@@ -1,0 +1,112 @@
+{% if result.result|length > 0 %}
+	<div class="report-table curfilter" style="color:#555555;">
+		{% if  result.posting_filter|length > 0 %}
+			{% for filter in result.posting_filter %}
+				 - <b>{{ filter.f }}</b> = <i>{{ filter.v }}</i> -
+			{% endfor %}
+		{% endif %}
+	</div>
+	<div  class="report-table result-table" >
+		<table {% if is_plot %} class="plot" {% endif %} {% if is_nav %} class="{{index}}" {% endif %}>
+			<caption>
+				<div class="left titleleft">
+					<div class="title left">{{ result.title }}</div>
+					{% if result.config %}
+						<a href="#" class="config left"><img title="{% trans 'report :: configurer le tableau' %}" src="images/config.png"/></a>
+					{% endif %}
+					{% if result.print %}
+						<a href="#" class="jqprint left"><img  title="{% trans 'report :: imprimer le tableau' %}" src="images/print.png"/></a>
+					{% endif %}
+					{% if result.csv %}
+						<form class="form_csv left" method="POST" action="export_csv.php" target="iframe" >
+							<input type="submit" name ="submit" value=""/>
+							<input style="display:none;" type="submit"  name="doit"/>
+							<input type="hidden" name="name" value="{{ result.title }}" size="68"/>
+							<textarea style="display:none;" name="csv"></textarea>
+						</form>
+					{% endif %}
+				</div>
+				<div class="right">{{ result.periode }}</div>
+				<div style="clear:both;height:2px;"></div>
+				<div class="right" style="font-weight:lighter;font-size:10px;">
+					{% if result.total|length > 0 and result.total != 0 %}
+						<i>Nombre de résultat : {{ result.total }}</i>
+					{% endif %}
+				</div>
+				<div class="spacer"></div>
+			</caption>
+			<thead>
+			{% set colspan = "" %} 
+			{% for key, value in result.display %}
+				<th class="{{ key }}" scope="col" >
+				{% if value.sort == 1 %}
+					<div class="orderby">
+						<img title="Trier" style="float:left;top:0;left:0;" class="asc" src="images/arrow_up.png"  />
+						<img titlte="trier" style="float:left;top:0;left:0;" class="desc" src="images/arrow_down.png" />
+				{% endif %}
+				
+				<div class="title_th" style="clear:both;color:black;">{{ value.title }}</div>
+				
+				{% if value.sort == 1 %}
+					</div>
+				{% endif %}
+				
+				<div style="height:8px;">
+				
+				{% if value.filter == 1 %}
+					<a href="#" title="Filtrer" style="float:left;bottom:0;left:0;font-size:8px;" class="{{ key }} filter ">{% trans "report :: filtrer" %}</a>
+				{% endif %}
+				
+				{% if value.groupby == 1 %}
+					<a href="#" title="Grouper" style="float:right;bottom:0;right:0;font-size:8px;" class="{{ key }} groupby ">{% trans "report :: grouper" %}</a>
+				{% endif %}
+				</div>
+				</th>
+				{% set colspan = loop.length %}
+			{% endfor %}
+			</thead>
+			<tbody>
+			{% for tr, value in result.result %}
+				{% if loop.index is even %}
+					<tr class="even">
+				{% else %}
+					<tr class="odd">
+				{% endif %}
+				{% for class, config in result.display %}
+					<td class="{{ class }}">
+					{% for key , result in value %}
+					 	{% if key == class %}
+							{% if config.bound == 1 and not "</i>"|in(result) %}
+								{% if key == "user" and value.user == "<b>TOTAL</b>"%} 
+									{{ result }}
+								{% elseif is_nav or is_doc %}
+									<a href="#" rel ="" class="{{result}} bound">{{ result }}</a>
+								{% else %}
+									<a href="#" rel ="" class="{{value.usrid}} bound">{{ result }}</a>
+								{% endif %}
+							{% else %}
+								{{ result }}								
+							{% endif %}
+						{% endif %}
+					{% endfor %} 
+					</td>
+				{% endfor %}
+				</tr>
+			{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="{{colspan}}"></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+{% else %}
+	<div  class="report-table center" style="margin-top:50px;" >
+		<b>{{ result.title }}</b>
+		<br />
+		<img src="images/noresults.png" />
+		<br />
+		<i>{% trans "report :: aucun resultat trouve" %}</i><br />
+	</div>
+{% endif %}

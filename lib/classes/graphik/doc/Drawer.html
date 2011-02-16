@@ -1,0 +1,425 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Driver</h2><div class="description">
+		<p>
+			La classe <a href="Driver.html">Driver</a> est une couche d'abstraction à GD et permet de dessiner toutes sortes de formes géométriques sur une <a href="Image.html">Image</a>.
+		</p>
+		<p>
+			Sur une image, l'axe des abscisses rejoint l'axe des ordonnées sur le coin haut-gauche. Le coin haut-gauche de l'image a donc pour coordonnées (0, 0) et le coin bas-droite (largeur, hauteur). Par exemple, sur une image de largeur 100 et de hauteur 50, un point à 50 sur l'axe des abscisses et 25 sur l'axe des ordonnées sera au centre de l'image.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <span class="type">resource</span> <a href="Driver.html#property.resource"><span class="argument">$resource</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Driver.html#property.imageWidth"><span class="argument">$imageWidth</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Driver.html#property.imageHeight"><span class="argument">$imageHeight</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Driver.html#property.antiAliasing"><span class="argument">$antiAliasing</span></a> := <span class="default">FALSE</span>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Driver.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.init">init</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.initFromFile">initFromFile</a>(<a href="FileImage.html"><span class="type">FileImage</span></a> <span class="argument">$fileImage</span>, <span class="type">string</span> <span class="argument">$file</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.setImageSize">setImageSize</a>(<span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.setPosition">setPosition</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.movePosition">movePosition</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.setAbsPosition">setAbsPosition</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.setSize">setSize</a>(<span class="type">float</span> <span class="argument">$w</span>, <span class="type">float</span> <span class="argument">$h</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.setAbsSize">setAbsSize</a>(<span class="type">int</span> <span class="argument">$w</span>, <span class="type">int</span> <span class="argument">$h</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Driver.html#method.getSize">getSize</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Driver.html#method.getColor">getColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.send">send</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.get">get</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.setAntiAliasing">setAntiAliasing</a>(<span class="type">bool</span> <span class="argument">$bool</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.copyImage">copyImage</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.copyResizeImage">copyResizeImage</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$d1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$d2</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$s1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$s2</span>, <span class="type">bool</span> <span class="argument">$resampled</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.string">string</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>, <span class="type">int</span> <span class="argument">$width</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.point">point</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.line">line</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Line.html"><span class="type">Line</span></a> <span class="argument">$line</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.arc">arc</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>, <span class="type">float</span> <span class="argument">$from</span>, <span class="type">float</span> <span class="argument">$to</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.filledArc">filledArc</a>(<span class="type">mixed</span> <span class="argument">$background</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>, <span class="type">float</span> <span class="argument">$from</span>, <span class="type">float</span> <span class="argument">$to</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.ellipse">ellipse</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.filledEllipse">filledEllipse</a>(<span class="type">mixed</span> <span class="argument">$background</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.rectangle">rectangle</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.filledRectangle">filledRectangle</a>(<span class="type">mixed</span> <span class="argument">$background</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.polygon">polygon</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html#method.filledPolygon">filledPolygon</a>(<span class="type">mixed</span> <span class="argument">$background</span>, <a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.resource"></a><span class="access">public</span> <span class="type">resource</span> <a href="Driver.html#property.resource"><span class="argument">$resource</span></a><div class="description">
+				La ressource GD utilisée par le pilote.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.imageWidth"></a><span class="access">public</span> <span class="type">int</span> <a href="Driver.html#property.imageWidth"><span class="argument">$imageWidth</span></a><div class="description">
+				La largeur de l'image gérée par le pilote.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.imageHeight"></a><span class="access">public</span> <span class="type">int</span> <a href="Driver.html#property.imageHeight"><span class="argument">$imageHeight</span></a><div class="description">
+				La hauteur de l'image gérée par le pilote.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.antiAliasing"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Driver.html#property.antiAliasing"><span class="argument">$antiAliasing</span></a> := <span class="default">FALSE</span><div class="description">
+				Doit-on utiliser l'anti-aliasing sur ce dessin ?
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Driver.html#method.__construct">__construct</a>()
+	<div class="description">
+				Construit le pilote. 
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.init"></a><span class="access">public</span> <a href="Driver.html#method.init">init</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1.0</li></ul>
+<div class="description">
+				Crée la ressource GD dont a besoin le Driver pour dessiner l'Image.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.initFromFile"></a><span class="access">public</span> <a href="Driver.html#method.initFromFile">initFromFile</a>(<a href="FileImage.html"><span class="type">FileImage</span></a> <span class="argument">$fileImage</span>, <span class="type">string</span> <span class="argument">$file</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1.0</li></ul>
+<div class="description">
+				Crée la ressource GD dont a besoin le Driver à partir d'un fichier déjà existant dont le nom est $file.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setImageSize"></a><span class="access">public</span> <a href="Driver.html#method.setImageSize">setImageSize</a>(<span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	<div class="description">
+				Change la taille de l'image gérée par le pilote pour la largeur $width et la hauteur $height.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setPosition"></a><span class="access">public</span> <a href="Driver.html#method.setPosition">setPosition</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	<div class="description">
+				Informe le pilote de la position de la sous-image sur l'image.
+				Les positions X et Y sont données via les paramètres $x et $y, qui représentent une fraction de la taille de l'image.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.movePosition"></a><span class="access">public</span> <a href="Driver.html#method.movePosition">movePosition</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	<div class="description">
+				Demande au pilote de déplacer la position de la sous-image sur l'image.
+				$x et $y représentent respectivement les déplacements latéral et vertical de la position en pixels.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAbsPosition"></a><span class="access">public</span> <a href="Driver.html#method.setAbsPosition">setAbsPosition</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	<div class="description">
+				Informe le pilote de la position de la sous-image sur l'image.
+				Les positions X et Y sont données via les paramètres $x et $y, dont l'unité est le pixel.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSize"></a><span class="access">public</span> <a href="Driver.html#method.setSize">setSize</a>(<span class="type">float</span> <span class="argument">$w</span>, <span class="type">float</span> <span class="argument">$h</span>)
+	<div class="description">
+				Informe le pilote de la taille de la sous-image sur l'image.
+				Les largeur et hauteur de la sous-image sont données via les paramètres $w et $h, qui représentent une fraction de la taille de l'image.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAbsSize"></a><span class="access">public</span> <a href="Driver.html#method.setAbsSize">setAbsSize</a>(<span class="type">int</span> <span class="argument">$w</span>, <span class="type">int</span> <span class="argument">$h</span>)
+	<div class="description">
+				Informe le pilote de la taille de la sous-image sur l'image.
+				Les largeur et hauteur de la sous-image sont données via les paramètres $w et $h, dont l'unité est le pixel.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getSize"></a><span class="access">public</span> <span class="type">array</span> <a href="Driver.html#method.getSize">getSize</a>()
+	<div class="description">
+				Retourne la taille de la sous-image en pixels.
+				Les valeurs sont retournées sous la forme d'un tableau, de la forme array(largeur, hauteur).
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getColor"></a><span class="access">public</span> <span class="type">int</span> <a href="Driver.html#method.getColor">getColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Retourne la couleur sous la forme d'un entier numérique, utilisable ensuite avec les fonctions GD de PHP.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.send"></a><span class="access">public</span> <a href="Driver.html#method.send">send</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	<div class="description">
+				Construit l'image passée en paramètre et l'envoie sur la sortie standard accompagnée des en-têtes HTTP correspondants.
+				A aucun moment vous ne devriez avoir besoin d'appeler vous-même cette méthode. Pour générez les images, utilisez <a href="Graph.html#method.draw">Graph::draw()</a>.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.get"></a><span class="access">public</span> <a href="Driver.html#method.get">get</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1.0</li></ul>
+<div class="description">
+				Construit l'image passée en paramètre et la renvoie sous forme de données binaires. Vous pouvez donc la stocker dans une variable si vous voulez faire des manipulations spécifiques.
+				A aucun moment vous ne devriez avoir besoin d'appeler vous-même cette méthode. Pour générez les images, utilisez <a href="Graph.html#method.draw">Graph::draw()</a>.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAntiAliasing"></a><span class="access">public</span> <a href="Driver.html#method.setAntiAliasing">setAntiAliasing</a>(<span class="type">bool</span> <span class="argument">$bool</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Active ou désactive l'anti-aliasing lors du dessin.
+				L'anti-aliasing permet d'avoir des graphiques plus propres mais demande plus de ressources.
+				L'anti-aliasing n'est pas activé par défaut.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Image.html#method.setAntiAliasing">Image::setAntiAliasing()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.copyImage"></a><span class="access">public</span> <a href="Driver.html#method.copyImage">copyImage</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	<div class="description">
+				Copie l'image $image vers la sous-image courante.
+				L'image sera copiée sur la sous-image du point $p1 (coin haut-gauche) ou point $p2 (coin bas-droit).
+				Les coordonnées de $p1 et $p2 doivent être relatives à celles de la sous-image.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.copyResizeImage"></a><span class="access">public</span> <a href="Driver.html#method.copyResizeImage">copyResizeImage</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$d1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$d2</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$s1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$s2</span>, <span class="type">bool</span> <span class="argument">$resampled</span>)
+	<div class="description">
+				Copie l'image $image vers l'image courante.
+				L'image $image sera copiée des points $s1 (coin haut-gauche) et $s2 (coin bas-droit) vers les points $d1 (coin haut-gauche) et $d2 (coin bas-droit) de l'image courante.
+				Si $resampled est placé à TRUE, l'image sera rééchantillonée.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.string"></a><span class="access">public</span> <a href="Driver.html#method.string">string</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>, <span class="type">int</span> <span class="argument">$width</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Dessine la chaîne de caractères $text à partir du point $point.
+				Les coordonnées de $point doivent être relatives à celles de la sous-image.
+				Le paramètre $width permet de spécifier la largeur maximale en pixels de la boîte de texte.
+			<div class="see">
+					Voir aussi :
+					<ul>
+<li><a href="Driver.html#method.getTextHeight">Driver::getTextHeight()</a></li>
+<li><a href="Driver.html#method.getTextWidth">Driver::getTextWidth()</a></li>
+</ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.point"></a><span class="access">public</span> <a href="Driver.html#method.point">point</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	<div class="description">
+				Dessine un pixel de couleur $color au point $point.
+				Les coordonnées de $point doivent être relatives à celles de la sous-image.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.line"></a><span class="access">public</span> <a href="Driver.html#method.line">line</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Line.html"><span class="type">Line</span></a> <span class="argument">$line</span>)
+	<div class="description">
+				Dessine la ligne $line de couleur $color.
+				Les coordonnées de la ligne doivent être relatives à celles de la sous-image.
+			</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.arc"></a><span class="access">public</span> <a href="Driver.html#method.arc">arc</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>, <span class="type">float</span> <span class="argument">$from</span>, <span class="type">float</span> <span class="argument">$to</span>)
+	<div class="description">
+				Dessine un arc d'ellipse de couleur $color dont les deux extrémités sont reliées au centre de l'ellipse.
+				L'ellipse a pour centre $center et est de largeur et hauteur respectives $width et $height.
+				L'angle de départ pour l'arc est $from et l'angle d'arrivée $to.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.filledArc">Driver::filledArc()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.filledArc"></a><span class="access">public</span> <a href="Driver.html#method.filledArc">filledArc</a>(<span class="type">mixed</span> <span class="argument">$background</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>, <span class="type">float</span> <span class="argument">$from</span>, <span class="type">float</span> <span class="argument">$to</span>)
+	<div class="description">
+				Dessine un arc d'ellipse dont les deux extrémités sont reliées au centre de l'ellipse et le remplit avec la couleur ou le dégradé $background.
+				L'ellipse a pour centre $center et est de largeur et hauteur respectives $width et $height.
+				L'angle de départ pour l'arc est $from et l'angle d'arrivée $to.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.arc">Driver::arc()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.ellipse"></a><span class="access">public</span> <a href="Driver.html#method.ellipse">ellipse</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	<div class="description">
+				Dessine une ellipse de couleur $color, ayant pour centre $center et de largeur et hauteur respectives $width et $height.
+				Les coordonnées de l'ellipse doivent être relatives à celles de la sous-image.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.filledEllipse">Driver::filledEllipse()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.filledEllipse"></a><span class="access">public</span> <a href="Driver.html#method.filledEllipse">filledEllipse</a>(<span class="type">mixed</span> <span class="argument">$background</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	<div class="description">
+				Dessine et remplit une ellipse avec la couleur ou le dégradé $background. Cette ellipse a pour centre $center et est de largeur et hauteur respectives $width et $height.
+				Les coordonnées de l'ellipse doivent être relatives à celles de la sous-image.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.ellipse">Driver::ellipse()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.rectangle"></a><span class="access">public</span> <a href="Driver.html#method.rectangle">rectangle</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	<div class="description">
+				Dessine un rectangle de couleur $color des points $p1 à $p2 (le segment qui relie ces points représente la diagonale du rectangle).
+				Les coordonnées du rectangle doivent être relatives à celles de la sous-image.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.filledRectangle">Driver::filledRectangle()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.filledRectangle"></a><span class="access">public</span> <a href="Driver.html#method.filledRectangle">filledRectangle</a>(<span class="type">mixed</span> <span class="argument">$background</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	<div class="description">
+				Dessine et remplit un rectangle avec la couleur ou le dégradé $background des points $p1 à $p2 (le segment qui relie ces points représente la diagonale du rectangle).
+				Les coordonnées du rectangle doivent être relatives à celles de la sous-image.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.rectangle">Driver::rectangle()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.polygon"></a><span class="access">public</span> <a href="Driver.html#method.polygon">polygon</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>, <a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	<div class="description">
+				Dessine le polygone $polygon de couleur $color.
+				Les coordonnées de chaque point du polygone doivent être relatives à celles de la sous-image.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.filledPolygon">Driver::filledPolygon()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.filledPolygon"></a><span class="access">public</span> <a href="Driver.html#method.filledPolygon">filledPolygon</a>(<span class="type">mixed</span> <span class="argument">$background</span>, <a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	<div class="description">
+				Dessine et remplit le polygone $polygon avec la couleur ou le dégradé $background.
+				Les coordonnées de chaque point du polygone doivent être relatives à celles de la sous-image.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.polygon">Driver::polygon()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Driver.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

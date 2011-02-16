@@ -1,0 +1,20 @@
+{% block colFilter %}
+	<form>
+		<fieldset>
+			<select name='filtre'>
+				<option value="{{ field }}">{% trans "report:: Enlever le filtre" %}</option>
+				{% for value in result %}
+					<option value="{{ value.value }}">
+					{% if value.val == "" %}
+						{% trans "report:: non-renseigne"  %}
+					{% else %}
+						{{ value.val }}
+					{% endif %}
+					</option>
+				{% else %}
+					<option value="">{% trans "report:: non-renseigne" %}</option>
+				{%endfor %}
+			</select>
+		</fieldset>
+	</form>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% for basket_element in basket.elements %}
+	<span class="wrapCHIM_{{basket_element.sselcont_id}}">
+	{% include 'prod/basket_element.twig' %}
+	</span>
+{% endfor %}
+	

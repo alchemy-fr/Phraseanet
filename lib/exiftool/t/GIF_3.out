@@ -1,0 +1,16 @@
+BackgroundColor: 0
+BitsPerPixel: 8
+City: Kingston
+ColorResolutionDepth: 8
+Comment: a new comment
+ExifToolVersion: 8.02
+FileSize: 4.0 kB
+FileType: GIF
+GIFVersion: 89a
+HasColorMap: Yes
+ImageHeight: 8
+ImageSize: 8x8
+ImageWidth: 8
+MIMEType: image/gif
+Title: GIF with XMP
+XMPToolkit: Image::ExifTool 8.02

@@ -1,0 +1,234 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head><title>~/.ExifTool_config</title>
+<link rel=stylesheet type='text/css' href='style.css' title='Style'>
+</head>
+<body>
+<pre>
+<span class='com'>#------------------------------------------------------------------------------
+# File:         ExifTool_config  --&gt;  ~/.ExifTool_config
+#
+# Description:  Sample user configuration file for Image::ExifTool
+#
+# Notes:        This example file shows how to define your own shortcuts and
+#               add new EXIF, IPTC, XMP, PNG, MIE and Composite tags, as well
+#               as how to specify preferred lenses for the LensID tag and
+#               define default values for ExifTool options.
+#
+#               Note that unknown tags may be extracted even if they aren't
+#               defined, but tags must be defined to be written.  Also note
+#               that it is possible to override an existing tag definition
+#               with a new tag.
+#
+#               To activate this file, rename it to ".ExifTool_config" and
+#               place it in your home directory or the exiftool application
+#               directory (to do this in Windows, use the "rename" command at
+#               the command line).  This causes ExifTool to automatically
+#               load the file when run.  Your home directory is determined by
+#               the first defined of the following environment variables:
+#
+#                   1. EXIFTOOL_HOME
+#                   2. HOME
+#                   3. HOMEDRIVE + HOMEPATH
+#                   4. (the current directory)
+#
+#               Alternatively, the -config option of the exiftool application
+#               may be used to load a specific configuration file (note that
+#               it must be the first option on the command line):
+#
+#                   exiftool -config ExifTool_config ...
+#
+#               This sample file defines the following 13 new tags as well as a
+#               number of Shortcut and Composite tags:
+#
+#                   1.  EXIF:NewEXIFTag
+#                   2.  IPTC:NewIPTCTag
+#                   3.  XMP-xmp:NewXMPxmpTag
+#                   4.  XMP-xxx:NewXMPxxxTag1
+#                   5.  XMP-xxx:NewXMPxxxTag2
+#                   6.  XMP-xxx:NewXMPxxxTag3
+#                   7.  XMP-xxx:NewXMPxxxStructX
+#                   8.  XMP-xxx:NewXMPxxxStructY
+#                   9.  PNG:NewPngTag1
+#                  10.  PNG:NewPngTag2
+#                  11.  PNG:NewPngTag3
+#                  12.  MIE-Meta:NewMieTag1
+#                  13.  MIE-Test:NewMieTag2
+#
+#               For detailed information on the definition of tag tables and
+#               tag information hashes, see lib/Image/ExifTool/README.
+#------------------------------------------------------------------------------
+
+# Shortcut tags are used when extracting information to simplify
+# commonly used commands.  They can be used to represent groups
+# of tags, or to provide an alias for a tag name.</span>
+%Image::ExifTool::UserDefined::Shortcuts = (
+    MyShortcut =&gt; ['exif:createdate','exposuretime','aperture'],
+    MyAlias =&gt; 'FocalLengthIn35mmFormat',
+);
+
+<span class='com'># NOTE: All tag names used in the following tables are case sensitive.
+
+# The %Image::ExifTool::UserDefined hash defines new tags to be added
+# to existing tables.</span>
+%Image::ExifTool::UserDefined = (
+    <span class='com'># All EXIF tags are added to the Main table, and WriteGroup is used to
+    # specify where the tag is written (default is ExifIFD if not specified):</span>
+    'Image::ExifTool::Exif::Main' =&gt; {
+        0xd000 =&gt; {
+            Name =&gt; 'NewEXIFTag',
+            Writable =&gt; 'int16u',
+            WriteGroup =&gt; 'IFD0',
+        },
+    },
+    <span class='com'># IPTC tags are added to a specific record type (ie. application record):
+    # (Note: IPTC tags ID's are limited to the range 0-255)</span>
+    'Image::ExifTool::IPTC::ApplicationRecord' =&gt; {
+        240 =&gt; {
+            Name =&gt; 'NewIPTCTag',
+            Format =&gt; 'string[0,16]',
+        },
+    },
+    <span class='com'># XMP tags may be added to existing namespaces:</span>
+    'Image::ExifTool::XMP::xmp' =&gt; {
+        NewXMPxmpTag =&gt; { Groups =&gt; { 2 =&gt; 'Author' } },
+    },
+    <span class='com'># new XMP namespaces (ie. xxx) must be added to the Main XMP table:</span>
+    'Image::ExifTool::XMP::Main' =&gt; {
+        xxx =&gt; { <span class='com'># <-- must be the same as the NAMESPACE prefix</span>
+            SubDirectory =&gt; {
+                TagTable =&gt; 'Image::ExifTool::UserDefined::xxx',
+                <span class='com'># (see the definition of this table below)</span>
+            },
+        },
+    },
+    <span class='com'># new PNG tags are added to the PNG::TextualData table:</span>
+    'Image::ExifTool::PNG::TextualData' =&gt; {
+        NewPngTag1 =&gt; { },
+        NewPngTag2 =&gt; { },
+        NewPngTag3 =&gt; { },
+    },
+    <span class='com'># add a new MIE tag (MieTag1) and group (MIE-Test) to MIE-Meta
+    # (Note: MIE group names must NOT end with a number)</span>
+    'Image::ExifTool::MIE::Meta' =&gt; {
+        NewMieTag1 =&gt; {
+            Writable =&gt; 'rational64u',
+            Units =&gt; [ 'cm', 'in' ],
+        },
+        Test =&gt; {
+            SubDirectory =&gt; {
+                TagTable =&gt; 'Image::ExifTool::UserDefined::MIETest',
+                DirName =&gt; 'MIE-Test',
+            },
+        },
+    },
+    <span class='com'># Composite tags are added to the Composite table:</span>
+    'Image::ExifTool::Composite' =&gt; {
+        <span class='com'># Composite tags are unique: The Require/Desire elements list tags
+        # that must/may exist, and the keys of these hashes are used as
+        # indices in the @val array of the ValueConv expression to derive
+        # the composite tag value.  All Require'd tags must exist for the
+        # Composite tag to be evaluated.  If no Require'd tags are specified,
+        # then at least one of the Desire'd tags must exist.  See the
+        # Composite table in Image::ExifTool::Exif for more examples.</span>
+        BaseName =&gt; {
+            Require =&gt; {
+                0 =&gt; 'FileName',
+            },
+            <span class='com'># remove the extension from FileName</span>
+            ValueConv =&gt; 'my $name=$val[0]; $name=~s/\..*?$//; $name',
+        },
+        <span class='com'># the following examples demonstrate simplifications which may be
+        # used if only one tag is Require'd or Desire'd:
+        # 1) the Require lookup may be replaced with a simple tag name
+        # 2) "$val" may be used to represent "$val[0]" in the expression</span>
+        FileExtension =&gt; {
+            Require =&gt; 'FileName',
+            ValueConv =&gt; '$val=~/\.([^.]*)$/; $1',
+        },
+        <span class='com'># override CircleOfConfusion tag to use D/1750 instead of D/1440</span>
+        CircleOfConfusion =&gt; {
+            Require =&gt; 'ScaleFactor35efl',
+            Groups =&gt; { 2 =&gt; 'Camera' },
+            ValueConv =&gt; 'sqrt(24*24+36*36) / ($val * 1750)',
+            PrintConv =&gt; 'sprintf("%.3f mm",$val)',
+        },
+        <span class='com'># generate a description for this file type</span>
+        FileTypeDescription =&gt; {
+            Require =&gt; 'FileType',
+            ValueConv =&gt; 'GetFileType($val,1) || $val',
+        },
+    },
+);
+
+<span class='com'># This is a basic example of the definition for a new XMP namespace.
+# This table is referenced through a SubDirectory tag definition
+# in the %Image::ExifTool::UserDefined definition above.
+# The namespace prefix for these tags is 'xxx', which corresponds to
+# an ExifTool family 1 group name of 'XMP-xxx'.</span>
+%Image::ExifTool::UserDefined::xxx = (
+    GROUPS =&gt; { 0 =&gt; 'XMP', 1 =&gt; 'XMP-xxx', 2 =&gt; 'Image' },
+    NAMESPACE =&gt; { 'xxx' =&gt; 'http://ns.myname.com/xxx/1.0/' },
+    WRITABLE =&gt; 'string',
+    <span class='com'># replace "NewXMPxxxTag1" with your own tag name (ie. "MyTag")</span>
+    NewXMPxxxTag1 =&gt; { },
+    NewXMPxxxTag2 =&gt; { Groups =&gt; { 2 =&gt; 'Author' } },
+    NewXMPxxxTag3 =&gt; { List =&gt; 'Bag' },
+    <span class='com'># XMP structures are defined as SubDirectory's</span>
+    NewXMPxxxStruct =&gt; {
+        SubDirectory =&gt; { },  <span class='com'># treat as a subdirectory containing other tags</span>
+        Struct =&gt; 'MyStruct', <span class='com'># arbitrary name identifies entry in xmpStruct</span>
+        List =&gt; 'Seq',        <span class='com'># structures may also be elements of a list</span>
+    },
+    <span class='com'># structure elements must be defined as separate tags.  The tag ID's
+    # are the concatination of the structure tag ID with the ID of each
+    # structure element in turn.  The list flag should be set if the
+    # parent structure is contained in a list.</span>
+    NewXMPxxxStructX =&gt; { List =&gt; 1 },
+    NewXMPxxxStructY =&gt; { List =&gt; 1 },
+);
+
+<span class='com'># User-defined XMP structures are added to the xmpStruct lookup</span>
+%Image::ExifTool::UserDefined::xmpStruct = (
+    <span class='com'># A structure with 2 elements: X and Y</span>
+    MyStruct =&gt; {
+        NAMESPACE =&gt; { 'test' =&gt; 'http://x.y.z/test/' },
+        <span class='com'># TYPE is optional -- it adds an rdf:type element to the structure</span>
+        TYPE =&gt; 'http://x.y.z/test/xystruct',
+        X =&gt; { },
+        Y =&gt; { },
+    },
+);
+
+<span class='com'># Adding a new MIE group requires a few extra definitions</span>
+use Image::ExifTool::MIE;
+%Image::ExifTool::UserDefined::MIETest = (
+    %Image::ExifTool::MIE::tableDefaults,   <span class='com'># default MIE table entries</span>
+    GROUPS      =&gt; { 0 =&gt; 'MIE', 1 =&gt; 'MIE-Test', 2 =&gt; 'Document' },
+    WRITE_GROUP =&gt; 'MIE-Test',
+    NewMieTag2  =&gt; { },     <span class='com'># new user-defined tag in MIE-Test group</span>
+);
+
+<span class='com'># A special 'Lenses' list can be defined to give priority to specific lenses
+# in the logic to determine a lens model for the Composite:LensID tag</span>
+@Image::ExifTool::UserDefined::Lenses = (
+    'Sigma AF 10-20mm F4-5.6 EX DC',
+    'Tamron 35-90mm F4 AF',
+);
+
+<span class='com'># Specify default ExifTool option values
+# (see the <a href="ExifTool.html#Options">Options function documentation</a> for available options)</span>
+%Image::ExifTool::UserDefined::Options = (
+    CoordFormat =&gt; '%.6f',  <span class='com'># change default GPS coordinate format</span>
+    Duplicates =&gt; 1,        <span class='com'># make -a default for the exiftool app</span>
+    GeoMaxHDOP =&gt; 4,        <span class='com'># ignore GPS fixes with HDOP &gt; 4</span>
+);
+
+<span class='com'>#------------------------------------------------------------------------------</span>
+1;  <span class='com'>#end</span>
+</pre>
+<hr>
+<p class='lf'><a href="index.html">&lt;-- Back to ExifTool home page</a></p>
+</body>
+</html>

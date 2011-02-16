@@ -1,0 +1,13 @@
+PATCHED library in inc/drivers/gd.class.php
+
+replace function setAntialiasing($bool) bu this one :
+
+function setAntiAliasing($bool) {
+		if(function_exists('imageantialias')) {
+			imageantialias($this->resource, (bool)$bool);
+
+			$this->antiAliasing = (bool)$bool;
+		} else {
+			awImage::drawErrorFile('missing-anti-aliasing');
+		}
+	}

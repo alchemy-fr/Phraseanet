@@ -1,0 +1,156 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class PlotGroup</h2><div class="extends"><ul>
+<li><a href="Component.html">Component</a></li>
+<ul>
+<li><a href="ComponentGroup.html">ComponentGroup</a></li>
+<ul><li>PlotGroup</li></ul>
+</ul>
+</ul></div><div class="description">
+		<p>
+			Cette classe permet de gérer plusieurs objets <a href="Plot.html">Plot</a> sur le même graphique.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <a href="Grid.html"><span class="type">Grid</span></a> <a href="PlotGroup.html#property.grid"><span class="argument">$grid</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="PlotAxis.html"><span class="type">PlotAxis</span></a> <a href="PlotGroup.html#property.axis"><span class="argument">$axis</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="PlotGroup.html#property.xAxisZero"><span class="argument">$xAxisZero</span></a> := <span class="default">TRUE</span>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="PlotGroup.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="PlotGroup.html#method.setXAxisZero">setXAxisZero</a>(<span class="type">bool</span> <span class="argument">$zero</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="PlotGroup.html#method.setYAxisZero">setYAxisZero</a>(<span class="type">bool</span> <span class="argument">$zero</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="PlotGroup.html#method.setYMin">setYMin</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="PlotGroup.html#method.setYMax">setYMax</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="PlotGroup.html#method.setXMin">setXMin</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="PlotGroup.html#method.setXMax">setXMax</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.grid"></a><span class="access">public</span> <a href="Grid.html"><span class="type">Grid</span></a> <a href="PlotGroup.html#property.grid"><span class="argument">$grid</span></a><div class="description">
+				Représente la grille de fond du groupe de <a href="Plot.html">Plot</a>.
+			</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.axis"></a><span class="access">public</span> <a href="PlotAxis.html"><span class="type">PlotAxis</span></a> <a href="PlotGroup.html#property.axis"><span class="argument">$axis</span></a><div class="description">
+				Représente les axes de gauche, droite, du haut et du bas du groupe de <a href="Plot.html">Plot</a>.
+			</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.xAxisZero"></a><span class="access">protected</span> <span class="type">bool</span> <a href="PlotGroup.html#property.xAxisZero"><span class="argument">$xAxisZero</span></a> := <span class="default">TRUE</span><div class="description">
+				Est-ce le ou les axes des abscisses doivent être centrés sur zéro ?
+			</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="PlotGroup.html#method.__construct">__construct</a>()
+	<div class="description">
+				Construit le groupe de <a href="Plot.html">Plot</a>.
+			</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setXAxisZero"></a><span class="access">public</span> <a href="PlotGroup.html#method.setXAxisZero">setXAxisZero</a>(<span class="type">bool</span> <span class="argument">$zero</span>)
+	<div class="description">
+				Précise si le ou les axes des abscisses doivent être centrés sur le zéro de l'axe des ordonnées.
+			</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setYAxisZero"></a><span class="access">public</span> <a href="PlotGroup.html#method.setYAxisZero">setYAxisZero</a>(<span class="type">bool</span> <span class="argument">$zero</span>)
+	<div class="description">
+				Précise si le ou les axes des ordonnées doivent être centrés sur le zéro de l'axe des abscisses.
+			</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setYMin"></a><span class="access">public</span> <a href="PlotGroup.html#method.setYMin">setYMin</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	<div class="description">
+				Force la valeur minimale de l'axe des ordonnées à $value.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="PlotGroup.html#method.setYMax">PlotGroup::setYMax()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setYMax"></a><span class="access">public</span> <a href="PlotGroup.html#method.setYMax">setYMax</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	<div class="description">
+				Force la valeur maximale de l'axe des ordonnées à $value.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="PlotGroup.html#method.setYMin">PlotGroup::setYMin()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setXMin"></a><span class="access">public</span> <a href="PlotGroup.html#method.setXMin">setXMin</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	<div class="description">
+				Force la valeur minimale de l'axe des abscisses à $value.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="PlotGroup.html#method.setXMax">PlotGroup::setXMax()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setXMax"></a><span class="access">public</span> <a href="PlotGroup.html#method.setXMax">setXMax</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	<div class="description">
+				Force la valeur maximale de l'axe des abscisses à $value.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="PlotGroup.html#method.setXMin">PlotGroup::setXMin()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="PlotGroup.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

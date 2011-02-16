@@ -1,0 +1,342 @@
+BODY, TD, INPUT
+{
+	FONT-FAMILY: Verdana, Arial, helvetica, sans-serif;
+	font-size: 12px;
+}
+FORM
+{
+	padding:0px;
+	margin:0px;
+}
+BODY.dialog
+{
+	background-color:ButtonFace;
+}
+BODY.dialog .x3Dbox
+{
+	position:relative;
+	top:0px;
+	left:0px;
+	text-align:left;
+	padding:5px;
+	border-top: 1px solid #808080;
+	border-left: 1px solid #808080;
+	border-bottom: 1px solid #ffffff;
+	border-right: 1px solid #ffffff;
+}
+BODY.dialog .x3Dbox .title
+{
+	position:absolute;
+	top:-9px;
+	left:20px;
+	background-color:ButtonFace;
+	padding-left:4px;
+	padding-right:4px;
+}
+INPUT.textNofocus
+{
+	position:relative;
+	top:1px;
+	height:14px;
+	padding:0px;
+	margin:2px;
+	border-top:1px solid #ffffff;
+	border-left:1px solid  #ffffff;
+	border-right:1px solid #d0d0d0;
+	border-bottom:1px solid #d0d0d0;
+}
+
+INPUT.textFocus
+{
+	position:relative;
+	top:1px;
+	height:14px;
+	padding:0px;
+	margin:0px;
+	border:3px solid #99a2d0;
+}
+
+H3, H4
+{
+	display: inline;
+}
+
+DIV.thbox
+{
+	BACKGROUND-COLOR:#ffffff;
+	border-top:1px solid #d0d0d0;
+	border-left:1px solid  #d0d0d0;
+	border-right:2px solid black;
+	border-bottom:2px solid black;
+	margin:0px;
+	padding:0px;
+	z-index:1;
+}
+
+DIV.thbox .onglet
+{
+	position:absolute;
+	top: -22px;
+	left:5px;
+	height:20px;
+	BACKGROUND-COLOR:#ffffff;
+	border-top:1px solid #d0d0d0;
+	border-left:1px solid  #d0d0d0;
+	border-right:2px solid black;
+	border-bottom:1px solid #ffffff;
+	margin:0px;
+	padding:0px;
+	padding-left:5px;
+	padding-right:15px;
+	font-size: 14px;
+	z-index:2;
+}
+
+DIV.thbox HR
+{
+	COLOR:#d0d0d0;
+	height:1px;
+	margin:0px;
+	padding:0px;
+}
+
+
+DIV.glossaire
+{
+	position:relative;
+	left:4px;
+	white-space: nowrap;
+}
+DIV.glossaire U
+{
+	position:relative;
+	left:1px;
+    TEXT-DECORATION: none;
+	margin-right: 5px;
+	width: 9px;
+	height:10px;
+	text-align:center;
+	display:inline-block;
+	font-size: 8px;
+	border: 1px solid #b0b0b0;
+	color: #000000;
+	BACKGROUND-COLOR:#FFFFFF;
+	cursor:pointer;
+}
+
+DIV.glossaire U.nots
+{
+	border: 1px solid #F0F0F0;
+	BACKGROUND-COLOR:#F0F0F0;
+	cursor:default;
+}
+
+DIV.glossaire DIV.S_
+{
+	cursor:pointer;
+	BACKGROUND-COLOR:#99a2d0;
+	COLOR:#FFFFFF;
+}
+DIV.glossaire DIV.s_
+{
+	cursor:pointer;
+}
+DIV.glossaire DIV.r0_
+{
+}
+DIV.glossaire DIV.r1_
+{
+	COLOR:#FF4000;
+}
+DIV.glossaire DIV.OB
+{
+	position:relative;
+	top:0px;
+	padding-top:0px;
+	padding-left:8px;
+	margin-left:6px;
+	border-left: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
+DIV.glossaire DIV.ob
+{
+	display:none;
+}
+
+DIV.glossaire DIV.hb
+{
+	position:relative;
+	top:0px;
+	padding-top:0px;
+	padding-left:8px;
+	margin-left:6px;
+	border-left: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+}
+DIV.glossaire DIV.ctroot
+{
+	position:relative;
+	top:0px;
+	padding:0px;
+	border:none;
+}
+
+
+DIV.glossaire P.sy 
+{
+}
+DIV.glossaire P.ta 
+{
+}
+
+DIV.glossaire P.tc
+{
+}
+
+DIV.glossaire P.tce
+{
+}
+
+
+
+
+DIV.tableContainer
+{
+	margin:2px;
+	border:1px solid #000000;
+	background-color:#ffffff;
+}
+
+DIV.tableContainerDragOver
+{
+	margin:0px;
+	border:3px solid #99a2d0;
+}
+
+DIV.tableContainer DIV.tbody
+{
+	position:relative;
+	overflow:auto;
+}
+
+DIV.tableContainer TABLE
+{
+	table-layout:fixed;
+}
+DIV.tableContainer THEAD TH
+{
+	background: #e0ece8;
+	border-left: 1px solid #ffffff;
+	border-right: 1px solid #c0ccc8;
+	border-top: 1px solid #ffffff;
+	border-bottom: 1px solid #c0ccc8;
+	font-weight: normal;
+	padding-left: 2px;
+	padding-right: 2px;
+	text-align: left;
+	cursor:pointer;
+	margin: 0px;
+}
+DIV.tableContainer TBODY TR.s_
+{
+}
+DIV.tableContainer TBODY TR.S_
+{
+	BACKGROUND-COLOR:#99a2d0;
+	COLOR:#FFFFFF;
+}
+
+DIV.tableContainer TBODY TD
+{
+	border-left: 1px solid #ffffff;
+	border-right: 1px solid #cccccc;
+	font-weight: normal;
+	padding-left: 2px;
+	padding-right: 2px;
+	text-align: left;
+	cursor:pointer;
+	margin: 0px;
+}
+
+DIV.menu
+{
+	FONT-FAMILY: Arial, helvetica, sans-serif;
+	font-size: 12px;
+	border-left: 1px solid #ffffff;
+	border-top: 1px solid #ffffff;
+	border-right: 2px solid #000000;
+	border-bottom: 2px solid #000000;
+	padding:0px;
+	margin:0px;
+	visibility:hidden;
+	position:absolute;
+	top:0px;
+	left:0px;
+	background-color:#d4d0c8; 
+}
+DIV.menu IMG
+{
+	padding:0px;
+	margin:0px;
+	position:relative;
+	left:-10px;
+	top:2px;
+}
+DIV.menu A
+{
+	font-size: 12px;
+	display:block;
+	position:relative;
+	text-decoration: none;
+	color:#000000;
+	padding-top:1px;
+	padding-bottom:1px;
+	padding-left:13px;
+	padding-right:3px;
+	overflow:hidden;
+	border:none 0px #FFFFFF;
+	white-space:nowrap;
+}
+DIV.menu A:hover
+{
+	font-size: 12px;
+	display:block;
+	position:relative;
+	text-decoration: none;
+	color:#ffffff;
+	background-color:#000080;
+}
+DIV.menu A.disabled
+{
+	font-size: 12px;
+	display:block;
+	position:relative;
+	text-decoration: none;
+	color:#A0A0A0;
+	padding-top:1px;
+	padding-bottom:1px;
+	padding-left:13px;
+	padding-right:3px;
+	overflow:hidden;
+}
+DIV.menu A.disabled:hover
+{
+	font-size: 12px;
+	display:block;
+	position:relative;
+	text-decoration: none;
+	color:#A0A0A0;
+	background-color:#d4d0c8;
+}
+DIV.menu .line
+{
+	display:block;
+	position:relative;
+	height:0px;
+	overflow:hidden;
+	margin-top:5px;
+	margin-bottom:4px;
+	padding:0px;
+	border-top: 1px solid #555555;
+	border-bottom: 1px solid #ffffff;
+}

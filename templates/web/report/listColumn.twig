@@ -1,0 +1,40 @@
+{% block listColumn %}
+	<div class="columnjson_title">{% trans "Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre dans le report" %} </div> <br /> 
+		<div>
+			<div class="columnjson_link_box">
+				<a class="columnjson_link" href='#' id='on'><img src ='./images/checkbox_checked.png' />{% trans "cocher tout" %}</a>
+			</div>
+			&nbsp;&nbsp;
+			<div class="columnjson_link_box">
+				<a class="columnjson_link" href='#' id='off'><img src ='./images/checkbox_unchecked.png' />{% trans "tout decocher" %}</a>
+			</div>
+		</div>
+		<br />
+		<form>
+		{% for key, value in conf %}
+			{% set k="true" %}
+			{% for key2, value2 in value %}
+  				{% if value2 == 1 %}
+  					{% set k = "false" %}
+  				{% endif %}
+			{% endfor %}
+			{% set val = key %}
+			{% if key == "date" %}
+				{% set val = "ddate" %}
+			{% endif %}
+			{% if k == "true"%}
+				<input type='checkbox' value='{{ val }}' name='{{ key }}' checked='checked' /><label style='color:yellow;'>{{ value.0 }}</label><br />
+			{% else %}
+				<input type='checkbox' value='{{ val }}' name='{{ key }}' checked='checked'/><label>{{ value.0 }}</label><br />
+			{% endif %}
+		{% endfor %}
+		</form>
+			<script type="text/javascript">
+				$('a#on').click(function(){
+					$(this).closest('#dialog').find(':checkbox').attr('checked', true);
+				});
+				$('a#off').click(function(){
+					$(this).closest('#dialog').find(':checkbox').attr('checked', false);
+				});
+			</script>
+{% endblock %}

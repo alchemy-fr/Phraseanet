@@ -1,0 +1,203 @@
+
+				body{
+					font-family:Helvetica,Verdana,Arial,sans-serif;
+					font-size:11px;
+					color:white;
+					position:absolute;
+					top:0;
+					left:0;
+					width:99%;
+					height:99%;
+					background-color:#000000;
+				}
+				input,select{
+					border:none;
+					background:white;
+				}
+				input.checkbox{
+					background:transparent;
+					border:none;
+				}
+				.link{
+					text-decoration:underline;
+					font-weight:bold;
+					color: #A9A9A9;
+				}
+				.pointer{
+					cursor:pointer;
+				}
+				.tab-content{
+					height:490px;margin:0 10px;position:relative;top:10px;background-color:#000000;display:none;
+				}
+				.tab-pane{
+					background-color:#525252;
+				}
+				.tab{
+			    -moz-border-radius-topleft:3px;
+			    -moz-border-radius-topright:3px;
+					-webkit-border-top-left-radius:3px;
+					-webkit-border-top-right-radius:3px;
+					xborder-color:#b2b2b2;
+					xborder-width:1px;
+					padding:6px 15px;
+					margin:0 2px;
+					xborder-style:solid;
+					float:right;
+					xborder-bottom:none;
+					background:url('img/tab-default.gif');
+					background-repeat: repeat-x;
+					background-position: 0 0;
+					color:#b2b2b2;
+					cursor:pointer;
+					text-decoration:none;
+					font-size:11px;
+				}
+				.tab.active{
+					background:url('img/tab-hover.gif');
+					background-repeat: repeat-x;
+					color:#b2b2b2;
+				}
+				.tab.click{
+					background:url('img/tab-actif.gif');
+					background-repeat: repeat-x;
+					color:#b2b2b2;
+				}
+				#forgotPWD{
+					color:#b2b2b2;
+					text-decoration:underline;
+				}
+				.apps{
+					width:135px;
+					height:135px;
+					cursor:pointer;
+				}
+				.apps_hover{
+					background-color:#353535;
+				}
+				
+				.app_title, .app_name, .app_name a{
+					margin:0 0 0 10px;
+					font-size:13px;
+					text-decoration:none;
+					color:white;
+				}
+				.app_title{
+					font-size:14px;
+				}
+				.apps_separator{
+					width:0px;
+					border:none;
+					border-left:1px solid #999999;
+					border-right:1px solid #1a1a1a;
+				}
+				.activeApp{
+					background-color:#353535;
+				}
+				.activeApp .app_name a,.activeApp .app_name{
+					color:#0077BC;
+					font-weight:bold;
+					text-decoration:none;
+				}
+				.validation{
+					text-align:center;
+				}
+				.requiredField{
+					color:red;
+				}
+				#lng-select{
+					background-color:#525252;
+					border:1px solid #444;
+					color:white;
+					font-size:10px;
+				}
+				.title-desc{
+					font-size:12px;
+					font-weight:bold;
+					margin-left:20px;
+				}
+				.title-name{
+					 font-size:28px;
+					 color:#b1b1b1;
+				}
+				
+			/*register && account*/
+					#form_register_table tr{
+						height:22px;
+					}
+					table{
+						font-size:11px;
+					}
+					.form_alert{
+						color:red;
+					}
+					.input_element{
+						width:200px;
+					}
+					.form_label{
+						text-align:right;
+						width:150px;
+					}
+					.form_label label{
+						margin-right:10px;
+					}
+					.form_input{
+						text-align:left;
+						width:220px;
+					}
+					.form_alert{
+						text-align:left;
+						width:200px;
+					}
+					
+					.notice{
+						background:#00a8FF;
+					}
+					
+					
+					
+					.password-meter {
+						position:relative;
+						width: 180px;
+					}
+					.password-meter-message {
+						text-align: right;
+						font-weight: bold;
+						color: #676767;
+					}
+					.password-meter-bg, .password-meter-bar {
+						height: 4px;
+					}
+					.password-meter-bg {
+						top: 8px;
+						background: #e0e0e0;
+					}
+					
+					.password-meter-message-very-weak {
+						color: #aa0033;
+					}
+					.password-meter-message-weak {
+						color: #f5ac00;
+					}
+					.password-meter-message-good {
+						color: #6699cc;
+					}
+					.password-meter-message-strong {
+						color: #008000;
+					}
+					
+					.password-meter-bg .password-meter-very-weak {
+						background: #aa0033;
+						width: 30px;
+					}
+					.password-meter-bg .password-meter-weak {
+						background: #f5ac00;
+						width: 60px;
+					}
+					.password-meter-bg .password-meter-good {
+						background: #6699cc;
+						width: 135px;
+					}
+					.password-meter-bg .password-meter-strong {
+						background: #008000;
+						width: 180px;
+					}

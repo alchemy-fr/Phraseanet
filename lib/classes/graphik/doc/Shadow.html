@@ -1,0 +1,234 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Shadow</h2><div class="description">
+		<p>
+			La classe <a href="Shadow.html">Shadow</a> permet de manipuler des ombres sur des rectangles.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.LEFT_TOP">LEFT_TOP</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.LEFT_BOTTOM">LEFT_BOTTOM</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.RIGHT_TOP">RIGHT_TOP</a> := <span class="default">3</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.RIGHT_BOTTOM">RIGHT_BOTTOM</a> := <span class="default">4</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.IN">IN</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.OUT">OUT</a> := <span class="default">2</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Shadow.html#property.size"><span class="argument">$size</span></a> := <span class="default">0</span>
+</li>
+<li>
+<span class="access">protected</span> <a href="Color.html"><span class="type">Color</span></a> <a href="Shadow.html#property.color"><span class="argument">$color</span></a> := <span class="default">new Color(100, 100, 100)</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Shadow.html#property.position"><span class="argument">$position</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Shadow.html#property.hide"><span class="argument">$hide</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Shadow.html#property.smooth"><span class="argument">$smooth</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Shadow.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$position</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html#method.setPosition">setPosition</a>(<span class="type">int</span> <span class="argument">$position</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html#method.smooth">smooth</a>(<span class="type">bool</span> <span class="argument">$smooth</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Side.html"><span class="type">Side</span></a> <a href="Shadow.html#method.getSpace">getSpace</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>, <span class="type">int</span> <span class="argument">$mode</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.LEFT_TOP"></a><span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.LEFT_TOP">LEFT_TOP</a> := <span class="default">1</span><div class="description">
+				Dessine l'ombre sur les côtés haut et gauche.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.LEFT_BOTTOM"></a><span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.LEFT_BOTTOM">LEFT_BOTTOM</a> := <span class="default">2</span><div class="description">
+				Dessine l'ombre sur les côtés bas et gauche.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.RIGHT_TOP"></a><span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.RIGHT_TOP">RIGHT_TOP</a> := <span class="default">3</span><div class="description">
+				Dessine l'ombre sur les côtés haut et droit.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.RIGHT_BOTTOM"></a><span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.RIGHT_BOTTOM">RIGHT_BOTTOM</a> := <span class="default">4</span><div class="description">
+				Dessine l'ombre sur les côtés bas et droit.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.IN"></a><span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.IN">IN</a> := <span class="default">1</span><div class="description">
+				Spécifie que l'ombre doit être dessinée à l'intérieur.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.OUT"></a><span class="access">const</span> <span class="type">int</span> <a href="Shadow.html#constant.OUT">OUT</a> := <span class="default">2</span><div class="description">
+				Spécifie que l'ombre doit être dessinée à l'extérieur.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.size"></a><span class="access">protected</span> <span class="type">int</span> <a href="Shadow.html#property.size"><span class="argument">$size</span></a> := <span class="default">0</span><div class="description">
+				Taille de l'ombre.
+				Cette valeur est par défaut à 0, ce qui signifie qu'aucune ombre n'est affichée.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.color"></a><span class="access">protected</span> <a href="Color.html"><span class="type">Color</span></a> <a href="Shadow.html#property.color"><span class="argument">$color</span></a> := <span class="default">new Color(100, 100, 100)</span><div class="description">
+				Taille de l'ombre.
+				Cette valeur est par défaut à 0, ce qui signifie qu'aucune ombre n'est affichée.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.position"></a><span class="access">protected</span> <span class="type">int</span> <a href="Shadow.html#property.position"><span class="argument">$position</span></a><div class="description">
+				Détermine la position de l'ombre.
+				Les valeurs possible sont <a href="Shadow.html#constant.LEFT_TOP">Shadow::LEFT_TOP</a>, <a href="Shadow.html#constant.RIGHT_TOP">Shadow::RIGHT_TOP</a>, <a href="Shadow.html#constant.LEFT_BOTTOM">Shadow::LEFT_BOTTOM</a> ou <a href="Shadow.html#constant.RIGHT_BOTTOM">Shadow::RIGHT_BOTTOM</a>.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.hide"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Shadow.html#property.hide"><span class="argument">$hide</span></a><div class="description">
+				Détermine si l'ombre doit être cachée.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.smooth"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Shadow.html#property.smooth"><span class="argument">$smooth</span></a><div class="description">
+				Détermine si l'ombre doit être lissée ou non.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Shadow.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$position</span>)
+	<div class="description">
+				Déclare une ombre à la position $position.
+				$position peut prendre les valeurs <a href="Shadow.html#constant.LEFT_TOP">Shadow::LEFT_TOP</a>, <a href="Shadow.html#constant.RIGHT_TOP">Shadow::RIGHT_TOP</a>, <a href="Shadow.html#constant.LEFT_BOTTOM">Shadow::LEFT_BOTTOM</a> ou <a href="Shadow.html#constant.RIGHT_BOTTOM">Shadow::RIGHT_BOTTOM</a>.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Shadow.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	<div class="description">
+				Détermine si l'ombre doit être cachée ou non.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.show"></a><span class="access">public</span> <a href="Shadow.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span>)
+	<div class="description">
+				Détermine si l'ombre doit être affichée ou non.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSize"></a><span class="access">public</span> <a href="Shadow.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	<div class="description">
+				Change la taille de l'ombre pour $size.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="Shadow.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de l'ombre pour $color.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setPosition"></a><span class="access">public</span> <a href="Shadow.html#method.setPosition">setPosition</a>(<span class="type">int</span> <span class="argument">$position</span>)
+	<div class="description">
+				Change la position de l'ombre.
+				$position peut prendre les valeurs <a href="Shadow.html#constant.LEFT_TOP">Shadow::LEFT_TOP</a>, <a href="Shadow.html#constant.RIGHT_TOP">Shadow::RIGHT_TOP</a>, <a href="Shadow.html#constant.LEFT_BOTTOM">Shadow::LEFT_BOTTOM</a> ou <a href="Shadow.html#constant.RIGHT_BOTTOM">Shadow::RIGHT_BOTTOM</a>.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.smooth"></a><span class="access">public</span> <a href="Shadow.html#method.smooth">smooth</a>(<span class="type">bool</span> <span class="argument">$smooth</span>)
+	<div class="description">
+				Détermine si l'ombre doit être lissée ou non.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getSpace"></a><span class="access">public</span> <a href="Side.html"><span class="type">Side</span></a> <a href="Shadow.html#method.getSpace">getSpace</a>()
+	<div class="description">
+				Retourne l'espace pris par l'ombre à gauche, droit, en haut et en bas.
+				Les espaces sont retournés en pixels.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.draw"></a><span class="access">public</span> <a href="Shadow.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>, <span class="type">int</span> <span class="argument">$mode</span>)
+	<div class="description">
+				Dessine l'ombre avec le pilote $driver dans un rectangle dont la diagonale est le segment qui relie les points $p1 et $p2.
+				Le paramètre $mode détermine le mode d'affichage de l'ombre. Si <a href="Shadow.html#constant.OUT">Shadow::OUT</a> est spécifié, alors l'ombre sera dessinée en dehors du rectangle. Si <a href="Shadow.html#constant.IN">Shadow::IN</a> est spécifié, alors l'ombre sera dessinée à l'intérieur du rectangle.
+			</div>
+<div class="description-bottom"><a href="Shadow.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

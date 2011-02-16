@@ -1,0 +1,360 @@
+
+/********************
+*********************
+				HTML
+*********************
+********************/
+
+BODY
+{
+	BACKGROUND-COLOR: #959595;
+	COLOR: #000000;
+}
+input,select{
+	border:1px solid #999999;
+	background:#FFFFFF;
+}
+
+.loading{
+	background-image:url('../../icons/loader.gif');
+}
+.baskLoading{
+	background-image:url('../../icons/baskLoader.gif');
+}
+.prevLoading{
+	background-image:url('../../icons/prevloader.gif');
+}
+
+
+A
+{
+    COLOR: #000000;
+}
+
+.bodyprofile
+{
+	background-color: #959595;
+}
+DIV.onglets SPAN
+{
+    BACKGROUND-COLOR: #C9C9C9;
+	COLOR: #FFFFFF;
+}
+DIV.onglets SPAN.actif
+{
+    BACKGROUND-COLOR: #FFFFFF;
+	COLOR: #949494;
+}
+#tooltip
+{
+	BACKGROUND-COLOR: #DDDDDD;
+	COLOR:#000000;
+	BORDER:1px solid black;
+}
+.descimpair
+{
+	background-color:#C9C9C9;
+}
+#tooltip em{
+	background:red;
+}
+.bigTabs{
+	background-color:#C9C9C9;
+}
+.bigTabs.actif{
+	background-color:#E9E9E9;
+}
+#bigTabsBckg{
+	background-color:#959595;
+}
+/********************
+*********************
+			TOPICS
+*********************
+********************/
+
+#idongTopic UL.opened
+{
+	border-left:1px solid #c0c0c0;
+	border-bottom:1px solid #c0c0c0;
+}
+#idongTopic LI A
+{
+	color:#000000;
+}
+#idongTopic LI SPAN.static
+{
+	background-image: url(../../icons/tri_static.gif); 
+}
+#idongTopic div.searchZonePop{
+	
+	background-color:#E9E9E9;
+}
+/********************
+*********************
+			RECHERCHE
+*********************
+********************/
+
+.searchZone
+{
+	background-color:#FFFFFF;
+}
+.bodyLeft{
+	background-color:#E9E9E9;
+}
+.basContTitle{
+	background-color:#C9C9C9;
+	COLOR:#000000;
+}
+.base_filter{
+	background-color:#F7F7F7;
+}
+.filterTitle{
+	background-color:#e0e0e0;
+}
+.basContTitle div.filter{
+	background-image:url('../../icons/filters_cl.gif');
+}
+.filter, .base_filter{
+	color:#555555;
+}
+.basContTitle div.open{
+	background-image:url('../../icons/filters_op.gif');
+}
+
+.basContainer{
+	border:2px solid #C9C9C9;
+}
+
+/********************
+*********************
+			CHUTIER
+*********************
+********************/
+
+.bodynochu
+{
+	BACKGROUND-COLOR: #E9E9E9;
+}
+.diapochu
+{
+	BACKGROUND-COLOR:#FFFFFF;
+}
+.flechenochu			/*** page  ***/
+{
+	background-image:url('../../icons/light_bas.gif');
+}
+#flechechu{
+	background-image:url('../../icons/light_haut.gif');
+}
+.baskCreate{
+	background-image:url('../../icons/images/add.gif');
+}
+.baskDel,.baskOneDel{
+	background-image:url('../../icons/images/delete.gif');
+}
+.baskDownload,.baskOneDownload{
+	background-image:url('../../icons/images/download.gif');
+}
+.baskPrint{
+	background-image:url('../../icons/images/print.gif');
+}
+
+/********************
+*********************
+			ANSWERS
+*********************
+********************/
+
+.diapo
+{
+  border: 1px solid #E9E9E9;
+	BACKGROUND-COLOR :#e9e9e9;
+}
+.duration
+{
+	background-color:black;
+	color: white;
+}
+.PREV_PAGE, .NEXT_PAGE
+{
+	background-image:url('../../icons/light_left.gif');
+}
+.NEXT_PAGE{
+	background-image:url('../../icons/light_right.gif');
+}
+.previewTips,.infoTips,.baskAdder,.printer,.downloader{
+	background-image:url('../../icons/images/zoom.gif');
+}
+.infoTips{
+	background-image:url('../../icons/images/info.gif');
+}
+.baskAdder{
+	background-image:url('../../icons/images/basket.gif');
+}
+.printer{
+	background-image:url('../../icons/images/print.gif');
+}
+.downloader{
+	background-image:url('../../icons/images/download.gif');
+}
+
+/********************
+*********************
+			HOME
+*********************
+********************/
+
+.homePubTitleBox
+{
+	color:#FFFFFF;
+}
+.homePubLink
+{
+	color:#FFFFFF;
+}
+.homePubTitle
+{
+	color:#000000;
+}
+.moreLess{
+	color:white;
+}
+.boxPubli{
+	border:2px solid #AAAAAA;
+}
+.titlePubli{
+	background-color:#AAAAAA;
+}
+
+
+span.sel
+{
+  COLOR:#000000;
+	BACKGROUND-COLOR:#FFFFFF;
+}
+.divNavig
+{
+	BACKGROUND-COLOR:#e9e9e9;
+}
+/********************
+*********************
+			BANDEAU TOP
+*********************
+********************/
+#bandeau .box{
+	background-color:#959595;
+}
+#bandeau li.hover{
+	background-color:#A5A5A5;
+}
+#bandeau .hoverlist{
+	background-color:#E9E9E9;
+	border:1px solid #959595;
+}
+.colorpicker{
+	border:1px solid black;
+}
+/********************
+*********************
+		MODAL
+*********************
+********************/
+#OVERLAY,#OVERLAY2{
+	background-color:#111111;
+}
+.modalbox{
+	display:none;
+}
+.modaltitle{
+	color:white;
+	background:black;
+}
+/********************
+*********************
+		PREVIEW
+*********************
+********************/
+
+#PREVIEWBOX
+{
+	background-color:#959595;
+	color:white;
+	border-color:#BBBBBB;
+}
+#PREVIEWBOX A.bounce
+{
+	BORDER-BOTTOM:#ffe000 1px dashed;	
+}
+#PREVIEWCURRENT li.selected
+{
+	background-color:white;
+}
+#PREVIEWIMGDESC em
+{
+	background-color:red;
+}
+.cont_infos
+{
+	background-color:#CCCCCC;
+}
+
+#PREVIEWCURRENTCONT
+{
+	background-color:#CCCCCC;
+}
+#PREVMAINREG{
+	background-color:white;
+}
+
+/********************
+*********************
+	HELP
+*********************
+********************/
+
+	.client_help kbd.ky {
+		background-color:#ffffff ;
+		color:#000000;
+		border:#000000 1px solid;
+	}
+	.client_help kbd.tx {
+		background-color:#ffffff ;
+		color:#000000;
+		border:#000000 1px solid;
+	}
+	.client_help no_i {
+		border-bottom:#ff0000 2px dotted;
+	}
+	.client_help i{
+		color:#000000;
+		background-color:#CCCCCC
+	}
+	.client_help{
+		background-color: #E0E0E0;
+	}
+
+/********************
+*********************
+	BANDEAU ANSWER
+*********************
+********************/
+
+#nb_answersEXT
+{
+	background-color:#E9E9E9;
+}
+
+/********************
+*********************
+			Onglets
+*********************
+********************/
+
+
+#proposals h1{
+	color:#949494;
+}
+
+

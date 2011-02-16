@@ -1,0 +1,101 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Positionable</h2><div class="description">
+		<p>
+			<a href="Positionable.html">Positionable</a> est une <span style="text-decoration: underline">interface</span> que doivent implémenter les classes peuvent être positionnées par rapport à un <a href="Point.html">Point</a>.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.LEFT">LEFT</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.RIGHT">RIGHT</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.CENTER">CENTER</a> := <span class="default">3</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.TOP">TOP</a> := <span class="default">4</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.BOTTOM">BOTTOM</a> := <span class="default">5</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.MIDDLE">MIDDLE</a> := <span class="default">6</span>
+</li>
+</ul><ul class="methods"><li>
+<span class="access">public</span> <a href="Positionable.html#method.setAlign">setAlign</a>(<span class="type">int</span> <span class="argument">$h</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$v</span> := <span class="default">NULL</span>)
+	</li></ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.LEFT"></a><span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.LEFT">LEFT</a> := <span class="default">1</span><div class="description">
+				Désigne un alignement à gauche.
+			</div>
+<div class="description-bottom"><a href="Positionable.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.RIGHT"></a><span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.RIGHT">RIGHT</a> := <span class="default">2</span><div class="description">
+				Désigne un alignement à droite.
+			</div>
+<div class="description-bottom"><a href="Positionable.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.CENTER"></a><span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.CENTER">CENTER</a> := <span class="default">3</span><div class="description">
+				Désigne un alignement au centre.
+			</div>
+<div class="description-bottom"><a href="Positionable.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.TOP"></a><span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.TOP">TOP</a> := <span class="default">4</span><div class="description">
+				Désigne un alignement en haut.
+			</div>
+<div class="description-bottom"><a href="Positionable.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.BOTTOM"></a><span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.BOTTOM">BOTTOM</a> := <span class="default">5</span><div class="description">
+				Désigne un alignement en bas.
+			</div>
+<div class="description-bottom"><a href="Positionable.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.MIDDLE"></a><span class="access">const</span> <span class="type">int</span> <a href="Positionable.html#constant.MIDDLE">MIDDLE</a> := <span class="default">6</span><div class="description">
+				Désigne un alignement au centre.
+			</div>
+<div class="description-bottom"><a href="Positionable.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAlign"></a><span class="access">public</span> <a href="Positionable.html#method.setAlign">setAlign</a>(<span class="type">int</span> <span class="argument">$h</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$v</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Change l'alignement par rapport au point où l'objet sera affiché.
+				$h correspond à l'alignement horizontal (<a href="Positionable.html#constant.LEFT">Positionable::LEFT</a>, <a href="Positionable.html#constant.RIGHT">Positionable::RIGHT</a> ou <a href="Positionable.html#constant.CENTER">Positionable::CENTER</a>) et $v à l'alignement vertical (<a href="Positionable.html#constant.TOP">Positionable::TOP</a>, <a href="Positionable.html#constant.BOTTOM">Positionable::BOTTOM</a> ou <a href="Positionable.html#constant.MIDDLE">Positionable::MIDDLE</a>).
+				Si vous ne souhaitez pas modifier une des deux valeurs, vous pouvez passer NULL.
+			</div>
+<div class="description-bottom"><a href="Positionable.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

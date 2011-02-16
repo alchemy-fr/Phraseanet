@@ -1,0 +1,147 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Polygon</h2><div class="extends"><ul>
+<li><a href="Shape.html">Shape</a></li>
+<ul><li>Polygon</li></ul>
+</ul></div><div class="description">
+		<p>
+			Un polygone est une succcession de points.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties"><li>
+<span class="access">protected</span> <span class="type">array</span> <a href="Polygon.html#property.points"><span class="argument">$points</span></a>
+</li></ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Polygon.html#method.set">set</a>(<span class="type">int</span> <span class="argument">$pos</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Polygon.html#method.get">get</a>(<span class="type">int</span> <span class="argument">$pos</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Polygon.html#method.append">append</a>(<a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Polygon.html#method.count">count</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.all">all</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.getLines">getLines</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.getBoxPoints">getBoxPoints</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.getBoxYRange">getBoxYRange</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.getBoxXRange">getBoxXRange</a>()
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.points"></a><span class="access">protected</span> <span class="type">array</span> <a href="Polygon.html#property.points"><span class="argument">$points</span></a><div class="description">
+				Stocke tous les points du polygone.
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.set"></a><span class="access">public</span> <a href="Polygon.html#method.set">set</a>(<span class="type">int</span> <span class="argument">$pos</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	<div class="description">
+				Ajoute ou remplace un point $point dans le polygon à la position $pos.
+				Cette méthode accepte la valeur NULL pour spécifier que ce point doit être ignoré.
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.get"></a><span class="access">public</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Polygon.html#method.get">get</a>(<span class="type">int</span> <span class="argument">$pos</span>)
+	<div class="description">
+				Retourne le point du polygone à la position $pos.
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.append"></a><span class="access">public</span> <a href="Polygon.html#method.append">append</a>(<a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	<div class="description">
+				Ajoute un point $point à la fin du polygone.
+				Cette méthode accepte la valeur NULL pour spécifier que ce point doit être ignoré.
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.count"></a><span class="access">public</span> <span class="type">int</span> <a href="Polygon.html#method.count">count</a>()
+	<div class="description">
+				Retourne le nombre de points contenus dans le polygone.
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.all"></a><span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.all">all</a>()
+	<div class="description">
+				Permet de récupérer tous les points du polygone.
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getLines"></a><span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.getLines">getLines</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie un tableau contenant toutes les lignes formant le polygone.
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getBoxPoints"></a><span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.getBoxPoints">getBoxPoints</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie un tableau contenant les points supérieur droit et inférieur gauche du rectangle encadrant le polygone.
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getBoxYRange"></a><span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.getBoxYRange">getBoxYRange</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie un tableau contenant les ordonnées minimales et maximales de n'importe quel point appartenant au polygone (c'est à dire l'étendue du polygone le long de l'axe des ordonnées).
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getBoxXRange"></a><span class="access">public</span> <span class="type">array</span> <a href="Polygon.html#method.getBoxXRange">getBoxXRange</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie un tableau contenant les abscisses minimales et maximales de n'importe quel point appartenant au polygone (c'est à dire l'étendue du polygone le long de l'axe des abscisses).
+			</div>
+<div class="description-bottom"><a href="Polygon.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

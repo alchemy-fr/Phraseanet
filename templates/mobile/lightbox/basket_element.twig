@@ -1,0 +1,72 @@
+<div id="bask_item_{{basket_element.sselcont_id}}">
+    <div class="toolbar">
+    	<a class="back" href="#bask_{{basket_element.ssel_id}}">{% trans 'boutton::retour'%}</a>
+    	<div class="next" style="display:none;position:absolute;right:20px;line-height:28px;width:20px;height:20px;text-align:center;">
+    		<a href="#" style="color:white;text-decoration:none;font-size:28px;">&#9660;</a>
+    	</div>
+    	<div class="previous" style="display:none;position:absolute;right:60px;line-height:28px;width:20px;height:20px;text-align:center;">
+    		<a href="#" style="color:white;text-decoration:none;font-size:28px;">&#9650;</a>
+    	</div>
+    </div>
+    <div>
+	    <script type="text/javascript">
+	    	$(document).ready(function(){
+	    		check_basket_element({{basket_element.sselcont_id}});
+	    	});
+	    </script>
+	    <div class="info" style="position:relative">
+		    <div style="position:absolute;left:20px;top:14px;height:15px;font-weight:bold;font-size:18px;color:#1A1A1A" class="display_id" id="current_sselcont_id_n_{{basket_element.sselcont_id}}"></div>
+	    	<p>{{basket_element.get_title}}</p>
+	    </div>
+    	{% if basket_element.get_preview.doctype == 'image' %}
+			<img style="width:100%;" src="{{basket_element.get_preview.url}}" />
+    	{% elseif basket_element.get_preview.doctype == 'video' %}
+	    	<video controls="controls" style="width:100%;" src="{{basket_element.get_preview.url}}"">
+			your browser does not support the video tag
+			</video>
+    	{% elseif basket_element.get_preview.doctype == 'audio' %}
+			<audio style="width:100%;" src="{{basket_element.get_preview.url}}" />
+    	{% else %}
+			{% trans 'Le type de document n\'est actuellement pas supporte'%}
+    	{% endif %}
+    	{% if basket_element.is_validation_item %}
+	    	<ul class="individual">
+	    		<li>
+	    			<a href="#" class="yes {% if basket_element.my_agreement == '1'%}active_choice{% endif %}" id="yes_{{basket_element.sselcont_id}}">
+	    				{% trans 'validation:: OUI' %}
+	    			</a>
+	    		</li>
+	    		<li>
+	    			<a href="#" class="no {% if basket_element.my_agreement == '-1'%}active_choice{% endif %}" id="no_{{basket_element.sselcont_id}}">
+	    				{% trans 'validation:: NON' %}
+	    			</a>
+	    		</li>
+	    	</ul>
+	    	<ul class="rounded">
+	    		<li class="arrow">
+	    			<a href="#" id="note_editor_{{basket_element.sselcont_id}}" class="note_editor">{% trans 'validation:: editer ma note' %}</a>
+	    			<input type="hidden" name="sselcont_id" value="{{basket_element.sselcont_id}}"/></li>
+	    	</ul>
+	   		<form style="display:none;" id="note_form_{{basket_element.sselcont_id}}">
+		        <ul class="edit rounded">
+			    	<li>
+			    		<textarea class="note_area" 
+			    			id="note_area_{{basket_element.sselcont_id}}" 
+			    			{% if basket_element.my_note == '' %}placeholder="Note"{% endif %}>{{basket_element.my_note}}</textarea>
+			    	</li>
+		    	</ul>
+		    	<ul class="individual">
+		    		<li>
+		    			<a href="#" id="note_area_cancel_{{basket_element.sselcont_id}}" class="note_area_cancel">{% trans 'boutton::annuler' %}</a>
+		    		</li>
+		    		<li>
+		    			<a href="#" id="note_area_validate_{{basket_element.sselcont_id}}" class="note_area_validate">{% trans 'boutton::valider' %}</a>
+		    		</li>
+		    	</ul>
+	   		</form>
+	   		<div id="notes_{{basket_element.sselcont_id}}">
+	    	{% include 'lightbox/sc_note.twig' %}
+	    	</div>
+    	{% endif %}
+    </div>
+</div>

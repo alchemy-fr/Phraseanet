@@ -1,0 +1,17 @@
+{% extends "common/index.twig" %}
+
+{% block stylesheet %}
+	<link type="text/css" rel="stylesheet" 
+		href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,lightbox/lightbox.css" media="screen"/>
+{% endblock %}
+
+{% block content %}
+	<div id="main_index">
+		<h2 style="font-weight:bold;font-size:20px;margin:40px 0;">{% trans 'Erreur !' %}</h2>
+		<p>{% trans 'Le panier demande nexiste plus' %}</p>
+		<p>{{error}}</p>
+		<p><a style="color:black;" target="_self" href="/lightbox/">{% trans 'Retour a laccueil' %}</a></p>
+	</div>
+{% endblock %}
+
+

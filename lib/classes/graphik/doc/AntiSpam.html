@@ -1,0 +1,137 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class AntiSpam</h2><div class="extends"><ul>
+<li><a href="Image.html">Image</a></li>
+<ul><li>AntiSpam</li></ul>
+</ul></div><div class="description">
+		<p>
+			La classe <a href="AntiSpam.html">AntiSpam</a> permet de créer des images pour interdire des requêtes automatisées sur certaines pages.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">protected</span> <span class="type">string</span> <a href="AntiSpam.html#property.string"><span class="argument">$string</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="AntiSpam.html#property.noise"><span class="argument">$noise</span></a> := <span class="default">0</span>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="AntiSpam.html#method.__construct">__construct</a>(<span class="type">string</span> <span class="argument">$string</span> := <span class="default">''</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">string</span> <a href="AntiSpam.html#method.setRand">setRand</a>(<span class="type">int</span> <span class="argument">$length</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="AntiSpam.html#method.setNoise">setNoise</a>(<span class="type">int</span> <span class="argument">$noise</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="AntiSpam.html#method.save">save</a>(<span class="type">string</span> <span class="argument">$qName</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="AntiSpam.html#method.check">check</a>(<span class="type">string</span> <span class="argument">$qName</span>, <span class="type">string</span> <span class="argument">$value</span>, <span class="type">bool</span> <span class="argument">$case</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="AntiSpam.html#method.draw">draw</a>()
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.string"></a><span class="access">protected</span> <span class="type">string</span> <a href="AntiSpam.html#property.string"><span class="argument">$string</span></a><div class="description">
+				La chaîne de caractère que devra retaper l'utilisateur.
+			</div>
+<div class="description-bottom"><a href="AntiSpam.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.noise"></a><span class="access">protected</span> <span class="type">int</span> <a href="AntiSpam.html#property.noise"><span class="argument">$noise</span></a> := <span class="default">0</span><div class="description">
+				Degré de bruit à afficher sur l'image (entre 0 et 10).
+			</div>
+<div class="description-bottom"><a href="AntiSpam.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="AntiSpam.html#method.__construct">__construct</a>(<span class="type">string</span> <span class="argument">$string</span> := <span class="default">''</span>)
+	<div class="description">
+				Construit une image anti-spam. Vous pouvez définir la chaîne de caractères à afficher sur l'image avec $string.
+				Si vous ne donnez aucune chaîne de caractères, voyez <a href="AntiSpam.html#method.setRand">AntiSpam::setRand()</a> pour générer une valeur aléatoire.
+			</div>
+<div class="description-bottom"><a href="AntiSpam.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setRand"></a><span class="access">public</span> <span class="type">string</span> <a href="AntiSpam.html#method.setRand">setRand</a>(<span class="type">int</span> <span class="argument">$length</span>)
+	<div class="description">
+				Génère une chaîne de caractère aléatoire de taille $length pour l'image anti-spam.
+				La chaîne de caractère ainsi créée est ensuite retournée.
+			</div>
+<div class="description-bottom"><a href="AntiSpam.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setNoise"></a><span class="access">public</span> <a href="AntiSpam.html#method.setNoise">setNoise</a>(<span class="type">int</span> <span class="argument">$noise</span>)
+	<div class="description">
+				Ajoute du bruit sur l'image.
+				Les valeurs possibles sont de 0 à 10, avec 0 pour ne pas afficher de bruit et 10 pour afficher un bruit maximal.
+			</div>
+<div class="description-bottom"><a href="AntiSpam.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.save"></a><span class="access">public</span> <a href="AntiSpam.html#method.save">save</a>(<span class="type">string</span> <span class="argument">$qName</span>)
+	<div class="description">
+				Enregistre la valeur de l'image anti-spam dans la session de l'utilisateur sous le nom $qName.
+				Cette méthode doit être utilisée en combinaison avec <a href="AntiSpam.html#method.check">AntiSpam::check()</a>.
+			</div>
+<div class="description-bottom"><a href="AntiSpam.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.check"></a><span class="access">public</span> <a href="AntiSpam.html#method.check">check</a>(<span class="type">string</span> <span class="argument">$qName</span>, <span class="type">string</span> <span class="argument">$value</span>, <span class="type">bool</span> <span class="argument">$case</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Vérifie que la valeur $value correspond à la valeur enregistrée sous le nom $qName avec <a href="AntiSpam.html#method.save">AntiSpam::save()</a>.
+				Si $case est mis à TRUE, alors la vérification NE sera PAS sensible à la casse, elle le sera à FALSE.
+				Cette méthode doit être utilisée en combinaison avec <a href="AntiSpam.html#method.save">AntiSpam::save()</a>.
+			</div>
+<div class="description-bottom"><a href="AntiSpam.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.draw"></a><span class="access">public</span> <a href="AntiSpam.html#method.draw">draw</a>()
+	<div class="description">
+				Affiche l'image anti-spam à l'écran.
+<pre>
+
+&lt;?php
+
+require_once "AntiSpam.class.php";
+
+$object = new <a href="AntiSpam.html">AntiSpam</a>();
+$object-&gt;<a href="AntiSpam.html#method.setRand">setRand</a>(5);
+$object-&gt;<a href="AntiSpam.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="AntiSpam.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,354 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2>
+<small>abstract</small> Class Image</h2><div class="description">
+		<p>
+			La classe <a href="Image.html">Image</a> est une classe abstraite à la base de toutes les images sur Artichow. Une image peut être copiée sur d'autres images et chaque image peut être générée soit au format PNG, soit au format JPEG.
+		</p>
+	</div><div class="inherit">
+			Les classes suivantes dérivent de Image :
+				<ul>
+<li><a href="Graph.html">Graph</a></li>
+<li><a href="FileImage.html">FileImage</a></li>
+</ul>
+</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Image.html#constant.JPEG">JPEG</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Image.html#constant.PNG">PNG</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Image.html#constant.GIF">GIF</a> := <span class="default">3</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Image.html#property.width"><span class="argument">$width</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Image.html#property.height"><span class="argument">$height</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html"><span class="type">Shadow</span></a> <a href="Image.html#property.shadow"><span class="argument">$shadow</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Image.html#property.border"><span class="argument">$border</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Image.html#property.format"><span class="argument">$format</span></a> := <span class="default">Image::PNG</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Image.html#property.antiAliasing"><span class="argument">$antiAliasing</span></a> := <span class="default">FALSE</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">resource</span> <a href="Image.html#property.resource"><span class="argument">$resource</span></a>
+</li>
+<li>
+<span class="access">protected</span> <a href="Driver.html"><span class="type">Driver</span></a> <a href="Image.html#property.driver"><span class="argument">$driver</span></a>
+</li>
+<li>
+<span class="access">protected</span> <a href="Color.html"><span class="type">Color</span></a> <a href="Image.html#property.background"><span class="argument">$background</span></a> := <span class="default">new Color(255, 255, 255)</span>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Image.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Driver.html"><span class="type">Driver</span></a> <a href="Image.html#method.getDriver">getDriver</a>(<span class="type">int</span> <span class="argument">$w</span> := <span class="default">1</span>, <span class="type">int</span> <span class="argument">$h</span> := <span class="default">1</span>, <span class="type">int</span> <span class="argument">$x</span> := <span class="default">0.5</span>, <span class="type">int</span> <span class="argument">$y</span> := <span class="default">0.5</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.setAntiAliasing">setAntiAliasing</a>(<span class="type">bool</span> <span class="argument">$bool</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.setFormat">setFormat</a>(<span class="type">int</span> <span class="argument">$format</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Image.html#method.getFormat">getFormat</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">string</span> <a href="Image.html#method.getFormatString">getFormatString</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.create">create</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.drawComponent">drawComponent</a>(<a href="Component.html"><span class="type">Component</span></a> <span class="argument">$component</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.send">send</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">resource</span> <a href="Image.html#method.get">get</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Image.html#method.sendHeaders">sendHeaders</a>()
+	</li>
+<li>
+<span class="access">public static</span> <a href="Image.html#method.drawError">drawError</a>(<span class="type">string</span> <span class="argument">
+							$message</span>)
+	</li>
+<li>
+<span class="access">public static</span> <a href="Image.html#method.drawErrorFile">drawErrorFile</a>(<span class="type">string</span> <span class="argument">
+							$error</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.JPEG"></a><span class="access">const</span> <span class="type">int</span> <a href="Image.html#constant.JPEG">JPEG</a> := <span class="default">1</span><div class="description">
+				Indique que l'image est au format JPEG.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.PNG"></a><span class="access">const</span> <span class="type">int</span> <a href="Image.html#constant.PNG">PNG</a> := <span class="default">2</span><div class="description">
+				Indique que l'image est au format PNG.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.GIF"></a><span class="access">const</span> <span class="type">int</span> <a href="Image.html#constant.GIF">GIF</a> := <span class="default">3</span><div class="description">
+				Indique que l'image est au format GIF.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.width"></a><span class="access">public</span> <span class="type">int</span> <a href="Image.html#property.width"><span class="argument">$width</span></a><div class="description">
+				La largeur de l'image en pixels.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.height"></a><span class="access">public</span> <span class="type">int</span> <a href="Image.html#property.height"><span class="argument">$height</span></a><div class="description">
+				La hauteur de l'image en pixels.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.shadow"></a><span class="access">public</span> <a href="Shadow.html"><span class="type">Shadow</span></a> <a href="Image.html#property.shadow"><span class="argument">$shadow</span></a><div class="description">
+				L'ombre associée à l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.border"></a><span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Image.html#property.border"><span class="argument">$border</span></a><div class="description">
+				La bordure associée à l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.format"></a><span class="access">protected</span> <span class="type">int</span> <a href="Image.html#property.format"><span class="argument">$format</span></a> := <span class="default">Image::PNG</span><div class="description">
+				Le format de l'image. Cela peut être <a href="Image.html#constant.PNG">Image::PNG</a> ou <a href="Image.html#constant.JPEG">Image::JPEG</a>.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.antiAliasing"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Image.html#property.antiAliasing"><span class="argument">$antiAliasing</span></a> := <span class="default">FALSE</span><div class="description">
+				Doit-on utiliser l'anti aliasing sur cette image ?
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.resource"></a><span class="access">protected</span> <span class="type">resource</span> <a href="Image.html#property.resource"><span class="argument">$resource</span></a><div class="description">
+				La ressource GD créée par PHP pour gérer l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.driver"></a><span class="access">protected</span> <a href="Driver.html"><span class="type">Driver</span></a> <a href="Image.html#property.driver"><span class="argument">$driver</span></a><div class="description">
+				Représente un objet de la classe <a href="Driver.html">Driver</a> qui sera utilisé pour dessiner toutes sortes de données sur cette image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.background"></a><span class="access">protected</span> <a href="Color.html"><span class="type">Color</span></a> <a href="Image.html#property.background"><span class="argument">$background</span></a> := <span class="default">new Color(255, 255, 255)</span><div class="description">
+				La couleur de fond de l'image. Par défaut, le fond d'une image est blanc.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Image.html#method.__construct">__construct</a>()
+	<div class="description">
+				Construit l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getDriver"></a><span class="access">public</span> <a href="Driver.html"><span class="type">Driver</span></a> <a href="Image.html#method.getDriver">getDriver</a>(<span class="type">int</span> <span class="argument">$w</span> := <span class="default">1</span>, <span class="type">int</span> <span class="argument">$h</span> := <span class="default">1</span>, <span class="type">int</span> <span class="argument">$x</span> := <span class="default">0.5</span>, <span class="type">int</span> <span class="argument">$y</span> := <span class="default">0.5</span>)
+	<div class="description">
+				Retourne un objet de type <a href="Driver.html">Driver</a> qui permet de dessiner sur l'image.
+				Le <a href="Driver.html">Driver</a> aura une largeur $w et une hauteur $h, et son centre sera positionné au point ($x, $y).
+				La largeur doit être comprise entre 0 et 1 et représente une fraction de la taille réelle de l'image.
+				La position doit être elle aussi comprise entre 0 et 1.
+				Les paramètres par défaut centrent le pilote au milieu de l'image et lui donnent la taille de l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSize"></a><span class="access">public</span> <a href="Image.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	<div class="description">
+				Permet de déterminer la taille de l'image à une largeur $width et une hauteur $height.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundColor"></a><span class="access">public</span> <a href="Image.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de fond de l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundGradient"></a><span class="access">public</span> <a href="Image.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	<div class="description">
+				Change le dégradé de fond de l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAntiAliasing"></a><span class="access">public</span> <a href="Image.html#method.setAntiAliasing">setAntiAliasing</a>(<span class="type">bool</span> <span class="argument">$bool</span>)
+	<div class="description">
+				Active ou désactive l'anti-aliasing sur l'image.
+				L'anti-aliasing permet d'avoir des graphiques plus propres mais demande plus de ressources.
+				L'anti-aliasing n'est pas activé par défaut.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.setAntiAliasing">Driver::setAntiAliasing()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setFormat"></a><span class="access">public</span> <a href="Image.html#method.setFormat">setFormat</a>(<span class="type">int</span> <span class="argument">$format</span>)
+	<div class="description">
+				Change le format de l'image. La nouvelle valeur peut être <a href="Image.html#constant.PNG">Image::PNG</a>, <a href="Image.html#constant.JPEG">Image::JPEG</a> ou <a href="Image.html#constant.GIF">Image::GIF</a>.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getFormat"></a><span class="access">public</span> <span class="type">int</span> <a href="Image.html#method.getFormat">getFormat</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1.0</li></ul>
+<div class="description">
+				Renvoie le format de l'image comme un entier.
+				Les valeurs possibles sont <a href="Image.html#constant.PNG">Image::PNG</a>, <a href="Image.html#constant.JPEG">Image::JPEG</a> ou <a href="Image.html#constant.GIF">Image::GIF</a>.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getFormatString"></a><span class="access">public</span> <span class="type">string</span> <a href="Image.html#method.getFormatString">getFormatString</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1.0</li></ul>
+<div class="description">
+				Renvoie le format de l'image comme une chaîne de caractères.
+				Les valeurs possibles sont "jpeg", "png", ou "gif".
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.create"></a><span class="access">public</span> <a href="Image.html#method.create">create</a>()
+	<div class="description">
+				Créé l'image en vue d'y ajouter des composants.
+				Il n'est possible de créer une image qu'après lui avoir affecté une taille avec <a href="Image.html#method.setSize">setSize()</a>.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.drawComponent"></a><span class="access">public</span> <a href="Image.html#method.drawComponent">drawComponent</a>(<a href="Component.html"><span class="type">Component</span></a> <span class="argument">$component</span>)
+	<div class="description">
+				Dessine le composant $component sur l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.send"></a><span class="access">public</span> <a href="Image.html#method.send">send</a>()
+	<div class="description">
+				Construit l'image et l'envoie sur la sortie standard accompagnée des en-têtes HTTP correspondants.
+				Cette fonction ne prend plus d'arguments depuis Artichow 1.1.0. Pour récupérer les données brutes de l'image, utilisez la méthode <a href="Image.html#method.get">get()</a>. Pour sauvegarder l'image dans un fichier sur le disque, voyez la méthode <a href="Graph.html#method.draw">Graph::draw()</a>.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.get"></a><span class="access">public</span> <span class="type">resource</span> <a href="Image.html#method.get">get</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1.0</li></ul>
+<div class="description">
+				Construit l'image et la renvoie sous forme de données binaires. Vous pouvez donc la stocker dans une variable si vous voulez faire des manipulations spécifiques.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.sendHeaders"></a><span class="access">public</span> <a href="Image.html#method.sendHeaders">sendHeaders</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Envoie l'en-tête HTTP correspondant au format de l'image.
+			</div>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.drawError"></a><span class="access">public static</span> <a href="Image.html#method.drawError">drawError</a>(<span class="type">string</span> <span class="argument">
+							$message</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.8</li></ul>
+<div class="description">
+				Affiche une erreur de façon lisible sous forme graphique.
+			</div>
+<ul class="arguments"><li class="property">
+<span class="type">string</span> <a href="Image.html#property.message"><span class="argument">$message</span></a><div class="description">
+						Le message d'erreur à afficher.
+					</div>
+</li></ul>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.drawErrorFile"></a><span class="access">public static</span> <a href="Image.html#method.drawErrorFile">drawErrorFile</a>(<span class="type">string</span> <span class="argument">
+							$error</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.8</li></ul>
+<div class="description">
+				Affiche une erreur à partir d'une image présente dans le dossier <em>images/erreurs/</em>.
+			</div>
+<ul class="arguments"><li class="property">
+<span class="type">string</span> <a href="Image.html#property.error"><span class="argument">$error</span></a><div class="description">
+						Le nom de l'erreur à afficher.
+						L'image correspondant à cette erreur sera récupérée dans le dossier <em>images/erreurs/</em>.
+					</div>
+</li></ul>
+<div class="description-bottom"><a href="Image.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

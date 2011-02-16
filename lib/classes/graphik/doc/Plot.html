@@ -1,0 +1,316 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Plot</h2><div class="extends"><ul>
+<li><a href="Component.html">Component</a></li>
+<ul><li>Plot</li></ul>
+</ul></div><div class="description">
+		<p>
+			Cette classe est la base des <a href="LinePlot.html">courbes</a> et <a href="BarPlot.html">histogrammes</a> sur Artichow.
+		</p>
+	</div><div class="inherit">
+			Les classes suivantes dérivent de Plot :
+				<ul>
+<li><a href="LinePlot.html">LinePlot</a></li>
+<li><a href="BarPlot.html">BarPlot</a></li>
+<li><a href="ScatterPlot.html">ScatterPlot</a></li>
+</ul>
+</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.LEFT">LEFT</a> := <span class="default">left</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.RIGHT">RIGHT</a> := <span class="default">right</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.TOP">TOP</a> := <span class="default">top</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.BOTTOM">BOTTOM</a> := <span class="default">bottom</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.BOTH">BOTH</a> := <span class="default">both</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Plot.html#property.datay"><span class="argument">$datay</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Plot.html#property.datax"><span class="argument">$datax</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Grid.html"><span class="type">Grid</span></a> <a href="Plot.html#property.grid"><span class="argument">$grid</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Axis.html"><span class="type">Axis</span></a> <a href="Plot.html#property.xAxis"><span class="argument">$xAxis</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Axis.html"><span class="type">Axis</span></a> <a href="Plot.html#property.yAxis"><span class="argument">$yAxis</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Plot.html#property.xAxisZero"><span class="argument">$xAxisZero</span></a> := <span class="default">TRUE</span>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Plot.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.reduce">reduce</a>(<a href="number.html"><span class="type">number</span></a> <span class="argument">$number</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.setXAxis">setXAxis</a>(<span class="type">string</span> <span class="argument">$axis</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.setYAxis">setYAxis</a>(<span class="type">string</span> <span class="argument">$axis</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.setXAxisZero">setXAxisZero</a>(<span class="type">bool</span> <span class="argument">$zero</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.setYAxisZero">setYAxisZero</a>(<span class="type">bool</span> <span class="argument">$zero</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.setYMin">setYMin</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.setYMax">setYMax</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.setXMin">setXMin</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Plot.html#method.setXMax">setXMax</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.LEFT"></a><span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.LEFT">LEFT</a> := <span class="default">left</span><div class="description">
+				Dessine l'axe des abscisses sur la gauche du graph.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.RIGHT"></a><span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.RIGHT">RIGHT</a> := <span class="default">right</span><div class="description">
+				Dessine l'axe des abscisses sur la droite du graph.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.TOP"></a><span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.TOP">TOP</a> := <span class="default">top</span><div class="description">
+				Dessine l'axe des ordonnées sur le haut du graph.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.BOTTOM"></a><span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.BOTTOM">BOTTOM</a> := <span class="default">bottom</span><div class="description">
+				Dessine l'axe des ordonnées sur le bas du graph.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.BOTH"></a><span class="access">const</span> <span class="type">string</span> <a href="Plot.html#constant.BOTH">BOTH</a> := <span class="default">both</span><div class="description">
+				 Dessine l'axe des abscisses (ou des ordonnées) sur la gauche et la droite (ou le haut et la bas) du graph.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.datay"></a><span class="access">public</span> <span class="type">array</span> <a href="Plot.html#property.datay"><span class="argument">$datay</span></a><div class="description">
+				Les valeurs de l'axe des Y.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.datax"></a><span class="access">public</span> <span class="type">array</span> <a href="Plot.html#property.datax"><span class="argument">$datax</span></a><div class="description">
+				Les valeurs de l'axe des X.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.grid"></a><span class="access">public</span> <a href="Grid.html"><span class="type">Grid</span></a> <a href="Plot.html#property.grid"><span class="argument">$grid</span></a><div class="description">
+				Représente la grille de fond du composant.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.xAxis"></a><span class="access">public</span> <a href="Axis.html"><span class="type">Axis</span></a> <a href="Plot.html#property.xAxis"><span class="argument">$xAxis</span></a><div class="description">
+				L'axe des abscisses
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.yAxis"></a><span class="access">public</span> <a href="Axis.html"><span class="type">Axis</span></a> <a href="Plot.html#property.yAxis"><span class="argument">$yAxis</span></a><div class="description">
+				L'axe des ordonnées
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.xAxisZero"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Plot.html#property.xAxisZero"><span class="argument">$xAxisZero</span></a> := <span class="default">TRUE</span><div class="description">
+				Est-ce le ou les axes des abscisses doivent être centrés sur zéro ?
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Plot.html#method.__construct">__construct</a>()
+	<div class="description">
+				Construit le composant.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.reduce"></a><span class="access">public</span> <a href="Plot.html#method.reduce">reduce</a>(<a href="number.html"><span class="type">number</span></a> <span class="argument">$number</span>)
+	<div class="description">
+				Réduit le nombre de valeurs à afficher sur le composant à $number.<br>
+				Cette fonctionnalité est utile dans le cas où vous souhaitez afficher plus de 400 ou 500 valeurs sur un graphique.
+				En effet, au delà d'un certain nombre de valeurs, toutes ne seront pas affichées et le temps de création du graphique sera très élevé.
+				La solution est de réduire le nombre de valeurs sur votre graphique, ce que permet cette fonction.
+				Le processus de réduction se fait à travers un système de moyennes, afin de garder une courbe identique à celle que vous auriez eu en affichant toutes les valeurs.
+				Le nombre $number que vous spécifiez en paramètre est un nombre maximal. Pas plus de $number valeurs seront affichées sur le graphique. En revanche, dans certains cas, il est possible qu'un nombre inférieur de valeurs soient affichées.
+				Voici un exemple d'utilisation de cette fonctionnalité :
+<pre>
+
+&lt;?php
+
+require_once "LinePlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+$datay = array();
+$datax = array();
+
+// On créé un tableau avec 3000 valeurs
+for($i = 1; $i &lt;= 3000; $i++) {
+	$datay[] = log($i);
+	$datax[] = $i;
+}
+
+$plot = new <a href="LinePlot.html">LinePlot</a>($datay);
+$plot-&gt;xAxis-&gt;<a href="Axis.html#method.setLabelText">setLabelText</a>($datax);
+$plot-&gt;xAxis-&gt;label-&gt;<a href="Label.html#method.setAngle">setAngle</a>(90);
+
+// On réduit le nombre de valeurs à afficher sur le graphique à 30,
+// soit 100 fois moins
+$plot-&gt;<a href="Plot.html#method.reduce">reduce</a>(30);
+
+// On affiche le graphique
+// Les valeurs de l'axe des X ont été automatiquement mises à jour
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+// Finalement, la courbe représentative de log(x) apparaît très correctement
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setXAxis"></a><span class="access">public</span> <a href="Plot.html#method.setXAxis">setXAxis</a>(<span class="type">string</span> <span class="argument">$axis</span>)
+	<div class="description">
+				Change l'axe de abscisses qui sera affiché sur l'image.
+				Cela peut être <a href="Plot.html#constant.TOP">Plot::TOP</a>, <a href="Plot.html#constant.BOTTOM">Plot::BOTTOM</a> ou <a href="Plot.html#constant.BOTH">Plot::BOTH</a>.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setYAxis"></a><span class="access">public</span> <a href="Plot.html#method.setYAxis">setYAxis</a>(<span class="type">string</span> <span class="argument">$axis</span>)
+	<div class="description">
+				Change l'axe de ordonnées qui sera affiché sur l'image.
+				Cela peut être <a href="Plot.html#constant.LEFT">Plot::LEFT</a>, <a href="Plot.html#constant.RIGHT">Plot::RIGHT</a> ou <a href="Plot.html#constant.BOTH">Plot::BOTH</a>.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setXAxisZero"></a><span class="access">public</span> <a href="Plot.html#method.setXAxisZero">setXAxisZero</a>(<span class="type">bool</span> <span class="argument">$zero</span>)
+	<div class="description">
+				Précise si le ou les axes des abscisses doivent être centrés sur le zéro de l'axe des ordonnées.
+				Comme il peut y avoir plus axes des ordonnées, l'axe de gauche est choisi en premier pour sélectionner la valeur du zéro. S'il n'existe pas, alors on utilise l'axe de droite.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setYAxisZero"></a><span class="access">public</span> <a href="Plot.html#method.setYAxisZero">setYAxisZero</a>(<span class="type">bool</span> <span class="argument">$zero</span>)
+	<div class="description">
+				Précise si le ou les axes des ordonnées doivent être centrés sur le zéro de l'axe des abscisses.
+				Comme il peut y avoir plus axes des abscisses, l'axe du bas est choisi en premier pour sélectionner la valeur du zéro. S'il n'existe pas, alors on utilise l'axe du haut.
+			</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setYMin"></a><span class="access">public</span> <a href="Plot.html#method.setYMin">setYMin</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	<div class="description">
+				Force la valeur minimale de l'axe des ordonnées à $value.
+				L'appel à cette méthode désactive la gestion automatique de l'axe des ordonnées.
+			<div class="see">
+					Voir aussi :
+					<ul>
+<li><a href="Plot.html#method.setYMax">Plot::setYMax()</a></li>
+<li><a href="Axis.html#method.auto">Axis::auto()</a></li>
+</ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setYMax"></a><span class="access">public</span> <a href="Plot.html#method.setYMax">setYMax</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	<div class="description">
+				Force la valeur maximale de l'axe des ordonnées à $value.
+				L'appel à cette méthode désactive la gestion automatique de l'axe des ordonnées.
+			<div class="see">
+					Voir aussi :
+					<ul>
+<li><a href="Plot.html#method.setYMin">Plot::setYMin()</a></li>
+<li><a href="Axis.html#method.auto">Axis::auto()</a></li>
+</ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setXMin"></a><span class="access">public</span> <a href="Plot.html#method.setXMin">setXMin</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	<div class="description">
+				Force la valeur minimale de l'axe des abscisses à $value.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Plot.html#method.setXMax">Plot::setXMax()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setXMax"></a><span class="access">public</span> <a href="Plot.html#method.setXMax">setXMax</a>(<span class="type">float</span> <span class="argument">$value</span>)
+	<div class="description">
+				Force la valeur maximale de l'axe des abscisses à $value.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Plot.html#method.setXMin">Plot::setXMin()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Plot.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

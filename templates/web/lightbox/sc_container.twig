@@ -1,0 +1,28 @@
+
+{% block basket %}
+<div id="sc_container">
+	{% for element in basket.elements %}
+		<div class="basket_element_wrapper">
+			<div id="scid_{{element.sselcont_id}}" class="basket_element ui-corner-all {% if basket_element and basket_element.sselcont_id == element.sselcont_id %}selected{% endif %}">
+				<div class="display_id">{{element.display_id}}</div>
+				{% if basket.valid %}
+					<div class="agreement">
+						<img src="/skins/lightbox/agree.png" 
+							class="agree_button {%if element.my_agreement != 1 %}not_decided{%endif%} agree_{{element.sselcont_id}}" />
+						<img src="/skins/lightbox/disagree.png" 
+							class="disagree_button {%if element.my_agreement != -1 %}not_decided{%endif%} disagree_{{element.sselcont_id}}" />
+					</div>
+				{% endif %}
+				{{thumbnail_basket.format(element,114,'',85)}}
+				<form name="download_form" class="download_form" style="display:none;">
+					<input type="hidden" name="basrec" value="{{element.base_id}}_{{element.record_id}}"/>
+				</form>
+<!--				<img class="image" src="{{element.url}}" title="" alt="" 
+					style="width:{{element.width_100}}px;height:{{element.height_100}}px;top:{{element.top}}%;"/>-->
+				{{element.get_preview_icon}}
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
+{% endblock basket %}

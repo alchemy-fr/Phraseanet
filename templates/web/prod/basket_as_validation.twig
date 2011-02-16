@@ -1,0 +1,44 @@
+<div style="margin:5px 0;text-align:center;">
+	<form>
+		<select name="valid_ord">
+			<option {% if ordre=='nat'%}selected{% endif %} value="nat">{% trans 'panier:: ordre du panier' %}</option>
+			<option {% if ordre=='desc'%}selected{% endif %} value="desc">{% trans 'panier:: ordre Validation ascendante' %}</option>
+			<option {% if ordre=='asc'%}selected{% endif %} value="asc">{% trans 'panier:: ordre Validation descendante' %}</option>
+		</select>
+	</form>
+</div>
+
+{% for basket_element in basket.elements %}
+	<span class="wrapCHIM_{{basket_element.sselcont_id}} valid">
+		<table style="width: 100%; min-width: 330px; display: inline-block;">
+			<tr>
+				<td style="width:80px;">
+					{% include 'prod/basket_element.twig' %}
+				</td>
+				<td style="width:100%;">
+					<table style=width:100%>
+						{% for choice in basket_element.choices %}
+							<tr>
+								<td> {{choice.usr_name}} </td>
+								<td>
+								{% if choice.agreement == '1' %}
+									<img style="cursor:help;" src='/skins/lightbox/agree.png' title="{% trans "L'utilisateur approuve ce document" %}" />
+								{% elseif choice.agreement == '-1' %}
+									<img style="cursor:help;" src='/skins/lightbox/disagree.png' title="{% trans "L'utilisateur desapprouve ce document" %}" />
+								{% else %}
+									<img style="cursor:help;" src='/skins/icons/valid.png' title="{% trans "L'utilisateur n'a pas encore donne son avis sur ce document" %}" />
+								{% endif %}
+								</td>
+								<td style="width:25px;">
+								{% if choice.note != '' %}
+									 <img style="cursor:help;" src='/skins/icons/file-edit.png' class="noteTips" title="{{choice.note|e|nl2br}}" />
+								{% endif %}
+								</td>
+							</tr>
+						{% endfor %}
+					</table>
+				</td>
+			</tr>
+		</table>
+	</span>
+{% endfor %}

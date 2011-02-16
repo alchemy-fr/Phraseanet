@@ -1,0 +1,23 @@
+<div style="margin:0 7px;overflow:hidden;">
+{% set basket_length = basket.elements|length %}
+
+{% if basket_length == 0 %}
+	<div style="height:120px;"></div>
+{% endif %}
+
+{% if basket.is_grouping %}
+	{% set basket_scope = 'groupings'%}
+{% else %}
+	{% set basket_scope = 'objects'%}
+{% endif %}
+
+{% if basket.valid == 'myvalid' %}
+	{% include 'prod/basket_as_validation.twig'%}
+{% else %}
+	{% include 'prod/basket_default.twig'%}
+{% endif %}
+
+</div>
+
+	
+	

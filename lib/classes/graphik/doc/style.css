@@ -1,0 +1,383 @@
+body {
+	font-family: "Trebuchet MS", Geneva, Arial, Helvetica, SunSans-Regular, Verdana, sans-serif;
+	font-size: 0.75em;
+	margin: 0px;
+	padding: 0px;
+	background-color: #c2d2c4;
+	background-image: url("image/fond.png");
+	background-repeat: repeat-x; 
+	padding-top: 20px;
+}
+
+
+a {
+	color: #000055;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #295F37;
+	text-decoration: underline;
+}
+
+p {
+	padding-left: 1em;
+	padding-right: 1em;
+	text-align: justify;
+}
+
+p:first-letter {
+	float: left;
+	font-size: 160%;
+	font-weight: bold;
+	color: #646464;
+	background-color: white;
+	margin-top: -7px;
+	margin-right: 3px;
+	padding-right: 0px;
+	padding-left: 2px;
+	margin-bottom: -10px;
+}
+
+pre {
+	margin: 0px;
+	padding: 0px;
+	font-size: 1.25em;
+}
+
+span.php4 {
+	color: red;
+	font-weight: bold;
+}
+
+.borderhg {
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+}
+
+.borderd {
+	border-right: 1px solid black;
+}
+
+.borderg {
+	border-left: 1px solid black;
+}
+
+.borderh {
+	border-top: 1px solid black;
+}
+
+.borderb {
+	border-bottom: 1px solid black;
+}
+
+
+table#page {
+	width: 900px;
+	margin: auto;
+	text-align: left;
+}
+
+table#page td {
+	vertical-align: top;
+}
+
+table#page div.logo {
+	text-align: center;
+}
+
+table#page td table.features td {
+	vertical-align: middle;
+}
+
+table#menuhaut, table#menubas {
+	width: 200px;
+	background-color: white;
+}
+
+table#menuhaut td.cornerhg {
+	width: 30px;
+	height: 30px;
+	background: transparent url("image/coin-hg.gif") no-repeat;
+}
+table#menubas td.cornerbg {
+	width: 30px;
+	height: 30px;
+	background: url("image/coin-bg.gif") no-repeat;
+}
+
+
+div#menu {
+	border-left: 1px solid black;
+	background-color: white;
+}
+
+
+div#menu ul.ulmenu {
+	padding: 0px;
+	margin: 0px;
+	background-color: #dddddd;
+}
+
+div#menu ul.ulmenu li {
+	margin: 0px;
+	list-style-type: none;
+}
+
+div#menu ul.ulmenu a {
+	display: block;
+	text-decoration: none;
+	padding-left: 1em;
+	color: black;
+	width: 100%;
+	border-top: 1px solid black;
+
+}
+
+div#menu ul.ulmenu a:hover  {
+	color: #dddddd;
+	background-color: #a43030;
+	display: block;
+}
+
+table#contenu {
+	width: 100%;
+	color: #2d2d2d;
+	background-color: white;
+}
+
+table#contenu td.cornerhd, table#contenu td.cornerhg, table#contenu td.cornerbd, table#contenu td.cornerbg {
+	width: 30px;
+	height: 30px;
+}
+
+table#contenu td.cornerhd {
+	background: transparent url("image/coin-hd.gif") no-repeat;
+}
+
+table#contenu td.cornerbd {
+	background: url("image/coin-bd.gif") no-repeat;
+}
+
+table#contenu td.cornerbg {
+	background: url("image/coin-bg.gif") no-repeat;
+}
+
+table#contenu table {
+	width: 95%;
+	margin: auto;
+}
+
+table#contenu h1 {
+	text-align: center;
+	margin: auto;
+	width: 100%;
+	color: #a43030;
+}
+
+table#contenu h2:after {
+	border: 0px;
+	background-color: transparent;
+	display: block;
+	margin-left: -1px;
+	padding-top: 31px;
+	width: 97%;
+	line-height: 1em;
+	margin-bottom: -25px;
+	text-align: left;
+	background: transparent url("image/back-rayures.png") repeat-x;
+	content: "";
+
+}
+
+table#contenu h4 {
+	margin-top: 0.3em;
+	margin-left: 1em;
+	margin-bottom: 0.5em;
+	font-size: 1.25em;
+}
+
+table#contenu h5 {
+	margin-top: 0.3em;
+	margin-left: 1em;
+	margin-bottom: 0.5em;
+	font-size: 1.0em;
+}
+
+table#contenu pre {
+	margin-left: 1em;
+}
+
+table#contenu ul.features li {
+	list-style-type: armenian;
+	margin-left: 3em;
+}
+
+table#contenu div.graph {
+	padding-top: 8px;
+	text-align: center;
+}
+
+table#contenu div.graph img {
+	border: 0px;
+}
+
+table#contenu div.image {
+	text-align: center;
+	margin-top: 2em;
+}
+
+table#contenu span.type {
+	color: #0000FF;
+}
+
+table#contenu span.default {
+	color: #A000A0;
+}
+
+table#contenu span.interface {
+	font-weight: bold;
+}
+
+table#contenu span.argument {
+	color: #880000;
+}
+
+table#contenu span.access {
+	font-weight: bold;
+	color: #3B3F3C;
+
+}
+
+table#contenu div.description {
+	margin-right: 3em;
+	margin-left: 2em;
+	border: 1px solid #A7BFAD;
+	padding: 4px;
+	
+}
+
+table#contenu ul.news li {
+	list-style-type: none;
+}
+
+table#contenu ul.news li ul li {
+	list-style-type: square;
+	margin-left: 20px;
+}
+
+table#contenu div.description ul li {
+	list-style-type: circle;
+	font-size: 95%;
+}
+
+table#contenu div.description div.see {
+	margin-right: 1em;
+	margin-left: 1em;
+	background-color: #f0f0f0;
+	padding: 3px;
+	
+}
+
+table#contenu div.description div.see ul li {
+	list-style-type: circle;
+	margin-bottom: 0em;
+	margin-top: 0em;
+	padding-bottom: 0em;
+	padding-top: 0em;
+	
+}
+
+table#contenu div.inherit {
+	border-bottom: 1px solid #a43030;
+	margin-right: 3em;
+	margin-left: 2em;
+	padding: 4px;
+}
+
+
+table#contenu ul.doc li.method {
+}
+
+table#contenu ul.doc li.property {
+}
+
+table#contenu ul.doc li {
+	margin-bottom: 0.5em;
+	padding: 0.3em;
+}
+
+table#contenu ul {
+	margin-left: 1.5em;	
+	padding-left: 0px;
+	padding-right: 1em;
+}
+
+table#contenu ul li {
+	list-style-type: square;
+	margin-left: 1em;
+}
+
+table#contenu ul.constants li, table#contenu ul.methods li, table#contenu ul.properties li,
+table#contenu ul li.constant, table#contenu ul li.method, table#contenu ul li.property
+ {
+	list-style-type: none;
+	margin-left: 0px;
+}
+
+table#contenu ul.links li {
+}
+
+table#contenu a.easy {
+	color: red;
+}
+
+div.release {
+	background-color: #eeeeee;
+	padding-left: 20px;
+}
+
+div#imagemenu {
+	background-image: url("mini.php");
+	height: 100px;
+	width: 150px;
+	margin-left: 25px;
+	margin-top: 30px;
+	border: 0px;
+}
+
+td#textebas {
+	text-align: center;
+}
+ 
+table#bas {
+	float:left;
+	width: 100%;
+	background-color: white;
+	margin-top: 10px;
+}
+
+table#bas td.cornerhd, table#bas td.cornerhg, table#bas td.cornerbd, table#bas td.cornerbg {
+	width: 30px;
+	height: 30px;
+}
+
+table#bas td.cornerhd {
+	background: url("image/coin-hd-transparent.gif") no-repeat;
+}
+
+table#bas td.cornerhg {
+	background: url("image/coin-hg-transparent.gif") no-repeat;
+}
+
+table#bas td.cornerbd {
+	background: url("image/coin-bd.gif") no-repeat;
+}
+
+table#bas td.cornerbg {
+	background: url("image/coin-bg.gif") no-repeat;
+}
+
+table#contenu ul.demo li {
+	list-style-type : circle;
+}

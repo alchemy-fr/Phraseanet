@@ -1,0 +1,323 @@
+{% extends "common/index.twig" %}
+
+
+{% block javascript %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.note_editor').live('tap', function(){
+			var sselcont_id = $(this).next('input').val();
+			$('#note_form_'+sselcont_id).show().find('textarea').focus();
+			$(this).removeClass('active').parent().parent().hide();
+		});
+		
+		
+		$('.note_area_cancel').live('tap', function(){
+			var sselcont_id = $(this).attr('id').split('_').pop();
+			$('#note_editor_'+sselcont_id).parent().parent().show();
+			$('#note_form_'+sselcont_id).hide();
+			$(this).removeClass('active');
+		});
+		$('.note_area_validate').live('tap', function(){
+			var sselcont_id = $(this).attr('id').split('_').pop();
+			$('#note_editor_'+sselcont_id).parent().parent().show();
+			$('#note_form_'+sselcont_id).hide();
+			$(this).removeClass('active');
+			
+			$.ajax({
+				type: "POST",
+				url: "/lightbox/feedback.php",
+				dataType: 'json',
+				data: {
+					action			: 'SET_NOTE',
+					sselcont_id		: sselcont_id,
+					note			: $('#note_form_'+sselcont_id).find('textarea').val()
+				},
+				success: function(datas){
+					if(datas.error)
+					{
+						alert(datas.datas);
+						return;
+					}
+					
+					$('#notes_'+sselcont_id).empty().append(datas.datas);
+					return;
+				}
+			});
+		});
+		
+		
+		$('.yes, .no').live('tap', function(){
+			var sselcont_id = $(this).attr('id').split('_').pop(); 
+			var agreement = $(this).hasClass('yes') ? '1' : '-1';
+			
+			if(agreement == '1')
+			{
+				$('#yes_'+sselcont_id).addClass('active_choice loading');
+				$('#no_'+sselcont_id).removeClass('active_choice loading');
+			}
+			else
+			{
+				$('#no_'+sselcont_id).addClass('active_choice loading');
+				$('#yes_'+sselcont_id).removeClass('active_choice loading');
+			}
+			
+			$.ajax({
+				type: "POST",
+				url: "/lightbox/feedback.php",
+				dataType: 'json',
+				data: {
+					action			: 'SET_ELEMENT_AGREEMENT',
+					sselcont_id		: sselcont_id,
+					agreement		: agreement
+				},
+				error: function(datas){
+					alert('error');
+				},
+				timeout: function(datas){
+					alert('error');
+				},
+				success: function(datas){
+					
+					$('#no_'+sselcont_id+', #yes_'+sselcont_id).removeClass('loading');
+					
+					if(datas.error)
+					{
+						$('#no_'+sselcont_id+', #yes_'+sselcont_id).removeClass('active_choice');
+						alert(datas.datas);
+						return;
+					}
+					return;
+				}
+			});
+			return false;
+		
+		})
+	});
+	
+	function check_basket_element(sselcont_id)
+	{
+		var orig_element = $('#sselcontid_'+sselcont_id);
+		var wrapper_toolbar = $('#bask_item_'+sselcont_id+' .toolbar');
+		
+		var prev = orig_element.prev();
+		var next = orig_element.next();
+		
+		if(next.length > 0)
+		{
+			$('.next',wrapper_toolbar).show().find('a').tap(function(){next.find('a').trigger('tap');return false;});
+		}
+		if(prev.length > 0)
+		{
+			$('.previous',wrapper_toolbar).show().find('a').tap(function(){prev.find('a').trigger('tap');return false;});
+		}
+		$('#current_sselcont_id_n_'+sselcont_id).append($('input.display_id', orig_element).val());
+		return;
+	}
+</script>
+{% endblock %}
+
+{% block stylesheet %}
+
+        <style type="text/css" media="screen">
+            ul.image_set{
+            	padding:0;
+            	margin:0;
+            	border:none;
+            	width:320px;
+            	border:none;
+            }
+            li.image_box a{
+            	padding:0;
+            	text-shadow:0;
+            	margin:0;
+            }
+            li.image_box img.portrait{
+            	width:75px;
+            	vertical-align:middle;
+            	border:none;
+            }
+            li.image_box img.landscape{
+            	height:75px;
+            	border:none;
+            }
+            li.image_box{
+            	width:75px;
+            	height:75px;
+            	position:relative;
+            	float:left;
+            	margin:4px 0 0 4px;
+            	padding:0px;
+            	text-align:center;
+            }
+            a.no.active_choice{
+            	background-color:red;
+				color: #fff;
+            }
+			a.active_choice{
+			    background-color: #53b401;
+			    color: #fff;
+            }
+        </style>
+{% endblock %}
+
+{% macro valid_baskets_length(baskets) %}
+	{% set foo = 0 %}
+	{% for item in baskets %}
+		{% if item.valid %}
+			{% set foo = foo + 1 %}
+		{% endif %}
+	{% endfor %}
+  {{foo}}
+{% endmacro %}
+
+{% macro baskets_length(baskets_collection) %}
+	{% set foo = 0 %}
+	{% for key,baskets in baskets_collection.baskets %}
+		{% if key == 'baskets' or key == 'recept' %}
+			{% for item in baskets %}
+				{% if item.valid == false %}
+					{% set foo = foo + 1 %}
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	{% endfor %}
+  {{foo}}
+{% endmacro %}
+
+{% block content %}
+    <div id="home" class="current">
+        <div class="toolbar">
+            <h1>{{module_name}}</h1>
+            <a class="button slideup" id="infoButton" href="#about">{% trans 'a propos'%}</a>
+        </div>
+        <ul class="rounded">
+            <li class="arrow">
+            	<a href="#validation">{% trans 'Validations'%}</a> 
+            	<small class="counter">{{_self.valid_baskets_length(baskets_collection.baskets.baskets)}}</small>
+            </li>
+            <li class="arrow">
+            	<a href="#baskets">{% trans 'Paniers'%}</a> 
+            	<small class="counter">{{_self.baskets_length(baskets_collection)}}</small>
+            </li>
+        </ul>
+    </div>
+    <div id="about" class="current">
+        <div class="toolbar">
+            <h1>{% trans 'a propos'%}</h1>
+            <a class="back slideup" id="infoButton" href="#about">{{module_name}}</a>
+        </div>
+        <ul class="rounded">
+            <div class="info">
+            	<p>Phraseanet Version {{session.version}}</p>
+            	<p>
+            		<a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>
+            			<img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/>
+            		</a>
+            	</p>
+            	<p>License <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GNU GPL v3</a></p>
+            	<p><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-2010</a></p>
+            </div>
+        </ul>
+    </div>
+    <div id="validation">
+        <div class="toolbar">
+            <h1>{% trans 'Validations'%}</h1>
+            <a class="back" href="#home">{% trans 'boutton::retour'%}</a>
+        </div>
+        <div class="info">
+        	{% trans 'Voici vos validations en cours' %}
+        </div>
+        <ul class="rounded">
+			{% for key,baskets in baskets_collection.baskets %}
+				{% if key == 'baskets' %}
+					{% for item in baskets %}
+						{% if item.valid %}
+				            <li class="arrow">
+				            	<a href="#bask_{{item.ssel_id}}">
+									{% set basket_length = item.elements|length%}
+									{% if basket_length > 0%}
+					            		<table style="height:100px;">
+					            			<tr>
+					            				<td style="width:100px;">
+					            					<img style="vertical-align:middle;width:{{item.get_first_element.width_82}}px;
+					            							height:{{item.get_first_element.height_82}}px;top:{{item.get_first_element.top}}%;" 
+					            						src="{{item.get_first_element.url}}"/>
+					            				</td>
+					            				<td> {{item.name}}</td>
+					            			</tr>
+					            		</table>
+				            		{% else %}
+					            		{{item.name}}
+									{% endif %}
+				            	</a>
+				            </li>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+        </ul>
+    </div>
+    <div id="baskets">
+        <div class="toolbar">
+            <h1>{% trans 'Paniers'%}</h1>
+            <a class="back" href="#home">{% trans 'boutton::retour'%}</a>
+        </div>
+        <div class="info">
+        	{% trans 'Voici vos paniers' %}
+        </div>
+        <ul class="rounded">
+			{% for key,baskets in baskets_collection.baskets %}
+				{% if key == 'baskets' or key == 'recept' %}
+					{% for item in baskets %}
+						{% if item.valid == false %}
+				            <li class="arrow">
+				            	<a href="#bask_{{item.ssel_id}}">
+									{% set basket_length = item.elements|length%}
+									{% if basket_length > 0%}
+					            		<table style="height:100px;">
+					            			<tr>
+					            				<td style="width:100px;">
+					            					<img style="vertical-align:middle;width:{{item.get_first_element.width_82}}px;
+					            							height:{{item.get_first_element.height_82}}px;top:{{item.get_first_element.top}}%;" 
+					            						src="{{item.get_first_element.url}}"/>
+					            				</td>
+					            				<td> {{item.name}}</td>
+					            			</tr>
+					            		</table>
+				            		{% else %}
+					            		{{item.name}}
+									{% endif %}
+				            	</a>
+				            </li>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+        </ul>
+    </div>
+	{% for key,baskets in baskets_collection.baskets %}
+		{% if key == 'baskets' or key == 'recept' %}
+			{% for basket in baskets %}
+			    <div id="bask_{{basket.ssel_id}}">
+			   		<div class="toolbar">
+			            <h1>{{basket.name}}</h1>
+			            <a class="back" href="#baskets">{% trans 'boutton::retour'%}</a>
+			        </div>
+			        <h2>
+			        	{% set basket_length = basket.elements|length %}
+			        	{% trans %}{{basket_length}} documents{% endtrans %}</h2>
+			        <ul class="image_set">
+		        	{% for sselcont_id, basket_element in basket.elements %}
+		            	<li class="image_box" id="sselcontid_{{basket_element.sselcont_id}}">
+		            		<a href="/lightbox/feedback.php?action=LOAD_BASKET_ELEMENT&sselcont_id={{basket_element.sselcont_id}}" class="fade">
+		            			<img src="{{basket_element.url}}" style="top:{{basket_element.squarebox_top}}%;left:{{basket_element.squarebox_left}}%;position:absolute;" class="{{basket_element.orientation}}"/>
+		                	</a>
+		                	<input type="hidden" class="display_id" name="display_id" value="{{basket_element.display_id}}" />
+		            	</li>
+		            {% endfor %}
+			        </ul>
+			    </div>
+			{% endfor %}
+		{% endif %}
+	{% endfor %}
+{% endblock %}

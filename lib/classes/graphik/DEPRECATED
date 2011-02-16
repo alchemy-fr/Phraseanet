@@ -1,0 +1,3 @@
+Artichow 1.0.9
+
+- Pie::setBorder(): replaced by Pie::setBorderColor()

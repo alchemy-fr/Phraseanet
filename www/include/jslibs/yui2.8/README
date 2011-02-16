@@ -1,0 +1,6 @@
+*** YUI 2.8.2r1 ***
+
+YUI 2.8.2r1 addresses a security vulnerability in specific .swf files distributed with YUI releases from 2.4.0 through 2.8.1.
+See http://yuilibrary.com/support/2.8.2/ for full details on this issue and how to address it.
+
+

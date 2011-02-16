@@ -1,0 +1,279 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Line</h2><div class="extends"><ul>
+<li><a href="Shape.html">Shape</a></li>
+<ul><li>Line</li></ul>
+</ul></div><div class="description">
+		<p>
+			La classe <a href="Line.html">Line</a> permet de manipuler des lignes de manière uniforme sur Artichow. Une ligne est composée de deux Point.
+		</p>
+	</div><div class="inherit">
+			Les classes suivantes dérivent de Line :
+				<ul><li><a href="Vector.html">Vector</a></li></ul>
+</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">protected</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Line.html#property.p1"><span class="argument">$p1</span></a>
+</li>
+<li>
+<span class="access">protected</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Line.html#property.p2"><span class="argument">$p2</span></a>
+</li>
+<li>
+<span class="access">private</span> <span class="type">float</span> <a href="Line.html#property.slope"><span class="argument">$slope</span></a>
+</li>
+<li>
+<span class="access">private</span> <span class="type">float</span> <a href="Line.html#property.origin"><span class="argument">$origin</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Line.html#method.__construct">__construct</a>(<a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>, <span class="type">int</span> <span class="argument">$style</span> := <span class="default">Line::SOLID</span>, <span class="type">int</span> <span class="argument">$thickness</span> := <span class="default">1</span>)
+	</li>
+<li>
+<span class="access">public static</span> <a href="Line.html#method.build">build</a>(<span class="type">int</span> <span class="argument">$x1</span>, <span class="type">int</span> <span class="argument">$y1</span>, <span class="type">int</span> <span class="argument">$x2</span>, <span class="type">int</span> <span class="argument">$y2</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Line.html#method.setX">setX</a>(<span class="type">int</span> <span class="argument">$x1</span>, <span class="type">int</span> <span class="argument">$x2</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Line.html#method.setY">setY</a>(<span class="type">int</span> <span class="argument">$y1</span>, <span class="type">int</span> <span class="argument">$y2</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Line.html#method.setLocation">setLocation</a>(<a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Line.html#method.getLocation">getLocation</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getSize">getSize</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getSlope">getSlope</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getOrigin">getOrigin</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Line.html#method.getEquation">getEquation</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getXFrom">getXFrom</a>(<span class="type">float</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getYFrom">getYFrom</a>(<span class="type">float</span> <span class="argument">$x</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isPoint">isPoint</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isHorizontal">isHorizontal</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isVertical">isVertical</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isTopToBottom">isTopToBottom</a>(<a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isLeftToRight">isLeftToRight</a>(<a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.p1"></a><span class="access">protected</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Line.html#property.p1"><span class="argument">$p1</span></a><div class="description">
+				Le premier point de la ligne.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.p2"></a><span class="access">protected</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Line.html#property.p2"><span class="argument">$p2</span></a><div class="description">
+				Le second point de la ligne.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.slope"></a><span class="access">private</span> <span class="type">float</span> <a href="Line.html#property.slope"><span class="argument">$slope</span></a><div class="description">
+				La pente (ou coefficient directeur) de la droite.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.origin"></a><span class="access">private</span> <span class="type">float</span> <a href="Line.html#property.origin"><span class="argument">$origin</span></a><div class="description">
+				La valeur de l'ordonnée à l'origine de la droite.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Line.html#method.__construct">__construct</a>(<a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>, <span class="type">int</span> <span class="argument">$style</span> := <span class="default">Line::SOLID</span>, <span class="type">int</span> <span class="argument">$thickness</span> := <span class="default">1</span>)
+	<div class="description">
+				Déclare une nouvelle ligne des points $p1 à $p2. La ligne est de style $style (<a href="Line.html#constant.SOLID">Line::SOLID</a> pour une ligne continue, <a href="Line.html#constant.DOTTED">Line::DOTTED</a> pour une ligne pointillée ou encore <a href="Line.html#constant.DASHED">Line::DASHED</a>) et d'épaisseur $thickness.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.build"></a><span class="access">public static</span> <a href="Line.html#method.build">build</a>(<span class="type">int</span> <span class="argument">$x1</span>, <span class="type">int</span> <span class="argument">$y1</span>, <span class="type">int</span> <span class="argument">$x2</span>, <span class="type">int</span> <span class="argument">$y2</span>)
+	<div class="description">
+				Construit une ligne à partir des coordonnées ($x1, $y1) et ($x2, $y2)
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setX"></a><span class="access">public</span> <a href="Line.html#method.setX">setX</a>(<span class="type">int</span> <span class="argument">$x1</span>, <span class="type">int</span> <span class="argument">$x2</span>)
+	<div class="description">
+				Change les coordonnées X des deux points de la ligne pour $x1 et $x2.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setY"></a><span class="access">public</span> <a href="Line.html#method.setY">setY</a>(<span class="type">int</span> <span class="argument">$y1</span>, <span class="type">int</span> <span class="argument">$y2</span>)
+	<div class="description">
+				Change les coordonnées Y des deux points de la ligne pour $y1 et $y2.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLocation"></a><span class="access">public</span> <a href="Line.html#method.setLocation">setLocation</a>(<a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	<div class="description">
+				Change l'emplacement de la ligne pour les points $p1 et $p2 passés en paramètre.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getLocation"></a><span class="access">public</span> <span class="type">array</span> <a href="Line.html#method.getLocation">getLocation</a>()
+	<div class="description">
+				Retourne la position de la ligne dans un tableau à deux valeurs.
+<pre>
+
+&lt;?php
+$line = new Line(new Point(1, 2), new Point(3, 4));
+list($p1, $p2) = $line-&gt;getLocation();
+// $p1 == new Point(1, 2)
+// $p2 == new Point(3, 4)
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getSize"></a><span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getSize">getSize</a>()
+	<div class="description">
+				Retourne la taille de la ligne en pixels.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getSlope"></a><span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getSlope">getSlope</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie la valeur de la pente de la ligne.
+				Si celle-ci est verticale, la pente vaudra NULL; si elle est horizontale, la pente vaudra 0.
+				La valeur est calculée uniquement lorsqu'elle est demandée.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getOrigin"></a><span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getOrigin">getOrigin</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie la valeur de l'ordonnée à l'origine.
+				Si la ligne est verticale, l'ordonnée à l'origine vaudra NULL.
+				La valeur est calculée uniquement lorsqu'elle est demandée.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getEquation"></a><span class="access">public</span> <span class="type">array</span> <a href="Line.html#method.getEquation">getEquation</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie un tableau contenant la pente et l'ordonnée à l'origine de la ligne.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getXFrom"></a><span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getXFrom">getXFrom</a>(<span class="type">float</span> <span class="argument">$y</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie la valeur de l'abscisse du point d'ordonnée $y situé sur la droite portant la ligne.
+				Si la ligne est horizontale et que $y est différent de l'ordonnée à l'origine, aucun point ne pourra être trouvé et la méthode renverra NULL.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getYFrom"></a><span class="access">public</span> <span class="type">float</span> <a href="Line.html#method.getYFrom">getYFrom</a>(<span class="type">float</span> <span class="argument">$x</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie la valeur de l'ordonnée du point d'abscisse $x situé sur la droite portant la ligne.
+				Si la ligne est verticale et qu'aucun point correspondant à $x ne peut être trouvé, la méthode renverra NULL.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.isPoint"></a><span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isPoint">isPoint</a>()
+	<div class="description">
+				Retourne TRUE si la ligne peut être considérée comme un point, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.isHorizontal"></a><span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isHorizontal">isHorizontal</a>()
+	<div class="description">
+				Retourne TRUE si la ligne est horizontale, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.isVertical"></a><span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isVertical">isVertical</a>()
+	<div class="description">
+				Retourne TRUE si la ligne est verticale, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.isTopToBottom"></a><span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isTopToBottom">isTopToBottom</a>(<a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie TRUE si la ligne remplit toute la hauteur du rectangle encadrant le polygone $polygon, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.isLeftToRight"></a><span class="access">public</span> <span class="type">bool</span> <a href="Line.html#method.isLeftToRight">isLeftToRight</a>(<a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Renvoie TRUE si la ligne remplit toute la largeur du rectangle encadrant le polygone $polygon, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Line.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

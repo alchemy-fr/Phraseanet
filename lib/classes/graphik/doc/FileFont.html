@@ -1,0 +1,214 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class FileFont</h2><div class="extends"><ul>
+<li><a href="Font.html">Font</a></li>
+<ul><li>FileFont</li></ul>
+</ul></div><div class="description">
+		<p>
+			La classe <a href="FileFont.html">FileFont</a> permet de gérer les polices représentée par un fichier, donc externe à PHP.
+			Quelques polices sont disponibles dans le répertoire <span style="font-weight: bold">font/</span> de Artichow.
+			Si vous connaissez d'autres polices intéressantes et dans le domaine public, n'hésitez pas à le signaler à <span style="text-decoration: underline">vincent</span> sur <span style="text-decoration: underline">artichow point org</span>.
+		</p>
+		<p>
+			Afin de simplifier l'utilisation de cette classe, plusieurs polices sont déjà prédéfinies sur Artichow.
+			Chacune de ces polices est une classe qui dérive de <a href="FileFont.html">FileFont</a> et dont le constructeur ne prend qu'un paramètre, la taille de la police. Voici les polices prédéfinies :
+		</p>
+		<ul>
+			<li>
+<em>Famille Tuffy :</em>  Tuffy, TuffyBold, TuffyItalic, TuffyBoldItalic</li>
+		</ul>
+		<p>
+			Voici un exemple d'utilisation pour les polices prédéfinies :
+<pre>
+
+&lt;?php
+
+// On utilise Tuffy de taille 12
+// Equivalent à new <a href="FileFont.html">FileFont</a>(ARTICHOW_FONT.'/Tuffy.ttf', 12);
+$blue = new Tuffy(12);
+
+// On utilise Tuffy en italique taille 42
+// Equivalent à new <a href="FileFont.html">FileFont</a>(ARTICHOW_FONT.'/TuffyItalic.ttf', 42);
+$orange = new TuffyItalic(42);
+
+?&gt;
+
+</pre>
+		</p>
+	</div><div class="inherit">
+			Les classes suivantes dérivent de FileFont :
+				<ul><li><a href="TTFFont.html">TTFFont</a></li></ul>
+</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <span class="type">string</span> <a href="FileFont.html#property.name"><span class="argument">$name</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="FileFont.html#property.size"><span class="argument">$size</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">string</span> <a href="FileFont.html#property.extension"><span class="argument">$extension</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="FileFont.html#method.__construct">__construct</a>(<span class="type">string</span> <span class="argument">$name</span>, <span class="type">int</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="FileFont.html#method.setName">setName</a>(<span class="type">string</span> <span class="argument">$name</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">string</span> <a href="FileFont.html#method.getName">getName</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="FileFont.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="FileFont.html#method.getSize">getSize</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="FileFont.html#method.setExtension">setExtension</a>(<span class="type">string</span> <span class="argument">$extension</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">string</span> <a href="FileFont.html#method.getExtension">getExtension</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="FileFont.html#method.getTextWidth">getTextWidth</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="FileFont.html#method.getTextHeight">getTextHeight</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.name"></a><span class="access">public</span> <span class="type">string</span> <a href="FileFont.html#property.name"><span class="argument">$name</span></a><div class="description">
+				Le nom du fichier contenant la police, sans l'extension.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.size"></a><span class="access">public</span> <span class="type">int</span> <a href="FileFont.html#property.size"><span class="argument">$size</span></a><div class="description">
+				La taille de la police, en pixels.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.extension"></a><span class="access">public</span> <span class="type">string</span> <a href="FileFont.html#property.extension"><span class="argument">$extension</span></a><div class="description">
+				L'extension du fichier. Cette propriété est utile si deux polices pouvant être utilisé par plusieurs pilotes doivent avoir une extension différente selon le cas. Voir à ce sujet le classe <a href="TTFFont.html">TTFFont</a>.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="FileFont.html#method.__construct">__construct</a>(<span class="type">string</span> <span class="argument">$name</span>, <span class="type">int</span> <span class="argument">$size</span>)
+	<div class="description">
+				Construit la police de nom $name et de taille $size.
+				Le nom doit être soit un chemin d'accès absolu, soit un simple nom de fichier. Dans ce dernier cas, la police correspondante sera recherchée dans le dossier <span style="font-weight: bold;">font/</span> d'Artichow.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setName"></a><span class="access">public</span> <a href="FileFont.html#method.setName">setName</a>(<span class="type">string</span> <span class="argument">$name</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1</li></ul>
+<div class="description">
+				Définit le nom du fichier contenant les informations de la police.
+				Ce nom doit être soit un chemin d'accès absolu, soit un simple nom de fichier. Dans ce dernier cas, la police correspondante sera recherchée dans le dossier <span style="font-weight: bold;">font/</span> d'Artichow.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getName"></a><span class="access">public</span> <span class="type">string</span> <a href="FileFont.html#method.getName">getName</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1</li></ul>
+<div class="description">
+				Renvoie l'extension du fichier contenant les informations de la police.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSize"></a><span class="access">public</span> <a href="FileFont.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1</li></ul>
+<div class="description">
+				Définit la taille de la police, en pixels.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getSize"></a><span class="access">public</span> <span class="type">int</span> <a href="FileFont.html#method.getSize">getSize</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1</li></ul>
+<div class="description">
+				Renvoie la taille de la police, en pixels.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setExtension"></a><span class="access">public</span> <a href="FileFont.html#method.setExtension">setExtension</a>(<span class="type">string</span> <span class="argument">$extension</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1</li></ul>
+<div class="description">
+				Définit l'extension du fichier contenant les informations de la police.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getExtension"></a><span class="access">public</span> <span class="type">string</span> <a href="FileFont.html#method.getExtension">getExtension</a>()
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.1</li></ul>
+<div class="description">
+				Renvoie l'extension du fichier contenant les informations de la police.
+			</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getTextWidth"></a><span class="access">public</span> <a href="FileFont.html#method.getTextWidth">getTextWidth</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>)
+	<ul class="version"><li>
+						Supprimé à partir d'Artichow 1.1</li></ul>
+<div class="description">
+				Renvoie la largeur en pixels occupée par l'objet <a href="Text.html">Text</a> $text.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.getTextWidth">Driver::getTextWidth()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getTextHeight"></a><span class="access">public</span> <a href="FileFont.html#method.getTextHeight">getTextHeight</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>)
+	<ul class="version"><li>
+						Supprimé à partir d'Artichow 1.1</li></ul>
+<div class="description">
+				Renvoie la hauteur en pixels occupée par l'objet <a href="Text.html">Text</a> $text.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Driver.html#method.getTextHeight">Driver::getTextHeight()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="FileFont.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

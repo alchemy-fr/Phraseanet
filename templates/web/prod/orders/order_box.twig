@@ -1,0 +1,47 @@
+<div>
+	{% if ordermanager.previous_page != false %}
+		<button onclick="load_orders(false,{{ordermanager.previous_page}});">&lt;</button>
+	{% endif %}
+	{% set current_page = ordermanager.page %}
+	{% trans %}Page {{current_page}}{% endtrans %}
+	{% if ordermanager.next_page != false %}
+		<button onclick="load_orders(false,{{ordermanager.next_page}});">&gt;</button>
+	{% endif %}
+
+	<table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+		<thead>
+			<tr>
+				<th>
+					Utilisateur
+				</th>
+				<th>
+					Date de demande
+				</th>
+				<th>
+					Deadline
+				</th>
+				<th>Utilisation prevue</th>
+				<th>Statut</th>
+			</tr>
+		</thead>
+		<tbody>
+	{% for order in ordermanager.orders %}
+		{% set deadline = order.deadline|phraseadate%}
+		<tr id="order_{{order.id}}" class="order_row">
+			<td>{{order.usr_display}}</td>
+			<td>{{order.created_on|phraseadate}}</td>
+			<td>
+				{% if deadline != '' %}
+					{{deadline}}
+				{% else %}
+					{% trans 'Aucune' %}
+				{% endif %}
+			
+			</td>
+			<td>{{order.usage}}</td>
+			<td>{% if order.todo == 0%}<img src="/skins/icons/ok.png" />{% endif %}</td>
+		</tr>
+	{% endfor %}
+		</tbody>
+	</table>
+</div>

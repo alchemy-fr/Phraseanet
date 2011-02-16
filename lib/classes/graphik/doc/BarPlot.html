@@ -1,0 +1,199 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class BarPlot</h2><div class="extends"><ul>
+<li><a href="Component.html">Component</a></li>
+<ul>
+<li><a href="Plot.html">Plot</a></li>
+<ul><li>BarPlot <span class="interface">implements</span> <a href="Legendable.html">Legendable</a>
+</li></ul>
+</ul>
+</ul></div><div class="description">
+		<p>
+			Cette classe permet de dessiner des histogrammes.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="BarPlot.html#property.label"><span class="argument">$label</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Shadow.html"><span class="type">Shadow</span></a> <a href="BarPlot.html#property.barShadow"><span class="argument">$barShadow</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="BarPlot.html#property.barBorder"><span class="argument">$barBorder</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="BarPlot.html#method.__construct">__construct</a>(<span class="type">array</span> <span class="argument">$values</span>, <span class="type">int</span> <span class="argument">$identifier</span> := <span class="default">1</span>, <span class="type">int</span> <span class="argument">$number</span> := <span class="default">1</span>, <span class="type">int</span> <span class="argument">$depth</span> := <span class="default">0</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="BarPlot.html#method.setBarPadding">setBarPadding</a>(<span class="type">float</span> <span class="argument">$left</span> := <span class="default">NULL</span>, <span class="type">float</span> <span class="argument">$right</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="BarPlot.html#method.setBarSize">setBarSize</a>(<span class="type">float</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="BarPlot.html#method.setBarSpace">setBarSpace</a>(<span class="type">int</span> <span class="argument">$space</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="BarPlot.html#method.setBarColor">setBarColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="BarPlot.html#method.setBarGradient">setBarGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="BarPlot.html#method.move">move</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.label"></a><span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="BarPlot.html#property.label"><span class="argument">$label</span></a><div class="description">
+				Représente les étiquettes affichées au-dessus de chaque barre de l'histogramme.
+				Ces étiquettes contiennent la valeur de chaque barre.
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.barShadow"></a><span class="access">public</span> <a href="Shadow.html"><span class="type">Shadow</span></a> <a href="BarPlot.html#property.barShadow"><span class="argument">$barShadow</span></a><div class="description">
+				Représente l'ombre associée à chaque barre de l'histogramme.
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.barBorder"></a><span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="BarPlot.html#property.barBorder"><span class="argument">$barBorder</span></a><div class="description">
+				La bordure à afficher autour de chaque barre de l'histogramme.
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="BarPlot.html#method.__construct">__construct</a>(<span class="type">array</span> <span class="argument">$values</span>, <span class="type">int</span> <span class="argument">$identifier</span> := <span class="default">1</span>, <span class="type">int</span> <span class="argument">$number</span> := <span class="default">1</span>, <span class="type">int</span> <span class="argument">$depth</span> := <span class="default">0</span>)
+	<div class="description">
+				Créé un nouvel histogramme avec les valeurs présentes dans $values.
+				$number représente le nombre d'histogrammes affichés en parallèle tandis que $identifier permet de spécifier où se situe l'histogramme courant.
+				$depth représente la profondeur de l'histogramme en pixels.
+				Le tableau $values doit être une liste de valeurs dans un tableau incrémental, c'est-à-dire dont les clés valent de 0 à n - 1 (où n est la taille du tableau).
+<pre>
+
+&lt;?php
+
+require_once "BarPlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+// Tableau de valeurs
+$x = array(-19, 42, 31);
+
+$plot = new <a href="BarPlot.html">BarPlot</a>($x);
+$plot-&gt;<a href="Plot.html#method.setXAxisZero">setXAxisZero</a>(TRUE);
+$plot-&gt;<a href="BarPlot.html#method.setBarColor">setBarColor</a>(
+	new <a href="Color.html">Color</a>(240, 185, 130, 20)
+);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBarPadding"></a><span class="access">public</span> <a href="BarPlot.html#method.setBarPadding">setBarPadding</a>(<span class="type">float</span> <span class="argument">$left</span> := <span class="default">NULL</span>, <span class="type">float</span> <span class="argument">$right</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Change l'espace interne de gauche et de droite sur chaque barre.
+				Laisser $left ou $right à NULL permet de ne pas modifier l'ancienne valeur.
+				Les valeurs données doivent être comprises entre 0 et 1 et représentent une fraction de l'espace réservé à chaque barre.
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBarSize"></a><span class="access">public</span> <a href="BarPlot.html#method.setBarSize">setBarSize</a>(<span class="type">float</span> <span class="argument">$size</span>)
+	<div class="description">
+				Change la taille de chaque barre pour $size.
+				Les valeurs données doivent être comprises entre 0 et 1 et représentent une fraction de l'espace réservé à chaque barre.
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBarSpace"></a><span class="access">public</span> <a href="BarPlot.html#method.setBarSpace">setBarSpace</a>(<span class="type">int</span> <span class="argument">$space</span>)
+	<div class="description">
+				Change l'espace entre les histogrammes affichés en parallèle pour $space.
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBarColor"></a><span class="access">public</span> <a href="BarPlot.html#method.setBarColor">setBarColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur des barres de l'histogrammes.
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBarGradient"></a><span class="access">public</span> <a href="BarPlot.html#method.setBarGradient">setBarGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	<div class="description">
+				Change le dégradé de fond des barres de l'histogramme.
+				Le dégradé de fond remplit le polygone définit par tous les points de la ligne additionés des points extrêmes de l'axe des abscisses.
+<pre>
+
+&lt;?php
+
+require_once "BarPlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+$x = array(19, 30, 31, -42, 11);
+
+$plot = new <a href="BarPlot.html">BarPlot</a>($x);
+$plot-&gt;<a href="BarPlot.html#method.setBarGradient">setBarGradient</a>(
+	new <a href="LinearGradient.html">LinearGradient</a>(
+		new <a href="Color.html">Color</a>(255, 20, 20, 30),
+		new <a href="Color.html">Color</a>(20, 255, 20, 30),
+		90
+	)
+);
+
+$plot-&gt;<a href="Plot.html#method.setYMin">setYMin</a>(-100);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.move"></a><span class="access">public</span> <a href="BarPlot.html#method.move">move</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	<div class="description">
+				Déplace chaque barre de $x pixels sur l'horizontale et $y pixels sur la vertical avant le dessin.
+			</div>
+<div class="description-bottom"><a href="BarPlot.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

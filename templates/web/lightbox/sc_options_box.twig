@@ -1,0 +1,36 @@
+<span style="padding:10px 4px 7px;">
+	{% if basket_element %}
+		<button class="previous_button play" title="{% trans 'boutton::precedent' %}">
+			<img src="/skins/lightbox/prev.png" />
+		</button>
+		<button class="previous_button pause" title="{% trans 'boutton::precedent' %}">
+			<img src="/skins/lightbox/prev_pause.png" />
+		</button>
+		<button class="play_button" title="{% trans 'boutton::demarrer' %}">
+			<img src="/skins/lightbox/play.png" />
+		</button>
+		<button class="pause_button" title="{% trans 'boutton::pause' %}">
+			<img src="/skins/lightbox/pause.png" />
+		</button>
+		<button class="next_button play" title="{% trans 'boutton::suivant' %}">
+			<img src="/skins/lightbox/next.png" />
+		</button>
+		<button class="next_button pause" title="{% trans 'boutton::suivant' %}">
+			<img src="/skins/lightbox/next_pause.png" />
+		</button>
+		<button class="download_button" title="{% trans 'boutton::telecharger' %}">
+			<img src="/skins/lightbox/save.png"/>
+		</button>
+		<form name="download_form" style="display:none;">
+			<input type="hidden" name="basrec" value="{{basket_element.base_id}}_{{basket_element.record_id}}"/>
+		</form>
+		 | 
+		{% if basket_element.is_validation_item %}
+			<button class="comment_button">
+				<img src="/skins/lightbox/note.png"/>
+				{{basket_element.get_note_count}}
+			</button>
+		{% endif %}
+	{% endif %}
+</span>
+

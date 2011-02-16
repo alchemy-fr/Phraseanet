@@ -1,0 +1,146 @@
+<div id="mainMenu" class="PNB" style="z-index:100">
+	<div style="float:left;padding-top:4px;">
+		<nobr>
+			<span class="title">{% trans 'phraseanet::Nom de l\'application' %} | </span>
+			
+			{% if session.is_authenticated and session.b_log|length > 0 %}
+			
+				{# MODULE #}
+				{% if module == "prod" %}
+					<a target="_self" href="/client/">{% trans 'admin::monitor: Ancienne version (client)' %}</a>
+				{% else %}
+					{% if browser.isNewGeneration %}
+						{% if module == "client" %}
+							<a target="_self" href="/prod/">{% trans 'admin::monitor: Nouvelle version (prod)' %}</a>
+						{% else %}
+							<a target="_blank" href="/prod/">{% trans 'admin::monitor: production' %}</a>
+						{% endif %}
+					{% endif %}
+				{% endif %}
+				
+				{# MODULE #}	
+				{% if browser.isNewGeneration and session.thesaurus %}
+					{% if module == "thesaurus" %}
+						<b>{% trans 'admin::monitor: module thesaurus' %}</b>
+					{% else %}
+						<a target="_blank" href="/thesaurus2/">{% trans 'admin::monitor: module thesaurus' %}</a>
+					{% endif %}
+				{% endif %}
+				
+				{# MODULE #}
+				{% if session.admin %}
+					{% if module == "admin" %}
+						<b>{% trans 'admin::monitor: module admin' %}</b>
+					{% else %}
+						<a target="_blank" href="/admin/">{% trans 'admin::monitor: module admin' %}</a>
+					{% endif %}
+				{% endif %}
+				
+				{# MODULE #}
+				{% if session.report %}
+					{% if module == "report" %}
+						<b>{% trans 'admin::monitor: module report' %}</b>
+					{% else %}
+						<a target="_blank" href="/report/">{% trans 'admin::monitor: module report' %}</a>
+					{% endif %}
+				{% endif %}
+				
+				{# MODULE #}
+				{% if module == "validation" %}
+					<b>{% trans 'admin::monitor: module validation' %}</b>
+				{% else %}
+					<a id="validation_link" style="display:" 
+						target="_blank" class=" " 
+						href="/lightbox/">{% trans 'admin::monitor: module validation' %} 
+						{#{% if session.lightbox.new > 0 %}({{session.lightbox.new}}){% endif %}#}</a>
+				{% endif %}
+				
+				{# MODULE #}
+				{% if session.upload %}
+					{% if module == "upload" %}
+						<b>{% trans 'admin::monitor: module upload' %}</b>
+					{% else %}
+						<a target="_blank" href="/upload/">{% trans 'admin::monitor: module upload' %}</a>
+					{% endif %}
+				{% endif %}
+				
+				{# MODULE #}
+				{% if module == "prod" or module == "client" %}
+					<a href="#" onclick="getHome('PUBLI');" >{% trans 'Publications' %}</a>
+				{% endif %}
+				
+				{% if module == "prod" and user._global_rights.order_master %}
+					<a href="#" class="order_launcher">{% trans 'Commandes' %}</a>
+				{% endif %}
+				
+			{% endif %}
+		</nobr>
+	</div>
+	<div style="float:right;padding-top:7px;">
+		<nobr class="account">
+		{% if session.is_authenticated %}
+			{% if session.invite %}
+				<b>{% trans 'Guest' %}</b>
+			{% else %}
+				<a target="_blank" href="/login/account.php" title="{% trans 'login:: Mon compte' %}">{{session.login}}</a>
+			{% endif %}
+		{% endif %}
+		
+		<a class="apps" style="margin-right:0;" target="_blank" href="http://www.phraseanet.com/{{session.usr_i18n}}/documentation/">
+			{% trans 'phraseanet:: aide' %}
+		</a><span style="cursor:pointer;margin-left:0;" id="help-trigger"> &#9660;</span>
+
+		<table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu helpcontextmenu">
+			<tbody>
+				<tr>
+					<td>
+						<div class="context-menu context-menu-theme-vista">		
+						{% if module == "prod" %}		
+							<div title="" class="context-menu-item menu3-custom-item">
+								<div style="" class="context-menu-item-inner shortcuts-trigger">
+										{% trans 'phraseanet:: raccourcis clavier' %}
+								</div>
+							</div>
+						{% endif %}	
+							<div title="" class="context-menu-item menu3-custom-item">
+								<div style="" class="context-menu-item-inner infoDialog" infos="<div><span style='color:#F7F7F7;font-size:18px;'>Phraseanet IV</span> Version {{session.version}}</div><div></div><br/><div><a href='http://www.gnu.org/licenses/gpl.html' target='_blank'><img src='http://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/><span>License GNU GPL v3</span></a></div><br/><div><a href='http://www.phraseanet.com/' target='_blank'>  &copy; Copyright Alchemy 2005-2010</a></div>">{% trans 'phraseanet:: a propos' %}</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>		
+		{% if session.is_authenticated %}
+			<a href="/login/logout.php?app={{module}}" target="_self">{% trans 'phraseanet:: deconnection' %}</a>	
+		{% endif %}	
+		</nobr>
+	</div>
+	{% if module == "client" or module == "prod" %}
+		<div style="width:135px;white-space:nowrap;" class="" id="notification_trigger">
+			<table cellspacing="0" cellpadding="0" border="0" style="width:100%;height:100%;">
+				<tr valign="middle">
+					<td>
+						<a href="#" class="news" style="font-weight:bold;text-decoration:none;">{% trans 'Notifications' %}</a>
+					</td>
+					<td>
+						<div class="counter_wrapper" style="width:40px;position:relative;float:right;">
+							<div class="counter" style="position:relative;float:left;
+									visibility:{% if events.get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};
+									margin:0px 2px 0px 0px;border:1px solid white;background:red;-moz-border-radius:8px;
+									-webkit-border-radius:8px;font-size:10px;font-weight:bold;">
+									
+								{% if events.get_unread_notifications_number > 0 %}
+								<div style="padding:1px 5px 0;">{{events.get_unread_notifications_number}}</div>
+								{% endif %}
+							</div>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div style="display:none;z-index:30000;" id="notification_box">
+				{{events.get_notifications}}
+		</div>
+	{% endif %}
+</div>

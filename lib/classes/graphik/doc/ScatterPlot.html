@@ -1,0 +1,164 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class ScatterPlot</h2><div class="extends"><ul>
+<li><a href="Component.html">Component</a></li>
+<ul>
+<li><a href="Plot.html">Plot</a></li>
+<ul><li>ScatterPlot <span class="interface">implements</span> <a href="Legendable.html">Legendable</a>
+</li></ul>
+</ul>
+</ul></div><div class="description">
+		<p>
+			Les ScatterPlot (ou graphiques libres) permettent de dessiner des points aux coordonnées (x, y) sur une image.
+			Ce type de graphique est plus pluissant que les <a href="LinePlot.html">LinePlot</a> car plusieurs points de même abscisse peuvent être placés sur le même graphique.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <a href="Mark.html"><span class="type">Mark</span></a> <a href="ScatterPlot.html#property.mark"><span class="argument">$mark</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="ScatterPlot.html#property.label"><span class="argument">$label</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="ScatterPlot.html#method.__construct">__construct</a>(<span class="type">array</span> <span class="argument">$datay</span>, <span class="type">array</span> <span class="argument">$datax</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="ScatterPlot.html#method.setImpulse">setImpulse</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="ScatterPlot.html#method.link">link</a>(<span class="type">bool</span> <span class="argument">$link</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="ScatterPlot.html#method.linkNull">linkNull</a>(<span class="type">bool</span> <span class="argument">$linkNull</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="ScatterPlot.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="ScatterPlot.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="ScatterPlot.html#method.setThickness">setThickness</a>(<span class="type">int</span> <span class="argument">$thickness</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.mark"></a><span class="access">public</span> <a href="Mark.html"><span class="type">Mark</span></a> <a href="ScatterPlot.html#property.mark"><span class="argument">$mark</span></a><div class="description">
+				Représente les marques affichées sur chaque point.
+			</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.label"></a><span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="ScatterPlot.html#property.label"><span class="argument">$label</span></a><div class="description">
+				Représente les étiquettes affichées au-dessus de chaque point.
+				Ces étiquettes ne sont pas affichées par défaut.
+			</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="ScatterPlot.html#method.__construct">__construct</a>(<span class="type">array</span> <span class="argument">$datay</span>, <span class="type">array</span> <span class="argument">$datax</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Créé un nouveau ScatterPlot avec des points d'abscisses $datax et d'ordonnées $datay.
+				Si la valeur $datax est laissée à NULL, alors la librairie utilisera des valeurs incrémentales pour X, en commençant par zéro.
+<pre>
+
+&lt;?php
+
+require_once "ScatterPlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+// Tableaux de valeurs
+$y = array(2, 4, 6);
+$x = array(1, 4, 3);
+
+// On dessine les points (1, 2), (4, 4) et (3, 6)
+$plot = new <a href="ScatterPlot.html">ScatterPlot</a>($y, $x);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setImpulse"></a><span class="access">public</span> <a href="ScatterPlot.html#method.setImpulse">setImpulse</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Si vous appelez cette méthode, les points de la courbe seront reliés à l'axe des abscisses par des segments de droite verticaux de couleur $color.
+				Cette méthode permet notamment de représenter des graphiques à impulsions.
+			</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.link"></a><span class="access">public</span> <a href="ScatterPlot.html#method.link">link</a>(<span class="type">bool</span> <span class="argument">$link</span>)
+	<div class="description">
+				Permet de lier les points du graphique entre eux.
+			</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.linkNull"></a><span class="access">public</span> <a href="ScatterPlot.html#method.linkNull">linkNull</a>(<span class="type">bool</span> <span class="argument">$linkNull</span>)
+	<div class="description">
+				Si $linkNull vaut TRUE, alors les valeurs en ordonnée égales à nulles n'interrompront pas le lien entre tous les points.
+				A l'inverse, si $linkNull vaut FALSE, alors le lien sera rompu à chaque fois qu'une valeur égale à NULL sera trouvée.
+				Cette méthode n'a de sens que lorsque vous avez choisi de relier les points entre eux.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="ScatterPlot.html#method.link">ScatterPlot::link()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="ScatterPlot.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de la ligne qui relie les points du composant entre eux.
+			</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setStyle"></a><span class="access">public</span> <a href="ScatterPlot.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	<div class="description">
+				Change le style de ligne (<a href="Line.html#constant.SOLID">Line::SOLID</a>, <a href="Line.html#constant.DOTTED">Line::DOTTED</a> ou <a href="Line.html#constant.DASHED">Line::DASHED</a>) qui relie chaque point.
+			</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setThickness"></a><span class="access">public</span> <a href="ScatterPlot.html#method.setThickness">setThickness</a>(<span class="type">int</span> <span class="argument">$thickness</span>)
+	<div class="description">
+				Change l'épaisseur de la ligne qui relie les points du composant entre eux.
+				L'épaisseur de la ligne doit être toujours positive.
+			</div>
+<div class="description-bottom"><a href="ScatterPlot.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,423 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Label</h2><div class="description">
+		<p>
+			La classe <a href="Label.html">Label</a> permet de créer et d'afficher des étiquettes de texte sur des images.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Label.html#property.border"><span class="argument">$border</span></a> := <span class="default">new Border</span>
+</li>
+<li>
+<span class="access">protected</span> <a href="Font.html"><span class="type">Font</span></a> <a href="Label.html#property.font"><span class="argument">$font</span></a> := <span class="default">new Font(Font::FONT_2)</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Label.html#property.angle"><span class="argument">$angle</span></a> := <span class="default">0</span>
+</li>
+<li>
+<span class="access">protected</span> <a href="Color.html"><span class="type">Color</span></a> <a href="Label.html#property.color"><span class="argument">$color</span></a> := <span class="default">new Color(0, 0, 0)</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Label.html#property.hide"><span class="argument">$hide</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Label.html#property.hideFirst"><span class="argument">$hideFirst</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Label.html#property.hideLast"><span class="argument">$hideLast</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Label.html#property.interval"><span class="argument">$interval</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Label.html#property.hAlign"><span class="argument">$hAlign</span></a> := <span class="default">Label::CENTER</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Label.html#property.vAlign"><span class="argument">$vAlign</span></a> := <span class="default">Label::MIDDLE</span>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Label.html#method.__construct">__construct</a>(<span class="type">string</span> <span class="argument">$label</span> := <span class="default">NULL</span>, <a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span> := <span class="default">new Font(Text::FONT_2)</span>, <a href="color.html"><span class="type">color</span></a> <span class="argument">$color</span> := <span class="default">new Color(0, 0, 0)</span>, <span class="type">int</span> <span class="argument">$angle</span> := <span class="default">0</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">mixed</span> <a href="Label.html#method.get">get</a>(<span class="type">int</span> <span class="argument">$key</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">mixed</span> <a href="Label.html#method.all">all</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.set">set</a>(<span class="type">mixed</span> <span class="argument">$labels</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Label.html#method.count">count</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setCallbackFunction">setCallbackFunction</a>(<span class="type">mixed</span> <span class="argument">$function</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">string</span> <a href="Label.html#method.getCallbackFunction">getCallbackFunction</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setFormat">setFormat</a>(<span class="type">string</span> <span class="argument">$format</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setFont">setFont</a>(<a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setAngle">setAngle</a>(<span class="type">int</span> <span class="argument">$angle</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setBackground">setBackground</a>(<span class="type">mixed</span> <span class="argument">$background</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>, <span class="type">int</span> <span class="argument">$top</span>, <span class="type">int</span> <span class="argument">$bottom</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.hideKey">hideKey</a>(<span class="type">int</span> <span class="argument">$key</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.hideFirst">hideFirst</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.hideLast">hideLast</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setInterval">setInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.move">move</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.setAlign">setAlign</a>(<span class="type">int</span> <span class="argument">$h</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$v</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Text.html"><span class="type">Text</span></a> <a href="Label.html#method.getText">getText</a>(<span class="type">int</span> <span class="argument">$key</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Label.html#method.getMaxWidth">getMaxWidth</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Label.html#method.getMaxHeight">getMaxHeight</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Label.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>, <span class="type">int</span> <span class="argument">$key</span> := <span class="default">0</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.border"></a><span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Label.html#property.border"><span class="argument">$border</span></a> := <span class="default">new Border</span><div class="description">
+				La bordure associée à l'étiquette.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.font"></a><span class="access">protected</span> <a href="Font.html"><span class="type">Font</span></a> <a href="Label.html#property.font"><span class="argument">$font</span></a> := <span class="default">new Font(Font::FONT_2)</span><div class="description">
+				La police utilisée pour ce paragraphe.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.angle"></a><span class="access">protected</span> <span class="type">int</span> <a href="Label.html#property.angle"><span class="argument">$angle</span></a> := <span class="default">0</span><div class="description">
+				L'angle du texte du paragraphe.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.color"></a><span class="access">protected</span> <a href="Color.html"><span class="type">Color</span></a> <a href="Label.html#property.color"><span class="argument">$color</span></a> := <span class="default">new Color(0, 0, 0)</span><div class="description">
+				La couleur du texte du paragraphe.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.hide"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Label.html#property.hide"><span class="argument">$hide</span></a><div class="description">
+				Détermine si les étiquettes doivent être cachées.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.hideFirst"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Label.html#property.hideFirst"><span class="argument">$hideFirst</span></a><div class="description">
+				Détermine si la première étiquette doit être cachée.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.hideLast"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Label.html#property.hideLast"><span class="argument">$hideLast</span></a><div class="description">
+				Détermine si la dernière étiquette doit être cachée.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.interval"></a><span class="access">protected</span> <span class="type">int</span> <a href="Label.html#property.interval"><span class="argument">$interval</span></a><div class="description">
+				L'interval d'affichage des étiquettes.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.hAlign"></a><span class="access">protected</span> <span class="type">int</span> <a href="Label.html#property.hAlign"><span class="argument">$hAlign</span></a> := <span class="default">Label::CENTER</span><div class="description">
+				L'alignement horizontal des étiquettes.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.vAlign"></a><span class="access">protected</span> <span class="type">int</span> <a href="Label.html#property.vAlign"><span class="argument">$vAlign</span></a> := <span class="default">Label::MIDDLE</span><div class="description">
+				L'alignement vertical des étiquettes.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Label.html#method.__construct">__construct</a>(<span class="type">string</span> <span class="argument">$label</span> := <span class="default">NULL</span>, <a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span> := <span class="default">new Font(Text::FONT_2)</span>, <a href="color.html"><span class="type">color</span></a> <span class="argument">$color</span> := <span class="default">new Color(0, 0, 0)</span>, <span class="type">int</span> <span class="argument">$angle</span> := <span class="default">0</span>)
+	<div class="description">
+				Construit un nouvel objet qui permettra l'affichage d'étiquettes sur une image.
+				$label est un chaîne de caractères qui représente la première étiquette (peut être laissée à NULL).
+				$font est la police à utiliser pour l'étiquette tandis que $color sera utilisé pour la couleur du texte.
+				Enfin, l'angle du texte prendra la valeur de $angle.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.get"></a><span class="access">public</span> <span class="type">mixed</span> <a href="Label.html#method.get">get</a>(<span class="type">int</span> <span class="argument">$key</span>)
+	<div class="description">
+				Retourne la valeur de l'élément de l'étiquette dont la clé vaut $key.
+				Si la clé n'est associée à aucune valeur, alors cette méthode retourne NULL.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.all"></a><span class="access">public</span> <span class="type">mixed</span> <a href="Label.html#method.all">all</a>()
+	<div class="description">
+				Retourne toutes la valeur de toutes les étiquettes sous la forme d'un tableau.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.set"></a><span class="access">public</span> <a href="Label.html#method.set">set</a>(<span class="type">mixed</span> <span class="argument">$labels</span>)
+	<div class="description">
+				Change le texte des étiquettes à afficher sur l'image.
+				$labels peut être une chaîne de caractères si vous n'avez besoin que d'une étiquette, ou un tableau de chaînes de caractères si vous avez besoin de plusieurs étiquettes.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.count"></a><span class="access">public</span> <span class="type">int</span> <a href="Label.html#method.count">count</a>()
+	<div class="description">
+				Retourne le nombre de textes dans le paragraphe.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setCallbackFunction"></a><span class="access">public</span> <a href="Label.html#method.setCallbackFunction">setCallbackFunction</a>(<span class="type">mixed</span> <span class="argument">$function</span>)
+	<div class="description">
+				Change le nom de la fonction de callback qui sera appelé lors du dessin des textes du paragraphe. $function peut être une simple chaîne de caractères, ou un tableau du type <span style="font-style: italic;">array($this, 'methodName')</span> pour permettre d'appeler des méthodes statiques.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getCallbackFunction"></a><span class="access">public</span> <span class="type">string</span> <a href="Label.html#method.getCallbackFunction">getCallbackFunction</a>()
+	<div class="description">
+				Retourne le nom de la fonction de callback actuellement utilisée.
+				Si aucune fonction de callback n'a été spécifiée, alors NULL sera retourné.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setFormat"></a><span class="access">public</span> <a href="Label.html#method.setFormat">setFormat</a>(<span class="type">string</span> <span class="argument">$format</span>)
+	<div class="description">
+				Formate le texte de chaque étiquette selon $format.
+				$format est du même format que les fonctions printf ou sprintf.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setFont"></a><span class="access">public</span> <a href="Label.html#method.setFont">setFont</a>(<a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span>)
+	<div class="description">
+				Change la police utilisée pour le texte de l'étiquette.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAngle"></a><span class="access">public</span> <a href="Label.html#method.setAngle">setAngle</a>(<span class="type">int</span> <span class="argument">$angle</span>)
+	<div class="description">
+				Change l'angle du texte de l'étiquette. Les valeurs possibles sont 0 ou 90°.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="Label.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur du texte de l'étiquette.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackground"></a><span class="access">public</span> <a href="Label.html#method.setBackground">setBackground</a>(<span class="type">mixed</span> <span class="argument">$background</span>)
+	<div class="description">
+				Change le fond du texte de l'étiquette.
+				$background peut être soit une couleur, soit un dégradé;
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundColor"></a><span class="access">public</span> <a href="Label.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de fond du texte de l'étiquette.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Label.html#method.setBackground">Label::setBackground()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundGradient"></a><span class="access">public</span> <a href="Label.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	<div class="description">
+				Change le dégradé de fond du texte de l'étiquette.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Label.html#method.setBackground">Label::setBackground()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setPadding"></a><span class="access">public</span> <a href="Label.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>, <span class="type">int</span> <span class="argument">$top</span>, <span class="type">int</span> <span class="argument">$bottom</span>)
+	<div class="description">
+				Change la valeur de l'espace qui entoure le texte par rapport à sa bordure.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Label.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	<div class="description">
+				Détermine si toutes les étiquettes doivent être cachées ou non.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.show"></a><span class="access">public</span> <a href="Label.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span>)
+	<div class="description">
+				Détermine si toutes les étiquettes doivent être affichées ou non.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideKey"></a><span class="access">public</span> <a href="Label.html#method.hideKey">hideKey</a>(<span class="type">int</span> <span class="argument">$key</span>)
+	<div class="description">
+				Détermine si l'étiquette de clé $key doit être cachée ou non.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideFirst"></a><span class="access">public</span> <a href="Label.html#method.hideFirst">hideFirst</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	<div class="description">
+				Détermine si la première étiquette doit être cachée ou non.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideLast"></a><span class="access">public</span> <a href="Label.html#method.hideLast">hideLast</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	<div class="description">
+				Détermine si la dernière étiquette doit être cachée ou non.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setInterval"></a><span class="access">public</span> <a href="Label.html#method.setInterval">setInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	<div class="description">
+				Change l'interval d'affichage des étiquettes.
+				L'interval est à 1 par défaut, ce qui signifie que toutes les étiquettes sont affichées.
+				Si cet interval est placé à 2 par exemple, alors la méthode <a href="Label.html#method.draw">draw()</a> n'affichera qu'une étiquette sur 2.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.move"></a><span class="access">public</span> <a href="Label.html#method.move">move</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	<div class="description">
+				Déplace l'affichage de l'étiquette de $x pixels sur l'axe des abscisses et de $y pixels sur l'axe des ordonnées.
+				Les appels à <a href="Label.html#method.move">move()</a> sont cumulés, c'est-à-dire qu'un appel avec de nouvelles valeurs additionnera ces valeurs avec les anciennes.
+				Par défaut, $x et $y sont à 0.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAlign"></a><span class="access">public</span> <a href="Label.html#method.setAlign">setAlign</a>(<span class="type">int</span> <span class="argument">$h</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$v</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Change l'alignement de l'étiquette par rapport au point où elle sera affichée.
+				$h correspond à l'alignement horizontal (<a href="Label.html#constant.LEFT">Positionable::LEFT</a>, <a href="Label.html#constant.RIGHT">Positionable::RIGHT</a> ou <a href="Label.html#constant.CENTER">Positionable::CENTER</a>) et $v à l'alignement vertical (<a href="Label.html#constant.TOP">Positionable::TOP</a>, <a href="Label.html#constant.BOTTOM">Positionable::BOTTOM</a> ou <a href="Label.html#constant.MIDDLE">Positionable::MIDDLE</a>).
+				Si vous ne souhaitez pas modifier une des deux valeurs, vous pouvez passer NULL.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getText"></a><span class="access">public</span> <a href="Text.html"><span class="type">Text</span></a> <a href="Label.html#method.getText">getText</a>(<span class="type">int</span> <span class="argument">$key</span>)
+	<div class="description">
+				Retourne un objet de type <a href="Text.html">Text</a> qui correspond à la valeur du tableau de textes passé au constructeur ou à <a href="Label.html#method.set">Label::set()</a> pour la clé $key.
+				Cette object <a href="Text.html">Text</a> se verra attribué toutes les propriétés (couleur, police, angle, etc.) définies pour le paragraphe.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getMaxWidth"></a><span class="access">public</span> <span class="type">int</span> <a href="Label.html#method.getMaxWidth">getMaxWidth</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	<div class="description">
+				Essaie de déterminer la longueur maximale des étiquettes. Cette méthode a besoin d'un <a href="Driver.html">Driver</a> pour établir la taille de chaque texte.
+				La longueur maximale trouvée est déterminée et rétournée en pixels.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getMaxHeight"></a><span class="access">public</span> <span class="type">int</span> <a href="Label.html#method.getMaxHeight">getMaxHeight</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	<div class="description">
+				Essaie de déterminer la hauteur maximale des étiquettes. Cette méthode a besoin d'un <a href="Driver.html">Driver</a> pour établir la taille de chaque texte.
+				La hauteur maximale trouvée est déterminée et rétournée en pixels.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.draw"></a><span class="access">public</span> <a href="Label.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>, <span class="type">int</span> <span class="argument">$key</span> := <span class="default">0</span>)
+	<div class="description">
+				Dessine l'étiquette identifiée par $key avec le pilote $driver. L'étiquette sera placée au point $point décalé des valeurs successivement passées à <a href="Label.html#method.move">move()</a>, et alignée par rapport à ce point selon les valeurs passées à <a href="Label.html#method.setAlign">setAlign()</a>.
+				L'étiquette ne sera pas affichée si sa clé $key n'est pas dans l'interval d'affichage donné avec <a href="Label.html#method.setInterval">setInterval()</a>.
+			</div>
+<div class="description-bottom"><a href="Label.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

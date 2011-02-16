@@ -1,0 +1,32 @@
+{% block setting_connexion %}
+	<div class="setting_title">{% trans "report:: 3 - Type de report" %}</div>
+			{% if not anonymous %}
+			<ul class="rounded">
+				<li class="formsubmiter CNXU submit">
+					{% trans "report:: (connexions) Par utilisateurs" %}
+				</li>
+			{% else %}
+			<ul class="rounded">
+				<li>
+					<label for="list-select">{% trans "report:: (connexions) Par utilisateurs" %}</label>
+					<select class="options" id="list-select" name="on" >
+						<option  selected ="selected" value="fonction" >{% trans "report:: fonction" %}</option>
+						<option  value="societe" >{% trans "report:: societe" %}</option>
+						<option  value="activite" >{% trans "report:: activite" %}</option>
+						<option  value="pays" >{% trans "report:: pays" %}</option>
+					</select>
+				</li>
+				<li class="formsubmiter CNXU submit fonction" style="display:none;"></li>
+			</ul>
+			<ul class="rounded">
+			{% endif %}
+			<li class="formsubmiter CNX submit">
+				{% trans "report:: (connexions) Globales" %}
+			</li>
+			<li class="formsubmiter CNXB submit">
+				{% trans "report:: (connexions) OS et navigateurs" %}
+			</li>
+				<input name="what" type="hidden" value="CNX" id="CNX-what" /> 
+				<input name="tbl" type="hidden" value="" id="tbl" /> 
+		</ul>
+{% endblock %}

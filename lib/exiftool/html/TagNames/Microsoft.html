@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Microsoft Tags</title>
+<link rel=stylesheet type='text/css' href='style.css' title='Style'>
+</head>
+<body>
+<h2 class=top><a name='XMP'>Microsoft XMP Tags</a></h2>
+<p>Microsoft Photo 1.0 schema XMP tags.  This is likely not a complete list,
+but represents tags which have been observed in sample images.  The actual
+namespace prefix is &quot;MicrosoftPhoto&quot;, but ExifTool shortens this to
+&quot;XMP-microsoft&quot; in the family 1 group name.</p>
+<blockquote>
+<table class=frame><tr><td>
+<table class=inner cellspacing=1>
+<tr class=h><th>Tag Name</th>
+<th>Writable</th><th>Values / <span class=n>Notes</span></th></tr>
+<tr>
+<td>CameraSerialNumber</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>DateAcquired</td>
+<td class=c>date</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>FlashManufacturer</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>FlashModel</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>LastKeywordIPTC</td>
+<td class=c title='+ = List'>string+</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>LastKeywordXMP</td>
+<td class=c title='+ = List'>string+</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>LensManufacturer</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>LensModel</td>
+<td class=c>string</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>RatingPercent</td>
+<td class=c>string</td>
+<td><span class=s><span class=n>(normal Rating values of 1,2,3,4 and 5 stars correspond to RatingPercent
+values of 1,25,50,75 and 99 respectively)</span></span></td></tr>
+</table></td></tr></table></blockquote>
+
+<h2><a name='MP1'>Microsoft MP1 Tags</a></h2>
+<p>Microsoft Photo 1.1 schema XMP tags which have been observed.</p>
+<blockquote>
+<table class=frame><tr><td>
+<table class=inner cellspacing=1>
+<tr class=h><th>Tag Name</th>
+<th>Writable</th><th>Values / <span class=n>Notes</span></th></tr>
+<tr>
+<td>PanoramicStitchCameraMotion</td>
+<td class=c>string</td>
+<td><span class=s>&#39;3DRotation&#39; = 3D Rotation
+  <br>&#39;Affine&#39; = Affine
+  <br>&#39;Homography&#39; = Homography
+  <br>&#39;RigidScale&#39; = Rigid Scale</span></td></tr>
+<tr class=b>
+<td>PanoramicStitchMapType</td>
+<td class=c>string</td>
+<td><span class=s>&#39;Horizontal-Cylindrical&#39; = Horizontal Cylindrical
+  <br>&#39;Horizontal-Spherical&#39; = Horizontal Spherical
+  <br>&#39;Perspective&#39; = Perspective
+  <br>&#39;Vertical-Cylindrical&#39; = Vertical Cylindrical
+  <br>&#39;Vertical-Spherical&#39; = Vertical Spherical</span></td></tr>
+<tr>
+<td>PanoramicStitchPhi0</td>
+<td class=c>real</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>PanoramicStitchPhi1</td>
+<td class=c>real</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td>PanoramicStitchTheta0</td>
+<td class=c>real</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>PanoramicStitchTheta1</td>
+<td class=c>real</td>
+<td>&nbsp;</td></tr>
+</table></td></tr></table></blockquote>
+
+<h2><a name='MP'>Microsoft MP Tags</a></h2>
+<p>Microsoft Photo 1.2 schema XMP tags which have been observed.</p>
+<blockquote>
+<table class=frame><tr><td>
+<table class=inner cellspacing=1>
+<tr class=h><th>Tag Name</th>
+<th>Writable</th><th>Values / <span class=n>Notes</span></th></tr>
+<tr>
+<td>RegionPersonDisplayName</td>
+<td class=c title='+ = List'>string+</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td>RegionRectangle</td>
+<td class=c title='+ = List'>string+</td>
+<td>&nbsp;</td></tr>
+</table></td></tr></table></blockquote>
+
+<h2><a name='Stitch'>Microsoft Stitch Tags</a></h2>
+<p>Information found in the Microsoft custom EXIF tag 0x4748, as written by
+Windows Live Photo Gallery.</p>
+<blockquote>
+<table class=frame><tr><td>
+<table class=inner cellspacing=1>
+<tr class=h><th>Index</th><th>Tag Name</th>
+<th>Writable</th><th>Values / <span class=n>Notes</span></th></tr>
+<tr>
+<td class=r title='0 = 0x0'>0</td>
+<td>PanoramicStitchVersion</td>
+<td class=c>int32u</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td class=r title='1 = 0x1'>1</td>
+<td>PanoramicStitchCameraMotion</td>
+<td class=c>int32u</td>
+<td><span class=s>2 = Rigid Scale
+  <br>3 = Affine
+  <br>4 = 3D Rotation
+  <br>5 = Homography</span></td></tr>
+<tr>
+<td class=r title='2 = 0x2'>2</td>
+<td>PanoramicStitchMapType</td>
+<td class=c>int32u</td>
+<td><span class=s>0 = Perspective
+  <br>1 = Horizontal Cylindrical
+  <br>2 = Horizontal Spherical
+  <br>257 = Vertical Cylindrical
+  <br>258 = Vertical Spherical</span></td></tr>
+<tr class=b>
+<td class=r title='3 = 0x3'>3</td>
+<td>PanoramicStitchTheta0</td>
+<td class=c>float</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td class=r title='4 = 0x4'>4</td>
+<td>PanoramicStitchTheta1</td>
+<td class=c>float</td>
+<td>&nbsp;</td></tr>
+<tr class=b>
+<td class=r title='5 = 0x5'>5</td>
+<td>PanoramicStitchPhi0</td>
+<td class=c>float</td>
+<td>&nbsp;</td></tr>
+<tr>
+<td class=r title='6 = 0x6'>6</td>
+<td>PanoramicStitchPhi1</td>
+<td class=c>float</td>
+<td>&nbsp;</td></tr>
+</table></td></tr></table></blockquote>
+
+<hr>
+(This document generated automatically by Image::ExifTool::BuildTagLookup)
+<br><i>Last revised Oct 7, 2010</i>
+<p class=lf><a href='index.html'>&lt;-- ExifTool Tag Names</a></p>
+</body>
+</html>

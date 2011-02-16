@@ -1,0 +1,27 @@
+
+{% if result.result|length > 0 %}
+		<div class="phone">
+		{% for tr, value in result.result %}
+			<ul>
+			{% for class, config in result.display %}
+				<li class="{{ class }}">
+				{% for key , result in value %}
+				 	{% if key == class %}
+				 	<div class="center key">{{ class }}</div>
+					<div class="center value">{{ result }}</div>
+					{% endif %}
+				{% endfor %} 
+				</li>
+			{% endfor %}
+			</ul>
+		{% endfor %}
+				
+{% else %}
+	<div class="center no_results">
+		<b>{{ array.title }}</b>
+		<br />
+		<img src="skins/images/noresults.png" />
+		<br />
+		<i>{% trans "report :: aucun resultat trouve" %}</i><br />
+	</div>
+{% endif %}

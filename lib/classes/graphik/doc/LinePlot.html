@@ -1,0 +1,230 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class LinePlot</h2><div class="extends"><ul>
+<li><a href="Component.html">Component</a></li>
+<ul>
+<li><a href="Plot.html">Plot</a></li>
+<ul><li>LinePlot <span class="interface">implements</span> <a href="Legendable.html">Legendable</a>
+</li></ul>
+</ul>
+</ul></div><div class="description">
+		<p>
+			Cette classe permet de dessiner des courbes.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="LinePlot.html#constant.LINE">LINE</a> := <span class="default">0</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="LinePlot.html#constant.MIDDLE">MIDDLE</a> := <span class="default">1</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">public</span> <a href="Mark.html"><span class="type">Mark</span></a> <a href="LinePlot.html#property.mark"><span class="argument">$mark</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="LinePlot.html#property.label"><span class="argument">$label</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="LinePlot.html#method.__construct">__construct</a>(<span class="type">array</span> <span class="argument">$values</span>, <span class="type">int</span> <span class="argument">$mode</span> := <span class="default">LinePlor::LINE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="LinePlot.html#method.hideLine">hideLine</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="LinePlot.html#method.setFilledArea">setFilledArea</a>(<span class="type">int</span> <span class="argument">$start</span>, <span class="type">int</span> <span class="argument">$stop</span>, <span class="type">mixed</span> <span class="argument">$background</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="LinePlot.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="LinePlot.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="LinePlot.html#method.setThickness">setThickness</a>(<span class="type">int</span> <span class="argument">$thickness</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="LinePlot.html#method.setFillColor">setFillColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="LinePlot.html#method.setFillGradient">setFillGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.LINE"></a><span class="access">const</span> <span class="type">int</span> <a href="LinePlot.html#constant.LINE">LINE</a> := <span class="default">0</span><div class="description">
+				Dessine une courbe.
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.MIDDLE"></a><span class="access">const</span> <span class="type">int</span> <a href="LinePlot.html#constant.MIDDLE">MIDDLE</a> := <span class="default">1</span><div class="description">
+				 Dessine une courbe dont les pics sont centrés sur l'axe des X (idéal pour cumuler courbe et histogramme).
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.mark"></a><span class="access">public</span> <a href="Mark.html"><span class="type">Mark</span></a> <a href="LinePlot.html#property.mark"><span class="argument">$mark</span></a><div class="description">
+				Représente les marques affichées sur chaque pointe de la courbe.
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.label"></a><span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="LinePlot.html#property.label"><span class="argument">$label</span></a><div class="description">
+				Représente les étiquettes affichées au-dessus de chaque pointe de la courbe.
+				Ces étiquettes contiennent la valeur de chaque pointe.
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="LinePlot.html#method.__construct">__construct</a>(<span class="type">array</span> <span class="argument">$values</span>, <span class="type">int</span> <span class="argument">$mode</span> := <span class="default">LinePlor::LINE</span>)
+	<div class="description">
+				Créé une nouvelle courbe de type $mode avec les valeurs présentes dans $values.
+				Le tableau $values doit être une liste de valeurs dans un tableau incrémental, c'est-à-dire dont les clés valent de 0 à n - 1 (où n est la taille du tableau).
+<pre>
+
+&lt;?php
+
+require_once "LinePlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+// Tableau de valeurs
+$x = array(1, 4, 3);
+
+$plot = new <a href="LinePlot.html">LinePlot</a>($x);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideLine"></a><span class="access">public</span> <a href="LinePlot.html#method.hideLine">hideLine</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	<div class="description">
+				Cache ou ne cache pas la ligne qui relie les valeurs de la courbe.
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setFilledArea"></a><span class="access">public</span> <a href="LinePlot.html#method.setFilledArea">setFilledArea</a>(<span class="type">int</span> <span class="argument">$start</span>, <span class="type">int</span> <span class="argument">$stop</span>, <span class="type">mixed</span> <span class="argument">$background</span>)
+	<div class="description">
+				Permet de remplir une aire sous la courbe des points $start à $stop.
+				L'aire sera remplie avec la couleur ou le dégradé $background.
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="LinePlot.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de la ligne qui relie les valeurs de la courbe.
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setStyle"></a><span class="access">public</span> <a href="LinePlot.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	<div class="description">
+				Change le style de ligne (<a href="Line.html#constant.SOLID">Line::SOLID</a>, <a href="Line.html#constant.DOTTED">Line::DOTTED</a> ou <a href="Line.html#constant.DASHED">Line::DASHED</a>).
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setThickness"></a><span class="access">public</span> <a href="LinePlot.html#method.setThickness">setThickness</a>(<span class="type">int</span> <span class="argument">$thickness</span>)
+	<div class="description">
+				Change l'épaisseur de la ligne.
+				L'épaisseur de la ligne doit être toujours positive.
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setFillColor"></a><span class="access">public</span> <a href="LinePlot.html#method.setFillColor">setFillColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de fond de la ligne qui relie les valeurs de la courbe.
+				La couleur de fond remplit le polygone définit par tous les points de la ligne additionés des points extrêmes de l'axe des abscisses.
+<pre>
+
+&lt;?php
+
+require_once "LinePlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+$x = array(1, 10, 3, -4, 1);
+
+$plot = new <a href="LinePlot.html">LinePlot</a>($x);
+$plot-&gt;<a href="LinePlot.html#method.setFillColor">setFillColor</a>(new <a href="Color.html">Color</a>(255, 20, 20, 30));
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setFillGradient"></a><span class="access">public</span> <a href="LinePlot.html#method.setFillGradient">setFillGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	<div class="description">
+				Change le dégradé de fond de la ligne qui relie les valeurs de la courbe.
+				Le dégradé de fond remplit le polygone définit par tous les points de la ligne additionés des points extrêmes de l'axe des abscisses.
+<pre>
+
+&lt;?php
+
+require_once "LinePlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+$x = array(1, 10, 3, -4, 1);
+
+$plot = new <a href="LinePlot.html">LinePlot</a>($x);
+$plot-&gt;<a href="LinePlot.html#method.setFillGradient">setFillGradient</a>(
+	new <a href="LinearGradient.html">LinearGradient</a>(
+		new <a href="Color.html">Color</a>(255, 20, 20, 30),
+		new <a href="Color.html">Color</a>(20, 255, 20, 30),
+		90
+	)
+);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="LinePlot.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

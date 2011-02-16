@@ -1,0 +1,233 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Pie</h2><div class="extends"><ul>
+<li><a href="Component.html">Component</a></li>
+<ul><li>Pie</li></ul>
+</ul></div><div class="description">
+		<p>
+			La classe <a href="Pie.html">Pie</a> permet de générer des camemberts en deux ou trois dimensions.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Pie.html#constant.DARK">DARK</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Pie.html#constant.COLORED">COLORED</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Pie.html#constant.AQUA">AQUA</a> := <span class="default">3</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Pie.html#constant.EARTH">EARTH</a> := <span class="default">4</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">protected</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Pie.html#property.border"><span class="argument">$border</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Pie.html#property.values"><span class="argument">$values</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Pie.html#property.colors"><span class="argument">$colors</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Pie.html#method.__construct">__construct</a>(<span class="type">array</span> <span class="argument">$values</span>, <span class="type">mixed</span> <span class="argument">$colors</span> := <span class="default">Pie::COLORED</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.setLegend">setLegend</a>(<span class="type">array</span> <span class="argument">$legend</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.setBorder">setBorder</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.setBorderColor">setBorderColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.set3D">set3D</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.setStartAngle">setStartAngle</a>(<span class="type">int</span> <span class="argument">$angle</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.setLabelPrecision">setLabelPrecision</a>(<span class="type">int</span> <span class="argument">$precision</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.setLabelPosition">setLabelPosition</a>(<span class="type">int</span> <span class="argument">$position</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.setLabelNumber">setLabelNumber</a>(<span class="type">int</span> <span class="argument">$number</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.setLabelMinimum">setLabelMinimum</a>(<span class="type">int</span> <span class="argument">$minimum</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Pie.html#method.explode">explode</a>(<span class="type">array</span> <span class="argument">$explode</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.DARK"></a><span class="access">const</span> <span class="type">int</span> <a href="Pie.html#constant.DARK">DARK</a> := <span class="default">1</span><div class="description">
+				Un thème sombre pour les camemberts.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.COLORED"></a><span class="access">const</span> <span class="type">int</span> <a href="Pie.html#constant.COLORED">COLORED</a> := <span class="default">2</span><div class="description">
+				Un thème coloré pour les camemberts (thème par défaut).
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.AQUA"></a><span class="access">const</span> <span class="type">int</span> <a href="Pie.html#constant.AQUA">AQUA</a> := <span class="default">3</span><div class="description">
+				Un thème plutôt bleu pour les camemberts.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.EARTH"></a><span class="access">const</span> <span class="type">int</span> <a href="Pie.html#constant.EARTH">EARTH</a> := <span class="default">4</span><div class="description">
+				Un thème aux couleurs de la Terre pour les camemberts.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.border"></a><span class="access">protected</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Pie.html#property.border"><span class="argument">$border</span></a><div class="description">
+				La bordure qui entoure chaque part du camembert.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.values"></a><span class="access">public</span> <span class="type">array</span> <a href="Pie.html#property.values"><span class="argument">$values</span></a><div class="description">
+				Les valeurs du camembert.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.colors"></a><span class="access">public</span> <span class="type">array</span> <a href="Pie.html#property.colors"><span class="argument">$colors</span></a><div class="description">
+				Les couleurs des parts du camembert.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Pie.html#method.__construct">__construct</a>(<span class="type">array</span> <span class="argument">$values</span>, <span class="type">mixed</span> <span class="argument">$colors</span> := <span class="default">Pie::COLORED</span>)
+	<div class="description">
+				Construit un nouveau camembert avec comme valeurs $values.
+				Le paramètre $colors peut soit être un tableau de couleurs, soit un thème prédéfini (<a href="Pie.html#constant.DARK">Pie::DARK</a>, <a href="Pie.html#constant.COLORED">Pie::COLORED</a>, <a href="Pie.html#constant.AQUA">Pie::AQUA</a> ou <a href="Pie.html#constant.EARTH">Pie::EARTH</a>).
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLegend"></a><span class="access">public</span> <a href="Pie.html#method.setLegend">setLegend</a>(<span class="type">array</span> <span class="argument">$legend</span>)
+	<div class="description">
+				Change les valeurs de la légende associée au camembert.
+				$legend est un tableau qui contient autant d'entrées que de valeurs présentes sur le camembert.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBorder"></a><span class="access">public</span> <a href="Pie.html#method.setBorder">setBorder</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<ul class="version"><li>
+						Déprécié depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Change la couleur de la bordure entourant le camembert et séparant chaque part.
+				Cette méthode a été remplacée par Pie::setBorderColor() depuis Artichow 1.0.9.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Pie.html#method.setBorderColor">Pie::setBorderColor()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBorderColor"></a><span class="access">public</span> <a href="Pie.html#method.setBorderColor">setBorderColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Change la couleur de la bordure entourant le camembert et séparant chaque part.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.set3D"></a><span class="access">public</span> <a href="Pie.html#method.set3D">set3D</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	<div class="description">
+				Associe au camembert à un effet 3D de taille $size (à spécifier en pixels).
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setStartAngle"></a><span class="access">public</span> <a href="Pie.html#method.setStartAngle">setStartAngle</a>(<span class="type">int</span> <span class="argument">$angle</span>)
+	<div class="description">
+				Angle initial en degrés pour commencer le dessin du camembert.
+				La valeur par défaut est de 0°.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLabelPrecision"></a><span class="access">public</span> <a href="Pie.html#method.setLabelPrecision">setLabelPrecision</a>(<span class="type">int</span> <span class="argument">$precision</span>)
+	<div class="description">
+				Change la précision des étiquettes associées à chaque part du camembert.
+				Par défaut à 0, cette précision donne le nombre de chiffres après la virgule à afficher.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLabelPosition"></a><span class="access">public</span> <a href="Pie.html#method.setLabelPosition">setLabelPosition</a>(<span class="type">int</span> <span class="argument">$position</span>)
+	<div class="description">
+				Change la distance des étiquettes par rapport au camembert.
+				La valeur est à donner en pixels et vaut par défaut 15 pixels.
+				Elle peut également être négative.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLabelNumber"></a><span class="access">public</span> <a href="Pie.html#method.setLabelNumber">setLabelNumber</a>(<span class="type">int</span> <span class="argument">$number</span>)
+	<div class="description">
+				Permet de choisir le nombre maximale d'étiquettes à afficher autour du camembert.
+				Par défaut, toutes les étiquettes sont affichées.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLabelMinimum"></a><span class="access">public</span> <a href="Pie.html#method.setLabelMinimum">setLabelMinimum</a>(<span class="type">int</span> <span class="argument">$minimum</span>)
+	<div class="description">
+				Permet de choisir une valeur minimum pour l'affichage des étiquettes.
+				Tout part dont le pourcentage sera inférieur à $minimum n'aura aucune étiquette associée.
+				Par défaut, il n'y a aucun minimum.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.explode"></a><span class="access">public</span> <a href="Pie.html#method.explode">explode</a>(<span class="type">array</span> <span class="argument">$explode</span>)
+	<div class="description">
+				Cette méthode permet de séparer une ou plusieurs parts du camembert.
+				Le paramètre $explode est un tableau dont les clés représente les numéros des parts à séparer et les valeurs la distance de séparation.
+			</div>
+<div class="description-bottom"><a href="Pie.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

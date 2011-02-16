@@ -1,0 +1,217 @@
+{% block head %}
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		
+		<title>{{ home_title }} - Reports </title>
+		{% block stylesheet %}
+			<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/report/jqt/jqtouch.css,skins/report/jqt/theme.css,skins/report/mycss.css,skins/report/datepicker/datepicker.css" media="screen" />
+		{% endblock %}
+		{% block icon %}
+			<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+		{% endblock %}
+		{% block javascript %}
+			
+			<script type="text/javascript" charset="utf-8">
+	          
+	            var usrId = '{{ usr_id }}' ;
+			
+				var language = {
+					valider : '{% trans "boutton::valider" %}',
+					choix_collection : '{% trans "veuillez choisir au minimum une collection" %}',
+					annuler : '{% trans "boutton::annuler" %}',
+					fermer : '{% trans "boutton::fermer" %}'
+				};
+	
+				var date = {
+					dmin :  '{{ dashboard_array.dmin_req }}',
+					dmax : '{{ dashboard_array.dmax_req }}'
+				};
+			</script>
+			<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+			<script type="text/javascript" src="/include/minify/g=reportmobile"></script>
+			<script type="text/javascript" src="/include/datepicker-mobile/datepicker.js"></script>
+			<script type="text/javascript" src="/include/jslibs/jquery.gvChart-0.1.js"></script>
+			
+			<script type="text/javascript" charset="utf-8">
+			
+				  var jQT = new $.jQTouch({
+	                addGlossToIcon: false,
+	                statusBar: 'white'
+	            });
+	            
+	            
+			</script>
+			
+			<script type="text/javascript">
+				gvChartInit();
+			</script>
+			
+	    	<script type="text/javascript">	
+	    	$(document).ready(function(){
+	    		$('#mytableday').gvChart({
+	    			chartType: 'LineChart',
+	    			gvSettings: {
+	    				colors:['white', '#FFFFFF'],
+	    				titleTextStyle:{
+	    					color: '#FF8D1C', 
+	    					fontSize: '20'
+						},
+	        			vAxis: {
+	        				title: '{% trans "report::Nombre de connexions" %}',
+	        				textStyle: {
+	       						fontSize: '10',
+	       						color: '#AAAAAA'
+	       					}
+	       				},
+	       				hAxis: {	
+	       					title: '{% trans "report:: jour" %}',
+	       					textStyle: {
+	       						fontSize: '10',
+	       						color: '#AAAAAA'
+	       					},
+	       					tooltipTextStyle: {
+	       						fontSize: 4
+	       					},
+	       					slantedTex: true,
+	       					slantedTextAngle: 60,
+	       					maxAlternation: 3,
+	       					showTextEvery: 3
+	       				},
+	  
+	       				legend: 'none',
+	       				lineWidth: 1,
+	       				pointSize: 3,
+	       				backgroundColor: '#555555',
+	        			width: 320,
+	        			height: 480,
+	       			}
+	    		});
+	    		
+				$('#mytablehour').gvChart({
+					chartType: 'LineChart',
+	    			gvSettings: {
+	        			colors:['white', '#FFFFFF'],
+	    				titleTextStyle:{
+	    					color: '#FF8D1C', 
+	    					fontSize: '20'
+						},
+	        			vAxis: {
+	        				title: '{% trans "report::Nombre de connexions" %}',
+	        				textStyle: {
+	       						fontSize: '10',
+	       						color: '#AAAAAA'
+	       					}
+	       				},
+	       				hAxis: {	
+	       					title: '{% trans "report:: jour" %}',
+	       					textStyle: {
+	       						fontSize: '10',
+	       						color: '#AAAAAA'
+	       					},
+	       					tooltipTextStyle: {
+	       						fontSize: 4
+	       					},
+	       					slantedTex: true,
+	       					slantedTextAngle: 90,
+	       					maxAlternation: 1,
+	       					showTextEvery: 1
+	       				},
+	  
+	       				legend: 'none',
+	       				lineWidth: 1,
+	       				pointSize: 3,
+	       				backgroundColor: '#555555',
+	        			width: 320,
+	        			height: 480,
+	       			}
+	    		});
+	    		
+	    		$('#mytableadded').gvChart({
+					chartType: 'ColumnChart',
+	    			gvSettings: {
+	    				colors:['white', '#FFFFFF'],
+	    				titleTextStyle:{
+	    					color: '#FF8D1C', 
+	    					fontSize: '20'
+						},
+	        			vAxis: {
+	        				title: '{% trans "report::Nombre de document ajoute" %}',
+	        				textStyle: {
+	       						fontSize: '10',
+	       						color: '#AAAAAA'
+	       					}
+	       				},
+	       				hAxis: {	
+	       					title: '{% trans "report:: jour" %}',
+	       					textStyle: {
+	       						fontSize: '10',
+	       						color: '#AAAAAA'
+	       					},
+	       					tooltipTextStyle: {
+	       						fontSize: 4
+	       					},
+	       					slantedTex: true,
+	       					slantedTextAngle: 60,
+	       				},
+	  
+	       				legend: 'none',
+	       				lineWidth: 1,
+	       				pointSize: 3,
+	       				backgroundColor: '#555555',
+	        			width: 320,
+	        			height: 480,
+	       			}
+	    		});
+	    		
+	    		$('#mytableedited').gvChart({
+					chartType: 'ColumnChart',
+	    			gvSettings: {
+	    				colors:['white', '#FFFFFF'],
+	    				titleTextStyle:{
+	    					color: '#FF8D1C', 
+	    					fontSize: '20'
+						},
+	        			vAxis: {
+	        				title: '{% trans "report::Nombre de document edite" %}',
+	        				textStyle: {
+	       						fontSize: '10',
+	       						color: '#AAAAAA'
+	       					}
+	       				},
+	       				hAxis: {	
+	       					title: '{% trans "report:: jour" %}',
+	       					textStyle: {
+	       						fontSize: '10',
+	       						color: '#AAAAAA'
+	       					},
+	       					tooltipTextStyle: {
+	       						fontSize: 4
+	       					},
+	       					slantedTex: true,
+	       					slantedTextAngle: 60,
+	       				},
+	  
+	       				legend: 'none',
+	       				lineWidth: 1,
+	       				pointSize: 3,
+	       				backgroundColor: '#555555',
+	        			width: 320,
+	        			height: 480,
+	       			}
+	    		});
+	    	});
+			</script>
+			{% for key, value in dashboard_array.all_sbas_desc %}
+			<script>
+				$(document).ready(function(){
+			    	$(".base_{{key}}").data("info", { 	
+						   								id : "{{key}}", 
+				    									coll : "{{value.server_coll_list}}", 
+				    									dmin : "{{ dashboard_array.dmin_req }}",
+				    									dmax : "{{dashboard_array.dmax_req }}"
+			    									}
+			    							);
+				});
+			</script>
+	{% endfor %}
+		{% endblock %}
+{% endblock %}

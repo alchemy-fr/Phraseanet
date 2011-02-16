@@ -1,0 +1,57 @@
+{% block draw_activity_day %}
+{% if ajax_chart %}
+	{% if rs|length > 0 %}
+		<div class="aroundTable">
+			<table class="center imgdash" id="mytableday">
+				<caption>{% trans "report:: activite par jour" %}</caption>
+				<thead>
+					<tr>
+						<th></th>
+						{% for key, value in legendDay %}
+							<th>{{ value }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>{% trans "report:: Connexion" %} {{  sbas_id|sbas_names }}</th>
+						{% for key, value in rs %}
+							<td>{{ value }}</td>
+						{% endfor %}
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	{% endif %}
+{% else %}
+	{% if dashboard_array.dashboard.activity_day|length > 0 %}
+		<div class="aroundTable">
+			<table class="center imgdash" id="mytableday">
+				<caption>{% trans "report:: activite par jour" %}</caption>
+				<thead>
+					<tr>
+						<th></th>
+						{% for key, value in dashboard_array.legendDay %}
+							<th>{{ value }}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				<tbody>
+				{% for key, value in dashboard_array.dashboard.activity_day %}
+					{% if loop.index == 1 %}
+						<tr>
+							<th>{% trans "report:: Connexion" %} {{ key|sbas_names}}</th>
+							{% if value|length > 0 %}
+								{% for k, v in value %}
+									<td>{{ v }}</td>
+								{% endfor %}
+							{% endif %}
+						</tr>
+					{% endif %}
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endif %}
+{% endif %}
+{% endblock %}

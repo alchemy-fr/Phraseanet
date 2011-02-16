@@ -1,0 +1,50 @@
+[ExifTool, ExifTool, ExifTool] ExifToolVersion - ExifTool Version Number: 8.32
+[File, System, Image] FileName - File Name: RIFF.avi
+[File, System, Image] Directory - Directory: t/images
+[File, System, Image] FileSize - File Size: 1262 bytes
+[File, System, Time] FileModifyDate - File Modification Date/Time: 2008:09:12 11:29:23-04:00
+[File, System, Image] FilePermissions - File Permissions: rw-r--r--
+[File, File, Image] FileType - File Type: AVI
+[File, File, Image] MIMEType - MIME Type: video/x-msvideo
+[RIFF, RIFF, Video] 0 - Frame Rate: 15
+[RIFF, RIFF, Video] 1 - Max Data Rate: 201.2 kB/s
+[RIFF, RIFF, Video] 4 - Frame Count: 233
+[RIFF, RIFF, Video] 6 - Stream Count: 2
+[RIFF, RIFF, Video] 8 - Image Width: 320
+[RIFF, RIFF, Video] 9 - Image Height: 240
+[RIFF, RIFF, Video] 0 - Stream Type: Video
+[RIFF, RIFF, Video] 1 - Video Codec: mjpg
+[RIFF, RIFF, Video] 5 - Video Frame Rate: 15
+[RIFF, RIFF, Video] 8 - Video Frame Count: 233
+[RIFF, RIFF, Video] 10 - Quality: 10000
+[RIFF, RIFF, Video] 11 - Sample Size: Variable
+[RIFF, RIFF, Video] 0 - Stream Type: Audio
+[RIFF, RIFF, Video] 1 - Audio Codec: 
+[RIFF, RIFF, Video] 5 - Audio Sample Rate: 11024
+[RIFF, RIFF, Video] 8 - Audio Sample Count: 171240
+[RIFF, RIFF, Video] 10 - Quality: 10000
+[RIFF, RIFF, Video] 11 - Sample Size: 1 byte
+[RIFF, RIFF, Audio] 0 - Encoding: Microsoft PCM
+[RIFF, RIFF, Audio] 1 - Num Channels: 1
+[RIFF, RIFF, Audio] 2 - Sample Rate: 11024
+[RIFF, RIFF, Audio] 4 - Avg Bytes Per Sec: 11024
+[RIFF, RIFF, Audio] 7 - Bits Per Sample: 8
+[RIFF, RIFF, Time] IDIT - Date/Time Original: 2003:03:10 15:04:43
+[RIFF, RIFF, Audio] ISFT - Software: CanonMVI01
+[BMP, BMP, Image] 4 - Image Width: 320
+[BMP, BMP, Image] 8 - Image Height: 240
+[BMP, BMP, Image] 12 - Planes: 1
+[BMP, BMP, Image] 14 - Bit Depth: 24
+[BMP, BMP, Image] 16 - Compression: MJPG
+[BMP, BMP, Image] 20 - Image Length: 230400
+[BMP, BMP, Image] 24 - Pixels Per Meter X: 0
+[BMP, BMP, Image] 28 - Pixels Per Meter Y: 0
+[BMP, BMP, Image] 32 - Num Colors: Use BitDepth
+[BMP, BMP, Image] 36 - Num Important Colors: All
+[XMP, XMP-x, Document] xmptk - XMP Toolkit: Adobe XMP Core 4.1-c036 46.277092, Fri Feb 23 2007 14:16:18        
+[XMP, XMP-xmpDM, Image] altTapeName - Alt Tape Name: An Alternate Scene Name
+[XMP, XMP-xmpDM, Image] album - Album: No Album
+[XMP, XMP-xmp, Time] MetadataDate - Metadata Date: 2008:09:12 11:17:39-04:00
+[XMP, XMP-dc, Author] creator - Creator: Phil Harvey
+[Composite, Composite, Other] Duration - Duration: 15.53 s
+[Composite, Composite, Image] ImageSize - Image Size: 320x240

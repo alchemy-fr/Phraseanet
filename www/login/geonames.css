@@ -1,0 +1,17 @@
+
+.geoname_city_finder div.box{
+	cursor:pointer;
+	text-align:left;
+	padding:3px	;
+}
+.geoname_city_finder div.boxI{
+	background-color:#666666;
+	border:1px solid #666666;
+}
+.geoname_city_finder div.boxP{
+	background-color:#444444;
+	border:1px solid #444444;
+}
+.geoname_city_finder div.box.selected{
+	border:1px solid red;	
+}

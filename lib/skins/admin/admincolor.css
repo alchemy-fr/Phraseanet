@@ -1,0 +1,56 @@
+body{
+	background-color:white;
+	color:#000000;
+	overflow-y:auto;	
+}
+a{
+	color:#000000;
+	text-decoration:none;
+	cursor:pointer;
+}
+a:hover{
+	color:#000000;
+	text-decoration:underline;
+	cursor:pointer;
+}
+
+div.finder div.content div.title
+{
+	left:0;
+	margin-top:-2px;
+	overflow:hidden;
+	position:relative;
+	top:0;
+	white-space:nowrap;
+}
+
+#mainMenu{
+	background-color:#777400;
+}
+
+#mainMenu a, #mainMenu b{
+	color:#FFFFFF;
+}
+
+.treeview ul{
+	background-color:transparent;
+}
+
+img{
+	vertical-align:middle
+	}
+/**
+
+FFFA00		9E9C3C		777400		FFFC65		FFFEB5
+
+**/
+
+#FNDR{
+	background-color:#FFFC65;
+	position:absolute;
+	top:10px;
+	left:10px;
+	right:10px;
+	bottom:10px;
+	overflow:auto;
+}

@@ -1,0 +1,168 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Color</h2><div class="description">
+		<p>
+			La classe <a href="Color.html">Color</a> permet de gérer les couleurs de manière uniforme sur Artichow.
+		</p>
+		<p>
+			Afin de simplifier l'utilisation de cette classe, plusieurs couleurs sont déjà prédéfinies sur Artichow.
+			Chacune de ces couleurs est une classe qui dérive de <a href="Color.html">Color</a> et dont le constructeur ne prend qu'un paramètre, le degré de transparence. Voici les couleurs prédéfinies triées par ton :
+		</p>
+		<ul>
+			<li>
+<em>Gris :</em>  Black, AlmostBlack, VeryDarkGray, DarkGray, MidGray, LightGray, VeryLightGray, White</li>
+			<li>
+<em>Rouge :</em>  VeryDarkRed, DarkRed, MidRed, Red, LightRed</li>
+			<li>
+<em>Vert :</em>  VeryDarkGreen, DarkGreen, MidGreen, Green, LightGreen</li>
+			<li>
+<em>Bleu :</em>  VeryDarkBlue, DarkBlue, MidBlue, Blue, LightBlue</li>
+			<li>
+<em>Jaune :</em>  VeryDarkYellow, DarkYellow, MidYellow, Yellow, LightYellow</li>
+			<li>
+<em>Cyan :</em>  VeryDarkCyan, DarkCyan, MidCyan, Cyan, LightCyan</li>
+			<li>
+<em>Magenta :</em>  VeryDarkMagenta, DarkMagenta, MidMagenta, Magenta, LightMagenta</li>
+			<li>
+<em>Orange :</em>  DarkOrange, Orange, LightOrange, VeryLightOrange</li>
+			<li>
+<em>Rose :</em>  DarkPink, Pink, LightPink, VeryLightPink</li>
+			<li>
+<em>Violet :</em>  DarkPurple, Purple, LightPurple, VeryLightPurple</li>
+		</ul>
+		<p>
+			Voici un exemple d'utilisation pour les couleurs prédéfinies :
+<pre>
+
+&lt;?php
+
+// On créé un bleu foncé
+$blue = new DarkBlue; // Equivalent à new <a href="Color.html">Color</a>(0, 0, 128);
+
+// On créé de l'orange transparent à 50 %
+$orange = new Orange(50); // Equivalent à new <a href="Color.html">Color</a>(255, 128, 0, 50);
+
+?&gt;
+
+</pre>
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Color.html#property.red"><span class="argument">$red</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Color.html#property.green"><span class="argument">$green</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Color.html#property.blue"><span class="argument">$blue</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Color.html#property.alpha"><span class="argument">$alpha</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Color.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$red</span>, <span class="type">int</span> <span class="argument">$green</span>, <span class="type">int</span> <span class="argument">$blue</span>, <span class="type">int</span> <span class="argument">$alpha</span> := <span class="default">0</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Color.html#method.brightness">brightness</a>(<span class="type">int</span> <span class="argument">$brightness</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Color.html#method.getColor">getColor</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Color.html#method.rgba">rgba</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Color.html#method.free">free</a>()
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.red"></a><span class="access">public</span> <span class="type">int</span> <a href="Color.html#property.red"><span class="argument">$red</span></a><div class="description">
+				Intensité en rouge de la couleur (entre 0 et 255)
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.green"></a><span class="access">public</span> <span class="type">int</span> <a href="Color.html#property.green"><span class="argument">$green</span></a><div class="description">
+				Intensité en vert de la couleur (entre 0 et 255)
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.blue"></a><span class="access">public</span> <span class="type">int</span> <a href="Color.html#property.blue"><span class="argument">$blue</span></a><div class="description">
+				Intensité en blue de la couleur (entre 0 et 255)
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.alpha"></a><span class="access">public</span> <span class="type">int</span> <a href="Color.html#property.alpha"><span class="argument">$alpha</span></a><div class="description">
+				Degré de transparence de la couleur (entre 0 et 100)
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Color.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$red</span>, <span class="type">int</span> <span class="argument">$green</span>, <span class="type">int</span> <span class="argument">$blue</span>, <span class="type">int</span> <span class="argument">$alpha</span> := <span class="default">0</span>)
+	<div class="description">
+				Construit une nouvelle couleur. Les trois premiers paramètres représentent l'intensité en rouge, vert et bleu pour cette couleur. L'intensité de chaque couleur est un nombre compris entre 0 et 255 (du foncé vers le clair). Le paramètre $alpha représente le dégré de transparence de la couleur, et doit être compris entre 0 et 100.
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.brightness"></a><span class="access">public</span> <a href="Color.html#method.brightness">brightness</a>(<span class="type">int</span> <span class="argument">$brightness</span>)
+	<div class="description">
+				Change la luminosité de la couleur, en ajoutant la valeur $brightness à chaque composante (rouge, vert, bleu) de cette couleur.
+				$brightness peut prendre des valeurs comprises entre -255 et +255.
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getColor"></a><span class="access">public</span> <span class="type">array</span> <a href="Color.html#method.getColor">getColor</a>()
+	<div class="description">
+				Retourne un tableau de quatre valeurs qui représentent l'intensité en rouge, vert et bleu ainsi que le degré de transparence de la couleur.
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.rgba"></a><span class="access">public</span> <span class="type">array</span> <a href="Color.html#method.rgba">rgba</a>()
+	<div class="description">
+				Retourne un tableau de quatre valeurs qui représentent l'intensité en rouge, vert et bleu ainsi que le degré de transparence de la couleur.
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.free"></a><span class="access">public</span> <a href="Color.html#method.free">free</a>()
+	<ul class="version"><li>
+						Supprimé à partir d'Artichow 1.1.0</li></ul>
+<div class="description">
+				Libère les ressources allouées lors de l'appel à <a href="Color.html#method.getColor">getColor()</a>.
+			</div>
+<div class="description-bottom"><a href="Color.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

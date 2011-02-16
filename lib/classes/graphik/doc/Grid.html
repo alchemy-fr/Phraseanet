@@ -1,0 +1,157 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Grid</h2><div class="description">
+		<p>
+			La classe <a href="Grid.html">Grid</a> permet de manipuler des grilles de fond sur les <a href="Plot.html">Plot</a> ou <a href="PlotGroup.html">groupes de Plot</a>.
+			Une grille facilite la lecture des données pour l'utilisateur.
+			Un exemple de grille est montré ci-dessous.
+		</p>
+		<div class="image">
+			<img src="image/grid.png">
+		</div>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Grid.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.hideHorizontal">hideHorizontal</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.hideVertical">hideVertical</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.setType">setType</a>(<span class="type">int</span> <span class="argument">$type</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.setInterval">setInterval</a>(<span class="type">int</span> <span class="argument">$hInterval</span>, <span class="type">int</span> <span class="argument">$vInterval</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.setSpace">setSpace</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>, <span class="type">int</span> <span class="argument">$top</span>, <span class="type">int</span> <span class="argument">$bottom</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.setGrid">setGrid</a>(<span class="type">array</span> <span class="argument">$xgrid</span>, <span class="type">array</span> <span class="argument">$ygrid</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Grid.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <span class="type">int</span> <span class="argument">$x1</span>, <span class="type">int</span> <span class="argument">$y1</span>, <span class="type">int</span> <span class="argument">$x2</span>, <span class="type">int</span> <span class="argument">$y2</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Grid.html#method.__construct">__construct</a>()
+	<div class="description">
+				Construit et initialise une grille.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Grid.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Cache ou affiche la grille sur le composant.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideHorizontal"></a><span class="access">public</span> <a href="Grid.html#method.hideHorizontal">hideHorizontal</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Cache ou affiche les lignes horizontales de la grille sur le composant.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideVertical"></a><span class="access">public</span> <a href="Grid.html#method.hideVertical">hideVertical</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Cache ou affiche les lignes verticales de la grille sur le composant.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="Grid.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de la grille pour la couleur $color.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundColor"></a><span class="access">public</span> <a href="Grid.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de fond de la grille pour la couleur $color.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setType"></a><span class="access">public</span> <a href="Grid.html#method.setType">setType</a>(<span class="type">int</span> <span class="argument">$type</span>)
+	<div class="description">
+				Change le type de ligne à utiliser sur la grille. $type peut être <a href="Line.html#constant.SOLID">Line::SOLID</a> pour une ligne continue, <a href="Line.html#constant.DOTTED">Line::DOTTED</a> pour une ligne pointillée ou encore <a href="Line.html#constant.DASHED">Line::DASHED</a>.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setInterval"></a><span class="access">public</span> <a href="Grid.html#method.setInterval">setInterval</a>(<span class="type">int</span> <span class="argument">$hInterval</span>, <span class="type">int</span> <span class="argument">$vInterval</span>)
+	<div class="description">
+				Change l'interval d'affichage des lignes horizontales de la grille avec $hInterval et verticales avec $vInterval.
+				Par défaut, cet interval est à 1 et toutes les lignes sont affichées.
+				Si vous choisissez un interval de 2 par exemple, une ligne sur deux sera affichée sur la grille.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSpace"></a><span class="access">public</span> <a href="Grid.html#method.setSpace">setSpace</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>, <span class="type">int</span> <span class="argument">$top</span>, <span class="type">int</span> <span class="argument">$bottom</span>)
+	<div class="description">
+				Change l'espace interne de la grille.
+				Les valeurs $left, $right, $top et $bottom représentent respectivement les nouvelles valeurs pour l'espace gauche, droit, haut et bas de la grille.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setGrid"></a><span class="access">public</span> <a href="Grid.html#method.setGrid">setGrid</a>(<span class="type">array</span> <span class="argument">$xgrid</span>, <span class="type">array</span> <span class="argument">$ygrid</span>)
+	<div class="description">
+				Précise la position sur la grille des lignes horizontales avec $ygrid et verticales avec $xgrid.
+				Ces deux paramètres sont des tableaux qui contiennent des entiers entre 0 et 1. Chaque valeur représente la position d'une ligne comme une fraction de la taille de la grille.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.draw"></a><span class="access">public</span> <a href="Grid.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <span class="type">int</span> <span class="argument">$x1</span>, <span class="type">int</span> <span class="argument">$y1</span>, <span class="type">int</span> <span class="argument">$x2</span>, <span class="type">int</span> <span class="argument">$y2</span>)
+	<div class="description">
+				Dessine la grille avec le pilote $driver.
+				La grille sera dessinée dans un rectangle dont la diagonale est le segment qui relie les points ($x1, $y1) et ($x2, $y2).
+				Les lignes dessinées auront été préalablement précisées avec <a href="Grid.html#method.setGrid">setGrid()</a>.
+			</div>
+<div class="description-bottom"><a href="Grid.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

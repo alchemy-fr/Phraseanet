@@ -1,0 +1,19 @@
+[ExifTool, ExifTool, ExifTool] ExifToolVersion - ExifTool Version Number: 8.02
+[File, System, Image] FileName - File Name: BMP.bmp
+[File, System, Image] Directory - Directory: t/images
+[File, System, Image] FileSize - File Size: 1142 bytes
+[File, System, Time] FileModifyDate - File Modification Date/Time: 2005:11:14 14:47:21-05:00
+[File, System, Image] FilePermissions - File Permissions: rw-r--r--
+[File, File, Image] FileType - File Type: BMP
+[File, File, Image] MIMEType - MIME Type: image/bmp
+[BMP, BMP, Image] 4 - Image Width: 8
+[BMP, BMP, Image] 8 - Image Height: 8
+[BMP, BMP, Image] 12 - Planes: 1
+[BMP, BMP, Image] 14 - Bit Depth: 8
+[BMP, BMP, Image] 16 - Compression: None
+[BMP, BMP, Image] 20 - Image Length: 64
+[BMP, BMP, Image] 24 - Pixels Per Meter X: 2835
+[BMP, BMP, Image] 28 - Pixels Per Meter Y: 2835
+[BMP, BMP, Image] 32 - Num Colors: 256
+[BMP, BMP, Image] 36 - Num Important Colors: 256
+[Composite, Composite, Image] ImageSize - Image Size: 8x8

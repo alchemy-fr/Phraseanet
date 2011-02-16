@@ -1,0 +1,214 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Graph</h2><div class="extends"><ul>
+<li><a href="Image.html">Image</a></li>
+<ul><li>Graph</li></ul>
+</ul></div><div class="description">
+		<p>
+			La classe <a href="Graph.html">Graph</a> permet de générer des graphiques, de les mettre éventuellement en cache et d'afficher le temps de génération de l'image. Il est possible de dessiner plusieurs <a href="Component.html">composants</a> sur une <a href="Image.html">image</a> de type <a href="Graph.html">Graph</a>.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Graph.html#constant.DRAW_RETURN">DRAW_RETURN</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Graph.html#constant.DRAW_DISPLAY">DRAW_DISPLAY</a> := <span class="default">2</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">protected</span> <span class="type">string</span> <a href="Graph.html#property.name"><span class="argument">$name</span></a> := <span class="default">NULL</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Graph.html#property.timeout"><span class="argument">$timeout</span></a> := <span class="default">0</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Graph.html#property.timing"><span class="argument">$timing</span></a> := <span class="default">FALSE</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">array</span> <a href="Graph.html#property.labels"><span class="argument">$labels</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="Graph.html#property.title"><span class="argument">$title</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Graph.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$width</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$height</span> := <span class="default">NULL</span>, <span class="type">string</span> <span class="argument">$name</span> := <span class="default">NULL</span>, <span class="type">string</span> <span class="argument">$timeout</span> := <span class="default">0</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">bool</span> <a href="Graph.html#method.deleteFromCache">deleteFromCache</a>(<span class="type">string</span> <span class="argument">$name</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Graph.html#method.deleteAllCache">deleteAllCache</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Graph.html#method.setTiming">setTiming</a>(<span class="type">bool</span> <span class="argument">$timing</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Graph.html#method.add">add</a>(<a href="Component.html"><span class="type">Component</span></a> <span class="argument">$component</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Graph.html#method.addLabel">addLabel</a>(<a href="Label.html"><span class="type">Label</span></a> <span class="argument">$label</span>, <span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Graph.html#method.addAbsLabel">addAbsLabel</a>(<a href="Label.html"><span class="type">Label</span></a> <span class="argument">$label</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">mixed</span> <a href="Graph.html#method.draw">draw</a>(<span class="type">string</span> <span class="argument">
+							$mode</span> := <span class="default">Graph::DRAW_DISPLAY</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.DRAW_RETURN"></a><span class="access">const</span> <span class="type">int</span> <a href="Graph.html#constant.DRAW_RETURN">DRAW_RETURN</a> := <span class="default">1</span><div class="description">
+				Pour retourner le graphique après du dessin.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Graph.html#method.draw">Graph::draw()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.DRAW_DISPLAY"></a><span class="access">const</span> <span class="type">int</span> <a href="Graph.html#constant.DRAW_DISPLAY">DRAW_DISPLAY</a> := <span class="default">2</span><div class="description">
+				Pour afficher le graphique après du dessin.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Graph.html#method.draw">Graph::draw()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.name"></a><span class="access">protected</span> <span class="type">string</span> <a href="Graph.html#property.name"><span class="argument">$name</span></a> := <span class="default">NULL</span><div class="description">
+				Nom du graphique.
+				Peut être laissé à NULL pour ne donner aucun nom au graphique.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.timeout"></a><span class="access">protected</span> <span class="type">int</span> <a href="Graph.html#property.timeout"><span class="argument">$timeout</span></a> := <span class="default">0</span><div class="description">
+				Peut prendre comme valeur 0 pour ne pas utiliser la mise en cache, ou spécifier un timestamp comme date d'expiration de l'image dans le cache.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.timing"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Graph.html#property.timing"><span class="argument">$timing</span></a> := <span class="default">FALSE</span><div class="description">
+				Activer l'affichage du temps de génération de l'image ?
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.labels"></a><span class="access">protected</span> <span class="type">array</span> <a href="Graph.html#property.labels"><span class="argument">$labels</span></a><div class="description">
+				Une liste de <a href="Label.html">Label</a> qui seront affichés sur le graphique.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.title"></a><span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="Graph.html#property.title"><span class="argument">$title</span></a><div class="description">
+				Permet de donner un titre au graphique.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Graph.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$width</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$height</span> := <span class="default">NULL</span>, <span class="type">string</span> <span class="argument">$name</span> := <span class="default">NULL</span>, <span class="type">string</span> <span class="argument">$timeout</span> := <span class="default">0</span>)
+	<div class="description">
+				Construit une image de largeur $width et de hauteur $height au nom $name (ce nom peut être laissé à NULL) et qui expirera dans le cache au timestamp $timeout. Si vous ne souhaitez pas utiliser le cache, vous pouvez laisser ce timestamp à 0.
+				$name ne représente pas le titre du graphique, c'est uniquement un moyen d'identification pour le cache.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.deleteFromCache"></a><span class="access">public</span> <span class="type">bool</span> <a href="Graph.html#method.deleteFromCache">deleteFromCache</a>(<span class="type">string</span> <span class="argument">$name</span>)
+	<div class="description">
+				Supprime manuellement l'image au nom $name du cache.
+				Cette méthode retourne TRUE si une image a été effectivement supprimée, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.deleteAllCache"></a><span class="access">public</span> <a href="Graph.html#method.deleteAllCache">deleteAllCache</a>()
+	<div class="description">
+				Supprime toutes les images mises en cache par Artichow.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setTiming"></a><span class="access">public</span> <a href="Graph.html#method.setTiming">setTiming</a>(<span class="type">bool</span> <span class="argument">$timing</span>)
+	<div class="description">
+				Active/désactive l'affichage du temps de génération de l'image sur l'image elle-même.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.add"></a><span class="access">public</span> <a href="Graph.html#method.add">add</a>(<a href="Component.html"><span class="type">Component</span></a> <span class="argument">$component</span>)
+	<div class="description">
+				Ajoute un <a href="Component.html">composant</a> à dessiner sur l'image.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.addLabel"></a><span class="access">public</span> <a href="Graph.html#method.addLabel">addLabel</a>(<a href="Label.html"><span class="type">Label</span></a> <span class="argument">$label</span>, <span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	<div class="description">
+				Ajoute une étiquette $label aux positions $x et $y.
+				Les nouvelles positions $x et $y représentent une fraction des largeur et hauteur du graphique.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.addAbsLabel"></a><span class="access">public</span> <a href="Graph.html#method.addAbsLabel">addAbsLabel</a>(<a href="Label.html"><span class="type">Label</span></a> <span class="argument">$label</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	<div class="description">
+				Ajoute une étiquette $label en position absolue sur le graphique aux coordonnées X et Y spécifiées par le point $point.
+				Le point (0, 0) se situe sur le coin haut-gauche du graphique.
+			</div>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.draw"></a><span class="access">public</span> <span class="type">mixed</span> <a href="Graph.html#method.draw">draw</a>(<span class="type">string</span> <span class="argument">
+							$mode</span> := <span class="default">Graph::DRAW_DISPLAY</span>)
+	<div class="description">
+				Créé et affiche l'image à l'utilisateur. Tous les composants précédemment ajoutés avec <a href="Graph.html#method.add">add()</a> sont dessinés sur l'image.
+				Cette méthode appelle successivement <a href="Image.html#method.create">create()</a>, <a href="Image.html#method.drawComponent">drawComponent()</a> autant de fois que de composants ont été ajoutés et <a href="Image.html#method.send">send()</a>.
+			</div>
+<ul class="arguments">
+<li class="property">
+<span class="type">string</span> <a href="Graph.html#property.mode"><span class="argument">$mode</span></a> := <span class="default">Graph::DRAW_DISPLAY</span><ul class="version"><li>
+						Disponible depuis Artichow 1.0.8</li></ul>
+</li>
+<li class="property">
+<span class="type">string</span> <a href="Graph.html#property.file"><span class="argument">$file</span></a> := <span class="default">NULL</span><ul class="version"><li>
+						Supprimé à partir d'Artichow 1.0.8</li></ul>
+<div class="description">
+						Si vous souhaitez enregistrer l'image dans un fichier plutôt qu'à l'écran, indiquez un nom de fichier destination pour le paramètre $file.
+						Ce paramètre est optionnel, et si il n'est pas rempli, alors l'image sera affichée à l'écran.
+					</div>
+</li>
+</ul>
+<div class="description-bottom"><a href="Graph.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

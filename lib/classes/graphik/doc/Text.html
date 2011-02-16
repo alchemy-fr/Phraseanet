@@ -1,0 +1,186 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Text</h2><div class="description">
+		<p>
+			La classe <a href="Text.html">Text</a> permet de manipuler du texte de manière uniforme sur Artichow.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties"><li>
+<span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Text.html#property.border"><span class="argument">$border</span></a>
+</li></ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Text.html#method.__construct">__construct</a>(<span class="type">string</span> <span class="argument">$text</span>, <a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span> := <span class="default">new Font(Text::FONT_2)</span>, <a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$angle</span> := <span class="default">0</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">string</span> <a href="Text.html#method.getText">getText</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Text.html#method.setText">setText</a>(<span class="type">string</span> <span class="argument">$text</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Font.html"><span class="type">Font</span></a> <a href="Text.html#method.getFont">getFont</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Text.html#method.setFont">setFont</a>(<a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Text.html#method.getAngle">getAngle</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Text.html#method.setAngle">setAngle</a>(<span class="type">int</span> <span class="argument">$angle</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Text.html#method.getColor">getColor</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Text.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">mixed</span> <a href="Text.html#method.getBackground">getBackground</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Text.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Text.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Text.html#method.getPadding">getPadding</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Text.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>, <span class="type">int</span> <span class="argument">$top</span>, <span class="type">int</span> <span class="argument">$bottom</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.border"></a><span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Text.html#property.border"><span class="argument">$border</span></a><div class="description">
+				La bordure qui entoure le texte.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Text.html#method.__construct">__construct</a>(<span class="type">string</span> <span class="argument">$text</span>, <a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span> := <span class="default">new Font(Text::FONT_2)</span>, <a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$angle</span> := <span class="default">0</span>)
+	<div class="description">
+				Créé un nouveau pavé de texte avec pour texte $text. $font représente la police utilisée pour le texte tandis que $color représente sa couleur.
+				L'angle est définit par le paramètre $angle, qui peut prendre les valeurs de 0 et 90°.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getText"></a><span class="access">public</span> <span class="type">string</span> <a href="Text.html#method.getText">getText</a>()
+	<div class="description">
+				Retourne le texte de la classe.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setText"></a><span class="access">public</span> <a href="Text.html#method.setText">setText</a>(<span class="type">string</span> <span class="argument">$text</span>)
+	<div class="description">
+				Change le texte associé à l'objet pour $text.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getFont"></a><span class="access">public</span> <a href="Font.html"><span class="type">Font</span></a> <a href="Text.html#method.getFont">getFont</a>()
+	<div class="description">
+				Retourne la police utilisée pour le texte.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setFont"></a><span class="access">public</span> <a href="Text.html#method.setFont">setFont</a>(<a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span>)
+	<div class="description">
+				Change la police utilisée pour le texte.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getAngle"></a><span class="access">public</span> <span class="type">int</span> <a href="Text.html#method.getAngle">getAngle</a>()
+	<div class="description">
+				Retourne l'angle du texte.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAngle"></a><span class="access">public</span> <a href="Text.html#method.setAngle">setAngle</a>(<span class="type">int</span> <span class="argument">$angle</span>)
+	<div class="description">
+				Change l'angle du texte. Les valeurs possibles sont 0 ou 90°.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getColor"></a><span class="access">public</span> <span class="type">int</span> <a href="Text.html#method.getColor">getColor</a>()
+	<div class="description">
+				Retourne la couleur du texte.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="Text.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur du texte.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getBackground"></a><span class="access">public</span> <span class="type">mixed</span> <a href="Text.html#method.getBackground">getBackground</a>()
+	<div class="description">
+				Retourne le fond du texte. Si aucun fond n'a été spécifié, cette méthode retourne NULL.
+				Dans le cas contraire, elle retourne un objet de la classe Color pour les couleurs, soit une instance de Gradient pour les dégradés.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundColor"></a><span class="access">public</span> <a href="Text.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de fond du texte.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundGradient"></a><span class="access">public</span> <a href="Text.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	<div class="description">
+				Change le dégradé de fond du texte.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getPadding"></a><span class="access">public</span> <span class="type">array</span> <a href="Text.html#method.getPadding">getPadding</a>()
+	<div class="description">
+				Retourne la valeur de l'espace qui entoure le texte par rapport à sa bordure. Cette méthode retourne un tableau de quatre valeurs, qui correspondent à l'espace de gauche, droite, haut et bas.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setPadding"></a><span class="access">public</span> <a href="Text.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>, <span class="type">int</span> <span class="argument">$top</span>, <span class="type">int</span> <span class="argument">$bottom</span>)
+	<div class="description">
+				Change la valeur de l'espace qui entoure le texte par rapport à sa bordure.
+			</div>
+<div class="description-bottom"><a href="Text.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

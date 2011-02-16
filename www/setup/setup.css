@@ -1,0 +1,110 @@
+@CHARSET "UTF-8";
+
+body{
+	font-family:Helvetica,Verdana,Arial,sans-serif;
+	font-size:11px;
+	color:white;
+	background-color:#000000;
+}
+input,select{
+	border:none;
+	background:white;
+}
+.steps
+{
+	display:none;
+	width:900px;
+	position:relative;
+	margin:0 auto;
+}
+.database_exists, .not_writable, .wrong_database{
+	background-color:orange;
+	color:black;
+	padding:5px;
+	font-wright:bold;
+}
+
+h1{
+	position:relative;
+	float:left;
+	width:100%;
+}
+ul{
+	position:relative;
+	float:left;
+	width:360px;
+	list-style-type:none;
+	padding:0 0 0 40px;
+	margin:5px 0;
+}
+li{
+	margin:5px 0;
+	padding:5px 5px 5px 30px;
+	border:1px solid #404040;
+	background-image:url(/skins/icons/ok.png);
+	background-repeat:no-repeat;
+	background-position:5px center;
+}
+li.non-blocker{
+	background-image:url(/skins/icons/alert.png);
+}
+li.blocker{
+	background-image:url(/skins/icons/delete.png);
+}
+
+
+
+
+
+
+
+
+
+
+
+					.password-meter {
+						position:relative;
+						width: 180px;
+					}
+					.password-meter-message {
+						text-align: right;
+						font-weight: bold;
+						color: #676767;
+					}
+					.password-meter-bg, .password-meter-bar {
+						height: 4px;
+					}
+					.password-meter-bg {
+						top: 8px;
+						background: #e0e0e0;
+					}
+					
+					.password-meter-message-very-weak {
+						color: #aa0033;
+					}
+					.password-meter-message-weak {
+						color: #f5ac00;
+					}
+					.password-meter-message-good {
+						color: #6699cc;
+					}
+					.password-meter-message-strong {
+						color: #008000;
+					}
+					
+					.password-meter-bg .password-meter-very-weak {
+						background: #aa0033;
+						width: 30px;
+					}
+					.password-meter-bg .password-meter-weak {
+						background: #f5ac00;
+						width: 60px;
+					}
+					.password-meter-bg .password-meter-good {
+						background: #6699cc;
+						width: 135px;
+					}
+					.password-meter-bg .password-meter-strong {
+						background: #008000;
+						width: 180px;
+					}

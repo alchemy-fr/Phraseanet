@@ -1,0 +1,107 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class FontDriver</h2><div class="description">
+		<p>
+			La classe abstraite <a href="FontDriver.html">FontDriver</a> définit toutes les méthodes devant être implémentées pour gérer l'affichage et les calculs à effectuer sur les polices. On dérivera cette classe une fois pour chaque classe enfant de <a href="Font.html">Font</a>, en l'occurence <a href="PHPFontDriver.html">PHPFontDriver</a> pour <a href="PHPFont.html">PHPFont</a> et <a href="FileFontDriver.html">FileFontDriver</a> pour <a href="FileFont.html">FileFont</a>.
+		</p>
+		<p>
+			A aucun moment vous ne devriez avoir à instancier un objet de ce type. La documentation est là à titre informatif pour les développeurs en herbe.
+		</p>
+	</div><div class="inherit">
+			Les classes suivantes dérivent de FontDriver :
+				<ul>
+<li><a href="PHPFontDriver.html">PHPFontDriver</a></li>
+<li><a href="FileFontDriver.html">FileFontDriver</a></li>
+</ul>
+</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="methods">
+<li>
+<span class="access">public</span> <a href="FontDriver.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="FontDriver.html#method.string">string</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>, <span class="type">int</span> <span class="argument">$width</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="FontDriver.html#method.getTextWidth">getTextWidth</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="FontDriver.html#method.getTextHeight">getTextHeight</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="FontDriver.html#method.__construct">__construct</a>()
+	<div class="description">
+				Simple constructeur. Ne fait rien pour l'instant.
+			</div>
+<div class="description-bottom"><a href="FontDriver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.string"></a><span class="access">public</span> <a href="FontDriver.html#method.string">string</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>, <span class="type">int</span> <span class="argument">$width</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Dessine le texte $text.
+				Le pilote $driver sera utilisé pour le dessin tandis que le texte sera positionné au point $point.
+				Le paramètre $width permet de spécifier la largeur maximale en pixels de la boîte de texte.
+			</div>
+<div class="description-bottom"><a href="FontDriver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getTextWidth"></a><span class="access">public</span> <a href="FontDriver.html#method.getTextWidth">getTextWidth</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>)
+	<ul class="version"><li>
+						Supprimé à partir d'Artichow 1.1</li></ul>
+<div class="description">
+				Retourne la largeur en pixels occupée par l'objet <a href="Text.html">Text</a> $text.
+			<div class="see">
+					Voir aussi :
+					<ul>
+<li><a href="Driver.html#method.getTextHeight">Driver::getTextHeight()</a></li>
+<li><a href="FontDriver.html#method.getTextHeight">FontDriver::getTextHeight()</a></li>
+<li><a href="FontDriver.html#method.getTextWidth">FontDriver::getTextWidth()</a></li>
+</ul>
+</div>
+</div>
+<div class="description-bottom"><a href="FontDriver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getTextHeight"></a><span class="access">public</span> <a href="FontDriver.html#method.getTextHeight">getTextHeight</a>(<a href="Text.html"><span class="type">Text</span></a> <span class="argument">$text</span>)
+	<ul class="version"><li>
+						Supprimé à partir d'Artichow 1.1</li></ul>
+<div class="description">
+				Retourne la hauteur en pixels occupée par l'objet <a href="Text.html">Text</a> $text.
+			<div class="see">
+					Voir aussi :
+					<ul>
+<li><a href="Driver.html#method.getTextWidth">Driver::getTextWidth()</a></li>
+<li><a href="FontDriver.html#method.getTextHeight">FontDriver::getTextHeight()</a></li>
+<li><a href="FontDriver.html#method.getTextWidth">FontDriver::getTextWidth()</a></li>
+</ul>
+</div>
+</div>
+<div class="description-bottom"><a href="FontDriver.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

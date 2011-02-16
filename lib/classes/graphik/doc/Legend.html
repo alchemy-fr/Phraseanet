@@ -1,0 +1,442 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Legend</h2><div class="description">
+		<p>
+			La classe <a href="Legend.html">Legend</a> permet de manipuler des légendes.
+			Un objet de la classe <a href="Legend.html">Legend</a> est disponible sur tous les <a href="Component.html">composants</a>.
+			N'importe quel objet peut être légendé à condition qu'il implémente l'interface <a href="Legendable.html">Legendable</a>.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.LINE">LINE</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.BACKGROUND">BACKGROUND</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MARK">MARK</a> := <span class="default">3</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MARKONLY">MARKONLY</a> := <span class="default">4</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MODEL_RIGHT">MODEL_RIGHT</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MODEL_BOTTOM">MODEL_BOTTOM</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.LEFT">LEFT</a> := <span class="default">0</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.RIGHT">RIGHT</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.CENTER">CENTER</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.TOP">TOP</a> := <span class="default">3</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.BOTTOM">BOTTOM</a> := <span class="default">4</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MIDDLE">MIDDLE</a> := <span class="default">5</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">public</span> <a href="Shadow.html"><span class="type">Shadow</span></a> <a href="Legend.html#property.shadow"><span class="argument">$shadow</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Legend.html#property.hide"><span class="argument">$hide</span></a>
+</li>
+<li>
+<span class="access">protected</span> <a href="ArrayOject.html"><span class="type">ArrayOject</span></a> <a href="Legend.html#property.legends"><span class="argument">$legends</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Legend.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$model</span> := <span class="default">Legend::MODEL_RIGHT</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setModel">setModel</a>(<span class="type">int</span> <span class="argument">$model</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.add">add</a>(<a href="Legendable.html"><span class="type">Legendable</span></a> <span class="argument">$legendable</span>, <span class="type">string</span> <span class="argument">$title</span>, <span class="type">int</span> <span class="argument">$type</span> := <span class="default">Legend::LINE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>, <span class="type">int</span> <span class="argument">$top</span>, <span class="type">int</span> <span class="argument">$bottom</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setSpace">setSpace</a>(<span class="type">int</span> <span class="argument">$space</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setAlign">setAlign</a>(<span class="type">int</span> <span class="argument">$h</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$v</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setColumns">setColumns</a>(<span class="type">int</span> <span class="argument">$columns</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setRows">setRows</a>(<span class="type">int</span> <span class="argument">$rows</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setPosition">setPosition</a>(<span class="type">float</span> <span class="argument">$x</span> := <span class="default">NULL</span>, <span class="type">float</span> <span class="argument">$y</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Legend.html#method.getPosition">getPosition</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setTextFont">setTextFont</a>(<a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setTextMargin">setTextMargin</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setTextColor">setTextColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setBackground">setBackground</a>(<span class="type">mixed</span> <span class="argument">$background</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setBorderSize">setBorderSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.setBorderColor">setBorderColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Legend.html#method.count">count</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Legend.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.LINE"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.LINE">LINE</a> := <span class="default">1</span><div class="description">
+				Utilise une couleur de ligne pour identifier un objet dans la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.BACKGROUND"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.BACKGROUND">BACKGROUND</a> := <span class="default">2</span><div class="description">
+				Utilise une couleur de fond pour identifier un objet dans la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.MARK"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MARK">MARK</a> := <span class="default">3</span><div class="description">
+				Utilise un objet Mark et une ligne pour identifier un objet dans la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.MARKONLY"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MARKONLY">MARKONLY</a> := <span class="default">4</span><div class="description">
+				Utilise un objet Mark seulement pour identifier un objet dans la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.MODEL_RIGHT"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MODEL_RIGHT">MODEL_RIGHT</a> := <span class="default">1</span><div class="description">
+				Modèle prédéfini qui place la légende à droite.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.MODEL_BOTTOM"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MODEL_BOTTOM">MODEL_BOTTOM</a> := <span class="default">2</span><div class="description">
+				Modèle prédéfini qui place la légende en bas.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.LEFT"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.LEFT">LEFT</a> := <span class="default">0</span><div class="description">
+				Aligne horizontalement la légende à gauche.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.RIGHT"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.RIGHT">RIGHT</a> := <span class="default">1</span><div class="description">
+				Aligne horizontalement la légende à droite.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.CENTER"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.CENTER">CENTER</a> := <span class="default">2</span><div class="description">
+				Centre la légende horizontalement.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.TOP"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.TOP">TOP</a> := <span class="default">3</span><div class="description">
+				Aligne verticalement la légende en haut.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.BOTTOM"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.BOTTOM">BOTTOM</a> := <span class="default">4</span><div class="description">
+				Aligne verticalement la légende en bas.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.MIDDLE"></a><span class="access">const</span> <span class="type">int</span> <a href="Legend.html#constant.MIDDLE">MIDDLE</a> := <span class="default">5</span><div class="description">
+				Aligne verticalement la légende au milieu.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.shadow"></a><span class="access">public</span> <a href="Shadow.html"><span class="type">Shadow</span></a> <a href="Legend.html#property.shadow"><span class="argument">$shadow</span></a><div class="description">
+				Cette propriété permet de manipuler l'ombre associée éventuellement avec la légende.
+				Par défaut, aucune ombre n'est affichée. Si vous souhaitez afficher une ombre, il vous suffit de lui donner une taille :
+<pre>
+
+&lt;?php
+
+require_once "Tools.class.php";
+
+$legend = new <a href="Legend.html">Legend</a>();
+
+// On associe une ombre de 4 pixels à la légende
+$legend-&gt;shadow-&gt;<a href="Legend.html#method.setSize">setSize</a>(4);
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.hide"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Legend.html#property.hide"><span class="argument">$hide</span></a><div class="description">
+				Détermine si la légende doit être cachée ou non.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.legends"></a><span class="access">protected</span> <a href="ArrayOject.html"><span class="type">ArrayOject</span></a> <a href="Legend.html#property.legends"><span class="argument">$legends</span></a><div class="description">
+				Les objets <a href="Legendable.html">Legendable</a> à afficher sur la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Legend.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$model</span> := <span class="default">Legend::MODEL_RIGHT</span>)
+	<div class="description">
+				Construit une nouvelle légende avec le modèle $model.
+				Les valeurs possibles pour $model sont <a href="Legend.html#constant.MODEL_BOTTOM">Legend::MODEL_BOTTOM</a> et <a href="Legend.html#constant.MODEL_RIGHT">Legend::MODEL_RIGHT</a>.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Legend.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Permet de cacher (par défaut) ou d'afficher la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.show"></a><span class="access">public</span> <a href="Legend.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Permet d'afficher (par défaut) ou de cacher la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setModel"></a><span class="access">public</span> <a href="Legend.html#method.setModel">setModel</a>(<span class="type">int</span> <span class="argument">$model</span>)
+	<div class="description">
+				Change le modèle de légende pour $model.
+				L'appel à cette méthode peut écraser les valeurs passées à d'autres méthodes comme <a href="Legend.html#method.setPadding">setPadding()</a> ou <a href="Legend.html#method.setHorizontalAlign">setHorizontalAlign()</a> par exemple (liste non exhaustive).
+				Les valeurs possibles pour $model sont <a href="Legend.html#constant.MODEL_BOTTOM">Legend::MODEL_BOTTOM</a> et <a href="Legend.html#constant.MODEL_RIGHT">Legend::MODEL_RIGHT</a>.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.add"></a><span class="access">public</span> <a href="Legend.html#method.add">add</a>(<a href="Legendable.html"><span class="type">Legendable</span></a> <span class="argument">$legendable</span>, <span class="type">string</span> <span class="argument">$title</span>, <span class="type">int</span> <span class="argument">$type</span> := <span class="default">Legend::LINE</span>)
+	<div class="description">
+				Ajoute un nouvel objet <a href="Legendable.html">légendable</a> avec pour titre $title à cette légende.
+				$type permet de spécifier le type de légende, qui peut être <a href="Legend.html#constant.LINE">Legend::LINE</a>, <a href="Legend.html#constant.BACKGROUND">Legend::BACKGROUND</a>, <a href="Legend.html#constant.MARK">Legend::MARK</a> ou encore <a href="Legend.html#constant.MARKONLY">Legend::MARKONLY</a>.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setPadding"></a><span class="access">public</span> <a href="Legend.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>, <span class="type">int</span> <span class="argument">$top</span>, <span class="type">int</span> <span class="argument">$bottom</span>)
+	<div class="description">
+				Change l'espace interne de la légende.
+				Les nouvelles valeurs doivent être données en pixels. 
+				Laissez les paramètres dont vous ne souhaitez pas modifier la valeur à NULL.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSpace"></a><span class="access">public</span> <a href="Legend.html#method.setSpace">setSpace</a>(<span class="type">int</span> <span class="argument">$space</span>)
+	<div class="description">
+				Change l'espace entre chaque valeur.
+				Cet espace doit être donné en pixels.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAlign"></a><span class="access">public</span> <a href="Legend.html#method.setAlign">setAlign</a>(<span class="type">int</span> <span class="argument">$h</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$v</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Change l'alignement de la légende par rapport au point où elle sera affichée.
+				$h correspond à l'alignement horizontal (<a href="Legend.html#constant.LEFT">Legend::LEFT</a>, <a href="Legend.html#constant.RIGHT">Legend::RIGHT</a> ou <a href="Legend.html#constant.CENTER">Legend::CENTER</a>) et $v à l'alignement vertical (<a href="Legend.html#constant.TOP">Legend::TOP</a>, <a href="Legend.html#constant.BOTTOM">Legend::BOTTOM</a> ou <a href="Legend.html#constant.MIDDLE">Legend::MIDDLE</a>).
+				Si vous ne souhaitez pas modifier une des deux valeurs, vous pouvez passer NULL.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColumns"></a><span class="access">public</span> <a href="Legend.html#method.setColumns">setColumns</a>(<span class="type">int</span> <span class="argument">$columns</span>)
+	<div class="description">
+				Change le nombre de colonnes qui seront affichées dans la légende pour $columns.
+				Cette méthode est incompatible avec <a href="Legend.html#method.setRows">setRows()</a>.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Legend.html#method.setColumns">Legend::setColumns()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setRows"></a><span class="access">public</span> <a href="Legend.html#method.setRows">setRows</a>(<span class="type">int</span> <span class="argument">$rows</span>)
+	<div class="description">
+				Change le nombre de lignes qui seront affichées dans la légende pour $rows.
+				Cette méthode est incompatible avec <a href="Legend.html#method.setColumns">setColumns()</a>.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Legend.html#method.setRows">Legend::setRows()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setPosition"></a><span class="access">public</span> <a href="Legend.html#method.setPosition">setPosition</a>(<span class="type">float</span> <span class="argument">$x</span> := <span class="default">NULL</span>, <span class="type">float</span> <span class="argument">$y</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Change la position de la légende sur l'objet légendé.
+				Les positions $x et $y sont des fractions des largeur et hauteur de l'objet légendé.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getPosition"></a><span class="access">public</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Legend.html#method.getPosition">getPosition</a>()
+	<div class="description">
+				Retourne la position courante de la légende sur l'objet légendé sous la forme d'un <a href="Point.html">point</a>.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setTextFont"></a><span class="access">public</span> <a href="Legend.html#method.setTextFont">setTextFont</a>(<a href="Font.html"><span class="type">Font</span></a> <span class="argument">$font</span>)
+	<div class="description">
+				Change la police à utiliser sur la légende.
+				Voir la classe <a href="Font.html">Font</a> pour une liste des polices disponibles.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setTextMargin"></a><span class="access">public</span> <a href="Legend.html#method.setTextMargin">setTextMargin</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>)
+	<div class="description">
+				Change la marge gauche et droite autour du texte des légendes.
+				$left et $right sont à donner en pixels.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setTextColor"></a><span class="access">public</span> <a href="Legend.html#method.setTextColor">setTextColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur du texte de la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackground"></a><span class="access">public</span> <a href="Legend.html#method.setBackground">setBackground</a>(<span class="type">mixed</span> <span class="argument">$background</span>)
+	<div class="description">
+				Change le fond de la légende.
+				$background peut être soit une couleur, soit un dégradé.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundColor"></a><span class="access">public</span> <a href="Legend.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de fond de la légende.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Legend.html#method.setBackground">Legend::setBackground()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundGradient"></a><span class="access">public</span> <a href="Legend.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	<div class="description">
+				Change le dégradé de fond de la légende.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Legend.html#method.setBackground">Legend::setBackground()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBorderSize"></a><span class="access">public</span> <a href="Legend.html#method.setBorderSize">setBorderSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	<div class="description">
+				Change la taille de la bordure qui entoure la légende.
+				Les valeurs possibles sont 0 et 1.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBorderColor"></a><span class="access">public</span> <a href="Legend.html#method.setBorderColor">setBorderColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de la bordure qui entoure la légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.count"></a><span class="access">public</span> <span class="type">int</span> <a href="Legend.html#method.count">count</a>()
+	<div class="description">
+				Retourne le nombre d'objets <a href="Legendable.html">légendable</a> qui ont été ajoutés à cette légende.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.draw"></a><span class="access">public</span> <a href="Legend.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	<div class="description">
+				Dessine la légende avec le pilote $driver.
+			</div>
+<div class="description-bottom"><a href="Legend.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

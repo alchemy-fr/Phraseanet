@@ -1,0 +1,464 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2>
+<small>abstract</small> Class Component</h2><div class="description">
+		<p>
+			Un composant est un objet qui peut être ajouté à une <a href="Image.html">Image</a>. Les composants sont indépendants les uns des autres. La classe <a href="Component.html">Component</a> est une classe abstraite, dont doivent dériver tous les objets qui vont pouvoir être ajoutés sur une image.
+		</p>
+		<p>
+			Sur un composant, l'axe des abscisses rejoint l'axe des ordonnées sur le coin haut-gauche. Le coin haut-gauche du composant a donc pour coordonnées (0, 0) et le coin bas-droite (largeur, hauteur). Par exemple, sur une image de largeur 100 et de hauteur 50, un point à 50 sur l'axe des abscisses et 25 sur l'axe des ordonnées sera au centre de l'image.
+		</p>
+	</div><div class="inherit">
+			Les classes suivantes dérivent de Component :
+				<ul>
+<li><a href="ComponentGroup.html">ComponentGroup</a></li>
+<li><a href="MathPlot.html">MathPlot</a></li>
+<li><a href="Pie.html">Pie</a></li>
+<li><a href="Plot.html">Plot</a></li>
+</ul>
+</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">protected</span> <a href="Driver.html"><span class="type">Driver</span></a> <a href="Component.html#property.driver"><span class="argument">$driver</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Component.html#property.width"><span class="argument">$width</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Component.html#property.height"><span class="argument">$height</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Component.html#property.x"><span class="argument">$x</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Component.html#property.y"><span class="argument">$y</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Component.html#property.w"><span class="argument">$w</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Component.html#property.h"><span class="argument">$h</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Component.html#property.top"><span class="argument">$top</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Component.html#property.left"><span class="argument">$left</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">mixed</span> <a href="Component.html#property.background"><span class="argument">$background</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Side.html"><span class="type">Side</span></a> <a href="Component.html#property.padding"><span class="argument">$padding</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Side.html"><span class="type">Side</span></a> <a href="Component.html#property.space"><span class="argument">$space</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Component.html#property.auto"><span class="argument">$auto</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="Component.html#property.title"><span class="argument">$title</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Legend.html"><span class="type">Legend</span></a> <a href="Component.html#property.legend"><span class="argument">$legend</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Component.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.auto">auto</a>(<span class="type">bool</span> <span class="argument">$auto</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setSize">setSize</a>(<span class="type">float</span> <span class="argument">$width</span>, <span class="type">float</span> <span class="argument">$height</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setAbsSize">setAbsSize</a>(<span class="type">int</span> <span class="argument">$w</span>, <span class="type">int</span> <span class="argument">$h</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setBackgroundImage">setBackgroundImage</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">mixed</span> <a href="Component.html#method.getBackground">getBackground</a>(<span class="type">int</span> <span class="argument">$type</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$right</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$top</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$bottom</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setSpace">setSpace</a>(<span class="type">int</span> <span class="argument">$left</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$right</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$top</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$bottom</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setCenter">setCenter</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.setAbsPosition">setAbsPosition</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$top</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.init">init</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Component.html#method.finalize">finalize</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	</li>
+<li>
+<span class="access">abstract public</span> <span class="type">array</span> <a href="Component.html#method.getPosition">getPosition</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	</li>
+<li>
+<span class="access">abstract public</span> <a href="Component.html#method.drawEnvelope">drawEnvelope</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	</li>
+<li>
+<span class="access">abstract public</span> <a href="Component.html#method.drawComponent">drawComponent</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <span class="type">int</span> <span class="argument">$x1</span>, <span class="type">int</span> <span class="argument">$y1</span>, <span class="type">int</span> <span class="argument">$x2</span>, <span class="type">int</span> <span class="argument">$y2</span>, <span class="type">bool</span> <span class="argument">$aliasing</span>)
+	</li>
+<li>
+<span class="access">protected</span> <a href="Component.html#method.getSpace">getSpace</a>(<span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.driver"></a><span class="access">protected</span> <a href="Driver.html"><span class="type">Driver</span></a> <a href="Component.html#property.driver"><span class="argument">$driver</span></a><div class="description">
+				Un objet <a href="Driver.html">Driver</a> pour dessiner sur l'image.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.width"></a><span class="access">public</span> <span class="type">float</span> <a href="Component.html#property.width"><span class="argument">$width</span></a><div class="description">
+				Largeur du composant entre 0 et 1. Représente une fraction de la largeur de l'image.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.height"></a><span class="access">public</span> <span class="type">float</span> <a href="Component.html#property.height"><span class="argument">$height</span></a><div class="description">
+				Hauteur du composant entre 0 et 1. Représente une fraction de la hauteur de l'image.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.x"></a><span class="access">public</span> <span class="type">float</span> <a href="Component.html#property.x"><span class="argument">$x</span></a><div class="description">
+				Position du composant sur l'axe des abscisses entre 0 et 1. Représente une fraction de la largeur de l'image.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.y"></a><span class="access">public</span> <span class="type">float</span> <a href="Component.html#property.y"><span class="argument">$y</span></a><div class="description">
+				Position du composant sur l'axe des ordonnées entre 0 et 1. Représente une fraction de la hauteur de l'image.
+				Attention, la position 0 correspond au haut de l'image.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.w"></a><span class="access">public</span> <span class="type">int</span> <a href="Component.html#property.w"><span class="argument">$w</span></a><div class="description">
+				Largeur du composant en pixels.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.h"></a><span class="access">public</span> <span class="type">int</span> <a href="Component.html#property.h"><span class="argument">$h</span></a><div class="description">
+				Hauteur du composant en pixels.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.top"></a><span class="access">public</span> <span class="type">int</span> <a href="Component.html#property.top"><span class="argument">$top</span></a><div class="description">
+				Position du composant sur l'axe des ordonnées en pixels.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.left"></a><span class="access">public</span> <span class="type">int</span> <a href="Component.html#property.left"><span class="argument">$left</span></a><div class="description">
+				Position du composant sur l'axe des abscisses en pixels.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.background"></a><span class="access">protected</span> <span class="type">mixed</span> <a href="Component.html#property.background"><span class="argument">$background</span></a><div class="description">
+				Fond du composant. Peut être une <a href="Color.html">couleur</a>, un <a href="Gradient.html">dégradé</a> ou peut être laissé à NULL pour ne spécifier aucune couleur de fond.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.padding"></a><span class="access">public</span> <a href="Side.html"><span class="type">Side</span></a> <a href="Component.html#property.padding"><span class="argument">$padding</span></a><div class="description">
+				Espace interne du composant.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.space"></a><span class="access">public</span> <a href="Side.html"><span class="type">Side</span></a> <a href="Component.html#property.space"><span class="argument">$space</span></a><div class="description">
+				Espace interne dans la zone de dessin effective du composant. Les valeurs doivent être données en pourcentage de la taille de la zone de dessin.
+				Le zone de dessin est la zone dans laquelle est dessiné le composant, c'est-à-dire la zone du composant amputée des axes et de l'<a href="Component.html#property.padding">espace interne</a>.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.auto"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Component.html#property.auto"><span class="argument">$auto</span></a><div class="description">
+				Doit-on ajuster automatiquement le composant ?
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.title"></a><span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="Component.html#property.title"><span class="argument">$title</span></a><div class="description">
+				Le titre du composant.
+				Si un titre est spécifié, il sera affiché sur l'image.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.legend"></a><span class="access">public</span> <a href="Legend.html"><span class="type">Legend</span></a> <a href="Component.html#property.legend"><span class="argument">$legend</span></a><div class="description">
+				La légende associée au composant.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Component.html#method.__construct">__construct</a>()
+	<div class="description">
+				Construit le composant en lui affectant une taille égale à celle de l'image et en le positionnant au centre de cette image.
+				Le composant remplit donc toute la surface de l'image.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.auto"></a><span class="access">public</span> <a href="Component.html#method.auto">auto</a>(<span class="type">bool</span> <span class="argument">$auto</span>)
+	<div class="description">
+				TRUE si le composant doit être automatiquement ajusté, FALSE sinon.
+				La notion d'ajustage automatique est propre à chaque classe qui dérive de celle-ci.
+				Par exemple, sur les histogrammes, si le composant n'est pas automatiquement ajusté, alors les barres ne seront pas centrées sur zéro mais sur leur valeur minimum.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSize"></a><span class="access">public</span> <a href="Component.html#method.setSize">setSize</a>(<span class="type">float</span> <span class="argument">$width</span>, <span class="type">float</span> <span class="argument">$height</span>)
+	<div class="description">
+				Change la largeur $width et la hauteur $height du composant.
+				Les nouvelles valeurs doivent être comprises entre 0 et 1 et correspondent à une fraction des largeur et hauteur de l'image à laquelle le composant appartient.
+<pre>
+
+&lt;?php
+
+require_once "LinePlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+// LinePLot dérive de Component
+$plot = new <a href="LinePlot.html">LinePlot</a>(array(1, 2, 3));
+
+// Le taille du composant sera 1 / 3 de celle de l'image, soit 133x133 pixels
+$plot-&gt;<a href="Component.html#method.setSize">setSize</a>(1 / 3, 1 / 3);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAbsSize"></a><span class="access">public</span> <a href="Component.html#method.setAbsSize">setAbsSize</a>(<span class="type">int</span> <span class="argument">$w</span>, <span class="type">int</span> <span class="argument">$h</span>)
+	<div class="description">
+				Donne une taille absolue au composant.
+				La largeur $width et la hauteur $height doivent être données en pixels.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundColor"></a><span class="access">public</span> <a href="Component.html#method.setBackgroundColor">setBackgroundColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de fond du composant.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundGradient"></a><span class="access">public</span> <a href="Component.html#method.setBackgroundGradient">setBackgroundGradient</a>(<a href="Gradient.html"><span class="type">Gradient</span></a> <span class="argument">$gradient</span>)
+	<div class="description">
+				Change le dégradé de fond du composant.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setBackgroundImage"></a><span class="access">public</span> <a href="Component.html#method.setBackgroundImage">setBackgroundImage</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	<div class="description">
+				Change l'image de fond du composant.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getBackground"></a><span class="access">public</span> <span class="type">mixed</span> <a href="Component.html#method.getBackground">getBackground</a>(<span class="type">int</span> <span class="argument">$type</span>)
+	<div class="description">
+				Retourne le fond de l'image. Cela peut être une <a href="Color.html">couleur</a>, un <a href="Gradient.html">dégradé</a> ou encore une <a href="Image.html">image</a>. Si aucun fond n'a été spécifié, cette méthode retourne NULL.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setPadding"></a><span class="access">public</span> <a href="Component.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$right</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$top</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$bottom</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Change l'espace interne du composant.
+				Les valeurs doivent être données en pixels.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSpace"></a><span class="access">public</span> <a href="Component.html#method.setSpace">setSpace</a>(<span class="type">int</span> <span class="argument">$left</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$right</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$top</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$bottom</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Change l'espace interne dans la zone de dessin effective du composant. Les valeurs doivent être données en pourcentage de la taille de la zone de dessin.
+				Le zone de dessin est la zone dans laquelle est dessiné le composant, c'est-à-dire la zone du composant amputée des axes et de l'<a href="Component.html#property.padding">espace interne</a>.
+<pre>
+
+&lt;?php
+
+require_once "LinePlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+$plot = new <a href="LinePlot.html">LinePlot</a>(array(43, 23, 65, 37));
+$plot-&gt;<a href="Component.html#method.setSpace">setSpace</a>(10, 10, 20, 20);
+
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setCenter"></a><span class="access">public</span> <a href="Component.html#method.setCenter">setCenter</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	<div class="description">
+				Change la position du centre du composant sur l'image.
+				Les nouvelles positions $x et $y représentent une fraction des largeur et hauteur de l'image.
+				Attention, la position 0 pour $y place le centre du composant en haut de l'image. La position 1 le place en bas de l'image.
+<pre>
+
+&lt;?php
+
+require_once "LinePlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+// LinePLot dérive de Component
+$plot = new <a href="LinePlot.html">LinePlot</a>(array(1, 2, 3));
+
+// Le taille du composant sera 1 / 3 de celle de l'image, soit 133x133 pixels
+$plot-&gt;<a href="Component.html#method.setSize">setSize</a>(1 / 3, 1 / 3);
+// Place le composant en haut à gauche
+$plot-&gt;<a href="Component.html#method.setCenter">setCenter</a>(1 / 6, 1 / 6);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setAbsPosition"></a><span class="access">public</span> <a href="Component.html#method.setAbsPosition">setAbsPosition</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$top</span>)
+	<div class="description">
+				Change la position du composant sur l'image.
+				Contrairement à <a href="Component.html#method.setCenter">setCenter()</a>, cette méthode ne place pas le composant par rapport à son centre, mais par rapport à son coin haut-gauche. Les positions $left à gauche et $top pour la hauteur doivent être données en pixels.
+				Attention, la position 0 pour $top place le composant en haut de l'image.
+<pre>
+
+&lt;?php
+
+require_once "LinePlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+// LinePLot dérive de Component
+$plot = new <a href="LinePlot.html">LinePlot</a>(array(1, 2, 3));
+
+// Le taille du composant sera 1 / 3 de celle de l'image, soit 133x133 pixels
+$plot-&gt;<a href="Component.html#method.setSize">setSize</a>(1 / 3, 1 / 3);
+// Place le composant en haut à gauche
+$plot-&gt;<a href="Component.html#method.setAbsPosition">setAbsPosition</a>(0, 0);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.init"></a><span class="access">public</span> <a href="Component.html#method.init">init</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	<div class="description">
+ 				Initialise le composant avant son affichage.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.finalize"></a><span class="access">public</span> <a href="Component.html#method.finalize">finalize</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	<div class="description">
+ 				Finalize l'affichage du composant.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getPosition"></a><span class="access">abstract public</span> <span class="type">array</span> <a href="Component.html#method.getPosition">getPosition</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	<div class="description">
+				Retourne la position de la zone de dessin effective du composant.
+				Les coordonnées doivent être retournées sous la forme d'un tableau de quatre valeurs.
+				Les première et deuxième valeurs sont les positions en abscisse et en ordonnée du coin haut-gauche de la zone de dessin.
+				Les troisième et quatrième valeurs sont les positions en abscisse et en ordonnée du coin bas-droit de la zone de dessin.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.drawEnvelope"></a><span class="access">abstract public</span> <a href="Component.html#method.drawEnvelope">drawEnvelope</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>)
+	<div class="description">
+				Dessine l'enveloppe autour de la zone de dessin effective du composant.
+				Cette enveloppe comprend généralement les axes et la grille du composant.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.drawComponent"></a><span class="access">abstract public</span> <a href="Component.html#method.drawComponent">drawComponent</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <span class="type">int</span> <span class="argument">$x1</span>, <span class="type">int</span> <span class="argument">$y1</span>, <span class="type">int</span> <span class="argument">$x2</span>, <span class="type">int</span> <span class="argument">$y2</span>, <span class="type">bool</span> <span class="argument">$aliasing</span>)
+	<div class="description">
+				Dessine effectivement le composant, c'est-à-dire le graphique.
+				Le paramètre $aliasing est à TRUE si l'anti-aliasing est activé, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getSpace"></a><span class="access">protected</span> <a href="Component.html#method.getSpace">getSpace</a>(<span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	<div class="description">
+				Convertit l'espace interne du composant de pourcentages en pixels, en fonction de la taille $width et de la hauteur $height, exprimées en pixels.
+			</div>
+<div class="description-bottom"><a href="Component.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

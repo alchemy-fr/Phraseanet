@@ -1,0 +1,64 @@
+{% if result.result|length > 0 %}
+		<div  class="report-table" style="margin:0;padding:0;width:320px;">
+			<table style="width:320px;">
+				<caption>
+						<div class="title">{{ result.title }}</div>
+						<div class="periode">{{ result.periode }}</div>
+					
+						{% if result.total|length > 0 and result.total != 0 %}
+							<div class="nb_result"> rs : {{ result.total }} </div>
+						{% endif %}
+
+					{% if report.rs.page|length > 0 %}
+						<div class="page"> p : {{report.rs.page}}</div>
+					{% endif %}
+				</caption>
+				<thead>
+				{% set colspan = "" %} 
+				{% for key, value in result.display %}
+					<th class="{{ key }}" scope="col">
+					
+					{% if value.title == "ddate" and value.title != 0  %}
+						<div class="title_th"> date </div>
+					{% else %}
+						<div class="title_th">{{ value.title }}</div>
+					{% endif %}
+					</th>
+					{% set colspan = loop.length %}
+				{% endfor %}
+				</thead>
+				<tbody>
+					{% for tr, value in result.result %}
+						{% if loop.index is even %}
+							<tr class="even">
+						{% else %}
+							<tr class="odd"
+						{% endif %}
+						{% for class, config in result.display %}
+							<td class="{{ class }}">
+							{% for key , result in value %}
+							 	{% if key == class %}
+									{{ result }}
+								{% endif %}
+							{% endfor %} 
+							</td>
+						{% endfor %}
+						</tr>
+					{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="{{colspan}}"></td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	{% else %}
+		<div class="center no_results">
+			<b>{{ array.title }}</b>
+			<br />
+			<img src="skins/images/noresults.png" />
+			<br />
+			<i>{% trans "report :: aucun resultat trouve" %}</i><br />
+		</div>
+	{% endif %}

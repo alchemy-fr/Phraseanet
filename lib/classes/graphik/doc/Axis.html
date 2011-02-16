@@ -1,0 +1,385 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Axis</h2><div class="description">
+		<p>
+			La classe <a href="Axis.html">Axis</a> permet de manipuler des axes.
+			Un axe permet à un utilisateur de répérer les points et leurs valeurs sur un graphique.
+		</p>
+		<p>
+			De nombreuses méthodes de la classe <a href="Axis.html">Axis</a> ne sont pas documentées,
+			car elles ne sont utilisées qu'en interne par Artichow.
+			Néanmoins, si vous développez Artichow, vous aurez besoin de ces méthodes.
+			N'hésitez donc pas à parcourir le code source de cette classe.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="Axis.html#property.title"><span class="argument">$title</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="Axis.html#property.label"><span class="argument">$label</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Line.html"><span class="type">Line</span></a> <a href="Axis.html#property.line"><span class="argument">$line</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Axis.html#property.auto"><span class="argument">$auto</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Axis.html#method.__construct">__construct</a>(<span class="type">float</span> <span class="argument">$min</span>, <span class="type">float</span> <span class="argument">$max</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.auto">auto</a>(<span class="type">bool</span> <span class="argument">$auto</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="true.html"><span class="type">true</span></a> <a href="Axis.html#method.isAuto">isAuto</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.addTick">addTick</a>(<span class="type">string</span> <span class="argument">$name</span>, <a href="Tick.html"><span class="type">Tick</span></a> <span class="argument">$tick</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html"><span class="type">Tick</span></a> <a href="Axis.html#method.tick">tick</a>(<span class="type">string</span> <span class="argument">$name</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.deleteTick">deleteTick</a>(<span class="type">string</span> <span class="argument">$name</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.hideTicks">hideTicks</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setTickStyle">setTickStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.reverseTickStyle">reverseTickStyle</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setTickInterval">setTickInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setNumberByTick">setNumberByTick</a>(<span class="type">string</span> <span class="argument">$to</span>, <span class="type">string</span> <span class="argument">$from</span>, <span class="type">float</span> <span class="argument">$number</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setLabelInterval">setLabelInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setLabelNumber">setLabelNumber</a>(<span class="type">int</span> <span class="argument">$number</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Axis.html#method.getLabelNumber">getLabelNumber</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setLabelPrecision">setLabelPrecision</a>(<span class="type">int</span> <span class="argument">$precision</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setLabelText">setLabelText</a>(<span class="type">array</span> <span class="argument">$texts</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setTitleAlignment">setTitleAlignment</a>(<span class="type">int</span> <span class="argument">$alignment</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setTitlePosition">setTitlePosition</a>(<span class="type">float</span> <span class="argument">$postion</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Axis.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Side.html"><span class="type">Side</span></a> <a href="Axis.html#method.getPadding">getPadding</a>()
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.title"></a><span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="Axis.html#property.title"><span class="argument">$title</span></a><div class="description">
+				Représente le titre de l'axe.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.label"></a><span class="access">public</span> <a href="Label.html"><span class="type">Label</span></a> <a href="Axis.html#property.label"><span class="argument">$label</span></a><div class="description">
+				Représente les étiquettes qui portent les valeurs affichées sur l'axe.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.line"></a><span class="access">public</span> <a href="Line.html"><span class="type">Line</span></a> <a href="Axis.html#property.line"><span class="argument">$line</span></a><div class="description">
+				Représente la ligne de l'axe.
+				Vous pouvez modifier le style et l'épaisseur de cette ligne, pas ses coordonnées.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.auto"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Axis.html#property.auto"><span class="argument">$auto</span></a><div class="description">
+				Précise si la gestion de l'axe doit être automatique ou non.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Axis.html#method.__construct">__construct</a>(<span class="type">float</span> <span class="argument">$min</span>, <span class="type">float</span> <span class="argument">$max</span>)
+	<div class="description">
+				Déclare un nouvel axe.
+				Les variables $min et $max représentent respectivement la valeurs minimales et maximales associées à l'axe.
+				Par exemple, choisir $min = -12 et $max = 42 signifie tout simplement que l'axe ira de -12 à 42.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.auto"></a><span class="access">public</span> <a href="Axis.html#method.auto">auto</a>(<span class="type">bool</span> <span class="argument">$auto</span>)
+	<div class="description">
+				Active/désactive la gestion automatique de l'axe.
+				La gestion automatique est automatiquement désactivée en cas d'appel aux méthodes suivantes : <a href="Axis.html#method.setLabelNumber">Axis::setLabelNumber()</a>, <a href="Axis.html#method.setLabelInterval">Axis::setLabelInterval()</a>, <a href="Axis.html#method.setLabelPrecision">Axis::setLabelPrecision()</a> et <a href="Axis.html#method.setLabelText">Axis::setLabelText()</a>.
+				Lorsqu'un axe est sous gestion automatique, l'échelle est le nombre de valeurs à afficher sur l'axe sont automatiquement calculés.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.isAuto"></a><span class="access">public</span> <a href="true.html"><span class="type">true</span></a> <a href="Axis.html#method.isAuto">isAuto</a>()
+	<div class="description">
+				Retourne TRUE si l'axe est gérée automatiquement, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Axis.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Cache ou non l'axe. Le paramètre $hide est par défaut à TRUE (ce qui signifie que l'axe ne sera pas dessiné).
+				S'il est mis à FALSE, l'axe sera dessiné.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.addTick"></a><span class="access">public</span> <a href="Axis.html#method.addTick">addTick</a>(<span class="type">string</span> <span class="argument">$name</span>, <a href="Tick.html"><span class="type">Tick</span></a> <span class="argument">$tick</span>)
+	<div class="description">
+				Associe un objet <a href="Tick.html">Tick</a> $tick à l'axe.
+				Cet objet sera reconnu par le nom $name au sein de la classe <a href="Axis.html">Axis</a>.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.tick"></a><span class="access">public</span> <a href="Tick.html"><span class="type">Tick</span></a> <a href="Axis.html#method.tick">tick</a>(<span class="type">string</span> <span class="argument">$name</span>)
+	<div class="description">
+				Récupère un objet <a href="Tick.html">Tick</a> en fonction de son nom.
+				Cet objet doit avoir été précédemment ajouté avec la méthode <a href="Axis.html#method.addTick">Axis::addTick()</a>.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.deleteTick"></a><span class="access">public</span> <a href="Axis.html#method.deleteTick">deleteTick</a>(<span class="type">string</span> <span class="argument">$name</span>)
+	<div class="description">
+				Supprime l'objet <a href="Tick.html">Tick</a> de nom $name associé à l'axe.
+				Pour pouvoir être supprimé, cet objet doit avoir été précédemment ajouté avec la méthode <a href="Axis.html#method.addTick">Axis::addTick()</a>.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideTicks"></a><span class="access">public</span> <a href="Axis.html#method.hideTicks">hideTicks</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Cache ou non tous les ticks qui ont été associés à cet axe.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Axis.html#method.addTick">Axis::addTick()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setTickStyle"></a><span class="access">public</span> <a href="Axis.html#method.setTickStyle">setTickStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	<div class="description">
+				Change le style de tous les ticks associés à l'axe pour $style.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Tick.html#method.setStyle">Tick::setStyle()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.reverseTickStyle"></a><span class="access">public</span> <a href="Axis.html#method.reverseTickStyle">reverseTickStyle</a>()
+	<div class="description">
+				Inverse le style de tous les ticks associés à l'axe pour $style.
+				Si les ticks étaient tournés vers l'extérieur, ils seront désormais tournés vers l'intérieur.
+				Et vice-versa.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Tick.html#method.setStyle">Tick::setStyle()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setTickInterval"></a><span class="access">public</span> <a href="Axis.html#method.setTickInterval">setTickInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	<div class="description">
+				Change l'intervalle d'affichage de tous les ticks associés à l'axe pour $interval.
+				Cette méthode permet d'espacer l'affichage des ticks par rapport aux valeurs de l'axe.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Tick.html#method.setStyle">Tick::setStyle()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setNumberByTick"></a><span class="access">public</span> <a href="Axis.html#method.setNumberByTick">setNumberByTick</a>(<span class="type">string</span> <span class="argument">$to</span>, <span class="type">string</span> <span class="argument">$from</span>, <span class="type">float</span> <span class="argument">$number</span>)
+	<div class="description">
+				Cette méthode permet de modifier la fréquence d'affichage d'un objet <a href="Tick.html">Tick</a> par rapport à un autre.
+				$to représente l'objet dont la fréquence d'affichage doit être modifiée et $from l'objet auquel on se réfère.
+				A chaque fois qu'un tick $from sera affiché, on affichera $number ticks $to.
+				Si $number vaut 2, cela signifie que deux ticks $to seront affichés pour un tick $from.
+				Cette méthode prend tout son sens donc le cadre des <a href="Plot.html">Plot</a> par exemple :
+<pre>
+
+&lt;?php
+
+require_once 'LinePlot.class.php';
+
+$graph = new <a href="Graph.html">Graph</a>(400, 400);
+
+$plot = new <a href="LinePlot.html">LinePlot</a>(array(1, 2, 3));
+
+// Pour chaque tick major affiché,
+// on affichera 10 ticks minor
+$plot-&gt;xAxis-&gt;setNumberByTick('minor', 'major', 10);
+
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			Cela donne 10 ticks mineurs par tick majeur :
+			<div class="image">
+				<img src="doc/image/ticks.png" alt="10 ticks mineurs par tick majeur">
+			</div>
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLabelInterval"></a><span class="access">public</span> <a href="Axis.html#method.setLabelInterval">setLabelInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	<div class="description">
+				Change l'intervalle d'affichage des étiquettes sur l'axe pour $interval.
+				Par défaut, cet intervalle est égal à 1.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLabelNumber"></a><span class="access">public</span> <a href="Axis.html#method.setLabelNumber">setLabelNumber</a>(<span class="type">int</span> <span class="argument">$number</span>)
+	<div class="description">
+				Change le nombre d'étiquettes à afficher sur l'axe pour $number.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getLabelNumber"></a><span class="access">public</span> <span class="type">int</span> <a href="Axis.html#method.getLabelNumber">getLabelNumber</a>()
+	<div class="description">
+				Retourne le nombre d'étiquettes qui seront affichées sur l'axe.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLabelPrecision"></a><span class="access">public</span> <a href="Axis.html#method.setLabelPrecision">setLabelPrecision</a>(<span class="type">int</span> <span class="argument">$precision</span>)
+	<div class="description">
+				Change la précision des valeurs affichées sur chaque étiquette de l'axe.
+				$number représente le nombre de chiffres après la virgule qui doivent être affiché.
+				Par défaut, $precision vaut 0.
+			<div class="see">
+					Voir aussi :
+					<ul>
+<li><a href="Axis.html#method.setLabelText">Axis::setLabelText()</a></li>
+<li><a href="Label.html#method.setCallbackFunction">Label::setCallbackFunction()</a></li>
+</ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLabelText"></a><span class="access">public</span> <a href="Axis.html#method.setLabelText">setLabelText</a>(<span class="type">array</span> <span class="argument">$texts</span>)
+	<div class="description">
+				Cette méthode permet d'afficher des valeurs arbitraires plutôt que des valeurs numériques sur les étiquettes de l'axe.
+				$texts est un tableau comportant autant d'entrées que d'étiquettes et qui contient les nouvelles valeurs à afficher.
+			<div class="see">
+					Voir aussi :
+					<ul>
+<li><a href="Axis.html#method.setLabelPrecision">Axis::setLabelPrecision()</a></li>
+<li><a href="Label.html#method.setCallbackFunction">Label::setCallbackFunction()</a></li>
+</ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setTitleAlignment"></a><span class="access">public</span> <a href="Axis.html#method.setTitleAlignment">setTitleAlignment</a>(<span class="type">int</span> <span class="argument">$alignment</span>)
+	<div class="description">
+				Change l'alignement du titre de l'axe sur l'axe.
+				Les valeurs possibles sont <a href="Label.html#constant.LEFT">Label::LEFT</a>, <a href="Label.html#constant.RIGHT">Label::RIGHT</a>, <a href="Label.html#constant.TOP">Label::TOP</a> et <a href="Label.html#constant.BOTTOM">Label::BOTTOM</a>.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setTitlePosition"></a><span class="access">public</span> <a href="Axis.html#method.setTitlePosition">setTitlePosition</a>(<span class="type">float</span> <span class="argument">$postion</span>)
+	<div class="description">
+				Change la position du titre sur l'axe.
+				$position est une fraction de la taille de l'axe.
+				Par exemple, si $position est placé à 0.5, le titre sera affiché au milieu de l'axe.
+				Si $position vaut 0.25, alors le titre sera affiché sur le premier quart de l'axe.
+				Pour aligner le titre par rapport à cette position, utilisez la méthode <a href="Axis.html#method.setTitleAlignment">Axis::setTitleAlignment()</a>.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Axis.html#method.setTitleAlignment">Axis::setTitleAlignment()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="Axis.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de l'axe et de son titre pour $color.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setPadding"></a><span class="access">public</span> <a href="Axis.html#method.setPadding">setPadding</a>(<span class="type">int</span> <span class="argument">$left</span>, <span class="type">int</span> <span class="argument">$right</span>)
+	<div class="description">
+				Change l'espace interne à gauche et à droite de l'axe.
+				Gauche et droite n'ont de sens que pour les axes verticaux.
+				Pour les axes plus horizontaux, préférez haut à gauche et bas à droite.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getPadding"></a><span class="access">public</span> <a href="Side.html"><span class="type">Side</span></a> <a href="Axis.html#method.getPadding">getPadding</a>()
+	<div class="description">
+				Retourne l'espace interne associé à l'axe.
+			</div>
+<div class="description-bottom"><a href="Axis.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

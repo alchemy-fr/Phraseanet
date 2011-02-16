@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class GDDriver</h2><div class="extends"><ul>
+<li><a href="Driver.html">Driver</a></li>
+<ul><li>GDDriver</li></ul>
+</ul></div><div class="description">
+		<p>
+			La classe <a href="GDDriver.html">GDDriver</a> est une implémentation de <a href="Driver.html">Driver</a> qui repose sur la bibliothèque GD. C'est le pilote par défaut utilisé par Artichow, PHP doit donc être compilé avec le support de GD pour que tout fonctionne.
+		</p>
+		<p>
+			Seules seront mentionnées ici les méthodes dont l'implémentation pourrait avoir un comportement spécifique. Pour le reste, veuillez vous référer à la doc de la classe parente <a href="Driver.html">Driver</a>.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties"><li>
+<span class="access">public</span> <span class="type">resource</span> <a href="GDDriver.html#property.resource"><span class="argument">$resource</span></a>
+</li></ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="GDDriver.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="GDDriver.html#method.getColor">getColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.resource"></a><span class="access">public</span> <span class="type">resource</span> <a href="GDDriver.html#property.resource"><span class="argument">$resource</span></a><div class="description">
+				La ressource GD contenant le dessin.
+			</div>
+<div class="description-bottom"><a href="GDDriver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="GDDriver.html#method.__construct">__construct</a>()
+	<div class="description">
+				Construit le pilote.
+				Instancie les <a href="FontDriver.html">FontDriver</a> et initialise la propriété <a href="Driver.html#property.driverString">driverString</a> à 'gd'.
+			</div>
+<div class="description-bottom"><a href="GDDriver.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getColor"></a><span class="access">public</span> <span class="type">int</span> <a href="GDDriver.html#method.getColor">getColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Convertit un objet <a href="Color.html">Color</a> pour qu'il soit exploitable directement par les fonctions de dessins de GD.
+				Renvoie un entier identifiant la couleur aux yeux de GD.
+			</div>
+<div class="description-bottom"><a href="GDDriver.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

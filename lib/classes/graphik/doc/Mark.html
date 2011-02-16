@@ -1,0 +1,265 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Mark</h2><div class="description">
+		<p>
+			La classe <a href="Mark.html">Mark</a> permet de créer des marques, qui peuvent être affichées n'importe où sur une image.
+			Typiquement, les marques sont affichées sur les courbes pour mettre en valeur chaque point.
+		</p>
+		<div class="image">
+			<img src="doc/image/marks.png">
+		</div>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.CIRCLE">CIRCLE</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.SQUARE">SQUARE</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.TRIANGLE">TRIANGLE</a> := <span class="default">3</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.INVERTED_TRIANGLE">INVERTED_TRIANGLE</a> := <span class="default">4</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.RHOMBUS">RHOMBUS</a> := <span class="default">5</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.CROSS">CROSS</a> := <span class="default">6</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.PLUS">PLUS</a> := <span class="default">7</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.IMAGE">IMAGE</a> := <span class="default">8</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.STAR">STAR</a> := <span class="default">9</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.PAPERCLIP">PAPERCLIP</a> := <span class="default">10</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.BOOK">BOOK</a> := <span class="default">11</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">protected</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Mark.html#property.move"><span class="argument">$move</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Mark.html#property.border"><span class="argument">$border</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Mark.html#method.__construct">__construct</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Mark.html#method.move">move</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Mark.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Mark.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Mark.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Mark.html#method.setType">setType</a>(<span class="type">int</span> <span class="argument">$type</span>, <span class="type">int</span> <span class="argument">$size</span> := <span class="default">NULL</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Mark.html#method.setFill">setFill</a>(<span class="type">mixed</span> <span class="argument">$fill</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Mark.html#method.setImage">setImage</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Mark.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.CIRCLE"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.CIRCLE">CIRCLE</a> := <span class="default">1</span><div class="description">
+				Pour les marques de la forme d'un cercle.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.SQUARE"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.SQUARE">SQUARE</a> := <span class="default">2</span><div class="description">
+				Pour les marques de la forme d'un carré.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.TRIANGLE"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.TRIANGLE">TRIANGLE</a> := <span class="default">3</span><div class="description">
+				Pour les marques de la forme d'un trianble.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.INVERTED_TRIANGLE"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.INVERTED_TRIANGLE">INVERTED_TRIANGLE</a> := <span class="default">4</span><div class="description">
+				Pour les marques de la forme d'un triangle inversé (sommet vers le bas).
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.RHOMBUS"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.RHOMBUS">RHOMBUS</a> := <span class="default">5</span><div class="description">
+				Représente une marque de type rhombus (carré à 45°).
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.CROSS"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.CROSS">CROSS</a> := <span class="default">6</span><div class="description">
+				Représente une marque de la forme d'une croix (X).
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.PLUS"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.PLUS">PLUS</a> := <span class="default">7</span><div class="description">
+				Représente une marque de la forme d'un plus (+).
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.IMAGE"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.IMAGE">IMAGE</a> := <span class="default">8</span><div class="description">
+				Pour les marques de type image.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.STAR"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.STAR">STAR</a> := <span class="default">9</span><div class="description">
+				Représente une marque de type étoile.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.PAPERCLIP"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.PAPERCLIP">PAPERCLIP</a> := <span class="default">10</span><div class="description">
+				Représente une marque de type trombonne.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.BOOK"></a><span class="access">const</span> <span class="type">int</span> <a href="Mark.html#constant.BOOK">BOOK</a> := <span class="default">11</span><div class="description">
+				Représente une marque de type livre.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.move"></a><span class="access">protected</span> <a href="Point.html"><span class="type">Point</span></a> <a href="Mark.html#property.move"><span class="argument">$move</span></a><div class="description">
+				Le déplacement de la marque défini par l'utilisateur.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Mark.html#method.move">Mark::move()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.border"></a><span class="access">public</span> <a href="Border.html"><span class="type">Border</span></a> <a href="Mark.html#property.border"><span class="argument">$border</span></a><div class="description">
+				La bordure qui entoure la marque.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Mark.html#method.__construct">__construct</a>()
+	<div class="description">
+				Construit un nouvel objet qui permettra l'affichage de marques sur une image.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.move"></a><span class="access">public</span> <a href="Mark.html#method.move">move</a>(<span class="type">int</span> <span class="argument">$x</span>, <span class="type">int</span> <span class="argument">$y</span>)
+	<div class="description">
+				Déplace l'affichage des marques de $x pixels sur l'axe des abscisses et de $y pixels sur l'axe des ordonnées.
+				Les appels à <a href="Mark.html#method.move">move()</a> sont cumulés, c'est-à-dire qu'un appel avec de nouvelles valeurs additionnera ces valeurs avec les anciennes.
+				Par défaut, $x et $y sont à 0 pixel.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Mark.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Permet de cacher (par défaut) ou d'afficher les marques.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.show"></a><span class="access">public</span> <a href="Mark.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Permet d'afficher (par défaut) ou de cacher les marques.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSize"></a><span class="access">public</span> <a href="Mark.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	<div class="description">
+				Change la taille des marques pour $size. Cette méthode n'a aucun effet pour les marques de type <a href="Mark.html#constant.IMAGE"></a>, <a href="Mark.html#constant.STAR"></a>, <a href="Mark.html#constant.PAPERCLIP"></a> ou <a href="Mark.html#constant.BOOK"></a>.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setType"></a><span class="access">public</span> <a href="Mark.html#method.setType">setType</a>(<span class="type">int</span> <span class="argument">$type</span>, <span class="type">int</span> <span class="argument">$size</span> := <span class="default">NULL</span>)
+	<div class="description">
+				Change le type de marque à utiliser.
+				Les valeurs possibles sont <a href="Mark.html#constant.CIRCLE"></a>, <a href="Mark.html#constant.SQUARE"></a>, <a href="Mark.html#constant.TRIANGLE"></a>, <a href="Mark.html#constant.IMAGE"></a>, <a href="Mark.html#constant.STAR"></a>, <a href="Mark.html#constant.PAPERCLIP"></a> ou encore <a href="Mark.html#constant.BOOK"></a>.
+				L'argument optionnel $size permet de déterminer la taille de la marque et n'a aucun effet sur <a href="Mark.html#constant.IMAGE"></a>, <a href="Mark.html#constant.PAPERCLIP"></a> et <a href="Mark.html#constant.BOOK"></a>.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setFill"></a><span class="access">public</span> <a href="Mark.html#method.setFill">setFill</a>(<span class="type">mixed</span> <span class="argument">$fill</span>)
+	<div class="description">
+				Remplit la marque avec la couleur ou le dégradé $fill. Cette méthode n'a aucun effet pour les marques de type <a href="Mark.html#constant.IMAGE">Mark::IMAGE</a>.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Mark.html#method.setType">Mark::setType()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setImage"></a><span class="access">public</span> <a href="Mark.html#method.setImage">setImage</a>(<a href="Image.html"><span class="type">Image</span></a> <span class="argument">$image</span>)
+	<div class="description">
+				Change l'image à afficher sur la marque. Cette méthode n'a de sens que pour les marques de type <a href="Mark.html#constant.IMAGE">Mark::IMAGE</a>.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Mark.html#method.setType">Mark::setType()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.draw"></a><span class="access">public</span> <a href="Mark.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$point</span>)
+	<div class="description">
+				Dessine la marque avec le pilote $driver. Le centre de la marque sera sur le point $point.
+			</div>
+<div class="description-bottom"><a href="Mark.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

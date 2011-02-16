@@ -1,0 +1,149 @@
+{% block ajax_data_content %}
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript">
+		$("input[type=button]").button();
+
+		$('a.jqprint').unbind('click').bind('click', function(){
+			$(this).closest('.report-table').jqprint();        
+		 return( false );
+		});
+		
+		$(document).ready(function(){
+			$padding = $('.horizontal-scroller').outerHeight(true);
+			$('.load').css('padding-top', $padding);
+			
+			//set slider position
+			if(!jQuery.support.boxModel)
+			{
+			  	$(".horizontal-scroller:visible").css("position", "absolute");	
+			}
+			else
+			{
+				$(".horizontal-scroller:visible").css("position", "fixed");
+			}
+		});
+	</script>
+	
+	{% if is_infouser %}
+		<script type="text/javascript">
+			$('#dialog .bound').each( function () {
+  				var riid = $(this).html();			
+				var new_a = $(this).html('<img style="float:right;margin-right:5px;" src="./images/loupe2.png" />');
+				$(this).before(riid);
+				$(this).attr('rel', './tab.php').cluetip({
+					width: 600,
+				  	ajaxCache: true, 
+				  	arrows: true,
+				    ajaxSettings : {
+				      	type : 'POST',
+					      dataType: 'json',
+					      data : ({
+					      	tbl : 'what',
+					      	rid : riid,
+					      	sbasid : '{{ param.sbasid }}',
+					      	collection : '{{ param.collection }}',
+					      	dmin : '{{ param.dmin }}',
+					      	dmax : '{{ param.dmax }}',
+					      	from : 'TOOL'
+				      	})
+				    },
+				    ajaxProcess : function (data) {
+				      return data.rs;
+				    }
+			  });
+			});
+	 	</script>
+	{% endif %}
+
+	{% if is_plot %}
+		<script type="text/javascript">
+				$("table:visible:first thead").prepend("<th>{% trans 'report:: Connexion' %}</th>");
+				$("table:visible:first tbody tr:first").prepend("<th>{% trans 'report::Heures' %}</th>");
+				$colspan = $("table:visible:first tfoot tr:first td").attr("colspan");
+				$colspan++;
+				$("table:visible:first tfoot tr:first td").attr("colspan", $colspan);
+		 </script>
+	{% endif %}
+	
+	{% if is_nav %}
+		{% for key, result in result %}
+		{% set index = key %}
+			<div class="graph">
+				{% include "report/generate_tab.twig" %}
+				<table class="navi" style="visibility:hidden;">
+					<caption></caption>
+					<thead>
+						<th></th>
+					{% if result.legend|length > 1 %}
+						{% for key, value in result.legend %}
+							<th>{{ value }}</th>
+						{% endfor %} 
+					{% endif %}
+					</thead>
+					<tbody>
+						<tr>
+						<th></th>
+						{% if result.value|length > 1 %}
+							{% for key, value in result.value %}
+								<td>{{ value }}</td>
+							{% endfor %} 
+						{% endif %}
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<script type="text/javascript">
+			$(".navi:visible").eq("{{ loop.index0 }}").gvChart({
+					chartType: 'PieChart',
+					hideTable:false,
+					gvSettings: {
+						vAxis: {title: 'navigateur'},
+						width: 890,
+						height: 300,
+						backgroundColor: "#F6F2F1",
+						is3D: true,
+						legend: 'bottom'
+					}
+				});
+			</script>
+		{% endfor %}
+	{% elseif is_plot %}
+		{% include "report/generate_tab.twig" %}
+			<table class="tblsite" style="visibility:hidden;">
+				<caption></caption>
+				<thead>
+					<th></th>
+				{% if result.legend|length > 1 %}
+					{% for key, value in result.legend %}
+						<th>{{ value }}</th>
+					{% endfor %} 
+				{% endif %}
+				</thead>
+				<tbody>
+					<tr>
+					<th>{% trans "report:: Connexion" %}</th>
+					{% if result.result.0|length > 1 %}
+						{% for key, value in result.result.0 %}
+							<td>{{ value }}</td>
+						{% endfor %} 
+					{% endif %}
+					</tr>
+				</tbody>
+			</table>
+		<script type="text/javascript">
+			$(".tblsite:visible").gvChart({
+				chartType: 'LineChart',
+				gvSettings: {
+					vAxis: {title: '{% trans "report:: Connexion" %}'},
+					hAxis: {title: '{% trans "report::Heures" %}'},						
+					width: 890,
+					height: 300,
+					backgroundColor: "#F6F2F1"
+				}
+			});
+		</script>
+	{% else %}
+			{% include "report/generate_tab.twig" %}
+	{% endif %}
+{% endblock %}
+

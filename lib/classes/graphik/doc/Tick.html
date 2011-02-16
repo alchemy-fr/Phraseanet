@@ -1,0 +1,188 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Tick</h2><div class="description">
+		<p>
+			La classe <a href="Tick.html">Tick</a> permet de représenter des ticks, petits traits réguliers associés à un axe.
+		</p>
+		<div class="image">
+			<img src="doc/image/ticks-out.png" style="margin-right: 42px" alt="Ticks à l'extérieur">
+			<img src="doc/image/ticks-in.png" alt="Ticks à l'intérieur">
+		</div>
+		<p>
+			De nombreuses méthodes de la classe <a href="Tick.html">Tick</a> ne sont pas documentées,
+			car elles ne sont utilisées qu'en interne par Artichow.
+			Néanmoins, si vous développez Artichow, vous aurez besoin de ces méthodes.
+			N'hésitez donc pas à parcourir le code source de cette classe.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">string</span> <a href="Tick.html#constant.OUT">OUT</a> := <span class="default">0</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">string</span> <a href="Tick.html#constant.IN">IN</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">string</span> <a href="Tick.html#constant.IN_OUT">IN_OUT</a> := <span class="default">2</span>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Tick.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$number</span>, <span class="type">int</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.setInterval">setInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.setNumber">setNumber</a>(<span class="type">int</span> <span class="argument">$number</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.hideFirst">hideFirst</a>(<span class="type">bool</span> <span class="argument">$hideFirst</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.hideLast">hideLast</a>(<span class="type">bool</span> <span class="argument">$hideLast</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Tick.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Vector.html"><span class="type">Vector</span></a> <span class="argument">$vector</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.OUT"></a><span class="access">const</span> <span class="type">string</span> <a href="Tick.html#constant.OUT">OUT</a> := <span class="default">0</span><div class="description">
+				Indique que les ticks doivent être tournés vers l'extérieur.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.IN"></a><span class="access">const</span> <span class="type">string</span> <a href="Tick.html#constant.IN">IN</a> := <span class="default">1</span><div class="description">
+				Indique que les types doivent être tournés vers l'intérieur.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.IN_OUT"></a><span class="access">const</span> <span class="type">string</span> <a href="Tick.html#constant.IN_OUT">IN_OUT</a> := <span class="default">2</span><div class="description">
+				Indique que les ticks sont et tournés vers l'extérieur, et tournés vers l'intérieur.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Tick.html#method.__construct">__construct</a>(<span class="type">int</span> <span class="argument">$number</span>, <span class="type">int</span> <span class="argument">$size</span>)
+	<div class="description">
+				Construit un nouvel objet <a href="Tick.html">Tick</a>.
+				$number représente un nombre de ticks et $size leur taille en pixels.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setStyle"></a><span class="access">public</span> <a href="Tick.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	<div class="description">
+				Change le style des ticks. Peut être <a href="Tick.html#constant.IN">Tick::IN</a>, <a href="Tick.html#constant.OUT">Tick::OUT</a> ou <a href="Tick.html#constant.IN_OUT">Tick::IN_OUT</a>.
+				Dans le premier cas, les ticks seront tournés vers l'intérieur. Dans le second vers l'extérieur et dans le troisième et vers l'extérieur et vers l'intérieur.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="Tick.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur des ticks pour $color.
+				Par défaut, les ticks sont dessinés en noir.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setSize"></a><span class="access">public</span> <a href="Tick.html#method.setSize">setSize</a>(<span class="type">int</span> <span class="argument">$size</span>)
+	<div class="description">
+				Change la taille des ticks pour $size.
+				$size doit être donné en pixels.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setInterval"></a><span class="access">public</span> <a href="Tick.html#method.setInterval">setInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	<div class="description">
+				Change l'intervalle d'affichage des ticks par rapport à leur nombre.
+				Si $interval vaut 1, alors tous les ticks seront affichés.
+				Si $interval vaut 0.5, alors un tick sur deux sera affiché.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Tick.html#method.setNumber">Tick::setNumber()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setNumber"></a><span class="access">public</span> <a href="Tick.html#method.setNumber">setNumber</a>(<span class="type">int</span> <span class="argument">$number</span>)
+	<div class="description">
+				Change le nombre de ticks à afficher pour $number.
+			<div class="see">
+					Voir aussi :
+					<ul><li><a href="Tick.html#method.setInterval">Tick::setInterval()</a></li></ul>
+</div>
+</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Tick.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	<div class="description">
+				Permet de cache ou d'afficher les ticks.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideFirst"></a><span class="access">public</span> <a href="Tick.html#method.hideFirst">hideFirst</a>(<span class="type">bool</span> <span class="argument">$hideFirst</span>)
+	<div class="description">
+				Permet de cache ou d'afficher le premier tick.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hideLast"></a><span class="access">public</span> <a href="Tick.html#method.hideLast">hideLast</a>(<span class="type">bool</span> <span class="argument">$hideLast</span>)
+	<div class="description">
+				Permet de cache ou d'afficher le dernier tick.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.draw"></a><span class="access">public</span> <a href="Tick.html#method.draw">draw</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Vector.html"><span class="type">Vector</span></a> <span class="argument">$vector</span>)
+	<div class="description">
+				Dessine les ticks sur le vecteur $vector.
+			</div>
+<div class="description-bottom"><a href="Tick.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

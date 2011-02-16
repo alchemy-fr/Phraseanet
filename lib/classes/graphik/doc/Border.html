@@ -1,0 +1,154 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Border</h2><div class="description">
+		<p>La classe <a href="Border.html">Border</a> permet de centraliser la gestion des bordures sur Artichow.</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">protected</span> <a href="Color.html"><span class="type">Color</span></a> <a href="Border.html#property.color"><span class="argument">$color</span></a> := <span class="default">new Black</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">int</span> <a href="Border.html#property.style"><span class="argument">$style</span></a> := <span class="default">Line::SOLID</span>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Border.html#property.hide"><span class="argument">$hide</span></a> := <span class="default">FALSE</span>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Border.html#method.__construct">__construct</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span> := <span class="default">new Black</span>, <span class="type">int</span> <span class="argument">$style</span> := <span class="default">Line::SOLID</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Border.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Border.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Border.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Border.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span> := <span class="default">TRUE</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">bool</span> <a href="Border.html#method.visible">visible</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Border.html#method.rectangle">rectangle</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Border.html#method.ellipse">ellipse</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Border.html#method.polygon">polygon</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.color"></a><span class="access">protected</span> <a href="Color.html"><span class="type">Color</span></a> <a href="Border.html#property.color"><span class="argument">$color</span></a> := <span class="default">new Black</span><div class="description">
+				La couleur de la bordure
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.style"></a><span class="access">protected</span> <span class="type">int</span> <a href="Border.html#property.style"><span class="argument">$style</span></a> := <span class="default">Line::SOLID</span><div class="description">
+				Style de la ligne qui compose la bordure.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.hide"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Border.html#property.hide"><span class="argument">$hide</span></a> := <span class="default">FALSE</span><div class="description">
+				Est-ce que la bordure doit être cachée ?
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Border.html#method.__construct">__construct</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span> := <span class="default">new Black</span>, <span class="type">int</span> <span class="argument">$style</span> := <span class="default">Line::SOLID</span>)
+	<div class="description">
+				Déclare une nouvelle bordure de couleur $color et avec pour style $style.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setColor"></a><span class="access">public</span> <a href="Border.html#method.setColor">setColor</a>(<a href="Color.html"><span class="type">Color</span></a> <span class="argument">$color</span>)
+	<div class="description">
+				Change la couleur de la bordure pour $color.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setStyle"></a><span class="access">public</span> <a href="Border.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	<div class="description">
+				Change le style de la bordure pour $style.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Border.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Détermine si la bordure doit être cachée ou non.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.show"></a><span class="access">public</span> <a href="Border.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span> := <span class="default">TRUE</span>)
+	<div class="description">
+				Détermine si la bordure doit être affichée ou non.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.visible"></a><span class="access">public</span> <span class="type">bool</span> <a href="Border.html#method.visible">visible</a>()
+	<div class="description">
+				Retourne TRUE si la bordure doit être affichée, FALSE sinon.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.rectangle"></a><span class="access">public</span> <a href="Border.html#method.rectangle">rectangle</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p1</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p2</span>)
+	<div class="description">
+				Dessine la bordure sous la forme d'un rectangle dont la diagonale s'étend des points $p1 à $p2.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.ellipse"></a><span class="access">public</span> <a href="Border.html#method.ellipse">ellipse</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Point.html"><span class="type">Point</span></a> <span class="argument">$center</span>, <span class="type">int</span> <span class="argument">$width</span>, <span class="type">int</span> <span class="argument">$height</span>)
+	<div class="description">
+				Dessine la bordure sous la forme d'une ellipse de centre $center et de largeur et hauteur respectives $width et $height.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.polygon"></a><span class="access">public</span> <a href="Border.html#method.polygon">polygon</a>(<a href="Driver.html"><span class="type">Driver</span></a> <span class="argument">$driver</span>, <a href="Polygon.html"><span class="type">Polygon</span></a> <span class="argument">$polygon</span>)
+	<ul class="version"><li>
+						Disponible depuis Artichow 1.0.9</li></ul>
+<div class="description">
+				Dessine la bordure comme un polygone entourant celui passé en argument.
+			</div>
+<div class="description-bottom"><a href="Border.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

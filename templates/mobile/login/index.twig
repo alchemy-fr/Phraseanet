@@ -1,0 +1,49 @@
+{% extends "common/index.twig" %}
+
+
+{% block javascript %}
+
+{% endblock %}
+
+{% block stylesheet %}
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="current">
+		<form name="send" action="/login/authenticate.php" method="post" id="authentication">
+	        <div class="toolbar">
+	        	<h1>{{home_title}}</h1>
+	        </div>
+			<script type="text/javascript">
+				{% if errorWarning|striptags != '' %}
+				alert("{{errorWarning|striptags}}");
+				{% endif %}
+				{% if confirmWarning|striptags != '' %}
+				alert("{{confirmWarning|striptags}}");
+				{% endif %}
+			</script>
+			{% if meta_description != '' %}
+       			<div class="info">{{meta_description}}</div>
+			{% endif %}
+            <ul class="rounded">
+				<li>
+					<input autocapitalize="off" autocorrect="off" {% if maintenance == true %}disabled{% endif %} tabindex="1" 
+						placeholder="{% trans 'admin::compte-utilisateur identifiant' %}" name="login" id="login" value="" type="text" />
+				</li>
+				<li>
+					<input autocapitalize="off" autocorrect="off" {% if maintenance == true %}disabled{% endif %} tabindex="2" 
+						placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" name="pwd" id="pwd" value="" type="password" />
+				</li>
+            </ul>
+			<input type="hidden" name="app" value="{{module}}"/>
+            <a style="margin:0 10px;color:rgba(0,0,0,.9)" href="#" class="whiteButton" {% if maintenance == false %}onclick="$('#authentication').submit();"{% endif %}>{% trans 'login:: connexion' %}</a>
+    	</form>
+        <ul class="rounded">
+        	{% if login.get_password_link != ''%}
+				<li class="forward">{{login.get_password_link}}</li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}

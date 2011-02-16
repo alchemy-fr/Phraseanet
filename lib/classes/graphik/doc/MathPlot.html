@@ -1,0 +1,124 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class MathPlot</h2><div class="extends"><ul>
+<li><a href="Component.html">Component</a></li>
+<ul><li>MathPlot</li></ul>
+</ul></div><div class="description">
+		<p>
+			Cette classe permet de représenter simplement des fonctions f(x) sur un graphique.
+			L'archive de Artichow contient plusieurs exemples pour vous aider dans la conception de ces graphiques.
+		</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <a href="Grid.html"><span class="type">Grid</span></a> <a href="MathPlot.html#property.grid"><span class="argument">$grid</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Axis.html"><span class="type">Axis</span></a> <a href="MathPlot.html#property.xAxis"><span class="argument">$xAxis</span></a>
+</li>
+<li>
+<span class="access">public</span> <a href="Axis.html"><span class="type">Axis</span></a> <a href="MathPlot.html#property.yAxis"><span class="argument">$yAxis</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="MathPlot.html#method.__construct">__construct</a>(<span class="type">float</span> <span class="argument">$xMin</span>, <span class="type">float</span> <span class="argument">$xMax</span>, <span class="type">float</span> <span class="argument">$yMax</span>, <span class="type">float</span> <span class="argument">$yMin</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="MathPlot.html#method.setInterval">setInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="MathPlot.html#method.add">add</a>(<a href="MathFunction.html"><span class="type">MathFunction</span></a> <span class="argument">$function</span>, <span class="type">string</span> <span class="argument">$name</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$type</span> := <span class="default">Legend::LINE</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.grid"></a><span class="access">public</span> <a href="Grid.html"><span class="type">Grid</span></a> <a href="MathPlot.html#property.grid"><span class="argument">$grid</span></a><div class="description">
+				Représente la grille de fond du graphique.
+			</div>
+<div class="description-bottom"><a href="MathPlot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.xAxis"></a><span class="access">public</span> <a href="Axis.html"><span class="type">Axis</span></a> <a href="MathPlot.html#property.xAxis"><span class="argument">$xAxis</span></a><div class="description">
+				Représente l'axe des abscisses.
+			</div>
+<div class="description-bottom"><a href="MathPlot.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.yAxis"></a><span class="access">public</span> <a href="Axis.html"><span class="type">Axis</span></a> <a href="MathPlot.html#property.yAxis"><span class="argument">$yAxis</span></a><div class="description">
+				Représente l'axe des ordonnées.
+			</div>
+<div class="description-bottom"><a href="MathPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="MathPlot.html#method.__construct">__construct</a>(<span class="type">float</span> <span class="argument">$xMin</span>, <span class="type">float</span> <span class="argument">$xMax</span>, <span class="type">float</span> <span class="argument">$yMax</span>, <span class="type">float</span> <span class="argument">$yMin</span>)
+	<div class="description">
+				Construit le graphique.
+				L'axe des X va des valeurs $xMin à $xMax tandis que l'axe de Y va des valeurs $yMin à $yMax.
+<pre>
+
+&lt;?php
+
+require_once "MathPlot.class.php";
+
+$graph = new <a href="Graph.html">Graph</a>(300, 300);
+
+
+$plot = new <a href="MathPlot.html">MathPlot</a>(-3, 3, 3, -3);
+$plot-&gt;<a href="MathPlot.html#method.setInterval">setInterval</a>(0.1);
+
+// On dessine cos(x)
+$function = new <a href="MathFunction.html">MathFunction</a>('cos');
+$plot-&gt;<a href="MathPlot.html#method.add">add</a>($function);
+	
+$graph-&gt;<a href="Graph.html#method.add">add</a>($plot);
+$graph-&gt;<a href="Graph.html#method.draw">draw</a>();
+
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="MathPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setInterval"></a><span class="access">public</span> <a href="MathPlot.html#method.setInterval">setInterval</a>(<span class="type">int</span> <span class="argument">$interval</span>)
+	<div class="description">
+				Change l'interval sur lequel sont calculées les valeurs affichées sur le graphique.
+				Par défaut, cet interval est de 1, c'est-à-dire que Artichow calcule f(x) pour toutes les valeurs entières de x.
+			</div>
+<div class="description-bottom"><a href="MathPlot.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.add"></a><span class="access">public</span> <a href="MathPlot.html#method.add">add</a>(<a href="MathFunction.html"><span class="type">MathFunction</span></a> <span class="argument">$function</span>, <span class="type">string</span> <span class="argument">$name</span> := <span class="default">NULL</span>, <span class="type">int</span> <span class="argument">$type</span> := <span class="default">Legend::LINE</span>)
+	<div class="description">
+				Ajoute une fonction mathématique au graphique.
+				Sur la légende, la fonction aura pour nom $name et le type de légende utilisé sera $type (<a href="Legend.html#constant.LINE">Legend::LINE</a>, <a href="Legend.html#constant.BACKGROUND">Legend::BACKGROUND</a> ou encore <a href="Legend.html#constant.MARK">Legend::MARK</a>).
+				Si vous ne souhaitez pas associer de légende à cette fonction, laissez l'argument $name à NULL.
+			</div>
+<div class="description-bottom"><a href="MathPlot.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

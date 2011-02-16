@@ -1,0 +1,11 @@
+{% block setting_date %}
+	<div class="setting_title">{% trans "report:: 1 - Periode" %}</div>
+			<ul class="rounded">
+			<li>
+				<input type="text" class="format-d-m-y divider-dash highlight-days-12 no-fade add_date"  name="dmin" value="{{ date.dmin }}" size="10" readonly="readonly"/>
+			</li>
+			<li>
+				<input type="text" class="format-d-m-y divider-dash highlight-days-12 no-fade add_date"  name="dmax" value="{{ date.dmax }}" size="10" readonly="readonly"/>
+			</li>
+		</ul>
+{% endblock %}

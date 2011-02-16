@@ -1,0 +1,134 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Point</h2><div class="extends"><ul>
+<li><a href="Shape.html">Shape</a></li>
+<ul><li>Point</li></ul>
+</ul></div><div class="description">
+		<p>La classe <a href="Point.html">Point</a> permet de manipuler des points dans un espace de deux dimensions.</p>
+	</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="properties">
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Point.html#property.x"><span class="argument">$x</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Point.html#property.y"><span class="argument">$y</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Point.html#method.__construct">__construct</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Point.html#method.setX">setX</a>(<span class="type">float</span> <span class="argument">$x</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Point.html#method.setY">setY</a>(<span class="type">float</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Point.html#method.setLocation">setLocation</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">array</span> <a href="Point.html#method.getLocation">getLocation</a>()
+	</li>
+<li>
+<span class="access">public</span> <span class="type">float</span> <a href="Point.html#method.getDistance">getDistance</a>(<a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Point.html#method.move">move</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="property">
+<a id="property.x"></a><span class="access">public</span> <span class="type">float</span> <a href="Point.html#property.x"><span class="argument">$x</span></a><div class="description">
+				La position du point sur l'axe des abscisses.
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.y"></a><span class="access">public</span> <span class="type">float</span> <a href="Point.html#property.y"><span class="argument">$y</span></a><div class="description">
+				La position du point sur l'axe des ordonnées.
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Point.html#method.__construct">__construct</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	<div class="description">
+				Déclare un nouveau point avec des coordonnées x et y.
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setX"></a><span class="access">public</span> <a href="Point.html#method.setX">setX</a>(<span class="type">float</span> <span class="argument">$x</span>)
+	<div class="description">
+				Change la position X du point.
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setY"></a><span class="access">public</span> <a href="Point.html#method.setY">setY</a>(<span class="type">float</span> <span class="argument">$y</span>)
+	<div class="description">
+				Change la position Y du point.
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setLocation"></a><span class="access">public</span> <a href="Point.html#method.setLocation">setLocation</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	<div class="description">
+				Change la position du point pour les valeurs x et y passées en paramètre.
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getLocation"></a><span class="access">public</span> <span class="type">array</span> <a href="Point.html#method.getLocation">getLocation</a>()
+	<div class="description">
+				Retourne la position du point dans un tableau à deux valeurs.
+<pre>
+
+&lt;?php
+$p = new Point(3, 7);
+list($x, $y) = $p-&gt;getLocation(); // array(3, 7)
+?&gt;
+
+</pre>
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getDistance"></a><span class="access">public</span> <span class="type">float</span> <a href="Point.html#method.getDistance">getDistance</a>(<a href="Point.html"><span class="type">Point</span></a> <span class="argument">$p</span>)
+	<div class="description">
+				Retourne la distance entre le point et le point $p.
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.move"></a><span class="access">public</span> <a href="Point.html#method.move">move</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	<div class="description">
+				Change la position du point en ajoutant à ses coordonnées actuelles les valeurs x et y passées en paramètre.
+			</div>
+<div class="description-bottom"><a href="Point.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>

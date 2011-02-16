@@ -1,0 +1,70 @@
+{% import 'common/thumbnail.twig' as thumbnail %}
+
+<div>
+	<div>
+		<button class="order_launcher">&lt; {% trans 'Retour aux commandes' %}</button>
+	</div>
+	<div>
+		<table>
+			<tr>
+				<td>{% trans %}Destinataire{% endtrans %}</td>
+				<td>{{ order.user.display_name }}({{ order.user.email }})</td>
+			</tr>
+			<tr>
+				<td>{% trans %}Date de commande{% endtrans %}</td>
+				<td>{{ order.created_on|phraseadate }}</td>
+			</tr>
+			<tr>
+				<td>{% trans %}Deadline{% endtrans %}</td>
+				<td>{{ order.deadline|phraseadate }}</td>
+			</tr>
+			<tr>
+				<td>{% trans %}Utilisation prevue{% endtrans %}</td>
+				<td>{{ order.usage }}</td>
+			</tr>
+			<tr>
+				<td>{% trans %}Nombre total d'element commandes{% endtrans %}</td>
+				<td>{{ order.total }}</td>
+			</tr>
+		</table>
+	</div>
+	<div>
+		{% trans 'Il se peux que vous ne voyez pas tous les elements. Vous ne verrez que les  elements correspondants aux collections sur lesquelles vous gerez les commandes' %}
+	</div>
+	<div>
+		<div>
+			{% trans 'Selectionnez des documents et ' %}
+			<button class="send">Envoyer</button>
+			<button class="deny">Refuser</button>
+			<img src="/skins/icons/loader000000.gif" class="activity_indicator" style="display:none;"/>
+		</div>
+		<div class="order_list">
+			{% for order_element_id,element in order.elements %}
+				<div id="order_wrapper_{{order.id}}_{{element.base_id}}_{{element.record_id}}" class="ui-corner-all order_wrapper {% if element.order_master_id == false %}selectable{% endif %}">
+					<div style="position:absolute;top:0;right:0">
+						{% if element.order_master_id %}
+							{% set name = element.order_master_name %}
+							{% if element.deny == 1 %}
+								{% set title %}
+									{% trans %}Document refuse par {{name}} {% endtrans %}
+								{% endset %}
+								{% set title_send %}
+									{% trans %}Forcer l'envoi du document{% endtrans %}
+								{% endset %}
+								<img style="cursor:help;" src="/skins/icons/delete.png" title="{{title|e}}" />
+								<img style="cursor:pointer;" class="force_sender" src="/skins/icons/reload.png" title="{{title_send|e}}" />
+							{% else %}
+								{% set title %}
+									{% trans %}Document envoye par {{name}} {% endtrans %}
+								{% endset %}
+								<img style="cursor:help;" src="/skins/icons/ok.png" title="{{title|e}}" />
+							{% endif %}
+						{% endif %}
+					</div>
+					{{ thumbnail.format(element.thumbnail,80) }}
+					<input type="hidden" name="order_element_id" value="{{order_element_id}}"/>
+				</div>
+			{% endfor %}
+		<div>
+	<div>
+</div>

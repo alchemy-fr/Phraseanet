@@ -1,0 +1,13 @@
+- message d'erreur si MING n'est pas installé
+
+- setLabelPrecision a un booleen pour déterminer s'il faut remplir avec des zéros ou non
+
+- Label => TextBox
+- Excel/Spider/Splines/Bezier
+
+- doc de Pattern
+- bug de la grille
+- pouvoir tracer des lignes verticales et horizontales à n'importe quel endroit sur les Plots
+- avant de parler de SimpleLinePlot, ajouter une classe CommonLinePlot, dont dérivent tous les LinePlot
+
+- faire un mode auto pour les Pie (au delà d'un certain nombre de parts, grouper le reste sous l'étiquette 'Divers' (choisie par le user))

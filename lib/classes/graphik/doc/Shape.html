@@ -1,0 +1,177 @@
+<html>
+	<head>
+		<title>Documentation</title>
+		<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+		<link rel='stylesheet' href='style.css' />
+	</head>
+
+	<body>
+		<div align='center'>
+		<table cellpadding='0' cellspacing='0' id='contenu' class='round' style='width: 80%; margin-bottom: 20px'>
+			<tr>
+				<td class='borderhg'>&nbsp;</td>
+				<td class='borderh'>&nbsp;</td>
+				<td class='cornerhd'></td>
+			</tr>
+			<tr>
+				<td class='borderg'>&nbsp;</td>
+				<td><a id="top"></a><h2> Class Shape</h2><div class="description">
+		<p>La classe <a href="Shape.html">Shape</a> permet de représenter toutes sortes de formes sur Artichow.</p>
+	</div><div class="inherit">
+			Les classes suivantes dérivent de Shape :
+				<ul>
+<li><a href="Point.html">Point</a></li>
+<li><a href="Line.html">Line</a></li>
+<li><a href="Polygon.html">Polygon</a></li>
+</ul>
+</div><ul class="links"><li><a href="index.html">Retourner voir la liste de toutes les classes</a></li></ul><h2>Méthodes et propriétés</h2><ul class="constants">
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shape.html#constant.SOLID">SOLID</a> := <span class="default">1</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shape.html#constant.DOTTED">DOTTED</a> := <span class="default">2</span>
+</li>
+<li>
+<span class="access">const</span> <span class="type">int</span> <a href="Shape.html#constant.DASHED">DASHED</a> := <span class="default">3</span>
+</li>
+</ul><ul class="properties">
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Shape.html#property.style"><span class="argument">$style</span></a>
+</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Shape.html#property.thickness"><span class="argument">$thickness</span></a>
+</li>
+<li>
+<span class="access">protected</span> <span class="type">bool</span> <a href="Shape.html#property.hide"><span class="argument">$hide</span></a>
+</li>
+</ul><ul class="methods">
+<li>
+<span class="access">public</span> <a href="Shape.html#method.__construct">__construct</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Shape.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Shape.html#method.getStyle">getStyle</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Shape.html#method.setThickness">setThickness</a>(<span class="type">int</span> <span class="argument">$thickness</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">int</span> <a href="Shape.html#method.getThickness">getThickness</a>()
+	</li>
+<li>
+<span class="access">public</span> <a href="Shape.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	</li>
+<li>
+<span class="access">public</span> <a href="Shape.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span>)
+	</li>
+<li>
+<span class="access">public</span> <span class="type">bool</span> <a href="Shape.html#method.isHidden">isHidden</a>()
+	</li>
+</ul><h2>Documentation</h2><ul class="doc">
+<li class="constant">
+<a id="constant.SOLID"></a><span class="access">const</span> <span class="type">int</span> <a href="Shape.html#constant.SOLID">SOLID</a> := <span class="default">1</span><div class="description">
+				Désigne une ligne continue.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.DOTTED"></a><span class="access">const</span> <span class="type">int</span> <a href="Shape.html#constant.DOTTED">DOTTED</a> := <span class="default">2</span><div class="description">
+				Désigne une ligne pointillée.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="constant">
+<a id="constant.DASHED"></a><span class="access">const</span> <span class="type">int</span> <a href="Shape.html#constant.DASHED">DASHED</a> := <span class="default">3</span><div class="description">
+				Désigne une ligne avec de larges pointillés.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.style"></a><span class="access">public</span> <span class="type">int</span> <a href="Shape.html#property.style"><span class="argument">$style</span></a><div class="description">
+				Décrit le style du pourtour de la forme. Peut être <a href="Shape.html#constant.DOTTED">Shape::DOTTED</a>, <a href="Shape.html#constant.SOLID">Shape::SOLID</a> ou <a href="Shape.html#constant.DASHED">Shape::DASHED</a>.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.thickness"></a><span class="access">public</span> <span class="type">int</span> <a href="Shape.html#property.thickness"><span class="argument">$thickness</span></a><div class="description">
+				L'épaisseur du pourtour de la forme.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="property">
+<a id="property.hide"></a><span class="access">protected</span> <span class="type">bool</span> <a href="Shape.html#property.hide"><span class="argument">$hide</span></a><div class="description">
+				Déterminer si la forme doit être cachée ou non.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.__construct"></a><span class="access">public</span> <a href="Shape.html#method.__construct">__construct</a>(<span class="type">float</span> <span class="argument">$x</span>, <span class="type">float</span> <span class="argument">$y</span>)
+	<div class="description">
+				Déclare un nouveau point avec des coordonnées x et y.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setStyle"></a><span class="access">public</span> <a href="Shape.html#method.setStyle">setStyle</a>(<span class="type">int</span> <span class="argument">$style</span>)
+	<div class="description">
+				Change le style du pourtour de la forme. Peut être <a href="Shape.html#constant.SOLID">Shape::SOLID</a> pour un pourtour continu, <a href="Shape.html#constant.DOTTED">Shape::DOTTED</a> pour un pourtour pointillé ou encore <a href="Shape.html#constant.DASHED">Shape::DASHED</a>.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getStyle"></a><span class="access">public</span> <span class="type">int</span> <a href="Shape.html#method.getStyle">getStyle</a>()
+	<div class="description">
+				Retourne le style actuel de la forme.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.setThickness"></a><span class="access">public</span> <a href="Shape.html#method.setThickness">setThickness</a>(<span class="type">int</span> <span class="argument">$thickness</span>)
+	<div class="description">
+				Change l'épaisseur du pourtour de la forme. Cette épaisseur doit être donnée en pixels.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.getThickness"></a><span class="access">public</span> <span class="type">int</span> <a href="Shape.html#method.getThickness">getThickness</a>()
+	<div class="description">
+				Retourne l'épaisseur du pourtour de la forme.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.hide"></a><span class="access">public</span> <a href="Shape.html#method.hide">hide</a>(<span class="type">bool</span> <span class="argument">$hide</span>)
+	<div class="description">
+				Détermine si la forme doit être cachée ou non.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.show"></a><span class="access">public</span> <a href="Shape.html#method.show">show</a>(<span class="type">bool</span> <span class="argument">$show</span>)
+	<div class="description">
+				Détermine si la forme doit être affichée ou non.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+<li class="method">
+<a id="method.isHidden"></a><span class="access">public</span> <span class="type">bool</span> <a href="Shape.html#method.isHidden">isHidden</a>()
+	<div class="description">
+				Retourne TRUE si la forme est cachée, FALSE si elle est visible.
+			</div>
+<div class="description-bottom"><a href="Shape.html#top">Remonter</a></div>
+</li>
+</ul>
+</td>
+				<td class='borderd'>&nbsp;</td>
+			</tr>
+			<tr>
+				<td class='cornerbg'></td>
+				<td class='borderb'>&nbsp;</td>
+				<td class='cornerbd'></td>
+			</tr>
+		</table>
+		</div>
+	</body>
+</html>
