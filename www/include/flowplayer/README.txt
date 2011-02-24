@@ -1,5 +1,95 @@
 Version history:
 
+3.2.6
+-----
+- linkUrl should now work better with popup blockers: http://code.google.com/p/flowplayer-core/issues/detail?id=31
+- new linkWindow value "_popup" opens the linked page in a popup browser window
+- added new onClipResized event
+- Added new onUnload event, can be only listened in Flash and not triggered to JS
+- API: Added new url property to plugin objects
+Fixes:
+- it was not possible to call play() in an onFinish listener
+- fix to preserve the infoObject for custom netStream and netConnection clients in cases where the infoObject is a
+  primitive object without properties
+- does not show the error dialog in the debugger player when showErrors: false
+- fixed to correctly handle xx.ca subdomains when validating the license key
+- a custom logo is now sized correctly according to the configured size
+- does not show the buffer animation any more when the player receives the onBufferEmpty message from the netStream.
+  The animation was unnecessarily shown in some situations.
+- fixed #155. added new urlEncoding property to Clip for url ncoding ut8 urls
+
+3.2.5
+-----
+- added new scaling option 'crop' that resizes to fill all available space, cropping on top/bottom or left/right
+- improvements to RSS file parsing
+- Now displays a hand cursor when a linkUrl is used in clips
+
+3.2.4
+-----
+- new flowplayer.js version, with Apple iDevice fixes
+
+3.2.3
+-----
+- a new 'type' clip property exposed to JS
+- changed the clip type property to better work as a read-write property. Now accepts 'video', 'audio',
+  'image' and 'api' as configuration values.
+- moved parallel rtmp connection mechanism from the RTMP plugin to Core so other plugins can use it (ie: securestreaming)
+Fixes:
+- fixed #112, wrong URL computation when using clip with relative URL on a page with a / after a # in its url
+- fixed #111, wrong behavior of pre/post roll images with duration 0
+- fixed multiple license keys logic
+Fixes:
+- correct verification of license keys in *.ca domains
+- fix to make playback to always reach end of video
+- fixed resuming of live streams
+
+3.2.2
+-----
+Fixes:
+- Now recognizes following kind of urls as audio clips: 'mp3:audiostreamname' (ulrs with mp3 prefix and no extension)
+- Now ignores the duration from metadata if we already got one. Fix required for pseudostreaming
+- Fix to reuse buffered data when replaying a clip
+
+3.2.1
+---------
+- Support for RTMP redirects (tested with Wowza loadbalancing)
+- Fixed video size when no size info available in clip metadata
+
+Fixes:
+- Fix to correctly detect if the player SWF name contains a version number and if it does also use the version number
+when it automatically loads the controls plugin.
+
+3.2.0
+-----
+- canvas, controlbar and the content plugin backgound color and border color can be now given with rgb() and rgba() CSS style syntax
+- Added onMouseOver() and onMouseOut() listener registration methods to the Flowplayer API
+- enhancements to RSS playlist. Converted parsing to E4X, yahoo media and flowplayer namespace support.
+- added feature to obtain bitrate and dimension information to a new clip custom property "bitrates" for future support for bitrate choosing.
+- added getter for playerSwfName config
+- if clip.url has the string "mp3:" in it, the clip.type will report 'audio'
+- added setKeyboardShortcutsEnabled(), addKeyListener(), removeKeyListener() to FlowplayerBase
+Fixes:
+- onSeek() was not fired when seeking while paused and when using RTMP. An extra onStart was fired too.
+- fireErrorExternal() was not working properly with an error PlayerEvent
+- countPlugins() was throwing an error when a plugin was not found
+- external swf files were not scaled properly
+- the logo was unnecessary shown when going fullscreen if logo.displayTime was being used
+- added a loadPluginWithConfig method to FlowplayerBase, accessible from javascript. Fixed double onload callback call.
+- now handles cuepoint parameters injected using the Adobe Media Encoder
+- showPlugin was not working when config.play was null
+- handles 3-part duration values included in FLV metadata, like "500.123.123"
+- player wasn't always reaching end of video
+- fixed broken buffering: false
+- fixed event dispatching when embedding flowplayer without flowplayer.js (=without playlist config field)
+- fixed safari crashes when unloading player
+- fixed scrubber behaviour with a playlist containing 2 images (or swf) in a row
+- fixed errors in logs when using an RSS playlist
+- fixed OverlayPlayButton that was showing even if it shouldn't on some cases
+- fixed wrong behavior when onBeforeFinish was returning false within playlists
+- /!\ Don't use the fadeIn / fadeOut controlbar's API while using autoHide.
+- fixed play state button with images
+- fixed splash image flickering
+
 3.1.5
 -----
 Fixes:
@@ -87,7 +177,7 @@ Bug fixes:
   because the server does not send metadata if replaying the same stream.
 - the scrubber is disabled if the clip is not seekable in the first frame: http://flowplayer.org/forum/8/16526
   By default if the clip has one of following extensions (the typical flash video extensions) it is seekable
-  in the first frame: 'f4b', 'f4p', 'f4v', 'flv'. Added new clip property seekableOnBegin that can be used to override the default.  
+  in the first frame: 'f4b', 'f4p', 'f4v', 'flv'. Added new clip property seekableOnBegin that can be used to override the default.
 
 3.0.6
 -----
@@ -107,7 +197,7 @@ Fixes:
   // disable the play button and the buffering animation
   play: null
   // disable the buffering animation
-  buffering: null 
+  buffering: null
 - Added possibility to seek when in the buffering state: http://flowplayer.org/forum/3/13896
 - Added copyright notices and other GPL required entries to the user interface
 
@@ -147,7 +237,7 @@ Fixes:
 - now displays a live feed even when the RTMP server does not send any metadata and the onStart method is not therefore dispatched
 - added onMetaData clip event
 - fixed 'orig' scaling: the player went to 'fit' scaling after coming back from fullscreen. This is now fixed and the original dimensions are preserved in non-fullscreen mode.
-- cuepoint times are now given in milliseconds, the firing precision is 100 ms. All cuepoint times are rounded to the nearest 100 ms value (for example 1120 rounds to 1100) 
+- cuepoint times are now given in milliseconds, the firing precision is 100 ms. All cuepoint times are rounded to the nearest 100 ms value (for example 1120 rounds to 1100)
 - backgroundGradient was drawn over the background image in the canvas and in the content and controlbar plugins. Now it's drawn below the image.
 - added cuepointMultiplier property to clips. This can be used to multiply the time values read from cuepoint metadata embedded into video files.
 - the player's framerate was increased to 24 FPS, makes all animations smoother
@@ -194,7 +284,7 @@ RC4
 - Should not stop playback too early before the clip is really completed
 - The START event is now delayed so that the metadata is available when the event is fired, METADATA event was removed,
   new event BEGIN that is dispatched when the playback has been successfully started. Metadata is not normally
-  available when BEGIN is fired. 
+  available when BEGIN is fired.
 
 RC3
 ---

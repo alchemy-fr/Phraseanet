@@ -1,0 +1,74 @@
+// ====== compiler un .rc avec C++ 2008
+
+	clic-droit / propriétés sur phrasea2.rc dans le projet
+	resources/général/autre rep. include :
+
+	"C:\Program Files\Microsoft Visual Studio\VC98\MFC\Include";./res
+
+
+
+
+
+// ====== changer automatiquement le num de version dans le .rc
+
+	dans  'gestionnaire de propriétés' / 'custom props' / 'macros utilisateur'
+		clic-droit sur le nom du projet / ajouter une feulle de propriétés de projet : nom=customprops
+		
+		ouvrir customprops, puis dans 'propriétéc communes' / 'macros utilisateurs', ajouter
+		PHVERSION = x,y,z,t
+		PDOTVERSION = x.y.z.t
+		
+
+	dans 'propriétés du projet' (alt+F7) / 'propriétés de configuration'
+		dans 'c/c++' / 'définitions du préprocesseur' : ajouter
+			PHVERSION=$(PHVERSION)
+			PHDOTVERSION=$(PHDOTVERSION)
+		dans 'ressources' / 'définitions du préprocesseur' : ajouter
+			PHVERSION=$(PHVERSION)
+			PHDOTVERSION=$(PHDOTVERSION)
+
+	dans _version.h :
+
+		//======================== _WIN32 (visual C++ 2008) : ===================
+		//
+		// le numéro de version est défini dans l'onglet
+		// 'gestionnaire de propriétés' / 'custom props' / 'macros utilisateur'
+		//
+		// ATTENTION : en cas de changement de version, forcer la recompilation
+		// de phrasea2.rc avant de recompiler le projet
+		//
+		#define QUOTE(x) _QUOTE(x)
+		#define _QUOTE(a) #a 
+		//
+		//=======================================================================
+		//============= _DEBIAN ;  _GENTOO ; _OS-X_10.4_i386 : ==================
+		//
+		// le numéro de version est défini ici :
+		//
+		#ifndef PHDOTVERSION
+		#define PHDOTVERSION x.y.z.t
+		#endif
+		//
+		//=======================================================================
+
+
+
+	dans le .rc (éditer comme text)
+
+		#include "..\..\src\_version.h"
+		....
+		 FILEVERSION PHVERSION 			// PHVERSION : défini dans macro utilisateurs
+		 PRODUCTVERSION PHVERSION 		// PHVERSION : défini dans macro utilisateurs
+		....
+			VALUE "FileVersion", QUOTE(PHDOTVERSION) 		// PHDOTVERSION : défini dans macro utilisateurs
+		....
+			VALUE "ProductVersion", QUOTE(PHDOTVERSION) 	// PHDOTVERSION : défini dans macro utilisateurs
+		....
+
+
+		
+// ======= changer le nom du fichier généré en fonction de la version
+
+	dans 'propriétés du projet' / 'éditeur de liens' / 'général' / 'fichier de sortie'
+	
+		.\$(OutDir)/php_phrasea2_UTF-8_$(PHDOTVERSION).dll

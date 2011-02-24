@@ -1,0 +1,6 @@
+# Microsoft Developer Studio Generated Dependency File, included by outline.mak
+
+.\outline.c : \
+	"..\lib\expat.h"\
+	"..\lib\expat_external.h"\
+	

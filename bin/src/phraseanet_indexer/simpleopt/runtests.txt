@@ -1,0 +1,236 @@
+ 
+fullSample -d -e -f -g -flag --flag 
+option:  2, text: '-d'
+option:  3, text: '-e'
+option:  4, text: '-f'
+option:  5, text: '-g'
+option:  6, text: '-flag'
+option:  7, text: '--flag'
+ 
+fullSample -s SEP1 -sep SEP2 --sep SEP3 
+option:  8, text: '-s', arg: 'SEP1'
+option:  9, text: '-sep', arg: 'SEP2'
+option: 10, text: '--sep', arg: 'SEP3'
+ 
+fullSample -s -s SEP1 -sep SEP2 --sep SEP3 
+Invalid argument data: '-s' (use --help to get command line help)
+option:  8, text: '-s', arg: 'SEP1'
+option:  9, text: '-sep', arg: 'SEP2'
+option: 10, text: '--sep', arg: 'SEP3'
+ 
+fullSample --noerr -s -s SEP1 -sep SEP2 --sep SEP3 
+option:  8, text: '-s', arg: '-s'
+option:  9, text: '-sep', arg: 'SEP2'
+option: 10, text: '--sep', arg: 'SEP3'
+file  0: 'SEP1'
+ 
+fullSample FILE0 -s SEP1 FILE1 -sep SEP2 FILE2 --sep SEP3 FILE3 
+option:  8, text: '-s', arg: 'SEP1'
+option:  9, text: '-sep', arg: 'SEP2'
+option: 10, text: '--sep', arg: 'SEP3'
+file  0: 'FILE0'
+file  1: 'FILE1'
+file  2: 'FILE2'
+file  3: 'FILE3'
+ 
+fullSample FILE0 -s=SEP1 FILE1 -sep=SEP2 FILE2 --sep=SEP3 FILE3 
+option:  8, text: '-s', arg: 'SEP1'
+option:  9, text: '-sep', arg: 'SEP2'
+option: 10, text: '--sep', arg: 'SEP3'
+file  0: 'FILE0'
+file  1: 'FILE1'
+file  2: 'FILE2'
+file  3: 'FILE3'
+ 
+fullSample --pedantic FILE0 -s=SEP1 FILE1 -sep=SEP2 FILE2 --sep=SEP3 FILE3 
+Invalid argument format: '-s' (use --help to get command line help)
+Invalid argument format: '-sep' (use --help to get command line help)
+Invalid argument format: '--sep' (use --help to get command line help)
+file  0: 'FILE0'
+file  1: 'FILE1'
+file  2: 'FILE2'
+file  3: 'FILE3'
+ 
+fullSample -c=COM1 -com=COM2 --com=COM3 
+option: 11, text: '-c', arg: 'COM1'
+option: 12, text: '-com', arg: 'COM2'
+option: 13, text: '--com', arg: 'COM3'
+ 
+fullSample --shortarg -cCOM 
+option: 11, text: '-c', arg: 'COM'
+ 
+fullSample --shortarg -cCOM1 -c=COM2 
+option: 11, text: '-c', arg: 'COM1'
+option: 11, text: '-c', arg: 'COM2'
+ 
+fullSample --shortarg --clump -defgcCOM1 -c=COM2 
+option:  2, text: '-d'
+option:  3, text: '-e'
+option:  4, text: '-f'
+option:  5, text: '-g'
+option: 11, text: '-c', arg: 'COM1'
+option: 11, text: '-c', arg: 'COM2'
+ 
+fullSample -o -opt --opt -o=OPT1 -opt=OPT2 --opt=OPT3 
+option: 14, text: '-o'
+option: 15, text: '-opt'
+option: 16, text: '--opt'
+option: 14, text: '-o', arg: 'OPT1'
+option: 15, text: '-opt', arg: 'OPT2'
+option: 16, text: '--opt', arg: 'OPT3'
+ 
+fullSample --shortarg -oOPT1 
+option: 14, text: '-o', arg: 'OPT1'
+ 
+fullSample -man -mand -mandy -manda -mandat -mandate 
+option: 17, text: '-man'
+Option matched multiple strings: '-mand' (use --help to get command line help)
+option: 18, text: '-mandy'
+option: 19, text: '-mandate'
+option: 19, text: '-mandate'
+option: 19, text: '-mandate'
+ 
+fullSample --man --mand --mandy --manda --mandat --mandate 
+option: 20, text: '--man'
+Option matched multiple strings: '--mand' (use --help to get command line help)
+option: 21, text: '--mandy'
+option: 22, text: '--mandate'
+option: 22, text: '--mandate'
+option: 22, text: '--mandate'
+ 
+fullSample --exact -man -mand -mandy -manda -mandat -mandate 
+option: 17, text: '-man'
+Unrecognized option: '-mand' (use --help to get command line help)
+option: 18, text: '-mandy'
+Unrecognized option: '-manda' (use --help to get command line help)
+Unrecognized option: '-mandat' (use --help to get command line help)
+option: 19, text: '-mandate'
+ 
+fullSample FILE0 FILE1 
+file  0: 'FILE0'
+file  1: 'FILE1'
+ 
+fullSample --multi0 --multi1 ARG1 --multi2 ARG1 ARG2 
+--multi0: expecting 0 args
+--multi1: expecting 1 args
+MultiArg 0: ARG1
+--multi2: expecting 2 args
+MultiArg 0: ARG1
+MultiArg 1: ARG2
+ 
+fullSample FILE0 --multi0 FILE1 --multi1 ARG1 FILE2 --multi2 ARG1 ARG2 FILE3 
+--multi0: expecting 0 args
+--multi1: expecting 1 args
+MultiArg 0: ARG1
+--multi2: expecting 2 args
+MultiArg 0: ARG1
+MultiArg 1: ARG2
+file  0: 'FILE0'
+file  1: 'FILE1'
+file  2: 'FILE2'
+file  3: 'FILE3'
+ 
+fullSample FILE0 --multi 0 FILE1 --multi 4 ARG1 ARG2 ARG3 ARG4 FILE3 
+--multi: expecting 0 args
+--multi: expecting 4 args
+MultiArg 0: ARG1
+MultiArg 1: ARG2
+MultiArg 2: ARG3
+MultiArg 3: ARG4
+file  0: 'FILE0'
+file  1: 'FILE1'
+file  2: 'FILE3'
+ 
+fullSample --multi 0 
+--multi: expecting 0 args
+ 
+fullSample --multi 1 
+--multi: expecting 1 args
+Required argument is missing: '--multi' (use --help to get command line help)
+ 
+fullSample FILE0 --multi 1 
+--multi: expecting 1 args
+Required argument is missing: '--multi' (use --help to get command line help)
+file  0: 'FILE0'
+ 
+fullSample /-sep SEP1 
+file  0: '\-sep'
+file  1: 'SEP1'
+ 
+fullSample /sep SEP1 
+option:  9, text: '-sep', arg: 'SEP1'
+ 
+fullSample --noslash /sep SEP1 
+file  0: '\sep'
+file  1: 'SEP1'
+ 
+fullSample --multi 1 -sep 
+--multi: expecting 1 args
+Invalid argument data: '--multi' (use --help to get command line help)
+Required argument is missing: '-sep' (use --help to get command line help)
+ 
+fullSample --noerr --multi 1 -sep 
+--multi: expecting 1 args
+MultiArg 0: -sep
+ 
+fullSample open file1 read file2 write file3 close file4 zip file5 unzip file6 
+option: 23, text: 'open'
+option: 24, text: 'read'
+option: 25, text: 'write'
+option: 26, text: 'close'
+option: 27, text: 'zip'
+option: 28, text: 'unzip'
+file  0: 'file1'
+file  1: 'file2'
+file  2: 'file3'
+file  3: 'file4'
+file  4: 'file5'
+file  5: 'file6'
+ 
+fullSample upcase 
+file  0: 'upcase'
+ 
+fullSample UPCASE 
+option: 34, text: 'UPCASE'
+ 
+fullSample --icase upcase 
+option: 34, text: 'UPCASE'
+ 
+fullSample -E -F -S sep1 -SEP sep2 --SEP sep3 
+option: 29, text: '-E'
+option: 30, text: '-F'
+option: 31, text: '-S', arg: 'sep1'
+option: 32, text: '-SEP', arg: 'sep2'
+option: 33, text: '--SEP', arg: 'sep3'
+ 
+fullSample --icase -E -F -S sep1 -SEP sep2 --SEP sep3 upcase 
+option:  3, text: '-e'
+option:  4, text: '-f'
+option:  8, text: '-s', arg: 'sep1'
+option:  9, text: '-sep', arg: 'sep2'
+option: 10, text: '--sep', arg: 'sep3'
+option: 34, text: 'UPCASE'
+ 
+fullSample --icase-short -E -F -S sep1 -SEP sep2 --SEP sep3 upcase 
+option:  3, text: '-e'
+option:  4, text: '-f'
+option:  8, text: '-s', arg: 'sep1'
+option: 32, text: '-SEP', arg: 'sep2'
+option: 33, text: '--SEP', arg: 'sep3'
+file  0: 'upcase'
+ 
+fullSample --icase-long  -E -F -S sep1 -SEP sep2 --SEP sep3 upcase 
+option: 29, text: '-E'
+option: 30, text: '-F'
+option: 31, text: '-S', arg: 'sep1'
+option:  9, text: '-sep', arg: 'sep2'
+option: 10, text: '--sep', arg: 'sep3'
+file  0: 'upcase'
+ 
+fullSample --icase-word  -E -F -S sep1 -SEP sep2 --SEP sep3 upcase 
+option: 29, text: '-E'
+option: 30, text: '-F'
+option: 31, text: '-S', arg: 'sep1'
+option: 32, text: '-SEP', arg: 'sep2'
+option: 33, text: '--SEP', arg: 'sep3'
+option: 34, text: 'UPCASE'

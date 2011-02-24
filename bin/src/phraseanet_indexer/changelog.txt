@@ -1,0 +1,91 @@
+3.7.1.0
+candidates terms can be filtered using the property 'candidates="str"' in structure/field :
+"str" is a string of characters (flags, in any order) to allow candidates for different kind of terms
+'D'        : date (3 groups of digits, ex."2000/08/12" or "74.65.30" date is NOT parsed nor checked)
+'9'        : only digits or spaces or underscore, ex: "123 45" or "_89_55"
+'I'        : integer (only digits, ex. "123" or "4")
+'0' (zero) : first character is a digit, ex. "123" or "2nd"
+'S'        : string = any other case  
+examples :
+candidates='DS' allows "12/34-56" (date) or "toto" (string), but NOT "78/52" nor "66"
+candidates='SI' allows "123456" (integer) or "toto" (string), but NOT "78/52" nor "66" nor "25/12/2009"
+
+3.7.0.0
+(re)indexation is controled by indexer, using a new entry 'indexes' in dbox.prefs :
+ - if 'value' is 0, index is suspended
+ - if 'updated_on'<'created_on', whole reindexation occurs (ex. set update_on to 0 to reindex) 
+
+3.6.1.3
+restore build for win32
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+3.6.1.2
+fixed : memory leak
+removed unknown gcc option -R
+
+3.6.1.1
+support for standard compile under osx (see __HOWTOBUILD__)
+
+3.6.1.0
+added debug-level to '--debug' option
+
+3.6.0.0
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+support for linux build system
+removed (temporaly) support for osx & windonws
+
+
+
+3.5.0.4
+fix for 64 bits
+
+3.5.0.3
+fix bug (multibyte char at end of value, aka 'poisson fumE')
+
+3.5.0.2
+indexing 3 & 4 bytes (multibytes) chars (chinese)
+
+3.5.0.1
+fix bug due to libxml
+
+3.5.0.0
+change structure of table dbox:pref
+
+3.4.1.0
+creating build script for UBUNTU
+new argument --optfile to read arguments from file (so password can be hidden)
+
+3.4.0.5
+sql error ER_DUP_ENTRY is not fatal
+
+3.4.0.4
+windows: restore output filename as phraseanet_indexer_<version>.exe (no phraseanet_Cindexer...)
+
+3.4.0.3
+windows : version number in .rc
+output filename has version number
+
+3.4.0.2
+new arg --clng=XX (default language for candidates words)
+
+3.4
+fix stop by taskmanager2
+fast stop of threads
+
+3.3
+wait while database is unavailable (no more need to restart when sql is up) 
+
+3.2
+log with syslog (unix) and event log (windows)
+rem:
+to keep low priority logs (LOG_DEBUG & LOG_INFO), don't forget to configure /etc/syslog.conf
+	ex:
+	daemon.debug		/var/log/daemon.log
+and restart syslogd service :kill -SIGHUP (syslogd pid)
+
+3.1
+new args --run, --install et --remove for windows (service) 
+
+3.0
+run as service under windows
+creation of this changelog

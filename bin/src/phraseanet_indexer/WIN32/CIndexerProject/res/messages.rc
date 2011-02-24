@@ -1,0 +1,4 @@
+LANGUAGE 0xc,0x1
+1 11 Messages_FRA.bin
+LANGUAGE 0x9,0x1
+1 11 Messages_ENU.bin

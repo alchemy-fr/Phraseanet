@@ -1,0 +1,153 @@
+1.16.5.4
+Improvement : uuid functions 
+
+1.16.5.3
+fix : crash on win32/multibases
+cause : ftell returns 0 after fopen("x", "ab"), even if the file is not empty
+
+
+1.16.5.2
+fix : order of answers was sometimes 'random'
+
+1.16.5.1
+fix : searching of duplicates search only on selected collections, respecting status bits
+	(no duplicates found in another collection or on hidden doc)
+change : duplicates are search ACROSS selected collections
+
+
+1.16.5.0
+fix memory error in 1.16.4.1
+new function : phrasea_info()
+
+
+1.16.4.1
+fixed for win32 : system temp dir used for cache
+
+
+1.16.4.0
+added special query "sha256=sha256" to find duplicates
+
+
+1.16.3.0
+restore compile under windows
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+1.16.2.1
+fixed : queries (thumbnail=0, preview=1 etc...) were broken
+
+	
+1.16.2.0
+added 'recordtype' pseudo-field (matched against the record.type field)
+
+
+1.16.1.0
+standard build process under linux (ubuntu ok): 
+./configure ; make ; make test ; make install
+beware : relocation of files
+BEWARE !!! :
+	no more build w32/mac from now
+	the filename is always 'phrasea2.so' (no more version number included)
+TODO :
+	restore build under other os...
+
+ FROM HERE, WIN32 & OSX build is (temporaly) disabled
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+	
+1.16.0.1
+multi-sites ok (cache filenames have host+port+dbname from l'appbox, + session_id)
+TODO : 
+	how to change the cache dir (/tmp is hardcoded)
+
+
+1.16.0.0
+writing cache in /tmp (not in sql anymore)
+adding chronos
+BEWARE : 
+	changing return of phrasea_fetch_results(...) :
+		before : array of results
+		now    : assoc array, results in $ret['results']
+TODO :
+	how to change the cache dir (/tmp is hardcoded)
+	enable multi-sites (now conflicting filenames in cache dir)
+
+
+1.15.0.3
+adding chronos in sql requests
+
+
+1.15.0.2
+remove(again) "order by coll_id" : results are returned with no regards of collections
+side effect : "last 12" returns last 12 documents in the base (not the last 12 of each collection on the base) : much faster
+
+
+1.15.0.1
+restore "order by coll_id" (else bug AND/OR...)
+TODO : how to return results ordered by coll_id
+
+
+1.15.0.0
+changing structure of table pref (dbbox)
+
+
+1.14.12.2
+correcting bug "canary mismatch"
+enhancement of the UBUNTU compile script : 
+	removing "warning: deprecated conversion from string constant to 'char*'" (gcc option -Wno-write-strings)
+
+
+1.14.12.1
+save session(...) in prepared stmt
+removing posgresql code
+cleaning
+
+
+1.14.12.0
+can run as module.
+phrasea_conn MUST receive those parms from appbox :
+host, port, user, password, dbname
+those parms are not anymore in php.ini, so phpinfo() DOES NO CHECK CONNECTION ANYMORE
+
+
+1.14.11.0
+remove thesaurus from session/bases
+add the 'sha256' field into return of phrasea_subdefs(...)
+
+
+1.14.10.0
+change in parms of function 'phrasea_query2' : bas_id replaced by sbas_id
+
+
+1.14.9.1
+correcting crash in function "phrasea_grpforselection(...)"
+
+
+1.14.9.0
+results are returned folowing the order set in table collusr
+the field 'ord' of table 'collusr' MUST be numbered from 1 to n
+
+
+1.14.8.2
+restore version number into resources of windows version (lost in previous commit)
+
+
+1.14.8.1
+display version number and sql encoding in phpinfo()
+
+
+1.14.8.0
+cleaning
+
+
+1.14.7.0
+add user_id in sessions
+-> new php fct : 'php_create_session(...)'
+
+
+1.14.6.3
+mysql connection in compressed mode
+
+
+
+

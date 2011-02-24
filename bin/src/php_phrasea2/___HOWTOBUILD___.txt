@@ -1,0 +1,9 @@
+ linux :
+./configure
+make
+make test
+sudo make install
+
+nb :
+DON'T do 'phpize' before configure !
+make test MAY FAIL, even if the builded extension is ok after install

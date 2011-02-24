@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="custom_props"
+	>
+	<UserMacro
+		Name="PHVERSION"
+		Value="&quot;1,16,5,3&quot;"
+		PerformEnvironmentSet="true"
+	/>
+	<UserMacro
+		Name="PHDOTVERSION"
+		Value="&quot;1.16.5.3&quot;"
+		PerformEnvironmentSet="true"
+	/>
+</VisualStudioPropertySheet>

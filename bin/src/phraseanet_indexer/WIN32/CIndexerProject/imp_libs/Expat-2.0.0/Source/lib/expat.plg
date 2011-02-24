@@ -1,0 +1,35 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: expat - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP34.tmp" with contents
+[
+/nologo /MTd /W3 /GX- /ZI /Od /D "_DEBUG" /D "COMPILED_FROM_DSP" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Expat-2.0.0\Source\lib\xmlparse.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP34.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP35.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:none /debug /machine:I386 /def:".\libexpat.def" /out:"Debug\libexpat.dll" /implib:"Debug/libexpat.lib" 
+".\Debug\xmlparse.obj"
+".\Debug\xmlrole.obj"
+".\Debug\xmltok.obj"
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP35.tmp"
+<h3>Output Window</h3>
+Compiling...
+xmlparse.c
+Linking...
+   Creating library Debug/libexpat.lib and object Debug/libexpat.exp
+
+
+
+<h3>Results</h3>
+libexpat.dll - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

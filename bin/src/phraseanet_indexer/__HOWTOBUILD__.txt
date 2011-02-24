@@ -1,0 +1,12 @@
+linux / osx :
+
+aclocal
+automake -a
+autoconf
+./configure
+make
+sudo make install
+
+
+nb : no make test for now
+ 
