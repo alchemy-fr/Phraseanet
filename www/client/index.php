@@ -662,7 +662,7 @@ if($cssfile)
 		<input type="hidden" name="app" value="client">
 	</form>	
 	<script type="text/javascript" src="/include/minify/g=client"></script>
-	<script type="text/javascript" src="/include/flowplayer/flowplayer-3.2.2.min.js"></script>
+	<script type="text/javascript" src="/include/flowplayer/flowplayer-3.2.6.min.js"></script>
 <script type="text/javascript"> 
 
 

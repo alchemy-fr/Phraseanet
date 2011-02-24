@@ -95,7 +95,7 @@ $groups = array(
 		,'//prod/jquery.order.js'
 		,'//include/jslibs/jquery.sprintf.1.0.3.js'
 		, '//include/jquery.tooltip.js'
-		, '//include/flowplayer/flowplayer-3.2.2.min.js'
+		, '//include/flowplayer/flowplayer-3.2.6.min.js'
 		, '//include/jquery.p4.preview.js'
 		, '//prod/jquery.edit.js'
 		, '//include/jslibs/jquery.color.animation.js'
@@ -134,7 +134,7 @@ $groups = array(
 		,'//include/jslibs/jquery.contextmenu_scroll.js'
 		,'//include/jquery.common.js'
 		,'//lightbox/jquery.lightbox.js'
-		, '//include/flowplayer/flowplayer-3.2.2.min.js'
+		, '//include/flowplayer/flowplayer-3.2.6.min.js'
 		),
     'lightboxie6' => array(
     	'//include/jslibs/jquery-1.4.4.js'
@@ -148,7 +148,7 @@ $groups = array(
 		, '//include/jslibs/jquery.contextmenu_scroll.js'
 		,'//include/jquery.common.js'
 		,'//lightbox/jquery.lightbox.ie6.js'
-		, '//include/flowplayer/flowplayer-3.2.2.min.js'
+		, '//include/flowplayer/flowplayer-3.2.6.min.js'
 		)
 );
 

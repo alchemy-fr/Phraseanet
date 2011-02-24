@@ -1849,7 +1849,7 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 			// attention, au cas ou il y aurait des espaces dans le path, il faut des quotes
 			// windows n'accepte pas les simple quotes
 			// pour mac les quotes pour les noms de fichiers sont indispensables car si il y a un espace -> ca plante
-			$array = array('application/pdf','image/psd','image/vnd.adobe.photoshop','image/photoshop','image/ai','image/illustrator','image/vnd.adobe.illustrator');
+			$array = array('image/tiff', 'application/pdf','image/psd','image/vnd.adobe.photoshop','image/photoshop','image/ai','image/illustrator','image/vnd.adobe.illustrator');
 			if( in_array($infos['mime'], $array ) )
 			$cmd .= ' "'.$infile .'[0]" "'. $outfile .'"';
 			else

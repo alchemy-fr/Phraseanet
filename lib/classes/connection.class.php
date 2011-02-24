@@ -1,11 +1,21 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 class connection
 {
 
   private $private_connect = false;
   private $private_lockedtables; // tableau assoc. des bases lockees
   private static $_instance = array();
+  private static $_PDO_instance = array();
   private static $_query_counter = array();
   private $_id;
   private $_name = false;
@@ -35,14 +45,56 @@ class connection
       }
     }
 
-
-//		if(!self::$_instance[$name]->isok())
-//		{
-//			header("HTTP/1.0 500 Internal Server Error");
-//			die('<h2>HTTP/1.0 500 Internal Server Error</h2><h2>Can\'t establish database connection<h2>');
-//		}
-
     return array_key_exists($name, self::$_instance) ? self::$_instance[$name] : false;
+  }
+
+  /**
+   *
+   * @param string $name
+   * @return PDO
+   */
+  public static function getPDOConnection($name = null)
+  {
+    if (!isset(self::$_PDO_instance[$name]))
+    {
+      $hostname = $port = $user = $password = $dbname = false;
+
+      $connection_params = array();
+
+      if (trim($name) !== '')
+      {
+        $connection_params = phrasea::sbas_params();
+  }
+      else
+      {
+        require (dirname(__FILE__) . '/../../config/connexion.inc');
+        $name = 'app_box';
+      }
+
+      if (isset($connection_params[$name]))
+      {
+        $hostname = $connection_params[$name]['host'];
+        $port = $connection_params[$name]['port'];
+        $user = $connection_params[$name]['user'];
+        $password = $connection_params[$name]['pwd'];
+        $dbname = $connection_params[$name]['dbname'];
+      }
+
+      $dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname.';port='.$port.';';
+
+      try
+      {
+        self::$_PDO_instance[$name] = new PDO($dsn, $user, $password);
+        self::$_PDO_instance[$name]->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
+      }
+      catch (Exception $e)
+      {
+        throw new Exception('Connection not avalaible');
+      }
+    }
+    if (array_key_exists($name, self::$_PDO_instance))
+      return self::$_PDO_instance[$name];
+    throw new Exception('Connection not avalaible');
   }
 
   function __construct($name)

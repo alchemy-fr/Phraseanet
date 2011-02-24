@@ -71,7 +71,7 @@ class answer
 					$preview = '/include/directprev.php%3F'."bas%3D".$base_id."%26rec%3D".$record_id;
 						
 				$JS_roll = '<div class="imgTips" style="z-index:99;width:'.((int)$sd["preview"]["width"]+10).'px;height:'.((int)$sd["preview"]["height"]+10).'px" id="rolloverpreview"></div>
-		<script type="text/javascript">flowplayer("rolloverpreview", {src:"/include/flowplayer/flowplayer-3.2.2.swf", wmode: "transparent"}, {clip:{url:"'.$preview.'",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"}, onError:function(code,message){getNewVideoToken('.$base_id.', '.$record_id.', this);},plugins: {h264streaming: {url: "/include/flowplayer/flowplayer.pseudostreaming-3.2.2.swf"}}});</script>';
+        <script type="text/javascript">flowplayer("rolloverpreview", {src:"/include/flowplayer/flowplayer-3.2.6.swf", wmode: "transparent"}, {clip:{url:"'.$preview.'",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"}, onError:function(code,message){getNewVideoToken('.$base_id.', '.$record_id.', this);},plugins: {h264streaming: {url: "/include/flowplayer/flowplayer.pseudostreaming-3.2.6.swf"}}});</script>';
 
 			}
 		}
@@ -256,12 +256,12 @@ class answer
 					$token = md5(time().mt_rand(100000,999999));
 					
 					$html_view = '<div class="record record_video" style="width:'.$width.'px;height:'.$height.'px;">
-									<div id="preview_'.$base_id.'_'.$record_id.'_'.$token.'" class="PNB" style=""></div>
+									<div id="rolloverpreview" class="PNB" style=""></div>
 									<input type="hidden" name="width" value="'.$width.'"/>
 									<input type="hidden" name="height" value="'.$height.'"/>
-									</div><script type="text/javascript">flowplayer("preview_'.$base_id.'_'.$record_id.'_'.$token.'",{src:"/include/flowplayer/flowplayer-3.2.2.swf", wmode: "transparent"},{clip:{url:"'.$preview.'",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},onError:function(code,message){getNewVideoToken('.$base_id.', '.$record_id.', this);},plugins: {h264streaming: {url: "/include/flowplayer/flowplayer.pseudostreaming-3.2.2.swf"}}});</script>';
+									</div><script type="text/javascript">flowplayer("rolloverpreview",{src:"/include/flowplayer/flowplayer-3.2.6.swf", wmode: "transparent"},{clip:{url:"'.$preview.'",autoPlay: true,autoBuffering:true,provider: "h264streaming",scaling:"fit"},onError:function(code,message){getNewVideoToken('.$base_id.', '.$record_id.', this);},plugins: {h264streaming: {url: "/include/flowplayer/flowplayer.pseudostreaming-3.2.6.swf"}}});</script>';
 					
-					$preview = '<div id="FLASHPREVIEW" class="PREVIEW_PIC" style="margin:0 auto;width: 600px; height: 300px;" ></div>';
+					$preview = '<div id="rolloverpreview" class="PREVIEW_PIC" style="margin:0 auto;width: 600px; height: 300px;" ></div>';
 //					$width = $height = '200';
 				}
 				elseif(in_array($sdMain[$typedoc]['mime'],$gviewer_docs))
@@ -427,7 +427,7 @@ class answer
 		}
 		return(array($term, $context));
 	}
-		
+
 	public static function format_caption($base_id, $record_id, $xml, $with_bounce = false, $template=false)
 	{
 		$session = session::getInstance();
@@ -453,7 +453,6 @@ class answer
 		
 		$basesettings = phrasea::load_settings($locale);
 		
-	
 		$captions = _('reponses::record::Pas de description');
 		
 		$xsl = '';
@@ -470,8 +469,8 @@ class answer
 		if($dom_doc->loadXML($xml))
 		{
 			$XPATH_thesaurus = databox::get_xpath_thesaurus($sbas_id);
-			
 			$XPATH_struct = databox::get_xpath_structure($sbas_id);
+
 			$DOM_thFields = array();
 			
 			if($XPATH_struct)
@@ -496,16 +495,16 @@ class answer
 					$context_noacc =  noaccent_utf8($context_noacc, PARSED);
 					if($context_noacc)
 					{
-						$q = "($tbranch)//sy[@w='".$term_noacc."' and @k='".$context_noacc."']";
+						$q = "//sy[@w='".$term_noacc."' and @k='".$context_noacc."']";
 					}
 					else
 					{
-						$q = "($tbranch)//sy[@w='".$term_noacc."' and not(@k)]";
+						$q = "//sy[@w='".$term_noacc."' and not(@k)]";
 					}
 					$t = "";
 					foreach($DOM_branchs as $DOM_branch)
 					{
-						$nodes = $XPATH_thesaurus->query($q, $DOM_branch);
+						$nodes = $XPATH_thesaurus->cache_query($q, $DOM_branch, $tbranch);
 						if($nodes->length > 0)
 						{
 							$lngfound = false;
@@ -529,12 +528,12 @@ class answer
 									$t .= "');return(false);\"]]";
 									$t .= $fvalue;
 									$t .= "[[/a]]";
-									
 									$lngfound = true;
 									break;
 								}
 								
-								$synonyms = $XPATH_thesaurus->query("sy[@lng='" . $session->usr_i18 . "']", $node->parentNode);
+								$synonyms = $XPATH_thesaurus->query("sy[@lng='" . $session->usr_i18n . "']", $node->parentNode);
+
 								foreach($synonyms as $synonym)
 								{
 									$k = $synonym->getAttribute("k");
@@ -554,7 +553,6 @@ class answer
 										$t .= "');return(false);\"]]";
 										$t .= $link;
 										$t .= "[[/a]]";
-										
 										$lngfound = true;
 										break;
 									}
@@ -1204,3 +1202,5 @@ class answer
 		return($value);
 	}
 }
+
+

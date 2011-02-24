@@ -184,13 +184,14 @@ function T_filter_delayed2(f, delay, mode)
 												var zurl = "/xmlhttp/search_th_term_prod.j.php"
 												+ "?sbid=" + sbas[i].sbid
 												+ "&t=" + encodeURIComponent(f);
-									 			sbas[i].seeker = $.get(
-									 											zurl,
-									 											[],
-									 											function(j, status)
-									 											{
-									 												if(status == 'success')
-									 												{
+
+									 			sbas[i].seeker = $.ajax({
+                                          url: zurl,
+                                          type:'POST',
+                                          data: [],
+                                          dataType:'json',
+                                          success: function(j)
+                                          {
 																						var z = '#TX_P\\.' + j.parm['sbid'] + '\\.T';
 																								
 																						var o = $(z);
@@ -200,10 +201,17 @@ function T_filter_delayed2(f, delay, mode)
 																						
 																						if(isLast)
 																							$(z).addClass('last');
-									 												}
-									 											},
-									 											"json"
-									 										);
+                                          },
+                                          error:function(){
+                                          
+                                          },
+                                          timeout:function(){
+
+                                          }
+                                        });
+
+
+
 										 	}
 										}
 										else if(mode=='CANDIDATE')
@@ -219,13 +227,13 @@ function T_filter_delayed2(f, delay, mode)
 													zurl += "&t=" + encodeURIComponent(f)
 														+ "&field=" + encodeURIComponent(trees.C._selInfos.field);
 												}
-									 			sbas[i].seeker = $.get(
-									 											zurl,
-									 											[],
-									 											function(j, status)
-									 											{
-									 												if(status == 'success')
-									 												{
+									 			sbas[i].seeker = $.ajax({
+                                          url: zurl,
+                                          type:'POST',
+                                          data: [],
+                                          dataType:'json',
+                                          success: function(j)
+                                          {
 																						var z = '#TX_P\\.' + j.parm['sbid'] + '\\.T';
 																								
 																						var o = $(z);
@@ -235,10 +243,15 @@ function T_filter_delayed2(f, delay, mode)
 																						
 																						if(isLast)
 																							$(z).addClass('last');
-									 												}
-									 											},
-									 											"json"
-									 										);
+                                          },
+                                          error:function(){
+                                          
+                                          },
+                                          timeout:function(){
+
+                                          }
+                                        });
+
 										 	}
 										}
 									},
@@ -358,6 +371,8 @@ function T_acceptCandidates_OK(dlgnode)
 									
 									// $("#THPD_confirm_accept_dlg_msg").dialog("close");
 								},
+                error:function(){},
+                timeout:function(){},
 					_ret: null	// private alchemy
 				};
 					
@@ -878,40 +893,12 @@ function replaceEditSel(value)
 	return;
 }
 
-function crossBrowser_XMLHttpRequest()
-{
-	var xmlhttp=false;
-	var e;
-	try
-	{
-		xmlhttp=new XMLHttpRequest();
-	}
-	catch(e)
-	{
-		try
-		{
-			xmlhttp=new ActiveXObject("Msxml2.XMLHTTP");
-		}
-		catch(e)
-		{
-			try
-			{
-				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			catch(e)
-			{
-				xmlhttp=false;
-			}
-		}
-	}
-	return xmlhttp;
-}
 
 function ThesauThesaurusSeeker(sbas_id)
 {
 	this.sbas_id = sbas_id;
 	this._ctimer = null;
-	this._xmlhttp = new crossBrowser_XMLHttpRequest();
+	this._xmlhttp = null;
 	this.tObj = { 'TH_searching':null , 'TH_P':null , 'TH_K':null };
 	this.search = function(txt) {
 		if(this._ctimer)
@@ -921,69 +908,100 @@ function ThesauThesaurusSeeker(sbas_id)
 	} ;
 	this.search_delayed = function(txt) {
 		var me = this;
-		this._xmlhttp.abort();
+    if($this._xmlttp.abort && typeof $this._xmlttp.abort == 'function')
+    {
+      this._xmlhttp.abort();
+    }
 		var url = "/xmlhttp/openbranches_prod.x.php";
-		var parms  = "bid=" + this.sbas_id + "&lng=<?php echo $lng?>" + "&t=" + encodeURIComponent(txt);
-		parms += "&mod=TREE";
-		this._xmlhttp.open("POST", url, true);	// yes, BEFORE setting callback
-		this._xmlhttp.onreadystatechange = function() { me.xmlhttpstatechanged(); } ;
-		this._xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-		this._xmlhttp.send(parms);
+		var parms  = {
+        bid : this.sbas_id,
+        lng : "<?php echo $lng?>",
+        t : txt,
+        mod : "TREE"
+    };
+
+    this._xmlhttp = $.ajax({
+                      url: url,
+                      type:'POST',
+                      data: parms,
+                      success: function(ret)
+                      {
+                         me.xmlhttpstatechanged(ret);
+                      },
+                      error:function(){
+
+                      },
+                      timeout:function(){
+
+                      }
+                    });
+
 		this._ctimer = null;
 	} ;
 	this.openBranch = function(id, thid) {
 		var me = this;
-		this._xmlhttp.abort();
+    if($this._xmlttp.abort && typeof $this._xmlttp.abort == 'function')
+    {
+      this._xmlhttp.abort();
+    }
 		var url = "/xmlhttp/getterm_prod.x.php";
-		var parms  = "bid=" + sbas_id;
-		parms += "&lng=<?php echo $lng?>";
-		parms += "&sortsy=1";
-		parms += "&id=" + thid;
-		parms += "&typ=TH";
-		this._xmlhttp.open("POST", url, true);	// yes, BEFORE setting callback
-		this._xmlhttp.onreadystatechange = function() { me.xmlhttpstatechanged(id); } ;
-		this._xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-		this._xmlhttp.send(parms);
+		var parms  = {
+      bid : this.sbas_id,
+      lng : "<?php echo $lng?>",
+      sortsy : 1,
+      id : thid,
+      typ : "TH"
+    }
+
+    this._xmlhttp = $.ajax({
+                      url: url,
+                      type:'POST',
+                      data: parms,
+                      success: function(ret)
+                      {
+                         me.xmlhttpstatechanged(ret, id);
+                      },
+                      error:function(){
+
+                      },
+                      timeout:function(){
+
+                      }
+                    });
+
 	};
-	this.xmlhttpstatechanged = function(id) {
+	this.xmlhttpstatechanged = function(ret, id) {
 		try
 		{
-			if (this._xmlhttp.readyState==4)
-			{
-				if(!this.tObj["TH_searching"])
-					this.tObj["TH_searching"] = document.getElementById("TH_searching");
-				this.tObj["TH_searching"].src = "/skins/icons/ftp-loader-blank.gif";
-	
-				if (this._xmlhttp.status==200)
-				{
-					var ret = this._xmlhttp.responseXML;
-					if(ret) // && (typeof(ret.parsed)=="undefined" || ret.parsed))
-					{
-						var htmlnodes = ret.getElementsByTagName("html");
-						if(htmlnodes && htmlnodes.length==1 && (htmlnode=htmlnodes.item(0).firstChild))
-						{
-							if(typeof(id)=="undefined")
-							{
-								// called from search or 'auto' : full thesaurus search
-								if(!this.tObj["TH_P"])
-									this.tObj["TH_P"] = document.getElementById("TH_P."+this.sbas_id+".T");
-								if(!this.tObj["TH_K"])
-									this.tObj["TH_K"] = document.getElementById("TH_K."+this.sbas_id+".T");
-								this.tObj["TH_P"].innerHTML = "...";
-								this.tObj["TH_K"].className = "h";
-								this.tObj["TH_K"].innerHTML = htmlnode.nodeValue;
-							}
-							else
-							{
-								// called from 'openBranch'
-								//			var js = "document.getElementById('TH_K."+thid+"').innerHTML = \""+htmlnode.nodeValue+"\"";
-								//			self.setTimeout(js, 10);
-								document.getElementById("TH_K."+id).innerHTML = htmlnode.nodeValue;
-							}
-						}
-					}
-				}
-			}
+      if(!this.tObj["TH_searching"])
+        this.tObj["TH_searching"] = document.getElementById("TH_searching");
+      this.tObj["TH_searching"].src = "/skins/icons/ftp-loader-blank.gif";
+
+      if(ret) // && (typeof(ret.parsed)=="undefined" || ret.parsed))
+      {
+        var htmlnodes = ret.getElementsByTagName("html");
+        if(htmlnodes && htmlnodes.length==1 && (htmlnode=htmlnodes.item(0).firstChild))
+        {
+          if(typeof(id)=="undefined")
+          {
+            // called from search or 'auto' : full thesaurus search
+            if(!this.tObj["TH_P"])
+              this.tObj["TH_P"] = document.getElementById("TH_P."+this.sbas_id+".T");
+            if(!this.tObj["TH_K"])
+              this.tObj["TH_K"] = document.getElementById("TH_K."+this.sbas_id+".T");
+            this.tObj["TH_P"].innerHTML = "...";
+            this.tObj["TH_K"].className = "h";
+            this.tObj["TH_K"].innerHTML = htmlnode.nodeValue;
+          }
+          else
+          {
+            // called from 'openBranch'
+            //			var js = "document.getElementById('TH_K."+thid+"').innerHTML = \""+htmlnode.nodeValue+"\"";
+            //			self.setTimeout(js, 10);
+            document.getElementById("TH_K."+id).innerHTML = htmlnode.nodeValue;
+          }
+        }
+      }
 		}
 		catch(err)
 		{

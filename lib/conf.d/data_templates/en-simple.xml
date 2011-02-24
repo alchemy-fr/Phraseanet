@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <record>
-   <path>{{datapathnoweb}}{{basename}}/documents</path>
+  <path>{{datapathnoweb}}{{basename}}/documents</path>
    
-   <subdefs>
+  <subdefs>
     <subdefgroup name="image">
       <subdef class="preview" name="preview" downloadable="true">
         <path>{{datapathnoweb}}{{basename}}/subdefs</path>
@@ -13,9 +13,9 @@
         <quality>75</quality>
         <meta>yes</meta>
         <baseurl></baseurl>
-		<mediatype>image</mediatype>
-		<label lang="fr">Prévisualisation</label>
-		<label lang="en">Preview</label>
+        <mediatype>image</mediatype>
+        <label lang="fr">Prévisualisation</label>
+        <label lang="en">Preview</label>
       </subdef>
       <subdef class="thumbnail" name="thumbnail" downloadable="true">
         <path>{{datapathweb}}{{basename}}/subdefs</path>
@@ -25,10 +25,10 @@
         <strip>yes</strip>
         <quality>75</quality>
         <meta>no</meta>
-		<mediatype>image</mediatype>
+        <mediatype>image</mediatype>
         <baseurl>{{dataurl}}{{basename}}/subdefs</baseurl>
-		<label lang="fr">Imagette</label>
-		<label lang="en">Thumbnail</label>
+        <label lang="fr">Imagette</label>
+        <label lang="en">Thumbnail</label>
       </subdef>
     </subdefgroup>
 	
@@ -36,171 +36,187 @@
       <subdef class="preview" name="preview" downloadable="true">
         <path>{{datapathnoweb}}{{basename}}/subdefs</path>
         <size>800</size>
-		<mediatype>video</mediatype>
+        <mediatype>video</mediatype>
         <writeDatas>yes</writeDatas>
         <baseurl></baseurl>
         <acodec>faac</acodec>
         <vcodec>libx264</vcodec>
         <bitrate>1000</bitrate>
-	    <threads>8</threads>
+        <threads>8</threads>
         <fps>15</fps>
-		<label lang="fr">Prévisualisation</label>
-		<label lang="en">Preview</label>
+        <label lang="fr">Prévisualisation</label>
+        <label lang="en">Preview</label>
       </subdef>
       <subdef class="thumbnail" name="thumbnailGIF" downloadable="true">
         <path>{{datapathweb}}{{basename}}/subdefs</path>
         <size>200</size>
-		<mediatype>gif</mediatype>
-		<delay>1</delay>
+        <mediatype>gif</mediatype>
+        <delay>1</delay>
         <writeDatas>no</writeDatas>
         <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
-		<label lang="fr">Animation GIF</label>
-		<label lang="en">GIF Animation</label>
+        <label lang="fr">Animation GIF</label>
+        <label lang="en">GIF Animation</label>
       </subdef>
       <subdef class="thumbnail" name="thumbnail" downloadable="true">
         <path>{{datapathweb}}{{basename}}/subdefs</path>
         <size>200</size>
-		<mediatype>image</mediatype>
+        <mediatype>image</mediatype>
         <writeDatas>no</writeDatas>
         <baseurl>{{dataurl}}{{basename}}/subdefs</baseurl>
-		<label lang="fr">Imagette</label>
-		<label lang="en">Thumbnail</label>
+        <label lang="fr">Imagette</label>
+        <label lang="en">Thumbnail</label>
       </subdef>
     </subdefgroup>
 	
     <subdefgroup name="audio">
       <subdef class="preview" name="preview" downloadable="true">
         <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-		<mediatype>audio</mediatype>
+        <mediatype>audio</mediatype>
         <writeDatas>yes</writeDatas>
         <baseurl></baseurl>
-		<label lang="fr">Prévisualisation</label>
-		<label lang="en">Preview</label>
+        <label lang="fr">Prévisualisation</label>
+        <label lang="en">Preview</label>
       </subdef>
       <subdef class="thumbnail" name="thumbnail" downloadable="true">
         <path>{{datapathweb}}{{basename}}/subdefs</path>
-		<mediatype>image</mediatype>
+        <mediatype>image</mediatype>
         <writeDatas>no</writeDatas>
         <baseurl>{{dataurl}}{{basename}}/subdefs</baseurl>
-		<label lang="fr">Imagette</label>
-		<label lang="en">Thumbnail</label>
+        <label lang="fr">Imagette</label>
+        <label lang="en">Thumbnail</label>
       </subdef>
     </subdefgroup>
-   </subdefs>
+  </subdefs>
    
-   <description>
+  <description>
 		<!-- 2:5 -->
-		<Object src="/rdf:RDF/rdf:Description/IPTC:ObjectName" /> 
+    <Object src="/rdf:RDF/rdf:Description/IPTC:ObjectName" />
 		
 		<!-- 2:15 -->
-		<Category src="/rdf:RDF/rdf:Description/IPTC:Category"/> 
+    <Category src="/rdf:RDF/rdf:Description/IPTC:Category"/>
 		
 		<!-- 2:20 -->
-		<SupplCategory src="/rdf:RDF/rdf:Description/IPTC:SupplementalCategories"/> 
+    <SupplCategory src="/rdf:RDF/rdf:Description/IPTC:SupplementalCategories"/>
 		
 		<!-- 2:25 -->
-		<Keywords src="/rdf:RDF/rdf:Description/IPTC:Keywords" multi="1"/> 
+    <Keywords src="/rdf:RDF/rdf:Description/IPTC:Keywords" multi="1"/>
 		
 		<!-- 2:40 -->
-		<SpecialInstruct src="/rdf:RDF/rdf:Description/IPTC:SpecialInstructions"/> 
+    <SpecialInstruct src="/rdf:RDF/rdf:Description/IPTC:SpecialInstructions"/>
 		
 		<!-- 2:55 -->
-		<Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" regdate="1" /> 
+    <Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" regdate="1" />
 		
 		<!-- 2:80 -->
-		<Byline src="/rdf:RDF/rdf:Description/IPTC:By-line"/> 
+    <Byline src="/rdf:RDF/rdf:Description/IPTC:By-line"/>
 		
 		<!-- 2:85 -->
-		<BylineTitle src="/rdf:RDF/rdf:Description/IPTC:By-lineTitle"/> 
+    <BylineTitle src="/rdf:RDF/rdf:Description/IPTC:By-lineTitle"/>
 		
 		<!-- 2:90 -->
-		<City src="/rdf:RDF/rdf:Description/IPTC:City" />
+    <City src="/rdf:RDF/rdf:Description/IPTC:City" />
 		
 		<!-- 2:95 -->
-		<Province src="/rdf:RDF/rdf:Description/IPTC:Province-State" /> 
+    <Province src="/rdf:RDF/rdf:Description/IPTC:Province-State" />
 		
 		<!-- 2:101 -->
-		<Country src="/rdf:RDF/rdf:Description/IPTC:Country-PrimaryLocationName" /> 
+    <Country src="/rdf:RDF/rdf:Description/IPTC:Country-PrimaryLocationName" />
 		
 		<!-- 2:103 -->
-		<OriginalRef src="/rdf:RDF/rdf:Description/IPTC:OriginalTransmissionReference" />  
+    <OriginalRef src="/rdf:RDF/rdf:Description/IPTC:OriginalTransmissionReference" />
 		
 		<!-- 2:105 -->
-		<Headline src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" regname="1" />
+    <Headline src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" regname="1" />
 		
 		<!-- 2:110 -->
-		<Credit src="/rdf:RDF/rdf:Description/IPTC:Credit" report="1" /> 
+    <Credit src="/rdf:RDF/rdf:Description/IPTC:Credit" report="1" />
 		
 		<!-- 2:115 -->
-		<Source src="/rdf:RDF/rdf:Description/IPTC:Source" />
+    <Source src="/rdf:RDF/rdf:Description/IPTC:Source" />
 		
 		<!-- 2:120 -->
-		<Caption src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" regdesc="1" /> 
+    <Caption src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" regdesc="1" />
 		
 		<!-- 2:122 -->
-		<CaptionWriter src="/rdf:RDF/rdf:Description/IPTC:Writer-Editor" />   
+    <CaptionWriter src="/rdf:RDF/rdf:Description/IPTC:Writer-Editor" />
 
 		<!-- 2:25 -->
-		<Longitude src="/rdf:RDF/rdf:Description/GPS:GPSLongitude" readonly="1"/>
+    <Longitude src="/rdf:RDF/rdf:Description/GPS:GPSLongitude" readonly="1"/>
 
 		<!-- 2:25 -->
-		<Latitude src="/rdf:RDF/rdf:Description/GPS:GPSLatitude" readonly="1"/>
+    <Latitude src="/rdf:RDF/rdf:Description/GPS:GPSLatitude" readonly="1"/>
 
 		<!-- 2:25 -->
-		<CameraModel src="/rdf:RDF/rdf:Description/IFD0:Model" readonly="1"/> 
+    <CameraModel src="/rdf:RDF/rdf:Description/IFD0:Model" readonly="1"/>
 
        <!-- Technical Fields -->
-       <FileName src="tf-filename" readonly="1" type="text" />
-       <FilePath src="tf-filepath" index="0" readonly="1" type="text" />
-       <Recordid src="tf-recordid" index="0" readonly="1" type="number" />
-       <MimeType src="tf-mimetype" index="0" readonly="1" type="text" />
-       <Size src="tf-size" index="0" readonly="1" type="number" />
-       <Extension src="tf-extension" index="0" readonly="1" type="text" />
-       <Width src="tf-width" index="0" readonly="1" type="number" />
-       <Height src="tf-height" index="0" readonly="1" type="number" />
-       <Bits src="tf-bits" index="0" readonly="1" type="number" />
-       <Channels src="tf-channels" index="0" readonly="1" type="number" />
-   </description>   
+    <FileName src="tf-filename" readonly="1" type="text" />
+    <FilePath src="tf-filepath" index="0" readonly="1" type="text" />
+    <Recordid src="tf-recordid" index="0" readonly="1" type="number" />
+    <MimeType src="tf-mimetype" index="0" readonly="1" type="text" />
+    <Size src="tf-size" index="0" readonly="1" type="number" />
+    <Extension src="tf-extension" index="0" readonly="1" type="text" />
+    <Width src="tf-width" index="0" readonly="1" type="number" />
+    <Height src="tf-height" index="0" readonly="1" type="number" />
+    <Bits src="tf-bits" index="0" readonly="1" type="number" />
+    <Channels src="tf-channels" index="0" readonly="1" type="number" />
+  </description>
    
-   <statbits>
-       <bit n="4">Online</bit>
-   </statbits>
+  <statbits>
+    <bit n="4">Online</bit>
+  </statbits>
     <!-- ==== Debut layout homeThumbPubli=== -->
-    <layout name="homeThumbPubli" skin="" type="">
-        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-        <xsl:output method="html"/>
-        <xsl:template match="/record/description/*">
-        <b><xsl:value-of select="name()" /></b> : <xsl:value-of select="current()" /><br />
-        </xsl:template>
-        </xsl:stylesheet>
-    </layout>
+  <layout name="homeThumbPubli" skin="" type="">
+    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+      <xsl:output method="html"/>
+      <xsl:template match="/record/description/*">
+        <b>
+          <xsl:value-of select="name()" />
+        </b> :
+        <xsl:value-of select="current()" />
+        <br />
+      </xsl:template>
+    </xsl:stylesheet>
+  </layout>
 
-    <layout name="homeThumbPubli" skin="fr" type="">
-        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-        <xsl:output method="html"/>
-        <xsl:template match="/record/description/*">
-        <b><xsl:value-of select="name()" /></b> : <xsl:value-of select="current()" /><br />
-        </xsl:template>
-        </xsl:stylesheet>
-    </layout>
+  <layout name="homeThumbPubli" skin="fr" type="">
+    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+      <xsl:output method="html"/>
+      <xsl:template match="/record/description/*">
+        <b>
+          <xsl:value-of select="name()" />
+        </b> :
+        <xsl:value-of select="current()" />
+        <br />
+      </xsl:template>
+    </xsl:stylesheet>
+  </layout>
     <!-- ==== Fin layout homeThumbPubli === -->
 
     <!-- ==== Debut layout homePrevPubli === -->
-    <layout name="homePrevPubli" skin="" type="">
-        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-        <xsl:output method="html"/>
-        <xsl:template match="/record/description/*">
-        <b><xsl:value-of select="name()" /></b> : <xsl:value-of select="current()" /><br />
-        </xsl:template>
-        </xsl:stylesheet> 
-   </layout>
+  <layout name="homePrevPubli" skin="" type="">
+    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+      <xsl:output method="html"/>
+      <xsl:template match="/record/description/*">
+        <b>
+          <xsl:value-of select="name()" />
+        </b> :
+        <xsl:value-of select="current()" />
+        <br />
+      </xsl:template>
+    </xsl:stylesheet>
+  </layout>
 
-    <layout name="homePrevPubli" skin="fr" type="">
-        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-        <xsl:output method="html"/>
-        <xsl:template match="/record/description/*">
-        <b><xsl:value-of select="name()" /></b> : <xsl:value-of select="current()" /><br />
-        </xsl:template>
-        </xsl:stylesheet>
-    </layout>
+  <layout name="homePrevPubli" skin="fr" type="">
+    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+      <xsl:output method="html"/>
+      <xsl:template match="/record/description/*">
+        <b>
+          <xsl:value-of select="name()" />
+        </b> :
+        <xsl:value-of select="current()" />
+        <br />
+      </xsl:template>
+    </xsl:stylesheet>
+  </layout>
 </record>

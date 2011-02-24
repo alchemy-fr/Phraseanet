@@ -114,7 +114,7 @@ $right = false;
 						switch($type)
 						{
 							case 'video':
-								$embed = '<object width="100%" height="100%" type="application/x-shockwave-flash" data="'.GV_ServerName.'include/flowplayer/flowplayer-3.2.2.swf">'.
+								$embed = '<object width="100%" height="100%" type="application/x-shockwave-flash" data="'.GV_ServerName.'include/flowplayer/flowplayer-3.2.6.swf">'.
 									'<param value="true" name="allowfullscreen">'.
 									'<param value="always" name="allowscriptaccess">'.
 									'<param value="high" name="quality">'.

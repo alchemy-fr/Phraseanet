@@ -51,7 +51,7 @@ try
 					'baskets_collection' 	=> $basket_collection,
 					'basket' 		=> $basket,
 					'local_title'		=> strip_tags($basket->name),
-					'module'		=> 'validation',
+					'module'		=> 'lightbox',
 					'module_name'		=> _('admin::monitor: module validation')
 						)
 				);

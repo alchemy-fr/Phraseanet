@@ -138,4 +138,9 @@
 	{% if lazaret|length == 0 %}
 		<div style="margin:20px 10px;">{% trans 'Aucun document dans la quarantaine actuellement' %}</div>
 	{% endif %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.tooltip').tooltip();
+    });
+  </script>
 </div>

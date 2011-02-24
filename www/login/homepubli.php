@@ -26,10 +26,10 @@ $item = $defaultchannel->appendChild($defaultdom->createElement('item'));
 $title = $item->appendChild($defaultdom->createElement('title'));
 $title->appendChild($defaultdom->createTextNode(GV_homeTitle));
 
-if(file_exists(GV_RootPath.'config/home.jpg'))
+if(file_exists(GV_RootPath.'www/custom/home.jpg'))
 {
-	$pathPic =  GV_RootPath.'config/home.jpg';	
-	$urlPic =  '/config/home.jpg';
+	$pathPic =  GV_RootPath.'www/custom/home.jpg';
+	$urlPic =  '/custom/home.jpg';
 }
 else
 {

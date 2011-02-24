@@ -247,7 +247,6 @@ class query
 		
 		$dstatus = status::getDisplayStatus();
 			
-		
 		$array_icons = array(
 			'flash'		=> '',
 			'document'	=> '',
@@ -308,6 +307,7 @@ class query
 				$base_id = $data["base_id"]; 
 				
 				$thumbnail = answer::getThumbnail($session->ses_id, $data["base_id"], $data["record_id"],GV_zommPrev_rollover_clientAnswer);
+		
 				
 				if($thumbnail['sha256'])
 					$rsScreen[$irec]['sha256'] = $thumbnail['sha256'];
@@ -319,6 +319,7 @@ class query
 					$exifinfos = answer::format_infos($data['xml'], $sbas_id, $data["record_id"],$thumbnail['type']);
 					$captions = answer::format_caption($base_id, $data["record_id"],$data['xml']);
 				}
+
 				
 	
 					

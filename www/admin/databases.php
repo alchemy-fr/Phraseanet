@@ -135,15 +135,14 @@ if($request->has_post_datas() && $user->is_admin === true)
 			}
 		}
 	}
-	elseif($parm['mount_base'] && $parm['new_hostname'] && $parm['new_port'] && $parm['new_user'] 
-			&& $parm['new_password'] && $parm['new_dbname'])
+	elseif($parm['mount_base'])
 	{
 		if(!$parm['new_settings'] && $parm['new_dbname'])
 		{	
 	
 			if(p4string::hasAccent($parm['new_dbname']))
 				$error['new_dbname'] = 'No special chars in dbname'; 
-			
+
 			if(count($error) === 0)
 			{
 				if( ($base = new databox()) !== false )
@@ -160,9 +159,8 @@ if($request->has_post_datas() && $user->is_admin === true)
 			}
 		}
 		elseif($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port'] && $parm['new_user'] 
-				&& $parm['new_password'] && $parm['new_dbname'] && $parm['new_data_template'])
+				&& $parm['new_password'] && $parm['new_dbname'])
 		{
-		
 			if(p4string::hasAccent($parm['new_dbname']))
 				$error['new_dbname'] = 'No special chars in dbname'; 
 			
@@ -170,7 +168,7 @@ if($request->has_post_datas() && $user->is_admin === true)
 			{
 				if( ($base = new databox(false,$parm['new_hostname'],$parm['new_port'],$parm['new_user'],$parm['new_password'])) !== false )
 				{
-					if($base->mount($parm['new_dbname']))
+					if($base->mount($parm['new_dbname'], $usr_id))
 					{
 						$sbas_id = $base->save($usr_id);
 						
@@ -181,12 +179,12 @@ if($request->has_post_datas() && $user->is_admin === true)
 							$base->registerAdminThesaurus($usr_id, true);
 							$base->registerPublication($usr_id, true);
 							$mountBase = true;
-						}
-					}
-				}
-			}
-		}
-	}
+					  }
+				  }
+			  }
+      }
+    }
+  }
 }
 	
 	

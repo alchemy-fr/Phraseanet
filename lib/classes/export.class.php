@@ -699,7 +699,19 @@ class export
 			if(GV_modxsendfile)
 			{
 				
-				$file_xaccel = str_replace(array(GV_X_Accel_Redirect, GV_RootPath.'tmp/download/'), array('/'.GV_X_Accel_Redirect_mount_point.'/', '/download/'), $file);
+        $file_xaccel = str_replace(
+                        array(
+                            GV_X_Accel_Redirect,
+                            GV_RootPath . 'tmp/download/',
+                            GV_RootPath . 'tmp/lazaret/'
+                        )
+                        , array(
+                    '/' . GV_X_Accel_Redirect_mount_point . '/',
+                    '/download/',
+                    '/lazaret/'
+                        )
+                        , $file
+        );
 				
 				header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 				header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");

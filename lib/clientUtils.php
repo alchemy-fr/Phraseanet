@@ -452,7 +452,8 @@ function getPreviewWindow($usr,$ses,$lng,$env,$pos,$contId,$roll)
 	$docType = isset($sdMain['document'])?$sdMain['document']['type']:'unknown';
 	
 	$prev = answer::get_preview($bas,$rec,$isFullyPublic);
-	
+
+	$preview_html = $prev['html'];
 	$preview = $prev['preview'];
 	$flashcontent = $prev['flashcontent'];
 	$width = $prev['width'];
@@ -678,6 +679,7 @@ function getPreviewWindow($usr,$ses,$lng,$env,$pos,$contId,$roll)
 	
 	return p4string::jsonencode(array(
 		"prev"=>$preview
+		,"prev_html"=>$preview_html
 		,"flashcontent"=>$flashcontent
 		,"desc"=>p4string::entitydecode($caption)
 		,"width"=>$width

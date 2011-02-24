@@ -52,7 +52,8 @@ $list = $download->prepare_export($parm['obj'], $titre);
 
 $list['export_name'] = $exportname.'.zip';
 
-$endDate = phraseadate::format_mysql(new DateTime('+1 day'));
+$endate_obj = new DateTime('+1 day');
+$endDate = phraseadate::format_mysql($endate_obj);
 
 $token = random::getUrlToken('download',false,$endDate,serialize($list));
 
@@ -75,7 +76,7 @@ if($parm['reading_confirm'] == '1')
 
 foreach($dest as $email)
 {
-	if(($result = mail::send_documents(trim($email), $url,$from, $parm["textmail"], $reading_confirm_to))!==true)
+	if(($result = mail::send_documents(trim($email), $url,$from, $endate_obj, $parm["textmail"], $reading_confirm_to))!==true)
 		$res[] = $email;
 }
  

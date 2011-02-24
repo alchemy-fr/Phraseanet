@@ -143,7 +143,12 @@
 	// save elements title before the tooltip is displayed
 	function save(event) {
 		// if this is the current source, or it has no title (occurs with click event), stop
-		if ( $.tooltip.blocked || this == $.tooltip.current || (!this.tooltipText && !settings(this).bodyHandler) )
+    if(event.stopPropagation)
+      event.stopPropagation();
+
+    event.cancelBubble = true;
+
+    if ( $.tooltip.blocked || this == $.tooltip.current || (!this.tooltipText && !settings(this).bodyHandler) )
 			return;
 
 		// save current
@@ -509,6 +514,9 @@
 		$.tooltip.current = null;
 		function complete() {
 			helper.parent.removeClass( tsettings.extraClass ).hide().css("opacity", "");
+      var el =helper.parent.find('object').parent();
+      el.empty();
+      el.remove();
 		}
 		if ((!IE || !$.fn.bgiframe) && tsettings.fade) {
 			if (helper.parent.is(':animated'))

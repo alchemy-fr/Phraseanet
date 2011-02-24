@@ -37,7 +37,7 @@ class phraseadate
         $diff = $compareTo->format('U') - $date->format('U');
         $dayDiff = floor($diff / 86400);
 
-        if(is_nan($dayDiff) || $dayDiff < 0) {
+        if(is_nan($dayDiff)) {
             return '';
         }
 		

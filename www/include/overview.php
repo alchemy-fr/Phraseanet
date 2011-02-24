@@ -117,7 +117,7 @@ phrasea::headers();
 				padding:50px 0 20px;
 			}
 		</style>
-		<script type="text/javascript" src="/include/flowplayer/flowplayer-3.2.2.min.js"></script>
+		<script type="text/javascript" src="/include/flowplayer/flowplayer-3.2.6.min.js"></script>
 	</head>
 	<body>
 	<?php
@@ -142,7 +142,7 @@ phrasea::headers();
 					$embed = '<img src="'.$url.'" title="" />';
 					break;
 				case 'video':
-					$embed = '<div style="width: 600px; height: 400px;" id="flash_preview"></div><script type="text/javascript">flowplayer("flash_preview", "/include/flowplayer/flowplayer-3.2.2.swf", "'.$url.'");</script>';
+					$embed = '<div style="width: 600px; height: 400px;" id="flash_preview"></div><script type="text/javascript">flowplayer("flash_preview", "/include/flowplayer/flowplayer-3.2.6.swf", "'.$url.'");</script>';
 					break;
 				case 'document':
 					$embed = '<object width="850" height="500" type="application/x-shockwave-flash" data="/include/FlexPaper_flash/FlexPaperViewer.swf" style="visibility: visible; width: 850px; height: 500px; top: 0px;">

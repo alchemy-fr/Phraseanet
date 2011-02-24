@@ -769,13 +769,15 @@ $rss_infos = user::getMyRss();
 			<script type="text/javascript">
 			<?php include 'thesaurus.php';?>
 			</script>
-	<?php if(USE_MINIFY_JS) { ?>		
+	<?php if(USE_MINIFY_JS) { ?>
 			<script type="text/javascript" src="/include/minify/g=prod"></script>
 			<script type="text/javascript" src="/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 	<?php } else { ?>
 			<script type="text/javascript" src="/include/swfobject/swfobject.js"></script>
 			<script type="text/javascript" src="/include/jslibs/jquery-1.4.4.js"></script>
 			<script type="text/javascript" src="/include/jslibs/jquery-ui-1.7.2.js"></script>
+			<script type="text/javascript" src="/include/colorpicker/js/colorpicker.js"></script>
+			<script type="text/javascript" src="/include/jslibs/json2.js"></script>
 			<script type="text/javascript" src="/include/jslibs/jquery.cookie.js"></script>
 			<script type="text/javascript" src="/include/jquery.common.js"></script>
 			<script type="text/javascript" src="/include/jslibs/jquery.form.2.49.js"></script>
@@ -783,6 +785,7 @@ $rss_infos = user::getMyRss();
 			<script type="text/javascript" src="/include/jslibs/json2.js"></script>
 			<script type="text/javascript" src="/include/jslibs/jquery.sprintf.1.0.3.js"></script>
 			<script type="text/javascript" src="/include/jquery.tooltip.js"></script>
+			<script type="text/javascript" src="/include/flowplayer/flowplayer-3.2.6.min.js"></script>
 			<script type="text/javascript" src="/include/jquery.p4.preview.js"></script>
 			<script type="text/javascript" src="/prod/jquery.edit.js"></script>
 			<script type="text/javascript" src="/include/jslibs/jquery.color.animation.js"></script>
@@ -1245,6 +1248,17 @@ $rss_infos = user::getMyRss();
 				?>
 <!--					<li><a href="#popular-queries">Popular</a></li>-->
 				</ul>
+				<div id="bases-queries" class="PNB" style="top:30px;overflow:hidden;">
+					<div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
+						
+										<?php echo $outB.str_replace('__UNIQUEID__',mt_rand(10000,99999),implode('<div><hr/></div>',$sbase));?>
+					</div>
+				</div>
+				<div id="history-queries" class="PNB" style="top:30px;overflow:hidden;">
+					<div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
+						<?php echo queries::history(); ?>
+					</div>
+				</div>
 				<?php
 					if(queries::topics_exists())
 					{
@@ -1262,17 +1276,6 @@ $rss_infos = user::getMyRss();
 				<?php
 					}
 				?>
-				<div id="bases-queries" class="PNB" style="top:30px;overflow:hidden;">
-					<div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-						
-										<?php echo $outB.str_replace('__UNIQUEID__',mt_rand(10000,99999),implode('<div><hr/></div>',$sbase));?>
-					</div>
-				</div>
-				<div id="history-queries" class="PNB" style="top:30px;overflow:hidden;">
-					<div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-						<?php echo queries::history(); ?>
-					</div>
-				</div>
 <!--				<div id="popular-queries" class="PNB" style="top:30px;overflow:hidden;">-->
 <!--					<div class="PNB10" style="overflow-y:auto;overflow-x:auto;">-->
 <!---->

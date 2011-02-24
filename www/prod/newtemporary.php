@@ -61,7 +61,7 @@ if($request->has_post_datas())
 		    try{
 				$story = new basket();
 				$story->name = $parm['name'];
-				$story->desc = $parm['desc'];
+				$story->desc = strip_tags(str_replace('<br>',"\n",$parm['desc']));
 				$story->is_grouping = true;
 				$story->base_id = $parm['coll'];
 				$story->save();

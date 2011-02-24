@@ -910,7 +910,7 @@ function HTML_Thesaurus(&$html)
               $class_status = '';
             }
 ?>
-            <div pos="<?php echo $idia ?>" id="idEditDiapo_<?php echo $idia ?>" class="diapo <?php echo $class_status; ?>" style="<?php echo $diapostyle ?>;">
+            <div pos="<?php echo $idia ?>" id="idEditDiapo_<?php echo $idia ?>" class="diapo <?php echo $class_status; ?> <?php echo $basrec['type'] ?>_bloc" style="<?php echo $diapostyle ?>;">
               <div class='titre'>
     <?php echo p4string::MakeString($basrec['originalname'], 'html') . "\n" ?>
           </div>

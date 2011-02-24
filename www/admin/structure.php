@@ -92,19 +92,30 @@ if($connbas)
 	if($parm["act"]=="CHGSTRUCTURE")
 	{
 		$errors = databox::get_structure_errors($parm["str"]);
-		if(count($errors) == 0 && $domst = @DOMDocument::loadXML($parm["str"])) // simplexml_load_string($parm["str"]))
+		if(count($errors) == 0) 
 		{
-			$domst->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
-
-			$sql = "UPDATE pref SET value='" . $conn->escape_string($parm["str"] = $domst->saveXML()) . "', updated_on='" . $now . "' WHERE prop='structure'" ;
-			$connbas->query($sql);
-			
-			$cache_appbox = cache_appbox::getInstance();
-			$cache_appbox->delete('list_bases');
-			
-			cache_databox::update($parm["p0"],'structure');
+			$domst = new DOMDocument('1.0', 'UTF-8');
+			$domst->preserveWhiteSpace = false;
+			$domst->formatOutput = true;
+			if(@$domst->loadXML($parm["str"]))
+			{
+				$domst->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
+	
+				$sql = "UPDATE pref SET value='" . $conn->escape_string($parm["str"] = $domst->saveXML()) . "', updated_on='" . $now . "' WHERE prop='structure'" ;
+				$connbas->query($sql);
+				
+				$cache_appbox = cache_appbox::getInstance();
+				$cache_appbox->delete('list_bases');
+				
+				cache_databox::update($parm["p0"],'structure');
+			}
+			else
+			{
+				$errors[] = "Error loadXML(structure)";
+			}
 		}
-		else
+		
+		if(count($errors) != 0) 
 		{
 			$msg .=  p4string::MakeString(_('admin::base: xml invalide, les changements ne seront pas appliques'), 'js') . "" ;
 			$loadit = false;

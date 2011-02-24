@@ -852,7 +852,7 @@ function edit_clk_editimg(evt, i)
     }
   }
 
-  $('#TH_Opreview .PNB10').empty();
+  empty_preview_edit();
 
   var selected = $('#EDIT_FILM2 .diapo.selected');
   if(selected.length == 1)
@@ -1234,6 +1234,7 @@ function edit_applyMultiDesc(evt)
   var sendorder = "";
   var sendChuOrder = "";
 
+  empty_preview_edit();
   var t = "";
 
   if(p4.edit.textareaIsDirty && edit_validField(evt, "ask_ok")==false)
@@ -1334,7 +1335,7 @@ function edit_applyMultiDesc(evt)
 function edit_cancelMultiDesc(evt)
 {
 
-
+  empty_preview_edit();
   var dirty = false;
 
   evt.cancelBubble = true;
@@ -1502,6 +1503,7 @@ function EditThesaurusSeeker(sbas_id)
     this.jq = $.ajax({
       url: url,
       data: parms,
+      type:'POST',
       success: function(ret)
       {
         me.TH_P_node.html("...");
@@ -1855,7 +1857,7 @@ function vsplit2()
 
 function setPreviewEdit()
 {
-  if(!$('#EDITWINDOW').is(':visible'))
+  if(!$('#TH_Opreview').is(':visible'))
     return false;
 
   var selected = $('#EDIT_FILM2 .diapo.selected');
@@ -1936,10 +1938,21 @@ function setPreviewEdit()
 
 }
 
+function empty_preview_edit()
+{
+  var el = $('#TH_Opreview .PNB10 object').parent();
+  if(el.parent().attr('id') != 'TH_Opreview')
+  {
+    el.empty();
+    el.remove();
+  }
+  $('#TH_Opreview .PNB10').empty();
+}
+
 function previewEdit(r)
 {
-
-  $('#TH_Opreview .PNB10').empty().append(p4.edit.T_records[r].preview.preview);
+  empty_preview_edit();
+  $('#TH_Opreview .PNB10').append(p4.edit.T_records[r].preview.preview);
 
   var data = p4.edit.T_records[r].preview;
 
@@ -1964,7 +1977,7 @@ function previewEdit(r)
     }
     else
     {
-      flowplayer("FLASHPREVIEW", '/include/flowplayer/flowplayer-3.2.2.swf',{
+      flowplayer("rolloverpreview", '/include/flowplayer/flowplayer-3.2.6.swf',{
         clip: {
           autoPlay: true,
           autoBuffering:true,
@@ -1978,7 +1991,7 @@ function previewEdit(r)
         },
         plugins: {
           h264streaming: {
-            url: '/include/flowplayer/flowplayer.pseudostreaming-3.2.2.swf'
+            url: '/include/flowplayer/flowplayer.pseudostreaming-3.2.6.swf'
           }
         }
       });
@@ -2000,7 +2013,22 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   p4.edit.regbasprid = regbasprid;
   p4.edit.ssel = ssel;
 
-  $('#EDIT_MID_R .tabs').tabs();
+  $('#EDIT_MID_R .tabs').tabs(
+    {
+      select: function(event, ui)
+      {
+        var bloc =  $('#EDIT_FILM2 .diapo.video_bloc .previewTips');
+        if($(ui.panel).attr('id') == 'TH_Opreview')
+        {
+          bloc.hide();
+        }
+        else
+        {
+          bloc.show();
+        }
+      }
+    }
+  );
 
   $('#divS div.edit_field:odd').addClass('odd');
   $('#divS div').bind('mouseover',function(){
