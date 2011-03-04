@@ -443,7 +443,7 @@ function baskets($ssel,$srt='')
 				
 				$noViewClass = $bask->noview ? ' unread ' : '';
 				$push_class = $is_push ? ' received ' : '';
-				$infos = '<div style="margin:5px;width:280px;"><div><span style="font-weight:bold;font-size:14px;">'.$bask->name.'</span> </div>'.($isReg?('<div style="text-align:right;">'._('phraseanet::collection').' '.collection::getName($bask->base_id, true).'</div>'):'').'<div style="margin:5px 0">'.$bask->desc.'</div>'.
+				$infos = '<div style="margin:5px;width:280px;"><div><span style="font-weight:bold;font-size:14px;">'.$bask->name.'</span> </div>'.($isReg?('<div style="text-align:right;">'._('phraseanet::collection').' '.collection::getName($bask->base_id, true).'</div>'):'').'<div style="margin:5px 0">'.nl2br($bask->desc).'</div>'.
 				'<div style="margin:5px 0;text-align:right;font-style:italic;">'.sprintf(_('paniers: %d elements'),count($bask->elements)).' - '.phraseadate::getPrettyString(new DateTime($date)).'</div><hr/><div style="position:relative;float:left;width:270px;">'.$bask->get_excerpt().'</div>';
 				
 				$out .= '<div title="'.str_replace('"','&quot;',$infos).'" id="SSTT_'.$ssel_id.'" sbas="'.$sbas.'" class="basketTips ui-accordion-header ui-state-default ui-corner-all header SSTT '.$class.$noViewClass.' '.(($firstBask || $ssel_id==$ssel)?'active':'').'" onclick="loadBask(\''.$ssel_id.'\',this)">

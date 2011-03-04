@@ -559,7 +559,7 @@ if($ztask)
 		 
 	<div style="position:absolute; top:0px; left:5px; right:5px; height:45px; " nowrap>
 		<h4 style="padding:2px; text-align:center"><?php echo $title?></h4>
-		<form name="__ftask" onsubmit="return(false);">
+		<form name="__ftask" onsubmit="return(false);" method="post">
 			<?php echo _('admin::tasks: nom de la tache')?> : <input type="text" name="__tname" style="width:200px" value="<?php echo p4string::MakeString($rowtask["name"], 'htmlprop')?>" onchange="setDirty();" />&nbsp;&nbsp;&nbsp;&nbsp;
 			<input type="checkbox" name="__tactive" <?php echo (((int)($rowtask["active"]>0))?"checked":"")?> onchange="setDirty();" />&nbsp;<?php echo _('admin::tasks: lancer au demarrage du scheduler')?>
 		</form>		
@@ -601,7 +601,7 @@ if($ztask)
 		if(method_exists($ztask, 'printInterfaceHTML'))
 			$ztask->printInterfaceHTML();
 		else
-			print("					<form name=\"".$zGraphicForm."\" onsubmit=\"return(false);\"></form>\n");
+			print("					<form name=\"".$zGraphicForm."\" onsubmit=\"return(false);\" method=\"post\"></form>\n");
 ?>
 			</div>
 			<!-- _____________  end graphic interface '<?php echo $ztask->getName()?>'   _________________ -->
@@ -610,7 +610,7 @@ if($ztask)
 ?>
 			<!-- _____________      xml interface    _____________ -->
 			<div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; <?php echo $xmlDivDispl?>;">
-				<form style="position:absolute; top:0px; left:0px; right:4px; bottom:20px;" action="./task2utils.php" onsubmit="return(false);" name="fxml">
+				<form style="position:absolute; top:0px; left:0px; right:4px; bottom:20px;" method="post" action="./task2utils.php" onsubmit="return(false);" name="fxml">
 					<input type="hidden" name="__act" value="???" />
 					<input type="hidden" name="__class" value="<?php echo $classname?>" />
 					<input type="hidden" name="__tid" value="<?php echo $taskid?>" />
@@ -629,7 +629,7 @@ if($ztask)
 					
 	<div style="position:absolute; bottom:0px; height:30px; right:5px">			
 		<div style="text-align:right; xdisplay:none;" id="saveButtons">
-			<form onsubmit="return(false)">
+			<form onsubmit="return(false)" method="post">
 				<input type="button" onclick="jsTaskObj.saveTask(false);" style="width:180px;" id="cancel_button" value="<?php echo p4string::MakeString(_('boutton::annuler'), 'htmlprop', '"')?>">
 				&nbsp;&nbsp;
 				<input type="button" onclick="jsTaskObj.saveTask(true);" style="width:180px;" id="submit_button" value="<?php echo p4string::MakeString(_('boutton::valider'), 'htmlprop', '"')?>">
