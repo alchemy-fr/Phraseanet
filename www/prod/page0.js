@@ -1860,7 +1860,7 @@ function renameThis(ssel)
 			action: "BASKETRENAME",
 			ssel_id:ssel,
 			name:$('#basket-dialog input[name=name]').val(),
-			description:tinyMCE.get('basket-desc').getContent()
+			description:$('#basket-desc').val()
 		},
 		success: function(data){
 			refreshBaskets('current');
@@ -1903,16 +1903,11 @@ function renameBasket(that,ssel)
 					overlay: {
 						backgroundColor: '#000',
 						opacity: 0.7
-					},
-					beforeclose:function(){
-						tinyMCE.execCommand('mceRemoveControl',true,'basket-desc');
 					}
 				}).dialog('option','buttons',buttons)
 				.dialog('open');
 			$('#basket-dialog input[name=name]').val(data.name);
 			$('#basket-dialog textarea').val(data.description);
-			tinyMCE.execCommand('mceAddControl',true,'basket-desc');
-
 		}
 	});
 }

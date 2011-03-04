@@ -51,7 +51,7 @@ class task_batchupload extends phraseatask
 	public function printInterfaceHTML()
 	{
 ?>
-		<form name="graphicForm" onsubmit="return(false);">
+		<form name="graphicForm" onsubmit="return(false);" method="post">
 		</form>
 <?php
 	}

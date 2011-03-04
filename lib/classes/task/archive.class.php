@@ -155,7 +155,7 @@ class task_archive extends phraseatask
 
 		$colls = databox::getColls();
 ?>
-		<form name="graphicForm" onsubmit="return(false);">
+		<form name="graphicForm" onsubmit="return(false);" method="post">
 			<?php echo _('task::archive:archivage sur base/collection/')?> :
 
 			<select onchange="chgxmlpopup(this, 'base_id');" name="base_id">

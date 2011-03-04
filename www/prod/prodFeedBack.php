@@ -72,7 +72,7 @@ $parm = $request->get_parms('action');
 			$parm = $request->get_parms('ssel_id', 'name', 'description');
 			$basket = basket::getInstance($parm['ssel_id']);
 			$basket->name = $parm['name'];
-			$basket->desc = $parm['description'];
+			$basket->desc = strip_tags($parm['description']);
 			$output = $basket->save();
 			break;
 		

@@ -126,7 +126,7 @@ class task_ftp extends phraseatask
 	{
 		global $parm;
 ?>
-		<form name="graphicForm" onsubmit="return(false);">
+		<form name="graphicForm" onsubmit="return(false);" method="post">
 			<br/>
 			<?php echo('task::ftp:proxy')?>
 			<input type="text" name="proxy" style="width:400px;" onchange="chgxmltxt(this, 'proxy');"><br/>

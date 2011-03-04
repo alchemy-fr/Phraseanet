@@ -977,6 +977,19 @@ span.sel
 	cursor:pointer;
 	font-size:10px;
 }
+
+.prevTrainCurrent .doc_infos, .diapo .doc_infos
+{
+	position: absolute;
+	padding:3px;
+	z-index: 97;
+}
+
+.prevTrainCurrent .doc_infos img,.diapo .doc_infos img
+{
+	vertical-align:middle;
+}
+
 #PREVIEWCURRENTGLOB, .preview_col_film
 {
 	height:96px;
@@ -990,6 +1003,8 @@ span.sel
 	width:400px;
 	overflow-x:auto;
 	overflow-y:hidden;
+  top:0;
+  left:0;
 }
 #PREVIEWCURRENT, #PREVIEWCURRENTGLOB
 {

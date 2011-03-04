@@ -65,7 +65,7 @@ try
 	$browser = browser::getInstance();
 	
 	$template = 'lightbox/index.twig';
-	if(!$browser->isNewGeneration())
+	if(!$browser->isNewGeneration() && !$browser->isMobile())
 		$template = 'lightbox/IE6/index.twig';
 	
 	$twig->display($template, array(

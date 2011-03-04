@@ -49,7 +49,7 @@ if($url)
 {
 	
 	$params = array(
-		'lst'=>$parm['lst'],
+		'lst'=>explode(";", $parm["lst"]),
 		'downloader'=>$session->usr_id,
 		'subdefs'=>$parm['obj'],
 		'from_basket'=>$parm["ssttid"],

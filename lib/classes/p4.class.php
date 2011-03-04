@@ -371,6 +371,7 @@ class p4
     skins::delete_skins_files();
     self::empty_directory(GV_RootPath . 'tmp/cache_minify/', false);
     self::empty_directory(GV_RootPath . 'tmp/cache_twig/', false);
+    self::empty_directory(GV_RootPath . 'www/setup/', true);
     skins::merge();
     self::copy_custom_files();
 

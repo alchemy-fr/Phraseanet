@@ -181,7 +181,7 @@ class task_readmeta extends phraseatask
 	public function printInterfaceHTML()
 	{
 ?>
-		<form name="graphicForm" onsubmit="return(false);">
+		<form name="graphicForm" onsubmit="return(false);" method="post">
 			<br/>
 			<?php echo _('task::_common_:periodicite de la tache')?>&nbsp;:&nbsp;
 			<input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">

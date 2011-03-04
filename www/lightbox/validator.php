@@ -44,7 +44,7 @@ try
 	
 	$template = 'lightbox/validate.twig';
 
-	if(!$browser->isNewGeneration())
+	if(!$browser->isNewGeneration() && !$browser->isMobile())
 		$template = 'lightbox/IE6/validate.twig';
 		
 	$render = $twig->render($template, array(

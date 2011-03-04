@@ -31,6 +31,7 @@ if($request->has_post_datas())
 	
 	if(trim($parm['name']) != '')
 	{
+    $parm['desc'] = strip_tags($parm['desc']);
 		if(is_null($parm['type']) || $parm['type']=="CHU")
 		{
 			try
@@ -199,13 +200,6 @@ if($n > $limit_bask)
 	
 });
 
-</script>
-<script type="text/javascript" src="/include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript">
-	tinyMCE.init({
-		mode : "textareas",
-		theme : "simple"
-	});
 </script>
 
 </head>

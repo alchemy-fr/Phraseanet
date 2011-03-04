@@ -327,7 +327,7 @@ class task_outofdate extends phraseatask
 		if($rs = $conn->query($sql))
 		{
 ?>
-		<form name="graphicForm" onsubmit="return(false);">
+		<form name="graphicForm" onsubmit="return(false);" method="post">
 			<?php echo _('task::outofdate:Base')?>&nbsp;:&nbsp;
 			
 			<select onchange="chgsbas(this);setDirty();" name="sbas_id">

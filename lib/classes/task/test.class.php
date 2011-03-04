@@ -51,7 +51,7 @@ class task_test extends phraseatask
 	public function printInterfaceHTML()
 	{
 ?>
-		<form name="graphicForm" onsubmit="return(false);">
+		<form name="graphicForm" onsubmit="return(false);" method="post">
 		</form>
 <?php
 	}

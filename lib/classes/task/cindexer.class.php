@@ -177,7 +177,7 @@ class task_cindexer extends phraseatask
 		if($this->system == 'WINDOWS')
 			$appname .= '.exe';
 ?>
-		<form name="graphicForm" onsubmit="return(false);">
+		<form name="graphicForm" onsubmit="return(false);" method="post">
 			<br/>
 			<?php echo _('task::cindexer:executable')?>&nbsp;:&nbsp;
 			<input type="text" name="binpath" style="width:300px;" onchange="chgxmltxt(this, 'binpath');" value="">&nbsp;/&nbsp;<?php echo $appname?>

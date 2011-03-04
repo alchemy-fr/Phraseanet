@@ -840,6 +840,7 @@ function evt_dwnl(lst)
 		modal:true,
 		closeOnEscape : true,
 		resizable : false,
+    zIndex:10000,
 		overlay: {
 			backgroundColor: '#000',
 			opacity: 0.7

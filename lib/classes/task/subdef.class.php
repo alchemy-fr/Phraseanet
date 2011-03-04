@@ -188,7 +188,7 @@ class task_subdef extends phraseatask
 		if($conn && ($rs = $conn->query($sql)))
 		{
 ?>
-		<form name="graphicForm" onsubmit="return(false);">
+		<form name="graphicForm" onsubmit="return(false);" method="post">
 			<br/>
 			<?php echo _('task::_common_:periodicite de la tache')?>&nbsp;:&nbsp;
 			<input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
@@ -578,12 +578,18 @@ class task_subdef extends phraseatask
 				{
 					$cache_preview = cache_preview::getInstance();
 					$cache_preview->delete($this->sbas_id,$rid);
+          unset($cache_preview);
 				}
 				if($s['name'] == 'thumbnail')
 				{
 					$cache_thumbnail = cache_thumbnail::getInstance();
 					$cache_thumbnail->delete($this->sbas_id,$rid);
+          unset($cache_thumbnail);
 				}
+
+        $cache_basket = cache_basket::getInstance();
+        $cache_basket->revoke_baskets_record(array($rid));
+        unset($cache_basket);
 				
 				unset($sql);
 				unset($fv, $fn);
