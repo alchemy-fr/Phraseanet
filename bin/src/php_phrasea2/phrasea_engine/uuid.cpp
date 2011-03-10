@@ -12,6 +12,15 @@
 #include "../php_phrasea2.h"
 
 
+
+#ifndef UUID_TYPE_DCE_TIME
+#ifdef __APPLE__
+/* UUID Type definitions */
+#define UUID_TYPE_DCE_TIME   1
+#define UUID_TYPE_DCE_RANDOM 4
+#endif /* __MACOS__ */
+#endif /* UUID_TYPE_DCE_TIME */
+
 ZEND_FUNCTION(phrasea_uuid_create)
 {
 	long uuid_type = 0;
@@ -37,7 +46,7 @@ ZEND_FUNCTION(phrasea_uuid_create)
 		  default:
 			php_error_docref(NULL TSRMLS_CC,
 							 E_WARNING,
-							 "Unknown/invalid UUID type '%d' requested, using default type instead",
+							 "Unknown/invalid UUID type '%ld' requested, using default type instead",
 							 uuid_type);
 			uuid_generate(uuid);
 			break;

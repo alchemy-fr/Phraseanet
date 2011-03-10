@@ -179,6 +179,13 @@ PHP_MINIT_FUNCTION(phrasea2)
 #endif
 
 
+#ifndef UUID_TYPE_DCE_TIME
+#ifdef __APPLE__
+/* UUID Type definitions */
+#define UUID_TYPE_DCE_TIME   1
+#define UUID_TYPE_DCE_RANDOM 4
+#endif /* __MACOS__ */
+#endif /* UUID_TYPE_DCE_TIME */
 
 
 
@@ -300,7 +307,7 @@ PHP_MINFO_FUNCTION(phrasea2)
 
 	if( (fname = (char *)EMALLOC(l)) )
 	{
-		sprintf(fname, "%s_phrasea.%s.test.%ld.bin", PHRASEA2_G(tempPath), "fakeukey", 666);
+		sprintf(fname, "%s_phrasea.%s.test.%d.bin", PHRASEA2_G(tempPath), "fakeukey", 666);
 		if( (fp_test = fopen(fname, "ab")) )
 		{
 			fclose(fp_test);
