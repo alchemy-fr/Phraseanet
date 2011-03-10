@@ -3388,7 +3388,7 @@ function evt_mdwn_obj(obj, evt) //, i, idx)
 				{
 					if($.inArray(k,p4.sel)<0)
 					{
-						p4.sel = $.grep(p4.sel,function(n){return($.inArray(n,$.map($('.IMGT',cont),function(n){return $(n).attr('id').split('_').slice(1,3).join('_');}))<0);});
+//						p4.sel = $.grep(p4.sel,function(n){return($.inArray(n,$.map($('.IMGT',cont),function(n){return $(n).attr('id').split('_').slice(1,3).join('_');}))<0);});
 						p4.sel = new Array();
 						$('.IMGT.selected', cont).removeClass('selected');
 
@@ -3486,8 +3486,9 @@ function baskSelection(obj,evt)
 		{
 			if($.inArray(k,p4.baskSel)<0)
 			{
-				p4.baskSel = $.grep(p4.baskSel,function(n){return($.inArray(n,$.map($('.CHIM',cont),function(n){return $(n).attr('id').split('_').slice(2,4).join('_');}))<0);});
-				p4.baskSel.push(k);
+//				p4.baskSel = $.grep(p4.baskSel,function(n){return($.inArray(n,$.map($('.CHIM',cont),function(n){return $(n).attr('id').split('_').slice(2,4).join('_');}))<0);});
+        p4.baskSel = new Array();
+        p4.baskSel.push(k);
 				$('.CHIM.selected', cont).removeClass('selected');
 				$(obj).addClass('selected');
 			}

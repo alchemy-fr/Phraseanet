@@ -2745,7 +2745,7 @@ function get_multiple ($value, $multiple, $bound='nearest')
 	if($ret < $multiple)
 		$ret = $multiple;
 	
-	return $ret;
+	return (int) $ret;
 }
 
 function resizeImage($file, $width, $height)
