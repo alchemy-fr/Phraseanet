@@ -55,6 +55,37 @@
 	 	</script>
 	{% endif %}
 
+{% if is_infouser_gen %}
+		<script type="text/javascript">
+			$('#tab-3-GEN .record_id .bound').each( function () {
+  				var riid = $(this).html();			
+				var new_a = $(this).html('<img style="float:right;margin-right:5px;" src="./images/loupe2.png" />');
+				$(this).before(riid);
+				$(this).attr('rel', './tab.php').cluetip({
+					width: 600,
+				  	ajaxCache: true, 
+				  	arrows: true,
+				    ajaxSettings : {
+				      	type : 'POST',
+					      dataType: 'json',
+					      data : ({
+					      	tbl : 'what',
+					      	rid : riid,
+					      	sbasid : '{{ param.sbasid }}',
+					      	collection : '{{ param.collection }}',
+					      	dmin : '{{ param.dmin }}',
+					      	dmax : '{{ param.dmax }}',
+					      	from : 'TOOL'
+				      	})
+				    },
+				    ajaxProcess : function (data) {
+				      return data.rs;
+				    }
+			  });
+			});
+	 	</script>
+	{% endif %}
+
 	{% if is_plot %}
 		<script type="text/javascript">
 				$("table:visible:first thead").prepend("<th>{% trans 'report:: Connexion' %}</th>");
