@@ -1295,6 +1295,15 @@
 						<comment></comment>
 					</field>
 					<field>
+						<name>sha256</name>
+						<type>char(64)</type>
+						<null>YES</null>
+						<extra></extra>
+						<default></default>
+						<comment></comment>
+						<collation>ascii_bin</collation>
+					</field>
+					<field>
 						<name>errors</name>
 						<type>text</type>
 						<null></null>

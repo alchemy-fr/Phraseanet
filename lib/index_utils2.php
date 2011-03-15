@@ -620,8 +620,9 @@ function get_fields_from_jpg(&$baseprefs, &$propfile, &$tfields)
 				$macchars .= "\xBC\xBD\xBE";
 		
 				$x = @$xptrdf->query('/rdf:RDF/rdf:Description/XMP-exif:ImageUniqueID');
-				
-				if($x->length>0)
+
+        var_dump($x);
+        if($x && $x->length>0)
 				{		
 					$x = $x->item(0);
 					

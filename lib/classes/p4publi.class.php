@@ -352,7 +352,7 @@ class p4publi
 			
 			
 			if(count($publi) == 0 && count($unpubli) == 0)
-				p4string::jsonencode(array('status'=>'1'));
+				return p4string::jsonencode(array('status'=>'1'));
 				
 			if($isOk)
 			{
@@ -392,6 +392,7 @@ class p4publi
 	
 	public static function unpublish($ssel_id, $pub_id)
 	{
+		$session = session::getInstance();
 		$conn = connection::getInstance();
 		$ret = false;
 		if($pub_id == 'default')
@@ -401,8 +402,12 @@ class p4publi
 			
 			
 			if($conn->query($sql))
+      {
+        $cache_basket = cache_basket::getInstance();
+        $cache_basket->delete($session->usr_id, $ssel_id);
+        
 				$ret = true;
-
+      }
 			$sql = 'SELECT b.*, c.base_id, c.record_id FROM sselcont c, bas b WHERE c.ssel_id = "'.$conn->escape_string($ssel_id).'" AND c.base_id = b.base_id ORDER BY sbas_id ASC';
 
 			if($rs = $conn->query($sql))
@@ -478,8 +483,12 @@ class p4publi
 			}
 			
 			if($conn->query($sql))
+      {
+        $cache_basket = cache_basket::getInstance();
+        $cache_basket->delete($session->usr_id, $ssel_id);
+
 				$ret = '1';
-		
+      }
 			$sql = 'SELECT b.*, c.base_id, c.record_id FROM sselcont c, bas b WHERE c.ssel_id = "'.$conn->escape_string($ssel_id).'" AND c.base_id = b.base_id ORDER BY sbas_id ASC';
 
 			if($rs = $conn->query($sql))

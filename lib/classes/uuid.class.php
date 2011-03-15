@@ -12,14 +12,20 @@ class uuid
 		
 		$this->filepath = $filepath;
 	}
-	
-	public function check_uuid($write = true)
-	{
+
+  public function has_uuid()
+  {
+    $this->read_uuid();
+    return !!$this->uuid;
+  }
+
+  public function read_uuid()
+  {
 		require_once GV_RootPath.'lib/index_utils2.php';
 		$cmd = NULL;
-	
+
 		$system = p4utils::getSystem();
-	
+
 		if(in_array($system, array('DARWIN', 'LINUX')))
 		{
 			$cmd = GV_exiftool.' -X -n -fast ' . escapeshellarg($this->filepath) . '';
@@ -36,24 +42,36 @@ class uuid
 			$s = @shell_exec($cmd);
 			if($s!='')
 			{
-		
+
 				$domrdf = new DOMDocument();
 				$domrdf->recover = true;
 				$domrdf->preserveWhiteSpace = false;
-				
+
 				if($domrdf->loadXML($s))
 				{
 					$this->uuid = $this->test_rdf_fields($domrdf);
 				}
 			}
 		}
-		
-		if($this->uuid === false)
+    return $this->uuid;
+  }
+	
+	public function write_uuid($uuid = false)
+	{
+    if($uuid && self::uuid_is_valid($uuid))
+    {
+      $this->uuid = $uuid;
+    }
+    elseif((($uuid = $this->read_uuid()) !== false) && self::uuid_is_valid($uuid))
+    {
+      $this->uuid = $uuid;
+    }
+		else
 		{
 			$this->uuid = self::generate_uuid();
 		}
-		$this->write();
-		
+
+    $this->write();
 		return $this->uuid;
 	}
 	

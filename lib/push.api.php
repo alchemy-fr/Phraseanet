@@ -1011,7 +1011,7 @@ function saveiList($usr,$ses,$lng,$name,$token,$filters)
 		}
 		$ilists->$label = $filters;
 	
-		$sql = 'UPDATE usr SET push_list="'.$conn->escape_string(p4string::jsonencode($ilists)).'"';
+		$sql = 'UPDATE usr SET push_list="'.$conn->escape_string(p4string::jsonencode($ilists)).'" WHERE usr_id="'.$conn->escape_string($usr).'"';
 		if($conn->query($sql))
 		{
 			$ret = loadILists($usr,$ses,$lng,$label);

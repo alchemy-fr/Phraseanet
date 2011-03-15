@@ -5,7 +5,7 @@ require_once(GV_RootPath.'lib/inscript.api.php');
 $session = session::getInstance();
 
 $request = httpRequest::getInstance();
-$parm = $request->get_post_datas('code');
+$parm = $request->get_parms('code', 'token');
 
 $lng = isset($session->locale)?$session->locale:GV_default_lng;
 

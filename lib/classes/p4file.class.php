@@ -52,7 +52,7 @@ class p4file
 		return $ret;
 	}
 	
-	public static function archiveFile($filename,$base_id,$delete=true,$name=false)
+	public static function archiveFile($filename,$base_id,$delete=true,$name=false,$sha256=false)
 	{
 		require_once GV_RootPath.'lib/index_utils2.php';
 		
@@ -91,7 +91,8 @@ class p4file
 			);
 		
 		$go = false;
-		$sql = "SELECT base_id FROM basusr WHERE base_id='".$conn->escape_string($base_id)."' AND usr_id='".$conn->escape_string($session->usr_id)."' AND canaddrecord='1'";	
+		$sql = "SELECT base_id FROM basusr WHERE base_id='".$conn->escape_string($base_id)."'
+      AND usr_id='".$conn->escape_string($session->usr_id)."' AND canaddrecord='1'";
 		if($rs = $conn->query($sql))
 		{
 			if($row = $conn->fetch_assoc($rs))
@@ -110,7 +111,8 @@ class p4file
 		$server_coll_id = $sbas_id = $server_coll_id = $xmlprefs = false;
 			
 			
-		$sql = "SELECT server_coll_id, bas.sbas_id FROM (bas INNER JOIN sbas ON sbas.sbas_id=bas.sbas_id AND base_id=" . $conn->escape_string($base_id) . ")";
+		$sql = "SELECT server_coll_id, bas.sbas_id
+      FROM (bas INNER JOIN sbas ON sbas.sbas_id=bas.sbas_id AND base_id=" . $conn->escape_string($base_id) . ")";
 	
 		if($rs = $conn->query($sql))
 		{
@@ -129,7 +131,8 @@ class p4file
 				echo "\n Erreur connection";
 			return false;
 		}	
-		$sql = "SELECT value AS baseprefs, prefs AS collprefs FROM pref p, coll c WHERE prop='structure' AND coll_id='" . $connbas->escape_string($server_coll_id)."'";
+		$sql = "SELECT value AS baseprefs, prefs AS collprefs FROM pref p, coll c
+      WHERE prop='structure' AND coll_id='" . $connbas->escape_string($server_coll_id)."'";
 		if($rs = $connbas->query($sql))
 		{
 			$xmlprefs = $connbas->fetch_assoc($rs);
@@ -188,13 +191,17 @@ class p4file
 			$status = (string)($collprefs->status);
 		
 		$file_uuid = new uuid($filename);
-		$uuid = $file_uuid->check_uuid();
-		
+		$uuid = $file_uuid->read_uuid();
+
+    if(!$sha256)
+    {
+      $sha256 = hash_file('sha256',$filename);
+    }
 		
 		$sql = 'INSERT INTO record (coll_id, record_id, status, jeton, moddate, credate, xml, type, sha256, uuid) 
 				VALUES ("'.$connbas->escape_string($server_coll_id) . '", "' .$connbas->escape_string($record_id) . '", 
 					(' . $status . ' | 0x0F), 0x0, NOW(), NOW(), \'' . $connbas->escape_string($xml["xml"]->saveXML()) . '\', 
-					\''.$connbas->escape_string($tfile["type"]).'\', \''.$connbas->escape_string(hash_file('sha256',$filename)).'\', 
+					\''.$connbas->escape_string($tfile["type"]).'\', \''.$connbas->escape_string($sha256).'\',
 					"'.$connbas->escape_string($uuid).'")';
 		
 		if(!$connbas->query($sql))

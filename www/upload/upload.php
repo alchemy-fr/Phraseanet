@@ -115,14 +115,32 @@ if($sbas_id !== false && is_array($parm['status']))
 
 try 
 {
-	$file_uuid = new uuid($newname);
-	$uuid = $file_uuid->check_uuid();
-	
+  $sha256 = hash_file('sha256',$newname);
+
+  $uuid = false;
+  $file_uuid = new uuid($newname);
+  if(!$file_uuid->has_uuid())
+  {
+    $connbas = connection::getInstance($sbas_id);
+    $sql = 'SELECT uuid FROM record WHERE sha256 = "'.$connbas->escape_string($sha256).'"';
+    if($rs = $connbas->query($sql))
+    {
+      if($row = $connbas->fetch_assoc($rs))
+      {
+        if(uuid::uuid_is_valid($row['uuid']))
+          $uuid = $row['uuid'];
+      }
+      $connbas->free_result($rs);
+    }
+  }
+
+  $uuid = $file_uuid->write_uuid($uuid);
+
 	$error_file = p4file::check_file_error($_FILES['Filedata']["tmp_name"], $sbas_id);
 	$status_2 = status::and_operation($mask_oui,$mask_non);
 	if(($uuid !== false && !$file_uuid->is_new_in_base(phrasea::sbasFromBas($base_id))) || count($error_file) > 0)
 	{
-		if(!lazaretFile::move_uploaded_to_lazaret($_FILES['Filedata']["tmp_name"], $base_id, $_FILES['Filedata']["name"], $uuid, implode("\n",$error_file), $status_2))
+		if(!lazaretFile::move_uploaded_to_lazaret($_FILES['Filedata']["tmp_name"], $base_id, $_FILES['Filedata']["name"], $uuid, $sha256, implode("\n",$error_file), $status_2))
 		{
 			if(UPLOADER == 'FLASH')
 				header('HTTP/1.1 500 Internal Server Error');
@@ -143,7 +161,7 @@ catch (Exception $e)
 
 
 
-if(($record_id = p4file::archiveFile($_FILES['Filedata']['tmp_name'],$base_id,true,$_FILES['Filedata']["name"])) === false)
+if(($record_id = p4file::archiveFile($_FILES['Filedata']['tmp_name'],$base_id,true,$_FILES['Filedata']["name"],$sha256)) === false)
 {
 	unlink($_FILES['Filedata']['tmp_name']);	
 	if(UPLOADER == 'FLASH')

@@ -1761,16 +1761,38 @@ class task_archive extends phraseatask
 		}
 
 		$lazaret = false;
-		$uuid = false;
+		$uuid = $sha256 = false;
 		if($grp_rid == 0 && $captionFileName == NULL)
 		{
 			$this->log(sprintf(("Checkin for lazaret")));
 			try
 			{
-				$file_uuid = new uuid($path.'/'.$file);
-				$uuid = $file_uuid->check_uuid();
+
+
 				$base_id = (int)($this->sxTaskSettings->base_id);
 				$sbas_id = phrasea::sbasFromBas($base_id);
+
+        $sha256 = hash_file('sha256',$path.'/'.$file);
+
+        $uuid = false;
+        $file_uuid = new uuid($path.'/'.$file);
+        if(!$file_uuid->has_uuid())
+        {
+          $connbas = connection::getInstance($sbas_id);
+          $sql = 'SELECT uuid FROM record WHERE sha256 = "'.$connbas->escape_string($sha256).'"';
+          if($rs = $connbas->query($sql))
+          {
+            if($row = $connbas->fetch_assoc($rs))
+            {
+              if(uuid::uuid_is_valid($row['uuid']))
+                $uuid = $row['uuid'];
+            }
+            $connbas->free_result($rs);
+          }
+        }
+
+        $uuid = $file_uuid->write_uuid($uuid);
+
 				$error_file = p4file::check_file_error($path.'/'.$file, $sbas_id);
 				$status = status::or_operation($stat0, $stat1);
 
@@ -1780,7 +1802,7 @@ class task_archive extends phraseatask
 				if(($uuid !== false && !$file_uuid->is_new_in_base(phrasea::sbasFromBas($base_id))) || count($error_file) > 0)
 				{
 					$this->log(sprintf(("Trying to move to lazaret")));
-					if(lazaretFile::move_uploaded_to_lazaret($path.'/'.$file, $base_id, $file, $uuid, implode("\n",$error_file), $status))
+					if(lazaretFile::move_uploaded_to_lazaret($path.'/'.$file, $base_id, $file, $uuid, $sha256, implode("\n",$error_file), $status))
 					{
 						$this->log("File %s moved to lazaret");
 						$lazaret = true;
@@ -1807,7 +1829,10 @@ class task_archive extends phraseatask
 			// ... flag the record as 'to reindex' (status-bits 0 and 1 to 0) AND UNLOCK IT (status-bit 2 to 1)
 			// ... and flag it for subdef creation (jeton bit 0 to 1)
 			$fl = 'coll_id, record_id, parent_record_id, status, jeton, moddate, credate, xml, type, sha256, uuid';
-			$vl = $cid . ', ' .$rid . ', ' . '0' . ', (((' . $stat0 . ' | ' . $stat1 . ' | 0x' . $hexstat . ') & ~0x0F) | 0x0C), '.JETON_READ_META_DOC_MAKE_SUBDEF.', NOW(), NOW(), \'' . $this->connbas->escape_string($meta['xml']->saveXML()) . '\', \'' . $this->connbas->escape_string($propfile['type']) . '\', \''.hash_file('sha256',$propfile["hotfolderfile"]).'\', "'.$this->connbas->escape_string($uuid).'"' ;
+			$vl = $cid . ', ' .$rid . ', ' . '0' . ', (((' . $stat0 . ' | ' . $stat1 . ' | 0x' . $hexstat . ') & ~0x0F) | 0x0C),
+          '.JETON_READ_META_DOC_MAKE_SUBDEF.', NOW(), NOW(), \'' . $this->connbas->escape_string($meta['xml']->saveXML()) . '\',
+            \'' . $this->connbas->escape_string($propfile['type']) . '\', \''.$sha256.'\',
+              "'.$this->connbas->escape_string($uuid).'"' ;
 			$sql = 'INSERT INTO record ('.$fl.') VALUES ('.$vl.')';
 
 			//printf("sql:%s\n", $sql);

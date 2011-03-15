@@ -10,7 +10,7 @@ class lazaretFile
 		if(!$conn)
 			throw new Exception ('Impossible detablir la connection a la base de donnee');
 		
-		$sql = 'SELECT filename, filepath, base_id, uuid, status, created_on, usr_id FROM lazaret WHERE id="'.$conn->escape_string($lazaret_id).'"';
+		$sql = 'SELECT filename, filepath, base_id, uuid, sha256, status, created_on, usr_id FROM lazaret WHERE id="'.$conn->escape_string($lazaret_id).'"';
 		
 		$id = false;
 		
@@ -24,7 +24,8 @@ class lazaretFile
 				$this->filepath 	= $row['filepath'];
 				$this->status 		= $row['status'];
 				$this->base_id 		= $row['base_id'];
-				$this->uuid 		= $row['uuid'];
+				$this->uuid       = $row['uuid'];
+				$this->sha256       = $row['sha256'];
 				$this->created_on 	= new DateTime($row['created_on']);
 				$this->usr_id 		= $row['usr_id'];
 			}
@@ -42,7 +43,7 @@ class lazaretFile
 		
 		$file = GV_RootPath.'tmp/lazaret/'.$this->filepath;
 		
-		if(($record_id = p4file::archiveFile($file, $this->base_id, false, $this->filename)) === false)
+		if(($record_id = p4file::archiveFile($file, $this->base_id, false, $this->filename, $this->sha256)) === false)
 			throw new Exception (_('Impossible dajouter le fichier a la base'));
 		
 		$sbas_id = phrasea::sbasFromBas($this->base_id);
@@ -108,7 +109,7 @@ class lazaretFile
 		return $this;
 	}
 	
-	public static function move_uploaded_to_lazaret($tmp_name, $base_id, $filename, $uuid, $errors='', $status=false)
+	public static function move_uploaded_to_lazaret($tmp_name, $base_id, $filename, $uuid, $sha256, $errors='', $status=false)
 	{
 		$conn = connection::getInstance();
 		$system = p4utils::getSystem();
@@ -140,9 +141,10 @@ class lazaretFile
 		rename($tmp_name, $pathfile);
 		p4::chmod($pathfile);
 		
-		$sql = 'INSERT INTO lazaret (id, filename, filepath, base_id, uuid, errors, status, created_on, usr_id) 
+		$sql = 'INSERT INTO lazaret (id, filename, filepath, base_id, uuid, sha256, errors, status, created_on, usr_id)
 				VALUES (null, "'.$conn->escape_string($filename).'", "'.$conn->escape_string($tmp_filename).'"
-				, "'.$conn->escape_string($base_id).'", "'.$conn->escape_string($uuid).'", "'.$conn->escape_string($errors).'"
+				, "'.$conn->escape_string($base_id).'", "'.$conn->escape_string($uuid).'", "'.$conn->escape_string($sha256).'",
+        "'.$conn->escape_string($errors).'"
 				, '.$conn->escape_string('0b'.$status).', NOW(), '.($usr_id ? '"'.$conn->escape_string($usr_id).'"' : 'NULL').')';
 		
 		

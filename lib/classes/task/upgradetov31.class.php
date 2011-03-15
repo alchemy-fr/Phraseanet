@@ -103,8 +103,8 @@ class task_upgradetov31 extends phraseatask
             else
             {
               $uuid_file = new uuid($pathfile);
-              $uuid = $uuid_file->check_uuid();
-              }
+              $uuid = $uuid_file->write_uuid();
+            }
 
             $sql = 'UPDATE record SET
               uuid="' . $connbas->escape_string($uuid) . '"

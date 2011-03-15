@@ -98,55 +98,62 @@ function getPreviewWindow($usr,$ses,$lng,$env,$pos,$contId,$roll)
 				
 			break;
 		case "BASK":
-				
-				$basket = basket::getInstance($contId);
-				
-				$posChu = 0;
-				$name = '';
-				$isPub = false;
-				$i = 0;
-				$first = true;
-				$posAlt = false;
-	
-				foreach($basket->elements as $element)
-				{
-						$i++;
-						if($first)
-						{
-							$bas = $element->base_id;
-							$rec = $element->record_id;
-							$isBask = true;
-							$xmlMAIN = phrasea_xmlcaption($ses,  $bas, $rec);
 
-							$posChu = $i;
-							$name = $basket->name;
-							$isPub = !!$basket->public;
-							$posAlt = $element->order;
-						}
-						$first = false;
-						if($isPub && !!$basket->pub_restrict)
-							$isFullyPublic = true;
+        try
+        {
+          $basket = basket::getInstance($contId);
 
-						if($element->order == $pos)
-						{
-							$bas = $element->base_id;
-							$rec = $element->record_id;
-							$isBask = true;
-							$xmlMAIN = phrasea_xmlcaption($ses,  $bas, $rec);
+          $posChu = 0;
+          $name = '';
+          $isPub = false;
+          $i = 0;
+          $first = true;
+          $posAlt = false;
 
-							$posChu = $i;
-							$name = $basket->name;
-							$isPub = !!$basket->public;
-							$posAlt = $element->order;
-						}
-				}
-				
-				if($posAlt != $pos)
-					$pos = $posAlt;
-				if($isPub)
-					$title = $name.' ('.$posChu.'/'.$i.')';
-				else
-					$title = $name.' ('.$posChu.'/'.$i.') ';
+          foreach($basket->elements as $element)
+          {
+              $i++;
+              if($first)
+              {
+                $bas = $element->base_id;
+                $rec = $element->record_id;
+                $isBask = true;
+                $xmlMAIN = phrasea_xmlcaption($ses,  $bas, $rec);
+
+                $posChu = $i;
+                $name = $basket->name;
+                $isPub = !!$basket->public;
+                $posAlt = $element->order;
+              }
+              $first = false;
+              if($isPub && !!$basket->pub_restrict)
+                $isFullyPublic = true;
+
+              if($element->order == $pos)
+              {
+                $bas = $element->base_id;
+                $rec = $element->record_id;
+                $isBask = true;
+                $xmlMAIN = phrasea_xmlcaption($ses,  $bas, $rec);
+
+                $posChu = $i;
+                $name = $basket->name;
+                $isPub = !!$basket->public;
+                $posAlt = $element->order;
+              }
+          }
+
+          if($posAlt != $pos)
+            $pos = $posAlt;
+          if($isPub)
+            $title = $name.' ('.$posChu.'/'.$i.')';
+          else
+            $title = $name.' ('.$posChu.'/'.$i.') ';
+        }
+        catch(Exception $e)
+        {
+
+        }
 
 			break;
 	}

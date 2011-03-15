@@ -51,20 +51,6 @@ if(  !isset($_FILES["newHD"]) || $_FILES["newHD"]["tmp_name"]=="" || $_FILES["ne
 		die('</body></html>');
 }
 
-$file_uuid = new uuid($_FILES["newHD"]["tmp_name"]);
-$uuid = $file_uuid->check_uuid();
-
-if($uuid === false || $file_uuid->is_new_in_base(phrasea::sbasFromBas($parm['bid'])))
-{
-	
-}
-else
-{
-	if(!lazaretFile::move_uploaded_to_lazaret($_FILES['newHD']["tmp_name"], $parm['bid'], $_FILES['newHD']["name"], $uuid))
-		header('HTTP/1.1 500 Internal Server Error');
-	exit;
-}
-
 try {
 	p4file::substitute($parm['bid'], $parm['rid'], $_FILES["newHD"]["tmp_name"], $_FILES["newHD"]["name"], ($parm['ccfilename'] == '1'));	
 }

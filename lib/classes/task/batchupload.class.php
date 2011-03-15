@@ -258,13 +258,35 @@ class task_batchupload extends phraseatask
 
 					$stat0 = $stat1 = '0';
 
-					$file_uuid = new uuid($path.'/'.$file);
-					$uuid = $file_uuid->check_uuid();
+
+          $sha256 = hash_file('sha256',$path.'/'.$file);
+
+          $uuid = false;
+          $file_uuid = new uuid($path.'/'.$file);
+          if(!$file_uuid->has_uuid())
+          {
+            $connbas = connection::getInstance($sbas_id);
+            $sql = 'SELECT uuid FROM record WHERE sha256 = "'.$connbas->escape_string($sha256).'"';
+            if($rs = $connbas->query($sql))
+            {
+              if($row = $connbas->fetch_assoc($rs))
+              {
+                if(uuid::uuid_is_valid($row['uuid']))
+                  $uuid = $row['uuid'];
+              }
+              $connbas->free_result($rs);
+            }
+          }
+
+          $uuid = $file_uuid->write_uuid($uuid);
 
 					// ... flag the record as 'to reindex' (status-bits 0 and 1 to 0) AND UNLOCK IT (status-bit 2 to 1)
 					// ... and flag it for subdef creation (jeton bit 0 to 1)
 					$fl = 'coll_id, record_id, parent_record_id, status, jeton, moddate, credate, xml, type, sha256, uuid';
-					$vl = $cid . ', ' .$rid . ', ' . '0' . ', (((' . $stat0 . ' | ' . $stat1 . ') & ~0x0F) | 0x0C), '.JETON_READ_META_DOC_MAKE_SUBDEF.', NOW(), NOW(), \'' . $connbas->escape_string($meta['xml']->saveXML()) . '\', \'' . $connbas->escape_string($propfile['type']) . '\', \''.hash_file('sha256',$propfile["hotfolderfile"]).'\', "'.$connbas->escape_string($uuid).'"';
+					$vl = $cid . ', ' .$rid . ', ' . '0' . ', (((' . $stat0 . ' | ' . $stat1 . ') & ~0x0F) | 0x0C),
+            '.JETON_READ_META_DOC_MAKE_SUBDEF.', NOW(), NOW(), \'' . $connbas->escape_string($meta['xml']->saveXML()) . '\',
+            \'' . $connbas->escape_string($propfile['type']) . '\', \''.$sha256.'\',
+            "'.$connbas->escape_string($uuid).'"';
 					$sql = 'INSERT INTO record ('.$fl.') VALUES ('.$vl.')';
 
 					if($connbas->query($sql))
