@@ -121,7 +121,7 @@ phrasea::headers();
 <html lang="<?php echo $session->usr_i18n;?>">
 	<head>
 		<script src="/include/jslibs/jquery-1.4.4.js" type="text/javascript"></script>
-		<script src="/include/jslibs/jquery-ui-1.7.2.js" type="text/javascript"></script>
+		<script src="/include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js" type="text/javascript"></script>
 		<script src="/include/jslibs/jquery.validate.js" type="text/javascript"></script>
 		<script src="/include/jslibs/jquery.validate.password.js" type="text/javascript"></script>
 		<script type="text/javascript">

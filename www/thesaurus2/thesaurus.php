@@ -55,7 +55,7 @@ var p4 = {};
 <script type="text/javascript" src="/include/jslibs/jquery.cookie.js"></script>
 <script type="text/javascript" src="/include/jslibs/jquery.contextmenu_scroll.js"></script>
 <script type="text/javascript" src="/include/jquery.common.js"></script>
-<script type="text/javascript" src="/include/jslibs/jquery-ui-1.7.2.js"></script>
+<script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js"></script>
 <script type="text/javascript" src="win.js"></script>
 <script type="text/javascript" src="xmlhttp.js"></script>
 <script type="text/javascript" src="thesaurus.js"></script>

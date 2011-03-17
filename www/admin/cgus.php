@@ -104,7 +104,7 @@ if(!$update)
 		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
 		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/959595/jquery-ui.css" />
 
-		<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.4.4.js,include/jslibs/jquery-ui-1.7.2.js"></script>
+		<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.4.4.js,include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js"></script>
 		<script type="text/javascript" src="/include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 		<script type="text/javascript">
 			tinyMCE.init({

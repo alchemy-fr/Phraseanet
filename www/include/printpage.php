@@ -231,7 +231,7 @@ if($parm["ACT"] === null)
 			
 		}
 		</script>
-		<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.4.4.js,include/jslibs/jquery-ui-1.7.2.js,include/jquery.p4.modal.js"></script>
+		<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.4.4.js,include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js,include/jquery.p4.modal.js"></script>
 	</head>
 	<body class="bodyprofile">
 		<div class="boxCloser" onclick="parent.hideDwnl();"><?php echo _('boutton::fermer')?></div>

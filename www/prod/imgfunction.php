@@ -35,7 +35,7 @@ if($parm['ACT'] === null)
 		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
 		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo user::getPrefs('css')?>/jquery-ui.css" />
 		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo user::getPrefs('css')?>/prodcolor.css" />
-		<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.4.4.js,include/jslibs/jquery-ui-1.7.2.js,include/jquery.p4.modal.js"></script>
+		<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.4.4.js,include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js,include/jquery.p4.modal.js"></script>
 	</head>
 <?php
 		

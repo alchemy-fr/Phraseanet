@@ -775,7 +775,7 @@ $rss_infos = user::getMyRss();
 	<?php } else { ?>
 			<script type="text/javascript" src="/include/swfobject/swfobject.js"></script>
 			<script type="text/javascript" src="/include/jslibs/jquery-1.4.4.js"></script>
-			<script type="text/javascript" src="/include/jslibs/jquery-ui-1.7.2.js"></script>
+			<script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js"></script>
 			<script type="text/javascript" src="/include/colorpicker/js/colorpicker.js"></script>
 			<script type="text/javascript" src="/include/jslibs/json2.js"></script>
 			<script type="text/javascript" src="/include/jslibs/jquery.cookie.js"></script>

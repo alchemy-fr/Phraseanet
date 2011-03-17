@@ -1,3 +1,2 @@
 <?php
-define('GV_version','3.1.6');
-
+define('GV_version','3.1.8');

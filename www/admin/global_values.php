@@ -47,7 +47,7 @@ phrasea::start();
 <html lang="<?php echo $session->usr_i18n;?>">
 	<head>
 		<script type="text/javascript" src="/include/jslibs/jquery-1.4.4.js"></script>
-		<script type="text/javascript" src="/include/jslibs/jquery-ui-1.7.2.js"></script>
+		<script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js"></script>
 		<script type="text/javascript" src="/include/jslibs/jquery.validate.js"></script>
 		<script type="text/javascript" src="/include/jslibs/jquery.validate.password.js"></script>
 		<link href="/skins/common/main.css" type="text/css" rel="stylesheet"/>

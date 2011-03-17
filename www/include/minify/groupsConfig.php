@@ -12,7 +12,7 @@
 $groups = array(
     'client' => array(
     	'//include/swfobject/swfobject.js'
-		,'//include/jslibs/jquery-ui-1.7.2.js'
+		,'//include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js'
 		,'//include/jslibs/jquery-ui-i18n.js'
     	,'//login/geonames.js'
 		,'//include/jslibs/jquery.cookie.js'
@@ -28,14 +28,14 @@ $groups = array(
 		'//include/jslibs/jquery-1.4.4.js'
 		,'//include/jslibs/jquery.cookie.js'
 		,'//include/jquery-treeview/jquery.treeview.js'
-		,'//include/jslibs/jquery-ui-1.7.2.js'
+		,'//include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js'
 		,'//include/jslibs/jquery-ui-i18n.js'
 		,'//include/jquery.common.js'
 		, '//include/jslibs/jquery.contextmenu_scroll.js'
 	),
     'push' => array(
 		'//include/jslibs/jquery-1.4.4.js'
-		,'//include/jslibs/jquery-ui-1.7.2.js'
+		,'//include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js'
 		,'//include/jslibs/json2.js'
 		,'//prod/push.js'
 		,'//include/jquery.p4.modal.js'
@@ -70,19 +70,19 @@ $groups = array(
 	),
     'setup' => array(
 		'//include/jslibs/jquery-1.4.4.js'
-		,'//include/jslibs/jquery-ui-1.7.2.js'
+		,'//include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js'
 		,'//include/jslibs/jquery-ui-i18n.js'
 		,'//include/jslibs/jquery.validate.js'
 		,'//include/jslibs/jquery.validate.password.js'
 	),
 	'modalBox'=> array(
 		'//include/jslibs/jquery-1.4.4.js'
-		,'//include/jslibs/jquery-ui-1.7.2.js'
+		,'//include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js'
 		,'//include/jslibs/jquery-ui-i18n.js'
 	),
     'prod' => array(
     	'//include/swfobject/swfobject.js'
-		,'//include/jslibs/jquery-ui-1.7.2.js'
+		,'//include/jslibs/jquery-ui-1.8.6/jquery-ui-1.8.6.js'
 		,'//include/jslibs/json2.js'
 		,'//include/colorpicker/js/colorpicker.js'
 		,'//include/jslibs/jquery.mousewheel.js'
