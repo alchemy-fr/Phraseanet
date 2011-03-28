@@ -30,24 +30,6 @@ class patch_3102 implements patch
 		$conn->query($sql);
 		
 	
-		if(!function_exists('phrasea_uuid_create'))
-		{
-			echo "<div style='padding:5px;background-color:red;color:black;'>".
-				sprintf(_('Attention, la fonction %s est indisponible, vous devriez mettre a jour lextension phrasea dans sa derniere version'), 'phrasea_uuid_create').
-				"</div>";
-		}
-		if(!function_exists('phrasea_uuid_is_valid'))
-		{
-			echo "<div style='padding:5px;background-color:red;color:black;'>".
-			sprintf(_('Attention, la fonction %s est indisponible, vous devriez mettre a jour lextension phrasea dans sa derniere version'), 'phrasea_uuid_is_valid').
-			"</div>";
-		}
-		if(!function_exists('phrasea_uuid_compare'))
-		{
-			echo "<div style='padding:5px;background-color:red;color:black;'>".
-			sprintf(_('Attention, la fonction %s est indisponible, vous devriez mettre a jour lextension phrasea dans sa derniere version'), 'phrasea_uuid_compare').
-			"</div>";
-		}
 		return true;
 	}
 }

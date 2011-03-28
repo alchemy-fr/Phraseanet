@@ -1321,6 +1321,10 @@ function pushIt($usr,$ses,$newBask,$parmLST,$users,$mail_content,$lng,$accuse)
 					$canSendHD = implode(',',$canSendHD);
 					$sql = 'UPDATE sselcont SET canHD="1" WHERE ssel_id="'.$new_basket->ssel_id.'" AND base_id IN ('.$canSendHD.')';
 					$conn->query($sql);
+
+          $cache_user = cache_user::getInstance();
+          $cache_user->delete($oneuser);
+
 				}	
 				
 				set_time_limit(60);

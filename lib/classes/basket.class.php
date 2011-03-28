@@ -128,7 +128,8 @@ class basket
 				FROM ssel s 
 					LEFT JOIN validate v ON (s.ssel_id = v.ssel_id AND v.usr_id = "'.$conn->escape_string($usr_id).'") 
 					LEFT JOIN sselnew n ON (n.usr_id = "'.$conn->escape_string($usr_id).'" AND n.ssel_id = s.ssel_id)  
-				WHERE s.ssel_id="'.$ssel_id.'" AND (s.usr_id="'.$conn->escape_string($usr_id).'" OR v.id IS NOT NULL )';
+				WHERE s.ssel_id="'.$ssel_id.'" 
+          AND (s.usr_id="'.$conn->escape_string($usr_id).'" OR v.id IS NOT NULL OR s.public = "1")';
 			
 			if($rs = $conn->query($sql))
 			{
@@ -1353,6 +1354,13 @@ class basket
 		if($conn->query($sql))
 		{
 			$insert_id = $conn->insert_id();
+
+      if($can_hd)
+      {
+          $cache_user = cache_user::getInstance();
+          $cache_user->delete($usr_id);
+      }
+
 			foreach($this->elements as $basket_element)
 			{
 				$sql = 'REPLACE INTO validate_datas (id, validate_id, sselcont_id, updated_on, agreement) 

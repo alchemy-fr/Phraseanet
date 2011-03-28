@@ -619,10 +619,62 @@ function get_fields_from_jpg(&$baseprefs, &$propfile, &$tfields)
 				$macchars .= "\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9D\x9E\x9F";	// 9x except 9C
 				$macchars .= "\xBC\xBD\xBE";
 		
+				$descriptionNode = @$xptrdf->query('/rdf:RDF/rdf:Description')->item(0);
+				if($descriptionNode)
+				{
+					for($x = $descriptionNode->firstChild; $x; $x=$x->nextSibling)
+					{
+						if($x->nodeType==XML_ELEMENT_NODE)
+						{
+							switch($x->nodeName)
+							{
+								case 'Composite:ImageSize':
+									if( (count($_t = explode('x', $x->textContent))) == 2 )
+									{
+										$propfile['width']  = 0 + $_t[0];
+										$propfile['height'] = 0 + $_t[1];
+									}
+									break;
+								case 'ExifIFD:ExifImageWidth':
+									if(!array_key_exists('width', $propfile))
+										$propfile['width'] = 0 + $x->textContent;
+									break;
+								case 'ExifIFD:ExifImageHeight':
+									if(!array_key_exists('height', $propfile))
+										$propfile['height'] = 0 + $x->textContent;
+									break;
+								case 'File:ColorComponents':
+								case 'IFD0:SamplesPerPixel':
+									if(!array_key_exists('channels', $propfile))
+										$propfile['channels'] = 0 + $x->textContent;
+									break;
+								case 'File:BitsPerSample':
+								case 'IFD0:BitsPerSample':
+									if(!array_key_exists('bits', $propfile))
+										$propfile['bits'] = 0 + $x->textContent;
+									break;
+							}
+							if( count($_t = explode(':', $x->nodeName)) == 2 )
+							{
+								switch($_t[1])
+								{
+									case 'ImageWidth':
+										if(!array_key_exists('width', $propfile))
+											$propfile['width'] = 0 + $x->textContent;
+										break;
+									case 'ImageHeight':
+										if(!array_key_exists('height', $propfile))
+											$propfile['height'] = 0 + $x->textContent;
+										break;
+								}
+							}
+						}
+					}
+				}
+				
 				$x = @$xptrdf->query('/rdf:RDF/rdf:Description/XMP-exif:ImageUniqueID');
 
-        var_dump($x);
-        if($x && $x->length>0)
+				if($x && $x->length>0)
 				{		
 					$x = $x->item(0);
 					
@@ -1685,9 +1737,9 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 			$tmpFiles = array();
 				
 			if($system == 'WINDOWS')
-			$cmd = 'start /B /WAIT /LOW ' . GV_exiftool;
+				$cmd = 'start /B /WAIT /LOW ' . GV_exiftool;
 			else
-			$cmd = GV_exiftool;
+				$cmd = GV_exiftool;
 				
 			$thisFile = $tmpFiles[] = GV_RootPath.'tmp/'.time().'-PI';
 				
@@ -1696,9 +1748,9 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 			exec($cmd);
 				
 			if($system == 'WINDOWS')
-			$cmd = 'start /B /WAIT /LOW ' . GV_exiftool;
+				$cmd = 'start /B /WAIT /LOW ' . GV_exiftool;
 			else
-			$cmd = GV_exiftool;
+				$cmd = GV_exiftool;
 				
 			$thisFile = $tmpFiles[] = GV_RootPath.'tmp/'.time().'-JP';
 				
@@ -1719,10 +1771,10 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 						$refSize = filesize($file);
 					}
 					else
-					unlink($file);
+						unlink($file);
 				}
 				else
-				unlink($file);
+					unlink($file);
 			}
 				
 				
@@ -1744,24 +1796,22 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 				}
 
 				if($system == 'WINDOWS')
-				$cmd = 'start /B /WAIT /LOW ' . GV_imagick;
+					$cmd = 'start /B /WAIT /LOW ' . GV_imagick;
 				else
-				$cmd = GV_imagick;
+					$cmd = GV_imagick;
 					
-				$cmd .= ' -quiet';
+				$cmd .= ' -colorspace RGB -flatten -alpha Off -quiet';
 
 				if($strip)
-				$cmd .= ' -strip';
+					$cmd .= ' -strip';
 
 				$cmd .= ' -quality ' . $quality . ' -resize ' . $sdsize . 'x' . $sdsize;
 
 				if($dpi)
-				$cmd .= ' -density '.$dpi.'x'.$dpi.' -units PixelsPerInch';
-
-				$cmd .= ' -colorspace RGB ';
+					$cmd .= ' -density '.$dpi.'x'.$dpi.' -units PixelsPerInch';
 
 				if($infos['mime']=='application/pdf' || $infos['mime']=='application/postscript')
-				$cmd .= ' -geometry ' . $sdsize.'x'.$sdsize;
+					$cmd .= ' -geometry ' . $sdsize.'x'.$sdsize;
 
 				if(isset($infos['Orientation']))
 				{
@@ -1783,9 +1833,9 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 				// windows n'accepte pas les simple quotes
 				// pour mac les quotes pour les noms de fichiers sont indispensables car si il y a un espace -> ca plante
 				if(in_array($infos['mime'],array('image/tiff','application/pdf','image/psd','image/vnd.adobe.photoshop','image/photoshop','image/ai','image/illustrator','image/vnd.adobe.illustrator')))
-				$cmd .= ' "'.$tmpFile .'[0]" "'. $outfile .'"';
+					$cmd .= ' "'.$tmpFile .'[0]" "'. $outfile .'"';
 				else
-				$cmd .= ' "'.$tmpFile .'" "'. $outfile .'"';
+					$cmd .= ' "'.$tmpFile .'" "'. $outfile .'"';
 
 				exec($cmd);
 				unlink($tmpFile);
@@ -1816,20 +1866,20 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 			else
 				$cmd = GV_imagick;
 				
-			$cmd .= ' -quiet';
+			$cmd .= ' -colorspace RGB -flatten -alpha Off -quiet';
 
 			if($strip)
-			$cmd .= ' -strip';
+				$cmd .= ' -strip';
 
 			$cmd .= ' -quality ' . $quality . ' -resize ' . $sdsize . 'x' . $sdsize;
 
 			if($dpi)
-			$cmd .= ' -density '.$dpi.'x'.$dpi.' -units PixelsPerInch';
+				$cmd .= ' -density '.$dpi.'x'.$dpi.' -units PixelsPerInch';
 
-			$cmd .= ' -colorspace RGB ';
-
+			$cmd .= ' -background white';
+			
 			if($infos['mime']=='application/pdf' || $infos['mime']=='application/postscript')
-			$cmd .= ' -geometry ' . $sdsize.'x'.$sdsize;
+				$cmd .= ' -geometry ' . $sdsize.'x'.$sdsize;
 
 			if(isset($infos['Orientation']))
 			{
@@ -1852,15 +1902,14 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 			// pour mac les quotes pour les noms de fichiers sont indispensables car si il y a un espace -> ca plante
 			$array = array('image/tiff', 'application/pdf','image/psd','image/vnd.adobe.photoshop','image/photoshop','image/ai','image/illustrator','image/vnd.adobe.illustrator');
 			if( in_array($infos['mime'], $array ) )
-			$cmd .= ' "'.$infile .'[0]" "'. $outfile .'"';
+				$cmd .= ' "'.$infile .'[0]" "'. $outfile .'"';
 			else
-			$cmd .= ' "'.$infile .'" "'. $outfile .'"';
+				$cmd .= ' "'.$infile .'" "'. $outfile .'"';
+// printf("%s\n", $cmd);
 			$res = exec($cmd);
 			if($debug)
 				echo "execution commande $cmd\n";
 		}
-
-
 
 		//------------------------------------------------------------
 		// on essaye GD ?

@@ -45,26 +45,6 @@ class task_upgradetov31 extends phraseatask
       return 'stopped';
     }
 
-    if (!function_exists('phrasea_uuid_create'))
-    {
-      echo sprintf(_('Attention, la fonction %s est indisponible et necessaire'.
-                        ' pour utiliser ce script'), 'phrasea_uuid_create');
-      return 'stopped';
-    }
-    if (!function_exists('phrasea_uuid_is_valid'))
-    {
-      echo sprintf(_('Attention, la fonction %s est indisponible, vous devriez'.
-              ' mettre a jour lextension phrasea dans sa derniere version'),
-              'phrasea_uuid_is_valid');
-      return 'stopped';
-    }
-    if (!function_exists('phrasea_uuid_compare'))
-    {
-      echo sprintf(_('Attention, la fonction %s est indisponible, vous devriez'.
-              ' mettre a jour lextension phrasea dans sa derniere version'),
-              'phrasea_uuid_compare');
-      return 'stopped';
-    }
 
     $todo = $this->how_many_left();
     $done = 0;

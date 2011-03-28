@@ -6,14 +6,14 @@ margin:0;
 padding:0;
 }
 
-*::-moz-selection{
+*::-moz-selection, *::selection{
 	background:white;
 	color:black;
 }
 
-*::selection {
-	background:white;
-	color:black;
+input::selection, textarea::selection, input::-moz-selection, textarea::-moz-selection {
+  background:#404040;
+  color:white;
 }
 
 .clickable{

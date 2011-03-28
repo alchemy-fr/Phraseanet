@@ -163,13 +163,11 @@ class lazaretFile
 		else
 			$cmd = GV_imagick;
 			
-		$cmd .= ' -quiet';
+		$cmd .= ' -colorspace RGB -flatten -alpha Off -quiet';
 
 		$cmd .= ' -quality 75 -resize ' . $sdsize . 'x' . $sdsize;
 
 		$cmd .= ' -density 72x72 -units PixelsPerInch';
-
-		$cmd .= ' -colorspace RGB ';
 
 		if(isset($infos['Orientation']))
 		{

@@ -254,27 +254,25 @@ function makeNewThumb($_FILES,$pathThumb,$namenewThumb,$baseurl,$sdsize)
 			
 			if($mimeExt['mime']=="application/pdf" || $_FILES["newThumb"]["type"]=="application/pdf" || mb_strtolower(substr($_FILES["newThumb"]["name"],-4)==".eps"))
 			{
-				$cmd = GV_imagick . " -strip -quality 75 -geometry ";
-				$cmd .= $sdsize."x".$sdsize;
-				$cmd .= " -define jpeg:preserve-settings -resize ";
-				$cmd .= $sdsize."x".$sdsize;
-				$cmd .=" -colorspace RGB ";
-				$cmd .= "  \"".$_FILES["newThumb"]["tmp_name"] ."[0]\" \"".$pathThumb.$namenewThumb."\"";
+				$cmd = GV_imagick . ' -colorspace RGB -flatten -alpha Off -quiet -strip -quality 75';
+				$cmd .= ' -geometry ' . $sdsize.'x'.$sdsize;
+				$cmd .= ' -define jpeg:preserve-settings';
+				$cmd .= ' -resize ' . $sdsize.'x'.$sdsize;
+				$cmd .= " \"".$_FILES["newThumb"]["tmp_name"] ."[0]\" \"".$pathThumb.$namenewThumb."\"";
 			}
 			else 
 			{
-				$cmd = GV_imagick . " -strip -quality 75 -size ";
-				$cmd .= $sdsize."x".$sdsize;
-				$cmd .= " -define jpeg:preserve-settings -resize ";
-				$cmd .= $sdsize."x".$sdsize;
-				$cmd .=" -colorspace RGB ";
+				$cmd = GV_imagick . ' -colorspace RGB -flatten -alpha Off -quiet -strip -quality 75';
+				$cmd .= ' -size ' . $sdsize.'x'.$sdsize;
+				$cmd .= ' -define jpeg:preserve-settings';
+				$cmd .= ' -resize ' . $sdsize.'x'.$sdsize;
 
 				// attention, au cas ou il y aurait des espaces dans le path, il faut des quotes
 				// windows n'accepte pas les simple quotes				
 				if( $_FILES["newThumb"]["type"]=="image/tiff")
-					$cmd .= " -quiet \"".$_FILES["newThumb"]["tmp_name"] ."\" \"".$pathThumb.$namenewThumb."\"";
+					$cmd .= " \"".$_FILES["newThumb"]["tmp_name"] ."\" \"".$pathThumb.$namenewThumb."\"";
 				else
-					$cmd .= "  \"".$_FILES["newThumb"]["tmp_name"] ."\" \"".$pathThumb.$namenewThumb."\"";
+					$cmd .= " \"".$_FILES["newThumb"]["tmp_name"] ."\" \"".$pathThumb.$namenewThumb."\"";
 				 
 			}  
 			$descriptorspec = array(0 => array("pipe", "r"),  // stdin is a pipe that the child will read from

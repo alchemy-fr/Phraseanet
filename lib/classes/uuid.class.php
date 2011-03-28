@@ -128,7 +128,7 @@ class uuid
 
   public static function generate_uuid()
   {
-    return phrasea_uuid_create();
+    return uuidobject::generate_v4();
   }
 
   private function test_rdf_fields($rdf_dom)
@@ -166,7 +166,7 @@ class uuid
 
   public static function uuid_is_valid($uuid)
   {
-    return phrasea_uuid_is_valid($uuid);
+    return uuidobject::is_valid($uuid);
   }
 
   public function __get($key)

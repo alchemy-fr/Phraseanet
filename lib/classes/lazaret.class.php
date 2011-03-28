@@ -106,7 +106,7 @@ class lazaret
 					
 					$xml = phrasea_xmlcaption($session->ses_id, $base_id, $row['record_id']);
 					
-					$thumbnail = answer::getThumbnail($session->ses_id, $base_id, $row['record_id'],GV_zommPrev_rollover_clientAnswer);
+					$thumbnail = answer::getThumbnail($session->ses_id, $base_id, $row['record_id'],true);
 						
 					$lazaret_group[$key_group]['potentials'][$record_id] = array(
 						'record_id'	=> $row['record_id'],

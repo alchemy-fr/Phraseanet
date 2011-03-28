@@ -1329,7 +1329,9 @@ function startThesaurus(){
 							className:"THPD_TMenu",
 							beforeShow:function()
 							{
-								var canPaste = false;
+								var menuOptions = $(this.menu).find(".context-menu-item");
+                menuOptions.eq(1).addClass("context-menu-item-disabled");
+                menuOptions.eq(2).addClass("context-menu-item-disabled");
 								
 								var x = this._showEvent.srcElement ? this._showEvent.srcElement : this._showEvent.target;
 								var li  = $(x).closest("li");
@@ -1367,26 +1369,18 @@ function startThesaurus(){
 														success: function(result, textStatus)
 																{
 																	this._ret = result ;
+                                  if(result.acceptable)
+                                  {
+                                    menuOptions.eq(1).removeClass("context-menu-item-disabled");
+                                    menuOptions.eq(2).removeClass("context-menu-item-disabled");
+                                  }
 																},
 														_ret: null	// private alchemy
 													};
 														
 										$.ajax( parms );
-										
-										if(parms._ret && parms._ret.acceptable)
-											canPaste = true;
+
 									}
-								}
-								var menuOptions = $(this.menu).find(".context-menu-item");
-								if(canPaste)
-								{
-									menuOptions.eq(1).removeClass("context-menu-item-disabled");
-									menuOptions.eq(2).removeClass("context-menu-item-disabled");
-								}
-								else
-								{
-									menuOptions.eq(1).addClass("context-menu-item-disabled");
-									menuOptions.eq(2).addClass("context-menu-item-disabled");
 								}
 								return(true);
 							}
