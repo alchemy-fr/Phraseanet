@@ -135,39 +135,63 @@ class collection
 		}
 		return true;
 	}
-	
+
 	public static function mount_collection($sbas_id, $coll_id)
 	{
 		$connbas = connection::getInstance($sbas_id);
 		$conn = connection::getInstance();
 		$session = session::getInstance();
-	
+
 		if(!$connbas || !$conn)
 		{
 			throw new Exception('Impossible de se connecter a la base');
 		}
 
 		$new_bas = $conn->getId("BAS");
-		
+
 		$fn = $fv = "";
 		$fn .= "base_id"            ; $fv .= $new_bas;
 		$fn .= ", active"           ; $fv .= ", 1";
 		$fn .= ", server_coll_id"   ; $fv .= ", "  . $coll_id;
 		$fn .= ", sbas_id"           ; $fv .= ", "  . $sbas_id;
 		$fn .= ", aliases";   $fv .= ",''";
-		
+
 		$sql = "INSERT INTO bas (".$fn.") VALUES (".$fv.")";
-			
+
 		if(!$conn->query($sql))
 		{
 			throw new Exception('Impossible de mounter la collection');
-		}	
+		}
 		$cache_appbox = cache_appbox::getInstance();
 		$cache_appbox->delete('list_bases');
 		cache_databox::update($sbas_id,'structure');
-		
+
 		self::set_admin($new_bas, $session->usr_id);
 		return $new_bas;
+	}
+
+
+	public static function activate_collection($sbas_id, $base_id)
+	{
+		$conn = connection::getInstance();
+		$session = session::getInstance();
+
+		if(!$conn)
+		{
+			throw new Exception('Impossible de se connecter a la base');
+		}
+
+		$sql = "UPDATE bas SET active='1' WHERE base_id = '".$conn->escape_string($base_id)."'" ;
+
+		if(!$conn->query($sql))
+		{
+			throw new Exception('Impossible dactiver la collection');
+		}
+		$cache_appbox = cache_appbox::getInstance();
+		$cache_appbox->delete('list_bases');
+		cache_databox::update($sbas_id,'structure');
+
+		return true;
 	}
 	
 	public static function duplicate_right_from_bas($base_id_from, $base_id_dest)

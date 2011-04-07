@@ -115,6 +115,25 @@ class databox extends base
     return $mountable_colls;
   }
 
+
+  public function get_activable_colls()
+  {
+    $conn = connection::getInstance();
+    $base_ids = array();
+
+    $sql = 'SELECT base_id FROM bas
+            WHERE sbas_id="' . $conn->escape_string($this->id) . '"
+              AND active = "0"';
+    if ($rs = $conn->query($sql))
+    {
+      while ($row = $conn->fetch_assoc($rs))
+        $base_ids[] = $row['base_id'];
+      $conn->free_result($rs);
+    }
+
+    return $base_ids;
+  }
+
   public function list_colls()
   {
     $lb = phrasea::bases();

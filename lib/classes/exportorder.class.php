@@ -153,13 +153,18 @@ class exportorder extends export
 		
 		if(!$conn->query($sql))
 			$commit = false;
-		
+
+    $cache_user = cache_user::getInstance();
+
 		foreach($admins as $admin)
 		{
 			$sql = 'INSERT INTO order_masters (id, usr_id, base_id) VALUES (null, "'.$conn->escape_string($admin).'", "'.$conn->escape_string($base_id).'")';
 
 			if(!$conn->query($sql))
 				$commit = false;
+      else
+        $cache_user->delete ($admin);
+
 		}
 		
 		if($commit)

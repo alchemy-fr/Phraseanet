@@ -72,7 +72,7 @@ function getPreviewWindow($usr,$ses,$lng,$env,$pos,$contId,$roll)
 				$bas = $mypreview[0]["base_id"];
 				$rec = $mypreview[0]["record_id"];
 				$xmlMAIN = $mypreview[0]["xml"];
-				$isFullyPublic = true;
+//				$isFullyPublic = true;
 				$title = sprintf(_('preview:: resultat numero %s / '),'<span id="current_result_n">'.($pos+1).'</span>');
 			break;
 		case "REG":
@@ -457,7 +457,7 @@ function getPreviewWindow($usr,$ses,$lng,$env,$pos,$contId,$roll)
 	
 	
 	$docType = isset($sdMain['document'])?$sdMain['document']['type']:'unknown';
-	
+
 	$prev = answer::get_preview($bas,$rec,$isFullyPublic);
 
 	$preview_html = $prev['html'];

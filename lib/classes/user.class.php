@@ -272,7 +272,7 @@ class user
     }
     public function __isset($name)
     {
-    	if(isset($this->data[$name]))
+    	if(array_key_exists($name, $this->data))
     		return true;
     	return false;
     }

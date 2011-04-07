@@ -11,7 +11,8 @@ $parm = $request->get_parms("act",
 									"srt",	// trier les colonnes de stats par collection (col) ou objet (obj)
 									"nvn",	// New ViewName ( lors de l'UPD
 									"othcollsel",
-									"coll_id"
+									"coll_id",
+									"base_id"
 									 );
 
 $lng = isset($session->locale)?$session->locale:GV_default_lng;
@@ -91,7 +92,17 @@ switch($parm["act"])
 		}
 		catch(Exception $e)
 		{
-			
+
+		}
+		break;
+	case 'ACTIVATE':
+		try
+		{
+			$base_id = collection::activate_collection($parm['p0'], $parm['base_id']);
+		}
+		catch(Exception $e)
+		{
+
 		}
 		break;
 }	
@@ -333,6 +344,11 @@ else
 		function mountColl()
 		{
 			$('#mount_coll').toggle();
+		}
+
+		function activateColl()
+		{
+			$('#activate_coll').toggle();
 		}
 		
 		function umountBase()
@@ -714,7 +730,7 @@ if(isset($tcoll["bases"]["b".$parm["p0"]]))	// ok si p0=base_id (local) ok
 		
 		$databox = new databox($parm['p0']);
 		$mountable_colls = $databox->get_mountable_colls();
-		
+
 		if(count($mountable_colls) > 0)
 		{
 		?>
@@ -727,16 +743,16 @@ if(isset($tcoll["bases"]["b".$parm["p0"]]))	// ok si p0=base_id (local) ok
 			<div id="mount_coll" style="display:none;">
 				<form method="post" action="database.php" target="_self">
 					<select name="coll_id">
-					<?php 
+					<?php
 					foreach($mountable_colls as $coll_id=>$name)
 					{
 					?>
 						<option value="<?php echo $coll_id?>"><?php echo $name?></option>
-					<?php 
+					<?php
 					}
 					?>
 					</select>
-					<?php 
+					<?php
 					$colls = $databox->list_colls();
 					if(count($colls) > 0)
 					{
@@ -746,12 +762,12 @@ if(isset($tcoll["bases"]["b".$parm["p0"]]))	// ok si p0=base_id (local) ok
 						</span>
 						<select name="othcollsel" >
 							<option><?php echo _('choisir')?></option>
-							<?php 
+							<?php
 							foreach ($colls as $base_id=>$name)
 								echo "<option value='".$base_id."'>".$name.'</option>';
 							?>
 						</select>
-					<?php 
+					<?php
 					}
 					?>
 					<input type="hidden" name="p0" value="<?php echo $parm['p0'];?>"/>
@@ -760,7 +776,37 @@ if(isset($tcoll["bases"]["b".$parm["p0"]]))	// ok si p0=base_id (local) ok
 				</form>
 			</div>
 		<?php
-		} 
+		}
+		$activable_colls = $databox->get_activable_colls();
+
+		if(count($activable_colls) > 0)
+		{
+		?>
+			<div style='margin:20px 0 3px 10px;'>
+				<a href="#" onclick="activateColl();">
+					<img src='/skins/icons/create_coll.png' style='vertical-align:middle'/>
+					<?php echo(_('Activer une collection'));?>
+				</a>
+			</div>
+			<div id="activate_coll" style="display:none;">
+				<form method="post" action="database.php" target="_self">
+					<select name="base_id">
+					<?php
+					foreach($activable_colls as $base_id)
+					{
+					?>
+            <option value="<?php echo $base_id?>"><?php echo phrasea::bas_names($base_id)?></option>
+					<?php
+					}
+					?>
+					</select>
+					<input type="hidden" name="p0" value="<?php echo $parm['p0'];?>"/>
+					<input type="hidden" name="act" value="ACTIVATE"/>
+					<button type="submit"><?php echo _('Activer');?></button>
+				</form>
+			</div>
+		<?php
+		}
 		?>
 		<div style='margin:20px 0 3px 10px;'>
 			<a href="javascript:void(0);return(false);" onclick="clearAllLog();return(false);">

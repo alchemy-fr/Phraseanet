@@ -91,7 +91,7 @@ class order
 		
 		try
 		{
-			$basket = basket::getInstance($this->ssel_id);
+			$basket = basket::getInstance($this->ssel_id, $this->user->id);
 		}
 		catch(Exception $e)
 		{

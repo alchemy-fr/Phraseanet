@@ -560,6 +560,9 @@ function get_fields_from_unknown(&$baseprefs, &$propfile, &$tfields)
 
 function get_fields_from_jpg(&$baseprefs, &$propfile, &$tfields)
 {
+	// (8x except 85, 8C) + (9x except 9C) + (BC, BD, BE)
+	static $macchars  = "\x81\x82\x83\x84\x86\x87\x88\x89\x8A\x8B\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9D\x9E\x9F\xBC\xBD\xBE";
+	
 	if($size = getimagesize($propfile['hotfolderfile'], $info))
 	{
 		$propfile['width'] = $size[0];
@@ -571,7 +574,6 @@ function get_fields_from_jpg(&$baseprefs, &$propfile, &$tfields)
 	}
 	
 	$cmd = NULL;
-
 	$system = p4utils::getSystem();
 
 	if($system == 'DARWIN' )
@@ -594,31 +596,21 @@ function get_fields_from_jpg(&$baseprefs, &$propfile, &$tfields)
 		$s = @shell_exec($cmd);
 		if($s!='')
 		{
-	
 			$domrdf = new DOMDocument();
 			$domrdf->recover = true;
 			$domrdf->preserveWhiteSpace = false;
 			
 			if($domrdf->loadXML($s))
 			{
-				
 				$xptrdf = new DOMXPath($domrdf);
-
 				$xptrdf->registerNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#') ;
 				
 				$pattern = "(xmlns:([a-zA-Z-_0-9]+)=[']{1}(https?:[/{2,4}|\\{2,4}][\w:#%/;$()~_?/\-=\\\.&]*)[']{1})";
 				preg_match_all($pattern, $s, $matches, PREG_PATTERN_ORDER, 0);
 
 				foreach($matches[2] as $key=>$value)
-				{
 					$xptrdf->registerNamespace($matches[1][$key], $value) ;
-				}	
 				
-				
-				$macchars  = "\x81\x82\x83\x84\x86\x87\x88\x89\x8A\x8B\x8D\x8E\x8F";			// 8x except 85,  8C
-				$macchars .= "\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9D\x9E\x9F";	// 9x except 9C
-				$macchars .= "\xBC\xBD\xBE";
-		
 				$descriptionNode = @$xptrdf->query('/rdf:RDF/rdf:Description')->item(0);
 				if($descriptionNode)
 				{
@@ -806,7 +798,6 @@ function kill_ctrlchars($s)		// ok en utf8 !
 
 function makeSubdefs($sbas_id, $hdDoc)
 {
-
 	$zdate = time();
 
 	$debug = false;
@@ -864,15 +855,15 @@ function makeSubdefs($sbas_id, $hdDoc)
 
 			$physdpath = p4string::addEndSlash(p4::dispatch($physdpath));
 			if(!is_dir($physdpath))
-			p4::fullmkdir($physdpath);
+				p4::fullmkdir($physdpath);
 
 
 			$ret['subdefs'][$i] = subdefDispatcher($what		// 'image', 'video' or 'audio'
-			, $HDFile	// path to document
-			, $subdef	// subdef settings from struct (simplexml)
-			, $physdpath	// where to create the subdef
-			, $HDprops		// recordid, width, height, mime, CMYK etc...
-			);
+												, $HDFile	// path to document
+												, $subdef	// subdef settings from struct (simplexml)
+												, $physdpath	// where to create the subdef
+												, $HDprops		// recordid, width, height, mime, CMYK etc...
+												);
 				
 			// complete le resultat
 			if($ret['subdefs'][$i] !== false)
@@ -885,7 +876,7 @@ function makeSubdefs($sbas_id, $hdDoc)
 				$baseurl = '';
 
 				if( ($baseurl = trim((string)($subdef->baseurl))) )
-				$baseurl = p4string::addEndSlash($baseurl).substr($physdpath, strlen(p4string::addEndSlash((string)($subdef->path))));
+					$baseurl = p4string::addEndSlash($baseurl).substr($physdpath, strlen(p4string::addEndSlash((string)($subdef->path))));
 					
 				$ret['subdefs'][$i]['baseurl'] = $baseurl ;
 				$ret['subdefs'][$i]['size']    = @filesize(p4string::addEndSlash($physdpath) . $ret['subdefs'][$i]['file']) ;
@@ -1006,7 +997,7 @@ function getVideoInfos($hdPath)
 	 	'ID_VIDEO_ASPECT'	 => 'video_aspect'
 	);
 
-        $stdout = shell_exec($cmd);
+	$stdout = shell_exec($cmd);
 
 	$propfile = array();
 	
@@ -1014,7 +1005,6 @@ function getVideoInfos($hdPath)
 	foreach($stdout as $property)
 	{
 		$props = explode('=',$property);
-		
 		
 		if(array_key_exists($props[0], $docProps))
 			$propfile[$docProps[$props[0]]] = $props[1];
@@ -1029,30 +1019,138 @@ function getVideoInfos($hdPath)
 	
 	return $retour;
 }
-
+/*
 function getImageInfos($hdPath)
 {
 	$retour = array('width'=>0, 'height'=>0, 'CMYK'=>false);
 	if( ($tempHD = getimagesize($hdPath)) )
 	{
 		if(isset($tempHD['channels']) && $tempHD['channels']==4)
-		$retour['CMYK'] = true;
+			$retour['CMYK'] = true;
 		$retour['width'] = $tempHD[0];
 		$retour['height'] = $tempHD[1];
 	}
 	if($ex = @exif_read_data($hdPath, 'FILE') )
 	{
 		if(array_key_exists('Orientation', $ex))
-		$retour['Orientation'] = $ex['Orientation'];
+			$retour['Orientation'] = $ex['Orientation'];
 	}
+var_dump($retour);
 	return $retour;
 }
+*/
+
+/*
+ * return width, height, Orientation, CMYK for a (image) file, using exiftool
+ */
+function getImageInfos($hdPath)
+{
+	$ret = array();
+
+	$cmd = NULL;
+	$system = p4utils::getSystem();
+
+	if($system == 'DARWIN' || $system == 'LINUX')
+		$cmd = GV_exiftool.' -X -n -fast ' . escapeshellarg($hdPath) . '';
+	elseif(chdir(GV_RootPath.'tmp/'))	// WINDOWS
+		$cmd = 'start /B /LOW ' . GV_exiftool.' -X -n -fast ' . escapeshellarg($hdPath) . '';
+
+	if($cmd && ($s = @shell_exec($cmd)) != '')
+	{
+		$domrdf = new DOMDocument();
+		$domrdf->recover = true;
+		$domrdf->preserveWhiteSpace = false;
+		
+		if($domrdf->loadXML($s))
+		{
+			$xptrdf = new DOMXPath($domrdf);
+			$xptrdf->registerNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#') ;
+			
+			$pattern = "(xmlns:([a-zA-Z-_0-9]+)=[']{1}(https?:[/{2,4}|\\{2,4}][\w:#%/;$()~_?/\-=\\\.&]*)[']{1})";
+			preg_match_all($pattern, $s, $matches, PREG_PATTERN_ORDER, 0);
+			foreach($matches[2] as $key=>$value)
+				$xptrdf->registerNamespace($matches[1][$key], $value) ;
+			
+			$descriptionNode = @$xptrdf->query('/rdf:RDF/rdf:Description')->item(0);
+			if($descriptionNode)
+			{
+				// exiftool fields giving tech infos, in order of 'reliability'
+				$fpri = array(
+					  'File:ColorComponents'     => array('f'=>'channels',    'v'=>NULL)
+					, 'Composite:ImageWidth'     => array('f'=>'width',       'v'=>NULL)
+					, 'Composite:ImageHeight'    => array('f'=>'height',      'v'=>NULL)
+					, 'Composite:ImageSize'      => array('f'=>'imageSize',   'v'=>NULL)
+					, 'ExifIFD:ExifImageWidth'   => array('f'=>'width',       'v'=>NULL)
+					, 'ExifIFD:ExifImageHeight'  => array('f'=>'height',      'v'=>NULL)
+					, 'XMP-exif:ExifImageWidth'  => array('f'=>'width',       'v'=>NULL)
+					, 'XMP-exif:ExifImageHeight' => array('f'=>'height',      'v'=>NULL)
+					, 'XMP-tiff:Orientation'     => array('f'=>'Orientation', 'v'=>NULL)
+					, 'IFD0:ImageWidth'          => array('f'=>'width',       'v'=>NULL)
+					, 'IFD0:ImageHeight'         => array('f'=>'height',      'v'=>NULL)
+					, 'IFD0:Orientation'         => array('f'=>'Orientation', 'v'=>NULL)
+					, 'IFD0:SamplesPerPixel'     => array('f'=>'channels',    'v'=>NULL)
+					, 'IFD0:BitsPerSample'       => array('f'=>'bits',        'v'=>NULL)
+					// last chanche values
+					, '*:ImageWidth'             => array('f'=>'width',       'v'=>NULL)
+					, '*:ImageHeight'            => array('f'=>'height',      'v'=>NULL)
+					, '*:BitsPerSample'          => array('f'=>'bits',        'v'=>NULL)
+					, '*:Orientation'            => array('f'=>'Orientation', 'v'=>NULL)
+					);
+			
+				for($x = $descriptionNode->firstChild; $x; $x=$x->nextSibling)
+				{
+					if($x->nodeType==XML_ELEMENT_NODE)
+					{
+						$nodeName = $x->nodeName;
+						if(!array_key_exists($nodeName, $fpri))
+						{
+							// if not a well known field, try (rename) it as a last chance one
+							if( count($tmp = explode(':', $nodeName)) == 2)
+								$nodeName = '*:'.$tmp[1];
+						} 
+						if(array_key_exists($nodeName, $fpri) && $fpri[$nodeName]['v'] === NULL)
+						{
+							$fpri[$nodeName]['v'] = trim($x->textContent);
+						}
+					}
+				}
+				
+				// fill result with the most reliable found values
+				foreach($fpri as $f)
+				{
+					if($f['v'] !== NULL && !array_key_exists($f['f'], $ret))
+						$ret[$f['f']] = $f['v'];
+				}
+				
+				// patch some values
+				if(array_key_exists('channels', $ret))
+					$ret['CMYK'] = ((int)($ret['channels']) == 4);
+				if( (!array_key_exists('width', $ret) || !array_key_exists('height', $ret)) && array_key_exists('imageSize', $ret))
+				{
+					if( count($tmp = explode('x', $ret['imageSize'])) == 2 )
+					{
+						$ret['width']  = $tmp[0];
+						$ret['height'] = $tmp[1];
+					}
+				}
+				foreach(array('width', 'height', 'channels', 'bits', 'Orientation') as $f)
+				{
+					if(array_key_exists($f, $ret))
+						$ret[$f] = (int)($ret[$f]);
+				}
+			}
+		}
+	}	
+	// create some default values to unfound fields
+	$ret = array_merge(array('width'=>0, 'height'=>0, 'CMYK'=>false), $ret);
+	return($ret);
+}
+
 
 
 function isRaw($mime)
 {
 	$raws = array(
-
 		'3fr' 	=> 'image/x-tika-hasselblad'
 		,'arw' 	=> 'image/x-tika-sony'
 		,'bay' 	=> 'image/x-tika-casio'
@@ -1096,104 +1194,104 @@ function giveMimeExt($doc, $OrDoc=null)
 {
 	// printf("--------------\n %s \n--------------\n", $doc);
 	if($OrDoc == null)
-	$OrDoc = $doc;
+		$OrDoc = $doc;
 
 	static $mimeTypes = array(
-	'ai' 	=> 'application/postscript'
-	,'3gp' 	=> 'video/3gpp'
-	,'aif' 	=> 'audio/aiff'
-	,'aiff' => 'audio/aiff'
-	,'asf' 	=> 'video/x-ms-asf'
-	,'asx' 	=> 'video/x-ms-asf'
-	,'avi' 	=> 'video/avi'
-	,'bmp' 	=> 'image/bmp'
-	,'bz2'	=> 'application/x-bzip'
-		
-	,'3fr' 	=> 'image/x-tika-hasselblad'
-	,'arw' 	=> 'image/x-tika-sony'
-	,'bay' 	=> 'image/x-tika-casio'
-	,'cap' 	=> 'image/x-tika-phaseone'
-	,'cr2' 	=> 'image/x-tika-canon'
-	,'crw' 	=> 'image/x-tika-canon'
-	,'dcs' 	=> 'image/x-tika-kodak'
-	,'dcr' 	=> 'image/x-tika-kodak'
-	,'dng' 	=> 'image/x-tika-dng'
-	,'drf' 	=> 'image/x-tika-kodak'
-	,'erf' 	=> 'image/x-tika-epson'
-	,'fff' 	=> 'image/x-tika-imacon'
-	,'iiq' 	=> 'image/x-tika-phaseone'
-	,'kdc' 	=> 'image/x-tika-kodak'
-	,'k25' 	=> 'image/x-tika-kodak'
-	,'mef' 	=> 'image/x-tika-mamiya'
-	,'mos' 	=> 'image/x-tika-leaf'
-	,'mrw' 	=> 'image/x-tika-minolta'
-	,'nef' 	=> 'image/x-tika-nikon'
-	,'nrw' 	=> 'image/x-tika-nikon'
-	,'orf' 	=> 'image/x-tika-olympus'
-	,'pef' 	=> 'image/x-tika-pentax'
-	,'ppm' 	=> 'image/x-portable-pixmap'
-	,'ptx' 	=> 'image/x-tika-pentax'
-	,'pxn' 	=> 'image/x-tika-logitech'
-	,'raf' 	=> 'image/x-tika-fuji'
-	,'raw' 	=> 'image/x-tika-panasonic'
-	,'r3d' 	=> 'image/x-tika-red'
-	,'rw2' 	=> 'image/x-tika-panasonic'
-	,'rwz'	=> 'image/x-tika-rawzor'
-	,'sr2' 	=> 'image/x-tika-sony'
-	,'srf' 	=> 'image/x-tika-sony'
-	,'x3f' 	=> 'image/x-tika-sigma'
-		
-	,'css' 	=> 'text/css'
-	,'doc' 	=> 'application/msword'
-	,'docx' => 'application/msword'
-	,'eps' 	=> 'application/postscript'
-	,'exe' 	=> 'application/x-msdownload'
-	,'flv' 	=> 'video/x-flv'
-	,'gif' 	=> 'image/gif'
-	,'gz' 	=> 'application/x-gzip'
-	,'htm' 	=> 'text/html'
-	,'html' => 'text/html'
-	,'jpeg' => 'image/jpeg'
-	,'jpg' 	=> 'image/jpeg'
-	,'m3u' 	=> 'audio/x-mpegurl'
-	,'mid' 	=> 'audio/mid'
-	,'midi' => 'audio/mid'
-	,'mkv' 	=> 'video/matroska'
-	,'mp3' 	=> 'audio/mpeg'
-	,'mp4'	=> 'video/mp4'
-	,'vob'	=> 'video/mpeg'
-	,'mp2p'	=> 'video/mpeg'
-	,'mpeg' => 'video/mpeg'
-	,'mpg' 	=> 'video/mpeg'
-	,'ods' 	=> 'application/vnd.oasis.opendocument.spreadsheet'
-	,'odt' 	=> 'application/vnd.oasis.opendocument.text'
-	,'odp' 	=> 'application/vnd.oasis.opendocument.presentation'
-	,'ogg' 	=> 'audio/ogg'
-	,'pdf' 	=> 'application/pdf'
-	,'pls' 	=> 'audio/scpls'
-	,'png' 	=> 'image/png'
-	,'pps' 	=> 'application/vnd.ms-powerpoint'
-	,'ppt' 	=> 'application/vnd.ms-powerpoint'
-	,'pptx' => 'application/vnd.ms-powerpoint'
-	,'psd' 	=> 'image/psd'
-	,'ra' 	=> 'audio/x-pn-realaudio'
-	,'ram' 	=> 'audio/x-pn-realaudio'
-	,'rm' 	=> 'application/vnd.rn-realmedia'
-	,'rtf' 	=> 'application/msword'
-	,'rv' 	=> 'video/vnd.rn-realvideo'
-	,'swf' 	=> 'application/x-shockwave-flash'
-	,'tar' 	=> 'application/x-tar'
-	,'tif' 	=> 'image/tiff'
-	,'txt' 	=> 'text/plain'
-	,'wav' 	=> 'audio/wav'
-	,'wma' 	=> 'audio/x-ms-wma'
-	,'wmv' 	=> 'video/x-ms-wmv'
-	,'wmx' 	=> 'video/x-ms-wmx'
-	,'xls' 	=> 'application/excel'
-	,'xlsx'	=> 'application/excel'
-	,'xml' 	=> 'text/xml'
-	,'xsl' 	=> 'text/xsl'
-	,'zip' 	=> 'application/zip'
+		'ai' 	=> 'application/postscript'
+		,'3gp' 	=> 'video/3gpp'
+		,'aif' 	=> 'audio/aiff'
+		,'aiff' => 'audio/aiff'
+		,'asf' 	=> 'video/x-ms-asf'
+		,'asx' 	=> 'video/x-ms-asf'
+		,'avi' 	=> 'video/avi'
+		,'bmp' 	=> 'image/bmp'
+		,'bz2'	=> 'application/x-bzip'
+			
+		,'3fr' 	=> 'image/x-tika-hasselblad'
+		,'arw' 	=> 'image/x-tika-sony'
+		,'bay' 	=> 'image/x-tika-casio'
+		,'cap' 	=> 'image/x-tika-phaseone'
+		,'cr2' 	=> 'image/x-tika-canon'
+		,'crw' 	=> 'image/x-tika-canon'
+		,'dcs' 	=> 'image/x-tika-kodak'
+		,'dcr' 	=> 'image/x-tika-kodak'
+		,'dng' 	=> 'image/x-tika-dng'
+		,'drf' 	=> 'image/x-tika-kodak'
+		,'erf' 	=> 'image/x-tika-epson'
+		,'fff' 	=> 'image/x-tika-imacon'
+		,'iiq' 	=> 'image/x-tika-phaseone'
+		,'kdc' 	=> 'image/x-tika-kodak'
+		,'k25' 	=> 'image/x-tika-kodak'
+		,'mef' 	=> 'image/x-tika-mamiya'
+		,'mos' 	=> 'image/x-tika-leaf'
+		,'mrw' 	=> 'image/x-tika-minolta'
+		,'nef' 	=> 'image/x-tika-nikon'
+		,'nrw' 	=> 'image/x-tika-nikon'
+		,'orf' 	=> 'image/x-tika-olympus'
+		,'pef' 	=> 'image/x-tika-pentax'
+		,'ppm' 	=> 'image/x-portable-pixmap'
+		,'ptx' 	=> 'image/x-tika-pentax'
+		,'pxn' 	=> 'image/x-tika-logitech'
+		,'raf' 	=> 'image/x-tika-fuji'
+		,'raw' 	=> 'image/x-tika-panasonic'
+		,'r3d' 	=> 'image/x-tika-red'
+		,'rw2' 	=> 'image/x-tika-panasonic'
+		,'rwz'	=> 'image/x-tika-rawzor'
+		,'sr2' 	=> 'image/x-tika-sony'
+		,'srf' 	=> 'image/x-tika-sony'
+		,'x3f' 	=> 'image/x-tika-sigma'
+			
+		,'css' 	=> 'text/css'
+		,'doc' 	=> 'application/msword'
+		,'docx' => 'application/msword'
+		,'eps' 	=> 'application/postscript'
+		,'exe' 	=> 'application/x-msdownload'
+		,'flv' 	=> 'video/x-flv'
+		,'gif' 	=> 'image/gif'
+		,'gz' 	=> 'application/x-gzip'
+		,'htm' 	=> 'text/html'
+		,'html' => 'text/html'
+		,'jpeg' => 'image/jpeg'
+		,'jpg' 	=> 'image/jpeg'
+		,'m3u' 	=> 'audio/x-mpegurl'
+		,'mid' 	=> 'audio/mid'
+		,'midi' => 'audio/mid'
+		,'mkv' 	=> 'video/matroska'
+		,'mp3' 	=> 'audio/mpeg'
+		,'mp4'	=> 'video/mp4'
+		,'vob'	=> 'video/mpeg'
+		,'mp2p'	=> 'video/mpeg'
+		,'mpeg' => 'video/mpeg'
+		,'mpg' 	=> 'video/mpeg'
+		,'ods' 	=> 'application/vnd.oasis.opendocument.spreadsheet'
+		,'odt' 	=> 'application/vnd.oasis.opendocument.text'
+		,'odp' 	=> 'application/vnd.oasis.opendocument.presentation'
+		,'ogg' 	=> 'audio/ogg'
+		,'pdf' 	=> 'application/pdf'
+		,'pls' 	=> 'audio/scpls'
+		,'png' 	=> 'image/png'
+		,'pps' 	=> 'application/vnd.ms-powerpoint'
+		,'ppt' 	=> 'application/vnd.ms-powerpoint'
+		,'pptx' => 'application/vnd.ms-powerpoint'
+		,'psd' 	=> 'image/psd'
+		,'ra' 	=> 'audio/x-pn-realaudio'
+		,'ram' 	=> 'audio/x-pn-realaudio'
+		,'rm' 	=> 'application/vnd.rn-realmedia'
+		,'rtf' 	=> 'application/msword'
+		,'rv' 	=> 'video/vnd.rn-realvideo'
+		,'swf' 	=> 'application/x-shockwave-flash'
+		,'tar' 	=> 'application/x-tar'
+		,'tif' 	=> 'image/tiff'
+		,'txt' 	=> 'text/plain'
+		,'wav' 	=> 'audio/wav'
+		,'wma' 	=> 'audio/x-ms-wma'
+		,'wmv' 	=> 'video/x-ms-wmv'
+		,'wmx' 	=> 'video/x-ms-wmx'
+		,'xls' 	=> 'application/excel'
+		,'xlsx'	=> 'application/excel'
+		,'xml' 	=> 'text/xml'
+		,'xsl' 	=> 'text/xsl'
+		,'zip' 	=> 'application/zip'
 	);
 
 	$type_pj = '';
@@ -1284,104 +1382,104 @@ if(!function_exists('mime_content_type'))
 	function mime_content_type($f)
 	{
 		$ext2mime = array(
-					  'dwg'=>'application/acad'  // Fichiers AutoCAD
-		, 'ccad'=>'application/clariscad'  // Fichiers ClarisCAD
-		, 'drw'=>'application/drafting'  // Fichiers MATRA Prelude drafting
-		, 'dxf'=>'application/dxf'  // Fichiers AutoCAD
-		, 'unv'=>'application/i-deas'  // Fichiers SDRC I-deas
-		, 'igs'=>'application/iges'  // Format d'echange CAO IGES
-		, 'iges'=>'application/iges'  // Format d'echange CAO IGES
-		, 'bin'=>'application/octet-stream'  // Fichiers binaires non interpretes
-		, 'oda'=>'application/oda'  // Fichiers ODA
-		, 'pdf'=>'application/pdf'  // Fichiers Adobe Acrobat
-		, 'ai'=>'application/postscript'  // Fichiers PostScript
-		, 'eps'=>'application/postscript'  // Fichiers PostScript
-		, 'ps'=>'application/postscript'  // Fichiers PostScript
-		, 'prt'=>'application/pro_eng'  // Fichiers ProEngineer
-		, 'rtf'=>'application/rtf'  // Format de texte enrichi
-		, 'set'=>'application/set'  // Fichiers CAO SET
-		, 'stl'=>'application/sla'  // Fichiers stereolithographie
-		, 'dwg'=>'application/solids'  // Fichiers MATRA Solids
-		, 'step'=>'application/step'  // Fichiers de donnees STEP
-		, 'vda'=>'application/vda'  // Fichiers de surface
-		, 'mif'=>'application/x-mif'  // Fichiers Framemaker
-		, 'dwg'=>'application/x-csh'  // Script C-Shell (UNIX)
-		, 'dvi'=>'application/x-dvi'  // Fichiers texte dvi
-		, 'hdf'=>'application/hdf'  // Fichiers de donnees
-		, 'latex'=>'application/x-latex'  // Fichiers LaTEX
-		, 'nc'=>'application/x-netcdf'  // Fichiers netCDF
-		, 'cdf'=>'application/x-netcdf'  // Fichiers netCDF
-		, 'dwg'=>'application/x-sh'  // Script Bourne Shell
-		, 'tcl'=>'application/x-tcl'  // Script Tcl
-		, 'tex'=>'application/x-tex'  // fichiers Tex
-		, 'texinfo'=>'application/x-texinfo'  // Fichiers eMacs
-		, 'texi'=>'application/x-texinfo'  // Fichiers eMacs
-		, 't'=>'application/x-troff'  // Fichiers Troff
-		, 'tr'=>'application/x-troff'  // Fichiers Troff
-		, 'troff'=>'application/x-troff'  // Fichiers Troff
-		, 'man'=>'application/x-troff-man'  // Fichiers Troff/macro man
-		, 'me'=>'application/x-troff-me'  // Fichiers Troff/macro ME
-		, 'ms'=>'application/x-troff-ms'  // Fichiers Troff/macro MS
-		, 'src'=>'application/x-wais-source'  // Source Wais
-		, 'bcpio'=>'application/x-bcpio'  // CPIO binaire
-		, 'cpio'=>'application/x-cpio'  // CPIO Posix
-		, 'gtar'=>'application/x-gtar'  // Tar GNU
-		, 'shar'=>'application/x-shar'  // Archives Shell
-		, 'sv4cpio'=>'application/x-sv4cpio'  // CPIO SVR4n
-		, 'sc4crc'=>'application/x-sv4crc'  // CPIO SVR4 avec CRC
-		, 'tar'=>'application/x-tar'  // Fichiers compresses tar
-		, 'man'=>'application/x-ustar'  // Fichiers compresses tar Posix
-		, 'man'=>'application/zip'  // Fichiers compresses ZIP
-		, 'au'=>'audio/basic'  // Fichiers audio basiques
-		, 'snd'=>'audio/basic'  // Fichiers audio basiques
-		, 'aif'=>'audio/x-aiff'  // Fichiers audio AIFF
-		, 'aiff'=>'audio/x-aiff'  // Fichiers audio AIFF
-		, 'aifc'=>'audio/x-aiff'  // Fichiers audio AIFF
-		, 'wav'=>'audio/x-wav'  // Fichiers audio Wave
-		, 'man'=>'image/gif'  // Images gif
-		, 'ief'=>'image/ief'  // Images exchange format
-		, 'jpg'=>'image/jpeg'  // Images Jpeg
-		, 'jpeg'=>'image/jpeg'  // Images Jpeg
-		, 'jpe'=>'image/jpeg'  // Images Jpeg
-		, 'tiff'=>'image/tiff'  // Images Tiff
-		, 'tif'=>'image/tiff'  // Images Tiff
-		, 'cmu'=>'image/x-cmu-raster'  // Raster cmu
-		, 'pnm'=>'image/x-portable-anymap'  // Fichiers Anymap PBM
-		, 'pbm'=>'image/x-portable-bitmap'  // Fichiers Bitmap PBM
-		, 'pgm'=>'image/x-portable-graymap'  // Fichiers Graymap PBM
-		, 'ppm'=>'image/x-portable-pixmap'  // Fichiers Pixmap PBM
-		, 'rgb'=>'image/x-rgb'  // Image RGB
-		, 'xbm'=>'image/x-xbitmap'  // Images Bitmap X
-		, 'xpm'=>'image/x-xpixmap'  // Images Pixmap X
-		, 'man'=>'image/x-xwindowdump'  // Images dump X Window
-		, 'zip'=>'multipart/x-zip'  // Fichiers archive zip
-		, 'gz'=>'multipart/x-gzip'  // Fichiers archive GNU zip
-		, 'gzip'=>'multipart/x-gzip'  // Fichiers archive GNU zip
-		, 'htm'=>'text/html'  // Fichiers HTML
-		, 'html'=>'text/html'  // Fichiers HTML
-		, 'txt'=>'text/plain'  // Fichiers texte sans mise en forme
-		, 'g'=>'text/plain'  // Fichiers texte sans mise en forme
-		, 'h'=>'text/plain'  // Fichiers texte sans mise en forme
-		, 'c'=>'text/plain'  // Fichiers texte sans mise en forme
-		, 'cc'=>'text/plain'  // Fichiers texte sans mise en forme
-		, 'hh'=>'text/plain'  // Fichiers texte sans mise en forme
-		, 'm'=>'text/plain'  // Fichiers texte sans mise en forme
-		, 'f90'=>'text/plain'  // Fichiers texte sans mise en forme
-		, 'rtx'=>'text/richtext'  // Fichiers texte enrichis
-		, 'tsv'=>'text/tab-separated-value'  // Fichiers texte avec separation des valeurs
-		, 'etx'=>'text/x-setext'  // Fichiers texte Struct
-		, 'mpeg'=>'video/mpeg'  // Videos MPEG
-		, 'mpg'=>'video/mpeg'  // Videos MPEG
-		, 'mpe'=>'video/mpeg'  // Videos MPEG
-		, 'qt'=>'video/quicktime'  // Videos QuickTime
-		, 'mov'=>'video/quicktime'  // Videos QuickTime
-		, 'avi'=>'video/msvideo'  // Videos Microsoft Windows
-		, 'movie'=>'video/x-sgi-movie'  // Videos MoviePlayer
-		);
+						  'dwg'=>'application/acad'  // Fichiers AutoCAD
+						, 'ccad'=>'application/clariscad'  // Fichiers ClarisCAD
+						, 'drw'=>'application/drafting'  // Fichiers MATRA Prelude drafting
+						, 'dxf'=>'application/dxf'  // Fichiers AutoCAD
+						, 'unv'=>'application/i-deas'  // Fichiers SDRC I-deas
+						, 'igs'=>'application/iges'  // Format d'echange CAO IGES
+						, 'iges'=>'application/iges'  // Format d'echange CAO IGES
+						, 'bin'=>'application/octet-stream'  // Fichiers binaires non interpretes
+						, 'oda'=>'application/oda'  // Fichiers ODA
+						, 'pdf'=>'application/pdf'  // Fichiers Adobe Acrobat
+						, 'ai'=>'application/postscript'  // Fichiers PostScript
+						, 'eps'=>'application/postscript'  // Fichiers PostScript
+						, 'ps'=>'application/postscript'  // Fichiers PostScript
+						, 'prt'=>'application/pro_eng'  // Fichiers ProEngineer
+						, 'rtf'=>'application/rtf'  // Format de texte enrichi
+						, 'set'=>'application/set'  // Fichiers CAO SET
+						, 'stl'=>'application/sla'  // Fichiers stereolithographie
+						, 'dwg'=>'application/solids'  // Fichiers MATRA Solids
+						, 'step'=>'application/step'  // Fichiers de donnees STEP
+						, 'vda'=>'application/vda'  // Fichiers de surface
+						, 'mif'=>'application/x-mif'  // Fichiers Framemaker
+						, 'dwg'=>'application/x-csh'  // Script C-Shell (UNIX)
+						, 'dvi'=>'application/x-dvi'  // Fichiers texte dvi
+						, 'hdf'=>'application/hdf'  // Fichiers de donnees
+						, 'latex'=>'application/x-latex'  // Fichiers LaTEX
+						, 'nc'=>'application/x-netcdf'  // Fichiers netCDF
+						, 'cdf'=>'application/x-netcdf'  // Fichiers netCDF
+						, 'dwg'=>'application/x-sh'  // Script Bourne Shell
+						, 'tcl'=>'application/x-tcl'  // Script Tcl
+						, 'tex'=>'application/x-tex'  // fichiers Tex
+						, 'texinfo'=>'application/x-texinfo'  // Fichiers eMacs
+						, 'texi'=>'application/x-texinfo'  // Fichiers eMacs
+						, 't'=>'application/x-troff'  // Fichiers Troff
+						, 'tr'=>'application/x-troff'  // Fichiers Troff
+						, 'troff'=>'application/x-troff'  // Fichiers Troff
+						, 'man'=>'application/x-troff-man'  // Fichiers Troff/macro man
+						, 'me'=>'application/x-troff-me'  // Fichiers Troff/macro ME
+						, 'ms'=>'application/x-troff-ms'  // Fichiers Troff/macro MS
+						, 'src'=>'application/x-wais-source'  // Source Wais
+						, 'bcpio'=>'application/x-bcpio'  // CPIO binaire
+						, 'cpio'=>'application/x-cpio'  // CPIO Posix
+						, 'gtar'=>'application/x-gtar'  // Tar GNU
+						, 'shar'=>'application/x-shar'  // Archives Shell
+						, 'sv4cpio'=>'application/x-sv4cpio'  // CPIO SVR4n
+						, 'sc4crc'=>'application/x-sv4crc'  // CPIO SVR4 avec CRC
+						, 'tar'=>'application/x-tar'  // Fichiers compresses tar
+						, 'man'=>'application/x-ustar'  // Fichiers compresses tar Posix
+						, 'man'=>'application/zip'  // Fichiers compresses ZIP
+						, 'au'=>'audio/basic'  // Fichiers audio basiques
+						, 'snd'=>'audio/basic'  // Fichiers audio basiques
+						, 'aif'=>'audio/x-aiff'  // Fichiers audio AIFF
+						, 'aiff'=>'audio/x-aiff'  // Fichiers audio AIFF
+						, 'aifc'=>'audio/x-aiff'  // Fichiers audio AIFF
+						, 'wav'=>'audio/x-wav'  // Fichiers audio Wave
+						, 'man'=>'image/gif'  // Images gif
+						, 'ief'=>'image/ief'  // Images exchange format
+						, 'jpg'=>'image/jpeg'  // Images Jpeg
+						, 'jpeg'=>'image/jpeg'  // Images Jpeg
+						, 'jpe'=>'image/jpeg'  // Images Jpeg
+						, 'tiff'=>'image/tiff'  // Images Tiff
+						, 'tif'=>'image/tiff'  // Images Tiff
+						, 'cmu'=>'image/x-cmu-raster'  // Raster cmu
+						, 'pnm'=>'image/x-portable-anymap'  // Fichiers Anymap PBM
+						, 'pbm'=>'image/x-portable-bitmap'  // Fichiers Bitmap PBM
+						, 'pgm'=>'image/x-portable-graymap'  // Fichiers Graymap PBM
+						, 'ppm'=>'image/x-portable-pixmap'  // Fichiers Pixmap PBM
+						, 'rgb'=>'image/x-rgb'  // Image RGB
+						, 'xbm'=>'image/x-xbitmap'  // Images Bitmap X
+						, 'xpm'=>'image/x-xpixmap'  // Images Pixmap X
+						, 'man'=>'image/x-xwindowdump'  // Images dump X Window
+						, 'zip'=>'multipart/x-zip'  // Fichiers archive zip
+						, 'gz'=>'multipart/x-gzip'  // Fichiers archive GNU zip
+						, 'gzip'=>'multipart/x-gzip'  // Fichiers archive GNU zip
+						, 'htm'=>'text/html'  // Fichiers HTML
+						, 'html'=>'text/html'  // Fichiers HTML
+						, 'txt'=>'text/plain'  // Fichiers texte sans mise en forme
+						, 'g'=>'text/plain'  // Fichiers texte sans mise en forme
+						, 'h'=>'text/plain'  // Fichiers texte sans mise en forme
+						, 'c'=>'text/plain'  // Fichiers texte sans mise en forme
+						, 'cc'=>'text/plain'  // Fichiers texte sans mise en forme
+						, 'hh'=>'text/plain'  // Fichiers texte sans mise en forme
+						, 'm'=>'text/plain'  // Fichiers texte sans mise en forme
+						, 'f90'=>'text/plain'  // Fichiers texte sans mise en forme
+						, 'rtx'=>'text/richtext'  // Fichiers texte enrichis
+						, 'tsv'=>'text/tab-separated-value'  // Fichiers texte avec separation des valeurs
+						, 'etx'=>'text/x-setext'  // Fichiers texte Struct
+						, 'mpeg'=>'video/mpeg'  // Videos MPEG
+						, 'mpg'=>'video/mpeg'  // Videos MPEG
+						, 'mpe'=>'video/mpeg'  // Videos MPEG
+						, 'qt'=>'video/quicktime'  // Videos QuickTime
+						, 'mov'=>'video/quicktime'  // Videos QuickTime
+						, 'avi'=>'video/msvideo'  // Videos Microsoft Windows
+						, 'movie'=>'video/x-sgi-movie'  // Videos MoviePlayer
+					);
 		$ret = 'application/octet-stream';
 		$ext = mb_strtolower(substr($f, stripos($f, '.')+1));
 		if(array_key_exists($ext, $ext2mime))
-		$ret = $ext2mime[$ext];
+			$ret = $ext2mime[$ext];
 		//		printf("%s : %s : %s<br/>\n", $f, $ext, $ret);
 		return($ret);
 	}
@@ -1430,7 +1528,6 @@ function giveMeDocType($mime)
 		case 'image/x-tika-sigma':
 		case 'image/x-tika-sony':
 		case 'image/x-portable-pixmap':
-				
 			$return = 'image';
 			break;
 
@@ -1510,7 +1607,6 @@ function giveMeDocType($mime)
 
 function make1flashsubdef($infile, $sd, $physdpath, $infos)
 {
-
 	$debug = false;
 
 	if($debug)
@@ -1551,13 +1647,12 @@ function make1flashsubdef($infile, $sd, $physdpath, $infos)
 		if (is_resource($process))
 		{
 			while (!feof($pipes[2]))
-			$err .= fgets($pipes[2], 1024);
+				$err .= fgets($pipes[2], 1024);
 			fclose($pipes[2]);
 			while (!feof($pipes[1]))
-			$stdout .= fgets($pipes[1], 1024);
+				$stdout .= fgets($pipes[1], 1024);
 			fclose($pipes[1]);
 			proc_close($process);
-				
 				
 			$lines = explode("\n",$stdout);
 			foreach($lines as $l)
@@ -1574,13 +1669,10 @@ function make1flashsubdef($infile, $sd, $physdpath, $infos)
 					$ext = '.png';
 					break;
 				}
-
 			}
-				
 		}
 		if($id)
 		{
-
 			if($debug)
 			{
 				echo "jai bien le type de fichier : $id\n";
@@ -1590,7 +1682,7 @@ function make1flashsubdef($infile, $sd, $physdpath, $infos)
 			exec(GV_swf_extract.$id.' '.escapeshellarg($infile).' -o '.escapeshellarg($infile_tmp));
 				
 			if(file_exists($infile_tmp))
-			$file_extracted = true;
+				$file_extracted = true;
 
 			if($debug)
 			{
@@ -1607,12 +1699,11 @@ function make1flashsubdef($infile, $sd, $physdpath, $infos)
 		exec($cmd);
 
 		if(file_exists($infile_tmp))
-		$file_extracted = true;
+			$file_extracted = true;
 	}
 
 	if(!$file_extracted)
-	return false;
-
+		return false;
 
 	if(($subdefs = make1subdef($infile_tmp,$sd, $physdpath, $infos)) != false)
 	{
@@ -1643,11 +1734,11 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 
 	$dpi = (int)($sd->dpi);
 	if($dpi <= 0 || $dpi > 32767)
-	$dpi = null;
+		$dpi = null;
 
 	$quality = (int)($sd->quality);
 	if($quality <= 0 || $quality > 100)
-	$quality = 75;
+		$quality = 75;
 
 	$strip = (string)$sd->strip;
 	$strip = $strip=='' || p4field::isyes($strip);		// vrai par defaut
@@ -1667,7 +1758,7 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 		if($system == 'DARWIN' && !$infos['CMYK'] )
 		{
 			if($debug)
-			echo "\n- Try SIPS\n";
+				echo "\n- Try SIPS\n";
 
 			$engine = 'SIPS';
 
@@ -1681,7 +1772,7 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 			$cmd .= ' -s formatOptions '.$quality;
 			$cmd .= ' -Z '.$sdsize;
 			if($dpi)
-			$cmd .= ' -s dpiHeight '.$dpi.' -s dpiWidth '.$dpi;
+				$cmd .= ' -s dpiHeight '.$dpi.' -s dpiWidth '.$dpi;
 			if(isset($infos['Orientation']))
 			{
 				switch($infos['Orientation'])
@@ -1714,7 +1805,7 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 			if (is_resource($process))
 			{
 				while (!feof($pipes[2]))
-				$err .= fgets($pipes[2], 1024);
+					$err .= fgets($pipes[2], 1024);
 				fclose($pipes[2]);
 				proc_close($process);
 				if($err!='')
@@ -1777,10 +1868,8 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 					unlink($file);
 			}
 				
-				
 			if(is_file($tmpFile) && filesize($tmpFile) > 0)
 			{
-
 				$sdsize = (int)$sd->size;
 				$recalc = getimagesize($tmpFile);
 
@@ -1850,7 +1939,7 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 		{
 
 			if($debug)
-			echo "\n- Try IMAGICK\n";
+				echo "\n- Try IMAGICK\n";
 
 			$sdsize = (int)$sd->size;
 
@@ -1917,7 +2006,7 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 		if((!file_exists($outfile)) || $err!='')
 		{
 			if($debug)
-			echo "\n- Try GD\n";
+				echo "\n- Try GD\n";
 
 			$engine = 'GD2';
 
@@ -1937,16 +2026,16 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 				{
 					// cherche le max des 2 valeurs pour creer le coeff de resize
 					if($w_doc > $h_doc)
-					$h_sub = (int)(($h_doc/$w_doc) * ($w_sub = $sdsize));
+						$h_sub = (int)(($h_doc/$w_doc) * ($w_sub = $sdsize));
 					else
-					$w_sub = (int)(($w_doc/$h_doc) * ($h_sub = $sdsize));
+						$w_sub = (int)(($w_doc/$h_doc) * ($h_sub = $sdsize));
 					$img_mini = imagecreatetruecolor($w_sub, $h_sub);
 						
 					$sdmethod = trim((string)($sd->method));
 					if(strtoupper($sdmethod) == 'RESAMPLE')
-					imagecopyresampled($img_mini, $imag_original, 0,0,0,0, $w_sub, $h_sub, $w_doc, $h_doc);
+						imagecopyresampled($img_mini, $imag_original, 0,0,0,0, $w_sub, $h_sub, $w_doc, $h_doc);
 					else
-					imagecopyresized($img_mini, $imag_original, 0,0,0,0, $w_sub, $h_sub, $w_doc, $h_doc);
+						imagecopyresized($img_mini, $imag_original, 0,0,0,0, $w_sub, $h_sub, $w_doc, $h_doc);
 				}
 
 				if(isset($infos['Orientation']))
@@ -1984,7 +2073,7 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 		if(file_exists($outfile))
 		{
 			if(function_exists('chgrp')&& GV_filesGroup!=null)
-			$r = chgrp($outfile, GV_filesGroup);
+				$r = chgrp($outfile, GV_filesGroup);
 			p4::chmod($outfile);
 				
 			$tempHD = getimagesize($outfile);
@@ -2006,7 +2095,6 @@ function make1subdef($infile, $sd, $physdpath, $infos)
 			$return_value['height'] = 666;
 			$return_value['mime'] = 'image/jpeg';
 		}
-
 	}
 	return($return_value);
 }
@@ -2041,10 +2129,10 @@ function pdf_from_document($infile)
 	if (is_resource($process))
 	{
 		while (!feof($pipes[2]))
-		$err .= fgets($pipes[2], 1024);
+			$err .= fgets($pipes[2], 1024);
 		fclose($pipes[2]);
 		while (!feof($pipes[1]))
-		$stdout .= fgets($pipes[1], 1024);
+			$stdout .= fgets($pipes[1], 1024);
 		fclose($pipes[1]);
 		proc_close($process);
 	}
@@ -2056,7 +2144,6 @@ function pdf_from_document($infile)
 
 function swf_from_document($infile, $outfile)
 {
-	
 	$infile = pdf_from_document($infile);
 	
 	if(!$infile)
@@ -2071,7 +2158,7 @@ function swf_from_pdf($infile, $outfile, $delete_infile = false)
 	if(!GV_pdf2swf)
 		return false;
 	
-        $system = p4utils::getSystem();
+	$system = p4utils::getSystem();
 
 	if($system == 'WINDOWS')
 		$cmd = GV_pdf2swf.' "'.$infile .'" "'. $outfile .'" -T 9 -f';
@@ -2098,10 +2185,10 @@ function swf_from_pdf($infile, $outfile, $delete_infile = false)
 	if (is_resource($process))
 	{
 		while (!feof($pipes[2]))
-		$err .= fgets($pipes[2], 1024);
+			$err .= fgets($pipes[2], 1024);
 		fclose($pipes[2]);
 		while (!feof($pipes[1]))
-		$stdout .= fgets($pipes[1], 1024);
+			$stdout .= fgets($pipes[1], 1024);
 		fclose($pipes[1]);
 		proc_close($process);
 	}
@@ -2185,9 +2272,7 @@ function make1Documentsubdef($infile, $sd, $physdpath, $infos)
 
 function make1AudioSubdef($infile, &$sd, $physdpath, &$infos)
 {
-
 	$debug = false;
-
 
 	$retour = false;
 	$sdtype = trim(mb_strtolower($sd->mediatype)); //MP3/JPG
@@ -2195,10 +2280,9 @@ function make1AudioSubdef($infile, &$sd, $physdpath, &$infos)
 	$sdtypeOK = array('audio','image');
 
 	if($debug)
-	echo "\n::::::::::::::::::::::::::::::::::::::::::::::::::\narrivee dans make1audiosubdef AVEC PARAMS : sdname - $sdname et sdtype - $sdtype \n:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n";
+		echo "\n::::::::::::::::::::::::::::::::::::::::::::::::::\narrivee dans make1audiosubdef AVEC PARAMS : sdname - $sdname et sdtype - $sdtype \n:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n";
 	if(!in_array($sdtype,$sdtypeOK))
-	return $retour;
-
+		return $retour;
 		
 	if($sdtype == 'audio')
 	{
@@ -2264,7 +2348,7 @@ function make1AudioSubdef($infile, &$sd, $physdpath, &$infos)
 					if($infos[0] == 'Picture')
 					{
 						if($debug)
-						echo "\nUne emebedded pic est presente dans l'image, on l'extrait...\n";
+							echo "\nUne emebedded pic est presente dans l'image, on l'extrait...\n";
 							
 						$cmd = GV_exiftool.' -b -Picture '.$infile.' > '.$dest;
 						exec($cmd);
@@ -2321,8 +2405,6 @@ function make1AudioSubdef($infile, &$sd, $physdpath, &$infos)
 
 function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 {
-
-
 	$debug = false;
 
 	$system = p4utils::getSystem();
@@ -2415,19 +2497,13 @@ function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 	if($debug)
 		echo "\nLa sortie est   ".$newWidth."x".$newHeight."....\n";
 			
-			
-			
-			
 	if($sdtype == 'video' && $ffmpeg)
 	{
-		
 		$cwd = getcwd();
 		chdir(GV_RootPath.'tmp/');
 		
 		if($debug)
 			echo "\nGENERATING " . $sdname . "  ".$sdtype."....\n";
-
-			
 		
 		$fps = 25;
 		if(isset($sd->fps) && is_numeric((int)$sd->fps))
@@ -2500,7 +2576,6 @@ function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 			if($debug)
 				echo "\n\n\n\nEXECUTION COMMANDE ::::   ".$cmd_pass1."\n\n\n\n";
 			
-			
 			if(is_file($dest))
 				unlink($dest);
 
@@ -2531,7 +2606,6 @@ function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 				$audioEnc = ' -ar ' . $srcAR . ' -ab ' . $srcAB .'k -acodec libmp3lame ';
 			}
 
-
 			$fps = 15;
 			if(isset($sd->fps) && is_numeric((int)$sd->fps))
 				$fps = (int)$sd->fps;
@@ -2545,7 +2619,6 @@ function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 		        ' -f flv -nr 500 -s '.$newWidth.'x'.$newHeight.'' .
 					' -r '.$fps.//$srcFPS.
 		    	' -b 270k -me_range '.$srcFPS.' -i_qfactor 0.71 -g 500 ' . $dest ;
-			
 			
 			if($debug)
 				echo "\n\n\n\nEXECUTION COMMANDE ::::   ".$cmd."\n\n\n\n";
@@ -2573,7 +2646,6 @@ function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 		if($debug)
 			echo "\nGENERATING " . $sdname . "  ".$sdtype."....\n";
 			
-		
 		$newname = $infos['recordid'] . '_' . $sdname . '.jpg';
 		$dest = $physdpath.$newname;
 
@@ -2633,8 +2705,6 @@ function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 		p4::fullmkdir($tmpDir);
 		$tmpDir = p4string::addEndSlash($tmpDir);
 
-
-
 		if($system == 'WINDOWS')
 			$cmd = GV_ffmpeg.' -s '.$newWidth.'x'.$newHeight.' -i '.str_replace('/', "\\", $infile).' -r 1 -f image2 '.$tmpDir.'images%05d.jpg';
 		else
@@ -2660,14 +2730,13 @@ function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 
 		$inter = round(count($files) / 10);
 
-
 		$i = 0;
 		foreach($files as $k=>$file)
 		{
 			if($i % $inter !== 0)
 			{
 				if(unlink($file))
-				unset($files[$k]);
+					unset($files[$k]);
 			}
 			else
 			{
@@ -2722,7 +2791,6 @@ function make_mp4_progressive($mp4_file)
 		echo "\nchecking mp4 box for mp4 progressive video ....\n";
 	if(defined('GV_mp4box') && is_executable(GV_mp4box))
 	{
-		
 		if($debug)
 			echo "\nmp4 box OK, doing it\n";
 			
@@ -2758,7 +2826,6 @@ function make_mp4_progressive($mp4_file)
 			rename($tmpFile,$mp4_file);
 		}
 	}
-	
 	
 	if($debug)
 		echo "\nfichier en sortie : $mp4_file : ".filesize($mp4_file)." \n";
