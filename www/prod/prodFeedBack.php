@@ -443,6 +443,7 @@ $parm = $request->get_parms('action');
 						,"sendermail"
 						,"namecaract"
 						,"NAMMKDFOLD"
+						,"logfile"
 						);
 			
 			$download = new exportftp($parm['lst'], $parm['ssttid']);
@@ -456,7 +457,7 @@ $parm = $request->get_parms('action');
 				try
 				{
 					$download->prepare_export($parm['obj']);
-					$download->export_ftp($parm['usr_dest'], $parm['addr'], $parm['login'], $parm['pwd'], $parm['ssl'], $parm['nbretry'], $parm['passif'], $parm['destfolder'], $parm['NAMMKDFOLD']);
+					$download->export_ftp($parm['usr_dest'], $parm['addr'], $parm['login'], $parm['pwd'], $parm['ssl'], $parm['nbretry'], $parm['passif'], $parm['destfolder'], $parm['NAMMKDFOLD'], $parm['logfile']);
 				
 					$output = p4string::jsonencode(array('error'=>false,'message'=>_('Export enregistre dans la file dattente')));
 				}

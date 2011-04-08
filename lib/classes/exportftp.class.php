@@ -3,7 +3,7 @@ class exportftp extends export
 {
 	
 	
-	public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory)
+	public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile)
 	{
 		$session = session::getInstance();
 		$user_f = user::getInstance($session->usr_id);
@@ -43,9 +43,9 @@ class exportftp extends export
 		$fn.= ",text_mail_receiver";	$fv.= ",'".$conn->escape_string($text_mail_receiver)."'";
 		$fn.= ",text_mail_sender";		$fv.= ",'".$conn->escape_string($text_mail_sender)."'";
 		$fn.= ",usr_id";				$fv.= ",'".$session->usr_id."'";
-//		$fn.= ",reportlogin";			$fv.= ",'".$conn->escape_string($user_f->login)."'";
 		$fn.= ",date";					$fv.= ", NOW()";
 		$fn.= ",foldertocreate";		$fv.= ",'".$conn->escape_string($makedirectory)."'";
+		$fn.= ",logfile";		$fv.= ",'".$conn->escape_string(!!$logfile ? '1' : '0')."'";
 		
 		$sql = "INSERT INTO ftp_export ($fn) VALUES ($fv)"; 
 		

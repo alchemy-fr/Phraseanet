@@ -47,18 +47,20 @@ if($n_files == 1)
 	$unique_file = true;
 	$export_name .= $u_file["ajout"].'.'. $u_file["exportExt"];
 	$zipFile = p4string::addEndSlash($u_file['path']).$u_file['file'];
+  $mime = $u_file['mime'];
 	$zip_done = true;
 }
 else
 {
 	$zipFile = GV_RootPath.'tmp/download/'.$datas['value'].'.zip';
+  $mime = 'application/zip';
 }
 
 $files = $list['files'];
 
 if(isset($parm['get']) && $parm['get'] == '1')
 {
-	if(export::stream_file($zipFile, $export_name, 'application/zip'))
+	if(export::stream_file($zipFile, $export_name, $mime))
 		export::log_download($list,$parm['type']);exit;
 	exit;
 }

@@ -178,8 +178,10 @@ class exportElement
 		
 		if($xml)
 		{
-			$downloadable['caption'] = array('class'=>'caption','label'=>_('caption'));
-			$this->add_count('caption', mb_strlen($xml));
+			$downloadable['caption'] = array('class'=>'caption','label'=>_('caption XML'));
+			$downloadable['caption-yaml'] = array('class'=>'caption','label'=>_('caption YAML'));
+			$this->add_count('caption', strlen($xml));
+			$this->add_count('caption-yaml', strlen(strip_tags($xml)));
 		}
 		
 		$this->downloadable = $downloadable;

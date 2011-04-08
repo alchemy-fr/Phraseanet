@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
-"X-Poedit-SearchPath-0: /home/grosroro/workspace/Phraseanet-Trunk\n"
+"X-Poedit-SearchPath-0: /home/grosroro/workspace/Phraseanet-Branche-3.1.x\n"
 
 #: /home/grosroro/workspace/Phraseanet-Trunk/monaco home.php:89
 msgid "login::captcha: obtenir une autre captcha"

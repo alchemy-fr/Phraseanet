@@ -353,6 +353,7 @@ class ftpclient
 	
 	protected function get_absolute_path($file)
 	{
+    $file = str_replace('//','/',$file);
 		if($this->is_absolute_path($file))
 			return $file;
 			
@@ -364,8 +365,8 @@ class ftpclient
 	public function add_end_slash($path)
 	{
 		$path = trim($path);
-		
-	  	if($path == "" || $path == '/')
+
+    if($path == "" || $path == '/' || $path == '//')
 			return("/");
 			
 		if(substr($path,-1,1) != "/")

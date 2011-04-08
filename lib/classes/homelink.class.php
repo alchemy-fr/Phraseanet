@@ -30,9 +30,14 @@ class homelink extends feed
 				$usr_id =  $session->usr_id = $row['usr_id'];
 			$conn->free_result($rs);
 		}
-		
-		$ses_id = $session->ses_id = phrasea_create_session($usr_id);
-		
+
+    $to_logout = false;
+    if(!$session->is_authenticated())
+    {
+  		$ses_id = $session->ses_id = phrasea_create_session($usr_id);
+      $to_logout = true;
+    }
+		$ses_id = $session->ses_id;
 		
 		$date_obj = new DateTime();
 			
@@ -150,8 +155,11 @@ class homelink extends feed
 			}
 			$conn->free_result($rs);
 		}
+
+    if($to_logout === true)
+    {
                 p4::logout($ses_id);
-//		phrasea_close_session($ses_id);
+    }
 		
 		$datas = array('infos'=>$this->infos,'items'=>$this->items);
 		$feed_cache->set($this->cache_id,$datas);

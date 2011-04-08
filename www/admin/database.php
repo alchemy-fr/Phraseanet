@@ -187,7 +187,7 @@ else
 		}
 		function reindex()
 		{
-			if(confirm('<?php echo str_replace("'","\'",_('Confirmez-vous la ré-indexation de la base ?')); ?>'))
+			if(confirm('<?php echo str_replace("'","\'",_('Confirmez-vous la re-indexation de la base ?')); ?>'))
 			{
 				$.ajax({
 					type: "POST",

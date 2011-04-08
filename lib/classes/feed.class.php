@@ -65,7 +65,7 @@ class feed
 				            <title>'.strip_tags(p4string::entitydecode($doc['title'])).'</title>
 				            <link>'.$url.'view/</link>
 				            <media:thumbnail url="'.GV_ServerName.$doc['subdefs']['thumbnail'].'"/>
-				            <media:content url="'.$url.'" '.($doc['subdefs']['type'] == 'video' ? 'type="'.$doc['subdefs']['mime'].'"':'').' />
+				            <media:content url="'.$url.'" type="'.$doc['subdefs']['mime'].'" />
 				        </item>';
 			}
 		}

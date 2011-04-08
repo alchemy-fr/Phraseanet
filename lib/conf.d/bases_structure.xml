@@ -1108,6 +1108,14 @@
 						<default></default>
 						<comment></comment>
 					</field>
+					<field>
+						<name>logfile</name>
+						<type>tinyint(1) unsigned</type>
+						<null></null>
+						<extra></extra>
+						<default>0</default>
+						<comment></comment>
+					</field>
 				</fields>
 				<indexes>
 					<index>
