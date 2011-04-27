@@ -5936,7 +5936,7 @@
 					</field>
 					<field>
 						<name>name</name>
-						<type>char(16)</type>
+						<type>char(64)</type>
 
 						<null></null>
 						<extra></extra>

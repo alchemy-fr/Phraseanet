@@ -128,18 +128,17 @@ function deleteRecord($lst,$del_children)
 	{
 		$cache_basket = cache_basket::getInstance();
 		
-		$sql_res = 'SELECT DISTINCT ssel.usr_id, ssel.ssel_id FROM sselcont ,ssel  WHERE '.implode(' OR ',$sql).' AND sselcont.ssel_id = ssel.ssel_id AND ssel.usr_id="'.$conn->escape_string($usr_id).'"';
+		$sql_res = 'SELECT DISTINCT ssel.usr_id, ssel.ssel_id FROM sselcont ,ssel  WHERE ('.implode(' OR ',$sql).') AND sselcont.ssel_id = ssel.ssel_id AND ssel.usr_id="'.$conn->escape_string($usr_id).'"';
 		if($rs = $conn->query($sql_res))
 		{
 			while($row = $conn->fetch_assoc($rs))
 			{
-				$cache_basket->delete($usr_id, $row['ssel_id']);
 			}
 			$conn->free_result($rs);
 		}
 		
 		
-		$sql = 'DELETE FROM sselcont WHERE '.implode(' OR ',$sql).' AND ssel_id IN (SELECT ssel_id FROM ssel WHERE usr_id = "'.$conn->escape_string($usr_id).'")';
+		$sql = 'DELETE FROM sselcont WHERE ('.implode(' OR ',$sql).') AND ssel_id IN (SELECT ssel_id FROM ssel WHERE usr_id = "'.$conn->escape_string($usr_id).'")';
 		$conn->query($sql);
 	}
 	

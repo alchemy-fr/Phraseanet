@@ -20,7 +20,7 @@ $request = httpRequest::getInstance();
 $parm = $request->get_parms('action', 'type', 'base_id', 'name');
 
 $action = $parm['action'];
-	
+
 switch($action)
 {
 	case 'images':

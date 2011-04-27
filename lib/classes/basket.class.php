@@ -438,7 +438,7 @@ class basket
 										AND record_id="'.$connbas->escape_string($record['record_id']).'") ';
 				}
 				
-				$sql .= implode(' OR ',$sql_records);
+				$sql .= '('.implode(' OR ',$sql_records).')';
 				
 				$display_id = 1;
 				

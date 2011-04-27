@@ -2,7 +2,7 @@
 
 {% macro lazaret_item(lazaret_item, thumbnail, extraclass) %}
 	<div style="width:250px;xheight:290px;margin:10px auto;border:2px solid black;" class="ui-corner-all {{extraclass}} lazaret_item lazaret_item_{{lazaret_item.id}}">
-		<div style="text-align:center;height:40px;">
+		<div style="text-align:center;height:60px;">
 			{% set date = lazaret_item.created_on|phraseadate %}
 			{% set basname = lazaret_item.base_id|basnames %}
 			{% if lazaret_item.usr_id %}
@@ -113,7 +113,7 @@
 						<td style="width:50%;">
 							{% for record_id, element in lazaretgroup.potentials %}
 								<div style="width:250px;height:290px;margin:10px auto;border:2px solid black;" class="ui-corner-all">
-									<div style="text-align:center;height:40px;">
+									<div style="text-align:center;height:60px;">
 									{% set title = element.title %}
 									{% set basname = element.base_id|basnames %}
 									{% set recordid %}
