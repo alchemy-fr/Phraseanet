@@ -107,7 +107,7 @@ if($connSbas)
 {
 	$sql = "SELECT pub_wm FROM coll WHERE coll_id = '".$connSbas->escape_string($server_coll_id)."'";
 	
-	if($parm['view'] == 'overview')
+	if(!$session->is_authenticated())
 	{
 		if($rs2 = $connSbas->query($sql))
 		{
