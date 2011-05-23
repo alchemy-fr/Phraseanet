@@ -73,7 +73,7 @@ if($request->has_post_datas())
 	
 		foreach($parm as $field=>$value)
 		{
-			if(is_string($value) && isset($arrayVerif[$field]))
+			if(is_string($value) && isset($arrayVerif[$field]) && $arrayVerif[$field] === true)
 			{
 				if(trim($value) == '' )
 					$needed[$field] = _('forms::ce champ est requis');
@@ -340,6 +340,9 @@ phrasea::headers();
 					$first = true;
 					$sep = $msg = $rules = '';
 					foreach($arrayVerif as $ar=>$ver)
+          {
+            if($ver === false)
+              continue;
 						if($ar != 'form_password')
 						{
 							if(!$first)
@@ -361,6 +364,7 @@ phrasea::headers();
 							
 							$msg .= '}';
 						}
+          }
 					
 					?>
 											
@@ -445,7 +449,7 @@ phrasea::headers();
 												<tr> 
 													<td class="form_label">
 														<label for="form_login">
-															<?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur identifiant')?> <br/><span style="font-size:9px;"><?php echo sprintf(_('forms:: %d caracteres minimum'),5)?></span> :
+															<?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur identifiant')?>   <br/><span style="font-size:9px;"><?php echo sprintf(_('forms:: %d caracteres minimum'),5)?></span> :
 														</label>
 													</td>
 													<td class="form_input"> 
@@ -458,7 +462,7 @@ phrasea::headers();
 												<tr> 
 													<td class="form_label">
 														<label for="form_password">
-															<?php echo (isset($arrayVerif['form_password']) && $arrayVerif['form_password']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur mot de passe')?> <br/><span style="font-size:9px;"><?php echo  sprintf(_('forms:: %d caracteres minimum'),5)?></span> :
+															<?php echo (isset($arrayVerif['form_password']) && $arrayVerif['form_password']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur mot de passe')?>   <br/><span style="font-size:9px;"><?php echo  sprintf(_('forms:: %d caracteres minimum'),5)?></span> :
 														</label>
 													</td>
 													<td class="form_input"> 
@@ -507,19 +511,6 @@ phrasea::headers();
 													</td>
 												</tr>
 												<tr><td colspan="3">&nbsp;</td></tr>
-												<tr>
-													<td class="form_label">
-														<label for="form_city">
-															<?php echo (isset($arrayVerif['form_geonameid']) && $arrayVerif['form_geonameid']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur ville')?> : 
-														</label>
-													</td>
-													<td class="form_input"> 
-														<input id="form_geonameid" type="text" geonameid="<?php echo $parm["form_geonameid"]?>" value="<?php echo geonames::name_from_id($parm["form_geonameid"])?>" class="input_element geoname_field" name="form_geonameid">
-													</td>
-													<td class="form_alert">
-														<?php echo isset($needed['form_geonameid'])?$needed['form_geonameid']:''?>
-													</td>
-												</tr>
 												<tr> 
 													<td class="form_label">
 													<?php echo _('admin::compte-utilisateur sexe')?> : 
@@ -531,6 +522,19 @@ phrasea::headers();
 													</td>
 													<td class="form_alert">
 														<?php echo isset($needed['form_gender'])?$needed['form_gender']:''?>
+													</td>
+												</tr>
+												<tr>
+													<td class="form_label">
+														<label for="form_firstname">
+															<?php echo (isset($arrayVerif['form_firstname']) && $arrayVerif['form_firstname']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur prenom')?> :
+														</label>
+													</td>
+													<td class="form_input">
+														<input id="form_firstname" autocomplete="off" type="text" value="<?php echo $parm["form_firstname"]?>" class="input_element" name="form_firstname">
+													</td>
+													<td class="form_alert">
+														<?php echo isset($needed['form_firstname'])?$needed['form_firstname']:''?>
 													</td>
 												</tr>
 												<tr> 
@@ -546,17 +550,73 @@ phrasea::headers();
 														<?php echo isset($needed['form_lastname'])?$needed['form_lastname']:''?>
 													</td>
 												</tr>
-												<tr> 
+												<tr><td colspan="3">&nbsp;</td></tr>
+												<tr>
 													<td class="form_label">
-														<label for="form_firstname">
-															<?php echo (isset($arrayVerif['form_firstname']) && $arrayVerif['form_firstname']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur prenom')?> : 
+														<label for="form_address">
+															<?php echo (isset($arrayVerif['form_address']) && $arrayVerif['form_address']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur adresse')?> :
 														</label>
 													</td>
-													<td class="form_input"> 
-														<input id="form_firstname" autocomplete="off" type="text" value="<?php echo $parm["form_firstname"]?>" class="input_element" name="form_firstname">
+													<td class="form_input">
+														<input id="form_address" autocomplete="off" type="text" value="<?php echo $parm["form_address"]?>" class="input_element" name="form_address">
 													</td>
 													<td class="form_alert">
-														<?php echo isset($needed['form_firstname'])?$needed['form_firstname']:''?>
+														<?php echo isset($needed['form_address'])?$needed['form_address']:''?>
+													</td>
+												</tr>
+
+												<tr>
+													<td class="form_label">
+														<label for="form_zip">
+															<?php echo (isset($arrayVerif['form_zip']) && $arrayVerif['form_zip']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur code postal')?> :
+														</label>
+													</td>
+													<td class="form_input">
+														<input id="form_zip" autocomplete="off" type="text" value="<?php echo $parm["form_zip"]?>" class="input_element" name="form_zip">
+													</td>
+													<td class="form_alert">
+														<?php echo isset($needed['form_zip'])?$needed['form_zip']:''?>
+													</td>
+												</tr>
+												<tr>
+													<td class="form_label">
+														<label for="form_city">
+															<?php echo (isset($arrayVerif['form_geonameid']) && $arrayVerif['form_geonameid']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur ville')?> :
+														</label>
+													</td>
+													<td class="form_input">
+														<input id="form_geonameid" type="text" geonameid="<?php echo $parm["form_geonameid"]?>" value="<?php echo geonames::name_from_id($parm["form_geonameid"])?>" class="input_element geoname_field" name="form_geonameid">
+													</td>
+													<td class="form_alert">
+														<?php echo isset($needed['form_geonameid'])?$needed['form_geonameid']:''?>
+													</td>
+												</tr>
+												<tr><td colspan="3">&nbsp;</td></tr>
+												<tr>
+													<td class="form_label">
+														<label for="form_phone">
+															<?php echo (isset($arrayVerif['form_phone']) && $arrayVerif['form_phone']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur telephone')?> :
+														</label>
+													</td>
+													<td class="form_input">
+														<input id="form_phone" autocomplete="off" type="text" value="<?php echo $parm["form_phone"]?>" class="input_element" name="form_phone">
+													</td>
+													<td class="form_alert">
+														<?php echo isset($needed['form_phone'])?$needed['form_phone']:''?>
+													</td>
+												</tr>
+												<tr><td colspan="3">&nbsp;</td></tr>
+												<tr>
+													<td class="form_label">
+														<label for="form_company">
+															<?php echo (isset($arrayVerif['form_company']) && $arrayVerif['form_company']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur societe')?> :
+														</label>
+													</td>
+													<td class="form_input">
+														<input id="form_company" autocomplete="off" type="text" value="<?php echo $parm["form_company"]?>" class="input_element" name="form_company">
+													</td>
+													<td class="form_alert">
+														<?php echo isset($needed['form_company'])?$needed['form_company']:''?>
 													</td>
 												</tr>
 												<tr> 
@@ -587,19 +647,6 @@ phrasea::headers();
 												</tr>
 												<tr> 
 													<td class="form_label">
-														<label for="form_phone">
-															<?php echo (isset($arrayVerif['form_phone']) && $arrayVerif['form_phone']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur telephone')?> : 
-														</label>
-													</td>
-													<td class="form_input"> 
-														<input id="form_phone" autocomplete="off" type="text" value="<?php echo $parm["form_phone"]?>" class="input_element" name="form_phone">
-													</td>
-													<td class="form_alert">
-														<?php echo isset($needed['form_phone'])?$needed['form_phone']:''?>
-													</td>
-												</tr>
-												<tr> 
-													<td class="form_label">
 														<label for="form_fax">
 															<?php echo (isset($arrayVerif['form_fax']) && $arrayVerif['form_fax']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur fax')?> : 
 														</label>
@@ -609,46 +656,6 @@ phrasea::headers();
 													</td>
 													<td class="form_alert">
 														<?php echo isset($needed['form_fax'])?$needed['form_fax']:''?>
-													</td>
-												</tr>
-												<tr> 
-													<td class="form_label">
-														<label for="form_company">
-															<?php echo (isset($arrayVerif['form_company']) && $arrayVerif['form_company']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur societe')?> : 
-														</label>
-													</td>
-													<td class="form_input"> 
-														<input id="form_company" autocomplete="off" type="text" value="<?php echo $parm["form_company"]?>" class="input_element" name="form_company">
-													</td>
-													<td class="form_alert">
-														<?php echo isset($needed['form_company'])?$needed['form_company']:''?>
-													</td>
-												</tr>
-												<tr> 
-													<td class="form_label">
-														<label for="form_address">
-															<?php echo (isset($arrayVerif['form_address']) && $arrayVerif['form_address']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur adresse')?> : 
-														</label>
-													</td>
-													<td class="form_input"> 
-														<input id="form_address" autocomplete="off" type="text" value="<?php echo $parm["form_address"]?>" class="input_element" name="form_address">
-													</td>
-													<td class="form_alert">
-														<?php echo isset($needed['form_address'])?$needed['form_address']:''?>
-													</td>
-												</tr>
-												
-												<tr> 
-													<td class="form_label">
-														<label for="form_zip">
-															<?php echo (isset($arrayVerif['form_zip']) && $arrayVerif['form_zip']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur code postal')?> : 
-														</label>
-													</td>
-													<td class="form_input"> 
-														<input id="form_zip" autocomplete="off" type="text" value="<?php echo $parm["form_zip"]?>" class="input_element" name="form_zip">
-													</td>
-													<td class="form_alert">
-														<?php echo isset($needed['form_zip'])?$needed['form_zip']:''?>
 													</td>
 												</tr>
 												

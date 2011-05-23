@@ -520,7 +520,7 @@ function display_basket_element(compare, sselcont_id)
 	{
 		if(compare)
 		{
-			$('.agreement_selector').show();
+//      $('.agreement_selector').show();
 //			$('#record_wrapper').stop().animate({right:0},100,function(){display_record(compare);});
 			$('#record_wrapper').css({right:0});
 			display_record(compare);
@@ -528,7 +528,7 @@ function display_basket_element(compare, sselcont_id)
 		}
 		else
 		{
-			$('.agreement_selector').hide();
+//			$('.agreement_selector').hide();
 			$('#record_wrapper').css({right:250});
 			display_record(compare);
 			$('#right_column').show();
@@ -810,6 +810,7 @@ function display_record(compare)
 	
 	if(compare)
 	{
+    $('.agreement_selector').show();
 		main_container.addClass('comparison');
 		
 		var double_portrait_width		= main_container_innerwidth / 2;
@@ -926,6 +927,7 @@ function display_record(compare)
 	}
 	else
 	{
+    $('.agreement_selector').hide();
 		main_container.removeClass('comparison');
 		
 		if(compare_box.is(':visible'))

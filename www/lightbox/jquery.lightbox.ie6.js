@@ -429,14 +429,14 @@ function display_basket_element(compare, sselcont_id)
 	{
 		if(compare)
 		{
-			$('.agreement_selector').show();
+//			$('.agreement_selector').show();
 			$('#record_infos, #right_column').hide();
 			$('#record_wrapper').stop().css({width:'100%'});
 			display_record(compare);
 		}
 		else
 		{
-			$('.agreement_selector').hide();
+//			$('.agreement_selector').hide();
 			$('#record_wrapper').css({width:($('#innerWrapper').width() - $('#record_infos').outerWidth() - $('#right_column').outerWidth() - 2)});
 			display_record(compare);
 			$('#record_infos, #right_column').show();
@@ -558,6 +558,7 @@ function display_record(compare)
 
 	if(compare)
 	{
+    $('.agreement_selector').show();
 		main_container.addClass('comparison');
 		
 		var double_portrait_width		= main_container_innerwidth / 2;
@@ -673,6 +674,7 @@ function display_record(compare)
 	}
 	else
 	{
+    $('.agreement_selector').hide();
 		main_container.removeClass('comparison');
 		
 		if(compare_box.is(':visible'))
