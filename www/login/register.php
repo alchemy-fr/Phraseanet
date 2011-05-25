@@ -84,7 +84,7 @@ if($request->has_post_datas())
 		// 1 - on verifie les password
 		if($parm['form_password'] !== $parm['form_password_confirm'])
 			$needed['form_password'] = $needed['form_password_confirm'] = _('forms::les mots de passe ne correspondent pas');
-		elseif(strlen(trim($parm['form_password']))<5)
+		elseif(strlen(trim($parm['form_password']))<8)
 			$needed['form_password'] = _('forms::la valeur donnee est trop courte');
 		elseif(trim($parm['form_password']) != str_replace(array("\r\n","\n","\r","\t"," "),"_",$parm['form_password']))
 			$needed['form_password'] = _('forms::la valeur donnee contient des caracteres invalides');
@@ -94,7 +94,7 @@ if($request->has_post_datas())
 			$needed['form_email'] = _('forms::l\'email semble invalide');
 			
 		//on verifie le login
-		if(!GV_needMail && strlen($parm['form_login'])<5)
+		if(!GV_needMail && strlen($parm['form_login'])<8)
 			$needed['form_login'] = _('forms::la valeur donnee est trop courte');
 			
 			
@@ -374,7 +374,7 @@ phrasea::headers();
 								"similar-to-username": "<?php echo _('forms::le mot de passe est trop similaire a l\'identifiant')?>",
 								"too-short": "<?php echo _('forms::la valeur donnee est trop courte')?>",
 								"very-weak": "<?php echo _('forms::le mot de passe est trop simple')?>",
-								"weak": "<?php echo _('forms::le mot de passe est trop simple')?>",
+								"weak": "<?php echo _('forms::le mot de passe est simple')?>",
 								"good": "<?php echo _('forms::le mot de passe est bon')?>",
 								"strong": "<?php echo _('forms::le mot de passe est tres bon')?>"
 							}
@@ -439,6 +439,7 @@ phrasea::headers();
 
 
 
+
 										<form id="register" name="creation" action="/login/register.php" method="post">
 					
 											<table id="form_register_table" cellspacing="0" cellpadding="0" style="font-size:11px;margin:0 auto;">
@@ -449,7 +450,7 @@ phrasea::headers();
 												<tr> 
 													<td class="form_label">
 														<label for="form_login">
-															<?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur identifiant')?>   <br/><span style="font-size:9px;"><?php echo sprintf(_('forms:: %d caracteres minimum'),5)?></span> :
+															<?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur identifiant')?>   <br/><span style="font-size:9px;"><?php echo _('8 caracteres minimum')?></span> :
 														</label>
 													</td>
 													<td class="form_input"> 
@@ -459,10 +460,14 @@ phrasea::headers();
 														<?php echo isset($needed['form_login'])?$needed['form_login']:''?>
 													</td>
 												</tr>
+												<tr style="height:10px;">
+													<td colspan="3">
+													</td>
+												</tr>
 												<tr> 
 													<td class="form_label">
 														<label for="form_password">
-															<?php echo (isset($arrayVerif['form_password']) && $arrayVerif['form_password']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur mot de passe')?>   <br/><span style="font-size:9px;"><?php echo  sprintf(_('forms:: %d caracteres minimum'),5)?></span> :
+															<?php echo (isset($arrayVerif['form_password']) && $arrayVerif['form_password']===true)?'<span class="requiredField">*</span>':''?> <?php echo _('admin::compte-utilisateur mot de passe')?>   <br/><span style="font-size:9px;"><?php echo  _('8 caracteres minimum')?></span> :
 														</label>
 													</td>
 													<td class="form_input"> 
@@ -470,6 +475,7 @@ phrasea::headers();
 
 													</td>
 													<td class="form_alert">
+                            <span style="color:white;"><?php echo _('Resistance du mot de passe');?></span><br/>
 														<?php echo isset($needed['form_password'])?$needed['form_password']:''?>
 														<div class="password-meter">
 															<div class="password-meter-message">&nbsp;</div>
@@ -490,6 +496,26 @@ phrasea::headers();
 													</td>
 													<td class="form_alert">
 														<?php echo isset($needed['form_password_confirm'])?$needed['form_password_confirm']:''?>
+													</td>
+												</tr>
+												<tr style="height:10px;">
+													<td colspan="3">
+                            <div style="margin:20px 0;">
+                              <a href="#" onclick="$('#password_infos').slideToggle();return false;" style="color:white;font-size:13px;"><?php echo _('admin::compte-utilisateur A propos de la securite des mots de passe');?></a>
+                              <div id="password_infos" style="display:none;">
+                                <div style="text-align:center;margin:20px 0 0;">
+                                  <?php echo _('admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :');?>
+                                </div>
+                                <div style="text-align:left;margin:10px auto;width:300px;">
+                                  <ul>
+                                    <li><?php echo _('admin::compte-utilisateur::securite caracteres speciaux');?></li>
+                                    <li><?php echo _('admin::compte-utilisateur::securite caracteres majuscules');?></li>
+                                    <li><?php echo _('admin::compte-utilisateur::securite caracteres minuscules');?></li>
+                                    <li><?php echo _('admin::compte-utilisateur::securite caracteres numeriques');?></li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
 													</td>
 												</tr>
 												<tr> 

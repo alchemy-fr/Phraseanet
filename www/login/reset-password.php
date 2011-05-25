@@ -96,7 +96,7 @@ phrasea::headers();
 					"similar-to-username": "<?php echo _('forms::le mot de passe est trop similaire a l\'identifiant')?>",
 					"too-short": "<?php echo _('forms::la valeur donnee est trop courte')?>",
 					"very-weak": "<?php echo _('forms::le mot de passe est trop simple')?>",
-					"weak": "<?php echo _('forms::le mot de passe est trop simple')?>",
+					"weak": "<?php echo _('forms::le mot de passe est simple')?>",
 					"good": "<?php echo _('forms::le mot de passe est bon')?>",
 					"strong": "<?php echo _('forms::le mot de passe est tres bon')?>"
 				}
@@ -174,7 +174,10 @@ phrasea::headers();
 							<td colspan="3"></td>
 						</tr>
 						<tr>
-							<td class="form_label"><label for="form_password"><?php echo _('admin::compte-utilisateur nouveau mot de passe')?></label></td>
+							<td class="form_label">
+                <label for="form_password"><?php echo _('admin::compte-utilisateur nouveau mot de passe')?></label>
+                <br/><label style="font-size:9px;"><?php echo _('8 caracteres minimum')?></label>
+              </td>
 							<td class="form_input"><input autocomplete="off" type="hidden" value="<?php echo $session->login?>" id="form_login"/><input type="password" name="form_password" id="form_password"></td>
 							<td class="form_alert"><?php echo isset($needed['form_password'])?$needed['form_password']:''?>
 								<div class="password-meter">

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-08 14:53+0100\n"
+"POT-Creation-Date: 2011-05-25 10:13+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Phraseanet Team <info@phraseanet.com>\n"
 "Language-Team: \n"
@@ -1732,26 +1732,32 @@ msgid "prod::substitution::document remplace avec succes"
 msgstr "Document remplacé avec succès"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/saveedit_mdesc.php:31
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/edit.php:307
 msgid "phraseanet::technique::datetime-edit-format"
 msgstr "YYYY/MM/DD HH:NN:SS"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/saveedit_mdesc.php:32
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/edit.php:308
 msgid "phraseanet::technique::datetime-edit-explain"
 msgstr "aaaa/mm/jj hh:mm:ss"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/saveedit_mdesc.php:35
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/edit.php:311
 msgid "phraseanet::technique::date-edit-format"
 msgstr "YYYY/MM/DD"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/saveedit_mdesc.php:36
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/edit.php:312
 msgid "phraseanet::technique::date-edit-explain"
 msgstr "aaaa/mm/jj"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/saveedit_mdesc.php:39
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/edit.php:315
 msgid "phraseanet::technique::time-edit-format"
 msgstr "HH:MM:SS"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/saveedit_mdesc.php:40
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/edit.php:316
 msgid "phraseanet::technique::time-edit-explain"
 msgstr "hh:mm:ss"
 
@@ -1772,6 +1778,7 @@ msgid "prod::thesaurusTab:wizard:remplacer par le terme"
 msgstr "Remplacer le terme"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/thesaurus_tab.php:120
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/prod/index.php:290
 msgid "boutton::rechercher"
 msgstr "Rechercher"
 
@@ -3958,7 +3965,6 @@ msgid "admin::compte-utilisateur nom/prenom"
 msgstr "Nom / prénom"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/users.php:1825
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/exportlistusers.php:269
 #, php-format
 msgid "admin::compte-utilisateur pays"
 msgstr "Pays"
@@ -4011,7 +4017,6 @@ msgid "admin::user:export:format: export ascii"
 msgstr "Ascii"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/getinfousr.php:76
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/exportlistusers.php:274
 msgid "admin::compte-utilisateur activite"
 msgstr "Activité"
 
@@ -4449,39 +4454,39 @@ msgstr "Reste"
 msgid "admin::user:quota: les quotas par base seront appliques uniformement a toutes les collections"
 msgstr "Les quotas par base seront appliqués uniformément à toutes les collections"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:422
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:483
 msgid "admin:: demandes en cours"
 msgstr "Demande en cours "
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:427
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:556
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:488
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:615
 msgid "admin:: refuser l'acces"
 msgstr "Refuser l'accès"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:428
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:559
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:489
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:618
 msgid "admin:: donner les droits de telechargement et consultation de previews"
 msgstr "Autoriser la visualisation et le téléchargement des prévisualisations "
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:429
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:562
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:490
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:621
 msgid "admin:: donner les droits de telechargements de preview et hd"
 msgstr "Autoriser le téléchargement des prévisualisations et documents"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:430
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:565
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:491
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:624
 msgid "admin:: watermarquer les documents"
 msgstr "Appliquer le filigrane sur les prévisualisations"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:433
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:494
 msgid "admin::compte-utilisateur date d'inscription"
 msgstr "Inscription"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:434
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:495
 msgid "admin::collection"
 msgstr "Collection"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:537
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/demand.php:597
 msgid "admin:: appliquer le modele  "
 msgstr "Appliquer le modèle"
 
@@ -4537,12 +4542,10 @@ msgid "admin::tasks: reinitialiser el compteur de crashes"
 msgstr "Ré-initialiser le compteur d'échecs "
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/task2.php:585
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/sugval.php:1033
 msgid "boutton::vue graphique"
 msgstr "Vue Graphique"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/task2.php:591
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/admin/sugval.php:1032
 msgid "boutton::vue xml"
 msgstr "Vue XML"
 
@@ -5132,7 +5135,7 @@ msgstr "Veuillez saisir une adresse e-mail valide"
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:123
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:126
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:79
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:350
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:353
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-email.php:153
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-email.php:156
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-email.php:160
@@ -5143,7 +5146,7 @@ msgstr "Ce champs est requis"
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:51
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:127
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:86
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:358
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:361
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:67
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:133
 msgid "forms::les mots de passe ne correspondent pas"
@@ -5163,7 +5166,7 @@ msgstr "Il y a des erreurs, veuillez les corriger avant de continuer"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/setup/installer.php:141
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:96
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:370
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:374
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:139
 msgid "forms::le mot de passe est trop similaire a l'identifiant"
 msgstr "Trop similaire à l'identifiant"
@@ -5173,9 +5176,9 @@ msgstr "Trop similaire à l'identifiant"
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:97
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:88
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:98
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:353
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:356
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:371
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:359
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:375
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:69
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:140
 msgid "forms::la valeur donnee est trop courte"
@@ -5184,9 +5187,7 @@ msgstr "Trop court"
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/setup/installer.php:143
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/setup/installer.php:144
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:98
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:99
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:372
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:373
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:376
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:141
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:142
 msgid "forms::le mot de passe est trop simple"
@@ -5194,14 +5195,14 @@ msgstr "Trop simple"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/setup/installer.php:145
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:100
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:374
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:378
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:143
 msgid "forms::le mot de passe est bon"
 msgstr "Bon"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/setup/installer.php:146
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:101
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:375
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:379
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:144
 msgid "forms::le mot de passe est tres bon"
 msgstr "Très bon"
@@ -5316,6 +5317,11 @@ msgstr "contient des caractères invalides"
 msgid "admin::compte-utilisateur:ftp: Le mot de passe est errone"
 msgstr "Le mot de passe est erroné"
 
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:99
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:377
+msgid "forms::le mot de passe est simple"
+msgstr "Simple"
+
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:147
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-email.php:42
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-email.php:54
@@ -5334,37 +5340,48 @@ msgstr "Oups ! une erreur est survenue !"
 msgid "admin::compte-utilisateur ancien mot de passe"
 msgstr "Ancien mot de passe"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:177
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:178
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/forgotpwd.php:171
 msgid "admin::compte-utilisateur nouveau mot de passe"
 msgstr "Nouveau mot de passe"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:199
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:179
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:453
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:470
+msgid "8 caracteres minimum"
+msgstr "8 caractères minimum"
+
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:202
 msgid "admin::compte-utilisateur A propos de la securite des mots de passe :"
 msgstr "A propos de la sécurité des mots de passe :"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:200
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:203
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:507
 msgid "admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :"
 msgstr "Les mots de passe doivent être clairement distincts du login et contenir au moins deux types parmis les caractères suivants :"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:202
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:205
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:511
 msgid "admin::compte-utilisateur::securite caracteres speciaux"
 msgstr "Spéciaux"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:203
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:206
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:512
 msgid "admin::compte-utilisateur::securite caracteres majuscules"
 msgstr "Majuscules"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:204
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:207
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:513
 msgid "admin::compte-utilisateur::securite caracteres minuscules"
 msgstr "Minuscules"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:205
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-password.php:208
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:514
 msgid "admin::compte-utilisateur::securite caracteres numeriques"
 msgstr "Numériques"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:94
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:360
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:363
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-email.php:117
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/reset-email.php:157
 msgid "forms::l'email semble invalide"
@@ -5374,13 +5391,15 @@ msgstr "L'e-mail semble invalide"
 msgid "forms::un utilisateur utilisant cette adresse email existe deja"
 msgstr "Cette e-mail est déjà attribuée à un utilisateur"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:448
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:461
-#, php-format
-msgid "forms:: %d caracteres minimum"
-msgstr "%d de caractéres minimun"
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:478
+msgid "Resistance du mot de passe"
+msgstr "Résistance du mot de passe"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:672
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:504
+msgid "admin::compte-utilisateur A propos de la securite des mots de passe"
+msgstr "A propos de la sécurité des mots de passe"
+
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/www/login/register.php:705
 msgid "admin::compte-utilisateur actuellement, acces aux bases suivantes : "
 msgstr "Accès aux bases :"
 
@@ -5738,17 +5757,17 @@ msgid "export:: aucun document n'est disponible au telechargement"
 msgstr "Aucun document n'est disponible au téléchargement"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/clientUtils.php:9
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:359
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:358
 msgid "invite:: Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annulez"
 msgstr "Redirection vers la zone d'authentification, cliquez sur OK pour continuer ou annuler"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/clientUtils.php:14
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:322
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:321
 msgid "paniers::Vous etes sur le point de supprimer ce panier. Cette action est irreversible. Souhaitez-vous continuer ?"
 msgstr "Vous êtes sur le point de supprimer ce panier. Cette action est irreversible, Souhaitez vous continuer ?"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/clientUtils.php:17
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:338
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:337
 msgid "boutton::renouveller"
 msgstr "Renouveller"
 
@@ -5897,191 +5916,191 @@ msgstr "Aussi dans les reportages suivants"
 msgid "Apparait aussi dans ces paniers"
 msgstr "Aussi dans les paniers suivants"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:321
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:320
 msgid "prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee."
 msgstr "Attention : la liste des collections sélectionnées pour la recherche a été changée"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:327
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:326
 msgid "phraseanet::Ne plus afficher ce message"
 msgstr "Ne plus afficher ce message"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:328
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:327
 msgid "Supprimer egalement les documents rattaches a ces regroupements"
 msgstr "Egalement supprimer les documents rattachés à ces reportages ?"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:329
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:328
 msgid "reponses:: Ces enregistrements vont etre definitivement supprimes et ne pourront etre recuperes. Etes vous sur ?"
 msgstr "Ces enregistrements vont être définitivement supprimés et ne pourront être récupérés. Confirmer ?"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:332
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:331
 msgid "prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'"
 msgstr "Valeurs hétérogènes, choisir 'remplacer', 'ajouter' ou 'annuler'"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:333
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:332
 msgid "prod::editing::annulation: abandonner les modification ?"
 msgstr "Annulation : abandonner les modifications ?"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:339
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:338
 msgid "Vous n'avez pas les droits pour supprimer certains documents"
 msgstr "Vous ne possedez pas les autorisations pour supprimer certains documents"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:340
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:339
 msgid "Vous n'avez pas les droits pour supprimer ces documents"
 msgstr "Vous ne possedez pas les autorisations pour supprimer ces documents"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:341
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:340
 msgid "Vous devez donner un titre"
 msgstr "Nom du modèle"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:342
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:341
 msgid "Nouveau modele"
 msgstr "Nouveau modèle"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:344
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:343
 msgid "panier::Supression d'un element d'un reportage"
 msgstr "Suppression d'un élément d'un reportage"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:345
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:344
 msgid "panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action."
 msgstr "Attention, vous êtes sur le point de supprimer un élément du reportage. Merci de confirmer votre action."
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:346
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:345
 msgid "phraseanet::recherche avancee"
 msgstr "Recherche avancée"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:347
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:346
 msgid "panier:: renommer le panier"
 msgstr "Renommer"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:348
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:357
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:347
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:356
 msgid "panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre"
 msgstr "Un reportage ne peut recevoir des éléments provenant d'une base autre que celle à laquelle il est rattaché"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:349
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:348
 msgid "phraseanet:: Erreur"
 msgstr "Erreur"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:350
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:349
 msgid "cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus acces"
 msgstr "Attention, refuser les «conditions générales d'utilisation» (CGU) implique que vous renoncez à l’accès de cette base."
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:351
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:350
 msgid "cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris en compte."
 msgstr "Les modifications  prendrons effet à votre prochaine connexion. Déconnectez vous et Reconnectez vous pour en bénéficier immédiatement."
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:352
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:351
 #, php-format
 msgid "edit:: Supprimer %s du champ dans les records selectionnes"
 msgstr "Supprimer %s du champ pour les documents selectionnés."
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:353
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:352
 #, php-format
 msgid "edit:: Ajouter %s au champ courrant pour les records selectionnes"
 msgstr "Ajouter %s au champ courant pour les documents selectionnés"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:354
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:353
 #, php-format
 msgid "edit:: Supprimer %s du champ courrant"
 msgstr "Supprimer %s du champ courant."
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:355
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:354
 #, php-format
 msgid "edit:: Ajouter %s au champ courrant"
 msgstr "Ajouter %s au champ courrant"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:356
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:355
 msgid "panier:: vous ne pouvez pas supprimer un panier public"
 msgstr "Vous ne possédez pas les autorisations d'accès requises pour supprimer un panier public"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:358
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:357
 msgid "Vous ne pouvez pas selectionner plus de 400 enregistrements"
 msgstr "Vous ne pouvez pas sélectionner plus de 400 enregistrements"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:360
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:359
 msgid "Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas"
 msgstr "Soit les paramètres sont incorrects, soit le serveur distant ne répond pas"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:361
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:360
 msgid "Les parametres sont corrects, le serveur distant est operationnel"
 msgstr "Les paramètres sont corrects, le serveur distant est opérationnel"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:362
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:361
 msgid "Certaines publications n'ont pu etre effectuees, verifiez vos parametres"
 msgstr "Certaines publications ont echoué, veuillez vérifier vos paramètres"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:363
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:362
 msgid "Aucune publication effectuee, verifiez vos parametres"
 msgstr "Aucune publication éffectuée, vérifiez vos paramètres"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:364
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:363
 msgid "Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci"
 msgstr "Attention, en supprimant ce préréglage, vous ne pourrez plus modifier ou supprimer de publications préalablement effectuées avec celui-ci"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:365
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:364
 msgid "edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing"
 msgstr "Certains documents possèdent des champs requis non remplis. Merci de leur donner une valeur avant de valider"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:366
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:365
 msgid "Aucun document selectionne"
 msgstr "Aucun document sélectionné"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:446
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:445
 msgid "phraseanet::collection"
 msgstr "Collection"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:447
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:446
 #, php-format
 msgid "paniers: %d elements"
 msgstr "%d éléments"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:454
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:453
 msgid "panier:: ce panier est publie en home page"
 msgstr "Ce panier est publié sur la page d'accueil"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:458
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:457
 msgid "Vous avez envoye une demande de validation de document sur ce panier"
 msgstr "Vous avez envoyé ce panier pour validation"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:463
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:462
 msgid "Vous avez recu une demande de validation de document sur ce panier"
 msgstr "Vous avez reçu une demande de validation sur ce panier"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:467
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:466
 #, php-format
 msgid "paniers:: panier recu de %s"
 msgstr "Panier reçu de %s"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:469
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:468
 #, php-format
 msgid "paniers:: ce panier est publie"
 msgstr "Ce panier est publié"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:482
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:481
 msgid "action::exporter"
 msgstr "Exporter"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:485
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:484
 msgid "action::editer"
 msgstr "Editer"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:499
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:498
 msgid "action::publier"
 msgstr "Publier"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:502
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:501
 msgid "action::page d'accueil"
 msgstr "Publication page d'accueil"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:505
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:504
 msgid "action::renommer"
 msgstr "Renommer"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:515
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:514
 msgid "action::Valider"
 msgstr "Valider"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:523
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/prodUtils.php:522
 msgid "action::detacher"
 msgstr "Détacher"
 
@@ -7068,13 +7087,11 @@ msgid "task::ftp:FTP Push"
 msgstr "FTP Push"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:250
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftpPull.class.php:307
 #, php-format
 msgid "task::ftp:ftptask (taskid=%s) started"
 msgstr "Taskid %s démarrée"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:258
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftpPull.class.php:315
 #, php-format
 msgid "task::ftp:ftptask (taskid=%s) ended"
 msgstr "Taskid %s arrétée"
@@ -7089,46 +7106,46 @@ msgstr "Transfer status to %1$s server to %3$s recipient folder using %2$s accou
 msgid "task::ftp:TENTATIVE no %s"
 msgstr "Tentative N° %s"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:510
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:518
 #, php-format
 msgid "task::ftp:File \"%1$s\" (record %2$s) de la base \"%3$s\" (Export du Document) : Transfert cancelled (le document n'existe plus)"
 msgstr "File \"%1$s\" (record %2$s) from database \"%3$s\" (Preview dowload) : Transfer cancelled (document deleted)"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:668
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:675
 msgid "task::ftp:Tous les documents ont ete transferes avec succes"
 msgstr "Tout les fichiers on été transferé"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:676
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:681
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:683
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:688
 #, php-format
 msgid "task::ftp:Record %1$s - %2$s de la base (%3$s - %4$s) - %5$s"
 msgstr "Enregistrement %1$s - %2$s de la base (%3$s - %4$s) - %5$s"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:677
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:684
 msgid "Transfert OK"
 msgstr "Transfert OK"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:682
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:689
 msgid "Transfert Annule"
 msgstr "Transfert Annulé"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:683
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:690
 msgid "task::ftp:Certains documents n'ont pas pu etre tranferes"
 msgstr "certains fichiers n'ont pu être transféré "
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:697
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:704
 msgid "Des difficultes ont ete rencontres a la connection au serveur distant"
 msgstr "Des difficultés ont été rencontrées lors de la connection au serveur distant"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:699
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:706
 msgid "La connection vers le serveur distant est OK"
 msgstr "Connection réussie vers le serveur distant "
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:713
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:720
 msgid "task::ftp:Details des fichiers"
 msgstr "Details des fichiers:"
 
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:722
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftp.class.php:729
 #, php-format
 msgid "task::ftp:Status about your FTP transfert from %1$s to %2$s"
 msgstr "Etat du transfert FTP du %1$s au %2$s"
@@ -7222,6 +7239,25 @@ msgstr "Création des sous definitions"
 msgid "task::subdef:creation des sous definitions des documents d'origine"
 msgstr "Création des sous définitions des documents "
 
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/workflow01.class.php:13
+msgid "task::workflow01"
+msgstr "Tâche d'automatisations"
+
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/workflow01.class.php:327
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:331
+msgid "task::outofdate:Base"
+msgstr "Database"
+
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/workflow01.class.php:351
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:355
+msgid "task::_common_:minutes (unite temporelle)"
+msgstr "minutes"
+
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/workflow01.class.php:403
+#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:438
+msgid "task::outofdate:deplacement de docs suivant valeurs de champs 'date'"
+msgstr "Déplacer ou modifier le status des documents,en fonction d'un critere temporel."
+
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/ftpPull.class.php:14
 msgid "task::ftp:FTP Pull"
 msgstr "FTP Pull"
@@ -7237,14 +7273,6 @@ msgstr "SSL"
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:13
 msgid "task::outofdate:deplacement de docs perimes"
 msgstr "Déplacement des documents périmés"
-
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:331
-msgid "task::outofdate:Base"
-msgstr "Database"
-
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:355
-msgid "task::_common_:minutes (unite temporelle)"
-msgstr "minutes"
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:364
 msgid "task::outofdate:before"
@@ -7270,10 +7298,6 @@ msgstr "Collection"
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:407
 msgid "task::outofdate:status"
 msgstr "Appliquer le status"
-
-#: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/task/outofdate.class.php:438
-msgid "task::outofdate:deplacement de docs suivant valeurs de champs 'date'"
-msgstr "Déplacer ou modifier le status des documents,en fonction d'un critere temporel."
 
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/notify/validationreminder.class.php:107
 #: /home/grosroro/workspace/Phraseanet-Branche-3.1.x/lib/classes/notify/validationreminder.class.php:111

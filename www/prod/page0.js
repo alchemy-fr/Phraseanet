@@ -65,7 +65,7 @@ function getHome(cas, page){
           if(page > 0)
             answers.animate({
               scrollTop:answers.scrollTop()+answers.height()
-              },700);
+            },700);
           return;
         }
 
@@ -2241,7 +2241,7 @@ function publi_preset(el)
         opacity:0,
         width:($(this).width()/2),
         height:($(this).height()/2)
-        },700,function(){
+      },700,function(){
         $('#flashing').remove();
         $(el).removeClass('animating');
       });
@@ -4121,7 +4121,7 @@ function arraySortByValue(datas, data_type) {
       v: i,
       c: datas[i].toUpperCase(),
       o: datas[i]
-      });
+    });
   }
   switch(data_type)
   {

@@ -80,7 +80,7 @@
 		.text($.validator.passwordRating.messages[rating.messageKey]);
 		// display process bar instead of error message
 		
-		return rating.rate > 2;
+		return rating.rate >= 2;
 	}, "&nbsp;");
 	// manually add class rule, to make username param optional
 	$.validator.classRuleSettings.password = { password: true };
