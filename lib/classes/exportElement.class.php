@@ -54,7 +54,7 @@ class exportElement
 		
 		$user = user::getInstance($session->usr_id);	
 		
-		if(isset($sd['document']) && (isset($user->_rights_bas[$this->base_id]) || isset($user->_rights_records[$this->base_id.'_'.$this->record_id])))
+		if(isset($sd['document']) && (isset($user->_rights_bas[$this->base_id]) || isset($user->_rights_records[$this->base_id.'_'.$this->record_id]) || user::right_preview($session->usr_id, $this->base_id, $this->record_id)))
 		{
 		
 			$subdefgroups = databox::get_subdefs($sbas_id);
@@ -87,6 +87,10 @@ class exportElement
 				$go_dl['document'] = true;
 				$go_dl['preview'] = true;
 			}
+      elseif(user::right_preview($session->usr_id, $this->base_id, $this->record_id) === true)
+      {
+				$go_dl['preview'] = true;
+      }
 			
 			$go_cmd = (isset(self::$_order_masters[$this->base_id]) && isset($user->_rights_bas[$this->base_id]) && $user->_rights_bas[$this->base_id]['cancmd']);
 			

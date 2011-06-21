@@ -114,6 +114,7 @@ if($request->has_post_datas())
 			request_notifications	='".$conn->escape_string($parm["request_notifications"]=='1' ? '1' : '0')."',
 			activite	='".$conn->escape_string($parm["form_activity"])."', 
 			geonameid		='".$conn->escape_string($parm["form_geonameid"])."',
+			pays		='".$conn->escape_string(geonames::get_country_code($parm["form_geonameid"]))."',
 			
 			activeFTP	='".($parm["form_activeFTP"]?"1":"0")."',
 			addrFTP		='".$conn->escape_string($parm["form_addrFTP"])."',

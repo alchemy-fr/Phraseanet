@@ -343,6 +343,9 @@ class p4
   {
     $origine = p4string::addEndSlash($origine);
     
+    if(!is_dir($origine))
+      return;
+    
     $dirs = array();
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($origine), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
     {

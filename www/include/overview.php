@@ -118,6 +118,7 @@ phrasea::headers();
 			}
 		</style>
 		<script type="text/javascript" src="/include/flowplayer/flowplayer-3.2.6.min.js"></script>
+		<script type="text/javascript" src="/include/swfobject/swfobject.js"></script>
 	</head>
 	<body>
 	<?php
@@ -151,6 +152,15 @@ phrasea::headers();
 								<param name="allowFullScreen" value="true">
 								<param name="wmode" value="transparent">
 							</object>';
+          $embed = '<div style="width:850px;height:500px;">
+                      <div id="player_pdf" class="PNB" style=""></div>
+                  </div>
+              <script type="text/javascript">
+                swfobject.embedSWF("/include/FlexPaper_flash/FlexPaperViewer.swf",
+                "player_pdf",
+                "100%", "100%", "9.0.0", false, false,
+                {menu: "false",flashvars: "SwfFile='.urlencode($url).'&Scale=0.6&ZoomTransition=easeOut&ZoomTime=0.5&ZoomInterval=0.1&FitPageOnLoad=true&FitWidthOnLoad=true&PrintEnabled=true&FullScreenAsMaxWindow=false&localeChain='.$session->locale.'",	movie: "/include/FlexPaper_flash/FlexPaperViewer.swf",	allowFullScreen :"true",wmode: "transparent"}, false);
+              </script>';
 					break;
 				case 'image':
 				default:

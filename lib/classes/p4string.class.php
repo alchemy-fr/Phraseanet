@@ -48,7 +48,7 @@ class p4string
 
 	public static function cleanTags($string)
 	{
-		return strip_tags($string, '<p><a><b><i><div><ul><ol><li>');
+		return strip_tags($string, '<p><a><b><i><div><ul><ol><li><br>');
 	}
 
 	public static function checkMail($adresse)

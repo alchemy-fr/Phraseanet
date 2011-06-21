@@ -2,7 +2,6 @@
 require_once dirname( __FILE__ ) . "/../../lib/bootstrap.php";
 
 $session = session::getInstance();
-$session->set_cookie('test_cookie','accepted',0,true);
 
 require_once(GV_RootPath.'lib/inscript.api.php');
 if(GV_captchas && trim(GV_captcha_private_key) !== '' && trim(GV_captcha_public_key) !== '')
@@ -56,9 +55,6 @@ if($parm['error'] !== null)
 		break;
 		case 'captcha':
 			$errorWarning = '<div class="notice">'._('login::erreur: Erreur de captcha').'</div>';
-		break;
-		case 'cookie':
-			$errorWarning = '<div class="notice">'._('login::erreur: Les cookies sont desactives sur votre navigateur').'</div>';
 		break;
 		case 'mailNotConfirm' :
 			$errorWarning = '<div class="notice">'._('login::erreur: Vous n\'avez pas confirme votre email').'</div>';

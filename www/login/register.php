@@ -196,7 +196,9 @@ if($request->has_post_datas())
 				$fieldsname.= ",issuperu"; 						$fieldsvalue.= ",0";
 				$fieldsname.= ",code8"; 							$fieldsvalue.= ",0";
 				$fieldsname.= ",geonameid"; 							$fieldsvalue.= ",'".$conn->escape_string($parm["form_geonameid"])."'";
+        $fieldsname.= ",pays";             $fieldsvalue.= ",'".$conn->escape_string(geonames::get_country_code($parm["form_geonameid"]))."'";
 				$fieldsname.= ",model_of"; 					$fieldsvalue.= ",0";
+				$fieldsname.= ",locale"; 					$fieldsvalue.= ",'".$conn->escape_string($session->locale)."'";
 		
 				$sql = "INSERT INTO usr (".$fieldsname.") VALUES (".$fieldsvalue.")";
 		
