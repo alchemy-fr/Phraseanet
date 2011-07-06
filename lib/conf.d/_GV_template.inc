@@ -847,12 +847,12 @@ $GV = array(
                 'comment' => _('reglages:: Nombre de jour avant la fin de la validation pour envoie de mail de rappel'),
                 'default' => 2
             ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_DL_checkit',
-                'comment' => _('reglages:: Autorise le telechargement des fichiers pendant le process de validation'),
-                'default' => true
-            ),
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_DL_checkit',
+//                'comment' => _('reglages:: Autorise le telechargement des fichiers pendant le process de validation'),
+//                'default' => true
+//            ),
             array(
                 'type' => 'integer',
                 'name' => 'GV_val_expiration',

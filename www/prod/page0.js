@@ -385,14 +385,18 @@ function dropOnBask(event,from,destKey)
   {
     from_id = $(from).closest('.content').attr('id').split('_').pop();
   }
+  
+  addToBasket(act, action, sselcont.join(';'), lstbr, ssttid_dest, from_id);
+}
 
-
+function addToBasket(act, action, sselcont, lstbr, ssttid_dest, from_id)
+{
   $.ajax({
     type: "POST",
     url: "/prod/prodFeedBack.php",
     data: {
       action: act+action,
-      sselcont:sselcont.join(';'),
+      sselcont:sselcont,
       lst:lstbr,
       dest:ssttid_dest,
       from:from_id
@@ -423,11 +427,7 @@ function dropOnBask(event,from,destKey)
       return;
     }
   });
-
-
-
 }
-
 
 
 function activeFilters()
@@ -3429,7 +3429,9 @@ function evt_print(value)
 function evt_add_in_chutier(a,b,event,el)
 {
   if($('#baskets .SSTT.active').length == 1)
-    dropOnBask(event,$('#PREV_BASKADD_'+a+'_'+b),$('#baskets .SSTT.active'));
+  {
+    addToBasket("ADD", "IMGT2CHU", '', a+'_'+b, $('#baskets .SSTT.active').attr('id').split('_').slice(1,2).pop(), false);
+  }
 }
 
 
