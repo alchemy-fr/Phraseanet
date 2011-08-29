@@ -5,6 +5,7 @@
 #include "_syslog.h"
 
 #include "trace_memory.h"
+#include "phrasea_clock_t.h"
 
 
 //--------------------------------------------------------------------
@@ -302,6 +303,7 @@ unsigned int CMysqlStmt::errNo()
 
 int CMysqlStmt::execute()
 {
+	CHRONO chrono;
 	int r;
 	if(this->connbas->crashed)
 	{
@@ -311,10 +313,12 @@ int CMysqlStmt::execute()
 	}
 	try
 	{
+		startChrono(chrono);
 		if((r = mysql_stmt_execute(this->stmt)) != 0)
 		{
 			if(this->debug)
 				zSyslog.log(CSyslog::LOGL_ERR, CSyslog::LOGC_SQLERR, "CMysqlStmt::execute : mysql_stmt_execute error (%d) : '%s', return(%d)", this->errNo(), this->error(), r);
+
 			switch(this->errNo())
 			{
 				// erreurs non fatales
@@ -339,6 +343,11 @@ int CMysqlStmt::execute()
 			}
 			// this->connbas->crashed = 1;
 			return(-1);
+		}
+		else
+		{
+			if(this->debug)
+				zSyslog.log(CSyslog::LOGL_ERR, CSyslog::LOGC_SQLERR, "CMysqlStmt::execute : %s : %f sec", this->sql, stopChrono(chrono));
 		}
 		return(r);
 	}

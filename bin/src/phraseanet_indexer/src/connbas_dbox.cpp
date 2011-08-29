@@ -232,7 +232,7 @@ int CConnbas_dbox::updatePref_cterms(char *cterms, unsigned long cterms_size, ch
 // ---------------------------------------------------------------
 // SELECT CAST(value AS UNSIGNED), updated_on<created_on AS k FROM pref WHERE prop='indexes' LIMIT 1
 // ---------------------------------------------------------------
-int CConnbas_dbox::selectPrefsIndexes(long *value, long *toReindex)
+int CConnbas_dbox::selectPrefsIndexes(int *value, int *toReindex)
 {
   int ret = 0;
 	if(this->cstmt_needReindex == NULL)
@@ -250,8 +250,6 @@ int CConnbas_dbox::selectPrefsIndexes(long *value, long *toReindex)
 	}
 	if(this->cstmt_needReindex)
 	{
-//		long value, k;
-
 		this->cstmt_needReindex->bindo[0].buffer = value;
 		this->cstmt_needReindex->bindo[1].buffer = toReindex;
 
@@ -652,7 +650,7 @@ unsigned int CConnbas_dbox::getID(const char *name, unsigned int n )
 					this->cstmt_selectUid->bindi[0].buffer_length = lencpy;
 					this->cstmt_selectUid->bindi[0].length        = &lencpy;
 
-					unsigned long uid;
+					unsigned int uid;
 					this->cstmt_selectUid->bindo[0].buffer      = (void *)(&uid);
 
 					if (this->cstmt_selectUid->bind_param() == 0)
@@ -1151,8 +1149,8 @@ int CConnbas_dbox::scanRecords(void (*callBack)(CConnbas_dbox *connbas, unsigned
 	unsigned int record_id;
 	int ret = -1;
 
-	long prefsIndexes_value = 1;
-	long prefsIndexes_toReindex = 0;
+	int prefsIndexes_value = 1;
+	int prefsIndexes_toReindex = 0;
 
 //printf("-- 1\n");
 	if(!this->cstmt_selectRecords)
@@ -1238,290 +1236,6 @@ int CConnbas_dbox::scanRecords(void (*callBack)(CConnbas_dbox *connbas, unsigned
 	return(ret);
 }
 
-/*
-// ---------------------------------------------------------------
-// SELECT record_id, xml FROM record ORDER BY record_id
-// ---------------------------------------------------------------
-int CConnbas_dbox::scanRecords(void (*callBack)(CConnbas_dbox *connbas, unsigned long record_id, char *xml, unsigned long len), int *running )
-{
-//	static char *sql = "SELECT record_id, xml FROM record WHERE record_id>=5313 LIMIT 10";
-//	static char *sql = "SELECT record_id, xml FROM record WHERE record_id>=18573 LIMIT 50";
-	static char *sql = "SELECT record_id, xml FROM record WHERE (status & 7) IN (4,5,6) ORDER BY record_id ASC"; // LIMIT 10";
-//	static char *sql = "SELECT record_id, xml FROM record WHERE record_id=100077"; // LIMIT 10";
-	MYSQL_STMT *stmt;
-	unsigned long record_id;
-	char *xml=NULL;
-	unsigned long  xmlbuffer_length = 0;
-
-	unsigned long xml_length;
-	MYSQL_BIND bindo[2];
-	int ret = 0;
-
-	if(!this->cstmt_selectRecords)
-	{
-		if(this->cstmt_selectRecords = this->newStmt("SELECT record_id, xml FROM record WHERE (status & 7) IN (4,5,6) ORDER BY record_id ASC", 0, 2))
-		{
-			this->cstmt_selectRecords->bindo[0].buffer_type = MYSQL_TYPE_LONG;
-
-			this->cstmt_selectRecords->bindo[1].buffer_type = MYSQL_TYPE_STRING;
-		}
-	}
-
-	if(this->cstmt_selectRecords)
-	{
-		this->cstmt_selectRecords->bindo[0].buffer      = (void *)(&record_id);
-
-		this->cstmt_selectRecords->bindo[1].buffer      = (void *)(&xml);
-		this->cstmt_selectRecords->bindo[1].buffer_length = 150;
-		this->cstmt_selectRecords->bindo[1].length      = &xpath_length;
-
-// static my_ulonglong last_numr = 123465;
-printf("-- 1\n");
-	if( (xml = (char *)(_MALLOC_WHY(xmlbuffer_length = 4096, "connbas_dbox.cpp:scanRecords:xml"))) == NULL)
-	{
-		// malloc error
-		return(2);
-	}
-
-	if( (stmt = mysql_stmt_init(this->mysqlCnx)) != NULL)
-	{
-printf("-- 2\n");
-		if(mysql_stmt_prepare(stmt, sql, strlen(sql)) == 0)
-		{
-printf("-- 3\n");
-			if(mysql_stmt_execute(stmt) == 0)
-			{
-printf("-- 4\n");
-				memset(bindo, 0, sizeof(bindo));
-
-				bindo[0].buffer_type = MYSQL_TYPE_LONG;
-				bindo[0].buffer      = (void *)(&record_id);
-				// bind[0].length = ;			// ignored for numeric types
-				// bind[0].buffer_length = ;			// ignored for numeric types
-				bindo[0].is_null     = (my_bool*)0;	// data is always not null
-				bindo[0].is_unsigned = 1;
-
-				bindo[1].buffer_type = MYSQL_TYPE_STRING;
-				bindo[1].buffer      = (void *)(xml);
-				bindo[1].buffer_length = xmlbuffer_length;
-				bindo[1].length      = &xml_length;
-				bindo[1].is_null     = (my_bool*)0;	// data is always not null
-				// bind[1].is_unsigned = 1;		// ignored for string type
-
-				// Bind the result buffers
-				if(mysql_stmt_bind_result(stmt, bindo) == 0)
-				{
-printf("-- 5\n");
-					if(mysql_stmt_store_result(stmt) == 0)
-					{
-						int row_count = 0;
-//						my_ulonglong num_rows = mysql_stmt_num_rows(stmt); 
-// if(num_rows > 0 || last_numr != 0)
-printf("----------- scanRecords found %ld ---------\n", 666);
-//last_numr = num_rows;
-						while(!this->crashed && *running && ret==0 && mysql_stmt_fetch(stmt) == 0)
-						{
-							// printf("rid=%ld, xml_length=%ld\n", record_id, xml_length);
-							if(xml_length > xmlbuffer_length)
-							{
-								if(xml = (char *)_REALLOC((void *)xml, xmlbuffer_length = xml_length+1024))
-								{
-									bindo[1].buffer = (void *)(xml);
-									bindo[1].buffer_length = xmlbuffer_length;
-									mysql_stmt_bind_result(stmt, bindo);
-								//	printf("buffer reallocated to %ld\n", xmlbuffer_length);
-
-									mysql_stmt_data_seek(stmt, row_count);
-								}
-								else
-								{
-									// realloc error
-									ret = 2;
-								}
-							}
-							else
-							{
-								// printf("xml(%ld) read\n", xml_length);
-								(*callBack)(this, record_id, xml, xml_length);
-								row_count++;
-							}
-					//		if(keyword_length > 64)
-					//			keyword_length = 64;
-					//		keyword[keyword_length] = '\0';
-						}
-						mysql_stmt_free_result(stmt);
-					}
-					else
-					{
-						// mysql_stmt_store_result error
-						ret = 6;
-					}
-				}
-				else
-				{
-					// mysql_stmt_bind_result error
-					ret = 5;
-				}
-
-			}
-			else
-			{
-				// mysql_stmt_execute error
-				zSyslog.log(CSyslog::LOGL_ERR, CSyslog::LOGC_SQLERR, "%s", mysql_stmt_error(stmt));
-			}
-
-		}
-		else
-		{
-			// mysql_stmt_prepare error
-			ret = 4;
-		}
-		mysql_stmt_close(stmt);
-	}
-	else
-	{
-		// mysql_stmt_init error
-		ret = 3;
-	}
-	//_FREE(xml);
-	_FREE(xml);
-	return(ret);
-}
-*/
-
-/*
-// ---------------------------------------------------------------
-// SELECT record_id, xml FROM record ORDER BY record_id
-// ---------------------------------------------------------------
-int CConnbas_dbox::scanRecords(void (*callBack)(CConnbas_dbox *connbas, unsigned long record_id, char *xml, unsigned long len), int *running )
-{
-//	static char *sql = "SELECT record_id, xml FROM record WHERE record_id>=5313 LIMIT 10";
-//	static char *sql = "SELECT record_id, xml FROM record WHERE record_id>=18573 LIMIT 50";
-	static char *sql = "SELECT record_id, xml FROM record WHERE (status & 7) IN (4,5,6) ORDER BY record_id ASC"; // LIMIT 10";
-//	static char *sql = "SELECT record_id, xml FROM record WHERE record_id=100077"; // LIMIT 10";
-	MYSQL_STMT *stmt;
-	unsigned long record_id;
-	char *xml=NULL;
-	unsigned long  xmlbuffer_length = 0;
-
-	unsigned long xml_length;
-	MYSQL_BIND bindo[2];
-	int ret = 0;
-
-// static my_ulonglong last_numr = 123465;
-printf("-- 1\n");
-	if( (xml = (char *)(_MALLOC_WHY(xmlbuffer_length = 4096, "connbas_dbox.cpp:scanRecords:xml"))) == NULL)
-	{
-		// malloc error
-		return(2);
-	}
-
-	if( (stmt = mysql_stmt_init(this->mysqlCnx)) != NULL)
-	{
-printf("-- 2\n");
-		if(mysql_stmt_prepare(stmt, sql, strlen(sql)) == 0)
-		{
-printf("-- 3\n");
-			if(mysql_stmt_execute(stmt) == 0)
-			{
-printf("-- 4\n");
-				memset(bindo, 0, sizeof(bindo));
-
-				bindo[0].buffer_type = MYSQL_TYPE_LONG;
-				bindo[0].buffer      = (void *)(&record_id);
-				// bind[0].length = ;			// ignored for numeric types
-				// bind[0].buffer_length = ;			// ignored for numeric types
-				bindo[0].is_null     = (my_bool*)0;	// data is always not null
-				bindo[0].is_unsigned = 1;
-
-				bindo[1].buffer_type = MYSQL_TYPE_STRING;
-				bindo[1].buffer      = (void *)(xml);
-				bindo[1].buffer_length = xmlbuffer_length;
-				bindo[1].length      = &xml_length;
-				bindo[1].is_null     = (my_bool*)0;	// data is always not null
-				// bind[1].is_unsigned = 1;		// ignored for string type
-
-				// Bind the result buffers
-				if(mysql_stmt_bind_result(stmt, bindo) == 0)
-				{
-printf("-- 5\n");
-					if(mysql_stmt_store_result(stmt) == 0)
-					{
-						int row_count = 0;
-//						my_ulonglong num_rows = mysql_stmt_num_rows(stmt); 
-// if(num_rows > 0 || last_numr != 0)
-printf("----------- scanRecords found %ld ---------\n", 666);
-//last_numr = num_rows;
-						while(!this->crashed && *running && ret==0 && mysql_stmt_fetch(stmt) == 0)
-						{
-							// printf("rid=%ld, xml_length=%ld\n", record_id, xml_length);
-							if(xml_length > xmlbuffer_length)
-							{
-								if(xml = (char *)_REALLOC((void *)xml, xmlbuffer_length = xml_length+1024))
-								{
-									bindo[1].buffer = (void *)(xml);
-									bindo[1].buffer_length = xmlbuffer_length;
-									mysql_stmt_bind_result(stmt, bindo);
-								//	printf("buffer reallocated to %ld\n", xmlbuffer_length);
-
-									mysql_stmt_data_seek(stmt, row_count);
-								}
-								else
-								{
-									// realloc error
-									ret = 2;
-								}
-							}
-							else
-							{
-								// printf("xml(%ld) read\n", xml_length);
-								(*callBack)(this, record_id, xml, xml_length);
-								row_count++;
-							}
-							//if(keyword_length > 64)
-							//	keyword_length = 64;
-							//keyword[keyword_length] = '\0';
-							
-						}
-						mysql_stmt_free_result(stmt);
-					}
-					else
-					{
-						// mysql_stmt_store_result error
-						ret = 6;
-					}
-				}
-				else
-				{
-					// mysql_stmt_bind_result error
-					ret = 5;
-				}
-
-			}
-			else
-			{
-				// mysql_stmt_execute error
-				zSyslog.log(CSyslog::LOGL_ERR, CSyslog::LOGC_SQLERR, "%s", mysql_stmt_error(stmt));
-			}
-
-		}
-		else
-		{
-			// mysql_stmt_prepare error
-			ret = 4;
-		}
-		mysql_stmt_close(stmt);
-	}
-	else
-	{
-		// mysql_stmt_init error
-		ret = 3;
-	}
-	//_FREE(xml);
-	_FREE(xml);
-	return(ret);
-}
-*/
 
 // ---------------------------------------------------------------
 // INSERT INTO thit (record_id, xpath_id, name, value, hitstart, hitlen) VALUES (?, ?, ?, ?, ?, ?) 
@@ -1703,121 +1417,11 @@ int CConnbas_dbox::updateRecord_unlock(unsigned int record_id)
 }
 
 
-/*
-
-int CConnbas_dbox::lockRecord(unsigned int record_id)
-{
-	this->parms_updateRecord_xlock.id = record_id;
-	return(mysql_stmt_execute(this->stmt_updateRecord_lock));
-}
-
-int CConnbas_dbox::unlockRecord(unsigned int record_id)
-{
-	this->parms_updateRecord_xlock.id = record_id;
-	return(mysql_stmt_execute(this->stmt_updateRecord_unlock));
-}
-
-
-int CConnbas_dbox::addTHit(unsigned int record_id, unsigned int xpath_id, unsigned char *name, unsigned char *value, unsigned int hitstart, unsigned int hitlen)
-{
-  int ret;
-	this->parms_insertTHit.record_id = record_id;
-	this->parms_insertTHit.xpath_id = xpath_id;
-	if( (this->parms_insertTHit.name_length = strlen((char *)name)) > 32)
-		this->parms_insertTHit.name_length = 32;
-	memcpy(this->parms_insertTHit.name,  name,  this->parms_insertTHit.name_length);
-	if( (this->parms_insertTHit.value_length = strlen((char *)value)) > 100)
-		this->parms_insertTHit.value_length = 100;
-	memcpy(this->parms_insertTHit.value, value, this->parms_insertTHit.value_length);
-	this->parms_insertTHit.hitstart = hitstart;
-	this->parms_insertTHit.hitlen = hitlen;
-	ret = mysql_stmt_execute(this->stmt_insertTHit);
-	if(ret != 0)
-		printf("%s \n", mysql_stmt_error(this->stmt_insertTHit) );
-	return(ret);
-}
-
-
-int CConnbas_dbox::addProp(unsigned int record_id, unsigned int xpath_id, unsigned char *name, unsigned char *value)
-{
-	this->parms_insertProp.record_id = record_id;
-	this->parms_insertProp.xpath_id = xpath_id;
-	if( (this->parms_insertProp.name_length = strlen((char *)name)) > 32)
-		this->parms_insertProp.name_length = 32;
-	memcpy(this->parms_insertProp.name,  name,  this->parms_insertProp.name_length);
-	if( (this->parms_insertProp.value_length = strlen((char *)value)) > 100)
-		this->parms_insertProp.value_length = 100;
-	memcpy(this->parms_insertProp.value, value, this->parms_insertProp.value_length);
-	return(mysql_stmt_execute(this->stmt_insertProp) == 0);
-}
-
-
-*/
-
 
 void CConnbas_dbox::close()
 {
 	this->isok = false;
-/*
-	CMysqlStmt *stmt;
-	while(stmt = this->firstStmt)
-	{
-		this->firstStmt = stmt->next;
-		delete stmt;
-	}
-*/
-/*
-	if(this->cstmt_updatePref_cterms)
-	{
-		delete(this->cstmt_updatePref_cterms);
-		this->cstmt_updatePref_cterms = NULL;
-	}
-	if(this->cstmt_selectPref_moddates)
-	{
-		delete(this->cstmt_selectPref_moddates);
-		this->cstmt_selectPref_moddates = NULL;
-	}
-	if(this->cstmt_insertKword)
-	{
-		delete(this->cstmt_insertKword);
-		this->cstmt_insertKword = NULL;
-	}
-	if(this->cstmt_selectKword)
-	{
-		delete(this->cstmt_selectKword);
-		this->cstmt_selectKword = NULL;
-	}
-	if(this->cstmt_insertIdx)
-	{
-		delete(this->cstmt_insertIdx);
-		this->cstmt_insertIdx = NULL;
-	}
-	if(this->cstmt_selectXPath)
-	{
-		delete(this->cstmt_selectXPath);
-		this->cstmt_selectXPath = NULL;
-	}
-	if(this->cstmt_insertXPath)
-	{
-		delete(this->cstmt_insertXPath);
-		this->cstmt_insertXPath = NULL;
-	}
-	if(this->cstmt_updateUids)
-	{
-		delete(this->cstmt_updateUids);
-		this->cstmt_updateUids = NULL;
-	}
-	if(this->cstmt_selectUid)
-	{
-		delete(this->cstmt_selectUid);
-		this->cstmt_selectUid = NULL;
-	}
-	if(this->cstmt_selectPrefs)
-	{
-		delete(this->cstmt_selectPrefs);
-		this->cstmt_selectPrefs = NULL;
-	}
-*/
+
 	if(this->struct_buffer)
 	{
 		_FREE(this->struct_buffer);
@@ -1842,34 +1446,6 @@ void CConnbas_dbox::close()
 		this->xml_buffer = NULL;
 		this->xml_buffer_size = 0;
 	}
-
-/*
-	if(this->stmt_insertTHit)
-	{
-		mysql_stmt_close(this->stmt_insertTHit);
-		this->stmt_insertTHit = NULL;
-	}
-	if(this->stmt_insertProp)
-	{
-		mysql_stmt_close(this->stmt_insertProp);
-		this->stmt_insertProp = NULL;
-	}
-
-
-	if(this->stmt_updateRecord_lock)
-	{
-		mysql_stmt_close(this->stmt_updateRecord_lock);
-		this->stmt_updateRecord_lock = NULL;
-	}
-
-	if(this->stmt_updateRecord_unlock)
-	{
-		mysql_stmt_close(this->stmt_updateRecord_unlock);
-		this->stmt_updateRecord_unlock = NULL;
-	}
-
-*/
-
 
 	CConnbas::close();
 }

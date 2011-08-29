@@ -483,7 +483,8 @@ class export
         $name = mb_substr($name, 0, $max_length);
 
       $n = 1;
-      while (in_array($name, $file_names))
+      
+      while (in_array(mb_strtolower($name), $file_names))
       {
         $n++;
         $suffix = "-" . $n; // pour diese si besoin
@@ -494,7 +495,8 @@ class export
         else
           $name = $name . $suffix;
       }
-      $file_names[] = $name;
+      
+      $file_names[] = mb_strtolower($name);
       $files[$id]["export_name"] = $name;
 
       $files[$id]["export_name"] = noaccent_utf8($files[$id]["export_name"], UNPARSED);

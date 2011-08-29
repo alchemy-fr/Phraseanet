@@ -463,13 +463,13 @@ class CIndexer
 		CStructField *tStructField;			// table of fields in the structure
 
 		CKword *tKeywords[KWORD_HASHSIZE];	// chained list(s) of keywords
-		unsigned long nNewKeywords;			// number of NEW (unknown id) keywords in this list
+		unsigned int nNewKeywords;			// number of NEW (unknown id) keywords in this list
 
-		CXPath *tXPaths;					// chained liste of xpath
+		CXPath *tXPaths;					// chained list of xpath
 		CXPath *current_xpath;
 		
 		unsigned int current_rid;			// current record_id
-		unsigned long nrecsIndexed;			// nbr of records treated by this indexer
+		unsigned int nrecsIndexed;			// nbr of records treated by this indexer
 
 
 		// dates of the first changing of prefs

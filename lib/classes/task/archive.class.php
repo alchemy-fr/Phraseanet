@@ -1793,7 +1793,7 @@ class task_archive extends phraseatask
 
         $uuid = $file_uuid->write_uuid($uuid);
 
-				$error_file = p4file::check_file_error($path.'/'.$file, $sbas_id);
+				$error_file = p4file::check_file_error($path.'/'.$file, $sbas_id, $file);
 				$status = status::or_operation($stat0, $stat1);
 
 				if($meta['status'])

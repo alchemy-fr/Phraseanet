@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.60])
 
-AC_INIT([phraseanet_indexer], [3.6.1.1])
+AC_INIT([phraseanet_indexer], [3.7.1.1])
 
 AM_INIT_AUTOMAKE(no-dependencies no-define no-dist no-installinfo)
 
@@ -21,11 +21,11 @@ XTRAINCPATHS="-I/usr/include/libxml2/"
 # Checks for MySQL lib
 AC_MSG_CHECKING([MySQL client library])
 for i in / /usr /usr/local /opt/local; do
-	if test -r $i/lib/libmysqlclient.a; then
+	if test -r $i/lib/libmysqlclient.so -o -r $i/lib/libmysqlclient.dylib; then
 		MYSQL_LIBDIR=$i/lib/
-	elif test -r $i/lib/mysql/libmysqlclient.a; then
+	elif test -r $i/lib/mysql/libmysqlclient.so -o -r $i/lib/mysql/libmysqlclient.dylib; then
 		MYSQL_LIBDIR=$i/lib/mysql/
-	elif test -r $i/lib/mysql5/mysql/libmysqlclient.a; then
+	elif test -r $i/lib/mysql5/mysql/libmysqlclient.so -o -r $i/lib/mysql5/mysql/libmysqlclient.dylib; then
 		MYSQL_LIBDIR=$i/lib/mysql5/mysql/
 	fi
 done

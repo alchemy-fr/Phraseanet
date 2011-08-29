@@ -1,5 +1,7 @@
 <?php
 require_once dirname(__FILE__) . "/../lib/bootstrap_task.php";
+
+
 define('TASKDELAYTOQUIT', 20);  // allow 20 sec for never-ending tasks before sending SIGKILL
 ?>
 #!/usr/bin/php
@@ -176,7 +178,7 @@ while ($schedstatus == 'started' || $runningtask > 0)
     $conn->query($sql);
 
     // if scheduler is stopped, stop the tasks
-    $sql = 'UPDATE task2 SET status=\'tostop\' WHERE status!="stopped" and status!="manual"';
+    $sql = 'UPDATE task2 SET status=\'tostop\', last_change=NOW() WHERE status!="stopped" and status!="manual"';
     $conn->query($sql);
 
     $msg = sprintf("schedstatus == 'stopping', waiting tasks to end");
@@ -283,7 +285,7 @@ while ($schedstatus == 'started' || $runningtask > 0)
         $ttask[$tkey]["process"] = null;
         if($schedstatus == 'started')
         {
-          $sql = 'UPDATE task2 SET status=\'tostart\' WHERE task_id="' . $conn->escape_string($ttask[$tkey]["tid"]) . '"';
+          $sql = 'UPDATE task2 SET status=\'tostart\', last_change=NOW() WHERE task_id="' . $conn->escape_string($ttask[$tkey]["tid"]) . '"';
           $conn->query($sql);
         }
         break;
@@ -318,7 +320,7 @@ while ($schedstatus == 'started' || $runningtask > 0)
           }
           if ($ttask[$tkey]['pid'] !== NULL)
           {
-            $sql = 'UPDATE task2 SET status=\'started\' WHERE task_id="' . $conn->escape_string($ttask[$tkey]['tid']) . '"';
+            $sql = 'UPDATE task2 SET status=\'started\', last_change=NOW() WHERE task_id="' . $conn->escape_string($ttask[$tkey]['tid']) . '"';
             $conn->query($sql);
             $msg = sprintf("Task %s '%s' started (pid=%s)", $ttask[$tkey]["tid"], $cmd, $ttask[$tkey]['pid']);
             my_syslog(LOG_INFO, $msg);
@@ -336,9 +338,9 @@ while ($schedstatus == 'started' || $runningtask > 0)
             $msg = sprintf("Task %s '%s' failed to start %d times", $ttask[$tkey]["tid"], $cmd, $ttask[$tkey]["crashed"]);
             my_syslog(LOG_INFO, $msg);
             if ($ttask[$tkey]["crashed"] >= 5)
-              $sql = "UPDATE task2 SET status='stopped', pid=0, crashed=crashed+1 WHERE task_id='" . $conn->escape_string($ttask[$tkey]['tid']) . "'";
+              $sql = "UPDATE task2 SET status='stopped', last_change=NOW(), pid=0, crashed=crashed+1 WHERE task_id='" . $conn->escape_string($ttask[$tkey]['tid']) . "'";
             else
-              $sql = "UPDATE task2 SET status='tostart', pid=0, crashed=crashed+1 WHERE task_id='" . $conn->escape_string($ttask[$tkey]['tid']) . "'";
+              $sql = "UPDATE task2 SET status='tostart', last_change=NOW(), pid=0, crashed=crashed+1 WHERE task_id='" . $conn->escape_string($ttask[$tkey]['tid']) . "'";
             $conn->query($sql);
           }
         }
@@ -392,9 +394,9 @@ while ($schedstatus == 'started' || $runningtask > 0)
           $msg = sprintf("Task %s crashed %d times", $ttask[$tkey]["tid"], $ttask[$tkey]["crashed"]);
           my_syslog(LOG_INFO, $msg);
           if ($ttask[$tkey]["crashed"] >= 5)
-            $sql = "UPDATE task2 SET status='stopped', pid=0, crashed=crashed+1 WHERE task_id='" . $conn->escape_string($ttask[$tkey]['tid']) . "'";
+            $sql = "UPDATE task2 SET status='stopped', last_change=NOW(), pid=0, crashed=crashed+1 WHERE task_id='" . $conn->escape_string($ttask[$tkey]['tid']) . "'";
           else
-            $sql = "UPDATE task2 SET status='tostart', pid=0, crashed=crashed+1 WHERE task_id='" . $conn->escape_string($ttask[$tkey]['tid']) . "'";
+            $sql = "UPDATE task2 SET status='tostart', last_change=NOW(), pid=0, crashed=crashed+1 WHERE task_id='" . $conn->escape_string($ttask[$tkey]['tid']) . "'";
           $conn->query($sql);
         }
         break;

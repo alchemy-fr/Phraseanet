@@ -413,7 +413,7 @@ if (count($avBases) == 0)
           <li><a id="quarantine-tab" href="/upload/uploadFeedback.php?action=get_lazaret_html"><?php echo _('Quarantaine'); ?><span id="quarantine_size">(<?php echo (int) $count; ?>)</span></a></li>
         </ul>
         <div id="manager">
-          <form id="form1" action="upload.php" method="post" enctype="multipart/form-data" onsubmit="return false;" target="classic_upload">
+          <form id="form1" action="upload.php" method="post" enctype="multipart/form-data" target="classic_upload">
             <div style="height:60px;margin:20px 0;">
               <div id="step1" style="cursor:pointer;xwidth:800px;height:30px;"><span id="spanButtonPlaceHolder"></span>
                 <div>

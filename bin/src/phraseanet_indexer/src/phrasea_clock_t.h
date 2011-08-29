@@ -1,35 +1,30 @@
-/* définition portable des structures système à dénomination variable */
-#ifndef PHRASEA_CLOCK_T__INCLUDED
-#define PHRASEA_CLOCK_T__INCLUDED 1
+/*
+ * phrasea_clock_t.h
+ *
+ *  Created on: 4 mars 2010
+ *      Author: gaulier
+ */
+
+#ifndef PHRASEA_CLOCK_T_H_
+#define PHRASEA_CLOCK_T_H_
+
 
 #include <sys/timeb.h>
 
-/*
-#ifndef PHRASEA_TIMEB
-//# ifdef WIN32
-#  define PHRASEA_TIMEB struct _timeb
-#  define PHRASEA_FTIME ftime
-#  define PHRASEA_GET_MS millisec_diff
-//# else
-//#  define PHRASEA_TIMEB clock_t
-//#  define PHRASEA_FTIME phrasea_get_ticks
-//#  define PHRASEA_GET_MS phrasea_getclockinterval
-// ******* tosee : ligne mise en remarque pour warning win32
-//void PHRASEA_FTIME(PHRASEA_TIMEB *);
-//# endif
+#ifdef PHP_WIN32
+	typedef DWORD CHRONO;
+#else
+	typedef struct timeval CHRONO;
 #endif
 
+void startChrono(CHRONO &chrono);
+float stopChrono(CHRONO &chrono);
 
-
-int PHRASEA_GET_MS(PHRASEA_TIMEB *, PHRASEA_TIMEB *);
-// ******* tosee : resetclock est implÈmentÈ en void
-void resetclock(PHRASEA_TIMEB *);
-*/
 
 #ifndef WIN32
 char *_strupr( char *string );
 #endif
 
-#endif // PHRASEA_CLOCK_T__INCLUDED
+#endif /* PHRASEA_CLOCK_T_H_ */
 
 

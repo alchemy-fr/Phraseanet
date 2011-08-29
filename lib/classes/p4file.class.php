@@ -270,7 +270,7 @@ class p4file
 	}
 	
 	
-	public static function check_file_error($filename, $sbas_id)
+	public static function check_file_error($filename, $sbas_id, $originalname='')
 	{
 		require_once GV_RootPath.'lib/index_utils2.php';
 		$infos = giveMimeExt($filename);
@@ -295,6 +295,23 @@ class p4file
 			{
 				switch($name)
 				{
+					case 'name':
+						$fn = $originalname;
+						// fn can contain single quotes, but NO doubles
+//						if( count($fn=explode('"', $fn)) == 1)
+//							$fn = '\\"' . $fn[0] . '\\"';
+//						else
+//							$fn = 'concat(\\"' . implode('\\",\'\\"\',\\"', $fn) . '\\")';
+						$fn = '\\"'.str_replace('"', '&quot;', $fn).'\\"';	// in fact xquey does LITERAL search on attributes, so '&quot;' does REALLY MEANS "&quot;" !
+						$connbas = connection::getInstance($sbas_id);
+						$sql = 'SELECT record_id FROM record WHERE EXTRACTVALUE(xml, "count(/record/doc[@originalname='.$fn.'])")>0 LIMIT 1';
+						if( ($rs=$connbas->query($sql)) )
+						{
+							if($connbas->num_rows($rs)>0)
+								$errors[] = sprintf(_('Le fichier \'%s\' existe deja'), $originalname);
+							$connbas->free_result($rs);
+						}
+						break;
 					case 'size':
 						$min = min($datas['Image Height'], $datas['Image Width']);
 						if($min < (int)$value)

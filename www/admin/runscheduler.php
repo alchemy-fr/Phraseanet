@@ -88,6 +88,9 @@ else
 	
 }
 
+$conn = connection::getInstance();
+$conn->close();
+
 
 function my_syslog($level, $msg)
 {

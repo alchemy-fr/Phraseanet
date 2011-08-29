@@ -33,7 +33,6 @@ typedef unsigned long XML_Size;
 #include "lownodiacritics_utf8.h"
 
 /*
-*/
 #ifndef UINT8
 	#define UINT8 unsigned char
 #endif
@@ -41,8 +40,9 @@ typedef unsigned long XML_Size;
 	#define UINT16 unsigned short
 #endif
 #ifndef UINT32
-	#define UINT32 unsigned long
+	#define UINT32 unsigned int
 #endif
+*/
 
 #ifndef NULL
 	#define NULL 0
@@ -327,7 +327,7 @@ class CDOMDocument
 		bool load(char *filename);
 		bool loadXML(char *xml, unsigned long len);
 		void dump();
-		void (*onKeyword)(CDOMDocument *xmlparser, const char *lowKeyword, unsigned int lowKeywordLen, UINT32 pos, UINT32 len, UINT32 idx);
+		void (*onKeyword)(CDOMDocument *xmlparser, const char *lowKeyword, unsigned int lowKeywordLen, unsigned int pos, unsigned int len, unsigned int idx);
 		void (*onStart)(CDOMDocument *xmlparser, const char *name, const char *path, const char *upath);
 		void (*onEnd)(CDOMDocument *xmlparser);
 		void *userData;	// to pass/get data to/from callback
@@ -361,9 +361,9 @@ class CDOMDocument
 		int freepathoffset;
 		int freeupathoffset;
 
-		UINT32 indexStart;
-		UINT32 indexEnd;
-		UINT32 wordIndex;
+		unsigned int indexStart;
+		unsigned int indexEnd;
+		unsigned int wordIndex;
 		char tokBin[400+4];
 		int tokBinLen;
 

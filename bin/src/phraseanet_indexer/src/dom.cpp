@@ -161,7 +161,7 @@ void XMLCALL CDOMDocument::charHandler(void *userData, const XML_Char *xmls, int
 	{
 	  int i;
 	  unsigned char c0, c;
-	  UINT32 u, msk;
+	  unsigned int  u, msk;
 	  unsigned char nBytes;
 	  unsigned char nLowBytes;
 	  unsigned char *s = (unsigned char *)xmls;
@@ -219,14 +219,14 @@ void XMLCALL CDOMDocument::charHandler(void *userData, const XML_Char *xmls, int
 						// 11xxxxxx : multi bytes character
 						unsigned char flags = CFLAG_NORMALCHAR;
 						_this->tokBin[_this->tokBinLen++] = c0;
-						u = ((UINT32) c0) & 0x0000001F;
+						u = ((unsigned int) c0) & 0x0000001F;
 						msk = 0xFFFFFF7F;
 						nBytes = 1;
 						// read max 6 bytes
 						while(len && ((c0 <<= 1) & 0x80) && (((c = *s) & 0xC0) == 0x80) && ++nBytes <= 6)
 						{
 							_this->tokBin[_this->tokBinLen++] = c;
-							u = (u<<6 & (msk = (msk<<5) | 0x1F)) | (UINT32)(c & 0x3F);
+							u = (u<<6 & (msk = (msk<<5) | 0x1F)) | (unsigned int)(c & 0x3F);
 							len--;
 							i++;
 							s++;
@@ -327,7 +327,7 @@ void XMLCALL CDOMDocument::charHandler(void *userData, const XML_Char *xmls, int
 			//				_this->currentNode->index_start = index+i;
 			//			_this->currentNode->index_end = index+i;
 					}
-					u = (UINT32) c0;
+					u = (unsigned int) c0;
 					nLowBytes = nBytes = 1;
 
 				}
@@ -390,84 +390,10 @@ CDOMDocument::CDOMDocument()
 		XML_SetElementHandler(this->parser, this->start, this->end );
 		XML_SetCharacterDataHandler(this->parser, this->charHandler);
 		XML_SetCdataSectionHandler(this->parser, this->startCdata, this->endCdata);
-/*
-		//	unsigned char t[] = "\t\r\n !\"#$%&'()+,-./:;<=>@[\\]^_`{|}~����" ;
-		unsigned char t[] = "\t\r\n !\"#$%&'()+,-./:;=@[\\]^_`{|}~����" ;
-		size_t i;
-		for(i=0; i<256; i++)
-		{
-			this->charFlags[i] = 0;
-		}
-		for(i=0; i<strlen((const char *)t); i++)
-		{
-			this->charFlags[t[i]] |= 1;
-		}
-*/
 	}
 }
-/*
-bool CDOMDocument::load(char *filename)
-{
-  FILE *fp;
-	long filesize;
-	int bytes_read;
-	void *buff;
-	bool ret = TRUE;
-	
-	if(!this->parser)
-		return(FALSE);
 
-	if( fp=fopen(filename, "rb" ) )
-	{
-		fseek(fp, 0, SEEK_END);
-		filesize = ftell(fp);
-		rewind(fp);
 
-		this->depth = -1;
-		this->State = CDOMDocument::INTO_UNKNOWN;
-		this->indexStart = 0;
-		this->indexEnd = 0;
-		this->tokBinLen = 0;
-		this->lowtokBinLen = 0;
-		this->wordIndex = 0;
-		this->parseText = true;
-
-		buff = XML_GetBuffer(this->parser, filesize);
-
-		if (buff != NULL)
-		{
-			bytes_read = fread(buff, 1, filesize, fp);
-			if (bytes_read > 0)
-			{
-				if(XML_ParseBuffer(this->parser, bytes_read, TRUE) != XML_STATUS_ERROR)
-				{
-				}
-				else
-				{
-					// handle parse error
-					zSyslog.log(CSyslog::LOGL_WARNING, CSyslog::LOGC_XMLERR, "Parse error at line %u:\n%s\n",
-												  XML_GetCurrentLineNumber(this->parser),
-												  XML_ErrorString(XML_GetErrorCode(this->parser)));
-					ret = FALSE;
-				}
-			}
-			else
-			{
-				// handle error
-				ret = FALSE;
-			}
-		}
-		else
-		{
-			// handle error
-			ret = FALSE;
-		}
-		fclose(fp);
-	}
-
-	return(ret);
-}
-*/
 bool CDOMDocument::loadXML(char *xml, unsigned long len)
 {
 	bool ret = TRUE;

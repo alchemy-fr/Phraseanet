@@ -846,10 +846,10 @@ function makeSubdefs($sbas_id, $hdDoc)
 
 
       $ret['subdefs'][$i] = subdefDispatcher($what  // 'image', 'video' or 'audio'
-                      , $HDFile // path to document
-                      , $subdef // subdef settings from struct (simplexml)
-                      , $physdpath // where to create the subdef
-                      , $HDprops  // recordid, width, height, mime, CMYK etc...
+              , $HDFile // path to document
+              , $subdef // subdef settings from struct (simplexml)
+              , $physdpath // where to create the subdef
+              , $HDprops  // recordid, width, height, mime, CMYK etc...
       );
 
       // complete le resultat
@@ -2610,10 +2610,10 @@ function make1VideoSubdef($infile, &$sd, $physdpath, &$infos)
 
     if ($v_codec == 'flv')
       $retour['mime'] = 'video/x-flv'; //'image/jpeg' ;
- else
+    else
       $retour['mime'] = 'video/mp4'; //'image/jpeg' ;
 
-      $retour['file'] = $newname;
+    $retour['file'] = $newname;
 
     chdir($cwd);
   }
@@ -2770,10 +2770,24 @@ function make_mp4_progressive($mp4_file)
   {
     if ($debug)
       echo "\nmp4 box OK, doing it\n";
-
-    $cmd = GV_mp4box . ' -inter 0.5 ' . escapeshellarg($mp4_file);
+    $tmp_file = $mp4_file . 'non-inter.mp4';
+    rename($mp4_file, $tmp_file);
+    $cmd = GV_mp4box . ' -inter 0.5 ' . escapeshellarg($tmp_file) . ' -out ' . escapeshellarg($mp4_file);
     $errArr = '';
+
+    if ($debug)
+      echo $cmd . "\n\n ";
+
     @exec($cmd, $errArr);
+    if (is_file($mp4_file) && filesize($mp4_file) > 0)
+    {
+      unlink($tmp_file);
+    }
+    else
+    {
+      rename($tmp_file, $mp4_file);
+    }
+
 
     $ret = true;
   }

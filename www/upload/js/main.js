@@ -113,6 +113,15 @@ function do_global_action()
 
 $(document).ready(function(){
 
+  $('#form1').bind('submit', function(event){
+    var classic = !!$('#step2classic').is(':visible');
+    if(!classic)
+    {
+      event.stopPropagation();
+      return false;
+    }
+  });
+
   $.each($('#status_wrapper .slider_status'),function(){
     activeSliders(this);
   });

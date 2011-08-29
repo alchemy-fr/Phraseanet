@@ -1,5 +1,9 @@
 <?php
 require_once dirname( __FILE__ ) . "/../lib/bootstrap_task.php";
+phrasea::start();
+$session = session::getInstance();
+
+
 require_once(GV_RootPath."lib/index_utils2.php");
 
 $argt = array(

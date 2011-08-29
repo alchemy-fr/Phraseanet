@@ -589,7 +589,7 @@ class task_ftp extends phraseatask
       if ($loop > 2 || memory_get_usage() >> 20 >= 15)
       {
         $conn->close();
-        unset($conn);
+        $conn = null;
         sleep(20);
         $ret = 'torestart';
         $running = false;

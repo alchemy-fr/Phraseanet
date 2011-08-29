@@ -634,7 +634,7 @@ function edit_delmval()
       {
         if(p4.edit.T_records[r].fields[idx].value[f] != v)
           p4.edit.T_records[r].fields[idx].value[t++] = p4.edit.T_records[r].fields[idx].value[f];
-      }
+        }
       p4.edit.T_records[r].fields[idx].value.length = t;
       p4.edit.T_records[r].fields[idx].dirty = true;
     }
@@ -1788,10 +1788,13 @@ function preset_load(preset_id)
           {
             if(p4.edit.T_fields[f].multi)
             {
-              p4.edit.T_records[r].fields[""+f] = {
-                "value":p4.edit.T_fields[f].preset,
-                "dirty":true
-              };
+              p4.edit.T_records[r].fields[""+f] = {value:[], dirty:true};// = {
+              var n = 0;
+              for(val in p4.edit.T_fields[f].preset)
+              {
+                p4.edit.T_records[r].fields[""+f].value[n] = p4.edit.T_fields[f].preset[val];
+                n++;
+              }
             }
             else
             {

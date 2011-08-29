@@ -68,7 +68,7 @@ function sylk($tableau,$nomfic,$typ="SYLK")
                         header("Cache-Control: no-store, no-cache, must-revalidate");
                         header("Cache-Control: post-check=0, pre-check=0", false);
                         header("Pragma: no-cache");
-                        header("Content-Type: text/plain");
+                        header("Content-Type: text/csv");
                         header("Cache-Control: max-age=3600, must-revalidate ");
                         header("Content-Disposition: attachment; filename=export.csv;");
 				

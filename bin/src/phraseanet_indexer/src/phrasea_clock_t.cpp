@@ -1,37 +1,44 @@
+#include <memory.h>
+#include <sys/time.h>
 #include "phrasea_clock_t.h"
 
-/*
-#ifndef WIN32
-void phrasea_get_ticks ( clock_t *nbticks )
+
+# ifdef PHP_WIN32
+
+void startChrono(CHRONO &chrono)
 {
-	*nbticks = clock();
+	chrono = GetTickCount();
+}
+double stopChrono(CHRONO &chrono)
+{
+	return((double)(GetTickCount()-chrono) / 1000.0);
 }
 
-int phrasea_getclockinterval ( clock_t * timestart, clock_t * timeend )
+
+# else
+
+void startChrono(CHRONO &chrono)
 {
-	return (int)(((double)( *timeend - *timestart ) / CLOCKS_PER_SEC ) * 1000 );
+	gettimeofday(&chrono, NULL);
+	return;
 }
+float stopChrono(CHRONO &chrono)
+{
+	struct timeval t;
+	gettimeofday(&t, NULL);
+	t.tv_sec  -= chrono.tv_sec;
+	t.tv_usec -= chrono.tv_usec;
+	if(t.tv_usec < 0)
+	{
+		t.tv_sec--;
+		t.tv_usec += 1000000;
+	}
+	return((float)(t.tv_sec) + ((float)(t.tv_usec))/1000000);
+}
+
 #endif
 
-int millisec_diff(PHRASEA_TIMEB *timestart, PHRASEA_TIMEB *timeend)
-{
-//	time_t t;
-	return((1000 * (timeend->time - timestart->time)) + (timeend->millitm - timestart->millitm));
-}
 
-void resetclock(PHRASEA_TIMEB * timeref)
-{
-	timeref->time = timeref->millitm = 0;
-}
-
-
-# ifndef WIN32
-void resetclock(clock_t * timeref)
-{
-	*timeref = 0;
-}
-#endif
-*/
 
 #ifndef WIN32
 char *_strupr( char *string )

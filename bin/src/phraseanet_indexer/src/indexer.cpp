@@ -149,7 +149,7 @@ void CIndexer::flush()
 		if(nNewXPath > 0)
 		{
 			// there is some unknown, we get a uid and we write
-			unsigned long xpath_new_uid;
+			unsigned int xpath_new_uid;
 			xpath_new_uid = this->connbas->getID("XPATH", nNewXPath);
 
 			for(xp = this->tXPaths; !this->connbas->crashed && xp; xp = xp->next)
@@ -256,7 +256,7 @@ void CIndexer::flush()
 
 
 			// --------------------------------------------------- flush kword and idx
-			unsigned long kword_new_uid = 0;
+			unsigned int kword_new_uid = 0;
 			if(this->nNewKeywords > 0)
 				kword_new_uid = this->connbas->getID("KEYWORDS", this->nNewKeywords);
 			

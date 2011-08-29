@@ -185,7 +185,7 @@ class CConnbas_dbox:public CConnbas
 		int updateRecord_unlock(unsigned int record_id);
 		int updateRecord_unlock2(char *lrid, unsigned long lrid_len);
 
-		int selectPrefsIndexes(long *value, long *toReindex);
+		int selectPrefsIndexes(int *value, int *toReindex);
 		void reindexAll();
 		// int sql_connect();
 		// int getPrefsDates(unsigned long *struct_moddate, unsigned long *thesaurus_moddate, unsigned long *cterms_moddate);

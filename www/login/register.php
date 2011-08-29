@@ -336,6 +336,7 @@ phrasea::headers();
 				<script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.4.4.js"></script>
 				<script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
 				<script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
+				<script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.login.js"></script>
 				<script type="text/javascript">
 
 					<?php
@@ -363,6 +364,7 @@ phrasea::headers();
 								$msg .= ' ,equalTo: "'._('forms::les mots de passe ne correspondent pas').'"';
 							if($ar == 'form_email')
 								$msg .= ',email:"'.(str_replace('"','\"',_('forms::l\'email semble invalide'))).'"';
+              $msg .= ',login:"'.(str_replace('"','\"',_('login invalide (8 caracteres sans accents ni espaces)'))).'"';
 							
 							$msg .= '}';
 						}
@@ -397,9 +399,11 @@ phrasea::headers();
 
 						$('#form_email').rules("add",{email:true});
 
-						$('#form_login').rules("add",{
-							minlength: 5
-						});
+//						$('#form_login').rules("add",{
+//							minlength: 5
+//						});
+
+						$('#form_login').rules("add",{login : true});
 						
 						$('#form_password').rules("add",{password: "#form_login"});
 						$('#form_password_confirm').rules("add",{equalTo: "#form_password"});

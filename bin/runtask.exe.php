@@ -1,5 +1,8 @@
 <?php
 require_once dirname( __FILE__ ) . "/../lib/bootstrap_task.php";
+phrasea::start();					// because it's not done in bootstrap_task.php anymore to low the number of actives cnx
+$session = session::getInstance();	// because it's not done in bootstrap_task.php anymore to low the number of actives cnx
+
 $argt = array(
 				"--help" =>           array("set"=>false, "values"=>array(), "usage"=>"[={task_id|classname}] : this help | help of task {task_id} | help of {classname}"),
 				"--display_errors" => array("set"=>false, "values"=>array(), "usage"=>"             : force php ini_set('display_errors', 1)"),
@@ -212,10 +215,11 @@ if(!parse_cmdargs($ztask->argt, $err, true) ) //  || $argt["--help"]["set"])
 {
 	print($err);
 	// print("parsing argt\n");
-	print(getUsage($argt));
+//	print(getUsage($argt, false));
 	// printf("parsing ztask->argt (%s)\n", var_export($ztask->argt, true));
 	print(getUsage($ztask->argt, false));
 	flush();
+	die;
 }
 
 

@@ -1,3 +1,6 @@
+3.7.1.1
+fix some bad types (long/int)
+
 3.7.1.0
 candidates terms can be filtered using the property 'candidates="str"' in structure/field :
 "str" is a string of characters (flags, in any order) to allow candidates for different kind of terms

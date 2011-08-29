@@ -136,9 +136,9 @@ try
 
   $uuid = $file_uuid->write_uuid($uuid);
 
-	$error_file = p4file::check_file_error($_FILES['Filedata']["tmp_name"], $sbas_id);
+	$error_file = p4file::check_file_error($_FILES['Filedata']["tmp_name"], $sbas_id, $_FILES['Filedata']["name"]);
 	$status_2 = status::and_operation($mask_oui,$mask_non);
-	if(($uuid !== false && !$file_uuid->is_new_in_base(phrasea::sbasFromBas($base_id))) || count($error_file) > 0)
+	if( ($uuid !== false && !$file_uuid->is_new_in_base(phrasea::sbasFromBas($base_id))) || count($error_file) > 0)
 	{
 		if(!lazaretFile::move_uploaded_to_lazaret($_FILES['Filedata']["tmp_name"], $base_id, $_FILES['Filedata']["name"], $uuid, $sha256, implode("\n",$error_file), $status_2))
 		{

@@ -27,7 +27,7 @@
 // prototypes local fcts
 void evt_start(CDOMDocument *xmlparser, const char *name, const char *path, const char *upath);
 void evt_end(CDOMDocument *xmlparser);
-void evt_keyword(CDOMDocument *xmlparser, const char *lowKeyword, unsigned int lowKeywordLen, UINT32 pos, UINT32 len, UINT32 index);
+void evt_keyword(CDOMDocument *xmlparser, const char *lowKeyword, unsigned int lowKeywordLen, unsigned int pos, unsigned int len, unsigned int index);
 
 // prototypes external fcts
 extern CSyslog zSyslog; // , LOG_PID, LOG_DAEMON);
@@ -527,7 +527,7 @@ void evt_end(CDOMDocument *xmlparser)
 // ----------------------------------------------
 // the parser met a keyword
 // ----------------------------------------------
-void evt_keyword(CDOMDocument *xmlparser, const char *lowKeyword, unsigned int lowKeywordLen, UINT32 pos, UINT32 len, UINT32 index)
+void evt_keyword(CDOMDocument *xmlparser, const char *lowKeyword, unsigned int lowKeywordLen, unsigned int pos, unsigned int len, unsigned int index)
 {
 	CIndexer *indexer = (CIndexer *)(xmlparser->userData);
 

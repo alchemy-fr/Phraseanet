@@ -113,57 +113,6 @@ CSyslog zSyslog; // , LOG_PID, LOG_DAEMON);
 
 
 
-
-/*
-void dumpk()
-{
-	CKword *k;
-//	CHit *h;
-	for(unsigned int hash=0; hash<1024; hash++)
-	{
-		int nk=0;
-		for(k=tKeywords[hash]; k; k=k->next)
-		{
-//			printf("%s : ", k->kword);
-//			for(h=k->firsthit; h; h=h->next)
-//				printf("[%ld, %ld, %ld, %ld] ", h->record_id, h->pos, h->len, h->index);
-//			printf("\r\n");
-			nk++;
-		}
-		printf("tKeywords[%i] = %i\n", hash, nk);
-	}
-}
-void freek()
-{
-	CKword *k;
-	CHit *h;
-	for(unsigned int hash=0; hash<1024; hash++)
-	{
-		while( (k = tKeywords[hash]) )
-		{
-			while( (h = k->firsthit) )
-			{
-				k->firsthit = h->next;
-				delete h;
-			}
-			tKeywords[hash] = k->next;
-			delete k;
-		}
-	}
-}
-
-// callback appel�e par fetchAllKWords, � chaque kword
-void callbackKWord(unsigned long kword_id, char *keyword)
-{
-	// printf("keyword %ld : '%s'\n", kword_id, keyword);
-	// t_keywords[keyword]["kword_id"] = kword_id;
-}
-
-*/
-
-
-
-
 //===================================================================================================================
 // MAIN
 //===================================================================================================================
@@ -1149,7 +1098,7 @@ void cbScanXpaths(CConnbas_dbox *connbas, unsigned int xpath_id, char *xpath, un
 THREAD_ENTRYPOINT thread_index(void *parm)
 {
 	CSbas *sbas = (CSbas *)parm;
-	long prefsIndexes_value, prefsIndexes_toReindex=0;
+	int prefsIndexes_value, prefsIndexes_toReindex=0;
 
 	zSyslog.log(CSyslog::LOGL_INFO, CSyslog::LOGC_THREAD_START, "#%ld : thread_index START (%s:%ld:%s)", sbas->sbas_id, sbas->host, sbas->port, sbas->dbname);
 
