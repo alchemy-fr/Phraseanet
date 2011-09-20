@@ -264,6 +264,8 @@ class task_archive extends phraseatask
 				$server_coll_id = $row["server_coll_id"];
 				try
 				{
+          if(!$this->connbas)
+            throw new Exception('Unable to get connection');
 					$this->connbas->isok() || generalException::get('no db');
 
 					// on liste les collections disponibles

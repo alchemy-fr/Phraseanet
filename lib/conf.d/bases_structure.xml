@@ -2888,6 +2888,14 @@
 						<comment></comment>
 					</field>
 					<field>
+						<name>last_change</name>
+						<type>datetime</type>
+						<null></null>
+						<extra></extra>
+						<default>0000-00-00 00:00:00</default>
+						<comment></comment>
+					</field>
+					<field>
 						<name>class</name>
 						<type>varchar(100)</type>
 						<null></null>

@@ -20,6 +20,11 @@
           <div class="notice notice_cookie" style="display:none;">
             {% trans 'login::erreur: Les cookies sont desactives sur votre navigateur' %}
           </div>
+          {% if logged_out == 'user' %}
+          <div class="notice">
+            {% trans 'Vous etes maintenant deconnecte. A bientot.' %}
+          </div>
+          {% endif %}
 					{{errorWarning}}{{confirmWarning}}
 				</div>
 				<div style="margin-top:10px;">

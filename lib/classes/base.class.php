@@ -351,7 +351,7 @@ abstract class base
 //					{
 //						$alter[] = "ALTER TABLE `".$table['name']."` DROP `$f_name`";
 //					}
-        }
+					}
 
         foreach ($correct_table['fields'] as $f_name => $expr)
         {

@@ -660,9 +660,7 @@ class answer
 						$title = basename($title);
 					}
 
-					$l = mb_strlen($title);
-					if($l>120)
-						$title = p4string::cutDesc($title,120,"[[em]]","[[/em]]");
+					$title = p4string::cutDesc($title, 120, "[[em]]", "[[/em]]");
 				}
 			}
 		}

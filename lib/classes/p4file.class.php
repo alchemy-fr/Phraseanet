@@ -262,9 +262,6 @@ class p4file
 		
 		if($delete)
 			@unlink($filename);
-
-// prevent building subdefs before reading metadatas
-//		record::rebuild_subdef($base_id.'_'.$record_id);
 		
 		return $record_id;
 	}
@@ -297,12 +294,7 @@ class p4file
 				{
 					case 'name':
 						$fn = $originalname;
-						// fn can contain single quotes, but NO doubles
-//						if( count($fn=explode('"', $fn)) == 1)
-//							$fn = '\\"' . $fn[0] . '\\"';
-//						else
-//							$fn = 'concat(\\"' . implode('\\",\'\\"\',\\"', $fn) . '\\")';
-						$fn = '\\"'.str_replace('"', '&quot;', $fn).'\\"';	// in fact xquey does LITERAL search on attributes, so '&quot;' does REALLY MEANS "&quot;" !
+						$fn = '\\"'.str_replace('"', '&quot;', $fn).'\\"';
 						$connbas = connection::getInstance($sbas_id);
 						$sql = 'SELECT record_id FROM record WHERE EXTRACTVALUE(xml, "count(/record/doc[@originalname='.$fn.'])")>0 LIMIT 1';
 						if( ($rs=$connbas->query($sql)) )

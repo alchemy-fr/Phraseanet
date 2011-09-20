@@ -10,7 +10,7 @@ if(GV_captchas && trim(GV_captcha_private_key) !== '' && trim(GV_captcha_public_
 skins::merge();
 
 $request = httpRequest::getInstance();
-$parm = $request->get_parms('lng', 'error', 'confirm','badlog','postlog', 'app', 'usr');
+$parm = $request->get_parms('lng', 'error', 'confirm','badlog','postlog', 'app', 'usr', 'logged_out');
 	
 if($parm['postlog'])
 {
@@ -110,7 +110,6 @@ $captchaSys = '';
 														</div>'.recaptcha_get_html(GV_captcha_public_key).'</div>';
 		}
 
-
 $twig = new supertwig();
 	
 $twig->display('login/index.twig', array(
@@ -118,6 +117,7 @@ $twig->display('login/index.twig', array(
 				'confirmWarning'	=> $confirmWarning,
 				'errorWarning'		=> $errorWarning,
 				'module'			=> $parm['app'],
+				'logged_out'			=> $parm['logged_out'],
 				'captcha_system'	=> $captchaSys,
 				'login'				=> new login(),
 				'sso'				=> new sso(),

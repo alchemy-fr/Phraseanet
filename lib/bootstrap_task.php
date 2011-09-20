@@ -18,8 +18,6 @@ require_once __DIR__ . '/version.inc';
 require_once __DIR__ . '/../config/_GV.php';
 
 spl_autoload_register('phrasea_autoload');
-//phrasea::start();							// done in schedtask.php and runtask.exe.php
-//$session = session::getInstance();		// done in schedtask.php and runtask.exe.php
 
 if(defined('GV_timezone'))
 	date_default_timezone_set(GV_timezone);

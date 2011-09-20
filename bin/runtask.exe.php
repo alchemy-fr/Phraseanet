@@ -72,24 +72,7 @@ if($argt["--help"]["set"])
 		}
 			
 		$ztask = null;
-//		if($classname && file_exists("./tasks/$classname.class.php"))
-//		{
-//			require("./tasks/$classname.class.php");
-//			if(class_exists($classname))
-//			{
 				$ztask = new $classname();
-//			}
-//			if(!$ztask)
-//			{
-//				printf("ERROR : file '$classname.class.php' is not a proper task class\n");
-//				exit(-1);
-//			}
-//		}
-//		else
-//		{
-//			printf("ERROR : error loading file '$classname.class.php'\n");
-//			exit(-1);
-//		}
 		// on parse maintenant les arguments propres a cette classe de tache
 		// on rajoute les args de la classe aux args par defaut
 		$ztask->argt = array_merge($argt, $ztask->argt);
@@ -147,11 +130,6 @@ if($rs = $conn->query($sql))
 
 if($rowtask)
 {
-//	if($rowtask['status'] != 'stopped')
-//	{
-//		printf("task id $taskid not in 'stopped' state\n");
-//		exit(-1);
-//	}
 	$classname = $rowtask["class"];
 	$taskSettings = $rowtask["settings"];
 }
@@ -184,42 +162,17 @@ else
 
 
 $ztask = null;
-//if($classname && file_exists("./tasks/$classname.class.php"))
-//{
-//	require("./tasks/$classname.class.php");
-//	if(class_exists($classname))
-//	{
 		$ztask = new $classname($taskid);
-//	}
-//	if(!$ztask)
-//	{
-//		printf("ERROR : file '$classname.class.php' is not a proper task class\n");
-//		fclose($tasklock);
-//		@unlink($lockfile);
-//		exit(-1);
-//	}
-//}
-//else
-//{
-//	printf("ERROR : error loading file '$classname.class.php'\n");
-//	fclose($tasklock);
-//	@unlink($lockfile);
-//	exit(-1);
-//}
 
 // on parse maintenant les arguments propres � cette classe de t�che
 // on rajoute les args de la classe aux args par d�faut
 $ztask->argt = array_merge($argt, $ztask->argt);
-// printf("class $classname loaded\n");
 if(!parse_cmdargs($ztask->argt, $err, true) ) //  || $argt["--help"]["set"])
 {
 	print($err);
-	// print("parsing argt\n");
-//	print(getUsage($argt, false));
-	// printf("parsing ztask->argt (%s)\n", var_export($ztask->argt, true));
 	print(getUsage($ztask->argt, false));
 	flush();
-	die;
+	return;
 }
 
 
@@ -227,7 +180,6 @@ if(!parse_cmdargs($ztask->argt, $err, true) ) //  || $argt["--help"]["set"])
 $sql = "UPDATE task2 SET status='manual', pid='".$conn->escape_string(getmypid())."' WHERE task_id='".$conn->escape_string($taskid)."'";
 $conn->query($sql);
 
-// on �x�cute la tache
 $ztask->taskid = $taskid;
 $ztask->classname = $classname;
 $ztask->taskSettings = $taskSettings;

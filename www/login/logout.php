@@ -14,7 +14,7 @@ if(!$conn)
 p4::logout();	
 
 
-header("Location: /login/".$parm["app"]."/");
+header("Location: /login/".$parm["app"]."/?logged_out=user");
 exit;
 
 ?>

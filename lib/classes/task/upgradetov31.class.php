@@ -65,33 +65,50 @@ class task_upgradetov31 extends phraseatask
         if (!$connbas)
           continue;
 
-        $sql = 'SELECT r.type, r.record_id, s.path, s.file, r.xml
+        $sql = 'SELECT r.type, r.record_id, s.path, s.file, r.xml, uuid, sha256
                 FROM record r, subdef s
-                WHERE ISNULL(uuid)
-                AND s.record_id = r.record_id AND s.name="document" LIMIT 100';
+                WHERE ((uuid IS NULL OR uuid = "") OR (`sha256` = "" AND `sha256` IS NOT NULL))
+                  AND r.parent_record_id="0"
+                  AND s.record_id = r.record_id AND s.name="document" LIMIT 100';
 
         if ($rs = $connbas->query($sql))
         {
           while ($row = $connbas->fetch_assoc($rs))
           {
             $pathfile = p4string::addEndSlash($row['path']) . $row['file'];
-            if (!file_exists($pathfile))
+            $uuid = $row['uuid'];
+            $sha256 = $row['sha256'];
+            if (trim($uuid) === '')
             {
-              printf("le fichier nexiste $pathfile pas ....\n");
-              $uuid = uuid::generate_uuid();
+              if (!file_exists($pathfile))
+              {
+                printf("le fichier nexiste $pathfile pas ....\n");
+                $uuid = uuid::generate_uuid();
+              }
+              else
+              {
+                $uuid_file = new uuid($pathfile);
+                $uuid = $uuid_file->write_uuid();
+              }
             }
-            else
+            if (trim($sha256) === '')
             {
-              $uuid_file = new uuid($pathfile);
-              $uuid = $uuid_file->write_uuid();
+              if (!file_exists($pathfile))
+              {
+                printf("le fichier nexiste $pathfile pas ....\n");
+                $sha256 = null;
+              }
+              else
+              {
+                $sha256 = hash_file('sha256', $pathfile);
+              }
             }
 
             $sql = 'UPDATE record SET
-              uuid="' . $connbas->escape_string($uuid) . '"
-              WHERE record_id="' .
-                      $connbas->escape_string($row['record_id']) . '"';
+              uuid="' . $connbas->escape_string($uuid) . '", sha256=' . ($sha256 === null ? 'NULL' : '"' . $connbas->escape_string($sha256) . '"') . '
+              WHERE record_id="' . $connbas->escape_string($row['record_id']) . '"';
             echo "mise a jour du record " . $row['record_id'] .
-              " avec uuid " . $uuid . "\n";
+            ($uuid != $row['uuid'] ? " avec uuid " . $uuid : 'uuid not moving') . " et sha256 ".($sha256=== null ? 'null' : $sha256)." \n";
             $connbas->query($sql);
 
 
@@ -204,10 +221,12 @@ class task_upgradetov31 extends phraseatask
       if (!$connbas)
         continue;
 
-      $sql = 'SELECT count(r.record_id) as total FROM record r, subdef s
-					WHERE ISNULL(uuid) 
-					AND s.record_id = r.record_id AND s.name="document"';
-
+        $sql = 'SELECT count(r.record_id) as total
+                FROM record r, subdef s
+                WHERE ((uuid IS NULL OR uuid = "") OR (`sha256` = "" AND `sha256` IS NOT NULL))
+                  AND r.parent_record_id="0"
+                  AND s.record_id = r.record_id AND s.name="document" LIMIT 100';
+        
       if ($rs = $connbas->query($sql))
       {
         if ($row = $connbas->fetch_assoc($rs))

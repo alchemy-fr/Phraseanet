@@ -2,7 +2,7 @@
 class patch_3102 implements patch
 {
 	
-	private $release = '3.1.0';
+	private $release = '3.1.20';
 	private $concern = array('application_box');
 	
 	function get_release()
@@ -28,8 +28,10 @@ class patch_3102 implements patch
 					"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<tasksettings>\r\n</tasksettings>", -1)';
 		
 		$conn->query($sql);
+    
+    $sql = 'UPDATE record SET sha256 = "" WHERE sha256 IS NULL AND parent_record_id = 0';
+		$conn->query($sql);
 		
-	
 		return true;
 	}
 }
