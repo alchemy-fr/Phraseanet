@@ -148,6 +148,27 @@ if($cache_flushed)
 <?php 
 }
 ?>
+
+<h1>Espace Disque</h1>
+<?php
+function aff_taille($taille,$nb) {
+	for ($i = 0; $taille > 10240; $i++) {
+		$taille /= 1024;
+	}
+	$unites		= array(' o', ' Ko', ' Mo', ' Go', ' To');
+	$taille_txt	= number_format($taille, $nb, ',', ' ') . $unites[$i];
+	echo($taille_txt);
+}
+
+	$dir        = @getcwd();
+	$disk_free  = @diskfreespace($dir);
+	$disk_total = @disk_total_space($dir);
+	$disk_pc    = ($disk_total!=0) ? number_format(100*$disk_free/$disk_total, 0, ',', ' ') : 0;
+	
+	
+	?>
+	<?php aff_taille($disk_free,'0'); ?> libres - <i style="color:#FF0000;">(<?php echo($disk_pc); ?> %)</i> sur <strong><?php aff_taille($disk_total,'0'); ?> total</strong>
+
 <div>
 <h1><?php echo _('setup:: administrateurs de l\'application') ?></h1>
 <form action="sitestruct.php" method="post">
