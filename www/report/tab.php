@@ -193,6 +193,7 @@ function doHtml($report, $param, $twig, $template, $type = false)
 		'result' 			=> isset($report['report']) ? $report['report'] : $report,
 		'param'				=> $param,
 		'is_infouser'		=> false,
+		'is_infouser_gen'	=> false,
 		'is_nav' 			=> false,
 		'is_groupby' 		=> false,
 		'is_plot'			=> false,
@@ -205,6 +206,9 @@ function doHtml($report, $param, $twig, $template, $type = false)
 		{
 			case "user" :
 				$var['is_infouser'] = true;
+			break;
+			case "user_gen" :
+				$var['is_infouser_gen'] = true;
 			break;
 			case "nav" :
 				$var['is_nav'] = true;
@@ -461,7 +465,7 @@ function gen($param, $twig)
 	else
 	{
 		$report = doReport($dl, $param, $conf, $twig);
-		$html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig');
+		$html = doHtml($report, $param, $twig, 'report/ajax_data_content.twig', "user_gen");
 		sendReport($html, $report);	
 	}
 }
