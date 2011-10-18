@@ -351,7 +351,7 @@ abstract class base
 //					{
 //						$alter[] = "ALTER TABLE `".$table['name']."` DROP `$f_name`";
 //					}
-					}
+        }
 
         foreach ($correct_table['fields'] as $f_name => $expr)
         {
@@ -515,20 +515,25 @@ abstract class base
           continue;
         }
 
-        $list_patches[$patch->get_release()][] = $patch;
+        $n = 0;
+        do
+        {
+          $key = $patch->get_release() . '.' . $n;
+          $n++;
+        }
+        while (isset($list_patches[$key]));
+
+        $list_patches[$key] = $patch;
       }
     }
     ksort($list_patches);
 
     $success = true;
 
-    foreach ($list_patches as $v => $patches)
+    foreach ($list_patches as $patch)
     {
-      foreach ($patches as $patch)
-      {
-        if (!$patch->apply($this->id))
-          $success = false;
-      }
+      if (!$patch->apply($this->id))
+        $success = false;
     }
 
     return $success;

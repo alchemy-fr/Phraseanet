@@ -618,7 +618,8 @@ class task_archive extends phraseatask
 
 	function isIgnoredFile($f)
 	{
-		return($f=='.' || $f=='..' || $f=='Thumbs.db' || $f=='par-SYSTEM' || substr($f, 0, 10)=='.com.apple');
+		$f =  strtolower($f);
+		return(($f[0]=='.' &&  $f != '.phrasea.xml' && $f != '.grouping.xml') || $f=='thumbs.db' || $f=='par-system');
 		// return(substr($f,0,1)=='.' || $f=='Thumbs.db' || $f=='par-SYSTEM');
 	}
 

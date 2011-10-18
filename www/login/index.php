@@ -119,6 +119,7 @@ $twig->display('login/index.twig', array(
 				'module'			=> $parm['app'],
 				'logged_out'			=> $parm['logged_out'],
 				'captcha_system'	=> $captchaSys,
+				'homelink'				=> new homelink(),
 				'login'				=> new login(),
 				'sso'				=> new sso(),
 				'display_layout'	=> GV_home_publi

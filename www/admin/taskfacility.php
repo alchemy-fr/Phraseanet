@@ -1,13 +1,11 @@
 <?php
-$r = dirname(dirname(dirname( __FILE__ )));
-
-require_once $r . "/lib/bootstrap.php";
+require_once dirname( __FILE__ ) . "/../../lib/bootstrap.php";
 
 $request = httpRequest::getInstance();
 $parm = $request->get_parms(
 					'cls'
 					 );
-
+					 
 $conn = connection::getInstance();
 if(!$conn)
 {
@@ -15,9 +13,9 @@ if(!$conn)
 }
 
 $cls = 'task_' . $parm['cls'];
-$tskfile = $r . '/lib/classes/task/' . $parm['cls'] . '.class.php';
 
-require_once $tskfile;
+// $tskfile = $r . '/lib/classes/task/' . $parm['cls'] . '.class.php';
+// require_once $tskfile;
 
 $ztask = new $cls();
 
