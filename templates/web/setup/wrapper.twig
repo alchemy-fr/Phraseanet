@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="{{ locale }}">
+  <head>
+    <script src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery-validation/jquery.validate.js,include/jslibs/jquery-validate.password/jquery.validate.password.js,include/jslibs/jquery.cookie.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/path_files_tests.jquery.js"></script>
+    <script type="text/javascript" src="/login/home.js"></script>
+    <link rel="stylesheet" type="text/css" href="/include/jslibs/yui2.8/build/reset/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css" />
+    <link rel="stylesheet" type="text/css" href="/skins/setup/setup.css" />
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    <div style="float:left;width:100%;margin:20px 0;">
+      <div class="header">
+        <table style="width:100%;">
+          <tr style="vertical-align:bottom;">
+            <td>
+              <h1>
+                PHRASEANET
+                <span class="version_name">{{version_name}}</span>
+                <span class="version_number">- v{{version_number}}</span>
+              </h1>
+            </td>
+            <td style="text-align:right;">
+              <select name="lng" id="lng-select" onchange="setLanguage();">
+              {% for locales in available_locales %}
+                {% for locale, language in locales %}
+                  <option value="{{ locale }}" {% if language['selected'] %}selected="selected"{% endif %}>{{ language['name'] }}</option>
+                {% endfor %}
+              {% endfor %}
+              </select>
+            </td>
+          </tr>
+        </table>
+      </div>
+    {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

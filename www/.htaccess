@@ -1,23 +1,45 @@
 <IfModule mod_rewrite.c>
-	RewriteEngine on
-	RewriteRule	^(download)/([a-zA-Z0-9]*)\/?$											/include/download_prepare.php?type=$1&token=$2 [L]
-	RewriteRule	^(download)/([a-zA-Z0-9]*)\/get$										/include/download_prepare.php?type=$1&token=$2&get=1 [L]
-	RewriteRule	^(mail-export)/([a-zA-Z0-9]*)\/?$										/include/download_anonymous.php?type=$1&token=$2 [L]
-	RewriteRule	^(mail-export)/([a-zA-Z0-9]*)\/get$										/include/download_anonymous.php?type=$1&token=$2&get=1 [L]
-	RewriteRule	^atom\/(cooliris)+\/?([0-9]*)\/?$										/cooliris.php?item_id=$2 [L]
-	RewriteRule	^include\/directprev_([0-9]+)_([0-9]+)\.mp4$							/include/directprev.php?bas=$1&rec=$2 [L]
-	RewriteRule	^atom/([a-zA-Z0-9]*)$													/atomfeed.php?inf=$1 [L]
-	RewriteRule	^rss/([a-zA-Z0-9]*)$													/atomfeed.php?inf=$1 [L]
-	RewriteRule	^register-confirm=([a-zA-Z0-9]+)$										/login/register-confirm.php?code=$1 [L]
-	RewriteRule ^document\/?([0-9]+)?\/?([0-9]+)?\/?([a-zA-Z0-9]+)?\/?(overview)?\/?$	/include/directprev.php?bas=$1&rec=$2&sha=$3&view=$4	[L]
-	RewriteRule ^document\/([0-9]+)\/([0-9]+)\/([a-zA-Z0-9]+)\/view\/?$					/include/overview.php?bas=$1&rec=$2&sha=$3	[L]
-	RewriteRule ^(minilogos|stamp|watermark|presentation)\/?([0-9]+)?\/?$				/include/ajaxgetback.php?action=images&type=$1&base_id=$2	[L]
-	RewriteRule ^(status|print)\/?([0-9a-zA-Z-_\.]+)?\/?$								/include/ajaxgetback.php?action=images&type=$1&name=$2	[L]
+  RewriteEngine on
+  RewriteRule ^include/minify/([a-z]=.*)          /include/minify/index.php?$1  [L,NE]
+  RewriteRule ^(download)/([a-zA-Z0-9]*)\/?$      /include/download_prepare.php?type=$1&token=$2 [L]
+  RewriteRule ^(download)/([a-zA-Z0-9]*)\/get$    /include/download_prepare.php?type=$1&token=$2&get=1 [L]
+  RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/?$   /include/download_anonymous.php?type=$1&token=$2 [L]
+  RewriteRule ^(mail-export)/([a-zA-Z0-9]*)\/get$ /include/download_anonymous.php?type=$1&token=$2&get=1 [L]
 
-	RewriteRule	^login/(client|prod|admin|report|thesaurus|upload|lightbox)\/?$			/login/index.php?app=$1 [L]
-	RewriteRule ^include/minify/([a-z]=.*)  											/include/minify/index.php?$1  [L,NE]
-	RewriteRule ^setup/index.php$ 														/setup/installer.php
-	RewriteRule	^lightbox/(validate|compare)\/?([0-9]+)?\/?$							/lightbox/validator.php?ssel_id=$2 [L]
+
+  RewriteRule ^register-confirm=([a-zA-Z0-9]+)$   /login/register-confirm.php?code=$1 [L]
+
+  RewriteRule ^admin/users/.*$        /admin/router.php [L]
+  RewriteRule ^admin/tests/.*$        /admin/router.php [L]
+  RewriteRule ^admin/fields/.*$       /admin/router.php [L]
+  RewriteRule ^admin/publications/.*$ /admin/router.php [L]
+  RewriteRule ^admin/typeahead/.*$    /admin/router.php [L]
+
+  RewriteRule ^prod/records/edit/.*$  /prod/router.php [L]
+  RewriteRule ^prod/records/movecollection/.*$    /prod/router.php [L]
+  RewriteRule ^prod/bridge/.*$        /prod/router.php [L]
+  RewriteRule ^prod/feeds/.*$         /prod/router.php [L]
+  RewriteRule ^prod/tooltip/.*$       /prod/router.php [L]
+
+  RewriteRule ^robots.txt$            /index.php [L]
+  RewriteRule ^feeds/.*$              /index.php [L]
+
+# RewriteRule ^atom\/(cooliris)+\/?([0-9]*)\/?$  /cooliris.php?item_id=$2 [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^lightbox/.*$           /lightbox/index.php [L]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^api/v1/.*$             /api/v1/index.php [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^api/oauthv2/.*$        /api/oauthv2/index.php [L]
+
+  RewriteRule ^permalink/.*$          /include/overview.php [L]
+  RewriteRule ^datafiles/.*$          /include/overview.php [L]
+
+  RewriteRule	^login/(client|prod|admin|report|thesaurus|upload|lightbox)\/?$			/login/index.php?app=$1 [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^setup/.*$              /setup/installer.php [L]
 
 
 	RewriteRule ^admin/test-rewrite$ admin/adminFeedback.php?action=APACHE&test=success [L]
@@ -65,10 +87,10 @@ ErrorDocument 404 /include/error.php
 ErrorDocument 500 /include/error.php
 
 <IfModule mod_php5.c>
-  php_flag 	short_open_tag		off
-  php_flag	asp_tags			off
-  php_flag	magic_quotes_gpc	off
-  php_flag	register_globals	off
+  php_flag 	short_open_tag      off
+  php_flag	asp_tags            off
+  php_flag	magic_quotes_gpc    off
+  php_flag	register_globals    off
   php_value max_execution_time	"30"
-  php_value output_buffering	"4096"
+  php_value output_buffering    "4096"
 </IfModule>

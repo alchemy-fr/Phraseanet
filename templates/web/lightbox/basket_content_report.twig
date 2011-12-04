@@ -1,51 +1,51 @@
-{% import 'lightbox/thumbnail_basket.twig' as thumbnail_basket %}
+
+{% import 'common/thumbnail.html' as thumbnail %}
 
 <div style="margin:0 7px;overflow:hidden;">
-	{% for basket_element in basket.elements%}
-		<span class="wrapCHIM_{{basket_element.sselcont_id}} valid">
-			<div style="margin:20px;">
-				<table style="width: 100%; min-width: 330px;">
-					<tr valign="top">
-						<td style="width:165px;">
-							<div id="CHIM_{{basket_element.sselcont_id}}_{{basket_element.base_id}}_{{basket_element.record_id}}" 
-								class="CHIM diapo">
-								<div class="display_id">
-									{{basket_element.display_id}}</div>
-				{{thumbnail_basket.format(basket_element,165,'',125)}}
-<!--							<img ondragstart="return false;" class="CHIM_{{basket_element.base_id}}_{{basket_element.record_id}}"
-									 src="{{basket_element.url}}" style="position:relative;width:{{basket_element.width_82}}px;
-									 	height:{{basket_element.height_82}}px;top:{{basket_element.top}}%;"/>-->
-							</div>
-						</td>
-						<td style="width:10px;">
-						</td>
-						<td>
-							{% for choice in basket_element.choices%}
-								<div class="basket_report_user_wrapper ui-corner-all">
-									<div class="basket_report_user">
-										{% if choice.agreement == 1 %}
-											{% set imguser = '<img src="/skins/lightbox/agree.png" />' %}
-											{% set styleuser = '' %}
-										{% elseif choice.agreement == -1 %}
-											{% set imguser = '<img src="/skins/lightbox/disagree.png" />' %}
-											{% set styleuser = '' %}
-										{% else %}
-											{% set imguser = '' %}
-											{% set styleuser = 'margin-left:18px;' %}
-										{% endif %}
-										<b style="{{styleuser}}">{{imguser}} {{choice.usr_name}}</b>
-										{% if choice.note != '' %}
-											 : {{choice.note|nl2br}}
-										{% endif %}
-									</div>
-								</div>
-							{% endfor %}
-						</td>
-					</tr>
-				</table>
-			</div>
-		</span>
-		<div><hr/></div>
-	{% endfor %}
+    {% for basket_element in basket.get_elements() %}
+    {% set record = basket_element.get_record() %}
+        <span class="wrapCHIM_{{basket_element.get_sselcont_id()}} valid">
+            <div style="margin:20px;">
+                <table style="width: 100%; min-width: 330px;">
+                    <tr valign="top">
+                        <td style="width:165px;">
+                            <div id="CHIM_{{basket_element.get_sselcont_id()}}_{{record.get_serialize_key()}}"
+                                class="CHIM diapo">
+                                <div class="display_id">
+                                    {{basket_element.get_order()}}
+                </div>
+                {{thumbnail.format(record.get_thumbnail(),165, 125, '', session, true)}}
+                            </div>
+                        </td>
+                        <td style="width:10px;">
+                        </td>
+                        <td>
+                            {% for choice in basket_element.get_choices()%}
+                                <div class="basket_report_user_wrapper ui-corner-all">
+                                    <div class="basket_report_user">
+                                        {% if choice.agreement == 1 %}
+                                            {% set imguser = '<img src="/skins/lightbox/agree.png" />' %}
+                                            {% set styleuser = '' %}
+                                        {% elseif choice.agreement == -1 %}
+                                            {% set imguser = '<img src="/skins/lightbox/disagree.png" />' %}
+                                            {% set styleuser = '' %}
+                                        {% else %}
+                                            {% set imguser = '' %}
+                                            {% set styleuser = 'margin-left:18px;' %}
+                                        {% endif %}
+                                        <b style="{{styleuser}}">{{imguser|raw}} {{choice.usr_name}}</b>
+                                        {% if choice.note != '' %}
+                                             : {{choice.note|nl2br}}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </span>
+        <div><hr/></div>
+    {% endfor %}
 </div>
-	
+

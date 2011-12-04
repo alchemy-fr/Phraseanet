@@ -1,0 +1,32 @@
+<html>
+  <head>
+
+    <style>
+    </style>
+    {% if error_message is empty %}
+
+     <script type="text/javascript">
+        window.opener.publicator_reload_publicator();
+        window.close();
+      </script>
+
+    {% endif %}
+  </head>
+  <body>
+    {% if error_message %}
+      <div>
+        {% trans 'Erreur lors de votre authentification' %}
+      </div>
+      <div  class = 'error_auth'>
+      {{ error_message }}
+      </div>
+    {% else %}
+      <div>
+      {% trans 'Vous etes authentifie avec succes' %}
+      </div>
+      <div>
+      {% trans 'Si cette fenetre ne se ferme pas automatiquement, fermez la, et raffraichissez votre compte' %}
+      </div>
+    {% endif %}
+  </body>
+</html>

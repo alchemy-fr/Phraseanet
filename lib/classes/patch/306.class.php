@@ -1,61 +1,86 @@
-<?php 
-class patch_306 implements patch
-{
-	
-	private $release = '3.0.6';
-	private $concern = array('data_box');
-	
-	function get_release()
-	{
-		return $this->release;
-	}
-	
-	function concern()
-	{
-		return $this->concern;
-	}
-	
-	function apply($id)
-	{
-		$connbas = connection::getInstance($id);
-		
-		if(!$connbas || !$connbas->isok())
-			return true;
-		
-		$dom = databox::get_dom_structure($id);
-		
-		$xpath = databox::get_xpath_structure($id);
+<?php
 
-		$res = $xpath->query('/record/subdefs/preview/type');
-		
-		foreach($res as $type)
-		{
-			if($type->nodeValue == 'video')
-			{
-				$preview = $type->parentNode;
-				
-				$to_add = array(
-					'acodec'=>'faac',
-					'vcodec'=>'libx264',
-					'bitrate'=>'700'
-				);
-				foreach($to_add as $k=>$v)
-				{
-					$el = $dom->createElement($k);
-					$el->appendChild($dom->createTextNode($v));
-					$preview->appendChild($el);
-				}
-				
-			}
-		}
-		
-		$sql = "UPDATE pref SET value='" . $connbas->escape_string($dom->saveXML()) . "', updated_on=NOW() WHERE prop='structure'" ;
-		$connbas->query($sql);
-		
-		$cache_appbox = cache_appbox::getInstance();
-		$cache_appbox->delete('list_bases');
-		
-		cache_databox::update($id,'structure');
-		return true;
-	}
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+class patch_306 implements patchInterface
+{
+
+  /**
+   *
+   * @var string
+   */
+  private $release = '3.0.6';
+  /**
+   *
+   * @var Array
+   */
+  private $concern = array(base::DATA_BOX);
+
+  /**
+   *
+   * @return string
+   */
+  function get_release()
+  {
+    return $this->release;
+  }
+
+  public function require_all_upgrades()
+  {
+    return false;
+  }
+
+  /**
+   *
+   * @return Array
+   */
+  function concern()
+  {
+    return $this->concern;
+  }
+
+  function apply(base &$databox)
+  {
+    $dom = $databox->get_dom_structure();
+    $xpath = $databox->get_xpath_structure();
+    $res = $xpath->query('/record/subdefs/preview/type');
+
+    foreach ($res as $type)
+    {
+      if ($type->nodeValue == 'video')
+      {
+        $preview = $type->parentNode;
+
+        $to_add = array(
+            'acodec' => 'faac',
+            'vcodec' => 'libx264',
+            'bitrate' => '700'
+        );
+        foreach ($to_add as $k => $v)
+        {
+          $el = $dom->createElement($k);
+          $el->appendChild($dom->createTextNode($v));
+          $preview->appendChild($el);
+        }
+      }
+    }
+
+    $databox->saveStructure($dom);
+
+    return true;
+  }
+
 }

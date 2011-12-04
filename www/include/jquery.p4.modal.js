@@ -10,6 +10,8 @@ $(document).ready(function(){
 			case 27:
 				parent.hideDwnl();
 				break;
+      default:
+        break;
 		}
-	})
+	});
 });

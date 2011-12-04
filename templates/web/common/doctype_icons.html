@@ -1,0 +1,16 @@
+{% macro format(record)%}
+    {% set doctype = record.get_type() %}
+    {% if record.is_grouping() %}
+      <img src="/skins/icons/icon_story.gif" title="{% trans 'reportage' %}" />
+    {% elseif doctype == 'image' %}
+      <img src="/skins/icons/icon_image.gif" title="{% trans 'image' %}" />
+    {% elseif doctype == 'document' %}
+      <img src="/skins/icons/icon_document.gif" title="{% trans 'document' %}" />
+    {% elseif doctype == 'flash' %}
+      <img src="/skins/icons/icon_flash.gif" title="{% trans 'animation flash' %}" />
+    {% elseif doctype == 'video' %}
+      <img src="/skins/icons/icon_video.gif" title="{% trans 'video' %}" />
+    {% elseif doctype == 'audio' %}
+      <img src="/skins/icons/icon_audio.gif" title="{% trans 'audio' %}" />
+    {% endif %}
+{% endmacro %}

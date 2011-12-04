@@ -1,0 +1,62 @@
+<html>
+  <body>
+    {% if not session.is_authenticated %}
+      <form method="post" action="">
+        {% for key,value in auth.getParams %}
+          <input type="hidden" name="{{key}}" value="{{value}}" />
+        {% endfor %}
+        {% if errorMessage %}
+          <p>{% trans 'mauvais login / mot de passe' %}</p>
+        {% endif %}
+        {% trans %}
+          Bonjour, veuillez vous identifier sur {{home_title}}
+        {% endtrans %}
+        <label for="login">{% trans 'admin::compte-utilisateur identifiant' %}</label>
+        <input type="text" name="login" value=""/>
+        <label for="password">{% trans 'admin::compte-utilisateur mot de passe' %}</label>
+        <input type="password" name="password" value=""/>
+        <input type="submit" name="action_login" id="button_login" value="ok" />
+      </form>
+    {% else %}
+        {% if user is not none %}
+          {% set username = '<b>' ~ user.get_display_name() ~ '</b>' %}
+          <p>
+          {% trans %}
+            Hello {{username}}
+          {% endtrans %}
+          </p>
+        {% endif %}
+        {% if auth.getClient() is not none %}
+          <p>
+            <h2>{% trans 'Description' %}</h2>
+            {{auth.getClient.get_description}}
+          </p>
+          <p>
+            {% set application_name = auth.getClient.get_name() %}
+            {% trans %}
+            {{application_name}} wants to acces to your data on {{home_title}}
+            {% endtrans %}
+          </p>
+          <p>
+            {% trans 'Do you authorize the app to do its thing ?' %}
+          </p>
+        {% endif %}
+        <p>
+          <form method="post" action="">
+            {% for key,value in auth.getParams %}
+              <input type="hidden" name="{{key}}" value="{{value}}" />
+            {% endfor %}
+            <input type="hidden" name="action_accept" value="1"/>
+            <button>{% trans 'oui' %}</button>
+          </form>
+          <form method="post" action="">
+            {% for key,value in auth.getParams %}
+              <input type="hidden" name="{{key}}" value="{{value}}" />
+            {% endfor %}
+            <input type="hidden" name="action_accept" value="0"/>
+            <button>{% trans 'non' %}</button>
+          </form>
+        </p>
+   {% endif %}
+  </body>
+</html>

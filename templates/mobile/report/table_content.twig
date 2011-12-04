@@ -1,494 +1,494 @@
 {% extends "report/main.twig" %}
 
 {% block connexions_downloads_table %}
-	<div id="div_one">
-		<div class="toolbar"><a href="#settings" class="bbutton flip">menu</a><a href="#whattoclick"  class="button flip">Détails</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: Cumul telechargements & connexions" %}</li></ul>
-		<table >
-			<thead>
-				<tr>
-					<th>{% trans "report:: telechargements" %}</th>
-					<th>{% trans "report::Connexion" %}</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-							<td>{{ dashboard_array.dashboard.nb_dl }}</td>
-							<td>{{ dashboard_array.dashboard.nb_conn }}</td>
-				</tr>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-				</tr>
-			</tfoot>
-		</table>
-		<div>&nbsp;</div>
-	</div>
+    <div id="div_one">
+        <div class="toolbar"><a href="#settings" class="bbutton flip"{% trans 'menu' %}/a><a href="#whattoclick"  class="button flip">{% trans 'Details' %}</a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: Cumul telechargements & connexions" %}</li></ul>
+        <table >
+            <thead>
+                <tr>
+                    <th>{% trans "report:: telechargements" %}</th>
+                    <th>{% trans "report::Connexion" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                            <td>{{ dashboard_array.dashboard.nb_dl }}</td>
+                            <td>{{ dashboard_array.dashboard.nb_conn }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div>&nbsp;</div>
+    </div>
 {% endblock %}
 
 {% block top_ten_nb_docs %}
-		{% if dashboard_array.dashboard.top_ten_user.nbdoc|length > 0 %}
-			<div id="div_two">
-			<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-				<ul class="edgetoedge center"><li>{% trans "report:: Utilisateurs les plus actifs" %}</li></ul>
-				<table >
-					<thead>
-						<tr>
-							<th>{% trans "report:: utilisateurs" %}</th>
-							<th>{% trans "report:: telechargements document" %}</th>
-						</tr>
-					</thead>
-					<tbody>
-					{% for key, value in dashboard_array.dashboard.top_ten_user.nbdoc %}
-						<tr>
-							<td>{{ value.user|e }}</td>
-							<td>{{ value.nbdoc }}</td>
-						</tr>
-					{% endfor %}
-					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan='2'>{{ dashboard_array.dminv }} à {{dashboard_array.dmaxv }}</td>
-						</tr>
-					</tfoot>
-				</table>
-			</div>
-		{% endif %}
+        {% if dashboard_array.dashboard.top_ten_user.nbdoc|length > 0 %}
+            <div id="div_two">
+            <div class="toolbar"><a href="#settings" class="button flip">{% trans 'menu' %}</a></div>
+                <ul class="edgetoedge center"><li>{% trans "report:: Utilisateurs les plus actifs" %}</li></ul>
+                <table >
+                    <thead>
+                        <tr>
+                            <th>{% trans "report:: utilisateurs" %}</th>
+                            <th>{% trans "report:: telechargements document" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, value in dashboard_array.dashboard.top_ten_user.nbdoc %}
+                        <tr>
+                            <td>{{ value.user|e }}</td>
+                            <td>{{ value.nbdoc }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan='2'>{{ dashboard_array.dminv }} à {{dashboard_array.dmaxv }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        {% endif %}
 {% endblock %}
 
 {% block top_ten_nb_prev %}
-	{% if dashboard_array.dashboard.top_ten_user.nbprev|length > 0 %}
-		<div id="div_three">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: Utilisateurs les plus actifs" %}</li></ul>
-			<table >
-				<thead>
-					<tr>
-						<th>{% trans "report:: utilisateurs" %}</th>
-						<th>{% trans "report:: telechargements preview" %}</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for key, value in dashboard_array.dashboard.top_ten_user.nbprev %}
-					<tr>
-						<td>{{ value.user|e }}</td>
-						<td>{{ value.nbprev }}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv}}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.top_ten_user.nbprev|length > 0 %}
+        <div id="div_three">
+        <div class="toolbar"><a href="#settings" class="button flip">{% trans 'menu' %}</a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: Utilisateurs les plus actifs" %}</li></ul>
+            <table >
+                <thead>
+                    <tr>
+                        <th>{% trans "report:: utilisateurs" %}</th>
+                        <th>{% trans "report:: telechargements preview" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, value in dashboard_array.dashboard.top_ten_user.nbprev %}
+                    <tr>
+                        <td>{{ value.user|e }}</td>
+                        <td>{{ value.nbprev }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv}}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block top_ten_dl_doc %}
-	{% if dashboard_array.dashboard.top_dl.document|length > 0 %}
-		<div id="div_for">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-			<ul class="edgetoedge center"><li>{% trans "report:: documents les plus telecharges" %}</li></ul>
-			<table >
-				<thead>
-					<tr>
-						<th>{% trans "report:: document" %}</th>
-						<th>{% trans "report:: telechargements" %}</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for key, value in dashboard_array.dashboard.top_dl.document %}
-					<tr>
-						<td class="{{ key }} link" style="color:white;cursor:pointer"><a href="#dashboard-info" class ="pop">{{ value.user|e }}</a></td>
-						<td>{{ value.nbdoc }}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmax }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.top_dl.document|length > 0 %}
+        <div id="div_for">
+        <div class="toolbar"><a href="#settings" class="button flip">{% trans 'menu' %}</a></div>
+            <ul class="edgetoedge center"><li>{% trans "report:: documents les plus telecharges" %}</li></ul>
+            <table >
+                <thead>
+                    <tr>
+                        <th>{% trans "report:: document" %}</th>
+                        <th>{% trans "report:: telechargements" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, value in dashboard_array.dashboard.top_dl.document %}
+                    <tr>
+                        <td class="{{ key }} link" style="color:white;cursor:pointer"><a href="#dashboard-info" class ="pop">{{ value.user|e }}</a></td>
+                        <td>{{ value.nbdoc }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmax }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block top_ten_dl_prev %}
-	{% if dashboard_array.dashboard.top_dl.preview|length > 0 %}
-		<div id="div_five">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-			<ul class="edgetoedge center">
-				<li>{% trans "report:: preview les plus telecharges" %}</li>
-			</ul>
-				<table class="fleft">
-					<thead>
-						<tr>
-							<th>{% trans "report:: document" %}</th>
-						<th>{% trans "report:: telechargements" %}</th>
-						</tr>
-					</thead>
-					<tbody>
-					{% for key, value in dashboard_array.dashboard.top_dl.preview %}
-						<tr>
-							<td class="{{ key }} link" style="color:white;cursor:pointer"><a href="#dashboard-info" class ="pop">{{ value.user|e }}</a></td>
-							<td>{{ value.nbdoc }}</td>
-						</tr>
-					{% endfor %}
-					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-						</tr>
-					</tfoot>
-				</table>
-			<div class="center"><em style="font-size:9px;">{% trans "report:: site" %}></em></div>
-			<div class="center"><em style="font-size:9px;">< {% trans "report:: documents les plus telecharges" %}</em></div>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.top_dl.preview|length > 0 %}
+        <div id="div_five">
+        <div class="toolbar"><a href="#settings" class="button flip">{% trans 'menu' %}</a></div>
+            <ul class="edgetoedge center">
+                <li>{% trans "report:: preview les plus telecharges" %}</li>
+            </ul>
+                <table class="fleft">
+                    <thead>
+                        <tr>
+                            <th>{% trans "report:: document" %}</th>
+                        <th>{% trans "report:: telechargements" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, value in dashboard_array.dashboard.top_dl.preview %}
+                        <tr>
+                            <td class="{{ key }} link" style="color:white;cursor:pointer"><a href="#dashboard-info" class ="pop">{{ value.user|e }}</a></td>
+                            <td>{{ value.nbdoc }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            <div class="center"><em style="font-size:9px;">{% trans "report:: site" %}></em></div>
+            <div class="center"><em style="font-size:9px;">< {% trans "report:: documents les plus telecharges" %}</em></div>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block top_ten_site %}
-	{% if dashboard_array.dashboard.top_ten_site|length > 0 %}
-		<div id="div_six">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: site d\'ou les photo sont les plus consultees" %}</li></ul>
-			<table >
-				<thead>
-					<tr>
-						<th>{% trans "report:: site" %}</th>
-						<th>{% trans "report:: nombre de vue" %}</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for key, value in dashboard_array.dashboard.top_ten_site %}
-					<tr>
-						<td>{{ key }}</td>
-						<td>{{ value }}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.top_ten_site|length > 0 %}
+        <div id="div_six">
+        <div class="toolbar"><a href="#settings" class="button flip">{% trans 'menu' %}</a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: site d\'ou les photo sont les plus consultees" %}</li></ul>
+            <table >
+                <thead>
+                    <tr>
+                        <th>{% trans "report:: site" %}</th>
+                        <th>{% trans "report:: nombre de vue" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, value in dashboard_array.dashboard.top_ten_site %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ value }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block top_ten_weight_doc %}
-	{% if dashboard_array.dashboard.top_ten_user.poiddoc|length > 0 %}
-		<div id="div_seven">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: Utilisateurs les plus actifs" %}</li></ul>
-			<table >
-				<thead>
-					<tr>
-						<th>{% trans "report:: telechargements" %}</th>
-						<th>{% trans "report:: poids document" %}</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for key, value in dashboard_array.dashboard.top_ten_user.poiddoc %}
-					<tr>
-						<td>{{ value.user|e }}</td>
-						<td>{{ value.poiddoc|unite }}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.top_ten_user.poiddoc|length > 0 %}
+        <div id="div_seven">
+        <div class="toolbar"><a href="#settings" class="button flip"{% trans 'menu' %}/a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: Utilisateurs les plus actifs" %}</li></ul>
+            <table >
+                <thead>
+                    <tr>
+                        <th>{% trans "report:: telechargements" %}</th>
+                        <th>{% trans "report:: poids document" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, value in dashboard_array.dashboard.top_ten_user.poiddoc %}
+                    <tr>
+                        <td>{{ value.user|e }}</td>
+                        <td>{{ value.poiddoc|unite }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 
 {% block top_ten_weight_prev %}
-	{% if dashboard_array.dashboard.top_ten_user.poidprev|length > 0 %}
-		<div id="div_eights">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: Utilisateurs les plus actifs" %}</li></ul>
-			<table >
-				<thead>
-					<tr>
-						<th>{% trans "report:: telechargements" %}</th>
-						<th>{% trans "report:: poids preview" %}</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for key, value in dashboard_array.dashboard.top_ten_user.poidprev %}
-					<tr>
-						<td>{{ value.user|e }}</td>
-						<td>{{ value.poidprev|unite }}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.top_ten_user.poidprev|length > 0 %}
+        <div id="div_eights">
+        <div class="toolbar"><a href="#settings" class="button flip"{% trans 'menu' %}/a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: Utilisateurs les plus actifs" %}</li></ul>
+            <table >
+                <thead>
+                    <tr>
+                        <th>{% trans "report:: telechargements" %}</th>
+                        <th>{% trans "report:: poids preview" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, value in dashboard_array.dashboard.top_ten_user.poidprev %}
+                    <tr>
+                        <td>{{ value.user|e }}</td>
+                        <td>{{ value.poidprev|unite }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block top_ten_user_question %}
-	{% if dashboard_array.dashboard.ask|length > 0 %}
-		<div id="div_ten">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: Les questions les plus posees" %}</li></ul>
-			<table >
-				<thead>
-					<tr>
-							<th>{% trans "report:: utilisateurs" %}</th>
-						<th>{% trans "report:: question" %}</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for key, value in dashboard_array.dashboard.ask %}
-					<tr>
-						<td>{{ value.user|e }}</td>
-						<td>{{ value.question|e }}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.ask|length > 0 %}
+        <div id="div_ten">
+        <div class="toolbar"><a href="#settings" class="button flip"{% trans 'menu' %}/a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: Les questions les plus posees" %}</li></ul>
+            <table >
+                <thead>
+                    <tr>
+                            <th>{% trans "report:: utilisateurs" %}</th>
+                        <th>{% trans "report:: question" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for key, value in dashboard_array.dashboard.ask %}
+                    <tr>
+                        <td>{{ value.user|e }}</td>
+                        <td>{{ value.question|e }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block draw_activity_hour %}
-	{% if dashboard_array.dashboard.activity|length > 0 %}
-		<div id="div_eleven">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: activite par heure" %}</li></ul>
-			<table id = "mytablehour">
-				<thead>
-					<tr>
-						<th></th>
-					{% for key, value in dashboard_array.legendHour %}
-						<th>{{ value }}</th>
-					{% endfor %}
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th></th>
-					{% for key, value in dashboard_array.dashboard.activity.0 %}
-						<td>{{ value }}</td>
-					{% endfor %}
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.activity|length > 0 %}
+        <div id="div_eleven">
+        <div class="toolbar"><a href="#settings" class="button flip"{% trans 'menu' %}/a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: activite par heure" %}</li></ul>
+            <table id = "mytablehour">
+                <thead>
+                    <tr>
+                        <th></th>
+                    {% for key, value in dashboard_array.legendHour %}
+                        <th>{{ value }}</th>
+                    {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th></th>
+                    {% for key, value in dashboard_array.dashboard.activity.0 %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block draw_activity_day %}
-	{% if dashboard_array.dashboard.activity_day|length > 0 %}
-		<div id="div_twelve">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: activite par jour" %}</li></ul>
-			<table id="mytableday">
-				<thead>
-					<tr>
-						<th></th>
-					{% for key, value in dashboard_array.legendDay %}
-						<th>{{ value }}</th>
-					{% endfor %}
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th></th>
-					{% for key, value in dashboard_array.dashboard.activity_day.value %}
-						<td>{{ value }}</td>
-					{% endfor %}
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.activity_day|length > 0 %}
+        <div id="div_twelve">
+        <div class="toolbar"><a href="#settings" class="button flip"{% trans 'menu' %}/a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: activite par jour" %}</li></ul>
+            <table id="mytableday">
+                <thead>
+                    <tr>
+                        <th></th>
+                    {% for key, value in dashboard_array.legendDay %}
+                        <th>{{ value }}</th>
+                    {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th></th>
+                    {% for key, value in dashboard_array.dashboard.activity_day.value %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 
 {% block draw_activity_added %}
-	{% if dashboard_array.dashboard.activity_added|length > 0 %}
-		<div id="div_thirteen">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: activite document ajoute" %}</li></ul>
-			<table id="mytableadded">
-				<thead>
-					<tr>
-						<th></th>
-					{% for key, value in dashboard_array.legendDay %}
-						<th>{{ value }}</th>
-					{% endfor %}
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-					<th></th>
-					{% for key, value in dashboard_array.dashboard.activity_added.value %}
-						<td>{{ value }}</td>
-					{% endfor %}
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.activity_added|length > 0 %}
+        <div id="div_thirteen">
+        <div class="toolbar"><a href="#settings" class="button flip"{% trans 'menu' %}/a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: activite document ajoute" %}</li></ul>
+            <table id="mytableadded">
+                <thead>
+                    <tr>
+                        <th></th>
+                    {% for key, value in dashboard_array.legendDay %}
+                        <th>{{ value }}</th>
+                    {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <th></th>
+                    {% for key, value in dashboard_array.dashboard.activity_added.value %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 
 {% block draw_activity_edited %}
-	{% if dashboard_array.dashboard.activity_edited|length > 0 %}
-		<div id="div_forteen">
-		<div class="toolbar"><a href="#settings" class="button flip">menu</a></div>
-		<ul class="edgetoedge center"><li>{% trans "report:: activite document edite" %}</li></ul>
-			<table id="mytableedited">
-				<thead>
-					<tr>
-						<th></th>
-					{% for key, value in dashboard_array.legendDay %}
-						<th>{{ value }}</th>
-					{% endfor %}
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-					<th></th>
-					{% for key, value in dashboard_array.dashboard.activity_edited.value %}
-						<td>{{ value }}</td>
-					{% endfor %}
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	{% endif %}
+    {% if dashboard_array.dashboard.activity_edited|length > 0 %}
+        <div id="div_forteen">
+        <div class="toolbar"><a href="#settings" class="button flip"{% trans 'menu' %}/a></div>
+        <ul class="edgetoedge center"><li>{% trans "report:: activite document edite" %}</li></ul>
+            <table id="mytableedited">
+                <thead>
+                    <tr>
+                        <th></th>
+                    {% for key, value in dashboard_array.legendDay %}
+                        <th>{{ value }}</th>
+                    {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <th></th>
+                    {% for key, value in dashboard_array.dashboard.activity_edited.value %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan='2'>{{ dashboard_array.dminv }} à {{ dashboard_array.dmaxv }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
 
 
 {% block content %}
-		<div id="settings">
-			<div class="toolbar"><a href="#" class="button back flip">back</a></div>
-			<ul class="center edgetoedge">
-				<li class = "arrow"><a href="#dashboard-table" class="div_one">{% trans "report:: Cumul telechargements & connexions" %}</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_two">{% trans "report:: Utilisateurs les plus actifs" %} (documents)</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_three">{% trans "report:: Utilisateurs les plus actifs" %} (previews)</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_for">{% trans "report:: Les questions les plus posees" %}</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_five">{% trans "report:: Les questions les plus posees" %}(users)</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_six">{% trans "report:: documents les plus telecharges" %}</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_seven">{% trans "report:: Utilisateurs les plus actifs" %} (weight)</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_eight">{% trans "report:: preview les plus telecharges" %}</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_nine">{% trans "report:: Utilisateurs les plus actifs" %} (weight)</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_ten">{% trans "report:: site d\'ou les photo sont les plus consultees" %}</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_eleven">aaaa</a></li>
-				<li class = "arrow"><a href="#dashboard-table" class="div_twelwe">aaaa</a></li>
-			</ul>
-		</div>
-		
-		
-		
-		
-		
-		
-		<div id="whattoclick">
-			<div class="toolbar"><a class="button back" href="#">Back</a><h1>Détails</h1></div>
-			<ul class="edgetoedge center">
-				<li><a href="#report-connexions-settings" class="flip">{% trans "report:: Connexion" %}</a></li>
-				<li><a href="#report-telechargement-settings" class="flip">{% trans "report:: telechargements" %}</a></li>
-			</ul>
-		</div>
-		
-		{# SETTING CONNEXION #}
-		<form id="report-connexions-settings" action="ajax_liste_base.php" method="POST" class="form">
-		{# TITLE #}
-			<div class="toolbar"><h1>{% trans "report:: Connexion" %}</h1></div>
-			<a class="button back" href="#">Back</a>
-		{# CONTENT #}
-				{% include "report/settings/setting_date.twig" %}
-				{% include "report/settings/setting_base.twig" %}
-				{% include "report/settings/setting_connexion.twig" %}
-			<a href="#" class="submit whiteButton">Submit</a>
-		</form>
-		
-		
-		{# SETTING TELECHARGEMENT #}
-		<form id="report-telechargement-settings" action="ajax_liste_base.php" method="POST" class="form">
-		{# TITLE #}
-			<div class="toolbar"><h1>{% trans "report:: telechargements" %}</h1></div>
-			<a class="button back" href="#">Back</a>
-		{# CONTENT #}
-			
-				{% include "report/settings/setting_date.twig" %}
-				{% include "report/settings/setting_base.twig" %}
-				{% include "report/settings/setting_download.twig" %}
-			
-			
-		</form>
-		
-		
-		{# SETTING ACTIVITY #}
-		<form id="report-activite-settings" action="ajax_liste_base.php" method="POST" class="form">
-		{# TITLE #}
-			<div class="toolbar"><h1>{% trans "report:: activite du site" %}</h1></div>
-			<a class="button back" href="#">Back</a>
-		{# CONTENT #}
-			
-				{% include "report/settings/setting_date.twig" %}
-				{% include "report/settings/setting_base.twig" %}
-				{% include "report/settings/setting_activity.twig" %}
-			
-			
-		</form>
-		
-		{% for key, value in dashboard_array.base %}
-			<div id="#base_{{key}}">
-				<div class="toolbar"><a class="button back" href="#">Back</a><h1>{{ value }}</h1></div>
-			</div>
-		{% endfor %}
-				
-		<div id="mask"></div>
-		
-		<div id="dashboard-info">
-			<div class="toolbar"><a class="button back" href="#">Back</a><h1>{% trans "report:: Dashboard" %}</h1></div>
-			<div class="result">
-				{% include 'report/info.twig' %}
-			</div>
-		</div>
+        <div id="settings">
+            <div class="toolbar"><a href="#" class="button back flip">{% trans 'Back' %}</a></div>
+            <ul class="center edgetoedge">
+                <li class = "arrow"><a href="#dashboard-table" class="div_one">{% trans "report:: Cumul telechargements & connexions" %}</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_two">{% trans "report:: Utilisateurs les plus actifs" %} (documents)</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_three">{% trans "report:: Utilisateurs les plus actifs" %} (previews)</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_for">{% trans "report:: Les questions les plus posees" %}</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_five">{% trans "report:: Les questions les plus posees" %}(users)</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_six">{% trans "report:: documents les plus telecharges" %}</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_seven">{% trans "report:: Utilisateurs les plus actifs" %} (weight)</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_eight">{% trans "report:: preview les plus telecharges" %}</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_nine">{% trans "report:: Utilisateurs les plus actifs" %} (weight)</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_ten">{% trans "report:: site d\'ou les photo sont les plus consultees" %}</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_eleven">aaaa</a></li>
+                <li class = "arrow"><a href="#dashboard-table" class="div_twelwe">aaaa</a></li>
+            </ul>
+        </div>
+
+
+
+
+
+
+        <div id="whattoclick">
+            <div class="toolbar"><a class="button back" href="#">{% trans 'Back' %}</a><h1>{% trans 'Details' %}</h1></div>
+            <ul class="edgetoedge center">
+                <li><a href="#report-connexions-settings" class="flip">{% trans "report:: Connexion" %}</a></li>
+                <li><a href="#report-telechargement-settings" class="flip">{% trans "report:: telechargements" %}</a></li>
+            </ul>
+        </div>
+
+        {# SETTING CONNEXION #}
+        <form id="report-connexions-settings" action="ajax_liste_base.php" method="POST" class="form">
+        {# TITLE #}
+            <div class="toolbar"><h1>{% trans "report:: Connexion" %}</h1></div>
+            <a class="button back" href="#">{% trans 'Back' %}</a>
+        {# CONTENT #}
+                {% include "report/settings/setting_date.twig" %}
+                {% include "report/settings/setting_base.twig" %}
+                {% include "report/settings/setting_connexion.twig" %}
+            <a href="#" class="submit whiteButton">Submit</a>
+        </form>
+
+
+        {# SETTING TELECHARGEMENT #}
+        <form id="report-telechargement-settings" action="ajax_liste_base.php" method="POST" class="form">
+        {# TITLE #}
+            <div class="toolbar"><h1>{% trans "report:: telechargements" %}</h1></div>
+            <a class="button back" href="#">{% trans 'Back' %}</a>
+        {# CONTENT #}
+
+                {% include "report/settings/setting_date.twig" %}
+                {% include "report/settings/setting_base.twig" %}
+                {% include "report/settings/setting_download.twig" %}
+
+
+        </form>
+
+
+        {# SETTING ACTIVITY #}
+        <form id="report-activite-settings" action="ajax_liste_base.php" method="POST" class="form">
+        {# TITLE #}
+            <div class="toolbar"><h1>{% trans "report:: activite du site" %}</h1></div>
+            <a class="button back" href="#">{% trans 'Back' %}</a>
+        {# CONTENT #}
+
+                {% include "report/settings/setting_date.twig" %}
+                {% include "report/settings/setting_base.twig" %}
+                {% include "report/settings/setting_activity.twig" %}
+
+
+        </form>
+
+        {% for key, value in dashboard_array.base %}
+            <div id="#base_{{key}}">
+                <div class="toolbar"><a class="button back" href="#">{% trans 'Back' %}</a><h1>{{ value }}</h1></div>
+            </div>
+        {% endfor %}
+
+        <div id="mask"></div>
+
+        <div id="dashboard-info">
+            <div class="toolbar"><a class="button back" href="#">{% trans 'Back' %}</a><h1>{% trans "report:: Dashboard" %}</h1></div>
+            <div class="result">
+                {% include 'report/info.twig' %}
+            </div>
+        </div>
 {% endblock %}

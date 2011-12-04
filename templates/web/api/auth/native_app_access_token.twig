@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>
+    {% if error is defined %}
+      {% trans 'Fail' %}
+    {% else %}
+      {% trans 'Success' %}
+    {% endif %}
+    </title>
+  </head>
+  <body>
+    {% if error is defined %}
+      <p>
+        {% trans %}
+         Erreur : {{error}}
+        {% endtrans %}
+      </p>
+    {% else %}
+      <input type="text" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
+      <p>
+        {% set expiration_date = token.expires_in() %}
+        {% trans %}
+        Expire dans {{expiration_date}}
+        {% endtrans %}
+      </p>
+    {% endif %}
+  </body>
+</html>

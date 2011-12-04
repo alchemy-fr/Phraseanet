@@ -1,205 +1,188 @@
 <?php
-require_once dirname( __FILE__ ).'/../../lib/classes/httpRequest.class.php';
 
-$request = httpRequest::getInstance();
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+require_once dirname(__FILE__) . '/../../lib/classes/http/request.class.php';
+
+$request = http_request::getInstance();
 $parm = $request->get_parms('session', 'coll', 'status');
 
-if ($parm["session"]) {
-	session_id($parm["session"]);
+if ($parm["session"])
+{
+  session_id($parm["session"]);
 }
 
-require_once dirname( __FILE__ ) . "/../../lib/bootstrap.php";
+require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
 
-$session = session::getInstance();
+$appbox = appbox::get_instance();
+$session = $appbox->get_session();
 define("DEFAULT_MIMETYPE", "application/octet-stream");
 
-if(isset($_SERVER['HTTP_USER_AGENT']) && strtolower($_SERVER['HTTP_USER_AGENT']) == 'shockwave flash')
-	define("UPLOADER", "FLASH");
+if ($request->comes_from_flash())
+  define("UPLOADER", "FLASH");
 else
-	define("UPLOADER", "HTML");
-	
-require(GV_RootPath."lib/index_utils2.php");
+  define("UPLOADER", "HTML");
 
-require( GV_RootPath . 'lib/unicode/lownodiacritics_utf8.php' );
+$registry = $appbox->get_registry();
 
-if(!isset($_FILES['Filedata']))
+if (!isset($_FILES['Filedata']))
 {
-	if(UPLOADER == 'FLASH')
-		header('HTTP/1.1 500 Internal Server Error');
-	else
-		echo '<script type="text/javascript">parent.classic_uploaded("'._("Internal Server Error").'")</script>';
-	exit;
+  if (UPLOADER == 'FLASH')
+    header('HTTP/1.1 500 Internal Server Error');
+  else
+    echo '<script type="text/javascript">parent.classic_uploaded("' . _("Internal Server Error") . '")</script>';
+  exit;
 }
-	
-if($_FILES['Filedata']['error'] > 0)
-{
-	if(UPLOADER == 'FLASH')
-		header('HTTP/1.1 500 Internal Server Error');
-	else
-		echo '<script type="text/javascript">parent.classic_uploaded("'._("Internal Server Error").'")</script>';
-	exit(0);
-}
-	
 
-	
-$conn = connection::getInstance();
+if ($_FILES['Filedata']['error'] > 0)
+{
+  if (UPLOADER == 'FLASH')
+    header('HTTP/1.1 500 Internal Server Error');
+  else
+    echo '<script type="text/javascript">parent.classic_uploaded("' . _("Internal Server Error") . '")</script>';
+  exit(0);
+}
+
 $sbas_id = false;
-if(isset($session->usr_id) && isset($session->ses_id))
-{
-	$ses_id = $session->ses_id;
-	$usr_id = $session->usr_id;
-	
-		if(!$session->upload)
-		{
-			if(UPLOADER == 'FLASH')
-				header("Location: /login/?error=auth&lng=".$lng);
-			else
-				echo '<script type="text/javascript">parent.classic_uploaded("'._("Session Lost").'")</script>';
-			exit();
-		}
-	
-}
-else{
-	if(UPLOADER == 'FLASH')
-		header("Location: /login/upload/");
-	else
-		echo '<script type="text/javascript">parent.classic_uploaded("'._("Session Lost").'")</script>';
-	exit();
-}
+$usr_id = $session->get_usr_id();
 
-if(!($ph_session = phrasea_open_session($ses_id,$usr_id)))
-	die();
-	
-$base_id = (int)$parm['coll'];
-	
-$chStatus = false;
-$sql = 'SELECT bu.base_id, bu.chgstatus, b.sbas_id FROM basusr bu, bas b WHERE bu.base_id = b.base_id AND usr_id="'.$conn->escape_string($usr_id).'" AND canaddrecord = "1" AND bu.base_id="'.$conn->escape_string($base_id).'"';
+$sbas_id = phrasea::sbasFromBas($parm['coll']);
 
-if($rs = $conn->query($sql))
-{
-	while($row = $conn->fetch_assoc($rs))
-	{
-		$chStatus = true;
-		$sbas_id = $row['sbas_id'];
-	}
-}
+$base_id = $parm['coll'];
+
+$chStatus = User_Adapter::getInstance($usr_id, $appbox)->ACL()->has_right_on_base($base_id, 'chgstatus');
+
 
 
 $ext = pathinfo($_FILES['Filedata']["name"]);
 
-$newname = $_FILES['Filedata']['tmp_name'].'.'.(isset($ext['extension'])?$ext['extension']:'');
+$newname = $_FILES['Filedata']['tmp_name'] . '.' . (isset($ext['extension']) ? $ext['extension'] : '');
 
-if($newname !== $_FILES['Filedata']['tmp_name'])
-	if(rename($_FILES['Filedata']['tmp_name'], $newname));
-		$_FILES['Filedata']['tmp_name'] = $newname;
+if ($newname !== $_FILES['Filedata']['tmp_name'])
+  if (rename($_FILES['Filedata']['tmp_name'], $newname)
+  )
+    ;
+$_FILES['Filedata']['tmp_name'] = $newname;
 
+$filename = new system_file($_FILES['Filedata']['tmp_name']);
 
 $mask_oui = '0000000000000000000000000000000000000000000000000000000000000000';
 $mask_non = '1111111111111111111111111111111111111111111111111111111111111111';
-if($sbas_id !== false && is_array($parm['status']))
+if ($sbas_id !== false && is_array($parm['status']))
 {
-	$mask_oui = '0000000000000000000000000000000000000000000000000000000000000000';
-	$mask_non = '1111111111111111111111111111111111111111111111111111111111111111';
+  $mask_oui = '0000000000000000000000000000000000000000000000000000000000000000';
+  $mask_non = '1111111111111111111111111111111111111111111111111111111111111111';
 
-	foreach($parm['status'] as $k=>$v)
-	{
-		if((int)$k<=63 && (int)$k>=4)
-		{
-			if($v == '0')
-				$mask_non[63-(int)$k] = $v;
-			elseif($v == '1')
-				$mask_oui[63-(int)$k] = $v;
-		}
-	}
+  foreach ($parm['status'] as $k => $v)
+  {
+    if ((int) $k <= 63 && (int) $k >= 4)
+    {
+      if ($v == '0')
+        $mask_non[63 - (int) $k] = $v;
+      elseif ($v == '1')
+        $mask_oui[63 - (int) $k] = $v;
+    }
+  }
 }
 
-try 
+try
 {
-  $sha256 = hash_file('sha256',$newname);
+  $sha256 = $filename->get_sha256();
 
   $uuid = false;
-  $file_uuid = new uuid($newname);
-  if(!$file_uuid->has_uuid())
+  if (!$filename->has_uuid())
   {
-    $connbas = connection::getInstance($sbas_id);
-    $sql = 'SELECT uuid FROM record WHERE sha256 = "'.$connbas->escape_string($sha256).'"';
-    if($rs = $connbas->query($sql))
+    try
     {
-      if($row = $connbas->fetch_assoc($rs))
+      $tmp_record = record_adapter::get_record_by_sha($sbas_id, $sha256);
+
+      if (!$tmp_record)
+        throw new Exception('bad luck');
+      if (is_array($tmp_record))
+        $tmp_record = array_shift($tmp_record);
+
+      $tmp_uuid = $tmp_record->get_uuid();
+
+      if ($tmp_uuid && uuid::is_valid($tmp_uuid))
       {
-        if(uuid::uuid_is_valid($row['uuid']))
-          $uuid = $row['uuid'];
+        $uuid = $tmp_uuid;
       }
-      $connbas->free_result($rs);
+    }
+    catch (Exception $e)
+    {
+
     }
   }
 
-  $uuid = $file_uuid->write_uuid($uuid);
+  $filename->write_uuid($uuid);
 
-	$error_file = p4file::check_file_error($_FILES['Filedata']["tmp_name"], $sbas_id, $_FILES['Filedata']["name"]);
-	$status_2 = status::and_operation($mask_oui,$mask_non);
-	if( ($uuid !== false && !$file_uuid->is_new_in_base(phrasea::sbasFromBas($base_id))) || count($error_file) > 0)
-	{
-		if(!lazaretFile::move_uploaded_to_lazaret($_FILES['Filedata']["tmp_name"], $base_id, $_FILES['Filedata']["name"], $uuid, $sha256, implode("\n",$error_file), $status_2))
-		{
-			if(UPLOADER == 'FLASH')
-				header('HTTP/1.1 500 Internal Server Error');
-			else
-				echo '<script type="text/javascript">parent.classic_uploaded("'._("erreur lors de l'archivage").'")</script>';
-		}
-		
-		if(UPLOADER == 'HTML')
-			echo '<script type="text/javascript">parent.classic_uploaded("'._("Fichier uploade, en attente").'")</script>';
-		exit;
-	}
-	
+  $error_file = p4file::check_file_error($filename->getPathname(), $sbas_id, $_FILES['Filedata']["name"]);
+  $status_2 = databox_status::operation_and($mask_oui, $mask_non);
+  if (!$filename->is_new_in_base(phrasea::sbasFromBas($base_id)) || count($error_file) > 0)
+  {
+    if (!lazaretFile::move_uploaded_to_lazaret($filename, $base_id, $_FILES['Filedata']["name"], implode("\n", $error_file), $status_2))
+    {
+      if (UPLOADER == 'FLASH')
+        header('HTTP/1.1 500 Internal Server Error');
+      else
+        echo '<script type="text/javascript">parent.classic_uploaded("' . _("erreur lors de l'archivage") . '")</script>';
+    }
+    else
+      exit(_('Document ajoute a la quarantaine'));
+
+    if (UPLOADER == 'HTML')
+      echo '<script type="text/javascript">parent.classic_uploaded("' . _("Fichier uploade, en attente") . '")</script>';
+    exit;
+  }
 }
 catch (Exception $e)
 {
-	
+
 }
 
 
 
-if(($record_id = p4file::archiveFile($_FILES['Filedata']['tmp_name'],$base_id,true,$_FILES['Filedata']["name"],$sha256)) === false)
+if (($record_id = p4file::archiveFile($filename, $base_id, true, $_FILES['Filedata']["name"])) === false)
 {
-	unlink($_FILES['Filedata']['tmp_name']);	
-	if(UPLOADER == 'FLASH')
-		header('HTTP/1.1 500 Internal Server Error');
-	else
-		echo '<script type="text/javascript">parent.classic_uploaded("'._("erreur lors de l'archivage").'")</script>';
-	exit(0);
+  unlink($filename->getPathname());
+  if (UPLOADER == 'FLASH')
+    header('HTTP/1.1 500 Internal Server Error');
+  else
+    echo '<script type="text/javascript">parent.classic_uploaded("' . _("erreur lors de l'archivage") . '")</script>';
+  exit(0);
 }
 
 
-if($chStatus === true && $sbas_id !== false && is_array($parm['status']))
+if ($chStatus === true && $sbas_id !== false && is_array($parm['status']))
 {
 
-	$connbas = connection::getInstance($sbas_id);
-	
-	if($connbas)
-	{
-		$sql = 'SELECT status FROM record WHERE record_id="'.$connbas->escape_string($record_id).'"';
-		if($rs = $connbas->query($sql))
-		{
-			if($row = $connbas->fetch_assoc($rs))
-			{
-				$status = $row['status'];
-			
-				$sql = 'UPDATE record SET status = ((' . $status . ' | 0b'.$mask_oui.') & 0b'.$mask_non.') WHERE record_id="'.$connbas->escape_string($record_id).'"';
-		
+  try
+  {
+    $record = new record_adapter($sbas_id, $record_id);
+    $status = databox_status::operation_or($record->get_status(), $mask_oui);
+    $record->set_binary_status(databox_status::operation_and($status, $mask_non));
+  }
+  catch (Exception $e)
+  {
 
-				if($connbas->query($sql))
-				{
-					
-				}
-			}
-		}
-	}
+  }
 }
-if(file_exists($_FILES['Filedata']['tmp_name']))
-	unlink($_FILES['Filedata']['tmp_name']);
+if (file_exists($filename->getPathname()))
+  unlink($filename->getPathname());
 
-if(UPLOADER == 'HTML')
-	echo '<script type="text/javascript">parent.classic_uploaded("'._("Fichier uploade !").'")</script>';
+if (UPLOADER == 'HTML')
+  echo '<script type="text/javascript">parent.classic_uploaded("' . _("Fichier uploade !") . '")</script>';
 exit(0);

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="BuildSourceHudson" default="Main" basedir=".">
+	<property file="build.properties"/>
+	<target name="Main">
+    <delete includeemptydirs="true">
+      <fileset dir="${dir.dest}" >
+        <exclude name="config" />
+				<exclude name="config/**" />
+			</fileset>
+    </delete>
+		<copy todir="${dir.dest}" verbose="true" overwrite="false" >
+			<fileset dir="${dir.src}" >
+				<exclude name="**/test/**" />
+				<exclude name="**/tests/**" />
+				<exclude name="**/example/**" />
+
+				<exclude name="**/examples/**" />
+				<exclude name="**/exemple/**" />
+				<exclude name="**/exemples/**" />
+				<exclude name="**/demo/**" />
+				<exclude name="**/demos/**" />
+			</fileset>
+		</copy>
+    <chmod file="${dir.dest}/lib/vendor/exiftool/exiftool" perm="755"/>
+	</target>
+</project>

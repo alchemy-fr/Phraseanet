@@ -4,7 +4,7 @@ function sprintf()
 { 
 	if (!arguments || arguments.length < 1 || !RegExp)
 	{
-		return;
+		return '';
 	}
 	
 	str = arguments[0];
@@ -13,9 +13,10 @@ function sprintf()
 	// var re = /([^%]*)%('.|0|\x20)?(-)?(\d+)?(\.\d+)?(%|b|c|d|u|f|o|s|x|X)(.*)/;
 	var re = new RegExp("^([^%]*)%('.|0|\x20)?(-)?(\d+)?(\.\d+)?(%|b|c|d|u|f|o|s|x|X)(.*)$", "m");
 	re["$*"] = true;
-	var a = b = [], numSubstitutions = 0, numMatches = 0; 
-	while (a = re.exec(str))
-	{ 
+	var a = b = [], numSubstitutions = 0, numMatches = 0;
+  a = re.exec(str);
+	while (a)
+	{
 		var leftpart = a[1], pPad = a[2], pJustify = a[3], pMinLength = a[4]; 
 		var pPrecision = a[5], pType = a[6], rightPart = a[7]; numMatches++; 
 		
@@ -82,21 +83,25 @@ function sprintf()
 					 break; 
 				case 'X':
 					subst = ('' + parseInt(param).toString(16)).toUpperCase();
-					break; 
+					break;
+        default:
+          break;
 			} 
-			var padLeft = minLength - subst.toString().length; 
+			var padLeft = minLength - subst.toString().length;
+      var padding;
 			if (padLeft > 0)
 			{ 
 				var arrTmp = new Array(padLeft+1); 
-				var padding = arrTmp.join(pad?pad:" "); 
+				padding = arrTmp.join(pad?pad:" "); 
 			}
 			else
 			{ 
-				var padding = "";
+				padding = "";
 			}
 		} 
-		str = leftpart + padding + subst + rightPart; 
-	} 
+		str = leftpart + padding + subst + rightPart;
+    a = re.exec(str);
+	}
 	while((newstr = str.replace("\x01", "\n")) != str)
 		str = newstr;
 	return(str);

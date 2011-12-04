@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>YUI: Editor Image Browser</title>
-    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/reset-fonts-grids/reset-fonts-grids.css"> 
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.3.1/build/reset-fonts-grids/reset-fonts-grids.css">
     <style type="text/css" media="screen">
     #doc {
         min-width: 500px;
@@ -39,7 +39,7 @@
         Event = YAHOO.util.Event,
         myEditor = window.opener.YAHOO.widget.EditorInfo.getEditorById('msgpost');
         //Get a reference to the editor on the other page
-    
+
     //Add a listener to the parent of the images
     Event.on('images', 'click', function(ev) {
         var tar = Event.getTarget(ev);

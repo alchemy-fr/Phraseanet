@@ -5,11 +5,12 @@ class mail
 
   public static function mail_test($email)
   {
-    $from = array('email' => GV_defaulmailsenderaddr, 'name' => GV_defaulmailsenderaddr);
+    $registry = registry::get_instance();
+    $from = array('email' => $registry->get('GV_defaulmailsenderaddr'), 'name' => $registry->get('GV_defaulmailsenderaddr'));
 
     $subject = _('mail:: test d\'envoi d\'email');
 
-    $message = sprintf(_('Ce mail est un test d\'envoi de mail depuis %s'), GV_ServerName);
+    $message = sprintf(_('Ce mail est un test d\'envoi de mail depuis %s'), $registry->get('GV_ServerName'));
 
     $to = array('email' => $email, 'name' => $email);
 
@@ -21,15 +22,6 @@ class mail
     $to = array('email' => $email, 'name' => $email);
 
     return self::send_mail($subject, $message, $to, $from);
-  }
-
-  public static function hack_alert($email, $body)
-  {
-    $subject = 'Hack on ' . GV_homeTitle;
-
-    $to = array('email' => $email, 'name' => $email);
-
-    return self::send_mail($subject, $body, $to);
   }
 
   public static function ftp_sent($email, $subject, $body)
@@ -88,8 +80,8 @@ class mail
 
   public static function register_confirm($email, $accept, $deny)
   {
-
-    $subject = sprintf(_('login::register:email: Votre compte %s'), GV_homeTitle);
+    $registry = registry::get_instance();
+    $subject = sprintf(_('login::register:email: Votre compte %s'), $registry->get('GV_homeTitle'));
 
     $body = '<div>' . _('login::register:email: Voici un compte rendu du traitement de vos demandes d\'acces :') . "</div>\n";
 
@@ -109,8 +101,8 @@ class mail
 
   public static function register_user($email, $auto, $others)
   {
-
-    $subject = sprintf(_('login::register:email: Votre compte %s'), GV_homeTitle);
+    $registry = registry::get_instance();
+    $subject = sprintf(_('login::register:email: Votre compte %s'), $registry->get('GV_homeTitle'));
 
 
     $body = "<div>" . _('login::register:Votre inscription a ete prise en compte') . "</div>\n";
@@ -133,16 +125,16 @@ class mail
 
   public static function reset_email($email, $usr_id)
   {
+    $registry = registry::get_instance();
     $date = new DateTime('1 day');
-    $date = phraseadate::format_mysql($date);
     $token = random::getUrlToken('email', $usr_id, $date, $email);
 
-    $url = GV_ServerName . 'login/reset-email.php?token=' . $token;
+    $url = $registry->get('GV_ServerName') . 'login/reset-email.php?token=' . $token;
 
     $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
     $body = "<div>" . _('admin::compte-utilisateur: email changement de mot d\'email Bonjour, nous avons bien recu votre demande de changement d\'adresse e-mail. Pour la confirmer, veuillez suivre le lien qui suit. SI vous recevez ce mail sans l\'avoir sollicite, merci de le detruire et de l\'ignorer.') . "</div>\n";
-    $body .= '<div><a href="' . $url . '">' . $url . '</a></div>\n';
+    $body .= "<div><a href='" . $url . "'>" . $url . "</a></div>\n";
 
     $to = array('email' => $email, 'name' => $email);
 
@@ -155,7 +147,7 @@ class mail
 
     $body = "<div>" . _('login::register: merci d\'avoir confirme votre adresse email') . "</div>\n";
     $body .= "<br/><div>" . _('login::register: vous pouvez maintenant vous connecter a l\'adresse suivante : ') . "</div>\n";
-    $body .= "<div><a href='" . GV_ServerName . "' target='_blank'>" . GV_ServerName . "</a></div>\n";
+    $body .= "<div><a href='" . $registry->get('GV_ServerName') . "' target='_blank'>" . $registry->get('GV_ServerName') . "</a></div>\n";
 
     $to = array('email' => $email, 'name' => $email);
 
@@ -180,24 +172,34 @@ class mail
   {
 
     $expire = new DateTime('+3 days');
-    $expire = phraseadate::format_mysql($expire);
     $token = random::getUrlToken('password', $usr_id, $expire, $email);
 
     $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
     $body = "<div>" . _('login::register: email confirmation email Pour valider votre inscription a la base de donnees, merci de confirmer votre e-mail en suivant le lien ci-dessous.') . "</div>\n";
-    $body .= "<br/>\n<div><a href='" . GV_ServerName . "register-confirm=" . $token . "' target='_blank'>" . GV_ServerName . "register-confirm=" . $token . "</a></div>\n";
+    $body .= "<br/>\n<div><a href='" . $registry->get('GV_ServerName') . "register-confirm=" . $token . "' target='_blank'>" . $registry->get('GV_ServerName') . "register-confirm=" . $token . "</a></div>\n";
 
     $to = array('email' => $email, 'name' => $email);
 
     return self::send_mail($subject, $body, $to);
   }
 
+  public static function validateEmail($email)
+  {
+    $registry = registry::get_instance();
+    require_once($registry->get('GV_RootPath') . 'lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+
+    return PHPMailer::ValidateAddress($email);
+  }
+
   public static function send_mail($subject, $body, $to, $from=false, $files=array(), $reading_confirm_to=false)
   {
-    require_once(GV_RootPath . 'lib/PHPMailer_v5.1/class.phpmailer.php');
+
+    $registry = registry::get_instance();
+    require_once($registry->get('GV_RootPath') . 'lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
 
     if (!isset($to['email']) || !PHPMailer::ValidateAddress($to['email']))
+
       return false;
 
     $mail = new PHPMailer();
@@ -206,7 +208,7 @@ class mail
 
     $body .= "<br/><br/><br/><br/>\n\n\n\n";
     $body .= '<div style="font-style:italic;">' . _('phraseanet::signature automatique des notifications par mail, infos a l\'url suivante') . "</div>\n";
-    $body .= '<div><a href="' . GV_ServerName . '">' . GV_ServerName . "</a></div>\n";
+    $body .= '<div><a href="' . $registry->get('GV_ServerName') . '">' . $registry->get('GV_ServerName') . "</a></div>\n";
     $body = '<body>' . $body . '</body>';
 
     try
@@ -214,24 +216,26 @@ class mail
       $mail->CharSet = 'utf-8';
       $mail->Encoding = 'base64'; //'quoted-printable';
 
-      if (GV_smtp)
+      $registry = registry::get_instance();
+
+      if ($registry->get('GV_smtp'))
       {
         $mail->IsSMTP();
-        if (GV_smtp_host != '')
-          $mail->Host = GV_smtp_host;
-//				$mail->SMTPDebug  = 2;                     // enables SMTP debug information (for testing)
-        if (GV_smtp_auth)
+        if ($registry->get('GV_smtp_host') != '')
+          $mail->Host = $registry->get('GV_smtp_host');
+//        $mail->SMTPDebug  = 2;                     // enables SMTP debug information (for testing)
+        if ($registry->get('GV_smtp_auth'))
         {
           $mail->SMTPAuth = true;
 
-          if (GV_smtp_secure === true)
+          if ($registry->get('GV_smtp_secure') === true)
           {
             $mail->SMTPSecure = "ssl";
           }
-          $mail->Host = GV_smtp_host;
-          $mail->Port = GV_smtp_port;
-          $mail->Username = GV_smtp_user;
-          $mail->Password = GV_smtp_password;
+          $mail->Host = $registry->get('GV_smtp_host');
+          $mail->Port = $registry->get('GV_smtp_port');
+          $mail->Username = $registry->get('GV_smtp_user');
+          $mail->Password = $registry->get('GV_smtp_password');
         }
       }
 
@@ -240,7 +244,7 @@ class mail
 
       $mail->AddAddress($to['email'], $to['name']);
 
-      $mail->SetFrom(GV_defaulmailsenderaddr, GV_homeTitle);
+      $mail->SetFrom($registry->get('GV_defaulmailsenderaddr'), $registry->get('GV_homeTitle'));
 
       $mail->Subject = $subject;
 
@@ -251,7 +255,8 @@ class mail
         $mail->ConfirmReadingTo = $reading_confirm_to;
       }
 
-      $mail->MsgHTML(p4string::cleanTags($body));
+      $mail->MsgHTML(strip_tags($body));
+//      $mail->MsgHTML(p4string::cleanTags($body));
 
       foreach ($files as $f)
       {
@@ -259,6 +264,7 @@ class mail
       }
 
       $mail->Send();
+
       return true;
     }
     catch (phpmailerException $e)

@@ -55,7 +55,7 @@ function showFound2(term, lterm, branch, depth)
 
 //	if(ret > 0)	
 //	if(depth > 0)
-	{
+//	{
 		if(ret > 0)
 		{
 			//eventObj.Src0.innerHTML = "+";
@@ -66,7 +66,7 @@ function showFound2(term, lterm, branch, depth)
 			//eventObj.Src0.innerHTML = "+";
 			thb.className = "ob";
 		}
-	}
+//	}
 /*
 	if(depth == 0)
 	{
@@ -83,6 +83,7 @@ function showFound2(term, lterm, branch, depth)
 
 function showAll(branch, depth)
 {
+  depth = parseInt(depth);
 	var c;
 	for(c=branch.firstChild; c; c=c.nextSibling)
 	{
@@ -93,10 +94,10 @@ function showAll(branch, depth)
 	if(depth > 0)
 		branch.style.display = "";
 
-	if(depth==0)
+	if(depth===0)
 	{
 		document.getElementById("WT1").style.visibility="hidden";
-		if(document.forms["fTh"].textT1.value!="")
+		if(document.forms["fTh"].textT1.value!=="")
 		{
 			// oups! le mot a changé durant le traitement, on recommence
 			evt_kup_T1();
@@ -108,6 +109,7 @@ function showAll(branch, depth)
 
 function scanTerms(inputName, zTerm, showhide)
 {
+  showhide = !!showhide;
 	var lTerm = zTerm.length;
 	var zTable = document.getElementById("L"+inputName);
 	var zTr = zTable.childNodes;	// TR's
@@ -122,7 +124,7 @@ function scanTerms(inputName, zTerm, showhide)
 		if(zTerm == t)
 			found = zTr[i];
 
-		if(showhide)
+		if(showhide === true)
 		{
 			if(lTerm==0 || (t.substr(0, lTerm)==zTerm))
 				zTr[i].style.display = "";
@@ -226,10 +228,10 @@ function addTerm(inputName, zTerm, oldid)	// inputName = "TS"|"TA"|"SY"
 		
 		dirty();
 	}
-	else
-	{
+//	else
+//	{
 		// alert("Le terme associé '"+newterm+"' existe déjà.");
-	}
+//	}
 	evt_kup(inputName);
 }
 

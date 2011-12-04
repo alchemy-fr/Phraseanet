@@ -925,11 +925,11 @@ function ww_evt_balloon(msg)
 		if(msg_t < 3)
 		{
 			// tiens pas au dessus
-			msg_t = body_h - msg_h - 10;	// coll� en bas
+			msg_t = body_h - msg_h - 10;	// colle en bas
 			if(msg_t < 3)
 			{
-				// tiens pas coll� en bas
-				msg_t = 3;	// coll� en haut, tant pis si �a d�borde en bas
+				// tiens pas colle en bas
+				msg_t = 3;	// colle en haut, tant pis si ea deborde en bas
 			}
 		}
 	}

@@ -1,0 +1,33 @@
+
+{% extends "prod/results/answerabstract.twig" %}
+{% block content %}
+
+  {% import 'common/caption_templates/answer.html' as caption %}
+
+  {% for record in results.get_datas() %}
+    <div class='list ui-corner-all'>
+
+    {% set ident = record.get_base_id ~ ' ' ~ record.get_record_id%}
+    {% set sbas_id = record.get_base_id|sbasFromBas %}
+    <table style='width:100%;' cellspacing='0' cellpadding='0' border='0'>
+      <tr>
+        <td valign="top" style='width:{{th_size+50}}px'>
+
+        {{record_format.block(record, user, session, highlight, searchEngine, 'IMGT', false)}}
+
+          </td>
+          <td valign="top">
+            <div class='desc' style='max-height:{{th_size+70}}px;overflow-y:auto;'>
+              <div class="fixeddesc">
+                {{caption.format_caption(record, highlight, searchEngine)}}
+                {% if user.getPrefs('technical_display') == 'group' %}<hr/>{{record.get_technical_infos|raw}}{% endif %}
+              </div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  {% endfor %}
+  
+{% endblock %}
+

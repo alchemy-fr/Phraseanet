@@ -1,0 +1,43 @@
+ <div id="PREVIEWCURRENTCONT" class="PNB10">
+  <ul>
+    {% for child in record.get_container().get_elements() %}
+
+      {% set thumbnail = child.get_record().get_thumbnail() %}
+      {% if thumbnail.is_paysage() %}
+        {% set style = 'width:65px;top:' %}
+        {% set top = ((66 - (65 / (thumbnail.get_width() / thumbnail.get_height()))) / 2)|round %}
+        {% set style = style ~ top %}
+        {% set style = style ~ 'px;' %}
+      {% else %}
+        {% set style = 'height:65px;top:0;' %}
+      {% endif %}
+
+      {% set tooltip = '' %}
+      {% if GV_rollover_reg_preview %}
+        {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/' ~ child.get_record().get_sbas_id() ~ '/' ~ child.get_record().get_record_id() ~ '/basket/"' %}
+      {% endif %}
+
+      {% set class = '' %}
+      {% if record.get_number() == child.get_order() %}
+        {% set class = ' selected' %}
+      {% endif %}
+
+      <li class="{{class}} prevTrainCurrent">
+        <img {{tooltip|raw}} jsargs="BASK|{{child.get_order()}}|{{record.get_container().get_ssel_id()}}"
+          class="openPreview prevRegToolTip" return(false);" src="{{thumbnail.get_url()}}"
+            style="{{style}}margin:7px;position:relative;"/></li>
+    {% endfor %}
+
+   </ul>
+  </div>
+  <div class="cont_infos">
+    <div>
+      <img src="/skins/icons/light_left.gif" style="margin-right:10px;" onclick="getPrevious();"/>
+      <img src="/skins/icons/light_right.gif" style="margin-left:10px;" onclick="getNext();"/><br/>
+      <span onclick="startSlide()" id="start_slide">{% trans 'preview:: demarrer le diaporama' %}</span>
+      <span onclick="stopSlide()" id="stop_slide">{% trans 'preview:: arreter le diaporama' %}</span>
+    </div>
+  </div>
+  <div id="PREVIEWTOOL">
+  {% include 'prod/preview/tools.html' %}
+  </div>

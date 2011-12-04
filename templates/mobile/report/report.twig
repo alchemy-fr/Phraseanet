@@ -1,28 +1,28 @@
 {% block ajax_data_content %}
-	<script type="text/javascript">
-	</script>
-	
-	{% if filters|length > 0 %}
-		<div class='current_filter'>{{ currentfilter }}</div>
-	{% endif %} 
-	
-	{% if is_nav %}
-		{% for result in result %}
-			<div class="graph">
-				{% include "report/generate_tab.twig" %}
-				{% if result.legend|length > 1 %}
-					<div class='center' ><img src='charts/draw_pie.php?value={{ result.value|serialize|urlencode }}&legend={{ result.legend|serialize|urlencode }}&title={{ result.title|serialize|urlencode }}' ></img></div>
-				{% endif %}
-			</div>
-		{% endfor %}
-	{% elseif is_plot %}
-		{% include "report/generate_tab.twig" %}
-		{% set heures = "heures" %}
-		
-		<div class='center'>
-				<img src='charts/drawLinePlotWithLegend.php?legend={{ result.legend|serialize|urlencode }}&value={{ result.result.0|serialize|urlencode }}&absc={{ heures|urlencode }}'></img>
-		</div>
-	{% else %}
-			{% include "report/generate_tab.twig" %}
-	{% endif %}
+    <script type="text/javascript">
+    </script>
+
+    {% if filters|length > 0 %}
+        <div class='current_filter'>{{ currentfilter }}</div>
+    {% endif %}
+
+    {% if is_nav %}
+        {% for result in result %}
+            <div class="graph">
+                {% include "report/generate_tab.twig" %}
+                {% if result.legend|length > 1 %}
+                    <div class='center' ><img src='charts/draw_pie.php?value={{ result.value|serialize|urlencode }}&legend={{ result.legend|serialize|urlencode }}&title={{ result.title|serialize|urlencode }}' ></img></div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% elseif is_plot %}
+        {% include "report/generate_tab.twig" %}
+        {% set heures = "heures" %}
+
+        <div class='center'>
+                <img src='charts/drawLinePlotWithLegend.php?legend={{ result.legend|serialize|urlencode }}&value={{ result.result.0|serialize|urlencode }}&absc={{ heures|urlencode }}'></img>
+        </div>
+    {% else %}
+            {% include "report/generate_tab.twig" %}
+    {% endif %}
 {% endblock %}

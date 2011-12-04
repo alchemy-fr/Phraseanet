@@ -1,0 +1,82 @@
+{% extends "prod/actions/Bridge/wrapper.twig"%}
+{% import "prod/actions/Bridge/macro_error_form.twig" as error_form %}
+
+{% block menu %}
+<table style="width:100%;height:30px;">
+  <tr>
+    <td style="width:10px;">
+    </td>
+    <td>
+      {% trans %}Edition de 1 element{% endtrans %}
+    </td>
+    <td style="text-align:right;">
+      <a href="#" class="back_link">{% trans 'boutton::annuler' %}</a>
+    </td>
+    <td style="width:10px;">
+    </td>
+  </tr>
+</table>
+{% endblock %}
+
+{% block response %}
+<form class="form_add_container bridge_form" action="/prod/bridge/action/{{ account.get_id() }}/{{action}}/{{element_type}}/" method="post">
+  <table>
+    <tr>
+      <td class='column_left'>
+        <label for="modif_title">{% trans 'Titre' %}</label>
+      </td>
+      <td class='column_right'>
+        <input name="modif_title" type="text" value="{{element.get_title}}" />
+        {{ error_form.display_errors('title', constraint_errors) }}
+      </td>
+    </tr>
+    <tr>
+      <td class='column_left'>
+        <label for="modif_description">{% trans 'Description' %}</label>
+      </td>
+      <td class='column_right'>
+        <textarea name="modif_description" rows="3" >{{element.get_description()|default("")}}</textarea>
+        {{ error_form.display_errors('description', constraint_errors) }}
+      </td>
+    </tr>
+    <tr>
+      <td class='column_left'>
+        <label for="modif_tags">{% trans 'Tags' %}</label>
+      </td>
+      <td class='column_right'>
+        <textarea  name="modif_tags" rows="3" >{{element.get_tags()|default("")}}</textarea>
+        {{ error_form.display_errors('tags', constraint_errors) }}
+      </td>
+    </tr>
+    <tr>
+      <td class='column_left'>
+        <label for="modif_category">{% trans 'Categorie' %}</label>
+      </td>
+      <td class='column_right'>
+        {% set categorie = account.get_api().get_connector.get_category_list() %}
+        <select name="modif_category">
+          {% for key, value in categorie  %}
+            <option {{element.get_category == key ? "selected='selected'" : "" }} value="{{key}}" >{{value}}</option>
+          {% endfor %}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td class='column_left'>{% trans 'Confidentialite' %}</td>
+      <td class='column_right'>
+        <div class='bridge_fleft'>
+          <span>Privé</span>
+          <input type="radio" name="modif_privacy" value="private" {{element.is_private ? "checked='checked'" : ""}} />
+        </div>
+        <div class='bridge_fleft'>
+          <span>public</span>
+          <input type="radio" name="modif_privacy"  value="public" {{element.is_private ? "" : "checked='checked'"}}/>
+        </div>
+      </td>
+    </tr>
+  </table>
+  <input type="hidden" name="elements_list[]" value="{{element.get_id}}" />
+  <button class="form_submitter">{% trans 'boutton::valider' %}</button>
+  <a target="#" class="back_link">{% trans 'boutton::annuler' %}</a>
+</form>
+{% endblock %}

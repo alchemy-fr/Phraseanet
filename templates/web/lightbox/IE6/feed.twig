@@ -1,0 +1,162 @@
+{% extends "common/index.twig" %}
+
+{% import 'common/thumbnail.html' as thumbnail %}
+{% import 'common/caption_templates/preview.html' as caption %}
+
+{% block javascript %}
+    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+        <script type="text/javascript" src="/include/minify/g=lightboxie6"></script>
+        <script type="text/javascript" src="include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+{% endblock %}
+
+{% block stylesheet %}
+    <link type="text/css" rel="stylesheet"
+        href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/lightbox/lightboxie6.css" media="screen"/>
+{% endblock %}
+
+{% block content %}
+    <div id="innerWrapper" style="top:10px;left:10px;position:relative;width:100%;height:100%;">
+        <div id="innerTop" style="bottom:186px;position:relative;bottom:0;width:100%;">
+
+            <div id="record_wrapper" class="single PNBleft" style="overflow:hidden;">
+                <div id="record_main" class="record_display_box PNBleft" style="">
+                    <div class="header ui-widget-header ui-corner-all left">
+                        <table cellspacing="0" cellpadding="0" border="0" style="width:100%;height:100%;">
+                            <tr valign="middle">
+                                <td style="width:10px;"></td>
+                                <td style="width:35px;text-align:center;">
+                                    <div class="display_id">{% if first_item %}{{first_item.get_order()}}{% endif %}</div>
+                                </td>
+                                <td style="text-align:left;width:auto;">
+                                    <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
+                                        {% if first_item %}{{first_item.get_record().get_title}}{% endif %}
+                                    </div>
+                                </td>
+                                <td style="text-align:right;width:230px;">
+                                    <div class="options">
+                                        {% include 'lightbox/IE6/sc_options_box.twig' %}
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="container left">
+                        {% if first_item %}
+              {% set preview = first_item.get_record().get_preview() %}
+              {{thumbnail.format(preview, preview.get_width(), preview.get_height(),'',session, false)}}
+            {% endif %}
+                        {% include 'lightbox/selector_box.twig' %}
+                        {% include 'lightbox/sc_note.twig' %}
+                    </div>
+                </div>
+                <div id="record_compare" class="record_display_box PNBleft">
+                    <div class="header ui-widget-header ui-corner-all left">
+                        <table cellspacing="0" cellpadding="0" border="0" style="width:100%;height:100%;">
+                            <tr valign="middle">
+                                <td style="width:10px;"></td>
+                                <td style="width:35px;text-align:center;">
+                                    <div class="display_id"></div>
+                                </td>
+                                <td style="text-align:left;width:auto;">
+                                    <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
+                                        {% if first_item %}{{first_item.get_record().get_title}}{% endif %}
+                                    </div>
+                                </td>
+                                <td style="text-align:right;width:230px;">
+                                    <div class="options"></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="container left">
+                    </div>
+                </div>
+            </div>
+            <div id="right_column" class="PNBleft" style="width:250px;overflow-y:scroll;overflow-x:hidden;background-color:#1f1e1b;">
+                <div class="right_column_title unselectable left" style="width:230px;height:30px;">
+                    <table style="border:none;width:215px;height:30px;" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td>
+                                <img class="collapsed" src="/skins/lightbox/collapsedie6.gif"/>
+                                <span class="caption">{% trans 'notice'%}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;">
+                    <div id="record_infos">
+                        <div class="container">
+              {% if first_item %}
+                {{caption.format_caption(first_item.get_record())}}
+              {% endif %}
+            </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+        </div>
+        <div id="innerBottom" style="position:relative;bottom:0;width:100%;height:196px;">
+            <div class="" style="height:30px;width:100%;">
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td>
+                            <select id="navigation">
+                                <optgroup label="{% trans 'Validations'%}">
+                                {% for key,baskets in baskets_collection.get_baskets() %}
+                                    {% if key == 'baskets' %}
+                                        {% for item in baskets %}
+                                            {% if item.is_valid() %}
+                                                <option {% if basket.get_ssel_id() == item.get_ssel_id() %} selected="selected" {% endif %}
+                                                    value="{{item.get_ssel_id()}}">{{item.get_name()}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                                </optgroup>
+                                <optgroup label="{% trans 'Paniers'%}">
+                                {% for key,baskets in baskets_collection.get_baskets() %}
+                                    {% if key == 'baskets' or key == 'recept' %}
+                                        {% for item in baskets %}
+                                            {% if item.is_valid() == false %}
+                                                <option {% if basket.get_ssel_id() == item.get_ssel_id() %} selected="selected" {% endif %}
+                                                    value="{{item.get_ssel_id()}}">{{item.get_name()}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                                </optgroup>
+                            </select>
+                            <button class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
+                                <img src="/skins/lightbox/save.png"/>
+                            </button>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="" style="width:100%;position:relative;height:166px;overflow-x:hidden;overflow-y:hidden;">
+                <div class="" id="sc_wrapper" style="width:100%;position:relative;overflow-x:auto;overflow-y:hidden;">
+                    {% include 'lightbox/IE6/feed_container.twig' %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="report" style="display:none;">
+    </div>
+    <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
+
+{% endblock %}
+
+

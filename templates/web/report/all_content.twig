@@ -1,369 +1,57 @@
 {% extends "common/index.twig" %}
 
 {% block stylesheet %}
-	<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/report/jquery-ui.css,skins/report/jquery-ui-2.css,skins/report/report-table.css,skins/report/jquery.cluetip.css" media="screen" />
-	<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/report/print.css" media="print" />
-{% endblock %}
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/report/jquery-ui.css,skins/report/jquery-ui-2.css,skins/report/report-table.css,skins/report/jquery.cluetip.css,include/jslibs/jquery.contextmenu.css" media="screen" />
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/report/print.css" media="print" />
+{% endblock stylesheet %}
 
 {% block icon %}
-	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-{% endblock %}
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+{% endblock  icon%}
 
 {% block javascript %}
-	{#<script type="text/javascript"  src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script>#}
-	<script type="text/javascript" >
-			var usrId = '{{ usr_id }}' ;
-			
-			var language = {
-				valider : '{% trans "boutton::valider" %}',
-				choix_collection : '{% trans "veuillez choisir au minimum une collection" %}',
-				annuler : '{% trans "boutton::annuler" %}',
-				fermer : '{% trans "boutton::fermer" %}'
-			};
-	
-			var date = {
-				dmin :  '{{ dashboard_array.dmin_req }}',
-				dmax : '{{ dashboard_array.dmax_req }}'
-			};
-	</script>
-	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
-	<script type="text/javascript" src="/include/minify/g=report"></script>
-	<script type="text/javascript" src="/include/jslibs/jquery.gvChart-0.1.js"></script>
-	<script type="text/javascript">
-		gvChartInit();
-	</script>
-	<script type="text/javascript">
-    	$(document).ready(function(){
-			$("#query").unbind("change").bind("change", function(){
-				var $this = $(this);
-				var height = $this.next(".aroundTable:first").height();
-				var $id_graph = $(this).find("option:selected").val();
-				$.ajax({
-					type: "POST",
-					url: "ajax_chart.php",
-					dataType: 'json',
-					data: {
-						id : $id_graph
-					},
-					beforeSend:function(){
-						$this.next(".aroundTable:first").height(height);
-						$this.next(".aroundTable:first").empty();
-						$this.next(".aroundTable:first").addClass('onloadd');
-					},
-					success: function(data){
-						$this.next(".aroundTable:first").empty().append(data.rs);
-						$('#mytableday').gvChart({
-							chartType: 'LineChart',
-							gvSettings: {
-								colors:['yellow', '#B9D135'],
-								titleTextStyle:{
-									color: '#FF8D1C', 
-									fontSize: '20'
-								},
-				    			vAxis: {
-				    				title: '{% trans "report::Nombre de connexions" %}',
-				    				textStyle: {
-				   						fontSize: '10',
-				   						color: '#AAAAAA'
-				   					}
-				   				},
-				   				hAxis: {	
-				   					title: '{% trans "report:: jour" %}',
-				   					textStyle: {
-				   						fontSize: '10',
-				   						color: '#AAAAAA'
-				       					},
-				       					tooltipTextStyle: {
-				       						fontSize: 4
-				       					},
-		       							showTextEvery: 4
-				       				},
-				   				lineWidth: 1,
-				   				pointSize: 2,
-				   				backgroundColor: '#555555',
-				    			width: 900,
-				    			height: 400
-				   			}
-						});
-					}
-				});
-			});
-			
-			
-			$("#chart_detail").unbind("click").bind("click", function(){
-				$("#chartdetail").toggle();
-			});
-			
-			if($('#mytableday').length > 0)
-			{
-				$('#mytableday').gvChart({
-					chartType: 'LineChart',
-					gvSettings: {
-						colors:['yellow', '#B9D135'],
-						titleTextStyle:{
-							color: '#FF8D1C', 
-							fontSize: '20'
-						},
-		    			vAxis: {
-		    				title: '{% trans "report::Nombre de connexions" %}',
-		    				textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		   					}
-		   				},
-		   				hAxis: {	
-		   					title: '{% trans "report:: jour" %}',
-		   					textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		       					},
-		       					tooltipTextStyle: {
-		       						fontSize: 4
-		       					},
-		       					showTextEvery: 4
-		       				},
-		   				lineWidth: 1,
-		   				pointSize: 2,
-		   				backgroundColor: '#555555',
-		    			width: 900,
-		    			height: 400
-		   			}
-				});
-			}
-			
-			$("#chartdetail").hide();
-			
-			if($('#mytabledaytotal').length > 0)
-			{
-				$('#mytabledaytotal').gvChart({
-					chartType: 'LineChart',
-					gvSettings: {
-						titleTextStyle:{
-							color: '#FF8D1C', 
-							fontSize: '20'
-						},
-		    			vAxis: {
-		    				title: '{% trans "report::Nombre de connexions" %}',
-		    				textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		   					}
-		   				},
-		   				hAxis: {	
-		   					title: '{% trans "report:: jour" %}',
-		   					textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		       					},
-		       					tooltipTextStyle: {
-		       						fontSize: 4
-		       					},
-		       					showTextEvery: 4
-		       				},
-		   				lineWidth: 1,
-		   				pointSize: 2,
-		   				backgroundColor: '#555555',
-		    			width: 900,
-		    			height: 400
-		   			}
-				});
-			}
-			
-			if($('#mytablehour').length > 0)
-			{
-				$('#mytablehour').gvChart({
-					chartType: 'LineChart',
-					gvSettings: {
-		    			colors:['white', '#FFFFFF'],
-						titleTextStyle:{
-							color: '#FF8D1C', 
-							fontSize: '20'
-						},
-		    			vAxis: {
-		    				title: '{% trans "report::Nombre de connexions" %}',
-		    				textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		   					}
-		   				},
-		   				hAxis: {	
-		   					title: '{% trans "report:: Heures" %}',
-		   					textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		       				},
-	       					tooltipTextStyle: {
-	       						fontSize: 4
-	       					},
-	       					slantedTex: true,
-	       					slantedTextAngle: 90,
-	       					maxAlternation: 1,
-	       					showTextEvery: 1
-	       				},
-		   				lineWidth: 1,
-		   				pointSize: 3,
-		   				backgroundColor: '#555555',
-		    			width: 900,
-		    			height: 400
-		   			}
-				});
-			}
-				
-			if($('#mytableadded').length > 0)
-			{
-				$('#mytableadded').gvChart({
-					chartType: 'ColumnChart',
-					gvSettings: {
-						colors:['white', '#FFFFFF'],
-						titleTextStyle:{
-							color: '#FF8D1C', 
-							fontSize: '20'
-						},
-		    			vAxis: {
-		    				title: '{% trans "report::Nombre de document ajoute" %}',
-		    				textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		   					}
-		   				},
-		   				hAxis: {	
-		   					title: '{% trans "report:: jour" %}',
-		   					textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		       					},
-		       					tooltipTextStyle: {
-		       						fontSize: 4
-		       					},
-		       					showTextEvery: 4
-		       				},
-		  
-		       				legend: 'none',
-		   				lineWidth: 1,
-		   				pointSize: 3,
-		   				backgroundColor: '#555555',
-		    			width: 900,
-		    			height: 400
-		   			}
-				});
-			}
-			
-			if($('#mytableedited').length > 0)
-			{
-				$('#mytableedited').gvChart({
-					chartType: 'ColumnChart',
-					gvSettings: {
-						colors:['white', '#FFFFFF'],
-						titleTextStyle:{
-							color: '#FF8D1C', 
-							fontSize: '20'
-						},
-		    			vAxis: {
-		    				title: '{% trans "report::Nombre de document edite" %}',
-		    				textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		   					}
-		   				},
-		   				hAxis: {	
-		   					title: '{% trans "report:: jour" %}',
-		   					textStyle: {
-		   						fontSize: '10',
-		   						color: '#AAAAAA'
-		       					},
-		       					tooltipTextStyle: {
-		       						fontSize: 4
-		       					},
-		       					showTextEvery: 4
-		       				},
-		  
-		       				legend: 'none',
-		   				lineWidth: 1,
-		   				pointSize: 3,
-		   				backgroundColor: '#555555',
-		    			width: 900,
-		    			height: 400
-		   			}
-				});
-			}
-		});//end document ready
-	</script>
-{% endblock %}
+    {#<script type="text/javascript"  src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script>#}
+    <script type="text/javascript" >
+
+            var usrId = '{{ dashboard.usr.get_id() }}' ;
+
+            var language = {
+                valider : '{% trans "boutton::valider" %}',
+                choix_collection : '{% trans "veuillez choisir au minimum une collection" %}',
+                annuler : '{% trans "boutton::annuler" %}',
+                fermer : '{% trans "boutton::fermer" %}',
+        connexion : '{% trans "report:: Connexion" %}',
+        heure : '{% trans "report::Heures" %}'
+            };
+
+            var date = {
+                dmin :  '{{ dashboard.dmin }}',
+                dmax : '{{ dashboard.dmax }}'
+            };
+
+            var dashboard ={
+                title_connexion : '{% trans "report::Nombre de connexions" %}',
+                title_jour : '{% trans "report:: jour" %}',
+                title_heure : '{% trans "report:: Heures" %}',
+                title_doc_add: '{% trans "report::Nombre de document ajoute" %}',
+                title_doc_edit:'{% trans "report::Nombre de document edite" %}'
+            }
+
+    </script>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+  <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/minify/g=report"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.gvChart-0.1.js"></script>
+    <script type="text/javascript">
+        gvChartInit();
+    </script>
+
+{% endblock javascript%}
 
 {% block content %}
-<div id="form-container" >
-	<div id="mainTabs">
-		<ul id="navigation">
-	  		<li><a href="#dash">{% trans "report:: Dashboard" %}</a></li>
-	      	<li><a href="#report-connexions">{% trans "report:: Connexion" %}</a></li>
-	    	<li><a href="#report-telechargement">{% trans "report:: telechargements" %}</a></li>
-	     	<li><a href="#report-activite">{% trans "report:: activite du site" %}</a></li>
-	    </ul>
-		{# DASH #}
-		<div id="dash" class="inside-container">
-			<div class="answers">
-				<div class="content">
-					<div id='dashboard'>
-						<div id="title_dash" class="center" >{% trans "report:: Dashboard" %}</div>
-						<div id="periode_dash" class="center" >{{ dashboard_array.dminv }} - {{ dashboard_array.dmaxv }}</div>
-						<div id="liste_dash"  class="center">{{ dashboard_array.liste_base }}</div>
-						<div id="dashboard-table" >
-							{%block dashboard_content %}{% endblock %}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		{# FORM #}
-		<div id="report-connexions" class="inside-container">
-			<form class="form"  >
-				{% block form_date_and_base %}{% endblock %}
-				{% block main_form_connexion %}{% endblock %}
-			</form>
-			{% include "report/panel_hide_button.twig" %}
-			<div class="answers">
-				<div class="content">
-					{% if ajax %}
-						{% include "report/ajax_report_content.twig" %}
-					{%endif%}
-				</div>
-			</div>
-		</div>
-		{# FORM #}
-		<div id="report-telechargement" class="inside-container">
-			<form class="form"  >
-				{% display form_date_and_base %}
-				{% block main_form_telechargement %}{% endblock %}
-			</form>
-			{% include "report/panel_hide_button.twig" %}
-			<div class="answers">
-				<div class="content">
-					{% if ajax %}
-						{% include "report/ajax_report_content.twig" %}
-					{%endif%}
-				</div>
-			</div>
-		</div>
-		{# FORM #}
-		<div id="report-activite" class="inside-container">
-			<form class="form"  >
-				{% display form_date_and_base %}
-				{% block main_form_activite %}{% endblock %}
-			</form>
-			{% include "report/panel_hide_button.twig" %}
-			<div class="answers">
-				<div class="content">
-					{% if ajax %}
-						{% include "report/ajax_report_content.twig" %}
-					{%endif%}
-				</div>
-			</div>
-		</div>
-	{# END MAINTABS #}	
-	</div>
-	{# END FORM CONTAINER #}
-</div>
-<iframe name="iframe" style="display:none;"></iframe>
-{% endblock %}
+  {% block report_layout %}
+  {% endblock report_layout %}
+  <div id="DIALOG" style="color:white;"></div>
+{% endblock content %}
 

@@ -7,7 +7,7 @@ $(document).ready(function(){
 });
 
 
-function getNewVideoToken(base_id, record_id, obj)
+function getNewVideoToken(sbas_id, record_id, obj)
 {
 	$.ajax({
 		type: "POST",
@@ -15,7 +15,7 @@ function getNewVideoToken(base_id, record_id, obj)
 		dataType: 'json',
 		data: {
 			action:'VIDEOTOKEN',
-			base_id : base_id,
+			sbas_id : sbas_id,
 			record_id : record_id
 		},
 		success: function(data){
@@ -36,32 +36,11 @@ function openPreview(env, pos, contId, reload){
 		contId = '';
 	var roll = 0;
 	var justOpen = false;
-//	if (env == 'RESULT')
-//		$('#PREVIEWCURRENT').height(40);
-//	else
-//		$('#PREVIEWCURRENT').height(116);
 
 	if (!p4.preview.open) {
 		showOverlay();
 
 		$('#PREVIEWIMGCONT').disableSelection();
-
-		$('#PREVIEWIMGCONT.dblclick').bind('dblclick',function(event){
-			$(this).find('.zoomable').removeClass('zoomed');
-			setPreview();
-		}).bind('mousewheel',function(event, delta){
-			$(this).find('.zoomable').addClass('zoomed');
-			if(delta > 0)
-			{
-				event.stopPropagation();
-				zoomPreview(true);
-			}
-			else
-			{
-				event.stopPropagation();
-				zoomPreview(false);
-			}
-		}).removeClass('dblclick');
 
 		justOpen = true;
 
@@ -94,7 +73,10 @@ function openPreview(env, pos, contId, reload){
 		'display': 'none'
 	});
 
-	empty_preview();
+	$('#PREVIEWIMGCONT').empty();
+
+  var options_serial = p4.tot_options;
+  var query = p4.tot_query;
 
 	prevAjax = $.ajax({
 		type: "POST",
@@ -105,7 +87,9 @@ function openPreview(env, pos, contId, reload){
 			env: env,
 			pos: pos,
 			cont: contId,
-			roll: roll
+			roll: roll,
+      options_serial:options_serial,
+      query:query
 		},
 		beforeSend: function(){
 			if (prevAjaxrunning)
@@ -114,7 +98,6 @@ function openPreview(env, pos, contId, reload){
 				$('#current_result_n').empty().append(parseInt(pos)+1);
 			prevAjaxrunning = true;
 			$('#PREVIEWIMGDESC, #PREVIEWOTHERS').addClass('loading');
-      empty_preview();
 		},
 		error: function(data){
 			prevAjaxrunning = false;
@@ -139,17 +122,13 @@ function openPreview(env, pos, contId, reload){
 					closePreview();
 				return;
 			}
+			posAsk = data.pos - 1;
 
-      if((data.type == 'video'))
-      {
-    		$('#PREVIEWIMGCONT').html(data.prev_html);
-      }
-      else
-      {
-    		$('#PREVIEWIMGCONT').html(data.prev);
-      }
+			$('#PREVIEWIMGCONT').empty().append(data.html_preview);
+      $('#PREVIEWIMGCONT .thumb_wrapper')
+        .width('100%').height('100%').image_enhance({zoomable:true});
 
-      $('#PREVIEWIMGDESCINNER').empty().append(data.desc);
+			$('#PREVIEWIMGDESCINNER').empty().append(data.desc);
 			$('#HISTORICOPS').empty().append(data.history);
 			$('#popularity').empty().append(data.popularity);
 
@@ -166,83 +145,26 @@ function openPreview(env, pos, contId, reload){
 				BitlyClient.stats($('#popularity .bitly_link').html(), 'BitlyCB.statsResponse');
 			}
 
-
 			p4.preview.current = {};
-			p4.preview.current.width = data.width;
-			p4.preview.current.height = data.height;
-			p4.preview.current.prev = data.prev;
+			p4.preview.current.width = parseInt($('#PREVIEWIMGCONT input[name=width]').val());
+			p4.preview.current.height = parseInt($('#PREVIEWIMGCONT input[name=height]').val());
 			p4.preview.current.tot = data.tot;
-			p4.preview.current.hd = data.hd;
-			p4.preview.current.hdH = data.hdH;
-			p4.preview.current.hdW = data.hdW;
-			p4.preview.current.type = data.type;
 			p4.preview.current.pos = data.pos;
-			p4.preview.current.flashcontent = data.flashcontent;
 
-			if ((data.type == 'video' || data.type == 'audio' || data.type == 'flash'))
-      {
-				if(data.type != 'video' && p4.preview.current.flashcontent.url)
-				{
-					var flashvars = false;
-					var params = {
-						menu: "false",
-						flashvars: p4.preview.current.flashcontent.flashVars,
-						movie: p4.preview.current.flashcontent.url,
-						allowFullScreen :"true",
-						wmode: "transparent"
-					};
-					var attributes = false;
-					if (data.type != 'audio') {
-						attributes = {
-							styleclass: "PREVIEW_PIC"
-						};
-					}
-					swfobject.embedSWF(p4.preview.current.flashcontent.url, "FLASHPREVIEW", p4.preview.current.flashcontent.width, p4.preview.current.flashcontent.height, "9.0.0", false, flashvars, params, attributes);
-				}
-				else
-				{
-//          alert(data.flashcontent.flv);
-//          try
-//          {
-//					flowplayer("FLASHPREVIEW",  {src:"/include/flowplayer/flowplayer-3.2.6.swf", wmode: "transparent"}, {
-//							clip: {
-//								autoPlay: true,
-//								autoBuffering:true,
-//								provider: 'h264streaming',
-//								metadata: false,
-//								scaling:'fit',
-//							    url: data.flashcontent.flv
-//							},
-//							onError:function(code,message){getNewVideoToken(data.base_id, data.record_id, this);},
-//							plugins: {
-//								h264streaming: {
-//								url: '/include/flowplayer/flowplayer.pseudostreaming-3.2.6.swf'
-//							}
-//						}
-//					});
-//          $('#PREVIEWIMGDESCINNER').empty().append('<textarea></textarea>').find('textarea').val($('#FLASHPREVIEW').html());
-//
-//          }
-//          catch(err)
-//          {
-//            alert(err);
-//          }
-				}
-			}
-
-			if($('img.PREVIEW_PIC.zoomable').length > 0)
+      if($('#PREVIEWBOX img.record.zoomable').length > 0)
 			{
-				$('img.PREVIEW_PIC.zoomable').draggable();
+				$('#PREVIEWBOX img.record.zoomable').draggable();
 			}
 
 			setTitle(data.title);
 			setPreview();
 
-			if (env == 'REG' || (env == 'BASK' && data.current !== '')) {
+      if(env != 'RESULT')
+      {
 				setCurrent(data.current);
 				viewCurrent($('#PREVIEWCURRENT li.selected'));
 			}
-			if(env == 'RESULT')
+			else
 			{
 				if(!justOpen)
 				{
@@ -251,7 +173,7 @@ function openPreview(env, pos, contId, reload){
 				}
 				if(justOpen || ($('#PREVIEWCURRENTCONT li.current'+pos).length === 0) ||  ($('#PREVIEWCURRENTCONT li:last')[0] == $('#PREVIEWCURRENTCONT li.selected')[0]) ||  ($('#PREVIEWCURRENTCONT li:first')[0] == $('#PREVIEWCURRENTCONT li.selected')[0]))
 				{
-					getAnswerTrain(pos, data.tools);
+					getAnswerTrain(pos, data.tools, query,options_serial);
 				}
 
 				viewCurrent($('#PREVIEWCURRENT li.selected'));
@@ -283,7 +205,7 @@ function openPreview(env, pos, contId, reload){
 
 function zoomPreview(bool){
 
-	var el = $('img.PREVIEW_PIC');
+	var el = $('#PREVIEWIMGCONT img.record');
 
 	if(el.length === 0)
 		return;
@@ -314,7 +236,7 @@ function zoomPreview(bool){
 	h2 = Math.round(w2 / ratio);
 	w2 = Math.round(w2);
 
-	var t2 = Math.round(t1 - (h2 - h1) / 2)+'px';
+	t2 = Math.round(t1 - (h2 - h1) / 2)+'px';
 	var l2 = Math.round(l1 - (w2 - w1) / 2)+'px';
 
 	var wPreview = $('#PREVIEWIMGCONT').width()/2;
@@ -329,7 +251,7 @@ function zoomPreview(bool){
 	}).width(w2).height(h2);
 }
 
-function getAnswerTrain(pos, tools)
+function getAnswerTrain(pos, tools, query,options_serial)
 {
 	$('#PREVIEWCURRENTCONT').fadeOut('fast');
 	$.ajax({
@@ -338,14 +260,15 @@ function getAnswerTrain(pos, tools)
 		dataType: 'json',
 		data: {
 			action: "ANSWERTRAIN",
-			pos:pos
+			pos:pos,
+      options_serial:options_serial,
+      query:query
 
 		},
 		success: function(data){
 			setCurrent(data.current);
 			viewCurrent($('#PREVIEWCURRENT li.selected'));
 			setTools(tools);
-//			setTools(tools);
 			return;
 		}
 	});
@@ -384,20 +307,10 @@ function setTitle(title){
 
 function cancelPreview(){
 	$('#PREVIEWIMGDESCINNER').empty();
-	empty_preview();
+	$('#PREVIEWIMGCONT').empty();
 	p4.preview.current = false;
 }
 
-function empty_preview()
-{
-  var player_cont = $('#PREVIEWIMGCONT object').parent();
-  if(player_cont.attr('id') != 'PREVIEWIMGCONT')
-  {
-    player_cont.empty();
-    player_cont.remove();
-  }
-  $('#PREVIEWIMGCONT').empty();
-}
 
 function startSlide(){
 	if (!p4.slideShow) {
@@ -433,14 +346,11 @@ function stopSlide(){
 //var posAsk = null;
 
 function getNext(){
-	if (p4.preview.mode == 'REG' && parseInt(p4.preview.current.pos) == 0)
+	if (p4.preview.mode == 'REG' && parseInt(p4.preview.current.pos) === 0)
 		$('#PREVIEWCURRENTCONT li img:first').trigger("click");
 	else {
 		if (p4.preview.mode == 'RESULT') {
-			if(posAsk != null)
-				posAsk += 1;
-			else
-				posAsk = parseInt(p4.preview.current.pos) + 1;
+			posAsk = parseInt(p4.preview.current.pos) + 1;
 			posAsk = (posAsk > parseInt(p4.tot) || isNaN(posAsk)) ? 0 : posAsk;
 			openPreview('RESULT', posAsk);
 		}
@@ -459,11 +369,9 @@ function reloadPreview(){
 }
 
 function getPrevious(){
-	if (p4.preview.mode == 'RESULT') {
-		if(posAsk != null)
-			posAsk -= 1;
-		else
-			posAsk = parseInt(p4.preview.current.pos) - 1;
+	if (p4.preview.mode == 'RESULT')
+  {
+		posAsk = parseInt(p4.preview.current.pos) - 1;
 		posAsk = (posAsk < 0) ? ((parseInt(p4.tot) - 1)) : posAsk;
 		openPreview('RESULT', posAsk);
 	}
@@ -479,7 +387,7 @@ function getPrevious(){
 function setOthers(others){
 
 	$('#PREVIEWOTHERSINNER').empty();
-	if (others != '') {
+	if (others !== '') {
 		$('#PREVIEWOTHERSINNER').append(others);
 
 		$('#PREVIEWOTHERS table.otherRegToolTip').tooltip();
@@ -500,7 +408,7 @@ function setTools(tools){
 }
 
 function setCurrent(current){
-	if (current != '') {
+	if (current !== '') {
 		var el = $('#PREVIEWCURRENT');
 		el.removeClass('loading').empty().append(current);
 
@@ -519,7 +427,7 @@ function setCurrent(current){
 }
 
 function viewCurrent(el){
-	if (el.length == 0)
+	if (el.length === 0)
 	{
 		return;
 	}
@@ -533,32 +441,32 @@ function setPreview(){
 	if (!p4.preview.current)
 		return;
 
-	var zoomable = $('img.PREVIEW_PIC.zoomable');
+	var zoomable = $('img.record.zoomable');
 	if(zoomable.length > 0 && zoomable.hasClass('zoomed'))
 		return;
 
 	var h = parseInt(p4.preview.current.height);
 	var w = parseInt(p4.preview.current.width);
-	if(p4.preview.current.type == 'video')
-	{
-		var h = parseInt(p4.preview.current.flashcontent.height);
-		var w = parseInt(p4.preview.current.flashcontent.width);
-	}
+//	if(p4.preview.current.type == 'video')
+//	{
+//		var h = parseInt(p4.preview.current.flashcontent.height);
+//		var w = parseInt(p4.preview.current.flashcontent.width);
+//	}
 	var t=20;
 	var de = 0;
 
 	var margX = 0;
 	var margY = 0;
 
-	if(p4.preview.current.type == 'audio')
+	if($('#PREVIEWIMGCONT .record_audio').length > 0)
 	{
-		var margY = 100;
+		margY = 100;
 		de = 60;
 	}
 
 
-	if(p4.preview.current.type != 'flash')
-	{
+//	if(p4.preview.current.type != 'flash')
+//	{
 		var ratioP = w / h;
 		var ratioD = parseInt(p4.preview.width) / parseInt(p4.preview.height);
 
@@ -575,16 +483,16 @@ function setPreview(){
 				h = Math.round(w / ratioP);
 			}
 		}
-	}
-	else
-	{
+//	}
+//	else
+//	{
 
-		h = Math.round(parseInt(p4.preview.height) - margY);
-		w = Math.round(parseInt(p4.preview.width) - margX);
-	}
+//		h = Math.round(parseInt(p4.preview.height) - margY);
+//		w = Math.round(parseInt(p4.preview.width) - margX);
+//	}
 	t = Math.round((parseInt(p4.preview.height) - h - de) / 2);
 	var l = Math.round((parseInt(p4.preview.width) - w) / 2);
-	$('#PREVIEWIMGCONT .PREVIEW_PIC').css({
+	$('#PREVIEWIMGCONT .record').css({
 		width: w,
 		height: h,
 		top: t,
@@ -609,7 +517,6 @@ function doudouMode(){
 
 function closePreview(){
 	p4.preview.open = false;
-  empty_preview();
 	hideOverlay();
 
 	$('#PREVIEWBOX').fadeTo(500, 0);
@@ -620,50 +527,4 @@ function closePreview(){
 		cancelPreview();
 		$(this).dequeue();
 	});
-}
-
-
-function fullScreen(){
-	var url = '';
-	var dHd = false;
-	$('#PREVIEWHD').empty();
-	$('#PREVIEWHD').show();
-
-	if ((p4.preview.current.width / bodySize.x) < 0.6 && (p4.preview.current.height / bodySize.y) < 0.6) {
-		//je charge la HD
-		dHd = true;
-		if (!p4.preview.current.hd)
-			dHd = false;
-	}
-	if (dHd) {
-		$('#PREVIEWHD').append(p4.preview.current.hd);
-	}
-	else {
-		$('#PREVIEWHD').append(p4.preview.current.prev);
-	}
-	$('#PREVIEWHD .PREVIEW_PIC').removeClass('PREVIEW_PIC').addClass('PREVIEW_HD');
-
-	var h = $('.PREVIEW_HD').height();
-	var w = $('.PREVIEW_HD').width();
-	var t = 0;
-	var ratio = w / h;
-
-	if (h > bodySize.y) {
-		h = bodySize.y - 40;
-		w = h * ratio;
-	}
-	if (w > bodySize.x) {
-		w = bodySize.x - 40;
-		h = w / ratio;
-	}
-
-
-	var t = (bodySize.y - h) / 2;
-	$('.PREVIEW_HD').css({
-		width: w,
-		height: h,
-		top: t,
-		position: 'relative'
-	});
-
 }

@@ -26,12 +26,12 @@ returnMarkup($rows, $cols);
 function returnMarkup($rows, $cols) {
     // start the table
     $markup = "<table><thead><tr>";
-    
+
     // build the thead
     for($i=0; $i<$cols; $i++) {
         $markup = $markup."<th>header ".$i."</th>";
     }
-    $markup = $markup."</tr></thead><tbody>";  
+    $markup = $markup."</tr></thead><tbody>";
 
     // build the tbody
     for($j=0; $j<$rows; $j++) {

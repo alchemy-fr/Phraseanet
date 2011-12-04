@@ -1,16 +1,26 @@
 <?php
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-header("Content-Type: text/html; charset=UTF-8");
-header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");  // always modified
-header("Cache-Control: no-store, no-cache, must-revalidate");  // HTTP/1.1
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");                          // HTTP/1.0
-require( GV_RootPath . 'lib/unicode/lownodiacritics_utf8.php' );
+phrasea::headers(200, true);
+$appbox = appbox::get_instance();
+$session = $appbox->get_session();
+$registry = $appbox->get_registry();
 
-$session = session::getInstance();
-
-$request = httpRequest::getInstance();
+$request = http_request::getInstance();
 $parm = $request->get_parms(
         "bid"
         , 'piv'
@@ -27,108 +37,66 @@ $err = '';
 if ($parm["bid"] !== null)
 {
   $loaded = false;
-  $connbas = connection::getInstance($parm['bid']);
-  if ($connbas)
+  try
   {
-    $sql = "SELECT value AS xml FROM pref WHERE prop='thesaurus'";
-    if ($rsbas = $connbas->query($sql))
+    $databox = databox::get_instance((int) $parm['bid']);
+    $connbas = connection::getPDOConnection($parm['bid']);
+
+    $dom = $databox->get_dom_thesaurus();
+
+    if ($dom)
     {
-      if ($rowbas = $connbas->fetch_assoc($rsbas))
+      $err = '';
+      if ($parm['id'] == '')
       {
-        $xml = trim($rowbas["xml"]);
+        // on importe un theaurus entier
+        $node = $dom->documentElement;
+        while ($node->firstChild)
+          $node->removeChild($node->firstChild);
 
-        $dom = new DOMDocument();
-        $dom->formatOutput = true;
-        $dom->preserveWhiteSpace = false;
-        if (($dom->loadXML($xml)))
-        {
-          $err = '';
-          if ($parm['id'] == '')
-          {
-            // on importe un thï¿½saurus entier
-            $node = $dom->documentElement;
-            while ($node->firstChild)
-              $node->removeChild($node->firstChild);
-
-            $err = importFile($dom, $node);
-          }
-          else
-          {
-            // on importe dans une branche
-            $err = 'not implemented';
-          }
-
-          if (!$err)
-          {
-            $imported = true;
-            $dom->documentElement->setAttribute('modification_date', date("YmdHis"));
-
-            $sql = 'UPDATE pref SET value=\'' . $connbas->escape_string($dom->saveXML()) . '\' WHERE prop="thesaurus"';
-            $connbas->query($sql);
-
-            $cache_abox = cache_appbox::getInstance();
-            $cache_abox->delete('thesaurus_' . $parm['bid']);
-          }
-        }
+        $err = importFile($dom, $node);
       }
-      $connbas->free_result($rsbas);
+      else
+      {
+        // on importe dans une branche
+        $err = 'not implemented';
+      }
+
+      if (!$err)
+      {
+        $imported = true;
+        $databox->saveThesaurus($dom);
+      }
     }
 
     if (!$err)
     {
-      $sql = 'SELECT value AS struct FROM pref WHERE prop="structure"';
-      if (($rsbas = $connbas->query($sql)))
+      $meta_struct = $databox->get_meta_structure();
+
+      foreach ($meta_struct->get_elements() as $meta_field)
       {
-        if (($rowbas = $connbas->fetch_assoc($rsbas)))
-        {
-          if (($dom = @DOMDocument::loadXML($rowbas["struct"])))
-          {
-            $xp = new DOMXPath($dom);
-            $fields = $xp->query("/record/description/*");
-            for ($i = 0; $i < $fields->length; $i++)
-            {
-              $fields->item($i)->removeAttribute('tbranch');
-              $fields->item($i)->removeAttribute('newterm');
-            }
-            $dom->documentElement->setAttribute('modification_date', date("YmdHis"));
-
-            $sql = 'UPDATE pref SET value=\'' . $connbas->escape_string($dom->saveXML()) . '\' WHERE prop="structure"';
-            $connbas->query($sql);
-
-            $cache_appbox = cache_appbox::getInstance();
-            $cache_appbox->delete('list_bases');
-            cache_databox::update($parm['bid'], 'structure');
-          }
-        }
-        $connbas->free_result($rsbas);
+        $meta_field->set_tbranch('')->save();
       }
 
-      $sql = 'SELECT value AS cterms FROM pref WHERE prop="cterms"';
-      if (($rsbas = $connbas->query($sql)))
+      $dom = $databox->get_dom_cterms();
+      if ($dom)
       {
-        if (($rowbas = $connbas->fetch_assoc($rsbas)))
-        {
-          $dom = new DOMDocument();
-          $dom->formatOutput = true;
-          $dom->preserveWhiteSpace = false;
-          if (($dom->loadXML($rowbas["cterms"])))
-          {
-            $node = $dom->documentElement;
-            while ($node->firstChild)
-              $node->removeChild($node->firstChild);
-            $dom->documentElement->setAttribute('modification_date', date("YmdHis"));
+        $node = $dom->documentElement;
+        while ($node->firstChild)
+          $node->removeChild($node->firstChild);
 
-            $sql = 'UPDATE pref SET value=\'' . $connbas->escape_string($dom->saveXML()) . '\' WHERE prop="cterms"';
-            $connbas->query($sql);
-          }
-        }
-        $connbas->free_result($rsbas);
+        $databox->saveCterms($dom);
       }
 
-      // flag records as 'to reindex'
       $sql = 'UPDATE RECORD SET status=status & ~3';
-      $connbas->query($sql);
+      $stmt = $connbas->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
     }
+  }
+  catch (Exception $e)
+  {
+
   }
 }
 
@@ -142,7 +110,7 @@ else
 }
 ?>
 
-<html lang="<?php echo $session->usr_i18n; ?>">
+<html lang="<?php echo $session->get_I18n(); ?>">
   <body onload='parent.importDone("<?php print(p4string::MakeString($err, 'js')); ?>");'>
   </body>
 </html>
@@ -162,6 +130,8 @@ function importFile($dom, $node)
 {
   global $parm;
   $err = '';
+
+  $unicode = new unicode();
 
   $cbad = array();
   $cok = array();
@@ -281,9 +251,9 @@ function importFile($dom, $node)
         if ($kon)
           $v .= ' (' . $kon . ')';
         $sy->setAttribute('v', $v);
-        $sy->setAttribute('w', noaccent_utf8($syn, PARSED));
+        $sy->setAttribute('w', $unicode->remove_indexer_chars($syn));
         if ($kon)
-          $sy->setAttribute('k', noaccent_utf8($kon, PARSED));
+          $sy->setAttribute('k', $unicode->remove_indexer_chars($kon));
 
         $sy->setAttribute('lng', $lng);
 
@@ -295,12 +265,14 @@ function importFile($dom, $node)
 
     fclose($fp);
   }
+
   return($err);
 }
 
 function no_dof($dom, $node)
 {
   global $parm;
+  $unicode = new unicode();
 
   $t = $parm['t'];
 
@@ -313,8 +285,8 @@ function no_dof($dom, $node)
   $mindepth = 999999;
   foreach ($tlig as $lig)
   {
-//		echo('.');
-//		flush();
+//    echo('.');
+//    flush();
 
     if (trim($lig) == '')
       continue;
@@ -328,8 +300,8 @@ function no_dof($dom, $node)
   $tid = array(-1 => -1, 0 => -1);
   foreach ($tlig as $lig)
   {
-//		echo('-');
-//		flush();
+//    echo('-');
+//    flush();
 
     $lig = substr($lig, $mindepth);
     if (trim($lig) == '')
@@ -337,12 +309,12 @@ function no_dof($dom, $node)
     for ($depth = 0; $lig != '' && $lig[0] == "\t"; $depth++)
       $lig = substr($lig, 1);
 
-//		printf("curdepth=%s, depth=%s : %s\n", $curdepth, $depth, $lig);
+//    printf("curdepth=%s, depth=%s : %s\n", $curdepth, $depth, $lig);
 
     if ($depth > $curdepth + 1)
     {
       // error
-//			print('<span style="color:#ff0000">error over-indent at</span> \'' . $lig . "'\n");
+//      print('<span style="color:#ff0000">error over-indent at</span> \'' . $lig . "'\n");
       continue;
     }
 
@@ -416,16 +388,16 @@ function no_dof($dom, $node)
           $syn = substr($syn, 0, $ob);
         }
       }
-      /* 			
+      /*
        */
       $syn = trim($syn);
 
-      //		for($id='T',$i=0; $i<=$curdepth; $i++)
-      //			$id .= '.' . $tid[$i];
-//	$id = '?';
-//			printf("depth=%s (%s) ; sy='%s', kon='%s', lng='%s', hit='%s' \n", $depth, $id, $syn, $kon, $lng, $hit);
+      //    for($id='T',$i=0; $i<=$curdepth; $i++)
+      //      $id .= '.' . $tid[$i];
+//  $id = '?';
+//      printf("depth=%s (%s) ; sy='%s', kon='%s', lng='%s', hit='%s' \n", $depth, $id, $syn, $kon, $lng, $hit);
 
-      /* 			
+      /*
         $nid = (int)($node->getAttribute('nextid'));
         $pid = $node->getAttribute('id');
 
@@ -439,9 +411,9 @@ function no_dof($dom, $node)
       if ($kon)
         $v .= ' (' . $kon . ')';
       $sy->setAttribute('v', $v);
-      $sy->setAttribute('w', noaccent_utf8($syn, PARSED));
+      $sy->setAttribute('w', $unicode->remove_indexer_chars($syn));
       if ($kon)
-        $sy->setAttribute('k', noaccent_utf8($kon, PARSED));
+        $sy->setAttribute('k', $unicode->remove_indexer_chars($kon));
 
       $sy->setAttribute('lng', $lng);
 
@@ -451,4 +423,3 @@ function no_dof($dom, $node)
     $te->setAttribute('nextid', (string) $nsy);
   }
 }
-?>

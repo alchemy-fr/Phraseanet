@@ -1,224 +1,271 @@
 <?php
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 class lazaretFile
 {
-	protected $storage = array();
-	
-	function __construct($lazaret_id)
-	{
-		$conn = connection::getInstance();
-		
-		if(!$conn)
-			throw new Exception ('Impossible detablir la connection a la base de donnee');
-		
-		$sql = 'SELECT filename, filepath, base_id, uuid, sha256, status, created_on, usr_id FROM lazaret WHERE id="'.$conn->escape_string($lazaret_id).'"';
-		
-		$id = false;
-		
-		if($rs = $conn->query($sql))
-		{
-			if($row = $conn->fetch_assoc($rs))
-			{
-				$id = $lazaret_id;
-				$this->id 			= $lazaret_id;
-				$this->filename 	= $row['filename'];
-				$this->filepath 	= $row['filepath'];
-				$this->status 		= $row['status'];
-				$this->base_id 		= $row['base_id'];
-				$this->uuid       = $row['uuid'];
-				$this->sha256       = $row['sha256'];
-				$this->created_on 	= new DateTime($row['created_on']);
-				$this->usr_id 		= $row['usr_id'];
-			}
-			$conn->free_result($rs);
-		}
-		if(!$id)
-		{
-			throw new Exception (_('L\'element n\'existe pas ou plus'));
-		}
-	}
-	
-	public function add_to_base()
-	{
-		$conn = connection::getInstance();
-		
-		$file = GV_RootPath.'tmp/lazaret/'.$this->filepath;
-		
-		if(($record_id = p4file::archiveFile($file, $this->base_id, false, $this->filename, $this->sha256)) === false)
-			throw new Exception (_('Impossible dajouter le fichier a la base'));
-		
-		$sbas_id = phrasea::sbasFromBas($this->base_id);
-		$connbas = connection::getInstance($sbas_id);
-		if($connbas)
-		{
-			$sql = 'UPDATE record SET status = (status | '.$this->status.') WHERE record_id="'.$connbas->escape_string($record_id).'"';
-			$connbas->query($sql);
-		}	
-		
-		$this->delete();
-		
-		return $this;
-	}
-	
-	public function delete()
-	{
-		$conn = connection::getInstance();
-		
-		$sql = 'DELETE FROM lazaret WHERE id="'.$conn->escape_string($this->id).'"';
-		if($conn->query($sql))
-		{
-			$file = GV_RootPath.'tmp/lazaret/'.$this->filepath;
-			$thumbnail = $file.'_thumbnail.jpg';
-	
-			@unlink($thumbnail);
-			@unlink($file);
-		}
-		
-		return $this;
-	}
-	
-	public function substitute($lazaret_id, $record_id)
-	{
-		$conn = connection::getInstance();
-		
-		$sbas_id = phrasea::sbasFromBas($this->base_id);
-		$connbas = connection::getInstance($sbas_id);
-		
-		$base_id = false;
-		
-		$sql = 'SELECT coll_id FROM record WHERE record_id ="'.$connbas->escape_string($record_id).'"';
-		if($rs = $connbas->query($sql))
-		{
-			if($row = $connbas->fetch_assoc($rs))
-				$base_id = phrasea::baseFromColl($sbas_id, $row['coll_id']);
-			$connbas->free_result($rs);
-		}
-		
-		if(!$base_id)
-			throw new Exception(_('Impossible de trouver la base'));
-		
-		$pathfile = GV_RootPath.'tmp/lazaret/'.$this->filepath;	
-			
-		try{
-			p4file::substitute($base_id, $record_id, $pathfile, $this->filename, false);
-			$this->delete();
-		}
-		catch(Exception $e)
-		{
-			throw new Exception ($e->getMessage());
-		}		
-		return $this;
-	}
-	
-	public static function move_uploaded_to_lazaret($tmp_name, $base_id, $filename, $uuid, $sha256, $errors='', $status=false)
-	{
-		$conn = connection::getInstance();
-		$system = p4utils::getSystem();
 
-		if(!$conn)
-			return false;
+  protected $storage = array();
 
-		if(!$status)
-			$status = '0';
-		
-		$session = session::getInstance();
+  /**
+   *
+   * @param int $lazaret_id
+   * @return lazaretFile
+   */
+  function __construct($lazaret_id)
+  {
+    $conn = connection::getPDOConnection();
 
-		$usr_id = isset($session->usr_id) ? $session->usr_id : false; 
-		
-		$lazaret_root = GV_RootPath.'tmp/lazaret/';
-		$pathinfo = pathinfo($filename);
-		
-		$tmp_filename = $filename;
-		
-		$n = 1;
-		while(file_exists($lazaret_root.$tmp_filename))
-		{
-			$tmp_filename = $pathinfo['filename'].'-'.$n.'.'.$pathinfo['extension'];
-			$n++;
-		}
-		
-		$pathfile = $lazaret_root.$tmp_filename;
-		
-		rename($tmp_name, $pathfile);
-		p4::chmod($pathfile);
-		
-		$sql = 'INSERT INTO lazaret (id, filename, filepath, base_id, uuid, sha256, errors, status, created_on, usr_id)
-				VALUES (null, "'.$conn->escape_string($filename).'", "'.$conn->escape_string($tmp_filename).'"
-				, "'.$conn->escape_string($base_id).'", "'.$conn->escape_string($uuid).'", "'.$conn->escape_string($sha256).'",
-        "'.$conn->escape_string($errors).'"
-				, '.$conn->escape_string('0b'.$status).', NOW(), '.($usr_id ? '"'.$conn->escape_string($usr_id).'"' : 'NULL').')';
-		
-		
-		//create thumbnail
+    $sql = 'SELECT filename, filepath, base_id,
+                   uuid, status, created_on, usr_id
+             FROM lazaret WHERE id = :lazaret_id';
 
-		$infos = exiftool::get_fields($pathfile, array('Image Width', 'Image Height', 'Orientation', 'MIME Type'));
-		$sdsize = 300;
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':lazaret_id' => $lazaret_id));
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
 
-		if($infos['Image Width']>0 && $infos['Image Height']>0 && $infos['Image Width']<$sdsize && $infos['Image Height']<$sdsize)
-		{
-			$sdsize = max($infos['Image Width'], $infos['Image Height']);
-		}
+    if (!$row)
+      throw new Exception(_('L\'element n\'existe pas ou plus'));
 
-		if($system == 'WINDOWS')
-			$cmd = 'start /B /WAIT /LOW ' . GV_imagick;
-		else
-			$cmd = GV_imagick;
-			
-		$cmd .= ' -colorspace RGB -flatten -alpha Off -quiet';
+    $this->id = $lazaret_id;
+    $this->filename = $row['filename'];
+    $this->filepath = $row['filepath'];
+    $this->status = $row['status'];
+    $this->base_id = $row['base_id'];
+    $this->uuid = $row['uuid'];
+    $this->created_on = new DateTime($row['created_on']);
+    $this->usr_id = $row['usr_id'];
 
-		$cmd .= ' -quality 75 -resize ' . $sdsize . 'x' . $sdsize;
+    return $this;
+  }
 
-		$cmd .= ' -density 72x72 -units PixelsPerInch';
+  /**
+   *
+   * @return lazaretFile
+   */
+  public function add_to_base()
+  {
+    $registry = registry::get_instance();
 
-		if(isset($infos['Orientation']))
-		{
-			switch($infos['Orientation'])
-			{
-				case 'Rotate 180':		// -90 trigo pour corriger
-					$cmd .= ' -rotate 180';
-					break;
-				case 'Rotate 90 CW':		// -90 trigo pour corriger
-					$cmd .= ' -rotate 90';
-					break;
-				case 'Rotate 270 CW':		// 90 trigo pour corriger
-					$cmd .= ' -rotate -90';
-					break;
-			}
-		}
+    $file = new system_file($registry->get('GV_RootPath') . 'tmp/lazaret/' . $this->filepath);
 
-		// attention, au cas ou il y aurait des espaces dans le path, il faut des quotes
-		// windows n'accepte pas les simple quotes
-		// pour mac les quotes pour les noms de fichiers sont indispensables car si il y a un espace -> ca plante
-		$array = array('application/pdf','image/psd','image/vnd.adobe.photoshop','image/photoshop','image/ai','image/illustrator','image/vnd.adobe.illustrator');
-		
-		if( in_array($infos['MIME Type'], $array ) )
-			$cmd .= ' "'.$pathfile .'[0]" "'. $pathfile .'_thumbnail.jpg"';
-		else
-			$cmd .= ' "'.$pathfile .'" "'. $pathfile .'_thumbnail.jpg"';
-		
-		$res = exec($cmd);
-		
-		if($conn->query($sql))
-			return true;
-			
-		return false;
-	}
-	
-	public static function stream_thumbnail($id)
-	{
-		$conn = connection::getInstance();
-		$sql = "SELECT filepath FROM lazaret WHERE id='".$conn->escape_string($id)."'";
-		
-		$pathfile = false;
-		
-		if($rs = $conn->query($sql))
-		{
-			if($row = $conn->fetch_assoc($rs))
-			{
-				$pathfile = GV_RootPath.'tmp/lazaret/'.$row['filepath'].'_thumbnail.jpg';
-			}
-			$conn->free_result($rs);
-		}
+    if (($record_id = p4file::archiveFile(
+                    $file, $this->base_id, false, $this->filename)) === false)
+      throw new Exception(_('Impossible dajouter le fichier a la base'));
 
-		export::stream_file($pathfile, basename($pathfile), 'image/jpeg', 'inline');
-	}
+    $sbas_id = phrasea::sbasFromBas($this->base_id);
+    $connbas = connection::getPDOConnection($sbas_id);
+
+    $sql = 'UPDATE record
+        SET status = (status | ' . $this->status . ')
+        WHERE record_id = :record_id';
+
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute(array(':record_id' => $record_id));
+    $stmt->closeCursor();
+
+    $this->delete();
+
+    return $this;
+  }
+
+  /**
+   *
+   * @return lazaretFile
+   */
+  public function delete()
+  {
+    $conn = connection::getPDOConnection();
+    $registry = registry::get_instance();
+
+    try
+    {
+      $sql = 'DELETE FROM lazaret WHERE id = :lazaret_id';
+      $stmt = $conn->prepare($sql);
+      $stmt->execute(array(':lazaret_id' => $this->id));
+      $stmt->closeCursor();
+
+      $file = $registry->get('GV_RootPath') . 'tmp/lazaret/' . $this->filepath;
+      $thumbnail = $file . '_thumbnail.jpg';
+
+      @unlink($thumbnail);
+      @unlink($file);
+    }
+    catch (Exception $e)
+    {
+
+    }
+
+    return $this;
+  }
+
+  /**
+   *
+   * @param Int $lazaret_id
+   * @param Int $record_id
+   * @return lazaretFile
+   */
+  public function substitute($lazaret_id, $record_id)
+  {
+    $registry = registry::get_instance();
+
+    $sbas_id = phrasea::sbasFromBas($this->base_id);
+    $connbas = connection::getPDOConnection($sbas_id);
+
+    $base_id = false;
+
+    $sql = 'SELECT coll_id FROM record WHERE record_id = :record_id';
+
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute(array(':record_id' => $record_id));
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    if (!$row)
+      throw new Exception(_('Impossible de trouver la base'));
+
+    $base_id = phrasea::baseFromColl($sbas_id, $row['coll_id']);
+
+    $pathfile = $registry->get('GV_RootPath') . 'tmp/lazaret/' . $this->filepath;
+
+    $record = new record_adapter($sbas_id, $record_id);
+    p4file::substitute($record, $pathfile, $this->filename, false);
+    $this->delete();
+
+    return $this;
+  }
+
+  public static function move_uploaded_to_lazaret(
+  system_file $system_file, $base_id, $filename, $errors='', $status=false)
+  {
+    $appbox = appbox::get_instance();
+    $session = $appbox->get_session();
+    $registry = $appbox->get_registry();
+    $conn = $appbox->get_connection();
+    $system = system_server::get_platform();
+
+    if (!$status)
+      $status = '0';
+
+    $usr_id = $session->is_authenticated() ? $session->get_usr_id() : false;
+
+    $lazaret_root = $registry->get('GV_RootPath') . 'tmp/lazaret/';
+    $pathinfo = pathinfo($filename);
+
+    $tmp_filename = $filename;
+
+    $n = 1;
+    while (file_exists($lazaret_root . $tmp_filename))
+    {
+      $tmp_filename = $pathinfo['filename']
+              . '-' . $n . '.' . $pathinfo['extension'];
+      $n++;
+    }
+
+    $pathfile = $lazaret_root . $tmp_filename;
+    $uuid = $system_file->read_uuid();
+    $sha256 = $system_file->get_sha256();
+    rename($system_file->getPathname(), $pathfile);
+
+    unset($system_file);
+
+    $system_file = new system_file($pathfile);
+    $system_file->chmod();
+
+    try
+    {
+      $system_file = new system_file($pathfile);
+      switch ($system_file->get_phrasea_type())
+      {
+        case 'image':
+        default:
+          $adapter = new binaryAdapter_image_resize($registry);
+          break;
+        case 'video':
+          $adapter = new binaryAdapter_video_toimage($registry);
+          break;
+        case 'flash':
+          $adapter = new binaryAdapter_flash_toimage($registry);
+          break;
+        case 'audio':
+          $adapter = new binaryAdapter_audio_previewExtract($registry);
+          break;
+      }
+      $adapter->execute($system_file, $pathfile . "_thumbnail.jpg", array('size' => 300));
+    }
+    catch (Exception $e)
+    {
+
+    }
+
+    try
+    {
+
+      $sql = 'INSERT INTO lazaret
+            (id, filename, filepath, base_id, uuid, sha256,
+                  errors, status, created_on, usr_id)
+          VALUES (null, :filename, :filepath, :base_id,
+          :uuid, :sha256, :errors, 0b' . $status . ', NOW(), :usr_id )';
+
+      $params = array(
+          ':filename' => $filename
+          , ':filepath' => $tmp_filename
+          , ':base_id' => $base_id
+          , ':uuid' => $uuid
+          , ':sha256' => $sha256
+          , ':errors' => $errors
+          , ':usr_id' => ($usr_id ? $usr_id : null
+          )
+      );
+
+      $stmt = $conn->prepare($sql);
+      $stmt->execute($params);
+      $stmt->closeCursor();
+
+      return true;
+    }
+    catch (Exception $e)
+    {
+
+    }
+
+    return false;
+  }
+
+  public static function stream_thumbnail($id)
+  {
+    $conn = connection::getPDOConnection();
+    $registry = registry::get_instance();
+    $sql = "SELECT filepath FROM lazaret WHERE id = :lazaret_id";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':lazaret_id' => $id));
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    if ($row)
+    {
+      $pathfile = $registry->get('GV_RootPath') . 'tmp/lazaret/'
+              . $row['filepath'] . '_thumbnail.jpg';
+
+      $response = set_export::stream_file(
+                      $pathfile,
+                      basename($pathfile),
+                      'image/jpeg',
+                      'inline'
+      );
+      $response->send();
+    }
+
+    return false;
+  }
+
 }

@@ -1,0 +1,340 @@
+
+{% macro dces_selector(available_dc_sources, selected_field) %}
+  {% set disabled = '' %}
+  {% if selected_field.is_on_error() %}
+    {% set disabled = 'disabled="disabled"' %}
+  {% endif %}
+<select class="metafield_{{selected_field.get_id()}} dces_selector" {{disabled}} name="dces_{{selected_field.get_id()}}">
+  <option>{% trans 'choisir' %}</option>
+    {% for field in available_dc_sources %}
+  <option value="{{ field.get_label() }}" {% if selected_field.get_dces_element() != null and selected_field.get_dces_element().get_label() == field.get_label() %}selected="selected"{% endif %}>
+    DC:{{ field.get_label() }}
+  </option>
+    {% endfor %}
+</select>
+{% endmacro %}
+
+{% macro thumbtitle_selector(title) %}
+<option value="1" {% if title == '1' %}selected="selected"{% endif %}>{% trans 'Tous' %}</option>
+<option value="0" {% if title == '0' %}selected="selected"{% endif %}>{% trans 'Aucun' %}</option>
+<option value="fr" {% if title == 'fr' %}selected="selected"{% endif %}>{% trans 'Francais' %}</option>
+<option value="de" {% if title == 'de' %}selected="selected"{% endif %}>{% trans 'Allemand' %}</option>
+<option value="en" {% if title == 'en' %}selected="selected"{% endif %}>{% trans 'Anglais' %}</option>
+<option value="ar" {% if title == 'ar' %}selected="selected"{% endif %}>{% trans 'Arabe' %}</option>
+{% endmacro %}
+
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/admin/admincolor.css" />
+    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/jquery.tooltip.js"></script>
+    <style>
+        body{
+          font-size:12px;
+        }
+        .ui-autocomplete {
+          max-height: 200px;
+          overflow-y: auto;
+          /* prevent horizontal scrollbar */
+          overflow-x: hidden;
+          /* add padding to account for vertical scrollbar */
+          padding-right: 20px;
+        }
+        /* IE 6 doesn't support max-height
+       * we use height instead, but this forces the menu to always be this tall
+        */
+        * html .ui-autocomplete {
+          height: 200px;
+        }
+        .ui-autocomplete-loading { background: white url('/skins/icons/ui-anim_basic_16x16.gif') right center no-repeat; }
+        .alertTips{
+          cursor:help;
+        }
+        .alert{
+          vertical-align: baseline;
+        }
+      </style>
+      <script type="text/javascript">
+        $(document).ready(function(){
+          var buttons = {};
+          var dialog = $('#field_changer');
+          buttons['{% trans 'boutton::annuler' %}'] = function(){
+            $('#field_changer').dialog('close');
+          };
+          buttons['{% trans 'boutton::valider' %}'] = function(){
+            var field_id = $('input[name="field_id"]', dialog).val();
+            $('#field_changer').dialog('close');
+            var selected_opt = $('#field_chooser option:selected');
+            var display = selected_opt.parent().attr('label')+' / '+selected_opt.html();
+            $('#display_value_'+field_id).empty().append(display);
+            $('input[name="src_'+field_id+'"]').val($('#field_chooser').val());
+            $('input[name="src_'+field_id+'"]').trigger('change');
+            $('.metafield_'+field_id).removeAttr('disabled');
+          };
+          $('#field_changer').dialog({
+            modal:true,
+            buttons : buttons
+          }).dialog('close');
+
+          $('a.field_change').bind('click', function(){
+            var field_id = $('input',this).val();
+            $('#field_chooser').val( $('input[name="src_'+field_id+'"]').val());
+            $('input[name="field_id"]', dialog).val(field_id);
+            dialog.dialog().dialog('open');
+
+            return false;
+          });
+
+          $('.alertTips').tooltip();
+
+          var buttons = {};
+          var dialog_adder = $('#field_adder');
+          buttons['{% trans 'boutton::annuler' %}'] = function(){
+            $('#field_adder').dialog('close');
+          };
+          buttons['{% trans 'boutton::valider' %}'] = function(){
+            $('#newfield').val($('#field_adder input[name="newfield_name"]').val());
+            $('#field_adder').dialog('close');
+            $('#form_struct').submit();
+          };
+          $('#field_adder').dialog({
+            modal:true,
+            buttons : buttons
+          }).dialog('close');
+
+          $('.field_adder').bind('click', function(){
+            dialog_adder.dialog().dialog('open');
+          });
+
+
+          $('.meta_deleter').bind('click', function(){
+            if(confirm('{% trans 'Etes vous sur de vouloir supprimer cette metadonnee ? Elle sera definitivement perdue' %}'))
+            {
+              var field = $('input[name="field_ids[]"]', $(this).parent());
+              var field_id = $('input', $(this)).val();
+              field.attr('name', 'todelete_ids[]');
+              $('.metafield_'+field_id).attr('disabled', 'disabled');
+            }
+          });
+
+
+          $('.dces_selector').bind('change', function(event){
+            if($.trim($(this).val()) === '')
+
+              return;
+            var $this = $(this);
+            var $others = $('.dces_selector option[value="'+$this.val()+'"]:selected');
+            if($others.length > 1)
+            {
+              var other_name = $($others.get(0)).closest('tr').find('input.meta_namer').val();
+
+              $('#warning_dialog').html("<p>{% trans 'Attention, deux champs ne peuvent représenter le meme element Dublin Core.' %}<br/><br/>{% trans 'La precedente attribution a ete desactivee' %} </p><p style='margin-top:10px;text-align:center;font-weight:bold;'>"+other_name+'</p>').dialog({modal:true});
+              $others.each(function(i, el){
+                var $parent = $(el).parent();
+                if($parent.attr('name') !== $this.attr('name'))
+                  $parent.val('');
+              });
+
+              return false;
+            }
+          });
+
+          $('.meta_multi, .meta_src').bind('change', function(){
+            var id = $(this).attr('name').split('_').pop();
+
+            $.ajax({
+              type: "GET",
+              url: "/admin/fields/checkmulti/",
+              dataType: 'json',
+              data: {
+                multi : $('input[name="multi_'+id+'"]').attr('checked'),
+                source : $('input[name="src_'+id+'"]').val()
+              },
+              error: function(){
+                return;
+              },
+              timeout: function(){
+                return;
+              },
+              success: function(data){
+                var $parent = $('input[name="multi_'+id+'"]').parent();
+                $('.alert', $parent).hide();
+                if(data.result === false && data.is_multi === true)
+                  $('.alert_is_multi', $parent).show();
+                else if(data.result === false && data.is_multi === false)
+                  $('.alert_not_multi', $parent).show();
+              }
+            });
+
+          });
+
+
+          $('.meta_readonly, .meta_src').bind('change', function(){
+            var id = $(this).attr('name').split('_').pop();
+
+            $.ajax({
+              type: "GET",
+              url: "/admin/fields/checkreadonly/",
+              dataType: 'json',
+              data: {
+                readonly : $('input[name="readonly_'+id+'"]').attr('checked'),
+                source : $('input[name="src_'+id+'"]').val()
+              },
+              error: function(){
+                return;
+              },
+              timeout: function(){
+                return;
+              },
+              success: function(data){
+                var $parent = $('input[name="readonly_'+id+'"]').parent();
+                $('.alert', $parent).hide();
+                if(data.result === false && data.is_readonly === true)
+                  $('.alert_is_readonly', $parent).show();
+                else if(data.result === false && data.is_readonly === false)
+                  $('.alert_not_readonly', $parent).show();
+              }
+            });
+
+          });
+        });
+        </script>
+      </head>
+      <body>
+        <div id="warning_dialog" style="display:none" title="{% trans 'Attention !' %}" >
+        </div>
+        <div style="display:none" id="field_changer">
+          <select id="field_chooser">
+            <option>{% trans 'choisir' %}</option>
+        {% set current_ns = '' %}
+        {% for field in available_fields %}
+          {% if current_ns != field.get_namespace() %}
+            {% if current_ns != '' %}
+            </optgroup>
+            {% endif %}
+            {% set current_ns = field.get_namespace() %}
+            <optgroup label="{{field.get_namespace()}}">
+          {% endif %}
+                <option value="{{field.get_source()}}">{{field.get_tagname()}}</option>
+        {% endfor %}
+              </optgroup>
+            </select>
+            <input name="field_id" type="hidden"/>
+          </div>
+          <div style="display:none" id="field_adder">
+            <input name="newfield_name" type="text"/>
+          </div>
+          <div>
+            <button class="field_adder">
+        {% trans 'boutton::ajouter' %}
+              </button>
+            </div>
+            <form action="/admin/description.php" method="post" target="_self" id="form_struct">
+              <input name="newfield" id="newfield" type="hidden" />
+              <table class="admintable">
+                <thead>
+                  <tr>
+                    <th>
+                      </th>
+                    <th>
+            {% trans 'Nom' %}
+                      </th>
+                      <th>
+            {% trans 'Source' %}Source
+                        </th>
+                        <th>
+                          <span title="{% trans 'DublinCore Element Set' %}">DCES</span>
+                        </th>
+                        <th>
+            {% trans 'Multivalue' %}
+                          </th>
+                          <th>
+            {% trans 'Indexable' %}
+                            </th>
+                            <th>
+            {% trans 'Lecture seule' %}
+                              </th>
+                              <th>
+            {% trans 'Branche Thesaurus' %}
+                                </th>
+                                <th>
+            {% trans 'Affiche dans report' %}
+                                  </th>
+                                  <th>
+                                    Regdate
+                                  </th>
+                                  <th>
+                                    Regname
+                                  </th>
+                                  <th>
+                                    Regdesc
+                                  </th>
+                                  <th>
+            {% trans 'Afficher en titre' %}
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+        {% for field in fields %}
+        {% set disabled = '' %}
+        {% if field.is_on_error() %}
+          {% set disabled = 'disabled="disabled"' %}
+        {% endif %}
+                                    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}">
+                                      <td>
+                                        <a class="meta_deleter"><input type="hidden" value="{{field.get_id()}}"/><img src="/skins/icons/delete.png"></a>
+                                        <input type="hidden" name="field_ids[]" value="{{field.get_id()}}" />
+                                      </td>
+                                      <td>
+                                        <input style="width:100px;" class="meta_namer metafield_{{field.get_id()}}" {{disabled}} type="text" name="name_{{field.get_id()}}" value="{{field.get_name ()}}" />
+                                      </td>
+                                      <td>
+                                        <span id="display_value_{{field.get_id()}}">{{ field.get_metadata_namespace() }} / {{ field.get_metadata_tagname() }}</span> <a href="#" class="field_change">change<input type="hidden" value="{{field.get_id()}}"/></a>
+                                        <input class="meta_src" type="hidden" name="src_{{field.get_id()}}" value="{{ field.get_metadata_source() }}"/>
+                                      </td>
+                                      <td>
+              {{_self.dces_selector(available_dc_fields, field)}}
+                                        </td>
+                                        <td>
+                                          <input class="meta_multi metafield_{{field.get_id()}}" {{disabled}} name="multi_{{field.get_id()}}" type="checkbox" {% if field.is_multi() %}checked="checked"{% endif %}/>
+                                          <img class="alert alertTips alert_not_multi" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne n\'est pas multivaluee, vous devriez decocher cette case' %}" style="display:none;" />
+                                          <img class="alert alertTips alert_is_multi" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne est multivaluee, vous devriez cocher cette case' %}" style="display:none;" />
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} name="indexable_{{field.get_id()}}" type="checkbox" {% if field.is_indexable() %}checked="checked"{% endif %}/>
+                                        </td>
+                                        <td>
+                                          <input class="meta_readonly metafield_{{field.get_id()}}" {{disabled}} name="readonly_{{field.get_id()}}" type="checkbox" {% if field.is_readonly() %}checked="checked"{% endif %}/>
+                                          <img class="alert alertTips alert_not_readonly" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne n\'est pas en lecture seule, vous devriez decocher cette case' %}" style="display:none;" />
+                                          <img class="alert alertTips alert_is_readonly" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne est en lecture seule, vous devriez cocher cette case' %}" style="display:none;" />
+                                        </td>
+                                        <td>
+                                          <input style="width:100px;" class="metafield_{{field.get_id()}}" {{disabled}} name="tbranch_{{field.get_id()}}" type="text" value="{{field.get_tbranch()}}"/>
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} name="report_{{field.get_id()}}" type="checkbox" {% if field.is_report() %}checked="checked"{% endif %}/>
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regdate() %}checked="checked"{% endif %} name="regdate" value="{{field.get_id()}}"/>
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regname() %}checked="checked"{% endif %} name="regname" value="{{field.get_id()}}"/>
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regdesc() %}checked="checked"{% endif %} name="regdesc" value="{{field.get_id()}}"/>
+                                        </td>
+                                        <td>
+                                          <select class="metafield_{{field.get_id()}}" {{disabled}} name="thumbtitle_{{field.get_id()}}">
+              {{_self.thumbtitle_selector(field.get_thumbtitle())}}
+                                            </select>
+                                          </td>
+                                        </tr>
+        {% endfor %}
+                                      </tbody>
+                                    </table>
+                                    <input type="hidden" name="p0" value="{{databox.get_sbas_id()}}" />
+                                    <button type="submit">Submit</button>
+                                  </form>
+                                </body>
+                              </html>

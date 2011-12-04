@@ -301,13 +301,18 @@
 		.find('li.ui-multiselect-optgroup-label a.ui-multiselect-all')
 		.click(function(e){
 			// optgroup label toggle support
-			if($(this).css("color") == "white")
-				$(this).css("color", "#FF9000");
+			if(cssColorToHex($(this).css("color")) == "#ffffff")
+			{
+				$(this).css("color", "rgb(255,144,0)");
+			}
 			else
-				$(this).css("color", "white");
+			{
+				$(this).css("color", "rgb(255,255,255)");
+			}
+				
 			var $checkboxes = $(this).parent().nextUntil('li.ui-multiselect-optgroup-label').find('input');
 			
-			$options.trigger('toggleChecked', [ ($checkboxes.filter(':checked').length === $checkboxes.length) ? false : true, $checkboxes]);
+			$options.trigger('toggleChecked', [ ($checkboxes.filter(':checked').length === $checkboxes.length) ? false : true, $checkboxes]);Y
 			o.onOptgroupToggle.call(this, $checkboxes.get());
 			e.preventDefault();
 		});
@@ -320,7 +325,24 @@
 			$label.toggle();
 			e.preventDefault();
 		});
-		
+
+
+		/*************************************************************************/
+
+
+		function cssColorToHex(colorStr)
+		{
+			var hex = '#';
+			$.each(colorStr.substring(4).split(','), function(i, str){
+					var h = ($.trim(str.replace(')',''))*1).toString(16);
+					hex += (h.length == 1) ? "0" + h : h;
+			});
+			return hex;
+		};
+
+
+
+		/**************************************************************************/
 		
 		// labels/checkbox events
 		$labels.bind({

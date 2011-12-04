@@ -1,25 +1,25 @@
-{% if basket_element and basket_element.is_validation_item %}
-	<div class="notes_wrapper">
-		<div class="notes_overlay">
-		</div>
-		<div class="notes">
-		<div><h2 class="title15">{% trans 'validation:: votre note' %}</h2></div>
-			<hr/>
-		{% for user, datas in basket_element.choices %}
-			{% if datas.note != '' %}
-				<div class="note_wrapper ui-corner-all {% if datas.is_mine %}my_note{% endif %} ">
-					<span class="note_author title15">{{datas.usr_name}}</span> : {{datas.note|nl2br}}
-				</div>
-			{% endif %}
-		{% endfor %}
-		
-		<form>
-			<textarea>{{basket_element.my_note}}</textarea>
-			<div class="buttons">
-				<button class="note_closer ui-corner-all">{% trans 'boutton::fermer' %}</button>
-				<button class="note_saver ui-corner-all" id="note_saver_{{basket_element.sselcont_id}}">{% trans 'boutton::enregistrer' %}</button>
-			</div>
-		</form>
-		</div>
-	</div>
+{% if basket_element and basket_element.is_validation_item() %}
+    <div class="notes_wrapper">
+        <div class="notes_overlay">
+        </div>
+        <div class="notes">
+        <div><h2 class="title15">{% trans 'validation:: votre note' %}</h2></div>
+            <hr/>
+        {% for user, datas in basket_element.get_choices() %}
+            {% if datas.note != '' %}
+                <div class="note_wrapper ui-corner-all {% if datas.is_mine %}my_note{% endif %} ">
+                    <span class="note_author title15">{{datas.usr_name}}</span> : {{datas.note|nl2br}}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <form>
+            <textarea>{{basket_element.get_my_note()}}</textarea>
+            <div class="buttons">
+                <button class="note_closer ui-corner-all">{% trans 'boutton::fermer' %}</button>
+                <button class="note_saver ui-corner-all" id="note_saver_{{basket_element.get_sselcont_id()}}">{% trans 'boutton::enregistrer' %}</button>
+            </div>
+        </form>
+        </div>
+    </div>
 {% endif %}

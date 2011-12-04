@@ -1,0 +1,113 @@
+{% extends '/setup/wrapper.twig' %}
+
+{% block extrahead %}
+<script type="text/javascript">
+
+
+  {% if upgrade_status.active %}
+  function update_status()
+  {
+    $.ajax({
+      type: "GET",
+      url: '/setup/upgrader/status/',
+      dataType:'json',
+      beforeSend:function(){
+
+      },
+      success: function(datas){
+        var percent = Math.round(datas.percentage * 100);
+        $('#progress_meter .gauge').stop().animate({width:percent + '%'});
+        $('#progress_meter .counter').empty().append(datas.completed_steps + ' / ' + datas.total_steps);
+
+        var update = $('#message_update');
+        update.empty().append(datas.message);
+
+        if(percent < 100)
+          setTimeout("update_status();", 1000);
+        else
+          setTimeout("document.location.href = document.location.href",1000);
+
+        return;
+      },
+      timeout:function(){
+          setTimeout("document.location.href = document.location.href",1000);
+      },
+      error:function(datas){
+          setTimeout("document.location.href = document.location.href",1000);
+      }
+    });
+  }
+
+  {% endif %}
+  $(document).ready(function(){
+    console.log('hello update_button');
+    $('.update_button').bind('click', function(){
+      $(this).attr('disabled','disbaled');
+      $('.upgrade_loader').show();
+      setTimeout("document.location.href = document.location.href",1000);
+    });
+    {% if upgrade_status.active %}
+      update_status();
+    {% endif %}
+  });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="steps">
+<div class="wrapper">
+  <div class="PNB10 wrapper_left">
+    <div class="PNB10 section_title">
+      <h2>
+        {% trans 'Mise a jour' %}
+      </h2>
+    </div>
+    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+      <table class="main_content_wrapper">
+        <tr>
+          <td>
+            <table class="main_content_table">
+              <tr>
+                <td>
+                  {% if not upgrade_status.active %}
+                  <p>
+                    {% trans 'Une mise a jour de l\'application est necessaire, il est vivement recommande de l\'effectuer en ligne de commande via la commande :' %}
+                  </p>
+                  <p>
+                    <code>
+                      {{registry.get('GV_cli')}} {% if registry.get('GV_PHP_INI') %} -c {{registry.get('GV_PHP_INI')}}{% endif %} bin/upgrade.php
+                    </code>
+                  </p>
+                  <p>
+                    {% trans 'Si toutefois vous n\'aviez pas acces à la console, suivez le lien suivant' %}
+                  </p>
+                  <p>
+                    <form action="/setup/upgrader/execute/" method="POST" target="update_target">
+                      <button class="update_button">{% trans 'Mise a jour' %}</button>
+                      <img style="display:none;" class="upgrade_loader" src="/skins/icons/loader111111.gif"/>
+                    </form>
+                    <iframe style="display:none;" src="about:blank" name="update_target"></iframe>
+                  </p>
+                  {% else %}
+                  <p>{% trans 'Progression de la mise a jour : ' %}</p>
+                  <div id="progress_meter" style="text-align:center;width:100%;height:26px;border:1px solid #404040;position:relative;">
+                    {% set percentage = upgrade_status.percentage * 100 %}
+                    <div class="gauge" style="position:absolute;background-color:#404040;left:0;top:0;bottom:0;width:{{percentage}}%;z-index:3;">
+                    </div>
+                    <div class="counter" style="position:absolute;left:0;top:0;bottom:0;right:0;color:white;z-index:4;font-wieght:bold;font-size:1.3em;">
+                      {{ upgrade_status.completed_steps }} / {{ upgrade_status.total_steps }}
+                    </div>
+                  </div>
+                  <p id="message_update">{{upgrade_status.message}}</p>
+                  {% endif %}
+                </td>
+              </tr>
+            </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

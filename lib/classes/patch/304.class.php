@@ -1,31 +1,78 @@
-<?php 
-class patch_304 implements patch
+<?php
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+class patch_304 implements patchInterface
 {
-	
-	private $release = '3.0.4';
-	private $concern = array('data_box');
-	
-	function get_release()
-	{
-		return $this->release;
-	}
-	
-	function concern()
-	{
-		return $this->concern;
-	}
-	
-	function apply($id)
-	{
-		$connbas = connection::getInstance($id);
-		
-		if(!$connbas || !$connbas->isok())
-			return true;
-			
-		$sql = 'INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
-		VALUES (null, "indexes", "1", "", NOW(), NOW())';
-		$connbas->query($sql);
-		
-		return true;
-	}
+
+  /**
+   *
+   * @var string
+   */
+  private $release = '3.0.4';
+
+  /**
+   *
+   * @var Array
+   */
+  private $concern = array(base::DATA_BOX);
+
+  /**
+   *
+   * @return string
+   */
+  function get_release()
+  {
+    return $this->release;
+  }
+
+  public function require_all_upgrades()
+  {
+    return false;
+  }
+
+  /**
+   *
+   * @return Array
+   */
+  function concern()
+  {
+    return $this->concern;
+  }
+
+  function apply(base &$databox)
+  {
+    $sql = 'SELECT id FROM pref WHERE prop = "indexes"';
+    $stmt = $databox->get_connection()->prepare($sql);
+    $stmt->execute();
+    $rowcount = $stmt->rowCount();
+    $stmt->closeCursor();
+
+    if ($rowcount == 0)
+    {
+      $sql = 'INSERT INTO pref
+        (id, prop, value, locale, updated_on, created_on)
+        VALUES
+        (null, "indexes", "1", "", NOW(), NOW())';
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
+    }
+
+    return true;
+  }
+
 }

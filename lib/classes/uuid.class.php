@@ -1,196 +1,155 @@
 <?php
 
+/*
+ * @author Andrew Moore
+ *
+ * Originally found at: http://www.php.net/manual/en/function.uniqid.php#94959
+ */
+
 class uuid
 {
 
-  protected $storage = array();
-
-  function __construct($filepath)
+  /**
+   * @desc UUID named based version that use MD5(hash)
+   * @param string $namespace
+   * @param string $name
+   * @return string
+   */
+  public static function generate_v3($namespace, $name)
   {
-    if (!(file_exists($filepath)))
+    if (!self::is_valid($namespace))
+
+      return false;
+
+    // Get hexadecimal components of namespace
+    $nhex = str_replace(array('-', '{', '}'), '', $namespace);
+
+    // Binary Value
+    $nstr = '';
+
+    // Convert Namespace UUID to bits
+    for ($i = 0; $i < strlen($nhex); $i+=2)
     {
-      throw new Exception('Le fichier n\'existe pas');
+      $nstr .= chr(hexdec($nhex[$i] . $nhex[$i + 1]));
     }
 
-    $this->filepath = $filepath;
-  }
+    // Calculate hash value
+    $hash = md5($nstr . $name);
 
-  public function has_uuid()
-  {
-    $this->read_uuid();
-    return!!$this->uuid;
-  }
-
-  public function read_uuid()
-  {
-    require_once GV_RootPath . 'lib/index_utils2.php';
-    $cmd = NULL;
-
-    $system = p4utils::getSystem();
-
-    if (in_array($system, array('DARWIN', 'LINUX')))
-    {
-      $cmd = GV_exiftool . ' -X -n -fast ' . escapeshellarg($this->filepath) . '';
-    }
-    else // WINDOWS
-    {
-      if (chdir(GV_RootPath . 'tmp/'))
-      {
-        $cmd = 'start /B /LOW ' . GV_exiftool . ' -X -n -fast ' . escapeshellarg($this->filepath) . '';
-      }
-    }
-    if ($cmd)
-    {
-      $s = @shell_exec($cmd);
-      if ($s != '')
-      {
-
-        $domrdf = new DOMDocument();
-        $domrdf->recover = true;
-        $domrdf->preserveWhiteSpace = false;
-
-        if ($domrdf->loadXML($s))
-        {
-          $this->uuid = $this->test_rdf_fields($domrdf);
-        }
-      }
-    }
-    return $this->uuid;
-  }
-
-  public function write_uuid($uuid = false)
-  {
-    if ($uuid && self::uuid_is_valid($uuid))
-    {
-      $this->uuid = $uuid;
-    }
-    elseif ((($uuid = $this->read_uuid()) !== false) && self::uuid_is_valid($uuid))
-    {
-      $this->uuid = $uuid;
-    }
-    else
-    {
-      $this->uuid = self::generate_uuid();
-    }
-
-    $this->write();
-    return $this->uuid;
-  }
-
-  public function is_new_in_base($sbas_id)
-  {
-    if (!$this->uuid)
-      return true;
-
-    $connbas = connection::getInstance($sbas_id);
-
-    $sql = 'SELECT record_id FROM record WHERE uuid="' . $connbas->escape_string($this->uuid) . '"';
-    if ($rs = $connbas->query($sql))
-    {
-      if ($connbas->num_rows($rs) > 0)
-        return false;
-      $connbas->free_result($rs);
-    }
-
-    return true;
-  }
-
-  public function generate_and_write()
-  {
-    $this->uuid = self::generate_uuid();
-    $this->write();
-
-    return $this;
-  }
-
-  public function write()
-  {
-    $system = p4utils::getSystem();
-
-    if (in_array($system, array('DARWIN', 'LINUX')))
-    {
-      $cmd = GV_exiftool . ' -m -overwrite_original -XMP-exif:ImageUniqueID=\'' . $this->uuid . '\' -IPTC:UniqueDocumentID=\'' . $this->uuid . '\' ' . escapeshellarg($this->filepath) . '';
-    }
-    else // WINDOWS
-    {
-      if (chdir(GV_RootPath . 'tmp/'))
-      {
-        $cmd = 'start /B /LOW ' . GV_exiftool . ' -m -overwrite_original -XMP-exif:ImageUniqueID=\'' . $this->uuid . '\' -IPTC:UniqueDocumentID=\'' . $this->uuid . '\' ' . escapeshellarg($this->filepath) . '';
-      }
-    }
-    if ($cmd)
-    {
-//			echo "mise ad jour : $cmd \n";
-      $s = @shell_exec($cmd);
-    }
-    return $this;
-  }
-
-  public static function generate_uuid()
-  {
-    return uuidobject::generate_v4();
-  }
-
-  private function test_rdf_fields($rdf_dom)
-  {
-    $xptrdf = new DOMXPath($rdf_dom);
-    $xptrdf->registerNamespace('XMP-exif', 'http://ns.exiftool.ca/XMP/XMP-exif/1.0/');
-    $xptrdf->registerNamespace('IPTC', 'http://ns.exiftool.ca/IPTC/IPTC/1.0/');
-
-    $fields = array(
-        '/rdf:RDF/rdf:Description/XMP-exif:ImageUniqueID',
-        '/rdf:RDF/rdf:Description/IPTC:UniqueDocumentID'
+    return sprintf('%08s-%04s-%04x-%04x-%12s',
+            // 32 bits for "time_low"
+                   substr($hash, 0, 8),
+            // 16 bits for "time_mid"
+                    substr($hash, 8, 4),
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 3
+                     (hexdec(substr($hash, 12, 4)) & 0x0fff) | 0x3000,
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+                                   (hexdec(substr($hash, 16, 4)) & 0x3fff) | 0x8000,
+            // 48 bits for "node"
+                                                 substr($hash, 20, 12)
     );
+  }
 
-    foreach ($fields as $field)
+  /**
+   * @desc UUID randomly generated version
+   * @return string
+   */
+  public static function generate_v4()
+  {
+    return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            // 32 bits for "time_low"
+                   mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            // 16 bits for "time_mid"
+                                        mt_rand(0, 0xffff),
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 4
+                                         mt_rand(0, 0x0fff) | 0x4000,
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+                                          mt_rand(0, 0x3fff) | 0x8000,
+            // 48 bits for "node"
+                                           mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+    );
+  }
+
+  /**
+   * @desc UUID named version that use SHA-1 hashing
+   * @param string $namespace
+   * @param string $name
+   * @return string
+   */
+  public static function generate_v5($namespace, $name)
+  {
+    if (!self::is_valid($namespace))
+
+      return false;
+
+    // Get hexadecimal components of namespace
+    $nhex = str_replace(array('-', '{', '}'), '', $namespace);
+
+    // Binary Value
+    $nstr = '';
+
+    // Convert Namespace UUID to bits
+    for ($i = 0; $i < strlen($nhex); $i+=2)
     {
-      $x = $xptrdf->query($field);
-
-      if ($x->length > 0)
-      {
-        $x = $x->item(0);
-
-        $encoding = strtolower($x->getAttribute('rdf:datatype') . $x->getAttribute('et:encoding'));
-        $base64_encoded = (strpos($encoding, 'base64') !== false);
-
-        if (($v = $x->firstChild) && $v->nodeType == XML_TEXT_NODE)
-        {
-          $value = $base64_encoded ? base64_decode($v->nodeValue) : $v->nodeValue;
-          if (self::uuid_is_valid($value))
-            return $value;
-        }
-      }
+      $nstr .= chr(hexdec($nhex[$i] . $nhex[$i + 1]));
     }
-    return false;
+
+    // Calculate hash value
+    $hash = sha1($nstr . $name);
+
+    return sprintf('%08s-%04s-%04x-%04x-%12s',
+            // 32 bits for "time_low"
+                   substr($hash, 0, 8),
+            // 16 bits for "time_mid"
+                    substr($hash, 8, 4),
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 5
+                     (hexdec(substr($hash, 12, 4)) & 0x0fff) | 0x5000,
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+                                   (hexdec(substr($hash, 16, 4)) & 0x3fff) | 0x8000,
+            // 48 bits for "node"
+                                                 substr($hash, 20, 12)
+    );
   }
 
-  public static function uuid_is_valid($uuid)
+  /**
+   * @desc check if an uuid is a valid one
+   * @param string $uuid
+   * @return boolean
+   */
+  public static function is_valid($uuid)
   {
-    return uuidobject::is_valid($uuid);
+    return preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?' .
+            '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) === 1;
   }
 
-  public function __get($key)
+  /**
+   * @desc Compare two UUID's "lexically"
+   * @param stiring $uuid1
+   * @param string $uuid2
+   * @return int
+   * -1 uuid1<uuid2 0 uuid1==uuid2 +1 uuid1>uuid2
+   */
+  public static function compare($uuid1, $uuid2)
   {
-    if (isset($this->storage[$key]))
-    {
-      return $this->storage[$key];
-    }
-    return null;
+    return (strcmp($uuid1, $uuid2) === 0);
   }
 
-  public function __set($key, $value)
+  /**
+   * @desc Check wheter an UUID is the NULL UUID 00000000-0000-0000-0000-000000000000
+   * @return  string
+   */
+  public static function is_null($uuid)
   {
-    $this->storage[$key] = $value;
-
-    return $this;
-  }
-
-  public function __isset($key)
-  {
-    if (isset($this->storage[$key]))
-      return true;
-    return false;
+    return (0 === strcmp($uuid, '00000000-0000-0000-0000-000000000000'));
   }
 
 }
-

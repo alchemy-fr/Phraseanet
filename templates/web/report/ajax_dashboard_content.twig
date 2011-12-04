@@ -1,0 +1,28 @@
+{%block dashboard_content %}
+    <div id="title_dash" class="center" style="clear:left;">{% trans "report:: Dashboard" %}</div>
+        <div id="periode_dash" class="center" >{{ dashboard.getTitleDate('dmin') }} - {{ dashboard.getTitleDate('dmax') }}</div>
+        <div id="liste_dash"  class="center">
+            {% for key in dashboard.authorizedCollection|keys %}
+                {% if not loop.first %}
+                    <em id="em_{{ key }}" >{{ key|sbas_names }}</em>
+                {% else %}
+                <em id="em_all" class="selected_em" >Toutes les bases</em>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div id="dashboard-table" >
+            <div class ="center" style="width:820px;">
+                <div id='currentDashboard'>
+                    {% block currentDashboard %}
+
+                    {% endblock currentDashboard %}
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $("#liste_dash").find("em").removeClass("selected_em");
+            $("#em_{{dashboard.sbasid}}").addClass("selected_em");
+        </script>
+{% endblock %}
+

@@ -715,36 +715,6 @@ function openCompare(sselid){
 	$('#ssel2val')[0].value = sselid;
 	$('#validatorEject').submit();
 }
-/*************
- * ANSWERS
- **************/
-function evt_clk_status(bid, rid, stat, oldval){
-	var o;
-	var imgid;
-	var newval = 1 - oldval;
-	
-	$.ajax({
-		type: "POST",
-		url: "/xmlhttp/chg_status.x.php",
-		dataType: 'xml',
-		data: {
-			bid: bid,
-			rid: rid,
-			stat: stat,
-			val: newval
-		},
-		success: function(xml){
-			if (xml.documentElement.getAttribute('done') == '1') {
-				if ((o = document.getElementById(imgid = 'STATBIT_' + bid + '_' + rid + '_' + stat + '_' + oldval))) 
-					o.style.display = 'none';
-				if ((o = document.getElementById(imgid = 'STATBIT_' + bid + '_' + rid + '_' + stat + '_' + newval))) 
-					o.style.display = '';
-			}
-			return;
-		}
-		
-	});
-}
 	
 function setVisible(el){
 	el.style.visibility = 'visible';
@@ -774,27 +744,6 @@ function gotopage(pag){
 	return (false);
 }
 
-//function evt_open_hd(u){
-//	var top;
-//	var left;
-//	var w;
-//	var h;
-//	
-//	
-//	if (screen) {
-//		h = (screen.width) / 3;
-//		w = (screen.width) / 2.1;
-//		top = ((screen.height) / 3) - 100;
-//		left = ((screen.width - w) / 2);
-//		
-//		top = window.screenTop;
-//		left = window.screenLeft - 5;
-//		w = document.body.scrollWidth / 2;
-//		h = document.body.scrollHeight / 2;
-//	}
-//	var url = "/include/dirdoc.php?" + u
-//	myPrevWindow = window.open(url, "HD", 'resizable=yes,scrollbars,width=' + w + ',height=' + h + ',top=' + top + ',left=' + left);
-//}
 
 function evt_print(basrec){
 	var url = "/include/printpage.php?callclient=1";

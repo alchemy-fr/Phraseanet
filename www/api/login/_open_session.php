@@ -1,60 +1,67 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 //SPECIAL ZINO
-ini_set('display_errors','off');
-ini_set('display_startup_errors','off');
-ini_set('log_errors','off');
+ini_set('display_errors', 'off');
+ini_set('display_startup_errors', 'off');
+ini_set('log_errors', 'off');
 //SPECIAL ZINO
-$session = session::getInstance();
+$appbox = appbox::get_instance();
 
-$login = (string)($sxParms->login);
-$pwd = (string)($sxParms->pwd);
+$login = (string) ($sxParms->login);
+$pwd = (string) ($sxParms->pwd);
 
-$lm = p4::signOnAPI($login, $pwd);
-if($lm['error']) // || !$lm['admin'])
+try
 {
-	err($lm['error']);
+  $auth = new Session_Authentication_Native($appbox, $login, $pwd);
+  $lm = $appbox->get_session()->signOn($auth);
 }
-else
+catch (Exception $e)
 {
-	$sessid = $session->ses_id;
-	$usrid = $session->usr_id;
-
-	if( ($ph_session = phrasea_open_session($sessid, $usrid)) )
-	{
-
-		$result->appendChild($dom->createElement('ses_id'))->appendChild($dom->createTextNode((string)$sessid));
-		$result->appendChild($dom->createElement('usr_id'))->appendChild($dom->createTextNode((string)$usrid));
-		$xbases = $result->appendChild($dom->createElement('bases'));
-		foreach($ph_session['bases'] as $base)
-		{
-			$xbase = $xbases->appendChild($dom->createElement('base'));
-			$xbase->appendChild($dom->createElement('name'))->appendChild($dom->createTextNode($base['viewname']));
-			$xcolls = $xbase->appendChild($dom->createElement('collections'));
-			foreach($base['collections'] as $coll)
-			{
-				$xcoll = $xcolls->appendChild($dom->createElement('collection'));
-				$xcoll->setAttribute('id', (string)$coll['base_id']);
-				$xcoll->appendChild($dom->createElement('name'))->appendChild($dom->createTextNode($coll['name']));
-			}
-			$xstats = $xbase->appendChild($dom->createElement('statusbits'));
-												
-			if($sxe = simplexml_load_string($base['xmlstruct']))
-			{
-				if($sxe->statbits->bit)
-				{
-					foreach($sxe->statbits->bit as $sb)
-					{
-						$xstat = $xstats->appendChild($dom->createElement('statusbit'));
-						$xstat->setAttribute('name',(string)$sb);
-						$xstat->setAttribute('index',(string)$sb['n']);
-						$xstat0 = $xstat->appendChild($dom->createElement('label_0'))->appendChild($dom->createTextNode((string)$sb['labelOff']));
-						$xstat1 = $xstat->appendChild($dom->createElement('label_1'))->appendChild($dom->createTextNode((string)$sb['labelOn']));
-					}
-				}
-			}
-		}
-	}
+  err($lm['error']);
 }
+$sessid = $appbox->get_session()->get_ses_id();
+$usrid = $appbox->get_session()->get_usr_id();
 
-?>
+
+$result->appendChild($dom->createElement('ses_id'))->appendChild($dom->createTextNode((string) $sessid));
+$result->appendChild($dom->createElement('usr_id'))->appendChild($dom->createTextNode((string) $usrid));
+$xbases = $result->appendChild($dom->createElement('bases'));
+foreach ($appbox->get_databoxes() as $databox)
+{
+  $xbase = $xbases->appendChild($dom->createElement('base'));
+  $xbase->appendChild($dom->createElement('name'))->appendChild($dom->createTextNode($databox->get_viewname()));
+  $xcolls = $xbase->appendChild($dom->createElement('collections'));
+  foreach ($databox->get_collections() as $collection)
+  {
+    $xcoll = $xcolls->appendChild($dom->createElement('collection'));
+    $xcoll->setAttribute('id', (string) $collection->get_base_id());
+    $xcoll->appendChild($dom->createElement('name'))->appendChild($dom->createTextNode($collection->get_name()));
+  }
+  $xstats = $xbase->appendChild($dom->createElement('statusbits'));
+
+  $status = $databox->get_statusbits();
+
+  foreach ($status as $bit => $datas)
+  {
+    $xstat = $xstats->appendChild($dom->createElement('statusbit'));
+    $xstat->setAttribute('name', $datas['name']);
+    $xstat->setAttribute('index', $bit);
+    $xstat0 = $xstat->appendChild($dom->createElement('label_0'))->appendChild($dom->createTextNode($datas['labeloff']));
+    $xstat1 = $xstat->appendChild($dom->createElement('label_1'))->appendChild($dom->createTextNode($datas['labelon']));
+  }
+}

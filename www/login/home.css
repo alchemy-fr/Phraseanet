@@ -10,7 +10,7 @@
 					height:99%;
 					background-color:#000000;
 				}
-				input,select{
+				input,select,textarea{
 					border:none;
 					background:white;
 				}
@@ -201,3 +201,219 @@
 						background: #008000;
 						width: 180px;
 					}
+     
+          ul.app-list {
+                border-top: 1px solid #EEEEEE;
+                margin: 10px 0 20px;
+                list-style: none outside none;
+                padding:0;
+          }
+          
+          ul.app-list li {
+              border-bottom: 1px solid #EEEEEE;
+              font-size: 14px;
+              line-height: 19px;
+              min-height: 48px;
+              padding: 14px 0 15px;
+              margin:0;
+              clear:both;
+              display:block;
+          }
+          
+          ul.app-list li span.app-row {
+            padding:0;
+            margin:0;
+            display:block;
+            text-align: left;
+            padding-left:30px;
+          }
+          
+          ul.app-list li span.app-row a{
+            color: #2D76B9;
+            text-decoration:none;
+          }
+          
+          ul.app-list li .app-btn{
+            border-color: #DDDDDD #DDDDDD #CCCCCC;
+            border-radius: 4px 4px 4px 4px;
+            border-style: solid;
+            border-width: 1px;
+            color: #333333;
+            margin: 0;
+            overflow: visible;
+            padding: 4px 8px 5px;
+            text-shadow: 1px 1px 0 #FFFFFF;
+            width: auto;
+            float:right;
+            cursor:pointer;
+          }
+          
+          #tab-account-cat .ui-tabs-nav li a{
+            font-size: 0.95em;
+            color: #FFF;
+            font-weight:600;
+          }
+          #tab-account-cat .ui-tabs-nav li.ui-tabs-selected a{
+            color: #2D76B9;
+          }
+          
+          #content-apps{
+            text-align:left;
+          }
+          
+          div.side-section {
+              
+          }
+          
+          table.app-placement{
+            table-layout: fixed;
+            width:100%;
+          }
+          
+          #app_dev_create{
+          }
+          
+          .link_button{
+            text-decoration:none;
+            background-color: #00A0D1;
+            border: 1px solid #095B7E;
+            border-radius: 4px 4px 4px 4px;
+            color: #BFE4EF;
+            margin-top: 10px;
+            padding: 6px 12px;
+            width: auto;
+          }
+          a.no_underline{
+            text-decoration: none;
+          }
+          
+          #app-oauth-setting{
+            border-top: 1px solid #EEEEEE;
+            margin: 0 0 3em;
+            width: 100%;
+          }
+          
+          #app-oauth-setting td:first-child {
+              width: 25%;
+          }
+          
+          
+          #app-oauth-setting td{
+            padding: 8px 0;
+            vertical-align: top;
+            text-align: left;
+          }
+          
+          #generate_access{
+             background-color: #00A0D1;
+              border: 1px solid #095B7E;
+              color: #BFE4EF;
+              width: 120px
+          }
+
+          #app-access-token-setting td{
+            padding: 8px 0;
+            vertical-align: top;
+            text-align: left;
+          }
+          
+          #app-access-token-setting {
+            width:100%;
+            border-top:1px solid whitesmoke;
+          }
+          
+          
+          #tab-account-cat .ui-tabs-nav{
+            height:30px;
+            border-bottom:1px solid white;
+          }
+          #app-dev-create {
+            table-layout: fixed;
+            width:100%;
+          }
+          
+          #app-dev-create td input[type=text], #app-dev-create td textarea{
+            width:100%;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px 4px 4px 4px;
+            box-shadow: 0 1px 1px #EEEEEE;
+            margin: 0;
+            padding: 6px;
+          }
+          
+          #app-dev-create td{
+            text-align:left;
+          }
+          
+          #app-dev-create tr td:first-child{
+            padding-right:10px;
+            text-align:right;
+            font-weight: 700;
+          }
+          
+          #app-dev-create td:first-child{
+            width:25%;
+          }
+          
+          .app_submit{
+            background-color: #00A0D1;
+              border: 1px solid #095B7E;
+              color: #BFE4EF;
+              width: 120px
+          }
+          
+          #updatingDemand input[type=submit]{
+            margin:0 auto;
+          }
+          
+          .delete_app{
+            text-decoration:none;
+            background-color: #BCB5B5;
+            border: 1px solid #1A1A1A;
+            border-radius: 4px 4px 4px 4px;
+            color: #000;
+            margin-top: 10px;
+            padding: 6px 12px;
+            width: auto;
+            float:right;
+            display: none;
+          }
+            
+          .ui-dialog{
+            color:black;
+            background-color: white;
+            font-size:16px;
+            padding: 10px;
+            border: 1px solid #1A1A1A;
+            border-radius: 4px 4px 4px 4px;
+          }
+          
+          .ui-dialog button{
+            background-color: #BCB5B5;
+            border: 1px solid #1A1A1A;
+            border-radius: 4px 4px 4px 4px;
+            color: #000;
+            padding: 2px 6px;
+            margin-left:10px;
+          }
+          
+          .ui-dialog-buttonset{
+            text-align: right;
+          }
+          
+          .ui-dialog a{
+            color:black;
+            float:right;
+          }
+          
+          /* Tabs
+----------------------------------*/
+.ui-tabs { padding: .2em; zoom: 1; }
+.ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: .2em .2em 0; }
+.ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0 !important; margin: 0 .2em -1px 0; padding: 0; }
+.ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: .5em 1em; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: .1em; border-bottom-width: 0; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-panel { padding: 1em 1.4em; display: block; border-width: 0; background: none; }
+.ui-tabs .ui-tabs-hide { display: none !important; }

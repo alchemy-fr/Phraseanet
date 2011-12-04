@@ -1,0 +1,28 @@
+
+{% block alldash %}
+    <div style="margin-top:15px;">
+        <div style="float:left;">
+            <label for="dmin">{% trans "report:: Du (date)" %}</label>
+            <input class= "dminDash" name="dmin" type="text" value="{{ dashboard_array.date.date.dmin}}" size="10" />
+        </div>
+        <div style="float:left;">
+            <label for="dmax">{% trans "report:: Au (date)" %}</label>
+            <input class="dmaxDash" name="dmax" type="text" value="{{dashboard_array.date.date.dmax}}" size="10" />
+        </div>
+    </div>
+    <div id="chooose" style="float:left;">
+        <select name="nameDash">
+            <option value="all" checked = 'checked'>Global</option>
+        {% for it in dashboard_array.authorizedCollection %}
+            <option value="{{it.sbas_id}}" >{{ it.name }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    <div id="title_dash" class="center" style="clear:left;">{% trans "report:: Dashboard" %}</div>
+    <div id="periode_dash" class="center" >{{ dashboard_array.date.title.dmin }} - {{ dashboard_array.date.title.dmax }}</div>
+    <div id="liste_dash"  class="center">{{ dashboard_array.listeStringBase }}</div>
+    <div id="dashboard-table" >
+        {%block dashboard_content %}{% endblock %}
+    </div>
+
+{% endblock %}

@@ -1,16 +1,25 @@
 <?php
-if (file_exists( dirname( __FILE__ ) . "/../config/_GV.php") && file_exists( dirname( __FILE__ ) . "/../config/connexion.inc"))
-{
-	include( dirname( __FILE__ ) . "/../lib/bootstrap.php" );
-	
-	$browser = browser::getInstance();
-	if($browser->isNewGeneration())
-		header("Location: /login/prod/");
-	else
-		header("Location: /login/client/");
-	exit();
-}
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 
 
-header("Location: /setup/");
-exit();
+require_once __DIR__ . "/../lib/classes/bootstrap.class.php";
+bootstrap::register_autoloads();
+
+$app = require __DIR__ . '/../lib/classes/module/Root.php';
+
+$app->run();

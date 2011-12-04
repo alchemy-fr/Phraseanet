@@ -1,0 +1,34 @@
+{% extends "report/all_content.twig" %}
+
+{% block report_layout %}
+    <div id="form-container" >
+        <div id="mainTabs">
+            <ul id="navigation">
+              <li><a href="#dash">{% trans "report:: Dashboard" %}</a></li>
+                <li><a href="#report-connexions">{% trans "report:: Connexion" %}</a></li>
+              <li><a href="#report-telechargement">{% trans "report:: telechargements" %}</a></li>
+               <li><a href="#report-activite">{% trans "report:: activite du site" %}</a></li>
+            </ul>
+
+            {% block report_dashboard_layout %}
+            {% endblock report_dashboard_layout %}
+
+
+            {% block report_connexion_layout %}
+            {% endblock report_connexion_layout %}
+
+
+
+            {% block report_telechargement_layout %}
+            {% endblock report_telechargement_layout %}
+
+
+            {% block report_activite_layout %}
+            {% endblock report_activite_layout %}
+
+        {# END MAINTABS #}
+        </div>
+        {# END FORM CONTAINER #}
+    </div>
+    <iframe name="iframe" style="display:none;"></iframe>
+{% endblock report_layout %}

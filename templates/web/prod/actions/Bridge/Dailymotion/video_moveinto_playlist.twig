@@ -1,0 +1,34 @@
+{% extends "prod/actions/Bridge/wrapper.twig"%}
+
+{% set n_element = elements|length %}
+
+{% block menu %}
+  {% trans %}
+  Deplacement {{n_element}} elements
+  {% endtrans %}
+{% endblock %}
+
+{% block response %}
+    <form method="POST" action="/prod/bridge/action/{{account.get_id()}}/{{action}}/{{element_type}}/">
+      <p>
+        {% set number = elements|length %}
+        {% trans %}
+          Which playlist you want to put you {{number}} elements into ?
+        {% endtrans %}
+      </p>
+      {% for id in elements %}
+        <input type="hidden" name="elements_list[]" value="{{id}}"/>
+      {% endfor %}
+      <ul>
+      {% for playlist in containers.get_elements%}
+        <li>
+          <input type="radio"  value="{{playlist.get_id}}" name="container_id" id="playlist_selector_{{playlist.get_id}}"/>
+          <label for="playlist_selector_{{playlist.get_id}}">{{playlist.get_title}}</label>
+        </li>
+      {% endfor %}
+      </ul>
+      <input type="hidden" name="destination" value="{{ destination }}" />
+      <button class="form_submitter">{% trans 'boutton::valider' %}</button>
+      <button class="back_link">{% trans 'boutton::retour' %}</button>
+    </form>
+{% endblock %}

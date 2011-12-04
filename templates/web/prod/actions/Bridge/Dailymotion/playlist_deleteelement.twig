@@ -1,0 +1,26 @@
+{% extends "prod/actions/Bridge/wrapper.twig"%}
+
+{% set n_element = elements|length %}
+
+{% block menu %}
+  {% trans %}
+  Suppression de {{n_element}} playlists
+  {% endtrans %}
+{% endblock %}
+
+{% block response %}
+    <form method="POST" action="/prod/bridge/action/{{account.get_id()}}/{{action}}/{{element_type}}/">
+      <p>
+        {% set number = elements|length %}
+        {% trans %}
+          Etes vous sur de supprimer {{ number }} playlists ?
+        {% endtrans %}
+      </p>
+      {% for id in elements %}
+        <input type="hidden" name="elements_list[]" value="{{id}}"/>
+      {% endfor %}
+      <input type="hidden" name="destination" value="{{ destination }}" />
+      <button class="form_submitter">{% trans 'boutton::valider' %}</button>
+      <button class="back_link">{% trans 'boutton::retour' %}</button>
+    </form>
+{% endblock %}

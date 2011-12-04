@@ -1,0 +1,42 @@
+<div id="PREVIEWCURRENTCONT" class="PNB10">
+  <ul>
+    {% for rec in records %}
+
+        {% set thumbnail = rec.get_thumbnail() %}
+        {% set w = thumbnail.get_width() %}
+        {% set h = thumbnail.get_height() %}
+
+        {% if thumbnail.is_paysage() %}
+          {% set style = 'width:65px;top:' %}
+          {% set top = ((66 - (65 / (w / h))) / 2)|round %}
+          {% set style = style ~ top %}
+          {% set style = style ~ 'px;' %}
+        {% else %}
+          {% set style = 'height:65px;top:0;' %}
+        {% endif %}
+
+        {% if selected == rec.get_number() %}
+          {% set class = ' selected ' %}
+        {% else %}
+          {% set class = '' %}
+        {% endif %}
+
+        <li class="prevTrainCurrent current{{rec.get_number()}} {{class}}" style="">
+          <!--<div class="doc_infos">' . $array_icons[$record->get_type()] . '<span class="duration">{{rec.get_formated_duration()}}</span></div>-->
+          <img jsargs="RESULT|{{rec.get_number()}}|" class="openPreview" src="{{thumbnail.get_url()}}"
+               style="{{style}}margin:7px;position:relative;"/>
+        </li>
+    {% endfor %}
+
+    </ul>
+  </div>
+  <div class="cont_infos">
+    <div>
+      <img src="/skins/icons/light_left.gif" style="margin-right:10px;" onclick="getPrevious();"/>
+      <img src="/skins/icons/light_right.gif" style="margin-left:10px;" onclick="getNext();"/><br/>
+      <span onclick="startSlide()" id="start_slide">{% trans 'preview:: demarrer le diaporama' %} </span>
+      <span onclick="stopSlide()" id="stop_slide"> {% trans 'preview:: arreter le diaporama' %} </span>
+    </div>
+  </div>
+  <div id="PREVIEWTOOL"></div>
+            

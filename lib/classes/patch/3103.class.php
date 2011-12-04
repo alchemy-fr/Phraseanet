@@ -1,77 +1,147 @@
 <?php
 
-class patch_3103 implements patch
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+class patch_3103 implements patchInterface
 {
 
+  /**
+   *
+   * @var string
+   */
   private $release = '3.1.0';
-  private $concern = array('application_box');
+  /**
+   *
+   * @var Array
+   */
+  private $concern = array(base::APPLICATION_BOX);
 
+  /**
+   *
+   * @return string
+   */
   function get_release()
   {
     return $this->release;
   }
 
+  public function require_all_upgrades()
+  {
+    return true;
+  }
+
+  /**
+   *
+   * @return Array
+   */
   function concern()
   {
     return $this->concern;
   }
 
-  function apply($id)
+  function apply(base &$appbox)
   {
-    $conn = connection::getInstance();
-
-    if (!$conn || !$conn->isok())
-      return true;
+    $conn = $appbox->get_connection();
 
     $validate_process = array();
 
     $sql = 'SELECT id, ssel_id, usr_id FROM validate';
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
 
-    if ($rs = $conn->query($sql))
+    foreach ($rs as $row)
     {
-      while ($row = $conn->fetch_assoc($rs))
-      {
-        $validate_process[$row['ssel_id']][$row['usr_id']] = $row['id'];
-      }
-      $conn->free_result($rs);
+      $validate_process[$row['ssel_id']][$row['usr_id']] = $row['id'];
     }
 
-    $sql = 'SELECT u.*, s.ssel_id FROM sselcontusr u, sselcont c, ssel s' .
+    $sql = 'SELECT u.*, s.ssel_id, c.base_id, c.record_id , s.usr_id as pushFrom
+              FROM sselcontusr u, sselcont c, ssel s' .
             ' WHERE s.ssel_id = c.ssel_id AND u.sselcont_id = c.sselcont_id' .
             ' AND s.deleted="0" ' .
             ' ORDER BY s.ssel_id ASC, c.sselcont_id ASC';
 
-    if ($rs = $conn->query($sql))
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    foreach ($rs as $row)
     {
-      while ($row = $conn->fetch_assoc($rs))
+      if (!isset($validate_process[$row['ssel_id']]) ||
+              !array_key_exists($row['usr_id'], $validate_process[$row['ssel_id']])
+      )
       {
-        if (!isset($validate_process[$row['ssel_id']]) || !array_key_exists($row['usr_id'], $validate_process[$row['ssel_id']]))
-        {
-          //insert ligne de process
 
-          $expire = new DateTime($row['dateFin']);
-          $expire = $expire->format('u') == 0 ? null : phraseadate::format_mysql($expire);
+        $sql = 'INSERT INTO validate
+            (id, ssel_id, created_on, updated_on, expires_on, last_reminder,
+              usr_id, confirmed, can_agree, can_see_others)
+              VALUES
+            (null, :ssel_id, :created_on, :updated_on, :expires_on, null,
+              :usr_id, "0", :can_agree, :can_see)';
+
+        $stmt = $conn->prepare($sql);
+
+        $expire = new DateTime($row['dateFin']);
+        $expire = $expire->format('u') == 0 ?
+                null : phraseadate::format_mysql($expire);
 
 
-          $sql = 'INSERT INTO validate
-					(id, ssel_id, created_on, updated_on, expires_on, last_reminder, usr_id, confirmed, can_agree, can_see_others, can_hd) VALUES 
-					(null, "' . $conn->escape_string($row['ssel_id']) . '", "' . $conn->escape_string($row['date_maj']) . '", "' . $conn->escape_string($row['date_maj']) . '", ' . ($expire == null ? 'null' : '"' . $conn->escape_string($expire) . '"') . ',
-					null, "' . $conn->escape_string($row['usr_id']) . '", "0", "' . $conn->escape_string($row['canAgree']) . '", "' . $conn->escape_string($row['canSeeOther']) . '", "' . $conn->escape_string($row['canHD']) . '")';
+        $params = array(
+            ':ssel_id' => $row['ssel_id']
+            , ':created_on' => $row['date_maj']
+            , ':updated_on' => $row['date_maj']
+            , ':expires_on' => $expire
+            , ':usr_id' => $row['usr_id']
+            , ':can_agree' => $row['canAgree']
+            , ':can_see' => $row['canSeeOther']
+        );
+        $stmt->execute($params);
 
-          if ($conn->query($sql))
-          {
-            $validate_process[$row['ssel_id']][$row['usr_id']] = $conn->insert_id();
-          }
-        }
+        $validate_process[$row['ssel_id']][$row['usr_id']] = $conn->lastInsertId();
+        $stmt->closeCursor();
 
-        //insert ligne d'avis
+        $sbas_id = phrasea::sbasFromBas($row['base_id']);
+        $record = new record_adapter($sbas_id, $row['record_id']);
 
-        $sql = 'INSERT INTO validate_datas
-				(id, validate_id, sselcont_id, updated_on, agreement) 
-				VALUES (null, "' . $conn->escape_string($validate_process[$row['ssel_id']][$row['usr_id']]) . '", "' . $conn->escape_string($row['sselcont_id']) . '", "' . $conn->escape_string($row['date_maj']) . '", "' . $conn->escape_string($row['agree']) . '")';
-        $conn->query($sql);
+        $user = User_Adapter::getInstance($row['usr_id'], $appbox);
+        $pusher = User_Adapter::getInstance($row['pushFrom'], $appbox);
+
+        if ($row['canHD'])
+          $user->ACL()->grant_hd_on($record, $pusher, 'validate');
+        else
+          $user->ACL()->grant_preview_on($record, $pusher, 'validate');
       }
-      $conn->free_result($rs);
+
+      $sql = 'REPLACE INTO validate_datas
+                (id, validate_id, sselcont_id, updated_on, agreement)
+                VALUES
+        (null, :validate_id, :sselcont_id, :updated_on, :agreement)';
+
+      $stmt = $conn->prepare($sql);
+
+      $params = array(
+          ':validate_id' => $validate_process[$row['ssel_id']][$row['usr_id']]
+          , ':sselcont_id' => $row['sselcont_id']
+          , ':updated_on' => $row['date_maj']
+          , ':agreement' => $row['agree']
+      );
+      $stmt->execute($params);
+      $stmt->closeCursor();
     }
 
     return true;

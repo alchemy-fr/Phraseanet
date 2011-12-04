@@ -1,22 +1,23 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$session = session::getInstance();
 
-$lng = isset($session->locale) ? $session->locale : GV_default_lng;
-
-if (isset($session->usr_id) && isset($session->ses_id))
-{
-  $ses_id = $session->ses_id;
-  $usr_id = $session->usr_id;
-}
-else
-{
-  header("Location: /login/prod/");
-  exit();
-}
-
-$request = httpRequest::getInstance();
+$request = http_request::getInstance();
 $parm = $request->get_parms('action', 'from_id', 'to_id', 'actions', 'id');
 
 $output = '';
@@ -39,49 +40,49 @@ switch ($action)
     break;
   case 'lazaret_global_operation':
     $errors = array();
-    foreach($parm['actions'] as $action=>$datas)
+    foreach ($parm['actions'] as $action => $datas)
     {
-      if($datas === "")
+      if ($datas === "")
         continue;
       switch ($action)
       {
         case 'add':
-          foreach($datas as $data)
+          foreach ($datas as $data)
           {
             try
             {
               $lazaret_file = new lazaretFile($data['id']);
               $lazaret_file->add_to_base();
             }
-            catch(Exception $e)
+            catch (Exception $e)
             {
               $errors[] = $e->getMessage();
             }
           }
           break;
         case 'delete':
-          foreach($datas as $data)
+          foreach ($datas as $data)
           {
             try
             {
               $lazaret_file = new lazaretFile($data['id']);
               $lazaret_file->delete();
             }
-            catch(Exception $e)
+            catch (Exception $e)
             {
               $errors[] = $e->getMessage();
             }
           }
           break;
         case 'substitute':
-          foreach($datas as $data)
+          foreach ($datas as $data)
           {
             try
             {
               $lazaret_file = new lazaretFile($data['from']);
               $lazaret_file->substitute($data['from'], $data['to']);
             }
-            catch(Exception $e)
+            catch (Exception $e)
             {
               $errors[] = $e->getMessage();
             }
@@ -92,11 +93,11 @@ switch ($action)
       }
     }
     $output = p4string::jsonencode(
-                array(
-                    'error'=>(count($errors)>0),
-                    'message'=>implode("\n", $errors)
-                )
-              );
+                    array(
+                        'error' => (count($errors) > 0),
+                        'message' => implode("\n", $errors)
+                    )
+    );
     break;
   case 'lazaret_delete_record':
     try
@@ -126,7 +127,6 @@ switch ($action)
     try
     {
       $lazaret = new lazaret();
-      $lazaret_elements = $lazaret->elements;
 
       $twig = new supertwig();
       $twig->addFilter(array('nl2br' => 'nl2br'));
@@ -134,8 +134,8 @@ switch ($action)
       $twig->addFilter(array('basnames' => 'phrasea::bas_names'));
 
       $output = $twig->render(
-              'upload/lazaret.twig',
-              array('lazaret' => $lazaret_elements)
+                      'upload/lazaret.twig',
+                      array('lazaret' => $lazaret)
       );
     }
     catch (Exception $e)
@@ -147,7 +147,7 @@ switch ($action)
     try
     {
       $lazaret = new lazaret();
-      $count = (int)$lazaret->get_count();
+      $count = $lazaret->get_count();
 
       $ret = array('error' => false, 'count' => $count);
     }

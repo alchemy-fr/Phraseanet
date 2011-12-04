@@ -5,13 +5,13 @@
 <script type="text/javascript" src="../../../build/datasource/datasource.js" ></script>
 <script type="text/javascript">
 YAHOO.util.DateLocale['fr'] = YAHOO.lang.merge(YAHOO.util.DateLocale, {
-	a: ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'],
-	A: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
-	b: ['jan', 'fév', 'mar', 'avr', 'mai', 'jun', 'jui', 'aoû', 'sep', 'oct', 'nov', 'déc'],
-	B: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
-	p: ['', ''],
-	P: ['', ''],
-	x: '%d.%m.%Y'
+    a: ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'],
+    A: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+    b: ['jan', 'fév', 'mar', 'avr', 'mai', 'jun', 'jui', 'aoû', 'sep', 'oct', 'nov', 'déc'],
+    B: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+    p: ['', ''],
+    P: ['', ''],
+    x: '%d.%m.%Y'
 });
 
 YAHOO.util.DateLocale['fr-CA'] = YAHOO.lang.merge(YAHOO.util.DateLocale['fr'], { x: '%Y-%m-%d' });
@@ -26,34 +26,34 @@ YAHOO.util.DateLocale['de'] = YAHOO.lang.merge(YAHOO.util.DateLocale['fr'], {
 });
 
 YAHOO.util.DateLocale['de-CH'] = YAHOO.lang.merge(YAHOO.util.DateLocale['de'], {
-	a: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
-	x: '%Y-%m-%d'
+    a: ['Son', 'Mon', 'Die', 'Mit', 'Don', 'Fre', 'Sam'],
+    x: '%Y-%m-%d'
 });
 
 YAHOO.util.DateLocale['hi'] = YAHOO.lang.merge(YAHOO.util.DateLocale, {
-	"a": ["\u0930\u0935\u093f ","\u0938\u094b\u092e ","\u092e\u0902\u0917\u0932 ","\u092c\u0941\u0927 ","\u0917\u0941\u0930\u0941 ","\u0936\u0941\u0915\u094d\u0930 ","\u0936\u0928\u093f "],
-	"A": ["\u0930\u0935\u093f\u0935\u093e\u0930 ","\u0938\u094b\u092e\u0935\u093e\u0930 ","\u092e\u0902\u0917\u0932\u0935\u093e\u0930 ","\u092c\u0941\u0927\u0935\u093e\u0930 ","\u0917\u0941\u0930\u0941\u0935\u093e\u0930 ","\u0936\u0941\u0915\u094d\u0930\u0935\u093e\u0930 ","\u0936\u0928\u093f\u0935\u093e\u0930 "],
-	"b": ["\u091c\u0928\u0935\u0930\u0940","\u092b\u093c\u0930\u0935\u0930\u0940","\u092e\u093e\u0930\u094d\u091a","\u0905\u092a\u094d\u0930\u0947\u0932","\u092e\u0908","\u091c\u0942\u0928","\u091c\u0941\u0932\u093e\u0908","\u0905\u0917\u0938\u094d\u0924","\u0938\u093f\u0924\u092e\u094d\u092c\u0930","\u0905\u0915\u094d\u091f\u0942\u092c\u0930","\u0928\u0935\u092e\u094d\u092c\u0930","\u0926\u093f\u0938\u092e\u094d\u092c\u0930"],
-	"B":["\u091c\u0928\u0935\u0930\u0940","\u092b\u093c\u0930\u0935\u0930\u0940","\u092e\u093e\u0930\u094d\u091a","\u0905\u092a\u094d\u0930\u0947\u0932","\u092e\u0908","\u091c\u0942\u0928","\u091c\u0941\u0932\u093e\u0908","\u0905\u0917\u0938\u094d\u0924","\u0938\u093f\u0924\u092e\u094d\u092c\u0930","\u0905\u0915\u094d\u091f\u0942\u092c\u0930","\u0928\u0935\u092e\u094d\u092c\u0930","\u0926\u093f\u0938\u092e\u094d\u092c\u0930"],
-	"c": "%A %d %B %Y %r",
-	"p": ["\u092a\u0942\u0930\u094d\u0935\u093e\u0939\u094d\u0928","\u0905\u092a\u0930\u093e\u0939\u094d\u0928"],
-	"P": ["\u092a\u0942\u0930\u094d\u0935\u093e\u0939\u094d\u0928","\u0905\u092a\u0930\u093e\u0939\u094d\u0928"],
-	"r":"%I:%M:%S %p %Z",
-	"x":"%A %d %B %Y",
-	"X":"%I:%M:%S  %Z"
+    "a": ["\u0930\u0935\u093f ","\u0938\u094b\u092e ","\u092e\u0902\u0917\u0932 ","\u092c\u0941\u0927 ","\u0917\u0941\u0930\u0941 ","\u0936\u0941\u0915\u094d\u0930 ","\u0936\u0928\u093f "],
+    "A": ["\u0930\u0935\u093f\u0935\u093e\u0930 ","\u0938\u094b\u092e\u0935\u093e\u0930 ","\u092e\u0902\u0917\u0932\u0935\u093e\u0930 ","\u092c\u0941\u0927\u0935\u093e\u0930 ","\u0917\u0941\u0930\u0941\u0935\u093e\u0930 ","\u0936\u0941\u0915\u094d\u0930\u0935\u093e\u0930 ","\u0936\u0928\u093f\u0935\u093e\u0930 "],
+    "b": ["\u091c\u0928\u0935\u0930\u0940","\u092b\u093c\u0930\u0935\u0930\u0940","\u092e\u093e\u0930\u094d\u091a","\u0905\u092a\u094d\u0930\u0947\u0932","\u092e\u0908","\u091c\u0942\u0928","\u091c\u0941\u0932\u093e\u0908","\u0905\u0917\u0938\u094d\u0924","\u0938\u093f\u0924\u092e\u094d\u092c\u0930","\u0905\u0915\u094d\u091f\u0942\u092c\u0930","\u0928\u0935\u092e\u094d\u092c\u0930","\u0926\u093f\u0938\u092e\u094d\u092c\u0930"],
+    "B":["\u091c\u0928\u0935\u0930\u0940","\u092b\u093c\u0930\u0935\u0930\u0940","\u092e\u093e\u0930\u094d\u091a","\u0905\u092a\u094d\u0930\u0947\u0932","\u092e\u0908","\u091c\u0942\u0928","\u091c\u0941\u0932\u093e\u0908","\u0905\u0917\u0938\u094d\u0924","\u0938\u093f\u0924\u092e\u094d\u092c\u0930","\u0905\u0915\u094d\u091f\u0942\u092c\u0930","\u0928\u0935\u092e\u094d\u092c\u0930","\u0926\u093f\u0938\u092e\u094d\u092c\u0930"],
+    "c": "%A %d %B %Y %r",
+    "p": ["\u092a\u0942\u0930\u094d\u0935\u093e\u0939\u094d\u0928","\u0905\u092a\u0930\u093e\u0939\u094d\u0928"],
+    "P": ["\u092a\u0942\u0930\u094d\u0935\u093e\u0939\u094d\u0928","\u0905\u092a\u0930\u093e\u0939\u094d\u0928"],
+    "r":"%I:%M:%S %p %Z",
+    "x":"%A %d %B %Y",
+    "X":"%I:%M:%S  %Z"
 });
 
 YAHOO.util.DateLocale['ko-KR'] = YAHOO.lang.merge(YAHOO.util.DateLocale, {
-	"a": ["\uc77c","\uc6d4","\ud654","\uc218","\ubaa9","\uae08","\ud1a0"],
-	"A": ["\uc77c\uc694\uc77c","\uc6d4\uc694\uc77c","\ud654\uc694\uc77c","\uc218\uc694\uc77c","\ubaa9\uc694\uc77c","\uae08\uc694\uc77c","\ud1a0\uc694\uc77c"],
-	"b": [" 1\uc6d4"," 2\uc6d4"," 3\uc6d4"," 4\uc6d4"," 5\uc6d4"," 6\uc6d4"," 7\uc6d4"," 8\uc6d4"," 9\uc6d4","10\uc6d4","11\uc6d4","12\uc6d4"],
-	"B": ["1\uc6d4","2\uc6d4","3\uc6d4","4\uc6d4","5\uc6d4","6\uc6d4","7\uc6d4","8\uc6d4","9\uc6d4","10\uc6d4","11\uc6d4","12\uc6d4"],
-	"c": "%x (%a) %r",
-	"p": ["\uc624\uc804","\uc624\ud6c4"],
-	"P": ["\uc624\uc804","\uc624\ud6c4"],
-	"r": "%p %I\uc2dc %M\ubd84 %S\ucd08",
-	"x": "%Y\ub144 %m\uc6d4 %d\uc77c",
-	"X": "%H\uc2dc %M\ubd84 %S\ucd08"
+    "a": ["\uc77c","\uc6d4","\ud654","\uc218","\ubaa9","\uae08","\ud1a0"],
+    "A": ["\uc77c\uc694\uc77c","\uc6d4\uc694\uc77c","\ud654\uc694\uc77c","\uc218\uc694\uc77c","\ubaa9\uc694\uc77c","\uae08\uc694\uc77c","\ud1a0\uc694\uc77c"],
+    "b": [" 1\uc6d4"," 2\uc6d4"," 3\uc6d4"," 4\uc6d4"," 5\uc6d4"," 6\uc6d4"," 7\uc6d4"," 8\uc6d4"," 9\uc6d4","10\uc6d4","11\uc6d4","12\uc6d4"],
+    "B": ["1\uc6d4","2\uc6d4","3\uc6d4","4\uc6d4","5\uc6d4","6\uc6d4","7\uc6d4","8\uc6d4","9\uc6d4","10\uc6d4","11\uc6d4","12\uc6d4"],
+    "c": "%x (%a) %r",
+    "p": ["\uc624\uc804","\uc624\ud6c4"],
+    "P": ["\uc624\uc804","\uc624\ud6c4"],
+    "r": "%p %I\uc2dc %M\ubd84 %S\ucd08",
+    "x": "%Y\ub144 %m\uc6d4 %d\uc77c",
+    "X": "%H\uc2dc %M\ubd84 %S\ucd08"
 });
 
 </script>
@@ -70,9 +70,9 @@ $testdates = array(time(), strtotime('1900/01/01'), strtotime('2008/01/01'), str
 /*$testdates = array();
 for($i=1; $i<366; $i++)
 {
-	$testdates[] = strtotime("2008/01/$i");
-	$testdates[] = strtotime("2008/01/$i 11:59:59");
-	$testdates[] = strtotime("2008/01/$i 12:00:00");
+    $testdates[] = strtotime("2008/01/$i");
+    $testdates[] = strtotime("2008/01/$i 11:59:59");
+    $testdates[] = strtotime("2008/01/$i 12:00:00");
 }*/
 $formats = array('a','A','b','B','c','C','d','D','e','F','g','G','h','H','I','j','k','l','m','M','n','p','P','r','R','s','S','t','T','u','U','V','w','W','x','X','y','Y','z','Z','%');
 //$formats = array('j');
@@ -93,11 +93,11 @@ document.write(YAHOO.util.Date.format(date, {format: '%Y/%m/%d %H:%M:%S'}));
 <?php
 foreach($formats as $format)
 {
-	$format = "%$format";
+    $format = "%$format";
 
-	setlocale(LC_TIME, 'en_US.UTF-8', 'en_US');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'en_US.UTF-8', 'en_US');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
 <tr>
   <td>
@@ -117,9 +117,9 @@ foreach($formats as $format)
 
   <!-- en-GB -->
 <?php
-	setlocale(LC_TIME, 'en_GB.UTF-8', 'en_GB');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'en_GB.UTF-8', 'en_GB');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
   <td>
     <?php echo $sDate ?>
@@ -133,9 +133,9 @@ foreach($formats as $format)
 
   <!-- fr -->
 <?php
-	setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR', 'fr');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'fr_FR.UTF-8', 'fr_FR', 'fr');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
   <td>
     <?php echo $sDate ?>
@@ -150,9 +150,9 @@ foreach($formats as $format)
 
   <!-- fr-CA -->
 <?php
-	setlocale(LC_TIME, 'fr_CA.UTF-8', 'fr_CA');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'fr_CA.UTF-8', 'fr_CA');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
   <td>
     <?php echo $sDate ?>
@@ -167,9 +167,9 @@ foreach($formats as $format)
 
   <!-- fr-CH -->
 <?php
-	setlocale(LC_TIME, 'fr_CH.UTF-8', 'fr_CH');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'fr_CH.UTF-8', 'fr_CH');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
   <td>
     <?php echo $sDate ?>
@@ -184,9 +184,9 @@ foreach($formats as $format)
 
   <!-- de -->
 <?php
-	setlocale(LC_TIME, 'de_DE.UTF-8', 'de_DE', 'de');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'de_DE.UTF-8', 'de_DE', 'de');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
   <td>
     <?php echo $sDate ?>
@@ -201,9 +201,9 @@ foreach($formats as $format)
 
   <!-- de-CH -->
 <?php
-	setlocale(LC_TIME, 'de_CH.UTF-8', 'de_CH');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'de_CH.UTF-8', 'de_CH');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
   <td>
     <?php echo $sDate ?>
@@ -218,9 +218,9 @@ foreach($formats as $format)
 
   <!-- hi -->
 <?php
-	setlocale(LC_TIME, 'hi_IN.UTF-8', 'hi_IN');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'hi_IN.UTF-8', 'hi_IN');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
   <td>
     <?php echo $sDate ?>
@@ -235,9 +235,9 @@ foreach($formats as $format)
 
   <!-- ko_KR -->
 <?php
-	setlocale(LC_TIME, 'ko_KR.UTF-8', 'ko_KR');
-	$sDate = strftime($format, $date);
-	$jsDate = preg_replace('/\n/', '\n', $sDate);
+    setlocale(LC_TIME, 'ko_KR.UTF-8', 'ko_KR');
+    $sDate = strftime($format, $date);
+    $jsDate = preg_replace('/\n/', '\n', $sDate);
 ?>
   <td>
     <?php echo $sDate ?>
@@ -265,16 +265,16 @@ foreach($formats as $format)
 
 setlocale(LC_TIME, 'ko_KR.UTF-8', 'ko_KR');
 $lc = array (
-	"a" => array(),
-	"A" => array(),
-	"b" => array(),
-	"B" => array(),
-	"c" => "%Y %m %d (%a) %r",
-	"p" => array(),
-	"P" => array(),
-	"r" => "%p %I %M %S %p %Z",
-	"x" => "%Y %m %d",
-	"X" => "%H %M %S"
+    "a" => array(),
+    "A" => array(),
+    "b" => array(),
+    "B" => array(),
+    "c" => "%Y %m %d (%a) %r",
+    "p" => array(),
+    "P" => array(),
+    "r" => "%p %I %M %S %p %Z",
+    "x" => "%Y %m %d",
+    "X" => "%H %M %S"
 );
 $lc['c'] = strftime("%c");
 $lc['r'] = strftime("%r");
@@ -282,15 +282,15 @@ $lc['x'] = strftime("%X");
 $lc['X'] = strftime("%X");
 for($i=6; $i<13; $i++)
 {
-	$d = strtotime("2008/01/$i");
-	$lc['a'][] = strftime("%a", $d);
-	$lc['A'][] = strftime("%A", $d);
+    $d = strtotime("2008/01/$i");
+    $lc['a'][] = strftime("%a", $d);
+    $lc['A'][] = strftime("%A", $d);
 }
 for($i=1; $i<13; $i++)
 {
-	$d = strtotime("2008/$i/1");
-	$lc['b'][] = strftime("%b", $d);
-	$lc['B'][] = strftime("%B", $d);
+    $d = strtotime("2008/$i/1");
+    $lc['b'][] = strftime("%b", $d);
+    $lc['B'][] = strftime("%B", $d);
 }
 
 $d = strtotime("2008/01/01 10:00:00");

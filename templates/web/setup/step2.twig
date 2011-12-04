@@ -1,0 +1,861 @@
+{% extends '/setup/wrapper.twig' %}
+
+{% block extrahead %}
+      <script type="text/javascript">
+        $(document).ready(function(){
+
+          $('button').button();
+          $('.databox_create').bind('change', function(){
+            var $this = $(this);
+            var $current = $this.closest('.steps');
+            $('.databox_creation_input', $current).attr('disabled', $this.attr('checked'));
+          });
+          $('.ab_opt_toggler').bind('click', function(){
+            $('.optional_ab_datas').fadeToggle();
+
+            return false;
+          });
+
+          $('button.ab_tester').bind('click', function (){
+            if(window.console)
+              console.log('application box connection test');
+            test_connection_appbox();
+
+            return false;
+          });
+          $('button.db_tester').bind('click', function (){
+            if(window.console)
+              console.log('data box connection test');
+            test_connection_databox();
+
+            return false;
+          });
+          var language = {
+            ajaxError        : "{% trans 'Erreur lors du contact avec le serveur WEB' %}",
+            ajaxTimeout        : "{% trans 'Delai depasse lors du contact avec le serveur WEB' %}",
+            requiredField      : "{% trans 'Required' %}",
+            validateEmail      : "{% trans 'forms::merci d\'entrer une adresse e-mail valide' %}",
+            validatePassword    : "{% trans 'forms::ce champ est requis' %}",
+            validatePasswordConfirm  : "{% trans 'forms::ce champ est requis' %}",
+            validatePasswordEqual  : "{% trans 'forms::les mots de passe ne correspondent pas' %}",
+            wrongCredentials    : "{% trans 'Vous devez specifier une adresse email et un mot de passe valides' %}",
+            wrongDatabasename    : "{% trans 'Le nom de base de donnee est incorrect' %}",
+            someErrors        : "{% trans 'Il y a des erreurs, merci de les corriger avant de continuer' %}"
+          }
+
+          $.validator.passwordRating.messages = {
+            "similar-to-username": "{% trans 'forms::le mot de passe est trop similaire a l\'identifiant' %}",
+            "too-short": "{% trans 'forms::la valeur donnee est trop courte' %}",
+            "very-weak": "{% trans 'forms::le mot de passe est trop simple' %}",
+            "weak": "{% trans 'forms::le mot de passe est trop simple' %}",
+            "good": "{% trans 'forms::le mot de passe est bon' %}",
+            "strong": "{% trans 'forms::le mot de passe est tres bon' %}"
+          };
+
+          $("#create_admin").validate({
+                rules: {
+                  email:{  email:true},
+
+                  password : {password:"#create_admin input[name=email]"},
+                  password_confirm : {equalTo:"#create_admin input[name=password]"},
+                  ab_hostname : {required:true},
+                  ab_user : {required:true},
+                  ab_name : {required:true}
+                },
+                messages: {
+                  email:{
+                    email : language.validateEmail
+                  },
+                  ab_hostname : {
+                    required :  language.requiredField
+                  },
+                  password : {
+                    required :  language.validatePassword
+                  },
+                  password_confirm : {
+                    required :  language.validatePasswordConfirm,
+                    equalTo :  language.validatePasswordEqual
+                  }
+                },
+                errorPlacement: function(error, element) {
+                  error.appendTo( element.parent() );
+                }
+              }
+          );
+          $("#create_admin").valid();
+
+          $('.path_to_test').path_file_test({'url':'/setup/test/path/'});
+          $('.url_to_test').url_test({'url':'/setup/test/url/'});
+
+          $('.steps:not(:first)').hide();
+          $('.steps .next').bind('click', function(){
+            var $current = $(this).closest('.steps');
+            if($('input.field_error, input.error', $current).length > 0)
+            {
+              alert('{% trans "Veuillez corriger les erreurs avant de poursuivre" %}');
+
+              return false;
+            }
+
+            if(!$(this).hasClass('install'))
+            {
+              var callback = function(){
+                $current.hide();
+                $current.next().show();
+              };
+            }
+            else
+            {
+              var callback = function(){
+                if(window.console)
+                  console.log('Processing install....');
+                $(this).attr('disabled', 'disabled');
+                var dialog = $('#install_wait');
+                dialog.dialog({
+                  modal:true,
+                  resizable:false,
+                  draggable:false,
+                  closeOnEscape:false
+                });
+                $('.ui-dialog-titlebar-close', dialog.closest('.ui-dialog')).remove();
+                setTimeout("$('form#create_admin').submit();",500);
+              };
+            }
+
+            if($current.hasClass('appbox_settings'))
+            {
+              test_connection_appbox(callback);
+            }
+            else if($current.hasClass('databox_settings'))
+            {
+              test_connection_databox(callback);
+            }
+            else{
+              callback();
+            }
+            if(window.console)
+              console.log('return false;');
+
+            return false;
+          });
+          $('.steps .previous').bind('click', function(){
+            var $current = $(this).closest('.steps');
+            $current.hide();
+            $current.prev().show();
+
+            return false;
+          });
+
+
+          function test_connection_appbox(callback)
+          {
+            var scope = $('.appbox_settings');
+            var hostname_input = $('input[name="ab_hostname"]:visible', scope);
+            var port_input = $('input[name="ab_port"]:visible', scope);
+            var user_input = $('input[name="ab_user"]', scope);
+            var password_input = $('input[name="ab_password"]', scope);
+            var dbname_input = $('input[name="ab_name"]', scope);
+
+            var user = user_input.val();
+            var password = password_input.val();
+            var dbname = dbname_input.val();
+
+            var datas =  {
+                user:user,
+                password:password,
+                dbname:dbname
+            };
+
+            if(hostname_input.length > 0)
+            {
+              datas.hostname = hostname_input.val();
+            }
+            if(port_input.length > 0)
+            {
+              datas.port = port_input.val();
+            }
+
+            var el_loader = $('.tester_loader', scope);
+            var el_status = $('.tester_status', scope);
+            var el_message = $('.tester_message', scope);
+
+            test_connection(el_loader, el_status, el_message, datas, callback);
+          }
+
+
+          function test_connection_databox(callback)
+          {
+            var appbox_scope = $('.appbox_settings');
+            var databox_scope = $('.databox_settings');
+
+            var hostname_input = $('input[name="ab_hostname"]', appbox_scope);
+            var port_input = $('input[name="ab_port"]', appbox_scope);
+            var user_input = $('input[name="ab_user"]', appbox_scope);
+            var password_input = $('input[name="ab_password"]', appbox_scope);
+
+            var dbname_input = $('input[name="db_name"]', databox_scope);
+
+            var user = user_input.val();
+            var password = password_input.val();
+            var dbname = dbname_input.val();
+
+            var datas =  {
+                user:user,
+                password:password,
+                dbname:dbname
+            };
+
+            if(hostname_input.length > 0)
+            {
+              datas.hostname = hostname_input.val();
+            }
+            if(port_input.length > 0)
+            {
+              datas.port = port_input.val();
+            }
+
+            var el_loader = $('.tester_loader', databox_scope);
+            var el_status = $('.tester_status', databox_scope);
+            var el_message = $('.tester_message', databox_scope);
+            test_connection(el_loader, el_status, el_message, datas, callback);
+
+          }
+
+          function test_connection(el_loader, el_status, el_message, datas, callback)
+          {
+            $.ajax({
+              type: "GET",
+              url: '/setup/connection_test/mysql/',
+              dataType:'json',
+              data: datas,
+              beforeSend:function(){
+                el_loader.css('visibility', 'visible');
+              },
+              success: function(datas){
+                el_loader.css('visibility', 'hidden');
+                if(datas.connection === true && datas.database === true)
+                {
+                  el_status.attr('src','/skins/icons/ok.png').show();
+                  el_message.empty().append('{% trans 'Successfull connection' %}');
+                  if(!datas.is_empty)
+                  {
+                    el_message.append('<br>{% trans 'Warning, this database is not empty' %}');
+                    el_status.attr('src','/skins/icons/alert.png').show();
+                  }
+                  if(typeof callback == 'function')
+                    callback();
+
+                  return;
+                }
+                if(datas.connection === true)
+                {
+                  el_message.empty().append('{% trans 'Connection is OK but database does not exists or can not be accessed' %}');
+                }
+                else
+                {
+                  el_message.empty().append('{% trans 'Unable to connect to MySQL server' %}');
+                }
+                el_status.attr('src', '/skins/icons/delete.png').show();
+
+                return;
+              },
+              timeout:function(){
+                el_loader.css('visibility', 'hidden');
+                el_status.attr('src', '/skins/icons/delete.png').show();
+                el_message.empty().append('{% trans 'Unable to connect to MySQL server' %}');
+              },
+              error:function(datas){
+                el_loader.css('visibility', 'hidden');
+                el_status.attr('src', '/skins/icons/delete.png').show();
+                el_message.empty().append('{% trans 'Unable to connect to MySQL server' %}');
+              }
+            });
+          }
+
+        });
+
+        </script>
+{% endblock %}
+
+{% block content %}
+            <form id="create_admin" method="post" action="/setup/installer/install/">
+
+
+
+              <div class="steps">
+                <div class="wrapper">
+                  <div class="PNB10 wrapper_left">
+                    <div class="PNB10 section_title">
+                      <h2>
+
+                      </h2>
+                    </div>
+                    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                      <table class="main_content_wrapper">
+                        <tr>
+                          <td>
+                            <table class="main_content_table">
+                              <tr>
+                                <td>
+                                  <p>
+                                    {% trans %}
+                                      Bonjour, vous etes sur le point d'installer Phraseanet.
+                                    {% endtrans %}
+                                  </p>
+                                  <p>
+                                    {% trans %}
+                                      Consultez en ligne les pré-requis et la configuration du serveur web
+                                    {% endtrans %}
+                                  </p>
+                                  <p>
+                                    {% trans %}
+                                      Vous aurez besoin de spécifier un serveur MySQL, des repertoires de stockage pour vos documents, et de configurer votre serveur web pour qu'il publie certains de ces dossiers de stockage.
+                                    {% endtrans %}
+                                  </p>
+                                  {% if warnings|length > 0 %}
+                                  <p>
+                                    {% trans %}
+                                      Avant de continuer, prenez connaissance des points ci-dessous. Vous pouvez continuer sans corriger ces problèmes.
+                                    {% endtrans %}
+                                  </p>
+                                  {% endif %}
+                                </td>
+                              </tr>
+                              {% for warning in warnings %}
+                                <tr>
+                                  <td>
+                                    <img src="/skins/icons/alert.png" /> {{ warning }}
+                                  </td>
+                                </tr>
+                              {% endfor %}
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="PNB10 side_infos">
+                    <div class="table_wrapper">
+                      <table>
+                        <tr>
+                          <td>
+                            <p>
+                              <a href="http://www.phraseanet.com/download/prerequisite/" target="_blank">
+                                {% trans 'Pre-requis' %}
+                              </a>
+                            </p>
+                            <p>
+                              <a href="http://www.phraseanet.com/download/" target="_blank">
+                                {% trans 'Configuration du serveur web' %}
+                              </a>
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="buttons">
+                  <table>
+                    <tr>
+                      <td>
+                      </td>
+                      <td style="text-align:right;">
+                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+
+              <div class="steps">
+                <div class="wrapper">
+                  <div class="PNB10 wrapper_left">
+                    <div class="PNB10 section_title">
+                      <h2>
+                        1/5 {% trans 'Executables externes' %}
+                      </h2>
+                    </div>
+                    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                      <table class="main_content_wrapper">
+                        <tr>
+                          <td>
+                            <table class="main_content_table">
+                              {% for key,binary in discovered_binaries %}
+                                {% set required = '0' %}
+                                {% if key == 'php' or key == 'phraseanet_indexer' or key == 'convert' or key == 'composite' or key == 'exiftool' %}
+                                  {% set required = '1' %}
+                                {% endif %}
+                              <tr>
+                                <td><label>{{ binary['name'] }}</label> </td>
+                                <td><input autocomplete="off" name="binary_{{key}}" class="path_to_test test_executable {% if required == "1" %}required{% endif %}" type="text" value="{{ binary['binary'] }}" /> {% if required == "1" %}{% trans 'Required field' %}{% endif %}</td>
+                              </tr>
+                              {% endfor %}
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="PNB10 side_infos">
+                    <div class="table_wrapper">
+                      <table>
+                        <tr>
+                          <td>
+                            <p>
+                              {% trans 'Phraseanet may require many binaries.' %}
+                            </p>
+                            <p>
+                              {% trans 'Some of them are required, like the indexer, Exiftool or ImageMagick components, some others are optionnal, like FFmpeg which is used to preview video files.' %}
+                            </p>
+                            <p>
+                              {% trans 'Don\'t worry, You can modify your configuration later' %}
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="buttons">
+                  <table>
+                    <tr>
+                      <td>
+                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                      </td>
+                      <td style="text-align:right;">
+                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+
+
+
+              <div class="steps">
+                <div class="wrapper">
+                  <div class="PNB10 wrapper_left">
+                    <div class="PNB10 section_title">
+                      <h2>2/5
+                          {% trans 'Creation de votre compte' %}
+                      </h2>
+                    </div>
+                    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                      <table class="main_content_wrapper">
+                        <tr>
+                          <td>
+                            <table class="main_content_table">
+                              <tr>
+                                <td style="width:200px;"><label>{% trans 'Votre adresse email' %}</label></td>
+                                <td><input class="error" type="text" name="email" value="" /></td>
+                              </tr>
+                              <tr>
+                                <td style="width:200px;"><label>{% trans 'Votre mot de passe' %}</label></td>
+                                <td><input autocomplete="off" type="password" name="password" value="" /></td>
+                              </tr>
+                              <tr>
+                                <td>
+                                </td>
+                                <td>
+                                  <div class="password-meter">
+                                    <div class="password-meter-message">&nbsp;</div>
+                                    <div class="password-meter-bg">
+                                      <div class="password-meter-bar"></div>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="width:200px;"><label>{% trans 'Confirmation de votre mot de passe' %}</label></td>
+                                <td><input autocomplete="off" type="password" name="password_confirm" value="" /></td>
+                              </tr>
+                              <tr>
+                              <tr>
+                                <td colspan="2">
+                                  <div style="border:1px solid #404040;padding:0 10px;margin:20px 0">
+                                    <h3>{% trans 'admin::compte-utilisateur A propos de la securite des mots de passe :' %}</h3>
+                                    <p>{% trans 'admin::compte-utilisateur Les mots de passe doivent etre clairement distincts du login et contenir au moins deux types parmis les caracteres suivants :' %}</p>
+                                    <dl style="border:none;float:none;">
+                                      <dt>{% trans 'admin::compte-utilisateur::securite caracteres speciaux' %}</dt>
+                                      <dt>{% trans 'admin::compte-utilisateur::securite caracteres majuscules' %}</dt>
+                                      <dt>{% trans 'admin::compte-utilisateur::securite caracteres minuscules' %}</dt>
+                                      <dt>{% trans 'admin::compte-utilisateur::securite caracteres numeriques' %}</dt>
+                                    </dl>
+                                  </div>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="PNB10 side_infos">
+                    <div class="table_wrapper">
+                      <table>
+                        <tr>
+                          <td>
+                            <p>
+                              {% trans 'Your email will be used to log in the application.'%} <br/><br/>
+                              {% trans 'Please be sure it is still valid and you can access it' %}
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="buttons">
+                  <table>
+                    <tr>
+                      <td>
+                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                      </td>
+                      <td style="text-align:right;">
+                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+
+
+
+
+
+
+
+
+              <div class="steps appbox_settings">
+                <div class="wrapper">
+                  <div class="PNB10 wrapper_left">
+                    <div class="PNB10 section_title">
+                      <h2>
+                        3/5
+                        {% trans %}
+                          setup::Configuration de la base de compte ApplicationBox
+                        {% endtrans %}
+                      </h2>
+                    </div>
+                    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                      <table class="main_content_wrapper">
+                        <tr>
+                          <td>
+                            <table class="main_content_table">
+                              <tr>
+                                <td colspan="2">
+                                  <h3>{% trans 'MySQL database connection parameters' %}</h3>
+                                </td>
+                              </tr>
+                              <tr class="optional_ab_datas">
+                                <td style="width:200px;"><label>{% trans 'phraseanet:: adresse' %}</label></td>
+                                <td><input autocomplete="off" type="text" name="ab_hostname" value="localhost" /></td>
+                              </tr>
+                              <tr>
+                                <td style="width:200px;"><label>{% trans 'Database user' %}</label></td>
+                                <td><input type="text" name="ab_user" value=""  /></td>
+                              </tr>
+                              <tr>
+                                <td style="width:200px;"><label>{% trans 'admin::compte-utilisateur mot de passe' %}</label></td>
+                                <td><input type="password" name="ab_password" value="" autocomplete="off" /></td>
+                              </tr>
+                              <tr class="optional_ab_datas">
+                                <td style="width:200px;"><label>{% trans 'phraseanet:: port' %}</label></td>
+                                <td><input autocomplete="off" type="text" name="ab_port" value="3306" /></td>
+                              </tr>
+                              <tr>
+                                <td style="width:200px;"><label>{% trans 'Database' %}</label></td>
+                                <td><input type="text" name="ab_name" value="" /></td>
+                              </tr>
+                              <tr style="height:40px;">
+                                <td style="text-align:center;">
+                                  <button class="ab_tester error">{% trans 'boutton::tester' %}</button>
+                                  <img class="tester_loader" style="visibility:hidden;" src="/skins/icons/loader-black.gif"/>
+                                  <img class="tester_status" style="display:none;" src="/skins/icons/delete.png"/>
+                                </td>
+                                <td>
+                                  <span class="tester_message"> </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td colspan="2">
+                                  <p style="margin:10px 0;">
+                                    {% set debut_lien = '<a href="#" class="ab_opt_toggler">' %}
+                                    {% set fin_lien = '</a>' %}
+                                    {% trans %}
+                                      Si vous aviez besoin de plus de parametres, {{debut_lien}}Afficher d'avantage d'options{{fin_lien}}
+                                    {% endtrans %}
+                                  </p>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="PNB10 side_infos">
+                    <div class="table_wrapper">
+                      <table>
+                        <tr>
+                          <td>
+                            <p>
+                              {% trans 'ApplicationBox is a Mysql database.' %}
+                            </p>
+                            <p>
+                              {% trans 'It stores users datas, rights, and references to DataBoxes where records are stored.' %}
+                            </p>
+                            <p>
+                              {% set link_start = '<a href="https://mariadb.org/" target="_blank">' %}
+                              {% set link_end = '</a>' %}
+                              {% trans %}
+                                Phraseanet strongly recommends the use of {{link_start}}MariaDB{{link_end}} as a replacement for MySQL.
+                              {% endtrans %}
+                              <br/>
+                              <br/>
+                              <a href="https://mariadb.org/" target="_blank">
+                                <img src="/skins/icons/Mariadb-big.png" style="width:100%;" />
+                              </a>
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="buttons">
+                  <table>
+                    <tr>
+                      <td>
+                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                      </td>
+                      <td style="text-align:right;">
+                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+
+
+
+              <div class="steps">
+                <div class="wrapper">
+                  <div class="PNB10 wrapper_left">
+                    <div class="PNB10 section_title">
+                      <h2>4/5
+                        {% trans 'setup::Configuration des repertoires de stockage' %}
+                      </h2>
+                    </div>
+                    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                      <table class="main_content_wrapper">
+                        <tr>
+                          <td>
+                            <table class="main_content_table">
+                              <tr>
+                                <td><label>{% trans 'Repertoire de stockage des fichiers' %}</label></td>
+                                <td><input class="path_to_test test_writeable required" type="text" name="datapath_noweb" value="" /></td>
+                              </tr>
+                              <tr>
+                                <td><label>{% trans 'Repertoire de stockage des imagettes' %}</label></td>
+                                <td><input class="path_to_test test_writeable required" type="text" name="datapath_web" value="" /></td>
+                              </tr>
+                              <tr>
+                                <td><label>{% trans 'Point de montage des imagettes (voir aide ci dessous)' %}</label></td>
+                                <td><input class="url_to_test same_domain required" type="text" name="mount_point_web" value="web/" /></td>
+                              </tr>
+                              <tr>
+                                <td colspan="2">
+                                  <p>
+                                    {% trans 'Il faut declarer dans votre serveur web un montage vers le dossier de stockage des  imagettes' %}
+                                  </p>
+                                  <h3>{% trans 'Exemple Apache' %}</h3>
+                                  <code>
+                                    &lt;VirtualHost *:80&gt;<br/>
+                                    &nbsp;&nbsp;...<br/>
+                                    &nbsp;&nbsp;Alias /mountpoint&nbsp;&nbsp;/path/to/thumbnail/folder<br/>
+                                    &nbsp;&nbsp;...<br/>
+                                    &lt;/VirtualHost&gt;
+                                  </code>
+                                  <h3>{% trans 'Exemple Nginx' %}</h3>
+                                  <code>
+                                    server {<br/>
+                                    &nbsp;&nbsp;...<br/>
+                                    &nbsp;&nbsp;location /mountpoint {<br/>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;alias /path/to/thumbnail/folder;<br/>
+                                    &nbsp;&nbsp;}<br/>
+                                    &nbsp;&nbsp;...<br/>
+                                    }
+                                  </code>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="PNB10 side_infos">
+                    <div class="table_wrapper">
+                      <table>
+                        <tr>
+                          <td>
+                            <p>
+                              {% trans 'Your medias and their subdefinitions (previews, thumbnails..) will be stored in these directories.' %}
+                            </p>
+                            <p>
+                              {% trans 'Thumbnails directory is mounted to be accessible via HTTP, while other files are not.' %}
+                            </p>
+                            <p>
+                              {% trans 'If you plan to store large files, be sure it will fit in these directories.' %}
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="buttons">
+                  <table>
+                    <tr>
+                      <td>
+                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                      </td>
+                      <td style="text-align:right;">
+                        <button class="next">{% trans 'boutton::suivant' %}</button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+
+
+              <div class="steps databox_settings">
+                <div class="wrapper">
+                  <div class="PNB10 wrapper_left">
+                    <div class="PNB10 section_title">
+                      <h2>5/5
+                          {% trans %}
+                            setup::Configuration de la base de stockage DataBox
+                          {% endtrans %}
+                      </h2>
+                    </div>
+                    <div class="PNB10" style="top:50px;overflow-x:hidden;">
+                      <table class="main_content_wrapper">
+                        <tr>
+                          <td>
+                            <table class="main_content_table">
+                              <tr>
+                                <td colspan="2"><h3>{% trans 'MySQL database connection parameters' %}</h3></td>
+                              </tr>
+
+                              <tr>
+                                <td style="width:200px;"><label>{% trans 'Ne pas creer de DataBox maintenant' %}</label></td>
+                                <td><input type="checkbox" class="databox_create" /></td>
+                              </tr>
+
+                              <tr>
+                                <td style="width:200px;"><label>{% trans 'Database' %}</label></td>
+                                <td><input class="databox_creation_input" type="text" name="db_name" value="" /></td>
+                              </tr>
+                              <tr style="height:40px;">
+                                <td style="text-align:center;">
+                                  <button class="db_tester error">{% trans 'boutton::tester' %}</button>
+                                  <img class="tester_loader" style="visibility:hidden;" src="/skins/icons/loader-black.gif"/>
+                                  <img class="tester_status" style="display:none;" src="/skins/icons/delete.png"/>
+                                </td>
+                                <td>
+                                  <span class="tester_message"> </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td><label>{% trans 'Modele de donnees' %}</label></td>
+                                <td>
+                                  <select name="db_template" class="databox_creation_input">
+                                  {% for template in available_templates %}
+                                      <option value="{{ template }}">{{ template }}</option>
+                                  {% endfor %}
+                                  </select>
+                                </td>
+                              </tr>
+
+
+                              <tr>
+                                <td colspan="2">
+                                  <h3>
+                                    {% trans %}
+                                      Creation des taches
+                                    {% endtrans %}
+                                  </h3>
+                                  {% trans 'Phraseanet embarque un moteur de taches pour la lecture / ecriture des metadonnes, et autre operations' %}
+                                  <br/><br/>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="width:100px;text-align:right;">
+                                  <input  type="checkbox" name="create_task[]" value="writemeta" checked />
+                                </td>
+                                <td><label>{% trans 'Creer la tache d\'ecriture des metadonnees' %}</label></td>
+                              </tr>
+                              <tr>
+                                <td style="width:100px;text-align:right;">
+                                  <input  type="checkbox" name="create_task[]" value="subdef" checked />
+                                </td>
+                                <td><label>{% trans 'Creer la tache de creation des sous-definitions' %}</label></td>
+                              </tr>
+                              <tr>
+                                <td style="width:100px;text-align:right;">
+                                  <input  type="checkbox" name="create_task[]" value="cindexer" checked />
+                                </td>
+                                <td><label>{% trans 'Creer la tache d\'indexation' %}</label></td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="PNB10 side_infos">
+                    <div class="table_wrapper">
+                      <table>
+                        <tr>
+                          <td>
+                            <p>
+                              {% trans 'Phraseanet DataBoxes are MySQL databases, queryable by Phraseanet ApplicationBox.' %}<br/><br/>
+                              {% trans 'Databoxes store records, metadatas and their classifications' %}
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="buttons">
+                  <table>
+                    <tr>
+                      <td>
+                        <button class="previous">{% trans 'boutton::precedent' %}</button>
+                      </td>
+                      <td style="text-align:right;">
+                        <button class="next install" type="submit">{% trans 'button::Install' %}</button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </form>
+        <div id="install_wait" style="display:none;" title="{% trans 'Install in progess' %}">
+          <p>
+            <img src="/skins/icons/loader111111.gif"/>
+            {% trans %}
+              Installation is currenlty processing, please wait...
+            {% endtrans %}
+          </p>
+        </div>
+{% endblock %}

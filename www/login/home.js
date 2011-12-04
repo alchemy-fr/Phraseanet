@@ -2,7 +2,7 @@
 $(document).ready(function(){	
 	var date = new Date();
 	date.setMonth(date.getMonth() + 2);
-  $.cookie('screen', screen.width+"x"+screen.height, { path: '/', expires: date });
+	$.cookie('screen', screen.width+"x"+screen.height, { path: '/', expires: date });
   
   var test_cookie = date.getTime();
   $.cookie('test_cookie'+test_cookie, 'accepted', { path: '/', expires: date });

@@ -1,0 +1,114 @@
+
+{% macro table(title, titleLeft, titleRight, object, dmin, dmax, unite, sbasid) %}
+{% if object|length > 0 %}
+      <table style="margin:0 auto; margin-bottom:30px;">
+          <caption>{% trans title %}</caption>
+            <thead>
+                <tr>
+                    <th>{% trans titleLeft %}</th>
+                    <th>{% trans titleRight %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for key, value in object %}
+                <tr>
+                    {% if value.id == "false" %}
+                        <td>{{ value.lib|e }}</td>
+                    {% else %}
+                        {% if sbasid == "true"%}
+                            <td><a href="#" id= "id_{{ value.id }}_{{ value.sbasid }}" class ="hasSbas">{{ value.lib|e }}</a></td>
+                        {% else %}
+                            <td><a href="#" id= "id_{{ value.id }}" >{{ value.lib|e }}</a></td>
+                        {% endif %}
+                    {% endif %}
+                    <td>{{ unite == "true" ? value.nb|unite : value.nb }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan='2'>{{ dmin }} - {{ dmax }}</td>
+                </tr>
+            </tfoot>
+      </table>
+      {% endif %}
+{% endmacro %}
+
+
+{% macro top_ten_question(home_title, title_left, title_right, item, dmin, dmax)%}
+    {% if item|length > 0 %}
+        <table style="margin:0 auto; margin-bottom:30px;">
+            <caption>{% trans %} report:: Volumetrie des questions posees sur {{home_title}} {% endtrans %}</caption>
+            <thead>
+                <tr>
+                    <th>{% trans title_left %}</th>
+                    <th>{% trans title_right %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for key, value in item %}
+                <tr>
+                    <td>{{ value.lib|e }}</td>
+                    <td>{{ value.nb }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan='2'>{{ dmin }} - {{ dmax }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    {%endif%}
+{% endmacro %}
+
+{% macro connexion_download(title, title_left, title_right, itemco, itemdl, dmin, dmax ) %}
+    <table style="margin:0 auto; margin-bottom:30px;">
+        <caption>{% trans  title %}</caption>
+        <thead>
+            <tr>
+                <th>{% trans title_left %}</th>
+                <th>{% trans  title_right %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ itemco }}</td>
+                <td>{{  itemdl }}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan='2'>{{ dmin }} - {{ dmax }}</td>
+            </tr>
+        </tfoot>
+    </table>
+{% endmacro %}
+
+{% macro table_activity( id, title, title_abscisse, item) %}
+    {% if item|length > 0 %}
+        <table border='1' class="center imgdash" id = "{{id}}">
+            <caption>{% trans title %}</caption>
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for key in item|keys %}
+                        <th>{{ key }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>
+                        {% if title_abscisse|length > 0 %}
+                            {% trans  title_abscisse%}
+                        {% endif %}
+                    </th>
+                    {% for value in item %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    {% endif %}
+{% endmacro %}

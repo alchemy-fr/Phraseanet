@@ -268,6 +268,11 @@ td {
 	border: solid 1px #CEE2F2;
 	background-color: #F0F5FF;
 }
+/* Quarantine */
+.orange {
+	border: solid 1px #CEE2F2;
+	background-color: #ffdd3c;
+}
 
 .progressName {
 	font-size: 8pt;

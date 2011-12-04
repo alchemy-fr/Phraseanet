@@ -1,158 +1,163 @@
 {% extends "common/index.twig" %}
 
-{% import 'lightbox/thumbnail_basket.twig' as thumbnail_basket %}
+{% import 'common/thumbnail.html' as thumbnail %}
 
 {% block javascript %}
-		<script type="text/javascript" src="/include/minify/g=lightbox"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+        <script type="text/javascript" src="/include/minify/g=lightbox"></script>
 {% endblock %}
 
 {% block stylesheet %}
-	<link type="text/css" rel="stylesheet" 
-		href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,skins/lightbox/ui-lightness/jquery-ui-1.8.4.custom.css,lightbox/lightbox.css" media="screen"/>
+    <link type="text/css" rel="stylesheet"
+        href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/lightbox/lightbox.css" media="screen"/>
 {% endblock %}
 
+  {% block icon %}
+  <link rel="shortcut icon" type="image/x-icon" href="/skins/lightbox/favicon.ico">
+  {% endblock %}
+
 {% block content %}
-	<div id="main_index">
-		<table id="main_wrapper" cellspacing="0" cellpadding="0">
-			<thead>
-				<tr>
-					<th class="title">
-						<h1>{% trans 'Validations' %}</h1>
-					</th>
-					<th>
-						<i>{% trans 'Voici vos validations en cours' %}</i>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for key,baskets in baskets_collection.baskets %}
-					{% if key == 'baskets' %}
-						{% for item in baskets %}
-							{% if item.valid %}
-								{% set basket_length = item.elements|length%}
-				<tr>
-					<td colspan="2">
-						<div class="basket_wrapper ui-corner-all clickable">
-							<table cellspacing="0" cellpadding="0" border="0">
-								<tbody>
-									<tr>
-										<td style="width:170px;">
-											{% if basket_length > 0%}
-												{{thumbnail_basket.format(item.get_first_element, 170)}}
-											{% endif %}
-										</td>
-										<td style="width:20px;">
-										</td>
-										<td valign="top">
-											<div class="basket_description">
-												<table cellspacing="0" cellpadding="0" style="margin:0;width:100%;">
-													<tr>
-														<td>
-															<h2 class="title15">
-																{{item.name}} 
-															</h2>
-															{% set end_date_validation = item.get_validation_end_date %}
-															{% if item.is_validation_finished %}
-																{% trans '(validation) session terminee' %}
-															{% elseif item.is_confirmed %}
-																{% trans '(validation) envoyee' %}
-															{% else %}
-																{% trans '(validation) a envoyer' %}
-															{% endif %}
-														</td>
-														<td class="right">
-																{% set basket_length = item.elements|length%}
-															({% trans %}{{basket_length}} documents{% endtrans %})
-														</td>
-													</tr>
-													<tr style="height:20px;">
-														<td colspan="2"></td>
-													</tr>
-													<tr>
-														<td colspan="2">
-															<div>{{item.desc}}</div>
-															<div>{{item.get_validation_infos}}</div>
-														</td>
-													</tr>
-												</table>
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<input type="hidden" name="ssel_id" value="{{item.ssel_id}}"/>
-						</div>
-					</td>
-				</tr>
-							{% endif %}
-						{% endfor %}
-					{% endif %}
-				{% endfor %}
-				<tr>
-					<th class="title">
-						<h1>{% trans 'Paniers'%}</h1>
-					</th>
-					<th>
-						<i>{% trans 'Voici vos paniers' %}</i>
-					</th>
-				</tr>
-				{% for key,baskets in baskets_collection.baskets %}
-					{% if key == 'baskets' or key == 'recept' %}
-						{% for item in baskets %}
-							{% if item.valid == false %}
-								{% set basket_length = item.elements|length%}
-				<tr>
-					<td colspan="2">
-						<div class="basket_wrapper ui-corner-all clickable">
-							<table cellspacing="0" cellpadding="0" border="0">
-								<tbody>
-									<tr>
-										<td style="width:170px;">
-											{% if basket_length > 0%}
-												{{thumbnail_basket.format(item.get_first_element, 170)}}
-											{% endif %}
-										</td>
-										<td style="width:20px;">
-										</td>
-										<td valign="top">
-											<div class="basket_description">
-												<table cellspacing="0" cellpadding="0" style="margin:0;width:100%;">
-													<tr>
-														<td>
-															<h2 class="title15">
-																{{item.name}} 
-															</h2>
-														</td>
-														<td class="right">
-															{% set basket_length = item.elements|length%}
-															({% trans %}{{basket_length}} documents{% endtrans %})
-														</td>
-													</tr>
-													<tr style="height:20px;">
-														<td colspan="2"></td>
-													</tr>
-													<tr>
-														<td colspan="2">
-															<div>{{item.desc}}</div>
-														</td>
-													</tr>
-												</table>
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<input type="hidden" name="ssel_id" value="{{item.ssel_id}}"/>
-						</div>
-					</td>
-				</tr>
-							{% endif %}
-						{% endfor %}
-					{% endif %}
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
+    <div id="main_index">
+        <table id="main_wrapper" cellspacing="0" cellpadding="0">
+            <thead>
+                <tr>
+                    <th class="title">
+                        <h1>{% trans 'Validations' %}</h1>
+                    </th>
+                    <th>
+                        <i>{% trans 'Voici vos validations en cours' %}</i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key,baskets in baskets_collection.get_baskets() %}
+                    {% if key == 'baskets' %}
+                        {% for item in baskets %}
+                            {% if item.is_valid() %}
+                                {% set basket_length = item.get_elements()|length%}
+                <tr>
+                    <td colspan="2">
+                        <div class="basket_wrapper ui-corner-all clickable">
+                            <table cellspacing="0" cellpadding="0" border="0">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:170px;">
+                                            {% if basket_length > 0%}
+                                                {{thumbnail.format(item.get_first_element.get_record().get_thumbnail, 170, 170, '', session, true)}}
+                                            {% endif %}
+                                        </td>
+                                        <td style="width:20px;">
+                                        </td>
+                                        <td valign="top">
+                                            <div class="basket_description">
+                                                <table cellspacing="0" cellpadding="0" style="margin:0;width:100%;">
+                                                    <tr>
+                                                        <td>
+                                                            <h2 class="title15">
+                                                                {{item.get_name()|raw}}
+                                                            </h2>
+                                                            {% if item.is_validation_finished %}
+                                                                {% trans '(validation) session terminee' %}
+                                                            {% elseif item.is_confirmed %}
+                                                                {% trans '(validation) envoyee' %}
+                                                            {% else %}
+                                                                {% trans '(validation) a envoyer' %}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td class="right">
+                                                                {% set basket_length = item.get_elements()|length%}
+                                                            ({% trans %}{{basket_length}} documents{% endtrans %})
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="height:20px;">
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <div>{{item.get_description()}}</div>
+                                                            <div>{{item.get_validation_infos}}</div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="hidden" name="ssel_id" value="{{item.get_ssel_id()}}"/>
+                        </div>
+                    </td>
+                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                <tr>
+                    <th class="title">
+                        <h1>{% trans 'Paniers'%}</h1>
+                    </th>
+                    <th>
+                        <i>{% trans 'Voici vos paniers' %}</i>
+                    </th>
+                </tr>
+                {% for key,baskets in baskets_collection.get_baskets() %}
+                    {% if key == 'baskets' or key == 'recept' %}
+                        {% for item in baskets %}
+                            {% if item.is_valid() == false %}
+                                {% set basket_length = item.get_elements()|length%}
+                <tr>
+                    <td colspan="2">
+                        <div class="basket_wrapper ui-corner-all clickable">
+                            <table cellspacing="0" cellpadding="0" border="0">
+                                <tbody>
+                                    <tr>
+                                        <td style="width:170px;">
+                                            {% if basket_length > 0%}
+                                                {{thumbnail.format(item.get_first_element.get_record().get_thumbnail, 170, 170, '', session, true)}}
+                                            {% endif %}
+                                        </td>
+                                        <td style="width:20px;">
+                                        </td>
+                                        <td valign="top">
+                                            <div class="basket_description">
+                                                <table cellspacing="0" cellpadding="0" style="margin:0;width:100%;">
+                                                    <tr>
+                                                        <td>
+                                                            <h2 class="title15">
+                                                                {{item.get_name()|raw}}
+                                                            </h2>
+                                                        </td>
+                                                        <td class="right">
+                                                            {% set basket_length = item.get_elements()|length%}
+                                                            ({% trans %}{{basket_length}} documents{% endtrans %})
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="height:20px;">
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <div>{{item.get_description()}}</div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="hidden" name="ssel_id" value="{{item.get_ssel_id()}}"/>
+                        </div>
+                    </td>
+                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 

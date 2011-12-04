@@ -2,34 +2,43 @@
 var ajaxGeoRunning = false;
 var ajaxGeo = false;
 
-
-
+					
+	
 function initialize_geoname_field(box)
 {
 
-
+	
 	$(box).bind('keyup',function(event){
 				checkCity(event,$(this));
 				return false;
 			})
 			.bind('keydown',function(event){
-				goCity(event,$(this))
+				goCity(event,$(this));
 			})
 			.bind('focus',function(event){
 				checkCity(event,$(this));return false;
 			})
 			.bind('blur',function(){
-				if($('div.box.selected', $(this).parent().find('.geoname_city_finder')).length > 0)
+        var city_finder = $(this).parent().find('.geoname_city_finder');
+				if($('div.box.selected', city_finder).length > 0)
+        {
 					selectCity($(this));
+        }
 				else
+        {
+          if($('div.box', city_finder).length > 0)
+          {
+            $(this).val('');
+          }
 					$(this).parent().find('.geoname_city_finder').empty();
+        }
 
-				if (ajaxGeoRunning)
+				if (ajaxGeoRunning) 
 					ajaxGeo.abort();
 				ajaxGeoRunning = false;
 				return false
 			});
-
+	
 	$(box).attr('autocomplete','off').addClass('geoname_initialized');
 	var form_name = $(box).attr('name');
 	$(box).attr('name',form_name+'_geoname_name');
@@ -37,15 +46,15 @@ function initialize_geoname_field(box)
 	$('<input type="hidden" name="'+form_name+'" value="'+$(box).attr('geonameid')+'"/>').insertAfter($(box));
 
 	var city_finder = $(box).parent().find('.geoname_city_finder');
-
+	
 }
 
 function checkCity(event,keybox)
 {
 	var geoname_id = $(keybox).next().val();
-
+	
 	var city_finder = $(keybox).parent().find('.geoname_city_finder');
-
+	
 	var badCodes = [9,16,17,18,20,27,33,34,35,36,37,39,45,112,113,114,115,116,117,118,119,120,121,122,123];
 
 	if($.inArray(event.keyCode,badCodes)>=0)
@@ -53,7 +62,7 @@ function checkCity(event,keybox)
 
 	if(event.keyCode == 40)
 	{
-		el = $('div.box.selected',city_finder);
+		el = $('div.box.selected',city_finder); 
 		el.removeClass('selected');
 		if(el.next(':not(.unselectable)').length == 0)
 			el = $('div.box:not(.unselectable):first',city_finder);
@@ -68,7 +77,7 @@ function checkCity(event,keybox)
 
 		if(event.keyCode == 38)
 		{
-			el =$('div.box.selected',city_finder);
+			el =$('div.box.selected',city_finder); 
 			el.removeClass('selected');
 			if(el.prev(':not(.unselectable)').length == 0)
 				el = $('div.box:not(.unselectable):last',city_finder);
@@ -87,7 +96,7 @@ function checkCity(event,keybox)
 			}
 			else
 			{
-				$('div.box.selected',city_finder).removeClass('selected');
+				$('div.box.selected',city_finder).removeClass('selected'); 
 			}
 		}
 	}
@@ -107,7 +116,7 @@ function checkCity(event,keybox)
 			city : $(keybox).val()
 		},
 		beforeSend: function(){
-			if (ajaxGeoRunning)
+			if (ajaxGeoRunning) 
 				ajaxGeo.abort();
 			ajaxGeoRunning = true;
 			city_finder.css({
@@ -123,7 +132,7 @@ function checkCity(event,keybox)
 				$('div:not(.unselectable):first', city_finder).addClass('selected');
 			else
 			{
-				var geo_el = $('#geo_'+geoname_id);
+				var geo_el = $('#geo_'+geoname_id); 
 				if(geo_el.length > 0)
 				{
 					geo_el.addClass('selected');
@@ -138,7 +147,9 @@ function checkCity(event,keybox)
 			});
 			return false;
 		}
-
+    ,error:function(){return;}
+    ,timeout:function(){return;}
+		
 	});
 	return false;
 }
@@ -155,9 +166,8 @@ function goCity(event,keybox)
 function selectCity(keybox)
 {
 	var city_finder = $(keybox).parent().find('.geoname_city_finder')
-	var val,id,el,
-	val = '';
-	id='';
+	var val = '',
+	id='',
 	el = $('div.selected div:first', city_finder);
 	if(el.length==0)
 		el = false;
@@ -169,5 +179,7 @@ function selectCity(keybox)
 	$(keybox).val(val);
 	$(keybox).next().val(id);
 	city_finder.empty();
-	$(keybox).trigger('blur');
+//	$(keybox).trigger('blur');
+  
+					$(keybox).parent().find('.geoname_city_finder').empty();
 }

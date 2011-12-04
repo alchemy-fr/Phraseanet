@@ -1,66 +1,41 @@
 <?php
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-require( GV_RootPath . 'lib/unicode/lownodiacritics_utf8.php' );
-$session = session::getInstance();
+$appbox = appbox::get_instance();
+$session = $appbox->get_session();
+$registry = $appbox->get_registry();
 
-
-$lng = isset($session->locale) ? $session->locale : GV_default_lng;
-
-$conn = connection::getInstance();
-
-if (isset($session->usr_id) && isset($session->ses_id))
-{
-  $ses_id = $session->ses_id;
-  $usr_id = $session->usr_id;
-
-  if (!$session->upload)
-  {
-    header("Location: /client/");
-    exit();
-  }
-}
-else
-{
-  header("Location: /login/upload/");
-  exit();
-}
+$usr_id = $session->get_usr_id();
 
 function filize($x)
 {
   return '*.' . $x;
 }
 
-if (!($ph_session = phrasea_open_session($ses_id, $usr_id)))
-  die();
 
-user::updateClientInfos(8);
+User_Adapter::updateClientInfos(8);
 
 phrasea::headers();
 
-$avStatus = array();
-$sql = 'SELECT b.base_id FROM basusr bu, bas b 
-        WHERE usr_id="' . $conn->escape_string($usr_id) . '"
-        AND bu.chgstatus = "1" AND b.base_id=bu.base_id
-        AND b.active="1" AND bu.actif="1"';
-if ($rs = $conn->query($sql))
-{
-  while ($row = $conn->fetch_assoc($rs))
-  {
-    $avStatus[] = $row["base_id"];
-  }
-}
-$avBases = array();
-$sql = 'SELECT b.base_id FROM basusr bu, bas b 
-        WHERE usr_id="' . $conn->escape_string($usr_id) . '"
-        AND canaddrecord = "1" AND b.base_id=bu.base_id
-        AND b.active="1" AND bu.actif="1"';
-if ($rs = $conn->query($sql))
-{
-  while ($row = $conn->fetch_assoc($rs))
-  {
-    $avBases[] = $row["base_id"];
-  }
-}
+$user = User_Adapter::getInstance($usr_id, $appbox);
+
+$avStatus = array_keys($user->ACL()->get_granted_base(array('chgstatus')));
+
+$avBases = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
 
 if (count($avBases) == 0)
 {
@@ -68,40 +43,35 @@ if (count($avBases) == 0)
   header("Content-Type: text/html; charset=UTF-8");
 ?>
 
-  <html xmlns="http://www.w3.org/1999/xhtml"
-        lang="<?php echo $session->usr_i18n; ?>">
+  <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $session->get_I18n(); ?>">
     <head>
       <meta http-equiv="X-UA-Compatible" content="chrome=1">
-      <title>
-      <?php echo GV_homeTitle, ' ', _('admin::monitor: module upload'); ?>
-    </title>
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-    <link type="text/css" rel="stylesheet"
-          href="/include/minify/f=skins/common/main.css" />
-    <link href="css/default.css" rel="stylesheet" type="text/css" />
-    <link href="css/jquery-ui-1.7.2.custom.css"
-          rel="stylesheet" type="text/css" />
+      <title><?php echo $registry->get('GV_homeTitle'), ' ', _('admin::monitor: module upload'); ?></title>
+      <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+      <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,css/default.css,css/jquery-ui-1.7.2.custom.css,include/jslibs/jquery.contextmenu.css" rel="stylesheet" type="text/css" />
 
-    <style type="text/css">
-      body{
-        background-color:black;
-        color:white;
-        overflow:auto;
-      }
+      <style type="text/css">
+        body{
+          background-color:black;
+          color:white;
+          overflow:auto;
+        }
 
-      #mainMenu a, #mainMenu b{
-        color:white;
-      }
-    </style>
-    <script type="text/javascript" src="/include/minify/g=upload"></script>
-  </head>
-  <body>
+        #mainMenu a, #mainMenu b{
+          color:white;
+        }
+      </style>
+    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+      <script type="text/javascript" src="/include/minify/g=upload"></script>
+    </head>
+    <body>
     <?php
-      $twig = new supertwig();
-      $twig->display('common/menubar.twig', array('module' => 'upload'));
+    $twig = new supertwig();
+    $twig->display('common/menubar.twig', array('module' => 'upload'));
     ?>
 
-      <div id="content">
+    <div id="content">
       <?php echo _('upload:You do not have right to upload datas'); ?>
     </div>
   </body>
@@ -113,88 +83,42 @@ if (count($avBases) == 0)
 
     $colls = '';
     $datasSB = array();
-    $dstatus = status::getDisplayStatus();
+    $dstatus = databox_status::getDisplayStatus();
 
-    foreach ($ph_session['bases'] as $base)
+    foreach ($appbox->get_databoxes() as $databox)
     {
-
       $groupopen = false;
-      $collections = array();
+      $sbas_id = $databox->get_sbas_id();
 
-      $connsbas = connection::getInstance($base['sbas_id']);
-
-      $sql = 'SELECT distinct base_id, server_coll_id FROM bas
-              WHERE sbas_id="' . $conn->escape_string($base['sbas_id']) . '"
-              AND (base_id = "' . implode('" OR base_id="', $avBases) . '")
-              ORDER BY ord ASC , server_coll_id ASC';
-      if ($connsbas && ($rs = $conn->query($sql)))
+      foreach ($databox->get_collections() as $collection)
       {
-        while ($row = $conn->fetch_assoc($rs))
-        {
-          $sql = 'SELECT htmlname, prefs FROM coll
-                  WHERE coll_id = "' .
-                  $connsbas->escape_string($row['server_coll_id']) . '"';
-          if ($rsB = $connsbas->query($sql))
-          {
-            if ($rowB = $connsbas->fetch_assoc($rsB))
-            {
-              $collections[] = array(
-                  'base_id' => $row['base_id'],
-                  'name' => $rowB['htmlname'],
-                  'prefs' => $rowB['prefs']
-              );
-            }
-          }
-        }
-        $conn->free_result($rs);
-      }
-
-
-
-
-      foreach ($collections as $coll)
-      {
-        if (in_array($coll['base_id'], $avBases))
+        if (in_array($collection->get_base_id(), $avBases))
         {
           if (!$groupopen)
           {
-            $colls .= '<optgroup
-              label="' . phrasea::sbas_names($base['sbas_id']) . '">';
+            $colls .= '<optgroup label="' . phrasea::sbas_names($sbas_id) . '">';
             $groupopen = true;
           }
-          $colls .= '<option
-              value="' . $coll['base_id'] . '">' . $coll['name'] . '</option>';
+          $colls .= '<option value="' . $collection->get_base_id() . '">' . $collection->get_name() . '</option>';
         }
 
-        if (in_array($coll['base_id'], $avStatus))
+        if (in_array($collection->get_base_id(), $avStatus))
         {
-
-          $status = '0000000000000000000000000000' .
-                  '000000000000000000000000000000000000';
-          if ($sxe = simplexml_load_string($coll['prefs']))
+          $status = '0000000000000000000000000000000000000000000000000000000000000000';
+          if ($sxe = simplexml_load_string($collection->get_prefs()))
           {
             if ($sxe->status)
             {
-              $status = (string) ($sxe->status);
+              $status = databox_status::hex2bin((string) ($sxe->status));
 
-              if ($rs = $conn->query('SELECT bin(' . $status . ') as status'))
-              {
-                if ($row = $conn->fetch_assoc($rs))
-                {
-                  $status = $row['status'];
-
-                  while (strlen($status) < 64)
-                    $status = '0' . $status;
-                }
-              }
+              while (strlen($status) < 64)
+                $status = '0' . $status;
             }
           }
 
-          $datasSB[$coll['base_id']] = '<div style="display:none;"
-            class="status_box" id="status_' . $coll['base_id'] . '"><table>';
+          $datasSB[$collection->get_base_id()] = '<div style="display:none;" class="status_box" id="status_' . $collection->get_base_id() . '"><table>';
 
           $currentdatasSB = '';
-          $sbas_id = phrasea::sbasFromBas($coll['base_id']);
 
           if (isset($dstatus[$sbas_id]))
           {
@@ -205,29 +129,23 @@ if (count($avBases) == 0)
               $imgon = '';
 
               if ($statbit['img_off'])
-                $imgoff = '<img src="' . $statbit['img_off'] . '"
-                  title="' . $statbit['labeloff'] . '"
-                  style="width:16px;height:16px;vertical-align:bottom" />';
+                $imgoff = '<img src="' . $statbit['img_off'] . '" title="' . $statbit['labeloff'] . '" style="width:16px;height:16px;vertical-align:bottom" />';
               if ($statbit['img_on'])
-                $imgon = '<img src="' . $statbit['img_on'] . '"
-                  title="' . $statbit['labelon'] . '"
-                  style="width:16px;height:16px;vertical-align:bottom" />';
+                $imgon = '<img src="' . $statbit['img_on'] . '" title="' . $statbit['labelon'] . '" style="width:16px;height:16px;vertical-align:bottom" />';
 
-              $datasSB[$coll['base_id']] .= '
-		<tr style="height: 24px;">
-                  <td id="status_off_' . $coll['base_id'] . '_' . $n . '"
-                        class="status_off ' . (($status[63 - (int) $n] == '0') ? 'active' : '') . '">' .
+              $datasSB[$collection->get_base_id()] .= '
+                        <tr style="height: 24px;">
+                            <td id="status_off_' . $collection->get_base_id() . '_' . $n . '" class="status_off ' . (($status[63 - (int) $n] == '0') ? 'active' : '') . '">' .
                       $imgoff . ' ' . $statbit['labeloff'] .
                       '</td>
-                  <td>
-                  <div style="width:50px;margin:0 20px;" class="slider_status"></div></td>
-                  <td class="status_on ' . (($status[63 - (int) $n] == '1') ? 'active' : '') . '" id="status_on_' . $coll['base_id'] . '_' . $n . '">' .
+                            <td> <div style="width:50px;margin:0 20px;" class="slider_status"></div></td>
+                            <td class="status_on ' . (($status[63 - (int) $n] == '1') ? 'active' : '') . '" id="status_on_' . $collection->get_base_id() . '_' . $n . '">' .
                       $imgon . ' ' . $statbit['labelon'] . '</td>
-						</tr>';
+                        </tr>';
             }
           }
 
-          $datasSB[$coll['base_id']] .= '</table></div>';
+          $datasSB[$collection->get_base_id()] .= '</table></div>';
         }
       }
       if ($groupopen)
@@ -243,9 +161,9 @@ if (count($avBases) == 0)
 
     <html xmlns="http://www.w3.org/1999/xhtml" >
       <head>
-        <title><?php echo GV_homeTitle, ' ', _('admin::monitor: module upload'); ?></title>
+        <title><?php echo $registry->get('GV_homeTitle'), ' ', _('admin::monitor: module upload'); ?></title>
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery.contextmenu.css" />
         <link href="css/jquery-ui-1.8.5.custom.css" rel="stylesheet" type="text/css" />
         <link href="css/default.css" rel="stylesheet" type="text/css" />
 
@@ -255,6 +173,8 @@ if (count($avBases) == 0)
     echo $theFont;
 ?>
         </style>
+    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
         <script type="text/javascript" src="/include/minify/g=upload"></script>
         <script type="text/javascript">
 
@@ -264,129 +184,137 @@ if (count($avBases) == 0)
             'ok':'<?php echo str_replace("'", "\'", _('boutton::valider')) ?>',
             'annuler':'<?php echo str_replace("'", "\'", _('boutton::annuler')) ?>',
             'pleaseselect':'<?php echo str_replace("'", "\'",
-                                    _('Selectionner une action')) ?>',
-            'norecordselected':'<?php echo str_replace("'", "\'",
-                                    _('Aucune enregistrement selectionne')) ?>',
-            'transfert_active':'<?php echo str_replace("'", "\'", _('Transfert en court, vous devez attendre la fin du transfert')) ?>',
-            'queue_not_empty' : '<?php echo str_replace("'", "\'", _('File d\'attente n\'est pas vide, souhaitez vous supprimer ces elements ?')) ?>'
-          };
+            _('Selectionner une action')) ?>',
+                'norecordselected':'<?php echo str_replace("'", "\'",
+            _('Aucune enregistrement selectionne')) ?>',
+                'transfert_active':'<?php echo str_replace("'", "\'", _('Transfert en court, vous devez attendre la fin du transfert')) ?>',
+                'queue_not_empty' : '<?php echo str_replace("'", "\'", _('File d\'attente n\'est pas vide, souhaitez vous supprimer ces elements ?')) ?>'
+              };
 
-          function sessionactive(){
-            $.ajax({
-              type: "POST",
-              url: "/include/updses.php",
-              dataType: 'json',
-              data: {
-                app : 8,
-                usr : <?php echo $usr_id ?>
-              },
-              error: function(){
-                window.setTimeout("sessionactive();", 10000);
-              },
-              timeout: function(){
-                window.setTimeout("sessionactive();", 10000);
-              },
-              success: function(data){
-                if(data)
-                  manageSession(data);
-                var t = 20000;
-                if(data.apps && parseInt(data.apps)>1)
-                  t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 20000));
-                window.setTimeout("sessionactive();", t);
-                return;
+              function sessionactive(){
+                $.ajax({
+                  type: "POST",
+                  url: "/include/updses.php",
+                  dataType: 'json',
+                  data: {
+                    app : 8,
+                    usr : <?php echo $usr_id ?>
+                  },
+                  error: function(){
+                    window.setTimeout("sessionactive();", 10000);
+                  },
+                  timeout: function(){
+                    window.setTimeout("sessionactive();", 10000);
+                  },
+                  success: function(data){
+                    if(data)
+                      manageSession(data);
+                    var t = 120000;
+                    if(data.apps && parseInt(data.apps)>1)
+                      t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
+                    window.setTimeout("sessionactive();", t);
+
+                    return;
+                  }
+                })
+              };
+              sessionactive();
+
+              window.onbeforeunload = function()
+              {
+                var xhr_object = null;
+                if(window.XMLHttpRequest) // Firefox
+                  xhr_object = new XMLHttpRequest();
+                else if(window.ActiveXObject) // Internet Explorer
+                  xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+                else  // XMLHttpRequest non supporte par le navigateur
+
+                  return;
+                url= "../include/delses.php?app=8&t="+Math.random();
+                xhr_object.open("GET", url, false);
+                xhr_object.send(null);
+
+              };
+
+              //This event comes from the Queue Plugin
+              function queueComplete(numFilesUploaded) {
+                var status = document.getElementById("divStatus");
+                if(numFilesUploaded>1)
+                  status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichiers uploades')); ?>",numFilesUploaded);
+                else
+                  status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichier uploade')); ?>",numFilesUploaded);
+
+                var n_quarantine = $('#QUEUE li.progressWrapper.done .progressContainer.orange.quarantine').size();
+                if(n_quarantine > 0)
+                  alert('<?php echo str_replace("'", "\'", _('Certains elements uploades sont passes en quarantaine')); ?>');
+
+                $('#QUEUE li.done .quarantine').removeClass('quarantine');
+                checkQuarantineSize();
               }
-            })
-          };
-          sessionactive();
 
-          window.onbeforeunload = function()
-          {
-            var xhr_object = null;
-            if(window.XMLHttpRequest) // Firefox
-              xhr_object = new XMLHttpRequest();
-            else if(window.ActiveXObject) // Internet Explorer
-              xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-            else  // XMLHttpRequest non supporte par le navigateur
-              return;
-            url= "../include/delses.php?app=8&t="+Math.random();
-            xhr_object.open("GET", url, false);
-            xhr_object.send(null);
+              $(document).ready(function() {
+                var settings = {
+                  flash_url : "swfupload/swfupload.swf",
+                  upload_url: "upload.php",
+                  post_params: {"session" : "<?php echo session_id(); ?>"},
+                  file_size_limit : "<?php echo $maxVolume . ' MB'; ?>",
+                  file_types : "<?php echo implode(';', array_map("filize", explode(',', $registry->get('GV_appletAllowedFileExt')))) ?>",
+                  file_types_description : "These Files",
+                  file_upload_limit : 0,
+                  requeue_on_error : true,
+                  file_post_name : "Filedata",
+                  file_queue_limit : 0,
+                  custom_settings : {
+                    progressTarget : "fsUploadProgress",
+                    cancelButtonId : "btnCancel"
+                  },
+                  debug:false,
 
-          };
-
-          //This event comes from the Queue Plugin
-          function queueComplete(numFilesUploaded) {
-            var status = document.getElementById("divStatus");
-            if(numFilesUploaded>1)
-              status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichiers uploades')); ?>",numFilesUploaded);
-            else
-              status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichier uploade')); ?>",numFilesUploaded);
-
-            checkQuarantineSize();
-          }
-
-          $(document).ready(function() {
-            var settings = {
-              flash_url : "swfupload/swfupload.swf",
-              upload_url: "upload.php",
-              post_params: {"session" : "<?php echo session_id(); ?>"},
-              file_size_limit : "<?php echo $maxVolume . ' MB'; ?>",
-              file_types : "<?php echo implode(';', array_map("filize", explode(',', GV_appletAllowedFileExt))) ?>",
-              file_types_description : "These Files",
-              file_upload_limit : 0,
-              requeue_on_error : true,
-              file_post_name : "Filedata",
-              file_queue_limit : 0,
-              custom_settings : {
-                progressTarget : "fsUploadProgress",
-                cancelButtonId : "btnCancel"
-              },
-              debug:false,
-
-              // Button settings
-              button_image_url: "images/fond400.gif",
-              button_width: "400",
-              button_height: "30",
-              button_placeholder_id: "spanButtonPlaceHolder",
-              button_text: '<span class="theFont"><?php echo str_replace("'", "\'", sprintf(_('upload :: choisir les fichiers  a uploader (max : %d MB)'), $maxVolume)); ?></span>',
-              button_text_style: "<?php echo $theFont ?>",
-              button_text_left_padding: 12,
-              button_text_top_padding: 3,
-              button_window_mode:'transparent',
-              button_cursor : SWFUpload.CURSOR.HAND,
+                  // Button settings
+                  button_image_url: "images/fond400.gif",
+                  button_width: "400",
+                  button_height: "30",
+                  button_placeholder_id: "spanButtonPlaceHolder",
+                  button_text: '<span class="theFont"><?php echo str_replace("'", "\'", sprintf(_('upload :: choisir les fichiers  a uploader (max : %d MB)'), $maxVolume)); ?></span>',
+                  button_text_style: "<?php echo $theFont ?>",
+                  button_text_left_padding: 12,
+                  button_text_top_padding: 3,
+                  button_window_mode:'transparent',
+                  button_cursor : SWFUpload.CURSOR.HAND,
 
 
-              // The event handler functions are defined in handlers.js
-              file_queued_handler : fileQueued,
-              file_queue_error_handler : fileQueueError,
-              file_dialog_complete_handler : fileDialogComplete,
-              upload_start_handler : uploadStart,
-              upload_progress_handler : uploadProgress,
-              upload_error_handler : uploadError,
-              upload_success_handler : uploadSuccess,
-              upload_complete_handler : uploadComplete,
-              queue_complete_handler : queueComplete	// Queue plugin event
-            };
+                  // The event handler functions are defined in handlers.js
+                  file_queued_handler : fileQueued,
+                  file_queue_error_handler : fileQueueError,
+                  file_dialog_complete_handler : fileDialogComplete,
+                  upload_start_handler : uploadStart,
+                  upload_progress_handler : uploadProgress,
+                  upload_error_handler : uploadError,
+                  upload_success_handler : uploadSuccess,
+                  upload_complete_handler : uploadComplete,
+                  queue_complete_handler : queueComplete  // Queue plugin event
+                };
 
-            swfu = new SWFUpload(settings);
+                swfu = new SWFUpload(settings);
 
-            $('#step1 .classic_switch, #flash_return .classic_switch').bind('click', function(event){
-              classic_switch();
-              return false;
-            });
-          });
+                $('#step1 .classic_switch, #flash_return .classic_switch').bind('click', function(event){
+                  classic_switch();
 
-          function reverseOrder()
-          {
-            var elems = $('#fsUploadProgress li');
-            var arr = $.makeArray(elems);
-            arr.reverse();
-            $(arr).appendTo($('#fsUploadProgress'));
-          }
-          function classic_switch()
-          {
-            $('#step1, #step2, #step2classic, #step4, #flash_return').toggle();
-          }
+                  return false;
+                });
+              });
+
+              function reverseOrder()
+              {
+                var elems = $('#fsUploadProgress li');
+                var arr = $.makeArray(elems);
+                arr.reverse();
+                $(arr).appendTo($('#fsUploadProgress'));
+              }
+              function classic_switch()
+              {
+                $('#step1, #step2, #step2classic, #step4, #flash_return').toggle();
+              }
 
         </script>
       </head>
@@ -400,7 +328,7 @@ if (count($avBases) == 0)
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $twig = new supertwig();
@@ -410,7 +338,7 @@ if (count($avBases) == 0)
       <div class="tabs">
         <ul>
           <li><a href="#manager"><?php echo _('Upload Manager') ?></a></li>
-          <li><a id="quarantine-tab" href="/upload/uploadFeedback.php?action=get_lazaret_html"><?php echo _('Quarantaine'); ?><span id="quarantine_size">(<?php echo (int) $count; ?>)</span></a></li>
+          <li><a id="quarantine-tab" href="/upload/uploadFeedback.php?action=get_lazaret_html"><?php echo _('Quarantaine'); ?> (<span id="quarantine_size"><?php echo $count ?></span>)</a></li>
         </ul>
         <div id="manager">
           <form id="form1" action="upload.php" method="post" enctype="multipart/form-data" target="classic_upload">
@@ -501,24 +429,25 @@ if (count($avBases) == 0)
         <select name="action">
           <option value="">
             <?php echo _('Action'); ?>
-          </option>
-          <option value="add">
+                        </option>
+                        <option value="add">
             <?php echo _('Ajouter les documents bloques'); ?>
-          </option>
-          <option value="substitute">
+                        </option>
+                        <option value="substitute">
             <?php echo _('Substituer quand possible ou Ajouter les documents bloques'); ?>
-          </option>
-          <option value="delete">
+                        </option>
+                        <option value="delete">
             <?php echo _('Supprimer les documents bloques'); ?>
-          </option>
-        </select>
-      </div>
-      <div>
-        <input type="checkbox" class="delete_previous" id="delete_previous_global" />
-        <label for="delete_previous_global">
+                        </option>
+                      </select>
+                    </div>
+                    <div>
+                      <input type="checkbox" class="delete_previous" id="delete_previous_global" />
+                      <label for="delete_previous_global">
           <?php echo _('Supprimer precedentes propositions a la substitution'); ?>
         </label>
       </div>
     </div>
+  <div id="DIALOG" style="color:white;"></div>
   </body>
 </html>

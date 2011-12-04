@@ -1,0 +1,102 @@
+{% extends "prod/actions/Bridge/wrapper.twig" %}
+{% import "common/thumbnail.html" as thumb %}
+
+
+
+{% block menu %}
+  {#<div class="block_menu PNB" style="height:30px;bottom:auto;">
+  <table>
+    <tr>
+      <td>
+        <form name="bridge_selection">
+          <input class="bridge_all_selector" type="checkbox" value="">
+          <input type="hidden" name="elements_list" value="" />
+        </form>
+      </td>
+
+
+      {% if not elements.get_total_items is none %}
+      <td>
+        <div class="menu_nb_element">
+          {% set nb_elements = elements.get_total_items() %}
+          {% trans %}
+            {{nb_elements}} elements
+          {% endtrans %}
+        </div>
+      </td>
+      {% endif %}
+      <td>
+
+
+        {% set url = '/prod/bridge/adapter/' ~ account.get_id ~ '/' ~ adapter_action ~ '/' ~ action_type ~ '/' %}
+        {{pages.paginator(elements.get_total_page(), elements.get_current_page(), url) }}
+
+
+      </td>
+    </tr>
+  </table>
+  </div>#}
+{% endblock %}
+
+{% block response %}
+  <table style="width:100%;">
+    <td style="width:60px;">
+
+    </td>
+    <td>
+
+    </td>
+    <td style="width:100px;">
+      Statut
+    </td>
+    <td style="width:120px;">
+      Date de demande
+    </td>
+    <td style="width:120px;">
+      Date dupload
+    </td>
+    {%for element in elements %}
+    <tr>
+      <td>
+        <input type="hidden" value="{{ element.get_id() }}"/>
+        <div class="diapo pending_records">
+          {{thumb.format(element.get_record().get_thumbnail, 40, 40, "", session, true)}}
+        </div>
+      </td>
+      <td>
+        {% if element.get_title() %}
+          {% set title = element.get_title() %}
+        {% else %}
+          {% set title = element.get_record().get_title() %}
+        {% endif %}
+        {% if element.build_connector_element() is not empty %}
+          <a target="_blank" href="{{ element.build_connector_element().get_url() }}">
+            {{ title }}
+          </a>
+        {% else %}
+          {{ title }}
+        {% endif %}
+      </td>
+      <td>
+        {% if element.get_status is constant('Bridge_Element::STATUS_DONE') %}
+          OK
+        {% elseif element.get_status is constant('Bridge_Element::STATUS_PENDING') %}
+          {% trans 'En attente' %}
+        {% elseif element.get_status is constant('Bridge_Element::STATUS_PROCESSING') %}
+          {% trans 'En cours d\'envoi' %}
+        {% elseif element.get_status is constant('Bridge_Element::STATUS_PROCESSING_SERVER') %}
+          {% trans 'En cours d\'encodage' %}
+        {% else %}
+          {{ account.get_api().get_error_message_from_status(element.get_connector_status()) }}
+        {% endif %}
+      </td>
+      <td>
+        {{ element.get_created_on()|prettyDate }}
+      </td>
+      <td>
+        {{ element.get_uploaded_on()|prettyDate }}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

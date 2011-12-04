@@ -1,117 +1,148 @@
 <?php
-class patch_303 implements patch
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+class patch_303 implements patchInterface
 {
-	
-	private $release = '3.0.3';
-	private $concern = array('application_box');
-	
-	function get_release()
-	{
-		return $this->release;
-	}
-	
-	function concern()
-	{
-		return $this->concern;
-	}
-	
-	function apply($id)
-	{
-		$this->update_users_log_datas();
-		$this->update_users_search_datas();
-		return true;
-	}
 
-	
-	function update_users_log_datas()
-	{
-		$conn = connection::getInstance();
-		
-		$col = array('fonction','societe','activite','pays');
-		
-		$sql = " SELECT * FROM sbas";
-		if($rs = $conn->query($sql))
-		{
-			while($row = $conn->fetch_assoc($rs))
-				$tab_sbas[$row['sbas_id']] = array('dbname' => $row['dbname']);
-			$conn->free_result($rs);
-		}
+  /**
+   *
+   * @var string
+   */
+  private $release = '3.0.3';
+  /**
+   *
+   * @var Array
+   */
+  private $concern = array(base::APPLICATION_BOX);
 
-		$f_req = "";
-		foreach($col as $key => $column)
-			$f_req .= (($f_req) ? ',': '') . $column;
-	
-		$sql = "SELECT usr_id, ".$f_req." FROM usr";
-		if($rs = $conn->query($sql))
-		{
-			while($row = $conn->fetch_assoc($rs))
-				$tab_usr[$row['usr_id']] = array('fonction' => $row['fonction'], 'societe' => $row['societe'], 'activite' => $row['activite'], 'pays' => $row['pays']);
-			$conn->free_result($rs);
-		}
+  /**
+   *
+   * @return string
+   */
+  function get_release()
+  {
+    return $this->release;
+  }
 
-		foreach($tab_sbas as $sbasid => $name)
-		{
-			$f_req = '';
-			
-			$connbas = connection::getInstance($sbasid);
-			
-			if($connbas)
-			{
-				foreach($tab_usr as $id => $columns)
-				{
-					foreach($columns as $column => $value)
-						$f_req .= (($f_req) ? ',': '') . $column." = '".$connbas->escape_string($value)."'" ;
-						
-					$sql = "UPDATE log SET ".$f_req." WHERE usrid = '".$connbas->escape_string($id)."' AND site='".GV_sit."'";
-					$connbas->query($sql);
-				}
-			}
-		}
+  public function require_all_upgrades()
+  {
+    return false;
+  }
 
-	}
-	
-	function update_users_search_datas()
-	{
-		$conn = connection::getInstance();
-		
-		
-		$sql = " SELECT * FROM sbas";
-		if($rs = $conn->query($sql))
-		{
-			while($row = $conn->fetch_assoc($rs))
-				$tab_sbas[$row['sbas_id']] = array('dbname' => $row['dbname']);
-			$conn->free_result($rs);
-		}
-		
-		foreach($tab_sbas as $sbasid => $name)
-		{
-			$f_req = "";
-			
-			$connbas = connection::getInstance($sbasid);
-			
-			if($connbas)
-			{
-				$date_debut = '0000-00-00 00:00:00';
-				
-				$sql = 'SELECT MAX(date) as debut FROM `log_search`';
-				if($rs = $connbas->query($sql))
-				{
-					if($row = $connbas->fetch_assoc($rs))
-						$date_debut = $row['debut'];
-					$connbas->free_result($rs);
-				}
-				
-				$sql = 'REPLACE INTO log_search (SELECT null as id, logid as log_id, date, askquest as search, nbrep as results, coll_id FROM quest WHERE `date` > "'.$date_debut.'")';
-				$connbas->query($sql);
-				
-			}
-		}
-		
-		
-		
-		
-	}
-	
-	
-	
+  /**
+   *
+   * @return Array
+   */
+  function concern()
+  {
+    return $this->concern;
+  }
+
+  function apply(base &$appbox)
+  {
+    $this->update_users_log_datas($appbox);
+    $this->update_users_search_datas($appbox);
+
+    return true;
+  }
+
+  /**
+   *
+   * @return patch_303
+   */
+  function update_users_log_datas(appbox &$appbox)
+  {
+    $col = array('fonction', 'societe', 'activite', 'pays');
+
+    $f_req = implode(', ', $col);
+
+    $sql = "SELECT usr_id, " . $f_req . " FROM usr";
+    $stmt = $appbox->get_connection()->prepare($sql);
+    $stmt->execute();
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    foreach ($rs as $row)
+    {
+      $tab_usr[$row['usr_id']] = array(
+          'fonction' => $row['fonction'],
+          'societe' => $row['societe'],
+          'activite' => $row['activite'],
+          'pays' => $row['pays']
+      );
+    }
+
+    foreach ($appbox->get_databoxes() as $databox)
+    {
+      foreach ($tab_usr as $id => $columns)
+      {
+        $f_req = array();
+        $params = array(':usr_id' => $id, ':site' => $appbox->get_registry()->get('GV_sit'));
+        foreach ($columns as $column => $value)
+        {
+          $column = trim($column);
+          $f_req[] = $column . " = :" . $column;
+          $params[':' . $column] = $value;
+        }
+        $f_req = implode(', ', $f_req);
+        $sql = "UPDATE log SET " . $f_req . "
+                  WHERE usrid = :usr_id AND site = :site";
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+      }
+    }
+
+    return $this;
+  }
+
+  /**
+   *
+   * @return patch_303
+   */
+  function update_users_search_datas(appbox &$appbox)
+  {
+    foreach ($appbox->get_databoxes() as $databox)
+    {
+      $date_debut = '0000-00-00 00:00:00';
+
+      $sql = 'SELECT MAX(date) as debut FROM `log_search`';
+
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $row = $stmt->fetch(PDO::FETCH_ASSOC);
+      $stmt->closeCursor();
+
+      if ($row)
+      {
+        $date_debut = $row['debut'];
+      }
+
+      $sql = 'REPLACE INTO log_search
+                (SELECT null as id, logid as log_id, date, askquest as search,
+                        nbrep as results, coll_id
+                 FROM quest
+                 WHERE `date` > :date)';
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute(array(':date' => $date_debut));
+      $stmt->closeCursor();
+    }
+
+    return $this;
+  }
+
 }

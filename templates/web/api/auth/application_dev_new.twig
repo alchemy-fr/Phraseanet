@@ -1,0 +1,80 @@
+{% macro input(name, value, violations, type, size) %}
+   {% if violations is none %}
+    <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
+   {% else %}
+    {% set hasError = "false" %}
+    {% for violation in violations %}
+      {% if violation.getPropertyPath == name and hasError == "false" %}
+        {% set hasError = "true" %}
+        <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ violation.getInvalidValue  }}" size="{{ size|default(20) }}" />
+        <div style="color:red" > {{violation.getMessage}} </div>
+      {% endif %}
+    {% endfor %}
+    {% if hasError == "false" %}
+      <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />  {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% macro textarea(name, value, violations, rows, cols) %}
+   {% if violations is none %}
+    <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}" >{{ value|e}}</textarea>
+  {% else %}
+    {% set hasError = "false" %}
+    {% for violation in violations %}
+      {% if violation.getPropertyPath == name and hasError == "false" %}
+        {% set hasError = "true" %}
+        <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}" >{{ violation.getInvalidValue}}</textarea>
+        <div style="color:red" > {{violation.getMessage}} </div>
+      {% endif %}
+    {% endfor %}
+    {% if hasError == "false" %}
+      <textarea name="{{ name }}" rows="{{ rows|default(4)}}" cols="{{cols|default(20)}}" >{{ value|e}}</textarea>
+    {% endif %}
+  {% endif %}
+{% endmacro %}
+
+{% block dev %}
+  <form id="form_create" action="/api/oauthv2/applications/dev/create" method="POST">
+    {% if form is none %}
+      {% set name, description, website, callback = '', '', '', ''%}
+    {% else %}
+      {% set name = form.name %}
+      {% set description = form.description %}
+      {% set website = form.website %}
+      {% set callback = form.callback %}
+    {% endif %}
+    <table id = "app-dev-create">
+    <tr>
+    <td><label for="name">{% trans 'Nom' %}</label></td>
+    <td>{{ _self.input("name", name, violations) }}</td>
+    </tr>
+    <tr>
+    <td><label for="description">{% trans 'Description' %}</label></td>
+    <td>{{ _self.textarea("description", description, violations,5,17) }}</td>
+    </tr>
+    <tr>
+    <td><label for="website">{% trans 'Site web' %}</label></td>
+    <td>{{ _self.input("website", website|default("http://"), violations) }}</td>
+    </tr>
+    <tr>
+    <td><label for="type">{% trans 'Type d\'application' %}</label></td>
+    <td>{% trans 'Application web' %}
+    <input type="radio" name="type" value="web" checked="checked"/>
+    {% trans 'Application desktop' %}
+    <input type="radio" name="type" value="desktop"/></td>
+    </tr>
+    <tr class="callback" style="height:25px;">
+      <td><label for="callback">{% trans 'URL de callback' %} <br/></label></td>
+    <td>{{ _self.input("callback", callback|default("http://"), violations) }}</td>
+    </tr>
+    <tr>
+    <td></td>
+    <td><button class="app_submit" type="button">{% trans 'boutton::valider' %}</button</td>
+
+    </tr>
+    </table>
+  </form>
+<div style="text-align:left">
+    <a class="dev_back link" href="/api/oauthv2/applications/dev"><button>{% trans 'boutton::retour' %}</button></a>
+  <div>
+{% endblock %}

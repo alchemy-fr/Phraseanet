@@ -1,0 +1,55 @@
+{% extends "report/ajax_dashboard_content.twig" %}
+{% import "report/dashboard_macro.twig" as dash %}
+
+
+
+{% block currentDashboard %}
+
+        {% set item = dashboard.dashboard %}
+
+
+        {% if "activity"|key_exists(item) %}
+            {{ dash.table_activity("mytablehour", "report:: activite par heure", "report:: Connexion", item.activity)}}
+        {% endif %}
+        {% if  "activity_day"|key_exists(item) %}
+            {{dash.table_activity("mytabledaytotal",  "report:: activite par jour" , "report:: Connexion", item.activity_day)}}
+        {%endif%}
+        {% if "activity_added"|key_exists(item) %}
+            {{ dash.table_activity("mytableadded",  "report:: activite document ajoute" , "", item.activity_added)}}
+        {%endif %}
+        {% if "activity_edited"|key_exists(item) %}
+            {{ dash.table_activity("mytableedited",  "report:: activite document edite" , "", item.activity_edited)}}
+        {% endif %}
+        {% if "nb_conn"|key_exists(item) and  "nb_dl"|key_exists(item)%}
+            {{ dash.connexion_download("report:: Cumul telechargements & connexions", "report:: telechargements", "report::Connexion", item.nb_dl, item.nb_conn, dashboard.getTitleDate('dmin'),dashboard.getTitleDate('dmax'))}}
+        {% endif %}
+        {% if "top_ten_user_doc"|key_exists(item)%}
+            {{ dash.table('report:: Utilisateurs les plus actifs' , 'report:: utilisateurs' , 'report:: telechargements document', item.top_ten_user_doc, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "false", "false") }}
+        {% endif %}
+        {% if "top_ten_user_prev"|key_exists(item) %}
+            {{ dash.table('report:: Utilisateurs les plus actifs' , 'report:: utilisateurs' , 'report:: telechargements preview', item.top_ten_user_prev, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "false", "false") }}
+        {%endif %}
+        {% if "top_ten_user_poiddoc"|key_exists(item) %}
+            {{ dash.table('report:: Utilisateurs les plus actifs' , 'report:: utilisateurs' , 'report:: poids document', item.top_ten_user_poiddoc, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "true", "false") }}
+        {%endif %}
+        {% if "top_ten_user_poidprev"|key_exists(item) %}
+            {{ dash.table('report:: Utilisateurs les plus actifs' , 'report:: utilisateurs' , 'report:: poids preview', item.top_ten_user_poidprev, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "true", "false") }}
+        {%endif %}
+        {% if "top_dl_doc"|key_exists(item) %}
+            {{ dash.table('report:: documents les plus telecharges' , 'report:: document' , 'report:: telechargements', item.top_dl_doc, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "false", "true") }}
+        {%endif %}
+        {% if "top_dl_preview"|key_exists(item) %}
+            {{ dash.table('report:: preview les plus telecharges' , 'report:: preview' , 'report:: telechargements', item.top_dl_preview, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "false", "true") }}
+        {%endif %}
+        {% if "ask"|key_exists(item) %}
+            {{ dash.table('report:: Les questions les plus posees' , 'report:: utilisateurs' , 'report:: question', item.ask, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "false", "false") }}
+        {%endif %}
+        {% if "top_ten_question"|key_exists(item) %}
+            {{dash.top_ten_question(home_title, "report:: question",  "report:: poids preview" , item.top_ten_question,dashboard.getTitleDate('dmin') , dashboard.getTitleDate('dmax')) }}
+        {%endif %}
+        {% if "top_ten_site"|key_exists(item) %}
+                {{ dash.table('report:: site d\'ou les photo sont les plus consultees' , 'report:: site' , 'report:: nombre de vue', item.top_ten_site, dashboard.getTitleDate('dmin'), dashboard.getTitleDate('dmax'), "false", "false") }}
+        {%endif %}
+
+    {%endblock currentDashboard %}
+

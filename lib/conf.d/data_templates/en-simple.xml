@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <record>
   <path>{{datapathnoweb}}{{basename}}/documents</path>
-   
+
   <subdefs>
     <subdefgroup name="image">
       <subdef class="preview" name="preview" downloadable="true">
@@ -26,12 +26,12 @@
         <quality>75</quality>
         <meta>no</meta>
         <mediatype>image</mediatype>
-        <baseurl>{{dataurl}}{{basename}}/subdefs</baseurl>
+        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
         <label lang="fr">Imagette</label>
         <label lang="en">Thumbnail</label>
       </subdef>
     </subdefgroup>
-	
+
     <subdefgroup name="video">
       <subdef class="preview" name="preview" downloadable="true">
         <path>{{datapathnoweb}}{{basename}}/subdefs</path>
@@ -62,12 +62,12 @@
         <size>200</size>
         <mediatype>image</mediatype>
         <writeDatas>no</writeDatas>
-        <baseurl>{{dataurl}}{{basename}}/subdefs</baseurl>
+        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
         <label lang="fr">Imagette</label>
         <label lang="en">Thumbnail</label>
       </subdef>
     </subdefgroup>
-	
+
     <subdefgroup name="audio">
       <subdef class="preview" name="preview" downloadable="true">
         <path>{{datapathnoweb}}{{basename}}/subdefs</path>
@@ -81,142 +81,88 @@
         <path>{{datapathweb}}{{basename}}/subdefs</path>
         <mediatype>image</mediatype>
         <writeDatas>no</writeDatas>
-        <baseurl>{{dataurl}}{{basename}}/subdefs</baseurl>
+        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
         <label lang="fr">Imagette</label>
         <label lang="en">Thumbnail</label>
       </subdef>
     </subdefgroup>
   </subdefs>
-   
+
   <description>
-		<!-- 2:5 -->
+        <!-- 2:5 -->
     <Object src="/rdf:RDF/rdf:Description/IPTC:ObjectName" />
-		
-		<!-- 2:15 -->
+
+        <!-- 2:15 -->
     <Category src="/rdf:RDF/rdf:Description/IPTC:Category"/>
-		
-		<!-- 2:20 -->
+
+        <!-- 2:20 -->
     <SupplCategory src="/rdf:RDF/rdf:Description/IPTC:SupplementalCategories"/>
-		
-		<!-- 2:25 -->
+
+        <!-- 2:25 -->
     <Keywords src="/rdf:RDF/rdf:Description/IPTC:Keywords" multi="1"/>
-		
-		<!-- 2:40 -->
+
+        <!-- 2:40 -->
     <SpecialInstruct src="/rdf:RDF/rdf:Description/IPTC:SpecialInstructions"/>
-		
-		<!-- 2:55 -->
+
+        <!-- 2:55 -->
     <Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" regdate="1" />
-		
-		<!-- 2:80 -->
+
+        <!-- 2:80 -->
     <Byline src="/rdf:RDF/rdf:Description/IPTC:By-line"/>
-		
-		<!-- 2:85 -->
+
+        <!-- 2:85 -->
     <BylineTitle src="/rdf:RDF/rdf:Description/IPTC:By-lineTitle"/>
-		
-		<!-- 2:90 -->
+
+        <!-- 2:90 -->
     <City src="/rdf:RDF/rdf:Description/IPTC:City" />
-		
-		<!-- 2:95 -->
+
+        <!-- 2:95 -->
     <Province src="/rdf:RDF/rdf:Description/IPTC:Province-State" />
-		
-		<!-- 2:101 -->
+
+        <!-- 2:101 -->
     <Country src="/rdf:RDF/rdf:Description/IPTC:Country-PrimaryLocationName" />
-		
-		<!-- 2:103 -->
+
+        <!-- 2:103 -->
     <OriginalRef src="/rdf:RDF/rdf:Description/IPTC:OriginalTransmissionReference" />
-		
-		<!-- 2:105 -->
+
+        <!-- 2:105 -->
     <Headline src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" regname="1" />
-		
-		<!-- 2:110 -->
+
+        <!-- 2:110 -->
     <Credit src="/rdf:RDF/rdf:Description/IPTC:Credit" report="1" />
-		
-		<!-- 2:115 -->
+
+        <!-- 2:115 -->
     <Source src="/rdf:RDF/rdf:Description/IPTC:Source" />
-		
-		<!-- 2:120 -->
+
+        <!-- 2:120 -->
     <Caption src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" regdesc="1" />
-		
-		<!-- 2:122 -->
+
+        <!-- 2:122 -->
     <CaptionWriter src="/rdf:RDF/rdf:Description/IPTC:Writer-Editor" />
 
-		<!-- 2:25 -->
+        <!-- 2:25 -->
     <Longitude src="/rdf:RDF/rdf:Description/GPS:GPSLongitude" readonly="1"/>
 
-		<!-- 2:25 -->
+        <!-- 2:25 -->
     <Latitude src="/rdf:RDF/rdf:Description/GPS:GPSLatitude" readonly="1"/>
 
-		<!-- 2:25 -->
+        <!-- 2:25 -->
     <CameraModel src="/rdf:RDF/rdf:Description/IFD0:Model" readonly="1"/>
 
        <!-- Technical Fields -->
-    <FileName src="tf-filename" readonly="1" type="text" />
-    <FilePath src="tf-filepath" index="0" readonly="1" type="text" />
-    <Recordid src="tf-recordid" index="0" readonly="1" type="number" />
-    <MimeType src="tf-mimetype" index="0" readonly="1" type="text" />
-    <Size src="tf-size" index="0" readonly="1" type="number" />
-    <Extension src="tf-extension" index="0" readonly="1" type="text" />
-    <Width src="tf-width" index="0" readonly="1" type="number" />
-    <Height src="tf-height" index="0" readonly="1" type="number" />
-    <Bits src="tf-bits" index="0" readonly="1" type="number" />
-    <Channels src="tf-channels" index="0" readonly="1" type="number" />
+    <FileName src="/rdf:RDF/rdf:Description/PHRASEANET:tf-filename" readonly="1" type="text" />
+    <FilePath src="/rdf:RDF/rdf:Description/PHRASEANET:tf-filepath" index="0" readonly="1" type="text" />
+    <Recordid src="/rdf:RDF/rdf:Description/PHRASEANET:tf-recordid" index="0" readonly="1" type="number" />
+    <MimeType src="/rdf:RDF/rdf:Description/PHRASEANET:tf-mimetype" index="0" readonly="1" type="text" />
+    <Size src="/rdf:RDF/rdf:Description/PHRASEANET:tf-size" index="0" readonly="1" type="number" />
+    <Extension src="/rdf:RDF/rdf:Description/PHRASEANET:tf-extension" index="0" readonly="1" type="text" />
+    <Width src="/rdf:RDF/rdf:Description/PHRASEANET:tf-width" index="0" readonly="1" type="number" />
+    <Height src="/rdf:RDF/rdf:Description/PHRASEANET:tf-height" index="0" readonly="1" type="number" />
+    <Bits src="/rdf:RDF/rdf:Description/PHRASEANET:tf-bits" index="0" readonly="1" type="number" />
+    <Channels src="/rdf:RDF/rdf:Description/PHRASEANET:tf-channels" index="0" readonly="1" type="number" />
   </description>
-   
+
   <statbits>
     <bit n="4">Online</bit>
   </statbits>
-    <!-- ==== Debut layout homeThumbPubli=== -->
-  <layout name="homeThumbPubli" skin="" type="">
-    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-      <xsl:output method="html"/>
-      <xsl:template match="/record/description/*">
-        <b>
-          <xsl:value-of select="name()" />
-        </b> :
-        <xsl:value-of select="current()" />
-        <br />
-      </xsl:template>
-    </xsl:stylesheet>
-  </layout>
-
-  <layout name="homeThumbPubli" skin="fr" type="">
-    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-      <xsl:output method="html"/>
-      <xsl:template match="/record/description/*">
-        <b>
-          <xsl:value-of select="name()" />
-        </b> :
-        <xsl:value-of select="current()" />
-        <br />
-      </xsl:template>
-    </xsl:stylesheet>
-  </layout>
-    <!-- ==== Fin layout homeThumbPubli === -->
-
-    <!-- ==== Debut layout homePrevPubli === -->
-  <layout name="homePrevPubli" skin="" type="">
-    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-      <xsl:output method="html"/>
-      <xsl:template match="/record/description/*">
-        <b>
-          <xsl:value-of select="name()" />
-        </b> :
-        <xsl:value-of select="current()" />
-        <br />
-      </xsl:template>
-    </xsl:stylesheet>
-  </layout>
-
-  <layout name="homePrevPubli" skin="fr" type="">
-    <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-      <xsl:output method="html"/>
-      <xsl:template match="/record/description/*">
-        <b>
-          <xsl:value-of select="name()" />
-        </b> :
-        <xsl:value-of select="current()" />
-        <br />
-      </xsl:template>
-    </xsl:stylesheet>
-  </layout>
 </record>

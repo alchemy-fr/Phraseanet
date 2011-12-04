@@ -1,47 +1,47 @@
 <div>
-	{% if ordermanager.previous_page != false %}
-		<button onclick="load_orders(false,{{ordermanager.previous_page}});">&lt;</button>
-	{% endif %}
-	{% set current_page = ordermanager.page %}
-	{% trans %}Page {{current_page}}{% endtrans %}
-	{% if ordermanager.next_page != false %}
-		<button onclick="load_orders(false,{{ordermanager.next_page}});">&gt;</button>
-	{% endif %}
+    {% if ordermanager.get_previous_page() != false %}
+        <button onclick="load_orders(false,{{ordermanager.get_previous_page()}});">&lt;</button>
+    {% endif %}
+    {% set current_page = ordermanager.get_page() %}
+    {% trans %}Page {{current_page}}{% endtrans %}
+    {% if ordermanager.get_next_page() != false %}
+        <button onclick="load_orders(false,{{ordermanager.get_next_page()}});">&gt;</button>
+    {% endif %}
 
-	<table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
-		<thead>
-			<tr>
-				<th>
-					Utilisateur
-				</th>
-				<th>
-					Date de demande
-				</th>
-				<th>
-					Deadline
-				</th>
-				<th>Utilisation prevue</th>
-				<th>Statut</th>
-			</tr>
-		</thead>
-		<tbody>
-	{% for order in ordermanager.orders %}
-		{% set deadline = order.deadline|phraseadate%}
-		<tr id="order_{{order.id}}" class="order_row">
-			<td>{{order.usr_display}}</td>
-			<td>{{order.created_on|phraseadate}}</td>
-			<td>
-				{% if deadline != '' %}
-					{{deadline}}
-				{% else %}
-					{% trans 'Aucune' %}
-				{% endif %}
-			
-			</td>
-			<td>{{order.usage}}</td>
-			<td>{% if order.todo == 0%}<img src="/skins/icons/ok.png" />{% endif %}</td>
-		</tr>
-	{% endfor %}
-		</tbody>
-	</table>
+    <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+        <thead>
+            <tr>
+                <th>
+                    {% trans 'Utilisateur' %}
+                </th>
+                <th>
+                    {% trans 'Date de demande' %}
+                </th>
+                <th>
+                    {% trans 'Deadline' %}
+                </th>
+                <th>{% trans 'Utilisation prevue' %}</th>
+                <th>{% trans 'Statut' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for order in ordermanager %}
+        {% set deadline = order.get_deadline()|phraseadate%}
+        <tr id="order_{{order.get_order_id()}}" class="order_row">
+            <td>{{order.get_user().get_display_name()}}</td>
+            <td>{{order.get_created_on()|phraseadate}}</td>
+            <td>
+                {% if deadline != '' %}
+                    {{deadline}}
+                {% else %}
+                    {% trans 'Aucune' %}
+                {% endif %}
+
+            </td>
+            <td>{{order.get_usage()|raw}}</td>
+            <td>{% if order.get_todo() == 0%}<img src="/skins/icons/ok.png" />{% endif %}</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
 </div>

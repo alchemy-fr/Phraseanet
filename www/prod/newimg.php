@@ -1,57 +1,50 @@
 <?php
-require_once dirname( __FILE__ ) . "/../../lib/bootstrap.php";
-$session = session::getInstance();
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+
+$registry = registry::get_instance();
 phrasea::headers();
-require(GV_RootPath."lib/index_utils2.php");
 
-$request = httpRequest::getInstance();
+$request = http_request::getInstance();
 $parm = $request->get_parms(
-					"lst"
-					,"ACT"
-					,"operation"
-					,"ForceThumbSubstit"
-					);
-
-$lng = isset($session->locale)?$session->locale:GV_default_lng;
-
-if(isset($session->usr_id) && isset($session->ses_id))
-{
-	$ses_id = $session->ses_id;
-	$usr_id = $session->usr_id;
-	if(!($ph_session = phrasea_open_session((int)$ses_id, $usr_id)))
-	{
-		header("Location: /login/?err=no-session");
-		exit();
-	}
-}
-else
-{
-	header("Location: /login/");
-	exit();
-}
-
-$conn = connection::getInstance();
-
-
+                "lst"
+                , "ACT"
+                , "operation"
+                , "ForceThumbSubstit"
+);
 
 $lst = explode(";", $parm["lst"]);
-$newlist = '';	
-if($parm['ForceThumbSubstit'] == 'on')
+$newlist = '';
+if ($parm['ForceThumbSubstit'] == '1')
 {
-	foreach($lst as $basrec)
-	{
-		$basrec = explode('_',$basrec);
-		if(isset($doc['sd'][$sd_name]) && isset($doc['sd'][$sd_name]['substit']) && $doc['sd'][$sd_name]['substit'] == 1)
-		{
-			$connbas = connection::getInstance(phrasea::sbasFromBas($basrec[0]));
-			if($connbas)
-			{
-				$sql = 'UPDATE subdef SET substit="0" WHERE name="'.$connbas->escape_string($sd_name).'" AND record_id="'.$connbas->escape_string($basrec[1]).'"';
-				$connbas->query($sql);
-			}
-		}
-	}
-}
+  foreach ($lst as $basrec)
+  {
+    $basrec = explode('_', $basrec);
 
-record::rebuild_subdef($lst);
-	
+    try
+    {
+      $record = new record_adapter($basrec[0], $basrec[1]);
+      $record->rebuild_subdefs();
+      unset($record);
+    }
+    catch (Exception $e)
+    {
+      echo $e->getMessage();
+    }
+  }
+}

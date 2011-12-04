@@ -8,8 +8,9 @@ $EOL = PHP_EOL;
 
 $GV_sit = md5(time() . '--' . mt_rand(1000000, 9999999));
 
-include_once dirname(__FILE__) . "/../../lib/classes/user.class.php";
-$lngs = user::avLanguages();
+include_once dirname(__FILE__) . "/../../lib/classes/User/Interface.class.php";
+include_once dirname(__FILE__) . "/../../lib/classes/User/Adapter.class.php";
+$lngs = User_Adapter::avLanguages();
 $avLanguages = array();
 foreach ($lngs as $lng => $locales)
 {
@@ -18,15 +19,12 @@ foreach ($lngs as $lng => $locales)
     $avLanguages[$loc] = $locname['name'];
   }
 }
-
-
-
-
+  $eventsmanager = eventsmanager_broker::getInstance(appbox::get_instance());
 
 
 $PHP_CONF = array(
     'output_buffering' => '4096'  //INI_ALL
-    , 'memory_limit' => '512M'  //INI_ALL
+    , 'memory_limit' => '1024M'  //INI_ALL
     , 'error_reporting' => '6143'  //INI_ALL
     , 'default_charset' => 'UTF-8'  //INI_ALL
     , 'session.use_cookies' => '1'   //INI_ALL
@@ -46,28 +44,22 @@ $PHP_REQ = array(
     , 'magic_quotes_gpc' => 'off'  //INI_PER_DIR -- just for check
 );
 
+$youtube_console_url = '<a href="https://code.google.com/apis/console/" target="_blank">https://code.google.com/apis/console/</a>';
 
+$dashboard_youtube = '<a href="https://code.google.com/apis/youtube/dashboard/" target="_blank">https://code.google.com/apis/youtube/dashboard/</a>';
+
+$create_api_flickr = '<a href="https://secure.flickr.com/services/apps/create/" target="_blank">https://secure.flickr.com/services/apps/create/</a>';
+
+$flickr_callback = '/prod/bridge/callback/flickr/';
+
+$dailymotion_callback = '/prod/bridge/callback/dailymotion/';
+
+$create_api_dailymotion = '<a href="http://www.dailymotion.com/profile/developer" target="_blank">http://www.dailymotion.com/profile/developer</a>';
 
 $GV = array(
     array(
         'section' => _('GV::section:: Serveur HTTP'),
         'vars' => array(
-            array(
-                'type' => 'string',
-                'name' => 'GV_ServerName',
-                'end_slash' => true,
-                'comment' => _('reglages:: URL d\'installation'),
-                'default' => isset($_SERVER['SERVER_NAME']) ? 'http://' . $_SERVER['SERVER_NAME'] : '',
-                'required' => true
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_RootPath',
-                'end_slash' => true,
-                'comment' => _('reglages:: Path d\'installation'),
-                'default' => $cwd,
-                'required' => true
-            ),
             array(
                 'type' => 'timezone',
                 'name' => 'GV_timezone',
@@ -88,20 +80,22 @@ $GV = array(
                 'name' => 'GV_default_lng',
                 'comment' => _('reglages:: Langue par defaut'),
                 'default' => 'fr_FR',
-                'avalaible' => $avLanguages,
+                'available' => $avLanguages,
                 'required' => true
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_STATIC_URL',
+                'end_slash' => false,
+                'comment' => _('reglages:: URL statique (optionnel)'),
+                'default' => '',
+                'required' => false
             )
         )
     ), array(
         'section' => _('GV::section:: Etat de maintenance'),
         'rolled' => true,
         'vars' => array(
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_maintenance',
-                'comment' => _('reglages:: Activation de la maintenance'),
-                'default' => false
-            ),
             array(
                 'type' => 'text',
                 'name' => 'GV_message',
@@ -112,12 +106,6 @@ $GV = array(
                 'type' => 'boolean',
                 'name' => 'GV_message_on',
                 'comment' => _('reglages:: activation du message a diffuser aux utilistaeurs'),
-                'default' => false
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_debug',
-                'comment' => _('reglages:: activation des messages de debug et des erreurs serveur'),
                 'default' => false
             ),
             array(
@@ -135,6 +123,14 @@ $GV = array(
                 'name' => 'GV_google_api',
                 'comment' => _('reglages:: Utiliser els google apis'),
                 'default' => true,
+                'required' => true
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_i18n_service',
+                'comment' => _('reglages:: Service phrasea de localisation'),
+                'default' => 'http://localization.webservice.alchemyasp.com/',
+                'end_slash' => true,
                 'required' => true
             ),
             array(
@@ -170,6 +166,101 @@ $GV = array(
             )
         )
     ), array(
+        'section' => _('GV::section:: Connectivite a Youtube'),
+        'vars' => array(
+            array(
+                'type' => 'boolean',
+                'name' => 'GV_youtube_api',
+                'comment' => sprintf(_('reglages:: Utiliser l\'api youtube, voir %s, <br/> mettre la callback a WEBSITE_URL/prod/bridge/callback/youtube'), $youtube_console_url),
+                'default' => false,
+                'required' => true
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_youtube_client_id',
+                'comment' => _('reglages:: Youtube client id'),
+                'default' => ''
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_youtube_client_secret',
+                'comment' => _('reglages:: Youtube clientsecret'),
+                'default' => ''
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_youtube_dev_key',
+                'comment' => sprintf(_('reglages:: Youtube cle developpeur, voir %s'), $dashboard_youtube),
+                'default' => ''
+            )
+        )
+    ), array(
+        'section' => _('GV::section:: Connectivite a FlickR'),
+        'vars' => array(
+            array(
+                'type' => 'boolean',
+                'name' => 'GV_flickr_api',
+                'comment' => sprintf(_('reglages:: Utiliser l api flickr, voir %s, puis set la callback a %s'), $create_api_flickr, $flickr_callback),
+                'default' => false,
+                'required' => true
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_flickr_client_id',
+                'comment' => _('reglages:: FlickR client id'),
+                'default' => ''
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_flickr_client_secret',
+                'comment' => _('reglages:: FlickR client secret'),
+                'default' => ''
+            )
+        )
+    ), array(
+        'section' => _('GV::section:: Connectivite a Dailymotion'),
+        'vars' => array(
+            array(
+                'type' => 'boolean',
+                'name' => 'GV_dailymotion_api',
+                'comment' => sprintf(_('reglages:: Utiliser l api dailymotion, voir %s, puis set la callback a %s'), $create_api_dailymotion, $dailymotion_callback),
+                'default' => false,
+                'required' => true
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_dailymotion_client_id',
+                'comment' => _('reglages:: dailymotion client id'),
+                'default' => ''
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_dailymotion_client_secret',
+                'comment' => _('reglages:: dailymotion client secret'),
+                'default' => ''
+            )
+        )
+    ), array(
+        'section' => _('GV::section:: Gestionnaire d\'evenements'),
+        'vars' => array(
+            array(
+                'type' => 'enum_multi',
+                'name' => 'GV_events',
+                'default'=>null,
+                'comment' => _('reglages:: Evenements'),
+                'available'=>  $eventsmanager->list_all('event'),
+                'default'=>  array_keys($eventsmanager->list_all('event'))
+            ),
+            array(
+                'type' => 'enum_multi',
+                'name' => 'GV_notifications',
+                'default'=>null,
+                'comment' => _('reglages:: Notifications'),
+                'available'=>  $eventsmanager->list_all('notify'),
+                'default'=>  array_keys($eventsmanager->list_all('notify'))
+            )
+        )
+    ), array(
         'section' => _('GV::section:: Stockage des documents'),
         'vars' => array(
             array(
@@ -184,6 +275,7 @@ $GV = array(
                 'name' => 'GV_base_datapath_web',
                 'end_slash' => true,
                 'comment' => _('reglages:: dossier de stockage des vignettes publiees en acces direct'),
+                'default'=>'',
                 'required' => true
             ),
             array(
@@ -191,6 +283,7 @@ $GV = array(
                 'name' => 'GV_base_datapath_noweb',
                 'end_slash' => true,
                 'comment' => _('reglages:: dossier de stockage des fichiers proteges de l\'acces direct'),
+                'default'=>'',
                 'required' => true
             ),
             array(
@@ -205,25 +298,66 @@ $GV = array(
     ), array(
         'section' => _('GV::section:: Serveurs de cache'),
         'vars' => array(
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_use_cache',
+//                'comment' => _('reglages:: Utiliser un serveur de cache'),
+//                'default' => false,
+//                'required' => true
+//            ),
             array(
-                'type' => 'boolean',
-                'name' => 'GV_use_cache',
-                'comment' => _('reglages:: Utiliser un serveur memcache'),
-                'default' => false,
-                'required' => true
+                'type' => 'enum',
+                'name' => 'GV_cache_server_type',
+                'comment' => _('reglages:: Utiliser un serveur de cache'),
+                'default' => '',
+                'available' => array(''=>_('Aucun'),'redis' => 'Redis', 'memcached' => 'Memcached')
             ),
             array(
                 'type' => 'string',
-                'name' => 'GV_memcached',
-                'comment' => _('setup:: Serveur Memcached'),
+                'name' => 'GV_cache_server_host',
+                'comment' => _('setup:: Hote du Serveur de cache'),
                 'default' => '127.0.0.1',
                 'required' => false
             ),
             array(
                 'type' => 'integer',
-                'name' => 'GV_memcached_port',
-                'comment' => _('reglages:: port du serveur memcached'),
+                'name' => 'GV_cache_server_port',
+                'comment' => _('reglages:: port du serveur de cache'),
                 'default' => 11211
+            )
+        )
+    ),array(
+        'section' => _('GV::section:: Serveur Sphinx'),
+        'vars' => array(
+            array(
+                'type' => 'boolean',
+                'name' => 'GV_sphinx',
+                'comment' => _('Utiliser Sphinx'),
+                'default' => false
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_sphinx_host',
+                'comment' => _('reglages:: de l\'adresse du serveur sphinx'),
+                'default' => '127.0.0.1'
+            ),
+            array(
+                'type' => 'integer',
+                'name' => 'GV_sphinx_port',
+                'comment' => _('reglages:: port du serveur sphinx'),
+                'default' => 9306
+            ),
+            array(
+                'type' => 'string',
+                'name' => 'GV_sphinx_rt_host',
+                'comment' => _('reglages:: de l\'adresse du serveur RT sphinx'),
+                'default' => '127.0.0.1'
+            ),
+            array(
+                'type' => 'integer',
+                'name' => 'GV_sphinx_rt_port',
+                'comment' => _('reglages:: port du serveur RT sphinx'),
+                'default' => 9308
             )
         )
     ), array(
@@ -239,7 +373,8 @@ $GV = array(
                 'type' => 'string',
                 'name' => 'GV_X_Accel_Redirect',
                 'comment' => _('reglages:: Path en acces pour X-Accel-Redirect (NginX Uniquement)'),
-                'default' => ''
+                'default' => '',
+                'end_slash' => true
             ),
             array(
                 'type' => 'string',
@@ -278,6 +413,7 @@ $GV = array(
                 'type' => 'string',
                 'name' => 'GV_cli',
                 'comment' => _('reglages:: executable PHP CLI'),
+                'default'=>'',
                 'required' => true
             ),
             array(
@@ -289,18 +425,21 @@ $GV = array(
             array(
                 'type' => 'string',
                 'name' => 'GV_imagick',
+                'default'=>'',
                 'comment' => _('reglages:: chemin de l\'executable convert'),
                 'required' => true
             ),
             array(
                 'type' => 'string',
                 'name' => 'GV_pathcomposite',
+                'default'=>'',
                 'comment' => _('reglages:: chemin de l\'executable composite'),
                 'required' => true
             ),
             array(
                 'type' => 'string',
                 'name' => 'GV_exiftool',
+                'default'=>'',
                 'comment' => _('reglages:: chemin de l\'executable exiftools'),
                 'required' => true
             ),
@@ -382,13 +521,13 @@ $GV = array(
     ), array(
         'section' => _('GV::section:: Configuration principale'),
         'vars' => array(
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_logobeforebas',
-                'comment' => _('reglages:: Voir les minilogos devant les noms de collection'),
-                'default' => false,
-                'required' => true
-            ),
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_logobeforebas',
+//                'comment' => _('reglages:: Voir les minilogos devant les noms de collection'),
+//                'default' => false,
+//                'required' => true
+//            ),
             array(
                 'type' => 'string',
                 'name' => 'GV_adminMail',
@@ -414,20 +553,20 @@ $GV = array(
                 'name' => 'GV_default_export_title',
                 'comment' => _('reglages:: choix par defaut des noms de fichier a l\'export'),
                 'default' => 'support@alchemy.fr',
-                'avalaible' => array('title' => 'Titre du document', 'original' => 'Nom original')
+                'available' => array('title' => 'Titre du document', 'original' => 'Nom original')
             ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_ArchiveSorted',
-                'comment' => _('reglages:: trie des fichiers par ordre naturel a l\'import'),
-                'default' => true,
-                'required' => true
-            ),
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_ArchiveSorted',
+//                'comment' => _('reglages:: trie des fichiers par ordre naturel a l\'import'),
+//                'default' => true,
+//                'required' => true
+//            ),
             array(
                 'type' => 'enum',
                 'name' => 'GV_social_tools',
                 'comment' => _('reglages:: Active les partages Facebook et Twitter'),
-                'avalaible' => array('none' => 'Disabled', 'publishers' => 'Publishers', 'all' => 'Activated'),
+                'available' => array('none' => 'Disabled', 'publishers' => 'Publishers', 'all' => 'Activated'),
                 'default' => 'none',
                 'required' => false
             )
@@ -436,19 +575,19 @@ $GV = array(
         'section' => _('GV::section:: Page d\'accueil'),
         'rolled' => true,
         'vars' => array(
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_find_password',
-                'comment' => _('reglages:: affiche le lien de renouvellement de mot de passe'),
-                'default' => true,
-                'required' => true
-            ),
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_find_password',
+//                'comment' => _('reglages:: affiche le lien de renouvellement de mot de passe'),
+//                'default' => true,
+//                'required' => true
+//            ),
             array(
                 'type' => 'enum',
                 'name' => 'GV_home_publi',
                 'comment' => _('reglages:: presentation sur la home'),
                 'default' => 'COOLIRIS',
-                'avalaible' => array('DISPLAYx1' => 'slideshow', 'SCROLL' => 'Bandeau defilant', 'COOLIRIS' => 'Cooliris'),
+                'available' => array('DISPLAYx1' => 'slideshow', 'SCROLL' => 'Bandeau defilant', 'COOLIRIS' => 'Cooliris'),
                 'required' => true
             )
         )
@@ -472,7 +611,7 @@ $GV = array(
                 'type' => 'enum',
                 'name' => 'GV_defaultQuery_type',
                 'comment' => _('reglages:: type de document cherches par defaut e l\'ouverture du site'),
-                'avalaible' => array('0' => 'Documents', '1' => 'Regroupements'),
+                'available' => array('0' => 'Documents', '1' => 'Regroupements'),
                 'default' => '0'
             )
         )
@@ -486,47 +625,6 @@ $GV = array(
                 'comment' => _('reglages:: report anonyme (masque les infos concernant les utilisateurs)'),
                 'default' => false,
                 'required' => true
-            )
-        )
-    ), array(
-        'section' => _('GV::section:: Module d\'administration'),
-        'rolled' => true,
-        'vars' => array(
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_admusr_id',
-                'comment' => _('reglages:: Affichage de la colonne id (liste des utilisateurs)'),
-                'default' => true
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_admusr_name',
-                'comment' => _('reglages:: Affichage de la colonne nom-prenom'),
-                'default' => true
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_admusr_company',
-                'comment' => _('reglages:: Affichage de la colonne societe'),
-                'default' => true
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_admusr_mail',
-                'comment' => _('reglages:: Affichage de la colonne mail'),
-                'default' => true
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_admusr_country',
-                'comment' => _('reglages:: Affichage de la colonne pays'),
-                'default' => true
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_admusr_lastmodel',
-                'comment' => _('reglages:: affichage de la colonne du dernier model passe sur l\'utilisateur (liste des utilisateurs)'),
-                'default' => true
             )
         )
     ), array(
@@ -555,92 +653,94 @@ $GV = array(
                 'default' => false
             )
         )
-    ), array(
-        'section' => _('GV::section:: Authentification LDAP'),
-        'rolled' => true,
-        'vars' => array(
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_ldap_enabled',
-                'comment' => _('reglages:: Activation de l\'authentification LDAP '),
-                'default' => false
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_ldap_addr',
-                'comment' => _('reglages:: Adresse du serveur LDAP'),
-                'default' => '127.0.0.1'
-            ),
-            array(
-                'type' => 'integer',
-                'name' => 'GV_ldap_port',
-                'comment' => _('reglages:: Port du serveur LDAP'),
-                'default' => 389
-            ),
-            array(
-                'type' => 'integer',
-                'name' => 'GV_ldap_userid_template',
-                'comment' => _('reglages:: UserID Phraseanet du Template USER LDAP (obsolete)'),
-                'default' => 4
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_ldap_user_template',
-                'comment' => '',
-                'default' => 'ldap_model'
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_ldap_bind_anonymous',
-                'comment' => _('reglages:: Utilisation de BIND Anonyme pour la consultation (obsolete)'),
-                'default' => true
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_ldap_login_consult',
-                'comment' => _('reglages:: Login de Consultation (vide=anonymous)'),
-                'default' => ''
-            ),
-            array(
-                'type' => 'password',
-                'name' => 'GV_ldap_pwd_consult',
-                'comment' => _('reglages:: Mot de passe de Consultation (vide=anonymous)'),
-                'default' => ''
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_ldap_base_dn',
-                'comment' => _('reglages:: Base DN du Groupe Phototheque'),
-                'default' => ''
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_ldap_sfilter',
-                'comment' => _('reglages:: Filtre de Recherche LDAP oe %LOGIN% sera substitue par le login de l\'utilisateur'),
-                'default' => 'cn=%LOGIN%'
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_ldap_grp_base_dn',
-                'comment' => '',
-                'default' => 'o=Alchemy'
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_ldap_grp_sfilter',
-                'comment' => _('reglages:: Filtre de recherche du groupe Phototheque'),
-                'default' => '(ou=photo_*)'
-            )
-        )
-    ), array(
+    )
+//    , array(
+//        'section' => _('GV::section:: Authentification LDAP'),
+//        'rolled' => true,
+//        'vars' => array(
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_ldap_enabled',
+//                'comment' => _('reglages:: Activation de l\'authentification LDAP '),
+//                'default' => false
+//            ),
+//            array(
+//                'type' => 'string',
+//                'name' => 'GV_ldap_addr',
+//                'comment' => _('reglages:: Adresse du serveur LDAP'),
+//                'default' => '127.0.0.1'
+//            ),
+//            array(
+//                'type' => 'integer',
+//                'name' => 'GV_ldap_port',
+//                'comment' => _('reglages:: Port du serveur LDAP'),
+//                'default' => 389
+//            ),
+//            array(
+//                'type' => 'integer',
+//                'name' => 'GV_ldap_userid_template',
+//                'comment' => _('reglages:: UserID Phraseanet du Template USER LDAP (obsolete)'),
+//                'default' => 4
+//            ),
+//            array(
+//                'type' => 'string',
+//                'name' => 'GV_ldap_user_template',
+//                'comment' => '',
+//                'default' => 'ldap_model'
+//            ),
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_ldap_bind_anonymous',
+//                'comment' => _('reglages:: Utilisation de BIND Anonyme pour la consultation (obsolete)'),
+//                'default' => true
+//            ),
+//            array(
+//                'type' => 'string',
+//                'name' => 'GV_ldap_login_consult',
+//                'comment' => _('reglages:: Login de Consultation (vide=anonymous)'),
+//                'default' => ''
+//            ),
+//            array(
+//                'type' => 'password',
+//                'name' => 'GV_ldap_pwd_consult',
+//                'comment' => _('reglages:: Mot de passe de Consultation (vide=anonymous)'),
+//                'default' => ''
+//            ),
+//            array(
+//                'type' => 'string',
+//                'name' => 'GV_ldap_base_dn',
+//                'comment' => _('reglages:: Base DN du Groupe Phototheque'),
+//                'default' => ''
+//            ),
+//            array(
+//                'type' => 'string',
+//                'name' => 'GV_ldap_sfilter',
+//                'comment' => _('reglages:: Filtre de Recherche LDAP oe %LOGIN% sera substitue par le login de l\'utilisateur'),
+//                'default' => 'cn=%LOGIN%'
+//            ),
+//            array(
+//                'type' => 'string',
+//                'name' => 'GV_ldap_grp_base_dn',
+//                'comment' => '',
+//                'default' => 'o=Alchemy'
+//            ),
+//            array(
+//                'type' => 'string',
+//                'name' => 'GV_ldap_grp_sfilter',
+//                'comment' => _('reglages:: Filtre de recherche du groupe Phototheque'),
+//                'default' => '(ou=photo_*)'
+//            )
+//        )
+//    )
+    , array(
         'section' => _('GV::section:: Envois de mails'),
         'vars' => array(
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_exportmail',
-                'comment' => _('reglages:: Activation de l\'export par mail'),
-                'default' => true
-            ),
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_exportmail',
+//                'comment' => _('reglages:: Activation de l\'export par mail'),
+//                'default' => true
+//            ),
             array(
                 'type' => 'string',
                 'name' => 'GV_defaulmailsenderaddr',
@@ -709,13 +809,13 @@ $GV = array(
     ), array(
         'section' => _('GV::section:: Configuration du client'),
         'vars' => array(
-            array(
-                'type' => 'enum',
-                'name' => 'GV_bandeauHome',
-                'comment' => _('reglages:: Affichage par defaut de la home du client'),
-                'avalaible' => array('QUERY' => _('Question'), 'PUBLI' => _('Publications'), 'HELP' => _('Aide')),
-                'default' => 'QUERY'
-            ),
+//            array(
+//                'type' => 'enum',
+//                'name' => 'GV_bandeauHome',
+//                'comment' => _('reglages:: Affichage par defaut de la home du client'),
+//                'available' => array('QUERY' => _('Question'), 'PUBLI' => _('Publications'), 'HELP' => _('Aide')),
+//                'default' => 'QUERY'
+//            ),
             array(
                 'type' => 'integer',
                 'name' => 'GV_ong_search',
@@ -744,15 +844,15 @@ $GV = array(
                 'type' => 'enum',
                 'name' => 'GV_client_render_topics',
                 'comment' => _('reglages:: rendu des topics'),
-                'avalaible' => array('tree' => 'Arbres', 'popups' => 'Menus deroulants'),
+                'available' => array('tree' => 'Arbres', 'popups' => 'Menus deroulants'),
                 'default' => 'tree'
             ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_grp_preview_list',
-                'comment' => _('reglages:: Voir les elements d\'un reportage sans Thumbnail (fenetre de preview)'),
-                'default' => false
-            ),
+//            array(
+//                'type' => 'boolean',
+//                'name' => 'GV_grp_preview_list',
+//                'comment' => _('reglages:: Voir les elements d\'un reportage sans Thumbnail (fenetre de preview)'),
+//                'default' => false
+//            ),
             array(
                 'type' => 'boolean',
                 'name' => 'GV_rollover_reg_preview',
@@ -766,36 +866,11 @@ $GV = array(
                 'default' => true
             ),
             array(
-                'type' => 'boolean',
-                'name' => 'GV_zommPrev_rollover_clientAnswer',
-                'comment' => _('reglages:: rollover sur les elements du client en recherche'),
-                'default' => true
-            ),
-            array(
                 'type' => 'enum',
                 'name' => 'GV_client_coll_ckbox',
                 'comment' => _('reglages:: Presentation des collections'),
                 'default' => 'checkbox',
-                'avalaible' => array('popup' => 'Menu deroulant', 'checkbox' => 'case a cocher')
-            ),
-            array(
-                'type' => 'enum',
-                'name' => 'GV_client_showTitle',
-                'comment' => _('reglages:: afficher le titre des imagettes'),
-                'default' => 'top',
-                'avalaible' => array('top' => 'haut', 'bottom' => 'bas', 'none' => 'aucun')
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_client_showMiniLogos',
-                'comment' => _('reglages:: afficher le minilogo de coll dans le client'),
-                'default' => true
-            ),
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_launchHDifNoPrev',
-                'comment' => _('reglages:: Lancer HD sans prev si video ou pdf'),
-                'default' => false
+                'available' => array('popup' => 'Menu deroulant', 'checkbox' => 'case a cocher')
             ),
             array(
                 'type' => 'boolean',
@@ -867,7 +942,7 @@ $GV = array(
                 'type' => 'string',
                 'name' => 'GV_homeTitle',
                 'comment' => _('reglages :: Titre de l\'installation'),
-                'default' => 'Phraseanet IV'
+                'default' => 'Phraseanet'
             ),
             array(
                 'type' => 'string',
@@ -888,11 +963,10 @@ $GV = array(
                 'default' => ''
             ),
             array(
-                'type' => 'text',
-                'name' => 'GV_robots_txt',
-                'comment' => _('reglages:: Contenu du fichier robots.txt'),
-                'default' => 'User-Agent: *
-Allow: /'
+                'type' => 'boolean',
+                'name' => 'GV_allow_search_engine',
+                'comment' => _('Allow the website to be indexed by search engines like Google'),
+                'default' => true
             ),
             array(
                 'type' => 'boolean',

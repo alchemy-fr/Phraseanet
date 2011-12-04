@@ -1,0 +1,118 @@
+{% trans 'Record_id' %} : {{record.get_record_id() }}<br/>
+
+{% if record.is_grouping() == false %}
+
+  {% if document.get_width() %}
+    {% trans 'Largeur' %} :
+    {{document.get_width()}}
+    <br />
+  {% endif %}
+
+
+  {% if document.get_height() %}
+    {% trans 'Hauteur' %} :
+    {{document.get_height()}}
+    <br />
+  {% endif %}
+  {% if record.get_original_name() %}
+    {% trans 'Nom Original' %} :
+    {{record.get_original_name() }}
+    <br />
+  {% endif %}
+
+  {% if record.get_mime() %}
+    {% trans 'Type Mime' %} :
+    {{record.get_mime() }}
+    <br />
+  {% endif %}
+
+  {% if document.get_size() %}
+    {% trans 'Taille' %} :
+    {{document.get_size()|formatoctet}}
+    <br />
+  {% endif %}
+
+
+  {% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
+    {% trans 'Dimensions a l\'impression' %}
+    <br/>
+    {% set size_w = (document.get_width() / (300*254/100)) %}
+    {% set size_h = (document.get_height() / (300*254/100)) %}
+    300 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
+    {% set size_w = (document.get_width() / (72*254/100)) %}
+    {% set size_h = (document.get_height() / (72*254/100)) %}
+    <br/>   72 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
+  {% endif %}
+
+  {% if record.get_type() == 'video' %}
+
+    <br/><br/>
+    {% if record.get_formated_duration() %}
+      {% trans 'Duree' %} :
+      {{record.get_formated_duration() }}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_FRAMERATE')) is not empty %}
+      {% trans 'Images par secondes' %} :
+      {{record.get_technical_infos(constant('system_file::TC_DATAS_FRAMERATE')) }} ips
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC'))  %}
+      {% trans 'Codec Audio' %} :
+      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC')) }}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOCODEC'))  %}
+      {% trans 'Codec Video' %} :
+      {{record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOCODEC')) }}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOBITRATE'))  %}
+      {% trans 'Debit video' %} :
+      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOBITRATE'))  / 1024) %}
+      {{rate|round(1)}} kbps
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  %}
+      {% trans 'Debit audio' %} :
+      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  / 1024) %}
+      {{rate|round(1)}} kbps
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE'))  %}
+      {% trans 'Frequence d\'echantillonage' %} :
+      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE')) }} kHz
+      <br />
+    {% endif %}
+  {% endif %}
+
+
+
+
+  {% if record.get_type() == 'audio' %}
+    <br/><br/>
+    {% if record.get_formated_duration() %}
+      {% trans 'Duree' %} :
+      {{record.get_formated_duration() }}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC'))  %}
+      {% trans 'Codec Audio' %} :
+      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC')) }}
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  %}
+      {% trans 'Debit audio' %} :
+      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  / 1024) %}
+      {{rate|round(1)}} kbps
+      <br />
+    {% endif %}
+    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE'))  %}
+      {% trans 'Frequence d\'echantillonage' %} :
+      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE')) }} kHz
+      <br />
+    {% endif %}
+  {% endif %}
+
+{% endif %}
+

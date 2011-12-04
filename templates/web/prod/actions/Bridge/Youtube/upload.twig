@@ -1,0 +1,128 @@
+{% extends "prod/actions/Bridge/wrapper.twig"%}
+{% import "prod/actions/Bridge/macro_error_form.twig" as error_form %}
+
+{% block menu %}
+  {% trans %}
+  Upload
+  {% endtrans %}
+{% endblock %}
+
+{% block response %}
+{% set elements_length = route.get_elements()|length %}
+{% set elements_received_length = route.get_count_element_received() %}
+
+{% if elements_received_length == 0 %}
+  {% trans 'Vous n\'avez selectionne aucun element' %}
+{% elseif elements_length == 0 %}
+  {% trans 'Les elements ne peuvent etre uploades (problemes de type ou de droit)' %}
+  {% trans 'Le bridge Youtube ne prend en charge que les videos' %}
+{% elseif elements_length > 1 %}
+  {% trans 'Vous ne pouvez uploader des elements sur Youtube qu\'un par un' %}
+{% else %}
+  {% for record in route.get_elements() %}
+    {% set caption = record.get_caption() %}
+    <form class='bridge_form' name="upload_form" action="/prod/bridge/upload/" method="post">
+      <input type="hidden" name="lst" value="{{ route.get_serialize_list() }}" />
+      <input type="hidden" name="account_id" value="{{ account.get_id() }}" />
+      <table>
+        <tr>
+          <td>
+            {% set name = "title_" ~ record.get_serialize_key() %}
+              <label for='{{name}}'>{% trans 'Titre' %}</label>
+              <div style="font-size:9px; font-weight:200">
+                {% trans "100 caracteres maximum" %}
+              </div>
+          </td>
+          <td>
+            <input class="required_field" type='text' name='{{name}}' value="{{ caption.get_dc_field('Title').get_value()|default(record.get_title()) }}"/>
+             <br />
+              {{ error_form.display_errors(name, constraint_errors) }}
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {% set name = "description_" ~ record.get_serialize_key() %}
+            <label for='{{ name }}'>{% trans 'Description' %}</label>
+            <div style="font-size:9px; font-weight:200">
+              {% trans "2000 caracteres maximum" %}
+            </div>
+          </td>
+          <td class='column_right'>
+            <textarea class="required_field" name="{{ name }}" rows="5">{{ caption.get_dc_field('Description').get_value() }}</textarea>
+            <br />
+              {{ error_form.display_errors(name, constraint_errors) }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {% set name = "category_" ~ record.get_serialize_key() %}
+            <label for='{{ name }}'>{% trans 'Categorie' %}</label>
+          </td>
+          <td class='column_right'>
+              <select name='{{ name }}'>
+              {% for key,val in  account.get_api().get_category_list() %}
+                <option value='{{key}}'>{{val}}</option>
+              {% endfor %}
+              </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {% set name = "tags_" ~ record.get_serialize_key() %}
+            <label for='{{ name }}'>{% trans 'Tags' %}</label>
+            <br/>
+            <div style="font-size:9px; font-weight:200">
+              {% trans "500 caracteres maximum" %} <br/>
+              {% trans "separe par un espace" %}
+            </div>
+          </td>
+          <td>
+            <input class='required_field' type='text' name='{{ name }}' value="{{ caption.get_dc_field('Subject').get_value(true, ' ') }}"/>
+            <br />
+              {{ error_form.display_errors(name, constraint_errors) }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            {% set name = "privacy_" ~ record.get_serialize_key() %}
+            <label for='{{ name }}'>{% trans 'Confidentialite' %}</label>
+          </td>
+          <td>
+            <div style='float:left'>
+          <label for="input_private">{% trans 'prive' %}</label>
+          <input id="input_private" type="radio" name="{{ name }}" value="private" checked='checked' />
+          </div>
+          <div style='float:left'>
+          <label for="input_public">{% trans 'public' %}</label>
+          <input id="input_public" type="radio" name="{{ name }}"  value="public "/>
+          </div>
+          </td>
+        </tr>
+      </table>
+      <button class="form_submitter">{% trans 'Upload' %}</button>
+    </form>
+  {% endfor %}
+  <p>
+          {# see http://code.google.com/intl/en/apis/youtube/terms.html#}
+          {% set lien_term_youtube = '<a target="_blank" href="http://www.youtube.com/t/terms">http://www.youtube.com/t/terms</a>' %}
+          {% trans %}
+          En cliquant sur "ajouter" vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a {{lien_term_youtube}}
+          {% endtrans %}
+  </p>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      var box = $('#dialog-confirm');
+      $(".the_upload_form .back_link", box).bind("click", function(){
+        $(".the_upload_selection").show();
+        $(".the_upload_form").hide();
+
+        return false;
+      }).button();
+    });
+  </script>
+{% endif %}
+<p>
+  <button class="back_link">&lt; {% trans 'Retour' %}</button>
+</p>
+{% endblock %}

@@ -1,0 +1,194 @@
+
+{% extends request.is_ajax ? "admin/common/ajax_wrap.html" : "admin/common/iframe_wrap.html" %}
+
+{% block content %}
+
+<div id="users_page">
+  <h1>{% trans 'Users' %}</h1>
+  <p class="admin_head_opts">
+    <a class="user_adder" href="#">
+      <span>
+        {% trans 'admin::user: nouvel utilisateur' %}
+      </span>
+    </a>
+    <a class="template_adder" href="#">
+      <span>
+        {% trans 'admin::user: nouveau template' %}
+      </span>
+    </a>
+
+    <a href="javascript:void();return(false);"  onclick="importlist();return(false);">
+      <span>
+        {% trans 'admin::user: import d\'utilisateurs' %}
+      </span>
+    </a> /
+    <a href="javascript:void();return(false);"  onclick="exportlist();return(false);">
+      <span>
+        {% trans 'admin::user: export d\'utilisateurs' %}
+      </span>
+    </a>
+
+    <a class="invite_modifier" href="#">
+      <span>
+        {% trans 'Reglages:: reglages d acces guest' %}
+      </span>
+    </a>
+    <input type="hidden" value="{{invite_user.get_id()}}" name="invite_user_id"/>
+  </p>
+  <form id="users_page_search" method="post" action="/admin/users/search/" target="_self">
+    <p class="admin_head_opts">
+      <span>{% trans 'Filter' %}</span>
+      <select name="like_field">
+        <option {% if parm['like_field'] == "usr_login" %}selected="selected"{% endif %} value="usr_login">{% trans 'Push::filter on login' %}</option>
+        <option {% if parm['like_field'] == "name" %}selected="selected"{% endif %} value="name">{% trans 'Push::filter on name' %}</option>
+        <option {% if parm['like_field'] == "pays" %}selected="selected"{% endif %} value="pays">{% trans 'Push::filter on countries' %}</option>
+        <option {% if parm['like_field'] == "societe" %}selected="selected"{% endif %} value="societe">{% trans 'Push::filter on companies' %}</option>
+        <option {% if parm['like_field'] == "usr_mail" %}selected="selected"{% endif %} value="usr_mail">{% trans 'Push::filter on emails' %}</option>
+        <option {% if parm['like_field'] == "lastModel" %}selected="selected"{% endif %} value="lastModel">{% trans 'Push::filter on templates' %}</option>
+      </select>
+
+      {% trans 'Push::filter starts' %}
+      <input type="text" value="{{parm['like_value']}}" name="like_value">
+      <button type="submit">{% trans 'boutton::chercher' %}</button>
+    </p>
+  </form>
+
+<table id="users" cellspacing="0"  cellpadding="0" border="0" class="admintable">
+  <thead>
+    <tr>
+      <th style="text-align: center;">
+        {% trans 'admin::compte-utilisateur id utilisateur' %}
+      </th>
+      <th>
+        {% trans 'admin::compte-utilisateur identifiant' %}
+      </th>
+      <th>
+        {% trans 'admin::compte-utilisateur nom/prenom' %}
+      </th>
+      <th>
+        {% trans 'admin::compte-utilisateur societe' %}
+      </th>
+      <th>
+        {% trans 'admin::compte-utilisateur email' %}
+      </th>
+      <th>
+        {% trans 'admin::compte-utilisateur pays' %}
+      </th>
+      <th>
+        {% trans 'admin::compte-utilisateur dernier modele applique' %}
+      </th>
+      <th>
+        {% trans 'admin::compte-utilisateur date de creation' %}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for usr in users.get_results %}
+    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.get_id()}}">
+      <td style="text-align: center;">
+        {% if usr.ACL().is_phantom() %}
+          <img src="/skins/admin/ghost.png"/>
+        {% endif %}
+        {{usr.get_id()}}
+      </td>
+      <td>
+        {{usr.get_login()}}
+      </td>
+      <td>
+        {{usr.get_firstname()}} {{usr.get_lastname()}}
+      </td>
+      <td>
+        {{usr.get_company()}}
+      </td>
+      <td>
+        {{usr.get_email()}}
+      </td>
+      <td>
+        {{usr.get_country()}}
+      </td>
+      <td>
+        {{usr.get_applied_template()}}
+      </td>
+      <td>
+        {{usr.get_creation_date()|getDate}}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<form id="users_page_form" method="post" target="_self" action="/admin/users/search/">
+  {{users.get_total}} resultats
+
+  {% set pages = users.get_total() / 20 %}
+  {% set modulo = users.get_total() % 20 %}
+
+  {% if modulo > 0 %}{% set pages = pages + 1 %}{% endif %}
+  {{pages|floor}} pages
+  {% if users.get_page > 2 %}
+  <button class="pager first"><<</button>
+  {% endif %}
+  {% if users.get_page > 1 %}
+  <button class="pager prev"><</button>
+  {% endif %}
+  <input type="text" value="{{users.get_page}}" />
+  {% if users.get_page < pages -1 %}
+  <button class="pager next">></button>
+  {% endif %}
+  {% if users.get_page < pages - 2 %}
+  <button class="pager last">>></button>
+  {% endif %}
+  <select name="per_page">
+    {% set n_par_page = 10 %}
+    <option value="10" {% if parm['per_page'] == 10%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+    {% set n_par_page = 20 %}
+    <option value="20" {% if parm['per_page'] == 20%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+    {% set n_par_page = 50 %}
+    <option value="50" {% if parm['per_page'] == 50%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+  </select>
+  <button class="user_modifier">{% trans 'boutton::modifier' %}</button>
+  <button class="user_deleter">{% trans 'Supprimer' %}</button>
+
+
+  <input type="hidden" name="total_results" value="{{users.get_total()}}"/>
+  <input type="hidden" name="page" value="{{users.get_page()}}"/>
+  <input name="srt" value="{{parm['srt']}}" type="hidden" />
+  <input name="ord" value="{{parm.ord}}" type="hidden" />
+  <input name="act" value="{{parm.act}}" type="hidden" />
+  <input name="sbas_id" value="{{parm.sbas_id}}" type="hidden" />
+  <input name="base_id" value="{{parm.base_id}}" type="hidden" />
+  <input name="usr_ids" value="{{parm.usr_ids}}" type="hidden" />
+  <input name="like_value" value="{{parm.like_value}}" type="hidden" />
+  <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+  <input name="inactives" value="{{parm.inactives}}" type="hidden" />
+  <input name="offset_start" value="{{parm.offset_start}}" type="hidden" />
+
+</form>
+<form target="_blank" method="post" action="/admin/users/export/csv/">
+  {% if parm.base_id is not empty %}
+    {% for base_id in parm.base_id %}
+    <input name="base_id[]" value="{{base_id}}" type="hidden" />
+    {% endfor %}
+  {% endif %}
+  {% if parm.sbas_id is not empty %}
+    {% for sbas_id in parm.sbas_id %}
+    <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
+    {% endfor %}
+  {% endif %}
+  <input name="like_value" value="{{parm.like_value}}" type="hidden" />
+  <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+  <button>{% trans 'boutton::exporter' %}</button>
+</form>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $.each(p4.users.sel, function(i,n){
+      var el = $('#user_'+n);
+      if(el.length > 0)
+      {
+        el.addClass('selected');
+      }
+    });
+  });
+</script>
+  </div>
+{% endblock %}

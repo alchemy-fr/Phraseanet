@@ -1,9 +1,10 @@
 <?php
-require_once(dirname(__FILE__)."/../../../lib/classes/graphik/Graph.class.php");
-require_once(dirname(__FILE__)."/../../../lib/classes/graphik/LinePlot.class.php");
-require_once(dirname(__FILE__)."/../../../lib/classes/httpRequest.php");
 
-$request = httpRequest::getInstance();
+require_once(dirname(__FILE__) . "/../../../lib/classes/graphik/Graph.class.php");
+require_once(dirname(__FILE__) . "/../../../lib/classes/graphik/LinePlot.class.php");
+require_once(dirname(__FILE__) . "/../../../lib/classes/http/request.class.php");
+
+$request = http_request::getInstance();
 $parm = $request->get_parms("value", 'legend', 'absc');
 
 $values = unserialize(urldecode($parm['value']));
@@ -13,17 +14,17 @@ $absc = $parm['absc'];
 $graph = new Graph(800, 300);
 $graph->setAntiAliasing(FALSE);
 $graph->border->hide();
-if(isset($values["Heures"]))
-	unset($values["Heures"]);
-		
-for($i = 0; $i < sizeof($values); $i++)
+if (isset($values["Heures"]))
+  unset($values["Heures"]);
+
+for ($i = 0; $i < sizeof($values); $i++)
 {
-	if($values[$i] < 1)
-		$values[$i] = (float)($values[$i]);
-	else 
-		$values[$i] = (int)($values[$i]);
+  if ($values[$i] < 1)
+    $values[$i] = (float) ($values[$i]);
+  else
+    $values[$i] = (int) ($values[$i]);
 }
-		
+
 $x = $values;
 $y = $legend;
 
@@ -49,7 +50,7 @@ $plot->label->setAlign(NULL, Label::MIDDLE);
 
 
 $plot->xAxis->setLabelText($y);
-$plot->xAxis->label->setAngle(90); 
+$plot->xAxis->label->setAngle(90);
 $plot->xAxis->label->setFont(new Tuffy(7));
 $plot->yAxis->title->set("Nombre de connexions");
 $plot->yAxis->title->setFont(new TuffyBold(10));
@@ -62,4 +63,4 @@ $plot->xAxis->setTitleAlignment(Label::RIGHT);
 
 $graph->add($plot);
 $graph->draw();
-?> 
+?>

@@ -12,7 +12,7 @@ function FileProgress(file, targetID) {
 	this.fileProgressStatus = $('#'+this.fileProgressID+' div.progressBarStatus');
 	this.fileProgressBar = $('#'+this.fileProgressID+' div.progressBarInProgress');
 
-	if (this.fileProgressWrapper.length == 0) {
+	if (this.fileProgressWrapper.length === 0) {
 		
 		var elem = 	'<li class="progressWrapper" id="'+this.fileProgressID+'">'+
 								'<div class="progressContainer">'+
@@ -57,6 +57,12 @@ FileProgress.prototype.setProgress = function (percentage) {
 FileProgress.prototype.setComplete = function () {
 	this.fileProgressWrapper.addClass('done');
 	this.fileProgressContainer.addClass('green');
+	this.fileProgressBar.addClass('complete').css('width','auto');
+};
+FileProgress.prototype.setQuarantine = function () {
+	this.fileProgressWrapper.addClass('done');
+	this.fileProgressContainer.addClass('orange');
+	this.fileProgressContainer.addClass('quarantine');
 	this.fileProgressBar.addClass('complete').css('width','auto');
 };
 FileProgress.prototype.setError = function () {

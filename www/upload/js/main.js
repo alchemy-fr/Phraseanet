@@ -12,7 +12,7 @@ function do_global_action()
 
   var delete_prev = $('input.delete_previous', cont).attr('checked');
 
-  if(action == '')
+  if(action === '')
   {
     alert(language.pleaseselect);
     return;
@@ -46,7 +46,7 @@ function do_global_action()
           to = $(elem).closest('form').find('[name=record_id]').val();
         }
       }
-      if(!manual && (action == 'add' || elem.length == 0))
+      if(!manual && (action == 'add' || elem.length === 0))
       {
         elem = $('.lazaret_base_adder', n);
         id = $(elem).closest('form').find('input[name=lazaret_id]').val();
@@ -54,23 +54,24 @@ function do_global_action()
       }
 
     }
-            
+
     if(elem.length > 0)
     {
+      var obj;
       switch (action)
       {
         case 'delete':
-          var obj = {
+          obj = {
             id:id
           };
           break;
         case 'add':
-          var obj = {
+          obj = {
             id:id
           };
           break;
         case 'substitute':
-          var obj = {
+          obj = {
             from:from,
             to:to
           };
@@ -140,6 +141,7 @@ $(document).ready(function(){
             return false;
         }
         $('#fsUploadProgress li, #QUEUE li').remove();
+        return true;
       }
     }
   });
@@ -225,7 +227,7 @@ $(document).ready(function(){
     var from_id = $(this).closest('form').find('input[name=lazaret_id]').val();
     var to_id = $(this).closest('form').find('[name=record_id]').val();
 
-    if(to_id == '')
+    if(to_id === '')
     {
       alert(language.norecordselected);
       return;
@@ -273,21 +275,21 @@ function checkQuarantineSize()
       var q_size = $('#quarantine_size');
       q_size.empty();
       if(!data.error)
-        q_size.append('('+data.count+')');
+        q_size.append(data.count);
     }
   });
 }
 	
 function clean(el)
 {
-  if($('.lazaret_item', el).length == 0)
+  if($('.lazaret_item', el).length === 0)
   {
     el.slideUp('fast',function(){
       el.remove();
     });
     return;
   }
-  if($('.main_item', el).length == 0)
+  if($('.main_item', el).length === 0)
   {
     if($('.more_item', el).length > 0)
     {
@@ -299,7 +301,7 @@ function clean(el)
       $('.more_uploads .more_item:first', el).remove();
     }
   }
-  if($('.more_uploads .lazaret_item', el).length == 0)
+  if($('.more_uploads .lazaret_item', el).length === 0)
   {
     $('.more_title, .more_uploads', el).remove();
   }
@@ -325,7 +327,7 @@ function getCurrentStatusValue(slider)
   var parent = $(slider).parent().parent();
   var parent_active = $(parent).find('td.active');
 
-  if(parent_active.length == 0)
+  if(parent_active.length === 0)
   {
     parent_active = $(parent).find('td:first');
     parent_active.addClass('active');
@@ -358,10 +360,10 @@ function activeSliders(slider){
     slide: function(event, ui) {
       var el = $(this).parent().parent();
       $(el).find('td.active').removeClass('active');
-      if(ui.value == 0)
+      if(parseInt(ui.value) === 0)
         $(el).find('td.status_off').addClass('active');
       else
-      if(ui.value == 1)
+      if(parseInt(ui.value) === 1)
         $(el).find('td.status_on').addClass('active');
 
     }
@@ -386,7 +388,7 @@ function startIt(){
 	
   $.each(els,function(){
     var id = $(this).attr('id');
-
+			
     var val = $('#coll_selector select option:selected').val();
 
     if(!classic)

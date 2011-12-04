@@ -1,0 +1,12 @@
+
+            <div id="PREVIEWCURRENTCONT" class="PNB10">
+              <div style="margin:2px 0;">
+                <img src="/skins/icons/light_left.gif" style="margin-right:20px;" onclick="getPrevious();"/>
+                <span onclick="startSlide()" id="start_slide">{% trans 'preview:: demarrer le diaporama' %}</span>
+                <span onclick="stopSlide()" id="stop_slide">{% trans 'preview:: arreter le diaporama' %}</span>
+                <img src="/skins/icons/light_right.gif" style="margin-left:20px;" onclick="getNext();"/><br/>
+              </div>
+            </div>
+            <div id="PREVIEWTOOL" style="top:0;bottom:auto;">
+              {% include 'prod/preview/tools.html' %}
+            </div>

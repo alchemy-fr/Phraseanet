@@ -1,3 +1,0 @@
-don't export numbers as candidates (optional ?)
-
-add 'do not index between' () ? [] ? {} ? ....

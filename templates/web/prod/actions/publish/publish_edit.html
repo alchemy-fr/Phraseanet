@@ -1,0 +1,81 @@
+
+{% macro format_diapo(record, session) %}
+  {% import 'common/thumbnail.html' as thumbnail %}
+  <div class="diapo">
+    {{thumbnail.format(record.get_thumbnail(), 100, 100, '', session, true)}}
+  </div>
+{% endmacro %}
+
+<style type="text/css">
+.record_list .sortable.ui-sortable-placeholder{
+  width:112px;
+  height:118px;
+  position:relative;
+  float:left;
+}
+</style>
+<div class="PNB" style="height:200px;bottom:auto;">
+  <div class="PNB10 record_list" style="overflow:auto;">
+  {% for content in entry.get_content() %}
+    <div class="sortable" style="position:relative;float:left;">
+      {{ _self.format_diapo(content.get_record(), session) }}
+      <form>
+        <input type="hidden" name="item_id" value="{{content.get_id()}}" />
+      </form>
+    </div>
+  {% endfor %}
+  </div>
+</div>
+<form method="post" action="/prod/feeds/entry/{{ entry.get_id() }}/update/" class="entry_update main_form">
+  <input type="hidden" name="sorted_lst" value="" />
+  <div class="PNB" style="top:200px;bottom:50px;">
+    <div class="PNB" style="width:50%;right:auto;">
+      <div class="PNB10 fields">
+        <div><label for="feed_add_title">{% trans 'publication : titre' %}</label></div>
+        <div><input class="required_text" type="text" name="title" id="feed_add_title" value="{{ entry.get_title() }}" /></div>
+        <div><label for="feed_add_subtitle">{% trans 'publication : sous titre' %}</label></div>
+        <div><textarea id="feed_add_subtitle" name="subtitle">{{ entry.get_subtitle() }}</textarea></div>
+        <div><label for="feed_add_author_name">{% trans 'publication : autheur' %}</label></div>
+        <div><input class="required_text" type="text" name="author_name" id="feed_add_author_name" value="{{ entry.get_author_name() }}" /></div>
+        <div><label for="feed_add_author_mail">{% trans 'publication : email autheur' %}</label></div>
+        <div><input class="required_text" type="text" name="author_mail" id="feed_add_author_mail" value="{{ entry.get_author_email() }}" /></div>
+      </div>
+    </div>
+    <div class="PNB" style="width:50%;left:auto;">
+      <div class="PNB10 feeds">
+        <h1>{% trans 'Fils disponibles' %}</h1>
+        <div class="list">
+          {% set feed_id = entry.get_feed().get_id() %}
+          {% for feed in feeds.get_feeds() %}
+            <div class="feed {% if loop.index is odd%}odd{% endif %} {% if feed_id == feed.get_id() %}selected{% endif %}">
+              <span>{{ feed.get_title() }}</span>
+              <input type="hidden" value="{{ feed.get_id() }}"/>
+            </div>
+          {% endfor %}
+          <input type="hidden" value="{{ feed_id }}" name="feed_id" />
+          <input type="hidden" value="{{ entry.get_id() }}" name="entry_id" />
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="PNB" style="top:auto;height:50px;text-align:center;">
+    <div class="PNB10">
+      <button class="valid_form">{% trans 'boutton::mettre a jour' %}</button>
+      <button class="close_dialog">{% trans 'boutton::annuler' %}</button>
+    </div>
+  </div>
+</form>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#modal_feed .record_list').sortable({
+      stop:function(event, ui){
+        var lst = [];
+        $('#modal_feed .record_list form').each(function(i, el){
+          lst.push($('input[name="item_id"]', el).val()+'_'+(i+1));
+        });
+        $('#modal_feed form.main_form input[name="sorted_lst"]').val(lst.join(';'));
+      }
+    });
+  });
+</script>

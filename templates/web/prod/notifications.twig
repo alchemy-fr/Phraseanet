@@ -1,0 +1,31 @@
+<div style="margin-right:16px;">
+
+{% if notifications|length == 0%}
+<div class="notification_title">
+  <span>{% trans 'Aucune notification' %}</span>
+</div>
+{% else %}
+<div class="notification_title">
+  <a href="#" onclick="print_notifications(0);return false;">{% trans 'toutes les notifications' %}</a>
+</div>
+{% endif %}
+
+{% for notif in notifications %}
+<div style="position:relative;" id="notification_{{notif['id']}}" class="notification {% if notif['unread'] == '1' %}unread{% endif %}">
+  <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+      <td style="width:25px;">
+        <img src="{{notif['icon']}}" style="vertical-align:middle;width:16px;margin:2px;" />
+      </td>
+      <td>
+        <p style="margin:0;padding:0;" class="{{notif['class']}}">
+          {{notif['text']|raw}}
+          <span class="time">{{notif['created_on']}}</span>
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endfor %}
+</div>

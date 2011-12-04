@@ -1,0 +1,33 @@
+rewrite ^/include/minify/([a-z]=.*)           /include/minify/index.php?$1 last;
+rewrite ^/(download)/([a-zA-Z0-9]*)\/?$       /include/download_prepare.php?type=$1&token=$2 last;
+rewrite ^/(download)/([a-zA-Z0-9]*)\/get$     /include/download_prepare.php?type=$1&token=$2&get=1 last;
+rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/?$    /include/download_anonymous.php?type=$1&token=$2 last;
+rewrite ^/(mail-export)/([a-zA-Z0-9]*)\/get$  /include/download_anonymous.php?type=$1&token=$2&get=1 last;
+
+rewrite ^/register-confirm=([a-zA-Z0-9]+)$    /login/register-confirm.php?code=$1 last;
+
+rewrite ^/admin/users/.*$         /admin/router.php last;
+rewrite ^/admin/tests/.*$         /admin/router.php last;
+rewrite ^/admin/fields/.*$        /admin/router.php last;
+rewrite ^/admin/publications/.*$  /admin/router.php last;
+rewrite ^/admin/typeahead/.*$     /admin/router.php last;
+
+
+rewrite ^/prod/records/edit/.*$   /prod/router.php last;
+rewrite ^/prod/records/movecollection/.*$ /prod/router.php last;
+rewrite ^/prod/bridge/.*$         /prod/router.php last;
+rewrite ^/prod/feeds/.*$          /prod/router.php last;
+rewrite ^/prod/tooltip/.*$        /prod/router.php last;
+
+rewrite ^/robots.txt$             /index.php last;
+rewrite ^/feeds/.*$               /index.php last;
+
+rewrite ^/lightbox/.*$            /lightbox/index.php last;
+rewrite ^/api/v1/.*$              /api/v1/index.php last;
+rewrite ^/api/oauthv2/.*$         /api/oauthv2/index.php last;
+
+rewrite ^/permalink/.*$           /include/overview.php last;
+rewrite ^/datafiles/.*$           /include/overview.php last;
+
+rewrite ^/login/(client|prod|admin|report|thesaurus|upload|lightbox)\/?$       /login/index.php?app=$1 last;
+rewrite ^/setup/.*$               /setup/installer.php last;

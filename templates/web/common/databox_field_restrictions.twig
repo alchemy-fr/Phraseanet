@@ -1,0 +1,33 @@
+<div>
+  <p style="font-style:italic;">
+    {% trans 'Les indications donnees ci dessous sont a titre informatif.' %}<br/>
+    {% trans 'Si vous ne les respectez pas, les documents seront correctement indexes, mais les metadonnees inscrites risquent d\'etre erronnees' %}<br/>
+    {% set norm_name = '<span style="font-style:normal;font-weight:bold;">' ~ field.get_metadata_namespace() ~ '</span>' %}
+    {% trans %}
+      Ces informations sont directement fournies par la norme de metadonnees de ce champ : {{ norm_name }}
+    {% endtrans %}
+  </p>
+</div>
+<hr/>
+<div>
+{% if field.get_type() == 'datetime' %}
+  {% trans 'phraseanet::technique::datetime-edit-explain' %}<br/>
+{% elseif field.get_type() == 'date' %}
+  {% trans 'phraseanet::technique::date-edit-explain (aaaa/mm/jj)' %}<br/>
+{% elseif field.get_type() == 'time' %}
+  {% trans 'phraseanet::technique::time-edit-explain (hh:mm:ss)' %}<br/>
+{% endif %}
+
+{% if field.get_source().minLength() > 0 %}
+  {% set minLength = field.get_source().minLength() %}
+  {% trans %}
+    Le champ doit contenir {{ minLength }} caracteres minimum.
+  {% endtrans %}<br/>
+{% endif %}
+{% if field.get_source().maxLength() > 0 %}
+  {% set maxLength = field.get_source().maxLength() %}
+  {% trans %}
+    Le champ ne peut contenir plus de {{ maxLength }} caracteres.
+  {% endtrans %}<br/>
+{% endif %}
+</div>

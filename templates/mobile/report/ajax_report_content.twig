@@ -2,158 +2,158 @@
 {# MAIN MENU #}
 <div id="menu_liste_base">
 {# TITLE #}
-	<div class="toolbar"><h1>Liste des bases</h1><a class="button back" href="#">Back</a></div>
+    <div class="toolbar"><h1>Liste des bases</h1><a class="button back" href="#">Back</a></div>
 {# CONTENT #}
-	<ul class="plastic rounded">
-		{% for key in selection|keys %}
-				<li class ="number_{{ key }} arrow"><a href="#tab-{{ key }}-{{ param.tbl }}">{{ key|sbas_names}}</a></li>
-		{% endfor %}
-	</ul>
+    <ul class="plastic rounded">
+        {% for key in selection|keys %}
+                <li class ="number_{{ key }} arrow"><a href="#tab-{{ key }}-{{ param.tbl }}">{{ key|sbas_names}}</a></li>
+        {% endfor %}
+    </ul>
 </div>
 
 <script type="text/javascript">
 
-	function update(divResult,form, i)
-	{
-		//a supprimer pour la production
-		if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i)))
-		{
-	 		var isTouchScreen = 1;
-	 	}
-	 	else
-	 	{
-	 		var isTouchScreen = 0;
- 		}
- 		
-		$.ajax({
-			type: "POST",
-			url: "./ajax_table_content.php",
-			dataType: "json",
-			data:form.serializeArray(),
-			beforeSend:function()
-			{
-				divResult.empty();
-				divResult.addClass('loading');
-			},
-			success: function(data)
-			{
-				
-				divResult.empty().append(data.rs);
-				form.find("input[name=page]").attr("value", data.page);
-				
-				
-				divResult.unbind('mousedown touchstart').bind('mousedown touchstart',function(e)
-				{
-					if(isTouchScreen)
-					{
-						e = e.originalEvent.touches[0];
-					}
-		
-					var initX = e.pageX;
-					var sX = e.pageX;
+    function update(divResult,form, i)
+    {
+        //a supprimer pour la production
+        if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) || (navigator.userAgent.match(/iPad/i)))
+        {
+         var isTouchScreen = 1;
+       }
+       else
+       {
+         var isTouchScreen = 0;
+         }
 
-					divResult.unbind('mousemove touchmove').bind('mousemove touchmove ',function(ev)
-					{
-						if(isTouchScreen)
-						{
-							ev = ev.originalEvent.touches[0];
-						}	 
-		
-						sX = ev.pageX;	
-					});
-		
-		
-					divResult.unbind('mouseup touchend').bind('mouseup touchend',function(ev)
-					{	
-						divResult.unbind('mousemove touchmove mouseup touchend mousedown mousestart');
-						if(isTouchScreen)
-						{
-							ev = ev.originalEvent.touches[0];
-						}
-						
-						if(initX>sX)
-						{	
-							if( (initX-sX > 0.4*320) && data.next != false && data.next != "undefined" && data.next > 0)//$(document).width()
-							{
-								form.find("input[name=page]").attr("value", data.next);
-								update(divResult,form);
-							}
-						}
-						else
-						{
-							if( (sX-initX > (0.4)*320) && data.prev > 0 && data.prev != "undefined" && data.prev != false )//$(document).width()
-							{
-								form.find("input[name=page]").attr("value", data.prev);
-								update(divResult,form);
-							}
-						}
-					});
-				});
-			}
-		});
-	}
-	
-	$(document).ready(function(){
-	
-		//load report
-		 $("#menu_liste_base li").unbind("click").bind("click", function(){
-		 	i = 1;
-			$this = $(this);
-			$ref = $this.find("a").attr("href").replace("#", "");
-			var div = $("#" + $ref);
-			var form = div.find("form");
-			var divResult = div.find(".result");
-			update(divResult,form);
-		});
-	});
+        $.ajax({
+            type: "POST",
+            url: "./ajax_table_content.php",
+            dataType: "json",
+            data:form.serializeArray(),
+            beforeSend:function()
+            {
+                divResult.empty();
+                divResult.addClass('loading');
+            },
+            success: function(data)
+            {
+
+                divResult.empty().append(data.rs);
+                form.find("input[name=page]").attr("value", data.page);
+
+
+                divResult.unbind('mousedown touchstart').bind('mousedown touchstart',function(e)
+                {
+                    if(isTouchScreen)
+                    {
+                        e = e.originalEvent.touches[0];
+                    }
+
+                    var initX = e.pageX;
+                    var sX = e.pageX;
+
+                    divResult.unbind('mousemove touchmove').bind('mousemove touchmove ',function(ev)
+                    {
+                        if(isTouchScreen)
+                        {
+                            ev = ev.originalEvent.touches[0];
+                        }
+
+                        sX = ev.pageX;
+                    });
+
+
+                    divResult.unbind('mouseup touchend').bind('mouseup touchend',function(ev)
+                    {
+                        divResult.unbind('mousemove touchmove mouseup touchend mousedown mousestart');
+                        if(isTouchScreen)
+                        {
+                            ev = ev.originalEvent.touches[0];
+                        }
+
+                        if(initX>sX)
+                        {
+                            if( (initX-sX > 0.4*320) && data.next != false && data.next != "undefined" && data.next > 0)//$(document).width()
+                            {
+                                form.find("input[name=page]").attr("value", data.next);
+                                update(divResult,form);
+                            }
+                        }
+                        else
+                        {
+                            if( (sX-initX > (0.4)*320) && data.prev > 0 && data.prev != "undefined" && data.prev != false )//$(document).width()
+                            {
+                                form.find("input[name=page]").attr("value", data.prev);
+                                update(divResult,form);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    $(document).ready(function(){
+
+        //load report
+         $("#menu_liste_base li").unbind("click").bind("click", function(){
+           i = 1;
+            $this = $(this);
+            $ref = $this.find("a").attr("href").replace("#", "");
+            var div = $("#" + $ref);
+            var form = div.find("form");
+            var divResult = div.find(".result");
+            update(divResult,form);
+        });
+    });
 
 </script>
 
 {% for key, value in selection %}
 <div id="tab-{{ key }}-{{ param.tbl }}" >
-	<div class="toolbar"><h1>{{ key|sbas_names}}</h1><a class="button back" href="#menu_liste_base">Back</a></div>
-	<div class="result">
-		{% block ajax_data_content %}{% endblock %}
-	</div>
-	<form onsubmit="return false;">
-		<input type="hidden" name="page" value="1" size ="2"/>
-		<input type="hidden" name="limit" value="30" size="2" />
-		<input type="hidden" name="tbl" value ="{{ param['tbl'] }}"/>
-		<input type="hidden" name="dmin" value ="{{ param['dmin'] }}"/>
-		<input type="hidden" name="dmax" value ="{{ param['dmax'] }}"/>
-		<input type="hidden" name="sbasid" value ="{{ key }}"/>
-		<input type="hidden" name="collection" value ="{{ value.liste }}"/>
-		<input type="hidden" name="user" value ="{{ param['preciseUser'] }}"/>
-		<input type="hidden" name="word" value ="{{ param['preciseWord'] }}"/>
-		<input type="hidden" name="precise" value ="{{ param['precise'] }}"/>
-		<input type="hidden" name="order" value =""/>
-		<input type="hidden" name="champ" value =""/>
-		<input type="hidden" name="rid" value =""/>
-		<input type="hidden" name="filter_column" value =""/>
-		<input type="hidden" name="filter_value" value =""/>
-		<input type="hidden" name="liste" value ="off"/>
-		<input type="hidden" name="liste_filter" value =""/>
-		<input type="hidden" name="conf" value ="off"/>
-		<input type="hidden" name="list_column" value =""/>
-		<input type="hidden" name="groupby" value =""/>
-		<input type="hidden" name="societe" value ="{{ param['societe'] }}"/>
-		<input type="hidden" name="pays" value ="{{ param['pays'] }}"/>
-		<input type="hidden" name="fonction" value ="{{ param['fonction'] }}"/>
-		<input type="hidden" name="activite" value ="{{ param['activite'] }}"/>
-		<input type="hidden" name="on" value ="{{ param['on'] }}"/>
-		<input type="hidden" name="from" value =""/>
-	</form>
+    <div class="toolbar"><h1>{{ key|sbas_names}}</h1><a class="button back" href="#menu_liste_base">{% trans 'Back' %}</a></div>
+    <div class="result">
+        {% block ajax_data_content %}{% endblock %}
+    </div>
+    <form onsubmit="return false;">
+        <input type="hidden" name="page" value="1" size ="2"/>
+        <input type="hidden" name="limit" value="30" size="2" />
+        <input type="hidden" name="tbl" value ="{{ param['tbl'] }}"/>
+        <input type="hidden" name="dmin" value ="{{ param['dmin'] }}"/>
+        <input type="hidden" name="dmax" value ="{{ param['dmax'] }}"/>
+        <input type="hidden" name="sbasid" value ="{{ key }}"/>
+        <input type="hidden" name="collection" value ="{{ value.liste }}"/>
+        <input type="hidden" name="user" value ="{{ param['preciseUser'] }}"/>
+        <input type="hidden" name="word" value ="{{ param['preciseWord'] }}"/>
+        <input type="hidden" name="precise" value ="{{ param['precise'] }}"/>
+        <input type="hidden" name="order" value =""/>
+        <input type="hidden" name="champ" value =""/>
+        <input type="hidden" name="rid" value =""/>
+        <input type="hidden" name="filter_column" value =""/>
+        <input type="hidden" name="filter_value" value =""/>
+        <input type="hidden" name="liste" value ="off"/>
+        <input type="hidden" name="liste_filter" value =""/>
+        <input type="hidden" name="conf" value ="off"/>
+        <input type="hidden" name="list_column" value =""/>
+        <input type="hidden" name="groupby" value =""/>
+        <input type="hidden" name="societe" value ="{{ param['societe'] }}"/>
+        <input type="hidden" name="pays" value ="{{ param['pays'] }}"/>
+        <input type="hidden" name="fonction" value ="{{ param['fonction'] }}"/>
+        <input type="hidden" name="activite" value ="{{ param['activite'] }}"/>
+        <input type="hidden" name="on" value ="{{ param['on'] }}"/>
+        <input type="hidden" name="from" value =""/>
+    </form>
 </div>
 
 <div id="settings-tab-{{ key }}-{{ param.tbl }}" >
-	<div class="toolbar"><h1>settings - {{ key|sbas_names }}</h1><a class="button back" href="#">Back</a></div>
+    <div class="toolbar"><h1>settings - {{ key|sbas_names }}</h1><a class="button back" href="#">{% trans 'Back' %}</a></div>
 </div>
 
 <div id="groupby-{{ key }}-{{ param.tbl }}">
-	<div class="toolbar"><h1></h1></div>
-	<div class="result">
-		{% display ajax_data_content %}
-	</div>
+    <div class="toolbar"><h1></h1></div>
+    <div class="result">
+        {{ block('ajax_data_content') }}
+    </div>
 </div>
 {% endfor %}
 

@@ -1,37 +1,36 @@
 {% set box_height = 110 %}
 {% if user.getPrefs('basket_title_display') == '1' %}
-	{% set box_height = (box_height + 20) %}
+    {% set box_height = (box_height + 20) %}
 {% endif %}
 {% if user.getPrefs('basket_status_display') == '1' %}
-	{% set box_height = (box_height + 20) %}
+    {% set box_height = (box_height + 20) %}
 {% endif %}
 
-<div ondblclick="{% if basket_scope == 'groupings' %}openPreview('REG',{{basket_element.order}},'{{basket.base_id}}_{{basket.record_id}}');{% else %}openPreview('BASK',{{basket_element.order}},{{basket.ssel_id}});{% endif %}" 
-	id="CHIM_{{basket_element.sselcont_id}}_{{basket_element.base_id}}_{{basket_element.record_id}}" 
-	sbas="{{basket_element.sbas_id}}" class="CHIM diapo" style="height:{{box_height}}px;">
-	{% if user.getPrefs('basket_title_display') == '1' %}
-		<div class="title">
-			{{basket_element.get_title}}
-		</div>
-	{% endif %}
-	{% if user.getPrefs('basket_status_display') == '1' %}
-		<div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
-			{{basket_element.get_status}}
-		</div>
-	{% endif %}
-	{% if basket.valid == 'myvalid' %}
-		<div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
-			{{basket_element.display_id}}
-		</div>
-	{% endif %}
-	<img ondragstart="return false;" class="CHIM_{{basket_element.base_id}}_{{basket_element.record_id}}"
-		src="{{basket_element.url}}" style="width:{{basket_element.width_82}}px;height:{{basket_element.height_82}}px;
-			top:{{basket_element.top}}%;"/>
-	<div class="bottom">
-		<span id="sselcontrem_{{basket.ssel_id}}_{{basket_element.sselcont_id}}" class="{{basket_scope}}" 
-			onmousedown="event.cancelBubble=true;return false;" onclick="removeFromBasket(this);return false;" title="{% trans 'delete'%}" >X</span>
-		{% if user.getPrefs('basket_caption_display') == '1' %}
-			<div class="captionRolloverTips" title="{{basket_element.get_caption|e}}"></div>
-		{% endif %}
-	</div>
+{% import 'common/thumbnail.html' as thumbnail %}
+{% set record = basket_element.get_record() %}
+
+<div ondblclick="{% if basket_scope == 'groupings' %}openPreview('REG',{{basket_element.get_order()}},'{{basket.get_base_id()}}_{{basket.get_record_id()}}');{% else %}openPreview('BASK',{{basket_element.get_order()}},{{basket.get_ssel_id()}});{% endif %}"
+    id="CHIM_{{basket_element.get_sselcont_id()}}_{{record.get_serialize_key()}}"
+    sbas="{{basket_record.get_sbas_id()}}" class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;">
+    {% if user.getPrefs('basket_title_display') == '1' %}
+        <div class="title">
+            {{record.get_title()}}
+        </div>
+    {% endif %}
+    {% if user.getPrefs('basket_status_display') == '1' %}
+        <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
+            {{record.get_status_icons|raw}}
+        </div>
+    {% endif %}
+        <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
+            {{basket_element.get_record().get_number()}}
+        </div>
+  {{thumbnail.format(record.get_thumbnail,82,82, '', session, true)}}
+    <div class="bottom">
+        <span id="sselcontrem_{{basket.get_ssel_id()}}_{{basket_element.get_sselcont_id()}}" class="{{basket_scope}}"
+            onmousedown="event.cancelBubble=true;return false;" onclick="removeFromBasket(this);return false;" title="{% trans 'delete'%}" >X</span>
+        {% if user.getPrefs('basket_caption_display') == '1' %}
+            <div class="captionRolloverTips" tooltipsrc="/prod/tooltip/caption/{{record.get_sbas_id()}}/{{record.get_record_id()}}/basket/?number={{record.get_number()}}"></div>
+        {% endif %}
+    </div>
 </div>

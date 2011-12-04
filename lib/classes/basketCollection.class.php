@@ -1,178 +1,169 @@
 <?php
 
-
-
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 class basketCollection
 {
-	private $baskets = array();
 
+  private $baskets = array();
 
-	function __get($name)
-	{
-		if ($this->$name) {
-            return $this->$name;
-        }
+  /**
+   * @param string $order (optionnal name_asc or date_desc - defaut to name_asc)
+   * @param array $except (array of element not return. available values are regroup baskets and recept)
+   * @return basketCollectionObject
+   */
+  function __construct(appbox $appbox, $usr_id, $order='name asc', $except = array())
+  {
+    $user = User_Adapter::getInstance($usr_id, $appbox);
 
-        $trace = debug_backtrace();
-        trigger_error(
-            'Undefined property via __get(): ' . $name .
-            ' in ' . $trace[0]['file'] .
-            ' on line ' . $trace[0]['line'],
-            E_USER_NOTICE);
-        return null;
-	}
-	public function __isset($name)
-	{
-		if (isset($this->$name))
-		{
-			return true;
-		}
+    $current_timestamp_obj = new DateTime();
+    $current_timestamp = $current_timestamp_obj->format('U');
 
-		return false;
-	}
-	/**
-	 * @param string $order (optionnal name_asc or date_desc - defaut to name_asc)
-	 * @param array $except (array of element not return. avalaible values are regroup baskets and recept)
-	 * @return basketCollectionObject
-	 */
-	function __construct($order='name asc',$except = array())
-	{
+    $sql = 'SELECT ssel_id FROM ssel WHERE usr_id = :usr_id
+                AND temporaryType="0"';
+    $stmt = $appbox->get_connection()->prepare($sql);
+    $stmt->execute(array(':usr_id' => $usr_id));
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
 
-		$session = session::getInstance();
-		$ses = $session->ses_id;
-		$usr = $session->usr_id;
-		if(!($ph_session = phrasea_open_session($ses,$usr)))
-			return;
+    if (count($rs) === 0)
+    {
+      $basket = basket_adapter::create($appbox, '', $user);
+    }
 
-		$current_timestamp_obj = new DateTime();
-		$current_timestamp = $current_timestamp_obj->format('U');
+    $baskets = array();
+    $baskets['baskets'] = $baskets['recept'] = $baskets['regroup'] = array();
 
-		$baskets = false;
+    $sql = 'SELECT s.ssel_id, s.usr_id as owner, v.id as validate_id,
+              s.temporaryType, s.pushFrom, v.expires_on FROM ssel s
+            LEFT JOIN validate v
+              ON (v.ssel_id = s.ssel_id AND v.usr_id = :usr_id_v)
+            WHERE (s.usr_id = :usr_id_o OR v.id IS NOT NULL)';
 
-		if(!$baskets)
-		{
+    $stmt = $appbox->get_connection()->prepare($sql);
+    $stmt->execute(array(':usr_id_o' => $usr_id, ':usr_id_v' => $usr_id));
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
 
-			$conn = connection::getInstance();
+    foreach ($rs as $row)
+    {
+        $is_mine = ($row['owner'] == $usr_id);
 
-			$sql = 'SELECT ssel_id FROM ssel WHERE usr_id="'.$conn->escape_string($usr).'" AND temporaryType="0" and deleted="0"';
-			if($rs = $conn->query($sql))
-			{
-				if($conn->num_rows($rs) == 0)
-				{
-					$basket = new basket();
-					$basket->save();
-				}
-				$conn->free_result($rs);
-			}
+        $expires_on_obj = new DateTime($row['expires_on']);
+        $expires_on = $expires_on_obj->format('U');
 
-			$baskets = array();
-			$baskets['baskets'] = $baskets['recept'] = $baskets['regroup'] = array();
+        if ($row['validate_id'] != null && !$is_mine && $expires_on < $current_timestamp)
+          continue;
 
-			$sql = 'SELECT s.ssel_id, s.usr_id as owner, v.id as validate_id, s.temporaryType, s.pushFrom, v.expires_on FROM ssel s
-					LEFT JOIN validate v ON (v.ssel_id = s.ssel_id AND v.usr_id="'.$conn->escape_string($usr).'")
-					WHERE (s.usr_id="'.$conn->escape_string($usr).'" OR v.id IS NOT NULL) and deleted="0"';
+        if ($row['temporaryType'] == '1')
+          $baskets['regroup'][] = basket_adapter::getInstance($appbox, $row['ssel_id'], $usr_id);
+        elseif (!is_null($row['validate_id']))
+          $baskets['baskets'][] = basket_adapter::getInstance($appbox, $row['ssel_id'], $usr_id);
+        elseif ((int) $row['pushFrom'] > 0)
+          $baskets['recept'][] = basket_adapter::getInstance($appbox, $row['ssel_id'], $usr_id);
+        else
+          $baskets['baskets'][] = basket_adapter::getInstance($appbox, $row['ssel_id'], $usr_id);
+    }
 
-			if($rs = $conn->query($sql))
-			{
+    $to_remove = array_intersect(array('recept', 'regroup', 'baskets'), $except);
 
-				while($row = $conn->fetch_assoc($rs))
-				{
-					try {
-						$is_mine = ($row['owner'] == $session->usr_id);
+    foreach ($to_remove as $type)
+      $baskets[$type] = array();
 
-						$expires_on_obj = new DateTime($row['expires_on']);
-						$expires_on = $expires_on_obj->format('U');
+    if ($order == 'name asc')
+    {
+      uasort($baskets['baskets'], array('basketCollection', 'story_name_sort'));
+      uasort($baskets['regroup'], array('basketCollection', 'story_name_sort'));
+      uasort($baskets['recept'], array('basketCollection', 'story_name_sort'));
+    }
+    if ($order == 'date desc')
+    {
+      uasort($baskets['baskets'], array('basketCollection', 'story_date_sort'));
+      uasort($baskets['regroup'], array('basketCollection', 'story_date_sort'));
+      uasort($baskets['recept'], array('basketCollection', 'story_date_sort'));
+    }
 
-						if($row['validate_id'] != null && !$is_mine && $expires_on < $current_timestamp)
-							continue;
+    $this->baskets = $baskets;
 
-						if($row['temporaryType'] == '1')
-							$baskets['regroup'][] = basket::getInstance($row['ssel_id']);
-						elseif(!is_null($row['validate_id']))
-							$baskets['baskets'][] = basket::getInstance($row['ssel_id']);
-						elseif((int)$row['pushFrom'] > 0)
-							$baskets['recept'][] = basket::getInstance($row['ssel_id']);
-						else
-							$baskets['baskets'][] = basket::getInstance($row['ssel_id']);
-					}
-					catch(Exception $e)
-					{
+    return $this;
+  }
 
-					}
-				}
+  public function get_baskets()
+  {
+    return $this->baskets;
+  }
 
-				$conn->free_result($rs);
-			}
-		}
+  function get_names()
+  {
+    $array_names = array();
 
-		$to_remove = array_intersect(array('recept','regroup','baskets'),$except);
+    foreach ($this->baskets as $type_name => $type)
+    {
+      foreach ($type as $basket)
+      {
 
-		foreach($to_remove as $type)
-			$baskets[$type] = array();
+        $array_names[] = array('ssel_id' => $basket->get_ssel_id(), 'name' => $basket->get_name(), 'type' => $type_name);
+      }
+    }
 
-		if($order == 'name asc')
-		{
-			uasort($baskets['baskets'],array('basketCollection','story_name_sort'));
-			uasort($baskets['regroup'],array('basketCollection','story_name_sort'));
-			uasort($baskets['recept'],array('basketCollection','story_name_sort'));
-		}
-		if($order == 'date desc')
-		{
-			uasort($baskets['baskets'],array('basketCollection','story_date_sort'));
-			uasort($baskets['regroup'],array('basketCollection','story_date_sort'));
-			uasort($baskets['recept'],array('basketCollection','story_date_sort'));
-		}
+    return $array_names;
+  }
 
-		$this->baskets = $baskets;
+  function story_date_sort($a, $b)
+  {
+    if (!$a->create || !$b->create)
 
-		return $this;
-	}
+      return 0;
 
+    $comp = strcasecmp($a->create, $b->create);
 
-	function get_names()
-	{
-		$array_names = array();
+    if ($comp == 0)
 
-		foreach($this->baskets as $type_name=>$type)
-		{
-			foreach($type as $basket)
-			{
+      return 0;
 
-				$array_names[] = array('ssel_id'=>$basket->ssel_id,'name'=>$basket->name,'type'=>$type_name);
-			}
-		}
+    return $comp < 0 ? -1 : 1;
+  }
 
-		return $array_names;
-	}
+  function story_name_sort($a, $b)
+  {
+    if (!$a->get_name() || !$b->get_name())
+    {
+      return 0;
+    }
+    $comp = strcasecmp($a->get_name(), $b->get_name());
 
+    if ($comp == 0)
 
+      return 0;
 
+    return $comp < 0 ? -1 : 1;
+  }
 
-	function story_date_sort($a, $b)
-	{
-		if(!$a->create || !$b->create)
-			return 0;
+  public static function get_updated_baskets()
+  {
+    $appbox = appbox::get_instance();
+    $conn = $appbox->get_connection();
+    $session = $appbox->get_session();
+    $sql = 'SELECT ssel_id FROM sselnew WHERE usr_id = :usr_id';
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':usr_id' => $session->get_usr_id()));
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
 
-		$comp = strcasecmp($a->create, $b->create);
+    $baskets = array();
+    foreach($rs as $row)
+    {
+      $baskets[] = basket_adapter::getInstance($appbox, $row['ssel_id'], $session->get_usr_id());
+    }
 
-		if($comp == 0)
-			return 0;
-
-		return $comp < 0 ? -1 : 1;
-	}
-	function story_name_sort($a, $b)
-	{
-		if(!$a->name || !$b->name)
-		{
-			return 0;
-		}
-		$comp = strcasecmp($a->name, $b->name);
-
-		if($comp == 0)
-			return 0;
-
-		return $comp < 0 ? -1 : 1;
-	}
+    return $baskets;
+  }
 
 }

@@ -1,0 +1,144 @@
+body{
+	background-color:white;
+	color:#000000;
+	overflow-y:auto;	
+}
+a{
+	color:#000000;
+	text-decoration:underline;
+	cursor:pointer;
+}
+a:hover{
+	color:#000000;
+	text-decoration:underline;
+	cursor:pointer;
+}
+
+div.finder div.content div.title
+{
+	left:0;
+	margin-top:-2px;
+	overflow:hidden;
+	position:relative;
+	top:0;
+	white-space:nowrap;
+}
+
+#mainMenu{
+	background-color:#fceb3f;
+}
+
+#mainMenu a, #mainMenu b,
+#mainMenu .title{
+	color:#000000;
+}
+
+.treeview ul{
+	background-color:transparent;
+}
+
+img{
+	vertical-align:middle
+	}
+/**
+
+FFFA00		9E9C3C		777400		FFFC65		FFFEB5
+
+**/
+
+#left{
+	background-color:#fffbcd;
+}
+#FNDR{
+	overflow:auto;
+}
+
+
+#mainMenu span{
+  color:black;
+}
+#mainMenu span.selected {
+    border-top: 3px solid black;
+}
+
+#mainMenu a:hover span{
+  background-color:#FFFBCD;
+}
+
+h1{
+  font-weight: bold;
+  font-size:24px;
+  text-align:left;
+  margin:10px 0;
+}
+
+h2{
+  font-weight: bold;
+  font-size:18px;
+  text-align:left;
+  margin:7px 0;
+}
+h3{
+  font-weight: bold;
+  font-size:14px;
+  text-align:left;
+  margin:4px 0;
+}
+h4{
+  font-weight: bold;
+  font-size:12px;
+  text-align:left;
+  margin:2px 0;
+}
+
+.admin_head_opts{
+  margin:5px 0;
+}
+
+.admin_head_opts span{
+  margin:0px 10px;
+}
+
+table.admintable{
+  width:100%;
+  border:none;
+  margin:10px 0;
+}
+table.admintable thead{
+  background-color:#e5d4a0;
+}
+table.admintable thead th{
+  text-align:left;
+  font-weight:bold;
+}
+table.admintable tr{
+  height:28px;
+  vertical-align: middle;
+}
+table.admintable tbody tr.even{
+  background-color:#fffbcd;
+}
+table.admintable tbody tr.selected{
+  background-color: #f0ad30;
+}
+table.admintable tbody .dropdown{
+  cursor:pointer;
+}
+
+#users_check_uncheck{
+}
+#users_check_uncheck div{
+  padding:5px 10px;
+  background-color:#CCCCCC;
+  color:black;
+  cursor:pointer
+}
+#users_check_uncheck div.hovered{
+  padding:5px 10px;
+  background-color:#555555;
+  color:white;
+}
+.users_col.options{
+    cursor:pointer;
+    color:#AFAFAF;
+}

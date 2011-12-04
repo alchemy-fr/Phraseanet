@@ -1,36 +1,36 @@
 <span style="padding:10px 4px 7px;">
-	{% if basket_element %}
-		<button class="previous_button play" title="{% trans 'boutton::precedent' %}">
-			<img src="/skins/lightbox/previe6.png" />
-		</button>
-		<button class="previous_button pause" title="{% trans 'boutton::precedent' %}">
-			<img src="/skins/lightbox/prev_pauseie6.png" />
-		</button>
-		<button class="play_button" title="{% trans 'boutton::demarrer' %}">
-			<img src="/skins/lightbox/playie6.png" />
-		</button>
-		<button class="pause_button" title="{% trans 'boutton::pause' %}">
-			<img src="/skins/lightbox/pauseie6.png" />
-		</button>
-		<button class="next_button play" title="{% trans 'boutton::suivant' %}">
-			<img src="/skins/lightbox/nextie6.png" />
-		</button>
-		<button class="next_button pause" title="{% trans 'boutton::suivant' %}">
-			<img src="/skins/lightbox/next_pauseie6.png" />
-		</button>
-		<button class="download_button" title="{% trans 'boutton::telecharger' %}">
-			<img src="/skins/lightbox/saveie6.png"/>
-		</button>
-		<form name="download_form" style="display:none;">
-			<input type="hidden" name="basrec" value="{{basket_element.base_id}}_{{basket_element.record_id}}"/>
-		</form>
-		 | 
-		{% if basket_element.is_validation_item %}
-			<button class="comment_button">
-				<img src="/skins/lightbox/noteie6.png"/>
-				{{basket_element.get_note_count}}
-			</button>
-		{% endif %}
-	{% endif %}
+    {% if basket_element %}
+        <button class="previous_button play" title="{% trans 'boutton::precedent' %}">
+            <img src="/skins/lightbox/previe6.png" />
+        </button>
+        <button class="previous_button pause" title="{% trans 'boutton::precedent' %}">
+            <img src="/skins/lightbox/prev_pauseie6.png" />
+        </button>
+        <button class="play_button" title="{% trans 'boutton::demarrer' %}">
+            <img src="/skins/lightbox/playie6.png" />
+        </button>
+        <button class="pause_button" title="{% trans 'boutton::pause' %}">
+            <img src="/skins/lightbox/pauseie6.png" />
+        </button>
+        <button class="next_button play" title="{% trans 'boutton::suivant' %}">
+            <img src="/skins/lightbox/nextie6.png" />
+        </button>
+        <button class="next_button pause" title="{% trans 'boutton::suivant' %}">
+            <img src="/skins/lightbox/next_pauseie6.png" />
+        </button>
+        <button class="download_button" title="{% trans 'boutton::telecharger' %}">
+            <img src="/skins/lightbox/saveie6.png"/>
+        </button>
+        <form name="download_form" style="display:none;">
+            <input type="hidden" name="basrec" value="{{basket_element.get_record().get_serialize_key()}}"/>
+        </form>
+         |
+        {% if basket_element.is_validation_item() %}
+            <button class="comment_button">
+                <img src="/skins/lightbox/noteie6.png"/>
+                {{basket_element.get_note_count}}
+            </button>
+        {% endif %}
+    {% endif %}
 </span>
 

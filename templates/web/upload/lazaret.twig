@@ -1,143 +1,143 @@
-{% import 'common/thumbnail.twig' as thumbnail %}
+{% import 'common/thumbnail.html' as thumbnail %}
 
-{% macro lazaret_item(lazaret_item, thumbnail, extraclass) %}
-	<div style="width:250px;xheight:290px;margin:10px auto;border:2px solid black;" class="ui-corner-all {{extraclass}} lazaret_item lazaret_item_{{lazaret_item.id}}">
-		<div style="text-align:center;height:60px;">
-			{% set date = lazaret_item.created_on|phraseadate %}
-			{% set basname = lazaret_item.base_id|basnames %}
-			{% if lazaret_item.usr_id %}
-				{% set display_name = lazaret_item.usr_id.display_name%}
-				{% trans %}Document ajoute le {{date}} par {{display_name}} sur la collection {{basname}}{% endtrans %}
-			{% else %}
-				{% trans %}Document ajoute le {{date}} sur la collection {{basname}}{% endtrans %}
-			{% endif %}
-		</div>
-		<div>
-			{{ thumbnail.format(lazaret_item.thumbnail,200) }}
-		</div>
-		<div style="text-align:center;height:30px;">
-			{% set basname = lazaret_item.base_id|basnames%}
-			
-			{% set title_add %}
-				{% trans %}Ajouter ce document a la base {{basname}}{% endtrans %}
-			{% endset %}
-			<form>
-				<a href="#" title="{{title_add|e}}" class="lazaret_base_adder">
-					<img src="/skins/icons/add.png"/>
-				</a>
-				<a href="#" title="{% trans 'Supprimer'%}" class="lazaret_deleter">
-					<img src="/skins/icons/delete.png"/>
-				</a>
-				{% if lazaret_item.potential_relationship|length > 0%}
-					<a href="#" title="{% trans 'Substituer' %}" class="lazaret_substituter">
-						<img src="/skins/icons/reload.png"/>
-					</a>
-					{% if lazaret_item.potential_relationship|length > 1%}
-						<select name="record_id" style="width:140px;">
-							<option value="">{% trans 'Document a substituer' %}</option>
-							{% for record_id, element in lazaret_item.potential_relationship %}
-								<option value="{{record_id}}">Record id {{record_id}} - {{element.title}}</option>
-							{% endfor %}
-						</select>
-					{% else %}
-						{% for record_id, element in lazaret_item.potential_relationship %}
-							<input type="hidden" name="record_id" value="{{record_id}}" />	
-						{% endfor %}
-					{% endif %}
-				{% endif %}
-				<input type="hidden" name="lazaret_id" value="{{lazaret_item.id}}" />
-			</form>
-		</div>
-		<div style="xheight:20px; text-align:center;">
-		{% if lazaret_item.errors != ''%}
-			<img src="/skins/icons/alert.png" style="vertical-align:middle;margin:0 5px;"/>
-			{{lazaret_item.errors|nl2br}}
-		{% endif %}
-		</div>
-	</div>
+{% macro lazaret_item(lazaret_item, thumbnail, extraclass, session) %}
+    <div style="width:250px;xheight:290px;margin:10px auto;border:2px solid black;" class="ui-corner-all {{extraclass}} lazaret_item lazaret_item_{{lazaret_item.id}}">
+        <div style="text-align:center;height:40px;">
+            {% set date = lazaret_item.created_on|phraseadate %}
+            {% set basname = lazaret_item.base_id|basnames %}
+            {% if lazaret_item.usr_id %}
+                {% set display_name = lazaret_item.usr_id %}
+                {% trans %}Document ajoute le {{date}} par {{display_name}} sur la collection {{basname}}{% endtrans %}
+            {% else %}
+                {% trans %}Document ajoute le {{date}} sur la collection {{basname}}{% endtrans %}
+            {% endif %}
+        </div>
+        <div>
+            {{ thumbnail.format(lazaret_item.thumbnail,200, 200, '', session, true) }}
+        </div>
+        <div style="text-align:center;height:30px;">
+            {% set basname = lazaret_item.base_id|basnames%}
+
+            {% set title_add %}
+                {% trans %}Ajouter ce document a la base {{basname}}{% endtrans %}
+            {% endset %}
+            <form>
+                <a href="#" title="{{title_add|e}}" class="lazaret_base_adder">
+                    <img src="/skins/icons/add.png"/>
+                </a>
+                <a href="#" title="{% trans 'Supprimer'%}" class="lazaret_deleter">
+                    <img src="/skins/icons/delete.png"/>
+                </a>
+                {% if lazaret_item.potential_relationship|length > 0%}
+                    <a href="#" title="{% trans 'Substituer' %}" class="lazaret_substituter">
+                        <img src="/skins/icons/reload.png"/>
+                    </a>
+                    {% if lazaret_item.potential_relationship|length > 1%}
+                        <select name="record_id" style="width:140px;">
+                            <option value="">{% trans 'Document a substituer' %}</option>
+                            {% for record_id, element in lazaret_item.potential_relationship %}
+                                <option value="{{record_id}}">Record id {{record_id}} - {{element.title}}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        {% for record_id, element in lazaret_item.potential_relationship %}
+                            <input type="hidden" name="record_id" value="{{record_id}}" />
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+                <input type="hidden" name="lazaret_id" value="{{lazaret_item.id}}" />
+            </form>
+        </div>
+        <div style="xheight:20px; text-align:center;">
+        {% if lazaret_item.errors != ''%}
+            <img src="/skins/icons/alert.png" style="vertical-align:middle;margin:0 5px;"/>
+            {{lazaret_item.errors|nl2br}}
+        {% endif %}
+        </div>
+    </div>
 {% endmacro %}
 
 <div class="relative w100">
         <div>
-          <a class="global_operation_trigger" href="#">Ajouter / Supprimer tous les candidats</a>
+          <a class="global_operation_trigger" href="#">{% trans 'action en lot' %}</a>
         </div>
-	{% for key, lazaretgroup in lazaret%}
-		<div class="relative w100 ui-corner-all group" style="">
-			<h1>Pour le GROUPE {{key}}</h1> 
-			<div class="relative w100">
-				<table cellspacing="0" cellpadding="0" border="0">
-					<thead>
-						<tr>
-							<th>
-								<h2>{% trans %}Derniere version uploadee{% endtrans %}</h2>
-							</th>
-							<th>
-								{% set potenlength = lazaretgroup.potentials|length%}
-								{% if potenlength > 1%}
-									<img src="/skins/icons/alert.png" style="vertical-align:middle"/> {% trans %}{{potenlength}} enregistrements correspondent cet identifiant unique{% endtrans %}
-								{% elseif potenlength == 1 %}
-									{% trans %}Voici enregistrement correspondant a  cet identifiant unique{% endtrans %}
-								{% endif %}
-							</th>
-						</tr>
-					</thead>
-					<tr>
-						<td style="width:50%;">
-							{% for item_id, lazaret_item in lazaretgroup.candidates%}
-								{% if loop.first %}
-									<div class="main_container">
-										{{ _self.lazaret_item(lazaret_item, thumbnail, 'main_item')}}
-									</div> 
-								{% else %}
-								
-									{% if loop.index == 2 %}
-										<div class="more_title">
-											{% trans 'D\'autres versions de ce document ont ete prealablement uploadees '%}
-											<a href="#" onclick="$('#toggle_{{item_id}}').slideToggle();return false;">{% trans 'Voir/Cacher' %}</a>
-										</div>
-										<div class="more_uploads" id="toggle_{{item_id}}" style="margin:10px;border:2px solid white;display:none;">
-											<span style="">
-												{% trans 'Precedents uploads' %}
-											</span>
-									{% endif %}
-									<div style="width:290px;margin:20px auto;">
-										{{ _self.lazaret_item(lazaret_item, thumbnail, 'more_item')}}
-									</div>
-								
-									{% if loop.last %}
-										</div>
-									{% endif %}
-								{% endif %}
-							{% endfor %}
-						</td>	
-						<td style="width:50%;">
-							{% for record_id, element in lazaretgroup.potentials %}
-								<div style="width:250px;height:290px;margin:10px auto;border:2px solid black;" class="ui-corner-all">
-									<div style="text-align:center;height:60px;">
-									{% set title = element.title %}
-									{% set basname = element.base_id|basnames %}
-									{% set recordid %}
-										<b>{{element.record_id}}</b>
-									{% endset %}
-										{% trans %}Record {{recordid}} - {{title}}{% endtrans %}
-									</div>
-									{{ thumbnail.format(element.thumbnail,200) }}
-									<div style="text-align:center;height:30px;">
-										{{ basname|e }}
-										<img src="/skins/icons/mode_list.gif" class="tooltip" title="{{ element.caption|e }}"/>
-										<img src="/skins/icons/zoom.gif" class="tooltip" title="{{ element.preview|e }}"/>
-									</div>
-								</div>
-							{% endfor %}
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-	{% endfor %}
-	{% if lazaret|length == 0 %}
-		<div style="margin:20px 10px;">{% trans 'Aucun document dans la quarantaine actuellement' %}</div>
-	{% endif %}
+    {% for key, lazaretgroup in lazaret%}
+        <div class="relative w100 ui-corner-all group" style="">
+            <h1>{% trans %}Pour le GROUPE {{key}}{% endtrans %}</h1>
+            <div class="relative w100">
+                <table cellspacing="0" cellpadding="0" border="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <h2>{% trans 'Derniere version uploadee' %}</h2>
+                            </th>
+                            <th>
+                                {% set potenlength = lazaretgroup.potentials|length%}
+                                {% if potenlength > 1%}
+                                    <img src="/skins/icons/alert.png" style="vertical-align:middle"/> {% trans %}{{potenlength}} enregistrements correspondent cet identifiant unique{% endtrans %}
+                                {% elseif potenlength == 1 %}
+                                    {% trans 'Voici enregistrement correspondant a  cet identifiant unique' %}
+                                {% endif %}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td style="width:50%;">
+                            {% for item_id, lazaret_item in lazaretgroup.candidates%}
+                                {% if loop.first %}
+                                    <div class="main_container">
+                                        {{ _self.lazaret_item(lazaret_item, thumbnail, 'main_item', session)}}
+                                    </div>
+                                {% else %}
+
+                                    {% if loop.index == 2 %}
+                                        <div class="more_title">
+                                            {% trans 'D\'autres versions de ce document ont ete prealablement uploadees '%}
+                                            <a href="#" onclick="$('#toggle_{{item_id}}').slideToggle();return false;">{% trans 'Voir/Cacher' %}</a>
+                                        </div>
+                                        <div class="more_uploads" id="toggle_{{item_id}}" style="margin:10px;border:2px solid white;display:none;">
+                                            <span style="">
+                                                {% trans 'Precedents uploads' %}
+                                            </span>
+                                    {% endif %}
+                                    <div style="width:290px;margin:20px auto;">
+                                        {{ _self.lazaret_item(lazaret_item, thumbnail, 'more_item', session)}}
+                                    </div>
+
+                                    {% if loop.last %}
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td style="width:50%;">
+                            {% for record_id, element in lazaretgroup.potentials %}
+                                <div style="width:250px;height:290px;margin:10px auto;border:2px solid black;" class="ui-corner-all">
+                                    <div style="text-align:center;height:40px;">
+                                    {% set title = element.get_title() %}
+                                    {% set basname = element.get_base_id()|basnames %}
+                                    {% set recordid %}
+                                        <b>{{element.get_record_id()}}</b>
+                                    {% endset %}
+                                        {% trans %}Record {{recordid}} - {{title}}{% endtrans %}
+                                    </div>
+                                    {{ thumbnail.format(element.get_thumbnail(),200, 200, '', session, true) }}
+                                    <div style="text-align:center;height:30px;">
+                                        {{ basname|e }}
+                                        <img src="/skins/icons/mode_list.gif" class="tooltip" tooltipsrc="/prod/tooltip/caption/{{element.get_sbas_id()}}/{{element.get_record_id()}}/lazaret/?number={{element.get_number()}}"/>
+                                        <img src="/skins/icons/zoom.gif" class="tooltip" tooltipsrc="/prod/tooltip/preview/{{element.get_sbas_id()}}/{{element.get_record_id()}}/"/>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+    {% if lazaret|length == 0 %}
+        <div style="margin:20px 10px;">{% trans 'Aucun document dans la quarantaine actuellement' %}</div>
+    {% endif %}
   <script type="text/javascript">
     $(document).ready(function(){
       $('.tooltip').tooltip();

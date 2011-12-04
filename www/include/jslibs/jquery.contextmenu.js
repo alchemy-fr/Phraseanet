@@ -107,7 +107,7 @@
 		createMenu: function(menu,cmenu) {
 			var className = cmenu.className;
 			$.each(cmenu.theme.split(","),function(i,n){className+=' '+cmenu.themePrefix+n;});
-			var $t = $('<table cellspacing=0 cellpadding=0></table>').click(function(){cmenu.hide(); return false;}); // We wrap a table around it so width can be flexible
+			var $t = $('<table cellspacing="0" cellpadding="0" class="contextMenuJq"></table>').click(function(){cmenu.hide(); return false;}); // We wrap a table around it so width can be flexible
 			var $tr = $('<tr></tr>');
 			var $td = $('<td></td>');
 			var $div = $('<div class="'+className+'"></div>');
@@ -199,6 +199,7 @@
 		
 		// Show the context menu
 		show: function(t,e) {
+      $('.contextMenuJq').hide();
 			var cmenu=this, x=e.pageX, y=e.pageY;
 			cmenu.target = t; // Preserve the object that triggered this context menu so menu item click methods can see it
 			if (cmenu.beforeShow()!==false) {

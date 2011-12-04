@@ -1,41 +1,41 @@
 {% block setting_download %}
-	<div class="setting_title">{% trans "report:: 3 - Type de report" %}</div>
-		<ul class="rounded">
-			{% if anonymous %}
-				<li>
-					<input name="tbl" type="radio" value="USR" id="USR-dl" class="formsubmiter" /> 
-					<label for="USR-dl">{% trans "report:: Grouper par" %}</label>
-					<select class="options" style="display:inline;display:none;" id="list-select2" name="on" >
-						<option selected ="selected" value="fonction" class="formsubmiter">{% trans "report:: fonction" %}</option>
-						<option value="societe" class="formsubmiter">{% trans "report:: societe" %}</option>
-						<option value="activite" class="formsubmiter">{% trans  "report:: societe" %}</option>
-						<option value="pays" class="formsubmiter">{% trans "report:: pays"  %}</option>
-					</select>
-				</li>
-			{% else %}
-				<li>
-					<input name="tbl" type="radio" value="USR" id="USR-input" class="formsubmiter" /> 
-					<label for="USR-input">{% trans "report:: par utilisateurs" %}</label>
-				</li>
-			{% endif %}
-			<li>
-				<input name="tbl" type="radio" value="GEN" id="GEN-input" class="formsubmiter" />
-				<label for="GEN-input">{% trans "report:: (telechargement) Global" %}</label>
-			</li>
-			<li>
-				<input name="tbl" type="radio" value="DAY" id="DAY-input" class="formsubmiter" />
-				<label for="DAY-input">{% trans "report:: (telechargement) Par jours base par base" %}</label>
-			</li>
-			<li>
-				<input name="tbl" type="radio" value="DOC" id="DOC-input" class="formsubmiter" /> 
-				<label for="DOC-input">{% trans "report:: (telechargement) Par documents sur la base" %}</label>
-				<select class="options" id="precise" name="precise" style="display:none;">
-					<option value="0">{% trans "report::aucune precision" %}</option>			
-					<option value="1">{% trans "report::la description contient" %}</option>			
-					<option value="2">{% trans "report:: recordid" %}</option>											
-				</select>
-				<input name="preciseWord" type="text" value="" class="options entersubmiter" /> 
-			</li>
-				<input name="what" type="hidden" value="DWLD" id="DWLD-what"/>
-		</ul>
+    <div class="setting_title">{% trans "report:: 3 - Type de report" %}</div>
+        <ul class="rounded">
+            {% if anonymous %}
+                <li>
+                    <input name="tbl" type="radio" value="USR" id="USR-dl" class="formsubmiter" />
+                    <label for="USR-dl">{% trans "report:: Grouper par" %}</label>
+                    <select class="options" style="display:inline;display:none;" id="list-select2" name="on" >
+                        <option selected ="selected" value="fonction" class="formsubmiter">{% trans "report:: fonction" %}</option>
+                        <option value="societe" class="formsubmiter">{% trans "report:: societe" %}</option>
+                        <option value="activite" class="formsubmiter">{% trans  "report:: societe" %}</option>
+                        <option value="pays" class="formsubmiter">{% trans "report:: pays"  %}</option>
+                    </select>
+                </li>
+            {% else %}
+                <li>
+                    <input name="tbl" type="radio" value="USR" id="USR-input" class="formsubmiter" />
+                    <label for="USR-input">{% trans "report:: par utilisateurs" %}</label>
+                </li>
+            {% endif %}
+            <li>
+                <input name="tbl" type="radio" value="GEN" id="GEN-input" class="formsubmiter" />
+                <label for="GEN-input">{% trans "report:: (telechargement) Global" %}</label>
+            </li>
+            <li>
+                <input name="tbl" type="radio" value="DAY" id="DAY-input" class="formsubmiter" />
+                <label for="DAY-input">{% trans "report:: (telechargement) Par jours base par base" %}</label>
+            </li>
+            <li>
+                <input name="tbl" type="radio" value="DOC" id="DOC-input" class="formsubmiter" />
+                <label for="DOC-input">{% trans "report:: (telechargement) Par documents sur la base" %}</label>
+                <select class="options" id="precise" name="precise" style="display:none;">
+                    <option value="0">{% trans "report::aucune precision" %}</option>
+                    <option value="1">{% trans "report::la description contient" %}</option>
+                    <option value="2">{% trans "report:: recordid" %}</option>
+                </select>
+                <input name="preciseWord" type="text" value="" class="options entersubmiter" />
+            </li>
+                <input name="what" type="hidden" value="DWLD" id="DWLD-what"/>
+        </ul>
 {% endblock %}

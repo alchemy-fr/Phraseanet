@@ -1,65 +1,65 @@
 {% block ajax_loaded_content %}
-	<div class="tabs">
-	<div class="horizontal-scroller">
-		<ul class="tabb">
-			{% for key in selection|keys %}
-				<li class ="number_{{ key }}"><a href="#tab-{{ key }}-{{ param.tbl }}">{{ key|sbas_names}}</a></li>
-			{% endfor %}
-		</ul>
-	</div>
-	{% for key, value in selection %}
-		<div id="tab-{{ key }}-{{ param.tbl }}">
-			<div class="load" style="margin-top:40px;">
-			{% block ajax_data_content %}{% endblock %}
-			</div>
-			<form style="display:none;" onsubmit="return false;" class="report_form">
-				<fieldset style="float:left; border:none;">
-					<label for="page" style="font-size:10px;float:left;margin-left:35px;"><i></i></label>
-					<div style="clear:left;">
-						<input type="button"  name="prev" value ="&lt;" class="prev ui-state-hover"/>
-						<input type="text" 	name="page" value="1" size ="2" class="enterformsubmiter"/>
-						<input type="button" name="next" value ="&gt;" class="next ui-state-hover"/>
-					</div>
-				</fieldset>
-				<fieldset style="float:right;border:none;text-align:right;">
-					<div style="clear:right;">
-						<input type="text" name="limit" value="30" size="2" class="enterformsubmiter"/>
-						<input type="button" name="go" value ="ok" class="submiter" />
-					</div>
-					<label for="limit" style="font-size:10px;float:right;"><i>nombre de ligne(s) par page</i></label>
-				</fieldset>
-				<input type="hidden" name="tbl" value ="{{ param['tbl'] }}"/>
-				<input type="hidden" name="dmin" value ="{{ param['dmin'] }}"/>
-				<input type="hidden" name="dmax" value ="{{ param['dmax'] }}"/>
-				<input type="hidden" name="sbasid" value ="{{ key }}"/>
-				<input type="hidden" name="collection" value ="{{ value.liste }}"/>
-				<input type="hidden" name="user" value =""/>
-				<input type="hidden" name="word" value ="{{ param['tbl'] == 'DOC' ? param['preciseWord'] : '' }}"/>
-				<input type="hidden" name="precise" value ="{{ param['tbl'] == 'DOC' ? param['precise'] : ''  }}"/>
-				<input type="hidden" name="order" value =""/>
-				<input type="hidden" name="champ" value =""/>
-				<input type="hidden" name="rid" value =""/>
-				<input type="hidden" name="filter_column" value =""/>
-				<input type="hidden" name="filter_value" value =""/>
-				<input type="hidden" name="liste" value ="off"/>
-				<input type="hidden" name="liste_filter" value =""/>
-				<input type="hidden" name="conf" value ="off"/>
-				<input type="hidden" name="list_column" value =""/>
-				<input type="hidden" name="groupby" value =""/>
-				<input type="hidden" name="societe" value =""/>
-				<input type="hidden" name="pays" value =""/>
-				<input type="hidden" name="fonction" value =""/>
-				<input type="hidden" name="activite" value =""/>
-				{% if anonymous %} 
-					<input type="hidden" name="on" value ="{{ param['on'] }}"/>
-				{% else %}
-					<input type="hidden" name="on" value =""/>
-				{% endif %}
-				<input type="hidden" name="docwhat" value ="{{ param['tbl'] == 'WDOC' ? param['docwhat'] : ''  }}"/>
-				<input type="hidden" name="from" value =""/>
-				<input type="hidden" name="printcsv" value ="off"/>
-			</form>
-		</div>		
-	{% endfor %}
-	</div>
-{% endblock %}	
+    <div class="tabs">
+    <div class="horizontal-scroller">
+        <ul class="tabb">
+            {% for key in selection|keys %}
+                <li class ="number_{{ key }}"><a href="#tab-{{ key }}-{{ param.tbl }}">{{ key|sbas_names}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% for key, value in selection %}
+        <div id="tab-{{ key }}-{{ param.tbl }}">
+            <div class="load" style="margin-top:40px;padding-top:10px;">
+            {% block ajax_data_content %}{% endblock %}
+            </div>
+            <form style="display:none;" onsubmit="return false;" class="report_form">
+                <fieldset style="float:left; border:none;">
+                    <label for="page" style="font-size:10px;float:left;margin-left:35px;"><i></i></label>
+                    <div style="clear:left;">
+                        <input type="button"  name="prev" value ="&lt;" class="prev ui-state-hover"/>
+                        <input type="text"   name="page" value="1" size ="2" class="enterformsubmiter"/>
+                        <input type="button" name="next" value ="&gt;" class="next ui-state-hover"/>
+                    </div>
+                </fieldset>
+                <fieldset style="float:right;border:none;text-align:right;">
+                    <div style="clear:right;">
+                        <input type="text" name="limit" value="30" size="2" class="enterformsubmiter"/>
+                        <input type="button" name="go" value ="ok" class="submiter" />
+                    </div>
+                    <label for="limit" style="font-size:10px;float:right;"><i>nombre de ligne(s) par page</i></label>
+                </fieldset>
+                <input type="hidden" name="tbl" value ="{{ param['tbl'] }}"/>
+                <input type="hidden" name="dmin" value ="{{ param['dmin'] }}"/>
+                <input type="hidden" name="dmax" value ="{{ param['dmax'] }}"/>
+                <input type="hidden" name="sbasid" value ="{{ key }}"/>
+                <input type="hidden" name="collection" value ="{{ value.liste }}"/>
+                <input type="hidden" name="user" value =""/>
+                <input type="hidden" name="word" value ="{{ param['tbl'] == 'DOC' ? param['preciseWord'] : '' }}"/>
+                <input type="hidden" name="precise" value ="{{ param['tbl'] == 'DOC' ? param['precise'] : ''  }}"/>
+                <input type="hidden" name="order" value =""/>
+                <input type="hidden" name="champ" value =""/>
+                <input type="hidden" name="rid" value =""/>
+                <input type="hidden" name="filter_column" value =""/>
+                <input type="hidden" name="filter_value" value =""/>
+                <input type="hidden" name="liste" value ="off"/>
+                <input type="hidden" name="liste_filter" value =""/>
+                <input type="hidden" name="conf" value ="off"/>
+                <input type="hidden" name="list_column" value =""/>
+                <input type="hidden" name="groupby" value =""/>
+                <input type="hidden" name="societe" value =""/>
+                <input type="hidden" name="pays" value =""/>
+                <input type="hidden" name="fonction" value =""/>
+                <input type="hidden" name="activite" value =""/>
+                {% if anonymous %}
+                    <input type="hidden" name="on" value ="{{ param['on'] }}"/>
+                {% else %}
+                    <input type="hidden" name="on" value =""/>
+                {% endif %}
+                <input type="hidden" name="docwhat" value ="{{ param['tbl'] == 'WDOC' ? param['docwhat'] : ''  }}"/>
+                <input type="hidden" name="from" value =""/>
+                <input type="hidden" name="printcsv" value ="off"/>
+            </form>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

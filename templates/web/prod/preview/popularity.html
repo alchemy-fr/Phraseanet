@@ -1,0 +1,27 @@
+
+  {% if record.get_bitly_link() and user.ACL().has_right_on_base(record.get_base_id(), 'canreport') %}
+    <div>
+      {% trans 'preview::statistiques pour le lien' %}
+      <a class="bitly_link bitly_link_{{record.get_bitly_link()}}"
+         href="http://bit.ly/info/{{record.get_bitly_link()}}" target="_blank">
+        http://bit.ly/{{record.get_bitly_link()}}</a></div>
+  {% endif %}
+
+  {% if record.get_view_popularity() %}
+    <br>
+    {% trans 'preview::statistiques de visualisation pour le lien' %}
+    <br/>
+    <img src="{{record.get_view_popularity().get_url()}}" />
+  {% endif %}
+
+  {% if record.get_refferer_popularity() %}
+    <br>
+    <img src="{{record.get_refferer_popularity().get_url()}}" />
+  {% endif %}
+
+  {% if record.get_download_popularity() %}
+    <br>
+    {% trans 'preview::statistiques de telechargement' %}
+    <br>
+    <img src="{{record.get_download_popularity().get_url()}}" />
+  {% endif %}

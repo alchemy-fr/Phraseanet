@@ -1,0 +1,51 @@
+ul.image_set{
+  padding:0;
+  margin:0;
+  border:none;
+  width:100%;
+  border:none;
+  list-style-type: none;
+}
+li.image_box a img{
+  position:relative;
+  vertical-align:middle;
+  border:none;
+}
+li.image_box a{
+  padding:0;
+  text-shadow:0;
+  margin:0;
+}
+li.image_box{
+  width:80px;
+  height:80px;
+  position:relative;
+  float:left;
+  margin:0px 15px 15px 0px;
+  padding:0px;
+  text-align:center;
+}
+a.no.active_choice{
+  background-color:red;
+  color: #fff;
+}
+a.active_choice{
+  background-color: #53b401;
+  color: #fff;
+}
+
+.valid_choice{
+  position:absolute;
+  bottom:0;
+  right:0;
+  width:16px;
+  height:16px;
+  z-index:2;
+}
+
+.valid_choice.agree{
+  background-image: url(/skins/icons/ok.png);
+}
+.valid_choice.disagree{
+  background-image: url(/skins/icons/delete.png);
+}

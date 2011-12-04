@@ -1,72 +1,45 @@
-<div id="bask_item_{{basket_element.sselcont_id}}">
-    <div class="toolbar">
-    	<a class="back" href="#bask_{{basket_element.ssel_id}}">{% trans 'boutton::retour'%}</a>
-    	<div class="next" style="display:none;position:absolute;right:20px;line-height:28px;width:20px;height:20px;text-align:center;">
-    		<a href="#" style="color:white;text-decoration:none;font-size:28px;">&#9660;</a>
-    	</div>
-    	<div class="previous" style="display:none;position:absolute;right:60px;line-height:28px;width:20px;height:20px;text-align:center;">
-    		<a href="#" style="color:white;text-decoration:none;font-size:28px;">&#9650;</a>
-    	</div>
-    </div>
-    <div>
-	    <script type="text/javascript">
-	    	$(document).ready(function(){
-	    		check_basket_element({{basket_element.sselcont_id}});
-	    	});
-	    </script>
-	    <div class="info" style="position:relative">
-		    <div style="position:absolute;left:20px;top:14px;height:15px;font-weight:bold;font-size:18px;color:#1A1A1A" class="display_id" id="current_sselcont_id_n_{{basket_element.sselcont_id}}"></div>
-	    	<p>{{basket_element.get_title}}</p>
-	    </div>
-    	{% if basket_element.get_preview.doctype == 'image' %}
-			<img style="width:100%;" src="{{basket_element.get_preview.url}}" />
-    	{% elseif basket_element.get_preview.doctype == 'video' %}
-	    	<video controls="controls" style="width:100%;" src="{{basket_element.get_preview.url}}"">
-			your browser does not support the video tag
-			</video>
-    	{% elseif basket_element.get_preview.doctype == 'audio' %}
-			<audio style="width:100%;" src="{{basket_element.get_preview.url}}" />
-    	{% else %}
-			{% trans 'Le type de document n\'est actuellement pas supporte'%}
-    	{% endif %}
-    	{% if basket_element.is_validation_item %}
-	    	<ul class="individual">
-	    		<li>
-	    			<a href="#" class="yes {% if basket_element.my_agreement == '1'%}active_choice{% endif %}" id="yes_{{basket_element.sselcont_id}}">
-	    				{% trans 'validation:: OUI' %}
-	    			</a>
-	    		</li>
-	    		<li>
-	    			<a href="#" class="no {% if basket_element.my_agreement == '-1'%}active_choice{% endif %}" id="no_{{basket_element.sselcont_id}}">
-	    				{% trans 'validation:: NON' %}
-	    			</a>
-	    		</li>
-	    	</ul>
-	    	<ul class="rounded">
-	    		<li class="arrow">
-	    			<a href="#" id="note_editor_{{basket_element.sselcont_id}}" class="note_editor">{% trans 'validation:: editer ma note' %}</a>
-	    			<input type="hidden" name="sselcont_id" value="{{basket_element.sselcont_id}}"/></li>
-	    	</ul>
-	   		<form style="display:none;" id="note_form_{{basket_element.sselcont_id}}">
-		        <ul class="edit rounded">
-			    	<li>
-			    		<textarea class="note_area" 
-			    			id="note_area_{{basket_element.sselcont_id}}" 
-			    			{% if basket_element.my_note == '' %}placeholder="Note"{% endif %}>{{basket_element.my_note}}</textarea>
-			    	</li>
-		    	</ul>
-		    	<ul class="individual">
-		    		<li>
-		    			<a href="#" id="note_area_cancel_{{basket_element.sselcont_id}}" class="note_area_cancel">{% trans 'boutton::annuler' %}</a>
-		    		</li>
-		    		<li>
-		    			<a href="#" id="note_area_validate_{{basket_element.sselcont_id}}" class="note_area_validate">{% trans 'boutton::valider' %}</a>
-		    		</li>
-		    	</ul>
-	   		</form>
-	   		<div id="notes_{{basket_element.sselcont_id}}">
-	    	{% include 'lightbox/sc_note.twig' %}
-	    	</div>
-    	{% endif %}
-    </div>
+{% import "common/thumbnail.twig" as thumbnail %}
+
+{% extends "common/index.twig" %}
+
+{% block javascript %}
+<script type="text/javascript" src="/include/minify/f=skins/lightbox/jquery.validator.mobile.js"></script>
+{% endblock %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" href="/include/minify/f=skins/lightbox/jquery.validator.mobile.css" />
+{% endblock %}
+
+{% block content %}
+  {% set record = basket_element.get_record() %}
+<div data-role="page">
+  <div data-role="header">
+    <a href="/lightbox/validate/{{basket_element.get_ssel_id()}}/" data-rel="back" data-icon="arrow-l">Back</a>
+    <h1>{{basket_element.get_order()}} - {{record.get_title()}}</h1>
+    <a rel="external" href="/lightbox/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+  </div>
+  <div data-role="content">
+    {{ thumbnail.format100percent(record.get_preview(),'',session, record.get_thumbnail()) }}
+    {% if basket_element.is_validation_item() %}
+      <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
+        <input {% if basket_element.get_my_agreement() == '1'%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.get_sselcont_id()}}" value="yes"  />
+          <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.get_sselcont_id()}}">{% trans 'validation:: OUI' %}</label>
+
+        <input {% if basket_element.get_my_agreement() == '-1'%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.get_sselcont_id()}}" value="no"  />
+          <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.get_sselcont_id()}}">{% trans 'validation:: NON' %}</label>
+      </fieldset>
+      <div style="text-align:center;margin:0 0 1em 0">
+        <a href="/lightbox/ajax/NOTE_FORM/{{basket_element.get_sselcont_id()}}/" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">{% trans 'validation:: editer ma note' %}</a>
+      </div>
+      <div>
+        <ul data-role="listview" id="notes_{{basket_element.get_sselcont_id()}}">
+          {% include 'lightbox/sc_note.twig' %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+  <div data-role="footer">
+
+  </div>
 </div>
+{% endblock %}

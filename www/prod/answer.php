@@ -1,90 +1,127 @@
 <?php
+
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ * @package
+ * @copyright   (c) 2004 Alchemy
+ * @version     3.5
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ * @see         http://developer.phraseanet.com
+ *
+ */
 require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$session = session::getInstance();
+$appbox = appbox::get_instance();
+$session = $appbox->get_session();
+$registry = $appbox->get_registry();
 
-require_once( GV_RootPath . 'lib/unicode/lownodiacritics_utf8.php' );
+$request = http_request::getInstance();
 
-$request = httpRequest::getInstance();
+$user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
 if (!isset($parm))
   $parm = $request->get_parms("bas", "qry", "pag"
-                  , "sel", "ord"
+                  , "sel", "ord", "sort", "stemme"
                   , "search_type", "recordtype", "status", "fields", "datemin", "datemax", "datefield");
 
-
-if (isset($session->usr_id) && isset($session->ses_id))
-{
-  $ses_id = $session->ses_id;
-  $usr_id = $session->usr_id;
-  if (!($ph_session = phrasea_open_session((int) $ses_id, $usr_id)))
-  {
-    header("Location: /login/?err=no-session");
-    exit();
-  }
-}
-else
-{
-  $request = httpRequest::getInstance();
-  if ($request->is_ajax())
-  {
-    echo _('Votre session est expiree, veuillez vous reconnecter');
-  }
-  else
-  {
-    header("Location: /login/");
-  }
-  exit();
-}
-
-if (!($ph_session = phrasea_open_session($ses_id, $usr_id)))
-{
-  die();
-}
-
-if ($parm["ord"] === NULL)
-  $parm["ord"] = PHRASEA_ORDER_DESC;
-else
-  $parm["ord"] = (int) $parm["ord"];
 
 $parm['sel'] = explode(';', $parm['sel']);
 
 if (!$parm['bas'])
   $parm['bas'] = array();
 
-if (!$parm["pag"] === NULL)
-  $parm["pag"] = "0";
 
-if (trim($parm["qry"]) === '')
-  $parm["qry"] = "all";
-
-$mod = user::getPrefs('view');
-
-$options = array(
-    'type' => $parm['search_type'],
-    'bases' => $parm['bas'],
-    'champs' => $parm['fields'],
-    'status' => $parm['status'],
-    'date' => array(
-        'minbound' => $parm['datemin'],
-        'maxbound' => $parm['datemax'],
-        'field' => explode('|', $parm['datefield'])
-    )
-);
-
-if ($parm['recordtype'] != '' && in_array($parm['recordtype'], array('image', 'video', 'audio', 'document', 'flash')))
+$parm["pag"] = (int) $parm["pag"];
+$mod = $user->getPrefs('view');
+//var_dump($session->get_ses_id(), phrasea_open_session($session->get_ses_id(), $session->get_usr_id()));
+function dmicrotime_float($message = '', $stack = 'def')
 {
-  $parm['qry'] .= ' AND recordtype=' . $parm['recordtype'];
+  static $last = array();
+  list($usec, $sec) = explode(' ', microtime());
+
+  $new = ((float) $usec + (float) $sec);
+
+//  if (isset($last[$stack]) && $message)
+//    echo "$stack \t\t temps : $message " . ($new - $last[$stack]) . "\n";
+
+  $last[$stack] = $new;
+
+  return ($new - $last[$stack]);
 }
 
+dmicrotime_float();
+$json = array();
 
-$query = new query($options);
+//$options = array(
+//    'type' => $parm['search_type'],
+//    'bases' => $parm['bas'],
+//    'champs' => $parm['fields'],
+//    'status' => $parm['status'],
+//    'recordtype' => (in_array($parm['recordtype'], array('image', 'video', 'audio', 'document', 'flash')) ? $parm['recordtype'] : ''),
+//    'date' => array(
+//        'minbound' => $parm['datemin'],
+//        'maxbound' => $parm['datemax'],
+//        'field' => explode('|', $parm['datefield'])
+//    )
+//);
 
-$result = $query->results($parm['qry'], $parm["pag"]); //$parm['search_type'],
+$options = new searchEngine_options();
 
-$proposals = trim($parm['pag']) === '' ? $query->proposals() : false;
 
-$npages = $result['pages'];
-$page = $result['current_page'];
+$options->set_bases($parm['bas'], $user->ACL());
+if (!is_array($parm['fields']))
+  $parm['fields'] = array();
+$options->set_fields($parm['fields']);
+if (!is_array($parm['status']))
+  $parm['status'] = array();
+$options->set_status($parm['status']);
+$options->set_search_type($parm['search_type']);
+$options->set_record_type($parm['recordtype']);
+$options->set_min_date($parm['datemin']);
+$options->set_max_date($parm['datemax']);
+$options->set_date_fields(explode('|', $parm['datefield']));
+$options->set_sort($parm['sort'], $parm['ord']);
+$options->set_use_stemming($parm['stemme']);
+
+if ($parm['ord'] === NULL)
+  $parm['ord'] = PHRASEA_ORDER_DESC;
+else
+  $parm['ord'] = (int) $parm['ord'];
+
+$form = serialize($options);
+
+$perPage = (int) $user->getPrefs('images_per_page');
+
+$search_engine = new searchEngine_adapter($registry);
+$search_engine->set_options($options);
+
+
+if ($parm['pag'] < 1)
+{
+  $search_engine->set_is_first_page(true);
+  $search_engine->reset_cache();
+  $parm['pag'] = 1;
+}
+
+$result = $search_engine->query_per_page($parm['qry'], $parm["pag"], $perPage);
+
+
+
+$proposals = $search_engine->is_first_page() ? $result->get_propositions() : false;
+
+$npages = $result->get_total_pages();
+
+
+$page = $result->get_current_page();
+
 $string = '';
 
 if ($npages > 1)
@@ -140,94 +177,86 @@ if ($npages > 1)
 }
 $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';
 
-$explain = $result['explain'];
 
-$infoResult = ' | <a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $session->prod['query']['nba']) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
+$explain = "<div id=\"explainResults\" class=\"myexplain\">";
 
-echo "<script type='text/javascript'>$('#tool_results').empty().append('" . str_replace("'", "\'", $infoResult) . "');</script>";
-echo "<script type='text/javascript'>$('#tool_navigate').empty().append('" . str_replace("'", "\'", $string) . "');</script>";
+$explain .= "<img src=\"/skins/icons/answers.gif\" /><span><b>";
 
-$rsScreen = $result['result'];
-
-if (count($rsScreen) > 0)
+if ($result->get_count_total_results() != $result->get_count_available_results())
 {
-  if ($mod == 'thumbs')
-    require("answergrid.php");
-  else
-    require("answerlist.php");
+  $explain .= sprintf(_('reponses:: %d Resultats rappatries sur un total de %d trouves'), $result->get_count_available_results(), $result->get_count_total_results());
 }
 else
 {
-  echo '<div style="float:left;">';
-  phrasea::getHome('HELP', 'prod');
-  echo '</div>';
+  $explain .= sprintf(_('reponses:: %d Resultats'), $result->get_count_total_results());
 }
 
-function proposalsToHTML(&$proposals)
+$explain .= " </b></span>";
+$explain .= '<br><div>' . $result->get_query_time() . ' s</div>dans index ' . $result->get_search_indexes();
+$explain .= "</div>";
+
+
+
+$infoResult = ' | <a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $result->get_count_total_results()) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
+
+$json['infos'] = $infoResult;
+$json['navigation'] = $string;
+
+$prop = null;
+$propal_n = 0;
+
+if ($search_engine->is_first_page())
 {
-  $html = "<div class=\"proposals\">";
-
-  $nbasesWprop = count($proposals["BASES"]);
-
-  $b = 0;
-  foreach ($proposals["BASES"] as $zbase)
+  $propals = $result->get_suggestions();
+  if (count($propals) > 0)
   {
-    if ((int) (count($zbase["TERMS"]) > 0))
+    foreach ($propals as $prop_array)
     {
-      if (($nbasesWprop > 1))
+      if ($prop_array['value'] !== $parm['qry'] && $prop_array['hits'] > $result->get_count_total_results())
       {
-        $style = $b == 0 ? "style=\"margin-top:0px;\"" : "";
-        $html .= "<h1" . $style . ">" . sprintf(_('reponses::propositions pour la base %s'), $zbase["NAME"]) . "</h1>";
+        $prop = $prop_array['value'];
+        break;
       }
-      $t = 0;
-      foreach ($zbase["TERMS"] as $path => $props)
-      {
-        $style = $t == 0 ? "style=\"margin-top:0px;\"" : "";
-        $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), $props["TERM"]) . "</h2>";
-        $html .= $props["HTML"];
-        $t++;
-      }
-      $b++;
     }
   }
-  $html .= "</div>";
-  return($html);
 }
-?>
-<script type="text/javascript">
-  $(document).ready(function(){
-<?php
-if ($proposals)
+
+$twig = new supertwig();
+$twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
+
+if($result->get_count_total_results() === 0)
 {
-?>
-          $('#proposals').empty().append("<?php echo $proposals ?>");
-          $('.activeproposals').show();
-<?php
+  $template = 'prod/results/help.twig';
 }
-elseif (trim($parm['pag']) === '')
+else
 {
-?>
-          $('#proposals').empty();
-<?php
+  if ($mod == 'thumbs')
+  {
+    $template = 'prod/results/answergrid.html';
+  }
+  else
+  {
+    $template = 'prod/results/answerlist.html';
+  }
 }
-?>
-<?php if ($page > 1 && $session->prod['query']['nba'] > 0)
-{ ?> 
-        $("#PREV_PAGE").bind('click',function(){gotopage(<?php echo ($page - 1) ?>)});
-<?php }
-else
-{ ?>
-        $("#PREV_PAGE").unbind('click');
-<?php }
-if ($page < $npages && $session->prod['query']['nba'] > 0)
-{ ?>
-         $("#NEXT_PAGE").bind('click',function(){gotopage(<?php echo ($page + 1) ?>)});
-<?php }
-else
-{ ?>
-        $("#NEXT_PAGE").unbind('click');
-<?php } ?>
-      p4.tot = <?php echo ((is_int((int) $session->prod['query']['nba']) && (int) $session->prod['query']['nba'] >= 0) ? (int) $session->prod['query']['nba'] : 0) ?>;
-    });
-</script>
+
+
+$json['results'] = $twig->render($template, array(
+            'results' => $result,
+            'GV_social_tools' => $registry->get('GV_social_tools'),
+            'array_selected' => $parm['sel'],
+            'highlight' => $search_engine->get_query(),
+            'searchEngine' => $search_engine,
+            'suggestions' => $prop
+                )
+);
+
+
+$json['query'] = $parm['qry'];
+$json['phrasea_props'] = $proposals;
+$json['total_answers'] = (int) $result->get_count_available_results();
+$json['next_page'] = ($page < $npages && $result->get_count_available_results() > 0) ? ($page + 1) : false;
+$json['prev_page'] = ($page > 1 && $result->get_count_available_results() > 0) ? ($page - 1) : false;
+$json['form'] = $form;
+echo p4string::jsonencode($json);
 

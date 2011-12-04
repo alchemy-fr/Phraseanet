@@ -1,0 +1,76 @@
+<meta charset="utf-8">
+
+<script type="text/javascript" src="jquery-ui-1.8.12/js/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+<script type="text/javascript" src="jquery.vertical.buttonset.js"></script>
+<link media="all" type="text/css" href="jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css" rel="stylesheet">
+
+<style>
+  body{
+    font-size:12px;
+  }
+  .ui-button-vertical{
+    text-align:left;
+  }
+</style>
+
+
+
+<script>
+  $(function() {
+    $('.menu').buttonsetv();
+  });
+</script>
+<style>
+
+</style>
+
+<table>
+  <tr>
+    <td>
+      Exemple 1
+    </td>
+    <td>
+      Exemple 2
+    </td>
+  </tr>
+  <tr>
+    <td>
+      
+      <div class="menu">
+        <div>
+          <button class="default_action">default action</button>
+          <button class="trigger">Select an action</button>
+        </div>
+        <div class="submenu" style="display:none;position:absolute;">
+          <button>
+            menu 1 with a great action
+          </button>
+          <button>
+            menu 2 is simple
+          </button>
+          <button>
+            menu 3 prout
+          </button>
+        </div>
+      </div>
+    </td>
+    <td>
+      <div class="menu">
+        <button class="trigger">Select an action</button>
+        <div class="submenu" style="display:none;position:absolute;">
+          <button>
+            menu 1 with a great action
+          </button>
+          <button>
+            menu 2 is simple
+          </button>
+          <button>
+            menu 3 prout
+          </button>
+        </div>
+      </div>
+    </td>
+  </tr>
+</table>
+

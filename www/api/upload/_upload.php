@@ -1,75 +1,83 @@
 <?php
 
+/*
+ * This file is part of Phraseanet
+ *
+ * (c) 2005-2010 Alchemy
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 //SPECIAL ZINO
-ini_set('display_errors','off');
-ini_set('display_startup_errors','off');
-ini_set('log_errors','off');
+ini_set('display_errors', 'off');
+ini_set('display_startup_errors', 'off');
+ini_set('log_errors', 'off');
 //SPECIAL ZINO
 
-$upload_batch_id = (string)($sxParms->upload_batch_id);
-$index          = (int)($sxParms->index);
-$filename       = (string)($sxParms->filename);
-$filesize       = (int)($sxParms->filesize);
-$md5            = (string)($sxParms->md5);
+$upload_batch_id = (string) ($sxParms->upload_batch_id);
+$index = (int) ($sxParms->index);
+$filename = (string) ($sxParms->filename);
+$filesize = (int) ($sxParms->filesize);
+$md5 = (string) ($sxParms->md5);
 //$crc32          = (int)($sxParms->crc32);
-
-
 // -------------------------------------------------------------------
 // check parms, size, name, md5 etc...
 // between post and _FILE
 // -------------------------------------------------------------------
 
-if(count($_FILES) != 1 || !array_key_exists('file', $_FILES))
+if (count($_FILES) != 1 || !array_key_exists('file', $_FILES))
 {
-	err('$_FILES[\'file\'] unknown');
-	return;
+  err('$_FILES[\'file\'] unknown');
+
+  return;
 }
 $fil = $_FILES['file']['tmp_name'];
-$tmp_filesize   = filesize($fil);
-$tmp_filename   = $_FILES['file']['name'];
-$tmp_k          = file_get_contents($fil);
-$tmp_md5        = md5($tmp_k, false);
+$tmp_filesize = filesize($fil);
+$tmp_filename = $_FILES['file']['name'];
+$tmp_k = file_get_contents($fil);
+$tmp_md5 = md5($tmp_k, false);
 //$tmp_crc32      = crc32($tmp_k);
 
-if($tmp_filename != $filename)
+if ($tmp_filename != $filename)
 {
-	err('filename : \'' . $tmp_filename . '\' != \'' . $filename . '\'');
-	return;
+  err('filename : \'' . $tmp_filename . '\' != \'' . $filename . '\'');
+
+  return;
 }
-if($tmp_md5 != $md5)
+if ($tmp_md5 != $md5)
 {
-	err('md5 : \'' . $tmp_md5 . '\' != \'' . $md5 . '\'');
-	return;
+  err('md5 : \'' . $tmp_md5 . '\' != \'' . $md5 . '\'');
+
+  return;
 }
-//if($tmp_crc32 != $crc32)
-//{
-//	err('checksum32 : \'' . $tmp_crc32 . '\' != \'' . $crc32 . '\'');
-//	return;
-//}
-
-
 
 // -------------------------------------------------------------------
 // check cnx & session
 // -------------------------------------------------------------------
 
-$conn = connection::getInstance();
-if(!$conn)
+try
 {
-	err('bad conn');
-	return ;
+  $conn = connection::getPDOConnection();
 }
-	
-if(!$ses_id || !$usr_id || !$upload_batch_id)
+catch (Exception $e)
 {
-	err('missing ses_id, usr_id or upload_batch_id');
-	return;
+  err('bad conn');
+
+  return;
 }
-	
-if( !$ph_session = phrasea_open_session($ses_id, $usr_id) )
+
+if (!$ses_id || !$usr_id || !$upload_batch_id)
 {
-	err('bad ph_session');
-	return;
+  err('missing ses_id, usr_id or upload_batch_id');
+
+  return;
 }
 
 
@@ -79,52 +87,58 @@ if( !$ph_session = phrasea_open_session($ses_id, $usr_id) )
 
 $batchok = false;
 $batch_nfiles = false;
-// $sql = 'SELECT b.*, SUM(1) AS uploaded FROM (uplbatch AS b LEFT JOIN uplfile AS f USING(uplbatch_id)) WHERE uplbatch_id=\'' . $conn->escape_string($upload_batch_id) . '\' GROUP BY uplbatch_id' ;
-$sql = 'SELECT * FROM uplbatch WHERE uplbatch_id=\'' . $conn->escape_string($upload_batch_id) . '\'' ;
-if( ($rs = $conn->query($sql)) )
+
+$sql = 'SELECT * FROM uplbatch WHERE uplbatch_id = :upload_id';
+
+$stmt = $conn->prepare($sql);
+$stmt->execute(array('upload_id' => $upload_batch_id));
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt->closeCursor();
+
+if ($row)
 {
-	if( ($row = $conn->fetch_assoc($rs)) )
-	{
-		$batch_nfiles = $row['nfiles'];
-		$batchok = true;
-	}
-	$conn->free_result($rs);
+  $batch_nfiles = $row['nfiles'];
+  $batchok = true;
 }
 
-if(!$batchok)
+if (!$batchok)
 {
-	err('bad upload_batch_id');
-	return;
+  err('bad upload_batch_id');
+
+  return;
 }
 
-if($index > $batch_nfiles)
+if ($index > $batch_nfiles)
 {
-	err('index : '.$index.' > '.$batch_nfiles);
-	return;
+  err('index : ' . $index . ' > ' . $batch_nfiles);
+
+  return;
 }
 
+$registry = registry::get_instance();
 
+$dir = $registry->get('GV_RootPath') . 'tmp/batches/' . $upload_batch_id . '/';
 
-$dir = GV_RootPath.'tmp/batches/'.$upload_batch_id.'/';
-
-if(!is_dir($dir))
+if (!is_dir($dir))
 {
-	@mkdir($dir, 0777, true);	
+  @mkdir($dir, 0777, true);
 }
 
 //$tmp_k          = file_get_contents($fil);
-if(is_dir($dir))
+if (is_dir($dir))
 {
-	if(!@move_uploaded_file($fil, $dir.$index))
-	{
-		err('error moving file \''.$fil.'\' to \''.$dir.$index.'\'');
-		return;
-	}
+  if (!@move_uploaded_file($fil, $dir . $index))
+  {
+    err('error moving file \'' . $fil . '\' to \'' . $dir . $index . '\'');
+
+    return;
+  }
 }
 else
 {
-	err('error creating tmp folder \''.$dir.'\'');
-	return;
+  err('error creating tmp folder \'' . $dir . '\'');
+
+  return;
 }
 
 
@@ -132,29 +146,34 @@ else
 // ok, add (or replace) the file to the batch
 // -------------------------------------------------------------------
 
-$sql = 'REPLACE INTO uplfile (uplbatch_id, idx, filename) VALUES ('
-		. '\'' . $conn->escape_string($upload_batch_id) . '\', '
-		. '\'' . $conn->escape_string($index) . '\', '
-		. '\'' . $conn->escape_string($filename) . '\') ';
+$sql = 'REPLACE INTO uplfile (uplbatch_id, idx, filename)
+        VALUES (:upload_id, :idx, :filename) ';
 
-$conn->query($sql);
-$affected = $conn->affected_rows();
+$params = array(
+    ':upload_id' => $upload_batch_id
+    , ':idx' => $index
+    , ':filename' => $filename
+);
+
+$stmt = $conn->prepare($sql);
+$stmt->execute($params);
+$affected = $stmt->rowCount();
+$stmt->closeCursor();
 
 $xupload_batch = $result->appendChild($dom->createElement('upload_batch'));
 $xupload_batch->setAttribute('id', $upload_batch_id);
 $xupload_batch->appendChild($dom->createElement('nfiles'))->appendChild($dom->createTextNode($batch_nfiles));
 
 $xindex = $result->appendChild($dom->createElement('index'));
-$xindex->appendChild($dom->createTextNode((string)$index));
-if($affected == 1)
+$xindex->appendChild($dom->createTextNode((string) $index));
+if ($affected == 1)
 {
-	// inserted
-	$xindex->setAttribute('action', 'INSERTED');
+  // inserted
+  $xindex->setAttribute('action', 'INSERTED');
 }
-elseif($affected == 2)
+elseif ($affected == 2)
 {
-	// inserted
-	$xindex->setAttribute('action', 'REPLACED');
+  // inserted
+  $xindex->setAttribute('action', 'REPLACED');
 }
-
 ?>

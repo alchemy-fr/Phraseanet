@@ -1,0 +1,134 @@
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Container
+ *
+ * @author nicolas
+ */
+class Bridge_Api_Dailymotion_Container implements Bridge_Api_ContainerInterface
+{
+
+  /**
+   *
+   * @var Array
+   */
+  protected $entry;
+
+  /**
+   *
+   * @var string
+   */
+  protected $type;
+
+  /**
+   *
+   * @var string
+   */
+  protected $thumbnail;
+
+  /**
+   *
+   * @param array $entry
+   * @param type $type
+   * @param type $thumbnail
+   * @return Bridge_Api_Dailymotion_Container
+   */
+  public function __construct(Array $entry, $type, $thumbnail = '', $url = '')
+  {
+    $this->entry = $entry;
+    $this->type = $type;
+    $this->thumbnail = $thumbnail;
+    $this->url = $url;
+
+    return $this;
+  }
+
+  /**
+   *
+   * @return mixed
+   */
+  private function get($key, $default = null)
+  {
+    return isset($this->entry[$key]) ? $this->entry[$key] : $default;
+  }
+
+  /**
+   *
+   * @return void
+   */
+  public function get_created_on()
+  {
+    return;
+  }
+
+  /**
+   *
+   * @return string
+   */
+  public function get_description()
+  {
+    return $this->get("description", '');
+  }
+
+  /**
+   *
+   * @return string
+   */
+  public function get_id()
+  {
+    return $this->get("id", '');
+  }
+
+  /**
+   *
+   * @param type $width
+   * @param type $height
+   * @return string
+   */
+  public function get_thumbnail($width = 120, $height = 90)
+  {
+    return $this->thumbnail;
+  }
+
+  /**
+   *
+   * @return string
+   */
+  public function get_title()
+  {
+    return $this->get("name", '');
+  }
+
+  /**
+   *
+   * @return string
+   */
+  public function get_type()
+  {
+    return $this->type;
+  }
+
+  /**
+   *
+   * @return void
+   */
+  public function get_updated_on()
+  {
+    return;
+  }
+
+  /**
+   *
+   * @return void
+   */
+  public function get_url()
+  {
+    return $this->url;
+  }
+
+}

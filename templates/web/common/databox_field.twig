@@ -1,0 +1,56 @@
+{% set field_name = field.get_name() %}
+<h1>
+  {{field_name}}
+  {% if field.get_type() == 'text' %}
+     ({% trans 'Type texte' %})
+  {% elseif field.get_type() == 'number' %}
+     ({% trans 'Type nombre' %})
+  {% elseif field.get_type() == 'date' %}
+     ({% trans 'Type date' %})
+  {% endif %}
+</h1>
+<hr/>
+<div>
+  {% trans 'Source' %} : {{ field.get_metadata_namespace() }} / {{ field.get_metadata_tagname() }}
+</div>
+
+{% if field.is_indexable() is empty %}
+<div>
+  {% trans 'Ce champ n\'est pas indexe' %}
+</div>
+{% endif %}
+{% if field.is_multi() %}
+<div>
+  {% trans 'Ce champ est multivalue' %}
+</div>
+{% endif %}
+{% if field.is_readonly() %}
+<div>
+  {% trans 'Ce champ est en lecture seule' %}
+</div>
+{% endif %}
+{% if field.get_tbranch() %}
+<div>
+  {% trans 'Ce champ est relie a une branche de thesaurus' %}
+</div>
+{% endif %}
+{% if field.get_thumbtitle() %}
+<div>
+  {% trans 'Ce champ est utilise en titre a l\'affichage' %}
+</div>
+{% endif %}
+{% if field.is_required() %}
+<div>
+  {% trans 'Ce champ est requis' %}
+</div>
+{% endif %}
+
+{% if field.get_dces_element() %}
+<hr/>
+<div>
+  {% set DublinCoreElementSet = '<a href="http://dublincore.org/documents/dces/" target="_blank">DublinCore Element Set</a>' %}
+  {% trans %}
+    Ce champ est decrit comme element du {{ DublinCoreElementSet }}
+  {% endtrans %}
+</div>
+{% endif %}

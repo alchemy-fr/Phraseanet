@@ -1,22 +1,22 @@
 {% block setting_activity %}
-	<div class="setting_title">{% trans "report:: 3 - Type de report" %}</div>
-		<ul class="rounded">
-			<li>
-				<input name="tbl" type="radio" value="ASK" id="ASK-input"  /> 
-				<label for="ASK-input">{% trans "report:: toutes les questions" %}</label>
-			</li>
-			<li>
-				<input name="tbl" type="radio" value="BESTOF" id="BESTOF-input"  /> 
-				<label for="BESTOF-input">{% trans "report:: Les questions les plus posees" %}</label>
-			</li>
-			<li>
-				<input name="tbl" type="radio" value="NOBESTOF" id="NOBESTOF-input"  /> 
-				<label for="NOBESTOF-input">{% trans "report:: questions sans reponses" %}</label>
-			</li>
-			<li>
-				<input name="tbl" type="radio" value="SITEACTIVITY" id="SITEACTIVITY-input"  /> 
-				<label for="SITEACTIVITY-input">{% trans "report:: activite du site" %}</label>
-			</li>
-				<input name="what" type="hidden" value="ACT" id="ACT-what" /> 
-		</ul>
+    <div class="setting_title">{% trans "report:: 3 - Type de report" %}</div>
+        <ul class="rounded">
+            <li>
+                <input name="tbl" type="radio" value="ASK" id="ASK-input"  />
+                <label for="ASK-input">{% trans "report:: toutes les questions" %}</label>
+            </li>
+            <li>
+                <input name="tbl" type="radio" value="BESTOF" id="BESTOF-input"  />
+                <label for="BESTOF-input">{% trans "report:: Les questions les plus posees" %}</label>
+            </li>
+            <li>
+                <input name="tbl" type="radio" value="NOBESTOF" id="NOBESTOF-input"  />
+                <label for="NOBESTOF-input">{% trans "report:: questions sans reponses" %}</label>
+            </li>
+            <li>
+                <input name="tbl" type="radio" value="SITEACTIVITY" id="SITEACTIVITY-input"  />
+                <label for="SITEACTIVITY-input">{% trans "report:: activite du site" %}</label>
+            </li>
+                <input name="what" type="hidden" value="ACT" id="ACT-what" />
+        </ul>
 {% endblock %}

@@ -12,7 +12,7 @@ function getResource($url){
     return $result;
 }
 
-$url = 'http://search.yahooapis.com/NewsSearchService/V1/newsSearch?appid=YahooDemo&language=en&output=php&'.getenv('QUERY_STRING'); 
+$url = 'http://search.yahooapis.com/NewsSearchService/V1/newsSearch?appid=YahooDemo&language=en&output=php&'.getenv('QUERY_STRING');
 //$response = file_get_contents($url);
 
 $response = getResource($url);

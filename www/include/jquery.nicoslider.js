@@ -24,7 +24,7 @@
 		 $sliderCss = {
 			'width':$sliderWidth,
 			'background-color':o.color
-		 }
+		 };
 		 
 		$slider.css($sliderCss);
 		
@@ -61,7 +61,7 @@
 				'overflow':'hidden',
 				'float':'left',
 				'position':'relative'
-			}
+			};
 			
 			$wrapper.css($wrapperCss);
 			ul.width(ulWidth);
@@ -81,14 +81,14 @@
 				'height' : liHeight,
 				'float' : 'right',
 				'background-color' : o.color
-			}
+			};
 	
 			leftCss = {
 				'width' : $scrollWidth - ($wrapper.outerWidth(true)  - $wrapper.innerWidth()),
 				'height' : liHeight,
 				'float' : 'left',
 				'background-color' : o.color
-			}
+			};
 			
 			leftScroll.css(leftCss);
 			rightScroll.css(rightCss);
