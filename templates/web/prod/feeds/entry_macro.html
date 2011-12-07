@@ -55,8 +55,8 @@
     <div class="contents selectable">
     {% for item in entry.get_content() %}
       {% set record = item.get_record() %}
-      {% set prefix = 'PUBLI_' ~ item.get_id() %}
-      {{record_format.block(record, user, session, false, null, prefix, entry.get_id())}}
+      {% set prefix = 'PUBLI' %}
+      {{record_format.block(record, user, session, false, null, prefix, entry.get_id(), item.get_id())}}
     {% endfor %}
     </div>
   </div>
