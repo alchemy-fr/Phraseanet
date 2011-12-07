@@ -200,7 +200,7 @@ phrasea::start();
             if (isset($value['available']) && is_array($value['available']))
             {
               foreach ($value['available'] as $k => $v)
-                $input .= '<input type="checkbox" name="' . $value['name'] . '[]" ' . ($readonly ? 'readonly="readonly"' : '') . ' value="' . $k . '" ' . ( (!is_array($currentValue) || in_array($k, $currentValue)) ? 'checked="checked"' : '' ) . '/><label>'.$v.'</label><br>';
+                $input .= '<input class="checkbox" type="checkbox" name="' . $value['name'] . '[]" ' . ($readonly ? 'readonly="readonly"' : '') . ' value="' . $k . '" ' . ( (!is_array($currentValue) || in_array($k, $currentValue)) ? 'checked="checked"' : '' ) . '/><label>'.$v.'</label><br>';
 
             }
             else
