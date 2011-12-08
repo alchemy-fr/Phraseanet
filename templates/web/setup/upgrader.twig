@@ -40,7 +40,6 @@
 
   {% endif %}
   $(document).ready(function(){
-    console.log('hello update_button');
     $('.update_button').bind('click', function(){
       $(this).attr('disabled','disbaled');
       $('.upgrade_loader').show();
@@ -70,24 +69,36 @@
               <tr>
                 <td>
                   {% if not upgrade_status.active %}
-                  <p>
-                    {% trans 'Une mise a jour de l\'application est necessaire, il est vivement recommande de l\'effectuer en ligne de commande via la commande :' %}
-                  </p>
-                  <p>
-                    <code>
-                      {{registry.get('GV_cli')}} {% if registry.get('GV_PHP_INI') %} -c {{registry.get('GV_PHP_INI')}}{% endif %} bin/upgrade.php
-                    </code>
-                  </p>
-                  <p>
-                    {% trans 'Si toutefois vous n\'aviez pas acces à la console, suivez le lien suivant' %}
-                  </p>
-                  <p>
-                    <form action="/setup/upgrader/execute/" method="POST" target="update_target">
-                      <button class="update_button">{% trans 'Mise a jour' %}</button>
-                      <img style="display:none;" class="upgrade_loader" src="/skins/icons/loader111111.gif"/>
-                    </form>
-                    <iframe style="display:none;" src="about:blank" name="update_target"></iframe>
-                  </p>
+                    {% if bad_users|length > 0 %}
+                    <p>
+                      {% trans 'Before any upgrade, you have to fix your database.' %}
+                      {% trans 'Some users have the same email address. You can fix this problem with this script :' %}
+                    </p>
+                    <p>
+                      <code style="width:90%">
+                        {{registry.get('GV_cli')}} {% if registry.get('GV_PHP_INI') %} -c {{registry.get('GV_PHP_INI')}}{% endif %} bin/console system:mailCheck
+                      </code>
+                    </p>
+                    {% else %}
+                    <p>
+                      {% trans 'Une mise a jour de l\'application est necessaire, il est vivement recommande de l\'effectuer en ligne de commande via la commande :' %}
+                    </p>
+                    <p>
+                      <code style="width:90%">
+                        {{registry.get('GV_cli')}} {% if registry.get('GV_PHP_INI') %} -c {{registry.get('GV_PHP_INI')}}{% endif %} bin/console system:upgrade
+                      </code>
+                    </p>
+                    <p>
+                      {% trans 'Si toutefois vous n\'aviez pas acces à la console, suivez le lien suivant' %}
+                    </p>
+                    <p>
+                      <form action="/setup/upgrader/execute/" method="POST" target="update_target">
+                        <button class="update_button">{% trans 'Mise a jour' %}</button>
+                        <img style="display:none;" class="upgrade_loader" src="/skins/icons/loader111111.gif"/>
+                      </form>
+                      <iframe style="display:none;" src="about:blank" name="update_target"></iframe>
+                    </p>
+                    {% endif %}
                   {% else %}
                   <p>{% trans 'Progression de la mise a jour : ' %}</p>
                   <div id="progress_meter" style="text-align:center;width:100%;height:26px;border:1px solid #404040;position:relative;">

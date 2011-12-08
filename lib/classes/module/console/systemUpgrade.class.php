@@ -59,6 +59,12 @@ class module_console_systemUpgrade extends Command
       {
         $output->write('<info>Upgrading...</info>', true);
         $appbox = appbox::get_instance();
+        
+        if(count(User_Adapter::get_wrong_email_users($appbox)) > 0)
+        {
+          return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
+        }
+        
         $upgrader = new Setup_Upgrade($appbox);
         $advices = $appbox->forceUpgrade($upgrader);
       }

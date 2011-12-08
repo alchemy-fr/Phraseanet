@@ -54,6 +54,12 @@ class Setup_Upgrade
     if (self::lock_exists())
       throw new Exception_Setup_UpgradeAlreadyStarted();
     $this->appbox = $appbox;
+    
+    if(count(User_Adapter::get_wrong_email_users($appbox)) > 0)
+    {
+      throw new Exception_Setup_FixBadEmailAddresses();
+    }
+        
     $this->write_lock();
 
     return $this;
