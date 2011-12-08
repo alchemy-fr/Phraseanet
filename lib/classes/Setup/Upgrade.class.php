@@ -52,12 +52,15 @@ class Setup_Upgrade
   public function __construct(appbox &$appbox)
   {
     if (self::lock_exists())
-      throw new Exception_Setup_UpgradeAlreadyStarted();
+    {
+      throw new Exception_Setup_UpgradeAlreadyStarted('The upgrade is already started');
+    }
+    
     $this->appbox = $appbox;
     
     if(count(User_Adapter::get_wrong_email_users($appbox)) > 0)
     {
-      throw new Exception_Setup_FixBadEmailAddresses();
+      throw new Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
     }
         
     $this->write_lock();

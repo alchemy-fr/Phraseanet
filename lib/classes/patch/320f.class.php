@@ -55,10 +55,22 @@ class patch_320f implements patchInterface
   function apply(base &$appbox)
   {
     $feeds = array();
-
+    
+    try
+    {
+      $sql = 'ALTER TABLE `ssel` ADD `migrated` INT NOT NULL DEFAULT "0"';
+      $stmt = $appbox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
+    }
+    catch(Exception $e)
+    {
+      
+    }
+    
     $sql = 'SELECT ssel_id, usr_id, name, descript, pub_date
               , updater, pub_restrict, homelink
-            FROM ssel WHERE public = "1" or homelink="1"';
+            FROM ssel WHERE (public = "1" or homelink="1") and migrated = 0';
 
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute();
@@ -73,6 +85,10 @@ class patch_320f implements patchInterface
 
       $feed = $this->get_feed($appbox, $user, $row['pub_restrict'], $row['homelink']);
 
+      if(!$feed instanceof Feed_Adapter)
+      {
+        continue;
+      }
 
       $entry = Feed_Entry_Adapter::create($appbox, $feed, array_shift($feed->get_publishers()), $row['name'], $row['descript'], $user->get_display_name(), $user->get_email());
       $date_create = new DateTime($row['pub_date']);
@@ -107,7 +123,8 @@ class patch_320f implements patchInterface
         }
       }
 
-      $sql = 'UPDATE ssel SET deleted = "1" WHERE ssel_id = :ssel_id';
+      $sql = 'UPDATE ssel SET deleted = "1", migrated="1" 
+              WHERE ssel_id = :ssel_id';
       $stmt = $appbox->get_connection()->prepare($sql);
       $stmt->execute(array(':ssel_id' => $row['ssel_id']));
       $stmt->closeCursor();
