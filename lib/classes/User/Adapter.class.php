@@ -1185,7 +1185,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $sql = 'SELECT last_conn FROM usr WHERE usr_id = :usr_id';
 
     $stmt = $this->appbox->get_connection()->prepare($sql);
-    
+
     $stmt->execute(array(':usr_id' => $this->get_id()));
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1193,7 +1193,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $stmt->closeCursor();
 
     $date_obj = new DateTime($row['last_conn']);
-    
+
     return $date_obj;
   }
 
@@ -1469,6 +1469,50 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $sel = explode('_', $sel);
 
     return $avLanguages;
+  }
+
+  public static function get_wrong_email_users(appbox $appbox)
+  {
+
+    $sql = 'SELECT usr_mail, usr_id FROM usr WHERE usr_mail IS NOT NULL';
+
+    $stmt = $appbox->get_connection()->prepare($sql);
+    $stmt->execute();
+
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt->closeCursor();
+
+    $users = array();
+
+    foreach ($rs as $row)
+    {
+      if (!isset($users[$row['usr_mail']]))
+      {
+        $users[$row['usr_mail']] = array();
+      }
+
+      $users[$row['usr_mail']][] = $row['usr_id'];
+    }
+
+    $bad_users = array();
+
+    foreach ($users as $email => $usrs)
+    {
+      if (count($usrs) > 1)
+      {
+        $bad_users[$email] = array();
+        foreach ($usrs as $usr_id)
+        {
+          $user = User_Adapter::getInstance($usr_id, $appbox);
+          $bad_users[$email][$user->get_id()] = $user;
+        }
+      }
+    }
+
+    unset($users);
+
+    return $bad_users;
   }
 
   public function setPrefs($prop, $value)
