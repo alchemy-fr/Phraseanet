@@ -22,10 +22,11 @@ body{
 }
 #mainMenu li{
   display: inline-block;
-    line-height: 30px;
-    padding: 0;
-    position: relative;
-    vertical-align: top;
+  float:left;
+  line-height: 30px;
+  padding: 0;
+  position: relative;
+  vertical-align: top;
 }
 #mainMenu span.selected{
   border-top:3px solid white;
