@@ -1,10 +1,33 @@
-Phraseanet - Digital Asset Management application
+Phraseanet 3.5 - Digital Asset Management application
 =================================================
 
-#Installation
+#Features :
 
-**Nginx**
+Metadatas Management (include Thesaurus and DublinCore Mapping)
+Search Engine (Sphinx Search Integration)
+RestFull APIS (See Developer Documentation http://docs.phraseanet.com/Devel)
+Bridge to Youtube/Dailymotion/Flickr
 
+#Documentation :
+
+http://docs.phraseanet.com
+
+#Easy Installation
+
+**Fetch Sources**
+
+<pre>
+
+git clone git://github.com/alchemy-fr/Phraseanet.git Phraseanet
+cd Phraseanet
+./vendors.php
+
+</pre>
+
+
+**Setup your webserver**
+
+***Nginx***
 <pre>
 server {
   listen       80;
@@ -15,58 +38,21 @@ server {
 
 
   location /web {
-    alias /home/grosroro/workspace/Phraseanet-Trunk/datas/web;
+    alias /path/to/Phraseanet/datas/web;
   }
   location /download {
     internal;
-    alias /home/grosroro/workspace/Phraseanet-Trunk/tmp/download;
+    alias /path/to/Phraseanet/tmp/download;
   }
   location /lazaret {
     internal;
-    alias /home/grosroro/workspace/Phraseanet-Trunk/tmp/lazaret;
+    alias /path/to/Phraseanet/tmp/lazaret;
   }
 }
 </pre>
 
-#Pimp my install
 
-**xsendfile**
-<pre>
-  location /protected {
-    internal;
-    alias /home/grosroro/workspace/Phraseanet-Trunk/datas/noweb/;
-  }
-</pre>
-
-**MP4 pseudo stream**
-<pre>
-  location /mp4_video {
-    internal;
-    mp4;
-    alias /home/grosroro/workspace/Phraseanet-Trunk/datas/noweb/;
-  }
-
-  location /mp4_videos {
-    secure_download on;
-    secure_download_secret S3cre3t;
-    secure_download_path_mode file;
-
-    if ($secure_download = "-1") {
-      return 403;
-    }
-    if ($secure_download = "-2") {
-      return 403;
-    }
-    if ($secure_download = "-3") {
-      return 500;
-    }
-    rewrite ^/mp4_videos(.*)/[0-9a-zA-Z]*/[0-9a-zA-Z]*$ /mp4_video$1 last;
-  }
-</pre>
-
-#RESTFULL APIs
-
-See the [online developer reference] [1]
+Let's go !
 
 #License
 
