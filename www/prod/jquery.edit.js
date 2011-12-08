@@ -139,36 +139,20 @@ function edit_chgFld(evt, dir)
 {
   var current_field = $('#divS .edit_field.active');
   if(current_field.length == 0)
+  {
     current_field = $('#divS .edit_field:first');
-
-  var meta_struct_id = parseInt(current_field.attr('id').split('_').pop());
-
-  if(isNaN(meta_struct_id))
-  {
-    meta_struct_id = 0;
+    current_field.trigger('click');
   }
   else
   {
-    meta_struct_id += dir;
-  }
-  if(meta_struct_id < -1)
-  {
-    meta_struct_id = p4.edit.T_fields.length -1;
-  }
-  else
-  {
-    if(meta_struct_id >= p4.edit.T_fields.length)
-      meta_struct_id =  -1;
-  }
-
-  if(!p4.edit.textareaIsDirty || edit_validField(evt, "ask_ok")==true)
-  {
-    if(meta_struct_id == -1)
+    if(dir >= 0)
     {
-      editStatus(evt);
+      current_field.next().trigger('click');
     }
     else
-      editField(evt, meta_struct_id);
+    {
+      current_field.prev().trigger('click');
+    }
   }
 }
 
@@ -1834,40 +1818,41 @@ function preset_load(preset_id)
     function(data, textStatus)
     {
       $("#Edit_copyPreset_dlg").dialog("close");
-			
-      for(var f=0; f<p4.edit.T_fields.length; f++)
+      
+      for(i in p4.edit.T_fields)
       {
-        p4.edit.T_fields[f].preset = null;
-        if(typeof(data.fields[p4.edit.T_fields[f].name]) != "undefined")
+        p4.edit.T_fields[i].preset = null;
+        if(typeof(data.fields[p4.edit.T_fields[i].name]) != "undefined")
         {
-          p4.edit.T_fields[f].preset = data.fields[p4.edit.T_fields[f].name];
+          p4.edit.T_fields[i].preset = data.fields[p4.edit.T_fields[i].name];
         }
       }
       for(var r=0; r<p4.edit.T_records.length; r++)
       {
         if(!p4.edit.T_records[r]._selected)
           continue;
-        for(var f=0; f<p4.edit.T_fields.length; f++)
+
+        for(i in p4.edit.T_fields)
         {
-          if(p4.edit.T_fields[f].preset != null)
+          if(p4.edit.T_fields[i].preset != null)
           {
-            if(p4.edit.T_fields[f].multi)
+            if(p4.edit.T_fields[i].multi)
             {
-              p4.edit.T_records[r].fields[""+f] = {
+              p4.edit.T_records[r].fields[""+i] = {
                 value:[], 
                 dirty:true
               };// = {
               var n = 0;
-              for(val in p4.edit.T_fields[f].preset)
+              for(val in p4.edit.T_fields[i].preset)
               {
-                p4.edit.T_records[r].fields[""+f].value[n] = p4.edit.T_fields[f].preset[val];
+                p4.edit.T_records[r].fields[""+i].value[n] = p4.edit.T_fields[i].preset[val];
                 n++;
               }
             }
             else
             {
-              p4.edit.T_records[r].fields[""+f] = {
-                "value":p4.edit.T_fields[f].preset[0],
+              p4.edit.T_records[r].fields[""+i] = {
+                "value":p4.edit.T_fields[i].preset[0],
                 "dirty":true
               };
             }
@@ -2319,10 +2304,12 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     {
       preset_paint(data);
     }
-    );
+  );
 
   check_required();
 
+  $('#TH_Opresets button.adder').button().bind('click', function(){preset_copy();});
+ 
   try{
     $('#divS .edit_field:first').trigger('mousedown');
   }
