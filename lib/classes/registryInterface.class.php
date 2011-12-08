@@ -17,7 +17,7 @@
  */
 interface registryInterface
 {
-  public function get($key);
+  public function get($key, $defaultvalue = null);
 
   public function set($key, $value);
 

@@ -21,9 +21,9 @@ class Setup_Registry implements registryInterface
 
   protected $datas = array();
 
-  public function get($key)
+  public function get($key, $defaultvalue = null)
   {
-    return isset($this->datas[$key]) ? $this->datas[$key] : null;
+    return isset($this->datas[$key]) ? $this->datas[$key] : $defaultvalue;
   }
 
   public function set($key, $value)
