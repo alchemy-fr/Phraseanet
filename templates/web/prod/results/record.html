@@ -1,4 +1,4 @@
-{% macro block(record, user, session, highlight, searchEngine, prefix, entry_id)%}
+{% macro block(record, user, session, highlight, searchEngine, prefix, entry_id, suffix)%}
   {% import 'common/thumbnail.html' as thumbnail %}
   {% import 'common/doctype_icons.html' as doctype_icons %}
   {% import 'common/drop_down_options.html' as drop_down %}
@@ -6,7 +6,7 @@
   {% set sbas_id = record.get_base_id|sbasFromBas %}
   {% if entry_id %}
     <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
-         id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
+         id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}_{{ suffix|default('') }}"
          class="IMGT diapo grouping type-{{record.get_type}}"
          onDblClick="openPreview('FEED',{{record.get_number()}},{{entry_id}});">
   {% elseif record.is_grouping() %}

@@ -292,7 +292,7 @@ class appbox extends base
 
   public function forceUpgrade(Setup_Upgrade &$upgrader)
   {
-    $upgrader->add_steps(8 + count($this->get_databoxes()));
+    $upgrader->add_steps(7 + count($this->get_databoxes()));
 
     $registry = $this->get_registry();
 
@@ -320,18 +320,6 @@ class appbox extends base
     $upgrader->set_current_message(_('Purging directories'));
     $system_file = new system_file($registry->get('GV_RootPath') . 'tmp/cache_twig/');
     $system_file->empty_directory();
-    $upgrader->add_steps_complete(1);
-
-    /**
-     * Step 4
-     */
-    $upgrader->set_current_message(_('Purging directories'));
-    if (!is_dir($registry->get('GV_RootPath') . 'www/setup/.svn') && is_dir($registry->get('GV_RootPath') . 'www/setup/'))
-    {
-      $system_file = new system_file($registry->get('GV_RootPath') . 'www/setup/');
-      $system_file->empty_directory();
-      rmdir($system_file->getPathname());
-    }
     $upgrader->add_steps_complete(1);
 
     /**

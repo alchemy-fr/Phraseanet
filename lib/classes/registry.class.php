@@ -125,12 +125,15 @@ class registry implements registryInterface
    * @param string $key
    * @return mixed
    */
-  public function get($key)
+  public function get($key, $defaultvalue = null)
   {
     if (!$this->cache->is_set($key))
       $this->load();
 
-    return $this->cache->get($key);
+    if(!$this->cache->is_set($key) && !is_null($defaultvalue))
+      return $defaultvalue;
+    else
+      return $this->cache->get($key);
   }
 
   /**

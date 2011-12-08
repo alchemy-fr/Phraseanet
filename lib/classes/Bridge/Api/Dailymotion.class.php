@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once dirname(__FILE__) . "/../../../vendor/dailymotion-sdk-php/DailymotionWithoutOauth2.php";
+require_once dirname(__FILE__) . "/../../../classes/DailymotionWithoutOauth2.php";
 
 use \Symfony\Component\HttpFoundation\Request;
 

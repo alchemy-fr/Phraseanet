@@ -10,18 +10,12 @@
  */
 
 /**
- *
- * @package
+ * 
+ * @package     Exception
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-interface registryInterface
+class Exception_Setup_FixBadEmailAddresses extends Exception
 {
-  public function get($key, $defaultvalue = null);
-
-  public function set($key, $value);
-
-  public function is_set($key);
-
-  public function un_set($key);
+  
 }

@@ -60,7 +60,7 @@
 {% endmacro %}
 
 {% macro HTML_fieldlist(editing, user) %}
-  <div class="edit_field" id="EditFieldBox_status" onMouseDown="return(edit_mdwn_status(event));" >
+  <div class="edit_field" id="EditFieldBox_status" onclick="return(edit_mdwn_status(event));" >
   {%trans 'prod::editing::fields: status ' %}
   </div>
   {% set cssfile = '000000' %}
@@ -337,8 +337,12 @@
           </table>
         </div>
         <div id='TH_Opresets'>
-          <a href="javascript:void();" onclick="preset_copy();return(false);">{% trans 'boutton::ajouter' %}</a>
-          <ul style="position:absolute; top:5px; left:0px; bottom:0px; right:0px; overflow:auto" class="EDIT_presets_list">
+          <div class="PNB10">
+            <button class="adder">
+              {% trans 'boutton::ajouter' %}
+            </button>
+          </div>
+          <ul style="top:50px;" class="PNB10 EDIT_presets_list">
           </ul>
         </div>
       </div>

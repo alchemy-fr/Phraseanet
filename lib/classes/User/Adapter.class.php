@@ -1180,6 +1180,23 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     return $this->geonameid;
   }
 
+  public function get_last_connection()
+  {
+    $sql = 'SELECT last_conn FROM usr WHERE usr_id = :usr_id';
+
+    $stmt = $this->appbox->get_connection()->prepare($sql);
+
+    $stmt->execute(array(':usr_id' => $this->get_id()));
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $stmt->closeCursor();
+
+    $date_obj = new DateTime($row['last_conn']);
+
+    return $date_obj;
+  }
+
   public function get_applied_template()
   {
     $template = '';
@@ -1214,7 +1231,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   protected function load_preferences()
   {
     if ($this->_prefs)
-
       return $this;
     $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -1308,7 +1324,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return $this;
@@ -1455,11 +1471,54 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     return $avLanguages;
   }
 
+  public static function get_wrong_email_users(appbox $appbox)
+  {
+
+    $sql = 'SELECT usr_mail, usr_id FROM usr WHERE usr_mail IS NOT NULL';
+
+    $stmt = $appbox->get_connection()->prepare($sql);
+    $stmt->execute();
+
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt->closeCursor();
+
+    $users = array();
+
+    foreach ($rs as $row)
+    {
+      if (!isset($users[$row['usr_mail']]))
+      {
+        $users[$row['usr_mail']] = array();
+      }
+
+      $users[$row['usr_mail']][] = $row['usr_id'];
+    }
+
+    $bad_users = array();
+
+    foreach ($users as $email => $usrs)
+    {
+      if (count($usrs) > 1)
+      {
+        $bad_users[$email] = array();
+        foreach ($usrs as $usr_id)
+        {
+          $user = User_Adapter::getInstance($usr_id, $appbox);
+          $bad_users[$email][$user->get_id()] = $user;
+        }
+      }
+    }
+
+    unset($users);
+
+    return $bad_users;
+  }
+
   public function setPrefs($prop, $value)
   {
     $this->load_preferences();
     if (isset($this->_prefs[$prop]) && $this->_prefs[$prop] === $value)
-
       return $value;
 
     $ok = true;
@@ -1497,7 +1556,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     if (!$session->is_authenticated())
-
       return;
 
     $ses_id = $session->get_ses_id();
@@ -1556,7 +1614,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         }
         catch (Exception $e)
         {
-
+          
         }
       }
     }
@@ -1620,7 +1678,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return false;
@@ -1707,7 +1765,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return $locale;
@@ -1773,7 +1831,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   public function get_nonce()
   {
     if ($this->nonce)
-
       return $this->nonce;
     $nonce = false;
 
@@ -1790,7 +1847,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     return $this->nonce;
   }
-
 
   public function __sleep()
   {

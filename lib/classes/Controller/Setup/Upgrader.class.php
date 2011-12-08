@@ -49,6 +49,7 @@ class Controller_Setup_Upgrader implements ControllerProviderInterface
                   'locale' => Session_Handler::get_locale()
                   , 'upgrade_status' => $upgrade_status
                   , 'available_locales' => $app['available_languages']
+                  , 'bad_users' => User_Adapter::get_wrong_email_users(appbox::get_instance())
                   , 'version_number' => GV_version
                   , 'version_name' => GV_version_name)
               );

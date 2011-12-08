@@ -677,7 +677,7 @@ function newSearch()
 
 function newAdvSearch()
 {
-  var cont = $('#adv_search .search_box');
+  var cont = $('#adv_search');
   var val_all 	= $.trim($('input[name=query_all]',cont).val()).split(' ').join(' AND ');
   var val_or 		= $.trim($('input[name=query_or]',cont).val()).split(' ').join(' OR ');
   var val_exact 	= $.trim($('input[name=query_exact]',cont).val());
@@ -703,7 +703,7 @@ function newAdvSearch()
     }
     else
       val = current;
-  }
+    }
   $('#EDIT_query').val(val);
 
   newSearch();
