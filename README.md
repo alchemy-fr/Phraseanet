@@ -1,5 +1,5 @@
 Phraseanet - Digital Asset Management application
-==========================================
+=================================================
 
 #Installation
 
