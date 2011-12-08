@@ -50,6 +50,7 @@ try
   $app->add(new module_console_aboutAuthors('about:authors'));
   $app->add(new module_console_aboutLicense('about:license'));
   $app->add(new module_console_systemUpgrade('system:upgrade'));
+  $app->add(new module_console_systemMailCheck('system:mailCheck'));
   $app->add(new module_console_systemConfigCheck('system:configCheck'));
   $app->add(new module_console_systemBackupDB('system:backupDB'));
   $app->add(new module_console_systemClearCache('system:clearCache'));
