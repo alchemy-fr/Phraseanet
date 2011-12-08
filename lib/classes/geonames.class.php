@@ -6,7 +6,8 @@ class geonames
   public function name_from_id($geonameid)
   {
     $registry = registry::get_instance();
-    $url = $registry->get('GV_i18n_service') . 'get_name.php?geonameid='
+    $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'get_name.php?geonameid='
             . $geonameid;
 
     $ret = '';
@@ -28,12 +29,17 @@ class geonames
 
   public function get_country($geonameid)
   {
+    if (trim($geonameid) === '' || trim($geonameid) <= 0)
+    {
+      return '';
+    }
+    
     $registry = registry::get_instance();
-    $url = $registry->get('GV_i18n_service') . 'get_name.php?geonameid='
+    $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'get_name.php?geonameid='
             . $geonameid;
 
     $ret = '';
-
     $xml = http_query::getUrl($url);
     if ($xml)
     {
@@ -51,7 +57,8 @@ class geonames
   public function get_country_code($geonameid)
   {
     $registry = registry::get_instance();
-    $url = $registry->get('GV_i18n_service') . 'get_name.php?geonameid='
+    $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'get_name.php?geonameid='
             . $geonameid;
 
     $ret = '';
@@ -87,11 +94,11 @@ class geonames
     $cityName = self::clean_input($cityName);
 
     if (strlen($cityName) === 0)
-
       return $output;
 
     $registry = registry::get_instance();
-    $url = $registry->get('GV_i18n_service') . 'find_city.php?city='
+    $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'find_city.php?city='
             . urlencode($cityName) . '&maxResult=30';
 
     $sxe = simplexml_load_string(http_query::getUrl($url));
@@ -127,7 +134,6 @@ class geonames
   public function find_geoname_from_ip($ip)
   {
     if (array_key_exists($ip, $this->cache_ips))
-
       return $this->cache_ips[$ip];
 
     $output = array(
@@ -140,7 +146,8 @@ class geonames
     );
 
     $registry = registry::get_instance();
-    $url = $registry->get('GV_i18n_service') . 'geoip.php?ip='
+    $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'geoip.php?ip='
             . urlencode($ip);
 
     $xml = http_query::getUrl($url);
@@ -157,7 +164,7 @@ class geonames
         $output['latitude'] = (string) $sxe->geoname->latitude;
       }
     }
-        $this->cache_ips[$ip] = $output;
+    $this->cache_ips[$ip] = $output;
 
 
     return $output;
