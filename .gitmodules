@@ -49,3 +49,6 @@
 [submodule "lib/vendor/Twig-extensions"]
 	path = lib/vendor/Twig-extensions
 	url = git://github.com/fabpot/Twig-extensions.git
+[submodule "lib/vendor/doctrine2-gedmo"]
+	path = lib/vendor/doctrine2-gedmo
+	url = git://github.com/l3pp4rd/DoctrineExtensions.git
