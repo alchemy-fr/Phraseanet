@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class cache_opcode_adapter implements cache_opcode_Interface
+class cache_opcode_adapter implements cache_opcode_interface
 {
   /**
    *

@@ -244,10 +244,12 @@ class supertwig
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
       }
 
+      $kernel = bootstrap::execute();
+      
       $this->default_vars = array(
           'session' => $session,
-          'version_number' => GV_version,
-          'version_name' => GV_version_name,
+          'version_number' => $kernel->getVersion()->getNumber(),
+          'version_name' => $kernel->getVersion()->getName(),
           'browser' => $browser,
           'request' => $request,
           'display_chrome_frame' => $registry->is_set('GV_display_gcf') ? $registry->get('GV_display_gcf') : true,
