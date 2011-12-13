@@ -213,7 +213,7 @@ class Kernel extends \Pimple
     \Twig_Autoloader::register();
     \Twig_Extensions_Autoloader::register();
 
-    $loader = new \Symfony\Component\ClassLoader\ApcUniversalClassLoader('KIKOO');
+    $loader = new \Symfony\Component\ClassLoader\ApcUniversalClassLoader(crc32(__DIR__));
 
     spl_autoload_register(array('Alchemy\Phrasea\Kernel', 'phraseaAutoload'));
 
