@@ -22,7 +22,7 @@ class module_prod_route_records_feed extends module_prod_route_records_abstract
    *
    * @var Array
    */
-  protected $required_sbas_rights = array('cbas_chupub');
+  protected $required_sbas_rights = array('bas_chupub');
   /**
    *
    * @var boolean
