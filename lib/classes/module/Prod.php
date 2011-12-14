@@ -23,19 +23,19 @@ use Alchemy\Phrasea\Controller\Prod as Controller;
 
 return call_user_func(function()
                 {
-                  $twig = new supertwig();
+                  $twig = new \supertwig();
 
                   $app = new Application();
 
                   $app->mount('/records/edit', new Controller\Edit());
-                  $app->mount('/records/movecollection', new Controller_Prod_Records_MoveCollection());
-                  $app->mount('/bridge/', new Controller_Prod_Records_Bridge());
-                  $app->mount('/feeds', new Controller_Prod_Records_Feed());
-                  $app->mount('/tooltip', new Controller_Prod_Records_Tooltip());
+                  $app->mount('/records/movecollection', new Controller\MoveCollection());
+                  $app->mount('/bridge/', new Controller\Bridge());
+                  $app->mount('/feeds', new Controller\Feed());
+                  $app->mount('/tooltip', new Controller\Tooltip());
 
                   $app->error(function (\Exception $e, $code) use ($app, $twig)
                           {
-                            if ($e instanceof Bridge_Exception)
+                            if ($e instanceof \Bridge_Exception)
                             {
                               $request = $app['request'];
 
@@ -48,19 +48,19 @@ return call_user_func(function()
                                   , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
                               );
 
-                              if ($e instanceof Bridge_Exception_ApiConnectorNotConfigured)
+                              if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured)
                               {
                                 $params = array_merge($params, array('account' => $app['current_account']));
 
                                 return new response($twig->render('/prod/actions/Bridge/notconfigured.twig', $params), 200);
                               }
-                              elseif ($e instanceof Bridge_Exception_ApiConnectorNotConnected)
+                              elseif ($e instanceof \Bridge_Exception_ApiConnectorNotConnected)
                               {
                                 $params = array_merge($params, array('account' => $app['current_account']));
 
                                 return new response($twig->render('/prod/actions/Bridge/disconnected.twig', $params), 200);
                               }
-                              elseif ($e instanceof Bridge_Exception_ApiConnectorAccessTokenFailed)
+                              elseif ($e instanceof \Bridge_Exception_ApiConnectorAccessTokenFailed)
                               {
                                 $params = array_merge($params, array('account' => $app['current_account']));
 
