@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of Phraseanet
  *
@@ -19,9 +20,11 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
 
-class Edit implements ControllerProviderInterface
+class MoveCollection implements ControllerProviderInterface
 {
 
   public function connect(Application $app)
@@ -31,35 +34,31 @@ class Edit implements ControllerProviderInterface
     $controllers->post('/', function() use ($app)
             {
               $request = $app['request'];
-              
-              $handler = new RequestHandler\Edit($request);
-              
-              $handler->propose_editing();
+              $move = new RequestHandler\MoveCollection($request);
+              $move->propose();
 
-              $template = 'prod/actions/edit_default.twig';
-
+              $template = 'prod/actions/collection_default.twig';
               $twig = new \supertwig();
-              $twig->addFilter(array('sbas_names' => 'phrasea::sbas_names'));
+              $twig->addFilter(array('bas_names' => 'phrasea::bas_names'));
 
-              return $twig->render($template, array('edit' => $handler, 'message' => ''));
+              return $twig->render($template, array('action' => $move, 'message' => ''));
             }
     );
+
 
     $controllers->post('/apply/', function() use ($app)
             {
               $request = $app['request'];
-              $editing = new RequestHandler\Edit($request);
-              $editing->execute($request);
-
-              $template = 'prod/actions/edit_default.twig';
+              $move = new RequestHandler\MoveCollection($request);
+              $move->execute($request);
+              $template = 'prod/actions/collection_submit.twig';
 
               $twig = new \supertwig();
-              $twig->addFilter(array('sbas_names' => 'phrasea::sbas_names'));
+              $twig->addFilter(array('bas_names' => 'phrasea::bas_names'));
 
-              return $twig->render($template, array('edit' => $editing, 'message' => ''));
-            }
-    );
-    
+              return $twig->render($template, array('action' => $move, 'message' => ''));
+            });
+
     return $controllers;
   }
 
