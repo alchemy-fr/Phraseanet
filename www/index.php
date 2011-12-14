@@ -20,6 +20,6 @@
 require_once __DIR__ . "/../lib/classes/bootstrap.class.php";
 bootstrap::register_autoloads();
 
-$app = require __DIR__ . '/../lib/classes/module/Root.php';
+$app = require __DIR__ . '/../lib/Alchemy/Phrasea/Application/Root.php';
 
 $app->run();
