@@ -40,7 +40,7 @@ class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../classes/module/Lightbox.php';
+    return require dirname(__FILE__) . '/../../Alchemy/Phrasea/Application/Lightbox.php';
   }
 
   /**

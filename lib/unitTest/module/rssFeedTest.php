@@ -42,7 +42,7 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../classes/module/Root.php';
+    return require dirname(__FILE__) . '/../../Alchemy/Phrasea/Application/Root.php';
   }
 
   public function testAggregatedRss()
