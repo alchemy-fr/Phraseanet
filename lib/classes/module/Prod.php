@@ -19,13 +19,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 
+use Alchemy\Phrasea\Controller\Prod as Controller;
+
 return call_user_func(function()
                 {
                   $twig = new supertwig();
 
                   $app = new Application();
 
-                  $app->mount('/records/edit', new Controller_Prod_Records_Edit());
+                  $app->mount('/records/edit', new Controller\Edit());
                   $app->mount('/records/movecollection', new Controller_Prod_Records_MoveCollection());
                   $app->mount('/bridge/', new Controller_Prod_Records_Bridge());
                   $app->mount('/feeds', new Controller_Prod_Records_Feed());

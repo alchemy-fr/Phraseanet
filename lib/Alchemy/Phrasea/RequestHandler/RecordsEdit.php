@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace Alchemy\Phrasea\RequestHandler;
 
 /**
  *
@@ -15,7 +16,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_prod_route_records_edit extends module_prod_route_records_abstract
+
+use Symfony\Component\HttpFoundation\Request;
+
+class RecordsEdit extends RecordsAbstract
 {
 
   /**
@@ -63,9 +67,9 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
 
 
 
-  public function __construct(Symfony\Component\HttpFoundation\Request $request)
+  public function __construct(Request $request)
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
 
     parent::__construct($request);
 
@@ -110,7 +114,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
    */
   public function get_javascript_elements_ids()
   {
-    return p4string::jsonencode(array_keys($this->javascript_elements));
+    return \p4string::jsonencode(array_keys($this->javascript_elements));
   }
 
   /**
@@ -120,7 +124,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
    */
   public function get_javascript_elements()
   {
-    return p4string::jsonencode($this->javascript_elements);
+    return \p4string::jsonencode($this->javascript_elements);
   }
 
   /**
@@ -130,7 +134,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
    */
   public function get_javascript_sugg_values()
   {
-    return p4string::jsonencode($this->javascript_sugg_values);
+    return \p4string::jsonencode($this->javascript_sugg_values);
   }
 
   /**
@@ -140,7 +144,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
    */
   public function get_javascript_status()
   {
-    return p4string::jsonencode($this->javascript_status);
+    return \p4string::jsonencode($this->javascript_status);
   }
 
   /**
@@ -150,7 +154,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
    */
   public function get_javascript_fields()
   {
-    return p4string::jsonencode(($this->javascript_fields));
+    return \p4string::jsonencode(($this->javascript_fields));
   }
 
   /**
@@ -181,10 +185,10 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
   protected function generate_javascript_elements()
   {
     $_lst = array();
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-    $twig = new supertwig();
+    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $twig = new \supertwig();
 
     foreach ($this->selection as $record)
     {
@@ -276,7 +280,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
         continue;
 
       $T_sgval['b' . $base_id] = array();
-      $collection = collection::get_from_base_id($base_id);
+      $collection = \collection::get_from_base_id($base_id);
       
       if ($sxe = simplexml_load_string($collection->get_prefs()))
       {
@@ -318,13 +322,13 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
   protected function generate_javascript_status()
   {
     $_tstatbits = array();
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
     if ($user->ACL()->has_right('changestatus'))
     {
-      $status = databox_status::getDisplayStatus();
+      $status = \databox_status::getDisplayStatus();
       if (isset($status[$this->get_sbas_id()]))
       {
         foreach ($status[$this->get_sbas_id()] as $n => $statbit)
@@ -355,7 +359,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
 
     $this->has_thesaurus = false;
 
-    $databox = databox::get_instance($this->get_sbas_id());
+    $databox = \databox::get_instance($this->get_sbas_id());
     $meta_struct = $databox->get_meta_structure();
 
     foreach ($meta_struct as $meta)
@@ -369,7 +373,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
     return $this;
   }
 
-  protected function generate_field(databox_field $meta)
+  protected function generate_field(\databox_field $meta)
   {
     $i = count($this->javascript_fields);
 
@@ -430,7 +434,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
    */
   public function execute(Symfony\Component\HttpFoundation\Request $request)
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     if ($request->get('act_option') == 'SAVEGRP' && $request->get('newrepresent'))
     {
       try
@@ -461,7 +465,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
       return $this;
 
     $sbas_id = (int) $request->get('sbid');
-    $databox = databox::get_instance($sbas_id);
+    $databox = \databox::get_instance($sbas_id);
     $meta_struct = $databox->get_meta_structure();
     $write_edit_el = false;
     $date_obj = new DateTime();
@@ -503,7 +507,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
         $record->set_metadatas($rec['metadatas']);
       }
 
-      if ($write_edit_el instanceof databox_field)
+      if ($write_edit_el instanceof \Acmedatabox_field)
       {
         $fields = $record->get_caption()->get_fields(array($write_edit_el->get_name()));
         $field = array_pop($fields);
@@ -526,12 +530,12 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
         $mask_and = ltrim(str_replace(
                         array('x', '0', '1', 'z'), array('1', 'z', '0', '1'), $statbits), '0');
         if ($mask_and != '')
-          $newstat = databox_status::operation_and_not($newstat, $mask_and);
+          $newstat = \databox_status::operation_and_not($newstat, $mask_and);
 
         $mask_or = ltrim(str_replace('x', '0', $statbits), '0');
 
         if ($mask_or != '')
-          $newstat = databox_status::operation_or($newstat, $mask_or);
+          $newstat = \databox_status::operation_or($newstat, $mask_or);
 
         $record->set_binary_status($newstat);
       }
