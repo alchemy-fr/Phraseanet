@@ -433,6 +433,8 @@ class searchEngine_options implements Serializable
     {
       if (in_array($key, array('date_min', 'date_max')))
         $value = new DateTime($value);
+      elseif($value instanceof stdClass)
+        $value = (array) $value;
 
       $this->$key = $value;
     }
