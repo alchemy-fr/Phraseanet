@@ -213,18 +213,18 @@ class Kernel extends \Pimple
     \Twig_Autoloader::register();
     \Twig_Extensions_Autoloader::register();
 
-    $loader = new \Symfony\Component\ClassLoader\ApcUniversalClassLoader(crc32(__DIR__));
+    $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader(crc32(__DIR__));
 
     spl_autoload_register(array('Alchemy\Phrasea\Kernel', 'phraseaAutoload'));
 
     $loader->registerNamespaces(array(
-        'Alchemy' => __DIR__ . '/../../',
+        'Alchemy' => __DIR__ . '/../..',
         'Symfony\\Component\\Yaml' => __DIR__ . '/../../vendor/symfony/src',
         'Symfony\\Component\\Console' => __DIR__ . '/../../vendor/symfony/src',
     ));
 
     $loader->register();
-
+    
     require_once __DIR__ . '/../../vendor/Silex/autoload.php';
 
     return;
