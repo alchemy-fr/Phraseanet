@@ -36,6 +36,12 @@ class EntitiesBasketProxy extends \Entities\Basket implements \Doctrine\ORM\Prox
     }
     
     
+    public function getId()
+    {
+        $this->__load();
+        return parent::getId();
+    }
+
     public function setName($name)
     {
         $this->__load();
@@ -46,6 +52,54 @@ class EntitiesBasketProxy extends \Entities\Basket implements \Doctrine\ORM\Prox
     {
         $this->__load();
         return parent::getName();
+    }
+
+    public function setDescription($description)
+    {
+        $this->__load();
+        return parent::setDescription($description);
+    }
+
+    public function getDescription()
+    {
+        $this->__load();
+        return parent::getDescription();
+    }
+
+    public function setUsrId($usrId)
+    {
+        $this->__load();
+        return parent::setUsrId($usrId);
+    }
+
+    public function getUsrId()
+    {
+        $this->__load();
+        return parent::getUsrId();
+    }
+
+    public function setPusherId($pusherId)
+    {
+        $this->__load();
+        return parent::setPusherId($pusherId);
+    }
+
+    public function getPusherId()
+    {
+        $this->__load();
+        return parent::getPusherId();
+    }
+
+    public function setArchived($archived)
+    {
+        $this->__load();
+        return parent::setArchived($archived);
+    }
+
+    public function getArchived()
+    {
+        $this->__load();
+        return parent::getArchived();
     }
 
     public function setCreated($created)
@@ -72,28 +126,46 @@ class EntitiesBasketProxy extends \Entities\Basket implements \Doctrine\ORM\Prox
         return parent::getUpdated();
     }
 
-    public function getId()
+    public function addBasketElement(\Entities\BasketElement $elements)
     {
         $this->__load();
-        return parent::getId();
+        return parent::addBasketElement($elements);
     }
 
-    public function setBlobby($blobby)
+    public function getElements()
     {
         $this->__load();
-        return parent::setBlobby($blobby);
+        return parent::getElements();
     }
 
-    public function getBlobby()
+    public function setPusher(\User_Adapter $user)
     {
         $this->__load();
-        return parent::getBlobby();
+        return parent::setPusher($user);
+    }
+
+    public function getPusher()
+    {
+        $this->__load();
+        return parent::getPusher();
+    }
+
+    public function setOwner(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::setOwner($user);
+    }
+
+    public function getOwner()
+    {
+        $this->__load();
+        return parent::getOwner();
     }
 
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'name', 'created', 'updated');
+        return array('__isInitialized__', 'id', 'name', 'description', 'usr_id', 'pusher_id', 'archived', 'created', 'updated', 'elements');
     }
 
     public function __clone()

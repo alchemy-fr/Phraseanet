@@ -10,6 +10,14 @@ Entities\Basket:
     name:
       type: string
       length: 128
+    description:
+      type: text
+    usr_id:
+      type: integer
+    pusher_id:
+      type: integer
+    archived:
+      type: boolean
     created:
       type: datetime
       gedmo:
@@ -20,3 +28,12 @@ Entities\Basket:
       gedmo:
         timestampable:
           on: update
+  oneToMany:
+    elements:
+      targetEntity: BasketElement
+      mappedBy: basket
+
+
+
+
+

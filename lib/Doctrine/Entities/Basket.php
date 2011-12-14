@@ -17,13 +17,43 @@ namespace Entities;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
+require_once __DIR__ . '/../../classes/cache/cacheableInterface.class.php';
+require_once __DIR__ . '/../../classes/User/Interface.class.php';
+require_once __DIR__ . '/../../classes/User/Adapter.class.php';
+
 class Basket
 {
-  
+    
+    /**
+     * @var integer $id
+     */
+    private $id;
+
     /**
      * @var string $name
      */
     private $name;
+
+    /**
+     * @var text $description
+     */
+    private $description;
+
+    /**
+     * @var integer $usr_id
+     */
+    private $usr_id;
+
+    /**
+     * @var integer $pusher_id
+     */
+    private $pusher_id;
+
+    /**
+     * @var boolean $archived
+     */
+    private $archived;
 
     /**
      * @var datetime $created
@@ -35,6 +65,25 @@ class Basket
      */
     private $updated;
 
+    /**
+     * @var Entities\BasketElement
+     */
+    private $elements;
+
+    public function __construct()
+    {
+        $this->elements = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Set name
@@ -54,6 +103,86 @@ class Basket
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set description
+     *
+     * @param text $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * Get description
+     *
+     * @return text 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set usr_id
+     *
+     * @param integer $usrId
+     */
+    public function setUsrId($usrId)
+    {
+        $this->usr_id = $usrId;
+    }
+
+    /**
+     * Get usr_id
+     *
+     * @return integer 
+     */
+    public function getUsrId()
+    {
+        return $this->usr_id;
+    }
+
+    /**
+     * Set pusher_id
+     *
+     * @param integer $pusherId
+     */
+    public function setPusherId($pusherId)
+    {
+        $this->pusher_id = $pusherId;
+    }
+
+    /**
+     * Get pusher_id
+     *
+     * @return integer 
+     */
+    public function getPusherId()
+    {
+        return $this->pusher_id;
+    }
+
+    /**
+     * Set archived
+     *
+     * @param boolean $archived
+     */
+    public function setArchived($archived)
+    {
+        $this->archived = $archived;
+    }
+
+    /**
+     * Get archived
+     *
+     * @return boolean 
+     */
+    public function getArchived()
+    {
+        return $this->archived;
     }
 
     /**
@@ -95,44 +224,46 @@ class Basket
     {
         return $this->updated;
     }
-    /**
-     * @var integer $id
-     */
-    private $id;
-
 
     /**
-     * Get id
+     * Add elements
      *
-     * @return integer 
+     * @param Entities\BasketElement $elements
      */
-    public function getId()
+    public function addBasketElement(\Entities\BasketElement $elements)
     {
-        return $this->id;
-    }
-    /**
-     * @var blob $blobby
-     */
-    private $blobby;
-
-
-    /**
-     * Set blobby
-     *
-     * @param blob $blobby
-     */
-    public function setBlobby($blobby)
-    {
-        $this->blobby = $blobby;
+        $this->elements[] = $elements;
     }
 
     /**
-     * Get blobby
+     * Get elements
      *
-     * @return blob 
+     * @return Doctrine\Common\Collections\Collection 
      */
-    public function getBlobby()
+    public function getElements()
     {
-        return $this->blobby;
+        return $this->elements;
     }
+    public function setPusher(\User_Adapter $user)
+    {
+        $this->setPusherId($user->get_id());
+    }
+    
+    public function getPusher()
+    {
+        return new \User_Adapter($this->getPusherId(), appbox::get_instance());
+    }
+    
+    public function setOwner(\User_Adapter $user)
+    {
+        $this->setUsrId($user->get_id());
+    }
+    
+    public function getOwner()
+    {
+        return new \User_Adapter($this->getUsrId(), appbox::get_instance());
+    }
+
+    
+    
 }

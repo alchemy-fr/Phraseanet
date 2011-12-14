@@ -36,6 +36,48 @@ class EntitiesBasketElementProxy extends \Entities\BasketElement implements \Doc
     }
     
     
+    public function getId()
+    {
+        $this->__load();
+        return parent::getId();
+    }
+
+    public function setRecordId($recordId)
+    {
+        $this->__load();
+        return parent::setRecordId($recordId);
+    }
+
+    public function getRecordId()
+    {
+        $this->__load();
+        return parent::getRecordId();
+    }
+
+    public function setSbasId($sbasId)
+    {
+        $this->__load();
+        return parent::setSbasId($sbasId);
+    }
+
+    public function getSbasId()
+    {
+        $this->__load();
+        return parent::getSbasId();
+    }
+
+    public function setOrd($ord)
+    {
+        $this->__load();
+        return parent::setOrd($ord);
+    }
+
+    public function getOrd()
+    {
+        $this->__load();
+        return parent::getOrd();
+    }
+
     public function setCreated($created)
     {
         $this->__load();
@@ -60,16 +102,22 @@ class EntitiesBasketElementProxy extends \Entities\BasketElement implements \Doc
         return parent::getUpdated();
     }
 
-    public function getId()
+    public function setBasket(\Entities\Basket $basket)
     {
         $this->__load();
-        return parent::getId();
+        return parent::setBasket($basket);
+    }
+
+    public function getBasket()
+    {
+        $this->__load();
+        return parent::getBasket();
     }
 
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'created', 'updated');
+        return array('__isInitialized__', 'id', 'record_id', 'sbas_id', 'ord', 'created', 'updated', 'basket');
     }
 
     public function __clone()

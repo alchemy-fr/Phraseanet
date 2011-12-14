@@ -19,7 +19,26 @@ namespace Entities;
  */
 class BasketElement
 {
-  
+    /**
+     * @var integer $id
+     */
+    private $id;
+
+    /**
+     * @var integer $record_id
+     */
+    private $record_id;
+
+    /**
+     * @var integer $sbas_id
+     */
+    private $sbas_id;
+
+    /**
+     * @var integer $ord
+     */
+    private $ord;
+
     /**
      * @var datetime $created
      */
@@ -30,6 +49,81 @@ class BasketElement
      */
     private $updated;
 
+    /**
+     * @var Entities\Basket
+     */
+    private $basket;
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set record_id
+     *
+     * @param integer $recordId
+     */
+    public function setRecordId($recordId)
+    {
+        $this->record_id = $recordId;
+    }
+
+    /**
+     * Get record_id
+     *
+     * @return integer 
+     */
+    public function getRecordId()
+    {
+        return $this->record_id;
+    }
+
+    /**
+     * Set sbas_id
+     *
+     * @param integer $sbasId
+     */
+    public function setSbasId($sbasId)
+    {
+        $this->sbas_id = $sbasId;
+    }
+
+    /**
+     * Get sbas_id
+     *
+     * @return integer 
+     */
+    public function getSbasId()
+    {
+        return $this->sbas_id;
+    }
+
+    /**
+     * Set ord
+     *
+     * @param integer $ord
+     */
+    public function setOrd($ord)
+    {
+        $this->ord = $ord;
+    }
+
+    /**
+     * Get ord
+     *
+     * @return integer 
+     */
+    public function getOrd()
+    {
+        return $this->ord;
+    }
 
     /**
      * Set created
@@ -70,19 +164,40 @@ class BasketElement
     {
         return $this->updated;
     }
-    /**
-     * @var integer $id
-     */
-    private $id;
-
 
     /**
-     * Get id
+     * Set basket
      *
-     * @return integer 
+     * @param Entities\Basket $basket
      */
-    public function getId()
+    public function setBasket(\Entities\Basket $basket)
     {
-        return $this->id;
+        $this->basket = $basket;
+    }
+
+    /**
+     * Get basket
+     *
+     * @return Entities\Basket 
+     */
+    public function getBasket()
+    {
+        return $this->basket;
+    }
+    
+    public function getRecord()
+    {
+      return new \record_adapter($this->getSbasId(), $this->getRecordId(), $this->getOrd());
+    }
+    
+    public function setRecord(\record_adapter $record)
+    {
+      $this->setRecordId($record->get_record_id());
+      $this->setSbasId($record->get_sbas_id());
+    }
+    
+    public function setLastInBasket()
+    {
+      $this->setOrd(count($this->getBasket()->getElements()) + 1);
     }
 }
