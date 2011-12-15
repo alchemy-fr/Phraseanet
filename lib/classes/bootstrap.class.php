@@ -21,7 +21,7 @@ require_once __DIR__ . '/../Alchemy/Phrasea/Kernel.php';
 class bootstrap
 {
   
-  static $kernel;
+  protected static $kernel;
 
   public static function set_php_configuration()
   {
@@ -41,6 +41,15 @@ class bootstrap
     
     static::$kernel = new Alchemy\Phrasea\Kernel();
     
+    return static::$kernel;
+  }
+  
+  /**
+   *
+   * @return Alchemy\Phrasea\Kernel 
+   */
+  public static function getKernel()
+  {
     return static::$kernel;
   }
 
