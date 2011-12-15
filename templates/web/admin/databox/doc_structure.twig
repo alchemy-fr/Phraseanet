@@ -312,9 +312,10 @@
                                           <img class="alert alertTips alert_not_readonly" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne n\'est pas en lecture seule, vous devriez decocher cette case' %}" style="display:none;" />
                                           <img class="alert alertTips alert_is_readonly" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne est en lecture seule, vous devriez cocher cette case' %}" style="display:none;" />
                                         </td>
-                                        <td>
+                                        <td>{{field.get_type()}}
                                           <select class="metafield_{{field.get_id()}}" {{disabled}} name="type_{{field.get_id()}}">
                                             <option value=""></option>
+                                            <option {% if field.get_type() == 'string' %}selected{% endif %} value="string">string</option>
                                             <option {% if field.get_type() == 'text' %}selected{% endif %} value="text">text</option>
                                             <option {% if field.get_type() == 'number' %}selected{% endif %} value="number">number</option>
                                             <option {% if field.get_type() == 'date' %}selected{% endif %} value="date">date</option>

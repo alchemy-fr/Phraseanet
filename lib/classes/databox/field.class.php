@@ -269,7 +269,21 @@ class databox_field implements cache_cacheableInterface
     $stmt->execute(array(':id' => $this->get_id()));
     $stmt->closeCursor();
 
+    $dom_struct = $this->databox->get_dom_structure();
+    $xp_struct = $this->databox->get_xpath_structure();
+
+    $nodes = $xp_struct->query(
+            '/record/description/*[@meta_id=' . $this->id . ']'
+    );
+
+    foreach($nodes as $node)
+    {
+      /* @var $node DOMNode */
+      $node->parentNode->removeChild($node);
+    }
+
     $this->delete_data_from_cache();
+    $this->databox->saveStructure($dom_struct);
 
     return;
   }
