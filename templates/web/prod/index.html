@@ -372,18 +372,31 @@
             <div>
               {% if registry.get('GV_sphinx') %}
               {% trans 'Trier par ' %}
-              <select name="sort">
-                <option value="relevance">{% trans 'pertinence'%}</option>
-                <option value="created_on">{% trans 'date dajout'%}</option>
-                <option value="random">{% trans 'aleatoire'%}</option>
-              </select>
-              <select name="ord">
-                <option value="desc">{% trans 'descendant'%}</option>
-                <option value="asc">{% trans 'ascendant'%}</option>
-              </select>
-              <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
+                <select name="sort">
+                  <option value="relevance">{% trans 'pertinence'%}</option>
+                  <option value="created_on">{% trans 'date dajout'%}</option>
+                  <option value="random">{% trans 'aleatoire'%}</option>
+                </select>
+                <select name="ord">
+                  <option value="desc">{% trans 'descendant'%}</option>
+                  <option value="asc">{% trans 'ascendant'%}</option>
+                </select>
+                <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
               {% else %}
-              <input type="hidden" name="ord" id="searchOrd" value="PHRASEA_ORDER_DESC" />
+                {% trans 'Trier par ' %}
+                <select name="sort">
+                  <option value=""></option>
+                  {% for field_id, field in search_datas['fields'] %}
+                    {% if field['type'] == 'date' %}
+                    <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+                <select name="ord">
+                  <option value="desc">{% trans 'descendant'%}</option>
+                  <option value="asc">{% trans 'ascendant'%}</option>
+                </select>
+                <input type="hidden" name="ord" id="searchOrd" value="PHRASEA_ORDER_DESC" />
               {% endif %}
               <div class="field_filter">
                 <div>
@@ -392,7 +405,9 @@
                 <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle;width:100%;">
                   <option value="phraseanet--all--fields">{% trans 'rechercher dans tous les champs' %}</option>
                   {% for field_id, field in search_datas['fields'] %}
-                  <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                    {% if field['type'] != 'date' %}
+                      <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                    {% endif %}
                   {% endfor %}
                 </select>
               </div>
