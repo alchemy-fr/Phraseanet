@@ -576,7 +576,7 @@ class Session_Handler
     $sql = 'SELECT v.id as validate_id, v.usr_id, v.ssel_id
               , s.usr_id as owner, t.value
             FROM (validate v, ssel s)
-              LEFT JOIN tokens t
+              INNER JOIN tokens t
                 ON (t.datas = s.ssel_id
                     AND v.usr_id=t.usr_id AND t.type="validate")
             WHERE expires_on < :expires_on
@@ -594,7 +594,8 @@ class Session_Handler
           'ssel_id' => $row['ssel_id'],
           'from' => $row['owner'],
           'validate_id' => $row['validate_id'],
-          'url' => $registry->get('GV_ServerName') . 'lightbox/validate/'.$row['ssel_id'].'/?LOG=' . $row['value']
+          'url' => $registry->get('GV_ServerName') 
+              . 'lightbox/validate/'.$row['ssel_id'].'/?LOG=' . $row['value']
       );
 
       $events_mngr->trigger('__VALIDATION_REMINDER__', $params);
