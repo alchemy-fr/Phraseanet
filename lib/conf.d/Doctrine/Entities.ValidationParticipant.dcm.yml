@@ -1,0 +1,22 @@
+Entities\ValidationParticipant:
+  type: entity
+  table: ValidationParticipants
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    usr_id:
+      type: integer
+  oneToMany:
+    datases:
+      targetEntity: ValidationData
+      mappedBy: participant
+  manyToOne:
+    session:
+      targetEntity: ValidationSession
+      inversedBy: participants
+      joinColumn:
+        name: ValidationSession_id
+        referencedColumnName: id

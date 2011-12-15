@@ -12,258 +12,286 @@
 namespace Entities;
 
 /**
- * Kernel
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 require_once __DIR__ . '/../../classes/cache/cacheableInterface.class.php';
 require_once __DIR__ . '/../../classes/User/Interface.class.php';
 require_once __DIR__ . '/../../classes/User/Adapter.class.php';
 
 class Basket
 {
-    
-    /**
-     * @var integer $id
-     */
-    private $id;
 
-    /**
-     * @var string $name
-     */
-    private $name;
+  /**
+   * @var integer $id
+   */
+  private $id;
 
-    /**
-     * @var text $description
-     */
-    private $description;
+  /**
+   * @var string $name
+   */
+  private $name;
 
-    /**
-     * @var integer $usr_id
-     */
-    private $usr_id;
+  /**
+   * @var text $description
+   */
+  private $description;
 
-    /**
-     * @var integer $pusher_id
-     */
-    private $pusher_id;
+  /**
+   * @var integer $usr_id
+   */
+  private $usr_id;
 
-    /**
-     * @var boolean $archived
-     */
-    private $archived;
+  /**
+   * @var integer $pusher_id
+   */
+  private $pusher_id;
 
-    /**
-     * @var datetime $created
-     */
-    private $created;
+  /**
+   * @var boolean $archived
+   */
+  private $archived = false;
 
-    /**
-     * @var datetime $updated
-     */
-    private $updated;
+  /**
+   * @var datetime $created
+   */
+  private $created;
 
-    /**
-     * @var Entities\BasketElement
-     */
-    private $elements;
+  /**
+   * @var datetime $updated
+   */
+  private $updated;
 
-    public function __construct()
+  /**
+   * @var Entities\BasketElement
+   */
+  private $elements;
+
+  public function __construct()
+  {
+    $this->elements = new \Doctrine\Common\Collections\ArrayCollection();
+  }
+
+  /**
+   * Get id
+   *
+   * @return integer 
+   */
+  public function getId()
+  {
+    return $this->id;
+  }
+
+  /**
+   * Set name
+   *
+   * @param string $name
+   */
+  public function setName($name)
+  {
+    $this->name = $name;
+  }
+
+  /**
+   * Get name
+   *
+   * @return string 
+   */
+  public function getName()
+  {
+    return $this->name;
+  }
+
+  /**
+   * Set description
+   *
+   * @param text $description
+   */
+  public function setDescription($description)
+  {
+    $this->description = $description;
+  }
+
+  /**
+   * Get description
+   *
+   * @return text 
+   */
+  public function getDescription()
+  {
+    return $this->description;
+  }
+
+  /**
+   * Set usr_id
+   *
+   * @param integer $usrId
+   */
+  public function setUsrId($usrId)
+  {
+    $this->usr_id = $usrId;
+  }
+
+  /**
+   * Get usr_id
+   *
+   * @return integer 
+   */
+  public function getUsrId()
+  {
+    return $this->usr_id;
+  }
+
+  /**
+   * Set pusher_id
+   *
+   * @param integer $pusherId
+   */
+  public function setPusherId($pusherId)
+  {
+    $this->pusher_id = $pusherId;
+  }
+
+  /**
+   * Get pusher_id
+   *
+   * @return integer 
+   */
+  public function getPusherId()
+  {
+    return $this->pusher_id;
+  }
+
+  /**
+   * Set archived
+   *
+   * @param boolean $archived
+   */
+  public function setArchived($archived)
+  {
+    $this->archived = $archived;
+  }
+
+  /**
+   * Get archived
+   *
+   * @return boolean 
+   */
+  public function getArchived()
+  {
+    return $this->archived;
+  }
+
+  /**
+   * Set created
+   *
+   * @param datetime $created
+   */
+  public function setCreated($created)
+  {
+    $this->created = $created;
+  }
+
+  /**
+   * Get created
+   *
+   * @return datetime 
+   */
+  public function getCreated()
+  {
+    return $this->created;
+  }
+
+  /**
+   * Set updated
+   *
+   * @param datetime $updated
+   */
+  public function setUpdated($updated)
+  {
+    $this->updated = $updated;
+  }
+
+  /**
+   * Get updated
+   *
+   * @return datetime 
+   */
+  public function getUpdated()
+  {
+    return $this->updated;
+  }
+
+  /**
+   * Add elements
+   *
+   * @param Entities\BasketElement $elements
+   */
+  public function addBasketElement(\Entities\BasketElement $elements)
+  {
+    $this->elements[] = $elements;
+  }
+
+  /**
+   * Get elements
+   *
+   * @return Doctrine\Common\Collections\Collection 
+   */
+  public function getElements()
+  {
+    return $this->elements;
+  }
+
+  public function setPusher(\User_Adapter $user)
+  {
+    $this->setPusherId($user->get_id());
+  }
+
+  public function getPusher()
+  {
+    if ($this->getPusherId())
     {
-        $this->elements = new \Doctrine\Common\Collections\ArrayCollection();
+      return new \User_Adapter($this->getPusherId(), \appbox::get_instance());
     }
-    
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+  }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
+  public function setOwner(\User_Adapter $user)
+  {
+    $this->setUsrId($user->get_id());
+  }
 
-    /**
-     * Get name
-     *
-     * @return string 
-     */
-    public function getName()
+  public function getOwner()
+  {
+    if ($this->getUsrId())
     {
-        return $this->name;
+      return new \User_Adapter($this->getUsrId(), \appbox::get_instance());
     }
+  }
 
-    /**
-     * Set description
-     *
-     * @param text $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
+  /**
+   * @var Entities\ValidationSession
+   */
+  private $validation;
 
-    /**
-     * Get description
-     *
-     * @return text 
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
+  /**
+   * Set validation
+   *
+   * @param Entities\ValidationSession $validation
+   */
+  public function setValidation(\Entities\ValidationSession $validation)
+  {
+    $this->validation = $validation;
+  }
 
-    /**
-     * Set usr_id
-     *
-     * @param integer $usrId
-     */
-    public function setUsrId($usrId)
-    {
-        $this->usr_id = $usrId;
-    }
+  /**
+   * Get validation
+   *
+   * @return Entities\ValidationSession 
+   */
+  public function getValidation()
+  {
+    return $this->validation;
+  }
 
-    /**
-     * Get usr_id
-     *
-     * @return integer 
-     */
-    public function getUsrId()
-    {
-        return $this->usr_id;
-    }
-
-    /**
-     * Set pusher_id
-     *
-     * @param integer $pusherId
-     */
-    public function setPusherId($pusherId)
-    {
-        $this->pusher_id = $pusherId;
-    }
-
-    /**
-     * Get pusher_id
-     *
-     * @return integer 
-     */
-    public function getPusherId()
-    {
-        return $this->pusher_id;
-    }
-
-    /**
-     * Set archived
-     *
-     * @param boolean $archived
-     */
-    public function setArchived($archived)
-    {
-        $this->archived = $archived;
-    }
-
-    /**
-     * Get archived
-     *
-     * @return boolean 
-     */
-    public function getArchived()
-    {
-        return $this->archived;
-    }
-
-    /**
-     * Set created
-     *
-     * @param datetime $created
-     */
-    public function setCreated($created)
-    {
-        $this->created = $created;
-    }
-
-    /**
-     * Get created
-     *
-     * @return datetime 
-     */
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    /**
-     * Set updated
-     *
-     * @param datetime $updated
-     */
-    public function setUpdated($updated)
-    {
-        $this->updated = $updated;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return datetime 
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
-    /**
-     * Add elements
-     *
-     * @param Entities\BasketElement $elements
-     */
-    public function addBasketElement(\Entities\BasketElement $elements)
-    {
-        $this->elements[] = $elements;
-    }
-
-    /**
-     * Get elements
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getElements()
-    {
-        return $this->elements;
-    }
-    public function setPusher(\User_Adapter $user)
-    {
-        $this->setPusherId($user->get_id());
-    }
-    
-    public function getPusher()
-    {
-        return new \User_Adapter($this->getPusherId(), appbox::get_instance());
-    }
-    
-    public function setOwner(\User_Adapter $user)
-    {
-        $this->setUsrId($user->get_id());
-    }
-    
-    public function getOwner()
-    {
-        return new \User_Adapter($this->getUsrId(), appbox::get_instance());
-    }
-
-    
-    
 }

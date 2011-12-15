@@ -200,4 +200,33 @@ class BasketElement
     {
       $this->setOrd(count($this->getBasket()->getElements()) + 1);
     }
+    /**
+     * @var Entities\ValidationData
+     */
+    private $validation_datas;
+
+    public function __construct()
+    {
+        $this->validation_datas = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add validation_datas
+     *
+     * @param Entities\ValidationData $validationDatas
+     */
+    public function addValidationData(\Entities\ValidationData $validationDatas)
+    {
+        $this->validation_datas[] = $validationDatas;
+    }
+
+    /**
+     * Get validation_datas
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getValidationDatas()
+    {
+        return $this->validation_datas;
+    }
 }

@@ -12,12 +12,15 @@ Entities\Basket:
       length: 128
     description:
       type: text
+      nullable: true
     usr_id:
       type: integer
     pusher_id:
       type: integer
+      nullable: true
     archived:
       type: boolean
+      default: false
     created:
       type: datetime
       gedmo:
@@ -28,6 +31,10 @@ Entities\Basket:
       gedmo:
         timestampable:
           on: update
+  oneToOne:
+    validation:
+      targetEntity: ValidationSession
+      mappedBy: basket
   oneToMany:
     elements:
       targetEntity: BasketElement

@@ -1,0 +1,31 @@
+Entities\ValidationData:
+  type: entity
+  table: ValidationDatas
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    agreement: 
+      type: boolean
+    note: 
+      type: text
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  manyToOne:
+    participant:
+      targetEntity: ValidationParticipant
+      inversedBy: datases
+      joinColumn:
+        name: participant_id
+        referencedColumnName: id
+    basket_element:
+      targetEntity: BasketElement
+      inversedBy: validation_datas
+      joinColumn:
+        name: basket_element_id
+        referencedColumnName: id

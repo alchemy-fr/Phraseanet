@@ -1,18 +1,13 @@
-Entities\BasketElement:
+Entities\ValidationSession:
   type: entity
-  table: BasketElements
+  table: ValidationSessions
   id:
     id:
       type: integer
       generator:
         strategy: AUTO
-    
   fields:
-    record_id:
-      type: integer
-    sbas_id:
-      type: integer
-    ord:
+    initiator_id:
       type: integer
     created:
       type: datetime
@@ -24,16 +19,24 @@ Entities\BasketElement:
       gedmo:
         timestampable:
           on: update
-  manyToOne:
+    expires:
+      type: datetime
+    reminded:
+      type: datetime
+      nullable: true;
+  oneToOne:
     basket:
       targetEntity: Basket
-      inversedBy: elements
+      inversedBy: validation
       joinColumn:
         name: basket_id
         referencedColumnName: id
   oneToMany:
-    validation_datas:
-      targetEntity: ValidationData
-      mappedBy: basket_element
-  lifecycleCallbacks:
-    postPersist: [ setLastInBasket ]
+    participants:
+      targetEntity: ValidationParticipant
+      mappedBy: session
+
+
+
+
+
