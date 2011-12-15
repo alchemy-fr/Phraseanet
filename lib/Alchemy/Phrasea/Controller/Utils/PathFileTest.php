@@ -9,12 +9,8 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+namespace Alchemy\Phrasea\Controller\Utils;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -23,7 +19,13 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 
-class Controller_Utils_PathFileTest implements ControllerProviderInterface
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+class PathFileTest implements ControllerProviderInterface
 {
 
   public function connect(Application $app)
@@ -34,7 +36,7 @@ class Controller_Utils_PathFileTest implements ControllerProviderInterface
             {
               $path = $app['request']->get('path');
 
-              return new Response(p4string::jsonencode(array(
+              return new Response(\p4string::jsonencode(array(
                                   'exists' => file_exists($path)
                                   , 'file' => is_file($path)
                                   , 'dir' => is_dir($path)
@@ -48,8 +50,8 @@ class Controller_Utils_PathFileTest implements ControllerProviderInterface
             {
               $url = $app['request']->get('url');
 
-              return new Response(p4string::jsonencode(array(
-                                  'code' => http_query::getHttpCodeFromUrl($url)
+              return new Response(\p4string::jsonencode(array(
+                                  'code' => \http_query::getHttpCodeFromUrl($url)
                               )), 200, array('application/json'));
             });
 

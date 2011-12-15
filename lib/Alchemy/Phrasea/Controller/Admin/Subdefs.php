@@ -9,13 +9,15 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Controller\Admin;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Controller_Admin_Subdefs
+class Subdefs
 {
 
   /**
@@ -30,7 +32,7 @@ class Controller_Admin_Subdefs
    * @param databox $databox
    * @return controller_admin_subdefs
    */
-  public function __construct(http_request $request, databox &$databox)
+  public function __construct(\http_request $request, \databox &$databox)
   {
     $this->databox = $databox;
     if ($request->has_post_datas())
@@ -112,7 +114,7 @@ class Controller_Admin_Subdefs
         }
       }
 
-      return phrasea::redirect('/admin/subdefs.php?p0=' . $databox->get_sbas_id());
+      return \phrasea::redirect('/admin/subdefs.php?p0=' . $databox->get_sbas_id());
     }
 
     return $this;

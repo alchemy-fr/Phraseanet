@@ -16,9 +16,6 @@
  * @link        www.phraseanet.com
  */
 
-//require_once dirname(__FILE__) . "/../../../lib/vendor/Silex/autoload.php";
-//use Symfony\Component\HttpFoundation\Response;
-
-$app = require __DIR__ . '/../../../lib/classes/module/api/V1.php';
+$app = require __DIR__ . '/../../../lib/Alchemy/Phrasea/Application/Api.php';
 
 $app->run();

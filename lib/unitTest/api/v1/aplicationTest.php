@@ -41,7 +41,7 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../../../lib/classes/module/api/V1.php';
+    return require dirname(__FILE__) . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
   }
 
   public function testRouteNotFound()

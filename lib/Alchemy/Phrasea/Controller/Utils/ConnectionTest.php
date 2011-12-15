@@ -9,12 +9,8 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+namespace Alchemy\Phrasea\Controller\Utils;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -23,7 +19,14 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 
-class Controller_Utils_ConnectionTest implements ControllerProviderInterface
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+
+class ConnectionTest implements ControllerProviderInterface
 {
 
   public function connect(Application $app)
@@ -32,7 +35,7 @@ class Controller_Utils_ConnectionTest implements ControllerProviderInterface
 
     $controllers->get('/mysql/', function() use ($app)
             {
-              require_once dirname(__FILE__) . '/../../connection/pdo.class.php';
+              require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';
 
               $request = $app['request'];
               $hostname = $request->get('hostname', '127.0.0.1');
@@ -45,10 +48,10 @@ class Controller_Utils_ConnectionTest implements ControllerProviderInterface
 
               try
               {
-                $conn = new connection_pdo('test', $hostname, $port, $user, $password);
+                $conn = new \connection_pdo('test', $hostname, $port, $user, $password);
                 $connection_ok = true;
               }
-              catch (Exception $e)
+              catch (\Exception $e)
               {
                 
               }
@@ -57,7 +60,7 @@ class Controller_Utils_ConnectionTest implements ControllerProviderInterface
               {
                 try
                 {
-                  $conn = new connection_pdo('test', $hostname, $port, $user, $password, $dbname);
+                  $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname);
                   $db_ok = true;
 
                   $sql = "SHOW TABLE STATUS";
@@ -66,7 +69,7 @@ class Controller_Utils_ConnectionTest implements ControllerProviderInterface
 
                   $empty = $stmt->rowCount() === 0;
 
-                  $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                  $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                   $stmt->closeCursor();
 
                   foreach ($rs as $row)
@@ -81,13 +84,13 @@ class Controller_Utils_ConnectionTest implements ControllerProviderInterface
                     }
                   }
                 }
-                catch (Exception $e)
+                catch (\Exception $e)
                 {
                   
                 }
               }
 
-              return new Response(p4string::jsonencode(array(
+              return new Response(\p4string::jsonencode(array(
                                   'connection' => $connection_ok
                                   , 'database' => $db_ok
                                   , 'is_empty' => $empty

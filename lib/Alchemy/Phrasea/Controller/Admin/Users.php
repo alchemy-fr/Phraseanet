@@ -9,12 +9,8 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+namespace Alchemy\Phrasea\Controller\Admin;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -22,13 +18,20 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
+use Alchemy\Phrasea\RequestHandler\User as RequestHandler;
 
-class Controller_Admin_Users implements ControllerProviderInterface
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+class Users implements ControllerProviderInterface
 {
 
   public function connect(Application $app)
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
 
     $controllers = new ControllerCollection();
@@ -37,10 +40,10 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->post('/rights/', function() use ($app)
             {
               $request = $app['request'];
-              $rights = new module_admin_route_users_edit($request);
+              $rights = new RequestHandler\Edit($request);
 
               $template = 'admin/editusers.twig';
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
               $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
               $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
@@ -53,10 +56,10 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->get('/rights/', function() use ($app)
             {
               $request = $app['request'];
-              $rights = new module_admin_route_users_edit($request);
+              $rights = new RequestHandler\Edit($request);
 
               $template = 'admin/editusers.twig';
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
               $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
               $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
@@ -72,7 +75,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
 
 
 
-              $module = new module_admin_route_users_edit($request);
+              $module = new RequestHandler\Edit($request);
               $module->delete_users();
 
               return $app->redirect('/admin/users/search/');
@@ -86,19 +89,19 @@ class Controller_Admin_Users implements ControllerProviderInterface
               try
               {
                 $request = $app['request'];
-                $rights = new module_admin_route_users_edit($request);
+                $rights = new RequestHandler\Edit($request);
                 $rights->apply_rights();
                 $rights->apply_infos();
 
                 $datas = array('error' => false);
               }
-              catch (Exception $e)
+              catch (\Exception $e)
               {
                 $datas['message'] = $e->getMessage();
               }
 
               return new Response(
-                              p4string::jsonencode($datas)
+                              \p4string::jsonencode($datas)
                               , 200
                               , array('Content-Type' => 'application/json')
               );
@@ -108,10 +111,10 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->post('/rights/quotas/', function() use ($app)
             {
               $request = $app['request'];
-              $rights = new module_admin_route_users_edit($request);
+              $rights = new RequestHandler\Edit($request);
 
               $template = 'admin/editusers_quotas.twig';
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
               $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
               $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
@@ -123,7 +126,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->post('/rights/quotas/apply/', function() use ($app)
             {
               $request = $app['request'];
-              $rights = new module_admin_route_users_edit($request);
+              $rights = new RequestHandler\Edit($request);
               $rights->apply_quotas();
 
               return;
@@ -133,10 +136,10 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->post('/rights/time/', function() use ($app)
             {
               $request = $app['request'];
-              $rights = new module_admin_route_users_edit($request);
+              $rights = new RequestHandler\Edit($request);
 
               $template = 'admin/editusers_timelimit.twig';
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
               $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
               $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
@@ -148,7 +151,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->post('/rights/time/apply/', function() use ($app)
             {
               $request = $app['request'];
-              $rights = new module_admin_route_users_edit($request);
+              $rights = new RequestHandler\Edit($request);
               $rights->apply_time();
 
               return;
@@ -158,10 +161,10 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->post('/rights/masks/', function() use ($app)
             {
               $request = $app['request'];
-              $rights = new module_admin_route_users_edit($request);
+              $rights = new RequestHandler\Edit($request);
 
               $template = 'admin/editusers_masks.twig';
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
               $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
               $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
@@ -173,7 +176,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->post('/rights/masks/apply/', function() use ($app)
             {
               $request = $app['request'];
-              $rights = new module_admin_route_users_edit($request);
+              $rights = new RequestHandler\Edit($request);
               $rights->apply_masks();
 
               return;
@@ -183,10 +186,10 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->post('/search/', function() use ($app)
             {
               $request = $app['request'];
-              $users = new module_admin_route_users($request);
+              $users = new RequestHandler\Manage($request);
               $template = 'admin/users.html';
 
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(array('floor' => 'floor'));
               $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
 
@@ -197,10 +200,10 @@ class Controller_Admin_Users implements ControllerProviderInterface
     $controllers->get('/search/', function() use ($app)
             {
               $request = $app['request'];
-              $users = new module_admin_route_users($request);
+              $users = new RequestHandler\Manage($request);
               $template = 'admin/users.html';
 
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(array('floor' => 'floor'));
               $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
 
@@ -222,11 +225,11 @@ class Controller_Admin_Users implements ControllerProviderInterface
 
 
               $elligible_users = $user_query->on_sbas_where_i_am($user->ACL(), $rights)
-                              ->like(User_Query::LIKE_EMAIL, $like_value)
-                              ->like(User_Query::LIKE_FIRSTNAME, $like_value)
-                              ->like(User_Query::LIKE_LASTNAME, $like_value)
-                              ->like(User_Query::LIKE_LOGIN, $like_value)
-                              ->like_match(User_Query::LIKE_MATCH_OR)
+                              ->like(\User_Query::LIKE_EMAIL, $like_value)
+                              ->like(\User_Query::LIKE_FIRSTNAME, $like_value)
+                              ->like(\User_Query::LIKE_LASTNAME, $like_value)
+                              ->like(\User_Query::LIKE_LOGIN, $like_value)
+                              ->like_match(\User_Query::LIKE_MATCH_OR)
                               ->who_have_right($have_right)
                               ->who_have_not_right($have_not_right)
                               ->on_base_ids($on_base)
@@ -244,7 +247,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
                 );
               }
 
-              return new Response(p4string::jsonencode($datas), 200, array('Content-type' => 'application/json'));
+              return new Response(\p4string::jsonencode($datas), 200, array('Content-type' => 'application/json'));
             });
 
 
@@ -255,7 +258,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
               try
               {
                 $request = $app['request'];
-                $module = new module_admin_route_users($request);
+                $module = new RequestHandler\Manage($request);
                 if ($request->get('template') == '1')
                 {
                   $user = $module->create_template();
@@ -264,27 +267,27 @@ class Controller_Admin_Users implements ControllerProviderInterface
                 {
                   $user = $module->create_newuser();
                 }
-                if (!($user instanceof User_Adapter))
-                  throw new Exception('Unknown error');
+                if (!($user instanceof \User_Adapter))
+                  throw new \Exception('Unknown error');
 
                 $datas['data'] = $user->get_id();
               }
-              catch (Exception $e)
+              catch (\Exception $e)
               {
                 $datas['error'] = true;
                 $datas['message'] = $e->getMessage();
               }
 
-              return new Response(p4string::jsonencode($datas));
+              return new Response(\p4string::jsonencode($datas));
             }
     );
 
     $controllers->post('/export/csv/', function() use ($appbox, $app)
             {
               $request = $app['request'];
-              $user_query = new User_Query($appbox);
+              $user_query = new \User_Query($appbox);
 
-              $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
               $like_value = $request->get('like_value');
               $like_field = $request->get('like_field');
               $on_base = $request->get('base_id') ? : null;
@@ -296,7 +299,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
                       ->on_sbas_ids($on_sbas);
 
               $offset = 0;
-              $geoname = new geonames();
+              $geoname = new \geonames();
               $buffer = array();
 
               $buffer[] = array(
@@ -332,8 +335,8 @@ class Controller_Admin_Users implements ControllerProviderInterface
                       , $user->get_lastname()
                       , $user->get_firstname()
                       , $user->get_email()
-                      , phraseadate::format_mysql($user->get_creation_date())
-                      , phraseadate::format_mysql($user->get_modification_date())
+                      , \phraseadate::format_mysql($user->get_creation_date())
+                      , \phraseadate::format_mysql($user->get_modification_date())
                       , $user->get_address()
                       , $user->get_city()
                       , $user->get_zipcode()
@@ -348,7 +351,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
               }
               while (count($results) > 0);
 
-              $out = format::arr_to_csv($buffer);
+              $out = \format::arr_to_csv($buffer);
 
               $headers = array(
                   'Content-type' => 'text/csv'
@@ -365,3 +368,4 @@ class Controller_Admin_Users implements ControllerProviderInterface
   }
 
 }
+

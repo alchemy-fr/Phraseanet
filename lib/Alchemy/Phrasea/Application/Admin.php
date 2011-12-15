@@ -9,24 +9,26 @@
  * file that was distributed with this source code.
  */
 
+use Silex\Application;
+use Alchemy\Phrasea\Controller\Admin as Controller;
+use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Silex\Application;
-
 return call_user_func(
                 function()
                 {
                   $app = new Application();
 
-                  $app->mount('/publications', new Controller_Admin_Publications());
-                  $app->mount('/users', new Controller_Admin_Users());
-                  $app->mount('/fields', new Controller_Admin_Fields());
-                  $app->mount('/tests/connection', new Controller_Utils_ConnectionTest());
-                  $app->mount('/tests/pathurl', new Controller_Utils_PathFileTest());
+                  $app->mount('/publications', new Controller\Publications());
+                  $app->mount('/users', new Controller\Users());
+                  $app->mount('/fields', new Controller\Fields());
+                  $app->mount('/tests/connection', new ControllerUtils\ConnectionTest());
+                  $app->mount('/tests/pathurl', new ControllerUtils\PathFileTest());
 
                   $app->error(function(\Exception $e)
                           {

@@ -9,6 +9,15 @@
  * file that was distributed with this source code.
  */
 
+require_once __DIR__ . "/../../../../lib/bootstrap.php";
+require_once __DIR__ . "/../../../../lib/classes/API/OAuth2/Autoloader.class.php";
+bootstrap::register_autoloads();
+API_OAuth2_Autoloader::register();
+
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 /**
  *
  *
@@ -20,14 +29,6 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../../../lib/bootstrap.php";
-require_once dirname(__FILE__) . "/../../../../lib/classes/API/OAuth2/Autoloader.class.php";
-bootstrap::register_autoloads();
-API_OAuth2_Autoloader::register();
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return call_user_func(function()
                 {

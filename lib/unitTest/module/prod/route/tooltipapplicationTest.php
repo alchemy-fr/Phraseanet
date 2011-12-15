@@ -21,7 +21,7 @@ class Module_Prod_Route_TooltipTest extends PhraseanetWebTestCaseAuthenticatedAb
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../../../classes/module/Prod.php';
+    return require dirname(__FILE__) . '/../../../../Alchemy/Phrasea/Application/Prod.php';
   }
 
   public function testRouteBasket()

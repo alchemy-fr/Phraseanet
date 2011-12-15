@@ -9,16 +9,17 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return call_user_func(
                 function()
@@ -361,6 +362,7 @@ return call_user_func(
                                 'releasable' => false,
                                 'datas' => _('Erreur lors de la mise a jour des donnes ')
                             );
+                            
                             try
                             {
                               $appbox = appbox::get_instance();

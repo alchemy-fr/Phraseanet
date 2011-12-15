@@ -9,13 +9,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\RequestHandler\User;
+
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_admin_route_users
+class Manage
 {
 
   protected $request;
@@ -35,7 +39,7 @@ class module_admin_route_users
    */
   protected $usr_id;
 
-  public function __construct(Symfony\Component\HttpFoundation\Request $request)
+  public function __construct(Request $request)
   {
     $this->request = $request;
 
@@ -43,9 +47,9 @@ class module_admin_route_users
     return $this;
   }
 
-  public function search(Symfony\Component\HttpFoundation\Request $request)
+  public function search(Request $request)
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
 
     $offset_start = (int) $request->get('offset_start');
@@ -65,8 +69,8 @@ class module_admin_route_users
         , 'offset_start' => $offset_start
     );
 
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-    $query = new User_Query($appbox);
+    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $query = new \User_Query($appbox);
 
     if (is_array($request->get('base_id')))
       $query->on_base_ids($request->get('base_id'));
@@ -83,22 +87,22 @@ class module_admin_route_users
 
     try
     {
-      $invite_id = User_Adapter::get_usr_id_from_login('invite');
-      $invite = User_Adapter::getInstance($invite_id, $appbox);
+      $invite_id = \User_Adapter::get_usr_id_from_login('invite');
+      $invite = \User_Adapter::getInstance($invite_id, $appbox);
     }
-    catch (Exception $e)
+    catch (\Exception $e)
     {
-      $invite = User_Adapter::create($appbox, 'invite', 'invite', '', false);
+      $invite = \User_Adapter::create($appbox, 'invite', 'invite', '', false);
     }
 
     try
     {
-      $autoregister_id = User_Adapter::get_usr_id_from_login('autoregister');
-      $autoregister = User_Adapter::getInstance($autoregister_id, $appbox);
+      $autoregister_id = \User_Adapter::get_usr_id_from_login('autoregister');
+      $autoregister = \User_Adapter::getInstance($autoregister_id, $appbox);
     }
     catch (Exception $e)
     {
-      $autoregister = User_Adapter::create($appbox, 'autoregister', 'autoregister', '', false);
+      $autoregister = \User_Adapter::create($appbox, 'autoregister', 'autoregister', '', false);
     }
 
     foreach ($this->query_parms as $k => $v)
@@ -119,12 +123,12 @@ class module_admin_route_users
   {
     $email = $this->request->get('value');
 
-    if(!mail::validateEmail($email))
+    if(!\mail::validateEmail($email))
     {
-      throw new Exception_InvalidArgument(_('Invalid mail address'));
+      throw new \Exception_InvalidArgument(_('Invalid mail address'));
     }
 
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
 
     $conn = $appbox->get_connection();
     $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
@@ -135,13 +139,13 @@ class module_admin_route_users
 
     if (!is_array($row) || $count == 0)
     {
-      $created_user = User_Adapter::create($appbox, $email, random::generatePassword(16), $email, false, false);
+      $created_user = \User_Adapter::create($appbox, $email, \random::generatePassword(16), $email, false, false);
       $this->usr_id = $created_user->get_id();
     }
     else
     {
       $this->usr_id = $row['usr_id'];
-      $created_user = User_Adapter::getInstance($this->usr_id, $appbox);
+      $created_user = \User_Adapter::getInstance($this->usr_id, $appbox);
     }
 
     return $created_user;
@@ -153,13 +157,13 @@ class module_admin_route_users
 
     if(trim($name) === '')
     {
-      throw new Exception_InvalidArgument(_('Invalid template name'));
+      throw new \Exception_InvalidArgument(_('Invalid template name'));
     }
 
-    $appbox = appbox::get_instance();
-    $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+    $appbox = \appbox::get_instance();
+    $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
-    $created_user = User_Adapter::create($appbox, $name, random::generatePassword(16), null, false, false);
+    $created_user = \User_Adapter::create($appbox, $name, \random::generatePassword(16), null, false, false);
     $created_user->set_template($user);
     $this->usr_id = $user->get_id();
 

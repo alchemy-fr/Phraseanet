@@ -9,15 +9,18 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Silex\Application;
+use Alchemy\Phrasea\Controller\Setup as Controller;
+use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-use Silex\Application;
 
 return call_user_func(function()
                 {
@@ -55,10 +58,10 @@ return call_user_func(function()
                           });
 
 
-                  $app->mount('/installer/', new Controller_Setup_Installer());
-                  $app->mount('/upgrader/', new Controller_Setup_Upgrader());
-                  $app->mount('/test', new Controller_Utils_PathFileTest());
-                  $app->mount('/connection_test', new Controller_Utils_ConnectionTest());
+                  $app->mount('/installer/', new Controller\Installer());
+                  $app->mount('/upgrader/', new Controller\Upgrader());
+                  $app->mount('/test', new ControllerUtils\PathFileTest());
+                  $app->mount('/connection_test', new ControllerUtils\ConnectionTest());
 
                   $app->error(function($e) use ($app)
                           {

@@ -45,7 +45,7 @@ class Feed_overviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../../../lib/classes/module/Overview.php';
+    return require dirname(__FILE__) . '/../../../../lib/Alchemy/Phrasea/Application/Overview.php';
   }
 
 //$deliver_content = function(session $session, record_adapter $record, $subdef, $watermark, $stamp, $app)

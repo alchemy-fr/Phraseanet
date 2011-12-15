@@ -165,7 +165,7 @@ class Feed_rssfeedsTest extends PhraseanetWebTestCaseAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../../lib/classes/module/Root.php';
+    return require dirname(__FILE__) . '/../../../lib/Alchemy/Phrasea/Application/Root.php';
   }
 
 //$app->get('/feeds/aggregated/{format}/', function($format) use ($app, $appbox, $display_feed)

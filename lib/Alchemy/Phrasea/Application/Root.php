@@ -9,17 +9,19 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Silex\Application;
+use Alchemy\Phrasea\Controller\Root as Controller;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Silex\Application;
 
 return call_user_func(function()
                 {
@@ -65,11 +67,8 @@ return call_user_func(function()
                             return $response;
                           });
 
-                  $app->mount('/feeds/', new Controller_RSSFeeds());
+                  $app->mount('/feeds/', new Controller\RSSFeeds());
 
-                  /**
-                   * Mount all aps
-                   */
                   return $app;
                 }
 );

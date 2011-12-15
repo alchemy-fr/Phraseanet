@@ -57,7 +57,7 @@ class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    $app = require __DIR__ . '/../../classes/module/Prod.php';
+    $app = require __DIR__ . '/../../Alchemy/Phrasea/Application/Prod.php';
 
     return $app;
   }

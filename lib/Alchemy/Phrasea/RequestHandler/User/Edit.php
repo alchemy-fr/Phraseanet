@@ -9,13 +9,17 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\RequestHandler\User;
+
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_admin_route_users_edit
+class Edit
 {
 
   protected $request;
@@ -43,12 +47,12 @@ class module_admin_route_users_edit
    * @param Symfony\Component\HttpFoundation\Request $request
    * @return module_admin_route_users_edit
    */
-  public function __construct(Symfony\Component\HttpFoundation\Request $request)
+  public function __construct(Request $request)
   {
     $this->users = explode(';', $request->get('users'));
 
     $this->request = $request;
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
 
     $users = array();
@@ -67,22 +71,22 @@ class module_admin_route_users_edit
 
   public function delete_users()
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     foreach ($this->users as $usr_id)
     {
-      $user = User_Adapter::getInstance($usr_id, $appbox);
+      $user = \User_Adapter::getInstance($usr_id, $appbox);
       $this->delete_user($user);
     }
 
     return $this;
   }
 
-  protected function delete_user(User_Adapter $user)
+  protected function delete_user(\User_Adapter $user)
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
 
-    $list = array_keys(User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL()->get_granted_base(array('canadmin')));
+    $list = array_keys(\User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL()->get_granted_base(array('canadmin')));
 
     $user->ACL()->revoke_access_from_bases($list);
     if ($user->ACL()->is_phantom())
@@ -93,9 +97,9 @@ class module_admin_route_users_edit
 
   public function get_users_rights()
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
-    $list = array_keys(User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL()->get_granted_base(array('canadmin')));
+    $list = array_keys(\User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL()->get_granted_base(array('canadmin')));
 
     $sql = "SELECT
             b.sbas_id,
@@ -150,7 +154,7 @@ class module_admin_route_users_edit
 
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute();
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $sql = 'SELECT base_id, sum(1) as access FROM basusr
@@ -159,7 +163,7 @@ class module_admin_route_users_edit
             GROUP BY base_id';
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute();
-    $access = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $access = $stmt->fetchAll(\PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $base_ids = array();
@@ -191,7 +195,7 @@ class module_admin_route_users_edit
     if (count($this->users) == 1)
     {
       $usr_id = array_pop($this->users);
-      $out['main_user'] = User_Adapter::getInstance($usr_id, $appbox);
+      $out['main_user'] = \User_Adapter::getInstance($usr_id, $appbox);
     }
 
     return $out;
@@ -208,10 +212,10 @@ class module_admin_route_users_edit
       WHERE u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . "
       AND bu.base_id = :base_id";
 
-    $conn = connection::getPDOConnection();
+    $conn = \connection::getPDOConnection();
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':base_id' => $this->base_id));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $this->users_datas = $rs;
@@ -233,10 +237,10 @@ class module_admin_route_users_edit
             WHERE usr_id IN (" . implode(',', $this->users) . ")
               AND base_id = :base_id";
 
-    $conn = connection::getPDOConnection();
+    $conn = \connection::getPDOConnection();
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':base_id' => $this->base_id));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
 
@@ -266,8 +270,8 @@ class module_admin_route_users_edit
     $tbits_left = array();
     $tbits_right = array();
 
-    $sbas_id = phrasea::sbasFromBas($this->base_id);
-    $databox = databox::get_instance($sbas_id);
+    $sbas_id = \phrasea::sbasFromBas($this->base_id);
+    $databox = \databox::get_instance($sbas_id);
     $status = $databox->get_statusbits();
 
     foreach ($status as $bit => $datas)
@@ -337,10 +341,10 @@ class module_admin_route_users_edit
       WHERE u.usr_id = " . implode(' OR u.usr_id = ', $this->users) . "
       AND bu.base_id = :base_id";
 
-    $conn = connection::getPDOConnection();
+    $conn = \connection::getPDOConnection();
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':base_id' => $this->base_id));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $time_limited = -1;
@@ -365,12 +369,12 @@ class module_admin_route_users_edit
 
     if ($limited_from)
     {
-      $date_obj_from = new DateTime($limited_from);
+      $date_obj_from = new \DateTime($limited_from);
       $limited_from = $date_obj_from->format('Y-m-d');
     }
     if ($limited_to)
     {
-      $date_obj_to = new DateTime($limited_to);
+      $date_obj_to = new \DateTime($limited_to);
       $limited_to = $date_obj_to->format('Y-m-d');
     }
 
@@ -388,10 +392,10 @@ class module_admin_route_users_edit
 
   public function apply_rights()
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
-    $request = http_request::getInstance();
-    $ACL = User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL();
+    $request = \http_request::getInstance();
+    $ACL = \User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL();
     $base_ids = array_keys($ACL->get_granted_base(array('canadmin')));
 
     $update = $create = $delete = $create_sbas = $update_sbas = array();
@@ -443,7 +447,7 @@ class module_admin_route_users_edit
         {
           if ($v === '1')
           {
-            $create_sbas[phrasea::sbasFromBas($base_id)] = phrasea::sbasFromBas($base_id);
+            $create_sbas[\phrasea::sbasFromBas($base_id)] = \phrasea::sbasFromBas($base_id);
             $create[] = $base_id;
           }
           else
@@ -451,7 +455,7 @@ class module_admin_route_users_edit
         }
         else
         {
-          $create_sbas[phrasea::sbasFromBas($base_id)] = phrasea::sbasFromBas($base_id);
+          $create_sbas[\phrasea::sbasFromBas($base_id)] = \phrasea::sbasFromBas($base_id);
           $update[$base_id][$p] = $v;
         }
       }
@@ -499,7 +503,7 @@ class module_admin_route_users_edit
       {
         $appbox->get_connection()->beginTransaction();
 
-        $user = User_Adapter::getInstance($usr_id, $appbox);
+        $user = \User_Adapter::getInstance($usr_id, $appbox);
         $user->ACL()->revoke_access_from_bases($delete)
                 ->give_access_to_base($create)
                 ->give_access_to_sbas($create_sbas);
@@ -520,7 +524,7 @@ class module_admin_route_users_edit
 
         unset($user);
       }
-      catch (Exception $e)
+      catch (\Exception $e)
       {
         $appbox->get_connection()->rollBack();
       }
@@ -536,9 +540,9 @@ class module_admin_route_users_edit
       return $this;
     }
 
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
-    $request = http_request::getInstance();
+    $request = \http_request::getInstance();
 
     $infos = array(
         'gender'
@@ -560,8 +564,8 @@ class module_admin_route_users_edit
     foreach ($this->users as $usr_id)
     {
 
-      if (!mail::validateEmail($parm['email']))
-        throw new Exception_InvalidArgument(_('Email addess is not valid'));
+      if (!\mail::validateEmail($parm['email']))
+        throw new \Exception_InvalidArgument(_('Email addess is not valid'));
 
       $user = User_Adapter::getInstance($usr_id, $appbox);
       $user->set_firstname($parm['first_name'])
@@ -586,7 +590,7 @@ class module_admin_route_users_edit
 
     foreach ($this->users as $usr_id)
     {
-      $user = User_Adapter::getInstance($usr_id, appbox::get_instance());
+      $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
       if ($this->request->get('quota'))
         $user->ACL()->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
       else
@@ -609,7 +613,7 @@ class module_admin_route_users_edit
     {
       foreach ($this->users as $usr_id)
       {
-        $user = User_Adapter::getInstance($usr_id, appbox::get_instance());
+        $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
 
         $user->ACL()->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
       }
@@ -623,14 +627,14 @@ class module_admin_route_users_edit
 
     $this->base_id = (int) $this->request->get('base_id');
 
-    $dmin = $this->request->get('dmin') ? new DateTime($this->request->get('dmin')) : null;
-    $dmax = $this->request->get('dmax') ? new DateTime($this->request->get('dmax')) : null;
+    $dmin = $this->request->get('dmin') ? new \DateTime($this->request->get('dmin')) : null;
+    $dmax = $this->request->get('dmax') ? new \DateTime($this->request->get('dmax')) : null;
 
     $activate = $this->request->get('limit');
 
     foreach ($this->users as $usr_id)
     {
-      $user = User_Adapter::getInstance($usr_id, appbox::get_instance());
+      $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
 
       $user->ACL()->set_limits($this->base_id, $activate, $dmin, $dmax);
     }

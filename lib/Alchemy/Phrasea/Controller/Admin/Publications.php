@@ -9,12 +9,8 @@
  * file that was distributed with this source code.
  */
 
-/**
- *
- * @package
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
+namespace Alchemy\Phrasea\Controller\Admin;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -23,24 +19,30 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 
-class Controller_Admin_Publications implements ControllerProviderInterface
+/**
+ *
+ * @package
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
+class Publications implements ControllerProviderInterface
 {
 
   public function connect(Application $app)
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
 
     $controllers = new ControllerCollection();
 
     $controllers->get('/list/', function() use ($app, $appbox)
             {
-              $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
-              $feeds = Feed_Collection::load_all($appbox, $user);
+              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $feeds = \Feed_Collection::load_all($appbox, $user);
 
               $template = 'admin/publications/list.html';
 
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(array('formatdate' => 'phraseadate::getDate'));
 
               return $twig->render($template, array('feeds' => $feeds));
@@ -50,15 +52,15 @@ class Controller_Admin_Publications implements ControllerProviderInterface
     $controllers->post('/create/', function() use ($app, $appbox)
             {
 
-              $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
               $request = $app['request'];
 
-              $feed = Feed_Adapter::create($appbox, $user, $request->get('title'), $request->get('subtitle'));
+              $feed = \Feed_Adapter::create($appbox, $user, $request->get('title'), $request->get('subtitle'));
               
               if($request->get('public') == '1')
                 $feed->set_public (true);
               elseif ($request->get('base_id'))
-                $feed->set_collection(collection::get_from_base_id($request->get('base_id')));
+                $feed->set_collection(\collection::get_from_base_id($request->get('base_id')));
 
               return $app->redirect('/admin/publications/list/');
             });
@@ -66,11 +68,11 @@ class Controller_Admin_Publications implements ControllerProviderInterface
 
     $controllers->get('/feed/{id}/', function($id) use ($app, $appbox)
             {
-              $feed = new Feed_Adapter($appbox, $id);
+              $feed = new \Feed_Adapter($appbox, $id);
 
               $template = 'admin/publications/fiche.html';
 
-              $twig = new supertwig();
+              $twig = new \supertwig();
               $twig->addFilter(
                       array(
                           'formatdate' => 'phraseadate::getDate'
@@ -89,8 +91,8 @@ class Controller_Admin_Publications implements ControllerProviderInterface
     $controllers->post('/feed/{id}/update/', function($id) use ($app, $appbox)
             {
 
-              $feed = new Feed_Adapter($appbox, $id);
-              $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $feed = new \Feed_Adapter($appbox, $id);
+              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
               if (!$feed->is_owner($user))
                 return $app->redirect('/admin/publications/feed/' . $id . '/?error=' . _('You are not the owner of this feed, you can not edit it'));
@@ -99,9 +101,9 @@ class Controller_Admin_Publications implements ControllerProviderInterface
 
               try
               {
-                $collection = collection::get_from_base_id($request->get('base_id'));
+                $collection = \collection::get_from_base_id($request->get('base_id'));
               }
-              catch (Exception $e)
+              catch (\Exception $e)
               {
                 $collection = null;
               }
@@ -117,8 +119,8 @@ class Controller_Admin_Publications implements ControllerProviderInterface
 
     $controllers->post('/feed/{id}/iconupload/', function($id) use ($app, $appbox)
             {
-              $feed = new Feed_Adapter($appbox, $id);
-              $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $feed = new \Feed_Adapter($appbox, $id);
+              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
               if (!$feed->is_owner($user))
                 return new Response('ERROR:you are not allowed');
@@ -126,7 +128,7 @@ class Controller_Admin_Publications implements ControllerProviderInterface
               if ($_FILES['Filedata']['error'] !== 0)
                 return new Response('ERROR:error while upload');
 
-              $file = new system_file($_FILES['Filedata']['tmp_name']);
+              $file = new \system_file($_FILES['Filedata']['tmp_name']);
               if (!in_array($file->get_mime(), array('image/jpeg', 'image/jpg', 'image/gif')))
                 return new Response('ERROR:bad filetype');
 
@@ -134,10 +136,10 @@ class Controller_Admin_Publications implements ControllerProviderInterface
                 return new Response('ERROR:file too large');
 
               $datas = $file->get_technical_datas();
-              if (!isset($datas[system_file::TC_DATAS_WIDTH]) || !isset($datas[system_file::TC_DATAS_HEIGHT]))
+              if (!isset($datas[\system_file::TC_DATAS_WIDTH]) || !isset($datas[\system_file::TC_DATAS_HEIGHT]))
                 return new Response('ERROR:file is not square');
 
-              if ($datas[system_file::TC_DATAS_WIDTH] != $datas[system_file::TC_DATAS_HEIGHT])
+              if ($datas[\system_file::TC_DATAS_WIDTH] != $datas[\system_file::TC_DATAS_HEIGHT])
                 return new Response('ERROR:file is not square');
 
               $feed->set_icon($file);
@@ -152,11 +154,11 @@ class Controller_Admin_Publications implements ControllerProviderInterface
               try
               {
                 $request = $app['request'];
-                $user = User_Adapter::getInstance($request->get('usr_id'), $appbox);
-                $feed = new Feed_Adapter($appbox, $id);
+                $user = \User_Adapter::getInstance($request->get('usr_id'), $appbox);
+                $feed = new \Feed_Adapter($appbox, $id);
                 $feed->add_publisher($user);
               }
-              catch (Exception $e)
+              catch (\Exception $e)
               {
                 $error = $e->getMessage();
               }
@@ -171,13 +173,13 @@ class Controller_Admin_Publications implements ControllerProviderInterface
               {
                 $request = $app['request'];
 
-                $feed = new Feed_Adapter($appbox, $id);
-                $publisher = new Feed_Publisher_Adapter($appbox, $request->get('publisher_id'));
+                $feed = new \Feed_Adapter($appbox, $id);
+                $publisher = new \Feed_Publisher_Adapter($appbox, $request->get('publisher_id'));
                 $user = $publisher->get_user();
                 if ($feed->is_publisher($user) === true && $feed->is_owner($user) === false)
                   $publisher->delete();
               }
-              catch (Exception $e)
+              catch (\Exception $e)
               {
                 $error = $e->getMessage();
               }
@@ -187,7 +189,7 @@ class Controller_Admin_Publications implements ControllerProviderInterface
 
     $controllers->post('/feed/{id}/delete/', function($id) use ($app, $appbox)
             {
-              $feed = new Feed_Adapter($appbox, $id);
+              $feed = new \Feed_Adapter($appbox, $id);
               $feed->delete();
 
               return $app->redirect('/admin/publications/list/');

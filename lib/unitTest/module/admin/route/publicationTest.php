@@ -35,7 +35,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function createApplication()
   {
-    $app = require dirname(__FILE__) . '/../../../../classes/module/Admin.php';
+    $app = require dirname(__FILE__) . '/../../../../Alchemy/Phrasea/Application/Admin.php';
 
     return $app;
   }
