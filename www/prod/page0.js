@@ -172,12 +172,10 @@ function getBask(sselid,el,ord)
     ord = '';
 
   $.ajax({
-    type: "POST",
-    url: "/prod/prodFeedBack.php",
-    dataType:'json',
+    type: "GET",
+    url: "/prod/baskets/" + sselid+ "/",
+    dataType:'html',
     data: {
-      action: "GETBASKET",
-      id:sselid,
       ord:ord
     },
     beforeSend:function(){
@@ -188,7 +186,7 @@ function getBask(sselid,el,ord)
     success: function(data){
       $(el).removeClass('unread');
       $(el).next().droppable('destroy').empty().removeClass('loading');
-      $(el).next().append(data.content).droppable({
+      $(el).next().append(data).droppable({
         accept:function(elem){
           if($(elem).hasClass('CHIM'))
           {
