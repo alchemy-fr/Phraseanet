@@ -1,5 +1,5 @@
-{% for basket_element in basket.get_elements() %}
-    <span class="wrapCHIM_{{basket_element.get_sselcont_id()}}">
+{% for basket_element in basket.getElements() %}
+    <span class="wrapCHIM_{{basket_element.getId()}}">
     {% include 'prod/basket_element.twig' %}
     </span>
 {% endfor %}
