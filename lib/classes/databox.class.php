@@ -959,7 +959,7 @@ class databox extends base
       }
       $this->saveStructure($dom_struct);
 
-      $type = isset($field['type']) ? $field['type'] : 'text';
+      $type = isset($field['type']) ? $field['type'] : 'string';
       $type = in_array($type, array(databox_field::TYPE_DATE, databox_field::TYPE_NUMBER, databox_field::TYPE_TEXT)) ? $type : databox_field::TYPE_TEXT;
 
       $meta_struct_field = databox_field::create($this, $fname);
