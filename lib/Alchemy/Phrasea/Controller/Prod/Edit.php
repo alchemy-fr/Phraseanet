@@ -10,17 +10,17 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Silex\ControllerCollection;
+use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
-use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
-
 class Edit implements ControllerProviderInterface
 {
 

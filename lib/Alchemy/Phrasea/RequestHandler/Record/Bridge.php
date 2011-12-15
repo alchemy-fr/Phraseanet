@@ -11,15 +11,15 @@
 
 namespace Alchemy\Phrasea\RequestHandler\Record;
 
+
+use Alchemy\Phrasea\RequestHandler\RecordsAbstract as RecordHandler;
+
 /**
  *
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
-use Alchemy\Phrasea\RequestHandler\RecordsAbstract as RecordHandler;
-
 class Bridge extends RecordHandler
 {
 

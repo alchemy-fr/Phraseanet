@@ -9,19 +9,18 @@
  * file that was distributed with this source code.
  */
 
-/**
- * Kernel
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-
 namespace Alchemy\Phrasea;
 
 use Symfony\Component\HttpFoundation\Request;
 
 require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 
+
+/**
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class Kernel extends \Pimple
 {
 
@@ -95,6 +94,15 @@ class Kernel extends \Pimple
   public function getRegistry()
   {
     return $this['Registry'];
+  }
+
+  /**
+   *
+   * @return \Doctrine\ORM\EntityManager 
+   */
+  public function getEntityManager()
+  {
+    return $this['EM'];
   }
 
   /**

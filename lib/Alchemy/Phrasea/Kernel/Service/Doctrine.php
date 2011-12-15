@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
+
+namespace Alchemy\Phrasea\Kernel\Service;
+
+use Doctrine\DBAL\Types\Type;
+
 /**
  * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
-namespace Alchemy\Phrasea\Kernel\Service;
-
-use Doctrine\DBAL\Types\Type;
-
 class Doctrine
 {
 

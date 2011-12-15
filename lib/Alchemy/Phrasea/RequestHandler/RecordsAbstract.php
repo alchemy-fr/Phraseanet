@@ -11,15 +11,15 @@
 
 namespace Alchemy\Phrasea\RequestHandler;
 
+
+use Symfony\Component\HttpFoundation\Request;
+
 /**
  * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
-use Symfony\Component\HttpFoundation\Request;
-
 class RecordsAbstract
 {
   

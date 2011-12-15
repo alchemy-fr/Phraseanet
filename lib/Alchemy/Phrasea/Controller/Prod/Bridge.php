@@ -11,21 +11,23 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Silex\ControllerCollection;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
+
 /**
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
-
 class Bridge implements ControllerProviderInterface
 {
 
