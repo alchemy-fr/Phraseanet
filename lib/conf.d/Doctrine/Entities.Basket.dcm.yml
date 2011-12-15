@@ -1,5 +1,6 @@
 Entities\Basket:
   type: entity
+  repositoryClass: Repositories\BasketRepository
   table: Baskets
   id:
     id:

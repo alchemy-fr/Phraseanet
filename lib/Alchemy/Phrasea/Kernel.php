@@ -91,6 +91,10 @@ class Kernel extends \Pimple
     return $this['Request'];
   }
 
+  /**
+   *
+   * @return \Registry 
+   */
   public function getRegistry()
   {
     return $this['Registry'];
@@ -112,6 +116,29 @@ class Kernel extends \Pimple
   public function getVersion()
   {
     return $this['Version'];
+  }
+  
+  /**
+   *
+   * @return boolean 
+   */
+  public function isAuthenticated()
+  {
+    $session = \Session_Handler::getInstance(\appbox::get_instance());
+
+    return $session->is_authenticated();
+  }
+  
+  /**
+   *
+   * @return \User_adapter 
+   */
+  public function getAuthenticatedUser()
+  {
+    $appbox = \appbox::get_instance();
+    $session = \Session_Handler::getInstance($appbox);
+
+    return \User_Adapter::getInstance($session->get_usr_id(), $appbox);
   }
 
   protected function verifyTimezone()

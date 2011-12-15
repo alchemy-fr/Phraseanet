@@ -111,6 +111,12 @@ class Doctrine
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
+                    'Repositories'
+                    , realpath(__DIR__ . '/../../../../Doctrine')
+    );
+    $classLoader->register();
+
+    $classLoader = new \Doctrine\Common\ClassLoader(
                     'Proxies'
                     , realpath(__DIR__ . '/../../../../Doctrine')
     );
