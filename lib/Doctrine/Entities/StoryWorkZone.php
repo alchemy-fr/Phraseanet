@@ -21,7 +21,7 @@ require_once __DIR__ . '/../../classes/cache/cacheableInterface.class.php';
 require_once __DIR__ . '/../../classes/User/Interface.class.php';
 require_once __DIR__ . '/../../classes/User/Adapter.class.php';
 
-class WorkZone
+class StoryWorkZone
 {
   
     /**
@@ -147,8 +147,14 @@ class WorkZone
     
     public function setRecord(\record_adapter $record)
     {
+      if(!$record->is_grouping())
+      {
+        throw new \Exception('Only storie allowed');
+      }
+      
       $this->setRecordId($record->get_record_id());
       $this->setSbasId($record->get_sbas_id());
+      
       return;
     }
     

@@ -294,4 +294,29 @@ class Basket
     return $this->validation;
   }
 
+    /**
+     * @var boolean $is_read
+     */
+    private $is_read = false;
+
+
+    /**
+     * Set is_read
+     *
+     * @param boolean $isRead
+     */
+    public function setIsRead($isRead)
+    {
+        $this->is_read = $isRead;
+    }
+
+    /**
+     * Get is_read
+     *
+     * @return boolean 
+     */
+    public function getIsRead()
+    {
+        return $this->is_read;
+    }
 }

@@ -1,6 +1,6 @@
-Entities\WorkZone:
+Entities\StoryWorkZone:
   type: entity
-  table: WorkZone
+  table: StoryWorkZone
   uniqueConstraints:
     user_story:
       columns: usr_id,sbas_id,record_id
