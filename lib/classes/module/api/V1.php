@@ -148,9 +148,9 @@ $app->before(function($request) use ($app)
 
               return;
             }
-            catch (Exception $e)
+            catch (\Exception $e)
             {
-              
+            
             }
           }
           $auth = new Session_Authentication_None($app['p4user']);

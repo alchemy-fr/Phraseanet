@@ -15,7 +15,7 @@
 
     {% set display = 'block' %}
 
-    {% if right[name] != users|length and name != 'access' and right['access'] != users|length %}
+    {% if right[name] != users|length and name != 'access' and right['access'] != users|length and type != 'sbas' %}
       {% set display = 'none' %}
     {% endif %}
 

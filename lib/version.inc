@@ -15,5 +15,5 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-define('GV_version', '3.5.0.0RC1');
-define('GV_version_name', 'Archaeopteryx');
+define('GV_version', '3.6.0.0a1');
+define('GV_version_name', 'Brachiosaurus');

@@ -49,7 +49,7 @@ class module_prod
           'sbas_id' => $sbas_id
       );
 
-      foreach($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
+      foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
       {
         $selected = ($searchSet &&
                 isset($searchSet->bases) &&
@@ -75,12 +75,19 @@ class module_prod
           else
             $dates[$id] = array('sbas' => array($sbas_id), 'fieldname' => $name);
         }
+        
+        if (isset($fields[$name]))
+        {
+          $fields[$name]['sbas'][] = $sbas_id;
+        }
         else
         {
-          if (isset($fields[$name]))
-            $fields[$name]['sbas'][] = $sbas_id;
-          else
-            $fields[$name] = array('sbas' => array($sbas_id), 'fieldname' => $name, 'id' => $id);
+          $fields[$name] = array(
+              'sbas' => array($sbas_id)
+              , 'fieldname' => $name
+              , 'type' => $meta->get_type()
+              , 'id' => $id
+          );
         }
       }
 

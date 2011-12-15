@@ -48,7 +48,7 @@
       <th>{% trans 'Titre' %}</th>
       <th style="width:150px;">{% trans 'Date Creation' %}</th>
       <th style="width:220px;">{% trans 'Restriction' %}</th>
-      <th style="width:80px;">{% trans 'Visible sur la homepage' %}</th>
+      <th style="width:80px;">{% trans 'Public' %}</th>
       <th style="width:80px;"></th>
     </tr>
   </thead>
@@ -72,7 +72,7 @@
         </td>
         <td style="text-align:center;">
           {% if feed.is_public() %}
-          <img src="/skins/icons/ok.png"/>
+            <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
           {% endif %}
         </td>
         <td>

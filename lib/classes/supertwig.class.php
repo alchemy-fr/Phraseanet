@@ -100,11 +100,10 @@ class supertwig
     $options = array_merge($default_options, $options);
     $extensions = array_merge($default_extensions, $extensions);
 
-    $this->init_twig();
-      
     try
     {
       $this->set_options($options);
+      $this->init_twig();
       $this->set_extensions($extensions);
       $this->addFilter(array('round' => 'round'));
     }

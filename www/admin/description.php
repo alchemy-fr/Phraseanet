@@ -21,7 +21,7 @@ $session = $appbox->get_session();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("srt", "ord", "act", "p0", // base_id
-                            "str" // si act=CHGSTRUCTURE, structure en xml
+        "str" // si act=CHGSTRUCTURE, structure en xml
 );
 
 
@@ -61,7 +61,16 @@ if (!empty($_POST))
         try
         {
           $local_parms = $httpRequest->get_parms(
-                          'name_' . $id, 'thumbtitle_' . $id, 'src_' . $id, 'multi_' . $id, 'indexable_' . $id, 'readonly_' . $id, 'tbranch_' . $id, 'report_' . $id, 'dces_' . $id
+                  'name_' . $id
+                  , 'thumbtitle_' . $id
+                  , 'src_' . $id
+                  , 'multi_' . $id
+                  , 'indexable_' . $id
+                  , 'readonly_' . $id
+                  , 'type_' . $id
+                  , 'tbranch_' . $id
+                  , 'report_' . $id
+                  , 'dces_' . $id
           );
 
           $field = databox_field::get_instance($databox, $id);
@@ -71,6 +80,7 @@ if (!empty($_POST))
           $field->set_multi($local_parms['multi_' . $id]);
           $field->set_indexable($local_parms['indexable_' . $id]);
           $field->set_readonly($local_parms['readonly_' . $id]);
+          $field->set_type($local_parms['type_' . $id]);
           $field->set_tbranch($local_parms['tbranch_' . $id]);
           $field->set_report($local_parms['report_' . $id]);
 
@@ -107,7 +117,7 @@ if (!empty($_POST))
 
     $parms = $httpRequest->get_parms('newfield');
 
-    if($parms['newfield'])
+    if ($parms['newfield'])
     {
       databox_field::create($databox, $parms['newfield']);
     }
@@ -124,7 +134,7 @@ if (!empty($_POST))
         }
         catch (Exception $e)
         {
-
+          
         }
       }
     }
