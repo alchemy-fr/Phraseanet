@@ -26,7 +26,9 @@ return call_user_func(function()
                   $twig = new \supertwig();
 
                   $app = new Application();
+                  $app['Kernel'] = bootstrap::getKernel();
 
+                  $app->mount('/baskets', new Controller\Basket());
                   $app->mount('/records/edit', new Controller\Edit());
                   $app->mount('/records/movecollection', new Controller\MoveCollection());
                   $app->mount('/bridge/', new Controller\Bridge());
