@@ -213,7 +213,6 @@ class Kernel extends \Pimple
   public static function initAutoloads()
   {
     require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-    require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/ApcUniversalClassLoader.php';
 
     require_once __DIR__ . '/../../vendor/Twig/lib/Twig/Autoloader.php';
     require_once __DIR__ . '/../../vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
@@ -221,7 +220,7 @@ class Kernel extends \Pimple
     \Twig_Autoloader::register();
     \Twig_Extensions_Autoloader::register();
 
-    $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader(crc32(__DIR__));
+    $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
 
     spl_autoload_register(array('Alchemy\Phrasea\Kernel', 'phraseaAutoload'));
 
