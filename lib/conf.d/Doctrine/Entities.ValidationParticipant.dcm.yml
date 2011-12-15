@@ -9,6 +9,8 @@ Entities\ValidationParticipant:
   fields:
     usr_id:
       type: integer
+    is_aware:
+      type: boolean
   oneToMany:
     datases:
       targetEntity: ValidationData

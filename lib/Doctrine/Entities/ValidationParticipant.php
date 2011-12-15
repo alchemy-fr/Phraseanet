@@ -112,4 +112,29 @@ class ValidationParticipant
     {
         return $this->session;
     }
+    /**
+     * @var boolean $is_aware
+     */
+    private $is_aware = false;
+
+
+    /**
+     * Set is_aware
+     *
+     * @param boolean $isAware
+     */
+    public function setIsAware($isAware)
+    {
+        $this->is_aware = $isAware;
+    }
+
+    /**
+     * Get is_aware
+     *
+     * @return boolean 
+     */
+    public function getIsAware()
+    {
+        return $this->is_aware;
+    }
 }
