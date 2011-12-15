@@ -1,5 +1,6 @@
 Entities\ValidationParticipant:
   type: entity
+  repositoryClass: Repositories\ValidationParticipantRepository
   table: ValidationParticipants
   id:
     id:
