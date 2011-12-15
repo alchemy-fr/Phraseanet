@@ -11,15 +11,16 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application;
-use Silex\ControllerProviderInterface;
-use Silex\ControllerCollection;
-
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Silex\Application,
+    Silex\ControllerProviderInterface,
+    Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\Request,
+    Symfony\Component\HttpFoundation\Response,
+    Symfony\Component\HttpFoundation\RedirectResponse,
+    Symfony\Component\HttpKernel\Exception\HttpException,
+    Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute,
+    Alchemy\Phrasea\RequestHandler;
 
 /**
  *
@@ -34,40 +35,30 @@ class Basket implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $kernel = $app['Kernel'] ;
-
-    $controllers->post('/create/', function() use ($app)
+    $controllers->match('/', function(Application $app)
             {
-      
-              $em = $app['Kernel']->getEntityManager();
-              
-              $Basket = new \Entities\Basket;
-              $Basket->setName($app['request']->get('name'));
-              $Basket->setUser($app['request']->get('desc'));
-              $Basket->setDescription($app['request']->get('desc'));
-              
-              $em->persist($Basket);
-              $em->flush();
-              
-              return new RedirectResponse(sprintf('/%d/', $Basket->getId()));
+              $requestHandler = new RequestHandler\Basket($app["kernel"]);
+              $processor = new BasketRoute\Root($requestHandler);
+
+              return $processor->getResponse();
             });
-            
+
+
     $controllers->get('/{basket_id}/', function($basket_id) use ($app)
             {
-      
               $em = $app['Kernel']->getEntityManager();
-              
+
               /* @var $entityManager \Doctrine\ORM\EntityManager */
-              
+
               $repo = $em->getRepository('Entities\Basket');
-              
+
               /* @todo implement ord */
               $Basket = $repo->find($basket_id);
-              
+
               $twig = new \supertwig();
-              
-              $html = $twig->render('prod/basket.twig', array('basket' => $Basket));//, 'ordre' => $order));
-              
+
+              $html = $twig->render('prod/basket.twig', array('basket' => $Basket)); //, 'ordre' => $order));
+
               return new Response($html);
             })->assert('basket_id', '\d+');
 
