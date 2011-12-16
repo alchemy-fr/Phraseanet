@@ -20,6 +20,8 @@
   RewriteRule ^prod/bridge/.*$        /prod/router.php [L]
   RewriteRule ^prod/feeds/.*$         /prod/router.php [L]
   RewriteRule ^prod/tooltip/.*$       /prod/router.php [L]
+  RewriteRule ^prod/baskets/.*$       /prod/router.php [L]
+  RewriteRule ^prod/$                 /prod/router.php [L]
 
   RewriteRule ^robots.txt$            /index.php [L]
   RewriteRule ^feeds/.*$              /index.php [L]
