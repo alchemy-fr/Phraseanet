@@ -14,7 +14,7 @@ namespace Alchemy\Phrasea\RouteProcessor;
 use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManager;
-use RequestHandler\RequestHandlerAbstract;
+use Alchemy\Phrasea\Helper\Helper;
 
 /**
  *
@@ -35,7 +35,7 @@ abstract class RouteAbstract
    *
    * @var Phrasea\Kernel 
    */
-  protected $requestHandler;
+  protected $requestHelper;
 
   /**
    * The response being rendered
@@ -52,18 +52,18 @@ abstract class RouteAbstract
    * Constructor for a Statme Thread Module
    * @param PDO $connection
    */
-  public function __construct(RequestHandlerAbstract $requestHandler)
+  public function __construct(Helper $requestHelper)
   {
-    $this->requestHandler = $requestHandler;
+    $this->requestHelper = $requestHelper;
   }
 
   /**
    *
-   * @return RequestHandlerAbstract 
+   * @return Helper 
    */
-  public function getRequestHandler()
+  public function getRequestHelper()
   {
-    return $this->requestHandler;
+    return $this->requestHelper;
   }
 
   /**
@@ -72,7 +72,7 @@ abstract class RouteAbstract
    */
   public function getKernel()
   {
-    return $this->requestHandler->getKernel();
+    return $this->requestHelper->getKernel();
   }
 
   /**

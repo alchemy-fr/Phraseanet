@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\RouteProcessor\Basket;
 
 use Alchemy\Phrasea\RouteProcessor;
-use Alchemy\Phrasea\RequestHandler;
+use Alchemy\Phrasea\Helper;
 
 /**
  *
@@ -23,11 +23,6 @@ use Alchemy\Phrasea\RequestHandler;
 class Root extends RouteProcessor\RouteAbstract
 {
 
-  public function __construct(RequestHandler\RequestHandlerAbstract $request)
-  {
-    parent::__construct($request);
-  }
-  
   public function getAllowedMethods()
   {
     return array('POST');

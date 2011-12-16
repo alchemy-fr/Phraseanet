@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\RouteProcessor\WorkZone;
 
 use Alchemy\Phrasea\RouteProcessor;
-use Alchemy\Phrasea\RequestHandler;
+use Alchemy\Phrasea\Helper;
 
 /**
  *
@@ -22,11 +22,7 @@ use Alchemy\Phrasea\RequestHandler;
  */
 class Root extends RouteProcessor\RouteAbstract
 {
-  public function __construct(RequestHandler\RequestHandlerAbstract $workzone)
-  {
-    parent::__construct($workzone);
-  }
-  
+
   public function getAllowedMethods()
   {
     return array('GET');
@@ -34,7 +30,7 @@ class Root extends RouteProcessor\RouteAbstract
 
   protected function get()
   {
-//    $content = $this->getRequestHandler()->getContent();
+    
   }
 
 }

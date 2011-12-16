@@ -12,8 +12,7 @@
 namespace Alchemy\Phrasea\RouteProcessor\Basket;
 
 use Symfony\Component\HttpFoundation\Request;
-use Alchemy\Phrasea\RouteProcessor,
-    Alchemy\Phrasea\RequestHandler;
+use Alchemy\Phrasea\RouteProcessor;
 
 /**
  *
@@ -23,11 +22,6 @@ use Alchemy\Phrasea\RouteProcessor,
  */
 class Basket extends RouteProcessor\RouteAbstract
 {
-
-  public function __construct(RequestHandler\RequestHandlerAbstract $request)
-  {
-    parent::__construct($request);
-  }
 
   public function getAllowedMethods()
   {
