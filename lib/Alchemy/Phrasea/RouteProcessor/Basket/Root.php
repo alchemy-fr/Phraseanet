@@ -23,7 +23,7 @@ use Alchemy\Phrasea\RequestHandler;
 class Root extends RouteProcessor\RouteAbstract
 {
 
-  public function __construct(RequestHandler\WorkZone $request)
+  public function __construct(RequestHandler\RequestHandlerAbstract $request)
   {
     parent::__construct($request);
   }
@@ -39,7 +39,7 @@ class Root extends RouteProcessor\RouteAbstract
 
     $Basket = new \Entities\Basket();
     $Basket->setName($this->getRequest()->get('name'));
-    $Basket->setUser($this->getRequest()->get('desc'));
+    $Basket->setUser($this->getKernel()->getAuthenticatedUser());
     $Basket->setDescription($this->getRequest()->get('desc'));
 
     $em->persist($Basket);

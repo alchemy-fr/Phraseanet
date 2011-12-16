@@ -83,7 +83,7 @@ abstract class RouteAbstract
   {
     return $this->getKernel()->getRequest();
   }
-
+  
   /**
    * Getter
    * @return EntityManager

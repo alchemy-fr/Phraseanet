@@ -22,7 +22,7 @@ use Alchemy\Phrasea\RequestHandler;
  */
 class Root extends RouteProcessor\RouteAbstract
 {
-  public function __construct(RequestHandler\WorkZone $workzone)
+  public function __construct(RequestHandler\RequestHandlerAbstract $workzone)
   {
     parent::__construct($workzone);
   }
@@ -34,7 +34,7 @@ class Root extends RouteProcessor\RouteAbstract
 
   protected function get()
   {
-    $content = $this->getRequestHandler()->getContent();
+//    $content = $this->getRequestHandler()->getContent();
   }
 
 }
