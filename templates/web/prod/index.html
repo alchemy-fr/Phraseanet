@@ -1,5 +1,5 @@
 {% macro bas_list(module, search_datas) %}
-{% set unique_id = module.get_random() %}
+{% set unique_id = module.getRandom() %}
 {% for base in search_datas['bases'] %}
 {% set sbas_id = base['sbas_id'] %}
 <div class="sbas_list sbas_{{sbas_id}}">
@@ -210,7 +210,6 @@
 {% block content %}
 
 {% set search_datas = module_prod.get_search_datas() %}
-
 <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-color:#1a1a1a;z-index:32766;">
   <div id="loader" style="top:200px;margin:0 auto;-moz-border-radius:5px;-webkit-border-radius:5px;background-color:#CCCCCC;position:relative;margin:0 auto;text-align:center;left:color:black;width:400px;height:100px;padding:20px;;z-index:32767;">
     <div style="margin:0 10px 10px;font-family:Helvetica,Arial,sans-serif;font-size:18px;color:#1A1A1A;text-align:left;">{% trans 'phraseanet::Nom de l\'application' %}</div>
@@ -305,8 +304,8 @@
         {% endif %}
       </ul>
       <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:30px;">
-        {% import 'prod/baskets_macro.html'  as  baskets %}
-        {{baskets.make_bloc(basket_collection)}}
+        {% import 'prod/baskets_macro.html'  as  WorkZoneMacros %}
+        {{WorkZoneMacros.make_bloc(WorkZone)}}
       </div>
       <div id="adv_search">
         <div>

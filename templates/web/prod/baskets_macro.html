@@ -1,99 +1,29 @@
-{% macro make_bloc(basket_collection, selected_type, selected_id, srt) %}
+{% macro make_bloc(WorkZone, selected_type, selected_id, srt) %}
   <div class="alert_datas_changed ui-corner-all">{% trans 'Vous avez recu un nouveau panier' %} <a class="basket_refresher" href="#">{% trans 'rafraichir' %}</a></div>
 <div class="bloc">
   <div class="insidebloc">
+    {% set content = WorkZone.getContent() %}
+    
+    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\RequestHandler\\WorkZone::BASKETS')) %}
 
-    {% for bask_type, baskets in basket_collection.get_baskets() %}
-
-      {% for content in baskets %}
-        {% if bask_type == 'regroup' %}
-          {% set class = 'grouping' %}
-          {% set sbas_id = content.getRecord().get_sbas_id() %}
-        
-          
-          
-          
-        <div tooltipsrc="/prod/tooltip/WorkZone/{{content.getId()}}/"
-             id="SSWZ_{{content.getId()}}" sbas="{{sbas_id}}"
+    
+        <div tooltipsrc="/prod/tooltip/basket/{{basket.getId()}}/"
+             id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT grouping
-                    {% if content.getId() == selected_ssel and selected_type == 'grouping' %}active{% endif %}"
-             onclick="loadBask('{{content.getId()}}',this)">
-          <div class="PNB title">
-            {{content.getRecord().get_base_id|get_collection_logo|raw}}
-            {{content.getRecord().getTitle()}}
-          </div>
-          <div class="menu">
-            <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">
-              &#9660;
-            </a>
-
-            <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="context-menu context-menu-theme-vista">
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="downloadThis('lst={{content.getRecord().get_serialized_key()}}');">{% trans 'action::exporter' %}
-                        </div>
-                      </div>
-                      <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('IMGT','{{content.getRecord().get_serialized_key()}}');" style=""
-                             class="context-menu-item-inner">{% trans 'action::editer' %}
-                        </div>
-                      </div>
-
-                      {% if bask_type == 'regroup' %}
-                        <div title="" class="context-menu-item">
-                          <div id="UNFIX_{{content.getId()}}" class="context-menu-item-inner" onclick="unFix(this);return false;">
-                            {% trans 'action::detacher' %}
-                          </div>
-                        </div>
-                        <div title="" class="context-menu-item">
-                          <div class="context-menu-item-inner" onclick="reorder('STORY',{{content.getRecord().get_serialized_key()}});return false;">
-                            {% trans 'Re-ordonner' %}
-                          </div>
-                        </div>
-                      {% endif %}
-
-                      </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div id="SSTT_content_{{content.getId()}}" class="content {{class}}" style="overflow:hidden;">
-
-        </div>
-
-          
-          
-          
-          
-        {% elseif bask_type == 'baskets' %}
-        
-        <div tooltipsrc="/prod/tooltip/basket/{{content.getId()}}/"
-             id="SSTT_{{content.getId()}}" sbas="{{sbas_id}}"
-             class="basketTips ui-accordion-header ui-state-default
-                    ui-corner-all header SSTT basket {% if content.is_unread() %}unread{% endif %}
-                    {% if content.getId() == selected_ssel and selected_type == 'basket' %}active{% endif %}"
-             onclick="loadBask('{{content.getId()}}',this)">
+                    ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
+                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}"
+             onclick="loadBask('{{basket.getId()}}',this)">
           <div class="PNB title">
             <img src='/skins/icons/basket.gif' title=''/>
-            {{content.getName()}}
+            {{basket.getName()}}
           </div>
           <div class="menu">
-          {% if content.getValidation() and content.getValidation().getInitator().get_id() == session.get_usr_id() %}
+          {% if basket.getValidation() %}
             <img title="{% trans 'Vous avez envoye une demande de validation de document sur ce panier' %}"
                  class="basketTips" src="/skins/icons/myvalid.png"/>
-          {% elseif content.getValidation() %}
-            <img title="{% trans 'Vous avez recu une demande de validation de document sur ce panier' %}"
-                 class="basketTips" src="/skins/icons/valid.png"/>
           {% endif %}
-          {% if content.getPusher() %}
-            {% set pusher = content.getPusher().get_display_name() %}
+          {% if basket.getPusher() %}
+            {% set pusher = basket.getPusher().get_display_name() %}
             <img class="basketTips" title="{% trans %}paniers:: panier recu de {{pusher}}{% endtrans %}"
                  src="/skins/icons/pushed_bask.png"/>
           {% endif %}
@@ -107,29 +37,29 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('SSTTID={{content.getId()}}');">{% trans 'action::exporter' %}
+                             onclick="downloadThis('SSTTID={{basket.getId()}}');">{% trans 'action::exporter' %}
                         </div>
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('SSTT','{{content.getId()}}');" style=""
+                        <div onclick="editThis('SSTT','{{basket.getId()}}');" style=""
                              class="context-menu-item-inner">{% trans 'action::editer' %}
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a href="/lightbox/compare/{{content.getId()}}/" target="_blank">Lightbox</a>
+                          <a href="/lightbox/compare/{{basket.getId()}}/" target="_blank">Lightbox</a>
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="renameBasket(this,'{{content.getId()}}');return false;">
+                             onclick="renameBasket(this,'{{basket.getId()}}');return false;">
                           {% trans 'action::renommer' %}
                         </div>
                       </div>
 
-                      {% if content.getValidation() %}
+                      {% if basket.getValidation() %}
                         <div title="" class="context-menu-item">
-                          <a target="_blank" href="/lightbox/validate/{{content.getId()}}/">
+                          <a target="_blank" href="/lightbox/validate/{{basket.getId()}}/">
                             <div class="context-menu-item-inner">
                               {% trans 'action::Valider' %}
                             </div>
@@ -137,16 +67,74 @@
                         </div>
                       {% endif %}
 
-                      {% if not content.getValidation() or content.getValidation().getInitiator().get_id() == session.get_usr_id() %}
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner" id="SSTTREMOVER_{{basket.getId()}}"
+                             onclick="checkDeleteThis('SSTT',this);return false;">
+                          {% trans 'action : supprimer' %}
+                        </div>
+                      </div>
+
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner" onclick="reorder({{basket.getId()}});return false;">
+                          {% trans 'Re-ordonner' %}
+                        </div>
+                      </div>
+
+                      </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;">
+
+        </div>
+    
+    {% endfor %}
+    
+    {% for story in content.get(constant('\\Alchemy\\Phrasea\\RequestHandler\\WorkZone::STORIES')) %}
+
+          
+        <div tooltipsrc="/prod/tooltip/WorkZone/{{story.getId()}}/"
+             id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
+             class="basketTips ui-accordion-header ui-state-default
+                    ui-corner-all header SSTT grouping
+                    {% if story.getId() == selected_id and selected_type == 'grouping' %}active{% endif %}"
+             onclick="loadBask('{{story.getId()}}',this)">
+          <div class="PNB title">
+            {{story.getRecord().get_base_id|get_collection_logo|raw}}
+            {{story.getRecord().getTitle()}}
+          </div>
+          <div class="menu">
+            <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">
+              &#9660;
+            </a>
+
+            <table cellspacing="0" cellpadding="0" style="display:none;" class="contextMenu basketcontextmenu">
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="context-menu context-menu-theme-vista">
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner"
+                             onclick="downloadThis('lst={{story.getRecord().get_serialized_key()}}');">{% trans 'action::exporter' %}
+                        </div>
+                      </div>
+                      <div title="" class="context-menu-item menu3-custom-item">
+                        <div onclick="editThis('IMGT','{{story.getRecord().get_serialized_key()}}');" style=""
+                             class="context-menu-item-inner">{% trans 'action::editer' %}
+                        </div>
+                      </div>
+
+                      {% if bask_type == 'regroup' %}
                         <div title="" class="context-menu-item">
-                          <div class="context-menu-item-inner" id="SSTTREMOVER_{{content.getId()}}"
-                               onclick="checkDeleteThis('SSTT',this);return false;">
-                            {% trans 'action : supprimer' %}
+                          <div id="UNFIX_{{story.getId()}}" class="context-menu-item-inner" onclick="unFix(this);return false;">
+                            {% trans 'action::detacher' %}
                           </div>
                         </div>
-
                         <div title="" class="context-menu-item">
-                          <div class="context-menu-item-inner" onclick="reorder({{content.getId()}});return false;">
+                          <div class="context-menu-item-inner" onclick="reorder('STORY',{{story.getRecord().get_serialized_key()}});return false;">
                             {% trans 'Re-ordonner' %}
                           </div>
                         </div>
@@ -159,18 +147,15 @@
             </table>
           </div>
         </div>
-        <div id="SSTT_content_{{content.getId()}}" class="content {{class}}" style="overflow:hidden;">
+        <div id="SSTT_content_{{story.getId()}}" class="content grouping" style="overflow:hidden;">
 
         </div>
 
           
           
-        {% endif %}
-        
-      
-
-      {% endfor %}
+    
     {% endfor %}
+    
   </div>
 </div>
 {% endmacro %}
