@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\RequestHelper\User;
+namespace Alchemy\Phrasea\Helper\User;
 
 use Symfony\Component\HttpFoundation\Request;
 

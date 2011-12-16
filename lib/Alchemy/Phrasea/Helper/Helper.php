@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\RequestHelper;
+namespace Alchemy\Phrasea\Helper;
 
 use Alchemy\Phrasea\Kernel;
 
