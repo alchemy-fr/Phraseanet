@@ -42,8 +42,8 @@ class basketCollection
     $baskets['baskets'] = $baskets['recept'] = $baskets['regroup'] = array();
 
 
-    $kernel = bootstrap::getKernel();
-    $em = $kernel->getEntityManager();
+    $core = bootstrap::getCore();
+    $em = $core->getEntityManager();
 
     $baskets['baskets'] = $em->getRepository('Entities\Basket')
             ->findBy(array('usr_id' => $usr_id, 'pusher_id' => null));

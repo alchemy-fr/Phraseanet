@@ -16,46 +16,46 @@
  * @link        www.phraseanet.com
  */
 
-require_once __DIR__ . '/../Alchemy/Phrasea/Kernel.php';
+require_once __DIR__ . '/../Alchemy/Phrasea/Core.php';
     
 class bootstrap
 {
   
-  protected static $kernel;
+  protected static $core;
 
   public static function set_php_configuration()
   {
-    return Alchemy\Phrasea\Kernel::initPHPConf();
+    return Alchemy\Phrasea\Core::initPHPConf();
   }
 
   /**
    *
-   * @return Alchemy\Phrasea\Kernel 
+   * @return Alchemy\Phrasea\Core 
    */
   public static function execute()
   {
-    if(static::$kernel)
+    if(static::$core)
     {
-      return static::$kernel;
+      return static::$core;
     }
     
-    static::$kernel = new Alchemy\Phrasea\Kernel();
+    static::$core = new Alchemy\Phrasea\Core();
     
-    return static::$kernel;
+    return static::$core;
   }
   
   /**
    *
-   * @return Alchemy\Phrasea\Kernel 
+   * @return Alchemy\Phrasea\Core 
    */
-  public static function getKernel()
+  public static function getCore()
   {
-    return static::$kernel;
+    return static::$core;
   }
 
   public static function register_autoloads()
   {
-    return Alchemy\Phrasea\Kernel::initAutoloads();
+    return Alchemy\Phrasea\Core::initAutoloads();
   }
 
 }
