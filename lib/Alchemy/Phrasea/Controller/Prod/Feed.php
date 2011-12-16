@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
  *
@@ -43,7 +43,7 @@ class Feed implements ControllerProviderInterface
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
               $feeds = \Feed_Collection::load_all($appbox, $user);
               $request = $app['request'];
-              $publishing = new RequestHandler\Feed($request);
+              $publishing = new RecordHelper\Feed($request);
 
               $datas = $twig->render('prod/actions/publish/publish.html', array('publishing' => $publishing, 'feeds' => $feeds));
 
@@ -71,7 +71,7 @@ class Feed implements ControllerProviderInterface
 
                 $entry = \Feed_Entry_Adapter::create($appbox, $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
                 
-                $publishing = new RequestHandler\Feed($request);
+                $publishing = new RecordHelper\Feed($request);
 
                 foreach ($publishing->get_elements() as $record)
                 {

@@ -34,7 +34,8 @@ return call_user_func(function()
                   $app->mount('/bridge/', new Controller\Bridge());
                   $app->mount('/feeds', new Controller\Feed());
                   $app->mount('/tooltip', new Controller\Tooltip());
-
+                  $app->mount('/', new Controller\Root());
+                  
                   $app->error(function (\Exception $e, $code) use ($app, $twig)
                           {
                             if ($e instanceof \Bridge_Exception)

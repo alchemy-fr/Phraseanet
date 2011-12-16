@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
  *
@@ -55,7 +55,7 @@ class Bridge implements ControllerProviderInterface
     $controllers->post('/manager/'
             , function() use ($app, $twig)
             {
-              $route = new RequestHandler\Bridge($app['request']);
+              $route = new RecordHelper\Bridge($app['request']);
               $appbox = \appbox::get_instance();
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
@@ -420,7 +420,7 @@ class Bridge implements ControllerProviderInterface
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
-              $route = new RequestHandler\Bridge($request);
+              $route = new RecordHelper\Bridge($request);
               $route->grep_records($account->get_api()->acceptable_records());
 
               $params = array(
@@ -447,7 +447,7 @@ class Bridge implements ControllerProviderInterface
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
-              $route = new RequestHandler\Bridge($request);
+              $route = new RecordHelper\Bridge($request);
               $route->grep_records($account->get_api()->acceptable_records());
               $connector = $account->get_api()->get_connector();
 

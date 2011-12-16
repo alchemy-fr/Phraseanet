@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpKernel\Exception\HttpException,
     Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute,
-    Alchemy\Phrasea\RequestHandler;
+    Alchemy\Phrasea\Helper;
 
 /**
  *
@@ -37,8 +37,8 @@ class Basket implements ControllerProviderInterface
 
     $controllers->match('/', function(Application $app)
             {
-              $requestHandler = new RequestHandler\Basket($app["kernel"]);
-              $processor = new BasketRoute\Root($requestHandler);
+              $requestHelper = new Helper\Helper($app["kernel"]);
+              $processor = new BasketRoute\Root($requestHelper);
 
               return $processor->getResponse();
             });

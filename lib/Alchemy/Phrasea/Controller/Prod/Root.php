@@ -19,8 +19,7 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpFoundation\RedirectResponse,
     Symfony\Component\HttpKernel\Exception\HttpException,
     Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Alchemy\Phrasea\RouteProcessor\WorkZone as RouteWorkZone,
-    Alchemy\Phrasea\Helper;
+use Alchemy\Phrasea\Helper;
 
 /**
  *
@@ -28,7 +27,7 @@ use Alchemy\Phrasea\RouteProcessor\WorkZone as RouteWorkZone,
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Basket implements ControllerProviderInterface
+class Root implements ControllerProviderInterface
 {
 
   public function connect(Application $app)
@@ -37,8 +36,8 @@ class Basket implements ControllerProviderInterface
 
     $controllers->match('/', function(Application $app)
             {
-              $requestHelper = new Helper\WorkZone($app["kernel"]);
-              $processor = new RouteWorkZone\Root($requestHelper);
+              $requestHelper = new Helper\Prod($app["Kernel"]);
+              $processor = new \Alchemy\Phrasea\RouteProcessor\Prod\Root($requestHelper);
 
               return $processor->getResponse();
             });

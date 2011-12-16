@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
-use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
  *
@@ -32,7 +32,7 @@ class Edit implements ControllerProviderInterface
             {
               $request = $app['request'];
               
-              $handler = new RequestHandler\Edit($request);
+              $handler = new RecordHelper\Edit($request);
               
               $handler->propose_editing();
 
@@ -48,7 +48,7 @@ class Edit implements ControllerProviderInterface
     $controllers->post('/apply/', function() use ($app)
             {
               $request = $app['request'];
-              $editing = new RequestHandler\Edit($request);
+              $editing = new RecordHelper\Edit($request);
               $editing->execute($request);
 
               $template = 'prod/actions/edit_default.twig';

@@ -16,7 +16,7 @@ use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
  *
@@ -34,7 +34,7 @@ class MoveCollection implements ControllerProviderInterface
     $controllers->post('/', function() use ($app)
             {
               $request = $app['request'];
-              $move = new RequestHandler\MoveCollection($request);
+              $move = new RecordHelper\MoveCollection($request);
               $move->propose();
 
               $template = 'prod/actions/collection_default.twig';
@@ -49,7 +49,7 @@ class MoveCollection implements ControllerProviderInterface
     $controllers->post('/apply/', function() use ($app)
             {
               $request = $app['request'];
-              $move = new RequestHandler\MoveCollection($request);
+              $move = new RecordHelper\MoveCollection($request);
               $move->execute($request);
               $template = 'prod/actions/collection_submit.twig';
 

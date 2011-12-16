@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Alchemy\Phrasea\RequestHandler\Record as RequestHandler;
+use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
  *
