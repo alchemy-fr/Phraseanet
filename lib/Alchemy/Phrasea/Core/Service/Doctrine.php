@@ -10,7 +10,7 @@
  */
 
 
-namespace Alchemy\Phrasea\Kernel\Service;
+namespace Alchemy\Phrasea\Core\Service;
 
 use Doctrine\DBAL\Types\Type;
 

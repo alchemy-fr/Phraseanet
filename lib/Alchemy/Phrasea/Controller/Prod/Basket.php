@@ -35,29 +35,49 @@ class Basket implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $controllers->match('/', function(Application $app)
+    $controllers->post('/', function(Application $app)
             {
-              $requestHelper = new Helper\Helper($app["kernel"]);
-              $processor = new BasketRoute\Root($requestHelper);
+              $em = $app['Core']->getEntityManager();
 
-              return $processor->getResponse();
+              $Basket = new \Entities\Basket();
+              $Basket->setName($app['request']->get('name'));
+              $Basket->setUser($app['Core']->getAuthenticatedUser());
+              $Basket->setDescription($app['request']->get('desc'));
+
+              $em->persist($Basket);
+              $em->flush();
+
+              return new RedirectResponse(sprintf('/%d/', $Basket->getId()));
+            });
+
+    $controllers->get('/create/', function(Application $app)
+            {
+              $twig = new \supertwig();
+
+              return new Response($twig->render('prod/Baskets/Create.html.twig', array()));
             });
 
 
     $controllers->get('/{basket_id}/', function($basket_id) use ($app)
             {
-              $em = $app['Kernel']->getEntityManager();
 
-              /* @var $entityManager \Doctrine\ORM\EntityManager */
+              $identifier = $app['request']->get('basket_id');
 
-              $repo = $em->getRepository('Entities\Basket');
+              if (null === $identifier)
+              {
+                throw new \Exception_BadRequest('No basket_id');
+              }
 
-              /* @todo implement ord */
-              $Basket = $repo->find($basket_id);
+              $em = $app['Core']->getEntityManager();
+
+              $repository = $em->getRepository('Entities\Baskets');
+
+              /* @var $basket Entities\Basket */
+              $basket = $repository->find($identifier);
 
               $twig = new \supertwig();
 
-              $html = $twig->render('prod/basket.twig', array('basket' => $Basket)); //, 'ordre' => $order));
+              $html = $twig->render('prod/basket.twig', array('basket' => $basket));
 
               return new Response($html);
             })->assert('basket_id', '\d+');

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-use Alchemy\Phrasea\Kernel;
+use Alchemy\Phrasea\Core;
 
 /**
  * 
@@ -33,7 +33,7 @@ class Prod extends \Alchemy\Phrasea\Helper\Helper
     $bases = $fields = $dates = array();
     $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
-    $user = $this->getKernel()->getAuthenticatedUser();
+    $user = $this->getCore()->getAuthenticatedUser();
     
     $searchSet = $user->getPrefs('search');
 

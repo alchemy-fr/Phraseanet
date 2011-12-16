@@ -21,7 +21,7 @@ require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Kernel extends \Pimple
+class Core extends \Pimple
 {
 
   public function __construct($isDev = false)
@@ -34,12 +34,12 @@ class Kernel extends \Pimple
 
     $this['Version'] = $this->share(function()
             {
-              return new Kernel\Version();
+              return new Core\Version();
             });
 
     $this['EM'] = $this->share(function()
             {
-              $doctrine = new Kernel\Service\Doctrine();
+              $doctrine = new Core\Service\Doctrine();
               return $doctrine->getEntityManager();
             });
 
@@ -111,7 +111,7 @@ class Kernel extends \Pimple
 
   /**
    *
-   * @return Alchemy\Phrasea\Kernel\Version 
+   * @return Alchemy\Phrasea\Core\Version 
    */
   public function getVersion()
   {
@@ -249,7 +249,7 @@ class Kernel extends \Pimple
 
     $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
 
-    spl_autoload_register(array('Alchemy\Phrasea\Kernel', 'phraseaAutoload'));
+    spl_autoload_register(array('Alchemy\Phrasea\Core', 'phraseaAutoload'));
 
     $loader->registerNamespaces(array(
         'Alchemy' => __DIR__ . '/../..',

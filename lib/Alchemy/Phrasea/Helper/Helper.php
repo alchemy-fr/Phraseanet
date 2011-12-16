@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-use Alchemy\Phrasea\Kernel;
+use Alchemy\Phrasea\Core;
 
 /**
  *
@@ -22,27 +22,27 @@ use Alchemy\Phrasea\Kernel;
 class Helper
 {
 
-  private $kernel;
+  private $core;
 
   /**
    *
    * @param Kernel $kernel
    * @return Helper 
    */
-  public function __construct(Kernel $kernel)
+  public function __construct(Core $core)
   {
-    $this->kernel = $kernel;
+    $this->core = $core;
 
     return $this;
   }
 
   /**
    *
-   * @return Alchemy\Phrasea\Kernel 
+   * @return Alchemy\Phrasea\Core 
    */
-  public function getKernel()
+  public function getCore()
   {
-    return $this->kernel;
+    return $this->core;
   }
 
 }

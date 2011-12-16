@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper;
 
-use Alchemy\Phrasea\Kernel;
+use Alchemy\Phrasea\Core;
 
 /**
  * 
@@ -42,8 +42,8 @@ class WorkZone extends Helper
    */
   public function getContent()
   {
-    $em = $this->getKernel()->getEntityManager();
-    $current_user = $this->getKernel()->getAuthenticatedUser();
+    $em = $this->getCore()->getEntityManager();
+    $current_user = $this->getCore()->getAuthenticatedUser();
 
     /* @var $repo_baskets \Doctrine\Repositories\BasketRepository */
     $repo_baskets = $em->getRepository('Entities\Basket');

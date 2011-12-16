@@ -26,9 +26,10 @@ return call_user_func(function()
                   $twig = new \supertwig();
 
                   $app = new Application();
-                  $app['Kernel'] = bootstrap::getKernel();
+                  $app['Core'] = bootstrap::getCore();
 
                   $app->mount('/baskets', new Controller\Basket());
+                  $app->mount('/WorkZone', new Controller\WorkZone());
                   $app->mount('/records/edit', new Controller\Edit());
                   $app->mount('/records/movecollection', new Controller\MoveCollection());
                   $app->mount('/bridge/', new Controller\Bridge());
@@ -38,6 +39,7 @@ return call_user_func(function()
                   
                   $app->error(function (\Exception $e, $code) use ($app, $twig)
                           {
+                    exit($e->getMessage());
                             if ($e instanceof \Bridge_Exception)
                             {
                               $request = $app['request'];

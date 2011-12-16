@@ -9,28 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\RouteProcessor\WorkZone;
-
-use Alchemy\Phrasea\RouteProcessor;
-use Alchemy\Phrasea\Helper;
+namespace Alchemy\Phrasea\Core;
 
 /**
- *
+ * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Root extends RouteProcessor\RouteAbstract
+class Version
 {
 
-  public function getAllowedMethods()
+  protected static $number = '3.6.0';
+  protected static $name = 'Brachiosaure';
+
+  public static function getNumber()
   {
-    return array('GET');
+    return static::$number;
   }
 
-  protected function get()
+  public static function getName()
   {
-    
+    return static::$name;
   }
 
 }
