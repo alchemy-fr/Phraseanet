@@ -79,7 +79,7 @@ class supertwig
     {
       $default_options = array(
           'debug' => true,
-          'strict_variables' => false,
+          'strict_variables' => true,
           'trim_blocks' => true,
           'charset' => 'utf-8',
           'auto_reload' => true
