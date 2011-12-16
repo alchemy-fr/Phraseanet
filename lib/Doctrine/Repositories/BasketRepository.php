@@ -31,10 +31,10 @@ class BasketRepository extends EntityRepository
   public function findActiveByUser(\User_Adapter $user)
   {
     $dql = 'SELECT b FROM Entities\Basket b 
-            WHERE b.usr_id = :usr_id AND archived = false';
+            WHERE b.usr_id = :usr_id AND b.archived = false';
     
     $query = $this->_em->createQuery($dql);
-    $query->setParameters(array(':usr_id' => $user->get_id()));
+    $query->setParameters(array('usr_id' => $user->get_id()));
 
     return $query->getResult();
   }
@@ -50,9 +50,9 @@ class BasketRepository extends EntityRepository
   public function findActiveValidationByUser(\User_Adapter $user)
   {
     $dql = 'SELECT b FROM Entities\Basket b 
-              JOIN b.Entities\ValidationSession s 
-              JOIN s.Entities\ValidationParticipant  
-            WHERE b.usr_id != ?1 AND s.usr_id = ?2 
+              JOIN b.validation s 
+              JOIN s.participants p  
+            WHERE b.usr_id != ?1 AND p.usr_id = ?2 
                   AND s.expires > CURRENT_TIMESTAMP()';
     
     $query = $this->_em->createQuery($dql);

@@ -11,6 +11,9 @@
 
 namespace Entities;
 
+require_once __DIR__ . '/../../classes/record/Interface.class.php';
+require_once __DIR__ . '/../../classes/record/adapter.class.php';
+
 /**
  * Kernel
  *
