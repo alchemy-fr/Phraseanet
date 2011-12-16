@@ -1,0 +1,29 @@
+Entities\StoryWZ:
+  type: entity
+  repositoryClass: Repositories\StoryWZRepository
+  table: StoryWZ
+  uniqueConstraints:
+    user_story:
+      columns: usr_id,sbas_id,record_id
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    sbas_id:
+      type: integer
+    record_id:
+      type: integer
+    usr_id:
+      type: integer
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+
+
+
+
+
