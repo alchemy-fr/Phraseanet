@@ -573,9 +573,11 @@
     <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
       <ul style="list-style-type:none;margin:0;padding:0">
         <li class="context-menu-item">
-          <div class="context-menu-item-inner" onclick="newTemp();">
-            <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau panier' %}" />
-            {% trans 'action:: nouveau panier' %}
+          <div class="context-menu-item-inner"@>
+            <a title="{% trans 'action:: nouveau panier' %}" class="dialog" href="/prod/baskets/create/">
+              <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau panier' %}" />
+              {% trans 'action:: nouveau panier' %}
+            </a>
           </div>
         </li>
         <li class="context-menu-item">
@@ -1189,6 +1191,7 @@
   {% include "prod/thesaurus.js" %}
 </script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/g=prod"></script>
+<script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=prod/jquery.dialogs.js"></script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">

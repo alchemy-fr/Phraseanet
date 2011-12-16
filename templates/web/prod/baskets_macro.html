@@ -4,7 +4,7 @@
   <div class="insidebloc">
     {% set content = WorkZone.getContent() %}
     
-    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\RequestHandler\\WorkZone::BASKETS')) %}
+    {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
 
     
         <div tooltipsrc="/prod/tooltip/basket/{{basket.getId()}}/"
@@ -93,7 +93,7 @@
     
     {% endfor %}
     
-    {% for story in content.get(constant('\\Alchemy\\Phrasea\\RequestHandler\\WorkZone::STORIES')) %}
+    {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
 
           
         <div tooltipsrc="/prod/tooltip/WorkZone/{{story.getId()}}/"
