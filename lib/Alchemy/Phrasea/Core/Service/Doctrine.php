@@ -34,7 +34,7 @@ class Doctrine
 
     $config = new \Doctrine\ORM\Configuration();
 
-    $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ApcCache);
+    $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
 
     $chainDriverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
 

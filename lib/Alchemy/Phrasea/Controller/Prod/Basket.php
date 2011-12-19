@@ -73,7 +73,7 @@ class Basket implements ControllerProviderInterface
               $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
 
               $em = $app['Core']->getEntityManager();
-              
+
               $em->remove($basket);
               $em->flush();
 
@@ -95,6 +95,43 @@ class Basket implements ControllerProviderInterface
               }
             });
 
+    $controllers->post(
+            '/{basket_id}/{basket_element_id}/delete/'
+            , function(Application $app, Request $request, $basket_id, $basket_element_id) use ($basket_controller)
+            {
+              $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
+
+              /* @var $em \Doctrine\ORM\EntityManager */
+              $em = $app['Core']->getEntityManager();
+
+              foreach ($basket->getElements() as $basket_element)
+              {
+                /* @var $basket_element \Entities\BasketElement */
+                if ($basket_element->getId() == $basket_element_id)
+                {
+                  $em->remove($basket_element);
+                }
+              }
+
+              $em->flush();
+
+              $data = array(
+                  'success' => true
+                  , 'message' => _('Record removed from basket')
+              );
+
+              if ($request->getRequestFormat() == 'json')
+              {
+                $datas = $app['Core']['Serializer']->serialize($data, 'json');
+
+                return new Response($datas, 200, array('Content-type' => 'application/json'));
+              }
+              else
+              {
+                return new RedirectResponse('/');
+              }
+            });
+
 
 
     $controllers->post('/{basket_id}/update/', function(Application $app, Request $request, $basket_id) use ($basket_controller)
@@ -105,7 +142,7 @@ class Basket implements ControllerProviderInterface
               $basket->setDescription($request->get('description'));
               
               $em = $app['Core']->getEntityManager();
-              
+
               $em->merge($basket);
               $em->flush();
 
@@ -151,7 +188,7 @@ class Basket implements ControllerProviderInterface
               $basket->setArchived(!!$request->get('archive'));
 
               $em = $app['Core']->getEntityManager();
-              
+
               $em->merge($basket);
               $em->flush();
 
@@ -180,11 +217,11 @@ class Basket implements ControllerProviderInterface
 
               $user = $app['Core']->getAuthenticatedUser();
               /* @var $user \User_Adapter */
-              
+
               $em = $app['Core']->getEntityManager();
 
               $n = 0;
-              
+
               foreach (explode(';', $request->get('lst')) as $sbas_rec)
               {
                 $sbas_rec = explode('_', $sbas_rec);
@@ -212,7 +249,11 @@ class Basket implements ControllerProviderInterface
                   $basket->addBasketElement($basket_element);
                   $n++;
                 }
-                catch (\Exception_NotFound $e)
+                catch (Exception $e)
+                {
+                  
+                }
+                catch (\PDOException $e)
                 {
                   
                 }
@@ -249,7 +290,7 @@ class Basket implements ControllerProviderInterface
     $controllers->get('/{basket_id}/', function(Application $app, $basket_id) use ($basket_controller)
             {
               $em = $app['Core']->getEntityManager();
-      
+
               $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
 
               $basket->setIsRead(true);
@@ -258,7 +299,7 @@ class Basket implements ControllerProviderInterface
               $em->flush();
 
               $twig = new \supertwig();
-              
+
               $html = $twig->render('prod/basket.twig', array('basket' => $basket));
 
               return new Response($html);
