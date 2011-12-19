@@ -68,7 +68,7 @@ class Basket implements ControllerProviderInterface
               }
             });
 
-    $controllers->post('/{basket_id}/delete/', function(Application $app, $basket_id) use ($basket_controller)
+    $controllers->post('/{basket_id}/delete/', function(Application $app, Request $request, $basket_id) use ($basket_controller)
             {
               $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
 
@@ -97,13 +97,13 @@ class Basket implements ControllerProviderInterface
 
 
 
-    $controllers->post('/{basket_id}/update/', function(Application $app, $basket_id) use ($basket_controller)
+    $controllers->post('/{basket_id}/update/', function(Application $app, Request $request, $basket_id) use ($basket_controller)
             {
               $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
 
               $basket->setName($request->get('name'));
               $basket->setDescription($request->get('description'));
-
+              
               $em = $app['Core']->getEntityManager();
               
               $em->merge($basket);
@@ -144,7 +144,7 @@ class Basket implements ControllerProviderInterface
             });
 
 
-    $controllers->post('/{basket_id}/archive/', function(Application $app, $basket_id) use ($basket_controller)
+    $controllers->post('/{basket_id}/archive/', function(Application $app, Request $request, $basket_id) use ($basket_controller)
             {
               $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
 
@@ -173,10 +173,8 @@ class Basket implements ControllerProviderInterface
               }
             });
 
-    $controllers->post('/{basket_id}/addElements/', function(Application $app, $basket_id) use ($basket_controller)
+    $controllers->post('/{basket_id}/addElements/', function(Application $app, Request $request, $basket_id) use ($basket_controller)
             {
-
-              $request = $app['request'];
 
               $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
 
