@@ -180,6 +180,7 @@
 
 <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,login/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css" >
 <link id="skinCss" type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=skins/prod/{{cssfile}}/prodcolor.css" >
+<link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css" >
 <!--[if IE 7]>
 		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie7.css" >
 <![endif]-->
@@ -882,26 +883,6 @@
 </div>
 
 {{cgus_agreement|raw}}
-
-
-<div id="basket-dialog" style="display:none;">
-  <form onsubmit="return false;">
-    <div>
-      <label>{% trans 'panier:: nom' %}</label>
-    </div>
-    <div>
-      <input style="width:100%;margin:10px 0;" type="text" name="name" value=""/>
-    </div>
-    <div>
-      <label>{% trans 'panier:: description' %}</label>
-    </div>
-    <div>
-      <textarea style="width:100%;height:200px;" id="basket-desc" name="description"></textarea>
-    </div>
-    <div></div>
-  </form>
-</div>
-
 
 <div style="display:none;position:relative;" id="look_box" title="{% trans 'Preferences' %}" >
   <div class="tabs">

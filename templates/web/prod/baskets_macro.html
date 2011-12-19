@@ -51,9 +51,10 @@
                         </div>
                       </div>
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner"
-                             onclick="renameBasket(this,'{{basket.getId()}}');return false;">
-                          {% trans 'action::renommer' %}
+                        <div class="context-menu-item-inner">
+                          <a class="dialog" title="{% trans 'action::renommer' %}" href="/prod/baskets/{{basket.getId()}}/update/">
+                            {% trans 'action::renommer' %}
+                          </a>
                         </div>
                       </div>
 

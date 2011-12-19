@@ -1,5 +1,5 @@
 <div style="margin:0 7px;overflow:hidden;">
-{% set basket_length = basket.get_elements()|length %}
+{% set basket_length = basket.getElements()|length %}
     <div class="tools">
 
 
@@ -57,13 +57,9 @@
             <div style="height:120px;"></div>
 {% endif %}
 
-{% if basket.is_grouping() %}
-    {% set basket_scope = 'groupings'%}
-{% else %}
-    {% set basket_scope = 'objects'%}
-{% endif %}
+{% set basket_scope = 'objects'%}
 
-{% if basket.is_my_valid() %}
+{% if basket.getValidation() and basket.getValidation().getInitiator() == core.getAuthenticatedUser() %}
     {% include 'prod/basket_as_validation.twig'%}
 {% else %}
     {% include 'prod/basket_default.twig'%}
