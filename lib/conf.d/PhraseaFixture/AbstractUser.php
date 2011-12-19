@@ -16,7 +16,7 @@
  * @link        www.phraseanet.com
  */
 
-namespace PhraseaFixture\Basket;
+namespace PhraseaFixture;
 
 class AbstractUser
 {

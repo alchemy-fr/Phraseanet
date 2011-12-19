@@ -21,10 +21,13 @@ use Doctrine\Common\DataFixtures\FixtureInterface;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Root extends AbstractUser implements FixtureInterface
+class Root extends \PhraseaFixture\AbstractUser implements FixtureInterface
 {
-  
-  public $basketId;
+  /**
+   *
+   * @var \Entities\Basket
+   */
+  public $basket;
   
   public function load($manager)
   {
@@ -34,7 +37,7 @@ class Root extends AbstractUser implements FixtureInterface
     $basket->setOwner($this->user);
     $manager->persist($basket);
     $manager->flush();
-    $this->basketId = $basket->getId();
+    $this->basket = $basket;
   }
 
 }
