@@ -41,9 +41,9 @@ class Basket implements ControllerProviderInterface
 
               $Basket = new \Entities\Basket();
               $Basket->setName($app['request']->get('name'));
-              $Basket->setUser($app['Core']->getAuthenticatedUser());
+              $Basket->setOwner($app['Core']->getAuthenticatedUser());
               $Basket->setDescription($app['request']->get('desc'));
-
+              
               $em->persist($Basket);
               $em->flush();
 
@@ -70,13 +70,13 @@ class Basket implements ControllerProviderInterface
 
               $em = $app['Core']->getEntityManager();
 
-              $repository = $em->getRepository('Entities\Baskets');
+              $repository = $em->getRepository('Entities\Basket');
 
               /* @var $basket Entities\Basket */
               $basket = $repository->find($identifier);
 
               $twig = new \supertwig();
-
+              
               $html = $twig->render('prod/basket.twig', array('basket' => $basket));
 
               return new Response($html);
