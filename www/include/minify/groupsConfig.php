@@ -75,6 +75,7 @@ $groups = array(
         , '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
+        , '//include/vendor/humane-js/humane.js'
         , '//login/geonames.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
