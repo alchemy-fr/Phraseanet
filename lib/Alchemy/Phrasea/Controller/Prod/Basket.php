@@ -72,6 +72,8 @@ class Basket implements ControllerProviderInterface
             {
               $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
 
+              $em = $app['Core']->getEntityManager();
+              
               $em->remove($basket);
               $em->flush();
 
@@ -102,6 +104,8 @@ class Basket implements ControllerProviderInterface
               $basket->setName($request->get('name'));
               $basket->setDescription($request->get('description'));
 
+              $em = $app['Core']->getEntityManager();
+              
               $em->merge($basket);
               $em->flush();
 
@@ -146,6 +150,8 @@ class Basket implements ControllerProviderInterface
 
               $basket->setArchived(!!$request->get('archive'));
 
+              $em = $app['Core']->getEntityManager();
+              
               $em->merge($basket);
               $em->flush();
 
@@ -176,6 +182,8 @@ class Basket implements ControllerProviderInterface
 
               $user = $app['Core']->getAuthenticatedUser();
               /* @var $user \User_Adapter */
+              
+              $em = $app['Core']->getEntityManager();
 
               foreach (explode(';', $request->get('lst')) as $sbas_rec)
               {
