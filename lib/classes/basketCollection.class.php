@@ -48,7 +48,7 @@ class basketCollection
     $baskets['baskets'] = $em->getRepository('Entities\Basket')
             ->findBy(array('usr_id' => $usr_id, 'pusher_id' => null));
     
-    $baskets['regroup'] = $em->getRepository('Entities\StoryWorkZone')
+    $baskets['regroup'] = $em->getRepository('Entities\StoryWZ')
             ->findBy(array('usr_id' => $usr_id));
 
 //    $sql = 'SELECT s.ssel_id, s.usr_id as owner, v.id as validate_id,

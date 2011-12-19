@@ -31,6 +31,7 @@ abstract class PhraseanetWebTestCaseAbstract extends PhraseanetPHPUnitAbstract
 
   public function setUp()
   {
+    parent::setUp();
     $this->app = $this->createApplication();
   }
 

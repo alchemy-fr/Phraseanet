@@ -248,7 +248,7 @@ class Basket implements ControllerProviderInterface
               $em->flush();
 
               $twig = new \supertwig();
-
+              
               $html = $twig->render('prod/basket.twig', array('basket' => $basket));
 
               return new Response($html);

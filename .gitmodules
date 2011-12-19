@@ -55,6 +55,6 @@
 [submodule "lib/vendor/doctrine2-orm"]
 	path = lib/vendor/doctrine2-orm
 	url = git://github.com/doctrine/doctrine2.git
-[submodule "www/include/vendor/humane-js"]
-	path = www/include/vendor/humane-js
-	url = https://github.com/wavded/humane-js.git
+[submodule "lib/vendor/data-fixtures"]
+	path = lib/vendor/data-fixtures
+	url = https://github.com/doctrine/data-fixtures
