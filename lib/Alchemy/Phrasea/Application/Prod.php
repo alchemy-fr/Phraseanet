@@ -98,7 +98,7 @@ return call_user_func(function()
                                   , 'message' => $e->getMessage()
                               );
 
-                              $json = $app['Core']['Serializer']->serialize('json', $datas);
+                              $json = $app['Core']['Serializer']->serialize($datas, 'json');
 
                               return new Response($json, 200, array('Content-Type' => 'application/json'));
                             }

@@ -185,6 +185,8 @@ class Basket implements ControllerProviderInterface
               
               $em = $app['Core']->getEntityManager();
 
+              $n = 0;
+              
               foreach (explode(';', $request->get('lst')) as $sbas_rec)
               {
                 $sbas_rec = explode('_', $sbas_rec);
@@ -205,10 +207,12 @@ class Basket implements ControllerProviderInterface
 
                   $basket_element = new \Entities\BasketElement();
                   $basket_element->setRecord($record);
+                  $basket_element->setBasket($basket);
 
                   $em->persist($basket_element);
 
                   $basket->addBasketElement($basket_element);
+                  $n++;
                 }
                 catch (\Exception_NotFound $e)
                 {
@@ -221,7 +225,7 @@ class Basket implements ControllerProviderInterface
 
               $data = array(
                   'success' => true
-                  , 'message' => _('Basket has been deleted')
+                  , 'message' => sprintf(_('%d records added'), $n)
               );
 
               if ($request->getRequestFormat() == 'json')

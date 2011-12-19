@@ -11,7 +11,7 @@
 
 <div ondblclick="{% if basket_scope == 'groupings' %}openPreview('REG',{{basket_element.getOrd()}},'{{basket.get_base_id()}}_{{basket.get_record_id()}}');{% else %}openPreview('BASK',{{basket_element.getOrd()}},{{basket.getId()}});{% endif %}"
     id="CHIM_{{basket_element.getId()}}_{{record.get_serialize_key()}}"
-    sbas="{{basket_record.get_sbas_id()}}" class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;">
+     class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;">
     {% if user.getPrefs('basket_title_display') == '1' %}
         <div class="title">
             {{record.get_title()}}
@@ -27,7 +27,7 @@
         </div>
   {{thumbnail.format(record.get_thumbnail,82,82, '', session, true)}}
     <div class="bottom">
-        <span id="sselcontrem_{{basket.get_ssel_id()}}_{{basket_element.getId()}}" class="{{basket_scope}}"
+        <span id="sselcontrem_{{basket.getId()}}_{{basket_element.getId()}}" class="{{basket_scope}}"
             onmousedown="event.cancelBubble=true;return false;" onclick="removeFromBasket(this);return false;" title="{% trans 'delete'%}" >X</span>
         {% if user.getPrefs('basket_caption_display') == '1' %}
             <div class="captionRolloverTips" tooltipsrc="/prod/tooltip/caption/{{record.get_sbas_id()}}/{{record.get_record_id()}}/basket/?number={{record.get_number()}}"></div>

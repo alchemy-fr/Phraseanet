@@ -36,4 +36,4 @@ Entities\BasketElement:
       targetEntity: ValidationData
       mappedBy: basket_element
   lifecycleCallbacks:
-    postPersist: [ setLastInBasket ]
+    prePersist: [ setLastInBasket ]
