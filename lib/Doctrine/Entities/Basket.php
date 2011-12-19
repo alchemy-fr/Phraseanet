@@ -298,7 +298,7 @@ class Basket
     /**
      * @var boolean $is_read
      */
-    private $is_read = false;
+    private $is_read = true;
 
 
     /**

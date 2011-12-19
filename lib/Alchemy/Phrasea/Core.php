@@ -11,10 +11,10 @@
 
 namespace Alchemy\Phrasea;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request,
+    Symfony\Component\Serializer;
 
 require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
-
 
 /**
  *
@@ -57,10 +57,19 @@ class Core extends \Pimple
               return Request::createFromGlobals();
             });
 
+    $this['Serializer'] = $this->share(function()
+            {
+              $encoders = array(
+                  'json' => new Serializer\Encoder\JsonEncoder()
+              );
+
+              return new Serializer\Serializer(array(), $encoders);
+            });
+
     self::initPHPConf();
-    
+
     $this->initLoggers();
-            
+
     $this->verifyTimeZone();
 
     \phrasea::start();
@@ -117,7 +126,7 @@ class Core extends \Pimple
   {
     return $this['Version'];
   }
-  
+
   /**
    *
    * @return boolean 
@@ -128,7 +137,7 @@ class Core extends \Pimple
 
     return $session->is_authenticated();
   }
-  
+
   /**
    *
    * @return \User_adapter 
@@ -169,7 +178,7 @@ class Core extends \Pimple
   protected function initLoggers()
   {
     $php_log = $this->getRegistry()->get('GV_RootPath') . 'logs/php_error.log';
-    
+
     ini_set('error_log', $php_log);
 
     if ($this->getRegistry()->get('GV_debug'))
@@ -191,10 +200,10 @@ class Core extends \Pimple
     {
       ini_set('log_errors', 'off');
     }
-    
+
     return $this;
   }
-  
+
   protected function detectLanguage()
   {
     $availables = array(
@@ -255,15 +264,16 @@ class Core extends \Pimple
         'Alchemy' => __DIR__ . '/../..',
         'Symfony\\Component\\Yaml' => __DIR__ . '/../../vendor/symfony/src',
         'Symfony\\Component\\Console' => __DIR__ . '/../../vendor/symfony/src',
+        'Symfony\\Component\\Serializer' => __DIR__ . '/../../vendor/symfony/src',
     ));
 
     $loader->register();
-    
+
     require_once __DIR__ . '/../../vendor/Silex/autoload.php';
 
     return;
   }
-  
+
   public static function initPHPConf()
   {
     ini_set('output_buffering', '4096');
@@ -277,7 +287,7 @@ class Core extends \Pimple
     ini_set('session.hash_function', '1');
     ini_set('session.hash_bits_per_character', '6');
     ini_set('allow_url_fopen', 'on');
-    
+
     return;
   }
 

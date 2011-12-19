@@ -20,13 +20,23 @@ use Alchemy\Phrasea\Controller\Prod as Controller;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 return call_user_func(function()
                 {
                   $twig = new \supertwig();
 
                   $app = new Application();
                   $app['Core'] = bootstrap::getCore();
+
+                  $app->before(function(Request $request)
+                          {
+                            $request->setRequestFormat(
+                                    $request->getFormat(
+                                            array_shift(
+                                                    $request->getAcceptableContentTypes()
+                                            )
+                                    )
+                            );
+                          });
 
                   $app->mount('/baskets', new Controller\Basket());
                   $app->mount('/WorkZone', new Controller\WorkZone());
@@ -36,13 +46,15 @@ return call_user_func(function()
                   $app->mount('/feeds', new Controller\Feed());
                   $app->mount('/tooltip', new Controller\Tooltip());
                   $app->mount('/', new Controller\Root());
-                  
+
                   $app->error(function (\Exception $e, $code) use ($app, $twig)
                           {
-                    exit($e->getMessage());
+                            $request = $app['request'];
+
+                            /* @var $request \Symfony\Component\HttpFoundation\Request */
+
                             if ($e instanceof \Bridge_Exception)
                             {
-                              $request = $app['request'];
 
                               $params = array(
                                   'message' => $e->getMessage()
@@ -78,6 +90,17 @@ return call_user_func(function()
                                 return new response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
                               }
                               return new response($twig->render('/prod/actions/Bridge/error.twig', $params), 200);
+                            }
+                            if ($request->getRequestFormat() == 'json')
+                            {
+                              $datas = array(
+                                  'success' => false
+                                  , 'message' => $e->getMessage()
+                              );
+
+                              $json = $app['Core']['Serializer']->serialize('json', $datas);
+
+                              return new Response($json, 200, array('Content-Type' => 'application/json'));
                             }
                           });
 
