@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 use Alchemy\Phrasea;
 
-require_once dirname(__FILE__) . '/../lib/Alchemy/Phrasea/Kernel/Service/Doctrine.php';
+require_once dirname(__FILE__) . '/../lib/Alchemy/Phrasea/Core/Service/Doctrine.php';
 
 try
 {
