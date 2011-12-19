@@ -1,6 +1,9 @@
 Entities\BasketElement:
   type: entity
   table: BasketElements
+  uniqueConstraints:
+    user_story:
+      columns: basket_id,sbas_id,record_id
   id:
     id:
       type: integer
