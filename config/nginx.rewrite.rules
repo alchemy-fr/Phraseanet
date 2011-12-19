@@ -19,6 +19,7 @@ rewrite ^/prod/bridge/.*$         /prod/router.php last;
 rewrite ^/prod/feeds/.*$          /prod/router.php last;
 rewrite ^/prod/tooltip/.*$        /prod/router.php last;
 rewrite ^/prod/baskets/.*$        /prod/router.php last;
+rewrite ^/prod/WorkZone/.*$       /prod/router.php last;
 rewrite ^/prod/$                  /prod/router.php last;
 
 rewrite ^/robots.txt$             /index.php last;
