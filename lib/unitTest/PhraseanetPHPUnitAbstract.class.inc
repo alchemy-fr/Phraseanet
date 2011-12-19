@@ -336,12 +336,29 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   protected static $time_start;
   protected static $generated_subdefs = array();
 
+  protected static $core;
+  
   public static function setUpBeforeClass()
   {
+    
+    if(is_file(__DIR__ .'/tests.sqlite'))
+    {
+      unlink(__DIR__ .'/tests.sqlite');
+    }
+    
+    self::$core = bootstrap::getCore();
+    self::$core["EM"] = self::$core->share(function()
+            {
+              $doctrine = new \Alchemy\Phrasea\Core\Service\DoctrineTestSQLite();
+              return $doctrine->getEntityManager();
+            });
+            
+            
+            
     if (!self::$time_start)
       self::$time_start = microtime(true);
-    
-    if(!setup::is_installed())
+
+    if (!setup::is_installed())
       exit("Phraseanet is not set up\n");
 
     $appbox = appbox::get_instance();
@@ -429,16 +446,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$user->ACL()->update_rights_to_base($collection->get_base_id(), $rights);
       }
     }
-
-    $basket_coll = new basketCollection($appbox, self::$user->get_id());
-    $baskets = $basket_coll->get_baskets();
-    
-    foreach($baskets['baskets'] as $basket)
-    {
-      $basket->delete();
-    }
-    
-    basket_adapter::create($appbox, 'TEST', self::$user);
 
     $appbox->get_session()->authenticate(new Session_Authentication_None(self::$user));
 
@@ -907,20 +914,46 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   public function setUp()
   {
     parent::setUp();
+    
+    
+    $em = self::$core["EM"];
+    
+    //create schema
+    $this->schematTool = new \Doctrine\ORM\Tools\SchemaTool($em);
+    $this->classesMetatdas = array(
+        $em->getClassMetadata('Entities\Basket')
+        ,$em->getClassMetadata('Entities\BasketElement')
+        ,$em->getClassMetadata('Entities\StoryWZ')
+        ,$em->getClassMetadata('Entities\ValidationData')
+        ,$em->getClassMetadata('Entities\ValidationParticipant')
+        ,$em->getClassMetadata('Entities\ValidationSession')
+    );
+    $this->schematTool->createSchema($this->classesMetatdas);
+    
     $browser = Browser::getInstance();
     $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
   }
 
   public function tearDown()
   {
+    //drop schema
+    $this->schematTool->dropSchema($this->classesMetatdas);
     parent::tearDown();
+  }
+  
+  
+  public function insertFixtureInDatabase(Doctrine\Common\DataFixtures\Loader $fixtureLoader)
+  {
+    $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
+    $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$core->getEntityManager(), $purger);
+    $executor->execute($fixtureLoader->getFixtures());
   }
 
   protected function assertDateAtom($date)
   {
     return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
   }
-  
+
   protected function set_user_agent($user_agent)
   {
     $browser = Browser::getInstance();
