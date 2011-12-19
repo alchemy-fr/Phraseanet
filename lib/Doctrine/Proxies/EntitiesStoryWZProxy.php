@@ -90,6 +90,30 @@ class EntitiesStoryWZProxy extends \Entities\StoryWZ implements \Doctrine\ORM\Pr
         return parent::getCreated();
     }
 
+    public function setUser(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::setUser($user);
+    }
+
+    public function getUser()
+    {
+        $this->__load();
+        return parent::getUser();
+    }
+
+    public function getRecord()
+    {
+        $this->__load();
+        return parent::getRecord();
+    }
+
+    public function setRecord(\record_adapter $record)
+    {
+        $this->__load();
+        return parent::setRecord($record);
+    }
+
 
     public function __sleep()
     {
