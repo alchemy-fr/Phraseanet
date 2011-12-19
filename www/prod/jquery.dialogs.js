@@ -20,7 +20,12 @@ $(document).ready(function(){
       success: function(data){
 
         $('#DIALOG').attr('title', $this.attr('title'))
-                    .append(data).dialog("open");
+                    .empty()
+                    .append(data)
+                    .dialog()
+                    .dialog('open');
+        
+
 
         return;
       }
