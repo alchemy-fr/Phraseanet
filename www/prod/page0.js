@@ -392,44 +392,57 @@ function dropOnBask(event,from,destKey)
     from_id = $(from).closest('.content').attr('id').split('_').pop();
   }
 
+console.log(ssttid_dest, action);
+  if(action == 'IMGT2CHU')
+  {
+    if(act == 'ADD')
+    {
+      var url = "/prod/baskets/" + ssttid_dest + "/addElements/";
+      var data = {lst:lstbr};
+    }
+  }
 
   $.ajax({
     type: "POST",
-    url: "/prod/prodFeedBack.php",
-    data: {
-      action: act+action,
-      sselcont:sselcont.join(';'),
-      lst:lstbr,
-      dest:ssttid_dest,
-      from:from_id
-    },
+    url: url,
+    data: data,
+    dataType:'json',
+//    data: {
+//      action: act+action,
+//      sselcont:sselcont.join(';'),
+//      lst:lstbr,
+//      dest:ssttid_dest,
+//      from:from_id
+//    },
     beforeSend:function(){
 
     },
-    dataType:'json',
     success: function(data){
-      if(data.error && data.error != '')
+      if(!data.success)
       {
-        alert(data.error);
-        if(!data.datas)
+        humane.error(data.message);
+        if(!data.result)
           return;
       }
-
-      var main = action.substr(0,4);
-      if(main == 'CHU2' || main=='REG2')
+      else
       {
-        if(act == 'MOV')
-        {
-          $('.wrapCHIM_'+data.datas.join(', .wrapCHIM_')).remove();
-          p4.baskSel = [];
-        }
+        humane.info(data.message);
       }
-      
-      var current_id = current_opened_sstt.length > 0 ? current_opened_sstt.attr('id').split('_').pop() : null;
-      if((act == 'MOV') || (current_id == ssttid_dest))
-      {
-        refreshBaskets('current','',true);
-      }
+//      var main = action.substr(0,4);
+//      if(main == 'CHU2' || main=='REG2')
+//      {
+//        if(act == 'MOV')
+//        {
+//          $('.wrapCHIM_'+data.datas.join(', .wrapCHIM_')).remove();
+//          p4.baskSel = [];
+//        }
+//      }
+//      
+//      var current_id = current_opened_sstt.length > 0 ? current_opened_sstt.attr('id').split('_').pop() : null;
+//      if((act == 'MOV') || (current_id == ssttid_dest))
+//      {
+//        refreshBaskets('current','',true);
+//      }
       return;
     }
   });
@@ -981,10 +994,10 @@ function refreshBaskets(baskId, sort, scrolltobottom)
   scrolltobottom = typeof scrolltobottom == 'undefined' ? false : scrolltobottom;
 
   $.ajax({
-    type: "POST",
-    url: "/prod/prodFeedBack.php",
+    type: "GET",
+    url: "/prod/WorkZone/",
     data: {
-      action: "BASKETS",
+      type:'basket',
       id:baskId,
       sort:sort
     },
@@ -1214,6 +1227,7 @@ function activateCgus()
 }
 
 $(document).ready(function(){
+  humane.forceNew = true;
   activateCgus();
 });
 
@@ -2294,13 +2308,9 @@ function renameBasket(that,ssel)
   };
 
   $.ajax({
-    type: "POST",
-    url: "/prod/prodFeedBack.php",
-    dataType : 'json',
-    data: {
-      action: "BASKETNAME",
-      ssel_id:ssel
-    },
+    type: "GET",
+    url: "/prod/baskets/"+ssel+'/update/',
+    dataType : 'html',
     success: function(data){
 
       $("#basket-dialog")
@@ -2436,19 +2446,16 @@ function removeFromBasket(el,confirm)
   var ssel_id = full_id.pop();
   $.ajax({
     type: "POST",
-    url: "/prod/prodFeedBack.php",
-    data: {
-      action: "DELFROMBASK",
-      sselcont_id:id,
-      ssel_id:ssel_id
-    },
+    url: "/prod/baskets/" + ssel_id + "/" + id + "/delete/",
     dataType:'json',
     beforeSend : function(){
       $('.wrapCHIM_'+id).find('.CHIM').fadeOut();
     },
     success: function(data){
-      if(parseInt(data.status) > 0 )
+     
+      if(data.success)
       {
+        humane.info(data.message);
         var k = $(el).parent().attr('id').split('_').slice(2,4).join('_');
         if($.inArray(k,p4.baskSel)>=0)
         {
@@ -2461,8 +2468,7 @@ function removeFromBasket(el,confirm)
       }
       else
       {
-        if(data.error != '')
-          alert(data.error);
+        humane.info(data.message);
         $('.wrapCHIM_'+id).find('.CHIM').fadeIn();
       }
       return;
@@ -3645,21 +3651,24 @@ function deleteBasket(item)
   k = $(item).attr('id').split('_').slice(1,2).pop();	// id de chutier
   $.ajax({
     type: "POST",
-    url: "/prod/prodFeedBack.php",
-    data: {
-      action: "DELBASK",
-      ssel:k
-    },
+    url: "/prod/baskets/"+k+'/delete/',
+    dataType:'json',
     beforeSend:function(){
 
     },
     success: function(data){
-      $('#SSTT_'+k).next().slideUp().droppable('destroy').remove();
-      $('#SSTT_'+k).slideUp().droppable('destroy').remove();
+      if(data.success)
+      {
+        $('#SSTT_'+k).next().slideUp().droppable('destroy').remove();
+        $('#SSTT_'+k).slideUp().droppable('destroy').remove();
 
-      if($('#baskets .SSTT').length == 0)
-        refreshBaskets(false);
-
+        if($('#baskets .SSTT').length == 0)
+          refreshBaskets(false);
+      }
+      else
+      {
+        alert(data.message);
+      }
       return;
     }
   });
