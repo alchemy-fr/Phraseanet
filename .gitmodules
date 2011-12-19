@@ -58,3 +58,8 @@
 [submodule "lib/vendor/data-fixtures"]
 	path = lib/vendor/data-fixtures
 	url = https://github.com/doctrine/data-fixtures
+[submodule "www/include/vendor/humane-js"]
+	path = www/include/vendor/humane-js
+	url = https://github.com/wavded/humane-js.git
+
+
