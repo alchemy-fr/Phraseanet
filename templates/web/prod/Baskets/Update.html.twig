@@ -1,20 +1,24 @@
-<form method="POST" action="/prod/baskets/">
-
-  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
-  <input type="checkbox" id="bask_create_sel" name="lst" value=""/>
-  
-  <label>{% trans 'Nom du nouveau panier' %}</label>
-  <input name="name" value="" type="text"/>
-  
-  <label>{% trans 'paniers::description du nouveau panier' %}</label>
-  <textarea name="description"></textarea>
-  
-  <button>{% trans 'boutton::valider' %}</button>
-  
+<div>
+  <form action="/prod/baskets/{{ basket.getId() }}/update/" method="POST">
+    <div>
+      <label>{% trans 'panier:: nom' %}</label>
+    </div>
+    <div>
+      <input style="width:100%;margin:10px 0;" type="text" name="name" value="{{ basket.getName() }}"/>
+    </div>
+    <div>
+      <label>{% trans 'panier:: description' %}</label>
+    </div>
+    <div>
+      <textarea style="width:100%;height:120px;" name="description">{{ basket.getDescription() }}</textarea>
+    </div>
+    <div>
+      <button>{% trans 'boutton::valider' %}</button>
+    </div>
+  </form>
   <script type="text/javascript">
     $(document).ready(function(){
-      $('#bask_create_sel').val(p4.sel.join(';'));
-      
+
       $('#DIALOG form').bind('submit', function(event){
 
         //$this.SetLoader(true);
@@ -25,6 +29,7 @@
           type: $form.attr('method'),
           url: $form.attr('action'),
           dataType: 'json',
+          data: $form.serializeArray(),
           beforeSend:function(){
 
           },
@@ -42,9 +47,10 @@
 
           }
         });
-
+        
         return false;
       });
+
     });
   </script>
-</form>
+</div>
