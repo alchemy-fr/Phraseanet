@@ -57,7 +57,7 @@ class task_period_emptyColl extends task_appboxAbstract
     $collection = collection::get_from_base_id($this->base_id);
     $this->total_records = $collection->get_record_amount();
     $collection->empty_collection(200);
-    $this->records_done +=200;
+    $this->records_done += $this->total_records;
     $this->setProgress($this->records_done, $this->total_records);
 
     if ($this->total_records == 0)
