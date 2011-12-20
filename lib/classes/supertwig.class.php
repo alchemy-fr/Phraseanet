@@ -73,7 +73,10 @@ class supertwig
     }
 
 
-    $default_extensions = array('I18n' => true, 'Optimizer' => true);
+    $default_extensions = array(
+        'I18n' => true
+        , 'Optimizer' => true
+    );
 
     if ($registry->get('GV_debug'))
     {
@@ -106,6 +109,8 @@ class supertwig
       $this->init_twig();
       $this->set_extensions($extensions);
       $this->addFilter(array('round' => 'round'));
+      $this->addFilter(array('nl2br' => 'nl2br'));
+      $this->addFilter(array('prettyString' => 'phraseadate::getPrettyString'));
     }
     catch (Exception $e)
     {
