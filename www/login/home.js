@@ -1,12 +1,7 @@
-
 jQuery(document).ready(function(){	
 	var date = new Date();
 	date.setMonth(date.getMonth() + 2);
-<<<<<<< HEAD
-	$.cookie('screen', screen.width+"x"+screen.height, { path: '/', expires: date });
-=======
   jQuery.cookie('screen', screen.width+"x"+screen.height, { path: '/', expires: date });
->>>>>>> FixHome
   
   var test_cookie = date.getTime();
   jQuery.cookie('test_cookie'+test_cookie, 'accepted', { path: '/', expires: date });
@@ -38,4 +33,4 @@ function setTab(tab,el)
 	jQuery('.tab-content').hide();
 	jQuery('#id-'+tab).show();
 }
-				
+

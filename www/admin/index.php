@@ -86,6 +86,8 @@ $parm = $request->get_parms('section');
 $twig = new supertwig();
 $twig->display('admin/index.html.twig', array(
     'module' => 'admin'
+    ,'events'=>  eventsmanager_broker::getInstance($appbox)
+    ,'module_name' => 'Admin'
     , 'feature' => $feature
     , 'featured' => $featured
     , 'databoxes' => $databoxes

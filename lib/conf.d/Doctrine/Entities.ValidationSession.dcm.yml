@@ -36,7 +36,7 @@ Entities\ValidationSession:
     participants:
       targetEntity: ValidationParticipant
       mappedBy: session
-
+      cascade: ["remove"]
 
 
 

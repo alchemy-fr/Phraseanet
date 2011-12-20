@@ -38,6 +38,7 @@ Entities\Basket:
     validation:
       targetEntity: ValidationSession
       mappedBy: basket
+      cascade: ["remove"]
   oneToMany:
     elements:
       targetEntity: BasketElement
