@@ -17,124 +17,137 @@ namespace Entities;
  */
 class ValidationParticipant
 {
-  
-    /**
-     * @var integer $id
-     */
-    private $id;
 
-    /**
-     * @var integer $usr_id
-     */
-    private $usr_id;
+  /**
+   * @var integer $id
+   */
+  private $id;
 
-    /**
-     * @var Entities\ValidationData
-     */
-    private $datases;
+  /**
+   * @var integer $usr_id
+   */
+  private $usr_id;
 
-    /**
-     * @var Entities\ValidationSession
-     */
-    private $session;
+  /**
+   * @var Entities\ValidationData
+   */
+  private $datases;
 
-    public function __construct()
-    {
-        $this->datases = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+  /**
+   * @var Entities\ValidationSession
+   */
+  private $session;
 
-    /**
-     * Set usr_id
-     *
-     * @param integer $usrId
-     */
-    public function setUsrId($usrId)
-    {
-        $this->usr_id = $usrId;
-    }
+  public function __construct()
+  {
+    $this->datases = new \Doctrine\Common\Collections\ArrayCollection();
+  }
 
-    /**
-     * Get usr_id
-     *
-     * @return integer 
-     */
-    public function getUsrId()
-    {
-        return $this->usr_id;
-    }
+  /**
+   * Get id
+   *
+   * @return integer 
+   */
+  public function getId()
+  {
+    return $this->id;
+  }
 
-    /**
-     * Add datases
-     *
-     * @param Entities\ValidationData $datases
-     */
-    public function addValidationData(\Entities\ValidationData $datases)
-    {
-        $this->datases[] = $datases;
-    }
+  /**
+   * Set usr_id
+   *
+   * @param integer $usrId
+   */
+  public function setUsrId($usrId)
+  {
+    $this->usr_id = $usrId;
+  }
 
-    /**
-     * Get datases
-     *
-     * @return Doctrine\Common\Collections\Collection 
-     */
-    public function getDatases()
-    {
-        return $this->datases;
-    }
+  /**
+   * Get usr_id
+   *
+   * @return integer 
+   */
+  public function getUsrId()
+  {
+    return $this->usr_id;
+  }
 
-    /**
-     * Set session
-     *
-     * @param Entities\ValidationSession $session
-     */
-    public function setSession(\Entities\ValidationSession $session)
-    {
-        $this->session = $session;
-    }
+  /**
+   * Add datases
+   *
+   * @param Entities\ValidationData $datases
+   */
+  public function addValidationData(\Entities\ValidationData $datases)
+  {
+    $this->datases[] = $datases;
+  }
 
-    /**
-     * Get session
-     *
-     * @return Entities\ValidationSession 
-     */
-    public function getSession()
-    {
-        return $this->session;
-    }
-    /**
-     * @var boolean $is_aware
-     */
-    private $is_aware = false;
+  /**
+   * Get datases
+   *
+   * @return Doctrine\Common\Collections\Collection 
+   */
+  public function getDatases()
+  {
+    return $this->datases;
+  }
+
+  /**
+   * Set session
+   *
+   * @param Entities\ValidationSession $session
+   */
+  public function setSession(\Entities\ValidationSession $session)
+  {
+    $this->session = $session;
+  }
+
+  /**
+   * Get session
+   *
+   * @return Entities\ValidationSession 
+   */
+  public function getSession()
+  {
+    return $this->session;
+  }
+
+  /**
+   * @var boolean $is_aware
+   */
+  private $is_aware = false;
 
 
-    /**
-     * Set is_aware
-     *
-     * @param boolean $isAware
-     */
-    public function setIsAware($isAware)
-    {
-        $this->is_aware = $isAware;
-    }
+  /**
+   * Set is_aware
+   *
+   * @param boolean $isAware
+   */
+  public function setIsAware($isAware)
+  {
+    $this->is_aware = $isAware;
+  }
 
-    /**
-     * Get is_aware
-     *
-     * @return boolean 
-     */
-    public function getIsAware()
-    {
-        return $this->is_aware;
-    }
+  /**
+   * Get is_aware
+   *
+   * @return boolean 
+   */
+  public function getIsAware()
+  {
+    return $this->is_aware;
+  }
+
+  /**
+   *
+   * @param \User_Adapter $user
+   * @return ValidationParticipant 
+   */
+  public function setParticipant(\User_Adapter $user)
+  {
+    $this->usr_id = $user->get_id();
+    return $this;
+  }
+
 }

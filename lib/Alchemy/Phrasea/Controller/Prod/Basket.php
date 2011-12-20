@@ -134,7 +134,7 @@ class Basket implements ControllerProviderInterface
 
 
 
-    $controllers->post('/{basket_id}/update/', function(Application $app, $basket_id) use ($basket_controller)
+    $controllers->post('/{basket_id}/update/', function(Application $app, Request $request, $basket_id) use ($basket_controller)
             {
               $em = $app['Core']->getEntityManager();
 
@@ -184,7 +184,7 @@ class Basket implements ControllerProviderInterface
             });
 
 
-    $controllers->post('/{basket_id}/archive/', function(Application $app, $basket_id) use ($basket_controller)
+    $controllers->post('/{basket_id}/archive/', function(Application $app, Request $request, $basket_id) use ($basket_controller)
             {
               $em = $app['Core']->getEntityManager();
 
