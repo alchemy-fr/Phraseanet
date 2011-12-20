@@ -2,7 +2,7 @@ Entities\BasketElement:
   type: entity
   table: BasketElements
   uniqueConstraints:
-    user_story:
+    unique_recordcle:
       columns: basket_id,sbas_id,record_id
   id:
     id:
