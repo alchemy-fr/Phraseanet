@@ -201,7 +201,7 @@ class BasketElement
     
     public function setLastInBasket()
     {
-      $this->setOrd(count($this->getBasket()->getElements()) + 1);
+      $this->setOrd($this->getBasket()->getElements()->count() + 1);
     }
     /**
      * @var Entities\ValidationData
