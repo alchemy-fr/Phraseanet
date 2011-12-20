@@ -74,6 +74,12 @@ function stripdoublequotes($value)
 {
   return str_replace(array("\r\n","\r","\n","\""),array('','','','\"'),$value);
 }
+
+if(!$task->getGraphicForm())
+{
+  $parm['view'] = 'XML';
+}
+
 $twig = new supertwig();
 $twig->addFilter(array('stripdoublequotes'=>'stripdoublequotes'));
 $twig->display('admin/task.html', array('task'=>$task, 'view'=>$parm['view']));
