@@ -60,5 +60,23 @@ class BasketRepository extends EntityRepository
 
     return $query->getResult();
   }
+  
+  public function findUserBasket($basket_id, \User_Adapter $user)
+  {
+    $basket = $this->find($basket_id);
+
+    /* @var $basket Entities\Basket */
+    if (null === $basket)
+    {
+      throw new \Exception_NotFound(_('Basket is not found'));
+    }
+
+    if ($basket->getowner()->get_id() != $user->get_id())
+    {
+      throw new \Exception_Forbidden(_('You have not access to this basket'));
+    }
+
+    return $basket;
+  }
 
 }

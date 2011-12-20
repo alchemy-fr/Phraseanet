@@ -35,20 +35,18 @@ class Tooltip implements ControllerProviderInterface
     $app['appbox'] = \appbox::get_instance();
     $twig = new \supertwig();
 
-    $controllers->post('/basket/{ssel_id}/'
-            , function($ssel_id) use ($app)
+    $controllers->post('/basket/{basket_id}/'
+            , function($basket_id) use ($app)
             {
-              $bask = \basket_adapter::getInstance($app['appbox'], $ssel_id, $app['appbox']->get_session()->get_usr_id());
-              $isReg = false;
+              $em = $app['Core']->getEntityManager();
 
-              return new Response('<div style="margin:5px;width:280px;"><div><span style="font-weight:bold;font-size:14px;">' .
-                              $bask->get_name() . '</span> </div>' .
-                              ($isReg ? ('<div style="text-align:right;">' . _('phraseanet::collection') . ' ' . \phrasea::bas_names($bask->get_base_id()) . '</div>') : '')
-                              . '<div style="margin:5px 0">' . nl2br($bask->get_description()) . '</div>' .
-                              '<div style="margin:5px 0;text-align:right;font-style:italic;">' . sprintf(_('paniers: %d elements'), count($bask->get_elements())) .
-                              ' - ' . \phraseadate::getPrettyString($bask->get_update_date()) . '</div><hr/>
-              <div style="position:relative;float:left;width:270px;">' . $bask->get_excerpt() . '</div>');
-            })->assert('ssel_id', '\d+');
+              $basket = $em->getRepository('\Entities\Basket')
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+              
+              $twig = new \supertwig();
+              
+              return $twig->render('prod/Tooltip/Basket.html.twig', array('basket'=>$basket));
+            })->assert('basket_id', '\d+');
 
 
     $controllers->post('/preview/{sbas_id}/{record_id}/'

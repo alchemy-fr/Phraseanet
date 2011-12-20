@@ -70,9 +70,9 @@ class Basket implements ControllerProviderInterface
 
     $controllers->post('/{basket_id}/delete/', function(Application $app, Request $request, $basket_id) use ($basket_controller)
             {
-              $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
-
               $em = $app['Core']->getEntityManager();
+
+              $basket = $em->getRepository('\Entities\Basket')->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
               $em->remove($basket);
               $em->flush();
@@ -99,10 +99,10 @@ class Basket implements ControllerProviderInterface
             '/{basket_id}/{basket_element_id}/delete/'
             , function(Application $app, Request $request, $basket_id, $basket_element_id) use ($basket_controller)
             {
-              $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
-
               /* @var $em \Doctrine\ORM\EntityManager */
               $em = $app['Core']->getEntityManager();
+
+              $basket = $em->getRepository('\Entities\Basket')->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
               foreach ($basket->getElements() as $basket_element)
               {
@@ -136,12 +136,12 @@ class Basket implements ControllerProviderInterface
 
     $controllers->post('/{basket_id}/update/', function(Application $app, $basket_id) use ($basket_controller)
             {
-              $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
+              $em = $app['Core']->getEntityManager();
+
+              $basket = $em->getRepository('\Entities\Basket')->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
               $basket->setName($request->get('name'));
               $basket->setDescription($request->get('description'));
-
-              $em = $app['Core']->getEntityManager();
 
               $em->merge($basket);
               $em->flush();
@@ -168,7 +168,10 @@ class Basket implements ControllerProviderInterface
 
     $controllers->get('/{basket_id}/update/', function(Application $app, $basket_id) use ($basket_controller)
             {
-              $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
+              /* @var $em \Doctrine\ORM\EntityManager */
+              $em = $app['Core']->getEntityManager();
+
+              $basket = $em->getRepository('\Entities\Basket')->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
               $twig = new \supertwig();
 
@@ -183,11 +186,11 @@ class Basket implements ControllerProviderInterface
 
     $controllers->post('/{basket_id}/archive/', function(Application $app, $basket_id) use ($basket_controller)
             {
-              $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
+              $em = $app['Core']->getEntityManager();
+
+              $basket = $em->getRepository('\Entities\Basket')->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
               $basket->setArchived(!!$request->get('archive'));
-
-              $em = $app['Core']->getEntityManager();
 
               $em->merge($basket);
               $em->flush();
@@ -210,17 +213,17 @@ class Basket implements ControllerProviderInterface
               }
             });
 
-    $controllers->post('/{basket_id}/addElements/', function(Application $app, $basket_id) use ($basket_controller)
+    $controllers->post(
+            '/{basket_id}/addElements/'
+            , function(Application $app, Request $request, $basket_id) use ($basket_controller)
             {
+              $em = $app['Core']->getEntityManager();
 
-              $request = $app['request'];
-
-              $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
+              $basket = $em->getRepository('\Entities\Basket')->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
               $user = $app['Core']->getAuthenticatedUser();
               /* @var $user \User_Adapter */
 
-              $em = $app['Core']->getEntityManager();
 
               $n = 0;
 
@@ -231,34 +234,29 @@ class Basket implements ControllerProviderInterface
                 if (count($sbas_rec) !== 2)
                   continue;
 
-                try
+                $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
+
+                if (!$user->ACL()->has_access_to_base($record->get_base_id())
+                        && !$user->ACL()->has_hd_grant($record)
+                        && !$user->ACL()->has_preview_grant($record))
                 {
-                  $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
-
-                  if (!$user->ACL()->has_access_to_base($record->get_base_id())
-                          && !$user->ACL()->has_hd_grant($record)
-                          && !$user->ACL()->has_preview_grant($record))
-                  {
-                    continue;
-                  }
-
-                  $basket_element = new \Entities\BasketElement();
-                  $basket_element->setRecord($record);
-                  $basket_element->setBasket($basket);
-
-                  $em->persist($basket_element);
-
-                  $basket->addBasketElement($basket_element);
-                  $n++;
+                  continue;
                 }
-                catch (Exception $e)
-                {
-                  
-                }
-                catch (\PDOException $e)
-                {
-                  
-                }
+
+                if ($basket->hasRecord($record))
+                  continue;
+
+                $basket_element = new \Entities\BasketElement();
+                $basket_element->setRecord($record);
+                $basket_element->setBasket($basket);
+
+                $em->persist($basket_element);
+
+                $basket->addBasketElement($basket_element);
+
+                $em->flush();
+
+                $n++;
               }
 
               $em->merge($basket);
@@ -293,7 +291,7 @@ class Basket implements ControllerProviderInterface
             {
               $em = $app['Core']->getEntityManager();
 
-              $basket = $basket_controller->getUserBasket($app['Core'], $basket_id);
+              $basket = $em->getRepository('\Entities\Basket')->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
               $basket->setIsRead(true);
 
@@ -308,35 +306,6 @@ class Basket implements ControllerProviderInterface
             })->assert('basket_id', '\d+');
 
     return $controllers;
-  }
-
-  /**
-   *
-   * @param \Alchemy\Phrasea\Core $core
-   * @param int $basket_id
-   * @return \Entities\Basket 
-   */
-  public function getUserBasket(\Alchemy\Phrasea\Core $core, $basket_id)
-  {
-    $em = $core->getEntityManager();
-
-    /* @var $em \Doctrine\ORM\EntityManager */
-    $repository = $em->getRepository('Entities\Basket');
-
-    $basket = $repository->find($basket_id);
-
-    /* @var $basket Entities\Basket */
-    if (null === $basket)
-    {
-      throw new \Exception_NotFound(_('Basket is not found'));
-    }
-
-    if ($basket->getowner()->get_id() != $core->getAuthenticatedUser()->get_id())
-    {
-      throw new \Exception_Forbidden(_('You have not access to this basket'));
-    }
-
-    return $basket;
   }
 
 }
