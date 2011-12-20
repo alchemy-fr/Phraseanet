@@ -1541,6 +1541,7 @@ class task_period_archive extends task_abstract
         $record->set_metadatas($meta['metadatas']);
         $record->set_binary_status(databox_status::operation_or($stat0, $stat1));
         $record->rebuild_subdefs();
+        $record->reindex();
         $rid = $record->get_record_id();
         $this->log(sprintf((' (recordId %s)'), $rid));
         $this->archivedFiles++;
@@ -1881,6 +1882,7 @@ class task_period_archive extends task_abstract
         $record->set_metadatas($meta['metadatas']);
         $record->set_binary_status(databox_status::operation_or(databox_status::operation_or($stat0, $stat1), databox_status::hex2bin($hexstat)));
         $record->rebuild_subdefs();
+        $record->reindex();
 
         $rid = $record->get_record_id();
         if ($grp_rid !== NULL)
