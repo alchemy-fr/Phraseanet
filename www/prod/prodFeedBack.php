@@ -108,27 +108,27 @@ switch ($action)
     $output = 1;
     break;
 
-  case 'BASKETS':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-    $parm = $request->get_parms('id', 'sort');
-    $baskets = new basketCollection($appbox, $usr_id);
-
-    $twig = new supertwig();
-    $twig->addFilter(array('get_collection_logo' => 'collection::getLogo'));
-
-    $output = $twig->render('prod/baskets.html', array(
-                'basket_collection' => $baskets,
-                'selected_ssel' => $parm['id'],
-                'srt' => $parm['sort']
-                    )
-    );
-    break;
-  case 'BASKETNAME':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-    $parm = $request->get_parms('ssel_id');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $output = p4string::jsonencode(array('name' => $basket->get_name(), 'description' => $basket->get_description()));
-    break;
+//  case 'BASKETS':
+//    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
+//    $parm = $request->get_parms('id', 'sort');
+//    $baskets = new basketCollection($appbox, $usr_id);
+//
+//    $twig = new supertwig();
+//    $twig->addFilter(array('get_collection_logo' => 'collection::getLogo'));
+//
+//    $output = $twig->render('prod/baskets.html', array(
+//                'basket_collection' => $baskets,
+//                'selected_ssel' => $parm['id'],
+//                'srt' => $parm['sort']
+//                    )
+//    );
+//    break;
+//  case 'BASKETNAME':
+//    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
+//    $parm = $request->get_parms('ssel_id');
+//    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
+//    $output = p4string::jsonencode(array('name' => $basket->get_name(), 'description' => $basket->get_description()));
+//    break;
   case 'BASKETRENAME':
     require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
     $parm = $request->get_parms('ssel_id', 'name', 'description');

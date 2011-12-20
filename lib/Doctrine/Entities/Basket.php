@@ -295,29 +295,45 @@ class Basket
     return $this->validation;
   }
 
-    /**
-     * @var boolean $is_read
-     */
-    private $is_read = true;
+  /**
+   * @var boolean $is_read
+   */
+  private $is_read = true;
 
+  /**
+   * Set is_read
+   *
+   * @param boolean $isRead
+   */
+  public function setIsRead($isRead)
+  {
+    $this->is_read = $isRead;
+  }
 
-    /**
-     * Set is_read
-     *
-     * @param boolean $isRead
-     */
-    public function setIsRead($isRead)
+  /**
+   * Get is_read
+   *
+   * @return boolean 
+   */
+  public function getIsRead()
+  {
+    return $this->is_read;
+  }
+
+  public function hasRecord(\record_adapter $record)
+  {
+    foreach ($this->getElements() as $basket_element)
     {
-        $this->is_read = $isRead;
+      $bask_record = $basket_element->getRecord();
+      
+      if ($bask_record->get_record_id() == $record->get_record_id()
+              && $bask_record->get_sbas_id() == $record->get_sbas_id())
+      {
+        return true;
+      }
     }
 
-    /**
-     * Get is_read
-     *
-     * @return boolean 
-     */
-    public function getIsRead()
-    {
-        return $this->is_read;
-    }
+    return false;
+  }
+
 }

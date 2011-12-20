@@ -438,11 +438,11 @@ console.log(ssttid_dest, action);
 //        }
 //      }
 //      
-//      var current_id = current_opened_sstt.length > 0 ? current_opened_sstt.attr('id').split('_').pop() : null;
-//      if((act == 'MOV') || (current_id == ssttid_dest))
-//      {
-//        refreshBaskets('current','',true);
-//      }
+      var current_id = current_opened_sstt.length > 0 ? current_opened_sstt.attr('id').split('_').pop() : null;
+      if((act == 'MOV') || (current_id == ssttid_dest))
+      {
+        refreshBaskets('current','',true);
+      }
       return;
     }
   });

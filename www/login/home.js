@@ -33,4 +33,3 @@ function setTab(tab,el)
 	jQuery('.tab-content').hide();
 	jQuery('#id-'+tab).show();
 }
-

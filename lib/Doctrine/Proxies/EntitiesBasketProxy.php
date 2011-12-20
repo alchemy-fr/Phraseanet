@@ -186,6 +186,12 @@ class EntitiesBasketProxy extends \Entities\Basket implements \Doctrine\ORM\Prox
         return parent::getIsRead();
     }
 
+    public function hasRecord(\record_adapter $record)
+    {
+        $this->__load();
+        return parent::hasRecord($record);
+    }
+
 
     public function __sleep()
     {
