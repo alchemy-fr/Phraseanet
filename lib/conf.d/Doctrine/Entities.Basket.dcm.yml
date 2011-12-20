@@ -42,6 +42,7 @@ Entities\Basket:
     elements:
       targetEntity: BasketElement
       mappedBy: basket
+      cascade: ["ALL"]
 
 
 
