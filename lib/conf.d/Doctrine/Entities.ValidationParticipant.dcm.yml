@@ -16,6 +16,7 @@ Entities\ValidationParticipant:
     datases:
       targetEntity: ValidationData
       mappedBy: participant
+      cascade: ["ALL"]
   manyToOne:
     session:
       targetEntity: ValidationSession
