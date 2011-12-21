@@ -48,6 +48,16 @@ class Tooltip implements ControllerProviderInterface
               return $twig->render('prod/Tooltip/Basket.html.twig', array('basket'=>$basket));
             })->assert('basket_id', '\d+');
 
+    $controllers->post('/Story/{sbas_id}/{record_id}/'
+            , function(Application $app, $sbas_id, $record_id)
+            {
+              $Story = new \record_adapter($sbas_id, $record_id);
+
+              $twig = new \supertwig();
+              
+              return $twig->render('prod/Tooltip/Story.html.twig', array('Story'=>$Story));
+            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+
 
     $controllers->post('/preview/{sbas_id}/{record_id}/'
             , function($sbas_id, $record_id) use ($app)
