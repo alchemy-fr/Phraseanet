@@ -11,12 +11,13 @@
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT basket {% if not basket.getIsRead() %}unread{% endif %}
-                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}"
-             onclick="loadBask('{{basket.getId()}}',this)">
-          <div class="PNB title">
-            <img src='/skins/icons/basket.gif' title=''/>
-            {{basket.getName()}}
-          </div>
+                    {% if basket.getId() == selected_id and selected_type == 'basket' %}active{% endif %}">
+          <a href="/prod/baskets/{{ basket.getId() }}/">
+            <span>
+              <img src='/skins/icons/basket.gif' title=''/>
+              {{basket.getName()}}
+            </span>
+          </a>
           <div class="menu">
           {% if basket.getValidation() %}
             <img title="{% trans 'Vous avez envoye une demande de validation de document sur ce panier' %}"
@@ -97,16 +98,17 @@
     {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
 
           
-        <div tooltipsrc="/prod/tooltip/WorkZone/{{story.getId()}}/"
+        <div tooltipsrc="/prod/tooltip/Story/{{story.getRecord().get_sbas_id()}}/{{story.getRecord().get_record_id()}}/"
              id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
              class="basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT grouping
-                    {% if story.getId() == selected_id and selected_type == 'grouping' %}active{% endif %}"
-             onclick="loadBask('{{story.getId()}}',this)">
-          <div class="PNB title">
-            {{story.getRecord().get_base_id|get_collection_logo|raw}}
-            {{story.getRecord().getTitle()}}
-          </div>
+                    {% if story.getId() == selected_id and selected_type == 'grouping' %}active{% endif %}">
+          <a href="/prod/story/{{ story.getRecord().get_sbas_id }}/{{ story.getRecord().get_record_id() }}/">
+            <span>
+            {{story.getRecord().get_base_id()|get_collection_logo|raw}}
+            {{story.getRecord().get_title()}}
+            </span>
+          </a>
           <div class="menu">
             <a style="cursor:pointer;display:inline;padding:0;margin:0;" class="contextMenuTrigger">
               &#9660;
@@ -119,36 +121,34 @@
                     <div class="context-menu context-menu-theme-vista">
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner"
-                             onclick="downloadThis('lst={{story.getRecord().get_serialized_key()}}');">{% trans 'action::exporter' %}
+                             onclick="downloadThis('lst={{story.getRecord().get_serialize_key()}}');">{% trans 'action::exporter' %}
                         </div>
                       </div>
                       <div title="" class="context-menu-item menu3-custom-item">
-                        <div onclick="editThis('IMGT','{{story.getRecord().get_serialized_key()}}');" style=""
+                        <div onclick="editThis('IMGT','{{story.getRecord().get_serialize_key()}}');" style=""
                              class="context-menu-item-inner">{% trans 'action::editer' %}
                         </div>
                       </div>
 
-                      {% if bask_type == 'regroup' %}
-                        <div title="" class="context-menu-item">
-                          <div id="UNFIX_{{story.getId()}}" class="context-menu-item-inner" onclick="unFix(this);return false;">
-                            {% trans 'action::detacher' %}
-                          </div>
+                      <div title="" class="context-menu-item">
+                        <div id="UNFIX_{{story.getId()}}" class="context-menu-item-inner" onclick="unFix(this);return false;">
+                          {% trans 'action::detacher' %}
                         </div>
-                        <div title="" class="context-menu-item">
-                          <div class="context-menu-item-inner" onclick="reorder('STORY',{{story.getRecord().get_serialized_key()}});return false;">
-                            {% trans 'Re-ordonner' %}
-                          </div>
-                        </div>
-                      {% endif %}
-
                       </div>
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner" onclick="reorder('STORY',{{story.getRecord().get_serialize_key()}});return false;">
+                          {% trans 'Re-ordonner' %}
+                        </div>
+                      </div>
+
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-        <div id="SSTT_content_{{story.getId()}}" class="content grouping" style="overflow:hidden;">
+        <div sbas="{{story.getSbasId()}}" id="SSTT_content_{{story.getId()}}" class="content grouping" style="overflow:hidden;">
 
         </div>
 
