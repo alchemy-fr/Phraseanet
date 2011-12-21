@@ -12,10 +12,21 @@ use Doctrine\ORM\EntityRepository;
  */
 class StoryWZRepository extends EntityRepository
 {
-  
+
   public function findByUser(\User_Adapter $user)
   {
-    return $this->findBy(array('usr_id'=>$user->get_id()));
+    return $this->findBy(array('usr_id' => $user->get_id()));
   }
-  
+
+  public function findUserStory(\User_Adapter $user, \record_adapter $Story)
+  {
+    return $this->findBy(
+                    array(
+                        'usr_id' => $user->get_id(),
+                        'sbas_id' => $Story->get_sbas_id(),
+                        'record_id' => $Story->get_record_id(),
+                    )
+    );
+  }
+
 }
