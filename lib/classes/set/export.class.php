@@ -102,8 +102,6 @@ class set_export extends set_abstract
         {
           $xml = $record->get_xml();
 
-          $regfield = basket_adapter::getRegFields($basrec[0], $xml);
-
           foreach ($record->get_children() as $child_basrec)
           {
             $base_id = $child_basrec->get_base_id();
@@ -126,7 +124,7 @@ class set_export extends set_abstract
                     new record_exportElement(
                             $child_basrec->get_sbas_id(),
                             $record_id,
-                            $regfield['regname'] . '_' . $n . '/',
+                            $record->get_title() . '_' . $n . '/',
                             $remain_hd[$base_id]
             );
 

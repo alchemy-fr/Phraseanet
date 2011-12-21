@@ -1080,31 +1080,6 @@ class basket_adapter implements cache_cacheableInterface
 
   /**
    *
-   * @param databox_descriptionStructure $meta_struct
-   * @return <type>
-   */
-  public function searchRegFields(databox_descriptionStructure $meta_struct)
-  {
-    $fields = null;
-    $fields["regname"] = "";
-    $fields["regdesc"] = "";
-    $fields["regdate"] = "";
-
-    foreach ($meta_struct as $meta)
-    {
-      if ($meta->is_regname())
-        $fields["regname"] = $meta->get_id();
-      elseif ($meta->is_regdesc())
-        $fields["regdesc"] = $meta->get_id();
-      elseif ($meta->is_regdate())
-        $fields['regdate'] = $meta->get_id();
-    }
-
-    return $fields;
-  }
-
-  /**
-   *
    * @return string
    */
   public function get_validation_infos()
@@ -1174,24 +1149,6 @@ class basket_adapter implements cache_cacheableInterface
     }
 
     return $this;
-  }
-
-  /**
-   * get databox reg fields
-   *
-   * @todo change this shit
-   * @return array
-   */
-  public static function load_regfields()
-  {
-    $appbox = appbox::get_instance();
-    self::$_regfields = array();
-    foreach ($appbox->get_databoxes() as $databox)
-    {
-      self::$_regfields[$databox->get_sbas_id()] = self::searchRegFields($databox->get_meta_structure());
-    }
-
-    return self::$_regfields;
   }
 
   /**
@@ -1655,41 +1612,6 @@ class basket_adapter implements cache_cacheableInterface
     }
 
     return $ret;
-  }
-
-  /**
-   *
-   * @param <type> $sbas_id
-   * @param caption_record $desc
-   * @return <type>
-   */
-  public static function getRegFields($sbas_id, caption_record $desc)
-  {
-    if (!self::$_regfields)
-      self::load_regfields();
-
-    $arrayRegFields = self::$_regfields[$sbas_id];
-
-    $array = array();
-
-    foreach ($arrayRegFields as $k => $f)
-    {
-      $array[$f] = $k;
-    }
-
-    $fields = array();
-    $fields["regname"] = "";
-    $fields["regdesc"] = "";
-    $fields["regdate"] = "";
-
-    foreach ($desc->get_fields() as $caption_field)
-    {
-      $meta_struct_id = $caption_field->get_meta_struct_id();
-      if (array_key_exists($meta_struct_id, $array))
-        $fields[$array[$meta_struct_id]] = $caption_field->get_value();
-    }
-
-    return $fields;
   }
 
   /**
