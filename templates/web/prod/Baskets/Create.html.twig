@@ -24,6 +24,7 @@
         $.ajax({
           type: $form.attr('method'),
           url: $form.attr('action'),
+          data: $form.serializeArray(),
           dataType: 'json',
           beforeSend:function(){
 
