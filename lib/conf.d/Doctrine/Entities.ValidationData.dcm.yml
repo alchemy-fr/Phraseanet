@@ -23,9 +23,11 @@ Entities\ValidationData:
       joinColumn:
         name: participant_id
         referencedColumnName: id
+      cascade: ["persist"]
     basket_element:
       targetEntity: BasketElement
       inversedBy: validation_datas
       joinColumn:
         name: basket_element_id
         referencedColumnName: id
+      cascade: ["persist"]

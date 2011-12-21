@@ -453,6 +453,59 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(2, $basket->getElements()->count());
   }
+  
+  /**
+   * Test when i remove a basket, all relations are removed too :
+   * - basket elements
+   * - validations sessions
+   * - validation participants
+   */
+  public function testRemoveBasket()
+  {
+    $this->insertOneBasketEnv();
+    
+    $em = self::$core->getEntityManager();
+    /* @var $em \Doctrine\ORM\EntityManager */
+    $basket = $em->find("Entities\Basket", 1);
+    
+    $em->remove($basket);
+    
+    $em->flush();
+    
+    $query = $em->createQuery(
+            'SELECT COUNT(v.id) FROM \Entities\ValidationParticipant v'
+    );
+
+    $count = $query->getSingleScalarResult();
+    
+    $this->assertEquals(0, $count);
+    
+    $query = $em->createQuery(
+            'SELECT COUNT(b.id) FROM \Entities\BasketElement b'
+    );
+
+    $count = $query->getSingleScalarResult();
+    
+    $this->assertEquals(0, $count);
+    
+    $query = $em->createQuery(
+            'SELECT COUNT(v.id) FROM \Entities\ValidationSession v'
+    );
+
+    $count = $query->getSingleScalarResult();
+    
+    $this->assertEquals(0, $count);
+    
+    
+    $query = $em->createQuery(
+            'SELECT COUNT(b.id) FROM \Entities\Basket b'
+    );
+    
+    $count = $query->getSingleScalarResult();
+
+    $this->assertEquals(0, $count);
+    
+  }
 
   /**
    *
@@ -472,6 +525,56 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
             'SELECT COUNT(b.id) FROM \Entities\Basket b'
     );
 
+    $count = $query->getSingleScalarResult();
+
+    $this->assertEquals(1, $count);
+
+    return $basketFixture->basket;
+  }
+  
+  /**
+   *
+   * @return \Entities\Basket
+   */
+  protected function insertOneBasketEnv()
+  {
+    $em = self::$core->getEntityManager();
+    /* @var $em \Doctrine\ORM\EntityManager */
+    
+    $basketFixture = new MyFixture\LoadOneBasketEnv();
+
+    $basketFixture->setUser(self::$user);
+    
+    $basketFixture->addParticipant(self::$user_alt1);
+    $basketFixture->addParticipant(self::$user_alt2);
+    
+    $basketFixture->addBasketElement(self::$record_1);
+    $basketFixture->addBasketElement(self::$record_2);
+            
+    $this->loader->addFixture($basketFixture);
+
+    $this->insertFixtureInDatabase($this->loader);
+
+    $query = $em->createQuery(
+            'SELECT COUNT(b.id) FROM \Entities\Basket b'
+    );
+    
+    $count = $query->getSingleScalarResult();
+
+    $this->assertEquals(1, $count);
+    
+    $query = $em->createQuery(
+            'SELECT COUNT(v.id) FROM \Entities\ValidationParticipant v'
+    );
+
+    $count = $query->getSingleScalarResult();
+    
+    $this->assertEquals(2, $count);
+    
+    $query = $em->createQuery(
+            'SELECT COUNT(v.id) FROM \Entities\ValidationSession v'
+    );
+    
     $count = $query->getSingleScalarResult();
 
     $this->assertEquals(1, $count);

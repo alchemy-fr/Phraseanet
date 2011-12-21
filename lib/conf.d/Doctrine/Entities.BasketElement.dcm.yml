@@ -34,9 +34,11 @@ Entities\BasketElement:
       joinColumn:
         name: basket_id
         referencedColumnName: id
+      cascade: ["persist"]
   oneToMany:
     validation_datas:
       targetEntity: ValidationData
       mappedBy: basket_element
+      cascade: ["ALL"]
   lifecycleCallbacks:
     prePersist: [ setLastInBasket ]
