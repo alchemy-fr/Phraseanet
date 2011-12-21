@@ -125,20 +125,20 @@ function getLanguage(){
     }
   });
 }
-function loadBask(sselid,el){
-
-  $("#baskets .SSTT").removeClass('ui-state-focus ui-state-hover active');
-  $(el).addClass('ui-state-focus active');
-
-
-  if($(el).next().is(':visible'))
-  {
-    return true;
-  }
-
-  getBask(sselid,el);
-  p4.baskSel = [];
-}
+//function loadBask(sselid,el){
+//
+//  $("#baskets .SSTT").removeClass('ui-state-focus ui-state-hover active');
+//  $(el).addClass('ui-state-focus active');
+//
+//
+//  if($(el).next().is(':visible'))
+//  {
+//    return true;
+//  }
+//
+//  getBask(sselid,el);
+//  p4.baskSel = [];
+//}
 
 function is_ctrl_key(event)
 {
@@ -273,6 +273,16 @@ function dropOnBask(event,from,destKey)
   cur_sbas = $(from).attr('sbas') ;
 
   var ssttid_dest = destKey.attr('id').split('_').slice(1,2).pop();
+  
+  if(destKey.hasClass('content'))
+  {
+    var ssttid_dest_uri = $('a', destKey.prev()).attr('href');
+  }
+  else
+  {
+    var ssttid_dest_uri = $('a', destKey).attr('href');
+  }
+  
   var lstbr;
   var sselcont = [];
   if(action=="IMGT2CHU" || action=="IMGT2REG")
@@ -392,13 +402,27 @@ function dropOnBask(event,from,destKey)
     from_id = $(from).closest('.content').attr('id').split('_').pop();
   }
 
-console.log(ssttid_dest, action);
   if(action == 'IMGT2CHU')
   {
     if(act == 'ADD')
     {
-      var url = "/prod/baskets/" + ssttid_dest + "/addElements/";
-      var data = {lst:lstbr};
+      var url = ssttid_dest_uri + "addElements/";
+      var data = {
+        lst:lstbr
+      };
+    }
+  }
+  else
+  {
+    if(action == 'IMGT2REG')
+    {
+      if(act == 'ADD')
+      {
+        var url = ssttid_dest_uri + "addElements/";
+        var data = {
+          lst:lstbr
+        };
+      }
     }
   }
 
@@ -407,13 +431,13 @@ console.log(ssttid_dest, action);
     url: url,
     data: data,
     dataType:'json',
-//    data: {
-//      action: act+action,
-//      sselcont:sselcont.join(';'),
-//      lst:lstbr,
-//      dest:ssttid_dest,
-//      from:from_id
-//    },
+    //    data: {
+    //      action: act+action,
+    //      sselcont:sselcont.join(';'),
+    //      lst:lstbr,
+    //      dest:ssttid_dest,
+    //      from:from_id
+    //    },
     beforeSend:function(){
 
     },
@@ -428,16 +452,16 @@ console.log(ssttid_dest, action);
       {
         humane.info(data.message);
       }
-//      var main = action.substr(0,4);
-//      if(main == 'CHU2' || main=='REG2')
-//      {
-//        if(act == 'MOV')
-//        {
-//          $('.wrapCHIM_'+data.datas.join(', .wrapCHIM_')).remove();
-//          p4.baskSel = [];
-//        }
-//      }
-//      
+      //      var main = action.substr(0,4);
+      //      if(main == 'CHU2' || main=='REG2')
+      //      {
+      //        if(act == 'MOV')
+      //        {
+      //          $('.wrapCHIM_'+data.datas.join(', .wrapCHIM_')).remove();
+      //          p4.baskSel = [];
+      //        }
+      //      }
+      //      
       var current_id = current_opened_sstt.length > 0 ? current_opened_sstt.attr('id').split('_').pop() : null;
       if((act == 'MOV') || (current_id == ssttid_dest))
       {
@@ -714,7 +738,7 @@ function newAdvSearch()
     }
     else
       val = current;
-    }
+  }
   $('#EDIT_query').val(val);
 
   newSearch();
@@ -1057,6 +1081,110 @@ function activeBaskets()
           scrollTop:t
         });
       }
+      
+      var uiactive = $(this).find('.ui-state-active');
+      
+      if(uiactive.length === 0)
+      {
+        return; /* everything is closed */
+      }
+      
+      var clicked = uiactive.attr('id').split('_').pop();
+      var href = $('a', uiactive).attr('href');
+      
+      uiactive.addClass('ui-state-focus active');
+
+      p4.baskSel = [];
+      
+      $('#SSTT_content_'+clicked)
+      .empty()
+      .addClass('loading')
+      .load(href, function(){
+        $(this).removeClass('loading');
+        
+        $('a.WorkZoneElementRemover', $(this))
+          .bind('mousedown', function(event){return false;})
+          .bind('click', function(event){
+
+            return WorkZoneElementRemover($(this), false);
+
+            function WorkZoneElementRemover(el, confirm)
+            {
+
+              if(confirm !== true && $(el).hasClass('groupings') && p4.reg_delete == true)
+              {
+                var buttons = {};
+
+
+                buttons[language.valider] = function() {
+                  $("#DIALOG-baskets").dialog('close').remove();
+                  WorkZoneElementRemover(el,true);
+                };
+
+                buttons[language.annuler] = function(){
+                  $("#DIALOG-baskets").dialog('close').remove();
+                };
+
+                var texte = '<p>'+language.confirmRemoveReg+'</p><div><input type="checkbox" onchange="toggleRemoveReg(this);"/>'+language.hideMessage+'</div>';
+                $('body').append('<div id="DIALOG-baskets"></div>');
+                $("#DIALOG-baskets").attr('title',language.removeTitle)
+                .empty()
+                .append(texte)
+                .dialog({
+
+                  autoOpen:false,
+                  closeOnEscape:true,
+                  resizable:false,
+                  draggable:false,
+                  modal:true,
+                  buttons:buttons,
+                  draggable:false,
+                  overlay: {
+                    backgroundColor: '#000',
+                    opacity: 0.7
+                  }
+                }).dialog('open');
+                return;
+              }
+
+              var full_id = $(el).attr('id').split('_');
+              var id = full_id.pop();
+              var ssel_id = full_id.pop();
+              $.ajax({
+                type: "POST",
+                url: $(el).attr('href'),
+                dataType:'json',
+                beforeSend : function(){
+                  $('.wrapCHIM_'+id).find('.CHIM').fadeOut();
+                },
+                success: function(data){
+
+                  if(data.success)
+                  {
+                    humane.info(data.message);
+                    var k = $(el).parent().attr('id').split('_').slice(2,4).join('_');
+                    if($.inArray(k,p4.baskSel)>=0)
+                    {
+                      p4.baskSel = $.grep(p4.baskSel,function(n){
+                        return(n!=k);
+                      });
+                    }
+                    $('.wrapCHIM_'+id).find('.CHIM').draggable('destroy');
+                    $('.wrapCHIM_'+id).remove();
+                  }
+                  else
+                  {
+                    humane.error(data.message);
+                    $('.wrapCHIM_'+id).find('.CHIM').fadeIn();
+                  }
+                  return;
+                }
+              });
+              return false;
+            }
+        });
+        });
+      
     },
     changestart:function(event,ui){
       $('#basketcontextwrap .basketcontextmenu').hide();
@@ -1079,26 +1207,11 @@ function activeBaskets()
   if($('.SSTT.active',cache).length>0)
   {
     var el = $('.SSTT.active',cache)[0];
-    loadBask($(el).attr('id').split('_').slice(1,2).pop(),$(el));
     $(el).trigger('click');
   }
 
 
-  $(".SSTT",cache)
-  //  .draggable({
-  //    helper : function(){
-  //      $('body').append('<div id="dragDropCursor" style="position:absolute;z-index:9999;background:red;-moz-border-radius:8px;-webkit-border-radius:8px;"><div style="padding:2px 5px;font-weight:bold;">'+$(this).find('.title').text()+'</div></div>');
-  //      return $('#dragDropCursor');
-  //    },
-  //    scope:"objects",
-  //    distance : 20,
-  //    scroll : false,
-  //    cursorAt: {
-  //      top:-10,
-  //      left:-20
-  //    }
-  //
-  //  })
+  $(".SSTT, .content",cache)
   .droppable({
     scope:'objects',
     hoverClass:'baskDrop',
@@ -2403,79 +2516,8 @@ function toggleRemoveReg(el)
   p4.reg_delete = state;
 }
 
-function removeFromBasket(el,confirm)
-{
-  if(typeof(confirm) == 'undefined' && $(el).hasClass('groupings') && p4.reg_delete == true)
-  {
-    var buttons = {};
 
 
-    buttons[language.valider] = function() {
-      $("#DIALOG-baskets").dialog('close').remove();
-      removeFromBasket(el,true);
-    };
-
-    buttons[language.annuler] = function(){
-      $("#DIALOG-baskets").dialog('close').remove();
-    };
-
-    var texte = '<p>'+language.confirmRemoveReg+'</p><div><input type="checkbox" onchange="toggleRemoveReg(this);"/>'+language.hideMessage+'</div>';
-    $('body').append('<div id="DIALOG-baskets"></div>');
-    $("#DIALOG-baskets").attr('title',language.removeTitle)
-    .empty()
-    .append(texte)
-    .dialog({
-
-      autoOpen:false,
-      closeOnEscape:true,
-      resizable:false,
-      draggable:false,
-      modal:true,
-      buttons:buttons,
-      draggable:false,
-      overlay: {
-        backgroundColor: '#000',
-        opacity: 0.7
-      }
-    }).dialog('open');
-    return;
-  }
-
-  var full_id = $(el).attr('id').split('_');
-  var id = full_id.pop();
-  var ssel_id = full_id.pop();
-  $.ajax({
-    type: "POST",
-    url: "/prod/baskets/" + ssel_id + "/" + id + "/delete/",
-    dataType:'json',
-    beforeSend : function(){
-      $('.wrapCHIM_'+id).find('.CHIM').fadeOut();
-    },
-    success: function(data){
-     
-      if(data.success)
-      {
-        humane.info(data.message);
-        var k = $(el).parent().attr('id').split('_').slice(2,4).join('_');
-        if($.inArray(k,p4.baskSel)>=0)
-        {
-          p4.baskSel = $.grep(p4.baskSel,function(n){
-            return(n!=k);
-          });
-        }
-        $('.wrapCHIM_'+id).find('.CHIM').draggable('destroy');
-        $('.wrapCHIM_'+id).remove();
-      }
-      else
-      {
-        humane.info(data.message);
-        $('.wrapCHIM_'+id).find('.CHIM').fadeIn();
-      }
-      return;
-    }
-  });
-  return;
-}
 
 function deleteThis(lst)
 {
@@ -4172,12 +4214,7 @@ function reorder(ssel_id)
     close:function(){}
   }).dialog('open');
 
-  var options = {
-    ssel_id	: ssel_id,
-    action	: 'REORDER_DATAS'
-  };
-  $.post("prodFeedBack.php"
-    , options
+  $.get("/prod/baskets/"+ssel_id+"/reorder/"
     , function(data){
       $('#reorder_box').removeClass('loading');
       var cont = $("#reorder_box");
