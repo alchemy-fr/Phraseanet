@@ -21,7 +21,8 @@
   RewriteRule ^prod/feeds/.*$         /prod/router.php [L]
   RewriteRule ^prod/tooltip/.*$       /prod/router.php [L]
   RewriteRule ^prod/baskets/.*$       /prod/router.php [L]
-  RewriteRule ^prod/WorkZone/.*$       /prod/router.php [L]
+  RewriteRule ^prod/story/.*$         /prod/router.php [L]
+  RewriteRule ^prod/WorkZone/.*$      /prod/router.php [L]
   RewriteRule ^prod/$                 /prod/router.php [L]
 
   RewriteRule ^robots.txt$            /index.php [L]
