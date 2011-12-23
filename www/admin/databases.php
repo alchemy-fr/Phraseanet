@@ -25,6 +25,8 @@ $user_obj = User_Adapter::getInstance($usr_id, $appbox);
 $createBase = $mountBase = false;
 $error = array();
 
+$Core = bootstrap::getCore();
+
 phrasea::headers();
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
@@ -300,13 +302,13 @@ if ($createBase || $mountBase)
         if ($upgrade_available)
         {
           ?>
-          <div><?php echo _('update::Votre application necessite une mise a jour vers : '), ' ', GV_version ?></div>
+        <div><?php echo _('update::Votre application necessite une mise a jour vers : '), ' ', $Core->getVersion()->getNumber() ?></div>
           <?php
         }
         else
         {
           ?>
-          <div><?php echo _('update::Votre version est a jour : '), ' ', GV_version ?></div>
+          <div><?php echo _('update::Votre version est a jour : '), ' ', $Core->getVersion()->getNumber() ?></div>
           <?php
         }
         ?>

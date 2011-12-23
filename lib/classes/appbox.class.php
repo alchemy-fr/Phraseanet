@@ -371,15 +371,17 @@ class appbox extends base
 
   protected function post_upgrade(Setup_Upgrade &$upgrader)
   {
+    $Core = bootstrap::getCore();
+    
     $upgrader->add_steps(1 + count($this->get_databoxes()));
-    $this->apply_patches($this->get_version(), GV_version, true, $upgrader);
-    $this->setVersion(GV_version);
+    $this->apply_patches($this->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
+    $this->setVersion($Core->getVersion()->getNumber());
     $upgrader->add_steps_complete(1);
 
     foreach ($this->get_databoxes() as $databox)
     {
-      $databox->apply_patches($databox->get_version(), GV_version, true, $upgrader);
-      $databox->setVersion(GV_version);
+      $databox->apply_patches($databox->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
+      $databox->setVersion($Core->getVersion()->getNumber());
       $upgrader->add_steps_complete(1);
     }
 
