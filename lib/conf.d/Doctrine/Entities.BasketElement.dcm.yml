@@ -1,5 +1,6 @@
 Entities\BasketElement:
   type: entity
+  repositoryClass: Repositories\BasketElementRepository
   table: BasketElements
   uniqueConstraints:
     unique_recordcle:
