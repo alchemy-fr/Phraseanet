@@ -46,9 +46,8 @@ class WorkZone implements ControllerProviderInterface
                   , 'srt' => $app['request']->get('sort')
               );
 
-              $twig->addFilter(array('get_collection_logo' => 'collection::getLogo'));
 
-              return new Response($twig->render('prod/baskets.html', $params));
+              return new Response($twig->render('prod/WorkZone/WorkZone.html.twig', $params));
             });
 
     return $controllers;
