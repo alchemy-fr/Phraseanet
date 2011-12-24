@@ -266,6 +266,24 @@ class ValidationSession
   }
 
   /**
+   * Get a participant
+   *
+   * @return Entities\ValidationParticipant
+   */
+  public function getParticipant(\User_Adapter $user)
+  {
+    foreach ($this->getParticipants() as $participant)
+    {
+      if ($participant->getUser()->get_id() == $user->get_id())
+      {
+        return $participant;
+      }
+    }
+
+    throw new \Exception_NotFound('Particpant not found');
+  }
+
+  /**
    * @var integer $initiator
    */
   private $initiator;
@@ -295,6 +313,11 @@ class ValidationSession
     return $this->initiator_id;
   }
 
+  public function isInitiator(\User_Adapter $user)
+  {
+    return $this->getInitiatorId() == $user->get_id();
+  }
+
   public function setInitiator(\User_Adapter $user)
   {
     $this->initiator_id = $user->get_id();
@@ -306,6 +329,57 @@ class ValidationSession
     if ($this->initiator_id)
     {
       return \User_Adapter::getInstance($this->initiator_id, \appbox::get_instance());
+    }
+  }
+
+  public function isFinished()
+  {
+    if (is_null($this->getExpires()))
+    {
+      return null;
+    }
+
+    $date_obj = new DateTime();
+
+    return $date_obj > $this->getExpires();
+  }
+
+  public function getValidationString(\User_Adapter $user)
+  {
+
+    if ($this->isInitiator($user))
+    {
+      if ($this->isFinished())
+      {
+        return sprintf(
+                        _('Vous aviez envoye cette demande a %d utilisateurs')
+                        , (count($this->getParticipants()) - 1)
+        );
+      }
+      else
+      {
+        return sprintf(
+                        _('Vous avez envoye cette demande a %d utilisateurs')
+                        , (count($this->getParticipants()) - 1)
+        );
+      }
+    }
+    else
+    {
+      if ($this->getParticipant($user)->getCanSeeOthers())
+      {
+        return sprintf(
+                        _('Processus de validation recu de %s et concernant %d utilisateurs')
+                        , $this->getInitiator()->get_display_name()
+                        , (count($this->getParticipants()) - 1));
+      }
+      else
+      {
+        return sprintf(
+                        _('Processus de validation recu de %s')
+                        , $this->getInitiator()->get_display_name()
+        );
+      }
     }
   }
 
