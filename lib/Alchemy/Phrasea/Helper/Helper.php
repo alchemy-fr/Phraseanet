@@ -22,7 +22,11 @@ use Alchemy\Phrasea\Core;
 class Helper
 {
 
-  private $core;
+  /**
+   *
+   * @var Alchemy\Phrasea\Core\Kernel 
+   */
+  protected $core;
 
   /**
    *

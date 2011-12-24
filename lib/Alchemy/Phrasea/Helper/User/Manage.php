@@ -19,10 +19,9 @@ use Symfony\Component\HttpFoundation\Request;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Manage
+class Manage extends \Alchemy\Phrasea\Helper\Helper
 {
 
-  protected $request;
   /**
    *
    * @var array
@@ -39,18 +38,11 @@ class Manage
    */
   protected $usr_id;
 
-  public function __construct(Request $request)
+  public function search()
   {
-    $this->request = $request;
-
-
-    return $this;
-  }
-
-  public function search(Request $request)
-  {
+    $request = $this->getCore()->getRequest();
+    
     $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
 
     $offset_start = (int) $request->get('offset_start');
     $offset_start = $offset_start < 0 ? 0 : $offset_start;
@@ -69,7 +61,7 @@ class Manage
         , 'offset_start' => $offset_start
     );
 
-    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user = $this->getCore()->getAuthenticatedUser();
     $query = new \User_Query($appbox);
 
     if (is_array($request->get('base_id')))
@@ -121,7 +113,7 @@ class Manage
 
   public function create_newuser()
   {
-    $email = $this->request->get('value');
+    $email = $this->getCore()->getRequest()->get('value');
 
     if(!\mail::validateEmail($email))
     {
@@ -153,7 +145,7 @@ class Manage
 
   public function create_template()
   {
-    $name = $this->request->get('value');
+    $name = $this->getCore()->getRequest()->get('value');
 
     if(trim($name) === '')
     {
@@ -161,7 +153,7 @@ class Manage
     }
 
     $appbox = \appbox::get_instance();
-    $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+    $user = $this->getCore()->getAuthenticatedUser();
 
     $created_user = \User_Adapter::create($appbox, $name, \random::generatePassword(16), null, false, false);
     $created_user->set_template($user);

@@ -19,10 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Edit
+class Edit extends \Alchemy\Phrasea\Helper\Helper
 {
-
-  protected $request;
 
   /**
    *
@@ -42,18 +40,10 @@ class Edit
    */
   protected $base_id;
 
-  /**
-   *
-   * @param Symfony\Component\HttpFoundation\Request $request
-   * @return module_admin_route_users_edit
-   */
-  public function __construct(Request $request)
+  public function __construct(\Alchemy\Phrasea\Core $core)
   {
+    parent::__construct($core);
     $this->users = explode(';', $request->get('users'));
-
-    $this->request = $request;
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
 
     $users = array();
     foreach ($this->users as $usr_id)
@@ -83,23 +73,26 @@ class Edit
 
   protected function delete_user(\User_Adapter $user)
   {
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
+    $master = $this->getCore()->getAuthenticatedUser();
 
-    $list = array_keys(\User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL()->get_granted_base(array('canadmin')));
+    $list = array_keys($master->ACL()->get_granted_base(array('canadmin')));
 
     $user->ACL()->revoke_access_from_bases($list);
+    
     if ($user->ACL()->is_phantom())
+    {
       $user->delete();
-
+    }
+    
     return $this;
   }
 
   public function get_users_rights()
   {
+    $user = $this->getCore()->getAuthenticatedUser();
     $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $list = array_keys(\User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL()->get_granted_base(array('canadmin')));
+    
+    $list = array_keys($user->ACL()->get_granted_base(array('canadmin')));
 
     $sql = "SELECT
             b.sbas_id,
@@ -203,7 +196,7 @@ class Edit
 
   public function get_quotas()
   {
-    $this->base_id = (int) $this->request->get('base_id');
+    $this->base_id = (int) $this->getCore()->getRequest()->get('base_id');
 
 //    $this->base_id = (int) $parm['base_id'];
 
@@ -230,7 +223,7 @@ class Edit
 
   public function get_masks()
   {
-    $this->base_id = (int) $this->request->get('base_id');
+    $this->base_id = (int) $this->getCore()->getRequest()->get('base_id');
 
     $sql = "SELECT BIN(mask_and) AS mask_and, BIN(mask_xor) AS mask_xor
             FROM basusr
@@ -334,7 +327,7 @@ class Edit
 
   public function get_time()
   {
-    $this->base_id = (int) $this->request->get('base_id');
+    $this->base_id = (int) $this->getCore()->getRequest()->get('base_id');
 
     $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
       FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
@@ -586,13 +579,13 @@ class Edit
 
   public function apply_quotas()
   {
-    $this->base_id = (int) $this->request->get('base_id');
+    $this->base_id = (int) $this->getCore()->getRequest()->get('base_id');
 
     foreach ($this->users as $usr_id)
     {
       $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
-      if ($this->request->get('quota'))
-        $user->ACL()->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
+      if ($this->getCore()->getRequest()->get('quota'))
+        $user->ACL()->set_quotas_on_base($this->base_id, $this->getCore()->getRequest()->get('droits'), $this->getCore()->getRequest()->get('restes'));
       else
         $user->ACL()->remove_quotas_on_base($this->base_id);
     }
@@ -602,12 +595,13 @@ class Edit
 
   public function apply_masks()
   {
-    $this->base_id = (int) $this->request->get('base_id');
+    $request = $this->getCore()->getRequest();
+    $this->base_id = (int) $request->get('base_id');
 
-    $vand_and = $this->request->get('vand_and');
-    $vand_or = $this->request->get('vand_or');
-    $vxor_and = $this->request->get('vxor_and');
-    $vxor_or = $this->request->get('vxor_or');
+    $vand_and = $request->get('vand_and');
+    $vand_or = $request->get('vand_or');
+    $vxor_and = $request->get('vxor_and');
+    $vxor_or = $request->get('vxor_or');
 
     if ($vand_and && $vand_or && $vxor_and && $vxor_or)
     {
@@ -624,13 +618,14 @@ class Edit
 
   public function apply_time()
   {
+    $request = $this->getCore()->getRequest();
+    
+    $this->base_id = (int) $request->get('base_id');
 
-    $this->base_id = (int) $this->request->get('base_id');
+    $dmin = $request->get('dmin') ? new \DateTime($request->get('dmin')) : null;
+    $dmax = $request->get('dmax') ? new \DateTime($request->get('dmax')) : null;
 
-    $dmin = $this->request->get('dmin') ? new \DateTime($this->request->get('dmin')) : null;
-    $dmax = $this->request->get('dmax') ? new \DateTime($this->request->get('dmax')) : null;
-
-    $activate = $this->request->get('limit');
+    $activate = $request->get('limit');
 
     foreach ($this->users as $usr_id)
     {
