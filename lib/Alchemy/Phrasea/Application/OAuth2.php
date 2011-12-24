@@ -33,6 +33,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 return call_user_func(function()
                 {
                   $app = new Silex\Application();
+                  
+                  $app['Core'] = bootstrap::getCore();
 
                   $app->register(new Silex\Provider\ValidatorServiceProvider(), array(
                       'validator.class_path' => __DIR__ . '/../../../../lib/vendor/symfony/src',

@@ -29,6 +29,8 @@ return call_user_func(
                   $session = $appbox->get_session();
 
                   $app = new Silex\Application();
+                  
+                  $app['Core'] = bootstrap::getCore();
 
                   $app->get('/', function () use ($session, $appbox)
                           {

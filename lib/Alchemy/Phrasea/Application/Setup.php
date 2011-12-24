@@ -25,6 +25,8 @@ use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 return call_user_func(function()
                 {
                   $app = new Silex\Application();
+                  
+                  $app['Core'] = bootstrap::getCore();
 
                   $app['install'] = false;
                   $app['upgrade'] = false;
