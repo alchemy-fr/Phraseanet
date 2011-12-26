@@ -24,6 +24,15 @@ require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 class Core extends \Pimple
 {
 
+  
+  protected static $availableLanguages = array(
+        'ar_SA' => 'العربية'
+        , 'de_DE' => 'Deutsch'
+        , 'en_GB' => 'English'
+        , 'es_ES' => 'Español'
+        , 'fr_FR' => 'Français'
+    );
+  
   public function __construct($isDev = false)
   {
 
@@ -44,10 +53,23 @@ class Core extends \Pimple
             });
 
 
-    $this['Registry'] = $this->share(function()
-            {
-              return \registry::get_instance();
-            });
+    if (\setup::is_installed())
+    {
+      $this['Registry'] = $this->share(function()
+              {
+                return \registry::get_instance();
+              });
+      \phrasea::start();
+      $this->enableEvents();
+    }
+    else
+    {
+
+      $this['Registry'] = $this->share(function()
+              {
+                return new \Setup_Registry();
+              });
+    }
 
     /**
      * Initialize Request
@@ -72,22 +94,21 @@ class Core extends \Pimple
 
     $this->verifyTimeZone();
 
-    \phrasea::start();
-
     $this->detectLanguage();
 
     $this->enableLocales();
 
-    $this->enableEvents();
 
     define('JETON_MAKE_SUBDEF', 0x01);
     define('JETON_WRITE_META_DOC', 0x02);
     define('JETON_WRITE_META_SUBDEF', 0x04);
     define('JETON_WRITE_META', 0x06);
 
-    $gatekeeper = \gatekeeper::getInstance();
-    $gatekeeper->check_directory();
-
+    if (\setup::is_installed())
+    {
+      $gatekeeper = \gatekeeper::getInstance();
+      $gatekeeper->check_directory();
+    }
     return;
   }
 
@@ -170,6 +191,7 @@ class Core extends \Pimple
 
   protected function enableEvents()
   {
+
     \phrasea::load_events();
 
     return;
@@ -183,8 +205,8 @@ class Core extends \Pimple
 
     if ($this->getRegistry()->get('GV_debug'))
     {
-      ini_set('display_errors', 'on');
-      ini_set('display_startup_errors', 'on');
+    ini_set('display_errors', 'on');
+    ini_set('display_startup_errors', 'on');
     }
     else
     {
@@ -204,23 +226,24 @@ class Core extends \Pimple
     return $this;
   }
 
+  /**
+   *
+   * @return Array 
+   */
+  public static function getAvailableLanguages()
+  {
+    return static::$availableLanguages;
+  }
+  
   protected function detectLanguage()
   {
-    $availables = array(
-        'ar_SA' => 'العربية'
-        , 'de_DE' => 'Deutsch'
-        , 'en_GB' => 'English'
-        , 'es_ES' => 'Español'
-        , 'fr_FR' => 'Français'
-    );
-
     $this->getRequest()->setDefaultLocale(
             $this->getRegistry()->get('GV_default_lng', 'en_GB')
     );
 
     $cookies = $this->getRequest()->cookies;
 
-    if (isset($availables[$cookies->get('locale')]))
+    if (isset(static::$availableLanguages[$cookies->get('locale')]))
     {
       $this->getRequest()->setLocale($cookies->get('locale'));
     }
