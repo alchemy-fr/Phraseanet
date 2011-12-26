@@ -45,9 +45,9 @@ class Bridge implements ControllerProviderInterface
                       };
 
               if (!$account->get_api()->get_connector()->is_configured())
-                throw new \Bridge_Exception_ApiConnectorNotConfigured();
+                throw new \Bridge_Exception_ApiConnectorNotConfigured("Bridge API Connector is not configured");
               if (!$account->get_api()->get_connector()->is_connected())
-                throw new \Bridge_Exception_ApiConnectorNotConnected ();
+                throw new \Bridge_Exception_ApiConnectorNotConnected ("Bridge API Connector is not connected");
 
               return;
             });
