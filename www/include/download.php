@@ -16,7 +16,7 @@
  * @link        www.phraseanet.com
  */
 /* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();

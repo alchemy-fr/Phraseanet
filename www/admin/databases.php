@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $usr_id = $session->get_usr_id();
@@ -97,7 +97,7 @@ phrasea::headers();
           {
             try
             {
-              require dirname(__FILE__) . '/../../config/connexion.inc';
+              require __DIR__ . '/../../config/connexion.inc';
               $data_template = new system_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
 
               $connbas = new connection_pdo('databox_creation', $hostname, $port, $user, $password, $parm['new_dbname']);
@@ -159,7 +159,7 @@ phrasea::headers();
           {
             try
             {
-              require dirname(__FILE__) . '/../../config/connexion.inc';
+              require __DIR__ . '/../../config/connexion.inc';
               $appbox->get_connection()->beginTransaction();
               $base = databox::mount($appbox, $hostname, $port, $user, $password, $parm['new_dbname'], $registry);
               $base->registerAdmin($user_obj);

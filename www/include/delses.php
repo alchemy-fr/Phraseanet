@@ -17,7 +17,7 @@
  */
 ignore_user_abort(true);
 set_time_limit(0);
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $request = http_request::getInstance();

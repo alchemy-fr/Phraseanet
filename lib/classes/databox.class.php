@@ -722,7 +722,7 @@ class databox extends base
   public static function get_available_metadatas()
   {
     $available_fields = array();
-    $dir = dirname(__FILE__) . '/metadata/description/';
+    $dir = __DIR__ . '/metadata/description/';
     $registry = registry::get_instance();
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
     {

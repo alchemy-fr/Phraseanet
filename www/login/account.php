@@ -14,9 +14,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
-require_once dirname(__FILE__) . "/../../lib/classes/API/OAuth2/Autoloader.class.php";
+require_once __DIR__ . "/../../lib/classes/API/OAuth2/Autoloader.class.php";
 
 API_OAuth2_Autoloader::register();
 

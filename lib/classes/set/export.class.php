@@ -956,7 +956,7 @@ class set_export extends set_abstract
   public static function stream_file(
   $file, $exportname, $mime, $disposition='attachment')
   {
-    require_once dirname(__FILE__) . "/../../../lib/vendor/Silex/autoload.php";
+    require_once __DIR__ . "/../../../lib/vendor/Silex/autoload.php";
     $registry = registry::get_instance();
 
     $disposition = in_array($disposition, array('inline', 'attachment')) ?

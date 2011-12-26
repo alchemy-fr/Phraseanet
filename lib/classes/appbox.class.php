@@ -74,7 +74,7 @@ class appbox extends base
     $this->registry = $registry;
     $this->session = Session_Handler::getInstance($this);
 
-    require dirname(__FILE__) . '/../../config/connexion.inc';
+    require __DIR__ . '/../../config/connexion.inc';
 
     $this->host = $hostname;
     $this->port = $port;
@@ -409,7 +409,7 @@ class appbox extends base
       {
         $credentials['dbname'] = $dbname;
       }
-      $connexion = dirname(__FILE__) . "/../../config/connexion.inc";
+      $connexion = __DIR__ . "/../../config/connexion.inc";
       if (is_file($connexion))
         unlink($connexion);
 
@@ -422,7 +422,7 @@ class appbox extends base
       }
 
       if (!file_put_contents($connexion, $connexionINI, FILE_APPEND) !== false)
-        throw new Exception(sprintf(_('Impossible d\'ecrire dans le dossier %s'), dirname(dirname(__FILE__)) . "/config/"));
+        throw new Exception(sprintf(_('Impossible d\'ecrire dans le dossier %s'), dirname(__DIR__) . "/config/"));
 
       if (function_exists('chmod'))
         chmod($connexion, 0700);
@@ -545,7 +545,7 @@ class appbox extends base
   public static function list_databox_templates()
   {
     $files = array();
-    $dir = new DirectoryIterator(dirname(__FILE__) . '/../conf.d/data_templates/');
+    $dir = new DirectoryIterator(__DIR__ . '/../conf.d/data_templates/');
     foreach ($dir as $fileinfo)
     {
       if ($fileinfo->isFile())

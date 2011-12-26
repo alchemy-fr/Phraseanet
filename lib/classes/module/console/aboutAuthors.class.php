@@ -37,7 +37,7 @@ class module_console_aboutAuthors extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    $output->writeln(file_get_contents(dirname(__FILE__) . '/../../../../AUTHORS'));
+    $output->writeln(file_get_contents(__DIR__ . '/../../../../AUTHORS'));
 
     return;
   }

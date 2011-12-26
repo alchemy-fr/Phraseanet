@@ -268,7 +268,7 @@ abstract class base implements cache_cacheableInterface
 
   protected function upgradeDb($apply_patches, Setup_Upgrade &$upgrader)
   {
-    require_once dirname(__FILE__) . '/../version.inc';
+    require_once __DIR__ . '/../version.inc';
 
     $recommends = array();
 
@@ -393,7 +393,7 @@ abstract class base implements cache_cacheableInterface
 
       return $this;
 
-    $structure = simplexml_load_file(dirname(__FILE__) . "/../../lib/conf.d/bases_structure.xml");
+    $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
 
     if (!$structure)
       throw new Exception('Unable to load schema');

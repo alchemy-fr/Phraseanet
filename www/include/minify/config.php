@@ -150,7 +150,7 @@ $min_uploaderHoursBehind = 0;
  * Path to Minify's lib folder. If you happen to move it, change
  * this accordingly.
  */
-$min_libPath = dirname(__FILE__) . '/lib';
+$min_libPath = __DIR__ . '/lib';
 $min_cachePath = dirname( __FILE__ ) . '/../../../tmp/cache_minify';
 
 

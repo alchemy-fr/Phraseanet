@@ -105,7 +105,7 @@ class phrasea
 
   public static function start()
   {
-    require (dirname(__FILE__) . '/../../config/connexion.inc');
+    require (__DIR__ . '/../../config/connexion.inc');
 
     if (!extension_loaded('phrasea2'))
       printf("Missing Extension php-phrasea");
@@ -283,7 +283,7 @@ class phrasea
     putenv('LANGUAGE=' . $locale . '.' . $codeset);
     bind_textdomain_codeset($textdomain, 'UTF-8');
 
-    bindtextdomain($textdomain, dirname(__FILE__) . '/../../locale/');
+    bindtextdomain($textdomain, __DIR__ . '/../../locale/');
     setlocale(LC_ALL
             , $locale . '.UTF-8'
             , $locale . '.UTF8'
@@ -497,7 +497,7 @@ class phrasea
         else
         {
           $request->set_code($code);
-          include(dirname(__FILE__) . '/../../www/include/error.php');
+          include(__DIR__ . '/../../www/include/error.php');
         }
         die();
         break;

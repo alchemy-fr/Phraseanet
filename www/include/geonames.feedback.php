@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-include(dirname(__FILE__) . '/../../lib/bootstrap.php');
+include(__DIR__ . '/../../lib/bootstrap.php');
 $output = '';
 
 $request = http_request::getInstance();

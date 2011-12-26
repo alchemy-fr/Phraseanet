@@ -68,13 +68,13 @@ class setup
 
   public static function is_installed()
   {
-    return file_exists(dirname(__FILE__) . "/../../config/connexion.inc")
-            && file_exists(dirname(__FILE__) . "/../../config/config.inc");
+    return file_exists(__DIR__ . "/../../config/connexion.inc")
+            && file_exists(__DIR__ . "/../../config/config.inc");
   }
 
   function create_global_values(registryInterface &$registry, $datas=array())
   {
-    require(dirname(__FILE__) . "/../../lib/conf.d/_GV_template.inc");
+    require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
 
     if ($registry->is_set('GV_timezone'))
@@ -257,12 +257,12 @@ class setup
   {
     if (system_server::get_platform() == 'WINDOWS')
     {
-      $exiftool = dirname(dirname(__FILE__)) . '/vendor/exiftool/exiftool.exe';
-      $indexer = dirname(dirname(dirname(__FILE__))) . '/bin/phraseanet_indexer.exe';
+      $exiftool = dirname(__DIR__) . '/vendor/exiftool/exiftool.exe';
+      $indexer = dirname(dirname(__DIR__)) . '/bin/phraseanet_indexer.exe';
     }
     else
     {
-      $exiftool = dirname(dirname(__FILE__)) . '/vendor/exiftool/exiftool';
+      $exiftool = dirname(__DIR__) . '/vendor/exiftool/exiftool';
       $indexer = null;
     }
 
@@ -453,7 +453,7 @@ class setup
 
     public static function check_writability(registryInterface $registry)
     {
-      $root = p4string::addEndSlash(realpath(dirname(__FILE__) . '/../../'));
+      $root = p4string::addEndSlash(realpath(__DIR__ . '/../../'));
 
       $pathes = array(
           $root . 'config',
@@ -765,17 +765,17 @@ class setup
 
     public static function get_config_filepath()
     {
-      return dirname(__FILE__) . '/../../config/config.inc';
+      return __DIR__ . '/../../config/config.inc';
     }
 
     public static function get_connexion_filepath()
     {
-      return dirname(__FILE__) . '/../../config/connexion.inc';
+      return __DIR__ . '/../../config/connexion.inc';
     }
 
     public static function rollback(connection_pdo $conn, connection_pdo $connbas =null)
     {
-      $structure = simplexml_load_file(dirname(__FILE__) . "/../../lib/conf.d/bases_structure.xml");
+      $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
 
       if (!$structure)
         throw new Exception('Unable to load schema');
@@ -814,7 +814,7 @@ class setup
           }
         }
       }
-      $connexion = dirname(__FILE__) . "/../../config/connexion.inc";
+      $connexion = __DIR__ . "/../../config/connexion.inc";
 
       if (file_exists($connexion))
         unlink($connexion);

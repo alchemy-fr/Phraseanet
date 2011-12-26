@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . '/../../../../vendor/moov/relocator.class.php';
+require_once __DIR__ . '/../../../../vendor/moov/relocator.class.php';
 /*
  * This file is part of Phraseanet
  *

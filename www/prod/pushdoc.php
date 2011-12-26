@@ -15,7 +15,7 @@
  * @link        www.phraseanet.com
  */
 define('ZFONT', 'freesans');
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();

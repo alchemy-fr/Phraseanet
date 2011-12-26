@@ -1376,7 +1376,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     $lngs = array();
 
-    $path = dirname(__FILE__) . "/../../../locale";
+    $path = __DIR__ . "/../../../locale";
     if ($hdir = opendir($path))
     {
       while (false !== ($file = readdir($hdir)))

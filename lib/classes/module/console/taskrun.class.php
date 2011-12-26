@@ -50,7 +50,7 @@ class module_console_taskrun extends Command
       throw new RuntimeException('Phraseanet is not set up');
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $task_id = (int) $input->getArgument('task_id');
 

@@ -42,7 +42,7 @@ class module_console_tasklist extends Command
       throw new RuntimeException('Phraseanet is not set up');
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $appbox = appbox::get_instance();
     $task_manager = new task_manager($appbox);
