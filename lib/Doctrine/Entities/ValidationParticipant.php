@@ -256,4 +256,24 @@ class ValidationParticipant
     return $this->can_see_others;
   }
 
+  public function isReleasable()
+  {
+
+    if ($this->getIsConfirmed())
+    {
+      return false;
+    }
+
+    foreach ($this->getDatas() as $validation_data)
+    {
+      /* @var $validation_data \Entities\ValidationData */
+      if ($validation_data->getAgreement() === null)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
 }
