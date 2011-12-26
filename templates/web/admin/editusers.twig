@@ -111,7 +111,7 @@
       <li>
         <a href="#rights_tab">Droits</a>
       </li>
-      {% if main_user is not empty %}
+      {% if main_user is not empty and main_user.is_template is empty %}
       <li>
         <a href="#user_infos_tab">Fiche</a>
       </li>
@@ -402,7 +402,7 @@
       </form>
     </div>
 
-    {% if main_user is not empty %}
+    {% if main_user is not empty and main_user.is_template is empty %}
     <div id="user_infos_tab" class="PNB" style="top:40px;">
       <form id="user_infos_form">
         <table>
