@@ -90,6 +90,11 @@ class User_Query implements User_QueryInterface
   protected $include_templates = false;
   /**
    *
+   * @var boolean
+   */
+  protected $only_templates = false;
+  /**
+   *
    * @var Array
    */
   protected $base_ids = array();
@@ -191,18 +196,22 @@ class User_Query implements User_QueryInterface
 
     $sql .= ' AND usr_login NOT LIKE "(#deleted_%" ';
 
-    if ($this->include_invite)
+    if (!$this->include_invite)
     {
       $sql .= ' AND usr.invite=0 ';
     }
 
-    if ($this->include_templates === false)
+    if ($this->only_templates === true)
+    {
+      $sql .= ' AND model_of = ' . $session->get_usr_id();
+    }
+    elseif ($this->include_templates === false)
     {
       $sql .= ' AND model_of=0';
     }
     else
     {
-      $sql .= ' AND (model_of=0 OR model_of= ' . $session->get_usr_id() . ' ) ';
+      $sql .= ' AND (model_of=0 OR model_of = ' . $session->get_usr_id() . ' ) ';
     }
 
     $baslist = array();
@@ -352,6 +361,17 @@ class User_Query implements User_QueryInterface
   public function include_templates($boolean)
   {
     $this->include_templates = !!$boolean;
+
+    return $this;
+  }
+  /**
+   *
+   * @param boolean $boolean
+   * @return User_Query
+   */
+  public function only_templates($boolean)
+  {
+    $this->only_templates = !!$boolean;
 
     return $this;
   }
