@@ -687,7 +687,7 @@ if ($act == "SEND")
         }
         ?>
       <script type="text/javascript">
-        parent.refreshBaskets('current');
+        parent.return p4.WorkZone.refresh('current');
       </script>
     </body>
     <?php
