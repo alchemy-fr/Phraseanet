@@ -15,6 +15,7 @@ use Silex\Application;
 use Alchemy\Phrasea\Controller\Setup as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 
+require_once dirname(__FILE__) . '/../../../bootstrap.php';
 /**
  *
  * @package
