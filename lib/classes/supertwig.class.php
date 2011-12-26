@@ -111,6 +111,7 @@ class supertwig
       $this->addFilter(array('round' => 'round'));
       $this->addFilter(array('nl2br' => 'nl2br'));
       $this->addFilter(array('prettyString' => 'phraseadate::getPrettyString'));
+      $this->addFilter(array('get_collection_logo' => 'collection::getLogo'));
     }
     catch (Exception $e)
     {
