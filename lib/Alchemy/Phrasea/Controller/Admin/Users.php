@@ -170,7 +170,7 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/search/', function() use ($app)
+    $controllers->match('/search/', function() use ($app)
             {
               $users = new UserHelper\Manage($app['Core']);
               $template = 'admin/users.html';
@@ -183,16 +183,13 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->get('/search/', function() use ($app)
+    $controllers->post('/apply_template/', function() use ($app)
             {
-              $users = new UserHelper\Manage($app['Core']);
-              $template = 'admin/users.html';
+              $users = UserHelper\Manage($app['Core']);
+              
+              $users->apply_template();
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('floor' => 'floor'));
-              $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
-
-              return $twig->render($template, $users->search($request));
+              return new Symfony\Component\HttpFoundation\RedirectResponse('/admin/users/search/');
             }
     );
 

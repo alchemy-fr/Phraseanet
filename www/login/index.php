@@ -125,7 +125,7 @@ if (!$registry->get('GV_maintenance')
                                                         <div style="text-align:center;float: left;width:300px;margin:0 15px 0px;">
                                                             <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
                                                             <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
-                                                        </div>' . recaptcha_get_html(GV_captcha_public_key) . '</div>';
+                                                        </div>' . recaptcha_get_html($registry->get('GV_captcha_public_key')) . '</div>';
 }
 
 $public_feeds = Feed_Collection::load_public_feeds($appbox);

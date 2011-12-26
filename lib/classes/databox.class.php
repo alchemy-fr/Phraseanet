@@ -142,7 +142,7 @@ class databox extends base
       }
       catch (Exception $e)
       {
-
+        
       }
     }
 
@@ -157,7 +157,7 @@ class databox extends base
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $conn = connection::getPDOConnection();
@@ -450,7 +450,6 @@ class databox extends base
     $stmt->closeCursor();
 
     if ($row)
-
       return self::get_instance((int) $row['sbas_id']);
 
     try
@@ -463,7 +462,7 @@ class databox extends base
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $sql = 'USE `' . $dbname . '`';
@@ -575,7 +574,6 @@ class databox extends base
   public function get_meta_structure()
   {
     if ($this->meta_struct)
-
       return $this->meta_struct;
 
     try
@@ -698,7 +696,6 @@ class databox extends base
       }
     }
     if ($n > $limit)
-
       return true;
 
     return false;
@@ -960,7 +957,14 @@ class databox extends base
       $this->saveStructure($dom_struct);
 
       $type = isset($field['type']) ? $field['type'] : 'string';
-      $type = in_array($type, array(databox_field::TYPE_DATE, databox_field::TYPE_NUMBER, databox_field::TYPE_TEXT)) ? $type : databox_field::TYPE_TEXT;
+      $type = in_array($type
+                      , array(
+                  databox_field::TYPE_DATE
+                  , databox_field::TYPE_NUMBER
+                  , databox_field::TYPE_STRING
+                  , databox_field::TYPE_TEXT
+                      )
+              ) ? $type : databox_field::TYPE_STRING;
 
       $meta_struct_field = databox_field::create($this, $fname);
       $meta_struct_field
@@ -968,7 +972,7 @@ class databox extends base
               ->set_indexable(isset($field['index']) ? $field['index'] : '1')
               ->set_type($type)
               ->set_tbranch(isset($field['tbranch']) ? $field['tbranch'] : '')
-              ->set_thumbtitle(isset($field['thumbtitle']) ? $field['thumbtitle'] : '0')
+              ->set_thumbtitle(isset($field['thumbtitle']) ? $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
               ->set_multi(isset($field['multi']) ? $field['multi'] : 0)
               ->set_report(isset($field['report']) ? $field['report'] : '1')
               ->save();
@@ -979,7 +983,7 @@ class databox extends base
       }
       catch (Exception $e)
       {
-
+        
       }
 
       if (isset($field['regname']))
@@ -1213,7 +1217,6 @@ class databox extends base
   public function get_structure()
   {
     if ($this->structure)
-
       return $this->structure;
     $this->structure = $this->retrieve_structure();
 
@@ -1228,7 +1231,7 @@ class databox extends base
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $structure = null;
@@ -1254,7 +1257,6 @@ class databox extends base
   public function get_cterms()
   {
     if ($this->cterms)
-
       return $this->cterms;
 
     $sql = "SELECT value FROM pref WHERE prop='cterms'";
@@ -1421,7 +1423,6 @@ class databox extends base
   public function get_cgus()
   {
     if ($this->cgus)
-
       return $this->cgus;
 
     $this->load_cgus();
@@ -1439,7 +1440,7 @@ class databox extends base
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $sql = 'SELECT value, locale, updated_on FROM pref WHERE prop ="ToU"';

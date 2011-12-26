@@ -102,12 +102,19 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
       if (is_null($v))
         $this->query_parms[$k] = false;
     }
+    
+    
+    $query = new User_Query($appbox);
+    $templates = $query
+            ->only_templates(true)
+            ->execute()->get_results();
 
     return array(
         'users' => $this->results,
         'parm' => $this->query_parms,
         'invite_user' => $invite,
-        'autoregister_user' => $autoregister
+        'autoregister_user' => $autoregister,
+        'templates' => $templates
     );
   }
 

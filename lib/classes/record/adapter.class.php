@@ -1030,7 +1030,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $base_url = '';
     $original_file = $subdef_def = false;
 
-
     $subdefs = $this->get_databox()->get_subdef_structure();
 
     foreach ($subdefs as $type => $datas)
@@ -1051,7 +1050,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     try
     {
       $value = $this->get_subdef($name);
-      $original_file = p4string::addEndSlash($value['path']) . $value['file'];
+      $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
       unlink($original_file);
     }
     catch (Exception $e)
@@ -1066,7 +1065,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if (trim($subdef_def->get_baseurl()) !== '')
     {
       $base_url = str_replace(
-              array((string) $subdef_def->get_path(), $newfilename), array((string) $subdef_def->get_baseurl(), ''), $path_file_dest
+              array((string) $subdef_def->get_path(), $newfilename)
+              , array((string) $subdef_def->get_baseurl(), '')
+              , $path_file_dest
       );
     }
 
@@ -1076,7 +1077,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       $sql = 'DELETE FROM subdef WHERE record_id= :record_id AND name=:name';
       $stmt = $connbas->prepare($sql);
-      $stmt->execute(array(':record_id' => $this->record_id, ':name' => $name));
+      $stmt->execute(
+              array(
+                  ':record_id' => $this->record_id
+                  , ':name' => $name
+              )
+      );
 
       $registry = registry::get_instance();
 
@@ -1111,7 +1117,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       $sql = 'UPDATE record SET moddate=NOW() WHERE record_id=:record_id';
       $stmt = $connbas->prepare($sql);
-      $stmt->bindParam(':record_id', $this->get_record_id());
+      $stmt->execute(array(':record_id' => $this->get_record_id()));
       $stmt->execute();
 
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
