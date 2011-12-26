@@ -76,4 +76,10 @@ function stripdoublequotes($value)
 }
 $twig = new supertwig();
 $twig->addFilter(array('stripdoublequotes'=>'stripdoublequotes'));
+
+if(!$task->getGraphicForm())
+{
+  $parm['view'] = 'XML';
+}
+
 $twig->display('admin/task.html', array('task'=>$task, 'view'=>$parm['view']));

@@ -397,7 +397,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
    */
   public function set_email($email)
   {
-    if (!trim($email))
+    if (trim($email) == '')
       $email = null;
     
     $test_user = User_Adapter::get_usr_id_from_email($email);
@@ -878,6 +878,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
   public static function get_usr_id_from_email($email)
   {
+    if(is_null($email))
+      return false;
+    
     $conn = connection::getPDOConnection();
     $sql = 'SELECT usr_id FROM usr
             WHERE usr_mail = :email
