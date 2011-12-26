@@ -128,10 +128,10 @@ class User_Query implements User_QueryInterface
   const SORT_FIRSTNAME= 'usr_prenom';
   const SORT_LASTNAME= 'usr_nom';
   const SORT_COMPANY = 'societe';
-  const SORT_LOGIN = 'login';
+  const SORT_LOGIN = 'usr_login';
   const SORT_EMAIL = 'usr_mail';
   const SORT_ID = 'usr_id';
-  const SORT_CREATIONDATE = 'creationdate';
+  const SORT_CREATIONDATE = 'usr_creationdate';
   const SORT_COUNTRY = 'pays';
   const SORT_LASTMODEL = 'lastModel';
 
@@ -410,6 +410,8 @@ class User_Query implements User_QueryInterface
         case self::SORT_COMPANY:
         case self::SORT_LOGIN:
         case self::SORT_EMAIL:
+          $sorter[$k] = ' usr.`' . $sort . '` COLLATE utf8_unicode_ci ';
+          break;
         case self::SORT_ID:
         case self::SORT_CREATIONDATE:
         case self::SORT_COUNTRY:
@@ -430,7 +432,7 @@ class User_Query implements User_QueryInterface
           $sorter[$k] .= ' ASC ';
           break;
         case self::ORD_DESC:
-          $sorter[$k] .= ' ASC ';
+          $sorter[$k] .= ' DESC ';
           break;
       }
     }

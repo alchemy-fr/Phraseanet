@@ -68,29 +68,75 @@
 <table id="users" cellspacing="0"  cellpadding="0" border="0" class="admintable">
   <thead>
     <tr>
-      <th style="text-align: center;">
+      <th style="text-align: center;" class="sortable {{ parm.srt == 'usr_id' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
         {% trans 'admin::compte-utilisateur id utilisateur' %}
+        <span class="ord_notifier">
+          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+        </span>
+        <input type="hidden" name="srt" value="usr_id" />
       </th>
-      <th>
+      <th class="sortable {{ parm.srt == 'usr_login' ? 'sorted' :  '' }} ">
+        <span>
         {% trans 'admin::compte-utilisateur identifiant' %}
+        </span>
+        <span class="ord_notifier">
+          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+        </span>
+        <input type="hidden" name="srt" value="usr_login" />
       </th>
-      <th>
+      <th class="sortable {{ parm.srt == 'usr_nom' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+        <span>
         {% trans 'admin::compte-utilisateur nom/prenom' %}
+        </span>
+        <span class="ord_notifier">
+          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+        </span>
+        <input type="hidden" name="srt" value="usr_nom" />
       </th>
-      <th>
+      <th class="sortable {{ parm.srt == 'societe' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+        <span>
         {% trans 'admin::compte-utilisateur societe' %}
+        </span>
+        <span class="ord_notifier">
+          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+        </span>
+        <input type="hidden" name="srt" value="societe" />
       </th>
-      <th>
+      <th class="sortable {{ parm.srt == 'usr_mail' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+        <span>
         {% trans 'admin::compte-utilisateur email' %}
+        </span>
+        <span class="ord_notifier">
+          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+        </span>
+        <input type="hidden" name="srt" value="usr_mail" />
       </th>
-      <th>
+      <th class="sortable {{ parm.srt == 'pays' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+        <span>
         {% trans 'admin::compte-utilisateur pays' %}
+        </span>
+        <span class="ord_notifier">
+          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+        </span>
+        <input type="hidden" name="srt" value="pays" />
       </th>
-      <th>
+      <th class="sortable {{ parm.srt == 'lastModel' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+        <span>
         {% trans 'admin::compte-utilisateur dernier modele applique' %}
+        </span>
+        <span class="ord_notifier">
+          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+        </span>
+        <input type="hidden" name="srt" value="lastModel" />
       </th>
-      <th>
+      <th class="sortable {{ parm.srt == 'usr_creationdate' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+        <span>
         {% trans 'admin::compte-utilisateur date de creation' %}
+        </span>
+        <span class="ord_notifier">
+          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+        </span>
+        <input type="hidden" name="srt" value="usr_creationdate" />
       </th>
     </tr>
   </thead>

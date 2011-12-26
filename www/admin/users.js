@@ -18,6 +18,29 @@ $(document).ready(function(){
     $(n).addClass('selected');
     return true;
   }
+  
+  $('#users th.sortable').live('click', function(){
+    
+    var $this = $(this);
+    
+    var sort = $('input', $this).val();
+    
+    if((sort == $('#users_page_form input[name="srt"]').val()) 
+      && ($('#users_page_form input[name="ord"]').val() == 'asc'))
+    {
+      var ord = 'desc';
+    }
+    else
+    {
+      var ord = 'asc';
+    }
+    
+    $('#users_page_form input[name="srt"]').val(sort);
+    $('#users_page_form input[name="ord"]').val(ord);
+    
+    $('#users_page_form').trigger('submit');
+  }).live('mouseover', function(){$(this).addClass('hover');})
+    .live('mouseout', function(){$(this).removeClass('hover');});
 
   var buttons = {};
   buttons[language.create_user] = function(){

@@ -142,3 +142,19 @@ table.admintable tbody .dropdown{
     cursor:pointer;
     color:#AFAFAF;
 }
+#users th.sortable span{
+  margin:0 5px;
+}
+#users th.sortable{
+  cursor:pointer;
+}
+#users th.sortable.hover,
+#users th.sortable.sorted{
+  background-color:#F0AD30;
+}
+#users th.sortable span.ord_notifier{
+  display:none;
+}
+#users th.sortable.sorted span.ord_notifier{
+  display:inline;
+}
