@@ -219,19 +219,29 @@ class set_order extends set_abstract
       }
     }
 
-    try
+    $core = \bootstrap::getCore();
+    
+    $em = $core->getEntityManager();
+    $repository = $em->getRepository('\Entities\Basket');
+    
+    /* @var $repository \Repositories\BasketRepository */
+    $Basket = $repository->findUserBasket($this->ssel_id, $core->getAuthenticatedUser());
+    
+    if(!$Basket)
     {
-      $basket = basket_adapter::getInstance($appbox, $this->ssel_id, $session->get_usr_id());
-    }
-    catch (Exception $e)
-    {
-      $basket = basket_adapter::create($appbox, sprintf(_('Commande du %s'), $this->created_on->format('Y-m-d')), $this->user, '', $pusher);
-
-      $this->ssel_id = $basket->get_ssel_id();
-
+      $Basket = new Basket();
+      $Basket->setName(sprintf(_('Commande du %s'), $this->created_on->format('Y-m-d')));
+      $Basket->setOwner($this->user);
+      $Basket->setPusher($core->getAuthenticatedUser());
+      
+      $em->persist($Basket);
+      $em->flush();
+      
+      $this->ssel_id = $Basket->getId();
+      
       $sql = 'UPDATE `order` SET ssel_id = :ssel_id WHERE id = :order_id';
       $stmt = $conn->prepare($sql);
-      $stmt->execute(array(':ssel_id' => $basket->get_ssel_id(), ':order_id' => $this->id));
+      $stmt->execute(array(':ssel_id' => $Basket->getId(), ':order_id' => $this->id));
       $stmt->closeCursor();
     }
 

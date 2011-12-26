@@ -45,5 +45,29 @@ class BasketElementRepository extends EntityRepository
 
     return $query->getResult();
   }
+  
+  /**
+   *
+   * @param type $element_id
+   * @param \User_Adapter $user
+   * @return \Entities\BasketELement 
+   */
+  public function findUserElement($element_id, \User_Adapter $user)
+  {
+    $element = $this->find($element_id);
+
+    /* @var $element \Entities\BasketElement */
+    if (null === $element)
+    {
+      throw new \Exception_NotFound(_('Element is not found'));
+    }
+
+    if ($element->getBasket()->getowner()->get_id() != $user->get_id())
+    {
+      throw new \Exception_Forbidden(_('You have not access to this basket element'));
+    }
+
+    return $element;
+  }
 
 }
