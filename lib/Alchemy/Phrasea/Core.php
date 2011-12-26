@@ -24,7 +24,13 @@ require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 class Core extends \Pimple
 {
 
-  public function __construct($isDev = false)
+  /**
+   *
+   * @var Core\Configuration
+   */
+  private $conf;
+  
+  public function __construct($env)
   {
 
     /**
@@ -32,14 +38,18 @@ class Core extends \Pimple
      */
     static::initAutoloads();
 
+    
+    $this->conf = new Core\Configuration($env);
+    
     $this['Version'] = $this->share(function()
             {
               return new Core\Version();
             });
-
-    $this['EM'] = $this->share(function()
+     
+    $conf = $this->conf;
+    $this['EM'] = $this->share(function() use ($conf)
             {
-              $doctrine = new Core\Service\Doctrine();
+              $doctrine = new Core\Service\Doctrine($conf->getDoctrineConf());
               return $doctrine->getEntityManager();
             });
 
@@ -89,6 +99,20 @@ class Core extends \Pimple
     $gatekeeper->check_directory();
 
     return;
+  }
+
+  private function init()
+  {
+    if ($this->conf->debug)
+    {
+      ini_set('display_errors', 1);
+      error_reporting(E_ALL);
+      \Symfony\Component\HttpKernel\Debug\ErrorHandler::register();
+    }
+    else
+    {
+      ini_set('display_errors', 0);
+    }
   }
 
   /**
@@ -291,4 +315,14 @@ class Core extends \Pimple
     return;
   }
 
+
+  public function getEnv()
+  {
+    return $this->env;
+  }
+
+  public function isDebug()
+  {
+    return $this->conf->debug;
+  }
 }
