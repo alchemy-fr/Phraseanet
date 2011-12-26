@@ -336,6 +336,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   protected static $time_start;
   protected static $generated_subdefs = array();
 
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core 
+   */
   protected static $core;
   
   public static function setUpBeforeClass()
