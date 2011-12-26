@@ -27,11 +27,11 @@
                             <tr valign="middle">
                                 <td style="width:10px;"></td>
                                 <td style="width:35px;text-align:center;">
-                                    <div class="display_id">{% if first_item %}{{first_item.get_ord()}}{% endif %}</div>
+                                    <div class="display_id">{% if first_item %}{{first_item.getOrd()}}{% endif %}</div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
-                                        {% if first_item %}{{first_item.get_record().get_title|raw}}{% endif %}
+                                    <div class="title title15" title="{% if first_item %}{{first_item.getRecord().get_title|e}}{% endif %}">
+                                        {% if first_item %}{{first_item.getRecord().get_title|raw}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -45,7 +45,7 @@
                     </div>
                     <div class="container PNB">
                         {% if first_item %}
-              {% set bask_prev = first_item.get_record().get_preview() %}
+              {% set bask_prev = first_item.getRecord().get_preview() %}
               {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'',session, false)}}
             {% endif %}
                         {% include 'lightbox/selector_box.twig' %}
@@ -61,8 +61,8 @@
                                     <div class="display_id"></div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
-                                        {% if first_item %}{{first_item.get_record().get_title}}{% endif %}
+                                    <div class="title title15" title="{% if first_item %}{{first_item.getRecord().get_title|e}}{% endif %}">
+                                        {% if first_item %}{{first_item.getRecord().get_title}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -83,7 +83,7 @@
                     <div id="record_infos" class="PNB">
                         <div class="container PNB">
               {% if first_item %}
-                {{caption.format_caption(first_item.get_record())}}
+                {{caption.format_caption(first_item.getRecord())}}
               {% endif %}
             </div>
                     </div>

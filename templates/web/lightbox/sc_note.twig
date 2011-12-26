@@ -1,25 +1,33 @@
-{% if basket_element and basket_element.is_validation_item() %}
-    <div class="notes_wrapper">
-        <div class="notes_overlay">
-        </div>
-        <div class="notes">
-        <div><h2 class="title15">{% trans 'validation:: votre note' %}</h2></div>
-            <hr/>
-        {% for user, datas in basket_element.get_choices() %}
-            {% if datas.note != '' %}
-                <div class="note_wrapper ui-corner-all {% if datas.is_mine %}my_note{% endif %} ">
-                    <span class="note_author title15">{{datas.usr_name}}</span> : {{datas.note|nl2br}}
-                </div>
-            {% endif %}
-        {% endfor %}
-
-        <form>
-            <textarea>{{basket_element.get_my_note()}}</textarea>
-            <div class="buttons">
-                <button class="note_closer ui-corner-all">{% trans 'boutton::fermer' %}</button>
-                <button class="note_saver ui-corner-all" id="note_saver_{{basket_element.get_sselcont_id()}}">{% trans 'boutton::enregistrer' %}</button>
-            </div>
-        </form>
-        </div>
+{% if basket_element and basket_element?getBasket().getValidation() %}
+  <div class="notes_wrapper">
+    <div class="notes_overlay">
     </div>
+    <div class="notes">
+    <div>
+      <h2 class="title15">{% trans 'validation:: votre note' %}</h2>
+    </div>
+    <hr/>
+    {% for validationDatas in basket_element.getValidationDatas() %}
+      {% if validationDatas.getNote() != '' %}
+    <div class="note_wrapper ui-corner-all {% if validationDatas.getParticipant().getUser().get_id() == user.get_id() %}my_note{% endif %} ">
+      <span class="note_author title15">
+        {{validationDatas.getParticipant().getUser().get_display_name()}}
+      </span> : {{ validationDatas.getNote()|nl2br }}
+    </div>
+      {% endif %}
+    {% endfor %}
+
+    <form>
+      <textarea>{{basket_element.get_my_note()}}</textarea>
+      <div class="buttons">
+        <button class="note_closer ui-corner-all">
+          {% trans 'boutton::fermer' %}
+        </button>
+        <button class="note_saver ui-corner-all" id="note_saver_{{basket_element.get_sselcont_id()}}">
+          {% trans 'boutton::enregistrer' %}
+        </button>
+      </div>
+    </form>
+    </div>
+  </div>
 {% endif %}
