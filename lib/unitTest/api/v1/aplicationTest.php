@@ -246,7 +246,7 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
           $this->assertTrue((strlen($metadatas->separator) > 0));
 
         $this->assertTrue(is_string($metadatas->thesaurus_branch));
-        $this->assertTrue(in_array($metadatas->type, array(databox_field::TYPE_DATE, databox_field::TYPE_NUMBER, databox_field::TYPE_TEXT)));
+        $this->assertTrue(in_array($metadatas->type, array(databox_field::TYPE_DATE,databox_field::TYPE_STRING, databox_field::TYPE_NUMBER, databox_field::TYPE_TEXT)));
         $this->assertTrue(is_bool($metadatas->indexable));
         $this->assertTrue(is_bool($metadatas->multivalue));
         $this->assertTrue(is_bool($metadatas->readonly));
