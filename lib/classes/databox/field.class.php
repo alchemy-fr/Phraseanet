@@ -124,6 +124,7 @@ class databox_field implements cache_cacheableInterface
 
   const TYPE_TEXT = "text";
   const TYPE_DATE = "date";
+  const TYPE_STRING = "string";
   const TYPE_NUMBER = "number";
 
   /**
