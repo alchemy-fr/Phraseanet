@@ -13,7 +13,7 @@
   
   <script type="text/javascript">
     $(document).ready(function(){
-      $('#bask_create_sel').val(p4.sel.join(';'));
+      $('#bask_create_sel').val(p4.Result.Selection.serialize());
       
       $('#DIALOG form').bind('submit', function(event){
 
@@ -31,7 +31,7 @@
           },
           success: function(data){
 
-            refreshBaskets(data.basket.id);
+            p4.WorkZone.refresh(data.basket.id);
             $('#DIALOG').dialog('close').empty();
 
             return;

@@ -1,6 +1,7 @@
 <div style="margin:0 7px;overflow:hidden;">
-{% set story_length = Story.get_children().get_elements()|length %}
+{% set basket_length = basket.getElements()|length %}
     <div class="tools">
+
 
       <button class="ui-corner-all TOOL_disktt_btn basket_window" title="{% trans 'action : exporter' %}">
         <img src="/skins/prod/000000/images/disktt_history.gif"/>
@@ -51,24 +52,21 @@
       </button>
 
     </div>
-    <div class="alert_datas_changed ui-corner-all">
-      {% trans 'Certaines donnees du panier ont change' %} 
-      <a class="basket_refresher" href="#">
-        {% trans 'rafraichir' %}
-      </a>
-    </div>
-    {% if story_length == 0 %}
-      <div style="height:120px;"></div>
-    {% endif %}
+            <div class="alert_datas_changed ui-corner-all">{% trans 'Certaines donnees du panier ont change' %} <a class="basket_refresher" href="#">{% trans 'rafraichir' %}</a></div>
+{% if basket_length == 0 %}
+            <div style="height:120px;"></div>
+{% endif %}
 
-    {% set basket_scope = 'groupings'%}
-    {% import 'prod/WorkZone/Macros.twig' as Macros %}
+{% set basket_scope = 'objects'%}
 
-    {% for record in Story.get_children().get_elements() %}
-        <span class="wrapCHIM_{{ record.get_serialize_key() }}">
-        {{ Macros.element('groupings', Story, record, record, record.get_number(), user, session) }}
-        </span>
-    {% endfor %}
-  </div>
+{% import 'prod/WorkZone/Macros.twig' as Macros %}
+            
+{% if basket.getValidation() and basket.getValidation().getInitiator() == core.getAuthenticatedUser() %}
+    {{ Macros.display_validation(basket, ordre, user, session) }}
+{% else %}
+    {{ Macros.display_basket(basket, user, session) }}
+{% endif %}
+
+          </div>
 
 
