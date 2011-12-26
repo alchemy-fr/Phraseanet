@@ -180,7 +180,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $connbas = $this->databox->get_connection();
@@ -530,7 +530,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return null;
@@ -580,7 +580,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
     $sql = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -617,7 +617,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       throw new Exception_Media_SubdefNotFound ();
 
     if (isset($this->subdefs[$name]))
-
       return $this->subdefs[$name];
 
     if (!$this->subdefs)
@@ -658,7 +657,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $connbas = $this->get_databox()->get_connection();
@@ -757,10 +756,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if ($data)
     {
       if (isset($this->technical_datas[$data]))
-
         return $this->technical_datas[$data];
       else
-
         return false;
     }
 
@@ -951,7 +948,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $base_url = '';
     $original_file = $subdef_def = false;
 
-
     $subdefs = $this->get_databox()->get_subdef_structure();
 
     foreach ($subdefs as $type => $datas)
@@ -972,7 +968,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     try
     {
       $value = $this->get_subdef($name);
-      $original_file = p4string::addEndSlash($value['path']) . $value['file'];
+      $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
       unlink($original_file);
     }
     catch (Exception $e)
@@ -987,7 +983,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if (trim($subdef_def->get_baseurl()) !== '')
     {
       $base_url = str_replace(
-              array((string) $subdef_def->get_path(), $newfilename), array((string) $subdef_def->get_baseurl(), ''), $path_file_dest
+              array((string) $subdef_def->get_path(), $newfilename)
+              , array((string) $subdef_def->get_baseurl(), '')
+              , $path_file_dest
       );
     }
 
@@ -997,7 +995,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       $sql = 'DELETE FROM subdef WHERE record_id= :record_id AND name=:name';
       $stmt = $connbas->prepare($sql);
-      $stmt->execute(array(':record_id' => $this->record_id, ':name' => $name));
+      $stmt->execute(
+              array(
+                  ':record_id' => $this->record_id
+                  , ':name' => $name
+              )
+      );
 
       $registry = registry::get_instance();
 
@@ -1032,7 +1035,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       $sql = 'UPDATE record SET moddate=NOW() WHERE record_id=:record_id';
       $stmt = $connbas->prepare($sql);
-      $stmt->bindParam(':record_id', $this->get_record_id());
+      $stmt->execute(array(':record_id' => $this->get_record_id()));
       $stmt->execute();
 
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
@@ -1242,7 +1245,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
     $this->delete_data_from_cache(self::CACHE_STATUS);
 
@@ -1257,7 +1260,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_reg_name()
   {
     if (!$this->is_grouping())
-
       return false;
 
     $balisename = '';
@@ -1296,14 +1298,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $registry = registry::get_instance();
 
     if ($this->bitly_link !== null)
-
       return $this->bitly_link;
 
     $this->bitly_link = false;
 
     if (trim($registry->get('GV_bitly_user')) == ''
             && trim($registry->get('GV_bitly_key')) == '')
-
       return $this->bitly_link;
 
     try
@@ -1356,7 +1356,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     else
     {
       $uuid = $system_file->read_uuid();
-      if(!uuid::is_valid($uuid))
+      if (!uuid::is_valid($uuid))
       {
         $uuid = uuid::generate_v4();
       }
@@ -1504,7 +1504,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $hd = $this->get_subdef('document');
     if ($hd->is_physically_present())
-
       return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
     return null;
   }
@@ -1730,7 +1729,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-
+        
       }
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
     }
@@ -1824,7 +1823,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-
+        
       }
     }
 
@@ -1844,7 +1843,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_container_baskets()
   {
     if ($this->container_basket)
-
       return $this->container_basket;
 
     $appbox = appbox::get_instance();
