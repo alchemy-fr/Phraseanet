@@ -33,7 +33,6 @@ class Upgrader implements ControllerProviderInterface
     $controllers = new ControllerCollection();
 
     $app['registry'] = new \Setup_Registry();
-    $app['available_languages'] = \User_Adapter::detectLanguage($app['registry']);
     $app['twig'] = function()
             {
               return new \supertwig();
@@ -50,7 +49,7 @@ class Upgrader implements ControllerProviderInterface
                       , array(
                   'locale' => \Session_Handler::get_locale()
                   , 'upgrade_status' => $upgrade_status
-                  , 'available_locales' => $app['available_languages']
+                  , 'available_locales' => $app['Core']::getAvailableLanguages()
                   , 'bad_users' => \User_Adapter::get_wrong_email_users(\appbox::get_instance())
                   , 'version_number' => $app['Core']['Version']->getNumber()
                   , 'version_name' => $app['Core']['Version']->getName()

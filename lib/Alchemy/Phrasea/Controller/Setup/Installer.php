@@ -20,15 +20,6 @@ use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 
 date_default_timezone_set('Europe/Berlin');
-require_once dirname(__FILE__) . '/../../../../version.inc';
-require_once dirname(__FILE__) . '/../../../../classes/phrasea.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/bootstrap.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/cache/cacheableInterface.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/cache/interface.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/cache/nocache.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/cache/adapter.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/User/Interface.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/User/Adapter.class.php';
 
 /**
  *
@@ -42,8 +33,6 @@ class Installer implements ControllerProviderInterface
   public function connect(Application $app)
   {
     $controllers = new ControllerCollection();
-
-    $app['available_languages'] = \User_Adapter::detectLanguage(new \Setup_Registry());
 
     $controllers->get('/', function() use ($app)
             {
@@ -89,15 +78,15 @@ class Installer implements ControllerProviderInterface
               }
 
               
-              $ld_path = array(dirname(__FILE__) . '/../../../../templates/web');
-              $loader = new Twig_Loader_Filesystem($ld_path);
-              $twig = new Twig_Environment($loader);
+              $ld_path = array(__DIR__ . '/../../../../../templates/web');
+              $loader = new \Twig_Loader_Filesystem($ld_path);
+              $twig = new \Twig_Environment($loader);
               
               $html = $twig->render(
                       '/setup/index.twig'
                       , array_merge($constraints_coll, array(
                           'locale' => Session_Handler::get_locale()
-                          , 'available_locales' => $app['available_languages']
+                          , 'available_locales' => $app['Core']::getAvailableLanguages()
                           , 'version_number' => $app['Core']['Version']->getNumber()
                           , 'version_name' => $app['Core']['Version']->getName()
                           , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
@@ -111,12 +100,12 @@ class Installer implements ControllerProviderInterface
             {
               \phrasea::use_i18n(\Session_Handler::get_locale());
               
-              $ld_path = array(dirname(__FILE__) . '/../../../../templates/web');
+              $ld_path = array(__DIR__ . '/../../../../../templates/web');
               
-              $loader = new Twig_Loader_Filesystem($ld_path);
-              $twig = new Twig_Environment($loader);
+              $loader = new \Twig_Loader_Filesystem($ld_path);
+              $twig = new \Twig_Environment($loader);
               
-              $twig->addExtension(new Twig_Extensions_Extension_I18n());
+              $twig->addExtension(new \Twig_Extensions_Extension_I18n());
 
               $request = $app['request'];
 
@@ -125,11 +114,12 @@ class Installer implements ControllerProviderInterface
               {
                 $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
               }
+
               $html = $twig->render(
                       '/setup/step2.twig'
                       , array(
                   'locale' => \Session_Handler::get_locale()
-                  , 'available_locales' => $app['available_languages']
+                  , 'available_locales' => $app['Core']::getAvailableLanguages()
                   , 'available_templates' => \appbox::list_databox_templates()
                   , 'version_number' => $app['Core']['Version']->getNumber()
                   , 'version_name' => $app['Core']['Version']->getName()
