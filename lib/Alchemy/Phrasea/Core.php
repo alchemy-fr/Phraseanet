@@ -58,7 +58,7 @@ class Core extends \Pimple
     $conf = $this->conf;
     $this['EM'] = $this->share(function() use ($conf)
             {
-              $doctrine = new Core\Service\Doctrine($conf->getDoctrineConf());
+              $doctrine = new Core\Service\Doctrine($conf->getDbalConf());
               return $doctrine->getEntityManager();
             });
 
