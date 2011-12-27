@@ -12,10 +12,16 @@ class eventsmanager_broker
    * @var appbox
    */
   protected $appbox;
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core 
+   */
+  protected $core;
 
   private function __construct(appbox &$appbox)
   {
     $this->appbox = $appbox;
+    $this->core = bootstrap::getCore();
 
     return $this;
   }
@@ -50,7 +56,7 @@ class eventsmanager_broker
         {
           continue;
         }
-        $this->pool_classes[$classname] = new $classname($this->appbox, $this->appbox->get_registry(), $this);
+        $this->pool_classes[$classname] = new $classname($this->appbox, $this->core, $this);
 
         foreach ($this->pool_classes[$classname]->get_events() as $event)
           $this->bind($event, $classname);
@@ -100,7 +106,7 @@ class eventsmanager_broker
             {
               continue;
             }
-            $obj = new $classname($this->appbox, $this->appbox->get_registry(), $this);
+            $obj = new $classname($this->appbox, $this->core, $this);
 
             $ret[$classname] = $obj->get_name();
           }
