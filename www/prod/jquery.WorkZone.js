@@ -536,44 +536,41 @@ var p4 = p4 || {};
   
   var baskets = {};
   
-  
-  
-
-  function unFix(el)
-  {
-    var id = $(el).attr('id').split('_').slice(1,2).pop();
-    $.ajax({
-      type: "POST",
-      url: "/prod/prodFeedBack.php",
-      data: {
-        action: "UNFIX",
-        lst:id
-      },
-      success: function(data){
-        $('#SSTT_'+id).next().droppable('destroy').remove();
-        $('#SSTT_'+id).droppable('destroy').remove();
-      }
-    });
-  }
   function fix()
   {
     $.ajax({
       type: "POST",
-      url: "/prod/prodFeedBack.php",
+      url: "/prod/WorkZone/attachStories/",
+      data:{stories:p4.Results.Selection.get()},
       dataType: "json",
-      data: {
-        action: "FIX",
-        lst:p4.Result.Selection.serialize()
-      },
       success: function(data){
-        if(data.length>0)
-          refreshBaskets(data.pop());
+        humane.info(data.message);
+        p4.WorkZone.refresh();
+      }
+    });
+  }
+  
+  function unfix(link)
+  {
+    $.ajax({
+      type: "POST",
+      url: link,
+      dataType: "json",
+      success: function(data){
+        humane.info(data.message);
+        p4.WorkZone.refresh();
       }
     });
   }
   
   $(document).ready(function(){
     activeBaskets();
+    
+    $('#baskets a.story_unfix').live('click', function(){
+      unfix($(this).attr('href'));
+      
+      return false;
+    });
     
     p4.WorkZone = {
       'Selection':new Selectable({selector : '.CHIM', container:$('#baskets')}),

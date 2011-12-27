@@ -5,6 +5,18 @@
     $('a.dialog').live('click', function(event){
 
       var $this = $(this);
+      
+      
+      $('#DIALOG').attr('title', $this.attr('title'))
+                  .empty().addClass('loading')
+                  .dialog({
+                    resizable:false,
+                    closeOnEscape:true,
+                    modal:true,
+                    width:'800',
+                    height:'500'
+                  })
+                  .dialog('open');
 
       $.ajax({
         type: "GET",
@@ -14,19 +26,14 @@
 
         },
         success: function(data){
-          $('#DIALOG').attr('title', $this.attr('title'))
-                      .empty()
-                      .append(data)
-                      .dialog()
-                      .dialog('open');
+          $('#DIALOG').removeClass('loading').empty()
+                      .append(data);
           return;
         }
       });
 
       return false;
     });
-    
-    
     
   });
 

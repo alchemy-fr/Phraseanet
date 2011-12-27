@@ -77,8 +77,10 @@
                       </div>
 
                       <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="reorder({{basket.getId()}});return false;">
-                          {% trans 'Re-ordonner' %}
+                        <div class="context-menu-item-inner">
+                          <a class="dialog" title="{% trans 'Re-ordonner' %}" href="/prod/baskets/{{basket.getId()}}/reorder/">
+                            {% trans 'Re-ordonner' %}
+                          </a>
                         </div>
                       </div>
 
@@ -130,14 +132,18 @@
                         </div>
                       </div>
 
-                      <div title="" class="context-menu-item">
-                        <div id="UNFIX_{{story.getId()}}" class="context-menu-item-inner" onclick="unFix(this);return false;">
-                          {% trans 'action::detacher' %}
+                      <div title="" class="context-menu-item menu3-custom-item">
+                        <div class="context-menu-item-inner">
+                          <a class="story_unfix" href="/prod/WorkZone/detachStory/{{story.getRecord().get_sbas_id()}}/{{story.getRecord().get_record_id()}}/">
+                            {% trans 'action::detacher' %}
+                          </a>
                         </div>
                       </div>
-                      <div title="" class="context-menu-item">
-                        <div class="context-menu-item-inner" onclick="reorder('STORY',{{story.getRecord().get_serialize_key()}});return false;">
-                          {% trans 'Re-ordonner' %}
+                      <div title="" class="context-menu-item menu3-custom-item">
+                        <div class="context-menu-item-inner">
+                          <a class="dialog" title="{% trans 'Re-ordonner' %}" href="/prod/story/{{story.getRecord().get_sbas_id()}}/{{story.getRecord().get_record_id()}}/reorder/">
+                            {% trans 'Re-ordonner' %}
+                          </a>
                         </div>
                       </div>
 
