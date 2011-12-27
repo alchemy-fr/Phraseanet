@@ -67,17 +67,17 @@ class eventsmanager_broker
   {
     $iterators_pool = array();
 
-    $root = dirname(__FILE__) . '/../../';
+    $root = __DIR__ . '/../../';
 
     if ($type == 'event')
     {
-      $iterators_pool['event'][] = new DirectoryIterator(dirname(__FILE__) . '/event/');
-      if (file_exists(dirname(__FILE__) . '/event/'))
-        $iterators_pool['event'][] = new DirectoryIterator(dirname(__FILE__) . '/event/');
+      $iterators_pool['event'][] = new DirectoryIterator(__DIR__ . '/event/');
+      if (file_exists(__DIR__ . '/event/'))
+        $iterators_pool['event'][] = new DirectoryIterator(__DIR__ . '/event/');
     }
     if ($type == 'notify')
     {
-      $iterators_pool['notify'][] = new DirectoryIterator(dirname(__FILE__) . '/notify/');
+      $iterators_pool['notify'][] = new DirectoryIterator(__DIR__ . '/notify/');
     }
 
     $ret = array();

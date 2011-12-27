@@ -8,32 +8,33 @@
             </tr>
         </tbody>
     </table>
-    {% if basket.is_valid() %}
-        <div>{{basket.get_validation_infos}}</div>
+    {% if basket.getValidation() %}
+        <div>{{ basket.getValidation().getValidationString(user) }}</div>
         <ul>
-            {% for choice in basket_element.get_choices() %}
-                {% if choice.agreement == 1 %}
+            {% for choice in basket_element.getValidationDatas() %}
+                {% if choice.getAgreement() == true %}
                     {% set classuser = 'agree' %}
-                {% elseif choice.agreement == -1 %}
-                    {% set classuser = 'disagree' %}
-                {% else %}
+                {% elseif choice.getAgreement() == null %}
                     {% set classuser = '' %}
+                {% else %}
+                    {% set classuser = 'disagree' %}
                 {% endif %}
-                <li class="{% if choice.usr_id == session.get_usr_id() %}me{% endif %} {{classuser}} userchoice">{{choice.usr_name}}</li>
+                {% set participant = choice.getParticipant().getUser() %}
+                <li class="{% if participant.get_id() == user.get_id() %}me{% endif %} {{classuser}} userchoice">{{participant.get_display_name()}}</li>
             {% endfor %}
         </ul>
     {% endif %}
 </div>
 <div class="PNB user_infos">
-{% if basket_element and basket_element.is_validation_item() %}
+{% if basket_element and basket_element.getBasket().getValidation() %}
     <div class="PNB choices">
         <div style="height:60px;">
-            <div class="ui-corner-all big_box agree_{{basket_element.get_sselcont_id()}} agree {% if basket_element.get_my_agreement() != 1%}not_decided{% endif %}">
+            <div class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if basket_element.getUserValidationDatas(user).getAgreement() == null %}not_decided{% endif %}">
                 <img src="/skins/lightbox/agree-big.png"/><span class="title15">{% trans 'validation:: OUI' %}</span>
             </div>
         </div>
         <div style="height:60px;">
-            <div class="ui-corner-all big_box disagree_{{basket_element.get_sselcont_id()}} disagree {% if basket_element.get_my_agreement() != -1%}not_decided{% endif %}">
+            <div class="ui-corner-all big_box disagree_{{basket_element.getId()}} disagree {% if basket_element.getUserValidationDatas(user).getAgreement() == null %}not_decided{% endif %}">
                 <img src="/skins/lightbox/disagree-big.png"/><span class="title15">{% trans 'validation:: NON' %}</span>
             </div>
         </div>

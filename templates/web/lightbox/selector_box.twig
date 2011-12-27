@@ -1,8 +1,8 @@
-{% if basket_element and basket_element.is_validation_item() %}
+{% if basket_element and basket_element.getBasket().getValidation() %}
     <div class="agreement_selector" style="display:none;">
         <img src="/skins/lightbox/agree-big.png"
-            class="{% if basket_element.get_my_agreement() != 1 %}not_decided{% endif %} agree_{{basket_element.get_sselcont_id()}}"/>
+            class="{% if basket_element.getUserValidationData (user) != true %}not_decided{% endif %} agree_{{basket_element.getId()}}"/>
         <img src="/skins/lightbox/disagree-big.png"
-            class="{% if basket_element.get_my_agreement() != -1 %}not_decided{% endif %} disagree_{{basket_element.get_sselcont_id()}}" />
+            class="{% if basket_element.getUserValidationData (user) != false %}not_decided{% endif %} disagree_{{basket_element.getId()}}" />
     </div>
 {% endif %}

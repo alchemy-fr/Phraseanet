@@ -20,7 +20,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 return call_user_func(
                 function()
                 {
@@ -30,17 +29,29 @@ return call_user_func(
 
                   $app = new Silex\Application();
 
-                  $app->get('/', function () use ($session, $appbox)
+                  $app['Core'] = bootstrap::getCore();
+
+                  $app->get('/', function (Silex\Application $app) use ($session, $appbox)
                           {
                             User_Adapter::updateClientInfos((6));
-                            $basket_collection = new basketCollection($appbox, $session->get_usr_id());
+
+                            $em = $app['Core']->getEntityManager();
+                            $repository = $em->getRepository('\Entities\Basket');
+
+                            /* @var $repository \Repositories\BasketRepository */
+                            $basket_collection = $repository->findActiveByUser(
+                                    $app['Core']->getAuthenticatedUser()
+                            );
+
                             $twig = new supertwig();
                             $twig->addFilter(array('nl2br' => 'nl2br'));
                             $browser = Browser::getInstance();
 
                             $template = 'lightbox/index.twig';
                             if (!$browser->isNewGeneration() && !$browser->isMobile())
+                            {
                               $template = 'lightbox/IE6/index.twig';
+                            }
 
                             $output = $twig->render($template, array(
                                 'baskets_collection' => $basket_collection,
@@ -55,7 +66,7 @@ return call_user_func(
                           }
                   );
 
-                  $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function($sselcont_id) use ($session, $appbox)
+                  $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(Silex\Application $app, $sselcont_id) use ($session, $appbox)
                           {
                             $browser = Browser::getInstance();
                             if (!$browser->isMobile())
@@ -71,7 +82,7 @@ return call_user_func(
                           }
                   )->assert('sselcont_id', '\d+');
 
-                  $app->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function($sselcont_id)
+                  $app->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(Silex\Application $app, $sselcont_id)
                           {
                             $twig = new supertwig();
                             $twig->addFilter(array('nl2br' => 'nl2br', 'formatoctet' => 'p4string::format_octets'));
@@ -107,19 +118,30 @@ return call_user_func(
                               $appbox = appbox::get_instance();
                               $usr_id = $appbox->get_session()->get_usr_id();
 
-                              $basket_element = basket_element_adapter::getInstance($sselcont_id);
-                              $basket = basket_adapter::getInstance($appbox, $basket_element->get_ssel_id(), $usr_id);
+
+                              $em = $app['Core']->getEntityManager();
+
+                              $repository = $em->getRepository('\Entities\BasketElement');
+                              /* @var $repository \Repositories\BasketElementRepository */
+
+                              $BasketElement = $repository->findUserElement(
+                                      $sselcont_id
+                                      , $app['Core']->getAuthenticatedUser()
+                              );
+
+
+                              $Basket = $BasketElement->getBasket();
 
                               $ret = array();
-                              $ret['number'] = $basket_element->get_record()->get_number();
-                              $ret['title'] = $basket_element->get_record()->get_title();
+                              $ret['number'] = $BasketElement->getRecord()->get_number();
+                              $ret['title'] = $BasketElement->getRecord()->get_title();
 
-                              $ret['preview'] = $twig->render($template_preview, array('record' => $basket_element->get_record(), 'not_wrapped' => true));
-                              $ret['options_html'] = $twig->render($template_options, array('basket_element' => $basket_element));
-                              $ret['agreement_html'] = $twig->render($template_agreement, array('basket' => $basket, 'basket_element' => $basket_element));
-                              $ret['selector_html'] = $twig->render($template_selector, array('basket_element' => $basket_element));
-                              $ret['note_html'] = $twig->render($template_note, array('basket_element' => $basket_element));
-                              $ret['caption'] = $twig->render($template_caption, array('view' => 'preview', 'record' => $basket_element->get_record()));
+                              $ret['preview'] = $twig->render($template_preview, array('record' => $BasketElement->getRecord(), 'not_wrapped' => true));
+                              $ret['options_html'] = $twig->render($template_options, array('basket_element' => $BasketElement));
+                              $ret['agreement_html'] = $twig->render($template_agreement, array('basket' => $Basket, 'basket_element' => $BasketElement));
+                              $ret['selector_html'] = $twig->render($template_selector, array('basket_element' => $BasketElement));
+                              $ret['note_html'] = $twig->render($template_note, array('basket_element' => $BasketElement));
+                              $ret['caption'] = $twig->render($template_caption, array('view' => 'preview', 'record' => $BasketElement->getRecord()));
                               $output = p4string::jsonencode($ret);
 
                               return new Response($output, 200, array('Content-Type' => 'application/json'));
@@ -130,7 +152,7 @@ return call_user_func(
 
 
 
-                  $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function($entry_id, $item_id)
+                  $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(Silex\Application $app, $entry_id, $item_id)
                           {
                             $twig = new supertwig();
                             $twig->addFilter(array('nl2br' => 'nl2br', 'formatoctet' => 'p4string::format_octets'));
@@ -182,15 +204,25 @@ return call_user_func(
                           }
                   )->assert('entry_id', '\d+')->assert('item_id', '\d+');
 
-                  $app->get('/validate/{ssel_id}/', function ($ssel_id) use ($session, $appbox)
+                  $app->get('/validate/{ssel_id}/', function (Silex\Application $app, $ssel_id) use ($session, $appbox)
                           {
 
                             User_Adapter::updateClientInfos((6));
 
                             $browser = Browser::getInstance();
 
-                            $basket_collection = new basketCollection($appbox, $session->get_usr_id());
-                            $basket = basket_adapter::getInstance($appbox, $ssel_id, $session->get_usr_id());
+                            $em = $app['Core']->getEntityManager();
+                            $repository = $em->getRepository('\Entities\Basket');
+
+                            /* @var $repository \Repositories\BasketRepository */
+                            $basket_collection = $repository->findActiveByUser(
+                                    $app['Core']->getAuthenticatedUser()
+                            );
+
+                            $basket = $repository->findUserBasket(
+                                    $ssel_id
+                                    , $app['Core']->getAuthenticatedUser()
+                            );
 
                             if ($basket->is_valid())
                             {
@@ -220,20 +252,25 @@ return call_user_func(
                           }
                   )->assert('ssel_id', '\d+');
 
-                  $app->get('/compare/{ssel_id}/', function ($ssel_id) use ($session, $appbox)
+                  $app->get('/compare/{ssel_id}/', function (Silex\Application $app, $ssel_id) use ($session, $appbox)
                           {
 
                             User_Adapter::updateClientInfos((6));
 
                             $browser = Browser::getInstance();
 
-                            $basket_collection = new basketCollection($appbox, $session->get_usr_id());
-                            $basket = basket_adapter::getInstance($appbox, $ssel_id, $session->get_usr_id());
+                            $em = $app['Core']->getEntityManager();
+                            $repository = $em->getRepository('\Entities\Basket');
 
-                            if ($basket->is_valid())
-                            {
-                              $basket->get_first_element()->load_users_infos();
-                            }
+                            /* @var $repository \Repositories\BasketRepository */
+                            $basket_collection = $repository->findActiveByUser(
+                                    $app['Core']->getAuthenticatedUser()
+                            );
+
+                            $basket = $repository->findUserBasket(
+                                    $ssel_id
+                                    , $app['Core']->getAuthenticatedUser()
+                            );
 
                             $twig = new supertwig();
 
@@ -260,7 +297,7 @@ return call_user_func(
 
 
 
-                  $app->get('/feeds/entry/{entry_id}/', function ($entry_id) use ($session, $appbox)
+                  $app->get('/feeds/entry/{entry_id}/', function (Silex\Application $app, $entry_id) use ($session, $appbox)
                           {
 
                             User_Adapter::updateClientInfos((6));
@@ -293,7 +330,7 @@ return call_user_func(
                           }
                   )->assert('entry_id', '\d+');
 
-                  $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function($ssel_id) use ($appbox, $app)
+                  $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(Silex\Application $app, $ssel_id) use ($appbox, $app)
                           {
                             $twig = new supertwig();
                             $twig->addFilter(array('nl2br' => 'nl2br'));
@@ -311,7 +348,7 @@ return call_user_func(
                           }
                   )->assert('ssel_id', '\d+');
 
-                  $app->post('/ajax/SET_NOTE/{sselcont_id}/', function ($sselcont_id) use ($app)
+                  $app->post('/ajax/SET_NOTE/{sselcont_id}/', function (Silex\Application $app, $sselcont_id)
                           {
                             $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
                             try
@@ -352,7 +389,7 @@ return call_user_func(
                           }
                   )->assert('sselcont_id', '\d+');
 
-                  $app->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function($sselcont_id) use ($app)
+                  $app->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(Silex\Application $app, $sselcont_id)
                           {
                             $request = $app['request'];
                             $agreement = (int) $request->get('agreement');
@@ -362,7 +399,7 @@ return call_user_func(
                                 'releasable' => false,
                                 'datas' => _('Erreur lors de la mise a jour des donnes ')
                             );
-                            
+
                             try
                             {
                               $appbox = appbox::get_instance();
@@ -388,7 +425,7 @@ return call_user_func(
                   )->assert('sselcont_id', '\d+');
 
 
-                  $app->post('/ajax/SET_RELEASE/{ssel_id}/', function($ssel_id) use ($session, $appbox)
+                  $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(Silex\Application $app, $ssel_id) use ($session, $appbox)
                           {
                             $basket = basket_adapter::getInstance($appbox, $ssel_id, $appbox->get_session()->get_usr_id());
 

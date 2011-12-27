@@ -45,14 +45,14 @@ class task_Scheduler
 
   protected static function get_connection()
   {
-    require dirname(__FILE__) . '/../../../config/connexion.inc';
+    require __DIR__ . '/../../../config/connexion.inc';
 
     return new connection_pdo('appbox', $hostname, $port, $user, $password, $dbname);
   }
 
   public function run(OutputInterface $output = null, $log_tasks = true)
   {
-    require_once dirname(__FILE__) . '/../../bootstrap.php';
+    require_once __DIR__ . '/../../bootstrap.php';
     $this->output = $output;
     $appbox = appbox::get_instance();
     $registry = $appbox->get_registry();

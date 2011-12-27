@@ -35,15 +35,23 @@ class API_V1_adapter extends API_V1_Abstract
   protected $appbox;
 
   /**
+   * Phraseanet Core
+   *
+   * @var \Alchemy\Phrasea\Core
+   */
+  protected $core;
+
+  /**
    * API constructor
    *
    * @param string $auth_token Authentification Token
    * @param appbox $appbox Appbox object
    * @return API_V1_adapter
    */
-  public function __construct($auth_token, appbox &$appbox)
+  public function __construct($auth_token, appbox &$appbox, Alchemy\Phrasea\Core $core)
   {
     $this->appbox = $appbox;
+    $this->core = $core;
 
     return $this;
   }
@@ -332,7 +340,7 @@ class API_V1_adapter extends API_V1_Abstract
     $ret = array();
     foreach ($containers as $basket)
     {
-      $ret[$basket->get_ssel_id()] = $this->list_basket($basket);
+      $ret[$basket->getId()] = $this->list_basket($basket);
     }
 
     $result->set_datas(array("baskets" => $ret));
@@ -549,7 +557,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function add_record_tobasket(Request $request, $databox_id, $record_id)
   {
-
+    
   }
 
   /**
@@ -607,10 +615,18 @@ class API_V1_adapter extends API_V1_Abstract
     if (trim(strip_tags($name)) === '')
       throw new API_V1_exception_badrequest ();
 
-    $user = User_Adapter::getInstance($this->appbox->get_session()->get_usr_id(), $this->appbox);
-    $basket = basket_adapter::create($this->appbox, $name, $user);
+    $user = $this->core->getAuthenticatedUser();
+
+    $Basket = new \Entities\Basket();
+    $Basket->setOwner($user);
+    $Basket->setName($name);
+
+    $em = $this->core->getEntityManager();
+    $em->persist($Basket);
+    $em->flush();
+
     $ret = array();
-    $ret[$basket->get_ssel_id()] = $this->list_basket($basket);
+    $ret[$Basket->getId()] = $this->list_basket($Basket);
     $result->set_datas(array("basket" => $ret));
 
     return $result;
@@ -627,12 +643,15 @@ class API_V1_adapter extends API_V1_Abstract
   {
     $result = new API_V1_result($request, $this);
 
-    $basket = basket_adapter::getInstance(
-                    $this->appbox
-                    , $basket_id
-                    , $this->appbox->get_session()->get_usr_id()
-    );
-    $basket->delete();
+    $em = $this->core->getEntityManager();
+    $repository = $em->getRepository('\Entities\Basket');
+
+
+    /* @var $repository \Repositories\BasketRepository */
+
+    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
+    $em->remove($Basket);
+    $em->flush();
 
     return $this->search_baskets($request);
   }
@@ -647,21 +666,21 @@ class API_V1_adapter extends API_V1_Abstract
   public function get_basket(Request $request, $basket_id)
   {
     $result = new API_V1_result($request, $this);
-    try
-    {
-      $basket = basket_adapter::getInstance($this->appbox, $basket_id, $this->appbox->get_session()->get_usr_id());
-      $result->set_datas(
-              array("basket_elements" =>
-                  array(
-                      $basket->get_ssel_id() => $this->list_basket_content($basket)
-                  )
-              )
-      );
-    }
-    catch (Exception $e)
-    {
 
-    }
+    $em = $this->core->getEntityManager();
+    $repository = $em->getRepository('\Entities\Basket');
+
+    /* @var $repository \Repositories\BasketRepository */
+
+    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
+
+    $result->set_datas(
+            array("basket_elements" =>
+                array(
+                    $Basket->getId() => $this->list_basket_content($Basket)
+                )
+            )
+    );
 
     return $result;
   }
@@ -669,16 +688,18 @@ class API_V1_adapter extends API_V1_Abstract
   /**
    * Retrieve elements of one basket
    *
-   * @param basket_adapter $basket
+   * @param \Entities\Basket $Basket
    * @return type
    */
-  protected function list_basket_content(basket_adapter $basket)
+  protected function list_basket_content(\Entities\Basket $Basket)
   {
-    $ret = $this->list_basket($basket);
+    $ret = $this->list_basket($Basket);
+
     $ret['basket_elements'] = array();
-    foreach ($basket->get_elements() as $basket_element)
+
+    foreach ($Basket->getElements() as $basket_element)
     {
-      $ret['basket_elements'][$basket_element->get_sselcont_id()] = $this->list_basket_element($basket_element);
+      $ret['basket_elements'][$basket_element->getId()] = $this->list_basket_element($basket_element);
     }
 
     return $ret;
@@ -687,23 +708,46 @@ class API_V1_adapter extends API_V1_Abstract
   /**
    * Retrieve detailled informations about a basket element
    *
-   * @param basket_element_adapter $basket_element
+   * @param \Entities\BasketElement $basket_element
    * @return type
    */
-  protected function list_basket_element(basket_element_adapter $basket_element)
+  protected function list_basket_element(\Entities\BasketElement $basket_element)
   {
     $ret = array(
-        'basket_element_id' => $basket_element->get_sselcont_id()
-        , 'order' => $basket_element->get_order()
-        , 'record' => $this->list_record($basket_element->get_record())
-        , 'validation_item' => $basket_element->is_validation_item()
+        'basket_element_id' => $basket_element->getId()
+        , 'order' => $basket_element->getOrd()
+        , 'record' => $this->list_record($basket_element->getRecord())
+        , 'validation_item' => !!$basket_element->getValidationDatas()
     );
 
-    if ($basket_element->is_validation_item())
+    if ($basket_element->getValidationDatas())
     {
-      $ret['choices'] = $basket_element->get_choices();
-      $ret['agreement'] = $basket_element->get_my_agreement();
-      $ret['note'] = $basket_element->get_my_note();
+      $choices = array();
+      $agreement = $note = null;
+
+      foreach ($basket_element->getValidationDatas() as $validation_datas)
+      {
+        $user = $validation_datas->getParticipant()->getUser();
+        /* @var $validation_datas Entities\ValidationData */
+        $choices[$user->get_id()] = array(
+            'usr_id' => $user->get_id(),
+            'usr_name' => $user->get_display_name(),
+            'is_mine' => $user->get_id() == $this->core->getAuthenticatedUser()->get_id(),
+            'agreement' => $validation_datas->getAgreement(),
+            'updated_on' => $validation_datas->getUpdated()->format(DATE_ATOM),
+            'note' => $validation_datas->getNote()
+        );
+        
+        if($user->get_id() == $this->core->getAuthenticatedUser()->get_id())
+        {
+          $agreement = $validation_datas->getAgreement();
+          $note = $validation_datas->getNote();
+        }
+      }
+
+      $ret['choices'] = $choices();
+      $ret['agreement'] = $agreement();
+      $ret['note'] = $note();
     }
 
     return $ret;
@@ -721,12 +765,23 @@ class API_V1_adapter extends API_V1_Abstract
     $result = new API_V1_result($request, $this);
 
     $name = $request->get('name');
-    $basket = basket_adapter::getInstance($this->appbox, $basket_id, $this->appbox->get_session()->get_usr_id());
-    $basket->set_name($name);
+
+    $em = $this->core->getEntityManager();
+    $repository = $em->getRepository('\Entities\Basket');
+
+
+    /* @var $repository \Repositories\BasketRepository */
+
+    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
+    $Basket->setName($name);
+
+    $em->merge($Basket);
+    $em->flush();
+
     $result->set_datas(
             array(
                 "basket" =>
-                array($basket->get_ssel_id() => $this->list_basket_content($basket)
+                array($Basket->getId() => $this->list_basket_content($Basket)
                 )
             )
     );
@@ -746,12 +801,23 @@ class API_V1_adapter extends API_V1_Abstract
     $result = new API_V1_result($request, $this);
 
     $desc = $request->get('description');
-    $basket = basket_adapter::getInstance($this->appbox, $basket_id, $this->appbox->get_session()->get_usr_id());
-    $basket->set_description($desc);
+
+    $em = $this->core->getEntityManager();
+    $repository = $em->getRepository('\Entities\Basket');
+
+
+    /* @var $repository \Repositories\BasketRepository */
+
+    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
+    $Basket->setDescription($desc);
+
+    $em->merge($Basket);
+    $em->flush();
+
     $result->set_datas(
             array(
                 "basket" =>
-                array($basket->get_ssel_id() => $this->list_basket_content($basket)
+                array($Basket->getId() => $this->list_basket_content($Basket)
                 )
             )
     );
@@ -791,7 +857,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function remove_publications(Request $request, $publication_id)
   {
-
+    
   }
 
   /**
@@ -919,7 +985,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function search_users(Request $request)
   {
-
+    
   }
 
   /**
@@ -929,7 +995,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function get_user_acces(Request $request, $usr_id)
   {
-
+    
   }
 
   /**
@@ -938,7 +1004,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function add_user(Request $request)
   {
-
+    
   }
 
   /**
@@ -1032,7 +1098,6 @@ class API_V1_adapter extends API_V1_Abstract
      * @todo  ajouter une option pour avoir les values serialisées
      *        dans un cas multi
      */
-
     return array(
         'meta_id' => $field->get_meta_id()
         , 'meta_structure_id' => $field->get_meta_struct_id()
@@ -1044,30 +1109,53 @@ class API_V1_adapter extends API_V1_Abstract
   /**
    * Retirve information about one basket
    *
-   * @param basket_adapter $basket
+   * @param \Entities\Basket $basket
    * @return array
    */
-  protected function list_basket(basket_adapter $basket)
+  protected function list_basket(\Entities\Basket $basket)
   {
     $ret = array(
-        'created_on' => $basket->get_create_date()->format(DATE_ATOM)
-        , 'description' => $basket->get_description()
-        , 'name' => $basket->get_name()
-        , 'pusher_usr_id' => $basket->get_pusher() ? $basket->get_pusher()->get_id() : null
-        , 'ssel_id' => $basket->get_ssel_id()
-        , 'updated_on' => $basket->get_update_date()->format(DATE_ATOM)
-        , 'unread' => $basket->is_unread()
+        'created_on' => $basket->getCreated()->format(DATE_ATOM)
+        , 'description' => $basket->getDescription()
+        , 'name' => $basket->getName()
+        , 'pusher_usr_id' => $basket->getPusherId()
+        , 'ssel_id' => $basket->getId()
+        , 'updated_on' => $basket->getUpdated()->format(DATE_ATOM)
+        , 'unread' => !$basket->getIsRead()
     );
 
-    if ($basket->is_valid())
+    if ($basket->getValidation())
     {
+      $users = array();
+
+      foreach ($basket->getValidation()->getParticipants() as $participant)
+      {
+        /* @var $participant \Entities\ValidationParticipant */
+        $user = $participant->getUser();
+
+        $users[$user->get_id()] = array(
+            'usr_id' => $user->get_id(),
+            'usr_name' => $user->get_display_name(),
+            'confirmed' => $participant->getIsConfirmed(),
+            'can_agree' => $participant->getCanAgree(),
+            'can_see_others' => $participant->getCanSeeOthers()
+        );
+      }
+
+      $expires_on_atom = $basket->getValidation()->getExpires();
+
+      if ($expires_on_atom instanceof DateTime)
+        $expires_on_atom = $expires_on_atom->format(DATE_ATOM);
+
+      $user = \User_Adapter::getInstance($this->appbox->get_session()->get_usr_id(), $this->appbox);
+
       $ret = array_merge(
               array(
-          'validation_users' => $basket->get_validating_users()
-          , 'validation_end_date' => ($basket->get_validation_end_date() instanceof DateTime ? $basket->get_validation_end_date()->format(DATE_ATOM) : null)
-          , 'validation_infos' => $basket->get_validation_infos()
-          , 'validation_confirmed' => $basket->is_confirmed()
-          , 'mine' => $basket->is_mine()
+          'validation_users' => $users
+          , 'validation_end_date' => $expires_on_atom
+          , 'validation_infos' => $basket->getValidation()->getValidationString($user)
+          , 'validation_confirmed' => $basket->getValidation()->getParticipant($user)->getIsConfirmed()
+          , 'mine' => $basket->getValidation()->isInitiator($user)
               )
               , $ret
       );

@@ -172,11 +172,18 @@ class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testLogoutDeconnected()
   {
+    try
+    {
     $url = sprintf('/bridge/adapter/%d/logout/', self::$account->get_id());
     $crawler = $this->client->request('GET', $url);
     $pageContent = $this->client->getResponse()->getContent();
     $this->assertContains("/adapter/" . self::$account->get_id() . "/logout/", $pageContent);
     $this->deconnected($crawler, $pageContent);
+    }
+    catch(Exception $e)
+    {
+      exit($e);
+    }
   }
 
   public function testLogout()

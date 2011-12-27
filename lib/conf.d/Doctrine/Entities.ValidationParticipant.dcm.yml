@@ -12,8 +12,17 @@ Entities\ValidationParticipant:
       type: integer
     is_aware:
       type: boolean
+    is_confirmed:
+      type: boolean
+    can_agree:
+      type: boolean
+    can_see_others:
+      type: boolean
+    reminded:
+      type: datetime
+      nullable: true;
   oneToMany:
-    datases:
+    datas:
       targetEntity: ValidationData
       mappedBy: participant
       cascade: ["ALL"]

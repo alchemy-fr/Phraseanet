@@ -62,11 +62,11 @@
     {% endif %}
 
     {% set basket_scope = 'groupings'%}
-    {% import 'prod/WorkZone/Element.html.twig' as Element %}
+    {% import 'prod/WorkZone/Macros.twig' as Macros %}
 
     {% for record in Story.get_children().get_elements() %}
         <span class="wrapCHIM_{{ record.get_serialize_key() }}">
-        {{ Element.element('groupings', Story, record, record, record.get_number(), user, session) }}
+        {{ Macros.element('groupings', Story, record, record, record.get_number(), user, session) }}
         </span>
     {% endfor %}
   </div>

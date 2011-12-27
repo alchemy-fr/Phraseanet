@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -46,11 +46,20 @@ if ($parm['ACT'] === null)
 
     if ($parm['SSTTID'] != '' && ($parm['lst'] == null || $parm['lst'] == ''))
     {
-      $basket = basket_adapter::getInstance($appbox, $parm['SSTTID'], $usr_id);
-      foreach ($basket->get_elements() as $basket_element)
+      $em = $Core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+
+      /* @var $repository \Repositories\BasketRepository */
+
+      $Basket = $repository->findUserBasket(
+              $Core->getRequest()->get('SSTTID')
+              , $Core->getAuthenticatedUser()
+      );
+
+      foreach ($Basket->getElements() as $basket_element)
       {
 
-        $parm['lst'] .= $basket_element->get_record()->get_serialize_key() . ';';
+        $parm['lst'] .= $basket_element->getRecord()->get_serialize_key() . ';';
       }
     }
 

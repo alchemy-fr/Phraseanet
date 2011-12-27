@@ -22,7 +22,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     parent::setUp();
     $appbox = appbox::get_instance();
-    $this->object = new API_V1_adapter(FALSE, $appbox);
+    $this->object = new API_V1_adapter(FALSE, $appbox, self::$core);
   }
 
   public function testGet_error_code()
@@ -370,10 +370,16 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     $usr_id = $session->get_usr_id();
+    
+    $em = self::$core->getEntityManager();
+    $repo = $em->getRepository('\Entities\Basket');
+    
+    /* @var $repo \Repositories\BasketRepository */
+    $repo->findUserBasket($ssel_id, self::$core->getAuthenticatedUser());
 
-    $basket = basket_adapter::getInstance(appbox::get_instance(), $ssel_id, $usr_id);
-    $this->assertTrue($basket instanceof basket_adapter);
-    $basket->delete();
+    $this->assertTrue($basket instanceof \Entities\Basket);
+    $em->remove($Basket);
+    $em->flush();
   }
 
   public function testDelete_basket()
@@ -381,8 +387,17 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
     $user = User_Adapter::getInstance($usr_id, $appbox);
-    $basket = basket_adapter::create($appbox, 'test suppression', $user);
-    $ssel_id = $basket->get_ssel_id();
+    
+    $em = self::$core->getEntityManager();
+    
+    $Basket = new Entities\Basket();
+    $Basket->setName('Delete test');
+    $Basket->setOwner($user);
+    
+    $em->persist($Basket);
+    $em->flush();
+    
+    $ssel_id = $basket->getId();
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     $result = $this->object->delete_basket($request, $ssel_id);
@@ -390,12 +405,14 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals('application/json', $result->get_content_type());
     $this->assertTrue(is_object(json_decode($result->format())));
 
+    $repo = $em->getRepository('\Entities\Basket');
+    
     try
     {
-      basket_adapter::getInstance($appbox, $ssel_id, $usr_id);
+      $repo->findUserBasket($ssel_id, $user);
       $this->fail('An exception should have been raised');
     }
-    catch (Exception_Basket_NotFound $e)
+    catch (Exception_NotFound $e)
     {
 
     }

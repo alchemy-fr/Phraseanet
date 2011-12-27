@@ -32,6 +32,8 @@ return call_user_func(function()
 
                   $app = new Silex\Application();
 
+                  $app["Core"] = bootstrap::getCore();
+
                   $app["appbox"] = appbox::get_instance();
 
                   /**
@@ -68,7 +70,7 @@ return call_user_func(function()
                    */
                   $app['api'] = function () use ($app)
                           {
-                            return new API_V1_adapter(false, $app["appbox"]);
+                            return new API_V1_adapter(false, $app["appbox"], $app["Core"]);
                           };
 
 

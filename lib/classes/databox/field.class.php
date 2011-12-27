@@ -124,6 +124,7 @@ class databox_field implements cache_cacheableInterface
 
   const TYPE_TEXT = "text";
   const TYPE_DATE = "date";
+  const TYPE_STRING = "string";
   const TYPE_NUMBER = "number";
 
   /**
@@ -176,7 +177,7 @@ class databox_field implements cache_cacheableInterface
     $this->required = !!$row['required'];
     $this->multi = !!$row['multi'];
     $this->report = !!$row['report'];
-    $this->type = $row['type'];
+    $this->type = $row['type'] ?: self::TYPE_STRING;
     $this->tbranch = $row['tbranch'];
     if ($row['dces_element'])
     {

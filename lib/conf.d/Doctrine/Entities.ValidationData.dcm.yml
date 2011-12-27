@@ -19,7 +19,7 @@ Entities\ValidationData:
   manyToOne:
     participant:
       targetEntity: ValidationParticipant
-      inversedBy: datases
+      inversedBy: datas
       joinColumn:
         name: participant_id
         referencedColumnName: id

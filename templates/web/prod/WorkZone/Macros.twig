@@ -1,6 +1,6 @@
 {% macro make_bloc(WorkZone, selected_type, selected_id, srt) %}
   <div class="alert_datas_changed ui-corner-all">{% trans 'Vous avez recu un nouveau panier' %} <a class="basket_refresher" href="#">{% trans 'rafraichir' %}</a></div>
-<div class="bloc">
+  <div class="bloc">
   <div class="insidebloc">
     {% set content = WorkZone.getContent() %}
     
@@ -159,4 +159,112 @@
     
   </div>
 </div>
+{% endmacro %}
+
+  
+{% macro element(wz_scope, container, contained, record, ord, user, session) %}
+  {% set box_height = 110 %}
+  {% if user.getPrefs('basket_title_display') == '1' %}
+      {% set box_height = (box_height + 20) %}
+  {% endif %}
+  {% if user.getPrefs('basket_status_display') == '1' %}
+      {% set box_height = (box_height + 20) %}
+  {% endif %}
+
+  {% import 'common/thumbnail.html' as thumbnail %}
+
+  <div ondblclick="{% if wz_scope == 'groupings' %}openPreview('REG',{{ ord }},'{{container.get_base_id()}}_{{container.get_record_id()}}');{% else %}openPreview('BASK',{{ ord }},{{container.getId()}});{% endif %}"
+       class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;"
+       id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
+       <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
+      {% if user.getPrefs('basket_title_display') == '1' %}
+          <div class="title">
+              {{record.get_title()}}
+          </div>
+      {% endif %}
+      {% if user.getPrefs('basket_status_display') == '1' %}
+          <div class="status" style="position:relative;height:20px;overflow-y:visible;z-index:15;">
+              {{record.get_status_icons|raw}}
+          </div>
+      {% endif %}
+          <div style="position:absolute;background-color:#959595;color:black;font-weight:bold;padding:3px;z-index:90;">
+              {{record.get_number()}}
+          </div>
+    {{thumbnail.format(record.get_thumbnail,82,82, '', session, true)}}
+      <div class="bottom">
+          <a 
+            {% if wz_scope == 'groupings' %}
+              id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}" 
+              href="/prod/story/{{ container.get_sbas_id() }}/{{ container.get_record_id() }}/delete/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/" 
+            {% elseif wz_scope == 'basket' %}
+              id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+              href="/prod/baskets/{{ container.getId() }}/delete/{{ contained.getId() }}/" 
+            {% elseif wz_scope == 'basket' %}
+              href="#" 
+            {% endif %}
+            class="WorkZoneElementRemover {{ wz_scope }}" title="{% trans 'delete'%}" >
+            X
+          </a>
+          {% if user.getPrefs('basket_caption_display') == '1' %}
+              <div class="captionRolloverTips" tooltipsrc="/prod/tooltip/caption/{{record.get_sbas_id()}}/{{record.get_record_id()}}/basket/?number={{record.get_number()}}"></div>
+          {% endif %}
+      </div>
+  </div>
+{% endmacro %}
+  
+{% macro display_basket(basket, user, session) %}
+  {% for basket_element in basket.getElements() %}
+      <span class="wrapCHIM_{{ basket_element.getRecord().get_serialize_key() }}">
+      {{ _self.element('basket', basket, basket_element, basket_element.getRecord(), basket_element.getOrd(), user, session) }}
+      </span>
+  {% endfor %}
+{% endmacro %}
+  
+{% macro display_validation(basket, ordre, user, session) %}
+  <div style="margin:5px 0;text-align:center;">
+      <form>
+          <select name="valid_ord">
+              <option {% if ordre=='nat'%}selected{% endif %} value="nat">{% trans 'panier:: ordre du panier' %}</option>
+              <option {% if ordre=='desc'%}selected{% endif %} value="desc">{% trans 'panier:: ordre Validation ascendante' %}</option>
+              <option {% if ordre=='asc'%}selected{% endif %} value="asc">{% trans 'panier:: ordre Validation descendante' %}</option>
+          </select>
+      </form>
+  </div>
+
+
+  {% for basket_element in basket.get_elements() %}
+      <span class="wrapCHIM_{{ basket_element.getRecord().get_serialize_key() }} valid">
+          <table style="width: 100%; min-width: 330px; display: inline-block;">
+              <tr>
+                  <td style="width:80px;">
+                    {{ _self.element('basket', basket, basket_element, basket.getRecord(), basket_element.getOrd(), user, session) }}
+                  </td>
+                  <td style="width:100%;">
+                      <table style=width:100%>
+                          {% for choice in basket_element.get_choices() %}
+                              <tr>
+                                  <td> {{choice.usr_name}} </td>
+                                  <td>
+                                  {% if choice.agreement == '1' %}
+                                      <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{% trans "L'utilisateur approuve ce document" %}" />
+                                  {% elseif choice.agreement == '-1' %}
+                                      <img style="cursor:help;" src='/skins/lightbox/disagree.png' title="{% trans "L'utilisateur desapprouve ce document" %}" />
+                                  {% else %}
+                                      <img style="cursor:help;" src='/skins/icons/valid.png' title="{% trans "L'utilisateur n'a pas encore donne son avis sur ce document" %}" />
+                                  {% endif %}
+                                  </td>
+                                  <td style="width:25px;">
+                                  {% if choice.note != '' %}
+                                       <img style="cursor:help;" src='/skins/icons/file-edit.png' class="noteTips" title="{{choice.note|e|nl2br}}" />
+                                  {% endif %}
+                                  </td>
+                              </tr>
+                          {% endfor %}
+                      </table>
+                  </td>
+              </tr>
+          </table>
+      </span>
+  {% endfor %}
+
 {% endmacro %}

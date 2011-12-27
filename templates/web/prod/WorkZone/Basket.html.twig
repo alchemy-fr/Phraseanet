@@ -59,10 +59,12 @@
 
 {% set basket_scope = 'objects'%}
 
+{% import 'prod/WorkZone/Macros.twig' as Macros %}
+            
 {% if basket.getValidation() and basket.getValidation().getInitiator() == core.getAuthenticatedUser() %}
-    {% include 'prod/basket_as_validation.twig'%}
+    {{ Macros.display_validation(basket, ordre, user, session) }}
 {% else %}
-    {% include 'prod/basket_default.twig'%}
+    {{ Macros.display_basket(basket, user, session) }}
 {% endif %}
 
           </div>

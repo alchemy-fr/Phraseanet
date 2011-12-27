@@ -305,7 +305,7 @@
         {% endif %}
       </ul>
       <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:30px;">
-        {% import 'prod/baskets_macro.html'  as  WorkZoneMacros %}
+        {% import 'prod/WorkZone/Macros.twig'  as  WorkZoneMacros %}
         {{WorkZoneMacros.make_bloc(WorkZone)}}
       </div>
       <div id="adv_search">
@@ -484,11 +484,6 @@
                 </table>
               </div>
               {% endif %}
-              <!--<div id="adv_tech">
-                    <div style="margin:10px;">
-                            <a href="#" onclick="search_doubles();return false;">{% trans 'recherche:: rechercher les doublons' %}</a> <label>{% trans 'aide doublon:: trouve les documents ayant la meme signature numerique' %}</label>
-                    </div>
-              </div>-->
             </div>
           </div>
         </div>
@@ -588,13 +583,13 @@
           </div>
         </li>
         <li class="context-menu-item">
-          <div class="context-menu-item-inner" onclick="refreshBaskets('current','date');">
+          <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
             <img style="cursor:pointer;" src="/skins/icons/cal.png" title="{% trans 'phraseanet:: tri par date' %}" />
             {% trans 'phraseanet:: tri par date' %}
           </div>
         </li>
         <li class="context-menu-item">
-          <div class="context-menu-item-inner" onclick="refreshBaskets('current','name');">
+          <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
             <img style="cursor:pointer;" src="/skins/icons/alpha.png" title="{% trans 'phraseanet:: tri par nom' %}" />
             {% trans 'phraseanet:: tri par nom' %}
           </div>
@@ -1178,7 +1173,6 @@
   {% include "prod/thesaurus.js" %}
 </script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/g=prod"></script>
-<script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=prod/jquery.dialogs.js"></script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">

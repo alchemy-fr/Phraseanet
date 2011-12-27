@@ -45,9 +45,9 @@ class Bridge implements ControllerProviderInterface
                       };
 
               if (!$account->get_api()->get_connector()->is_configured())
-                throw new \Bridge_Exception_ApiConnectorNotConfigured();
+                throw new \Bridge_Exception_ApiConnectorNotConfigured("Bridge API Connector is not configured");
               if (!$account->get_api()->get_connector()->is_connected())
-                throw new \Bridge_Exception_ApiConnectorNotConnected ();
+                throw new \Bridge_Exception_ApiConnectorNotConnected ("Bridge API Connector is not connected");
 
               return;
             });
@@ -55,7 +55,7 @@ class Bridge implements ControllerProviderInterface
     $controllers->post('/manager/'
             , function() use ($app, $twig)
             {
-              $route = new RecordHelper\Bridge($app['request']);
+              $route = new RecordHelper\Bridge($app['Core']);
               $appbox = \appbox::get_instance();
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
@@ -420,7 +420,7 @@ class Bridge implements ControllerProviderInterface
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
-              $route = new RecordHelper\Bridge($request);
+              $route = new RecordHelper\Bridge($app['Core']);
               $route->grep_records($account->get_api()->acceptable_records());
 
               $params = array(
@@ -447,7 +447,7 @@ class Bridge implements ControllerProviderInterface
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
-              $route = new RecordHelper\Bridge($request);
+              $route = new RecordHelper\Bridge($app['Core']);
               $route->grep_records($account->get_api()->acceptable_records());
               $connector = $account->get_api()->get_connector();
 

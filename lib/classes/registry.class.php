@@ -41,7 +41,7 @@ class registry implements registryInterface
    */
   public static function get_instance()
   {
-    $prefix = crc32(dirname(__FILE__));
+    $prefix = crc32(__DIR__);
     if (!self::$_instance instanceof self)
       self::$_instance = new self(new cache_opcode_adapter($prefix));
 
@@ -57,8 +57,8 @@ class registry implements registryInterface
   {
     $this->cache = $cache;
 
-    require dirname(__FILE__) . '/../../config/config.inc';
-    $this->cache->set('GV_RootPath', dirname(dirname(dirname(__FILE__))) . '/');
+    require __DIR__ . '/../../config/config.inc';
+    $this->cache->set('GV_RootPath', dirname(dirname(__DIR__)) . '/');
     $this->cache->set('GV_ServerName', p4string::addEndSlash($servername));
     $this->cache->set('GV_debug', !!$debug);
     $this->cache->set('GV_maintenance', !!$maintenance);

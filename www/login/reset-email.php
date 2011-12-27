@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -133,7 +133,7 @@ if (isset($parm['form_password']) && isset($parm['form_email']) && isset($parm['
 
     if (str_replace(array("\r\n", "\r", "\n", "\t"), '_', trim($parm['form_email'])) == $parm['form_email_confirm'])
     {
-      require_once(dirname(__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+      require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
       if (PHPMailer::ValidateAddress($parm['form_email']))
       {
         if (mail::reset_email($parm['form_email'], $session->get_usr_id()) === true)

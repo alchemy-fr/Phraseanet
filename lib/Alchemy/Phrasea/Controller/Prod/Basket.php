@@ -136,7 +136,7 @@ class Basket implements ControllerProviderInterface
             });
 
     $controllers->post(
-            '/{basket_id}/{basket_element_id}/delete/'
+            '/{basket_id}/delete/{basket_element_id}/'
             , function(Application $app, Request $request, $basket_id, $basket_element_id)
             {
               /* @var $em \Doctrine\ORM\EntityManager */
@@ -342,6 +342,61 @@ class Basket implements ControllerProviderInterface
                 return new RedirectResponse('/');
               }
             });
+            
+            
+            
+    $controllers->post(
+            '/{basket_id}/stealElements/'
+            , function(Application $app, Request $request, $basket_id)
+            {
+              $em = $app['Core']->getEntityManager();
+
+              /* @var $em \Doctrine\ORM\EntityManager */
+              $basket = $em->getRepository('\Entities\Basket')
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+
+              $user = $app['Core']->getAuthenticatedUser();
+              /* @var $user \User_Adapter */
+
+              $n = 0;
+
+              foreach ($request->get('elements') as $bask_element_id)
+              {
+                $basket_element = $em->getRepository('\Entities\BasketElement')
+                      ->findUserElement($bask_element_id, $user);
+                
+                if(!$basket_element)
+                {
+                  continue;
+                }
+                
+                $basket_element->setBasket($basket);
+                
+                $em->merge($basket_element);
+                
+                $n++;
+              }
+
+              $em->merge($basket);
+              $em->flush();
+
+              $data = array(
+                  'success' => true
+                  , 'message' => sprintf(_('%d records moved'), $n)
+              );
+
+              if ($request->getRequestFormat() == 'json')
+              {
+
+                $datas = $app['Core']['Serializer']->serialize($data, 'json');
+
+                return new Response($datas, 200, array('Content-type' => 'application/json'));
+              }
+              else
+              {
+                return new RedirectResponse('/');
+              }
+            });
 
     $controllers->get('/create/', function(Application $app)
             {
@@ -364,7 +419,7 @@ class Basket implements ControllerProviderInterface
 
               $twig = new \supertwig();
 
-              $html = $twig->render('prod/basket.twig', array('basket' => $basket));
+              $html = $twig->render('prod/WorkZone/Basket.html.twig', array('basket' => $basket));
 
               return new Response($html);
             })->assert('basket_id', '\d+');

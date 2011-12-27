@@ -479,23 +479,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function move_to_collection(collection &$collection, appbox &$appbox)
   {
-    $sql = 'UPDATE sselcont
-            SET base_id = :base_id
-            WHERE record_id = :record_id
-            AND base_id IN (SELECT base_id FROM bas WHERE sbas_id = :sbas_id)';
-
-    $params = array(
-        ':base_id' => $collection->get_base_id(),
-        ':record_id' => $this->get_record_id(),
-        ':sbas_id' => $this->get_sbas_id()
-    );
-
-    $stmt = $appbox->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $stmt->closeCursor();
-
-    basket_adapter::revoke_baskets_record($this, $appbox);
-
     $sql = "UPDATE record SET coll_id = :coll_id WHERE record_id =:record_id";
 
     $params = array(
@@ -1047,7 +1030,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $base_url = '';
     $original_file = $subdef_def = false;
 
-
     $subdefs = $this->get_databox()->get_subdef_structure();
 
     foreach ($subdefs as $type => $datas)
@@ -1068,7 +1050,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     try
     {
       $value = $this->get_subdef($name);
-      $original_file = p4string::addEndSlash($value['path']) . $value['file'];
+      $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
       unlink($original_file);
     }
     catch (Exception $e)
@@ -1083,7 +1065,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if (trim($subdef_def->get_baseurl()) !== '')
     {
       $base_url = str_replace(
-              array((string) $subdef_def->get_path(), $newfilename), array((string) $subdef_def->get_baseurl(), ''), $path_file_dest
+              array((string) $subdef_def->get_path(), $newfilename)
+              , array((string) $subdef_def->get_baseurl(), '')
+              , $path_file_dest
       );
     }
 
@@ -1093,7 +1077,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       $sql = 'DELETE FROM subdef WHERE record_id= :record_id AND name=:name';
       $stmt = $connbas->prepare($sql);
-      $stmt->execute(array(':record_id' => $this->record_id, ':name' => $name));
+      $stmt->execute(
+              array(
+                  ':record_id' => $this->record_id
+                  , ':name' => $name
+              )
+      );
 
       $registry = registry::get_instance();
 
@@ -1128,7 +1117,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       $sql = 'UPDATE record SET moddate=NOW() WHERE record_id=:record_id';
       $stmt = $connbas->prepare($sql);
-      $stmt->bindParam(':record_id', $this->get_record_id());
+      $stmt->execute(array(':record_id' => $this->get_record_id()));
       $stmt->execute();
 
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
@@ -1714,21 +1703,17 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $stmt->execute(array(':record_id' => $this->get_record_id()));
     $stmt->closeCursor();
 
-    $sql = 'SELECT s.ssel_id, c.sselcont_id, s.usr_id
-            FROM sselcont c, ssel s
-            WHERE c.base_id = :base_id AND c.record_id = :record_id
-              AND s.ssel_id = c.ssel_id';
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id(), ':base_id' => $this->get_base_id()));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($rs as $row)
+    $em = bootstrap::getCore()->getEntityManager();
+    
+    $repository = $em->getRepository('\Entities\BasketElement');
+    
+    /* @var $repository \Repositories\BasketElementRepository */
+    foreach($repository->findElementsByRecord($this) as $basket_element)
     {
-      $basket = basket_adapter::getInstance($appbox, $row['ssel_id'], $row['usr_id']);
-      $basket->remove_from_ssel($row['sselcont_id']);
+      $em->remove($basket_element);
     }
-
-    $stmt->closeCursor();
+    
+    $em->flush();
 
     foreach ($ftodel as $f)
       @unlink($f);
@@ -1935,37 +1920,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function get_container_baskets()
   {
-    if ($this->container_basket)
-      return $this->container_basket;
-
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
-
-    $baskets = array();
-    $sql = 'SELECT s.ssel_id FROM ssel s, sselcont c
-            WHERE s.ssel_id = c.ssel_id
-              AND c.base_id = :base_id AND record_id = :record_id
-              AND usr_id = :usr_id AND temporaryType="0"';
-
-    $params = array(
-        ':base_id' => $this->get_base_id()
-        , ':record_id' => $this->get_record_id()
-        , ':usr_id' => $session->get_usr_id()
-    );
-
-    $stmt = $appbox->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
-
-    foreach ($rs as $row)
-    {
-      $baskets[$row['ssel_id']] = basket_adapter::getInstance($appbox, $row['ssel_id'], $session->get_usr_id());
-    }
-
-    $this->container_basket = $baskets;
-
-    return $this->container_basket;
+    $Core = bootstrap::getCore();
+    $em = $Core->getEntityManager();
+    
+    $repo = $em->getRepository('\Entities\Baskets');
+    
+    /* @var $$repo \Repositories\BasketRepository */
+    return $repo->findContainingRecord($this);
   }
 
   /**

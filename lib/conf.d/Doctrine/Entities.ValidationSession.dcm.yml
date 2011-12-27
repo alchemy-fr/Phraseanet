@@ -21,9 +21,6 @@ Entities\ValidationSession:
           on: update
     expires:
       type: datetime
-    reminded:
-      type: datetime
-      nullable: true;
   oneToOne:
     basket:
       targetEntity: Basket

@@ -89,6 +89,7 @@ class record_preview extends record_adapter
   public function __construct($env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine =null, $query='')
   {
     $appbox = appbox::get_instance();
+    $Core = bootstrap::getCore();
     $number = null;
     $this->env = $env;
 
@@ -139,37 +140,42 @@ class record_preview extends record_adapter
 
         break;
       case "BASK":
-        $basket = basket_adapter::getInstance($appbox, $contId, $appbox->get_session()->get_usr_id());
+        $em = $Core->getEntityManager();
+        $repository = $em->getRepository('\Entities\Basket');
+        
+        /* @var $repository \Repositories\BasketRepository */
+        $Basket = $repository->findUserBasket($contId, $Core->getAuthenticatedUser());
 
-        $this->container = $basket;
-        $this->total = count($basket->get_elements());
+        /* @var $Basket \Entities\Basket */
+        $this->container = $Basket;
+        $this->total = $Basket->getElements()->count();
         $i = 0;
         $first = true;
 
-        foreach ($basket->get_elements() as $element)
+        foreach ($Basket->getElements() as $element)
         {
+          /* @var $element \Entities\BasketElement */
           $i++;
           if ($first)
           {
-            $sbas_id = $element->get_record()->get_sbas_id();
-            $record_id = $element->get_record()->get_record_id();
-            $this->name = $basket->get_name();
-            $number = $element->get_order();
+            $sbas_id = $element->getRecord()->get_sbas_id();
+            $record_id = $element->getRecord()->get_record_id();
+            $this->name = $Basket->getName();
+            $number = $element->getOrd();
           }
           $first = false;
 
-          if ($element->get_order() == $pos)
+          if ($element->getOrd() == $pos)
           {
-            $sbas_id = $element->get_record()->get_sbas_id();
-            $record_id = $element->get_record()->get_record_id();
-            $this->name = $basket->get_name();
-            $number = $element->get_order();
+            $sbas_id = $element->getRecord()->get_sbas_id();
+            $record_id = $element->getRecord()->get_record_id();
+            $this->name = $Basket->getName();
+            $number = $element->getOrd();
           }
         }
         break;
       case "FEED":
         $entry = Feed_Entry_Adapter::load_from_id($appbox, $contId);
-//        $basket = basket_adapter::getInstance($appbox, $contId, $appbox->get_session()->get_usr_id());
 
         $this->container = $entry;
         $this->total = count($entry->get_content());

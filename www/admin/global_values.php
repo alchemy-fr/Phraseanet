@@ -22,7 +22,7 @@ require($registry->get('GV_RootPath') . "lib/classes/deprecated/countries.php");
 
 $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
-require(dirname(__FILE__) . "/../../lib/conf.d/_GV_template.inc");
+require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
 $request = http_request::getInstance();
 

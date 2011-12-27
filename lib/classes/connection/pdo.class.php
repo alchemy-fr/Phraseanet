@@ -88,7 +88,7 @@ class connection_pdo extends connection_abstract implements connection_interface
    */
   protected function log($message)
   {
-    file_put_contents(dirname(__FILE__) . '/../../../logs/sql_log.log', $message . "\n", FILE_APPEND);
+    file_put_contents(__DIR__ . '/../../../logs/sql_log.log', $message . "\n", FILE_APPEND);
 
     return $this;
   }

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../../vendor/sphinx/sphinxapi.php';
+require_once __DIR__ . '/../../../../vendor/sphinx/sphinxapi.php';
 /*
  * This file is part of Phraseanet
  *

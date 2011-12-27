@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Helper;
+namespace Alchemy\Phrasea\Helper\Record;
 
 
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class RecordsAbstract
+class Helper extends \Alchemy\Phrasea\Helper\Helper
 {
   
   /**
@@ -92,45 +92,35 @@ class RecordsAbstract
 
   /**
    *
-   * @var basket_adapter
+   * @var \Entities\Basket
    */
   protected $original_basket;
   
-  
   /**
    *
-   * @return action_move
+   * @param \Alchemy\Phrasea\Core $core
+   * @return Helper 
    */
-  public function __construct(Request $request)
+  public function __construct(\Alchemy\Phrasea\Core $core)
   {
-    $this->request = $request;
+    parent::__construct($core);
+    
     $this->selection = new \set_selection();
     $appbox = \appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-
+    
     if (trim($request->get('ssel')) !== '')
     {
-      $basket = \basket_adapter::getInstance($appbox, $request->get('ssel'), $usr_id);
-
-      if ($basket->is_grouping() && $this->flatten_groupings === true)
-      {
-        foreach ($basket->get_elements() as $basket_element)
-        {
-          /* @var $basket_element basket_element_adapter */
-          $this->selection->add_element($basket_element->get_record());
-        }
-      }
-      elseif($basket->is_grouping())
-      {
-        $grouping = new record_adapter($basket->get_sbas_id(), $basket->get_record_id());
-        $this->selection->add_element($grouping);
-      }
-      else
-      {
-        $this->selection->load_basket($basket);
-        $this->is_basket = true;
-      }
-      $this->original_basket = $basket;
+      $em = $this->getCore()->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+      
+      /* @var $$repository \Repositories\BasketRepository */
+      $Basket = $repository->findUserBasket($request->get('ssel'), $this->getCore()->getAuthenticatedUser());
+      
+      $this->selection->load_basket($Basket);
+      
+      $this->is_basket = true;
+      $this->original_basket = $Basket;
     }
     else
     {
@@ -159,7 +149,7 @@ class RecordsAbstract
   /**
    * If the original selection was a basket, returns the basket object
    *
-   * @return basket_adapter
+   * @return \Entities\Basket
    */
   public function get_original_basket()
   {
@@ -302,16 +292,6 @@ class RecordsAbstract
     else
 
       return $this->selection->serialize_list();
-  }
-
-  public function get_request()
-  {
-    return $this->request;
-  }
-
-  public function set_request($request)
-  {
-    $this->request = $request;
   }
 
   public function grep_records(Closure $closure)

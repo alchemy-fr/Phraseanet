@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -108,59 +108,6 @@ switch ($action)
     $output = 1;
     break;
 
-//  case 'BASKETS':
-//    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-//    $parm = $request->get_parms('id', 'sort');
-//    $baskets = new basketCollection($appbox, $usr_id);
-//
-//    $twig = new supertwig();
-//    $twig->addFilter(array('get_collection_logo' => 'collection::getLogo'));
-//
-//    $output = $twig->render('prod/baskets.html', array(
-//                'basket_collection' => $baskets,
-//                'selected_ssel' => $parm['id'],
-//                'srt' => $parm['sort']
-//                    )
-//    );
-//    break;
-//  case 'BASKETNAME':
-//    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-//    $parm = $request->get_parms('ssel_id');
-//    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-//    $output = p4string::jsonencode(array('name' => $basket->get_name(), 'description' => $basket->get_description()));
-//    break;
-  case 'BASKETRENAME':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-    $parm = $request->get_parms('ssel_id', 'name', 'description');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $basket->set_name($parm['name']);
-    $basket->set_description($parm['description']);
-//    $output = $basket->save();
-    break;
-
-  case 'GETBASKET':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-
-    $twig = new supertwig();
-    $twig->addFilter(array('nl2br' => 'nl2br'));
-
-    $parm = $request->get_parms('id', 'ord');
-
-    $basket = basket_adapter::getInstance($appbox, $parm['id'], $usr_id);
-    $basket->set_read();
-
-    $order = $parm['ord'];
-
-    if (trim($order) == '' || !in_array($order, array('asc', 'desc', 'nat')))
-      $order = $user->getPrefs('bask_val_order');
-    else
-      $user->setPrefs('bask_val_order', $order);
-
-    $basket->sort($order);
-
-    $output = p4string::jsonencode(array('content' => $twig->render('prod/basket.twig', array('basket' => $basket, 'ordre' => $order))));
-    break;
-
   case 'DELETE':
     require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
     $parm = $request->get_parms('lst');
@@ -178,11 +125,6 @@ switch ($action)
     break;
 
 
-  case 'REORDER_DATAS':
-    $parm = $request->get_parms('ssel_id');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $output = $basket->getOrderDatas();
-    break;
   case 'SAVE_ORDER_DATAS':
     $parm = $request->get_parms('ssel_id', 'value');
     $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
@@ -280,17 +222,6 @@ switch ($action)
     $parm = $request->get_parms('dest', 'lst');
     $basket = basket_adapter::getInstance($appbox, $parm['dest'], $usr_id);
     $output = p4string::jsonencode($basket->push_list($parm['lst'], false));
-    break;
-  case 'DELFROMBASK':
-    $parm = $request->get_parms('ssel_id', 'sselcont_id');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $output = p4string::jsonencode($basket->remove_from_ssel($parm['sselcont_id']));
-    break;
-  case 'DELBASK':
-    $parm = $request->get_parms('ssel');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel'], $usr_id);
-    $output = $basket->delete();
-    unset($basket);
     break;
 
   case 'MOVCHU2CHU':

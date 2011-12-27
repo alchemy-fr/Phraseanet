@@ -127,7 +127,7 @@ class basket_element_adapter implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $sql = 'SELECT s.usr_id as owner, v.id as validate_id, v.can_see_others,
@@ -149,7 +149,7 @@ class basket_element_adapter implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $first = true;
@@ -493,7 +493,7 @@ class basket_element_adapter implements cache_cacheableInterface
         }
         catch (Exception $e)
         {
-
+          
         }
       }
     }
@@ -518,7 +518,6 @@ class basket_element_adapter implements cache_cacheableInterface
     $note = strip_tags($note);
 
     if (!$this->validate_id)
-
       return false;
 
     $appbox = appbox::get_instance();
@@ -554,7 +553,7 @@ class basket_element_adapter implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return $this;
@@ -596,7 +595,9 @@ class basket_element_adapter implements cache_cacheableInterface
     foreach ($this->choices as $key => $value)
     {
       if (trim($value['note']) != '')
+      {
         $n++;
+      }
     }
 
     return $n;
