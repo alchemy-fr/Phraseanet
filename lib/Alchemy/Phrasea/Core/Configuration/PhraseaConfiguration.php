@@ -12,7 +12,8 @@
 namespace Alchemy\Phrasea\Core\Configuration;
 
 /**
- *
+ * Precise some informations about phraseanet configuration mechanism
+ * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -22,16 +23,18 @@ class PhraseaConfiguration implements ConfigurationSpecification
 
   /**
    *
-   * @Override
+   * {@inheritdoc}
    */
   public function getNonExtendablePath()
   {
-    return array('doctrine', 'dbal');
+    return array(
+        array('doctrine', 'dbal')
+    );
   }
 
   /**
    *
-   * @Override
+   * {@inheritdoc}
    */
   public function getConfFileFromEnvName($name)
   {
@@ -44,7 +47,7 @@ class PhraseaConfiguration implements ConfigurationSpecification
 
   /**
    *
-   * @Override
+   * {@inheritdoc}
    */
   public function getConfigurationFilePath()
   {
@@ -53,7 +56,7 @@ class PhraseaConfiguration implements ConfigurationSpecification
 
   /**
    *
-   * @Override
+   * {@inheritdoc}
    */
   public function getConfFileExtension()
   {
@@ -62,7 +65,7 @@ class PhraseaConfiguration implements ConfigurationSpecification
 
   /**
    *
-   * @Override
+   * {@inheritdoc}
    */
   public function isExtended(Array $env)
   {
@@ -71,7 +74,7 @@ class PhraseaConfiguration implements ConfigurationSpecification
 
   /**
    *
-   * @Override
+   * {@inheritdoc}
    */
   public function getExtendedEnvName(Array $env)
   {

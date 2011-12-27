@@ -12,12 +12,12 @@
 namespace Alchemy\Phrasea\Core\Configuration;
 
 /**
- *
+ * A interface to precise some specific configuration file mechanism
+ * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 interface ConfigurationSpecification
 {
   /**

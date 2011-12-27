@@ -14,7 +14,8 @@ namespace Alchemy\Phrasea\Core\Configuration;
 use \Symfony\Component\Yaml\Yaml;
 
 /**
- *
+ * Handle configuration mechanism
+ * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -33,6 +34,12 @@ class EnvironnementHandler
    */
   protected $parser;
 
+  /**
+   * Tell handler the configuration specification ans which parser to use
+   * 
+   * @param ConfigurationSpecification $configSpec
+   * @param Parser\ParserInterface $parser 
+   */
   public function __construct(ConfigurationSpecification $configSpec, Parser\ParserInterface $parser)
   {
     $this->confSpecification = $configSpec;
@@ -46,7 +53,7 @@ class EnvironnementHandler
    * @param array $envs A stack of conf environnments
    * @return array 
    */
-  private function retrieveExtendedEnvFromFile(\SplFileObject $file, Array $envs = array())
+  private function retrieveExtendedEnvFromFile(\SplFileObject $file, Array $allEnvs = array())
   {
     $env = $this->parser->parse($file);
 
@@ -63,15 +70,17 @@ class EnvironnementHandler
         //get extended configuration file
         $file = $this->confSpecification->getConfFileFromEnvName($envName);
         //recurse
-        $this->retrieveExtendedEnvFromFile($file, $allEnvs);
+        return $this->retrieveExtendedEnvFromFile($file, $allEnvs);
       }
       catch (\Exception $e)
       {
         throw \Exception(sprintf("filename %s not found", $file->getPathname()));
       }
     }
-
-    return $allEnvs;
+    else
+    {
+      return $allEnvs;
+    }
   }
 
   /**
@@ -149,17 +158,22 @@ class EnvironnementHandler
                                 {
                                   foreach ($searchArray as $k => $v)
                                   {
-                                    if ($k === $currentPath[0])
+                                    if ($k === $currentPath[0]) //if key of searched path equal key of search array
                                     {
-                                      array_shift($currentPath);
-
-                                      if (is_array($v) && count($currentPath) !== 0)
+                                      array_shift($currentPath); //reduce path
+                                      
+                                      if (is_array($v) && count($currentPath) !== 0) //continue to run trought search array
                                       {
-                                        $replace(&$searchArray[$k], $currentPath, $value);
+                                        $replace(&$searchArray[$k], $currentPath, $value); 
                                       }
-                                      elseif (count($currentPath) === 0)
+                                      elseif (count($currentPath) === 0) //no more scope to looking for
                                       {
                                         $searchArray[$k] = $value;
+                                        break; //quit
+                                      }
+                                      else
+                                      {
+                                        continue;
                                       }
                                     }
                                   }
@@ -191,7 +205,7 @@ class EnvironnementHandler
         }
       }
     }
-    
+    //replace all other value
     if(count($allEnvs) >= 1)
     {
       foreach($allEnvs as $extendedEnv)

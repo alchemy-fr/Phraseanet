@@ -11,13 +11,14 @@
 namespace Alchemy\Phrasea\Core\Configuration\Parser;
 
 use Symfony\Component\Yaml\Yaml as SfYaml;
+
 /**
- *
+ * Parse a configuration file in yaml format and return an array of values
+ * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 class Yaml implements ParserInterface
 {
   /**
