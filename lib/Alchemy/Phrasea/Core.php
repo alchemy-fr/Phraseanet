@@ -327,11 +327,8 @@ class Core extends \Pimple
 
   public function getEnv()
   {
-    return $this->env;
+    return $this->conf->getEnvironnement();
   }
 
-  public function isDebug()
-  {
-    return $this->conf->debug;
-  }
+  
 }
