@@ -49,15 +49,15 @@ class Configuration
     //check whether the main configuration file is present on disk
     try
     {
+      $specifications = new Configuration\PhraseaConfiguration();
+      
+      $parser = new Configuration\Parser\Yaml();
+      
       $specifications->getConfFileFromEnvName(self::MAIN_ENV_NAME);
       
       $this->installed = true;
       
       $this->environnement = $envName;
-    
-      $specifications = new Configuration\PhraseaConfiguration();
-      
-      $parser = new Configuration\Parser\Yaml();
     
       $confHandler = new Configuration\EnvironnementHandler($specifications, $parser);
     
