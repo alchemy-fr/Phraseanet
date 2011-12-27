@@ -277,6 +277,7 @@ class databox extends base
                         SUM(1) AS n, SUM(size) AS siz FROM (record, subdef)
                     LEFT JOIN coll ON record.coll_id=coll.coll_id
                     WHERE record.record_id = subdef.record_id
+                    GROUP BY record.coll_id, name
           UNION
           SELECT coll.coll_id, 0, asciiname, '_' AS name, 0 AS n, 0 AS siz
             FROM coll LEFT JOIN record ON record.coll_id=coll.coll_id
