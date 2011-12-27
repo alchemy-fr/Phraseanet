@@ -18,7 +18,7 @@ define('USR_ID', 4);
 
 set_time_limit(300);
 
-require(dirname(__FILE__) . "/../lib/bootstrap.php");
+require(__DIR__ . "/../lib/bootstrap.php");
 
 phrasea::headers();
 $registry = registry::get_instance();

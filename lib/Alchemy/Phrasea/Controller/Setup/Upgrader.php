@@ -40,7 +40,7 @@ class Upgrader implements ControllerProviderInterface
 
     $controllers->get('/', function() use ($app)
             {
-              require_once dirname(__FILE__) . '/../../../../bootstrap.php';
+              require_once __DIR__ . '/../../../../bootstrap.php';
               $upgrade_status = \Setup_Upgrade::get_status();
 
               ini_set('display_errors', 'on');
@@ -62,7 +62,7 @@ class Upgrader implements ControllerProviderInterface
 
     $controllers->get('/status/', function() use ($app)
             {
-              require_once dirname(__FILE__) . '/../../../../bootstrap.php';
+              require_once __DIR__ . '/../../../../bootstrap.php';
               ini_set('display_errors', 'on');
 
               $datas = \Setup_Upgrade::get_status();
@@ -72,7 +72,7 @@ class Upgrader implements ControllerProviderInterface
 
     $controllers->post('/execute/', function() use ($app)
             {
-              require_once dirname(__FILE__) . '/../../../../bootstrap.php';
+              require_once __DIR__ . '/../../../../bootstrap.php';
               ini_set('display_errors', 'on');
               set_time_limit(0);
               session_write_close();

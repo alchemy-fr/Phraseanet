@@ -45,7 +45,7 @@ return call_user_func(function()
 
                   $app->get('robots.txt', function() use ($app)
                           {
-                            require dirname(__FILE__) . "/../lib/bootstrap.php";
+                            require __DIR__ . "/../lib/bootstrap.php";
                             $appbox = appbox::get_instance();
 
                             $registry = $appbox->get_registry();
