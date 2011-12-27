@@ -1564,7 +1564,7 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
       $from = trim($me->get_email()) != "" ? $me->get_email() : false;
 
 
-      $url = $registry->get('GV_ServerName') . 'lightbox/index.php?LOG=' . random::getUrlToken('view', $user->get_id(), null, $new_basket->get_ssel_id());
+      $url = $registry->get('GV_ServerName') . 'lightbox/index.php?LOG=' . random::getUrlToken('view', $user->get_id(), null, $new_basket->getId());
 
       if ($me->get_id() == $user->get_id())
         $my_link = $url;
