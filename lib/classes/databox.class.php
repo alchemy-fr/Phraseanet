@@ -970,6 +970,7 @@ class databox extends base
       $meta_struct_field
               ->set_readonly(isset($field['readonly']) ? $field['readonly'] : 0)
               ->set_indexable(isset($field['index']) ? $field['index'] : '1')
+              ->set_separator(isset($field['separator']) ? $field['separator'] : '')
               ->set_type($type)
               ->set_tbranch(isset($field['tbranch']) ? $field['tbranch'] : '')
               ->set_thumbtitle(isset($field['thumbtitle']) ? $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
