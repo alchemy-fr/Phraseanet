@@ -32,7 +32,7 @@ class Module_Prod_Route_TooltipTest extends PhraseanetWebTestCaseAuthenticatedAb
 
     $basket = array_shift($basket_coll['baskets']);
 
-    $crawler = $this->client->request('POST', '/tooltip/basket/' . $basket->get_ssel_id() . '/');
+    $crawler = $this->client->request('POST', '/tooltip/basket/' . $basket->getId() . '/');
     $pageContent = $this->client->getResponse()->getContent();
     $this->assertTrue($this->client->getResponse()->isOk());
 
