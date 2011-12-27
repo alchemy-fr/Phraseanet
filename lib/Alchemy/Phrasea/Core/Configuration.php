@@ -12,192 +12,104 @@
 namespace Alchemy\Phrasea\Core;
 
 /**
- *
+ * Handle configuration file mechanism of phraseanet
+ * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class Configuration
 {
-
-  public $debug = false;
+  const MAIN_ENV_NAME = "main";
   
-  protected $dbConf;
+  /**
+   * The environnment name
+   * @var string 
+   */
+  protected $environnement;
+  
+  /**
+   * The configuration
+   * @var Array 
+   */
+  protected $configuration = array();
+  
+  /**
+   * Tell if appli is currently installed
+   * @var boolean
+   */
   protected $installed;
-  
 
+  /**
+   * 
+   * @param type $envName the name of the loaded environnement
+   */
   public function __construct($envName)
   {
+    $this->environnement = $envName;
+    
     $specifications = new Configuration\PhraseaConfiguration();
     $parser = new Configuration\Parser\Yaml();
     
-    $handler = new Configuration\EnvironnementHandler($specifications, $parser);
+    $confHandler = new Configuration\EnvironnementHandler($specifications, $parser);
     
-    $configuration = $handler->handle($envName);
+    //check whether the main configuration file is present on disk
+    try
+    {
+      $specifications->getConfFileFromEnvName(self::MAIN_ENV_NAME);
+      $this->installed = true;
+      $this->configuration = $confHandler->handle($envName);
+    }
+    catch(\Exception $e)
+    {
+      $this->installed = false;
+    }
     
-    var_dump($configuration);
-    
-    exit;
-  }
-
-  public function getMainConfigFileName()
-  {
-    return 'config';
   }
 
   /**
-   *
-   * @return \SplFileObject
+   * Return the current used environnement
+   * 
+   * @return string 
    */
-  public function getMainConfigFile()
+  public function getEnvironnement()
   {
-    return $this->mainConfigFile;
+    return $this->environnement;
   }
 
-  public function getDoctrineConf()
+  /**
+   * Return the DBAL Doctrine configuration
+   * 
+   * @return Array 
+   */
+  public function getDbalConf()
   {
-    return (array) $this->dbConf;
+    return (array) $this->configuration['doctrine']['dbal'] ?: null;
   }
 
+  /**
+   * Tell if the application is installed
+   * 
+   * @return boolean 
+   */
   public function isInstalled()
   {
     return $this->installed;
   }
 
-  private function loadEnvironnments($env)
+  public function get($key)
   {
-    $filename = $this->loadFileName($env);
-
-    if (!is_file($filename))
-      throw new \InvalidArgumentException(sprintf('Config file %s do not exist', $filename));
-
-    $envConf = \Symfony\Component\Yaml\Yaml::parse($filename);
-
-    $this->envsConf[] = $envConf;
-
-    if (isset($envConf["extends"]))
-    {
-      $this->loadEnvironnments($envConf["extends"]);
-    }
-    else
-    {
-      return;
-    }
+    return isset($this->configuration[$key]) ? $this->configuration[$key]: null;
+  }
+  
+  /**
+   * Return the configuration
+   * @return Array
+   */
+  public function getConfiguration()
+  {
+    return $this->configuration;
   }
 
-  private function substituteEnvConfToMainConf(Array $mainConf)
-  {
-    foreach (array_reverse($this->envsConf) as $env)
-    {
-      $this->conf = array_replace_recursive($this->conf, $env);
-    }
-
-    $this->conf = array_replace_recursive($mainConf, $this->conf);
-  }
-
-  private function loadFileName($env = 'main')
-  {
-    if ('main' === $env)
-    {
-      return sprintf('%s/%s.yml', $this->configFilePath, $this->getMainConfigFileName());
-    }
-    else
-    {
-      return sprintf('%s/%s_%s.yml', $this->configFilePath, $this->getMainConfigFileName(), $env);
-    }
-  }
-
-  private function getNoneReplacedPath()
-  {
-    return array(
-        array('doctrine', 'dbal')
-    );
-  }
-
-  private function process($env)
-  {
-    $mainConf = \Symfony\Component\Yaml\Yaml::parse($this->loadFileName());
-
-    $this->loadEnvironnments($env);
-
-    $this->substituteEnvConfToMainConf($mainConf);
-
-    $path = array();
-
-    $excludedPath = $pathToProcess = $this->getNoneReplacedPath();
-
-    $confToChange = $this->conf;
-
-    foreach (array_reverse($this->envsConf) as $conf)
-    {
-      foreach ($pathToProcess as $key => $thePath)
-      {
-        $replaceValue = $this->getDataPath($conf, $thePath);
-        
-        if (null !== $replaceValue)
-        {
-          $map = function($item, $key) use (&$confToChange, $replaceValue, &$map, &$path, $thePath)
-                  {
-                      if (count(array_diff($path, $thePath) === 0))
-                      {
-                        
-                        $path[] = $key;
-                        $replace = function(&$searchArray, $path, $value, $depth = 0) use (&$replace)
-                                {
-                                  foreach ($searchArray as $k => $v)
-                                  {
-                                    if ($k === $path[$depth])
-                                    {
-                                      array_shift($path);
-                                      if (is_array($v) && count($path) !== 0)
-                                      {
-                                        $replace(&$searchArray[$k], $path, $value, $depth++);
-                                      }
-                                      else
-                                      {
-                                        $searchArray[$k] = $value;
-                                      }
-                                    }
-                                  }
-                                };
-                        $replace($confToChange, $path, $replaceValue);
-                      }
-                      elseif (is_array($item))
-                      {
-                        $path[] = $key;
-                        array_walk($item, $map);
-                      }
-                  };
-           
-          array_walk($this->conf, $map);
-          unset($pathToProcess[$key]);
-        }
-      }
-    }
-  }
-
-  public function getDataPath(Array $data, Array $path)
-  {
-    $found = true;
-
-    for ($x = 0; ($x < count($path) && $found); $x++)
-    {
-      $key = $path[$x];
-
-      if (isset($data[$key]))
-      {
-        $data = $data[$key];
-      }
-      else
-      {
-        $found = false;
-      }
-    }
-
-    if ($found)
-      return $data;
-    else
-      return null;
-  }
 
 }
