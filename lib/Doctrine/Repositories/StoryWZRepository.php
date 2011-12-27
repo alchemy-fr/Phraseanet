@@ -20,7 +20,7 @@ class StoryWZRepository extends EntityRepository
 
   public function findUserStory(\User_Adapter $user, \record_adapter $Story)
   {
-    return $this->findBy(
+    return $this->findOneBy(
                     array(
                         'usr_id' => $user->get_id(),
                         'sbas_id' => $Story->get_sbas_id(),
