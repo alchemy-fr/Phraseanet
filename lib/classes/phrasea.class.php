@@ -269,12 +269,6 @@ class phrasea
     return $user->ACL()->get_granted_base() > 0;
   }
 
-  public static function load_events()
-  {
-    $events = eventsmanager_broker::getInstance(appbox::get_instance());
-    $events->start();
-  }
-
   public static function use_i18n($locale, $textdomain = 'phraseanet')
   {
     $codeset = "UTF-8";

@@ -224,8 +224,8 @@ class Core extends \Pimple
 
   protected function enableEvents()
   {
-
-    \phrasea::load_events();
+    $events = \eventsmanager_broker::getInstance(appbox::get_instance(), $this);
+    $events->start();
 
     return;
   }

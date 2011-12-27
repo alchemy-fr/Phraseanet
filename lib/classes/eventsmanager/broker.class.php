@@ -18,10 +18,10 @@ class eventsmanager_broker
    */
   protected $core;
 
-  private function __construct(appbox &$appbox)
+  private function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core)
   {
     $this->appbox = $appbox;
-    $this->core = bootstrap::getCore();
+    $this->core = $core;
 
     return $this;
   }
@@ -29,11 +29,11 @@ class eventsmanager_broker
   /**
    * @return eventsmanager
    */
-  public static function getInstance(appbox &$appbox)
+  public static function getInstance(appbox &$appbox, \Alchemy\Phrasea\Core $core)
   {
     if (!self::$_instance)
     {
-      self::$_instance = new self($appbox);
+      self::$_instance = new self($appbox, $core);
     }
 
     return self::$_instance;
