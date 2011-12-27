@@ -43,12 +43,9 @@ class Story implements ControllerProviderInterface
               return new Response($twig->render('prod/Story/Create.html.twig', array()));
             });
 
-    $controllers->post('/', function(Application $app)
+    $controllers->post('/', function(Application $app, Request $request)
             {
-              $request = $app['request'];
-
-//              /* @var $request \Symfony\Component\HttpFoundation\Request */
-//
+              /* @var $request \Symfony\Component\HttpFoundation\Request */
               $em = $app['Core']->getEntityManager();
 
               $user = $app['Core']->getAuthenticatedUser();
@@ -107,7 +104,7 @@ class Story implements ControllerProviderInterface
                         'record_id' => $Story->get_record_id(),
                     )
                 );
-
+                  
                 $datas = $app['Core']['Serializer']->serialize($data, 'json');
 
                 return new Response($datas, 200, array('Content-type' => 'application/json'));
@@ -228,23 +225,25 @@ class Story implements ControllerProviderInterface
             , function(Application $app, Request $request, $sbas_id, $record_id)
             {
               $Story = new \record_adapter($sbas_id, $record_id);
-
+      
               if (!$Story->is_grouping())
                 throw new \Exception('You can only attach stories');
 
               $user = $app['Core']->getAuthenticatedUser();
 
-              if (!$user->ACL()->has_right_on_base($Story->get_base_id()))
+              if (!$user->ACL()->has_access_to_base($Story->get_base_id()))
                 throw new \Exception_Forbidden('You do not have access to this Story');
 
               $em = $app['Core']->getEntityManager();
-
+              /* @var $em \Doctrine\ORM\EntityManager */
               $StoryWZ = new \Entities\StoryWZ();
               $StoryWZ->setUser($user);
               $StoryWZ->setRecord($Story);
 
               $em->persist($StoryWZ);
 
+              $em->flush();
+              
               $data = array(
                   'success' => true
                   , 'message' => _('Story attached to the WorkZone')
@@ -275,16 +274,18 @@ class Story implements ControllerProviderInterface
 
               $em = $app['Core']->getEntityManager();
 
-              $repository = $em->getRepository('Entities\StoryWZ');
+              $repository = $em->getRepository('\Entities\StoryWZ');
 
               /* @var $repository \Repositories\StoryWZRepository */
               $StoryWZ = $repository->findUserStory($user, $Story);
-
+              
               if (!$StoryWZ)
               {
                 throw new \Exception_NotFound('Story not found');
               }
-
+              $em->remove($StoryWZ);
+              
+              $em->flush();
 
               $data = array(
                   'success' => true
