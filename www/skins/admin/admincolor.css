@@ -48,6 +48,7 @@ FFFA00		9E9C3C		777400		FFFC65		FFFEB5
 
 #left{
 	background-color:#fffbcd;
+  overflow:auto;
 }
 #FNDR{
 	overflow:auto;
