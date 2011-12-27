@@ -174,6 +174,15 @@ class Core extends \Pimple
     return \User_Adapter::getInstance($session->get_usr_id(), $appbox);
   }
 
+  /**
+   *
+   * @return Core\Configuration
+   */
+  public function getConfiguration()
+  {
+    return $this->conf;
+  }
+  
   protected function verifyTimezone()
   {
     if ($this->getRegistry()->is_set('GV_timezone'))
