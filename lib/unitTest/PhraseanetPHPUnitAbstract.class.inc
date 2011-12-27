@@ -314,11 +314,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * @var User_Adapter
    */
   protected static $user;
+
   /**
    *
    * @var User_Adapter
    */
   protected static $user_alt1;
+
   /**
    *
    * @var User_Adapter
@@ -335,26 +337,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   protected static $collection;
   protected static $time_start;
   protected static $generated_subdefs = array();
-
   protected static $core;
-  
+
   public static function setUpBeforeClass()
   {
-    
-    if(is_file(__DIR__ .'/tests.sqlite'))
-    {
-      unlink(__DIR__ .'/tests.sqlite');
-    }
-    
+
     self::$core = bootstrap::getCore();
-    self::$core["EM"] = self::$core->share(function()
-            {
-              $doctrine = new \Alchemy\Phrasea\Core\Service\DoctrineTestSQLite();
-              return $doctrine->getEntityManager();
-            });
-            
-            
-            
+
     if (!self::$time_start)
       self::$time_start = microtime(true);
 
@@ -364,6 +353,17 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $appbox = appbox::get_instance();
     if (!self::$updated)
     {
+      if (is_file(__DIR__ . '/tests.sqlite'))
+      {
+        unlink(__DIR__ . '/tests.sqlite');
+      }
+
+      self::$core["EM"] = self::$core->share(function()
+              {
+                $doctrine = new \Alchemy\Phrasea\Core\Service\DoctrineTestSQLite();
+                return $doctrine->getEntityManager();
+              });
+
       echo "Upgrading tables ...\n";
       if (file_exists(Setup_Upgrade::get_lock_file()))
         unlink(Setup_Upgrade::get_lock_file());
@@ -914,22 +914,22 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   public function setUp()
   {
     parent::setUp();
-    
-    
+
+
     $em = self::$core["EM"];
-    
+
     //create schema
     $this->schematTool = new \Doctrine\ORM\Tools\SchemaTool($em);
     $this->classesMetatdas = array(
         $em->getClassMetadata('Entities\Basket')
-        ,$em->getClassMetadata('Entities\BasketElement')
-        ,$em->getClassMetadata('Entities\StoryWZ')
-        ,$em->getClassMetadata('Entities\ValidationData')
-        ,$em->getClassMetadata('Entities\ValidationParticipant')
-        ,$em->getClassMetadata('Entities\ValidationSession')
+        , $em->getClassMetadata('Entities\BasketElement')
+        , $em->getClassMetadata('Entities\StoryWZ')
+        , $em->getClassMetadata('Entities\ValidationData')
+        , $em->getClassMetadata('Entities\ValidationParticipant')
+        , $em->getClassMetadata('Entities\ValidationSession')
     );
     $this->schematTool->createSchema($this->classesMetatdas);
-    
+
     $browser = Browser::getInstance();
     $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
   }
@@ -940,8 +940,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $this->schematTool->dropSchema($this->classesMetatdas);
     parent::tearDown();
   }
-  
-  
+
   public function insertFixtureInDatabase(Doctrine\Common\DataFixtures\Loader $fixtureLoader)
   {
     $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
