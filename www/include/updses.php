@@ -69,7 +69,7 @@ $ret['changed'] = array();
 $baskets = basketCollection::get_updated_baskets();
 foreach ($baskets as $basket)
 {
-  $ret['changed'][] = $basket->get_ssel_id();
+  $ret['changed'][] = $basket->getId();
 }
 
 

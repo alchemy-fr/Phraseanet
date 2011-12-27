@@ -28,10 +28,10 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
    *
    * @return notify_validationdone
    */
-  function __construct(appbox &$appbox, registryInterface &$registry, eventsmanager_broker &$broker)
+  function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
   {
     $this->group = _('Validation');
-    parent::__construct($appbox, $registry, $broker);
+    parent::__construct($appbox, $core, $broker);
 
     return $this;
   }
@@ -143,7 +143,10 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
     try
     {
-      $basket = basket_adapter::getInstance($this->appbox, $ssel_id,$this->appbox->get_session()->get_usr_id());
+      $em = $this->core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+      
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
     }
     catch (Exception $e)
     {
@@ -156,7 +159,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
                 $sender,
                 '<a href="/lightbox/validate/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
-                . $basket->get_name() . '</a>'
+                . $basket->getName() . '</a>'
         )
         , 'class' => ''
     );
@@ -193,7 +196,10 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
   {
     try
     {
-      $basket = basket_adapter::getInstance($this->appbox, $ssel_id,$this->appbox->get_session()->get_usr_id());
+      $em = $this->core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+      
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
     }
     catch (Exception $e)
     {
@@ -203,7 +209,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
     $subject = sprintf(
                     _('push::mail:: Rapport de validation de %1$s pour %2$s'),
                     $to['name'],
-                    $basket->get_name()
+                    $basket->getName()
     );
 
     $body = "<div>" . sprintf(

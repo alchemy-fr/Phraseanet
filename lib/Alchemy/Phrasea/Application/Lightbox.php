@@ -330,7 +330,7 @@ return call_user_func(
                           }
                   )->assert('entry_id', '\d+');
 
-                  $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(Silex\Application $app, $ssel_id) use ($appbox, $app)
+                  $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(Silex\Application $app, $ssel_id)
                           {
                             $twig = new supertwig();
                             $twig->addFilter(array('nl2br' => 'nl2br'));
@@ -339,7 +339,14 @@ return call_user_func(
 
                             $template = 'lightbox/basket_content_report.twig';
 
-                            $basket = basket_adapter::getInstance($appbox, $ssel_id, $appbox->get_session()->get_usr_id());
+                            $em = $app['Core']->getEntityManager();
+                            $repository = $em->getRepository('\Entities\Basket');
+
+                            /* @var $repository \Repositories\BasketRepository */
+                            $basket = $repository->findUserBasket(
+                                    $ssel_id
+                                    , $app['Core']->getAuthenticatedUser()
+                            );
 
                             $response = new Response($twig->render($template, array('basket' => $basket)));
                             $response->setCharset('UTF-8');
@@ -392,7 +399,14 @@ return call_user_func(
                   $app->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(Silex\Application $app, $sselcont_id)
                           {
                             $request = $app['request'];
-                            $agreement = (int) $request->get('agreement');
+                            $agreement = $request->get('agreement');
+
+                            if (is_null($agreement))
+                            {
+                              throw new \Exception_BadRequest();
+                            }
+
+                            $agreement = $agreement > 0;
 
                             $ret = array(
                                 'error' => true,
@@ -400,24 +414,37 @@ return call_user_func(
                                 'datas' => _('Erreur lors de la mise a jour des donnes ')
                             );
 
-                            try
-                            {
-                              $appbox = appbox::get_instance();
+                            $em = $app['Core']->getEntityManager();
+                            $repository = $em->getRepository('\Entities\BasketElement');
 
-                              $basket_element = basket_element_adapter::getInstance($sselcont_id);
-                              $basket_element->set_agreement($agreement);
-                              $basket = basket_adapter::getInstance($appbox, $basket_element->get_ssel_id(), $appbox->get_session()->get_usr_id());
+                            /* @var $repository \Repositories\BasketElementRepository */
+                            $basket_element = $repository->findUserElement(
+                                    $sselcont_id
+                                    , $app['Core']->getAuthenticatedUser()
+                            );
+                            /* @var $basket_element \Entities\BasketElement */
+                            $basket_element->setAgreement($agreement);
 
-                              $ret = array(
-                                  'error' => false
-                                  , 'datas' => ''
-                                  , 'releasable' => $basket->is_releasable() ? _('Do you want to send your report ?') : false
-                              );
-                            }
-                            catch (Exception $e)
+                            $user = $Core->getAuthenticatedUser();
+                            $participânt = $basket_element->getBasket()
+                                    ->getValidation()
+                                    ->getParticipant($user);
+
+                            if ($participant->getIsConfirmed() === true)
                             {
-                              return new Response('Bad Request', 400);
+                              $releasable = false;
                             }
+                            else
+                            {
+                              $releasable = _('Do you want to send your report ?');
+                            }
+
+                            $ret = array(
+                                'error' => false
+                                , 'datas' => ''
+                                , 'releasable' => $releasable
+                            );
+
                             $output = p4string::jsonencode($ret);
 
                             return new Response($output, 200, array('Content-Type' => 'application/json'));
@@ -427,22 +454,23 @@ return call_user_func(
 
                   $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(Silex\Application $app, $ssel_id) use ($session, $appbox)
                           {
-                            $basket = basket_adapter::getInstance($appbox, $ssel_id, $appbox->get_session()->get_usr_id());
 
-                            $datas = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
-                            try
-                            {
-                              $appbox->get_connection()->beginTransaction();
-                              $basket->set_released();
-                              $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
-                              $appbox->get_connection()->commit();
-                            }
-                            catch (Exception $e)
-                            {
-                              $appbox->get_connection()->rollBack();
+                            $em = $app['Core']->getEntityManager();
 
-                              return new Response('Bad Request', 400);
-                            }
+                            $repository = $em->getRepository('\Entities\Basket');
+
+                            /* @var $repository \Repositories\BasketRepository */
+                            $basket = $repository->findUserBasket(
+                                    $ssel_id
+                                    , $app['Core']->getAuthenticatedUser()
+                            );
+
+                            /* @var $basket \Entities\Basket */
+                            $participant = $basket->getValidation()->getParticipant($Core->getUser());
+                            $participant->setIsConfirmed(true);
+
+                            $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
+
                             $output = p4string::jsonencode($datas);
 
                             $response = new Response($output, 200, array('Content-Type' => 'application/json'));
