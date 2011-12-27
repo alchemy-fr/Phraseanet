@@ -20,7 +20,6 @@ require_once __DIR__ . '/../../classes/User/Adapter.class.php';
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 class Basket
 {
 
@@ -325,7 +324,7 @@ class Basket
     foreach ($this->getElements() as $basket_element)
     {
       $bask_record = $basket_element->getRecord();
-      
+
       if ($bask_record->get_record_id() == $record->get_record_id()
               && $bask_record->get_sbas_id() == $record->get_sbas_id())
       {
@@ -334,6 +333,29 @@ class Basket
     }
 
     return false;
+  }
+
+  public function getSize()
+  {
+    $totSize = 0;
+
+    foreach ($this->getElements() as $basket_element)
+    {
+      try
+      {
+        $totSize += $basket_element->getRecord()
+                ->get_subdef('document')
+                ->get_size();
+      }
+      catch (Exception $e)
+      {
+        
+      }
+    }
+
+    $totSize = round($totSize / (1024 * 1024), 2);
+
+    return $totSize;
   }
 
 }

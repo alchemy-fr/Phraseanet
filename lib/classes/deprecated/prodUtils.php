@@ -17,13 +17,16 @@
  */
 function deleteRecord($lst, $del_children)
 {
+  $Core = bootstrap::getCore();
+  $em = $Core->getEntityManager();
+  $BE_repository = $em->getRepository('\Entities\BasketElement');
+  
   $appbox = appbox::get_instance();
   $session = $appbox->get_session();
-  $registry = $appbox->get_registry();
+  $registry = $Core->getRegistry();
 
-  $usr_id = $session->get_usr_id();
-
-  $ACL = User_Adapter::getInstance($usr_id, $appbox)->ACL();
+  $user = $Core->getAuthenticatedUser();
+  $ACL = $user->ACL();
 
   $lst = explode(";", $lst);
 
@@ -103,84 +106,14 @@ function deleteRecord($lst, $del_children)
     }
   }
 
-  $sql = array();
-  $params = array();
-  $n = 0;
-  foreach ($ret as $key=>$basrec)
+  $basket_elements = $BE_repository->findElementsByRecord($record);
+  
+  foreach($basket_elements as $basket_element)
   {
-    $br = explode('_', $basrec);
-    $sql[] = '(base_id = :base_id' . $n . ' AND record_id = :record_id' . $n . ')';
-
-    $params[':base_id' . $n] = $br[2];
-    $params[':record_id' . $n] = $br[1];
-
-
-    $sql_ssel = 'SELECT ssel_id, usr_id FROM ssel
-                  WHERE sbas_id = :sbas_id AND rid = :record_id';
-
-    $stmt = $conn->prepare($sql_ssel);
-    $stmt->execute(array(':sbas_id' => $br[0], ':record_id' => $br[1]));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
-
-    foreach ($rs as $row)
-    {
-      try
-      {
-        $basket = basket_adapter::getInstance($appbox, $row['ssel_id'], $row['usr_id']);
-        $basket->delete_cache();
-        unset($basket);
-      }
-      catch (Exception $e)
-      {
-
-      }
-    }
-
-
-    $sql_ssel = 'DELETE FROM ssel WHERE sbas_id = :sbas_id AND rid = :record_id';
-    $stmt = $conn->prepare($sql_ssel);
-    $stmt->execute(array(':sbas_id' => $br[0], ':record_id' => $br[1]));
-    $stmt->closeCursor();
-
-    unset($br[2]);
-    $ret[$key] = implode('_', $br);
-    $n++;
+    $em->remove($basket_element);
   }
-
-  if (count($sql) > 0)
-  {
-    $sql_res = 'SELECT DISTINCT ssel.usr_id, ssel.ssel_id FROM sselcont ,ssel
-      WHERE (' . implode(' OR ', $sql) . ')
-        AND sselcont.ssel_id = ssel.ssel_id AND ssel.usr_id = :usr_id';
-    $params[':usr_id'] = $usr_id;
-
-    $stmt = $conn->prepare($sql_res);
-    $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
-
-    foreach ($rs as $row)
-    {
-      try
-      {
-        $basket = basket_adapter::getInstance($appbox, $row['ssel_id'], $usr_id);
-        $basket->delete_cache();
-      }
-      catch (Exception $e)
-      {
-
-      }
-    }
-
-
-    $sql = 'DELETE FROM sselcont WHERE (' . implode(' OR ', $sql) . ')
-      AND ssel_id IN (SELECT ssel_id FROM ssel WHERE usr_id = :usr_id)';
-    $stmt = $conn->prepare($sql_res);
-    $stmt->execute($params);
-    $stmt->closeCursor();
-  }
-
+  $em->flush();
+    
   return p4string::jsonencode($ret);
 }
 
