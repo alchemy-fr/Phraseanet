@@ -32,7 +32,7 @@ class Configuration
    * The configuration
    * @var Array 
    */
-  protected $configuration = array();
+  protected $configuration;
   
   /**
    * Tell if appli is currently installed
@@ -46,18 +46,21 @@ class Configuration
    */
   public function __construct($envName)
   {
-    $this->environnement = $envName;
-    
-    $specifications = new Configuration\PhraseaConfiguration();
-    $parser = new Configuration\Parser\Yaml();
-    
-    $confHandler = new Configuration\EnvironnementHandler($specifications, $parser);
-    
     //check whether the main configuration file is present on disk
     try
     {
       $specifications->getConfFileFromEnvName(self::MAIN_ENV_NAME);
+      
       $this->installed = true;
+      
+      $this->environnement = $envName;
+    
+      $specifications = new Configuration\PhraseaConfiguration();
+      
+      $parser = new Configuration\Parser\Yaml();
+    
+      $confHandler = new Configuration\EnvironnementHandler($specifications, $parser);
+    
       $this->configuration = $confHandler->handle($envName);
     }
     catch(\Exception $e)
@@ -104,7 +107,7 @@ class Configuration
   
   /**
    * Return the configuration
-   * @return Array
+   * @return Array|null
    */
   public function getConfiguration()
   {
