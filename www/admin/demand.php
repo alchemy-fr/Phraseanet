@@ -194,7 +194,7 @@ if (!is_null($templates) || !is_null($parm['deny']) || !is_null($parm['accept'])
     if ($row)
     {
 
-      require_once(dirname (__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+      require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
       if (PHPMailer::ValidateAddress($row['usr_mail']))
       {
         foreach ($bases as $bas => $isok)

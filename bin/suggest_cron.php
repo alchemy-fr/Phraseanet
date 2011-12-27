@@ -1,6 +1,6 @@
 <?php
 
-include dirname(__FILE__) . '/../lib/bootstrap.php';
+include __DIR__ . '/../lib/bootstrap.php';
 define('FREQ_THRESHOLD', 10);
 define('SUGGEST_DEBUG', 0);
 

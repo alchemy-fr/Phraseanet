@@ -126,7 +126,7 @@ class Installer implements ControllerProviderInterface
                   , 'warnings' => $warnings
                   , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
                   , 'discovered_binaries' => \setup::discover_binaries()
-                  , 'rootpath' => dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/'
+                  , 'rootpath' => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
                       )
               );
 
@@ -205,7 +205,7 @@ class Installer implements ControllerProviderInterface
                   if ($databox_name)
                   {
 
-                    $template = new \system_file(dirname(__FILE__) . '/../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
+                    $template = new \system_file(__DIR__ . '/../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
                     $databox = \databox::create($appbox, $connbas, $template, $registry);
                     $user->ACL()
                             ->give_access_to_sbas(array($databox->get_sbas_id()))
