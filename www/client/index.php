@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -106,7 +106,7 @@ if ($cssfile)
     <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
 <?php
-  $events_mngr = eventsmanager_broker::getInstance($appbox);
+  $events_mngr = eventsmanager_broker::getInstance($appbox, $Core);
 
   $twig = new supertwig();
   $twig->display('common/menubar.twig', array('module' => 'client', 'events' => $events_mngr));

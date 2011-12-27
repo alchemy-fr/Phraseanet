@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -56,7 +56,7 @@ $session->set_event_module($parm['app'], true);
 $ret['status'] = 'ok';
 $ret['notifications'] = false;
 
-$evt_mngr = eventsmanager_broker::getInstance($appbox);
+$evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
 $notif = $evt_mngr->get_notifications();
 
 $browser = Browser::getInstance();

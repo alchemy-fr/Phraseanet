@@ -289,7 +289,7 @@ class set_order extends set_abstract
 
     if ($n > 0)
     {
-      $evt_mngr = eventsmanager_broker::getInstance($appbox);
+      $evt_mngr = eventsmanager_broker::getInstance($appbox, $core);
 
       $params = array(
           'ssel_id' => $this->ssel_id,
@@ -311,6 +311,7 @@ class set_order extends set_abstract
    */
   public function deny_elements(Array $elements_ids)
   {
+    $Core = bootstrap::getCore();
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
@@ -338,7 +339,7 @@ class set_order extends set_abstract
 
     if ($n > 0)
     {
-      $evt_mngr = eventsmanager_broker::getInstance($appbox);
+      $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
 
       $params = array(
           'from' => $session->get_usr_id(),

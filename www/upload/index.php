@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -332,7 +332,7 @@ $twig = new supertwig();
 $twig->display('common/menubar.twig'
         , array(
     'module' => 'upload'
-    , 'events' => eventsmanager_broker::getInstance($appbox)
+    , 'events' => eventsmanager_broker::getInstance($appbox, $Core)
 ));
 ?>
     <div id="content">

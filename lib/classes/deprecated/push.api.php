@@ -1486,6 +1486,7 @@ function getUsrInfos($usr, $arrayUsrs)
 
 function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
 {
+  $Core = bootstrap::getCore();
   $appbox = appbox::get_instance();
   $session = $appbox->get_session();
   $registry = $appbox->get_registry();
@@ -1561,7 +1562,7 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
       );
 
 
-      $evt_mngr = eventsmanager_broker::getInstance($appbox);
+      $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
       $evt_mngr->trigger('__PUSH_DATAS__', $params);
     }
     catch (Exception $e)
@@ -1575,6 +1576,7 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
 
 function pushValidation($usr, $ssel_id, $listUsrs, $time, $mail_content, $accuse)
 {
+  $Core = bootstrap::getCore();
   $appbox = appbox::get_instance();
   $session = $appbox->get_session();
   $registry = $appbox->get_registry();
@@ -1637,7 +1639,7 @@ function pushValidation($usr, $ssel_id, $listUsrs, $time, $mail_content, $accuse
         , 'accuse' => $reading_confirm_to
     );
 
-    $evt_mngr = eventsmanager_broker::getInstance($appbox);
+    $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
     $evt_mngr->trigger('__PUSH_VALIDATION__', $params);
 
     if ($me->get_id() == $user->get_id())

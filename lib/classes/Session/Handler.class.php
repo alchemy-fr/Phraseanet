@@ -568,10 +568,12 @@ class Session_Handler
       return $this;
     }
 
-    $registry = $this->appbox->get_registry();
+    $Core = bootstrap::getCore();
+    
+    $registry = $Core->getRegistry();
     $date_two_day = new DateTime('+' . (int) $registry->get('GV_validation_reminder') . ' days');
 
-    $events_mngr = eventsmanager_broker::getInstance($this->appbox);
+    $events_mngr = eventsmanager_broker::getInstance($this->appbox, $Core);
 
     $sql = 'SELECT v.id as validate_id, v.usr_id, v.ssel_id
               , s.usr_id as owner, t.value

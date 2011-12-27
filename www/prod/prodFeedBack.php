@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -139,7 +139,7 @@ switch ($action)
   case 'READ_NOTIFICATIONS':
     try
     {
-      $evt_mngr = eventsmanager_broker::getInstance($appbox);
+      $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
       $parm = $request->get_parms('notifications');
       $output = $evt_mngr->read(explode('_', $parm['notifications']), $session->get_usr_id());
       $output = p4string::jsonencode(array('error' => false, 'message' => ''));
@@ -150,7 +150,7 @@ switch ($action)
     }
     break;
   case 'NOTIFICATIONS_FULL':
-    $evt_mngr = eventsmanager_broker::getInstance($appbox);
+    $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
     $parm = $request->get_parms('page');
     $output = $evt_mngr->get_json_notifications($parm['page']);
     break;

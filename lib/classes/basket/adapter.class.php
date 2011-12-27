@@ -1113,6 +1113,7 @@ class basket_adapter implements cache_cacheableInterface
     if(!$this->is_valid())
       throw new Exception('Not a validation basket');
 
+    $Core = bootstrap::getCore();
     $session = $this->appbox->get_session();
 
     $sql = 'UPDATE validate SET confirmed="1"
@@ -1126,7 +1127,7 @@ class basket_adapter implements cache_cacheableInterface
     $stmt->execute($params);
     $stmt->closeCursor();
 
-    $evt_mngr = eventsmanager_broker::getInstance($this->appbox);
+    $evt_mngr = eventsmanager_broker::getInstance($this->appbox, $Core);
 
     $sql = 'SELECT s.usr_id FROM validate v, ssel s
                     WHERE s.ssel_id = v.ssel_id

@@ -69,7 +69,7 @@ if ($url)
   );
 
 
-  $events_mngr = eventsmanager_broker::getInstance($appbox);
+  $events_mngr = eventsmanager_broker::getInstance($appbox, $Core);
   $events_mngr->trigger('__DOWNLOAD__', $params);
 
   return phrasea::redirect('/download/' . $url);
