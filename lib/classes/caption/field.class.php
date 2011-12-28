@@ -206,6 +206,9 @@ class caption_field implements cache_cacheableInterface
    */
   protected static function serialize_value(Array $value, $separator)
   {
+    if(strlen($separator) > 1)
+      $separator = $separator[0];
+    
     if (trim($separator) === '')
       $separator = ' ';
     else
