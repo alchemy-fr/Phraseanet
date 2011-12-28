@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\Helper;
 use Alchemy\Phrasea\RouteProcessor as routeProcessor;
@@ -35,7 +35,7 @@ class WorkZoneTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    return require __DIR__ . '/../../../Alchemy/Phrasea/Application/Prod.php';
+    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
   }
 
   public function testRootGet()

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Doctrine\Common\DataFixtures\Loader;
 use PhraseaFixture\Basket as MyFixture;
@@ -43,7 +43,7 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    return require __DIR__ . '/../../../Alchemy/Phrasea/Application/Prod.php';
+    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
   }
 
   public function testRootPost()
@@ -231,8 +231,8 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
   {
     $story = self::$story_1;
 
-    $goodRoute = sprintf("/story/%s/%s/attach/", $story->get_sbas_id(), $story->get_record_id());
-    $badRoute = sprintf("/story/%s/%s/attach/", self::$record_1->get_base_id(), self::$record_1->get_record_id());
+    $goodRoute = sprintf("/story/%s/attach/%s/", $story->get_sbas_id(), $story->get_record_id());
+    $badRoute = sprintf("/story/%s/attach/%s/", self::$record_1->get_base_id(), self::$record_1->get_record_id());
     try
     {
       $this->client->request('POST', $badRoute);
