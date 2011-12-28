@@ -566,7 +566,7 @@ var p4 = p4 || {};
   $(document).ready(function(){
     activeBaskets();
     
-    $('#baskets a.story_unfix').live('click', function(){
+    $('a.story_unfix').live('click', function(){
       unfix($(this).attr('href'));
       
       return false;
