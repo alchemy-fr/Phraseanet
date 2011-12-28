@@ -26,33 +26,24 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $client;
-  protected $loader;
 
   /**
    *
    * @var \record_adapter
    */
-  protected static $story;
+  protected static $need_story = true;
   protected static $need_records = 2;
 
   public function setUp()
   {
     parent::setUp();
     $this->client = $this->createClient();
-    $this->loader = new Loader();
+    $this->purgeDatabase();
   }
 
   public function createApplication()
   {
     return require __DIR__ . '/../../../Alchemy/Phrasea/Application/Prod.php';
-  }
-
-  public static function tearDownAfterClass()
-  {
-    if (self::$story instanceof \record_adapter)
-    {
-      self::$story->delete();
-    }
   }
 
   public function testRootPost()
@@ -133,7 +124,7 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testByIds()
   {
-    $story = $this->getStory();
+    $story = self::$story_1;
 
     $route = sprintf("/story/%d/%d/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -146,7 +137,7 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testAddElementsToStory()
   {
-    $story = $this->getStory();
+    $story = self::$story_1;
 
     $route = sprintf("/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -163,12 +154,12 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(302, $response->getStatusCode());
 
-    $this->assertEquals(2, self::$story->get_children()->get_count());
+    $this->assertEquals(2, self::$story_1->get_children()->get_count());
   }
 
   public function testAddElementsToStoryJSON()
   {
-    $story = $this->getStory();
+    $story = self::$story_1;
 
     $route = sprintf("/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -187,12 +178,12 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(200, $response->getStatusCode());
 
-    $this->assertEquals(2, self::$story->get_children()->get_count());
+    $this->assertEquals(2, self::$story_1->get_children()->get_count());
   }
 
   public function testRemoveElementFromStory()
   {
-    $story = $this->getStory();
+    $story = self::$story_1;
 
     $records = array(
         self::$record_1,
@@ -232,13 +223,13 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
       }
       $n++;
 
-      $this->assertEquals($totalRecords - $n, self::$story->get_children()->get_count());
+      $this->assertEquals($totalRecords - $n, self::$story_1->get_children()->get_count());
     }
   }
 
   public function testAttachStoryToWZ()
   {
-    $story = $this->getStory();
+    $story = self::$story_1;
 
     $goodRoute = sprintf("/story/%s/%s/attach/", $story->get_sbas_id(), $story->get_record_id());
     $badRoute = sprintf("/story/%s/%s/attach/", self::$record_1->get_base_id(), self::$record_1->get_record_id());
@@ -297,7 +288,7 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testDetachStoryFromWZ()
   {
-    $story = $this->getStory();
+    $story = self::$story_1;
 
     $route = sprintf("/story/%s/%s/detach/", $story->get_sbas_id(), $story->get_record_id());
     //story not yet Attched
@@ -350,43 +341,5 @@ class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(200, $response->getStatusCode());
   }
 
-  /**
-   * @return \record_adapter
-   */
-  protected function getStory()
-  {
-    if (self::$story instanceof \record_adapter)
-      return self::$story;
-
-    $collections = self::$core->getAuthenticatedUser()
-            ->ACL()
-            ->get_granted_base(array('canaddrecord'));
-
-    $collection = array_shift($collections);
-
-    $crawler = $this->client->request(
-            'POST', '/story/', array(
-        'base_id' => $collection->get_base_id(),
-        'name' => 'test story',
-        'description' => 'test_description'), array(), array(
-        "HTTP_ACCEPT" => "application/json")
-    );
-
-    $response = $this->client->getResponse();
-
-    $response = json_decode($response->getContent());
-
-    if (!$response->success)
-    {
-      $this->fail("Cannot create story");
-    }
-
-    $sbasId = $response->story->sbas_id;
-    $recordId = $response->story->record_id;
-
-    self::$story = new \record_adapter($sbasId, $recordId);
-
-    return self::$story;
-  }
-
+  
 }

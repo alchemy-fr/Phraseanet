@@ -11,8 +11,6 @@
 
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-use Doctrine\Common\DataFixtures\Loader;
-use PhraseaFixture\Basket as MyFixture;
 use Alchemy\Phrasea\Helper;
 use Alchemy\Phrasea\RouteProcessor as routeProcessor;
 
@@ -26,14 +24,13 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $client;
-  protected $loader;
   protected static $need_records = 2;
 
   public function setUp()
   {
     parent::setUp();
     $this->client = $this->createClient();
-    $this->loader = new Loader();
+    $this->purgeDatabase();
   }
 
   public function createApplication()
@@ -161,7 +158,7 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $em->flush();
 
     $route = sprintf(
-            "/baskets/%s/%s/delete/", $basket->getId(), $basket_element->getId()
+            "/baskets/%s/delete/%s/", $basket->getId(), $basket_element->getId()
     );
 
     $crawler = $this->client->request('POST', $route);
@@ -199,7 +196,7 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $em->flush();
 
     $route = sprintf(
-            "/baskets/%s/%s/delete/", $basket->getId(), $basket_element->getId()
+            "/baskets/%s/delete/%s/", $basket->getId(), $basket_element->getId()
     );
 
     $crawler = $this->client->request(
@@ -498,11 +495,11 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
    */
   public function testRemoveBasket()
   {
-    $this->insertOneBasketEnv();
+    $basket = $this->insertOneBasketEnv();
 
     $em = self::$core->getEntityManager();
     /* @var $em \Doctrine\ORM\EntityManager */
-    $basket = $em->find("Entities\Basket", 1);
+    $basket = $em->find("Entities\Basket", $basket->getId());
 
     $em->remove($basket);
 
@@ -540,81 +537,6 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $count = $query->getSingleScalarResult();
 
     $this->assertEquals(0, $count);
-  }
-
-  /**
-   *
-   * @return \Entities\Basket
-   */
-  protected function insertOneBasket()
-  {
-    $basketFixture = new MyFixture\LoadOneBasket();
-
-    $basketFixture->setUser(self::$user);
-
-    $this->loader->addFixture($basketFixture);
-
-    $this->insertFixtureInDatabase($this->loader);
-
-    $query = self::$core->getEntityManager()->createQuery(
-            'SELECT COUNT(b.id) FROM \Entities\Basket b'
-    );
-
-    $count = $query->getSingleScalarResult();
-
-    $this->assertEquals(1, $count);
-
-    return $basketFixture->basket;
-  }
-
-  /**
-   *
-   * @return \Entities\Basket
-   */
-  protected function insertOneBasketEnv()
-  {
-    $em = self::$core->getEntityManager();
-    /* @var $em \Doctrine\ORM\EntityManager */
-
-    $basketFixture = new MyFixture\LoadOneBasketEnv();
-
-    $basketFixture->setUser(self::$user);
-
-    $basketFixture->addParticipant(self::$user_alt1);
-    $basketFixture->addParticipant(self::$user_alt2);
-
-    $basketFixture->addBasketElement(self::$record_1);
-    $basketFixture->addBasketElement(self::$record_2);
-
-    $this->loader->addFixture($basketFixture);
-
-    $this->insertFixtureInDatabase($this->loader);
-
-    $query = $em->createQuery(
-            'SELECT COUNT(b.id) FROM \Entities\Basket b'
-    );
-
-    $count = $query->getSingleScalarResult();
-
-    $this->assertEquals(1, $count);
-
-    $query = $em->createQuery(
-            'SELECT COUNT(v.id) FROM \Entities\ValidationParticipant v'
-    );
-
-    $count = $query->getSingleScalarResult();
-
-    $this->assertEquals(2, $count);
-
-    $query = $em->createQuery(
-            'SELECT COUNT(v.id) FROM \Entities\ValidationSession v'
-    );
-
-    $count = $query->getSingleScalarResult();
-
-    $this->assertEquals(1, $count);
-
-    return $basketFixture->basket;
   }
 
 }
