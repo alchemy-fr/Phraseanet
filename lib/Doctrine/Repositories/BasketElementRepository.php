@@ -37,7 +37,7 @@ class BasketElementRepository extends EntityRepository
 
     $params = array(
         'sbas_id' => $record->get_sbas_id(),
-        'record_id' => $record_id->get_record_id()
+        'record_id' => $record->get_record_id()
     );
 
     $query = $this->_em->createQuery($dql);
@@ -52,7 +52,7 @@ class BasketElementRepository extends EntityRepository
    * @param \User_Adapter $user
    * @return \Entities\BasketELement 
    */
-  public function findUserElement($element_id, \User_Adapter $user)
+  public function findElement($element_id, \User_Adapter $user)
   {
     $element = $this->find($element_id);
 
