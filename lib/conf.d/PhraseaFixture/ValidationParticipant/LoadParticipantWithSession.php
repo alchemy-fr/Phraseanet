@@ -43,7 +43,7 @@ class LoadParticipantWithSession extends \PhraseaFixture\AbstractWZ implements F
     {
       throw new \LogicException('Fill a user to store a new validation Session');
     }
-    $validationParticipant->setParticipant($this->user);
+    $validationParticipant->setUser($this->user);
 
     if (null === $this->session)
     {
