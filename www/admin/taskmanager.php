@@ -33,35 +33,6 @@ $registry = $appbox->get_registry();
 $task_manager = new task_manager($appbox);
 
 
-$tasks = array();
-$path = $registry->get('GV_RootPath') . "lib/classes/task/period/";
-if ($hdir = opendir($path))
-{
-  $tskin = array();
-  $max = 9999;
-  while (($max-- > 0) && (($file = readdir($hdir)) !== false))
-  {
-    if (!is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php")
-      continue;
-
-    $classname = 'task_period_' . substr($file, 0, strlen($file) - 10);
-
-    try
-    {
-//      $testclass = new $classname(null);
-      if ($classname::interfaceAvailable())
-      {
-        $tasks[] = array("class" => $classname, "name" => $classname::getName(), "err" => null);
-      }
-    }
-    catch (Exception $e)
-    {
-
-    }
-  }
-  closedir($hdir);
-}
-
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
@@ -346,6 +317,7 @@ if ($hdir = opendir($path))
               var menuNewTask = [
 <?php
 // fill the 'new task' menu
+$tasks = task_manager::getAvailableTasks();
 $ntasks = count($tasks);
 foreach ($tasks as $t)
 {
