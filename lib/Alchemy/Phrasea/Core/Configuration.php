@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Core;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Alchemy\Phrasea\Core\Configuration\Application;
 use Alchemy\Phrasea\Core\Configuration\Parser as ConfigurationParser;
 
@@ -25,6 +26,12 @@ class Configuration
 {
 
   /**
+   * The file path of the main configuration file
+   * @var string 
+   */
+  protected $filePathName;
+  
+  /**
    * The environnment name
    * @var string 
    */
@@ -32,15 +39,10 @@ class Configuration
 
   /**
    * The finale configuration values as an array
-   * @var Array 
+   * @var ParameterBag\ParameterBag
    */
-  protected $configuration = array();
+  protected $configuration;
 
-  /**
-   * Tell if appli is currently installed
-   * @var boolean
-   */
-  protected $installed = false;
 
   /**
    * Class that take care of configuration process
@@ -49,25 +51,25 @@ class Configuration
   private $configurationHandler;
 
   /**
-   * Class that take care of configuration specification 
-   * like filepath, extends keywords etc ..
-   * @var Configuration\Specification
-   */
-  private $configurationSpecification;
-
-  /**
-   * Class that take care of parsing configuration file 
-   * @var Configuration\Parser
-   */
-  private $configurationParser;
-
-  /**
    * 
    * @param type $envName the name of the loaded environnement
    */
-  public function __construct($envName)
+  public function __construct($envName, Configuration\Handler $handler)
   {
-    $this->init($envName);
+    $this->environnement = $envName;
+    $this->configurationHandler = $handler;
+    $this->installed = false;
+
+    try
+    {
+      $handler->getSpecification()->getMainConfigurationFile();
+
+      $this->installed = true;
+    }
+    catch (\Exception $e)
+    {
+      
+    }
   }
 
   /**
@@ -89,42 +91,6 @@ class Configuration
   }
 
   /**
-   * Getter
-   * @return Configuration\Specification 
-   */
-  public function getConfigurationSpecification()
-  {
-    return $this->configurationSpecification;
-  }
-
-  /**
-   * Setter
-   * @param Configuration\Specification $configurationSpecification 
-   */
-  public function setConfigurationSpecification(Configuration\Specification $configurationSpecification)
-  {
-    $this->configurationSpecification = $configurationSpecification;
-  }
-
-  /**
-   * Getter
-   * @return Configuration\Parser
-   */
-  public function getConfigurationParser()
-  {
-    return $this->configurationParser;
-  }
-
-  /**
-   * Setter
-   * @param type $configurationParser 
-   */
-  public function setConfigurationParser($configurationParser)
-  {
-    $this->configurationParser = $configurationParser;
-  }
-
-  /**
    * Return the current used environnement
    * 
    * @return string 
@@ -141,9 +107,9 @@ class Configuration
    */
   public function getDoctrine()
   {
-    $doctrine = $this->get('doctrine'); //get doctrine scope
+    $doctrine = $this->getConfiguration()->get('doctrine', array()); //get doctrine scope
 
-    if (null !== $doctrine)
+    if (count($doctrine) > 0)
     {
       $doctrine["debug"] = $this->isDebug(); //set debug
 
@@ -151,18 +117,18 @@ class Configuration
       {
         $logger = $doctrine["log"]["type"];
 
-        if (!in_array($doctrine["log"]["type"], $this->getAvailableLogger()))
+        if (!in_array($doctrine["log"]["type"], $this->getAvailableDoctrineLogger()))
         {
           throw new \Exception(sprintf('Unknow logger %s', $logger));
         }
 
-        $doctrineLogger = $this->get($logger); //set logger
+        $doctrineLogger = $this->getConfiguration()->get($logger); //set logger
 
         $doctrine["logger"] = $doctrineLogger;
       }
     }
 
-    return null === $doctrine ? array() : $doctrine;
+    return $doctrine;
   }
 
   /**
@@ -175,6 +141,17 @@ class Configuration
     $phraseanet = $this->getPhraseanet();
     return isset($phraseanet["debug"]) ? !!$phraseanet["debug"] : false;
   }
+  
+  /**
+   * Check if current environnement should display errors
+   * Default to false
+   * @return boolean 
+   */
+  public function displayErrors()
+  {
+    $phraseanet = $this->getPhraseanet();
+    return isset($phraseanet["display_errors"]) ? !!$phraseanet["display_errors"] : false;
+  }
 
   /**
    * Return the phraseanet scope configurations values
@@ -183,8 +160,7 @@ class Configuration
    */
   public function getPhraseanet()
   {
-    $phraseanet = $this->get('phraseanet');
-    return null === $phraseanet ? array() : $phraseanet;
+    return $this->getConfiguration()->get('phraseanet', array());
   }
 
   /**
@@ -198,24 +174,23 @@ class Configuration
   }
 
   /**
-   * Check if key exist in final configuration if yes it returns the value else
-   * it returns null
-   * 
-   * @param type $key
-   * @return Array|null
-   */
-  private function get($key)
-  {
-    return isset($this->configuration[$key]) ? $this->configuration[$key] : null;
-  }
-
-  /**
    * Return the configuration
    * 
-   * @return Array|null
+   * @return ParameterBag\ParameterBag
    */
   public function getConfiguration()
   {
+    if (null === $this->configuration)
+    {
+      $this->configuration = new Configuration\Parameter();
+      
+      if($this->installed)
+      {
+        $configuration = $this->configurationHandler->handle($this->getEnvironnement());
+        $this->configuration = new Configuration\Parameter($configuration);
+      }
+    }
+    
     return $this->configuration;
   }
 
@@ -224,56 +199,10 @@ class Configuration
    * 
    * @return Array 
    */
-  private function getAvailableLogger()
+  public function getAvailableDoctrineLogger()
   {
     return array('echo', 'monolog');
   }
 
-  /**
-   * Return configurationFilePAth
-   * @return string
-   */
-  public function getConfigurationFilePath()
-  {
-    return __DIR__ . '/../../../../config';
-  }
-
-  /**
-   * Return configurationFileName
-   * @return string
-   */
-  public function getConfigurationFileName()
-  {
-    return 'config.yml';
-  }
-
-  /**
-   * Init object
-   * Called in constructor
-   */
-  private function init($envName)
-  {
-    $filePath = $this->getConfigurationFilePath();
-    $fileName = $this->getConfigurationFileName();
-
-    try
-    {
-      new \SplFileObject(sprintf("%s/%s", $filePath, $fileName));
-
-      $this->installed = true;
-    }
-    catch (\Exception $e)
-    {
-      
-    }
-
-    $this->environnement = $envName;
-
-    if ($this->installed)
-    {
-      $confHandler = new Configuration\Handler(new Application(), new ConfigurationParser\Yaml());
-      $this->configuration = $confHandler->handle($envName);
-    }
-  }
 
 }
