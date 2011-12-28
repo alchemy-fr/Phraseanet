@@ -253,6 +253,9 @@
                     {% trans 'Indexable' %}
                   </th>
                   <th>
+                    {% trans 'Required' %}
+                  </th>
+                  <th>
                     {% trans 'Lecture seule' %}
                   </th>
                   <th>
@@ -309,6 +312,9 @@
                                         </td>
                                         <td>
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="indexable_{{field.get_id()}}" type="checkbox" {% if field.is_indexable() %}checked="checked"{% endif %}/>
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} name="required_{{field.get_id()}}" type="checkbox" {% if field.is_required() %}checked="checked"{% endif %}/>
                                         </td>
                                         <td>
                                           <input class="meta_readonly metafield_{{field.get_id()}}" {{disabled}} name="readonly_{{field.get_id()}}" type="checkbox" {% if field.is_readonly() %}checked="checked"{% endif %}/>
