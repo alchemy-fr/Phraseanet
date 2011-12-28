@@ -20,7 +20,7 @@ use \Symfony\Component\Yaml\Yaml;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class EnvironnementHandler
+class Handler
 {
   /**
    * Configuration file specification interface
@@ -40,7 +40,7 @@ class EnvironnementHandler
    * @param ConfigurationSpecification $configSpec
    * @param Parser\ParserInterface $parser 
    */
-  public function __construct(ConfigurationSpecification $configSpec, Parser\ParserInterface $parser)
+  public function __construct(Application $configSpec, Parser $parser)
   {
     $this->confSpecification = $configSpec;
     $this->parser = $parser;
@@ -74,7 +74,7 @@ class EnvironnementHandler
       }
       catch (\Exception $e)
       {
-        throw \Exception(sprintf("filename %s not found", $file->getPathname()));
+        throw new \Exception(sprintf("filename %s not found", $file->getPathname()));
       }
     }
     else

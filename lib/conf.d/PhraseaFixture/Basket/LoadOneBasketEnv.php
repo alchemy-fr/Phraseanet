@@ -104,7 +104,7 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
     {
       $validationParticipant = new \Entities\ValidationParticipant();
 
-      $validationParticipant->setParticipant($participant);
+      $validationParticipant->setUser($participant);
 
       $validationParticipant->setSession($validationSession);
 

@@ -18,12 +18,16 @@ namespace Alchemy\Phrasea\Core\Configuration;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-interface ConfigurationSpecification
+interface Specification
 {
   /**
    * Keywords to detect extended file
    */
   const EXTENDED_KEYWORD = 'extends';
+  /**
+   * Keywords to detect main file
+   */
+  const EXTENDED_MAIN_KEYWORD = 'main';
   
   /**
    * Return an array of paths that CAN'T be extended by ONLY one or more of their value
