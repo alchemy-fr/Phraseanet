@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Configuration\Parser;
+namespace Alchemy\Phrasea\Core\Configuration;
 
 /**
  * A interface to parse configuration file
@@ -18,7 +18,7 @@ namespace Alchemy\Phrasea\Core\Configuration\Parser;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-interface ParserInterface
+interface Parser
 {
   /**
    * Parse the configuration file $file  to an array

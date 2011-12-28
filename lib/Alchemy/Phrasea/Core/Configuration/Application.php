@@ -18,7 +18,7 @@ namespace Alchemy\Phrasea\Core\Configuration;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class PhraseaConfiguration implements ConfigurationSpecification
+class Application implements Specification
 {
 
   /**
@@ -38,7 +38,12 @@ class PhraseaConfiguration implements ConfigurationSpecification
    */
   public function getConfFileFromEnvName($name)
   {
-    return new \SplFileObject(sprintf("/%s/config_%s.%s"
+    if($name === self::EXTENDED_MAIN_KEYWORD)
+    {
+      return $this->getMainFile();
+    }
+    
+    return new \SplFileObject(sprintf("%s/config_%s.%s"
                             , $this->getConfigurationFilePath()
                             , $name
                             , $this->getConfFileExtension())
@@ -52,6 +57,12 @@ class PhraseaConfiguration implements ConfigurationSpecification
   public function getConfigurationFilePath()
   {
     return __DIR__ . '/../../../../../config';
+  }
+  
+  public function getMainFile()
+  {
+    $path = __DIR__ . '/../../../../../config/config.yml';
+    return new \SplFileObject($path);
   }
 
   /**

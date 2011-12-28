@@ -19,7 +19,7 @@ use Symfony\Component\Yaml\Yaml as SfYaml;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Yaml implements ParserInterface
+class Yaml implements \Alchemy\Phrasea\Core\Configuration\Parser
 {
   /**
    *
