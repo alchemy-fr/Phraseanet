@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Core\Service;
 
 use Doctrine\DBAL\Types\Type;
+use Doctrine\Common\Cache\AbstractCache;
 
 /**
  * 
@@ -27,7 +28,7 @@ class Doctrine
 
   protected $entityManager;
 
-  public function __construct(Array $doctrineConfiguration)
+  public function __construct(Array $doctrineConfiguration = array())
   {
     require_once __DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
 
@@ -38,111 +39,20 @@ class Doctrine
     //debug mode
     $debug = isset($doctrineConfiguration["debug"]) ? : false;
     //doctrine cache
-    $cache = !isset($doctrineConfiguration["orm"]["cache"]) ? : $doctrineConfiguration["orm"]["cache"];
+    $cache = isset($doctrineConfiguration["orm"]["cache"]) ? $doctrineConfiguration["orm"]["cache"] : false;
     //doctrine log configuration
-    $log = isset($doctrineConfiguration["log"]) ? !!$doctrineConfiguration["log"] : false;
-    $logEnable = isset($log["enable"]) ? : !!$log["enable"];
+    $log = isset($doctrineConfiguration["log"]) ? $doctrineConfiguration["log"] : false;
     //service logger configuration
     $logger = !isset($doctrineConfiguration['logger']) ? : $doctrineConfiguration['logger'];
 
     //default query cache & meta chache
     $metaCache = $this->getCache();
     $queryCache = $this->getCache();
-    
+
     //handle cache
-    if ($cache && !$debug)
-    {
-      //define query cache
-      $cacheName = isset($cache["query"]) ? $cache["query"] : self::ARRAYCACHE;
-      $queryCache = $this->getCache($cacheName);
-
-      //define metadatas cache
-      $cacheName = isset($cache["metadata"]) ? $cache["metadata"] : self::ARRAYCACHE;
-      $metaCache = $this->getCache($cacheName);
-    }
-
+    $this->handleCache($metaCache, $queryCache, $cache, $debug);
     //Handle logs
-    if ($logEnable)
-    {
-      $loggerService = isset($log["type"]) ? $log["type"] : '';
-
-      switch ($loggerService)
-      {
-        case 'monolog':
-          //defaut to main handler
-          $doctrineHandler = isset($log["handler"]) ? $log["handler"] : 'main';
-          
-          if(!isset($logger["handlers"]))
-          {
-            throw new \Exception("You must specify at least on monolog handler");
-          }
-          
-          if (!array_key_exists($doctrineHandler, $logger["handlers"]))
-          {
-            throw new \Exception(sprintf('Unknow monolog handler %s'), $handlerType);
-          }
-
-          $handlerName = ucfirst($logger["handlers"][$doctrineHandler]["type"]);
-
-          $handlerClassName = sprintf('\Monolog\Handler\%sHandler', $handlerName);
-
-          if (!class_exists($handlerClassName))
-          {
-            throw new \Exception(sprintf('Unknow monolog handler class %s', $handlerClassName));
-          }
-
-          if (!isset($log["filename"]))
-          {
-            throw new \Exception('you must specify a file to write "filename: my_filename"');
-          }
-
-          $logPath = __DIR__ . '/../../../../../logs';
-          $file = sprintf('%s/%s', $logPath, $log["filename"]);
-
-          if ($doctrineHandler == 'rotate')
-          {
-            $maxDay = isset($log["max_day"]) ? (int) $log["max_day"] : (int) $logger["max_day"];
-
-            $handlerInstance = new $handlerClassName($file, $maxDay);
-          }
-          else
-          {
-            $handlerInstance = new $handlerClassName($file);
-          }
-
-          $monologLogger = new \Monolog\Logger('query-logger');
-          $monologLogger->pushHandler($handlerInstance);
-
-          if (isset($log["output"]))
-          {
-            $output = $log["output"];
-          }
-          elseif (isset($logger["output"]))
-          {
-            $output = $logger["output"];
-          }
-          else
-          {
-            $output = null;
-          }
-
-          if (null === $output)
-          {
-            $sqlLogger = new \Doctrine\Logger\MonologSQLLogger($monologLogger);
-          }
-          else
-          {
-            $sqlLogger = new \Doctrine\Logger\MonologSQLLogger($monologLogger, $output);
-          }
-
-          $config->setSQLLogger($sqlLogger);
-          break;
-        case 'echo':
-        default:
-          $config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger);
-          break;
-      }
-    }
+    $this->handleLogs($config, $log, $logger);
 
     //set caches
     $config->setMetadataCacheImpl($metaCache);
@@ -183,7 +93,7 @@ class Doctrine
           'driver' => 'pdo_mysql',
       );
     }
-    
+
     $evm = new \Doctrine\Common\EventManager();
 
     $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
@@ -299,10 +209,14 @@ class Doctrine
 
     $platform = $this->entityManager->getConnection()->getDatabasePlatform();
 
-    Type::addType('blob', 'Types\Blob');
-    Type::addType('enum', 'Types\Enum');
-    Type::addType('longblob', 'Types\LongBlob');
-    Type::addType('varbinary', 'Types\VarBinary');
+    if(!Type::hasType('blob'))
+      Type::addType('blob', 'Types\Blob');
+    if(!Type::hasType('enum'))
+      Type::addType('enum', 'Types\Enum');
+    if(!Type::hasType('longblob'))
+      Type::addType('longblob', 'Types\LongBlob');
+    if(!Type::hasType('varbinary'))
+      Type::addType('varbinary', 'Types\VarBinary');
 
     $platform->registerDoctrineTypeMapping('enum', 'enum');
     $platform->registerDoctrineTypeMapping('blob', 'blob');
@@ -334,6 +248,122 @@ class Doctrine
     }
 
     return $cache;
+  }
+
+  /**
+   * Handle Cache configuration
+   * 
+   * @param AbstractCache $metaCache
+   * @param AbstractCache $queryCache
+   * @param type $cache
+   * @param type $debug 
+   */
+  private function handleCache(AbstractCache &$metaCache, AbstractCache &$queryCache, $cache, $debug)
+  {
+    if ($cache && !$debug)
+    {
+      //define query cache
+      $cacheName = isset($cache["query"]) ? $cache["query"] : self::ARRAYCACHE;
+      $queryCache = $this->getCache($cacheName);
+
+      //define metadatas cache
+      $cacheName = isset($cache["metadata"]) ? $cache["metadata"] : self::ARRAYCACHE;
+      $metaCache = $this->getCache($cacheName);
+    }
+  }
+
+  /**
+   * Handle logs configuration
+   * 
+   * @param \Doctrine\ORM\Configuration $config
+   * @param type $log
+   * @param type $logger 
+   */
+  private function handleLogs(\Doctrine\ORM\Configuration &$config, $log, $logger)
+  {
+    $logEnable = isset($log["enable"]) ? !!$log["enable"] : false;
+    
+    if ($logEnable)
+    {
+      $loggerService = isset($log["type"]) ? $log["type"] : '';
+
+      switch ($loggerService)
+      {
+        case 'monolog':
+          //defaut to main handler
+          $doctrineHandler = isset($log["handler"]) ? $log["handler"] : 'main';
+
+          if (!isset($logger["handlers"]))
+          {
+            throw new \Exception("You must specify at least on monolog handler");
+          }
+
+          if (!array_key_exists($doctrineHandler, $logger["handlers"]))
+          {
+            throw new \Exception(sprintf('Unknow monolog handler %s'), $handlerType);
+          }
+
+          $handlerName = ucfirst($logger["handlers"][$doctrineHandler]["type"]);
+
+          $handlerClassName = sprintf('\Monolog\Handler\%sHandler', $handlerName);
+
+          if (!class_exists($handlerClassName))
+          {
+            throw new \Exception(sprintf('Unknow monolog handler class %s', $handlerClassName));
+          }
+
+          if (!isset($log["filename"]))
+          {
+            throw new \Exception('you must specify a file to write "filename: my_filename"');
+          }
+
+          $logPath = __DIR__ . '/../../../../../logs';
+          $file = sprintf('%s/%s', $logPath, $log["filename"]);
+
+          if ($doctrineHandler == 'rotate')
+          {
+            $maxDay = isset($log["max_day"]) ? (int) $log["max_day"] : (int) $logger["max_day"];
+
+            $handlerInstance = new $handlerClassName($file, $maxDay);
+          }
+          else
+          {
+            $handlerInstance = new $handlerClassName($file);
+          }
+
+          $monologLogger = new \Monolog\Logger('query-logger');
+          $monologLogger->pushHandler($handlerInstance);
+
+          if (isset($log["output"]))
+          {
+            $output = $log["output"];
+          }
+          elseif (isset($logger["output"]))
+          {
+            $output = $logger["output"];
+          }
+          else
+          {
+            $output = null;
+          }
+
+          if (null === $output)
+          {
+            $sqlLogger = new \Doctrine\Logger\MonologSQLLogger($monologLogger);
+          }
+          else
+          {
+            $sqlLogger = new \Doctrine\Logger\MonologSQLLogger($monologLogger, $output);
+          }
+
+          $config->setSQLLogger($sqlLogger);
+          break;
+        case 'echo':
+        default:
+          $config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger);
+          break;
+      }
+    }
   }
 
 }
