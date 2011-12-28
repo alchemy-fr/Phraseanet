@@ -870,9 +870,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       $titles = array();
       foreach ($retrieved_fields as $key => $value)
       {
-        if (trim($value === ''))
+        if (trim($value['value'] === ''))
           continue;
-        $titles[] = $value;
+        $titles[] = $value['value'];
       }
       $title = trim(implode(' - ', $titles));
     }

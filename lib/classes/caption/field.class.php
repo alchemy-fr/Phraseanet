@@ -346,9 +346,9 @@ class caption_field implements cache_cacheableInterface
     if ($this->databox_field->is_multi() === true)
     {
       if ($as_string === true && $custom_separator === false)
-
+      {
         return $this->value;
-
+      }
       $separator = $this->databox_field->get_separator();
       $array_values = self::get_multi_values($this->value, $separator);
 
