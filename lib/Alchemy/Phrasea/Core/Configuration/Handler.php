@@ -40,20 +40,38 @@ class Handler
    * @param ConfigurationSpecification $configSpec
    * @param Parser\ParserInterface $parser 
    */
-  public function __construct(Application $configSpec, Parser $parser)
+  public function __construct(Specification $configSpec, Parser $parser)
   {
     $this->confSpecification = $configSpec;
     $this->parser = $parser;
   }
 
   /**
+   * Getter
+   * @return Specification 
+   */
+  public function getSpecification()
+  {
+    return $this->confSpecification;
+  }
+
+  /**
+   * Getter
+   * @return Parser
+   */
+  public function getParser()
+  {
+    return $this->parser;
+  }
+
+    /**
    * Stacks all envrironnement in $env that extends the loaded configuration file
    * 
    * @param SplFileObject $file File of the current loaded config file
    * @param array $envs A stack of conf environnments
    * @return array 
    */
-  private function retrieveExtendedEnvFromFile(\SplFileObject $file, Array $allEnvs = array())
+  public function retrieveExtendedEnvFromFile(\SplFileObject $file, Array $allEnvs = array())
   {
     $env = $this->parser->parse($file);
 
@@ -119,7 +137,6 @@ class Handler
    */
   public function handle($name)
   {
-
     //get the corresepondant file
     $file = $this->confSpecification->getConfFileFromEnvName($name);
 
@@ -170,10 +187,6 @@ class Handler
                                       {
                                         $searchArray[$k] = $value;
                                         break; //quit
-                                      }
-                                      else
-                                      {
-                                        continue;
                                       }
                                     }
                                   }

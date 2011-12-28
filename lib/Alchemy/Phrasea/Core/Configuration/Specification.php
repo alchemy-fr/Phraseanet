@@ -30,6 +30,13 @@ interface Specification
   const EXTENDED_MAIN_KEYWORD = 'main';
   
   /**
+   * Return the main configuration file 
+   * 
+   * @return \SplFileObject
+   */
+  public function getMainConfigurationFile();
+  
+  /**
    * Return an array of paths that CAN'T be extended by ONLY one or more of their value
    * but must be fully replaced with new values
    * 

@@ -38,11 +38,11 @@ class Application implements Specification
    */
   public function getConfFileFromEnvName($name)
   {
-    if($name === self::EXTENDED_MAIN_KEYWORD)
+    if ($name === self::EXTENDED_MAIN_KEYWORD)
     {
-      return $this->getMainFile();
+      return $this->getMainConfigurationFile();
     }
-    
+
     return new \SplFileObject(sprintf("%s/config_%s.%s"
                             , $this->getConfigurationFilePath()
                             , $name
@@ -58,8 +58,12 @@ class Application implements Specification
   {
     return __DIR__ . '/../../../../../config';
   }
-  
-  public function getMainFile()
+
+  /**
+   *
+   * {@inheritdoc}
+   */
+  public function getMainConfigurationFile()
   {
     $path = __DIR__ . '/../../../../../config/config.yml';
     return new \SplFileObject($path);
