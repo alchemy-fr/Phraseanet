@@ -9,18 +9,22 @@
  * file that was distributed with this source code.
  */
 
+require_once dirname(__FILE__) . "/../../lib/classes/bootstrap.class.php";
+
 /**
  * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-bootstrap::register_autoloads();
+
+bootstrap::execute('test');
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\Common\DataFixtures\Loader;
+use PhraseaFixture\Basket as MyFixture;
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 {
@@ -32,7 +36,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * @var Symfony\Component\HttpKernel\Client 
    */
   protected $client;
-
+ /**
+   *
+   * @var record_adapter
+   */
+  protected static $story_1;
   /**
    *
    * @var record_adapter
@@ -329,6 +337,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   protected static $updated;
   protected static $need_records = false;
   protected static $need_subdefs = false;
+  protected static $need_story = false;
 
   /**
    *
@@ -343,11 +352,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * @var \Alchemy\Phrasea\Core 
    */
   protected static $core;
+  
+  /**
+   *
+   * @var \Doctrine\ORM\Tools\SchemaTools
+   */
+  protected $schematTool;
+  
+  /**
+   * Class metadatas
+   * @var Array
+   */
+  protected $classesMetatdas;
 
   public static function setUpBeforeClass()
   {
-
-    self::$core = bootstrap::getCore();
 
     if (!self::$time_start)
       self::$time_start = microtime(true);
@@ -358,17 +377,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $appbox = appbox::get_instance();
     if (!self::$updated)
     {
-      if (is_file(__DIR__ . '/tests.sqlite'))
-      {
-        unlink(__DIR__ . '/tests.sqlite');
-      }
-
-      self::$core["EM"] = self::$core->share(function()
-              {
-                $doctrine = new \Alchemy\Phrasea\Core\Service\DoctrineTestSQLite();
-                return $doctrine->getEntityManager();
-              });
-
       echo "Upgrading tables ...\n";
       if (file_exists(Setup_Upgrade::get_lock_file()))
         unlink(Setup_Upgrade::get_lock_file());
@@ -470,6 +478,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       self::fail('Unable to find a collection');
 
     self::$collection = $coll;
+
+    if (static::$need_story)
+    {
+      self::$story_1 = \record_adapter::create(
+                      self::$collection, new system_file(dirname(__FILE__) . '/testfiles/test001.CR2'), false, true
+      );
+      echo "\ngenerate story 01\n";
+    }
 
     if (static::$need_records)
     {
@@ -755,10 +771,62 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       }
     }
     $appbox->get_session()->logout();
+    
+    return;
   }
 
+  /**
+   * Delete temporay sqlite database
+   * Create schema using $this->classesMetatdas
+   * Load DoctrineTestServices
+   * 
+   * @return 
+   */
+  public function __construct()
+  {
+    if (null === self::$core)
+    {
+      if (is_file(__DIR__ . '/tests.sqlite'))
+      {
+        unlink(__DIR__ . '/tests.sqlite');
+      }
+
+      self::$core = bootstrap::getCore();
+      self::$core["EM"] = self::$core->share(function()
+              {
+                $doctrine = new \Alchemy\Phrasea\Core\Service\DoctrineTestSQLite();
+                return $doctrine->getEntityManager();
+              });
+      
+      $em = self::$core->getEntityManager();
+      /* @var $em \Doctrine\ORM\EntityManager */
+      
+      //create schema
+      $this->schematTool = new \Doctrine\ORM\Tools\SchemaTool($em);
+      $this->classesMetatdas = array(
+          $em->getClassMetadata('Entities\Basket')
+          , $em->getClassMetadata('Entities\BasketElement')
+          , $em->getClassMetadata('Entities\StoryWZ')
+          , $em->getClassMetadata('Entities\ValidationData')
+          , $em->getClassMetadata('Entities\ValidationParticipant')
+          , $em->getClassMetadata('Entities\ValidationSession')
+      );
+      
+      $this->schematTool->createSchema($this->classesMetatdas);
+    }
+  }
+
+  /**
+   * Delete all ressources created during the test
+   */
   public function __destruct()
   {
+    if (self::$story_1 instanceof record_adapter)
+    {
+      echo ".";
+      self::$story_1->delete();
+      self::$story_1 = null;
+    }
     if (self::$record_1 instanceof record_adapter)
     {
       echo ".";
@@ -920,32 +988,23 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     parent::setUp();
 
-
-    $em = self::$core["EM"];
-
-    //create schema
-    $this->schematTool = new \Doctrine\ORM\Tools\SchemaTool($em);
-    $this->classesMetatdas = array(
-        $em->getClassMetadata('Entities\Basket')
-        , $em->getClassMetadata('Entities\BasketElement')
-        , $em->getClassMetadata('Entities\StoryWZ')
-        , $em->getClassMetadata('Entities\ValidationData')
-        , $em->getClassMetadata('Entities\ValidationParticipant')
-        , $em->getClassMetadata('Entities\ValidationSession')
-    );
-    $this->schematTool->createSchema($this->classesMetatdas);
-
     $browser = Browser::getInstance();
     $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
   }
 
   public function tearDown()
   {
-    //drop schema
-    $this->schematTool->dropSchema($this->classesMetatdas);
+    $em = self::$core->getEntityManager();
+
     parent::tearDown();
   }
 
+  /**
+   * Insert fixture contained in the specified fixtureLoader
+   * into sqlLite test temporary database
+   * 
+   * @param Doctrine\Common\DataFixtures\Loader $fixtureLoader 
+   */
   public function insertFixtureInDatabase(Doctrine\Common\DataFixtures\Loader $fixtureLoader)
   {
     $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
@@ -953,6 +1012,16 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $executor->execute($fixtureLoader->getFixtures());
   }
 
+  /**
+   * Purge sqlLite test temporary database by truncate all existing tables
+   */
+  protected function purgeDatabase()
+  {
+    $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
+    $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$core->getEntityManager(), $purger);
+    $executor->execute(array());
+  }
+  
   protected function assertDateAtom($date)
   {
     return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
@@ -962,6 +1031,119 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     $browser = Browser::getInstance();
     $browser->setUserAgent($user_agent);
+  }
+
+  /**
+   * Insert one basket entry ans set current authenticated user as owner
+   * 
+   * @return \Entities\Basket
+   */
+  protected function insertOneBasket()
+  {
+    try
+    {
+      $basketFixture = new MyFixture\LoadOneBasket();
+
+      $basketFixture->setUser(self::$user);
+
+      $loader = new Loader();
+      $loader->addFixture($basketFixture);
+
+      $this->insertFixtureInDatabase($loader);
+
+      return $basketFixture->basket;
+    }
+    catch (\Exception $e)
+    {
+      $this->fail('Fail load one Basket : ' . $e->getMessage());
+    }
+  }
+
+  /**
+   * Create a new basket with current auhtenticated user as owner
+   * Create a new sessionValidation with the newly created basket
+   * Set current authenticated user as sessionValidation initiator 
+   * Add 2 records as elments of the newly created basket
+   * Add 2 participants to the newly created sessionValidation
+   * 
+   * @return \Entities\Basket
+   */
+  protected function insertOneBasketEnv()
+  {
+    try
+    {
+      $em = self::$core->getEntityManager();
+      /* @var $em \Doctrine\ORM\EntityManager */
+
+      $basketFixture = new MyFixture\LoadOneBasketEnv();
+
+      $basketFixture->setUser(self::$user);
+
+      $basketFixture->addParticipant(self::$user_alt1);
+      $basketFixture->addParticipant(self::$user_alt2);
+
+      $basketFixture->addBasketElement(self::$record_1);
+      $basketFixture->addBasketElement(self::$record_2);
+
+      $loader = new Loader();
+      $loader->addFixture($basketFixture);
+
+      $this->insertFixtureInDatabase($loader);
+
+      return $basketFixture->basket;
+    }
+    catch (\Exception $e)
+    {
+      $this->fail('Fail load one Basket context : ' . $e->getMessage());
+    }
+  }
+
+  /**
+   * Load One WZ with
+   * One basket
+   * One story
+   * One ValidationSession & one participant
+   * @return 
+   */
+  protected function insertOneWZ()
+  {
+    try
+    {
+      $currentUser = self::$user;
+      $altUser = self::$user_alt1;
+      //add one basket
+      $basket = new PhraseaFixture\Basket\LoadOneBasket();
+      $basket->setUser($currentUser);
+      //add one story
+      $story = new PhraseaFixture\Story\LoadOneStory();
+      $story->setUser($currentUser);
+      $story->setRecord(self::$record_1);
+      //add a validation session initiated by alt user
+      $validationSession = new PhraseaFixture\ValidationSession\LoadOneValidationSession();
+      $validationSession->setUser($altUser);
+
+      $loader = new Loader();
+      $loader->addFixture($basket);
+      $loader->addFixture($story);
+      $loader->addFixture($validationSession);
+
+      $this->insertFixtureInDatabase($loader);
+
+      //add current user as participant
+      $validationParticipant = new PhraseaFixture\ValidationParticipant\LoadParticipantWithSession();
+      $validationParticipant->setSession($validationSession->validationSession);
+      $validationParticipant->setUser($currentUser);
+
+      $loader = new Loader();
+      $loader->addFixture($validationParticipant);
+      $this->insertFixtureInDatabase($loader);
+    }
+    catch (\Exception $e)
+    {
+      $this->fail('Fail load one WorkingZone : ' . $e->getMessage());
+    }
+
+    return;
   }
 
 }
