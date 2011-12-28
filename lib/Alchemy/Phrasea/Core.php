@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea;
 
 use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\Serializer;
+use Alchemy\Phrasea\Core\Configuration;
 
 require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 
@@ -26,20 +27,20 @@ class Core extends \Pimple
 
   
   protected static $availableLanguages = array(
-        'ar_SA' => 'العربية'
-        , 'de_DE' => 'Deutsch'
-        , 'en_GB' => 'English'
-        , 'es_ES' => 'Español'
-        , 'fr_FR' => 'Français'
-    );
-  
-    /**
+      'ar_SA' => 'العربية'
+      , 'de_DE' => 'Deutsch'
+      , 'en_GB' => 'English'
+      , 'es_ES' => 'Español'
+      , 'fr_FR' => 'Français'
+  );
+
+  /**
    *
    * @var Core\Configuration
    */
-  private $conf;
-  
-  public function __construct($env)
+  private $configuration;
+
+  public function __construct($environnement)
   {
 
     /**
@@ -48,17 +49,26 @@ class Core extends \Pimple
     static::initAutoloads();
 
     
-    $this->conf = new Core\Configuration($env);
-    
+    /**
+     * Init conf
+     */
+    $this->init($environnement);
+
+    /**
+     * Set version
+     */
     $this['Version'] = $this->share(function()
             {
               return new Core\Version();
             });
-     
-    $conf = $this->conf;
-    $this['EM'] = $this->share(function() use ($conf)
+
+    /**
+     * Set Entity Manager using configuration
+     */        
+    $configuration = $this->getConfiguration();
+    $this['EM'] = $this->share(function() use ($configuration)
             {
-              $doctrine = new Core\Service\Doctrine($conf->getDoctrine());
+              $doctrine = new Core\Service\Doctrine($configuration->getDoctrine());
               return $doctrine->getEntityManager();
             });
 
@@ -122,9 +132,16 @@ class Core extends \Pimple
     return;
   }
 
-  private function init()
+  /**
+   * Load Configuration
+   * 
+   * @param type $environnement 
+   */
+  private function init($environnement)
   {
-    if ($this->conf->debug)
+    $this->loadConf($environnement);
+    
+    if ($this->getConfiguration()->displayErrors())
     {
       ini_set('display_errors', 1);
       error_reporting(E_ALL);
@@ -137,7 +154,8 @@ class Core extends \Pimple
   }
 
   /**
-   *
+   * Getter
+   * 
    * @return Request 
    */
   public function getRequest()
@@ -146,7 +164,8 @@ class Core extends \Pimple
   }
 
   /**
-   *
+   * Getter
+   * 
    * @return \Registry 
    */
   public function getRegistry()
@@ -155,7 +174,8 @@ class Core extends \Pimple
   }
 
   /**
-   *
+   * Getter
+   * 
    * @return \Doctrine\ORM\EntityManager 
    */
   public function getEntityManager()
@@ -164,7 +184,8 @@ class Core extends \Pimple
   }
 
   /**
-   *
+   * Getter
+   * 
    * @return Alchemy\Phrasea\Core\Version 
    */
   public function getVersion()
@@ -173,7 +194,8 @@ class Core extends \Pimple
   }
 
   /**
-   *
+   * Tell if current seession is authenticated
+   * 
    * @return boolean 
    */
   public function isAuthenticated()
@@ -184,7 +206,8 @@ class Core extends \Pimple
   }
 
   /**
-   *
+   * Return the current authenticated phraseanet user
+   * 
    * @return \User_adapter 
    */
   public function getAuthenticatedUser()
@@ -196,14 +219,18 @@ class Core extends \Pimple
   }
 
   /**
-   *
+   * Getter
+   * 
    * @return Core\Configuration
    */
   public function getConfiguration()
   {
-    return $this->conf;
+    return $this->configuration;
   }
-  
+
+  /**
+   * Set Default application Timezone
+   */
   protected function verifyTimezone()
   {
     if ($this->getRegistry()->is_set('GV_timezone'))
@@ -230,6 +257,11 @@ class Core extends \Pimple
     return;
   }
 
+  /**
+   * Initialiaze phraseanet log process
+   * 
+   * @return Core 
+   */
   protected function initLoggers()
   {
     $php_log = $this->getRegistry()->get('GV_RootPath') . 'logs/php_error.log';
@@ -238,8 +270,8 @@ class Core extends \Pimple
 
     if ($this->getRegistry()->get('GV_debug'))
     {
-    ini_set('display_errors', 'on');
-    ini_set('display_startup_errors', 'on');
+      ini_set('display_errors', 'on');
+      ini_set('display_startup_errors', 'on');
     }
     else
     {
@@ -260,14 +292,19 @@ class Core extends \Pimple
   }
 
   /**
-   *
+   * Return available language for phraseanet
+   * 
    * @return Array 
    */
   public static function getAvailableLanguages()
   {
     return static::$availableLanguages;
   }
-  
+
+  /**
+   * Set Language 
+   * 
+   */
   protected function detectLanguage()
   {
     $this->getRequest()->setDefaultLocale(
@@ -284,6 +321,11 @@ class Core extends \Pimple
     return;
   }
 
+  /**
+   * Finds the path to the file where the class is defined.
+   *
+   * @param string $class_name the name of the class we are looking for
+   */
   protected static function phraseaAutoload($class_name)
   {
     if (file_exists(__DIR__ . '/../../../config/classes/'
@@ -302,6 +344,10 @@ class Core extends \Pimple
     return;
   }
 
+  /**
+   * Register directory and namespaces for autoloading app classes
+   *  
+   */
   public static function initAutoloads()
   {
     require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
@@ -321,6 +367,7 @@ class Core extends \Pimple
         'Symfony\\Component\\Yaml' => __DIR__ . '/../../vendor/symfony/src',
         'Symfony\\Component\\Console' => __DIR__ . '/../../vendor/symfony/src',
         'Symfony\\Component\\Serializer' => __DIR__ . '/../../vendor/symfony/src',
+        'Symfony\\Component\\DependencyInjection'  => __DIR__ . '/../../vendor/symfony/src',
     ));
 
     $loader->register();
@@ -330,6 +377,10 @@ class Core extends \Pimple
     return;
   }
 
+  /**
+   * Initialize some PHP configuration variables
+   * 
+   */
   public static function initPHPConf()
   {
     ini_set('output_buffering', '4096');
@@ -347,11 +398,29 @@ class Core extends \Pimple
     return;
   }
 
-
+  /**
+   * Return the current working environnement (test, dev, prod etc ...)
+   * 
+   * @return string
+   */
   public function getEnv()
   {
     return $this->conf->getEnvironnement();
   }
-
   
+  /**
+   * Load application configuration
+   * 
+   * @param type $env 
+   */
+  private function loadConf($env)
+  {
+    $confHandler = new Configuration\Handler(
+                    new Configuration\Application(),
+                    new Configuration\Parser\Yaml()
+    );
+    
+    $this->configuration = new Configuration($env, $confHandler);
+  }
+
 }
