@@ -264,20 +264,28 @@ class set_order extends set_abstract
       {
         $sbas_id = phrasea::sbasFromBas($basrec['base_id']);
         $record = new record_adapter($sbas_id, $basrec['record_id']);
-        $ret = $basket->push_element($record, false, false);
-        if ($ret['error'] === false)
-        {
-          $params = array(
-              ':usr_id' => $session->get_usr_id()
-              , ':order_id' => $this->id
-              , ':order_element_id' => $order_element_id
-          );
+        
+        $BasketElement = new BasketElement();
+        $BasketElement->setRecord($record);
+        $BasketElement->setBasket($Basket);
+        
+        $Basket->addBasketElement($BasketElement);
+        
+        $em->persist($BasketElement);
+        
+        $em->merge($Basket);
+        
+        $params = array(
+            ':usr_id' => $session->get_usr_id()
+            , ':order_id' => $this->id
+            , ':order_element_id' => $order_element_id
+        );
 
-          $stmt->execute($params);
+        $stmt->execute($params);
 
-          $n++;
-          $this->user->ACL()->grant_hd_on($record, $pusher, 'order');
-        }
+        $n++;
+        $this->user->ACL()->grant_hd_on($record, $pusher, 'order');
+          
         unset($record);
       }
       catch (Exception $e)
@@ -285,6 +293,8 @@ class set_order extends set_abstract
 
       }
     }
+    
+    $em->flush();
     $stmt->closeCursor();
 
     if ($n > 0)

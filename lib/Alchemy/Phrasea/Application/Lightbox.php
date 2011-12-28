@@ -74,7 +74,14 @@ return call_user_func(
 
                             $twig = new supertwig();
                             $twig->addFilter(array('nl2br' => 'nl2br'));
-                            $basket_element = basket_element_adapter::getInstance($sselcont_id);
+
+                            $em = $app['Core']->getEntityManager();
+
+                            /* @var $repository \Repositories\BasketElementRepository */
+                            $repository = $em->getRepository('\Entities\BasketElement');
+
+                            $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
+
                             $template = '/lightbox/note_form.twig';
                             $output = $twig->render($template, array('basket_element' => $basket_element, 'module_name' => ''));
 
@@ -89,13 +96,18 @@ return call_user_func(
 
                             $browser = Browser::getInstance();
 
+                            $em = $app['Core']->getEntityManager();
+
+                            /* @var $repository \Repositories\BasketElementRepository */
+                            $repository = $em->getRepository('\Entities\BasketElement');
+
+                            $BasketElement = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
+
                             if ($browser->isMobile())
                             {
-                              $basket_element = basket_element_adapter::getInstance($sselcont_id);
-
                               $output = $twig->render('lightbox/basket_element.twig', array(
-                                  'basket_element' => $basket_element,
-                                  'module_name' => $basket_element->get_record()->get_title()
+                                  'basket_element' => $BasketElement,
+                                  'module_name' => $BasketElement->get_record()->get_title()
                                       )
                               );
 
@@ -117,17 +129,6 @@ return call_user_func(
                               }
                               $appbox = appbox::get_instance();
                               $usr_id = $appbox->get_session()->get_usr_id();
-
-
-                              $em = $app['Core']->getEntityManager();
-
-                              $repository = $em->getRepository('\Entities\BasketElement');
-                              /* @var $repository \Repositories\BasketElementRepository */
-
-                              $BasketElement = $repository->findUserElement(
-                                      $sselcont_id
-                                      , $app['Core']->getAuthenticatedUser()
-                              );
 
 
                               $Basket = $BasketElement->getBasket();
@@ -224,11 +225,6 @@ return call_user_func(
                                     , $app['Core']->getAuthenticatedUser()
                             );
 
-                            if ($basket->is_valid())
-                            {
-                              $basket->get_first_element()->load_users_infos();
-                            }
-
                             $twig = new supertwig();
 
                             $twig->addFilter(array('nl2br' => 'nl2br'));
@@ -241,7 +237,7 @@ return call_user_func(
                             $response = new Response($twig->render($template, array(
                                                 'baskets_collection' => $basket_collection,
                                                 'basket' => $basket,
-                                                'local_title' => strip_tags($basket->get_name()),
+                                                'local_title' => strip_tags($basket->getName()),
                                                 'module' => 'lightbox',
                                                 'module_name' => _('admin::monitor: module validation')
                                                     )
@@ -284,7 +280,7 @@ return call_user_func(
                             $response = new Response($twig->render($template, array(
                                                 'baskets_collection' => $basket_collection,
                                                 'basket' => $basket,
-                                                'local_title' => strip_tags($basket->get_name()),
+                                                'local_title' => strip_tags($basket->getName()),
                                                 'module' => 'lightbox',
                                                 'module_name' => _('admin::monitor: module validation')
                                                     )
@@ -358,36 +354,38 @@ return call_user_func(
                   $app->post('/ajax/SET_NOTE/{sselcont_id}/', function (Silex\Application $app, $sselcont_id)
                           {
                             $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
-                            try
+
+                            $request = $app['request'];
+                            $note = $request->get('note');
+
+                            $em = $app['Core']->getEntityManager();
+
+                            /* @var $repository \Repositories\BasketElementRepository */
+                            $repository = $em->getRepository('\Entities\BasketElement');
+
+                            $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
+
+
+                            $basket_element->getUserValidationDatas($app['Core']->getAuthenticatedUser())
+                                    ->setNote($note);
+                            $twig = new supertwig();
+                            $twig->addFilter(array('nl2br' => 'nl2br'));
+
+                            $browser = Browser::getInstance();
+
+                            if ($browser->isMobile())
                             {
-                              $request = $app['request'];
-                              $note = $request->get('note');
+                              $datas = $twig->render('lightbox/sc_note.twig', array('basket_element' => $basket_element));
 
-                              $basket_element = basket_element_adapter::getInstance($sselcont_id);
-                              $basket_element->set_note($note);
-                              $twig = new supertwig();
-                              $twig->addFilter(array('nl2br' => 'nl2br'));
-
-                              $browser = Browser::getInstance();
-
-                              if ($browser->isMobile())
-                              {
-                                $datas = $twig->render('lightbox/sc_note.twig', array('basket_element' => $basket_element));
-
-                                $output = array('error' => false, 'datas' => $datas);
-                              }
-                              else
-                              {
-                                $template = 'lightbox/sc_note.twig';
-
-                                $datas = $twig->render($template, array('basket_element' => $basket_element));
-
-                                $output = array('error' => false, 'datas' => $datas);
-                              }
+                              $output = array('error' => false, 'datas' => $datas);
                             }
-                            catch (Exception $e)
+                            else
                             {
-                              return new Response('Bad Request : ' . $e->getMessage() . $e->getFile() . $e->getLine(), 400);
+                              $template = 'lightbox/sc_note.twig';
+
+                              $datas = $twig->render($template, array('basket_element' => $basket_element));
+
+                              $output = array('error' => false, 'datas' => $datas);
                             }
 
                             $output = p4string::jsonencode($output);

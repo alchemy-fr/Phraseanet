@@ -585,16 +585,16 @@ class API_V1_adapter extends API_V1_Abstract
    */
   protected function list_baskets($usr_id)
   {
-    $basket_coll = new basketCollection($this->appbox, $usr_id);
-
+    $em = $this->core->getEntityManager();
+    $repo = $em->getRepository('\Entities\Basket');
+    /* @var $repo \Repositories\BasketRepository */
+    
+    $baskets = $repo->findActiveByUser($this->core->getAuthenticatedUser());
+    
     $ret = array();
-    foreach ($basket_coll->get_baskets() as $basktype => $baskets)
+    foreach ($baskets as $basket)
     {
-      if (!in_array($basktype, array('recept', 'baskets')))
-        continue;
-
-      foreach ($baskets as $basket)
-        $ret[$basket->get_ssel_id()] = $this->list_basket($basket);
+      $ret[$basket->getId()] = $this->list_basket($basket);
     }
 
     return $ret;

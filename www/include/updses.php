@@ -17,6 +17,10 @@
  */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
+$em = $Core->getEntityManager();
+
+$user = $Core->getAuthenticatedUser();
+
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $session->close_storage();
@@ -66,7 +70,11 @@ $ret['notifications'] = $twig->render('prod/notifications.twig', array('notifica
 
 $ret['changed'] = array();
 
-$baskets = basketCollection::get_updated_baskets();
+$repository = $em->getRepository('\Entities\Basket');
+
+/* @var $repository \Repositories\BasketRepository */
+$baskets = $repository->findUnreadActiveByUser($user);
+
 foreach ($baskets as $basket)
 {
   $ret['changed'][] = $basket->getId();

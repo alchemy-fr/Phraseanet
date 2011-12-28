@@ -1058,6 +1058,77 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       $this->fail('Fail load one Basket : ' . $e->getMessage());
     }
   }
+  
+  /**
+   *
+   * @return \Entities\BasketElement
+   */
+  protected function insertOneBasketElement()
+  {
+    $basket = $this->insertOneBasket();
+    
+    $basketElement = new \Entities\BasketElement();
+    $basketElement->setRecord(self::$record_1);
+    $basketElement->setBasket($basket);
+    
+    $basket->addBasketElement($basketElement);
+    
+    $em = self::$core->getEntityManager();
+    
+    $em->persist($basketElement);
+    
+    $em->merge($basket);
+    
+    $em->flush();
+    
+    return $basketElement;
+  }
+  
+  
+  /**
+   *
+   * @return \Entities\Basket
+   */
+  protected function insertOneValidationBasket()
+  {
+    $em = self::$core->getEntityManager();
+    
+    $basketElement = $this->insertOneBasketElement();
+    $basket = $basketElement->getBasket();
+    
+    $Validation = new Entities\ValidationSession();
+    $Validation->setBasket($basket);
+    $Validation->setInitiator(self::$user);
+    
+    $basket->setValidation($Validation);
+    
+    $em->persist($Validation);
+    $em->merge($basket);
+    
+    $Participant = new Entities\ValidationParticipant();
+    $Participant->setUser(self::$user);
+    $Participant->setCanAgree(true);
+    $Participant->setCanSeeOthers(true);
+    
+    $Validation->addValidationParticipant($Participant);
+    $Participant->setSession($Validation);
+    
+    $em->persist($Participant);
+    $em->merge($Validation);
+    
+    $Data = new Entities\ValidationData();
+    $Data->setBasketElement($basketElement);
+    $Data->setParticipant($Participant);
+    $basketElement->addValidationData($Data);
+    
+    $em->persist($Data);
+    $em->merge($basketElement);
+    
+    $em->flush();
+    
+    return $basket;
+    
+  }
 
   /**
    * Create a new basket with current auhtenticated user as owner

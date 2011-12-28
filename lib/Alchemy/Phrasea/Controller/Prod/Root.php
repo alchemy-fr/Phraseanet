@@ -119,7 +119,6 @@ class Root implements ControllerProviderInterface
                   'GV_defaultQuery_type' => $registry->get('GV_defaultQuery_type'),
                   'GV_multiAndReport' => $registry->get('GV_multiAndReport'),
                   'GV_thesaurus' => $registry->get('GV_thesaurus'),
-//        'basket_collection' => new \basketCollection($appbox, $user->get_id(), $srt),
                   'cgus_agreement' => \databox_cgu::askAgreement(),
                   'css' => $css,
                   'feeds' => $feeds,

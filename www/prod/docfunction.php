@@ -244,7 +244,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
     
     $Basket = $repository->findUserBasket($Core->getRequest()->get('SSTTID'), $Core->getAuthenticatedUser());
     
-    foreach ($Basket->get_elements() as $basket_element)
+    foreach ($Basket->getElements() as $basket_element)
     {
       /* @var $basket_element \Entities\BasketElement */
       $record = $basket_element->getRecord();

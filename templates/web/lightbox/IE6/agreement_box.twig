@@ -17,7 +17,7 @@
           {{ basket.getValidation().getValidationString(user) }}
         </div>
         <ul style="margin:10px 0 0 20px;width:200px;">
-            {% for validation_data in basket_element.getValidationData() %}
+            {% for validation_data in basket_element.getValidationDatas() %}
                 {% if validation_data.getAgreement() == true %}
                     {% set classuser = 'agree' %}
                 {% elseif validation_data.getAgreement() == false %}
@@ -38,12 +38,12 @@
                 <table cellspacing="0" cellpadding="0" style="width:230px;">
                     <tr>
                         <td>
-                            <div style="width:70px;margin:0px auto 0;" class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if basket_element.getValidationData().getParticipant(user).getAgreement() != true %}not_decided{% endif %}">
+                            <div style="width:70px;margin:0px auto 0;" class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if basket_element.getValidationDatas().getParticipant(user).getAgreement() != true %}not_decided{% endif %}">
                                 <img src="/skins/lightbox/agree-bigie6.gif" style="vertical-align:middle;"/><span>{% trans 'validation:: OUI' %}</span>
                             </div>
                         </td>
                         <td>
-                            <div style="width:70px;margin:0px auto;" class="ui-corner-all big_box disagree_{{basket_element.get_sselcont_id()}} disagree {% if basket_element.getValidationData().getParticipant(user).getAgreement() != false %}not_decided{% endif %}">
+                            <div style="width:70px;margin:0px auto;" class="ui-corner-all big_box disagree_{{basket_element.getId()}} disagree {% if basket_element.getValidationDatas().getParticipant(user).getAgreement() != false %}not_decided{% endif %}">
                                 <img src="/skins/lightbox/disagree-bigie6.gif" style="vertical-align:middle;"/><span>{% trans 'validation:: NON' %}</span>
                             </div>
                         </td>

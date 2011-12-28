@@ -795,8 +795,6 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
     {
       $this->evaluateGoodBasket($basket);
       $this->assertEquals('un Joli Nom', $basket->name);
-      $basket_obj = basket_adapter::getInstance($appbox, $basket->ssel_id, $appbox->get_session()->get_usr_id());
-      $basket_obj->delete();
     }
   }
 
@@ -804,180 +802,132 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
+    
+    $basket = $this->insertOneBasket();
+    
+    $route = '/baskets/' . $basket->getId() . '/content/?oauth_token=' . self::$token;
 
-    $found = false;
-    foreach ($basket_coll->get_baskets() as $bask_group => $baskets)
+    $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+    $crawler = $this->client->request('GET', $route);
+    $content = json_decode($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaJson200($content);
+
+    $this->assertEquals(1, count((array) $content->response));
+
+    $this->assertObjectHasAttribute("basket_elements", $content->response);
+
+    foreach ($content->response->basket_elements as $basket_str)
     {
-      if (!in_array($bask_group, array('recept', 'baskets')))
-        continue;
-      foreach ($baskets as $basket)
+      $this->evaluateGoodBasket($basket_str);
+
+      $this->assertEquals(count($basket->getElements()), count((array) $basket_str->basket_elements));
+      foreach ($basket_str->basket_elements as $basket_element)
       {
-        $found = true;
-        $route = '/baskets/' . $basket->get_ssel_id() . '/content/?oauth_token=' . self::$token;
-
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-
-        $crawler = $this->client->request('GET', $route);
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-
-        $this->assertObjectHasAttribute("basket_elements", $content->response);
-
-        foreach ($content->response->basket_elements as $basket_str)
-        {
-          $this->evaluateGoodBasket($basket_str);
-
-          $this->assertEquals(count($basket->get_elements()), count((array) $basket_str->basket_elements));
-          foreach ($basket_str->basket_elements as $basket_element)
-          {
-            $this->assertObjectHasAttribute('basket_element_id', $basket_element);
-            $this->assertObjectHasAttribute('order', $basket_element);
-            $this->assertObjectHasAttribute('record', $basket_element);
-            $this->assertObjectHasAttribute('validation_item', $basket_element);
-            $this->assertTrue(is_bool($basket_element->validation_item));
-            $this->assertTrue(is_int($basket_element->order));
-            $this->assertTrue(is_int($basket_element->basket_element_id));
-            $this->evaluateGoodRecord($basket_element->record);
-          }
-        }
+        $this->assertObjectHasAttribute('basket_element_id', $basket_element);
+        $this->assertObjectHasAttribute('order', $basket_element);
+        $this->assertObjectHasAttribute('record', $basket_element);
+        $this->assertObjectHasAttribute('validation_item', $basket_element);
+        $this->assertTrue(is_bool($basket_element->validation_item));
+        $this->assertTrue(is_int($basket_element->order));
+        $this->assertTrue(is_int($basket_element->basket_element_id));
+        $this->evaluateGoodRecord($basket_element->record);
       }
     }
-    if (!$found)
-      $this->markTestSkipped('Unable to test basket set title');
   }
 
   public function testSetBasketTitle()
   {
 
-    $appbox = appbox::get_instance();
-    $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
+    $basket = $this->insertOneBasket();
+    
+    $route = '/baskets/' . $basket->getId() . '/setname/?oauth_token=' . self::$token;
 
-    $found = false;
+    $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-    foreach ($basket_coll->get_baskets() as $bask_group => $baskets)
+    $crawler = $this->client->request('POST', $route, array('name' => 'un Joli Nom'));
+    $content = json_decode($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaJson200($content);
+
+    $this->assertEquals(1, count((array) $content->response));
+    $this->assertObjectHasAttribute("basket", $content->response);
+    foreach ($content->response->basket as $basket_str)
     {
-      if (!in_array($bask_group, array('recept', 'baskets')))
-        continue;
-      foreach ($baskets as $basket)
-      {
+      $this->evaluateGoodBasket($basket_str);
 
-        $found = true;
-        $route = '/baskets/' . $basket->get_ssel_id() . '/setname/?oauth_token=' . self::$token;
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $crawler = $this->client->request('POST', $route, array('name' => 'un Joli Nom'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-        $this->assertObjectHasAttribute("basket", $content->response);
-        foreach ($content->response->basket as $basket_str)
-        {
-          $this->evaluateGoodBasket($basket_str);
-
-          $this->assertEquals($basket_str->name, 'un Joli Nom');
-        }
-
-        $crawler = $this->client->request('POST', $route, array('name' => '<i>un Joli Nom<i>'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-
-        $this->assertObjectHasAttribute("basket", $content->response);
-
-        foreach ($content->response->basket as $basket)
-        {
-          $this->evaluateGoodBasket($basket_str);
-
-          $this->assertEquals($basket_str->name, 'un Joli Nom');
-        }
-
-        $crawler = $this->client->request('POST', $route, array('name' => '<strong>aéaa'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-        $this->assertObjectHasAttribute("basket", $content->response);
-        foreach ($content->response->basket as $basket_str)
-        {
-          $this->evaluateGoodBasket($basket_str);
-          $this->assertEquals($basket_str->name, 'aéaa');
-        }
-
-
-        break;
-      }
+      $this->assertEquals($basket_str->name, 'un Joli Nom');
     }
-    if (!$found)
-      $this->markTestSkipped('Unable to test basket set title');
+
+    $crawler = $this->client->request('POST', $route, array('name' => '<i>un Joli Nom<i>'));
+    $content = json_decode($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaJson200($content);
+
+    $this->assertEquals(1, count((array) $content->response));
+
+    $this->assertObjectHasAttribute("basket", $content->response);
+
+    foreach ($content->response->basket as $basket)
+    {
+      $this->evaluateGoodBasket($basket_str);
+
+      $this->assertEquals($basket_str->name, 'un Joli Nom');
+    }
+
+    $crawler = $this->client->request('POST', $route, array('name' => '<strong>aéaa'));
+    $content = json_decode($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaJson200($content);
+
+    $this->assertEquals(1, count((array) $content->response));
+    $this->assertObjectHasAttribute("basket", $content->response);
+    foreach ($content->response->basket as $basket_str)
+    {
+      $this->evaluateGoodBasket($basket_str);
+      $this->assertEquals($basket_str->name, 'aéaa');
+    }
+
   }
 
   public function testSetBasketDescription()
   {
-    $appbox = appbox::get_instance();
-    $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
+    $basket = $this->insertOneBasket();
+    
+    $route = '/baskets/' . $basket->getId() . '/setdescription/?oauth_token=' . self::$token;
 
-    $found = false;
+    $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-    foreach ($basket_coll->get_baskets() as $bask_group => $baskets)
+    $crawler = $this->client->request('POST', $route, array('description' => 'une belle desc'));
+    $content = json_decode($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaJson200($content);
+
+    $this->assertEquals(1, count((array) $content->response));
+
+    $this->assertObjectHasAttribute("basket", $content->response);
+    foreach ($content->response->basket as $basket_str)
     {
-      if (!in_array($bask_group, array('recept', 'baskets')))
-        continue;
-      foreach ($baskets as $basket)
-      {
+      $this->evaluateGoodBasket($basket_str);
 
-        $found = true;
-        $route = '/baskets/' . $basket->get_ssel_id() . '/setdescription/?oauth_token=' . self::$token;
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $crawler = $this->client->request('POST', $route, array('description' => 'une belle desc'));
-        $content = json_decode($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaJson200($content);
-
-        $this->assertEquals(1, count((array) $content->response));
-
-        $this->assertObjectHasAttribute("basket", $content->response);
-        foreach ($content->response->basket as $basket_str)
-        {
-          $this->evaluateGoodBasket($basket_str);
-
-          $this->assertEquals($basket_str->description, 'une belle desc');
-        }
-
-
-        break;
-      }
+      $this->assertEquals($basket_str->description, 'une belle desc');
     }
-    if (!$found)
-      $this->markTestSkipped('Unable to test basket set description');
+
+
   }
 
   public function testDeleteBasket()
   {
-    $appbox = appbox::get_instance();
-    $usr_id = $appbox->get_session()->get_usr_id();
+    $basket = $this->insertOneBasket();
+    $basket2 = $this->insertOneBasket();
 
-    $basket = basket_adapter::create($appbox, 'test suppression panier', User_Adapter::getInstance($usr_id, $appbox));
-
-    $route = '/baskets/' . $basket->get_ssel_id() . '/delete/?oauth_token=' . self::$token;
+    $route = '/baskets/' . $basket->getId() . '/delete/?oauth_token=' . self::$token;
 
     $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -988,9 +938,16 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
     $this->evaluateMetaJson200($content);
 
     $this->assertObjectHasAttribute("baskets", $content->response);
+    
+    $found = false;
     foreach ($content->response->baskets as $basket)
     {
       $this->evaluateGoodBasket($basket);
+      $found = true;
+    }
+    if(!$found)
+    {
+      $this->fail('There should be a basket left');
     }
   }
 

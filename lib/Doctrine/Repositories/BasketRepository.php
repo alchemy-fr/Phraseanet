@@ -38,6 +38,24 @@ class BasketRepository extends EntityRepository
 
     return $query->getResult();
   }
+  
+  /**
+   * Returns all unread basket for a given user that are not marked as archived
+   *
+   * @param \User_Adapter $user
+   * @return \Doctrine\Common\Collections\ArrayCollection 
+   */
+  public function findUnreadActiveByUser(\User_Adapter $user)
+  {
+    $dql = 'SELECT b FROM Entities\Basket b 
+            WHERE b.usr_id = :usr_id 
+              AND b.archived = false AND b.is_read = false';
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters(array('usr_id' => $user->get_id()));
+
+    return $query->getResult();
+  }
 
   /**
    * Returns all baskets that are in validation session not expired  and 
@@ -95,8 +113,7 @@ class BasketRepository extends EntityRepository
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id';
 
     $params = array(
-        'record_id' => $record->get_record_id(),
-        'sbas_id' => $record->get_sbas_id()
+        'record_id' => $record->get_record_id()
     );
 
     $query = $this->_em->createQuery($dql);

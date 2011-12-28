@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for basket in baskets_collection.get_baskets() %}
+                {% for basket in baskets_collection %}
                   {% if basket.getValidation() %}
                       {% set basket_length = basket.getElements().count() %}
       <tr>

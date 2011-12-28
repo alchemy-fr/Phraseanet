@@ -71,24 +71,13 @@ class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
     $accounts = Bridge_Account::get_accounts_by_user($appbox, self::$user);
     $usr_id = self::$user->get_id();
 
-    try
-    {
-      $basket_coll = new basketCollection($appbox, $usr_id);
-      $baskets = $basket_coll->get_baskets();
-      if (count($baskets["baskets"]) > 0)
-      {
-        $basket = array_shift($baskets["baskets"]);
-        $crawler = $this->client->request('POST', '/bridge/manager/', array('ssel' => $basket->get_ssel_id()));
-        $pageContent = $this->client->getResponse()->getContent();
-        $this->assertNotContains("Oups ! something went wrong !", $pageContent);
-        $this->assertEquals(count($accounts) + 2, $crawler->filter('form')->count());
-        $this->assertTrue($this->client->getResponse()->isOk());
-      }
-    }
-    catch (Exception $e)
-    {
-
-    }
+    $basket = $this->insertOneBasket();
+    
+    $crawler = $this->client->request('POST', '/bridge/manager/', array('ssel' => $basket->getId()));
+    $pageContent = $this->client->getResponse()->getContent();
+    $this->assertNotContains("Oups ! something went wrong !", $pageContent);
+    $this->assertEquals(count($accounts) + 2, $crawler->filter('form')->count());
+    $this->assertTrue($this->client->getResponse()->isOk());
   }
 
   public function testLogin()

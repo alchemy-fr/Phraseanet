@@ -225,7 +225,7 @@ class record_preview extends record_adapter
         $this->train = $results->get_datas();
         break;
       case 'BASK':
-        $this->train = $this->container->get_elements();
+        $this->train = $this->container->getElements();
         break;
       case 'REG':
         $this->train = $this->container->get_children();

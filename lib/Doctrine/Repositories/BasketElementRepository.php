@@ -48,6 +48,52 @@ class BasketElementRepository extends EntityRepository
   
   /**
    *
+   * @param \record_adapter $record
+   * @param \User_Adapter $user
+   * @return \Doctrine\Common\Collections\ArrayCollection
+   */
+  public function findReceivedElementsByRecord(\record_adapter $record, \User_Adapter $user)
+  {
+    $dql = 'SELECT e FROM Entities\BasketElement e 
+              JOIN e.basket b
+            WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL 
+              AND e.record_id = :record_id AND e.sbas_id = :sbas_id';
+
+    $params = array(
+        'sbas_id' => $record->get_sbas_id(),
+        'record_id' => $record->get_record_id(),
+        'usr_id' => $user->get_id()
+    );
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters($params);
+
+    return $query->getResult();
+  }
+  
+  public function findReceivedValidationElementsByRecord(\record_adapter $record, \User_Adapter $user)
+  {
+    $dql = 'SELECT e FROM Entities\BasketElement e 
+              JOIN e.basket b 
+              JOIN b.validation v
+              JOIN v.participants p
+            WHERE p.usr_id = :usr_id  
+              AND e.record_id = :record_id AND e.sbas_id = :sbas_id';
+
+    $params = array(
+        'sbas_id' => $record->get_sbas_id(),
+        'record_id' => $record->get_record_id(),
+        'usr_id' => $user->get_id()
+    );
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters($params);
+
+    return $query->getResult();
+  }
+  
+  /**
+   *
    * @param type $element_id
    * @param \User_Adapter $user
    * @return \Entities\BasketELement 

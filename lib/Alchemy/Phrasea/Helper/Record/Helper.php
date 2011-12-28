@@ -106,6 +106,9 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     parent::__construct($core);
     
     $this->selection = new \set_selection();
+    
+    $request = $core->getRequest();
+    
     $appbox = \appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
     

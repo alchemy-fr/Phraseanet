@@ -473,15 +473,25 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
-    $baskets = $basket_coll->get_baskets();
-    $baskets = $baskets['baskets'];
+    
+    $em = self::$core->getEntityManager();
 
-    $basket = array_shift($baskets);
+    $basket = $this->insertOneBasket();
     $this->assertInstanceOf('\Entities\Basket', $basket);
-
-    $basket->push_element(self::$record_1, false, false);
-
+    
+    /* @var $basket \Entities\Basket */
+    $basket_element = new \Entities\BasketElement();
+    $basket_element->setRecord(self::$record_1);
+    $basket_element->setBasket($basket);
+    
+    $em->persist($basket_element);
+    
+    $basket->addBasketElement($basket_element);
+    
+    $em->merge($basket);
+    
+    $em->flush();
+    
     $found = $sselcont_id = false;
 
     $sbas_id = self::$record_1->get_sbas_id();
@@ -489,7 +499,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     foreach (self::$record_1->get_container_baskets() as $c_basket)
     {
-      if ($c_basket->getId() == $basket->get_ssel_id())
+      if ($c_basket->getId() == $basket->getId())
       {
         $found = true;
         foreach ($c_basket->getElements() as $b_el)
@@ -504,7 +514,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     if (!$found)
       $this->fail();
 
-    $basket->remove_from_ssel($sselcont_id);
   }
 
 }

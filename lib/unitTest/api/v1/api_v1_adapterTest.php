@@ -397,7 +397,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $em->persist($Basket);
     $em->flush();
     
-    $ssel_id = $basket->getId();
+    $ssel_id = $Basket->getId();
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     $result = $this->object->delete_basket($request, $ssel_id);
@@ -422,12 +422,11 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
-    $baskets = $basket_coll->get_baskets();
-    $basket = array_pop($baskets['baskets']);
+    
+    $basket = $this->insertOneBasket();
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-    $result = $this->object->get_basket($request, $basket->get_ssel_id());
+    $result = $this->object->get_basket($request, $basket->getId());
     $this->assertEquals(200, $result->get_http_code());
     $this->assertEquals('application/json', $result->get_content_type());
     $this->assertTrue(is_object(json_decode($result->format())));
@@ -437,36 +436,38 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
-    $baskets = $basket_coll->get_baskets();
-    $basket = array_pop($baskets['baskets']);
-
+    
+    $basket = $this->insertOneBasket();
+    
     $request = new Request(array(), array(), array('name' => 'PROUTO'), array(), array(), array('HTTP_Accept' => 'application/json'));
-    $result = $this->object->set_basket_title($request, $basket->get_ssel_id());
+    $result = $this->object->set_basket_title($request, $basket->getId());
     $this->assertEquals(200, $result->get_http_code());
     $this->assertEquals('application/json', $result->get_content_type());
     $this->assertTrue(is_object(json_decode($result->format())));
 
-    $basket = basket_adapter::getInstance($appbox, $basket->get_ssel_id(), $usr_id);
-    $this->assertEquals('PROUTO', $basket->get_name());
+    self::$core->getEntityManager()->refresh($basket);
+    
+    $this->assertEquals('PROUTO', $basket->getName());
   }
 
   public function testSet_basket_description()
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
-    $baskets = $basket_coll->get_baskets();
-    $basket = array_pop($baskets['baskets']);
+    
+    $basket = $this->insertOneBasket();
 
     $request = new Request(array(), array(), array('description' => 'une belle description'), array(), array(), array('HTTP_Accept' => 'application/json'));
-    $result = $this->object->set_basket_description($request, $basket->get_ssel_id());
+    $result = $this->object->set_basket_description($request, $basket->getId());
     $this->assertEquals(200, $result->get_http_code());
     $this->assertEquals('application/json', $result->get_content_type());
     $this->assertTrue(is_object(json_decode($result->format())));
 
-    $basket = basket_adapter::getInstance($appbox, $basket->get_ssel_id(), $usr_id);
-    $this->assertEquals('une belle description', $basket->get_description());
+    $em = self::$core->getEntityManager();
+    /* @var $em \Doctrine\ORM\EntityManager */
+    $em->refresh($basket);
+    
+    $this->assertEquals('une belle description', $basket->getDescription());
   }
 
   public function testSearch_publications()

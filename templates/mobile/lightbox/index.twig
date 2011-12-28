@@ -13,27 +13,23 @@
 {% endblock %}
 
 {% macro valid_baskets_length(baskets) %}
-    {% set foo = 0 %}
+    {% set number = 0 %}
     {% for item in baskets %}
-        {% if item.is_valid() %}
-            {% set foo = foo + 1 %}
+        {% if item.getValidation() %}
+            {% set number = number + 1 %}
         {% endif %}
     {% endfor %}
-  {{foo}}
+  {{number}}
 {% endmacro %}
 
-{% macro baskets_length(baskets_collection) %}
-    {% set foo = 0 %}
-    {% for key,baskets in baskets_collection.get_baskets() %}
-        {% if key == 'baskets' or key == 'recept' %}
-            {% for item in baskets %}
-                {% if item.is_valid() == false %}
-                    {% set foo = foo + 1 %}
-                {% endif %}
-            {% endfor %}
+{% macro baskets_length(baskets) %}
+    {% set number = 0 %}
+    {% for item in baskets %}
+        {% if item.getValidation() == false %}
+            {% set number = number + 1 %}
         {% endif %}
     {% endfor %}
-  {{foo}}
+  {{number}}
 {% endmacro %}
 
 {% block content %}
@@ -46,7 +42,7 @@
     <ul data-role="listview">
       <li>
         <a href="#validation">{% trans 'Validations'%}</a>
-        <span class="ui-li-count">{{_self.valid_baskets_length(baskets_collection.get_baskets().baskets)}}</span>
+        <span class="ui-li-count">{{_self.valid_baskets_length(baskets_collection)}}</span>
       </li>
       <li>
         <a href="#baskets">{% trans 'Paniers'%}</a>

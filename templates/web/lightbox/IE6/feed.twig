@@ -112,27 +112,19 @@
                         <td>
                             <select id="navigation">
                                 <optgroup label="{% trans 'Validations'%}">
-                                {% for key,baskets in baskets_collection.get_baskets() %}
-                                    {% if key == 'baskets' %}
-                                        {% for item in baskets %}
-                                            {% if item.is_valid() %}
-                                                <option {% if basket.get_ssel_id() == item.get_ssel_id() %} selected="selected" {% endif %}
-                                                    value="{{item.get_ssel_id()}}">{{item.get_name()}}</option>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
+                                {% for item in baskets() %}
+                                  {% if item.getValidation() %}
+                                      <option {% if item.getId() == basket.getId() %} selected="selected" {% endif %}
+                                          value="{{basket.getId()}}">{{basket.getName()}}</option>
+                                  {% endif %}
                                 {% endfor %}
                                 </optgroup>
                                 <optgroup label="{% trans 'Paniers'%}">
-                                {% for key,baskets in baskets_collection.get_baskets() %}
-                                    {% if key == 'baskets' or key == 'recept' %}
-                                        {% for item in baskets %}
-                                            {% if item.is_valid() == false %}
-                                                <option {% if basket.get_ssel_id() == item.get_ssel_id() %} selected="selected" {% endif %}
-                                                    value="{{item.get_ssel_id()}}">{{item.get_name()}}</option>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
+                                {% for item in baskets() %}
+                                  {% if item.getValidation() is empty %}
+                                      <option {% if item.getId() == basket.getId() %} selected="selected" {% endif %}
+                                          value="{{item.getId()}}">{{item.getName()}}</option>
+                                  {% endif %}
                                 {% endfor %}
                                 </optgroup>
                             </select>

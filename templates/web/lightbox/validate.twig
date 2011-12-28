@@ -84,7 +84,7 @@
             </div>
             <div id="right_column" class="PNB">
                 <div class="right_column_title title15 unselectable">
-                {% if basket.is_valid() %}
+                {% if basket.getValidation() %}
                     <img class="collapsed" src="/skins/lightbox/collapsed.png"/>
                     <img class="expanded" src="/skins/lightbox/expanded.png"/>
                 {% endif %}
@@ -122,7 +122,7 @@
                         <td style="width:20px;">
                         </td>
                         <td style="width:310px;">
-                            {% if basket.is_valid() %}
+                            {% if basket.getValidation() %}
                             <img title="{% trans 'lightbox::recaptitulatif' %}" class="report" src="/skins/lightbox/retour.png"/>
                             {% endif %}
                             <select id="navigation">

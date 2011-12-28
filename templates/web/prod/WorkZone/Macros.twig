@@ -238,7 +238,7 @@
   </div>
 
 
-  {% for basket_element in basket.get_elements() %}
+  {% for basket_element in basket.getElements() %}
       <span class="wrapCHIM_{{ basket_element.getRecord().get_serialize_key() }} valid">
           <table style="width: 100%; min-width: 330px; display: inline-block;">
               <tr>
@@ -247,21 +247,21 @@
                   </td>
                   <td style="width:100%;">
                       <table style=width:100%>
-                          {% for choice in basket_element.get_choices() %}
+                          {% for choice in basket_element.getValidationDatas()) %}
                               <tr>
-                                  <td> {{choice.usr_name}} </td>
+                                  <td> {{ choice.getParticipant().getUser().get_display_name() }} </td>
                                   <td>
-                                  {% if choice.agreement == '1' %}
+                                  {% if choice.getAgreement() == true %}
                                       <img style="cursor:help;" src='/skins/lightbox/agree.png' title="{% trans "L'utilisateur approuve ce document" %}" />
-                                  {% elseif choice.agreement == '-1' %}
+                                  {% elseif choice.getAgreement() == false %}
                                       <img style="cursor:help;" src='/skins/lightbox/disagree.png' title="{% trans "L'utilisateur desapprouve ce document" %}" />
                                   {% else %}
                                       <img style="cursor:help;" src='/skins/icons/valid.png' title="{% trans "L'utilisateur n'a pas encore donne son avis sur ce document" %}" />
                                   {% endif %}
                                   </td>
                                   <td style="width:25px;">
-                                  {% if choice.note != '' %}
-                                       <img style="cursor:help;" src='/skins/icons/file-edit.png' class="noteTips" title="{{choice.note|e|nl2br}}" />
+                                  {% if choice.getNote() != '' %}
+                                       <img style="cursor:help;" src='/skins/icons/file-edit.png' class="noteTips" title="{{choice.getNote()|nl2br}}" />
                                   {% endif %}
                                   </td>
                               </tr>

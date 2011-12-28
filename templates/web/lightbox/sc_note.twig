@@ -18,12 +18,12 @@
     {% endfor %}
 
     <form>
-      <textarea>{{basket_element.get_my_note()}}</textarea>
+      <textarea>{{basket_element.getUserValidationDatas(user).getNote()}}</textarea>
       <div class="buttons">
         <button class="note_closer ui-corner-all">
           {% trans 'boutton::fermer' %}
         </button>
-        <button class="note_saver ui-corner-all" id="note_saver_{{basket_element.get_sselcont_id()}}">
+        <button class="note_saver ui-corner-all" id="note_saver_{{basket_element.getId()}}">
           {% trans 'boutton::enregistrer' %}
         </button>
       </div>

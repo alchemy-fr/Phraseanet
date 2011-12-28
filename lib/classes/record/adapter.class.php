@@ -1923,7 +1923,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $Core = bootstrap::getCore();
     $em = $Core->getEntityManager();
     
-    $repo = $em->getRepository('\Entities\Baskets');
+    $repo = $em->getRepository('\Entities\Basket');
     
     /* @var $$repo \Repositories\BasketRepository */
     return $repo->findContainingRecord($this);
