@@ -34,7 +34,7 @@
     jQuery($container).addClass('selectionnable');
     
     jQuery(this.options.selector, $container)
-    .live('mousedown', function(event){
+    .live('click', function(event){
       
       if(typeof $this.options.selectStart === 'function')
       {
@@ -66,7 +66,8 @@
           $.each(jQuery(exp, $container),function(i,n){
             if(!jQuery(n).hasClass('selected'))
             {
-              $this.push(jQuery(n).attr('id').split('_').slice(2,4).join('_'));
+              var k = get_value(jQuery(n), $this);              
+              $this.push(k);
               jQuery(n).addClass('selected');
             }
           });

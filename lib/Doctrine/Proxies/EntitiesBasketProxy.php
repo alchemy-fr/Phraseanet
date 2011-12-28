@@ -192,6 +192,12 @@ class EntitiesBasketProxy extends \Entities\Basket implements \Doctrine\ORM\Prox
         return parent::hasRecord($record);
     }
 
+    public function getSize()
+    {
+        $this->__load();
+        return parent::getSize();
+    }
+
 
     public function __sleep()
     {

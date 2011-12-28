@@ -124,14 +124,6 @@ switch ($action)
     $output = query_phrasea::mail_request($parm['user'], $parm['contrib'], $parm['message'], $parm['query']);
     break;
 
-
-  case 'SAVE_ORDER_DATAS':
-    $parm = $request->get_parms('ssel_id', 'value');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $output = $basket->saveOrderDatas($parm['value']);
-    break;
-
-
   case 'DENY_CGU':
     $parm = $request->get_parms('sbas_id');
     $output = databox_cgu::denyCgus($parm['sbas_id']);
@@ -200,14 +192,7 @@ switch ($action)
     $output = $twig->render('prod/preview/reg_train.html', array('container_records' => $record->get_container()->get_children(),
                 'record' => $record, 'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')));
     break;
-  case 'UNFIX':
-    $parm = $request->get_parms('lst');
-    $output = basket_adapter::unfix_grouping($parm['lst']);
-    break;
-  case 'FIX':
-    $parm = $request->get_parms('lst');
-    $output = basket_adapter::fix_grouping($parm['lst']);
-    break;
+  
   case 'ADDIMGT2CHU':
   case 'ADDCHU2CHU':
   case 'ADDREG2CHU':
