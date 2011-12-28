@@ -1,0 +1,59 @@
+## YAML Template.
+---
+phraseanet:
+  servername: http://dev.phrasea.net/
+  maintenance: false
+  debug: false
+  display_errors: false
+
+# Twig Configuration
+twig:
+  debug: false
+  strict_variables: true
+
+# Doctrine Configuration
+doctrine:
+  dbal:
+    driver:   pdo_mysql
+    host:     localhost
+    port:     3306
+    dbname:   ab_trunk
+    user:     root
+    password: nicolas007
+    charset:  UTF8
+
+  orm:
+    auto_generate_proxy_classes: %phraseanet.debug%
+    auto_mapping: true
+    cache:
+      query: array
+      result: array
+      metadata: array
+      
+  log:
+    enable: true
+    type: monolog
+    handler: rotate
+    filename: doctrine-query.log
+    max_day: 10
+    
+# Monolog LOG Configuration       
+monolog:
+  output: yaml
+  handlers:
+    main:
+      type:  stream
+      level: debug
+    rotate:
+      type: rotatingFile
+      level: debug
+      max_day: 10
+  
+# Memchache Configuration   
+memcached:
+  host: 11211
+
+  
+       
+
+            

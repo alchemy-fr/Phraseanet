@@ -1,0 +1,10 @@
+## YAML Template.
+---
+
+extends: dev
+
+doctrine:
+  dbal:
+    driver:   pdo_sqlite
+    path: /Users/nicolasl/workspace/phraseanet/lib/unitTest/tests.sqlite
+    charset:  UTF8
