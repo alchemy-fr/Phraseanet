@@ -108,11 +108,16 @@ class task_Scheduler
     foreach ($task_manager->get_tasks() as $task)
     {
       if (!$task->is_active())
+      {
         continue;
+      }
+      
       $tid = $task->get_task_id();
 
       if (!$task->is_running())
       {
+        /* @var $task task_abstract */
+        $task->reset_crash_counter();
         $task->set_status(task_abstract::STATUS_TOSTART);
       }
     }

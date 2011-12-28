@@ -88,8 +88,7 @@ class Session_Handler
     if (!$this->is_authenticated())
 
       return;
-    $user = User_Adapter::getInstance($this->get_usr_id(), $this->appbox);
-    $user->ACL()->delete_injected_rights();
+
     $this->storage()->reset();
     $this->close_phrasea_session();
 
