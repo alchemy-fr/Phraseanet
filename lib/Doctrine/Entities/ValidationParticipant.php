@@ -38,7 +38,7 @@ class ValidationParticipant
   /**
    * @var datetime $reminded
    */
-  private $reminded = false;
+  private $reminded = null;
 
   /**
    * @var Entities\ValidationData
