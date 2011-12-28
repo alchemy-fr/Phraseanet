@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 use Alchemy\Phrasea\Core as PhraseaCore;
 use Alchemy\Phrasea\Core\Configuration\Parser\Yaml;
