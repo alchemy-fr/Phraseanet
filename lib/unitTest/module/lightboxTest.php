@@ -41,19 +41,14 @@ class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteSlash()
   {
-    $n = mt_rand(2, 8);
-
-    for ($i = 0; $i != $n; $i++)
-    {
-      $basket = $this->insertOneBasket();
-    }
+    $baskets = $this->insertFiveBasket();
 
     $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
 
     $crawler = $this->client->request('GET', '/');
     $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     $this->assertEquals('UTF-8', $this->client->getResponse()->getCharset());
-    $this->assertEquals($crawler->filter('div.basket_wrapper')->count(), $n);
+    $this->assertEquals(5, $crawler->filter('div.basket_wrapper')->count());
 
     $this->set_user_agent(self::USER_AGENT_IE6);
 
@@ -71,7 +66,8 @@ class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testAjaxNoteForm()
   {
-    $basket_element = $this->insertOneBasketElement();
+    $basket = $this->insertOneValidationBasket();
+    $basket_element = $basket->getELements()->first();
 
     $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
 
@@ -179,7 +175,7 @@ class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
   public function testValidate()
   {
 
-    $basket = $this->insertOneBasket();
+    $basket = $this->insertOneValidationBasket();
 
     $this->set_user_agent(self::USER_AGENT_FIREFOX8MAC);
 
@@ -256,13 +252,17 @@ class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testAjaxSetNote()
   {
-    $crawler = $this->client->request('POST', '/ajax/SET_NOTE/' . $this->insertOneBasketElement()->getId() . '/');
-    $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
-
     $validationBasket = $this->insertOneValidationBasket();
     $validationBasketElement = $validationBasket->getElements()->first();
 
     $crawler = $this->client->request('POST', '/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/');
+    $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+
+    $crawler = $this->client->request(
+            'POST'
+            , '/ajax/SET_NOTE/' . $validationBasketElement->getId() . '/'
+            , array('note' => 'une jolie note')
+    );
 
     $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
     $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
@@ -275,16 +275,20 @@ class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testAjaxSetAgreement()
   {
-    $basket = $this->insertOneBasket();
-    $basketElement = $basket->getElements()->first();
-
-    $crawler = $this->client->request('POST', '/ajax/SET_ELEMENT_AGREEMENT/' . $basketElement->getId() . '/');
-    $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
-
     $validationBasket = $this->insertOneValidationBasket();
     $validationBasketElement = $validationBasket->getElements()->first();
 
-    $crawler = $this->client->request('POST', '/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/');
+    $crawler = $this->client->request(
+            'POST'
+            , '/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/'
+    );
+    $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
+
+    $crawler = $this->client->request(
+            'POST'
+            , '/ajax/SET_ELEMENT_AGREEMENT/' . $validationBasketElement->getId() . '/'
+            , array('agreement' => 1)
+    );
 
     $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), sprintf('set note to element %s ', $validationBasketElement->getId()));
     $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));

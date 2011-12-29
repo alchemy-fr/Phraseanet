@@ -1060,6 +1060,32 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   }
   
   /**
+   * Insert five baskets and set current authenticated user as owner
+   * 
+   * @return \Entities\Basket
+   */
+  protected function insertFiveBasket()
+  {
+    try
+    {
+      $basketFixture = new MyFixture\LoadFiveBaskets();
+
+      $basketFixture->setUser(self::$user);
+
+      $loader = new Loader();
+      $loader->addFixture($basketFixture);
+
+      $this->insertFixtureInDatabase($loader);
+
+      return $basketFixture->baskets;
+    }
+    catch (\Exception $e)
+    {
+      $this->fail('Fail load one Basket : ' . $e->getMessage());
+    }
+  }
+  
+  /**
    *
    * @return \Entities\BasketElement
    */
