@@ -158,6 +158,16 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
                         , 'application/atom+xml'
         );
         break;
+      case self::FORMAT_COOLIRIS:
+        return new Feed_Link(
+                        sprintf('%sfeeds/cooliris/%s'
+                                , $registry->get('GV_ServerName')
+                                , ($page ? '?page=' . $page : '')
+                        )
+                        , sprintf('%s - %s', $this->get_title(), 'RSS')
+                        , 'application/rss+xml'
+        );
+        break;
       default:
       case self::FORMAT_RSS:
         return new Feed_Link(
