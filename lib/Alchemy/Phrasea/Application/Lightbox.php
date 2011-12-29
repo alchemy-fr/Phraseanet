@@ -107,7 +107,7 @@ return call_user_func(
                             {
                               $output = $twig->render('lightbox/basket_element.twig', array(
                                   'basket_element' => $BasketElement,
-                                  'module_name' => $BasketElement->get_record()->get_title()
+                                  'module_name' => $BasketElement->getRecord()->get_title()
                                       )
                               );
 
@@ -176,13 +176,13 @@ return call_user_func(
                             }
                             else
                             {
-                              $template_options = 'lightbox/sc_options_box.twig';
+                              $template_options = 'lightbox/feed_options_box.twig';
                               $template_preview = 'common/preview.html';
                               $template_caption = 'common/caption.html';
 
                               if (!$browser->isNewGeneration())
                               {
-                                $template_options = 'lightbox/IE6/sc_options_box.twig';
+                                $template_options = 'lightbox/IE6/feed_options_box.twig';
                               }
                               $usr_id = $appbox->get_session()->get_usr_id();
 
@@ -191,7 +191,7 @@ return call_user_func(
                               $ret['title'] = $item->get_record()->get_title();
 
                               $ret['preview'] = $twig->render($template_preview, array('record' => $item->get_record(), 'not_wrapped' => true));
-                              $ret['options_html'] = $twig->render($template_options, array('basket_element' => $item));
+                              $ret['options_html'] = $twig->render($template_options, array('feed_element' => $item));
                               $ret['caption'] = $twig->render($template_caption, array('view' => 'preview', 'record' => $item->get_record()));
 
 
@@ -358,6 +358,11 @@ return call_user_func(
                             $request = $app['request'];
                             $note = $request->get('note');
 
+                            if (is_null($note))
+                            {
+                              Return new Response('You must provide a note value', 400);
+                            }
+
                             $em = $app['Core']->getEntityManager();
 
                             /* @var $repository \Repositories\BasketElementRepository */
@@ -401,7 +406,7 @@ return call_user_func(
 
                             if (is_null($agreement))
                             {
-                              throw new \Exception_BadRequest();
+                              Return new Response('You must provide an agreement value', 400);
                             }
 
                             $agreement = $agreement > 0;
@@ -412,19 +417,20 @@ return call_user_func(
                                 'datas' => _('Erreur lors de la mise a jour des donnes ')
                             );
 
+                            $user = $app['Core']->getAuthenticatedUser();
                             $em = $app['Core']->getEntityManager();
                             $repository = $em->getRepository('\Entities\BasketElement');
 
                             /* @var $repository \Repositories\BasketElementRepository */
                             $basket_element = $repository->findUserElement(
                                     $sselcont_id
-                                    , $app['Core']->getAuthenticatedUser()
+                                    , $user
                             );
                             /* @var $basket_element \Entities\BasketElement */
-                            $basket_element->setAgreement($agreement);
+                            $basket_element->getUserValidationDatas($user)
+                                    ->setAgreement($agreement);
 
-                            $user = $Core->getAuthenticatedUser();
-                            $participânt = $basket_element->getBasket()
+                            $participant = $basket_element->getBasket()
                                     ->getValidation()
                                     ->getParticipant($user);
 
@@ -455,16 +461,22 @@ return call_user_func(
 
                             $em = $app['Core']->getEntityManager();
 
+                            $user = $app['Core']->getAuthenticatedUser();
+                            
                             $repository = $em->getRepository('\Entities\Basket');
 
                             /* @var $repository \Repositories\BasketRepository */
                             $basket = $repository->findUserBasket(
                                     $ssel_id
-                                    , $app['Core']->getAuthenticatedUser()
+                                    , $user
                             );
 
+                            if (!$basket->getValidation())
+                            {
+                              Return new Response('There is no validation session attached to this basket', 400);
+                            }
                             /* @var $basket \Entities\Basket */
-                            $participant = $basket->getValidation()->getParticipant($Core->getUser());
+                            $participant = $basket->getValidation()->getParticipant($user);
                             $participant->setIsConfirmed(true);
 
                             $datas = array('error' => false, 'datas' => _('Envoie avec succes'));

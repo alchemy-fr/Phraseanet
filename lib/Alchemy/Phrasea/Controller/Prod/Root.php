@@ -37,7 +37,6 @@ class Root implements ControllerProviderInterface
     $controllers->get('/', function(Application $app)
             {
 
-
               \User_Adapter::updateClientInfos(1);
 
               $appbox = \appbox::get_instance();
