@@ -15,6 +15,13 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
    * @var Feed_Adapter
    */
   public static $feed;
+
+  /**
+   *
+   * @var Feed_Adapter_Entry
+   */
+  public static $entry;
+  public static $publisher;
   public static $need_records = 1;
   protected $client;
 
@@ -22,27 +29,62 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
   {
     parent::setUp();
     $this->client = $this->createClient();
+    self::$feed = Feed_Adapter::create(appbox::get_instance(), self::$user, 'title', 'subtitle');
+    self::$publisher = Feed_Publisher_Adapter::getPublisher(appbox::get_instance(), self::$feed, self::$user);
+    self::$entry = Feed_Entry_Adapter::create(appbox::get_instance(), self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
+    Feed_Entry_Item::create(appbox::get_instance(), self::$entry, self::$record_1);
+    self::$feed->set_public(true);
+  }
+
+  public function tearDown()
+  {
+    self::$publisher->delete();
+    self::$entry->delete();
+    self::$feed->delete();
+    parent::tearDown();
   }
 
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    self::$feed = Feed_Adapter::create(appbox::get_instance(), self::$user, 'title', 'subtitle');
-    $publisher = Feed_Publisher_Adapter::getPublisher(appbox::get_instance(), self::$feed, self::$user);
-    $entry = Feed_Entry_Adapter::create(appbox::get_instance(), self::$feed, $publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
-    Feed_Entry_Item::create(appbox::get_instance(), $entry, self::$record_1);
-    self::$feed->set_public(true);
   }
 
   public static function tearDownAfterClass()
   {
+
     parent::tearDownAfterClass();
-    self::$feed->delete();
   }
 
   public function createApplication()
   {
     return require dirname(__FILE__) . '/../../Alchemy/Phrasea/Application/Root.php';
+  }
+
+  public function testGetFeedFormat()
+  {
+    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance());
+    $feed = array_shift($feeds->get_feeds());
+
+    $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
+    $this->assertEquals("application/rss+xml", $this->client->getResponse()->headers->get("content-type"));
+    $xml = $this->client->getResponse()->getContent();
+    $this->verifyXML($xml);
+    $this->verifyRSS($feed, $xml);
+
+    $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/atom/");
+    $this->assertEquals("application/atom+xml", $this->client->getResponse()->headers->get("content-type"));
+    $xml = $this->client->getResponse()->getContent();
+    $this->verifyXML($xml);
+    $this->verifyATOM($feed, $xml);
+  }
+
+  public function testCooliris()
+  {
+    $crawler = $this->client->request("GET", "/feeds/cooliris/");
+    $this->assertTrue($this->client->getResponse()->isOk());
+    $this->assertEquals("application/rss+xml", $this->client->getResponse()->headers->get("content-type"));
+    $xml = $this->client->getResponse()->getContent();
+    $this->verifyXML($xml);
   }
 
   public function testAggregatedRss()
@@ -56,7 +98,6 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
     $crawler = $this->client->request("GET", "/feeds/aggregated/rss/");
     $this->assertTrue($this->client->getResponse()->isOk());
     $this->assertEquals("application/rss+xml", $this->client->getResponse()->headers->get("content-type"));
-//    $this->assertEquals($feeds->get_aggregate()->get_count_total_entries(), $crawler->filterXPath("//channel/item")->count());
     $xml = $this->client->getResponse()->getContent();
     $this->verifyXML($xml);
   }
@@ -86,35 +127,21 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
     $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
   }
 
-  public function testGetFeedFormat()
-  {
-    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance());
-    $feed = array_shift($feeds->get_feeds());
-    $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
-    $this->assertEquals("application/rss+xml", $this->client->getResponse()->headers->get("content-type"));
-    $xml = $this->client->getResponse()->getContent();
-    $this->verifyRSS($feed, $xml);
-    $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/atom/");
-    $this->assertEquals("application/atom+xml", $this->client->getResponse()->headers->get("content-type"));
-    $xml = $this->client->getResponse()->getContent();
-    $this->verifyATOM($feed, $xml);
-  }
-
   public function testGetFeedId()
   {
     $feeds = Feed_Collection::load_public_feeds(appbox::get_instance());
     $all_feeds = $feeds->get_feeds();
-    foreach ($all_feeds as $feed)
-    {
-      $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
-      $this->assertTrue($this->client->getResponse()->isOk());
-      $xml = $this->client->getResponse()->getContent();
-      $this->verifyRSS($feed, $xml);
-      $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/atom/");
-      $this->assertTrue($this->client->getResponse()->isOk());
-      $xml = $this->client->getResponse()->getContent();
-      $this->verifyATOM($feed, $xml);
-    }
+    $feed = array_shift($all_feeds);
+
+    $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
+    $this->assertTrue($this->client->getResponse()->isOk());
+    $xml = $this->client->getResponse()->getContent();
+    $this->verifyRSS($feed, $xml);
+
+    $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/atom/");
+    $this->assertTrue($this->client->getResponse()->isOk());
+    $xml = $this->client->getResponse()->getContent();
+    $this->verifyATOM($feed, $xml);
   }
 
   public function testPrivateFeedAccess()
@@ -129,7 +156,6 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
 
   public function verifyXML($xml)
   {
-    $this->markTestSkipped("En attente");
     try
     {
       $validator = new W3CFeedRawValidator($xml);
@@ -139,7 +165,7 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
     }
     catch (W3CFeedValidatorException $e)
     {
-      $this->fail($e->getMessage());
+      print "\nCould not use W3C FEED VALIDATOR API : " . $e->getMessage() . "\n";
     }
   }
 
@@ -443,7 +469,8 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
       {
         if ($p4field = $entry_item->get_record()->get_caption()->get_dc_field($field["dc_field"]))
         {
-          $this->assertEquals($p4field->get_value(true, $field["separator"]), $node->nodeValue);
+          $this->assertEquals($p4field->get_value(true, $field["separator"]), $node->nodeValue
+                  , sprintf('Asserting good value for DC %s', $field["dc_field"]));
           if (sizeof($field["media_field"]["attributes"]) > 0)
           {
             foreach ($node->attributes as $attribute)
@@ -583,15 +610,26 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
     }
 
     $content = $entry->get_content();
-    $available_medium = array('image', 'audio', 'video');
-    array_walk($content, $this->removeBadItems($content, $available_medium));
-    $media_group = $xpath->query("//media:group");
-    $this->assertEquals(sizeof($content), $media_group->length);
 
-    foreach ($media_group as $media)
+
+    $available_medium = array('image', 'audio', 'video');
+
+    array_walk($content, $this->removeBadItems($content, $available_medium));
+
+
+    $media_group = $xpath->query("/Atom:feed/Atom:entry[0]/media:group");
+
+    if ($media_group->length > 0)
     {
-      $entry_item = array_shift($content);
-      $this->verifyMediaItem($entry_item, $media);
+      foreach ($media_group as $media)
+      {
+
+        $entry_item = array_shift($content);
+        if ($entry_item instanceof Feed_Entry_Item)
+        {
+          $this->verifyMediaItem($entry_item, $media);
+        }
+      }
     }
   }
 
