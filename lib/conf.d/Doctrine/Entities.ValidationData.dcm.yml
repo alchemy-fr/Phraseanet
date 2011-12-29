@@ -9,8 +9,10 @@ Entities\ValidationData:
   fields:
     agreement: 
       type: boolean
+      nullable: true
     note: 
       type: text
+      nullable: true
     updated:
       type: datetime
       gedmo:

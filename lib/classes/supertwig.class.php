@@ -250,6 +250,7 @@ class supertwig
       }
 
       $core = bootstrap::getCore();
+      $eventsmanager = eventsmanager_broker::getInstance($appbox, $core);
       
       $this->default_vars = array(
           'session' => $session,
@@ -258,6 +259,7 @@ class supertwig
           'core' => $core,
           'browser' => $browser,
           'request' => $request,
+          'events' => $eventsmanager,
           'display_chrome_frame' => $registry->is_set('GV_display_gcf') ? $registry->get('GV_display_gcf') : true,
           'user' => $user,
           'current_date' => new DateTime(),

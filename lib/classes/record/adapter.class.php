@@ -1704,15 +1704,15 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $stmt->closeCursor();
 
     $em = bootstrap::getCore()->getEntityManager();
-    
+
     $repository = $em->getRepository('\Entities\BasketElement');
-    
+
     /* @var $repository \Repositories\BasketElementRepository */
-    foreach($repository->findElementsByRecord($this) as $basket_element)
+    foreach ($repository->findElementsByRecord($this) as $basket_element)
     {
       $em->remove($basket_element);
     }
-    
+
     $em->flush();
 
     foreach ($ftodel as $f)
@@ -1922,9 +1922,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $Core = bootstrap::getCore();
     $em = $Core->getEntityManager();
-    
+
     $repo = $em->getRepository('\Entities\Basket');
-    
+
     /* @var $$repo \Repositories\BasketRepository */
     return $repo->findContainingRecord($this);
   }
