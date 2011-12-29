@@ -63,7 +63,6 @@ phrasea::headers();
 
           $code = _('Propositions de modifications des tables')
                   . '<blockquote>' . $code . '</blockquote>';
-
           ?>
           <pre>
             <?php echo $code; ?>
@@ -87,10 +86,11 @@ phrasea::headers();
       {
         if (!$parm['new_settings'] && $parm['new_dbname'] && $parm['new_data_template'])
         {
-
           if (p4string::hasAccent($parm['new_dbname']))
-            $error['new_dbname'] = 'No special chars in dbname';
-
+          {
+            $error[] = _('Database name can not contains special characters');
+          }
+          
           if (count($error) === 0)
           {
             try
@@ -99,23 +99,34 @@ phrasea::headers();
               $data_template = new system_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
 
               $connbas = new connection_pdo('databox_creation', $hostname, $port, $user, $password, $parm['new_dbname']);
-              $base = databox::create($appbox, $connbas, $data_template, $registry);
-              $base->registerAdmin($user_obj);
-              $createBase = $sbas_id = $base->get_sbas_id();
+
+              try
+              {
+                $base = databox::create($appbox, $connbas, $data_template, $registry);
+                $base->registerAdmin($user_obj);
+                $createBase = $sbas_id = $base->get_sbas_id();
+              }
+              catch (Exception $e)
+              {
+                $error[] = $e->getMessage();
+              }
             }
             catch (Exception $e)
             {
-              $errors = $e->getMessage();
+              $error[] = _('Database does not exists or can not be accessed');
             }
           }
         }
-        elseif ($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port'] && $parm['new_user'] && $parm['new_password']
+        elseif ($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port'] 
+                && $parm['new_user'] && $parm['new_password']
                 && $parm['new_dbname'] && $parm['new_data_template'])
         {
 
           if (p4string::hasAccent($parm['new_dbname']))
-            $error['new_dbname'] = 'No special chars in dbname';
-
+          {
+            $error[] = _('Database name can not contains special characters');
+          }
+          
           if (count($error) === 0)
           {
 
@@ -129,7 +140,7 @@ phrasea::headers();
             }
             catch (Exception $e)
             {
-              $errors = $e->getMessage();
+              $error[] = $e->getMessage();
             }
           }
         }
@@ -140,7 +151,7 @@ phrasea::headers();
         {
 
           if (p4string::hasAccent($parm['new_dbname']))
-            $error['new_dbname'] = 'No special chars in dbname';
+            $error[] = _('Database name can not contains special characters');
 
           if (count($error) === 0)
           {
@@ -156,7 +167,7 @@ phrasea::headers();
             catch (Exception $e)
             {
               $appbox->get_connection()->rollBack();
-              $errors = $e->getMessage();
+              $error[] = $e->getMessage();
             }
           }
         }
@@ -165,7 +176,7 @@ phrasea::headers();
         {
 
           if (p4string::hasAccent($parm['new_dbname']))
-            $error['new_dbname'] = 'No special chars in dbname';
+            $error[] = 'No special chars in dbname';
 
           if (count($error) === 0)
           {
@@ -174,13 +185,12 @@ phrasea::headers();
               $appbox->get_connection()->beginTransaction();
               $base = databox::mount($appbox, $parm['new_hostname'], $parm['new_port'], $parm['new_user'], $parm['new_password'], $parm['new_dbname'], $registry);
               $base->registerAdmin($user_obj);
-//              $createBase = $sbas_id = $base->get_sbas_id();
               $appbox->get_connection()->commit();
             }
             catch (Exception $e)
             {
               $appbox->get_connection()->rollBack();
-              $errors = $e->getMessage();
+              $error[] = $e->getMessage() . '@' . $e->getFile() . $e->getLine();
             }
           }
         }
@@ -216,7 +226,7 @@ phrasea::headers();
       }
       catch (Exception $e)
       {
-
+        
       }
     }
     ?>
@@ -227,7 +237,7 @@ if ($createBase || $mountBase)
   $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
   $user->ACL()->delete_data_from_cache();
   ?>
-          parent.reloadTree('bases:bases');
+      parent.reloadTree('bases:bases');
   <?php
   if ($createBase)
   {
@@ -240,9 +250,18 @@ if ($createBase || $mountBase)
     phrasea::redirect('/admin/databases.php');
   }
 }
+
 ?>
 
     </script>
+    <?php 
+    foreach($error as $e)
+    {
+      ?>
+    <span style="background-color:red;color:white;padding:3px"><?php echo $e; ?></span>
+      <?php
+    }
+    ?>
     <div style="position:relative;float:left;width:100%;">
       <h2>Bases actuelles :</h2>
       <ul>
@@ -306,20 +325,20 @@ if ($createBase || $mountBase)
             </div>
             <div id="server_opts" style="display:none;">
               <div>
-                <label><?php echo _('phraseanet:: hostname'); ?></label><input name="new_hostname" value="" type="text"/><span class="error"><?php echo isset($error['new_hostname']) ? $error['new_hostname'] : ''; ?></span>
+                <label><?php echo _('phraseanet:: hostname'); ?></label><input name="new_hostname" value="" type="text"/>
               </div>
               <div>
-                <label><?php echo _('phraseanet:: port'); ?></label><input name="new_port" value="3306" type="text"/><span class="error"><?php echo isset($error['new_port']) ? $error['new_port'] : ''; ?></span>
+                <label><?php echo _('phraseanet:: port'); ?></label><input name="new_port" value="3306" type="text"/>
               </div>
               <div>
-                <label><?php echo _('phraseanet:: user'); ?></label><input name="new_user" value="" type="text"/><span class="error"><?php echo isset($error['new_user']) ? $error['new_user'] : ''; ?></span>
+                <label><?php echo _('phraseanet:: user'); ?></label><input name="new_user" value="" type="text"/>
               </div>
               <div>
-                <label><?php echo _('phraseanet:: password'); ?></label><input name="new_password" value="" type="password"/><span class="error"><?php echo isset($error['new_password']) ? $error['new_password'] : ''; ?></span>
+                <label><?php echo _('phraseanet:: password'); ?></label><input name="new_password" value="" type="password"/>
               </div>
             </div>
             <div>
-              <label><?php echo _('phraseanet:: dbname'); ?></label><input name="new_dbname" value="" type="text"/><span class="error"><?php echo isset($error['new_dbname']) ? $error['new_dbname'] : ''; ?></span>
+              <label><?php echo _('phraseanet:: dbname'); ?></label><input name="new_dbname" value="" type="text"/>
             </div>
             <div>
               <label><?php echo _('phraseanet:: Modele de donnees'); ?></label>
@@ -358,20 +377,20 @@ if ($createBase || $mountBase)
             </div>
             <div id="servermount_opts" style="display:none;">
               <div>
-                <label><?php echo _('phraseanet:: hostname'); ?></label><input name="new_hostname" value="" type="text"/><span class="error"><?php echo isset($error['new_hostname']) ? $error['new_hostname'] : ''; ?></span>
+                <label><?php echo _('phraseanet:: hostname'); ?></label><input name="new_hostname" value="" type="text"/>
               </div>
               <div>
-                <label><?php echo _('phraseanet:: port'); ?></label><input name="new_port" value="3306" type="text"/><span class="error"><?php echo isset($error['new_port']) ? $error['new_port'] : ''; ?></span>
+                <label><?php echo _('phraseanet:: port'); ?></label><input name="new_port" value="3306" type="text"/>
               </div>
               <div>
-                <label><?php echo _('phraseanet:: user'); ?></label><input name="new_user" value="" type="text"/><span class="error"><?php echo isset($error['new_user']) ? $error['new_user'] : ''; ?></span>
+                <label><?php echo _('phraseanet:: user'); ?></label><input name="new_user" value="" type="text"/>
               </div>
               <div>
-                <label><?php echo _('phraseanet:: password'); ?></label><input name="new_password" value="" type="password"/><span class="error"><?php echo isset($error['new_password']) ? $error['new_password'] : ''; ?></span>
+                <label><?php echo _('phraseanet:: password'); ?></label><input name="new_password" value="" type="password"/>
               </div>
             </div>
             <div>
-              <label><?php echo _('phraseanet:: dbname'); ?></label><input name="new_dbname" value="" type="text"/><span class="error"><?php echo isset($error['new_dbname']) ? $error['new_dbname'] : ''; ?></span>
+              <label><?php echo _('phraseanet:: dbname'); ?></label><input name="new_dbname" value="" type="text"/>
             </div>
             <div>
               <input type="hidden" name="mount_base" value="yes"/>

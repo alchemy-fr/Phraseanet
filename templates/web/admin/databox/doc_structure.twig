@@ -227,55 +227,64 @@
           </div>
           <div>
             <button class="field_adder">
-        {% trans 'boutton::ajouter' %}
-              </button>
-            </div>
-            <form action="/admin/description.php" method="post" target="_self" id="form_struct">
-              <input name="newfield" id="newfield" type="hidden" />
-              <table class="admintable">
-                <thead>
-                  <tr>
-                    <th>
-                      </th>
-                    <th>
-            {% trans 'Nom' %}
-                      </th>
-                      <th>
-            {% trans 'Source' %}Source
-                        </th>
-                        <th>
-                          <span title="{% trans 'DublinCore Element Set' %}">DCES</span>
-                        </th>
-                        <th>
-            {% trans 'Multivalue' %}
-                          </th>
-                          <th>
-            {% trans 'Indexable' %}
-                            </th>
-                            <th>
-            {% trans 'Lecture seule' %}
-                              </th>
-                              <th>
-            {% trans 'Branche Thesaurus' %}
-                                </th>
-                                <th>
-            {% trans 'Affiche dans report' %}
-                                  </th>
-                                  <th>
-                                    Regdate
-                                  </th>
-                                  <th>
-                                    Regname
-                                  </th>
-                                  <th>
-                                    Regdesc
-                                  </th>
-                                  <th>
-            {% trans 'Afficher en titre' %}
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
+              {% trans 'boutton::ajouter' %}
+            </button>
+          </div>
+          <form action="/admin/description.php" method="post" target="_self" id="form_struct">
+            <input name="newfield" id="newfield" type="hidden" />
+            <table class="admintable">
+              <thead>
+                <tr>
+                  <th>
+                    </th>
+                  <th>
+                    {% trans 'Nom' %}
+                  </th>
+                  <th>
+                    {% trans 'Source' %}Source
+                  </th>
+                  <th>
+                    <span title="{% trans 'DublinCore Element Set' %}">DCES</span>
+                  </th>
+                  <th>
+                    {% trans 'Multivalue' %}
+                  </th>
+                  <th>
+                    {% trans 'Indexable' %}
+                  </th>
+                  <th>
+                    {% trans 'Required' %}
+                  </th>
+                  <th>
+                    {% trans 'Lecture seule' %}
+                  </th>
+                  <th>
+                    {% trans 'Type' %}
+                  </th>
+                  <th>
+                    {% trans 'Separateur' %}
+                  </th>
+                  <th>
+                    {% trans 'Branche Thesaurus' %}
+                  </th>
+                  <th>
+                    {% trans 'Affiche dans report' %}
+                  </th>
+                  <th>
+                    Regdate
+                  </th>
+                  <th>
+                    Regname
+                  </th>
+                  <th>
+                    Regdesc
+                  </th>
+                  <th>
+                    {% trans 'Afficher en titre' %}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
         {% for field in fields %}
         {% set disabled = '' %}
         {% if field.is_on_error() %}
@@ -305,9 +314,24 @@
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="indexable_{{field.get_id()}}" type="checkbox" {% if field.is_indexable() %}checked="checked"{% endif %}/>
                                         </td>
                                         <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} name="required_{{field.get_id()}}" type="checkbox" {% if field.is_required() %}checked="checked"{% endif %}/>
+                                        </td>
+                                        <td>
                                           <input class="meta_readonly metafield_{{field.get_id()}}" {{disabled}} name="readonly_{{field.get_id()}}" type="checkbox" {% if field.is_readonly() %}checked="checked"{% endif %}/>
                                           <img class="alert alertTips alert_not_readonly" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne n\'est pas en lecture seule, vous devriez decocher cette case' %}" style="display:none;" />
                                           <img class="alert alertTips alert_is_readonly" src="/skins/icons/alert.png" title="{% trans 'Attention, la source descriptive selectionne est en lecture seule, vous devriez cocher cette case' %}" style="display:none;" />
+                                        </td>
+                                        <td>
+                                          <select class="metafield_{{field.get_id()}}" {{disabled}} name="type_{{field.get_id()}}">
+                                            <option value=""></option>
+                                            <option {% if field.get_type() == 'string' %}selected{% endif %} value="string">string</option>
+                                            <option {% if field.get_type() == 'text' %}selected{% endif %} value="text">text</option>
+                                            <option {% if field.get_type() == 'number' %}selected{% endif %} value="number">number</option>
+                                            <option {% if field.get_type() == 'date' %}selected{% endif %} value="date">date</option>
+                                          </select>
+                                        </td>
+                                        <td>
+                                          <input size="2" class="metafield_{{field.get_id()}}" {{disabled}} value="{{ field.get_separator() }}" name="separator_{{field.get_id()}}" type="text"/>
                                         </td>
                                         <td>
                                           <input style="width:100px;" class="metafield_{{field.get_id()}}" {{disabled}} name="tbranch_{{field.get_id()}}" type="text" value="{{field.get_tbranch()}}"/>

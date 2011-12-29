@@ -397,9 +397,16 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
    */
   public function set_email($email)
   {
-    if (!trim($email))
+    if (trim($email) == '')
       $email = null;
+    
+    $test_user = User_Adapter::get_usr_id_from_email($email);
 
+    if($test_user && $test_user != $this->get_id())
+    {
+      throw new Exception_InvalidArgument (sprintf(_('A user already exists with email addres %s'), $email));
+    }
+    
     $sql = 'UPDATE usr SET usr_mail = :new_email WHERE usr_id = :usr_id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':new_email' => $email, ':usr_id' => $this->get_id()));
@@ -864,8 +871,16 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     return $this->is_template;
   }
 
+  public function get_template_owner()
+  {
+    return $this->template_owner;
+  }
+
   public static function get_usr_id_from_email($email)
   {
+    if(is_null($email))
+      return false;
+    
     $conn = connection::getPDOConnection();
     $sql = 'SELECT usr_id FROM usr
             WHERE usr_mail = :email
@@ -1231,6 +1246,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   protected function load_preferences()
   {
     if ($this->_prefs)
+
       return $this;
     $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -1324,7 +1340,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $this;
@@ -1556,6 +1572,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     if (!$session->is_authenticated())
+
       return;
 
     $ses_id = $session->get_ses_id();
@@ -1614,7 +1631,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         }
         catch (Exception $e)
         {
-          
+
         }
       }
     }
@@ -1678,7 +1695,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return false;
@@ -1765,7 +1782,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $locale;
@@ -1831,6 +1848,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   public function get_nonce()
   {
     if ($this->nonce)
+
       return $this->nonce;
     $nonce = false;
 
@@ -1847,6 +1865,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     return $this->nonce;
   }
+
 
   public function __sleep()
   {

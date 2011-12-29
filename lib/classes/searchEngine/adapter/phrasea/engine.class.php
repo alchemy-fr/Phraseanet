@@ -56,7 +56,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
   /**
    *
-   * @var boolean
+   * @var searchEngine_options
    */
   protected $options = false;
 
@@ -142,6 +142,8 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
    */
   public function set_options(searchEngine_options $options)
   {
+    $this->options = $options;
+    
     $this->opt_search_type = (int) $options->get_search_type();
     $this->opt_bases = $options->get_bases();
     $this->opt_fields = $options->get_fields();
@@ -394,34 +396,37 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     $total_time = 0;
 
+    $sort = '';
+    
+    if($this->options->get_sortby())
+    {
+      switch($this->options->get_sortord())
+      {
+        case searchEngine_options::SORT_MODE_ASC:
+          $sort = '+';
+          break;
+        case searchEngine_options::SORT_MODE_DESC:
+        default:
+          $sort = '-';
+          break;
+      }
+      $sort .= '0' . $this->options->get_sortby();
+    }
+    
     foreach ($this->queries as $sbas_id => $qry)
     {
-      if ($this->opt_search_type == 1)
-      {
-        $this->results[$sbas_id] = phrasea_query2(
-                $session->get_ses_id()
-                , $sbas_id
-                , $this->colls[$sbas_id]
-                , $this->arrayq[$sbas_id]
-                , $registry->get('GV_sit')
-                , (string) $session->get_usr_id()
-                , false
-                , PHRASEA_MULTIDOC_REGONLY
-        );
-      }
-      else
-      {
-        $this->results[$sbas_id] = phrasea_query2(
-                $session->get_ses_id()
-                , $sbas_id
-                , $this->colls[$sbas_id]
-                , $this->arrayq[$sbas_id]
-                , $registry->get('GV_sit')
-                , (string) $session->get_usr_id()
-                , false
-                , PHRASEA_MULTIDOC_DOCONLY
-        );
-      }
+      $this->results[$sbas_id] = phrasea_query2(
+              $session->get_ses_id()
+              , $sbas_id
+              , $this->colls[$sbas_id]
+              , $this->arrayq[$sbas_id]
+              , $registry->get('GV_sit')
+              , (string) $session->get_usr_id()
+              , false
+              , $this->opt_search_type == 1 ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
+              , $sort
+      );
+
       $total_time += $this->results[$sbas_id]['time_all'];
 
       if ($this->results[$sbas_id])
@@ -634,9 +639,20 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     foreach ($fields as $name => $field)
     {
       if ($sxe->description->$name)
-        $ret[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $sxe->description->$name);
+      {
+        $val = array();
+        foreach($sxe->description->$name as $value)
+        {
+          $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
+        }
+        $val = implode(' '.$field['separator'].' ', $val);
+      }
       else
-        $ret[] = $field;
+      {
+        $val = $field['value'];
+      }
+      
+      $ret[] = $val;
     }
 
     return $ret;

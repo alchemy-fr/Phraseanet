@@ -124,6 +124,7 @@ class databox_field implements cache_cacheableInterface
 
   const TYPE_TEXT = "text";
   const TYPE_DATE = "date";
+  const TYPE_STRING = "string";
   const TYPE_NUMBER = "number";
 
   /**
@@ -176,7 +177,7 @@ class databox_field implements cache_cacheableInterface
     $this->required = !!$row['required'];
     $this->multi = !!$row['multi'];
     $this->report = !!$row['report'];
-    $this->type = $row['type'];
+    $this->type = $row['type'] ?: self::TYPE_STRING;
     $this->tbranch = $row['tbranch'];
     if ($row['dces_element'])
     {
@@ -269,7 +270,21 @@ class databox_field implements cache_cacheableInterface
     $stmt->execute(array(':id' => $this->get_id()));
     $stmt->closeCursor();
 
+    $dom_struct = $this->databox->get_dom_structure();
+    $xp_struct = $this->databox->get_xpath_structure();
+
+    $nodes = $xp_struct->query(
+            '/record/description/*[@meta_id=' . $this->id . ']'
+    );
+
+    foreach($nodes as $node)
+    {
+      /* @var $node DOMNode */
+      $node->parentNode->removeChild($node);
+    }
+
     $this->delete_data_from_cache();
+    $this->databox->saveStructure($dom_struct);
 
     return;
   }
@@ -537,6 +552,9 @@ class databox_field implements cache_cacheableInterface
    */
   public function set_separator($separator)
   {
+    if (strpos($separator, ';') === false)
+      $separator .= ';';
+      
     $this->separator = $separator;
 
     return $this;

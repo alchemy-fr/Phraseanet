@@ -162,6 +162,7 @@ class bootstrap
     $loader->registerNamespaces(array(
         'Symfony\\Component\\Yaml' => __LIBDIR__ . '/vendor/symfony/src',
         'Symfony\\Component\\Console' => __LIBDIR__ . '/vendor/symfony/src',
+        'Symfony\\Component\\BrowserKit' => __LIBDIR__ . '/vendor/symfony/src',
     ));
     $loader->register();
 

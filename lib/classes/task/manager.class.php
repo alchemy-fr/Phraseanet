@@ -112,5 +112,44 @@ class task_manager
 
     return $row;
   }
+  
+  public static function getAvailableTasks()
+  {
+    $registry = registry::get_instance();
+    $taskdir = array( $registry->get('GV_RootPath') .                     "lib/classes/task/period/"
+        ,             $registry->get('GV_RootPath') . "config/classes/task/period/"
+                    );
 
+    $tasks = array();
+    foreach($taskdir as $path)
+    {
+    if( ($hdir = @opendir($path)) )
+    {
+      $tskin = array();
+      $max = 9999;
+      while (($max-- > 0) && (($file = readdir($hdir)) !== false))
+      {
+        if (!is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php")
+          continue;
+
+        $classname = 'task_period_' . substr($file, 0, strlen($file) - 10);
+
+        try
+        {
+    //      $testclass = new $classname(null);
+          if ($classname::interfaceAvailable())
+          {
+            $tasks[] = array("class" => $classname, "name" => $classname::getName(), "err" => null);
+          }
+        }
+        catch (Exception $e)
+        {
+
+        }
+      }
+      closedir($hdir);
+    }
+    }
+    return $tasks;
+  }
 }

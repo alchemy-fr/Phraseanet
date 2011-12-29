@@ -357,6 +357,16 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     return $this->publisher;
   }
+  
+  /**
+   *
+   * @param User_adapter $user
+   * @return boolean 
+   */
+  public function is_publisher(User_adapter $user)
+  {
+    return $user->get_id() === $this->get_publisher()->get_user()->get_id();
+  }
 
   /**
    *

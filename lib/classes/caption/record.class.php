@@ -59,8 +59,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
   protected function retrieve_fields()
   {
-    if(is_array($this->fields))
-
+    if (is_array($this->fields))
       return $this->fields;
 
     $fields = array();
@@ -97,7 +96,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-
+        
       }
     }
     $this->fields = $rec_fields;
@@ -134,7 +133,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
   {
     $fields = $this->retrieve_fields();
     if (isset($this->dces_elements[$label]))
-
       return $fields[$this->dces_elements[$label]];
     return null;
   }
@@ -172,7 +170,10 @@ class caption_record implements caption_interface, cache_cacheableInterface
               , $field->highlight_thesaurus()
       );
 
-      $fields[$field->get_name()] = $value;
+      $fields[$field->get_name()] = array(
+          'value' => $value
+          , 'separator' => $field->get_databox_field()->get_separator()
+      );
     }
 
     if ($searchEngine instanceof searchEngine_adapter)
@@ -185,7 +186,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
         foreach ($fields as $key => $value)
         {
-          $fields[$key] = $ret[$n];
+          $fields[$key]['value'] = $ret[$n];
           $n++;
         }
       }

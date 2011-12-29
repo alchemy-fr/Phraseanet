@@ -47,6 +47,7 @@ class ACL implements cache_cacheableInterface
    * @var Array
    */
   protected $_rights_records_preview;
+
   /**
    *
    * @var Array
@@ -242,47 +243,88 @@ class ACL implements cache_cacheableInterface
     if (count($base_ids) == 0)
       return $this;
 
-    $params = array(
-        ':usr_id' => $this->user->get_id()
-        , ':template_id' => $template_user->get_id()
+    $sbas_ids = array();
+
+    foreach ($base_ids as $base_id)
+    {
+      $sbas_ids[] = phrasea::sbasFromBas($base_id);
+    }
+
+    $sbas_ids = array_unique($sbas_ids);
+
+    $sbas_rights = array('bas_manage', 'bas_modify_struct', 'bas_modif_th', 'bas_chupub');
+
+    $sbas_to_acces = array();
+    $rights_to_give = array();
+
+    foreach ($template_user->ACL()->get_granted_sbas() as $databox)
+    {
+      $sbas_id = $databox->get_sbas_id();
+
+      if (!in_array($sbas_id, $sbas_ids))
+        continue;
+
+
+      if (!$this->has_access_to_sbas($sbas_id))
+      {
+        $sbas_to_acces[] = $sbas_id;
+      }
+
+      foreach ($sbas_rights as $right)
+      {
+        if ($template_user->ACL()->has_right_on_sbas($sbas_id, $right))
+        {
+          $rights_to_give[$sbas_id][$right] = '1';
+        }
+      }
+    }
+
+    $this->give_access_to_sbas($sbas_to_acces);
+
+    foreach ($rights_to_give as $sbas_id => $rights)
+    {
+      $this->update_rights_to_sbas($sbas_id, $rights);
+    }
+
+    $bas_rights = array('canputinalbum', 'candwnldhd'
+        , 'candwnldpreview', 'cancmd'
+        , 'canadmin', 'actif', 'canreport', 'canpush'
+        , 'canaddrecord', 'canmodifrecord', 'candeleterecord'
+        , 'chgstatus', 'imgtools'
+        , 'manage', 'modify_struct'
+        , 'nowatermark', 'order_master'
     );
 
-    $sql = 'INSERT INTO sbasusr
-            (SELECT distinct null as sbasusr_id, sb.sbas_id, :usr_id as usr_id, bas_manage
-                , bas_modify_struct,bas_modif_th,bas_chupub
-             FROM sbasusr sb, bas b
-             WHERE b.base_id IN (' . implode(', ', $base_ids) . ')
-               AND b.sbas_id = sb.sbas_id
-               AND usr_id = :template_id)';
+    $bas_to_acces = array();
+    $rights_to_give = array();
 
-    $stmt = $this->appbox->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $stmt->closeCursor();
+    foreach ($template_user->ACL()->get_granted_base() as $collection)
+    {
+      $base_id = $collection->get_base_id();
 
-    $this->delete_data_from_cache(self::CACHE_RIGHTS_SBAS);
+      if (!in_array($base_id, $base_ids))
+        continue;
 
-    $sql = "INSERT INTO basusr
-            (SELECT null as id, base_id, :usr_id as usr_id, canputinalbum
-                , candwnldhd, candwnldsubdef, candwnldpreview, cancmd
-                , canadmin, actif, canreport, canpush, now() as creationdate
-                , basusr_infousr, mask_and, mask_xor, restrict_dwnld
-                , month_dwnld_max, remain_dwnld, time_limited, limited_from
-                , limited_to, canaddrecord, canmodifrecord, candeleterecord
-                , chgstatus, '0000-00-00 00:00:00' as lastconn, imgtools
-                , manage, modify_struct, bas_manage, bas_modify_struct
-                , nowatermark, order_master
-              FROM basusr
-              WHERE usr_id =
-                (SELECT usr_id
-                FROM usr WHERE usr_id = :template_id)
-                  AND base_id IN (" . implode(', ', $base_ids) . "))";
+      if (!$this->has_access_to_base($base_id))
+      {
+        $bas_to_acces[] = $base_id;
+      }
 
-    $stmt = $this->appbox->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $stmt->closeCursor();
+      foreach ($bas_rights as $right)
+      {
+        if ($template_user->ACL()->has_right_on_base($base_id, $right))
+        {
+          $rights_to_give[$base_id][$right] = '1';
+        }
+      }
+    }
 
-    $this->inject_rights();
-    $this->delete_data_from_cache(self::CACHE_RIGHTS_BAS);
+    $this->give_access_to_base($bas_to_acces);
+
+    foreach ($rights_to_give as $sbas_id => $rights)
+    {
+      $this->update_rights_to_base($base_id, $rights);
+    }
 
     $this->user->set_last_template($template_user);
 
@@ -315,7 +357,7 @@ class ACL implements cache_cacheableInterface
     {
       return false;
     }
-    
+
     if (!isset($this->_rights_bas[$base_id][$right]))
       throw new Exception('right ' . $right . ' does not exists');
 
@@ -750,7 +792,7 @@ class ACL implements cache_cacheableInterface
   {
     if ($this->_rights_bas && $this->_global_rights && is_array($this->_limited))
       return $this;
-    
+
     try
     {
       $this->_rights_bas = $this->get_data_from_cache(self::CACHE_RIGHTS_BAS);
@@ -1399,12 +1441,12 @@ class ACL implements cache_cacheableInterface
     $this->load_rights_bas();
 
     $datetime = new DateTime();
-    
+
     if (!isset($this->_limited[$base_id]))
     {
       return false;
     }
-    
+
     $ret = ($this->_limited[$base_id]['dmin'] > $datetime
             || $this->_limited[$base_id]['dmax'] < $datetime);
 

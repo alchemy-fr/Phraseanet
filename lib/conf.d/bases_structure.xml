@@ -1350,16 +1350,6 @@
             <comment></comment>
           </field>
           <field>
-            <name>bas_manage</name>
-            <type>int(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
             <name>bas_modify_struct</name>
             <type>int(1) unsigned</type>
             <null></null>
@@ -5131,7 +5121,7 @@
           </field>
           <field>
             <name>type</name>
-            <type>enum('text','date','number')</type>
+            <type>enum('string','text','date','number')</type>
             <null></null>
             <extra></extra>
             <default></default>

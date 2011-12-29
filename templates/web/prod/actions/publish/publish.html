@@ -55,6 +55,9 @@
             {% if feed.is_publisher(user) %}
               <div class="feed {% if loop.index is odd%}odd{% endif %}">
                 <span>{{ feed.get_title() }}</span>
+                {% if feed.is_public() %}
+                <img src="/skins/icons/ligth-on.png" title="{% trans 'This feed is public' %}"/>
+                 {% endif %}
                 <input type="hidden" value="{{ feed.get_id() }}"/>
               </div>
             {% endif %}
