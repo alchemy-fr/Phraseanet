@@ -9,9 +9,9 @@
                 {% if basket.getValidation() %}
                     <div class="agreement">
                         <img src="/skins/lightbox/agreeie6.gif"
-                            class="agree_button {% if element.getValidationDatas.getUserValidationDatas(user).getAgreement() != true %}not_decided{%endif%} agree_{{element.getId()}}" />
+                            class="agree_button {% if element.getUserValidationDatas(user).getAgreement() != true %}not_decided{%endif%} agree_{{element.getId()}}" />
                         <img src="/skins/lightbox/disagreeie6.gif"
-                            class="disagree_button {% if element.getValidationDatas.getUserValidationDatas(user).getAgreement() != false %}not_decided{%endif%} disagree_{{element.getId()}}" />
+                            class="disagree_button {% if element.getUserValidationDatas(user).getAgreement() != false %}not_decided{%endif%} disagree_{{element.getId()}}" />
                     </div>
                 {% endif %}
                 {{thumbnail.format(element.getRecord().get_thumbnail,114,85, '', session, true)}}

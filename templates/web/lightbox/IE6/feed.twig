@@ -26,7 +26,7 @@
                             <tr valign="middle">
                                 <td style="width:10px;"></td>
                                 <td style="width:35px;text-align:center;">
-                                    <div class="display_id">{% if first_item %}{{first_item.get_order()}}{% endif %}</div>
+                                    <div class="display_id">{% if first_item %}{{first_item.get_ord()}}{% endif %}</div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
                                     <div class="title title15" title="{% if first_item %}{{first_item.get_record().get_title|e}}{% endif %}">
@@ -35,7 +35,6 @@
                                 </td>
                                 <td style="text-align:right;width:230px;">
                                     <div class="options">
-                                        {% include 'lightbox/IE6/sc_options_box.twig' %}
                                     </div>
                                 </td>
                             </tr>
@@ -46,8 +45,6 @@
               {% set preview = first_item.get_record().get_preview() %}
               {{thumbnail.format(preview, preview.get_width(), preview.get_height(),'',session, false)}}
             {% endif %}
-                        {% include 'lightbox/selector_box.twig' %}
-                        {% include 'lightbox/sc_note.twig' %}
                     </div>
                 </div>
                 <div id="record_compare" class="record_display_box PNBleft">
@@ -109,30 +106,17 @@
             <div class="" style="height:30px;width:100%;">
                 <table border="0" cellspacing="0" cellpadding="0">
                     <tr>
-                        <td>
-                            <select id="navigation">
-                                <optgroup label="{% trans 'Validations'%}">
-                                {% for item in baskets() %}
-                                  {% if item.getValidation() %}
-                                      <option {% if item.getId() == basket.getId() %} selected="selected" {% endif %}
-                                          value="{{basket.getId()}}">{{basket.getName()}}</option>
-                                  {% endif %}
-                                {% endfor %}
-                                </optgroup>
-                                <optgroup label="{% trans 'Paniers'%}">
-                                {% for item in baskets() %}
-                                  {% if item.getValidation() is empty %}
-                                      <option {% if item.getId() == basket.getId() %} selected="selected" {% endif %}
-                                          value="{{item.getId()}}">{{item.getName()}}</option>
-                                  {% endif %}
-                                {% endfor %}
-                                </optgroup>
-                            </select>
+                        <td style="width:20px;">
+                        </td>
+                        <td style="width:40px;">
                             <button class="ui-corner-all basket_downloader" title="{% trans 'boutton::telecharger tous les documents' %}">
                                 <img src="/skins/lightbox/save.png"/>
                             </button>
                         </td>
                         <td>
+                            <hr/>
+                        </td>
+                        <td style="width:20px;">
                         </td>
                     </tr>
                 </table>

@@ -25,9 +25,6 @@
                 {% else %}
                     {% set classuser = 'disagree' %}
                 {% endif %}
-                <li class="{% if validation_data.getParticipant().getUser().get_id() == user.get_id() %}me{% endif %} {{classuser}} userchoice">
-                  {{ validation_data.getParticipant().getUser().get_display_name }}
-                </li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -38,12 +35,12 @@
                 <table cellspacing="0" cellpadding="0" style="width:230px;">
                     <tr>
                         <td>
-                            <div style="width:70px;margin:0px auto 0;" class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if basket_element.getValidationDatas().getParticipant(user).getAgreement() != true %}not_decided{% endif %}">
+                            <div style="width:70px;margin:0px auto 0;" class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if basket_element.getUserValidationDatas(user).getAgreement() != true %}not_decided{% endif %}">
                                 <img src="/skins/lightbox/agree-bigie6.gif" style="vertical-align:middle;"/><span>{% trans 'validation:: OUI' %}</span>
                             </div>
                         </td>
                         <td>
-                            <div style="width:70px;margin:0px auto;" class="ui-corner-all big_box disagree_{{basket_element.getId()}} disagree {% if basket_element.getValidationDatas().getParticipant(user).getAgreement() != false %}not_decided{% endif %}">
+                            <div style="width:70px;margin:0px auto;" class="ui-corner-all big_box disagree_{{basket_element.getId()}} disagree {% if basket_element.getUserValidationDatas(user).getAgreement() != false %}not_decided{% endif %}">
                                 <img src="/skins/lightbox/disagree-bigie6.gif" style="vertical-align:middle;"/><span>{% trans 'validation:: NON' %}</span>
                             </div>
                         </td>

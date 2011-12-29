@@ -130,7 +130,7 @@
                                 {% for item in baskets_collection %}
                                   {% if item.getValidation() %}
                                       <option {% if item.getId() == basket.getId() %} selected="selected" {% endif %}
-                                          value="{{item.getId()}}">{{item.get.Name()}}</option>
+                                          value="{{item.getId()}}">{{item.getName()}}</option>
                                   {% endif %}
                                 {% endfor %}
                                 </optgroup>
@@ -172,7 +172,9 @@
     {% endif %}
     <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
   <script type="text/javascript">
+    {% if basket.getValidation() %}
     p4.releasable = {% if basket.getValidation().getParticipant(user).isReleasable() %}"{% trans 'Do you want to send your report ?' %}"{% else %}false{% endif %}
+    {% endif %}
   </script>
 {% endblock %}
 

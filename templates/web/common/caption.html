@@ -6,13 +6,13 @@
 {% import 'common/caption_templates/preview.html' as cap_prev %}
 
 {% if view == 'answer' %}
-  {{cap_ans.format_caption(record, highlight, searchEngine)}}
+  {{cap_ans.format_caption(record, highlight|default(''), searchEngine|default(null))}}
 {% elseif view == 'lazaret' %}
-  {{cap_laz.format_caption(record, highlight, searchEngine)}}
+  {{cap_laz.format_caption(record, highlight|default(''), searchEngine|default(null))}}
 {% elseif view == 'preview' %}
-  {{cap_prev.format_caption(record, highlight, searchEngine)}}
+  {{cap_prev.format_caption(record, highlight|default(''), searchEngine|default(null))}}
 {% elseif view == 'basket' %}
-  {{cap_bas.format_caption(record, highlight|default(''), searchEngine)}}
+  {{cap_bas.format_caption(record, highlight|default(''), searchEngine|default(null))}}
 {% elseif view == 'overview' %}
-  {{cap_ovr.format_caption(record, highlight|default(''), searchEngine)}}
+  {{cap_ovr.format_caption(record, highlight|default(''), searchEngine|default(null))}}
 {% endif %}
