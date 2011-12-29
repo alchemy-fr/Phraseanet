@@ -63,6 +63,7 @@ class Bridge implements ControllerProviderInterface
                   'user_accounts' => \Bridge_Account::get_accounts_by_user($appbox, $user)
                   , 'available_apis' => \Bridge_Api::get_availables($appbox)
                   , 'route' => $route
+                  , 'current_account_id' => ''
               );
 
               return new Response($twig->render('prod/actions/Bridge/index.twig', $params)

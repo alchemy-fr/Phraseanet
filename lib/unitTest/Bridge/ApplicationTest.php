@@ -75,7 +75,7 @@ class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
     
     $crawler = $this->client->request('POST', '/bridge/manager/', array('ssel' => $basket->getId()));
     $pageContent = $this->client->getResponse()->getContent();
-    $this->assertNotContains("Oups ! something went wrong !", $pageContent);
+    $this->assertTrue($this->client->getResponse()->isOk());
     $this->assertEquals(count($accounts) + 2, $crawler->filter('form')->count());
     $this->assertTrue($this->client->getResponse()->isOk());
   }

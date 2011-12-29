@@ -19,8 +19,8 @@ foreach ($lngs as $lng => $locales)
     $avLanguages[$loc] = $locname['name'];
   }
 }
-  $eventsmanager = eventsmanager_broker::getInstance(appbox::get_instance());
 
+$eventsmanager = eventsmanager_broker::getInstance(appbox::get_instance(), bootstrap::getCore());
 
 $PHP_CONF = array(
     'output_buffering' => '4096'  //INI_ALL
