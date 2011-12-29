@@ -44,19 +44,19 @@ class RSSFeeds implements ControllerProviderInterface
 
               $registry = \registry::get_instance();
 
-              if ($format == Feed_Adapter::FORMAT_RSS)
+              if ($format == \Feed_Adapter::FORMAT_RSS)
               {
                 $content = new \Feed_XML_RSS();
               }
               
-              if ($format == Feed_Adapter::FORMAT_ATOM)
+              if ($format == \Feed_Adapter::FORMAT_ATOM)
               {
                 $content = new \Feed_XML_Atom();
               }
               
-              if($format == Feed_Adapter::FORMAT_COOLIRIS)
+              if($format == \Feed_Adapter::FORMAT_COOLIRIS)
               {
-                $content = new Feed_XML_Cooliris();
+                $content = new \Feed_XML_Cooliris();
               }
               
               if ($user instanceof \User_Adapter)
