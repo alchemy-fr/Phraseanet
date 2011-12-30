@@ -1050,6 +1050,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     try
     {
       $value = $this->get_subdef($name);
+      
+      if ($value->is_substituted())
+      {
+        throw new Exception('Cannot replace a substitution');
+      }
+      
       $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
       unlink($original_file);
     }

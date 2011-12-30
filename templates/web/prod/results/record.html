@@ -13,7 +13,7 @@
     <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
          id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
          class="IMGT diapo grouping type-{{record.get_type}}"
-         onDblClick="openPreview('REG','0','{{record.get_base_id}}_{{record.get_record_id}}');">
+         onDblClick="openPreview('REG','0','{{record.get_serialize_key()}}');">
   {% else %}
     <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
          id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"

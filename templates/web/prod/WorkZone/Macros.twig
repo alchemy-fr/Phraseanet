@@ -179,7 +179,7 @@
 
   {% import 'common/thumbnail.html' as thumbnail %}
 
-  <div ondblclick="{% if wz_scope == 'groupings' %}openPreview('REG',{{ ord }},'{{container.get_base_id()}}_{{container.get_record_id()}}');{% else %}openPreview('BASK',{{ ord }},{{container.getId()}});{% endif %}"
+  <div ondblclick="{% if wz_scope == 'groupings' %}openPreview('REG',{{ ord }},'{{container.get_sbas_id()}}_{{container.get_record_id()}}');{% else %}openPreview('BASK',{{ ord }},{{container.getId()}});{% endif %}"
        class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;"
        id="CHIM_{% if wz_scope == 'groupings' %}{{record.get_serialize_key()}}{% else %}{{ contained.getId() }}{% endif %}">
        <input type="hidden" name="id" value="{{ record.get_serialize_key() }}"/>
