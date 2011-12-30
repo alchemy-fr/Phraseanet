@@ -56,34 +56,34 @@ class WorkZone implements ControllerProviderInterface
             , function(Application $app, Request $request)
             {
 
-
+              
               $user = $app['Core']->getAuthenticatedUser();
 
               $em = $app['Core']->getEntityManager();
-              /* @var $em \Doctrine\ORM\EntityManager */
-
+             /* @var $em \Doctrine\ORM\EntityManager */
+             
               $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
 
               $alreadyFixed = $done = 0;
 
-              foreach ($request->get('stories') as $element)
+              foreach ( explode(';', $request->get('stories')) as $element)
               {
                 $element = explode('_', $element);
                 $Story = new \record_adapter($element[0], $element[1]);
 
                 if (!$Story->is_grouping())
                   throw new \Exception('You can only attach stories');
-
+                
                 if (!$user->ACL()->has_access_to_base($Story->get_base_id()))
                   throw new \Exception_Forbidden('You do not have access to this Story');
 
-
+                
                 if ($StoryWZRepo->findUserStory($user, $Story))
                 {
                   $alreadyFixed++;
                   continue;
                 }
-
+                
                 $StoryWZ = new \Entities\StoryWZ();
                 $StoryWZ->setUser($user);
                 $StoryWZ->setRecord($Story);
@@ -91,7 +91,7 @@ class WorkZone implements ControllerProviderInterface
                 $em->persist($StoryWZ);
                 $done++;
               }
-
+              
               $em->flush();
 
               if ($alreadyFixed === 0)
