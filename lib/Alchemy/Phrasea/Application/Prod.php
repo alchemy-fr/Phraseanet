@@ -44,6 +44,7 @@ return call_user_func(function()
                   $app->mount('/records/edit', new Controller\Edit());
                   $app->mount('/records/movecollection', new Controller\MoveCollection());
                   $app->mount('/bridge/', new Controller\Bridge());
+                  $app->mount('/printer/', new Controller\Printer());
                   $app->mount('/feeds', new Controller\Feed());
                   $app->mount('/tooltip', new Controller\Tooltip());
                   $app->mount('/', new Controller\Root());
