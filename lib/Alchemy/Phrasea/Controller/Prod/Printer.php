@@ -50,7 +50,17 @@ class Printer implements ControllerProviderInterface
               $printer = new RecordHelper\Printer($app['Core']);
 
               $request = $app['request'];
-              $PDF = new PDFExport($printer->get_elements(), $request->get('lay'));
+
+              $session = \Session_Handler::getInstance(\appbox::get_instance());
+
+              $layout = $request->get('lay');
+
+              foreach ($printer->get_elements() as $record)
+              {
+                $session->get_logger($record->get_databox())
+                        ->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
+              }
+              $PDF = new PDFExport($printer->get_elements(), $layout);
               return new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
             }
     );
