@@ -67,6 +67,21 @@ class Bridge_Api_Apitest_Containers implements Bridge_Api_ContainerInterface
   {
     
   }
+  
+  public function get_category()
+  {
+    
+  }
+  
+  public function is_private()
+  {
+    
+  }
+  
+  public function get_rating()
+  {
+    
+  }
 
 }
 

@@ -172,7 +172,7 @@ class Bridge implements ControllerProviderInterface
                       $app['require_connection']($account);
 
                       $elements = $account->get_api()->list_elements($type, $offset_start, $quantity);
-
+                      
                       $params = array(
                           'action_type' => $type
                           , 'adapter_action' => 'load-elements'
@@ -275,6 +275,8 @@ class Bridge implements ControllerProviderInterface
                   , 'destination' => $destination
                   , 'element_type' => $element_type
                   , 'action' => $action
+                  , 'constraint_errors' => null
+                  , 'adapter_action' => $action
                   , 'elements' => $elements
                   , 'error_message' => $app['request']->get('error')
                   , 'notice_message' => $app['request']->get('notice')
