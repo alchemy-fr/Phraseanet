@@ -81,6 +81,7 @@ class module_console_systemTemplateGenerator extends Command
     $twig->addFilter('formatdate', new Twig_Filter_Function('phraseadate::getDate'));
     $twig->addFilter('getPrettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
     $twig->addFilter('prettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
+    $twig->addFilter('prettyString', new Twig_Filter_Function('phraseadate::getPrettyString'));
     $twig->addFilter('formatoctet', new Twig_Filter_Function('p4string::format_octet'));
     $twig->addFilter('getDate', new Twig_Filter_Function('phraseadate::getDate'));
     $twig->addFilter('geoname_name_from_id', new Twig_Filter_Function('geonames::name_from_id'));
