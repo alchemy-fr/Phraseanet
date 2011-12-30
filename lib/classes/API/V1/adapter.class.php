@@ -1116,7 +1116,7 @@ class API_V1_adapter extends API_V1_Abstract
   {
     $ret = array(
         'created_on' => $basket->getCreated()->format(DATE_ATOM)
-        , 'description' => $basket->getDescription()
+        , 'description' => (string) $basket->getDescription()
         , 'name' => $basket->getName()
         , 'pusher_usr_id' => $basket->getPusherId()
         , 'ssel_id' => $basket->getId()

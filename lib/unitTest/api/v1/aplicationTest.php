@@ -890,7 +890,7 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
     foreach ($content->response->basket as $basket_str)
     {
       $this->evaluateGoodBasket($basket_str);
-      $this->assertEquals($basket_str->name, 'aéaa');
+      $this->assertEquals($basket_str->name, '<strong>aéaa');
     }
 
   }
@@ -924,10 +924,9 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
 
   public function testDeleteBasket()
   {
-    $basket = $this->insertOneBasket();
-    $basket2 = $this->insertOneBasket();
+    $baskets = $this->insertFiveBasket();
 
-    $route = '/baskets/' . $basket->getId() . '/delete/?oauth_token=' . self::$token;
+    $route = '/baskets/' . $baskets[0]->getId() . '/delete/?oauth_token=' . self::$token;
 
     $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -947,7 +946,7 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
     }
     if(!$found)
     {
-      $this->fail('There should be a basket left');
+      $this->fail('There should be four baskets left');
     }
   }
 
