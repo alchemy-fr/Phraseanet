@@ -151,7 +151,9 @@ class basketCollection
     $appbox = appbox::get_instance();
     $conn = $appbox->get_connection();
     $session = $appbox->get_session();
-    $sql = 'SELECT ssel_id FROM sselnew WHERE usr_id = :usr_id';
+    $sql = 'SELECT n.ssel_id FROM sselnew n, ssel s 
+            WHERE s.ssel_id = n.ssel_id AND n.usr_id = :usr_id 
+              AND n.usr_id = s.usr_id';
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':usr_id' => $session->get_usr_id()));
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);

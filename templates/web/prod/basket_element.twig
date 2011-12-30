@@ -9,7 +9,7 @@
 {% import 'common/thumbnail.html' as thumbnail %}
 {% set record = basket_element.get_record() %}
 
-<div ondblclick="{% if basket_scope == 'groupings' %}openPreview('REG',{{basket_element.get_order()}},'{{basket.get_base_id()}}_{{basket.get_record_id()}}');{% else %}openPreview('BASK',{{basket_element.get_order()}},{{basket.get_ssel_id()}});{% endif %}"
+<div ondblclick="{% if basket_scope == 'groupings' %}openPreview('REG',{{basket_element.get_order()}},'{{basket.get_sbas_id()}}_{{basket.get_record_id()}}');{% else %}openPreview('BASK',{{basket_element.get_order()}},{{basket.get_ssel_id()}});{% endif %}"
     id="CHIM_{{basket_element.get_sselcont_id()}}_{{record.get_serialize_key()}}"
     sbas="{{basket_record.get_sbas_id()}}" class="CHIM diapo CHIM_{{record.get_serialize_key()}}" style="height:{{box_height}}px;">
     {% if user.getPrefs('basket_title_display') == '1' %}

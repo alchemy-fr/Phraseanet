@@ -112,8 +112,7 @@ class record_preview extends record_adapter
         break;
       case "REG":
         $contId = explode('_', $contId);
-        $base_id = $contId[0];
-        $sbas_id = phrasea::sbasFromBas($base_id);
+        $sbas_id = $contId[0];
         $record_id = $contId[1];
 
         $this->container = new record_adapter($sbas_id, $record_id);
