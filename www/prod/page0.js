@@ -2431,27 +2431,33 @@ function shareThis(bas,rec)
 
 function printThis(value)
 {
-  var url = "/include/printpage.php?"+value;
+  
+  
+      $('#DIALOG').attr('title', 'Print')
+                  .empty().addClass('loading')
+                  .dialog({
+                    resizable:false,
+                    closeOnEscape:true,
+                    modal:true,
+                    width:'800',
+                    height:'500'
+                  })
+                  .dialog('open');
 
-  $('#MODALDL').attr('src','about:blank');
-  $('#MODALDL').attr('src',url);
+      $.ajax({
+        type: "POST",
+        url: '/prod/printer/?'+value,
+        dataType: 'html',
+        beforeSend:function(){
 
-
-  var t = (bodySize.y - 400) / 2;
-  var l = (bodySize.x - 550) / 2;
-
-  $('#MODALDL').css({
-    'display': 'block',
-    'opacity': 0,
-    'width': '550px',
-    'position': 'absolute',
-    'top': t,
-    'left': l,
-    'height': '400px'
-  }).fadeTo(500, 1);
-
-  showOverlay(2);
-  $('#tooltip').hide();
+        },
+        success: function(data){
+          $('#DIALOG').removeClass('loading').empty()
+                      .append(data);
+          return;
+        }
+      });
+      
 }
 
 
