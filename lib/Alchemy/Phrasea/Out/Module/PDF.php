@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Out\Module;
 
 use \Alchemy\Phrasea\Out\Tool\PhraseaPDF;
 
-require_once __DIR__ . '/../../../vendor/tcpdf/tcpdf.php';
+require_once __DIR__ . '/../../../../vendor/tcpdf/tcpdf.php';
 
 /**
  * Creates a PDF
