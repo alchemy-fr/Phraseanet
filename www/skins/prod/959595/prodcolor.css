@@ -2844,7 +2844,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #DIALOG p{
   line-height:18px;
 }
-#DIALOG input{
+#DIALOG input:text{
   height:24px;
   font-size:15px;
   margin:15px auto;
