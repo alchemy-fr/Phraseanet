@@ -41,7 +41,7 @@ abstract class W3CFeedValidator
 {
   const VALIDATOR_ENDPOINT = "http://validator.w3.org/feed/check.cgi";
   const OUTPOUT = "soap12";
-  const TIME_BETWEEN_REQUEST = 1;
+  const TIME_BETWEEN_REQUEST = 2;
 
   public abstract function validate();
 }
@@ -83,7 +83,7 @@ class W3CFeedUrlValidator extends W3CFeedValidator
   {
     $url_validator = sprintf("%s?url=%s&output=%s", self::VALIDATOR_ENDPOINT, $this->url, self::OUTPOUT);
     sleep(self::TIME_BETWEEN_REQUEST);
-    $response = file_get_contents($url_validator);
+    $response = @file_get_contents($url_validator);
     if (!$response)
     {
       throw new W3CFeedValidatorException("Unable to request W3C API");
@@ -146,7 +146,7 @@ class W3CFeedRawValidator extends W3CFeedValidator
         ),
             ));
     sleep(self::TIME_BETWEEN_REQUEST);
-    $response = file_get_contents(self::VALIDATOR_ENDPOINT, false, $context);
+    $response = @file_get_contents(self::VALIDATOR_ENDPOINT, false, $context);
     if (!$response)
     {
       throw new W3CFeedValidatorException("Unable to request W3C API");
