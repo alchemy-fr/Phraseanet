@@ -226,6 +226,12 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
    *
    * @var boolean
    */
+  protected $ldap_created;
+
+  /**
+   *
+   * @var boolean
+   */
   protected $is_guest;
 
   /**
@@ -587,6 +593,23 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     return $this;
   }
 
+   /**
+   *
+   * @param boolean $boolean
+   * @return User_Adapter
+   */
+  public function set_ldap_created($boolean)
+  {
+    $value = $boolean ? '1' : '0';
+    $sql = 'UPDATE usr SET ldap_created = :ldap_created WHERE usr_id = :usr_id';
+    $stmt = $this->appbox->get_connection()->prepare($sql);
+    $stmt->execute(array(':ldap_created' => $value, ':usr_id' => $this->get_id()));
+    $stmt->closeCursor();
+    $this->ldap_created = $boolean;
+
+    return $this;
+  }
+
   /**
    *
    * @param string $address
@@ -838,7 +861,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':owner_id' => $owner->get_id(), ':usr_id' => $this->get_id()));
     $stmt->closeCursor();
-
+    
     $this->set_ftp_address('')
             ->set_activeftp(false)
             ->set_city('')
@@ -1020,7 +1043,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
    */
   public function load($id)
   {
-    $sql = 'SELECT usr_id, create_db, usr_login, usr_nom, activite,
+    $sql = 'SELECT usr_id, ldap_created, create_db, usr_login, usr_nom, activite,
             usr_prenom, usr_sexe as gender, usr_mail, adresse, usr_creationdate, usr_modificationdate,
             ville, cpostal, tel, fax, fonction, societe, geonameid, lastModel, invite,
             defaultftpdatasent, mail_notifications, activeftp, addrftp, loginftp,
@@ -1036,6 +1059,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $this->id = (int) $row['usr_id'];
     $this->email = $row['usr_mail'];
     $this->login = $row['usr_login'];
+    
+    $this->ldap_created = $row['ldap_created'];
 
     $this->defaultftpdatas = $row['defaultftpdatasent'];
     $this->mail_notifications = $row['mail_notifications'];
@@ -1113,6 +1138,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   public function get_id()
   {
     return $this->id;
+  }
+
+  public function get_ldap_created()
+  {
+    return $this->ldap_created;
   }
 
   public function is_guest()
