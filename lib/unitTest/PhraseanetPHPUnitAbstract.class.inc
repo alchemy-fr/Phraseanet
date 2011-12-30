@@ -994,8 +994,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   public function tearDown()
   {
-    $em = self::$core->getEntityManager();
-
     parent::tearDown();
   }
 
