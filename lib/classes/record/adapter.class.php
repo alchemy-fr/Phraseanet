@@ -1050,6 +1050,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     try
     {
       $value = $this->get_subdef($name);
+      
+      if ($value->is_substituted())
+      {
+        throw new Exception('Cannot replace a substitution');
+      }
+      
       $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
       unlink($original_file);
     }
@@ -1368,54 +1374,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       $regname = (string) $sxe->description->$balisename;
 
     return $regname;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_bitly_link()
-  {
-
-    $registry = registry::get_instance();
-
-    if ($this->bitly_link !== null)
-      return $this->bitly_link;
-
-    $this->bitly_link = false;
-
-    if (trim($registry->get('GV_bitly_user')) == ''
-            && trim($registry->get('GV_bitly_key')) == '')
-      return $this->bitly_link;
-
-    try
-    {
-      $short = new PHPShortener();
-      $bitly = $short->encode($url . 'view/', 'bit.ly', $registry);
-
-      if (preg_match('/^(http:\/\/)?(www\.)?([^\/]*)\/(.*)$/', $bitly, $results))
-      {
-        if ($results[3] && $results[4])
-        {
-          $hash = 'http://bit.ly/' . $results[4];
-          $sql = 'UPDATE record SET bitly = :hash WHERE record_id = :record_id';
-
-          $connbas = connection::getPDOConnection($this->get_sbas_id());
-          $stmt = $connbas->prepare($sql);
-          $stmt->execute(array(':hash' => $hash, ':record_id' => $this->get_record_id()));
-          $stmt->closeCursor();
-
-          $this->bitly_link = 'http://bit.ly/' . $hash;
-        }
-      }
-    }
-    catch (Exception $e)
-    {
-      unset($e);
-    }
-    $this->delete_data_from_cache();
-
-    return $this->bitly_link;
   }
 
   /**

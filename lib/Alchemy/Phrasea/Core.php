@@ -317,6 +317,8 @@ class Core extends \Pimple
     {
       $this->getRequest()->setLocale($cookies->get('locale'));
     }
+    
+    \Session_Handler::set_locale($this->getRequest()->getLocale());
 
     return;
   }

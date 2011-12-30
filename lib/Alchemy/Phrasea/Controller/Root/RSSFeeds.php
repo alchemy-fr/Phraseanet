@@ -171,14 +171,14 @@ class RSSFeeds implements ControllerProviderInterface
             })->assert('format', '(rss|atom)');
 
     $controllers->get('/cooliris/', function() use ($app, $appbox, $display_feed) {
-      $feeds = Feed_Collection::load_public_feeds($appbox);
+      $feeds = \Feed_Collection::load_public_feeds($appbox);
               $feed = $feeds->get_aggregate();
 
               $request = $app['request'];
               $page = (int) $request->get('page');
               $page = $page < 1 ? 1 : $page;
 
-              return $display_feed($feed, Feed_Adapter::FORMAT_COOLIRIS , $page);
+              return $display_feed($feed, \Feed_Adapter::FORMAT_COOLIRIS , $page);
     });
     
     return $controllers;

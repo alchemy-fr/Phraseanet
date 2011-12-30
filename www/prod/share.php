@@ -67,7 +67,6 @@ if (!$right)
 
 $sha256 = $record->get_sha256();
 $type = $record->get_type();
-$bitly = $record->get_bitly_link();
 
 $url = '';
 
@@ -114,7 +113,7 @@ if ($url != '')
 ?>
         <div class="boxCloser" onclick="parent.hideDwnl();"><?php echo _('boutton::fermer') ?></div>
         <div id="tweet">
-          <div style="margin-left:20px;padding:10px 0 5px;"><a href="http://www.twitter.com/home/?status=<?php echo $bitly ?>" target="_blank"><img src="/skins/icons/twitter.ico" title="share this on twitter" style="vertical-align:middle;padding:0 5px;"/> Send to Twitter</a></div>
+          <div style="margin-left:20px;padding:10px 0 5px;"><a href="http://www.twitter.com/home/?status=<?php echo $url . 'view/' ?>" target="_blank"><img src="/skins/icons/twitter.ico" title="share this on twitter" style="vertical-align:middle;padding:0 5px;"/> Send to Twitter</a></div>
           <div style="margin-left:20px;padding:5px 0 10px;"><a href="http://www.facebook.com/sharer.php?u=<?php echo $url . 'view/' ?>" target="_blank"><img src="/skins/icons/facebook.ico" title="share on facebook" style="vertical-align:middle;padding:0 5px;"/> Send to Facebook</a></div>
         </div>
         <div id="embed" style="text-align:center;padding:10px 0;">
