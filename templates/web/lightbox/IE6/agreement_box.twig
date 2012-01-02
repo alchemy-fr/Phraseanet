@@ -1,41 +1,46 @@
-{% if basket_element and basket_element.is_validation_item() %}
+{% if basket_element and basket_element.getBasket().getValidation() %}
     <div class="left choices">
         <table style="margin-left:10px;width:220px;height:30px;" cellspacing="0" cellpadding="0">
             <tbody>
                 <tr>
                     <td class="title">{% trans 'VALIDATION' %}</td>
-                    <td class="report_wrapper;"><a class="report" href="#">{% trans 'lightbox::recaptitulatif' %}</a></td>
+                    <td class="report_wrapper">
+                      <a class="report" href="#">
+                        {% trans 'lightbox::recaptitulatif' %}
+                      </a>
+                    </td>
                 </tr>
             </tbody>
         </table>
-    {% if basket.is_valid() %}
-        <div style="margin-left:10px;width:220px;">{{basket.get_validation_infos}}</div>
+    {% if basket.getValidation() %}
+        <div style="margin-left:10px;width:220px;">
+          {{ basket.getValidation().getValidationString(user) }}
+        </div>
         <ul style="margin:10px 0 0 20px;width:200px;">
-            {% for choice in basket_element.get_choices() %}
-                {% if choice.agreement == 1 %}
+            {% for validation_data in basket_element.getValidationDatas() %}
+                {% if validation_data.getAgreement() == true %}
                     {% set classuser = 'agree' %}
-                {% elseif choice.agreement == -1 %}
-                    {% set classuser = 'disagree' %}
-                {% else %}
+                {% elseif validation_data.getAgreement() == false %}
                     {% set classuser = '' %}
+                {% else %}
+                    {% set classuser = 'disagree' %}
                 {% endif %}
-                <li class="{% if choice.usr_id == session.get_usr_id() %}me{% endif %} {{classuser}} userchoice">{{choice.usr_name}}</li>
             {% endfor %}
         </ul>
     {% endif %}
 
-    {% if basket_element and basket_element.is_validation_item() %}
+    {% if basket_element and basket_element.getBasket().getValidation() %}
         <div class="left choices">
             <div style="height:60px;margin-top:15px;">
                 <table cellspacing="0" cellpadding="0" style="width:230px;">
                     <tr>
                         <td>
-                            <div style="width:70px;margin:0px auto 0;" class="ui-corner-all big_box agree_{{basket_element.get_sselcont_id()}} agree {% if basket_element.get_my_agreement() != 1%}not_decided{% endif %}">
+                            <div style="width:70px;margin:0px auto 0;" class="ui-corner-all big_box agree_{{basket_element.getId()}} agree {% if basket_element.getUserValidationDatas(user).getAgreement() != true %}not_decided{% endif %}">
                                 <img src="/skins/lightbox/agree-bigie6.gif" style="vertical-align:middle;"/><span>{% trans 'validation:: OUI' %}</span>
                             </div>
                         </td>
                         <td>
-                            <div style="width:70px;margin:0px auto;" class="ui-corner-all big_box disagree_{{basket_element.get_sselcont_id()}} disagree {% if basket_element.get_my_agreement() != -1%}not_decided{% endif %}">
+                            <div style="width:70px;margin:0px auto;" class="ui-corner-all big_box disagree_{{basket_element.getId()}} disagree {% if basket_element.getUserValidationDatas(user).getAgreement() != false %}not_decided{% endif %}">
                                 <img src="/skins/lightbox/disagree-bigie6.gif" style="vertical-align:middle;"/><span>{% trans 'validation:: NON' %}</span>
                             </div>
                         </td>

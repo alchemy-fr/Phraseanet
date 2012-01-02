@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -27,7 +27,7 @@ $needed = array();
 
 if (isset($parm["mail"]) && trim($parm["mail"]) != "")
 {
-  require_once(dirname (__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+  require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
   if (!PHPMailer::ValidateAddress($parm['mail']))
   {
     return phrasea::redirect('/login/forgotpwd.php?error=noaccount');

@@ -37,7 +37,7 @@ class sphinx_configuration
   public function get_available_charsets()
   {
     $available_charsets = array();
-    $dir = dirname(__FILE__) . '/charsetTable/';
+    $dir = __DIR__ . '/charsetTable/';
     echo $dir;
     $registry = registry::get_instance();
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)

@@ -31,7 +31,7 @@ class module_console_systemBackupDB extends Command
 
     $dir = sprintf(
             '%s/config/'
-            , dirname(dirname(dirname(dirname(dirname(__FILE__)))))
+            , dirname(dirname(dirname(dirname(__DIR__))))
     );
 
     $this->setDescription('Backup Phraseanet Databases');
@@ -48,7 +48,7 @@ class module_console_systemBackupDB extends Command
       throw new RuntimeException('Phraseanet is not set up');
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $output->write('Phraseanet is going to be backup...', true);
 

@@ -36,25 +36,31 @@ class set_export extends set_abstract
    */
   public function __construct($lst, $sstid)
   {
+    $Core = bootstrap::getCore();
+    
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
 
-
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
+    $user = $Core->getAuthenticatedUser();
+            
     $download_list = array();
 
     $remain_hd = array();
 
     if ($sstid != "")
     {
-      $basket = basket_adapter::getInstance($appbox, $sstid, $user->get_id());
+      $em = $Core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+      
+      /* @var $repository \Repositories\BasketRepository */
+      $Basket = $repository->findUserBasket($sstid, $user);
 
-      foreach ($basket->get_elements() as $basket_element)
+      foreach ($Basket->getElements() as $basket_element)
       {
-        $base_id = $basket_element->get_record()->get_base_id();
-        $record_id = $basket_element->get_record()->get_record_id();
+        /* @var $basket_element \Entities\BasketElement */
+        $base_id = $basket_element->getRecord()->get_base_id();
+        $record_id = $basket_element->getRecord()->get_record_id();
 
         if (!isset($remain_hd[$base_id]))
         {
@@ -70,9 +76,9 @@ class set_export extends set_abstract
 
         $current_element = $download_list[] =
                 new record_exportElement(
-                        $basket_element->get_record()->get_sbas_id(),
+                        $basket_element->getRecord()->get_sbas_id(),
                         $record_id,
-                        $basket->get_name() . '/',
+                        $basket->getName() . '/',
                         $remain_hd[$base_id]
         );
 
@@ -950,7 +956,7 @@ class set_export extends set_abstract
   public static function stream_file(
   $file, $exportname, $mime, $disposition='attachment')
   {
-    require_once dirname(__FILE__) . "/../../../lib/vendor/Silex/autoload.php";
+    require_once __DIR__ . "/../../../lib/vendor/Silex/autoload.php";
     $registry = registry::get_instance();
 
     $disposition = in_array($disposition, array('inline', 'attachment')) ?

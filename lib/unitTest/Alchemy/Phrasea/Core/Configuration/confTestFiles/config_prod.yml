@@ -1,0 +1,12 @@
+## YAML Template.
+---
+
+# Doctrine Configuration
+doctrine:
+  orm:
+    cache:
+      query: apc
+      result: memcached
+      metadata: apc
+  log:
+    enable: true

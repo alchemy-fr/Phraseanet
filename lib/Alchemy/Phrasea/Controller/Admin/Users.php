@@ -39,8 +39,7 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/rights/', function() use ($app)
             {
-              $request = $app['request'];
-              $rights = new UserHelper\Edit($request);
+              $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers.twig';
               $twig = new \supertwig();
@@ -55,8 +54,7 @@ class Users implements ControllerProviderInterface
 
     $controllers->get('/rights/', function() use ($app)
             {
-              $request = $app['request'];
-              $rights = new UserHelper\Edit($request);
+              $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers.twig';
               $twig = new \supertwig();
@@ -71,11 +69,7 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/delete/', function() use ($app)
             {
-              $request = $app['request'];
-
-
-
-              $module = new UserHelper\Edit($request);
+              $module = new UserHelper\Edit($app['Core']);
               $module->delete_users();
 
               return $app->redirect('/admin/users/search/');
@@ -88,8 +82,7 @@ class Users implements ControllerProviderInterface
 
               try
               {
-                $request = $app['request'];
-                $rights = new UserHelper\Edit($request);
+                $rights = new UserHelper\Edit($app['Core']);
                 $rights->apply_rights();
                 $rights->apply_infos();
 
@@ -110,8 +103,7 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/rights/quotas/', function() use ($app)
             {
-              $request = $app['request'];
-              $rights = new UserHelper\Edit($request);
+              $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers_quotas.twig';
               $twig = new \supertwig();
@@ -125,8 +117,7 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/rights/quotas/apply/', function() use ($app)
             {
-              $request = $app['request'];
-              $rights = new UserHelper\Edit($request);
+              $rights = new UserHelper\Edit($app['Core']);
               $rights->apply_quotas();
 
               return;
@@ -135,8 +126,7 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/rights/time/', function() use ($app)
             {
-              $request = $app['request'];
-              $rights = new UserHelper\Edit($request);
+              $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers_timelimit.twig';
               $twig = new \supertwig();
@@ -150,8 +140,7 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/rights/time/apply/', function() use ($app)
             {
-              $request = $app['request'];
-              $rights = new UserHelper\Edit($request);
+              $rights = new UserHelper\Edit($app['Core']);
               $rights->apply_time();
 
               return;
@@ -160,8 +149,7 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/rights/masks/', function() use ($app)
             {
-              $request = $app['request'];
-              $rights = new UserHelper\Edit($request);
+              $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers_masks.twig';
               $twig = new \supertwig();
@@ -175,46 +163,40 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/rights/masks/apply/', function() use ($app)
             {
-              $request = $app['request'];
-              $rights = new UserHelper\Edit($request);
+              $rights = new UserHelper\Edit($app['Core']);
               $rights->apply_masks();
 
               return;
             }
     );
 
-    $controllers->post('/search/', function() use ($app)
+    $controllers->match('/search/', function() use ($app)
             {
-              $request = $app['request'];
-              $users = new UserHelper\Manage($request);
+              $users = new UserHelper\Manage($app['Core']);
               $template = 'admin/users.html';
 
               $twig = new \supertwig();
               $twig->addFilter(array('floor' => 'floor'));
               $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
 
-              return $twig->render($template, $users->search($request));
+              return $twig->render($template, $users->search());
             }
     );
 
-    $controllers->get('/search/', function() use ($app)
+    $controllers->post('/apply_template/', function() use ($app)
             {
-              $request = $app['request'];
-              $users = new UserHelper\Manage($request);
-              $template = 'admin/users.html';
+              $users = UserHelper\Manage($app['Core']);
+              
+              $users->apply_template();
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('floor' => 'floor'));
-              $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
-
-              return $twig->render($template, $users->search($request));
+              return new Symfony\Component\HttpFoundation\RedirectResponse('/admin/users/search/');
             }
     );
 
     $controllers->get('/typeahead/search/', function() use ($app, $appbox)
             {
               $request = $app['request'];
-              $user_query = new User_Query($appbox);
+              $user_query = new \User_Query($appbox);
 
               $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
               $like_value = $request->get('term');
@@ -258,7 +240,7 @@ class Users implements ControllerProviderInterface
               try
               {
                 $request = $app['request'];
-                $module = new UserHelper\Manage($request);
+                $module = new UserHelper\Manage($app['Core']);
                 if ($request->get('template') == '1')
                 {
                   $user = $module->create_template();
@@ -285,7 +267,7 @@ class Users implements ControllerProviderInterface
     $controllers->post('/export/csv/', function() use ($appbox, $app)
             {
               $request = $app['request'];
-              $user_query = new \User_Query($appbox);
+              $user_query = new \User_Query($appbox, $app['Core']);
 
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
               $like_value = $request->get('like_value');

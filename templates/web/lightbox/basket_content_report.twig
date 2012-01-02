@@ -2,17 +2,17 @@
 {% import 'common/thumbnail.html' as thumbnail %}
 
 <div style="margin:0 7px;overflow:hidden;">
-    {% for basket_element in basket.get_elements() %}
-    {% set record = basket_element.get_record() %}
-        <span class="wrapCHIM_{{basket_element.get_sselcont_id()}} valid">
+    {% for basket_element in basket.getElements() %}
+    {% set record = basket_element.getRecord() %}
+        <span class="wrapCHIM_{{basket_element.getId()}} valid">
             <div style="margin:20px;">
                 <table style="width: 100%; min-width: 330px;">
                     <tr valign="top">
                         <td style="width:165px;">
-                            <div id="CHIM_{{basket_element.get_sselcont_id()}}_{{record.get_serialize_key()}}"
+                            <div id="CHIM_{{basket_element.getId()}}_{{record.get_serialize_key()}}"
                                 class="CHIM diapo">
                                 <div class="display_id">
-                                    {{basket_element.get_order()}}
+                                    {{basket_element.getOrd()}}
                 </div>
                 {{thumbnail.format(record.get_thumbnail(),165, 125, '', session, true)}}
                             </div>
@@ -20,22 +20,22 @@
                         <td style="width:10px;">
                         </td>
                         <td>
-                            {% for choice in basket_element.get_choices()%}
+                            {% for validationDatas in basket_element.getValidationDatas()%}
                                 <div class="basket_report_user_wrapper ui-corner-all">
                                     <div class="basket_report_user">
-                                        {% if choice.agreement == 1 %}
+                                        {% if validationDatas.getAgreement() == true %}
                                             {% set imguser = '<img src="/skins/lightbox/agree.png" />' %}
                                             {% set styleuser = '' %}
-                                        {% elseif choice.agreement == -1 %}
+                                        {% elseif validationDatas.getAgreement() == false %}
                                             {% set imguser = '<img src="/skins/lightbox/disagree.png" />' %}
                                             {% set styleuser = '' %}
                                         {% else %}
                                             {% set imguser = '' %}
                                             {% set styleuser = 'margin-left:18px;' %}
                                         {% endif %}
-                                        <b style="{{styleuser}}">{{imguser|raw}} {{choice.usr_name}}</b>
-                                        {% if choice.note != '' %}
-                                             : {{choice.note|nl2br}}
+                                        <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser().get_display_name()}}</b>
+                                        {% if validationDatas.getNote() != '' %}
+                                             : {{validationDatas.getNote()|nl2br}}
                                         {% endif %}
                                     </div>
                                 </div>

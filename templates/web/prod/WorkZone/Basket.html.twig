@@ -1,0 +1,72 @@
+<div style="margin:0 7px;overflow:hidden;">
+{% set basket_length = basket.getElements()|length %}
+    <div class="tools">
+
+
+      <button class="ui-corner-all TOOL_disktt_btn basket_window" title="{% trans 'action : exporter' %}">
+        <img src="/skins/prod/000000/images/disktt_history.gif"/>
+      </button>
+      <button class="ui-corner-all TOOL_print_btn basket_window" title="{% trans 'action : print' %}">
+        <img src="/skins/prod/000000/images/print_history.gif"/>
+      </button>
+
+      {% if user.ACL().has_right('modifyrecord') %}
+      <button class="ui-corner-all TOOL_ppen_btn basket_window" title="{% trans 'action : editer' %}">
+        <img src="/skins/prod/000000/images/ppen_history.gif"/>
+      </button>
+      {% endif %}
+
+      {% if user.ACL().has_right('changestatus') %}
+      <button class="ui-corner-all TOOL_chgstatus_btn basket_window" title="{% trans 'action : status' %}">
+        <img src="/skins/prod/000000/images/chgstatus_history.gif"/>
+      </button>
+      {% endif %}
+
+      {% if user.ACL().has_right('deleterecord') and user.ACL().has_right('addrecord') %}
+      <button class="ui-corner-all TOOL_chgcoll_btn basket_window" title="{% trans 'action : collection' %}">
+        <img src="/skins/prod/000000/images/chgcoll_history.gif"/>
+      </button>
+      {% endif %}
+
+      {% if user.ACL().has_right('push') %}
+      <button class="ui-corner-all TOOL_pushdoc_btn basket_window" title="{% trans 'action : push' %}">
+        <img src="/skins/prod/000000/images/pushdoc_history.gif"/>
+      </button>
+      {% endif %}
+      {% if user.ACL().has_right('bas_chupub') %}
+      <button class="ui-corner-all TOOL_bridge_btn basket_window" title="{% trans 'action : bridge' %}">
+        <img src="/skins/icons/door.png"/>
+      </button>
+      <button class="ui-corner-all TOOL_publish_btn basket_window" title="{% trans 'action : publier' %}">
+        <img src="/skins/icons/rss16.png"/>
+      </button>
+      {% endif %}
+
+      {% if user.ACL().has_right('doctools') %}
+      <button class="ui-corner-all TOOL_imgtools_btn basket_window" title="{% trans 'action : outils' %}">
+        <img src="/skins/prod/000000/images/imgtools_history.gif"/>
+      </button>
+      {% endif %}
+      <button class="ui-corner-all TOOL_trash_btn basket_window" title="{% trans 'action : supprimer' %}">
+        <img src="/skins/icons/delete.png"/>
+      </button>
+
+    </div>
+            <div class="alert_datas_changed ui-corner-all">{% trans 'Certaines donnees du panier ont change' %} <a class="basket_refresher" href="#">{% trans 'rafraichir' %}</a></div>
+{% if basket_length == 0 %}
+            <div style="height:120px;"></div>
+{% endif %}
+
+{% set basket_scope = 'objects'%}
+
+{% import 'prod/WorkZone/Macros.twig' as Macros %}
+            
+{% if basket.getValidation() and basket.getValidation().getInitiator() == core.getAuthenticatedUser() %}
+    {{ Macros.display_validation(basket, ordre, user, session) }}
+{% else %}
+    {{ Macros.display_basket(basket, user, session) }}
+{% endif %}
+
+          </div>
+
+

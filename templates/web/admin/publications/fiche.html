@@ -42,7 +42,7 @@
         {% for databox in user.ACL().get_granted_sbas('bas_chupub') %}
           <optgroup label="{{ databox.get_viewname() }}">
           {% for collection in databox.get_collections() %}
-            <option {% if feed.get_collection().get_base_id() == collection.get_base_id() %}selected="selected"{% endif %} value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+            <option {% if feed.get_collection() and feed.get_collection().get_base_id() == collection.get_base_id() %}selected="selected"{% endif %} value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
           {% endfor %}
           </optgroup>
         {% endfor %}

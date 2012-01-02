@@ -57,6 +57,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   const CACHE_ENTRY_NUMBER = 'entrynumber';
 
   const CACHE_USER_TOKEN = 'usr_token';
+  
+  const MAX_ENTRIES = 20;
 
   /**
    *
@@ -561,7 +563,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   public function get_entries($offset_start, $how_many)
   {
     $offset_start = (int) $offset_start;
-    $how_many = $how_many > 20 ? 20 : (int) $how_many;
+    $how_many = $how_many > self::MAX_ENTRIES ? self::MAX_ENTRIES : (int) $how_many;
 
     $sql = 'SELECT id
             FROM feed_entries

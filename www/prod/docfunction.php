@@ -14,7 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$Core = bootstrap::getCore();
+$em = $Core->getEntityManager();
+
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 phrasea::headers();
@@ -235,13 +238,17 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
   if ($parm['SSTTID'] != '' && ($parm['lst'] == null || $parm['lst'] == ''))
   {
     $parm['lst'] = array();
-
-    $basket = basket_adapter::getInstance($appbox, $parm['SSTTID'], $usr_id);
-
-    foreach ($basket->get_elements() as $basket_element)
+    
+    $repository = $em->getRepository('\Entities\Basket');
+    /* @var $repository \Repositories\BasketRepository */
+    
+    $Basket = $repository->findUserBasket($Core->getRequest()->get('SSTTID'), $Core->getAuthenticatedUser());
+    
+    foreach ($Basket->getElements() as $basket_element)
     {
-      $record = $basket_element->get_record();
-      $parm['lst'][] = $record->get_sbas_id() . '_' . $record->get_record_id();
+      /* @var $basket_element \Entities\BasketElement */
+      $record = $basket_element->getRecord();
+      $parm['lst'][] = $record->get_serialize_key();
     }
     $parm['lst'] = implode(';', $parm['lst']);
   }

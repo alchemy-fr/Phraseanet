@@ -43,12 +43,9 @@ class Story implements ControllerProviderInterface
               return new Response($twig->render('prod/Story/Create.html.twig', array()));
             });
 
-    $controllers->post('/', function(Application $app)
+    $controllers->post('/', function(Application $app, Request $request)
             {
-              $request = $app['request'];
-
-//              /* @var $request \Symfony\Component\HttpFoundation\Request */
-//
+              /* @var $request \Symfony\Component\HttpFoundation\Request */
               $em = $app['Core']->getEntityManager();
 
               $user = $app['Core']->getAuthenticatedUser();
@@ -107,7 +104,7 @@ class Story implements ControllerProviderInterface
                         'record_id' => $Story->get_record_id(),
                     )
                 );
-
+                  
                 $datas = $app['Core']['Serializer']->serialize($data, 'json');
 
                 return new Response($datas, 200, array('Content-type' => 'application/json'));
@@ -222,87 +219,6 @@ class Story implements ControllerProviderInterface
                 return new RedirectResponse('/');
               }
             });
-
-    $controllers->post(
-            '/{sbas_id}/{record_id}/attach/'
-            , function(Application $app, Request $request, $sbas_id, $record_id)
-            {
-              $Story = new \record_adapter($sbas_id, $record_id);
-
-              if (!$Story->is_grouping())
-                throw new \Exception('You can only attach stories');
-
-              $user = $app['Core']->getAuthenticatedUser();
-
-              if (!$user->ACL()->has_right_on_base($Story->get_base_id()))
-                throw new \Exception_Forbidden('You do not have access to this Story');
-
-              $em = $app['Core']->getEntityManager();
-
-              $StoryWZ = new \Entities\StoryWZ();
-              $StoryWZ->setUser($user);
-              $StoryWZ->setRecord($Story);
-
-              $em->persist($StoryWZ);
-
-              $data = array(
-                  'success' => true
-                  , 'message' => _('Story attached to the WorkZone')
-                  , 'StoryWZ' => array(
-                      'id' => $StoryWZ->getId()
-                  )
-              );
-
-              if ($request->getRequestFormat() == 'json')
-              {
-
-                $datas = $app['Core']['Serializer']->serialize($data, 'json');
-
-                return new Response($datas, 200, array('Content-type' => 'application/json'));
-              }
-              else
-              {
-                return new RedirectResponse('/{sbas_id}/{record_id}/');
-              }
-            });
-    $controllers->post(
-            '/{sbas_id}/{record_id}/detach/'
-            , function(Application $app, Request $request, $sbas_id, $record_id)
-            {
-              $Story = new \record_adapter($sbas_id, $record_id);
-
-              $user = $app['Core']->getAuthenticatedUser();
-
-              $em = $app['Core']->getEntityManager();
-
-              $repository = $em->getRepository('Entities\StoryWZ');
-
-              /* @var $repository \Repositories\StoryWZRepository */
-              $StoryWZ = $repository->findUserStory($user, $Story);
-
-              if (!$StoryWZ)
-              {
-                throw new \Exception_NotFound('Story not found');
-              }
-
-
-              $data = array(
-                  'success' => true
-                  , 'message' => _('Story detached from the WorkZone')
-              );
-
-              if ($request->getRequestFormat() == 'json')
-              {
-                $datas = $app['Core']['Serializer']->serialize($data, 'json');
-
-                return new Response($datas, 200, array('Content-type' => 'application/json'));
-              }
-              else
-              {
-                return new RedirectResponse('/');
-              }
-            });
-
 //    $controllers->post('/{basket_id}/delete/', function(Application $app, Request $request, $basket_id)
 //            {
 //              $em = $app['Core']->getEntityManager();

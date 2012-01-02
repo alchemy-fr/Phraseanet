@@ -8,13 +8,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Alchemy\Phrasea\Helper\Record;
 
-
-use Alchemy\Phrasea\Helper\RecordsAbstract as RecordHelper;
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
+    Symfony\Component\HttpFoundation\Request;
 
 /**
+ * Edit Record Helper
+ * This object handles /edit/ request and filters records that user can edit
+ * 
+ * It prepares metadatas, databases structures.
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -64,16 +68,21 @@ class Edit extends RecordHelper
    * @var boolean
    */
   protected $works_on_unique_sbas = true;
+
+  /**
+   *
+   * @var type 
+   */
   protected $has_thesaurus = false;
 
-
-
-  public function __construct(Request $request)
+  /**
+   *
+   * @param \Alchemy\Phrasea\Core $core
+   * @return Edit 
+   */
+  public function __construct(\Alchemy\Phrasea\Core $core)
   {
-    $appbox = \appbox::get_instance();
-
-    parent::__construct($request);
-
+    parent::__construct($core);
 
     if ($this->is_single_grouping())
     {
@@ -186,9 +195,7 @@ class Edit extends RecordHelper
   protected function generate_javascript_elements()
   {
     $_lst = array();
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user = $this->getCore()->getAuthenticatedUser();
     $twig = new \supertwig();
 
     foreach ($this->selection as $record)
@@ -251,7 +258,7 @@ class Edit extends RecordHelper
       }
       catch (Exception $e)
       {
-
+        
       }
       $_lst[$indice]['type'] = $record->get_type();
     }
@@ -282,7 +289,7 @@ class Edit extends RecordHelper
 
       $T_sgval['b' . $base_id] = array();
       $collection = \collection::get_from_base_id($base_id);
-      
+
       if ($sxe = simplexml_load_string($collection->get_prefs()))
       {
         $z = $sxe->xpath('/baseprefs/sugestedValues');
@@ -292,7 +299,7 @@ class Edit extends RecordHelper
 
         foreach ($z[0] as $ki => $vi) // les champs
         {
-        
+
           $field = $databox->get_meta_structure()->get_element_by_name($ki);
           if (!$field)
             continue; // champ inconnu dans la structure ?
@@ -323,9 +330,7 @@ class Edit extends RecordHelper
   protected function generate_javascript_status()
   {
     $_tstatbits = array();
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user = $this->getCore()->getAuthenticatedUser();
 
     if ($user->ACL()->has_right('changestatus'))
     {
@@ -441,7 +446,7 @@ class Edit extends RecordHelper
       try
       {
         $reg_record = $this->get_grouping_head();
-        $reg_sbas_id = $reg_record->get_base_id();
+        $reg_sbas_id = $reg_record->get_sbas_id();
 
         $newsubdef_reg = new record_adapter($reg_sbas_id, $request->get('newrepresent'));
 
@@ -457,12 +462,11 @@ class Edit extends RecordHelper
       }
       catch (Exception $e)
       {
-
+        
       }
     }
 
     if (!is_array($request->get('mds')))
-
       return $this;
 
     $sbas_id = (int) $request->get('sbid');

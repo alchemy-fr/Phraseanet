@@ -7,7 +7,7 @@
  * @package Minify
  */
 
-define('MINIFY_MIN_DIR', dirname(__FILE__));
+define('MINIFY_MIN_DIR', __DIR__);
 
 // load config
 require MINIFY_MIN_DIR . '/config.php';

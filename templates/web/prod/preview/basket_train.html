@@ -1,6 +1,6 @@
  <div id="PREVIEWCURRENTCONT" class="PNB10">
   <ul>
-    {% for child in record.get_container().get_elements() %}
+    {% for child in record.get_container().getElements() %}
 
       {% set thumbnail = child.get_record().get_thumbnail() %}
       {% if thumbnail.is_paysage() %}
@@ -23,7 +23,7 @@
       {% endif %}
 
       <li class="{{class}} prevTrainCurrent">
-        <img {{tooltip|raw}} jsargs="BASK|{{child.get_order()}}|{{record.get_container().get_ssel_id()}}"
+        <img {{tooltip|raw}} jsargs="BASK|{{child.get_order()}}|{{record.get_container().getId()}}"
           class="openPreview prevRegToolTip" return(false);" src="{{thumbnail.get_url()}}"
             style="{{style}}margin:7px;position:relative;"/></li>
     {% endfor %}

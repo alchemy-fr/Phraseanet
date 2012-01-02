@@ -14,6 +14,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
    */
   protected static $grouping;
   protected static $need_records = true;
+  protected static $need_story = true;
   protected static $need_subdefs = true;
 
   public static function setUpBeforeClass()
@@ -30,12 +31,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     static::$record_23->set_metadatas($metadatas['metadatas']);
 
     $system_file = new system_file(dirname(__FILE__) . '/../testfiles/cestlafete.jpg');
-    self::$grouping = record_adapter::create(self::$collection, $system_file, false, true);
   }
 
   public static function tearDownAfterClass()
   {
-    self::$grouping->delete();
     parent::tearDownAfterClass();
   }
 
@@ -102,21 +101,21 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testIs_grouping()
   {
     $this->assertFalse(self::$record_1->is_grouping());
-    $this->assertTrue(self::$grouping->is_grouping());
+    $this->assertTrue(self::$story_1->is_grouping());
   }
 
   public function testGet_base_id()
   {
     $this->assertTrue(is_int(static::$record_1->get_base_id()));
     $this->assertEquals(self::$collection->get_base_id(), static::$record_1->get_base_id());
-    $this->assertTrue(is_int(static::$grouping->get_base_id()));
-    $this->assertEquals(self::$collection->get_base_id(), static::$grouping->get_base_id());
+    $this->assertTrue(is_int(self::$story_1->get_base_id()));
+    $this->assertEquals(self::$collection->get_base_id(), self::$story_1->get_base_id());
   }
 
   public function testGet_record_id()
   {
     $this->assertTrue(is_int(static::$record_1->get_record_id()));
-    $this->assertTrue(is_int(static::$grouping->get_record_id()));
+    $this->assertTrue(is_int(self::$story_1->get_record_id()));
   }
 
   public function testGet_thumbnail()
@@ -175,7 +174,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $this->assertNotNull(static::$record_1->get_sha256());
     $this->assertRegExp('/[a-zA-Z0-9]{64}/', static::$record_1->get_sha256());
-    $this->assertNull(static::$grouping->get_sha256());
+    $this->assertNull(self::$story_1->get_sha256());
   }
 
   public function testGet_mime()
@@ -416,7 +415,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_reg_name()
   {
-    $this->assertTrue(is_string(self::$grouping->get_reg_name()));
+    $this->assertTrue(is_string(self::$story_1->get_reg_name()));
   }
 
   public function testGet_record_by_sha()
@@ -473,16 +472,25 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
-    $baskets = $basket_coll->get_baskets();
-    $baskets = $baskets['baskets'];
+    
+    $em = self::$core->getEntityManager();
 
-    $basket = array_shift($baskets);
-    $this->assertInstanceOf('basket_adapter', $basket);
-
-    $basket->push_element(self::$record_1, false, false);
-    self::$record_1->get_container_baskets();
-
+    $basket = $this->insertOneBasket();
+    $this->assertInstanceOf('\Entities\Basket', $basket);
+    
+    /* @var $basket \Entities\Basket */
+    $basket_element = new \Entities\BasketElement();
+    $basket_element->setRecord(self::$record_1);
+    $basket_element->setBasket($basket);
+    
+    $em->persist($basket_element);
+    
+    $basket->addBasketElement($basket_element);
+    
+    $em->merge($basket);
+    
+    $em->flush();
+    
     $found = $sselcont_id = false;
 
     $sbas_id = self::$record_1->get_sbas_id();
@@ -490,13 +498,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     foreach (self::$record_1->get_container_baskets() as $c_basket)
     {
-      if ($c_basket->get_ssel_id() == $basket->get_ssel_id())
+      if ($c_basket->getId() == $basket->getId())
       {
         $found = true;
-        foreach ($c_basket->get_elements() as $b_el)
+        foreach ($c_basket->getElements() as $b_el)
         {
-          if ($b_el->get_record()->get_record_id() == $record_id && $b_el->get_record()->get_sbas_id() == $sbas_id)
-            $sselcont_id = $b_el->get_sselcont_id();
+          if ($b_el->getRecord()->get_record_id() == $record_id && $b_el->getRecord()->get_sbas_id() == $sbas_id)
+            $sselcont_id = $b_el->getId();
         }
       }
     }
@@ -505,7 +513,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     if (!$found)
       $this->fail();
 
-    $basket->remove_from_ssel($sselcont_id);
   }
 
 }

@@ -14,9 +14,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-require_once dirname(__FILE__) . "/../../lib/classes/API/OAuth2/Autoloader.class.php";
+require_once __DIR__ . "/../../lib/classes/API/OAuth2/Autoloader.class.php";
 
 API_OAuth2_Autoloader::register();
 
@@ -141,7 +141,7 @@ if ($request->has_post_datas())
 }
 if ($request->has_post_datas())
 {
-  $evt_mngr = eventsmanager_broker::getInstance($appbox);
+  $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
   $notifications = $evt_mngr->list_notifications_available($appbox->get_session()->get_usr_id());
 
   $datas = array();
@@ -504,7 +504,7 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                           <td colspan="3">Notification par email</td>
                         </tr>
                         <?php
-                        $evt_mngr = eventsmanager_broker::getInstance($appbox);
+                        $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
                         $notifications = $evt_mngr->list_notifications_available($appbox->get_session()->get_usr_id());
 
                         foreach ($notifications as $notification_group => $nots)

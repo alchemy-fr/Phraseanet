@@ -20,10 +20,10 @@
       {{feed_entry.get_subtitle()|nl2br|raw}}
     </p>
     <p>
+      {% set author = feed_entry.get_author_name() %}
       <span class="author">{% trans %}Par {{ author }}{% endtrans %}</span>
       {% set entry_length = feed_entry.get_content()|length %}
       {% trans %}{{entry_length}} documents{% endtrans %}
-      {% set author = feed_entry.get_author_name() %}
     </p>
     <ul class="image_set">
     {% for item in feed_entry.get_content() %}
@@ -31,7 +31,7 @@
         <a href="/lightbox/ajax/LOAD_FEED_ITEM/{{feed_entry.get_id()}}/{{item.get_id()}}/">
           {{thumbnail.format(item.get_record().get_thumbnail(), 80, 80, '', session, true)}}
           </a>
-          <input type="hidden" class="display_id" name="display_id" value="{{item.get_order()}}" />
+          <input type="hidden" class="display_id" name="display_id" value="{{item.get_ord()}}" />
       </li>
     {% endfor %}
     </ul>

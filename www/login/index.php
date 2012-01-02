@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -125,7 +125,7 @@ if (!$registry->get('GV_maintenance')
                                                         <div style="text-align:center;float: left;width:300px;margin:0 15px 0px;">
                                                             <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
                                                             <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
-                                                        </div>' . recaptcha_get_html(GV_captcha_public_key) . '</div>';
+                                                        </div>' . recaptcha_get_html($registry->get('GV_captcha_public_key')) . '</div>';
 }
 
 $public_feeds = Feed_Collection::load_public_feeds($appbox);

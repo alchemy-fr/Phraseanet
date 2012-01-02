@@ -27,12 +27,10 @@ class Module_Prod_Route_TooltipTest extends PhraseanetWebTestCaseAuthenticatedAb
   public function testRouteBasket()
   {
     $appbox = appbox::get_instance();
-    $basketcoll = new basketCollection($appbox, self::$user->get_id());
-    $basket_coll = $basketcoll->get_baskets();
 
-    $basket = array_shift($basket_coll['baskets']);
+    $basket = $this->insertOneBasket();
 
-    $crawler = $this->client->request('POST', '/tooltip/basket/' . $basket->get_ssel_id() . '/');
+    $crawler = $this->client->request('POST', '/tooltip/basket/' . $basket->getId() . '/');
     $pageContent = $this->client->getResponse()->getContent();
     $this->assertTrue($this->client->getResponse()->isOk());
 

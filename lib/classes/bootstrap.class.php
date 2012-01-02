@@ -32,14 +32,14 @@ class bootstrap
    *
    * @return Alchemy\Phrasea\Core 
    */
-  public static function execute()
+  public static function execute($env = 'main')
   {
     if(static::$core)
     {
       return static::$core;
     }
     
-    static::$core = new Alchemy\Phrasea\Core();
+    static::$core = new Alchemy\Phrasea\Core($env);
     
     return static::$core;
   }

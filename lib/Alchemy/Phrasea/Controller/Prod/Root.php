@@ -37,7 +37,6 @@ class Root implements ControllerProviderInterface
     $controllers->get('/', function(Application $app)
             {
 
-
               \User_Adapter::updateClientInfos(1);
 
               $appbox = \appbox::get_instance();
@@ -115,11 +114,10 @@ class Root implements ControllerProviderInterface
                   'module_prod' => new Helper\Prod($app['Core']),
                   'cssfile' => $cssfile,
                   'module' => 'prod',
-                  'events' => \eventsmanager_broker::getInstance($appbox),
+                  'events' => \eventsmanager_broker::getInstance($appbox, $app['Core']),
                   'GV_defaultQuery_type' => $registry->get('GV_defaultQuery_type'),
                   'GV_multiAndReport' => $registry->get('GV_multiAndReport'),
                   'GV_thesaurus' => $registry->get('GV_thesaurus'),
-//        'basket_collection' => new \basketCollection($appbox, $user->get_id(), $srt),
                   'cgus_agreement' => \databox_cgu::askAgreement(),
                   'css' => $css,
                   'feeds' => $feeds,

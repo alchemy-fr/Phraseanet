@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block content %}
-    {% set basket_element = basket.get_first_element%}
+    {% set basket_element = basket.getElements().first() %}
     <div id="innerWrapper" style="top:10px;left:10px;position:relative;width:100%;height:100%;">
         <div id="innerTop" style="bottom:186px;position:relative;bottom:0;width:100%;">
 
@@ -27,11 +27,11 @@
                             <tr valign="middle">
                                 <td style="width:10px;"></td>
                                 <td style="width:35px;text-align:center;">
-                                    <div class="display_id">{% if basket_element %}{{basket_element.get_order()}}{% endif %}</div>
+                                    <div class="display_id">{% if basket_element %}{{basket_element.getOrd()}}{% endif %}</div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if basket_element %}{{basket_element.get_record().get_title|e}}{% endif %}">
-                                        {% if basket_element %}{{basket_element.get_record().get_title}}{% endif %}
+                                    <div class="title title15" title="{% if basket_element %}{{basket_element.getRecord().get_title}}{% endif %}">
+                                        {% if basket_element %}{{basket_element.getRecord().get_title}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -44,7 +44,7 @@
                     </div>
                     <div class="container left">
                         {% if basket_element %}
-              {% set bask_prev = basket_element.get_record().get_preview() %}
+              {% set bask_prev = basket_element.getRecord().get_preview() %}
               {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'',session, false)}}
             {% endif %}
                         {% include 'lightbox/selector_box.twig' %}
@@ -60,8 +60,8 @@
                                     <div class="display_id"></div>
                                 </td>
                                 <td style="text-align:left;width:auto;">
-                                    <div class="title title15" title="{% if basket_element %}{{basket_element.get_record().get_title|e}}{% endif %}">
-                                        {% if basket_element %}{{basket_element.get_record().get_title}}{% endif %}
+                                    <div class="title title15" title="{% if basket_element %}{{basket_element.getRecord().get_title}}{% endif %}">
+                                        {% if basket_element %}{{basket_element.getRecord().get_title}}{% endif %}
                                     </div>
                                 </td>
                                 <td style="text-align:right;width:230px;">
@@ -82,7 +82,7 @@
                                 <img class="collapsed" src="/skins/lightbox/collapsedie6.gif"/>
                                 <span class="caption">{% trans 'notice'%}</span>
                             </td>
-              {% if basket.is_valid() %}
+              {% if basket.getValidation() %}
                             <td>
                                 <img class="collapsed" src="/skins/lightbox/collapsedie6.gif"/>
                                 <span class="validate highlight">{% trans 'Validation'%}</span>
@@ -92,16 +92,16 @@
                     </table>
                 </div>
 
-                <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;{% if basket.is_valid() %}display:none;{% endif %}">
+                <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;{% if basket.getValidation() %}display:none;{% endif %}">
                     <div id="record_infos">
                         <div class="container">
               {% if basket_element %}
-                {{caption.format_caption(basket_element.get_record())}}
+                {{caption.format_caption(basket_element.getRecord())}}
               {% endif %}
             </div>
                     </div>
                 </div>
-        {% if basket.is_valid() %}
+        {% if basket.getValidation() %}
                 <div style="width:230px;height:auto;" id="basket_infos" class="right_column_wrapper unselectable right_column_wrapper_user left">
                             {% include 'lightbox/IE6/agreement_box.twig' %}
                     <div id="basket_options" class="ui-corner-all unselectable left" style="height:35px;xmargin-top:10px;">
@@ -127,27 +127,19 @@
                         <td>
                             <select id="navigation">
                                 <optgroup label="{% trans 'Validations'%}">
-                                {% for key,baskets in baskets_collection.get_baskets() %}
-                                    {% if key == 'baskets' %}
-                                        {% for item in baskets %}
-                                            {% if item.is_valid() %}
-                                                <option {% if basket.get_ssel_id() == item.get_ssel_id() %} selected="selected" {% endif %}
-                                                    value="{{item.get_ssel_id()}}">{{item.get_name()}}</option>
-                                            {% endif %}
-                                        {% endfor %}
+                                {% for item in baskets_collection %}
+                                    {% if item.getValidation() %}
+                                        <option {% if basket.getId() == item.getId() %} selected="selected" {% endif %}
+                                            value="{{item.getId()}}">{{item.getName()}}</option>
                                     {% endif %}
                                 {% endfor %}
                                 </optgroup>
                                 <optgroup label="{% trans 'Paniers'%}">
-                                {% for key,baskets in baskets_collection.get_baskets() %}
-                                    {% if key == 'baskets' or key == 'recept' %}
-                                        {% for item in baskets %}
-                                            {% if item.is_valid() == false %}
-                                                <option {% if basket.get_ssel_id() == item.get_ssel_id() %} selected="selected" {% endif %}
-                                                    value="{{item.get_ssel_id()}}">{{item.get_name()}}</option>
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
+                                {% for item in baskets_collection %}
+                                  {% if item.getValidation() is null %}
+                                      <option {% if basket.getId() == item.getId() %} selected="selected" {% endif %}
+                                          value="{{item.getId()}}">{{item.getName()}}</option>
+                                  {% endif %}
                                 {% endfor %}
                                 </optgroup>
                             </select>

@@ -36,8 +36,8 @@
                                 </td>
                                 <td style="text-align:right;width:230px;">
                                     <div class="options">
-                    {% set basket_element = first_item %}
-                                        {% include 'lightbox/sc_options_box.twig' %}
+                    {% set feed_element = first_item %}
+                                        {% include 'lightbox/feed_options_box.twig' %}
                                     </div>
                                 </td>
                             </tr>
@@ -48,8 +48,6 @@
               {% set bask_prev = first_item.get_record().get_preview() %}
               {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'',session, false)}}
             {% endif %}
-                        {% include 'lightbox/selector_box.twig' %}
-                        {% include 'lightbox/sc_note.twig' %}
                     </div>
                 </div>
                 <div id="record_compare" class="PNB record_display_box">

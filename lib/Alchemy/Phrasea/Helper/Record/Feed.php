@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Helper\Record;
 
 
-use Alchemy\Phrasea\Helper\RecordsAbstract as RecordHelper;
+use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -43,15 +43,13 @@ class Feed extends RecordHelper
 
   /**
    *
-   * @param Request $request
-   * @return RecordsFeed 
+   * @param \Alchemy\Phrasea\Core $core
+   * @return Feed 
    */
-  public function __construct(Request $request)
+  public function __construct(\Alchemy\Phrasea\Core $core)
   {
-    $appbox = \appbox::get_instance();
-
-    parent::__construct($request);
-
+    parent::__construct($core);
+    
     if ($this->is_single_grouping())
     {
       $record = array_pop($this->selection->get_elements());

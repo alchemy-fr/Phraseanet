@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/include/vendor/qunit/qunit/qunit.js"></script>
+    <script src="/include/js/jquery.Selection.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/vendor/qunit/qunit/qunit.css"/> 
+    <script>  $(document).ready(function(){
+    
+      
+      test("Selection instanciation", function() {
+        var sel = new Selection();
+        var array = new Array();
+        equal( typeof array, typeof sel.get(), "We expect the selection to be an Array" );
+        equal( array.length, sel.get().length, "We expect the selection to be empty" );
+      });
+
+      module("Add datas");
+      
+      test("first test within module", function() {
+        var sel = new Selection();
+        sel.push('a');
+        equal( 1, sel.get().length, "We expect the selection to be empty" );
+        equal( 'a', sel.get().pop(), "We expect the selection to be empty" );
+      });
+      
+      module("Multiple selections");
+      
+      test("first test within module", function() {
+        var sel1 = new Selection();
+        var sel2 = new Selection();
+        
+        sel1.push('a');
+        sel2.push('b');
+        
+        equal( 1, sel1.get().length, "We expect the selection to be empty" );
+        equal( 'a', sel1.get().pop(), "We expect the selection to be empty" );
+        
+        equal( 1, sel2.get().length, "We expect the selection to be empty" );
+        equal( 'b', sel2.get().pop(), "We expect the selection to be empty" );
+      });
+
+
+
+    });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">QUnit example</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">test markup, will be hidden</div>
+  </body>
+</html>

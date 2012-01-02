@@ -376,7 +376,7 @@
           </div>
                     <div id="ftp_form">
                                             <div id="ftp_form_stock">
-                                            {% for datas in download.ftp_datas %}
+                                            {% for datas in download.get_ftp_datas() %}
                                                     {{ _self.print_ftp_form(datas) }}
                                             {% endfor %}
                                             </div>

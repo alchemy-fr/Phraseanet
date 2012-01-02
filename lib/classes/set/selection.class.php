@@ -31,21 +31,14 @@ class set_selection extends set_abstract
 
   /**
    *
-   * @param basket_adapter $basket
-   * @param boolean $flatten_if_grouping
+   * @param \Entities\Basket $basket
    * @return set_selection
    */
-  public function load_basket(basket_adapter $basket, $flatten_if_grouping = true)
+  public function load_basket(\Entities\Basket $Basket)
   {
-    if ($basket->is_grouping() && !$flatten_if_grouping)
+    foreach ($Basket->getElements() as $basket_element)
     {
-      $record = new record_adapter($basket->get_sbas_id(), $basket->get_record_id(), count($this->elements));
-      $this->add_element($record);
-    }
-    else
-    {
-      foreach ($basket->get_elements() as $basket_element)
-        $this->add_element($basket_element->get_record());
+      $this->add_element($basket_element->getRecord());
     }
 
     return $this;

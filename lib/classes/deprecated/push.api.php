@@ -1486,6 +1486,7 @@ function getUsrInfos($usr, $arrayUsrs)
 
 function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
 {
+  $Core = bootstrap::getCore();
   $appbox = appbox::get_instance();
   $session = $appbox->get_session();
   $registry = $appbox->get_registry();
@@ -1507,6 +1508,8 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
     $reading_confirm_to = $me->get_email();
   }
 
+  $em = $Core->getEntityManager();
+  
   foreach ($users as $oneuser => $rights)
   {
     $new_basket = null;
@@ -1516,20 +1519,40 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
       $user = User_Adapter::getInstance($oneuser, $appbox);
       $pusher = User_Adapter::getInstance($usr, $appbox);
 
-      $new_basket = basket_adapter::create($appbox, $newBask, $user, '', $pusher);
-      $new_basket->set_unread();
-
+      $new_basket = new \Entities\Basket();
+      $new_basket->setName($newBask);
+      $new_basket->setIsRead(false);
+      $new_basket->setPusher($pusher);
+      $new_basket->setOwner($user);
+      
+      $em->persist($new_basket);
+      
       $nbchu++;
 
-      $new_basket->push_list($parmLST, false);
+      foreach($parmLST as $basrec)
+      {
+        $basrec = explode('_', $basrec);
+        
+        $record = new record_adapter($basrec[0], $basrec[1]);
+        
+        $BasketElement = new Entities\BasketElement();
+        $BasketElement->setRecord($record);
+        $BasketElement->setBasket($new_basket);
+        
+        $em->persist($BasketElement);
+        
+        $new_basket->addBasketElement($BasketElement);
+      }
+      
+      $em->flush();
 
       $finalUsers[] = $user->get_id();
 
       $canSendHD = sendHdOk($usr, $parmLST);
 
-      foreach ($new_basket->get_elements() as $element)
+      foreach ($new_basket->getElements() as $element)
       {
-        $record = $element->get_record();
+        $record = $element->getRecord();
         if ($rights['canHD'] && in_array($record->get_base_id(), $canSendHD))
           $user->ACL()->grant_hd_on($record, $me, 'push');
         else
@@ -1541,7 +1564,7 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
       $from = trim($me->get_email()) != "" ? $me->get_email() : false;
 
 
-      $url = $registry->get('GV_ServerName') . 'lightbox/index.php?LOG=' . random::getUrlToken('view', $user->get_id(), null, $new_basket->get_ssel_id());
+      $url = $registry->get('GV_ServerName') . 'lightbox/index.php?LOG=' . random::getUrlToken('view', $user->get_id(), null, $new_basket->getId());
 
       if ($me->get_id() == $user->get_id())
         $my_link = $url;
@@ -1557,11 +1580,11 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
           , 'url' => $url
           , 'accuse' => $reading_confirm_to
           , 'message' => $mail_content
-          , 'ssel_id' => $new_basket->get_ssel_id()
+          , 'ssel_id' => $new_basket->getId()
       );
 
 
-      $evt_mngr = eventsmanager_broker::getInstance($appbox);
+      $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
       $evt_mngr->trigger('__PUSH_DATAS__', $params);
     }
     catch (Exception $e)
@@ -1575,6 +1598,7 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
 
 function pushValidation($usr, $ssel_id, $listUsrs, $time, $mail_content, $accuse)
 {
+  $Core = bootstrap::getCore();
   $appbox = appbox::get_instance();
   $session = $appbox->get_session();
   $registry = $appbox->get_registry();
@@ -1605,10 +1629,16 @@ function pushValidation($usr, $ssel_id, $listUsrs, $time, $mail_content, $accuse
     $expires = null;
   }
 
+  $em = $Core->getEntityManager();
+  $repository = $em->getRepository('\Entities\Basket');
+  
+  $basket = $repository->findUserBasket($ssel_id, $Core->getAuthenticatedUser());
 
-
-  $basket = basket_adapter::getInstance($appbox, $ssel_id, $session->get_usr_id());
-  $basket->set_unread();
+  $basket->setIsRead(false);
+  
+  $em->merge($basket);
+  
+  $em->flush();
 
   foreach ($listUsrs as $oneuser => $rights)
   {
@@ -1637,7 +1667,7 @@ function pushValidation($usr, $ssel_id, $listUsrs, $time, $mail_content, $accuse
         , 'accuse' => $reading_confirm_to
     );
 
-    $evt_mngr = eventsmanager_broker::getInstance($appbox);
+    $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
     $evt_mngr->trigger('__PUSH_VALIDATION__', $params);
 
     if ($me->get_id() == $user->get_id())

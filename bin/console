@@ -27,7 +27,9 @@ require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
 
 try
 {
-  bootstrap::register_autoloads();
+  \bootstrap::register_autoloads();
+  
+  $Core = \bootstrap::getCore();
 
   $app = new Application("
   _____  _    _ _____            _____ ______          _   _ ______ _______ 
@@ -45,7 +47,8 @@ try
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-                  . ' KONSOLE KOMMANDER', GV_version . ' ' . GV_version_name);
+                  . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName() 
+                  . ' ' . \Alchemy\Phrasea\Core\Version::getNumber());
 
   $app->add(new module_console_aboutAuthors('about:authors'));
   $app->add(new module_console_aboutLicense('about:license'));

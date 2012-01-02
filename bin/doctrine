@@ -28,6 +28,7 @@ require_once dirname(__FILE__) . '/../lib/Alchemy/Phrasea/Core/Service/Doctrine.
 
 try
 {
+  $doctrineConf = array();
   $doctrine = new Phrasea\Core\Service\Doctrine();
 
   $app = new Application("Phraseanet Doctrine Console", $doctrine->getVersion());

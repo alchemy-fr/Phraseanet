@@ -1350,16 +1350,6 @@
             <comment></comment>
           </field>
           <field>
-            <name>bas_manage</name>
-            <type>int(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
             <name>bas_modify_struct</name>
             <type>int(1) unsigned</type>
             <null></null>

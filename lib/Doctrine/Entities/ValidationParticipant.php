@@ -8,7 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Entities;
+
 /**
  * 
  * @package
@@ -29,18 +31,43 @@ class ValidationParticipant
   private $usr_id;
 
   /**
-   * @var Entities\ValidationData
-   */
-  private $datases;
-
-  /**
    * @var Entities\ValidationSession
    */
   private $session;
 
+  /**
+   * @var datetime $reminded
+   */
+  private $reminded = null;
+
+  /**
+   * @var Entities\ValidationData
+   */
+  private $datas;
+
+  /**
+   * @var boolean $is_confirmed
+   */
+  private $is_confirmed = false;
+
+  /**
+   * @var boolean $can_agree
+   */
+  private $can_agree = false;
+
+  /**
+   * @var boolean $can_see_others
+   */
+  private $can_see_others = false;
+
+  /**
+   * @var boolean $is_aware
+   */
+  private $is_aware = false;
+
   public function __construct()
   {
-    $this->datases = new \Doctrine\Common\Collections\ArrayCollection();
+    $this->datas = new \Doctrine\Common\Collections\ArrayCollection();
   }
 
   /**
@@ -76,21 +103,11 @@ class ValidationParticipant
   /**
    * Add datases
    *
-   * @param Entities\ValidationData $datases
+   * @param Entities\ValidationData $datas
    */
-  public function addValidationData(\Entities\ValidationData $datases)
+  public function addValidationData(\Entities\ValidationData $datas)
   {
-    $this->datases[] = $datases;
-  }
-
-  /**
-   * Get datases
-   *
-   * @return Doctrine\Common\Collections\Collection 
-   */
-  public function getDatases()
-  {
-    return $this->datases;
+    $this->datas[] = $datas;
   }
 
   /**
@@ -112,12 +129,6 @@ class ValidationParticipant
   {
     return $this->session;
   }
-
-  /**
-   * @var boolean $is_aware
-   */
-  private $is_aware = false;
-
 
   /**
    * Set is_aware
@@ -144,10 +155,125 @@ class ValidationParticipant
    * @param \User_Adapter $user
    * @return ValidationParticipant 
    */
-  public function setParticipant(\User_Adapter $user)
+  public function setUser(\User_Adapter $user)
   {
     $this->usr_id = $user->get_id();
     return $this;
+  }
+
+  public function getUser()
+  {
+    return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance());
+  }
+
+  /**
+   * Set reminded
+   *
+   * @param datetime $reminded
+   */
+  public function setReminded($reminded)
+  {
+    $this->reminded = $reminded;
+  }
+
+  /**
+   * Get reminded
+   *
+   * @return datetime 
+   */
+  public function getReminded()
+  {
+    return $this->reminded;
+  }
+
+  /**
+   * Get datas
+   *
+   * @return Doctrine\Common\Collections\Collection 
+   */
+  public function getDatas()
+  {
+    return $this->datas;
+  }
+
+  /**
+   * Set is_confirmed
+   *
+   * @param boolean $isConfirmed
+   */
+  public function setIsConfirmed($isConfirmed)
+  {
+    $this->is_confirmed = $isConfirmed;
+  }
+
+  /**
+   * Get is_confirmed
+   *
+   * @return boolean 
+   */
+  public function getIsConfirmed()
+  {
+    return $this->is_confirmed;
+  }
+
+  /**
+   * Set can_agree
+   *
+   * @param boolean $canAgree
+   */
+  public function setCanAgree($canAgree)
+  {
+    $this->can_agree = $canAgree;
+  }
+
+  /**
+   * Get can_agree
+   *
+   * @return boolean 
+   */
+  public function getCanAgree()
+  {
+    return $this->can_agree;
+  }
+
+  /**
+   * Set can_see_others
+   *
+   * @param boolean $canSeeOthers
+   */
+  public function setCanSeeOthers($canSeeOthers)
+  {
+    $this->can_see_others = $canSeeOthers;
+  }
+
+  /**
+   * Get can_see_others
+   *
+   * @return boolean 
+   */
+  public function getCanSeeOthers()
+  {
+    return $this->can_see_others;
+  }
+
+  public function isReleasable()
+  {
+
+    if ($this->getIsConfirmed())
+    {
+      return false;
+    }
+
+    foreach ($this->getDatas() as $validation_data)
+    {
+      /* @var $validation_data \Entities\ValidationData */
+      if ($validation_data->getAgreement() === null)
+      {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 }

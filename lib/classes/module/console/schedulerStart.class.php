@@ -45,7 +45,7 @@ class module_console_schedulerStart extends Command
       throw new RuntimeException('Phraseanet is not set up');
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $scheduler = new task_Scheduler();
     $scheduler->run($output, true);

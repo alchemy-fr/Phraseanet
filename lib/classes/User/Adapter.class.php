@@ -894,6 +894,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     return $this->is_template;
   }
 
+  public function get_template_owner()
+  {
+    return $this->template_owner;
+  }
+
   public static function get_usr_id_from_email($email)
   {
     if(is_null($email))
@@ -1298,7 +1303,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
   protected function load_notifications_preferences()
   {
-    $evt_mngr = eventsmanager_broker::getInstance($this->appbox);
+    $Core = bootstrap::getCore();
+    $evt_mngr = eventsmanager_broker::getInstance($this->appbox, $Core);
     $notifications = $evt_mngr->list_notifications_available($this->id);
 
     foreach ($notifications as $notification_group => $nots)
@@ -1401,7 +1407,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     $lngs = array();
 
-    $path = dirname(__FILE__) . "/../../../locale";
+    $path = __DIR__ . "/../../../locale";
     if ($hdir = opendir($path))
     {
       while (false !== ($file = readdir($hdir)))
@@ -1421,95 +1427,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
 
     return $lngs;
-  }
-
-  public static function detectLanguage(registryInterface $registry, $setLng = null)
-  {
-    $avLanguages = self::avLanguages();
-    $sel = $askLng = $askLocale = '';
-
-    if ($setLng !== null)
-    {
-      $askLng = substr($setLng, 0, 2);
-      $askLocale = $setLng;
-    }
-    elseif (Session_Handler::isset_cookie('locale'))
-    {
-      $askLng = substr(Session_Handler::get_cookie('locale'), 0, 2);
-      $askLocale = Session_Handler::get_cookie('locale');
-    }
-    elseif (strlen($registry->get('GV_default_lng')) > 2)
-    {
-      $askLng = substr($registry->get('GV_default_lng'), 0, 2);
-      $askLocale = $registry->get('GV_default_lng');
-    }
-
-
-    if ($askLng != '' && isset($avLanguages[$askLng]) && isset($avLanguages[$askLng][$askLocale]))
-    {
-      $avLanguages[$askLng][$askLocale]['selected'] = true;
-      $sel = $askLocale;
-    }
-
-    if ($sel === '' && isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-    {
-      $languages = explode(';', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-      $found = false;
-
-      foreach ($languages as $language)
-      {
-        $language = explode(',', strtolower($language));
-        if (count($language) != 2)
-          continue;
-
-        foreach ($language as $lang)
-        {
-          if (strpos($lang, '-') == 2 && strlen($lang) == 5)
-          {
-            $l = explode('-', $lang);
-            $l[0] = strtolower($l[0]);
-            $l[1] = strtoupper($l[1]);
-
-            if ($sel != '')
-            {
-              $found = true;
-              break;
-            }
-            $lang = implode('_', $l);
-            if (isset($avLanguages[$l[0]]))
-            {
-              if (!isset($avLanguages[$l[0]][$lang]))
-              {
-                $lang = end(array_keys($avLanguages[$l[0]]));
-              }
-              $avLanguages[$l[0]][$lang]['selected'] = true;
-              $sel = $lang;
-              $found = true;
-              break;
-            }
-          }
-        }
-        if ($found)
-          break;
-      }
-      if (!$found && array_key_exists(substr($registry->get('GV_default_lng'), 0, 2), $avLanguages))
-      {
-        $avLanguages[substr($registry->get('GV_default_lng'), 0, 2)][$registry->get('GV_default_lng')]['selected'] = true;
-        $sel = $registry->get('GV_default_lng');
-      }
-    }
-    if ($sel == '')
-    {
-      $key = end(array_keys($avLanguages));
-      $lang = end(array_keys($avLanguages[$key]));
-      $avLanguages[$key][$lang]['selected'] = true;
-      $sel = $lang;
-    }
-    Session_Handler::set_locale($sel);
-
-    $sel = explode('_', $sel);
-
-    return $avLanguages;
   }
 
   public static function get_wrong_email_users(appbox $appbox)

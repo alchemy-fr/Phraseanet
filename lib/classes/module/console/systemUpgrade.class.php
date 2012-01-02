@@ -39,9 +39,9 @@ class module_console_systemUpgrade extends Command
     if (!setup::is_installed())
     {
 
-      if (file_exists(dirname(__FILE__) . "/../../../../config/connexion.inc")
-              && !file_exists(dirname(__FILE__) . "/../../../../config/config.inc")
-              && file_exists(dirname(__FILE__) . "/../../../../config/_GV.php"))
+      if (file_exists(__DIR__ . "/../../../../config/connexion.inc")
+              && !file_exists(__DIR__ . "/../../../../config/config.inc")
+              && file_exists(__DIR__ . "/../../../../config/_GV.php"))
       {
 
         $output->writeln('This version of Phraseanet requires a config/config.inc');
@@ -76,7 +76,7 @@ class module_console_systemUpgrade extends Command
         
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $output->write('Phraseanet is going to be upgraded', true);
     $dialog = $this->getHelperSet()->get('dialog');

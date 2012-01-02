@@ -36,16 +36,16 @@ class module_console_systemTemplateGenerator extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    require_once dirname(__FILE__) . '/../../../../lib/vendor/Twig/lib/Twig/Autoloader.php';
-    require_once dirname(__FILE__) . '/../../../../lib/vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
+    require_once __DIR__ . '/../../../../lib/vendor/Twig/lib/Twig/Autoloader.php';
+    require_once __DIR__ . '/../../../../lib/vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
 
 
     Twig_Autoloader::register();
     Twig_Extensions_Autoloader::register();
 
 
-    $tplDir = dirname(__FILE__) . '/../../../../templates/';
-    $tmpDir = dirname(__FILE__) . '/../../../../tmp/cache_twig/';
+    $tplDir = __DIR__ . '/../../../../templates/';
+    $tmpDir = __DIR__ . '/../../../../tmp/cache_twig/';
     $loader = new Twig_Loader_Filesystem($tplDir);
 
     $twig = new Twig_Environment($loader, array(
@@ -81,6 +81,7 @@ class module_console_systemTemplateGenerator extends Command
     $twig->addFilter('formatdate', new Twig_Filter_Function('phraseadate::getDate'));
     $twig->addFilter('getPrettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
     $twig->addFilter('prettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
+    $twig->addFilter('prettyString', new Twig_Filter_Function('phraseadate::getPrettyString'));
     $twig->addFilter('formatoctet', new Twig_Filter_Function('p4string::format_octet'));
     $twig->addFilter('getDate', new Twig_Filter_Function('phraseadate::getDate'));
     $twig->addFilter('geoname_name_from_id', new Twig_Filter_Function('geonames::name_from_id'));

@@ -215,7 +215,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
       }
       catch (Exception_Databox_FieldNotFound $e)
       {
-
+        
       }
 
       $route = '/databoxes/' . $databox_id . '/metadatas/?oauth_token=' . self::$token;
@@ -254,7 +254,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
           $this->assertTrue((strlen($metadatas["separator"]) > 0));
 
         $this->assertTrue(is_string($metadatas["thesaurus_branch"]));
-        $this->assertTrue(in_array($metadatas["type"], array(databox_field::TYPE_DATE, databox_field::TYPE_NUMBER, databox_field::TYPE_TEXT)));
+        $this->assertTrue(in_array($metadatas["type"], array(databox_field::TYPE_DATE, databox_field::TYPE_STRING, databox_field::TYPE_NUMBER, databox_field::TYPE_TEXT)));
         $this->assertTrue(is_bool($metadatas["indexable"]));
         $this->assertTrue(is_bool($metadatas["multivalue"]));
         $this->assertTrue(is_bool($metadatas["readonly"]));
@@ -487,7 +487,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
         $this->assertNotEquals($subdef->get_size(), $headers["download_content_length"]);
         break;
       case "url" :
-        $this->assertTrue(strpos($headers['content_type'], $subdef->get_mime()) === 0, 'Verify that header '.$headers['content_type'].' contains subdef mime type '.$subdef->get_mime());
+        $this->assertTrue(strpos($headers['content_type'], $subdef->get_mime()) === 0, 'Verify that header ' . $headers['content_type'] . ' contains subdef mime type ' . $subdef->get_mime());
         $this->assertEquals($subdef->get_size(), $headers["download_content_length"]);
         break;
     }
@@ -805,189 +805,132 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     {
       $this->evaluateGoodBasket($basket);
       $this->assertEquals('un Joli Nom', $basket["name"]);
-      $basket_obj = basket_adapter::getInstance($appbox, $basket["ssel_id"], $appbox->get_session()->get_usr_id());
-      $basket_obj->delete();
     }
   }
 
   public function testBasketContent()
   {
-    $appbox = appbox::get_instance();
-    $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
+    $basket = $this->insertOneBasket();
 
-    $found = false;
-    foreach ($basket_coll->get_baskets() as $bask_group => $baskets)
+    $route = '/baskets/' . $basket->getId() . '/content/?oauth_token=' . self::$token;
+
+    $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+    $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
+    $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaYaml200($content);
+
+    $this->assertEquals(1, count((array) $content["response"]));
+
+    $this->assertArrayHasKey("basket_elements", $content["response"]);
+
+    foreach ($content["response"]["basket_elements"] as $basket_str)
     {
-      if (!in_array($bask_group, array('recept', 'baskets')))
-        continue;
-      foreach ($baskets as $basket)
+      $this->evaluateGoodBasket($basket_str);
+
+      $this->assertEquals(count($basket->getElements()), count((array) $basket_str["basket_elements"]));
+      foreach ($basket_str["basket_elements"] as $basket_element)
       {
-        $found = true;
-        $route = '/baskets/' . $basket->get_ssel_id() . '/content/?oauth_token=' . self::$token;
-
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-
-        $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
-        $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaYaml200($content);
-
-        $this->assertEquals(1, count((array) $content["response"]));
-
-        $this->assertArrayHasKey("basket_elements", $content["response"]);
-
-        foreach ($content["response"]["basket_elements"] as $basket_str)
-        {
-          $this->evaluateGoodBasket($basket_str);
-
-          $this->assertEquals(count($basket->get_elements()), count((array) $basket_str["basket_elements"]));
-          foreach ($basket_str["basket_elements"] as $basket_element)
-          {
-            $this->assertArrayHasKey('basket_element_id', $basket_element);
-            $this->assertArrayHasKey('order', $basket_element);
-            $this->assertArrayHasKey('record', $basket_element);
-            $this->assertArrayHasKey('validation_item', $basket_element);
-            $this->assertTrue(is_bool($basket_element["validation_item"]));
-            $this->assertTrue(is_int($basket_element["order"]));
-            $this->assertTrue(is_int($basket_element["basket_element_id"]));
-            $this->evaluateGoodRecord($basket_element["record"]);
-          }
-        }
+        $this->assertArrayHasKey('basket_element_id', $basket_element);
+        $this->assertArrayHasKey('order', $basket_element);
+        $this->assertArrayHasKey('record', $basket_element);
+        $this->assertArrayHasKey('validation_item', $basket_element);
+        $this->assertTrue(is_bool($basket_element["validation_item"]));
+        $this->assertTrue(is_int($basket_element["order"]));
+        $this->assertTrue(is_int($basket_element["basket_element_id"]));
+        $this->evaluateGoodRecord($basket_element["record"]);
       }
     }
-    if (!$found)
-      $this->markTestSkipped('Unable to test basket set title');
   }
 
   public function testSetBasketTitle()
   {
 
-    $appbox = appbox::get_instance();
-    $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
+    $basket = $this->insertOneBasket();
 
-    $found = false;
+    $route = '/baskets/' . $basket->getId() . '/setname/?oauth_token=' . self::$token;
 
-    foreach ($basket_coll->get_baskets() as $bask_group => $baskets)
+    $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+    $crawler = $this->client->request('POST', $route, array('name' => 'un Joli Nom'), array(), array("HTTP_ACCEPT" => "application/yaml"));
+    $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaYaml200($content);
+
+    $this->assertEquals(1, count((array) $content["response"]));
+    $this->assertArrayHasKey("basket", $content["response"]);
+    foreach ($content["response"]["basket"] as $basket_str)
     {
-      if (!in_array($bask_group, array('recept', 'baskets')))
-        continue;
-      foreach ($baskets as $basket)
-      {
+      $this->evaluateGoodBasket($basket_str);
 
-        $found = true;
-        $route = '/baskets/' . $basket->get_ssel_id() . '/setname/?oauth_token=' . self::$token;
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $crawler = $this->client->request('POST', $route, array('name' => 'un Joli Nom'), array(), array("HTTP_ACCEPT" => "application/yaml"));
-        $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaYaml200($content);
-
-        $this->assertEquals(1, count((array) $content["response"]));
-        $this->assertArrayHasKey("basket", $content["response"]);
-        foreach ($content["response"]["basket"] as $basket_str)
-        {
-          $this->evaluateGoodBasket($basket_str);
-
-          $this->assertEquals($basket_str["name"], 'un Joli Nom');
-        }
-
-        $crawler = $this->client->request('POST', $route, array('name' => '<i>un Joli Nom<i>'), array(), array("HTTP_ACCEPT" => "application/yaml"));
-        $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaYaml200($content);
-
-        $this->assertEquals(1, count((array) $content["response"]));
-
-        $this->assertArrayHasKey("basket", $content["response"]);
-
-        foreach ($content["response"]["basket"] as $basket)
-        {
-          $this->evaluateGoodBasket($basket_str);
-
-          $this->assertEquals($basket_str["name"], 'un Joli Nom');
-        }
-
-        $crawler = $this->client->request('POST', $route, array('name' => '<strong>aéaa'), array(), array("HTTP_ACCEPT" => "application/yaml"));
-        $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaYaml200($content);
-
-        $this->assertEquals(1, count((array) $content["response"]));
-        $this->assertArrayHasKey("basket", $content["response"]);
-        foreach ($content["response"]["basket"] as $basket_str)
-        {
-          $this->evaluateGoodBasket($basket_str);
-          $this->assertEquals($basket_str["name"], 'aéaa');
-        }
-
-
-        break;
-      }
+      $this->assertEquals($basket_str["name"], 'un Joli Nom');
     }
-    if (!$found)
-      $this->markTestSkipped('Unable to test basket set title');
+
+    $crawler = $this->client->request('POST', $route, array('name' => '<i>un Joli Nom<i>'), array(), array("HTTP_ACCEPT" => "application/yaml"));
+    $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaYaml200($content);
+
+    $this->assertEquals(1, count((array) $content["response"]));
+
+    $this->assertArrayHasKey("basket", $content["response"]);
+
+    foreach ($content["response"]["basket"] as $basket)
+    {
+      $this->evaluateGoodBasket($basket_str);
+
+      $this->assertEquals($basket_str["name"], 'un Joli Nom');
+    }
+
+    $crawler = $this->client->request('POST', $route, array('name' => '<strong>aéaa'), array(), array("HTTP_ACCEPT" => "application/yaml"));
+    $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaYaml200($content);
+
+    $this->assertEquals(1, count((array) $content["response"]));
+    $this->assertArrayHasKey("basket", $content["response"]);
+    foreach ($content["response"]["basket"] as $basket_str)
+    {
+      $this->evaluateGoodBasket($basket_str);
+      $this->assertEquals($basket_str["name"], '<strong>aéaa');
+    }
   }
 
   public function testSetBasketDescription()
   {
-    $appbox = appbox::get_instance();
-    $usr_id = $appbox->get_session()->get_usr_id();
-    $basket_coll = new basketCollection($appbox, $usr_id);
+    $basket = $this->insertOneBasket();
 
-    $found = false;
+    $route = '/baskets/' . $basket->getId() . '/setdescription/?oauth_token=' . self::$token;
 
-    foreach ($basket_coll->get_baskets() as $bask_group => $baskets)
+    $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+    $crawler = $this->client->request('POST', $route, array('description' => 'une belle desc'), array(), array("HTTP_ACCEPT" => "application/yaml"));
+    $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+    $this->evaluateResponse200($this->client->getResponse());
+    $this->evaluateMetaYaml200($content);
+
+    $this->assertEquals(1, count((array) $content["response"]));
+
+    $this->assertArrayHasKey("basket", $content["response"]);
+    foreach ($content["response"]["basket"] as $basket_str)
     {
-      if (!in_array($bask_group, array('recept', 'baskets')))
-        continue;
-      foreach ($baskets as $basket)
-      {
+      $this->evaluateGoodBasket($basket_str);
 
-        $found = true;
-        $route = '/baskets/' . $basket->get_ssel_id() . '/setdescription/?oauth_token=' . self::$token;
-
-        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-        $crawler = $this->client->request('POST', $route, array('description' => 'une belle desc'), array(), array("HTTP_ACCEPT" => "application/yaml"));
-        $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-        $this->evaluateResponse200($this->client->getResponse());
-        $this->evaluateMetaYaml200($content);
-
-        $this->assertEquals(1, count((array) $content["response"]));
-
-        $this->assertArrayHasKey("basket", $content["response"]);
-        foreach ($content["response"]["basket"] as $basket_str)
-        {
-          $this->evaluateGoodBasket($basket_str);
-
-          $this->assertEquals($basket_str["description"], 'une belle desc');
-        }
-
-
-        break;
-      }
+      $this->assertEquals($basket_str["description"], 'une belle desc');
     }
-    if (!$found)
-      $this->markTestSkipped('Unable to test basket set description');
   }
 
   public function testDeleteBasket()
   {
-    $appbox = appbox::get_instance();
-    $usr_id = $appbox->get_session()->get_usr_id();
+    $baskets = $this->insertFiveBasket();
 
-    $basket = basket_adapter::create($appbox, 'test suppression panier', User_Adapter::getInstance($usr_id, $appbox));
-
-    $route = '/baskets/' . $basket->get_ssel_id() . '/delete/?oauth_token=' . self::$token;
+    $route = '/baskets/' . $baskets[0]->getId() . '/delete/?oauth_token=' . self::$token;
 
     $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -998,9 +941,16 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     $this->evaluateMetaYaml200($content);
 
     $this->assertArrayHasKey("baskets", $content["response"]);
+
+    $found = false;
     foreach ($content["response"]["baskets"] as $basket)
     {
       $this->evaluateGoodBasket($basket);
+      $found = true;
+    }
+    if (!$found)
+    {
+      $this->fail('There should be four baskets left');
     }
   }
 

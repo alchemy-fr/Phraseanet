@@ -15,7 +15,7 @@
  * @link        www.phraseanet.com
  */
 define('ZFONT', 'freesans');
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -82,12 +82,19 @@ if ($act == "STEP2")
 {
   $num = 0;
 
+  
   if ($parm['SSTTID'] != '')
   {
-    $basket = basket_adapter::getInstance($appbox, $parm['SSTTID'], $usr_id);
+    $em = $Core->getEntityManager();
+    $repository = $em->getRepository('\Entities\Basket');
+    
+    $basket = $repository->findUserBasket($Core->getRequest()->get('SSTTID'), $Core->getAuthenticatedUser());
+    
     $lst = array();
-    foreach ($basket->get_elements() as $basket_element)
-      $lst[] = $basket_element->get_record()->get_serialize_key();
+    foreach ($basket->getElements() as $basket_element)
+    {
+      $lst[] = $basket_element->getRecord()->get_serialize_key();
+    }
   }
   else
   {
@@ -603,76 +610,80 @@ if ($act == "SEND")
           {
             $lst = array_reverse($push_datas[$parm['token']]['lst']);
 
-            $basket = basket_adapter::create($appbox, $parm["nameBask"], $user);
-            $basket->set_unread();
-            $basket->push_list($lst, false);
-            $basket->flatten();
-            $ssel_id = $basket->get_ssel_id();
+            $em = $Core->getEntityManager();
+
+            $basket = new \Entities\Basket();
+            $basket->setName($Core->getRequest()->get('nameBask'));
+            $basket->setIsRead(false);
+
+            $em->persist($basket);
+
+            foreach($lst as $basrec)
+            {
+              $basrec = explode('_', $basrec);
+
+              $record = new record_adapter($basrec[0], $basrec[1]);
+              $basket_element = new Entities\BasketElement();
+              $basket_element->setRecord($record);
+              $basket_element->setBasket($basket);
+              $basket->addBasketElement($basket_element);
+
+              $em->persist($basket_element);
+            }
+
+            $em->flush();
+    
+            $ssel_id = $basket->getId();
 
             $outinfos = _('prod::push: votre nouveau panier a ete cree avec succes ; il contient vos documents de validation');
           }
           else
           {
-            $basket = basket_adapter::getInstance($appbox, $ssel_id, $usr_id);
-
-            if ($basket->is_grouping())
-            {
-              $elements = $basket->get_elements();
-              $basket = basket_adapter::create($appbox, $basket->get_name(), $user);
-
-              foreach ($elements as $record)
-              {
-                $basket->push_element($record, false, false);
-              }
-
-              unset($elements);
-
-              $ssel_id = $basket->get_ssel_id();
-            }
-
-            $basket->flatten();
+            $em = $Core->getEntityManager();
+            $repository = $em->getRepository('\Entities\Basket');
+            
+            $basket = $repository->findUserBasket($ssel_id, $Core->getAuthenticatedUser());
+            
+            $ssel_id = $basket->getId();
           }
 
 
           $my_link = '';
-          if ($ssel_id && is_numeric($ssel_id))
+          
+          $lstUsrs = $push_datas[$parm['token']]['usrs'];
+          $users = array();
+          foreach ($lstUsrs as $usr => $right)
           {
-            $lstUsrs = $push_datas[$parm['token']]['usrs'];
-            $users = array();
-            foreach ($lstUsrs as $usr => $right)
+            $users[$usr] = array('canHD' => (in_array($right['HD'], array('0', '1')) ? $right['HD'] : '0'), 'canRate' => '0', 'canAgree' => '1', 'canSeeOther' => ($parm['view_all'] == '1' ? '1' : '0'), 'canZone' => '0');
+          }
+
+          if (!array_key_exists($session->get_usr_id(), $lstUsrs))
+            $users[$session->get_usr_id()] = array('canHD' => '0', 'canRate' => '0', 'canAgree' => '1', 'canSeeOther' => '1', 'canZone' => '0');
+
+          $push = pushValidation($usr_id, $basket->getId(), $users, $parm['timValS'], $parm["textmail"], $parm['accuse']);
+          $my_link = $push['mylink'];
+
+
+          $Endusers = $push['users'];
+
+          $lstbyBase = array();
+
+          foreach ($basket->getElements() as $basket_element)
+          {
+            $record = $basket_element->getRecord();
+            $lstbyBase[$record->get_sbas_id()][] = $record->get_record_id();
+          }
+
+          foreach ($lstbyBase as $sbas_id => $lst)
+          {
+            foreach ($lst as $record_id)
             {
-              $users[$usr] = array('canHD' => (in_array($right['HD'], array('0', '1')) ? $right['HD'] : '0'), 'canRate' => '0', 'canAgree' => '1', 'canSeeOther' => ($parm['view_all'] == '1' ? '1' : '0'), 'canZone' => '0');
-            }
-
-            if (!array_key_exists($session->get_usr_id(), $lstUsrs))
-              $users[$session->get_usr_id()] = array('canHD' => '0', 'canRate' => '0', 'canAgree' => '1', 'canSeeOther' => '1', 'canZone' => '0');
-
-            $push = pushValidation($usr_id, $ssel_id, $users, $parm['timValS'], $parm["textmail"], $parm['accuse']);
-            $my_link = $push['mylink'];
-
-
-            $Endusers = $push['users'];
-
-            $lstbyBase = array();
-
-            $basket = basket_adapter::getInstance($appbox, $ssel_id, $usr_id);
-            foreach ($basket as $basket_element)
-            {
-              $record = $basket_element->get_record();
-              $lstbyBase[$record->get_sbas_id()][] = $record->get_record_id();
-            }
-
-            foreach ($lstbyBase as $sbas_id => $lst)
-            {
-              foreach ($lst as $record_id)
+              foreach ($Endusers as $u)
               {
-                foreach ($Endusers as $u)
-                {
-                  $record = new record_adapter($sbas_id, $record_id);
-                  $session->get_logger($record->get_databox())
-                          ->log($record, Session_Logger::EVENT_VALIDATE, $u, '');
-                  unset($record);
-                }
+                $record = new record_adapter($sbas_id, $record_id);
+                $session->get_logger($record->get_databox())
+                        ->log($record, Session_Logger::EVENT_VALIDATE, $u, '');
+                unset($record);
               }
             }
           }
@@ -687,7 +698,7 @@ if ($act == "SEND")
         }
         ?>
       <script type="text/javascript">
-        parent.refreshBaskets('current');
+        parent.return p4.WorkZone.refresh('current');
       </script>
     </body>
     <?php

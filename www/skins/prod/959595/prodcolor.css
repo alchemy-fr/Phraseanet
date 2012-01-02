@@ -266,6 +266,18 @@ span.ww_winTitle{
 	padding:0;
 	min-height:120px;	
 }
+.ui-accordion-icons .ui-accordion-header a
+{
+  padding:2px 25px;
+}
+.ui-state-active .ui-icon
+{
+  background-image: url("/include/jslibs/jquery-ui-1.8.12/css/ui-lightness/images/ui-icons_ffffff_256x240.png");
+}
+#baskets .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  color:#FFFFFF; 
+  font-size:1em;
+}
 .ui-accordion .ui-accordion-content.loading
 {
 	background-image:url(/skins/icons/loaderd9d9d9.gif);
@@ -2832,7 +2844,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 #DIALOG p{
   line-height:18px;
 }
-#DIALOG input{
+#DIALOG input:text{
   height:24px;
   font-size:15px;
   margin:15px auto;

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once dirname(__FILE__) . '/../../../vendor/oauth2/lib/OAuth2.inc';
+require_once __DIR__ . '/../../../vendor/oauth2/lib/OAuth2.inc';
 
 /**
  *

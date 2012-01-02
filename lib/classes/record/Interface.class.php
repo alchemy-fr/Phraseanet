@@ -97,8 +97,6 @@ interface record_Interface
 
   public function get_reg_name();
 
-  public function get_bitly_link();
-
   public function get_hd_file();
 
   public function delete();

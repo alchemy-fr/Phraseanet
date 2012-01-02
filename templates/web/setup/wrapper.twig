@@ -25,10 +25,8 @@
             </td>
             <td style="text-align:right;">
               <select name="lng" id="lng-select" onchange="setLanguage();">
-              {% for locales in available_locales %}
-                {% for locale, language in locales %}
-                  <option value="{{ locale }}" {% if language['selected'] %}selected="selected"{% endif %}>{{ language['name'] }}</option>
-                {% endfor %}
+              {% for loc, language in available_locales %}
+                  <option value="{{ loc }}" {% if locale == loc %}selected="selected"{% endif %}>{{ language }}</option>
               {% endfor %}
               </select>
             </td>

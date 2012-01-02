@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-$new_include_path = dirname(__FILE__) . '/../../../vendor/gdata/' . PATH_SEPARATOR . get_include_path();
+$new_include_path = __DIR__ . '/../../../vendor/gdata/' . PATH_SEPARATOR . get_include_path();
 set_include_path($new_include_path);
 
 require_once('Zend/Loader.php');
@@ -245,7 +245,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         break;
 
       default:
-        throw new Bridge_Exception_ElementUnknown('Unknown element ' . $type);
+        throw new Bridge_Exception_ElementUnknown('Unknown element ' . $object);
         break;
     }
   }

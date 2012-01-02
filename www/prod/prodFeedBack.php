@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -108,59 +108,6 @@ switch ($action)
     $output = 1;
     break;
 
-//  case 'BASKETS':
-//    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-//    $parm = $request->get_parms('id', 'sort');
-//    $baskets = new basketCollection($appbox, $usr_id);
-//
-//    $twig = new supertwig();
-//    $twig->addFilter(array('get_collection_logo' => 'collection::getLogo'));
-//
-//    $output = $twig->render('prod/baskets.html', array(
-//                'basket_collection' => $baskets,
-//                'selected_ssel' => $parm['id'],
-//                'srt' => $parm['sort']
-//                    )
-//    );
-//    break;
-//  case 'BASKETNAME':
-//    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-//    $parm = $request->get_parms('ssel_id');
-//    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-//    $output = p4string::jsonencode(array('name' => $basket->get_name(), 'description' => $basket->get_description()));
-//    break;
-  case 'BASKETRENAME':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-    $parm = $request->get_parms('ssel_id', 'name', 'description');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $basket->set_name($parm['name']);
-    $basket->set_description($parm['description']);
-//    $output = $basket->save();
-    break;
-
-  case 'GETBASKET':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-
-    $twig = new supertwig();
-    $twig->addFilter(array('nl2br' => 'nl2br'));
-
-    $parm = $request->get_parms('id', 'ord');
-
-    $basket = basket_adapter::getInstance($appbox, $parm['id'], $usr_id);
-    $basket->set_read();
-
-    $order = $parm['ord'];
-
-    if (trim($order) == '' || !in_array($order, array('asc', 'desc', 'nat')))
-      $order = $user->getPrefs('bask_val_order');
-    else
-      $user->setPrefs('bask_val_order', $order);
-
-    $basket->sort($order);
-
-    $output = p4string::jsonencode(array('content' => $twig->render('prod/basket.twig', array('basket' => $basket, 'ordre' => $order))));
-    break;
-
   case 'DELETE':
     require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
     $parm = $request->get_parms('lst');
@@ -177,19 +124,6 @@ switch ($action)
     $output = query_phrasea::mail_request($parm['user'], $parm['contrib'], $parm['message'], $parm['query']);
     break;
 
-
-  case 'REORDER_DATAS':
-    $parm = $request->get_parms('ssel_id');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $output = $basket->getOrderDatas();
-    break;
-  case 'SAVE_ORDER_DATAS':
-    $parm = $request->get_parms('ssel_id', 'value');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $output = $basket->saveOrderDatas($parm['value']);
-    break;
-
-
   case 'DENY_CGU':
     $parm = $request->get_parms('sbas_id');
     $output = databox_cgu::denyCgus($parm['sbas_id']);
@@ -197,7 +131,7 @@ switch ($action)
   case 'READ_NOTIFICATIONS':
     try
     {
-      $evt_mngr = eventsmanager_broker::getInstance($appbox);
+      $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
       $parm = $request->get_parms('notifications');
       $output = $evt_mngr->read(explode('_', $parm['notifications']), $session->get_usr_id());
       $output = p4string::jsonencode(array('error' => false, 'message' => ''));
@@ -208,7 +142,7 @@ switch ($action)
     }
     break;
   case 'NOTIFICATIONS_FULL':
-    $evt_mngr = eventsmanager_broker::getInstance($appbox);
+    $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
     $parm = $request->get_parms('page');
     $output = $evt_mngr->get_json_notifications($parm['page']);
     break;
@@ -258,141 +192,7 @@ switch ($action)
     $output = $twig->render('prod/preview/reg_train.html', array('container_records' => $record->get_container()->get_children(),
                 'record' => $record, 'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')));
     break;
-  case 'UNFIX':
-    $parm = $request->get_parms('lst');
-    $output = basket_adapter::unfix_grouping($parm['lst']);
-    break;
-  case 'FIX':
-    $parm = $request->get_parms('lst');
-    $output = basket_adapter::fix_grouping($parm['lst']);
-    break;
-  case 'ADDIMGT2CHU':
-  case 'ADDCHU2CHU':
-  case 'ADDREG2CHU':
-    $parm = $request->get_parms('dest', 'lst');
-    $basket = basket_adapter::getInstance($appbox, $parm['dest'], $usr_id);
-    $output = p4string::jsonencode($basket->push_list($parm['lst'], false));
-
-    break;
-  case 'ADDIMGT2REG':
-  case 'ADDCHU2REG':
-  case 'ADDREG2REG':
-    $parm = $request->get_parms('dest', 'lst');
-    $basket = basket_adapter::getInstance($appbox, $parm['dest'], $usr_id);
-    $output = p4string::jsonencode($basket->push_list($parm['lst'], false));
-    break;
-  case 'DELFROMBASK':
-    $parm = $request->get_parms('ssel_id', 'sselcont_id');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel_id'], $usr_id);
-    $output = p4string::jsonencode($basket->remove_from_ssel($parm['sselcont_id']));
-    break;
-  case 'DELBASK':
-    $parm = $request->get_parms('ssel');
-    $basket = basket_adapter::getInstance($appbox, $parm['ssel'], $usr_id);
-    $output = $basket->delete();
-    unset($basket);
-    break;
-
-  case 'MOVCHU2CHU':
-    $parm = $request->get_parms('from', 'dest', 'sselcont');
-    $from_basket = basket_adapter::getInstance($appbox, $parm['from'], $usr_id);
-    $to_basket = basket_adapter::getInstance($appbox, $parm['dest'], $usr_id);
-
-    $ret = array('error' => _('phraseanet :: une erreur est survenue'), 'datas' => array());
-    if (!is_array($parm['sselcont']))
-      $parm['sselcont'] = explode(';', $parm['sselcont']);
-
-    $elements = $from_basket->get_elements();
-    foreach ($parm['sselcont'] as $sselcont_id)
-    {
-      if (!isset($elements[$sselcont_id]))
-        continue;
-
-      $element = $elements[$sselcont_id];
-
-      if ($to_basket->push_element($element->get_record(), false, false))
-      {
-        unset($elements[$sselcont_id]);
-        $from_basket->remove_from_ssel($sselcont_id);
-
-        $ret['error'] = false;
-        $ret['datas'][] = $sselcont_id;
-      }
-    }
-    $output = p4string::jsonencode($ret);
-    break;
-  case 'MOVREG2REG':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-    $lst = array();
-    $parm = $request->get_parms('lst', 'dest', 'sselcont', 'from');
-    $basket = basket_adapter::getInstance($appbox, $parm['dest'], $usr_id);
-    $res = $basket->push_list($parm['lst'], false);
-    if (!$res['error'])
-    {
-      $basket = basket_adapter::getInstance($appbox, $parm['from'], $usr_id);
-
-      $sselcont_ids = explode(';', $parm['sselcont']);
-      foreach ($sselcont_ids as $sselcont_id)
-      {
-        $basket->remove_from_ssel($sselcont_id);
-      }
-    }
-    $output = p4string::jsonencode(array('error' => $res['error'], 'datas' => explode(';', $parm['sselcont'])));
-    break;
-  case 'MOVCHU2REG':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-    $parm = $request->get_parms('lst', 'dest', 'sselcont', 'from');
-    $basket = basket_adapter::getInstance($appbox, $parm['dest'], $usr_id);
-    $res = $basket->push_list($parm['lst'], false);
-    if (!$res['error'])
-    {
-      $basket = basket_adapter::getInstance($appbox, $parm['from'], $usr_id);
-
-      $sselcont_ids = explode(';', $parm['sselcont']);
-      foreach ($sselcont_ids as $sselcont_id)
-      {
-        $basket->remove_from_ssel($sselcont_id);
-      }
-    }
-    $output = p4string::jsonencode(array('error' => $res['error'], 'datas' => explode(';', $parm['sselcont'])));
-    break;
-//  case 'MOVREG2CHU':
-//    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-//
-//    $parm = $request->get_parms('lst', 'dest', 'sselcont', 'from');
-//    $basket = basket_adapter::getInstance($appbox, $parm['dest'], $usr_id);
-//    $add = $basket->push_list($parm['lst'], false);
-//
-//    if (!$add['error'])
-//    {
-//
-//      $basket = basket_adapter::getInstance($appbox, $parm['from'], $usr_id);
-//
-//      $ret['error'] = false;
-//      $ret['datas'] = array();
-//
-//      $sselcont_ids = explode(';', $parm['sselcont']);
-//      foreach ($sselcont_ids as $sselcont_id)
-//      {
-//        $rem = $basket->remove_from_ssel($sselcont_id);
-//        if (!$rem['error'])
-//        {
-//          $ret['datas'][] = $sselcont_id;
-//        }
-//        else
-//        {
-//          $ret['error'] = true;
-//        }
-//      }
-//    }
-//    else
-//      $ret = array('datas' => array(), 'error' => $add['error']);
-//    $output = p4string::jsonencode($ret);
-//    break;
-
-
-
-
+  
   case 'GET_ORDERMANAGER':
     try
     {

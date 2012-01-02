@@ -639,9 +639,20 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     foreach ($fields as $name => $field)
     {
       if ($sxe->description->$name)
-        $ret[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $sxe->description->$name);
+      {
+        $val = array();
+        foreach($sxe->description->$name as $value)
+        {
+          $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
+        }
+        $val = implode(' '.$field['separator'].' ', $val);
+      }
       else
-        $ret[] = $field;
+      {
+        $val = $field['value'];
+      }
+      
+      $ret[] = $val;
     }
 
     return $ret;

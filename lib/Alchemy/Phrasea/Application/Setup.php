@@ -15,6 +15,7 @@ use Silex\Application;
 use Alchemy\Phrasea\Controller\Setup as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 
+require_once __DIR__ . '/../../../bootstrap.php';
 /**
  *
  * @package
@@ -25,6 +26,8 @@ use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 return call_user_func(function()
                 {
                   $app = new Silex\Application();
+                  
+                  $app['Core'] = bootstrap::getCore();
 
                   $app['install'] = false;
                   $app['upgrade'] = false;

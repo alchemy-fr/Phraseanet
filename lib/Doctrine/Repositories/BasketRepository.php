@@ -32,14 +32,31 @@ class BasketRepository extends EntityRepository
   {
     $dql = 'SELECT b FROM Entities\Basket b 
             WHERE b.usr_id = :usr_id AND b.archived = false';
-    
+
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
 
     return $query->getResult();
   }
   
-  
+  /**
+   * Returns all unread basket for a given user that are not marked as archived
+   *
+   * @param \User_Adapter $user
+   * @return \Doctrine\Common\Collections\ArrayCollection 
+   */
+  public function findUnreadActiveByUser(\User_Adapter $user)
+  {
+    $dql = 'SELECT b FROM Entities\Basket b 
+            WHERE b.usr_id = :usr_id 
+              AND b.archived = false AND b.is_read = false';
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters(array('usr_id' => $user->get_id()));
+
+    return $query->getResult();
+  }
+
   /**
    * Returns all baskets that are in validation session not expired  and 
    * where a specified user is participant (not owner)
@@ -54,18 +71,27 @@ class BasketRepository extends EntityRepository
               JOIN s.participants p  
             WHERE b.usr_id != ?1 AND p.usr_id = ?2 
                   AND s.expires > CURRENT_TIMESTAMP()';
-    
+
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array(1 => $user->get_id(), 2 => $user->get_id()));
 
     return $query->getResult();
   }
-  
+
+  /**
+   * Find a basket specified by his basket_id and his owner
+   *
+   * @throws \Exception_NotFound
+   * @throws \Exception_Forbidden
+   * @param type $basket_id
+   * @param \User_Adapter $user
+   * @return \Entities\Basket 
+   */
   public function findUserBasket($basket_id, \User_Adapter $user)
   {
     $basket = $this->find($basket_id);
 
-    /* @var $basket Entities\Basket */
+    /* @var $basket \Entities\Basket */
     if (null === $basket)
     {
       throw new \Exception_NotFound(_('Basket is not found'));
@@ -77,6 +103,23 @@ class BasketRepository extends EntityRepository
     }
 
     return $basket;
+  }
+
+  public function findContainingRecord(\record_adapter $record)
+  {
+
+    $dql = 'SELECT b FROM Entities\Basket b 
+              JOIN b.elements e 
+            WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id';
+
+    $params = array(
+        'record_id' => $record->get_record_id()
+    );
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters($params);
+
+    return $query->getResult();
   }
 
 }

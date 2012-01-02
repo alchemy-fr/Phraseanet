@@ -34,7 +34,7 @@ class MoveCollection implements ControllerProviderInterface
     $controllers->post('/', function() use ($app)
             {
               $request = $app['request'];
-              $move = new RecordHelper\MoveCollection($request);
+              $move = new RecordHelper\MoveCollection($app['Core']);
               $move->propose();
 
               $template = 'prod/actions/collection_default.twig';
@@ -49,7 +49,7 @@ class MoveCollection implements ControllerProviderInterface
     $controllers->post('/apply/', function() use ($app)
             {
               $request = $app['request'];
-              $move = new RecordHelper\MoveCollection($request);
+              $move = new RecordHelper\MoveCollection($app['Core']);
               $move->execute($request);
               $template = 'prod/actions/collection_submit.twig';
 

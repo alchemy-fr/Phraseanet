@@ -54,9 +54,9 @@ class patch_320aa implements patchInterface
 
   function apply(base &$appbox)
   {
-    if(is_file(dirname(__FILE__) . '/../../../config/_GV.php'))
-      require dirname(__FILE__) . '/../../../config/_GV.php';
-    require dirname(__FILE__) . '/../../../lib/conf.d/_GV_template.inc';
+    if(is_file(__DIR__ . '/../../../config/_GV.php'))
+      require __DIR__ . '/../../../config/_GV.php';
+    require __DIR__ . '/../../../lib/conf.d/_GV_template.inc';
 
     define('GV_STATIC_URL', '');
     define('GV_sphinx', false);

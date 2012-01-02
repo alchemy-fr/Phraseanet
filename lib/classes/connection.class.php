@@ -134,9 +134,9 @@ class connection
       }
       else
       {
-        if (!is_file(dirname(__FILE__) . '/../../config/connexion.inc'))
+        if (!is_file(__DIR__ . '/../../config/connexion.inc'))
           throw new Exception('Unable to load config file');
-        require (dirname(__FILE__) . '/../../config/connexion.inc');
+        require (__DIR__ . '/../../config/connexion.inc');
       }
       if (isset($connection_params[$name]))
       {

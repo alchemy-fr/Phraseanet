@@ -29,6 +29,8 @@ return call_user_func(
                   $session = $appbox->get_session();
 
                   $app = new Silex\Application();
+                  
+                  $app['Core'] = bootstrap::getCore();
 
 
                   $deliver_content = function(Session_Handler $session, record_adapter $record, $subdef, $watermark, $stamp, $app)
@@ -112,11 +114,18 @@ return call_user_func(
 
                             if ($watermark)
                             {
-                              if (basket_element_adapter::is_in_validation_session($record, $user))
+                              
+                              $em = $app['Core']->getEntityManager();
+                              
+                              $repository = $em->getRepository('\Entities\BasketElement');
+                              
+                              /* @var $repository \Repositories\BasketElementRepository */
+                              
+                              if ($repository->findReceivedValidationElementsByRecord($record, $user)->count() > 0)
                               {
                                 $watermark = false;
                               }
-                              elseif (basket_element_adapter::has_been_received($record, $user))
+                              elseif ($repository->findReceivedElementsByRecord($record, $user)->count() > 0)
                               {
                                 $watermark = false;
                               }
@@ -159,14 +168,20 @@ return call_user_func(
 
                                       if ($watermark)
                                       {
-                                        if (basket_element_adapter::is_in_validation_session($record, $user))
+                                        
+                                        $em = $app['Core']->getEntityManager();
+
+                                        $repository = $em->getRepository('\Entities\BasketElement');
+
+                                        if ($repository->findReceivedValidationElementsByRecord($record, $user)->count() > 0)
                                         {
                                           $watermark = false;
                                         }
-                                        elseif (basket_element_adapter::has_been_received($record, $user))
+                                        elseif ($repository->findReceivedElementsByRecord($record, $user)->count() > 0)
                                         {
                                           $watermark = false;
                                         }
+                              
                                       }
 
                                       return $deliver_content($session, $record, $subdef, $watermark, $stamp, $app);
