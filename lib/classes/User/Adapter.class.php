@@ -894,6 +894,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     return $this->is_template;
   }
 
+  public function get_template_owner()
+  {
+    return $this->template_owner;
+  }
+
   public static function get_usr_id_from_email($email)
   {
     if(is_null($email))

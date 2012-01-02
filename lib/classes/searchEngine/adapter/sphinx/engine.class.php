@@ -752,8 +752,15 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
         'before_match' => "<em>",
         'after_match' => "</em>"
     );
+    
+    $fields_to_send = array();
+    
+    foreach($fields as $k=>$f)
+    {
+      $fields_to_send[$k] = $f['value'];
+    }
 
-    return $this->sphinx->BuildExcerpts($fields, $index, $query, $opts);
+    return $this->sphinx->BuildExcerpts($fields_to_send, $index, $query, $opts);
   }
 
 }

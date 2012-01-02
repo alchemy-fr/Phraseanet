@@ -180,7 +180,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/search/', function() use ($app)
+    $controllers->match('/search/', function() use ($app)
             {
               $request = $app['request'];
               $users = new module_admin_route_users($request);
@@ -194,17 +194,14 @@ class Controller_Admin_Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->get('/search/', function() use ($app)
+    $controllers->post('/apply_template/', function() use ($app)
             {
               $request = $app['request'];
-              $users = new module_admin_route_users($request);
-              $template = 'admin/users.html';
+              $users = new module_admin_route_users_edit($request);
+              
+              $users->apply_template();
 
-              $twig = new supertwig();
-              $twig->addFilter(array('floor' => 'floor'));
-              $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
-
-              return $twig->render($template, $users->search($request));
+              return new Symfony\Component\HttpFoundation\RedirectResponse('/admin/users/search/');
             }
     );
 

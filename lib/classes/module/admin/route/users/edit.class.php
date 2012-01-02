@@ -536,6 +536,13 @@ class module_admin_route_users_edit
       return $this;
     }
 
+    $user = User_adapter::getInstance(array_pop($this->users), appbox::get_instance());
+
+    if ($user->is_template())
+    {
+      return $this;
+    }
+
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     $request = http_request::getInstance();
@@ -577,6 +584,36 @@ class module_admin_route_users_edit
               ->set_fax($parm['fax']);
     }
 
+    return $this;
+  }
+
+  public function apply_template()
+  {
+    $appbox = appbox::get_instance();
+    $session = $appbox->get_session();
+    
+    $template = \User_adapter::getInstance($this->request->get('template'), $appbox);
+
+    if ($template->get_template_owner()->get_id() != $session->get_usr_id())
+    {
+      throw new \Exception_Forbidden('You are not the owner of the template');
+    }
+    
+    $current_user = \User_adapter::getInstance($session->get_usr_id(), $appbox);
+    $base_ids = array_keys($current_user->ACL()->get_granted_base(array('canadmin')));
+
+    foreach ($this->users as $usr_id)
+    {
+      $user = \User_adapter::getInstance($usr_id, $appbox);
+      
+      if($user->is_template())
+      {
+        continue;
+      }
+      
+      $user->ACL()->apply_model($template, $base_ids);
+    }
+    
     return $this;
   }
 

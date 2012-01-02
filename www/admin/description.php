@@ -67,6 +67,8 @@ if (!empty($_POST))
                   , 'multi_' . $id
                   , 'indexable_' . $id
                   , 'readonly_' . $id
+                  , 'required_' . $id
+                  , 'separator_' . $id
                   , 'type_' . $id
                   , 'tbranch_' . $id
                   , 'report_' . $id
@@ -79,6 +81,8 @@ if (!empty($_POST))
           $field->set_source($local_parms['src_' . $id]);
           $field->set_multi($local_parms['multi_' . $id]);
           $field->set_indexable($local_parms['indexable_' . $id]);
+          $field->set_required($local_parms['required_' . $id]);
+          $field->set_separator($local_parms['separator_' . $id]);
           $field->set_readonly($local_parms['readonly_' . $id]);
           $field->set_type($local_parms['type_' . $id]);
           $field->set_tbranch($local_parms['tbranch_' . $id]);
