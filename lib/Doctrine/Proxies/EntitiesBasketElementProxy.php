@@ -144,6 +144,12 @@ class EntitiesBasketElementProxy extends \Entities\BasketElement implements \Doc
         return parent::getValidationDatas();
     }
 
+    public function getUserValidationDatas(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::getUserValidationDatas($user);
+    }
+
 
     public function __sleep()
     {
