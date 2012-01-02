@@ -1,0 +1,32 @@
+Entities\UsrListContent:
+  type: entity
+  repositoryClass: Repositories\UsrListContentRepository
+  table: UsrListsContent
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    usr_id:
+      type: integer
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  manyToOne:
+    list:
+      targetEntity: UsrList
+      inversedBy: users
+      joinColumn:
+        name: list_id
+        referencedColumnName: id
+      cascade: ["persist"]
+
+
