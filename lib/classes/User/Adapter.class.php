@@ -1688,7 +1688,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
               , 'imgtools' => '1'
               , 'manage' => '1'
               , 'modify_struct' => '1'
-              , 'bas_manage' => '1'
               , 'bas_modify_struct' => '1'
           );
 
