@@ -1,6 +1,6 @@
-Entities\UsrListContent:
+Entities\UsrListEntry:
   type: entity
-  repositoryClass: Repositories\UsrListContentRepository
+  repositoryClass: Repositories\UsrListEntryRepository
   table: UsrListsContent
   id:
     id:

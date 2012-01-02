@@ -45,7 +45,7 @@ class UsrList
   private $owners;
 
   /**
-   * @var Entities\UsrListContent
+   * @var Entities\UsrListEntry
    */
   private $users;
 
@@ -150,7 +150,7 @@ class UsrList
    *
    * @param Entities\UsrListContent $users
    */
-  public function addUsrListContent(\Entities\UsrListContent $users)
+  public function addUsrListEntry(\Entities\UsrListEntry $users)
   {
     $this->users[] = $users;
   }

@@ -12,4 +12,50 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsrListRepository extends EntityRepository
 {
+  /**
+   * Get all lists readable for a given User
+   *
+   * @param \User_Adapter $user
+   * @param type $like 
+   */
+  public function findUserList(\User_Adapter $user)
+  {
+    $dql = 'SELECT l FROM Entities\UsrList l 
+              JOIN l.owners o
+            WHERE o.usr_id = :usr_id';
+    
+    
+    $params = array(
+        'usr_id' => $user->get_id(),
+    );
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters($params);
+
+    return $query->getResult();
+  }
+  /**
+   * Search for a UsrList like '' with a given value, for a user
+   *
+   * @param \User_Adapter $user
+   * @param type $like 
+   */
+  public function findUserListLike(\User_Adapter $user, $name)
+  {
+    $dql = 'SELECT l FROM Entities\UsrList l 
+              JOIN l.owners o
+            WHERE o.usr_id = :usr_id AND e.name LIKE :name';
+    
+    
+    $params = array(
+        'usr_id' => $user->get_id(),
+        'name' => $name.'%'
+    );
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters($params);
+
+    return $query->getResult();
+  }
+  
 }
