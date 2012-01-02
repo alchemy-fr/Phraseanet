@@ -533,8 +533,7 @@ class collection implements cache_cacheableInterface
         "chgstatus" => "1",
         "imgtools" => "1",
         "manage" => "1",
-        "modify_struct" => "1",
-        "bas_manage" => "1"
+        "modify_struct" => "1"
     );
 
     $user->ACL()->update_rights_to_base($base_id, $rights);
