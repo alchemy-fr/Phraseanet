@@ -31,7 +31,7 @@ class Push implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $controllers->get('/', function() use ($app)
+    $controllers->get('/', function(Application $app)
             {
               $pusher = new RecordHelper\Push($app['Core']);
 
@@ -42,15 +42,95 @@ class Push implements ControllerProviderInterface
               return $twig->render($template, array('printer' => $printer, 'message' => ''));
             }
     );
-    $controllers->get('/send/', function() use ($app)
+    $controllers->post('/send/', function(Application $app)
             {
               $pusher = new RecordHelper\Push($app['Core']);
             }
     );
-    
-    $controllers->get('/validate/', function() use ($app)
+
+    $controllers->post('/validate/', function(Application $app)
             {
+              $request = $app['request'];
+      
               $pusher = new RecordHelper\Push($app['Core']);
+              
+              $em = $app['Core']->getEntityManager();
+              
+              $repository = $em->getRepository('\Entities\Basket');
+              
+              if($pusher->is_basket())
+              {
+                $Basket = $pusher->get_original_basket();
+              }
+              else
+              {
+                $Basket = new Basket();
+                
+                $em->persist($Basket);
+                
+                foreach($pusher->get_elements() as $element)
+                {
+                  $BasketElement = new BasketELement();
+                  $BasketElement->setRecord($element);
+                  $BasketElement->setBasket($Basket);
+                  
+                  $em->persist($BasketElement);
+                  
+                }
+                
+                $em->flush();
+              }
+              
+              if(!$Basket->getValidation())
+              {
+                $Validation  = new \Entities\ValidationSession();
+                $Validation->setInitiator($app['Core']->getAuthenticatedUser());
+                $Validation->setBasket($Basket);
+                
+                $Basket->setValidation($Validation);
+                
+                $appbox = appbox::get_instance();
+                
+                foreach($request->get('participants') as $usr_id)
+                {
+                  $usr_id = \User_Adapter::getInstance($usr_id, $appbox);
+                  $Participant = new \Entities\Participant();
+                }
+                
+                $em->persist($Validation);
+                
+                $em->flush();
+              }
+              else
+              {
+                
+              }
+              
+              
+            }
+    );
+
+    $controllers->get('/search-user/', function(Application $app)
+            {
+              $request = $app['request'];
+
+              $pusher = new RecordHelper\Push($app['Core']);
+
+              $result = $pusher->search($request->get('query'));
+
+              $datas = array();
+
+              foreach ($result as $user)
+              {
+                $datas[] = array(
+                    'type' => 'USER'
+                    , 'usr_id' => $user->get_id()
+                    , 'firstname'
+                    , 'lastname'
+                    , 'email'
+                    , 'display_name'
+                );
+              }
             }
     );
 
