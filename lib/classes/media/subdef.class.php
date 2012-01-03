@@ -192,6 +192,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
       $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/';
       $this->file = 'deleted.png';
       $this->is_physically_present = false;
+      $this->is_substituted = true;
     }
     if (!$row || !file_exists($this->path . $this->file))
     {
@@ -204,6 +205,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->path = $registry->get('GV_RootPath')
                 . 'www/skins/icons/substitution/';
         $this->file = 'regroup_thumb.png';
+        $this->is_substituted = true;
       }
       else
       {
@@ -217,6 +219,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->path = $registry->get('GV_RootPath')
                 . 'www/skins/icons/substitution/';
         $this->file = str_replace('+', '%20', $mime) . '.png';
+        $this->is_substituted = true;
       }
       $this->is_physically_present = false;
       if (!file_exists($this->path . $this->file))
@@ -225,6 +228,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->path = $registry->get('GV_RootPath')
                 . 'www/skins/icons/';
         $this->file = 'substitution.png';
+        $this->is_substituted = true;
       }
     }
 

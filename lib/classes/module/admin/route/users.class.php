@@ -59,8 +59,8 @@ class module_admin_route_users
         , 'like_value' => $request->get('like_value')
         , 'sbas_id' => $request->get('sbas_id')
         , 'base_id' => $request->get('base_id')
-        , 'srt' => $request->get("srt")
-        , 'ord' => $request->get("ord")
+        , 'srt' => $request->get("srt", User_Query::SORT_CREATIONDATE)
+        , 'ord' => $request->get("ord", User_Query::ORD_DESC)
         , 'per_page' => $results_quantity
         , 'offset_start' => $offset_start
     );
@@ -68,14 +68,14 @@ class module_admin_route_users
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
     $query = new User_Query($appbox);
 
-    if (is_array($request->get('base_id')))
-      $query->on_base_ids($request->get('base_id'));
-    elseif (is_array($request->get('sbas_id')))
-      $query->on_sbas_ids($request->get('sbas_id'));
+    if (is_array($this->query_parms['base_id']))
+      $query->on_base_ids($this->query_parms['base_id']);
+    elseif (is_array($this->query_parms['sbas_id']))
+      $query->on_sbas_ids($this->query_parms['sbas_id']);
 
-    $this->results = $query->sort_by($request->get("srt"), $request->get("ord"))
-            ->like($request->get('like_field'), $request->get('like_value'))
-            ->get_inactives($request->get('inactives'))
+    $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
+            ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
+            ->get_inactives($this->query_parms['inactives'])
             ->include_templates(true)
             ->on_bases_where_i_am($user->ACL(), array('canadmin'))
             ->limit($offset_start, $results_quantity)

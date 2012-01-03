@@ -193,7 +193,8 @@ return call_user_func(
 
                             if ($basket->is_valid())
                             {
-                              $basket->get_first_element()->load_users_infos();
+                              if($basket->get_first_element() instanceof basket_element_adapter)
+                               $basket->get_first_element()->load_users_infos();
                             }
 
                             $twig = new supertwig();

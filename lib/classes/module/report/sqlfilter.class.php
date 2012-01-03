@@ -46,7 +46,7 @@ class module_report_sqlfilter
     $coll_filter = array();
     foreach (explode(',', $list_coll_id) as $val)
     {
-      $coll_filter [] = " position('," . (int) $val . ",' in concat(',' ,coll_list, ',')) > 0 ";
+      $coll_filter [] = " position('," . phrasea::collFromBas($val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
     }
     $ret['sql'] = implode(' OR ', $coll_filter);
 
@@ -207,7 +207,7 @@ class module_report_sqlfilter
     {
       foreach ($tab as $val)
       {
-        $coll_filter[] = " position('," . (int) $val . ",' in concat(',' ,coll_list, ',')) > 0 ";
+        $coll_filter[] = " position('," . phrasea::collFromBas($val) . ",' in concat(',' ,coll_list, ',')) > 0 ";
       }
       $this->filter['collection'] = array('sql' => implode(' OR ', $coll_filter), 'params' => array());
     }
@@ -226,7 +226,7 @@ class module_report_sqlfilter
       foreach ($tab as $val)
       {
         $dl_coll_filter[] = "record.coll_id = :record_fil" . $n;
-        $params[":record_fil" . $n] = $val;
+        $params[":record_fil" . $n] = phrasea::collFromBas($val);
         $n++;
       }
       $this->filter['record'] = array('sql' => implode(' OR ', $dl_coll_filter), 'params' => $params);

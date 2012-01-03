@@ -161,7 +161,10 @@ class gatekeeper
           break;
         case 'lightbox':
           $this->token_access();
-//          phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          if(!$session->is_authenticated())
+          {
+            phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          }
           break;
       }
     }

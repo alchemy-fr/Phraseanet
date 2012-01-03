@@ -436,7 +436,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
       try
       {
         $reg_record = $this->get_grouping_head();
-        $reg_sbas_id = $reg_record->get_base_id();
+        $reg_sbas_id = $reg_record->get_sbas_id();
 
         $newsubdef_reg = new record_adapter($reg_sbas_id, $request->get('newrepresent'));
 
@@ -452,7 +452,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
       }
       catch (Exception $e)
       {
-
+        
       }
     }
 

@@ -362,7 +362,7 @@ $(document).ready(function(){
     });
     return false;
   });
-  $('#users_page .invite_modifier').live('click', function(){
+  $('#users_page .invite_modifier, #users_page .autoregister_modifier').live('click', function(){
     var users = $(this).next('input').val();
 
     if($.trim(users) === '')
