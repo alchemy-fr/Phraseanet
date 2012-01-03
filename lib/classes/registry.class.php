@@ -63,8 +63,9 @@ class registry implements registryInterface
                     new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
     );
     $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
-    
+    $phraseanet = $configuration->getPhraseanet();
     $this->cache->set('GV_RootPath', dirname(dirname(__DIR__)) . '/');
+    $this->cache->set('GV_ServerName', $phraseanet->get('servername'));
     $this->cache->set('GV_debug', $configuration->isDebug());
     $this->cache->set('GV_maintenance', $configuration->isMaintained());
 
