@@ -616,9 +616,7 @@
                     <button class="default_action">
                       <img src="/skins/icons/ccoch0.gif"/>&nbsp;
                     </button>
-                    <button class="trigger">
-                      oui
-                    </button>
+                    <button class="trigger">{% trans 'Select' %}</button>
                   </span>
                   <div class="submenu">
                     <button class="answer_selector all_selector">
@@ -647,7 +645,7 @@
                     <button class="default_action TOOL_disktt_btn results_window">
                       <img src="/skins/prod/000000/images/disktt_history.gif"/> {% trans 'action : exporter' %}
                     </button>
-                    <button class="trigger">Select an action</button>
+                    <button class="trigger">{% trans 'Select an action' %}</button>
                   </span>
                   <div class="submenu">
                     <button class="TOOL_print_btn results_window">
@@ -688,7 +686,7 @@
                       </button>
                       {% endif %}
                     {% endfor %}
-                    <button class="trigger">Operations</button>
+                    <button class="trigger">{% trans 'Select an action' %}</button>
                   </span>
                   <div class="submenu" >
                     {% for action in actions %}
@@ -717,7 +715,7 @@
                       <img src="/skins/prod/000000/images/pushdoc_history.gif"/>
                       {% trans 'action : push' %}
                     </button>
-                    <button class="trigger">Select an action</button>
+                    <button class="trigger">{% trans 'Select an action' %}</button>
                   </span>
                   <div class="submenu">
                     <button class="TOOL_bridge_btn results_window">
@@ -744,7 +742,7 @@
                       <img src="/skins/icons/door.png"/>
                       {% trans 'action : bridge' %}
                     </button>
-                    <button class="trigger">Select an action</button>
+                    <button class="trigger">{% trans 'Select an action' %}</button>
                   </span>
                   <div class="submenu">
                     <button class="TOOL_publish_btn results_window">
