@@ -1,6 +1,6 @@
 document.getElementById('loader_bar').style.width = '30%';
 
-var p4 = {};
+var p4 = p4 || {};
 
 var baskAjax,baskAjaxrunning;
 baskAjaxrunning = false;
@@ -1398,24 +1398,21 @@ $(document).ready(function(){
   $('#loader_bar').stop().animate({
     width:'70%'
   },450);
-  p4 =  {
-    preview :{
+  p4.preview = {
       open:false,
       current:false
-    },
-    currentViewMode:'classic',
-    nbNoview:0,
-    reg_delete:true,
-    lng:'',
-    sel:[],
-    baskSel:[],
-    edit:{},
-    thesau:{
+    };
+  p4.currentViewMode = 'classic';
+  p4.nbNoview = 0;
+  p4.reg_delete = true;
+  p4.sel = [];
+  p4.baskSel = [];
+  p4.edit = {};
+  p4.thesau = {
       tabs:null
-    },
-    active_zone:false,
-    next_bask_scroll: false
-  };
+    };
+  p4.active_zone = false;
+  p4.next_bask_scroll = false;
 
 
   $('#backcolorpickerHolder').ColorPicker({
