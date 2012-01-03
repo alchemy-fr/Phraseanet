@@ -953,7 +953,7 @@ class system_file extends SplFileObject
             = array($this->get_phrasea_tech_field(self::TECH_FIELD_SUBPATH));
     $tfields[metadata_description_PHRASEANET_tfparentdir::get_source()]
             = array($this->get_phrasea_tech_field(self::TECH_FIELD_PARENTDIRECTORY));
-    $tfields[metadata_description_PHRASEANET_tfparentdir::get_source()]
+    $tfields[metadata_description_PHRASEANET_tffilename::get_source()]
             = array($this->get_phrasea_tech_field(self::TECH_FIELD_ORIGINALNAME));
 
     $tfields[metadata_description_PHRASEANET_tfextension::get_source()]
