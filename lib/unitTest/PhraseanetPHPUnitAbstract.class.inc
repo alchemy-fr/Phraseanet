@@ -809,6 +809,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
           , $em->getClassMetadata('Entities\ValidationData')
           , $em->getClassMetadata('Entities\ValidationParticipant')
           , $em->getClassMetadata('Entities\ValidationSession')
+          , $em->getClassMetadata('Entities\UsrList')
+          , $em->getClassMetadata('Entities\UsrListContent')
+          , $em->getClassMetadata('Entities\UsrListOwner')
       );
 
       $this->schematTool->createSchema($this->classesMetatdas);
@@ -986,7 +989,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   public function setUp()
   {
     parent::setUp();
-
+    //create a new core instance loaded with the test environment for each test
+    self::$core = new \Alchemy\Phrasea\Core('test');
     $browser = Browser::getInstance();
     $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
   }
@@ -994,6 +998,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   public function tearDown()
   {
     parent::tearDown();
+    self::$core = null;
   }
 
   /**
