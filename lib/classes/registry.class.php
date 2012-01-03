@@ -23,6 +23,7 @@ class registry implements registryInterface
    * @var cache_opcode_adapter
    */
   protected $cache;
+
   /**
    *
    * @var registry
@@ -57,11 +58,15 @@ class registry implements registryInterface
   {
     $this->cache = $cache;
 
-    require __DIR__ . '/../../config/config.inc';
+    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                    new \Alchemy\Phrasea\Core\Configuration\Application(),
+                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    );
+    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    
     $this->cache->set('GV_RootPath', dirname(dirname(__DIR__)) . '/');
-    $this->cache->set('GV_ServerName', p4string::addEndSlash($servername));
-    $this->cache->set('GV_debug', !!$debug);
-    $this->cache->set('GV_maintenance', !!$maintenance);
+    $this->cache->set('GV_debug', $configuration->isDebug());
+    $this->cache->set('GV_maintenance', $configuration->isMaintained());
 
     return $this;
   }
@@ -88,7 +93,7 @@ class registry implements registryInterface
       }
       catch (Exception $e)
       {
-
+        
       }
       foreach ($rs as $row)
       {
@@ -130,7 +135,7 @@ class registry implements registryInterface
     if (!$this->cache->is_set($key))
       $this->load();
 
-    if(!$this->cache->is_set($key) && !is_null($defaultvalue))
+    if (!$this->cache->is_set($key) && !is_null($defaultvalue))
       return $defaultvalue;
     else
       return $this->cache->get($key);
