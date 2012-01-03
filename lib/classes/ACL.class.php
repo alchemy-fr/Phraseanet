@@ -1325,8 +1325,6 @@ class ACL implements cache_cacheableInterface
       $rights['manage'] = true;
     if ($row['modify_struct'])
       $rights['modify_struct'] = true;
-    if ($row['bas_manage'])
-      $rights['bas_manage'] = true;
 
     $this->update_rights_to_base($base_id_dest, $rights);
 

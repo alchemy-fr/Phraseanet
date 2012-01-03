@@ -14,6 +14,7 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
    */
   protected $object;
   protected $databox;
+  protected static $need_records = 1;
 
   public function setUp()
   {
@@ -119,10 +120,10 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
    */
   public function testOperation_and()
   {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->assertEquals('0', databox_status::operation_and('0x001','0x010'));
+    $this->assertEquals('1', databox_status::operation_and('01','11'));
+    $this->assertEquals('0', databox_status::operation_and('01','10'));
+    $this->assertEquals('10', databox_status::operation_and('11','10'));
   }
 
   /**
@@ -130,10 +131,11 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
    */
   public function testOperation_and_not()
   {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->assertEquals('0', databox_status::operation_and_not('0x001','0x011'));
+    $this->assertEquals('0', databox_status::operation_and_not('01','11'));
+    $this->assertEquals('1', databox_status::operation_and_not('01','10'));
+    $this->assertEquals('1', databox_status::operation_and_not('11','10'));
+    $this->assertEquals('10', databox_status::operation_and_not('10','01'));
   }
 
   /**
@@ -141,10 +143,8 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
    */
   public function testOperation_or()
   {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->assertEquals('10001', databox_status::operation_or('0x001','0x011'));
+    $this->assertEquals('11', databox_status::operation_or('01','11'));
   }
 
   /**
@@ -152,21 +152,31 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
    */
   public function testDec2bin()
   {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->assertEquals('1010', databox_status::dec2bin('10'));
+    
+    try
+    {
+    }
+    catch(Exception $e)
+    {
+      
+    }
   }
 
-  /**
-   * @todo Implement testHex2bin().
-   */
   public function testHex2bin()
   {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->assertEquals('10100001', databox_status::hex2bin('0x0A1'));
+    $this->assertEquals('10100001', databox_status::hex2bin('0A1'));
+    
+    try
+    {
+      databox_status::hex2bin('G1');
+      $this->fail('Should raise an exception');
+    }
+    catch(Exception $e)
+    {
+      
+    }
   }
 
 }
