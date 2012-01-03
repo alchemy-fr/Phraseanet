@@ -48,15 +48,15 @@ class Core extends \Pimple
      */
     static::initAutoloads();
 
-    
+
     $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
                     new \Alchemy\Phrasea\Core\Configuration\Application(),
                     new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
     );
     $this->configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
-    
+
     $this->configuration->setEnvironnement($environement);
-    
+
     /**
      * Set version
      */
@@ -67,7 +67,7 @@ class Core extends \Pimple
 
     /**
      * Set Entity Manager using configuration
-     */        
+     */
     $doctrineConf = $this->configuration->getDoctrine()->all();
     $this['EM'] = $this->share(function() use ($doctrineConf)
             {
@@ -121,12 +121,14 @@ class Core extends \Pimple
 
     $this->enableLocales();
 
-
-    define('JETON_MAKE_SUBDEF', 0x01);
-    define('JETON_WRITE_META_DOC', 0x02);
-    define('JETON_WRITE_META_SUBDEF', 0x04);
-    define('JETON_WRITE_META', 0x06);
-
+    if (!defined('JETON_MAKE_SUBDEF'))
+    {
+      define('JETON_MAKE_SUBDEF', 0x01);
+      define('JETON_WRITE_META_DOC', 0x02);
+      define('JETON_WRITE_META_SUBDEF', 0x04);
+      define('JETON_WRITE_META', 0x06);
+    }
+    
     if (\setup::is_installed())
     {
       $gatekeeper = \gatekeeper::getInstance();
@@ -143,7 +145,7 @@ class Core extends \Pimple
   private function init($environnement)
   {
     $this->loadConf($environnement);
-    
+
     if ($this->getConfiguration()->displayErrors())
     {
       ini_set('display_errors', 1);
@@ -320,7 +322,7 @@ class Core extends \Pimple
     {
       $this->getRequest()->setLocale($cookies->get('locale'));
     }
-    
+
     \Session_Handler::set_locale($this->getRequest()->getLocale());
 
     return;
@@ -372,7 +374,7 @@ class Core extends \Pimple
         'Symfony\\Component\\Yaml' => __DIR__ . '/../../vendor/symfony/src',
         'Symfony\\Component\\Console' => __DIR__ . '/../../vendor/symfony/src',
         'Symfony\\Component\\Serializer' => __DIR__ . '/../../vendor/symfony/src',
-        'Symfony\\Component\\DependencyInjection'  => __DIR__ . '/../../vendor/symfony/src',
+        'Symfony\\Component\\DependencyInjection' => __DIR__ . '/../../vendor/symfony/src',
     ));
 
     $loader->register();
@@ -412,6 +414,5 @@ class Core extends \Pimple
   {
     return $this->conf->getEnvironnement();
   }
-  
 
 }
