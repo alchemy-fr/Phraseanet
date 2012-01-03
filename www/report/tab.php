@@ -396,8 +396,9 @@ function getHistory($obj, $param, $twig, $conf, $dl = false, $title)
   elseif (!empty($param['on']) && !empty($param['user']))
     $filter->addfilter($param['on'], '=', $param['user']);
   if ($dl)
-    $filter->addfilter("(log_docs.final = 'document'", "OR", "log_docs.final = 'preview')");
-
+  {
+    $obj->setIsInformative(true);
+  }
   $tab_filter = $filter->getTabFilter();
   $obj->setFilter($tab_filter);
 
