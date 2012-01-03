@@ -893,6 +893,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     return $this->is_template;
   }
+  
+  public function is_special()
+  {
+    return in_array($this->login, array('invite', 'autoregister')); 
+  }
 
   public function get_template_owner()
   {
