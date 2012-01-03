@@ -36,10 +36,9 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function setUp()
   {
+    parent::setUp();
     $this->em = self::$core->getEntityManager();
     $this->basket = $this->insertOneBasket();
-
-    parent::setUp();
   }
 
   public function tearDown()
