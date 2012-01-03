@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of Phraseanet
  *
@@ -39,41 +40,51 @@ class module_console_systemUpgrade extends Command
     if (!setup::is_installed())
     {
 
-      if (file_exists(__DIR__ . "/../../../../config/connexion.inc")
-              && !file_exists(__DIR__ . "/../../../../config/config.inc")
-              && file_exists(__DIR__ . "/../../../../config/_GV.php"))
+      $output->writeln('This version of Phraseanet requires a config/config.inc');
+      $output->writeln('Would you like it to be created based on your settings ?');
+
+      $dialog = $this->getHelperSet()->get('dialog');
+      do
+      {
+        $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
+      }
+      while (!in_array($continue, array('y', 'n')));
+
+      if ($continue == 'y')
       {
 
-        $output->writeln('This version of Phraseanet requires a config/config.inc');
-        $output->writeln('Would you like it to be created based on your settings ?');
-        
-        $dialog = $this->getHelperSet()->get('dialog');
-        do
-        {
-          $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
-        }
-        while (!in_array($continue, array('y', 'n')));
-      
-        if ($continue == 'y')
-        {
-          require __DIR__ . "/../../../../config/_GV.php";
+        $file = __DIR__ . "/../../config/config.sample.yml";
+        $file1 = __DIR__ . "/../../config/config.yml";
 
-          $datas = '<?php'."\n"
-            .'$servername = "'.GV_ServerName.'";'."\n"
-            .'$maintenance=false;'."\n"
-            .'$debug=false;'."\n"
-            .'$debug=true;'."\n"
-            .'';
-        
-          file_put_contents(__DIR__ . "/../../../../config/config.inc", $datas);
-        }
-        else
-        {  
-          throw new RuntimeException('Phraseanet is not set up');
+        if (!copy($file, $file1))
+        {
+          throw new \Exception(sprintf("Unable to copy %s", $file1));
         }
 
+        $conn = \connection::getPDOConnection();
+        
+        $credentials = $conn->get_credentials();
+        
+        $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                        new \Alchemy\Phrasea\Core\Configuration\Application(),
+                        new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+        );
+        $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+        $connexionINI = array();
+
+        foreach ($credentials as $key => $value)
+        {
+          $key = $key == 'hostname' ? 'host' : $key;
+          $connexionINI[$key] = (string) $value;
+        }
+
+        $configuration->setAllDatabaseConnexion($connexionINI);
       }
-        
+      else
+      {
+        throw new RuntimeException('Phraseanet is not set up');
+      }
     }
 
     require_once __DIR__ . '/../../../../lib/bootstrap.php';
