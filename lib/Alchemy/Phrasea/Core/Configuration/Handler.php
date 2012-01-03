@@ -33,6 +33,12 @@ class Handler
    * @var Parser\ParserInterface
    */
   protected $parser;
+  
+  /**
+   * The environnment selected 
+   * @var string 
+   */
+  private $selectedEnvironnment;
 
   /**
    * Tell handler the configuration specification ans which parser to use
@@ -64,168 +70,39 @@ class Handler
     return $this->parser;
   }
 
-    /**
-   * Stacks all envrironnement in $env that extends the loaded configuration file
-   * 
-   * @param SplFileObject $file File of the current loaded config file
-   * @param array $envs A stack of conf environnments
-   * @return array 
-   */
-  public function retrieveExtendedEnvFromFile(\SplFileObject $file, Array $allEnvs = array())
-  {
-    $env = $this->parser->parse($file);
-
-    //stack current env to allEnvs 
-    $allEnvs[] = $env;
-
-    //check if the loaded environnement extends another configuration file
-    if ($this->confSpecification->isExtended($env))
-    {
-      try
-      {
-        //get extended environnement name
-        $envName = $this->confSpecification->getExtendedEnvName($env);
-        //get extended configuration file
-        $file = $this->confSpecification->getConfFileFromEnvName($envName);
-        //recurse
-        return $this->retrieveExtendedEnvFromFile($file, $allEnvs);
-      }
-      catch (\Exception $e)
-      {
-        throw new \Exception(sprintf("filename %s not found", $file->getPathname()));
-      }
-    }
-    else
-    {
-      return $allEnvs;
-    }
-  }
-
-  /**
-   * Get the value of a specified data path 
-   * 
-   * @param array $data The array where the data are stored
-   * @param array $path The Path as an  array example : array('path', 'to', 'my', 'value')
-   * @return mixed 
-   */
-  private function getDataPath(Array $data, Array $path)
-  {
-    $found = true;
-
-    for ($x = 0; ($x < count($path) && $found); $x++)
-    {
-      $key = $path[$x];
-
-      if (isset($data[$key]))
-      {
-        $data = $data[$key];
-      }
-      else
-      {
-        $found = false;
-      }
-    }
-
-    return $found ? $data : null;
-  }
-
   /**
    * Handle the configuration process and return the final configuration
    * 
    * @param strinig $name the name of the loaded environnement
    * @return Array
    */
-  public function handle($name)
+  public function handle($selectedEnv = null)
   {
-    //get the corresepondant file
-    $file = $this->confSpecification->getConfFileFromEnvName($name);
+    //get the correspondant file
+    $file = $this->confSpecification->getConfigurationFile();
+    //parse
+    $env = $this->parser->parse($file);
 
-    //get all extended configuration from current env
-    $allEnvs = $this->retrieveExtendedEnvFromFile($file);
-
-    //Last env is the main one
-    $mainEnv = array_pop($allEnvs);
-
-    $excludedPath = $pathToprocess = $this->confSpecification->getNonExtendablePath();
-
-    //at least 2 envs and one path to process
-    if (count($allEnvs) >= 1 && count($excludedPath) >= 1)
+    //get selected env
+    if (null === $selectedEnv)
     {
-      foreach ($allEnvs as $currentEnv) // run trought environnements
-      {
-        foreach ($pathToprocess as $kpath => $processedPath) //run throught path
-        {
-          $valueToReplace = $this->getDataPath($currentEnv, $processedPath); //retrive the value to replace
-
-          if (null !== $valueToReplace)
-          {
-
-            // reset current path
-            $currentPath = array();
-
-            //callback to iterate over the main conf environnement and replace value from extended file
-            $map = function($item, $key) use (&$mainEnv, $valueToReplace, &$map, &$currentPath, $processedPath)
-                    {
-                      if (count(array_diff($processedPath, $currentPath)) === 0) // current path and processed path match
-                      {
-                        /**
-                         * Replace current value of the $currentpath in $searchArray by $value
-                         */
-                        $replace = function(&$searchArray, $currentPath, $value) use (&$replace)
-                                {
-                                  foreach ($searchArray as $k => $v)
-                                  {
-                                    if ($k === $currentPath[0]) //if key of searched path equal key of search array
-                                    {
-                                      array_shift($currentPath); //reduce path
-                                      
-                                      if (is_array($v) && count($currentPath) !== 0) //continue to run trought search array
-                                      {
-                                        $replace(&$searchArray[$k], $currentPath, $value); 
-                                      }
-                                      elseif (count($currentPath) === 0) //no more scope to looking for
-                                      {
-                                        $searchArray[$k] = $value;
-                                        break; //quit
-                                      }
-                                    }
-                                  }
-                                };
-
-                        $replace($mainEnv, $currentPath, $valueToReplace);
-                      }
-                      elseif (is_array($item)) // if current item is an array
-                      {
-                        $currentPath[] = $key; // add item's key to current path
-
-                        array_walk($item, $map); // and dig into the current item
-                      }
-                      else //wrong path
-                      {
-                        $currentPath = array(); //reset
-                      }
-                    };
-
-            //run trough the main conf environnement
-            array_walk($mainEnv, $map);
-
-            //once done
-            //reduce the paths to process
-            unset($pathToprocess[$kpath]);
-
-            break;
-          }
-        }
-      }
-    }
-    //replace all other value
-    if(count($allEnvs) >= 1)
-    {
-      foreach($allEnvs as $extendedEnv)
-       $mainEnv = array_replace_recursive($mainEnv, $extendedEnv);
+      $selectedEnv = $this->confSpecification->getSelectedEnv($env);
     }
 
-    return $mainEnv;
+    $this->selectedEnvironnment = $selectedEnv;
+    
+    if (!isset($env[$selectedEnv]))
+    {
+      throw new \Exception(sprintf('Undeclared environment %s', $selectedEnv));
+    }
+
+    return $env[$selectedEnv];
   }
+
+  public function getSelectedEnvironnment()
+  {
+    return $this->selectedEnvironnment;
+  }
+
 
 }

@@ -36,5 +36,14 @@ class Yaml implements \Alchemy\Phrasea\Core\Configuration\Parser
       throw new \Exception(sprintf('Failed to parse the configuration file %s', $e->getMessage()));
     }
   }
+  
+  /**
+   *
+   * @Override
+   */
+  public function dump(Array $conf, $level = 1)
+  {
+    return SfYaml::dump($conf, $level);
+  }
 
 }

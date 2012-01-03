@@ -20,35 +20,8 @@ namespace Alchemy\Phrasea\Core\Configuration;
  */
 class Application implements Specification
 {
-
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function getNonExtendablePath()
-  {
-    return array(
-        array('doctrine', 'dbal')
-    );
-  }
-
-  /**
-   *
-   * {@inheritdoc}
-   */
-  public function getConfFileFromEnvName($name)
-  {
-    if ($name === self::EXTENDED_MAIN_KEYWORD)
-    {
-      return $this->getMainConfigurationFile();
-    }
-
-    return new \SplFileObject(sprintf("%s/config_%s.%s"
-                            , $this->getConfigurationFilePath()
-                            , $name
-                            , $this->getConfFileExtension())
-    );
-  }
+  const DEFAULT_ENV = 'prod';
+  const KEYWORD_ENV = 'environment';
 
   /**
    *
@@ -63,37 +36,58 @@ class Application implements Specification
    *
    * {@inheritdoc}
    */
-  public function getMainConfigurationFile()
+  public function getConfigurationPathName()
   {
-    $path = __DIR__ . '/../../../../../config/config.yml';
-    return new \SplFileObject($path);
+    $path = sprintf(
+            '%s/%s.%s'
+            , $this->getConfigurationFilePath()
+            , $this->getConfigurationFileName()
+            , $this->getConfigurationFileExtension()
+    );
+    return $path;
   }
 
   /**
    *
    * {@inheritdoc}
    */
-  public function getConfFileExtension()
+  public function getConfigurationFileName()
+  {
+    return 'config';
+  }
+
+  /**
+   *
+   * {@inheritdoc}
+   */
+  public function getConfigurationFileExtension()
   {
     return 'yml';
   }
 
   /**
-   *
-   * {@inheritdoc}
+   * Return the selected environnment from configuration file
+   * 
+   * @return string
    */
-  public function isExtended(Array $env)
+  public function getSelectedEnv(Array $config)
   {
-    return isset($env[self::EXTENDED_KEYWORD]);
+    if (!isset($config[self::KEYWORD_ENV]))
+    {
+      return self::DEFAULT_ENV;
+    }
+
+    return $config[self::KEYWORD_ENV];
   }
 
   /**
-   *
-   * {@inheritdoc}
+   * Return the main configuration file 
+   * 
+   * @return \SplFileObject
    */
-  public function getExtendedEnvName(Array $env)
+  public function getConfigurationFile()
   {
-    return $this->isExtended($env) ? $env[self::EXTENDED_KEYWORD] : null;
+    return new \SplFileObject($this->getConfigurationPathName());
   }
 
 }
