@@ -174,8 +174,6 @@ class oauthv2_application_test extends PhraseanetWebTestCaseAuthenticatedAbstrac
     $acc->set_revoked(true); // revoked to show form
 
     $crawler = $this->client->request('GET', '/authorize', $this->queryParameters);
-    $this->assertTrue($crawler->filter('form')->count() == 2);
-    $this->assertTrue($crawler->filter('input')->count() == 12);
     $this->assertTrue($this->client->getResponse()->isSuccessful());
     $this->assertRegExp("/" . self::$appli->get_client_id() . "/", $this->client->getResponse()->getContent());
     $this->assertRegExp("/" . str_replace("/", '\/', self::$appli->get_redirect_uri()) . "/", $this->client->getResponse()->getContent());
