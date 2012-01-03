@@ -111,7 +111,7 @@
       <li>
         <a href="#rights_tab">{% trans 'Rights' %}</a>
       </li>
-      {% if main_user is not empty and main_user.is_template is empty %}
+      {% if main_user is not empty and main_user.is_template is empty and main_user.is_special is empty %}
       <li>
         <a href="#user_infos_tab">{% trans 'Infos' %}</a>
       </li>
@@ -124,10 +124,19 @@
           <tr>
             <td>
               {% if main_user is not empty %}
-                {% set display_name = main_user.get_display_name() %}
-                {% trans %}
-                  Edition des droits de {{ display_name }}
-                {% endtrans %}
+                
+                {% if main_user.is_special is not empty %}
+                  {% if main_user.get_login() == 'invite' %}
+                    {% trans 'Reglages:: reglages d acces guest' %}
+                  {% elseif main_user.get_login() == 'autoregister' %}
+                    {% trans 'Reglages:: reglages d inscitpition automatisee' %}
+                  {% endif %}
+                {% else %}
+                  {% set display_name = main_user.get_display_name() %}
+                  {% trans %}
+                    Edition des droits de {{ display_name }}
+                  {% endtrans %}
+                {% endif %}
               {% else %}
                 {% set number = users|length %}
                 {% trans %}
@@ -413,7 +422,7 @@
       </form>
     </div>
 
-    {% if main_user is not empty and main_user.is_template is empty %}
+    {% if main_user is not empty and main_user.is_template is empty and main_user.is_special is empty %}
     <div id="user_infos_tab" class="PNB" style="top:40px;">
       <form id="user_infos_form">
         <table>
