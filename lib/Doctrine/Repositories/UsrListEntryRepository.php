@@ -21,9 +21,8 @@ class UsrListEntryRepository extends EntityRepository
    */
   public function findUserList(\User_Adapter $user)
   {
-    $dql = 'SELECT l FROM Entities\UsrListEntry l 
-              JOIN l.owners o
-            WHERE o.usr_id = :usr_id';
+    $dql = 'SELECT e FROM Entities\UsrListEntry e 
+            WHERE e.usr_id = :usr_id';
     
     
     $params = array(

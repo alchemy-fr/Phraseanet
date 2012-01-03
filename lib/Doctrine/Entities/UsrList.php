@@ -145,6 +145,17 @@ class UsrList
     return $this->owners;
   }
 
+  public function hasAccess(\User_Adapter $user)
+  {
+    foreach ($this->getOwners() as $owner)
+    {
+      if ($owner->getUser()->get_id() == $user->get_id())
+        return true;
+    }
+
+    return false;
+  }
+
   /**
    * Add users
    *
