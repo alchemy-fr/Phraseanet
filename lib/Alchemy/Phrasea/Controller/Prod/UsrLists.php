@@ -16,7 +16,8 @@ use Silex\Application,
     Silex\ControllerCollection;
 use Alchemy\Phrasea\Helper\Record as RecordHelper,
     Alchemy\Phrasea\Out\Module\PDF as PDFExport;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response,
+    Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  *
@@ -26,7 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class UsrLists implements ControllerProviderInterface
 {
-  
+
   public function connect(Application $app)
   {
     $controllers = new ControllerCollection();
@@ -36,71 +37,271 @@ class UsrLists implements ControllerProviderInterface
      */
     $controllers->get('/list/all/', function() use ($app)
             {
-      
+              $em = $app['Core']->getEntityManager();
+
+              $repository = $em->getRepository('\Entities\UsrList');
+
+              $lists = $repository->findUserLists($app['Core']->getAuthenticatedUser());
+
+              $datas = array('lists' => array());
+
+              foreach ($lists as $list)
+              {
+
+                $owners = $entries = array();
+
+                foreach ($list->getOwners() as $owner)
+                {
+                  $owners[] = array(
+                      'usr_id' => $owner->getUser()->get_id(),
+                      'display_name' => $owner->getUser()->get_display_name(),
+                      'position' => $owner->getUser()->get_position(),
+                      'job' => $owner->getUser()->get_job(),
+                      'company' => $owner->getUser()->get_company(),
+                      'email' => $owner->getUser()->get_email(),
+                      'role' => $owner->getRole()
+                  );
+                }
+
+                foreach ($list->getUsers() as $entry)
+                {
+                  $entries[] = array(
+                      'usr_id' => $owner->getUser()->get_id(),
+                      'display_name' => $owner->getUser()->get_display_name(),
+                      'position' => $owner->getUser()->get_position(),
+                      'job' => $owner->getUser()->get_job(),
+                      'company' => $owner->getUser()->get_company(),
+                      'email' => $owner->getUser()->get_email(),
+                  );
+                }
+
+
+                /* @var $list \Entities\UsrList */
+                $datas['lists'][] = array(
+                    'name' => $list->getName(),
+                    'created' => $list->getCreated()->format(DATE_ATOM),
+                    'updated' => $list->getUpdated()->format(DATE_ATOM),
+                    'owners' => $owners,
+                    'users' => $entries
+                );
+              }
+
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
-    
+
     /**
      * Creates a list
      */
-    $controllers->post('/list/{list_id}/', function() use ($app)
+    $controllers->post('/list/', function() use ($app)
             {
-      
+              $request = $app['request'];
+
+              $list_name = $request->get('name');
+
+              try
+              {
+                $em = $app['Core']->getEntityManager();
+
+                $repository = $em->getRepository('\Entities\Usr');
+
+                $List = new \Entities\UsrList();
+
+                $Owner = new \Entities\UsrListOwner();
+                $Owner->setRole(\Entities\UsrListOwner::ROLE_ADMIN);
+                $Owner->setUser($app['Core']->getAuthenticatedUser());
+                $Owner->setList($List);
+
+                $List->setName($list_name);
+                $List->addUsrListOwner($Owner);
+
+                $em->persist($Owner);
+                $em->persist($List);
+                $em->flush();
+
+                $datas = array(
+                    'success' => true
+                    , 'message' => ''
+                );
+              }
+              catch (\Exception $e)
+              {
+
+                $datas = array(
+                    'success' => false
+                    , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+                );
+              }
+
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
-    
+
     /**
      * Gets a list
      */
     $controllers->get('/list/{list_id}/', function() use ($app)
             {
-      
+              $user = $app['Core']->getAuthenticatedUser();
+              $em = $app['Core']->getEntityManager();
+
+              $repository = $em->getRepository('\Entities\UsrList');
+
+              $list = $repository->findUserListByUserAndId($user, $list_id);
+
+              $owners = $entries = $lists = array();
+
+              foreach ($list->getOwners() as $owner)
+              {
+                $owners[] = array(
+                    'usr_id' => $owner->getUser()->get_id(),
+                    'display_name' => $owner->getUser()->get_display_name(),
+                    'position' => $owner->getUser()->get_position(),
+                    'job' => $owner->getUser()->get_job(),
+                    'company' => $owner->getUser()->get_company(),
+                    'email' => $owner->getUser()->get_email(),
+                    'role' => $owner->getRole()
+                );
+              }
+
+              foreach ($list->getUsers() as $entry)
+              {
+                $entries[] = array(
+                    'usr_id' => $owner->getUser()->get_id(),
+                    'display_name' => $owner->getUser()->get_display_name(),
+                    'position' => $owner->getUser()->get_position(),
+                    'job' => $owner->getUser()->get_job(),
+                    'company' => $owner->getUser()->get_company(),
+                    'email' => $owner->getUser()->get_email(),
+                );
+              }
+
+
+              /* @var $list \Entities\UsrList */
+              $datas = array('list' => array(
+                      'name' => $list->getName(),
+                      'created' => $list->getCreated()->format(DATE_ATOM),
+                      'updated' => $list->getUpdated()->format(DATE_ATOM),
+                      'owners' => $owners,
+                      'users' => $entries
+                  )
+              );
+
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
 
     /**
      * Update a list
      */
-    $controllers->get('/list/{list_id}/update/', function() use ($app)
+    $controllers->post('/list/{list_id}/update/', function() use ($app)
             {
-      
-            }
-    );
-    
-    /**
-     * Delete a list
-     */
-    $controllers->get('/list/{list_id}/delete/', function() use ($app)
-            {
-      
+              $user = $app['Core']->getAuthenticatedUser();
+              $em = $app['Core']->getEntityManager();
+
+              try
+              {
+                $request = $app['request'];
+
+                $repository = $em->getRepository('\Entities\UsrList');
+
+                $list = $repository->findUserListByUserAndId($user, $list_id);
+
+                $list->setName($request->get('name'));
+
+                $em->merge($list);
+                $em->flush();
+                
+                $datas = array(
+                    'success' => true
+                    , 'message' => ''
+                );
+              }
+              catch (\Exception $e)
+              {
+
+                $datas = array(
+                    'success' => false
+                    , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+                );
+              }
+
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
 
-    
+    /**
+     * Delete a list
+     */
+    $controllers->post('/list/{list_id}/delete/', function() use ($app)
+            {
+              $em = $app['Core']->getEntityManager();
+
+              $repository = $em->getRepository('\Entities\Usr');
+              
+              try
+              {
+                $repository = $em->getRepository('\Entities\UsrList');
+
+                $list = $repository->findUserListByUserAndId($user, $list_id);
+
+                $em->remove($list);
+                $em->flush();
+              }
+              catch (\Exception $e)
+              {
+
+                $datas = array(
+                    'success' => false
+                    , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+                );
+              }
+
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
+            }
+    );
+
+
     /**
      * Remove a usr_id from a list
      */
     $controllers->post('/list/{list_id}/remove/{usr_id}/', function() use ($app)
             {
-      
+              $em = $app['Core']->getEntityManager();
+
+              $repository = $em->getRepository('\Entities\Usr');
             }
     );
-    
+
     /**
      * Adds a usr_id to a list
      */
     $controllers->post('/list/{list_id}/add/{usr_id}/', function() use ($app)
             {
-      
+              $em = $app['Core']->getEntityManager();
+
+              $repository = $em->getRepository('\Entities\Usr');
             }
     );
-    
+
     /**
      * Share a list to a user with an optionnal role
      */
     $controllers->post('/list/{list_id}/share/{usr_id}/', function() use ($app)
             {
-      
+              $em = $app['Core']->getEntityManager();
+
+              $repository = $em->getRepository('\Entities\Usr');
             }
     );
     /**
@@ -108,11 +309,14 @@ class UsrLists implements ControllerProviderInterface
      */
     $controllers->post('/list/{list_id}/unshare/{usr_id}/', function() use ($app)
             {
-      
+              $em = $app['Core']->getEntityManager();
+
+              $repository = $em->getRepository('\Entities\Usr');
             }
     );
 
 
     return $controllers;
   }
+
 }
