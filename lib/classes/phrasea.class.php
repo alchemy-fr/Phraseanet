@@ -105,7 +105,19 @@ class phrasea
 
   public static function start()
   {
-    require (__DIR__ . '/../../config/connexion.inc');
+    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                    new \Alchemy\Phrasea\Core\Configuration\Application(),
+                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    );
+    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+    $connexion = $configuration->getConnexion();
+
+    $hostname = $connexion->get('host');
+    $port = $connexion->get('port');
+    $user = $connexion->get('user');
+    $password = $connexion->get('password');
+    $dbname = $connexion->get('dbname');
 
     if (!extension_loaded('phrasea2'))
       printf("Missing Extension php-phrasea");
@@ -224,7 +236,6 @@ class phrasea
   public static function sbas_params()
   {
     if (self::$_sbas_params)
-
       return self::$_sbas_params;
 
     $appbox = appbox::get_instance();
@@ -236,7 +247,7 @@ class phrasea
     }
     catch (Exception $e)
     {
-
+      
     }
 
     self::$_sbas_params = array();
@@ -261,7 +272,6 @@ class phrasea
   {
     $usr_id = User_Adapter::get_usr_id_from_login('invite');
     if (!$usr_id)
-
       return false;
     $appbox = appbox::get_instance();
     $user = User_Adapter::getInstance($usr_id, $appbox);
