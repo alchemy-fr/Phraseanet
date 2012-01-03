@@ -40,7 +40,7 @@ class Core extends \Pimple
    */
   private $configuration;
 
-  public function __construct($environnement)
+  public function __construct($environement = null)
   {
 
     /**
@@ -49,11 +49,14 @@ class Core extends \Pimple
     static::initAutoloads();
 
     
-    /**
-     * Init conf
-     */
-    $this->init($environnement);
-
+    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                    new \Alchemy\Phrasea\Core\Configuration\Application(),
+                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    );
+    $this->configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    
+    $this->configuration->setEnvironnement($environement);
+    
     /**
      * Set version
      */
@@ -65,10 +68,10 @@ class Core extends \Pimple
     /**
      * Set Entity Manager using configuration
      */        
-    $configuration = $this->getConfiguration();
-    $this['EM'] = $this->share(function() use ($configuration)
+    $doctrineConf = $this->configuration->getDoctrine()->all();
+    $this['EM'] = $this->share(function() use ($doctrineConf)
             {
-              $doctrine = new Core\Service\Doctrine($configuration->getDoctrine());
+              $doctrine = new Core\Service\Doctrine($doctrineConf);
               return $doctrine->getEntityManager();
             });
 
@@ -410,19 +413,5 @@ class Core extends \Pimple
     return $this->conf->getEnvironnement();
   }
   
-  /**
-   * Load application configuration
-   * 
-   * @param type $env 
-   */
-  private function loadConf($env)
-  {
-    $confHandler = new Configuration\Handler(
-                    new Configuration\Application(),
-                    new Configuration\Parser\Yaml()
-    );
-    
-    $this->configuration = new Configuration($env, $confHandler);
-  }
 
 }
