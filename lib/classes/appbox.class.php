@@ -23,6 +23,7 @@ class appbox extends base
    * @var int
    */
   protected $id;
+
   /**
    *
    * @var appbox
@@ -74,13 +75,19 @@ class appbox extends base
     $this->registry = $registry;
     $this->session = Session_Handler::getInstance($this);
 
-    require __DIR__ . '/../../config/connexion.inc';
+    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                    new \Alchemy\Phrasea\Core\Configuration\Application(),
+                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    );
+    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
-    $this->host = $hostname;
-    $this->port = $port;
-    $this->user = $user;
-    $this->passwd = $password;
-    $this->dbname = $dbname;
+    $connexion = $configuration->getConnexion();
+
+    $this->host = $connexion->get('host');
+    $this->port = $connexion->get('port');
+    $this->user = $connexion->get('user');
+    $this->passwd = $connexion->get('password');
+    $this->dbname = $connexion->get('dbname');
 
     return $this;
   }
@@ -127,12 +134,10 @@ class appbox extends base
     $custom_path.= $collection->get_base_id();
 
     if (is_null($pathfile))
-
       return $this;
 
     $datas = file_get_contents($pathfile->getPathname());
     if (is_null($datas))
-
       return $this;
 
     file_put_contents($file, $datas);
@@ -184,12 +189,10 @@ class appbox extends base
     $custom_path.= $pic_type . '_' . $databox->get_sbas_id();
 
     if (is_null($pathfile))
-
       return $this;
 
     $datas = file_get_contents($pathfile->getPathname());
     if (is_null($datas))
-
       return $this;
 
     file_put_contents($file, $datas);
@@ -343,7 +346,7 @@ class appbox extends base
      */
     foreach ($this->get_databoxes() as $s)
     {
-      $upgrader->set_current_message(sprintf(_('Upgrading %s'),$s->get_viewname()));
+      $upgrader->set_current_message(sprintf(_('Upgrading %s'), $s->get_viewname()));
       $advices = array_merge($advices, $s->upgradeDB(true, $upgrader));
       $upgrader->add_steps_complete(1);
     }
@@ -372,7 +375,7 @@ class appbox extends base
   protected function post_upgrade(Setup_Upgrade &$upgrader)
   {
     $Core = bootstrap::getCore();
-    
+
     $upgrader->add_steps(1 + count($this->get_databoxes()));
     $this->apply_patches($this->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
     $this->setVersion($Core->getVersion()->getNumber());
@@ -401,7 +404,9 @@ class appbox extends base
     $credentials = $conn->get_credentials();
 
     if ($conn->is_multi_db() && trim($dbname) === '')
-      throw new Exception(_('Nom de base de donnee incorrect'));
+    {
+      throw new \Exception(_('Nom de base de donnee incorrect'));
+    }
 
     if ($write_file)
     {
@@ -409,23 +414,35 @@ class appbox extends base
       {
         $credentials['dbname'] = $dbname;
       }
-      $connexion = __DIR__ . "/../../config/connexion.inc";
-      if (is_file($connexion))
-        unlink($connexion);
 
-      $EOL = PHP_EOL;
+      $file = __DIR__ . "/../../config/config.sample.yml";
+      $file1 = __DIR__ . "/../../config/config.yml";
 
-      $connexionINI = '<?php' . $EOL;
-      foreach ($credentials as $key => $value)
+      if (!copy($file, $file1))
       {
-        $connexionINI .= '$' . $key . ' = "' . str_replace('"', '\"', $value) . '";' . $EOL;
+        throw new \Exception(sprintf("Unable to copy %s", $file1));
       }
 
-      if (!file_put_contents($connexion, $connexionINI, FILE_APPEND) !== false)
-        throw new Exception(sprintf(_('Impossible d\'ecrire dans le dossier %s'), dirname(__DIR__) . "/config/"));
+      $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                      new \Alchemy\Phrasea\Core\Configuration\Application(),
+                      new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+      );
+      $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
+      $connexionINI = array();
+
+      foreach ($credentials as $key => $value)
+      {
+        $key = $key == 'hostname' ? 'host' : $key;
+        $connexionINI[$key] = (string) $value;
+      }
+
+      $configuration->setAllDatabaseConnexion($connexionINI);
+      
       if (function_exists('chmod'))
-        chmod($connexion, 0700);
+      {
+        chmod($configuration->getFile()->getPathname(), 0700);
+      }
     }
     try
     {
@@ -437,7 +454,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-
+      
     }
 
     try
@@ -474,7 +491,6 @@ class appbox extends base
   public function get_databoxes()
   {
     if ($this->databoxes)
-
       return $this->databoxes;
 
     $ret = array();
@@ -486,7 +502,7 @@ class appbox extends base
       }
       catch (Exception $e)
       {
-
+        
       }
     }
 
@@ -503,7 +519,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-
+      
     }
     $sql = 'SELECT sbas_id FROM sbas';
 
