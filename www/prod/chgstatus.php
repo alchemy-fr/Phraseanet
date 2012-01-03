@@ -113,8 +113,8 @@ if ($parm["act"] == "START" || $parm["act"] == "WORK")
           $status = databox_status::operation_or($status,  $msko[$basrec[0]]);
           $record->set_binary_status($status);
 
-          $session->get_logger($databox)
-                  ->log($record, Session_Logger::EVENT_STATUS, '', '');
+            $session->get_logger($record->get_databox())
+                    ->log($record, Session_Logger::EVENT_STATUS, '', '');
 
           $maj++;
           unset($record);

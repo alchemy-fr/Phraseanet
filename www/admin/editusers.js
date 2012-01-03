@@ -78,6 +78,7 @@ function ini_edit_usrs(){
     var datas = {
       users:$('#users_rights_form input[name="users"]').val(),
       values:$('#users_rights_form').serialize(),
+      template:$('#users_rights_form select[name="template"]').val(),
       user_infos:$('#user_infos_form').serialize()
       };
     $.ajax({
@@ -92,6 +93,17 @@ function ini_edit_usrs(){
           alert(data.message);
       }
     });
+    return false;
+  });
+  
+  $('#right-ajax .users_rights_cancel').bind('click', function(){
+    var $this = $(this);
+    $('#right-ajax').empty().addClass('loading').parent().show();
+    $('#right').hide();
+    $.get($this.attr('href'), function(data) {
+      $('#right-ajax').removeClass('loading').html(data);
+    });
+    
     return false;
   });
 

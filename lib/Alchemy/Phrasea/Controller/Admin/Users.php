@@ -84,6 +84,12 @@ class Users implements ControllerProviderInterface
               {
                 $rights = new UserHelper\Edit($app['Core']);
                 $rights->apply_rights();
+                
+                if ($app['request']->get('template'))
+                {
+                  $rights->apply_template();
+                }
+                
                 $rights->apply_infos();
 
                 $datas = array('error' => false);

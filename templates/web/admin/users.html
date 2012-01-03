@@ -34,6 +34,13 @@
       </span>
     </a>
     <input type="hidden" value="{{invite_user.get_id()}}" name="invite_user_id"/>
+    
+    <a class="autoregister_modifier" href="#">
+      <span>
+        {% trans 'Reglages:: reglages d inscitpition automatisee' %}
+      </span>
+    </a>
+    <input type="hidden" value="{{autoregister_user.get_id()}}" name="autoregister_user_id"/>
   </p>
   <form id="users_page_search" method="post" action="/admin/users/search/" target="_self">
     <p class="admin_head_opts">

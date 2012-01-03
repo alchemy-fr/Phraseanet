@@ -213,33 +213,6 @@ if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache'
     </div>
     <h1><?php echo _('setup:: Reglages generaux') ?></h1>
     <br>
-<?php
-          try
-          {
-            $invite = new User_Adapter('invite', $appbox);
-          }
-          catch (Exception $e)
-          {
-            $invite = User_Adapter::create($appbox, 'invite', 'invite', '', false);
-          }
-?>
-          <div><a href="editusr.php?ord=asc&p2=<?php echo $invite->get_id() ?>"><?php echo _('Reglages:: reglages d acces guest'); ?></a></div>
-    <?php
-          try
-          {
-            $autoregister = new User_Adapter('autoregister', $appbox);
-          }
-          catch (Exception $e)
-          {
-            $invite = User_Adapter::create($appbox, 'autoregister', 'autoregister', '', false);
-          }
-          if ($autoregister !== false)
-          {
-    ?>
-            <div><a href="editusr.php?ord=asc&p2=<?php echo $autoregister->get_id() ?>"><?php echo _('Reglages:: reglages d inscitpition automatisee'); ?></a></div>
-    <?php
-          }
-    ?>
           <h2><?php echo _('setup::Votre configuration') ?></h2>
           <div>
             <div style="position:relative;float:left;width:400px;">
