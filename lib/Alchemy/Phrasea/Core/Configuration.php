@@ -277,6 +277,11 @@ class Configuration
     return $allConf;
   }
 
+  /**
+   * Write into the main file connexion credentials defined in $connexion
+   * @param array $connexion Array of connexion credentials
+   * @return Configuration 
+   */
   public function setAllDatabaseConnexion(Array $connexion)
   {
     $arrayConf = $this->all();
@@ -313,6 +318,36 @@ class Configuration
     }
 
     $this->write($arrayConf, FILE_APPEND, true);
+    
+    return $this;
+  }
+
+  /**
+   * Write into the main file the serverName
+   * @param type $serverName
+   * @return Configuration 
+   */
+  public function setServerName($serverName)
+  {
+    $arrayConf = $this->all();
+
+    foreach ($arrayConf as $key => $value)
+    {
+      if (is_array($value) && array_key_exists('phraseanet', $value))
+      {
+        foreach ($arrayConf[$key]['phraseanet'] as $kee => $value)
+        {
+          if ($kee === 'servername')
+          {
+            $arrayConf[$key]['phraseanet']['servername'] = $serverName;
+          }
+        }
+      }
+    }
+    
+    $this->write($arrayConf, FILE_APPEND, true);
+    
+    return $this;
   }
 
   /**
