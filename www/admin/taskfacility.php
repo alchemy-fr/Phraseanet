@@ -26,6 +26,6 @@ $tskfile = $registry->get('GV_RootPath') . 'lib/classes/task/period/' . $parm['c
 
 require_once $tskfile;
 
-$ztask = new $cls($parm['taskid']);
+// $ztask = new $cls($parm['taskid']);
 
 echo $ztask->facility();
