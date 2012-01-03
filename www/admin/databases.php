@@ -92,12 +92,26 @@ phrasea::headers();
           {
             $error[] = _('Database name can not contains special characters');
           }
-          
+
           if (count($error) === 0)
           {
             try
             {
-              require __DIR__ . '/../../config/connexion.inc';
+
+
+              $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                              new \Alchemy\Phrasea\Core\Configuration\Application(),
+                              new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+              );
+              $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+              $connexion = $configuration->getConnexion();
+
+              $hostname = $connexion->get('host');
+              $port = $connexion->get('port');
+              $user = $connexion->get('user');
+              $password = $connexion->get('password');
+
               $data_template = new system_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
 
               $connbas = new connection_pdo('databox_creation', $hostname, $port, $user, $password, $parm['new_dbname']);
@@ -119,7 +133,7 @@ phrasea::headers();
             }
           }
         }
-        elseif ($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port'] 
+        elseif ($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port']
                 && $parm['new_user'] && $parm['new_password']
                 && $parm['new_dbname'] && $parm['new_data_template'])
         {
@@ -128,7 +142,7 @@ phrasea::headers();
           {
             $error[] = _('Database name can not contains special characters');
           }
-          
+
           if (count($error) === 0)
           {
 
@@ -159,7 +173,21 @@ phrasea::headers();
           {
             try
             {
-              require __DIR__ . '/../../config/connexion.inc';
+
+
+              $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                              new \Alchemy\Phrasea\Core\Configuration\Application(),
+                              new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+              );
+              $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+              $connexion = $configuration->getConnexion();
+
+              $hostname = $connexion->get('host');
+              $port = $connexion->get('port');
+              $user = $connexion->get('user');
+              $password = $connexion->get('password');
+
               $appbox->get_connection()->beginTransaction();
               $base = databox::mount($appbox, $hostname, $port, $user, $password, $parm['new_dbname'], $registry);
               $base->registerAdmin($user_obj);
@@ -252,15 +280,14 @@ if ($createBase || $mountBase)
     phrasea::redirect('/admin/databases.php');
   }
 }
-
 ?>
 
     </script>
-    <?php 
-    foreach($error as $e)
+    <?php
+    foreach ($error as $e)
     {
       ?>
-    <span style="background-color:red;color:white;padding:3px"><?php echo $e; ?></span>
+      <span style="background-color:red;color:white;padding:3px"><?php echo $e; ?></span>
       <?php
     }
     ?>
@@ -302,7 +329,7 @@ if ($createBase || $mountBase)
         if ($upgrade_available)
         {
           ?>
-        <div><?php echo _('update::Votre application necessite une mise a jour vers : '), ' ', $Core->getVersion()->getNumber() ?></div>
+          <div><?php echo _('update::Votre application necessite une mise a jour vers : '), ' ', $Core->getVersion()->getNumber() ?></div>
           <?php
         }
         else
