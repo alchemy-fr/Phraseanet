@@ -54,16 +54,10 @@ class EntitiesValidationParticipantProxy extends \Entities\ValidationParticipant
         return parent::getUsrId();
     }
 
-    public function addValidationData(\Entities\ValidationData $datases)
+    public function addValidationData(\Entities\ValidationData $datas)
     {
         $this->__load();
-        return parent::addValidationData($datases);
-    }
-
-    public function getDatases()
-    {
-        $this->__load();
-        return parent::getDatases();
+        return parent::addValidationData($datas);
     }
 
     public function setSession(\Entities\ValidationSession $session)
@@ -90,10 +84,82 @@ class EntitiesValidationParticipantProxy extends \Entities\ValidationParticipant
         return parent::getIsAware();
     }
 
+    public function setUser(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::setUser($user);
+    }
+
+    public function getUser()
+    {
+        $this->__load();
+        return parent::getUser();
+    }
+
+    public function setReminded($reminded)
+    {
+        $this->__load();
+        return parent::setReminded($reminded);
+    }
+
+    public function getReminded()
+    {
+        $this->__load();
+        return parent::getReminded();
+    }
+
+    public function getDatas()
+    {
+        $this->__load();
+        return parent::getDatas();
+    }
+
+    public function setIsConfirmed($isConfirmed)
+    {
+        $this->__load();
+        return parent::setIsConfirmed($isConfirmed);
+    }
+
+    public function getIsConfirmed()
+    {
+        $this->__load();
+        return parent::getIsConfirmed();
+    }
+
+    public function setCanAgree($canAgree)
+    {
+        $this->__load();
+        return parent::setCanAgree($canAgree);
+    }
+
+    public function getCanAgree()
+    {
+        $this->__load();
+        return parent::getCanAgree();
+    }
+
+    public function setCanSeeOthers($canSeeOthers)
+    {
+        $this->__load();
+        return parent::setCanSeeOthers($canSeeOthers);
+    }
+
+    public function getCanSeeOthers()
+    {
+        $this->__load();
+        return parent::getCanSeeOthers();
+    }
+
+    public function isReleasable()
+    {
+        $this->__load();
+        return parent::isReleasable();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'usr_id', 'is_aware', 'datases', 'session');
+        return array('__isInitialized__', 'id', 'usr_id', 'is_aware', 'is_confirmed', 'can_agree', 'can_see_others', 'reminded', 'datas', 'session');
     }
 
     public function __clone()

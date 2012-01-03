@@ -297,7 +297,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
       return $this->selection->serialize_list();
   }
 
-  public function grep_records(Closure $closure)
+  public function grep_records(\Closure $closure)
   {
     foreach ($this->selection->get_elements() as $record)
     {
