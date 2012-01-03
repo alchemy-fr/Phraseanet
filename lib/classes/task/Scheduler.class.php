@@ -45,7 +45,19 @@ class task_Scheduler
 
   protected static function get_connection()
   {
-    require __DIR__ . '/../../../config/connexion.inc';
+    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                    new \Alchemy\Phrasea\Core\Configuration\Application(),
+                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    );
+    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+    $connexion = $configuration->getConnexion();
+
+    $hostname = $connexion->get('host');
+    $port = $connexion->get('port');
+    $user = $connexion->get('user');
+    $password = $connexion->get('password');
+    $dbname = $connexion->get('dbname');
 
     return new connection_pdo('appbox', $hostname, $port, $user, $password, $dbname);
   }
@@ -111,7 +123,7 @@ class task_Scheduler
       {
         continue;
       }
-      
+
       $tid = $task->get_task_id();
 
       if (!$task->is_running())
