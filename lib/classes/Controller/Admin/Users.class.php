@@ -88,6 +88,12 @@ class Controller_Admin_Users implements ControllerProviderInterface
                 $request = $app['request'];
                 $rights = new module_admin_route_users_edit($request);
                 $rights->apply_rights();
+                
+                if ($app['request']->get('template'))
+                {
+                  $rights->apply_template();
+                }
+                
                 $rights->apply_infos();
 
                 $datas = array('error' => false);
@@ -198,7 +204,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
             {
               $request = $app['request'];
               $users = new module_admin_route_users_edit($request);
-              
+
               $users->apply_template();
 
               return new Symfony\Component\HttpFoundation\RedirectResponse('/admin/users/search/');
