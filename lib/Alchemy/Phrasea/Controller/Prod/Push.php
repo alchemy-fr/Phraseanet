@@ -45,92 +45,184 @@ class Push implements ControllerProviderInterface
     $controllers->post('/send/', function(Application $app)
             {
               $pusher = new RecordHelper\Push($app['Core']);
+              $user = $app['Core']->getAuthenticatedUser();
+              $appbox = appbox::get_instance();
+
+              $push_name = $request->get(
+                      'push_name'
+                      , sprintf(_('Push from %s', $user->get_display_name()))
+              );
+              $push_description = $request->get('push_description');
+
+              foreach ($request->get('receivers') as $receiver)
+              {
+                $user_receiver = \User_Adapter::getInstance($receiver, $appbox);
+
+                $Basket = new Basket();
+                $Basket->setName($push_name);
+                $Basket->setDescription($push_description);
+                $Basket->setUser($user_receiver);
+                $Basket->setPusher($user);
+
+                $em->persist($Basket);
+
+                foreach ($pusher->get_elements() as $element)
+                {
+                  $BasketElement = new BasketELement();
+                  $BasketElement->setRecord($element);
+                  $BasketElement->setBasket($Basket);
+
+                  $em->persist($BasketElement);
+                }
+              }
+
+              $em->flush();
             }
     );
 
     $controllers->post('/validate/', function(Application $app)
             {
               $request = $app['request'];
-      
+
               $pusher = new RecordHelper\Push($app['Core']);
-              
+
               $em = $app['Core']->getEntityManager();
-              
+
               $repository = $em->getRepository('\Entities\Basket');
-              
-              if($pusher->is_basket())
+
+              $validation_name = $request->get(
+                      'validation_name'
+                      , sprintf(_('Validation from %s', $user->get_display_name()))
+              );
+              $validation_description = $request->get('validation_description');
+
+              if ($pusher->is_basket())
               {
                 $Basket = $pusher->get_original_basket();
               }
               else
               {
                 $Basket = new Basket();
-                
+                $Basket->setName($validation_name);
+                $Basket->setDescription($validation_description);
+                $Basket->setUser($user);
+
                 $em->persist($Basket);
-                
-                foreach($pusher->get_elements() as $element)
+
+                foreach ($pusher->get_elements() as $element)
                 {
                   $BasketElement = new BasketELement();
                   $BasketElement->setRecord($element);
                   $BasketElement->setBasket($Basket);
-                  
+
                   $em->persist($BasketElement);
-                  
                 }
-                
+
                 $em->flush();
               }
-              
-              if(!$Basket->getValidation())
+
+              if (!$Basket->getValidation())
               {
-                $Validation  = new \Entities\ValidationSession();
+                $Validation = new \Entities\ValidationSession();
                 $Validation->setInitiator($app['Core']->getAuthenticatedUser());
                 $Validation->setBasket($Basket);
-                
+
                 $Basket->setValidation($Validation);
-                
-                $appbox = appbox::get_instance();
-                
-                foreach($request->get('participants') as $usr_id)
-                {
-                  $usr_id = \User_Adapter::getInstance($usr_id, $appbox);
-                  $Participant = new \Entities\Participant();
-                }
-                
                 $em->persist($Validation);
-                
-                $em->flush();
               }
               else
               {
-                
+                $Validation = $Basket->getValidation();
               }
-              
-              
+
+
+              $appbox = appbox::get_instance();
+
+              foreach ($request->get('participants') as $participant)
+              {
+                $user = \User_Adapter::getInstance($participant['usr_id'], $appbox);
+
+                try
+                {
+                  $Participant = $Validation->getParticipant($user);
+                }
+                catch (\Exception_NotFound $e)
+                {
+                  continue;
+                }
+
+                $Participant = new \Entities\ValidationParticipant();
+                $Participant->setUser($user);
+                $Participant->setSession($Validation);
+
+                $Participant->setCanAgree($participant['agree']);
+                $Participant->setCanSeeOthers($participant['see_others']);
+
+                $em->persist($Participant);
+
+                foreach ($Basket->getElements() as $BasketElement)
+                {
+                  $ValidationData = new \Entities\ValidationData();
+                  $ValidationData->setParticipant($Participant);
+                  $validationData->setBasketElement($BasketElement);
+                  $BasketElement->addValidationData($ValidationData);
+
+                  $em->merge($BasketElement);
+                  $em->persists($ValidationData);
+
+                  $Participant->addValidationData($ValidationData);
+                }
+
+                $em->merge($Participant);
+              }
+
+              $em->merge($Basket);
+              $em->merge($Validation);
+
+              $em->flush();
             }
     );
 
     $controllers->get('/search-user/', function(Application $app)
             {
               $request = $app['request'];
+              $em = $app['Core']->getEntityManager();
+              $user = $app['Core']->getAuthenticatedUser();
 
               $pusher = new RecordHelper\Push($app['Core']);
 
               $result = $pusher->search($request->get('query'));
 
+              $repository = $em->getRepository('\Entities\UsrList');
+
+              $lists = $repository->findUserListLike($user, $request->get('query'));
+
               $datas = array();
+
+              foreach ($lists as $list)
+              {
+                $datas[] = array(
+                    'type' => 'LIST'
+                    , 'name' => $list->getName()
+                    , 'quantity' => $list->getUsers()->count()
+                );
+              }
 
               foreach ($result as $user)
               {
                 $datas[] = array(
                     'type' => 'USER'
                     , 'usr_id' => $user->get_id()
-                    , 'firstname'
-                    , 'lastname'
-                    , 'email'
-                    , 'display_name'
+                    , 'firstname' => $user->get_firstname()
+                    , 'lastname' => $user->get_lastname()
+                    , 'email' => $user->get_email()
+                    , 'display_name' => $user->get_display_name()
                 );
               }
+
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
 
