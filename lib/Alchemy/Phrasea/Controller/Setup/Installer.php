@@ -37,10 +37,7 @@ class Installer implements ControllerProviderInterface
     $controllers->get('/', function() use ($app)
             {
               $request = $app['request'];
-              $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
-              \setup::write_config($servername);
-              
-              
+
               $php_constraint = \setup::check_php_version();
               $writability_constraints = \setup::check_writability(new \Setup_Registry());
               $extension_constraints = \setup::check_php_extension();
@@ -77,11 +74,11 @@ class Installer implements ControllerProviderInterface
                 return $app->redirect('/setup/installer/step2/');
               }
 
-              
+
               $ld_path = array(__DIR__ . '/../../../../../templates/web');
               $loader = new \Twig_Loader_Filesystem($ld_path);
               $twig = new \Twig_Environment($loader);
-              
+
               $html = $twig->render(
                       '/setup/index.twig'
                       , array_merge($constraints_coll, array(
@@ -99,12 +96,12 @@ class Installer implements ControllerProviderInterface
     $controllers->get('/step2/', function() use ($app)
             {
               \phrasea::use_i18n(\Session_Handler::get_locale());
-              
+
               $ld_path = array(__DIR__ . '/../../../../../templates/web');
-              
+
               $loader = new \Twig_Loader_Filesystem($ld_path);
               $twig = new \Twig_Environment($loader);
-              
+
               $twig->addExtension(new \Twig_Extensions_Extension_I18n());
 
               $request = $app['request'];
@@ -180,11 +177,11 @@ class Installer implements ControllerProviderInterface
                 \setup::create_global_values($registry);
 
                 $appbox->set_registry($registry);
-
+                $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
                 $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')));
                 $registry->set('GV_base_datapath_web', \p4string::addEndSlash($request->get('datapath_web')));
                 $registry->set('GV_base_dataurl', \p4string::addEndSlash($request->get('mount_point_web')));
-
+                $registry->set('GV_ServerName', $servername);
                 $registry->set('GV_cli', $request->get('binary_php'));
                 $registry->set('GV_imagick', $request->get('binary_convert'));
                 $registry->set('GV_pathcomposite', $request->get('binary_composite'));
@@ -204,8 +201,7 @@ class Installer implements ControllerProviderInterface
                 {
                   if ($databox_name)
                   {
-
-                    $template = new \system_file(__DIR__ . '/../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
+                    $template = new \system_file(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
                     $databox = \databox::create($appbox, $connbas, $template, $registry);
                     $user->ACL()
                             ->give_access_to_sbas(array($databox->get_sbas_id()))
