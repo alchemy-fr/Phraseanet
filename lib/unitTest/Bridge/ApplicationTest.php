@@ -327,7 +327,7 @@ class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertTrue($this->client->getResponse()->isOk());
 
-    $this->assertContains("/prod/bridge/login/" . mb_strtolower(self::$account->get_api()->get_connector()->get_name()), $pageContent);
+    $this->assertContains("prod/bridge/login/" . mb_strtolower(self::$account->get_api()->get_connector()->get_name())."/", $pageContent);
   }
 
 }
