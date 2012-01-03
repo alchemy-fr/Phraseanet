@@ -37,13 +37,13 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $spec = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getMainConfigurationFile')
+            , array('getConfigurationFile')
     );
 
     $fileName = __DIR__ . '/confTestFiles/good.yml';
 
     $spec->expects($this->any())
-            ->method('getMainConfigurationFile')
+            ->method('getConfigurationFile')
             ->will(
                     $this->returnValue(
                             new \SplFileObject($fileName)
@@ -52,10 +52,10 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
 
-    $environnement = 'main';
-    $configuration = new PhraseaCore\Configuration($environnement, $handler);
+    $configuration = new PhraseaCore\Configuration($handler);
+    $configuration->setEnvironnement('prod');
 
-    $this->assertEquals($environnement, $configuration->getEnvironnement());
+    $this->assertEquals('prod', $configuration->getEnvironnement());
     $this->assertTrue($configuration->isInstalled());
     $this->assertInstanceOf(
             'Alchemy\Phrasea\Core\Configuration\Parameter'
@@ -63,29 +63,30 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
     $this->assertFalse($configuration->isDebug());
     $this->assertFalse($configuration->displayErrors());
-    $this->assertTrue(is_array($configuration->getPhraseanet()));
-    $this->assertTrue(is_array($configuration->getDoctrine()));
+    $this->assertFalse($configuration->isMaintained());
+    $this->assertTrue(is_array($configuration->getPhraseanet()->all()));
+    $this->assertTrue(is_array($configuration->getDoctrine()->all()));
   }
 
   public function testInstalled()
   {
     $spec = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getMainConfigurationFile')
+            , array('getConfigurationFile')
     );
 
     $spec->expects($this->any())
-            ->method('getMainConfigurationFile')
+            ->method('getConfigurationFile')
             ->will($this->throwException(new \Exception()));
 
     $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
 
-    $environnement = 'main';
-    $configuration = new PhraseaCore\Configuration($environnement, $handler);
-
+    $configuration = new PhraseaCore\Configuration($handler);
+    $configuration->setEnvironnement('prod');
+    
     $this->assertFalse($configuration->isInstalled());
-    $this->assertTrue(is_array($configuration->getPhraseanet()));
-    $this->assertTrue(is_array($configuration->getDoctrine()));
+    $this->assertTrue(is_array($configuration->getPhraseanet()->all()));
+    $this->assertTrue(is_array($configuration->getDoctrine()->all()));
   }
 
   public function testGetAvailableLogger()
@@ -93,8 +94,8 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $spec = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
     $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
 
-    $environnement = 'main';
-    $configuration = new PhraseaCore\Configuration($environnement, $handler);
+    $configuration = new PhraseaCore\Configuration($handler);
+    $configuration->setEnvironnement('prod');
     
     $availableLogger = $configuration->getAvailableDoctrineLogger();
     
@@ -108,8 +109,8 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $spec = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
     $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
 
-    $environnement = 'main';
-    $configuration = new PhraseaCore\Configuration($environnement, $handler);
+    $configuration = new PhraseaCore\Configuration($handler);
+    $configuration->setEnvironnement('prod');
     
     $this->assertInstanceOf('\Alchemy\Phrasea\Core\Configuration\Handler', $configuration->getConfigurationHandler());
   }
@@ -119,13 +120,13 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $spec = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
     $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
 
-    $environnement = 'main';
-    $configuration = new PhraseaCore\Configuration($environnement, $handler);
+    $configuration = new PhraseaCore\Configuration($handler);
+    $configuration->setEnvironnement('prod');
     
     $spec2 = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
     
     $spec2->expects($this->any())
-            ->method('getMainConfigurationFile')
+            ->method('getConfigurationFile')
             ->will(
                     $this->returnValue(
                             'test'
@@ -136,20 +137,20 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     
     $configuration->setConfigurationHandler($newHandler);
     
-    $this->assertEquals('test', $configuration->getConfigurationHandler()->getSpecification()->getMainConfigurationFile());
+    $this->assertEquals('test', $configuration->getConfigurationHandler()->getSpecification()->getConfigurationFile());
   }
 
   public function testBadDoctrineLogger()
   {
     $spec = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getMainConfigurationFile')
+            , array('getConfigurationFile')
     );
 
     $fileName = __DIR__ . '/confTestFiles/bad_doctrine_logger.yml';
 
     $spec->expects($this->any())
-            ->method('getMainConfigurationFile')
+            ->method('getConfigurationFile')
             ->will(
                     $this->returnValue(
                             new \SplFileObject($fileName)
@@ -158,8 +159,8 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
 
-    $environnement = 'main';
-    $configuration = new PhraseaCore\Configuration($environnement, $handler);
+    $configuration = new PhraseaCore\Configuration($handler);
+    $configuration->setEnvironnement('prod');
     
     try
     {
