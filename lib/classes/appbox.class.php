@@ -436,7 +436,8 @@ class appbox extends base
         $key = $key == 'hostname' ? 'host' : $key;
         $connexionINI[$key] = (string) $value;
       }
-
+      $serverName = $registry->get('GV_ServerName');
+      $configuration->setServerName($serverName);
       $configuration->setAllDatabaseConnexion($connexionINI);
       
       if (function_exists('chmod'))
