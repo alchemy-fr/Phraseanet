@@ -170,14 +170,16 @@ class Installer implements ControllerProviderInterface
 
               try
               {
-                $appbox = \appbox::create(new \Setup_Registry(), $conn, $appbox_name, true);
-
+                 $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
+                 $setupRegistry = new \Setup_Registry();
+                 $setupRegistry->set('GV_ServerName', $servername);
+                 $appbox = \appbox::create($setupRegistry, $conn, $appbox_name, true);
 
                 $registry = \registry::get_instance();
                 \setup::create_global_values($registry);
 
                 $appbox->set_registry($registry);
-                $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
+               
                 $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')));
                 $registry->set('GV_base_datapath_web', \p4string::addEndSlash($request->get('datapath_web')));
                 $registry->set('GV_base_dataurl', \p4string::addEndSlash($request->get('mount_point_web')));
