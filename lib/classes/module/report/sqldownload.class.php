@@ -18,17 +18,23 @@
 class module_report_sqldownload extends module_report_sql implements module_report_sqlReportInterface
 {
 
+  protected $restrict = false;
+
   public function __construct(module_report $report)
   {
     parent::__construct($report);
+    if($report->isInformative())
+    {
+      $this->restrict = true;
+    }
   }
 
   public function buildSql()
   {
     $registry = registry::get_instance();
     $report_filters = $this->filter->getReportFilter();
-    $record_filters = $this->filter->getRecordFilter() ?: array('sql'=>'', 'params'=> array());
-    $this->params =  array_merge($report_filters['params'], $record_filters['params']);
+    $record_filters = $this->filter->getRecordFilter() ? : array('sql' => '', 'params' => array());
+    $this->params = array_merge($report_filters['params'], $record_filters['params']);
 
     if ($this->groupby == false)
     {
@@ -58,17 +64,19 @@ class module_report_sqldownload extends module_report_sql implements module_repo
       $this->sql .= $report_filters['sql'] ? : '';
 
       $this->sql .= ' AND ( log_docs.action = \'download\' OR log_docs.action = \'mail\')';
-
+      if($this->restrict)
+        $this->sql .= ' AND ( log_docs.final = "document" OR log_docs.final = "preview")';
       $this->sql .= empty($record_filters['sql']) ? '' : ' AND ( ' . $record_filters['sql'] . ' )';
 
-      $this->sql .= $this->filter->getOrderFilter() ?: '';
+      $this->sql .= $this->filter->getOrderFilter() ? : '';
 
+//      var_dump(str_replace(array_keys($this->params), array_values($this->params), $this->sql), $this->sql, $this->params);
       $stmt = $this->connbas->prepare($this->sql);
       $stmt->execute($this->params);
       $this->total_row = $stmt->rowCount();
       $stmt->closeCursor();
 
-      $this->sql .= $this->filter->getLimitFilter() ?: '';
+      $this->sql .= $this->filter->getLimitFilter() ? : '';
     }
     else
     {
@@ -141,14 +149,15 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
       $this->sql .= ( $name == 'record_id' && $this->on == 'DOC') ? ' , final' : '';
 
-      if ($this->filter->getOrderFilter()) $this->sql .= $this->filter->getOrderFilter();
+      if ($this->filter->getOrderFilter())
+        $this->sql .= $this->filter->getOrderFilter();
 
       $stmt = $this->connbas->prepare($this->sql);
       $stmt->execute($this->params);
       $this->total = $stmt->rowCount();
       $stmt->closeCursor();
 
-      $this->sql .= $this->filter->getLimitFilter() ?: '';
+      $this->sql .= $this->filter->getLimitFilter() ? : '';
     }
 
     return $this;
