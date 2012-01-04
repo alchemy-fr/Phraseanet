@@ -802,18 +802,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
       //create schema
       $this->schematTool = new \Doctrine\ORM\Tools\SchemaTool($em);
-      $this->classesMetatdas = array(
-          $em->getClassMetadata('Entities\Basket')
-          , $em->getClassMetadata('Entities\BasketElement')
-          , $em->getClassMetadata('Entities\StoryWZ')
-          , $em->getClassMetadata('Entities\ValidationData')
-          , $em->getClassMetadata('Entities\ValidationParticipant')
-          , $em->getClassMetadata('Entities\ValidationSession')
-          , $em->getClassMetadata('Entities\UsrList')
-          , $em->getClassMetadata('Entities\UsrListContent')
-          , $em->getClassMetadata('Entities\UsrListOwner')
-      );
-
+      $this->classesMetatdas = $em->getMetadataFactory()->getAllMetadata();
       $this->schematTool->createSchema($this->classesMetatdas);
     }
   }
