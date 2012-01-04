@@ -375,8 +375,14 @@ class record_preview extends record_adapter
         $tab[$hour][$site][$action] = array();
 
       if (!isset($tab[$hour][$site][$action][$row['usr_id']]))
+      {
         $tab[$hour][$site][$action][$row['usr_id']] =
-                array('final' => array(), 'comment' => array());
+                array(
+                    'final' => array()
+                    , 'comment' => array()
+                    , 'user' => \User_Adapter::getInstance($row['usr_id'], $appbox)
+        );
+      }
 
       if (!in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final']))
         $tab[$hour][$site][$action][$row['usr_id']]['final'][] =

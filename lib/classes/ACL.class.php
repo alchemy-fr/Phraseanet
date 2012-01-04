@@ -321,7 +321,7 @@ class ACL implements cache_cacheableInterface
 
     $this->give_access_to_base($bas_to_acces);
 
-    foreach ($rights_to_give as $sbas_id => $rights)
+    foreach ($rights_to_give as $base_id => $rights)
     {
       $this->update_rights_to_base($base_id, $rights);
     }
