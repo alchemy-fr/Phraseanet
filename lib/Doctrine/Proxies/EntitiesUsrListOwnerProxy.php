@@ -102,6 +102,12 @@ class EntitiesUsrListOwnerProxy extends \Entities\UsrListOwner implements \Doctr
         return parent::getList();
     }
 
+    public function setUser(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::setUser($user);
+    }
+
     public function getUser()
     {
         $this->__load();

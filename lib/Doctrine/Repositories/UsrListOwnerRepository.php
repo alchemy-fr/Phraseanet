@@ -12,4 +12,29 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsrListOwnerRepository extends EntityRepository
 {
+  /**
+   * 
+   *
+   * @param \Entities\UsrList $list
+   * @param type $owner_id
+   * @return \Entities\UsrList 
+   */
+  public function findByListAndOwner(\Entities\UsrList $list, $owner_id)
+  {
+    $owner = $this->find($owner_id);
+
+    /* @var $owner \Entities\UsrListOwner */
+    if (null === $owner)
+    {
+      throw new \Exception_NotFound(_('Owner is not found'));
+    }
+
+    if (!$owner->getList()->getid() != $list->getId())
+    {
+      throw new \Exception_Forbidden(_('Owner and list mismatch'));
+    }
+
+    return $owner;
+  }
+  
 }
