@@ -245,7 +245,7 @@ var p4 = p4 || {};
       }
     });
 
-    if($('#basketcontextwrap').length == 0)
+    if($('#basketcontextwrap').length === 0)
       $('body').append('<div id="basketcontextwrap"></div>');
 
     $('.context-menu-item',cache).hover(function(){
@@ -297,10 +297,8 @@ var p4 = p4 || {};
         $('a.WorkZoneElementRemover', dest)
           .bind('mousedown', function(event){return false;})
           .bind('click', function(event){
-
             return WorkZoneElementRemover($(this), false);
-
-        });          
+          });          
         
         dest.droppable({
           accept:function(elem){
@@ -512,8 +510,7 @@ var p4 = p4 || {};
         {
           humane.info(data.message);
         }
-        
-        if($(destKey).hasClass('content') === true || $(destKey).next().is(':visible') === true || (act == 'MOV'))
+        if(act == 'MOV' || $(destKey).next().is(':visible') === true || $(destKey).hasClass('content') === true)
         {
           $('.CHIM.selected:visible').fadeOut();
           p4.WorkZone.Selection.empty();
@@ -526,15 +523,6 @@ var p4 = p4 || {};
   }
 
   
-  
-  
-  
-  
-  
-  
-  
-  
-  var baskets = {};
   
   function fix()
   {
