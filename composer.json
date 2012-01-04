@@ -1,0 +1,85 @@
+{
+  "repositories": {
+    "PHPmailer": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/PHPMailer_v5.1.git"
+      }
+    },
+    "exiftool": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/exiftool.git"
+      }
+    },
+    "fpdf": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/fpdf.git"
+      }
+    },
+    "gdata": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/gdata.git"
+      }
+    },
+    "moov": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/MoovRelocator.git"
+      }
+    },
+    "oauth2": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/oauth2-php.git"
+      }
+    },
+    "Phlickr": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/Phlickr.git"
+      }
+    },
+    "PHPShortener": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/PHPShortener.git"
+      }
+    },
+    "recaptcha": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/recaptcha.git"
+      }
+    },
+    "tcpdf": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/tcpdf.git"
+      }
+    },
+    "SphinxSearch": {
+      "vcs": {
+        "url": "git://github.com/alchemy-fr/SphinxSearch-PHP-SDK.git"
+      }
+    },
+    "DailymotionSDK" : {
+      "vcs": {
+        "url": "git://github.com/romainneutron/dailymotion-sdk-php.git"
+      }
+    }
+  },
+  "require": {
+    "alchemy/phpmailer": "master",
+    "alchemy/exiftool": "master",
+    "alchemy/fpdf": "master",
+    "alchemy/gdata": "master",
+    "alchemy/moovrelocator": "master",
+    "alchemy/oauth2php": "master",
+    "alchemy/phlickr": "master",
+    "alchemy/phpshortener": "master",
+    "alchemy/recaptcha": "master",
+    "alchemy/tcpdf": "master",
+    "alchemy/sphinxsearch": "master",
+    "dailymotion/sdk" : "master",
+    "symfony/symfony": "2.0.*",
+    "silex/silex": "1.0.*",
+    "doctrine/orm": "2.1.*",
+    "doctrine/data-fixtures": "master-dev",
+    "gedmo/doctrine-extensions": "master-dev",
+    "twig/twig": "1.5.*",
+    "twig/extensions": "master-dev"
+  }
+}
