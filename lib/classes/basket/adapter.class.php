@@ -1178,7 +1178,7 @@ class basket_adapter implements cache_cacheableInterface
       $url = $this->appbox->get_registry()->get('GV_ServerName')
               . 'lightbox/index.php?LOG=' . random::getUrlToken(
                       'validate'
-                      , $session->get_usr_id()
+                      , $row['usr_id']
                       , $expires
                       , $this->get_ssel_id()
       );
