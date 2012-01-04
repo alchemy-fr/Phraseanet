@@ -39,56 +39,67 @@ class searchEngine_options implements Serializable
    * @var string
    */
   protected $record_type;
+
   /**
    *
    * @var string
    */
   protected $search_type = 0;
+
   /**
    *
    * @var array
    */
   protected $bases = array();
+
   /**
    *
    * @var array
    */
   protected $fields = array();
+
   /**
    *
    * @var array
    */
   protected $status = array();
+
   /**
    *
    * @var DateTime
    */
   protected $date_min;
+
   /**
    *
    * @var DateTime
    */
   protected $date_max;
+
   /**
    *
    * @var array
    */
   protected $date_fields = array();
+
   /**
    *
    * @var string
    */
   protected $i18n;
+
   /**
    *
    * @var boolean
    */
   protected $stemming = true;
+
   /**
    *
    * @var string
    */
   protected $sort_by = self::SORT_CREATED_ON;
+
   /**
    *
    * @var string
@@ -267,12 +278,12 @@ class searchEngine_options implements Serializable
         continue;
       if (isset($options['on']))
       {
-        foreach($options['on'] as $sbas_id)
+        foreach ($options['on'] as $sbas_id)
           $tmp[$n][$sbas_id] = 1;
       }
       if (isset($options['off']))
       {
-        foreach($options['off'] as $sbas_id)
+        foreach ($options['off'] as $sbas_id)
           $tmp[$n][$sbas_id] = 0;
       }
     }
@@ -433,7 +444,7 @@ class searchEngine_options implements Serializable
     {
       if (in_array($key, array('date_min', 'date_max')))
         $value = new DateTime($value);
-      elseif($value instanceof stdClass)
+      elseif ($value instanceof stdClass)
         $value = (array) $value;
 
       $this->$key = $value;
