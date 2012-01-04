@@ -22,11 +22,10 @@ require_once __DIR__ . '/../../../bootstrap.php';
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 return call_user_func(function()
                 {
                   $app = new Silex\Application();
-                  
+
                   $app['Core'] = bootstrap::getCore();
 
                   $app['install'] = false;
@@ -39,9 +38,47 @@ return call_user_func(function()
                               $appbox = appbox::get_instance();
 
                               if (!$appbox->need_major_upgrade())
+                              {
                                 throw new Exception_Setup_PhraseaAlreadyInstalled();
+                              }
 
                               $app['upgrade'] = true;
+                            }
+                            elseif (\setup::needUpgradeConfigurationFile())
+                            {
+                              //copy sample
+                              $file = __DIR__ . "/../../../../config/config.sample.yml";
+                              $file1 = __DIR__ . "/../../../../config/config.yml";
+                              if (!copy($file, $file1))
+                              {
+                                throw new \Exception(sprintf("Unable to copy %s", $file1));
+                              }
+
+                              //get connexion credentials
+                              $conn = \connection::getPDOConnection();
+                              $credentials = $conn->get_credentials();
+
+                              //get configuration object
+                              $app = new \Alchemy\Phrasea\Core\Configuration\Application();
+                              $parser = new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml();
+                              $handler = new \Alchemy\Phrasea\Core\Configuration\Handler($app, $parser);
+                              $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+                              //refactor credentials
+                              $connexionINI = array();
+                              foreach ($credentials as $key => $value)
+                              {
+                                $key = $key == 'hostname' ? 'host' : $key;
+                                $connexionINI[$key] = (string) $value;
+                              }
+                              //write credentials to config file
+                              $configuration->setAllDatabaseConnexion($connexionINI);
+                              $request = $app["request"];
+                              //write servername
+                              $serverName = $request->getScheme() . '://' . $request->getHttpHost() . '/';
+                              $configuration->setServerName($serverName);
+
+                              $app->redirect("/");
                             }
                             else
                             {
