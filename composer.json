@@ -73,12 +73,15 @@
     "alchemy/recaptcha": "master",
     "alchemy/tcpdf": "master",
     "alchemy/sphinxsearch": "master",
-    "dailymotion/sdk" : "master",
-    "symfony/symfony": "2.0.*",
-    "silex/silex": "1.0.*",
     "doctrine/orm": "2.1.*",
     "doctrine/data-fixtures": "master-dev",
     "gedmo/doctrine-extensions": "master-dev",
+    "dailymotion/sdk" : "master",
+    "silex/silex": "1.0.*",
+    "symfony/yaml": "2.1.*",
+    "symfony/console": "2.1.*",
+    "symfony/serializer": "2.1.*",
+    "symfony/dependency-injection": "2.1.*",
     "twig/twig": "1.5.*",
     "twig/extensions": "master-dev"
   }
