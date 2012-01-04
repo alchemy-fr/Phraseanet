@@ -69,10 +69,16 @@ class setup
   public static function is_installed()
   {
     $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
-
+    
     return is_file($appConf->getConfigurationPathName());
   }
-
+  
+  public static function needUpgradeConfigurationFile()
+  {
+    return (is_file(__DIR__ . "/../../conf/connexion.inc") 
+          && is_file(__DIR__ . "/../../config.inc"));
+  }
+  
   function create_global_values(registryInterface &$registry, $datas=array())
   {
     require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
