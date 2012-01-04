@@ -573,11 +573,11 @@ class module_report_nav extends module_report
    */
   public function buildTabUserWhat($bid, $rid, $tab = false)
   {
+    $this->initialize();
     $sbas_id = phrasea::sbasFromBas($bid);
     $record = new record_adapter($sbas_id, $rid);
 
     $this->setDisplay($tab);
-    $this->initialize();
     $this->champ = array(
         'photo',
         'record_id',
@@ -593,7 +593,7 @@ class module_report_nav extends module_report
 
 
     $x = $record->get_thumbnail();
-    $this->result = array(
+    $this->result[] = array(
         'photo' =>
         "<img style='width:" . $x->get_width() . "px;height:" . $x->get_height() . "px;'
                         src='" . $x->get_url() . "'>"
@@ -603,10 +603,10 @@ class module_report_nav extends module_report
         , 'titre' => $record->get_title()
         , 'taille' => $document->get_size()
     );
-
+    
     $this->setDisplayNav();
     $this->setReport();
-
+    
     return $this->report;
   }
 

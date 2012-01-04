@@ -274,40 +274,39 @@ class record_preview extends record_adapter
   {
     if ($this->title)
       return $this->title;
+    
     $this->title = collection::getLogo($this->get_base_id()) . ' ';
+    
     switch ($this->env)
     {
 
       case "RESULT":
         $this->title .= sprintf(
                 _('preview:: resultat numero %s '), '<span id="current_result_n">' . ($this->number + 1)
-                . '</span>'
+                . '</span> : '
         );
 
-        $title = parent::get_title();
-        if ($search_engine instanceof searchEngine_adapter)
-        {
-          $this->title .= array_pop($search_engine->build_excerpt($highlight, array($title), $this));
-        }
-        else
-        {
-          $this->title .= $title;
-        }
+        $this->title .= parent::get_title($highlight, $search_engine);
         break;
       case "BASK":
-        $this->title .= $this->name . ' - ' . parent::get_title()
+        $this->title .= $this->name . ' - ' . parent::get_title($highlight, $search_engine)
                 . ' (' . $this->get_number() . '/' . $this->total . ') ';
         break;
       case "REG":
+        $title = parent::get_title();
         if ($this->get_number() == 0)
-          $this->title .= _('preview:: regroupement ');
+        {
+          $this->title .= $title;
+        }
         else
+        {
           $this->title .= sprintf(
-                  _('preview:: Previsualisation numero %s '), $this->get_number() . '/' . $this->total
+                  _('%s %d/%d '), $title, $this->get_number() . '/' . $this->total
           );
+        }
         break;
       default:
-        $this->title .= parent::get_title();
+        $this->title .= parent::get_title($highlight, $search_engine);
         break;
     }
 

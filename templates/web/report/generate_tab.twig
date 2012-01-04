@@ -74,18 +74,18 @@
                 {% endif %}
                 {% for class, config in result.display %}
                     <td class="{{ class }}">
-                    {% for key , result in value %}
+                    {% for key , res in value %}
                        {% if key == class %}
-                            {% if config.bound == 1 and "</i>" not in result %}
+                            {% if config.bound == 1 and "</i>" not in res %}
                                 {% if key == "user" and value.user == "<b>TOTAL</b>"%}
-                                    {{ result|raw }}
+                                    {{ res|raw }}
                                 {% elseif is_nav or is_doc %}
-                                    <a href="#" rel ="" class="{{result}} bound">{{ result|raw }}</a>
+                                    <a href="#" rel ="" class="{{res}} bound">{{ res|raw }}</a>
                                 {% else %}
-                                    <a href="#" rel ="" class="{{value.usrid}} bound">{{ result|raw }}</a>
+                                    <a href="#" rel ="" class="{{value.usrid}} bound">{{ res|raw }}</a>
                                 {% endif %}
                             {% else %}
-                                {{ result|raw }}
+                                {{ res|raw }}
                             {% endif %}
                         {% endif %}
                     {% endfor %}
