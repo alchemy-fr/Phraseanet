@@ -789,31 +789,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     if (null === self::$core)
     {
-      if (is_file(__DIR__ . '/tests.sqlite'))
-      {
-        unlink(__DIR__ . '/tests.sqlite');
-      }
-
       self::$core = bootstrap::getCore();
-
-
+      
       $em = self::$core->getEntityManager();
       /* @var $em \Doctrine\ORM\EntityManager */
+      
+      $params = $em->getConnection()->getParams();
+      
+      if (is_file($params["path"]))
+      {
+        unlink($params["path"]);
+      }
 
       //create schema
       $this->schematTool = new \Doctrine\ORM\Tools\SchemaTool($em);
-      $this->classesMetatdas = array(
-          $em->getClassMetadata('Entities\Basket')
-          , $em->getClassMetadata('Entities\BasketElement')
-          , $em->getClassMetadata('Entities\StoryWZ')
-          , $em->getClassMetadata('Entities\ValidationData')
-          , $em->getClassMetadata('Entities\ValidationParticipant')
-          , $em->getClassMetadata('Entities\ValidationSession')
-          , $em->getClassMetadata('Entities\UsrList')
-          , $em->getClassMetadata('Entities\UsrListContent')
-          , $em->getClassMetadata('Entities\UsrListOwner')
-      );
-
+      $this->classesMetatdas = $em->getMetadataFactory()->getAllMetadata();
       $this->schematTool->createSchema($this->classesMetatdas);
     }
   }
