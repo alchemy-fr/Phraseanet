@@ -9,6 +9,10 @@
   <div style="text-align:center;">
     {{record.get_status_icons()|raw}}
   </div>
-  {{caption.format_caption(record, highlight, searchEngine)}}
+  {% if record.is_from_reg()  %}
+    {{caption.format_caption(record)}}
+  {% else %}
+    {{caption.format_caption(record, highlight, searchEngine)}}
+  {% endif %}
   <hr style="margin:10px 0;"/>
   {% include 'common/technical_datas.twig' %}
