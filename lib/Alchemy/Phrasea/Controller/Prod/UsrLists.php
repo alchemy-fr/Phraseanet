@@ -217,7 +217,7 @@ class UsrLists implements ControllerProviderInterface
 
                 $em->merge($list);
                 $em->flush();
-                
+
                 $datas = array(
                     'success' => true
                     , 'message' => ''
@@ -246,7 +246,7 @@ class UsrLists implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $repository = $em->getRepository('\Entities\Usr');
-              
+
               try
               {
                 $repository = $em->getRepository('\Entities\UsrList');
@@ -255,13 +255,18 @@ class UsrLists implements ControllerProviderInterface
 
                 $em->remove($list);
                 $em->flush();
+
+                $datas = array(
+                    'success' => true
+                    , 'message' => sprintf(_('List has been deleted'))
+                );
               }
               catch (\Exception $e)
               {
 
                 $datas = array(
                     'success' => false
-                    , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+                    , 'message' => sprintf(_('Unable to delete list'))
                 );
               }
 
@@ -275,11 +280,41 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Remove a usr_id from a list
      */
-    $controllers->post('/list/{list_id}/remove/{usr_id}/', function() use ($app)
+    $controllers->post('/list/{list_id}/remove/{entry_id}/', function() use ($app)
             {
               $em = $app['Core']->getEntityManager();
 
-              $repository = $em->getRepository('\Entities\Usr');
+              try
+              {
+                $repository = $em->getRepository('\Entities\UsrList');
+
+                $list = $repository->findUserListByUserAndId($user, $list_id);
+                /* @var $list \Entities\UsrList */
+                
+                $entry_repository = $em->getRepository('\Entities\UsrListEntry');
+                
+                $user_entry = $entry_repository->findEntryByListAndEntryId($list, $entry_id);
+
+                $em->remove($user_entry);
+                $em->flush();
+                
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Entry removed from list')
+                );
+              }
+              catch (\Exception $e)
+              {
+
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Unable to remove entry from list')
+                );
+              }
+
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
 
@@ -290,7 +325,42 @@ class UsrLists implements ControllerProviderInterface
             {
               $em = $app['Core']->getEntityManager();
 
-              $repository = $em->getRepository('\Entities\Usr');
+              try
+              {
+                $repository = $em->getRepository('\Entities\UsrList');
+
+                $list = $repository->findUserListByUserAndId($user, $list_id);
+                /* @var $list \Entities\UsrList */
+                $user_entry = \User_Adapter::getInstance($usr_id, appbox::get_instance());
+
+                $entry = new \Entities\UsrListEntry();
+                $entry->setUser($user_entry);
+                $entry->setList($list);
+
+                $list->addUsrListEntry($entry);
+
+                $em->persist($entry);
+                $em->merge($list);
+
+                $em->flush();
+
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Usr added to list')
+                );
+              }
+              catch (\Exception $e)
+              {
+
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Unable to add usr to list')
+                );
+              }
+
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
 
@@ -300,18 +370,108 @@ class UsrLists implements ControllerProviderInterface
     $controllers->post('/list/{list_id}/share/{usr_id}/', function() use ($app)
             {
               $em = $app['Core']->getEntityManager();
+              $user = $app['Core']->getAuthenticatedUser();
 
-              $repository = $em->getRepository('\Entities\Usr');
+              try
+              {
+                $repository = $em->getRepository('\Entities\UsrList');
+
+                $list = $repository->findUserListByUserAndId($user, $list_id);
+                /* @var $list \Entities\UsrList */
+                
+                if($list->getOwner($user)->getList() < \Entities\UsrListOwner::ROLE_EDITOR)
+                {
+                  throw new \Exception('You are not authorized to do this');
+                }
+                
+                $new_owner = \User_Adapter::getInstance($usr_id, appbox::get_instance());
+                
+                if($list->hasAccess($new_owner))
+                {
+                  $owner = $list->getOwner($new_owner);
+                }
+                else
+                {
+                  $owner = new \Entities\UsrListOwner();
+                  $owner->setList($list);
+                  $owner->setUser($new_owner);
+                  
+                  $list->addUsrListOwner($owner);
+                  
+                  $em->persist($owner);
+                  $em->merge($list);
+                }
+                
+                $role = $app['request']->get('role', \Entities\UsrListOwner::ROLE_USER);
+                
+                $owner->setRole($role);
+                
+                $em->merge($owner);
+                $em->flush();
+                
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Usr added to list')
+                );
+              }
+              catch (\Exception $e)
+              {
+
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Unable to add usr to list')
+                );
+              }
+              
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
     /**
      * UnShare a list to a user 
      */
-    $controllers->post('/list/{list_id}/unshare/{usr_id}/', function() use ($app)
+    $controllers->post('/list/{list_id}/unshare/{owner_id}/', function() use ($app)
             {
               $em = $app['Core']->getEntityManager();
+              $user = $app['Core']->getAuthenticatedUser();
 
-              $repository = $em->getRepository('\Entities\Usr');
+              try
+              {
+                $repository = $em->getRepository('\Entities\UsrList');
+
+                $list = $repository->findUserListByUserAndId($user, $list_id);
+                /* @var $list \Entities\UsrList */
+                
+                if($list->getOwner($user)->getList() < \Entities\UsrListOwner::ROLE_ADMIN)
+                {
+                  throw new \Exception('You are not authorized to do this');
+                }
+                
+                $owners_repository = $em->getRepository('\Entities\UsrListOwner');
+                
+                $owner = $owners_repository->findByListAndOwner($list, $owner_id);
+                
+                $em->remove($owner);
+                $em->flush();
+                
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Owner removed from list')
+                );
+              }
+              catch (\Exception $e)
+              {
+
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Unable to add usr to list')
+                );
+              }
+              
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
 
