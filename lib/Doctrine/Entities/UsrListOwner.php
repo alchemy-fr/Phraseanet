@@ -18,9 +18,9 @@ namespace Entities;
  */
 class UsrListOwner
 {
-  const ROLE_USER = 'user';
-  const ROLE_EDITOR = 'editor';
-  const ROLE_ADMIN = 'admin';
+  const ROLE_USER = 1;
+  const ROLE_EDITOR = 2;
+  const ROLE_ADMIN = 3;
 
   /**
    * @var integer $id
