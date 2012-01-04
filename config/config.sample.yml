@@ -101,11 +101,11 @@ prod:
     debug: false
     display_errors: false
     database:
-      host: localhost
-      port: 3306
-      dbname: ab_trunk
-      user: root
-      password: nicolas007
+      host: <YOUR_HOST>
+      port: <YOUR_PORT>
+      dbname: <YOUR_DB_NAME>
+      user: <YOUR_USERNAME>
+      password: <YOUR_USERNAME>
     
   doctrine:
     dbal:
@@ -147,11 +147,11 @@ test:
     debug: true
     display_errors: true
     database:
-      host: localhost
-      port: 3306
-      dbname: ab_trunk
-      user: root
-      password: nicolas007
+      host: <YOUR_HOST>
+      port: <YOUR_PORT>
+      dbname: <YOUR_DB_NAME>
+      user: <YOUR_USERNAME>
+      password: <YOUR_USERNAME>
     
   doctrine:
     dbal:
