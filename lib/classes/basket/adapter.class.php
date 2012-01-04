@@ -511,7 +511,6 @@ class basket_adapter implements cache_cacheableInterface
     $this->desc = $row['descript'];
     $this->created_on = new DateTime($row['date']);
     $this->updated_on = new DateTime($row['updater']);
-    $this->usr_id = (int) $row['owner'];
     $this->noview = !!$row['noview'];
 
     $this->is_mine = ($row['owner'] == $this->usr_id);
