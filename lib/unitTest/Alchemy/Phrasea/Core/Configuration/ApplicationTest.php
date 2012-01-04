@@ -37,103 +37,40 @@ class ApplicationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     parent::tearDown();
   }
 
-  public function testGetNonExtendablePath()
-  {
-    $app = new Application();
-    $paths = $app->getNonExtendablePath();
-    $this->assertTrue(is_array($paths));
-    foreach ($paths as $path)
-    {
-      $this->assertTrue(is_array($path));
-      foreach ($path as $key)
-      {
-        $this->assertTrue(is_string($key));
-      }
-    }
-  }
-
-  public function testGetConfFileFromEnvName()
-  {
-    $app = $this->getMock(
-            '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getMainConfigurationFile', 'getConfigurationFilePath')
-    );
-
-    $fileName = __DIR__ . '/confTestFiles/good.yml';
-
-    $app->expects($this->any())
-            ->method('getMainConfigurationFile')
-            ->will(
-                    $this->returnValue(
-                            new \SplFileObject($fileName)
-                    )
-    );
-    $app->expects($this->any())
-            ->method('getConfigurationFilePath')
-            ->will(
-                    $this->returnValue(
-                            __DIR__ . '/confTestFiles'
-                    )
-    );
-
-    $this->assertInstanceOf('SplFileObject', $app->getConfFileFromEnvName('oneenv'));
-    $this->assertInstanceOf('SplFileObject', $app->getConfFileFromEnvName(Application::EXTENDED_MAIN_KEYWORD));
-
-    try
-    {
-      $app->getConfFileFromEnvName('unknow_env');
-      $this->fail('An exception shoud be raised');
-    }
-    catch (\Exception $e)
-    {
-      
-    }
-  }
-
   public function testGetConfigurationFilePath()
   {
     $app = new Application();
     $this->assertTrue(is_string($app->getConfigurationFilePath()));
   }
 
-  public function testGetMainConfigurationFile()
+  public function testGetConfigurationFile()
   {
     $app = new Application();
+    
     try
     {
-      $this->assertInstanceOf('SplFileObject', $app->getMainConfigurationFile());
+      $this->assertInstanceOf('SplFileObject', $app->getConfigurationFile());
     }
     catch(Exception $e)
     {
-      $this->markTestSkipped('Config file config.yml is not present');
+      $this->fail('Config file config.yml is not present');
     }
   }
 
   public function testGetConfFileExtension()
   {
     $app = new Application();
-    $this->assertEquals('yml', $app->getConfFileExtension());
+    $this->assertEquals('yml', $app->getConfigurationFileExtension());
   }
 
   public function testIsExtended()
   {
     $app = new Application();
     
-    $testExtendedEnv = array('extends' => 'value');
-    $testNonExtendedEnv = array('blabla' => 'blabla');
-    
-    $this->assertTrue($app->isExtended($testExtendedEnv));
-    $this->assertFalse($app->isExtended($testNonExtendedEnv));
-  }
-
-  public function testGetExtendedEnvName()
-  {
-    $app = new Application();
-    $testExtendedEnv = array('extends' => 'value');
-    $testNonExtendedEnv = array('blabla' => 'blabla');
-    
-    $this->assertEquals('value', $app->getExtendedEnvName($testExtendedEnv));
-    $this->assertNull($app->getExtendedEnvName($testNonExtendedEnv));
+    $envs = array(Application::KEYWORD_ENV => 'dev');
+    $this->assertEquals('dev', $app->getSelectedEnv($envs));
+    $envs = array('blabla' => 'blabla');
+    $this->assertEquals(Application::DEFAULT_ENV, $app->getSelectedEnv($envs));
   }
 
 }

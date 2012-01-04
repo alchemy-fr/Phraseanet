@@ -27,4 +27,12 @@ interface Parser
    * @return Array
    */
   public function parse(\SplFileObject $file);
+  
+  /**
+   * Dump into string from array
+   * 
+   * @param $conf
+   * @return string
+   */
+  public function dump(Array $conf, $level);
 }

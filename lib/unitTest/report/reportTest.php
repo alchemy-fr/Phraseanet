@@ -64,9 +64,6 @@ class reportTest extends PhraseanetPHPUnitAbstract
     {
       $this->report = new module_report($this->dmin, $this->dmax, $sbasid, $collections);
       $this->report->setUser_id(self::$user->get_id());
-      $this->SqlBuilder();
-      $this->SetBound();
-      $this->SetOrder();
       $this->assertEquals($collections, $this->report->getListCollId());
       $this->champ($this->report);
       $this->host($this->report);
@@ -89,19 +86,22 @@ class reportTest extends PhraseanetPHPUnitAbstract
     $this->assertEquals('localhost.phr4', $host);
   }
 
-  public function SqlBuilder()
-  {
-    $domain = $this->report->sqlBuilder("connexion");
-    $this->assertInstanceOf('module_report_sqlconnexion', $domain);
-    $domain = $this->report->sqlBuilder("download");
-    $this->assertInstanceOf('module_report_sqldownload', $domain);
-    $domain = $this->report->sqlBuilder("question");
-    $this->assertInstanceOf('module_report_sqlquestion', $domain);
-    $domain = $this->report->sqlBuilder("action");
-    $this->assertInstanceOf('module_report_sqlaction', $domain);
-    $domain = $this->report->sqlBuilder("unknow");
-    $this->assertEquals($this->report->getReq(), $domain);
-  }
+  /**
+   * @todo refactor
+   */
+//  public function SqlBuilder()
+//  {
+//    $domain = $this->report->sqlBuilder("connexion");
+//    $this->assertInstanceOf('module_report_sqlconnexion', $domain);
+//    $domain = $this->report->sqlBuilder("download");
+//    $this->assertInstanceOf('module_report_sqldownload', $domain);
+//    $domain = $this->report->sqlBuilder("question");
+//    $this->assertInstanceOf('module_report_sqlquestion', $domain);
+//    $domain = $this->report->sqlBuilder("action");
+//    $this->assertInstanceOf('module_report_sqlaction', $domain);
+//    $domain = $this->report->sqlBuilder("unknow");
+//    $this->assertEquals($this->report->getReq(), $domain);
+//  }
 
   public function SetBound()
   {

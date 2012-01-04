@@ -26,23 +26,10 @@ class Configuration
 {
 
   /**
-   * The file path of the main configuration file
-   * @var string 
-   */
-  protected $filePathName;
-  
-  /**
-   * The environnment name
-   * @var string 
-   */
-  protected $environnement;
-
-  /**
    * The finale configuration values as an array
    * @var ParameterBag\ParameterBag
    */
   protected $configuration;
-
 
   /**
    * Class that take care of configuration process
@@ -51,18 +38,23 @@ class Configuration
   private $configurationHandler;
 
   /**
+   * Return the current environnement
+   * @var string
+   */
+  private $environment;
+
+  /**
    * 
    * @param type $envName the name of the loaded environnement
    */
-  public function __construct($envName, Configuration\Handler $handler)
+  public function __construct(Configuration\Handler $handler)
   {
-    $this->environnement = $envName;
     $this->configurationHandler = $handler;
     $this->installed = false;
 
     try
     {
-      $handler->getSpecification()->getMainConfigurationFile();
+      $handler->getSpecification()->getConfigurationFile();
 
       $this->installed = true;
     }
@@ -97,13 +89,23 @@ class Configuration
    */
   public function getEnvironnement()
   {
-    return $this->environnement;
+    return $this->environment;
+  }
+
+  /**
+   * Return the current used environnement
+   * 
+   * @return string 
+   */
+  public function setEnvironnement($environement = null)
+  {
+    $this->environment = $environement;
   }
 
   /**
    * Return the DBAL Doctrine configuration
    * 
-   * @return Array 
+   * @return ParameterBag 
    */
   public function getDoctrine()
   {
@@ -115,7 +117,7 @@ class Configuration
 
       if (!!$doctrine["log"]['enable'])
       {
-        $logger = $doctrine["log"]["type"];
+        $logger = isset($doctrine["log"]["type"]) ? $doctrine["log"]["type"] : 'monolog';
 
         if (!in_array($doctrine["log"]["type"], $this->getAvailableDoctrineLogger()))
         {
@@ -128,7 +130,7 @@ class Configuration
       }
     }
 
-    return $doctrine;
+    return new ParameterBag($doctrine);
   }
 
   /**
@@ -139,9 +141,38 @@ class Configuration
   public function isDebug()
   {
     $phraseanet = $this->getPhraseanet();
-    return isset($phraseanet["debug"]) ? !!$phraseanet["debug"] : false;
+
+    try
+    {
+      $debug = !!$phraseanet->get('debug');
+    }
+    catch (\Exception $e)
+    {
+      $debug = false;
+    }
+    return $debug;
   }
-  
+
+  /**
+   * Check if phrasea is currently maintained
+   * Default to false
+   * @return boolean 
+   */
+  public function isMaintained()
+  {
+    $phraseanet = $this->getPhraseanet();
+
+    try
+    {
+      $maintained = !!$phraseanet->get('maintenance');
+    }
+    catch (\Exception $e)
+    {
+      $maintained = false;
+    }
+    return $maintained;
+  }
+
   /**
    * Check if current environnement should display errors
    * Default to false
@@ -150,17 +181,27 @@ class Configuration
   public function displayErrors()
   {
     $phraseanet = $this->getPhraseanet();
-    return isset($phraseanet["display_errors"]) ? !!$phraseanet["display_errors"] : false;
+
+    try
+    {
+      $displayErrors = !!$phraseanet->get('display_errors');
+    }
+    catch (\Exception $e)
+    {
+      $displayErrors = false;
+    }
+    return $displayErrors;
   }
 
   /**
    * Return the phraseanet scope configurations values
    * 
-   * @return Array|null 
+   * @return ParameterBag
    */
   public function getPhraseanet()
   {
-    return $this->getConfiguration()->get('phraseanet', array());
+    $phraseanetConf = $this->getConfiguration()->get('phraseanet', array());
+    return new ParameterBag($phraseanetConf);
   }
 
   /**
@@ -183,14 +224,15 @@ class Configuration
     if (null === $this->configuration)
     {
       $this->configuration = new Configuration\Parameter();
-      
-      if($this->installed)
+
+      if ($this->installed)
       {
-        $configuration = $this->configurationHandler->handle($this->getEnvironnement());
+        $configuration = $this->configurationHandler->handle($this->environment);
+        $this->environment = $this->configurationHandler->getSelectedEnvironnment();
         $this->configuration = new Configuration\Parameter($configuration);
       }
     }
-    
+
     return $this->configuration;
   }
 
@@ -204,5 +246,160 @@ class Configuration
     return array('echo', 'monolog');
   }
 
+  /**
+   * Return the connexion parameters as configuration parameter object
+   * 
+   * @return ParameterBag
+   */
+  public function getConnexion()
+  {
+    return new ParameterBag($this->getPhraseanet()->get('database'));
+  }
+
+  /**
+   * Return a the configuration file as an SplFileObject
+   * 
+   * @return \SplFileObject
+   */
+  public function getFile()
+  {
+    return $this->configurationHandler->getSpecification()->getConfigurationFile();
+  }
+
+  /**
+   * Return the full configuration file as an Array
+   * 
+   * @return Array 
+   */
+  public function all()
+  {
+    $allConf = $this->configurationHandler->getParser()->parse($this->getFile());
+    return $allConf;
+  }
+
+  /**
+   * Write into the main file connexion credentials defined in $connexion
+   * @param array $connexion Array of connexion credentials
+   * @return Configuration 
+   */
+  public function setAllDatabaseConnexion(Array $connexion)
+  {
+    $arrayConf = $this->all();
+
+    foreach ($arrayConf as $key => $value)
+    {
+      if (is_array($value) && array_key_exists('phraseanet', $value))
+      {
+        foreach ($arrayConf[$key]['phraseanet'] as $kee => $value)
+        {
+          if ($kee === 'database')
+          {
+            $arrayConf[$key]['phraseanet']['database'] = $connexion;
+          }
+        }
+      }
+    }
+
+    $connexion["driver"] = 'pdo_mysql';
+    $connexion['charset'] = 'UTF8';
+
+    foreach ($arrayConf as $key => $value)
+    {
+      if (is_array($value) && array_key_exists('phraseanet', $value))
+      {
+        foreach ($arrayConf[$key]['doctrine'] as $kee => $value)
+        {
+          if ($kee === 'dbal')
+          {
+            $arrayConf[$key]['doctrine']['dbal'] = $connexion;
+          }
+        }
+      }
+    }
+
+    $this->write($arrayConf, FILE_APPEND, true);
+    
+    return $this;
+  }
+
+  /**
+   * Write into the main file the serverName
+   * @param type $serverName
+   * @return Configuration 
+   */
+  public function setServerName($serverName)
+  {
+    $arrayConf = $this->all();
+
+    foreach ($arrayConf as $key => $value)
+    {
+      if (is_array($value) && array_key_exists('phraseanet', $value))
+      {
+        foreach ($arrayConf[$key]['phraseanet'] as $kee => $value)
+        {
+          if ($kee === 'servername')
+          {
+            $arrayConf[$key]['phraseanet']['servername'] = $serverName;
+          }
+        }
+      }
+    }
+    
+    $this->write($arrayConf, FILE_APPEND, true);
+    
+    return $this;
+  }
+
+  /**
+   * Write datas in config file
+   * 
+   * @param array $data
+   * @param type $flag
+   * @return Configuration 
+   */
+  public function write(Array $data, $flag = 0, $delete = false)
+  {
+    if ($delete)
+    {
+      $this->delete();
+    }
+
+    $yaml = $this->configurationHandler->getParser()->dump($data, 5);
+
+    $filePathName = $this->configurationHandler
+            ->getSpecification()
+            ->getConfigurationPathName();
+
+    if (!file_put_contents($filePathName, $yaml, $flag) !== false)
+    {
+      $filePath = $this->configurationHandler
+              ->getSpecification()
+              ->getConfigurationFilePath();
+      throw new \Exception(sprintf(_('Impossible d\'ecrire dans le dossier %s'), $filePath));
+    }
+
+    return $this;
+  }
+
+  /**
+   * Delete configuration file
+   * @return Configuration 
+   */
+  public function delete()
+  {
+    try
+    {
+      $filePathName = $this->configurationHandler
+              ->getSpecification()
+              ->getConfigurationPathName();
+      unlink($filePathName);
+    }
+    catch (\Exception $e)
+    {
+      
+    }
+
+    return $this;
+  }
 
 }

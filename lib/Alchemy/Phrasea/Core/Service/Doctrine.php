@@ -33,7 +33,7 @@ class Doctrine
     require_once __DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
 
     static::loadClasses();
-
+    
     $config = new \Doctrine\ORM\Configuration();
 
     //debug mode
@@ -81,17 +81,7 @@ class Doctrine
 
     if (!$dbalConf)
     {
-//      throw new Exception("Unable to read dbal configuration");
-
-      require __DIR__ . '/../../../../../config/connexion.inc';
-
-      $dbalConf = array(
-          'dbname' => $dbname,
-          'user' => $user,
-          'password' => $password,
-          'host' => $hostname,
-          'driver' => 'pdo_mysql',
-      );
+      throw new \Exception("Unable to read dbal configuration");
     }
 
     $evm = new \Doctrine\Common\EventManager();
@@ -311,7 +301,7 @@ class Doctrine
           {
             throw new \Exception(sprintf('Unknow monolog handler class %s', $handlerClassName));
           }
-
+          
           if (!isset($log["filename"]))
           {
             throw new \Exception('you must specify a file to write "filename: my_filename"');
@@ -319,18 +309,26 @@ class Doctrine
 
           $logPath = __DIR__ . '/../../../../../logs';
           $file = sprintf('%s/%s', $logPath, $log["filename"]);
-
+          
           if ($doctrineHandler == 'rotate')
           {
-            $maxDay = isset($log["max_day"]) ? (int) $log["max_day"] : (int) $logger["max_day"];
-
+            $maxDay = isset($log["max_day"]) ? (int) $log["max_day"] : false;
+            
+            if(!$maxDay && isset($logger["handlers"]['rotate']["max_day"]))
+            {
+              $maxDay = (int) $logger["handlers"]['rotate']["max_day"];
+            }
+            else
+            {
+              $maxDay = 10;
+            }
             $handlerInstance = new $handlerClassName($file, $maxDay);
           }
           else
           {
             $handlerInstance = new $handlerClassName($file);
           }
-
+          
           $monologLogger = new \Monolog\Logger('query-logger');
           $monologLogger->pushHandler($handlerInstance);
 

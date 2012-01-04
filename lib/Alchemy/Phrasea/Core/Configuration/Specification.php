@@ -20,42 +20,13 @@ namespace Alchemy\Phrasea\Core\Configuration;
  */
 interface Specification
 {
+
   /**
-   * Keywords to detect extended file
-   */
-  const EXTENDED_KEYWORD = 'extends';
-  /**
-   * Keywords to detect main file
-   */
-  const EXTENDED_MAIN_KEYWORD = 'main';
-  
-  /**
-   * Return the main configuration file 
+   * Return the pathname of the configuration file 
    * 
-   * @return \SplFileObject
+   * @return string
    */
-  public function getMainConfigurationFile();
-  
-  /**
-   * Return an array of paths that CAN'T be extended by ONLY one or more of their value
-   * but must be fully replaced with new values
-   * 
-   * example:
-   * array(array('PATH', 'TO', 'MY', 'SCOPE1', array('SCOPE2')
-   * 
-   * So $extendedConf['PATH']['TO']['MY']['SCOPE'] will fully replace
-   *    $mainConf['PATH']['TO']['MY']['SCOPE'];
-   *  
-   * @return Array
-   */
-  public function getNonExtendablePath();
-  
-  /**
-   * Return the configuration file from an environnment name
-   * 
-   * @return \SplFileObject
-   */
-  public function getConfFileFromEnvName($name);
+    public function getConfigurationPathName();
   
   /**
    * Return the path to the configuration file
@@ -69,22 +40,14 @@ interface Specification
    * 
    * @return string
    */
-  public function getConfFileExtension();
-  
-   /**
-   * Check wether the environnement $env extends another one
-   * 
-   * @param type $env
-   * @return boolean 
-   */
-  public function isExtended(Array $env);
+  public function getConfigurationFileExtension();
   
   /**
-   * Return the extends environnement name null if extends nothing
+   * Return the name of the configuration file
    * 
-   * @param Array an environnement
-   * @return mixed|null
+   * @return string
    */
-  public function getExtendedEnvName(Array $env);
+  public function getConfigurationFileName();
+  
   
 }

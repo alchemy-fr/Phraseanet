@@ -24,12 +24,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 use Alchemy\Phrasea;
 
-require_once dirname(__FILE__) . '/../lib/Alchemy/Phrasea/Core/Service/Doctrine.php';
+require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
+bootstrap::register_autoloads();
 
 try
 {
-  $doctrineConf = array();
-  $doctrine = new Phrasea\Core\Service\Doctrine();
+  $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                  new \Alchemy\Phrasea\Core\Configuration\Application(),
+                  new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+  );
+  $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+  
+  $doctrine = new Phrasea\Core\Service\Doctrine($configuration->getDoctrine()->all());
 
   $app = new Application("Phraseanet Doctrine Console", $doctrine->getVersion());
 
@@ -72,5 +78,5 @@ try
 }
 catch (Exception $e)
 {
-  echo "an error occured ";
+  echo "an error occured : " . $e->getMessage();
 }

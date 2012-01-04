@@ -45,13 +45,13 @@ class DoctrineTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
       $spec = $this->getMock(
               '\Alchemy\Phrasea\Core\Configuration\Application'
-              , array('getMainConfigurationFile')
+              , array('getConfigurationFile')
       );
 
       $fileName = __DIR__ . '/../Configuration/confTestFiles/good.yml';
 
       $spec->expects($this->any())
-              ->method('getMainConfigurationFile')
+              ->method('getConfigurationFile')
               ->will(
                       $this->returnValue(
                               new SplFileObject($fileName)
@@ -60,11 +60,10 @@ class DoctrineTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
       $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
 
-      $environnement = 'main';
-      $configuration = new PhraseaCore\Configuration($environnement, $handler);
+      $configuration = new PhraseaCore\Configuration($handler);
+      $configuration->setEnvironnement('prod');
 
-      $doctrineService = new Doctrine();
-      $doctrineService = new Doctrine($configuration->getDoctrine());
+      $doctrineService = new Doctrine($configuration->getDoctrine()->all());
     }
     catch (Exception $e)
     {
@@ -72,15 +71,68 @@ class DoctrineTest extends PhraseanetPHPUnitAuthenticatedAbstract
     }
   }
 
+  public function testNoDbalConf()
+  {
+    try
+    {
+      $doctrineService = new Doctrine();
+      $this->fail("should raised an exception");
+    }
+    catch (\Exception $e)
+    {
+      
+    }
+  }
+
   public function testGetVersion()
   {
-    $doctrineService = new Doctrine();
+    $spec = $this->getMock(
+            '\Alchemy\Phrasea\Core\Configuration\Application'
+            , array('getConfigurationFile')
+    );
+
+    $fileName = __DIR__ . '/../Configuration/confTestFiles/good.yml';
+
+    $spec->expects($this->any())
+            ->method('getConfigurationFile')
+            ->will(
+                    $this->returnValue(
+                            new SplFileObject($fileName)
+                    )
+    );
+
+    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
+
+    $configuration = new PhraseaCore\Configuration($handler);
+    $configuration->setEnvironnement('prod');
+
+    $doctrineService = new Doctrine($configuration->getDoctrine()->all());
     $this->assertTrue(is_string($doctrineService->getVersion()));
   }
 
   public function testGetEntityManager()
   {
-    $doctrineService = new Doctrine();
+    $spec = $this->getMock(
+            '\Alchemy\Phrasea\Core\Configuration\Application'
+            , array('getConfigurationFile')
+    );
+
+    $fileName = __DIR__ . '/../Configuration/confTestFiles/good.yml';
+
+    $spec->expects($this->any())
+            ->method('getConfigurationFile')
+            ->will(
+                    $this->returnValue(
+                            new SplFileObject($fileName)
+                    )
+    );
+
+    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
+
+    $configuration = new PhraseaCore\Configuration($handler);
+    $configuration->setEnvironnement('prod');
+
+    $doctrineService = new Doctrine($configuration->getDoctrine()->all());
     $this->assertInstanceOf('\Doctrine\ORM\EntityManager', $doctrineService->getEntityManager());
   }
 

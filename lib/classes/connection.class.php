@@ -23,11 +23,13 @@ class connection
    * @var Array
    */
   private static $_PDO_instance = array();
+
   /**
    *
    * @var boolean
    */
   private static $_selfinstance;
+
   /**
    *
    * @var Array
@@ -52,7 +54,6 @@ class connection
   {
     $registry = registry::get_instance();
     if (!$registry->get('GV_debug'))
-
       return;
     $totalTime = 0;
 
@@ -119,7 +120,6 @@ class connection
       $name = (int) $name;
     }
     else
-
       return false;
 
     if (!isset(self::$_PDO_instance[$name]))
@@ -134,10 +134,23 @@ class connection
       }
       else
       {
-        if (!is_file(__DIR__ . '/../../config/connexion.inc'))
-          throw new Exception('Unable to load config file');
-        require (__DIR__ . '/../../config/connexion.inc');
+
+
+        $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                        new \Alchemy\Phrasea\Core\Configuration\Application(),
+                        new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+        );
+        $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+        $connexion = $configuration->getConnexion();
+
+        $hostname = $connexion->get('host');
+        $port = $connexion->get('port');
+        $user = $connexion->get('user');
+        $password = $connexion->get('password');
+        $dbname = $connexion->get('dbname');
       }
+
       if (isset($connection_params[$name]))
       {
         $hostname = $connection_params[$name]['host'];
@@ -158,7 +171,6 @@ class connection
       }
     }
     if (array_key_exists($name, self::$_PDO_instance))
-
       return self::$_PDO_instance[$name];
     throw new Exception('Connection not available');
   }

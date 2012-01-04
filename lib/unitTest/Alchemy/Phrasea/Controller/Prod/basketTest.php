@@ -379,9 +379,7 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $response = $this->client->getResponse();
 
-    $em = self::$core->getEntityManager();
-    /* @var $em \Doctrine\ORM\EntityManager */
-    $basket = $em->getRepository('Entities\Basket')->find($basket->getId());
+    $em->refresh($basket);
 
     $this->assertFalse($basket->getArchived());
 
@@ -420,9 +418,7 @@ class basketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $response = $this->client->getResponse();
 
-    $em = self::$core->getEntityManager();
-    /* @var $em \Doctrine\ORM\EntityManager */
-    $basket = $em->getRepository('Entities\Basket')->find($basket->getId());
+    $em->refresh($basket);
 
     $this->assertFalse($basket->getArchived());
 

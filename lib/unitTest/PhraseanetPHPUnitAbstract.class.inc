@@ -36,11 +36,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * @var Symfony\Component\HttpKernel\Client 
    */
   protected $client;
- /**
+
+  /**
    *
    * @var record_adapter
    */
   protected static $story_1;
+
   /**
    *
    * @var record_adapter
@@ -352,13 +354,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * @var \Alchemy\Phrasea\Core 
    */
   protected static $core;
-  
+
   /**
    *
    * @var \Doctrine\ORM\Tools\SchemaTools
    */
   protected $schematTool;
-  
+
   /**
    * Class metadatas
    * @var Array
@@ -371,8 +373,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     if (!self::$time_start)
       self::$time_start = microtime(true);
 
-    if (!setup::is_installed())
-      exit("Phraseanet is not set up\n");
 
     $appbox = appbox::get_instance();
     if (!self::$updated)
@@ -771,7 +771,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       }
     }
     $appbox->get_session()->logout();
-    
+
     return;
   }
 
@@ -784,6 +784,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    */
   public function __construct()
   {
+    if (!setup::is_installed())
+      exit("Phraseanet is not set up\n");
+
     if (null === self::$core)
     {
       if (is_file(__DIR__ . '/tests.sqlite'))
@@ -792,15 +795,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       }
 
       self::$core = bootstrap::getCore();
-      self::$core["EM"] = self::$core->share(function()
-              {
-                $doctrine = new \Alchemy\Phrasea\Core\Service\DoctrineTestSQLite();
-                return $doctrine->getEntityManager();
-              });
-      
+
+
       $em = self::$core->getEntityManager();
       /* @var $em \Doctrine\ORM\EntityManager */
-      
+
       //create schema
       $this->schematTool = new \Doctrine\ORM\Tools\SchemaTool($em);
       $this->classesMetatdas = array(
@@ -810,8 +809,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
           , $em->getClassMetadata('Entities\ValidationData')
           , $em->getClassMetadata('Entities\ValidationParticipant')
           , $em->getClassMetadata('Entities\ValidationSession')
+          , $em->getClassMetadata('Entities\UsrList')
+          , $em->getClassMetadata('Entities\UsrListContent')
+          , $em->getClassMetadata('Entities\UsrListOwner')
       );
-      
+
       $this->schematTool->createSchema($this->classesMetatdas);
     }
   }
@@ -987,7 +989,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   public function setUp()
   {
     parent::setUp();
-
+    //create a new core instance loaded with the test environment for each test
+    self::$core = new \Alchemy\Phrasea\Core('test');
     $browser = Browser::getInstance();
     $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
   }
@@ -995,6 +998,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   public function tearDown()
   {
     parent::tearDown();
+    self::$core = null;
   }
 
   /**
@@ -1019,7 +1023,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$core->getEntityManager(), $purger);
     $executor->execute(array());
   }
-  
+
   protected function assertDateAtom($date)
   {
     return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
@@ -1056,7 +1060,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       $this->fail('Fail load one Basket : ' . $e->getMessage());
     }
   }
-  
+
   /**
    * Insert five baskets and set current authenticated user as owner
    * 
@@ -1082,7 +1086,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       $this->fail('Fail load one Basket : ' . $e->getMessage());
     }
   }
-  
+
   /**
    *
    * @return \Entities\BasketElement
@@ -1090,25 +1094,24 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   protected function insertOneBasketElement()
   {
     $basket = $this->insertOneBasket();
-    
+
     $basketElement = new \Entities\BasketElement();
     $basketElement->setRecord(self::$record_1);
     $basketElement->setBasket($basket);
-    
+
     $basket->addBasketElement($basketElement);
-    
+
     $em = self::$core->getEntityManager();
-    
+
     $em->persist($basketElement);
-    
+
     $em->merge($basket);
-    
+
     $em->flush();
-    
+
     return $basketElement;
   }
-  
-  
+
   /**
    *
    * @return \Entities\Basket
@@ -1116,42 +1119,41 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   protected function insertOneValidationBasket()
   {
     $em = self::$core->getEntityManager();
-    
+
     $basketElement = $this->insertOneBasketElement();
     $basket = $basketElement->getBasket();
-    
+
     $Validation = new Entities\ValidationSession();
     $Validation->setBasket($basket);
     $Validation->setInitiator(self::$user);
-    
+
     $basket->setValidation($Validation);
-    
+
     $em->persist($Validation);
     $em->merge($basket);
-    
+
     $Participant = new Entities\ValidationParticipant();
     $Participant->setUser(self::$user);
     $Participant->setCanAgree(true);
     $Participant->setCanSeeOthers(true);
-    
+
     $Validation->addValidationParticipant($Participant);
     $Participant->setSession($Validation);
-    
+
     $em->persist($Participant);
     $em->merge($Validation);
-    
+
     $Data = new Entities\ValidationData();
     $Data->setBasketElement($basketElement);
     $Data->setParticipant($Participant);
     $basketElement->addValidationData($Data);
-    
+
     $em->persist($Data);
     $em->merge($basketElement);
-    
+
     $em->flush();
-    
+
     return $basket;
-    
   }
 
   /**

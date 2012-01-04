@@ -68,8 +68,9 @@ class setup
 
   public static function is_installed()
   {
-    return file_exists(__DIR__ . "/../../config/connexion.inc")
-            && file_exists(__DIR__ . "/../../config/config.inc");
+    $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+
+    return is_file($appConf->getConfigurationPathName());
   }
 
   function create_global_values(registryInterface &$registry, $datas=array())
@@ -286,13 +287,11 @@ class setup
   protected static function discover_binary($binary, array $look_here = array())
   {
     if (system_server::get_platform() == 'WINDOWS')
-
       return null;
 
     foreach ($look_here as $place)
     {
       if (is_executable($place))
-
         return $place;
     }
 
@@ -304,7 +303,6 @@ class setup
     $registry = registry::get_instance();
 
     if ($registry->get('GV_h264_streaming') !== true)
-
       return;
     ?>
     <h1>mod_auth_token configuration </h1>
@@ -418,7 +416,7 @@ class setup
     public static function check_phrasea()
     {
       $constraints = array();
-      if(function_exists('phrasea_info'))
+      if (function_exists('phrasea_info'))
       {
         foreach (phrasea_info() as $name => $value)
         {
@@ -426,7 +424,7 @@ class setup
           {
             default:
               $result = true;
-              $message = $name.' = '.$value;
+              $message = $name . ' = ' . $value;
               break;
             case 'temp_writable':
               $result = $value == '1';
@@ -438,7 +436,7 @@ class setup
             case 'version':
               $result = version_compare($value, '1.18.0.3', '>=');
               if ($result)
-                $message = sprintf ('Phrasea version %s is ok', $value);
+                $message = sprintf('Phrasea version %s is ok', $value);
               else
                 $message = sprintf('Phrasea version %s is NOT ok', $value);
               break;
@@ -516,7 +514,6 @@ class setup
       </form>
 
       <?php
-
       return;
     }
 
@@ -708,7 +705,6 @@ class setup
       $constraints = array();
 
       if (!extension_loaded('gettext'))
-
         return new Setup_ConstraintsIterator($constraints);
 
       foreach (User_Adapter::$locales as $code => $language_name)
@@ -741,36 +737,12 @@ class setup
 
       if (($current === '' || $current === 'off' || $current === '0') && $is_flag)
         if ($value === 'off' || $value === '0' || $value === '')
-
           return $current;
       if (($current === '1' || $current === 'on') && $is_flag)
         if ($value === 'on' || $value === '1')
-
           return $current;
       if ($current === $value)
-
         return $current;
-    }
-
-    public static function write_config($servername)
-    {
-      $datas = "<?php\n\$servername = \""
-              . str_replace('"', '\"', $servername)
-              . "\";\n\$maintenance=false;\n\$debug=false;\n";
-
-      file_put_contents(self::get_config_filepath(), $datas);
-
-      return;
-    }
-
-    public static function get_config_filepath()
-    {
-      return __DIR__ . '/../../config/config.inc';
-    }
-
-    public static function get_connexion_filepath()
-    {
-      return __DIR__ . '/../../config/connexion.inc';
     }
 
     public static function rollback(connection_pdo $conn, connection_pdo $connbas =null)
@@ -794,7 +766,7 @@ class setup
         }
         catch (Exception $e)
         {
-
+          
         }
       }
       if ($connbas)
@@ -810,16 +782,25 @@ class setup
           }
           catch (Exception $e)
           {
-
+            
           }
         }
       }
-      $connexion = __DIR__ . "/../../config/connexion.inc";
 
-      if (file_exists($connexion))
-        unlink($connexion);
-
+      try
+      {
+        $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+        $configFile = $appConf->getConfigurationFile();
+        unlink($configFile->getPathname());
+      }
+      catch (\Exception $e)
+      {
+        
+      }
+      
       return;
     }
 
   }
+
+  

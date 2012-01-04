@@ -8,6 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+require_once __DIR__ . '/../Alchemy/Phrasea/Core.php';
+
+use Alchemy\Phrasea\Core;
 
 /**
  *
@@ -15,35 +18,33 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
-require_once __DIR__ . '/../Alchemy/Phrasea/Core.php';
-    
 class bootstrap
 {
-  
+
   protected static $core;
 
   public static function set_php_configuration()
   {
-    return Alchemy\Phrasea\Core::initPHPConf();
+    return Core::initPHPConf();
   }
 
   /**
-   *
+   * 
+   * @param $env 
    * @return Alchemy\Phrasea\Core 
    */
-  public static function execute($env = 'main')
+  public static function execute($env = null)
   {
-    if(static::$core)
+    if (static::$core)
     {
       return static::$core;
     }
-    
-    static::$core = new Alchemy\Phrasea\Core($env);
-    
+
+    static::$core = new Core($env);
+
     return static::$core;
   }
-  
+
   /**
    *
    * @return Alchemy\Phrasea\Core 
@@ -55,7 +56,7 @@ class bootstrap
 
   public static function register_autoloads()
   {
-    return Alchemy\Phrasea\Core::initAutoloads();
+    return Core::initAutoloads();
   }
 
 }
