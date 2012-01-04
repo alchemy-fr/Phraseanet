@@ -1179,7 +1179,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     foreach ($mandatoryParams as $param)
     {
       if (!array_key_exists($param, $params))
-        throw new Exception_InvalidArgument();
+      {
+        throw new Exception_InvalidArgument(sprintf('Invalid metadata, missing key %s', $param));
+      }
     }
 
     if (!is_array($params['value']))
