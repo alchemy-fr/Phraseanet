@@ -513,7 +513,7 @@ var p4 = p4 || {};
           humane.info(data.message);
         }
         
-        if(($(destKey).hasClass('content') === true) || ($(destKey).next().is(':visible') === true) || (act == 'MOV'))
+        if($(destKey).hasClass('content') === true || $(destKey).next().is(':visible') === true || (act == 'MOV'))
         {
           $('.CHIM.selected:visible').fadeOut();
           p4.WorkZone.Selection.empty();
