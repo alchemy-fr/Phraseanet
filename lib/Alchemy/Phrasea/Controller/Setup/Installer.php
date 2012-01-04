@@ -175,17 +175,29 @@ class Installer implements ControllerProviderInterface
                 $setupRegistry->set('GV_ServerName', $servername);
                 $appbox = \appbox::create($setupRegistry, $conn, $appbox_name, true);
 
-                $em = $app['Core']->getEntityManager();
-                /* @var $em \Doctrine\ORM\EntityManager */
-
-                $metadatas = $em->getMetadataFactory()->getAllMetadata();
-
-                if (!empty($metadatas))
+                $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                                new \Alchemy\Phrasea\Core\Configuration\Application(),
+                                new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+                );
+                $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+                if ($configuration->isInstalled())
                 {
-                  // Create SchemaTool
-                  $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-                  // Create schema
-                  $schemaTool->createSchema($metadatas);
+                  // Get Entity Manager using the new configuration
+                  $doctrineConf = $configuration->getDoctrine()->all();
+                  $doctrine = new \Alchemy\Phrasea\Core\Service\Doctrine($doctrineConf);
+
+                  $em = $doctrine->getEntityManager();
+                  /* @var $em \Doctrine\ORM\EntityManager */
+
+                  $metadatas = $em->getMetadataFactory()->getAllMetadata();
+
+                  if (!empty($metadatas))
+                  {
+                    // Create SchemaTool
+                    $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+                    // Create schema
+                    $tool->createSchema($metadatas);
+                  }
                 }
 
                 $registry = \registry::get_instance();
