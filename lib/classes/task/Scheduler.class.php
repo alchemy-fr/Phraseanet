@@ -287,18 +287,35 @@ class task_Scheduler
        * Launch task that are not yet launched
        */
       $runningtask = 0;
+      
+      $common_status = array(
+          task_abstract::STATUS_STARTED
+          , task_abstract::RETURNSTATUS_STOPPED
+      );
+      
       foreach ($ttask as $tkey => $tv)
       {
-        $this->log(
-                sprintf(
-                        'task %s has status %s'
-                        , $ttask[$tkey]["task"]->get_task_id()
-                        , $ttask[$tkey]["task"]->get_status()
-                )
-        );
+        if (!in_array($ttask[$tkey]["task"]->get_status(), $common_status))
+        {
+          $this->log(
+                  sprintf(
+                          'task %s has status %s'
+                          , $ttask[$tkey]["task"]->get_task_id()
+                          , $ttask[$tkey]["task"]->get_status()
+                  )
+          );
+        }
         switch ($ttask[$tkey]["task"]->get_status())
         {
-          case 'torestart':
+          default:
+            $this->log(
+                    sprintf(
+                            'Unknow status `%s`'
+                            , $ttask[$tkey]["task"]->get_status()
+                    )
+            );
+            break;
+          case task_abstract::RETURNSTATUS_TORESTART:
             @fclose($ttask[$tkey]["pipes"][1]);
             @fclose($ttask[$tkey]["pipes"][2]);
             @proc_close($ttask[$tkey]["process"]);
@@ -309,7 +326,7 @@ class task_Scheduler
               $ttask[$tkey]["task"]->set_status(task_abstract::STATUS_TOSTART);
             }
             break;
-          case 'tostart':
+          case task_abstract::STATUS_TOSTART:
             $ttask[$tkey]["killat"] = NULL;
             if ($schedstatus == 'started' && !$ttask[$tkey]["process"])
             {
@@ -392,7 +409,7 @@ class task_Scheduler
             }
             break;
 
-          case 'started':
+          case task_abstract::STATUS_STARTED:
             $crashed = false;
             /**
              * If no process, the task is probably manually ran
@@ -449,7 +466,7 @@ class task_Scheduler
             }
             break;
 
-          case 'tostop':
+          case task_abstract::STATUS_TOSTOP:
             if ($ttask[$tkey]["process"])
             {
               if ($ttask[$tkey]["killat"] === NULL)
@@ -499,8 +516,8 @@ class task_Scheduler
             }
             break;
 
-          case 'stopped':
-          case 'todelete':
+          case task_abstract::RETURNSTATUS_STOPPED:
+          case task_abstract::RETURNSTATUS_TODELETE:
             if ($ttask[$tkey]["process"])
             {
               @fclose($ttask[$tkey]["pipes"][1]);
@@ -509,6 +526,7 @@ class task_Scheduler
 
               $ttask[$tkey]["process"] = null;
             }
+            break;
         }
       }
 

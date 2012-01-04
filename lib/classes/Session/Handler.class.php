@@ -322,6 +322,9 @@ class Session_Handler
    */
   public function open_phrasea_session()
   {
+    if (!$this->phrasea_session instanceof Session_Phrasea)
+      throw new \Exception('No phrasea session available');
+    
     $this->phrasea_session->open();
 
     return $this;

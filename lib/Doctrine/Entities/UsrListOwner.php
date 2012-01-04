@@ -18,6 +18,9 @@ namespace Entities;
  */
 class UsrListOwner
 {
+  const ROLE_USER = 'user';
+  const ROLE_EDITOR = 'editor';
+  const ROLE_ADMIN = 'admin';
 
   /**
    * @var integer $id
@@ -86,6 +89,9 @@ class UsrListOwner
    */
   public function setRole($role)
   {
+    if (!in_array($role, array(self::ROLE_ADMIN, self::ROLE_EDITOR, self::ROLE_USER)))
+      throw new \Exception('Unknown role `' . $role . '`');
+
     $this->role = $role;
   }
 
@@ -157,6 +163,11 @@ class UsrListOwner
   public function getList()
   {
     return $this->list;
+  }
+
+  public function setUser(\User_Adapter $user)
+  {
+    return $this->setUsrId($user->get_id());
   }
 
   public function getUser()

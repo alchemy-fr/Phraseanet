@@ -176,13 +176,19 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
       }
     }
 
+    $query = new User_Query($appbox);
+    $templates = $query
+            ->only_templates(true)
+            ->execute()->get_results();
+    
     $this->users_datas = $rs;
     $out = array(
         'datas' => $this->users_datas,
         'users' => $this->users,
         'users_serial' => implode(';', $this->users),
         'base_id' => $this->base_id,
-        'main_user' => null
+        'main_user' => null,
+        'templates'=>$templates
     );
 
     if (count($this->users) == 1)

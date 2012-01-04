@@ -880,21 +880,21 @@ $(document).ready(function(){
   $('#loader_bar').stop().animate({
     width:'70%'
   },450);
-  
-  p4.preview ={
+  p4.preview = {
       open:false,
       current:false
     };
-  p4.currentViewMode='classic';
-  p4.nbNoview=0;
-  p4.reg_delete=true;
-  p4.lng='';
-  p4.edit={};
-  p4.thesau={
+  p4.currentViewMode = 'classic';
+  p4.nbNoview = 0;
+  p4.reg_delete = true;
+  p4.sel = [];
+  p4.baskSel = [];
+  p4.edit = {};
+  p4.thesau = {
       tabs:null
     };
-  p4.active_zone=false;
-  p4.next_bask_scroll= false;
+  p4.active_zone = false;
+  p4.next_bask_scroll = false;
 
 
   $('#backcolorpickerHolder').ColorPicker({

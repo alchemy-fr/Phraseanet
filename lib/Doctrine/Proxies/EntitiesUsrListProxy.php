@@ -90,10 +90,10 @@ class EntitiesUsrListProxy extends \Entities\UsrList implements \Doctrine\ORM\Pr
         return parent::getOwners();
     }
 
-    public function addUsrListContent(\Entities\UsrListContent $users)
+    public function addUsrListEntry(\Entities\UsrListEntry $users)
     {
         $this->__load();
-        return parent::addUsrListContent($users);
+        return parent::addUsrListEntry($users);
     }
 
     public function getUsers()
