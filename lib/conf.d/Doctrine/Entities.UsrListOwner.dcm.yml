@@ -2,6 +2,9 @@ Entities\UsrListOwner:
   type: entity
   repositoryClass: Repositories\UsrListOwnerRepository
   table: UsrListOwners
+  uniqueConstraints:
+    unique_owner:
+      columns: usr_id,id
   id:
     id:
       type: integer

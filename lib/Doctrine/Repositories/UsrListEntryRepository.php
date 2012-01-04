@@ -34,4 +34,22 @@ class UsrListEntryRepository extends EntityRepository
 
     return $query->getResult();
   }
+  
+  public function findEntryByListAndEntryId(\Entities\UsrList $list, $entry_id)
+  {
+    $entry = $this->find($entry_id);
+    
+    if(!$entry)
+    {
+      throw new \Exception_NotFound('Entry not found');
+    }
+    
+    /* @var $entry \Entities\UsrListEntry */
+    if($entry->getList()->getId() != $list->getId())
+    {
+      throw new \Exception_Forbidden('Entry mismatch list');
+    }
+
+    return $entry;
+  }
 }

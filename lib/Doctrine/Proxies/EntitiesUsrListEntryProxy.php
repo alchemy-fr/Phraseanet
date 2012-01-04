@@ -96,6 +96,12 @@ class EntitiesUsrListEntryProxy extends \Entities\UsrListEntry implements \Doctr
         return parent::getUser();
     }
 
+    public function setUser(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::setUser($user);
+    }
+
 
     public function __sleep()
     {

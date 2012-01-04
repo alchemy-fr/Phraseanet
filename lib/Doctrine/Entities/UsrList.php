@@ -157,6 +157,22 @@ class UsrList
   }
 
   /**
+   *
+   * @param \User_Adapter $user
+   * @return \Entities\UsrListOwner 
+   */
+  public function getOwner(\User_Adapter $user)
+  {
+    foreach ($this->getOwners() as $owner)
+    {
+      if ($owner->getUser()->get_id() == $user->get_id())
+        return $owner;
+    }
+
+    throw new \Exception('This user is not an owner of the list');
+  }
+
+  /**
    * Add users
    *
    * @param Entities\UsrListContent $users

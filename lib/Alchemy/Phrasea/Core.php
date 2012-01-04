@@ -18,13 +18,14 @@ use Alchemy\Phrasea\Core\Configuration;
 require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 
 /**
+ * 
+ * Phraseanet Core Container
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class Core extends \Pimple
 {
-
   
   protected static $availableLanguages = array(
       'ar_SA' => 'العربية'
@@ -358,7 +359,6 @@ class Core extends \Pimple
   public static function initAutoloads()
   {
     require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-
     require_once __DIR__ . '/../../vendor/Twig/lib/Twig/Autoloader.php';
     require_once __DIR__ . '/../../vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
 

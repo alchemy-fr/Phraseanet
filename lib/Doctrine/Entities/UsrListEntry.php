@@ -138,5 +138,9 @@ class UsrListEntry
   {
     return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance());
   }
+  public function setUser(\User_Adapter $user)
+  {
+    return $this->setUsrId($user->get_id());
+  }
 
 }
