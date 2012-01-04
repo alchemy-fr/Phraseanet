@@ -9,6 +9,7 @@
             var $this = $(this);
             var $current = $this.closest('.steps');
             $('.databox_creation_input', $current).attr('disabled', $this.attr('checked'));
+            $('.db_tester', $current).attr('disabled', $this.attr('checked')).toggleClass( "ui-state-disabled", $this.attr('checked') );
           });
           $('.ab_opt_toggler').bind('click', function(){
             $('.optional_ab_datas').fadeToggle();
@@ -121,12 +122,12 @@
                 setTimeout("$('form#create_admin').submit();",500);
               };
             }
-
+            
             if($current.hasClass('appbox_settings'))
             {
               test_connection_appbox(callback);
             }
-            else if($current.hasClass('databox_settings'))
+            else if($current.hasClass('databox_settings') && $('.databox_create', $current).is(':not(:checked)'))
             {
               test_connection_databox(callback);
             }
@@ -194,7 +195,7 @@
             var password_input = $('input[name="ab_password"]', appbox_scope);
 
             var dbname_input = $('input[name="db_name"]', databox_scope);
-
+            
             var user = user_input.val();
             var password = password_input.val();
             var dbname = dbname_input.val();
@@ -236,10 +237,10 @@
                 if(datas.connection === true && datas.database === true)
                 {
                   el_status.attr('src','/skins/icons/ok.png').show();
-                  el_message.empty().append('{% trans 'Successfull connection' %}');
+                  el_message.empty().append("{% trans 'Successfull connection' %}");
                   if(!datas.is_empty)
                   {
-                    el_message.append('<br>{% trans 'Warning, this database is not empty' %}');
+                    el_message.append("<br>{% trans 'Warning, this database is not empty' %}");
                     el_status.attr('src','/skins/icons/alert.png').show();
                   }
                   if(typeof callback == 'function')
@@ -249,11 +250,11 @@
                 }
                 if(datas.connection === true)
                 {
-                  el_message.empty().append('{% trans 'Connection is OK but database does not exists or can not be accessed' %}');
+                  el_message.empty().append("{% trans 'Connection is OK but database does not exists or can not be accessed' %}");
                 }
                 else
                 {
-                  el_message.empty().append('{% trans 'Unable to connect to MySQL server' %}');
+                  el_message.empty().append("{% trans 'Unable to connect to MySQL server' %}");
                 }
                 el_status.attr('src', '/skins/icons/delete.png').show();
 
@@ -262,12 +263,12 @@
               timeout:function(){
                 el_loader.css('visibility', 'hidden');
                 el_status.attr('src', '/skins/icons/delete.png').show();
-                el_message.empty().append('{% trans 'Unable to connect to MySQL server' %}');
+                el_message.empty().append("{% trans 'Unable to connect to MySQL server' %}");
               },
               error:function(datas){
                 el_loader.css('visibility', 'hidden');
                 el_status.attr('src', '/skins/icons/delete.png').show();
-                el_message.empty().append('{% trans 'Unable to connect to MySQL server' %}');
+                el_message.empty().append("{% trans 'Unable to connect to MySQL server' %}");
               }
             });
           }
