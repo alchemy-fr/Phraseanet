@@ -110,7 +110,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
           'name' => $user_from->get_display_name()
       );
 
-      if (self::mail($to, $from, $params['ssel_id']))
+      if (self::mail($to, $from, $params['ssel_id'], $params['url']))
         $mailed = true;
     }
 
@@ -192,7 +192,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
    * @param int $ssel_id
    * @return boolean
    */
-  function mail($to, $from, $ssel_id)
+  function mail($to, $from, $ssel_id, $url)
   {
     try
     {
@@ -217,7 +217,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
                     $from['name']
             ) . "</div>\n";
 
-    $body .= "<br/>\n" . $this->registry->get('GV_ServerName') . 'lightbox/validate/' . $ssel_id;
+    $body .= "<br/>\n" . $url;
 
     return mail::send_mail($subject, $body, $to, $from, array());
   }

@@ -366,7 +366,7 @@ function manageSession(data, showMessages)
 		if($('.notification.unread',box).length > 0)
 		{
 			var trigger = $('#notification_trigger') ;
-			$('.counter div',trigger)
+			$('.counter',trigger)
 			.empty()
 			.append($('.notification.unread',box).length);
 			$('.counter',trigger).css('visibility','visible');
