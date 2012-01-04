@@ -948,7 +948,7 @@ function scid_click(event, el)
     $('.basket_element', el).addClass('selected');
   }
 	
-	var sselcont_id = $(el).attr('id').split('_').pop();
+	var sselcont_id = $('.basket_element', el).attr('id').split('_').pop();
 	var ssel_id = $('#navigation').val();
 	
 	var container = $('#sc_container');
