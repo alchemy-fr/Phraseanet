@@ -311,14 +311,22 @@ class Configuration
         {
           if ($kee === 'dbal')
           {
-            $arrayConf[$key]['doctrine']['dbal'] = $connexion;
+            if ($key == 'test')
+            {
+              $arrayConf[$key]['doctrine']['dbal'] = $this->getTestDBCredentials();
+            }
+            else
+            {
+              $arrayConf[$key]['doctrine']['dbal'] = $connexion;
+            }
+            break;
           }
         }
       }
     }
 
     $this->write($arrayConf, FILE_APPEND, true);
-    
+
     return $this;
   }
 
@@ -344,9 +352,9 @@ class Configuration
         }
       }
     }
-    
+
     $this->write($arrayConf, FILE_APPEND, true);
-    
+
     return $this;
   }
 
@@ -400,6 +408,19 @@ class Configuration
     }
 
     return $this;
+  }
+
+  /**
+   * Return the test database credentials
+   * @return Array 
+   */
+  private function getTestDBCredentials()
+  {
+    return array(
+        'driver' => 'pdo_sqlite',
+        'path' => __DIR__ . '/../../../unitTest/tests.sqlite',
+        'charset' => 'UTF8'
+    );
   }
 
 }
