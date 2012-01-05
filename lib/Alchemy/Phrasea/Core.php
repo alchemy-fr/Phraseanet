@@ -358,10 +358,8 @@ class Core extends \Pimple
    */
   public static function initAutoloads()
   {
-    require_once __DIR__ . '/../../../vendor/twig/twig/lib/Twig/Autoloader.php';
     require_once __DIR__ . '/../../../vendor/twig/extensions/lib/Twig/Extensions/Autoloader.php';
 
-    \Twig_Autoloader::register();
     \Twig_Extensions_Autoloader::register();
 
     $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
