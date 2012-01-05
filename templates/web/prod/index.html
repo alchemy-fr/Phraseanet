@@ -1151,6 +1151,11 @@
 
 <div id="modal_feed" title="{% trans 'action : publier' %}" style="display:none;">
 </div>
+<form id="push_form" style="display:none;" method="post" target="download" action="/prod/pushdoc.php">
+  <input name="lst" value=""/>
+  <input name="ACT" value="LOAD"/>
+  <input name="SSTTID" value="LOAD"/>
+</form>
 
 <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
 <div title="{% trans 'Re-ordonner' %}" id="reorder_dialog" style="position:relative;overflow:hidden;">

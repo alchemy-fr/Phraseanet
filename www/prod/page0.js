@@ -2578,11 +2578,16 @@ function chgStatusThis(url)
 }
 
 
-function pushThis(url)
+function pushThis(sstt_id, lst)
 {
-  url = "pushdoc.php?ACT=LOAD&"+url;
   $('#MODALDL').attr('src','about:blank');
-  $('#MODALDL').attr('src',url);
+  
+  var $form = $('#push_form');
+  
+  $('input[name="lst"]', $form).val(lst);
+  $('input[name="SSTTID"]', $form).val(sstt_id);
+  
+  $form.submit();
 
   var w = bodySize.x - 40;
   var h = bodySize.y - 40;
@@ -2935,32 +2940,32 @@ function activeIcons()
   });
 
   $('.TOOL_pushdoc_btn').live('click', function(){
-    var value="";
+    var value="",type="",sstt_id="";
     if($(this).hasClass('results_window'))
     {
       if(p4.sel.length > 0)
-        value = "lst=" + p4.sel.join(';');
+        value = p4.sel.join(';');
     }
     else
     {
       if($(this).hasClass('basket_window'))
       {
         if(p4.baskSel.length > 0)
-          value = "lst=" + p4.baskSel.join(';');
+          value = p4.baskSel.join(';');
         else
-          value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+          sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
       }
       else
       {
         if($(this).hasClass('basket_element'))
         {
-          value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+          sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
         }
       }
     }
-    if(value !== '')
+    if(value !== '' || sstt_id !== '')
     {
-      pushThis(value);
+      pushThis(sstt_id, value);
     }
     else
     {
