@@ -123,7 +123,7 @@ if (!$zip_done)
     else
     {
 ?>
-      <p><?php echo sprintf(_('telechargement::Vos documents sont prets. Si le telechargement ne demarre pas, %s cliquez ici %s'), '<a href="/mail-export/' . $parm['token'] . '/get" target="_self">', '</a>'); ?></p>
+      <p><?php echo sprintf(_('telechargement::Vos documents sont prets. Si le telechargement ne demarre pas, %s cliquez ici %s'), '<a href="/mail-export/' . $parm['token'] . '/get/'.$list['export_name'].'" target="_self">', '</a>'); ?></p>
       <?php
     }
       ?>
