@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\Serializer;
 use Alchemy\Phrasea\Core\Configuration;
 
-require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
+require_once __DIR__ . '/../../../vendor/.composer/autoload.php';
 
 /**
  * 
@@ -358,9 +358,8 @@ class Core extends \Pimple
    */
   public static function initAutoloads()
   {
-    require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-    require_once __DIR__ . '/../../vendor/Twig/lib/Twig/Autoloader.php';
-    require_once __DIR__ . '/../../vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
+    require_once __DIR__ . '/../../../vendor/twig/twig/lib/Twig/Autoloader.php';
+    require_once __DIR__ . '/../../../vendor/twig/extensions/lib/Twig/Extensions/Autoloader.php';
 
     \Twig_Autoloader::register();
     \Twig_Extensions_Autoloader::register();
@@ -371,15 +370,9 @@ class Core extends \Pimple
 
     $loader->registerNamespaces(array(
         'Alchemy' => __DIR__ . '/../..',
-        'Symfony\\Component\\Yaml' => __DIR__ . '/../../vendor/symfony/src',
-        'Symfony\\Component\\Console' => __DIR__ . '/../../vendor/symfony/src',
-        'Symfony\\Component\\Serializer' => __DIR__ . '/../../vendor/symfony/src',
-        'Symfony\\Component\\DependencyInjection' => __DIR__ . '/../../vendor/symfony/src',
     ));
 
     $loader->register();
-
-    require_once __DIR__ . '/../../vendor/Silex/autoload.php';
 
     return;
   }
