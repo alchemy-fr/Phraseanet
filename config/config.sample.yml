@@ -36,7 +36,7 @@ dev:
       dbname: <YOUR_DB_NAME>
       user: <YOUR_USERNAME>
       password: <YOUR_PASSWORD>
-      charset: <CHARSET>
+      charset: UTF8
     #configure orm
     orm:
       #Available cache driver [memcached, apc, array]
@@ -115,7 +115,7 @@ prod:
       dbname: <YOUR_DB_NAME>
       user: <YOUR_USERNAME>
       password: <YOUR_PASSWORD>
-      charset: <CHARSET>
+      charset: UTF8
     orm:
       cache:
         query: apc
@@ -152,16 +152,12 @@ test:
       dbname: <YOUR_DB_NAME>
       user: <YOUR_USERNAME>
       password: <YOUR_USERNAME>
-    
+ #doctrine use a sqlite base to run tests   
   doctrine:
     dbal:
-      driver: <YOUR_DRIVER> 
-      host: <YOUR_HOST>
-      port: <YOUR_PORT>
-      dbname: <YOUR_DB_NAME>
-      user: <YOUR_USERNAME>
-      password: <YOUR_PASSWORD>
-      charset: <CHARSET>
+      driver: pdo_sqlite
+      path: <PATH_TO_A_SQLITE_DB>
+      charset: UTF8
     orm:
       cache:
         query: array
