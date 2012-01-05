@@ -801,7 +801,7 @@ function sqlFromFilters($usr, $filters)
           $params[':like1'] = $start . $filter->fieldsearch . $end;
           break;
         case "NAME" :
-          $precise.=" (usr_nom " . $like . " :like2 OR usr_prenom like like2bis)";
+          $precise.=" (usr_nom " . $like . " :like2 OR usr_prenom like :like2bis)";
           $params[':like2'] = $start . $filter->fieldsearch . $end;
           $params[':like2bis'] = $start . $filter->fieldsearch . $end;
           break;
