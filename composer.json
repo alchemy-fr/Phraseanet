@@ -82,6 +82,7 @@
     "symfony/console": "2.1.*",
     "symfony/serializer": "2.1.*",
     "symfony/dependency-injection": "2.1.*",
+    "monolog/monolog": "1.0.*",
     "twig/twig": "1.5.*",
     "twig/extensions": "master-dev"
   }
