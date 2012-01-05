@@ -216,7 +216,7 @@ if ($cssfile)
 
 
 
-                      foreach ($appbox->get_databoxes() as $databox)
+                      foreach ($user->ACL()->get_granted_sbas() as $databox)
                       {
                         if ($showbases)
                         {
@@ -227,7 +227,7 @@ if ($cssfile)
                           {
                             $options .= '<option value="' . implode(';', $allbcol) . '">`' . $databox->get_viewname() . '`' . '</option>';
                           }
-                          foreach ($databox->get_collections() as $coll)
+                          foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
                           {
                             $allbcol[] = $coll->get_base_id();
                             $n_allbcol++;
@@ -345,7 +345,7 @@ if ($cssfile)
                             <div>
                               <div class="basesContainer">
 <?php
-                          foreach ($appbox->get_databoxes() as $databox)
+                          foreach ($user->ACL()->get_granted_sbas() as $databox)
                           {
                             if ($registry->get('GV_view_bas_and_coll'))
                             {
@@ -483,7 +483,7 @@ if ($cssfile)
 <?php
                             }
 ?><div class="basGrp"><?php
-                            foreach ($databox->get_collections() as $coll)
+                            foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
                             {
                               $s = "checked";
                               echo '<div><input type="checkbox" class="checkbox basItem basItem' . $databox->get_sbas_id() . '" ' . $s . ' name="bas[]"  id="basChk' . $coll->get_base_id() . '" value="' . $coll->get_base_id() . '"><label for="basChk' . $coll->get_base_id() . '">' . $coll->get_name() . '</label></div>';
