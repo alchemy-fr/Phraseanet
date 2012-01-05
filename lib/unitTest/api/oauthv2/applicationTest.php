@@ -17,7 +17,6 @@ require_once dirname(__FILE__) . '/../../PhraseanetWebTestCaseAuthenticatedAbstr
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../../../lib/bootstrap.php";
-require_once __DIR__ . "/../../../../lib/vendor/Silex/autoload.php";
 API_OAuth2_Autoloader::register();
 
 use Symfony\Component\HttpFoundation\Response;
