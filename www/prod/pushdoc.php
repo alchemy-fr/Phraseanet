@@ -327,6 +327,8 @@ if ($act == "STEP2")
                     $htmlacti = '<option value="">Toutes</option>';
                     foreach ($rs as $row)
                     {
+                      if(trim($row['activite']) === '')
+                        continue;
                       $htmlacti .= '<option value="' . $row['activite'] . '">' . $row['activite'] . '</option>';
                     }
 
@@ -334,6 +336,8 @@ if ($act == "STEP2")
                     $htmlfonction = '<option value="">Toutes</option>';
                     foreach ($rs as $row)
                     {
+                      if(trim($row['fonction']) === '')
+                        continue;
                       $htmlfonction .= '<option value="' . $row['fonction'] . '">' . $row['fonction'] . '</option>';
                     }
 
@@ -350,6 +354,8 @@ if ($act == "STEP2")
                     $htmlsocie = '<option value="">Toutes</option>';
                     foreach ($rs as $row)
                     {
+                      if(trim($row['societe']) === '')
+                        continue;
                       $htmlsocie .= '<option value="' . $row['societe'] . '">' . $row['societe'] . '</option>';
                     }
 
@@ -357,6 +363,8 @@ if ($act == "STEP2")
                     $htmltemplate = '<option value="">Toutes</option>';
                     foreach ($rs as $row)
                     {
+                      if(trim($row['lastModel']) === '')
+                        continue;
                       $htmltemplate .= '<option value="' . $row['lastModel'] . '">' . $row['lastModel'] . '</option>';
                     }
                     ?>
