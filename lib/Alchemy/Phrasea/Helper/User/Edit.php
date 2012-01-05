@@ -539,14 +539,16 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
       return $this;
     }
 
-    $user = User_adapter::getInstance(array_pop($this->users), appbox::get_instance());
+    $users = $this->users;
+    
+    $user = \User_adapter::getInstance(array_pop($users), appbox::get_instance());
 
     if ($user->is_template())
     {
       return $this;
     }
 
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
     $request = \http_request::getInstance();
 
@@ -567,25 +569,20 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     $parm = $request->get_parms_from_serialized_datas($infos, 'user_infos');
 
-    foreach ($this->users as $usr_id)
-    {
+    if (!\mail::validateEmail($parm['email']))
+      throw new \Exception_InvalidArgument(_('Email addess is not valid'));
 
-      if (!\mail::validateEmail($parm['email']))
-        throw new \Exception_InvalidArgument(_('Email addess is not valid'));
-
-      $user = User_Adapter::getInstance($usr_id, $appbox);
-      $user->set_firstname($parm['first_name'])
-              ->set_lastname($parm['last_name'])
-              ->set_email($parm['email'])
-              ->set_address($parm['address'])
-              ->set_zip($parm['zip'])
-              ->set_geonameid($parm['geonameid'])
-              ->set_position($parm['function'])
-              ->set_job($parm['activite'])
-              ->set_company($parm['company'])
-              ->set_tel($parm['telephone'])
-              ->set_fax($parm['fax']);
-    }
+    $user->set_firstname($parm['first_name'])
+            ->set_lastname($parm['last_name'])
+            ->set_email($parm['email'])
+            ->set_address($parm['address'])
+            ->set_zip($parm['zip'])
+            ->set_geonameid($parm['geonameid'])
+            ->set_position($parm['function'])
+            ->set_job($parm['activite'])
+            ->set_company($parm['company'])
+            ->set_tel($parm['telephone'])
+            ->set_fax($parm['fax']);
 
     return $this;
   }

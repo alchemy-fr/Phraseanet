@@ -1,3 +1,4 @@
 /nbproject/*
 /config/*
 !.gitignore
+/vendor/.composer/
