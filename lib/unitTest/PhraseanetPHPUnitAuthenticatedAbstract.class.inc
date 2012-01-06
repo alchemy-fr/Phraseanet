@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class PhraseanetPHPUnitAuthenticatedAbstract extends PhraseanetPHPUnitAbstract
 {
 
-  public  function setUp()
+  public function setUp()
   {
     parent::setUp();
     $appbox = appbox::get_instance();
@@ -33,26 +33,12 @@ abstract class PhraseanetPHPUnitAuthenticatedAbstract extends PhraseanetPHPUnitA
     $session->authenticate($auth);
   }
 
-  public  function tearDown()
+  public function tearDown()
   {
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     $session->logout();
     parent::tearDown();
   }
-  
-//  public static function setUpBeforeClass()
-//  {
-//    parent::setUpBeforeClass();
-//    $session = Session_Handler::getInstance();
-//    $session->authenticate(self::$user->get_id());
-//  }
-//
-//  public static function tearDownAfterClass()
-//  {
-//    $session = Session_Handler::getInstance();
-//    $session->logout();
-//    parent::tearDownAfterClass();
-//  }
 
 }

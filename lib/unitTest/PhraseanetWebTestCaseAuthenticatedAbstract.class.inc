@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
@@ -24,15 +24,21 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPUnitAuthenticatedAbstract
 {
 
-  public function createClient(array $options = array(), array $server = array())
+  public static function setUpBeforeClass()
   {
-    return new Client($this->app);
+    parent::setUpBeforeClass();
+    $appbox = appbox::get_instance();
+    $session = $appbox->get_session();
+    $auth = new Session_Authentication_None(self::$user);
+    $session->authenticate($auth);
   }
 
-  public function setUp()
+  public static function tearDownAfterClass()
   {
-    parent::setUp();
-    $this->app = $this->createApplication();
+    parent::tearDownAfterClass();
+    $appbox = appbox::get_instance();
+    $session = $appbox->get_session();
+    $session->logout();
   }
 
 }

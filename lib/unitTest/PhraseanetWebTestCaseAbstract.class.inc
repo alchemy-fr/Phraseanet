@@ -24,15 +24,4 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class PhraseanetWebTestCaseAbstract extends PhraseanetPHPUnitAbstract
 {
 
-  public function createClient(array $options = array(), array $server = array())
-  {
-    return new Client($this->app);
-  }
-
-  public function setUp()
-  {
-    parent::setUp();
-    $this->app = $this->createApplication();
-  }
-
 }
