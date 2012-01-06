@@ -1254,7 +1254,7 @@ function setCss(color)
 
 {% if GV_bitly_user is not empty and GV_bitly_key is not empty %}
 $(document).ready(function(){
-$("#bitly_loader").attr("src","http://bit.ly/javascript-api.js?version=latest&login={{GV_bitly_user}}&apiKey={{GV_bitly_key}}");
+$("#bitly_loader").attr("src","http{{ request.is_secure() ? 's' : '' }}://bit.ly/javascript-api.js?version=latest&login={{GV_bitly_user}}&apiKey={{GV_bitly_key}}");
 });
 {% endif %}
 </script>

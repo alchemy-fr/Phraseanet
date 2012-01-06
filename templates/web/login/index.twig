@@ -46,8 +46,8 @@
         {% endif %}
         {% if display_chrome_frame and session.get_cookie('gfc_box') == false %}
         <!--[if IE]>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
-        <link href="http://www.google.com/css/modules/buttons/g-button.css" type="text/css" rel="stylesheet">
+        <script type="text/javascript" src="http{{ request.is_secure() ? 's' : '' }}://ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
+        <link href="http{{ request.is_secure() ? 's' : '' }}://www.google.com/css/modules/buttons/g-button.css" type="text/css" rel="stylesheet">
         <style type="text/css">
             #gfc_prompt{
                 width: 950px;
@@ -59,7 +59,7 @@
                 <div>
                     <span>
                         <span>
-                            <a target="_blank" href="http://www.google.com/chromeframe/eula.html">Get Google Chrome Frame (Beta)</a>
+                            <a target="_blank" href="http{{ request.is_secure() ? 's' : '' }}://www.google.com/chromeframe/eula.html">Get Google Chrome Frame (Beta)</a>
                         </span>
                     </span>
                 </div>

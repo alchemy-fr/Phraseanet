@@ -738,8 +738,10 @@ if ($cssfile)
 <?php
                         if (trim($registry->get('GV_bitly_user')) !== '' && trim($registry->get('GV_bitly_key')) !== '')
                         {
-?>
-                          <script type="text/javascript" src="http://bit.ly/javascript-api.js?version=latest&login=<?php echo $registry->get('GV_bitly_user') ?>&apiKey=<?php echo $registry->get('GV_bitly_key') ?>"></script>
+                          $request = new http_request();
+?>                        
+                          
+                        <script type="text/javascript" src="http<?php echo $request->is_secure() ? 's' : '' ?>://bit.ly/javascript-api.js?version=latest&login=<?php echo $registry->get('GV_bitly_user') ?>&apiKey=<?php echo $registry->get('GV_bitly_key') ?>"></script>
 <?php
                         }
 ?>
