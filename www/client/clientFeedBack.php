@@ -39,7 +39,9 @@ switch ($parm['action'])
     $output = module_client::getLanguage($lng);
     break;
   case 'PREVIEW':
-    $twig = new supertwig();
+    
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
 
     $search_engine = null;
     if (($options = unserialize($parm['options_serial'])) !== false)
@@ -49,8 +51,6 @@ switch ($parm['action'])
     }
 
     $record = new record_preview($parm['env'], $parm['pos'], $parm['cont'], $parm['roll'], $search_engine, $parm['query']);
-
-    $twig->addFilter(array('implode' => 'implode', 'formatoctet'=>'p4string::format_octets'));
 
     $train = '';
 
