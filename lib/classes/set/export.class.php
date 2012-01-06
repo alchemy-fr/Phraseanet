@@ -990,6 +990,15 @@ class set_export extends set_abstract
       }
       else
       {
+        /**
+         * 
+         * Header "Pragma: public" SHOULD be present.
+         * In case it is not present, download on IE 8 and previous over HTTPS
+         * will fail.
+         * 
+         * @todo : merge this shitty fix with Response object.
+         * 
+         */
         if(!headers_sent())
         {
           header("Pragma: public");
