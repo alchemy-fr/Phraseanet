@@ -131,21 +131,19 @@ if (!$registry->get('GV_maintenance')
 $public_feeds = Feed_Collection::load_public_feeds($appbox);
 $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
 
+//$twig = new supertwig(array('Escaper' => false));
+  $core = \bootstrap::getCore();
+  $twig = $core->getTwig();
 
-$twig = new supertwig(array('Escaper' => false));
-
-
-$twig->display('login/index.twig', array(
-    'module_name' => _('Accueil'),
-    'confirmWarning' => $confirmWarning,
-    'errorWarning' => $errorWarning,
-    'redirect' => $parm['redirect'],
-    'logged_out' => $parm['logged_out'],
-    'captcha_system' => $captchaSys,
-    'login' => new login(),
-    'feeds'=>$feeds,
-    'sso' => new sso(),
-    'display_layout' => $registry->get('GV_home_publi')
-        )
-);
-?>
+  echo $twig->render('login/index.twig', array(
+      'module_name' => _('Accueil'),
+      'confirmWarning' => $confirmWarning,
+      'errorWarning' => $errorWarning,
+      'redirect' => $parm['redirect'],
+      'logged_out' => $parm['logged_out'],
+      'captcha_system' => $captchaSys,
+      'login' => new login(),
+      'feeds' => $feeds,
+      'sso' => new sso(),
+      'display_layout' => $registry->get('GV_home_publi')
+  ));
