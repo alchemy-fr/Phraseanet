@@ -32,19 +32,16 @@ class Upgrader implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $app['registry'] = new \Setup_Registry();
-    $app['twig'] = function()
-            {
-              return new \supertwig();
-            };
-
     $controllers->get('/', function() use ($app)
             {
               require_once __DIR__ . '/../../../../bootstrap.php';
               $upgrade_status = \Setup_Upgrade::get_status();
 
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
+              
               ini_set('display_errors', 'on');
-              $html = $app['twig']->render(
+              $html = $twig->render(
                       '/setup/upgrader.twig'
                       , array(
                   'locale' => \Session_Handler::get_locale()

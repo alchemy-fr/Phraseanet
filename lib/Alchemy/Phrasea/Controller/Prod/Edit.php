@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of Phraseanet
  *
@@ -31,13 +32,13 @@ class Edit implements ControllerProviderInterface
     $controllers->post('/', function() use ($app)
             {
               $handler = new RecordHelper\Edit($app['Core']);
-              
+
               $handler->propose_editing();
 
               $template = 'prod/actions/edit_default.twig';
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('sbas_names' => 'phrasea::sbas_names'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('edit' => $handler, 'message' => ''));
             }
@@ -51,13 +52,13 @@ class Edit implements ControllerProviderInterface
 
               $template = 'prod/actions/edit_default.twig';
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('sbas_names' => 'phrasea::sbas_names'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('edit' => $editing, 'message' => ''));
             }
     );
-    
+
     return $controllers;
   }
 

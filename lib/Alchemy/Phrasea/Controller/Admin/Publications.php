@@ -41,9 +41,8 @@ class Publications implements ControllerProviderInterface
               $feeds = \Feed_Collection::load_all($appbox, $user);
 
               $template = 'admin/publications/list.html';
-
-              $twig = new \supertwig();
-              $twig->addFilter(array('formatdate' => 'phraseadate::getDate'));
+               /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('feeds' => $feeds));
             });
@@ -70,16 +69,10 @@ class Publications implements ControllerProviderInterface
             {
               $feed = new \Feed_Adapter($appbox, $id);
 
-              $template = 'admin/publications/fiche.html';
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
-              $twig = new \supertwig();
-              $twig->addFilter(
-                      array(
-                          'formatdate' => 'phraseadate::getDate'
-                      )
-              );
-
-              return $twig->render($template
+              return $twig->render('admin/publications/fiche.html'
                               , array(
                           'feed' => $feed
                           , 'error' => $app['request']->get('error')

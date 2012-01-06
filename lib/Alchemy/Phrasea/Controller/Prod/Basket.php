@@ -215,8 +215,9 @@ class Basket implements ControllerProviderInterface
 
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
-
-              $twig = new \supertwig();
+              
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response(
                               $twig->render(
@@ -237,7 +238,8 @@ class Basket implements ControllerProviderInterface
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
-              $twig = new \supertwig();
+               /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response(
                               $twig->render(
@@ -400,7 +402,8 @@ class Basket implements ControllerProviderInterface
 
     $controllers->get('/create/', function(Application $app)
             {
-              $twig = new \supertwig();
+               /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response($twig->render('prod/Baskets/Create.html.twig', array()));
             });
@@ -408,7 +411,7 @@ class Basket implements ControllerProviderInterface
     $controllers->get('/{basket_id}/', function(Application $app, $basket_id)
             {
               $em = $app['Core']->getEntityManager();
-
+              
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
@@ -417,8 +420,9 @@ class Basket implements ControllerProviderInterface
               $em->merge($basket);
               $em->flush();
 
-              $twig = new \supertwig();
-
+               /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
+              
               $html = $twig->render('prod/WorkZone/Basket.html.twig', array('basket' => $basket));
 
               return new Response($html);

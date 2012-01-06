@@ -14,12 +14,10 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
@@ -35,7 +33,8 @@ class Bridge implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
     $appbox = \appbox::get_instance();
-    $twig = new \supertwig();
+    /* @var $twig \Twig_Environment */
+    $twig = $app['Core']->getTwig();
 
     $app['require_connection'] = $app->protect(function(\Bridge_Account $account) use ($app)
             {
@@ -47,7 +46,7 @@ class Bridge implements ControllerProviderInterface
               if (!$account->get_api()->get_connector()->is_configured())
                 throw new \Bridge_Exception_ApiConnectorNotConfigured("Bridge API Connector is not configured");
               if (!$account->get_api()->get_connector()->is_connected())
-                throw new \Bridge_Exception_ApiConnectorNotConnected ("Bridge API Connector is not connected");
+                throw new \Bridge_Exception_ApiConnectorNotConnected("Bridge API Connector is not connected");
 
               return;
             });
@@ -154,8 +153,6 @@ class Bridge implements ControllerProviderInterface
                           , 'notice_message' => $app['request']->get('notice')
                       );
 
-                      $twig->addFilter(array('prettyDate' => 'phraseadate::getPrettyString'));
-
                       return new Response($twig->render('prod/actions/Bridge/records_list.twig', $params));
                     })
             ->assert('account_id', '\d+');
@@ -172,7 +169,7 @@ class Bridge implements ControllerProviderInterface
                       $app['require_connection']($account);
 
                       $elements = $account->get_api()->list_elements($type, $offset_start, $quantity);
-                      
+
                       $params = array(
                           'action_type' => $type
                           , 'adapter_action' => 'load-elements'
@@ -181,8 +178,6 @@ class Bridge implements ControllerProviderInterface
                           , 'error_message' => $app['request']->get('error')
                           , 'notice_message' => $app['request']->get('notice')
                       );
-
-                      $twig->addFilter(array('prettyDate' => 'phraseadate::getPrettyString'));
 
                       return new Response($twig->render('prod/actions/Bridge/element_list.twig', $params));
                     })
@@ -209,8 +204,6 @@ class Bridge implements ControllerProviderInterface
                           , 'error_message' => $app['request']->get('error')
                           , 'notice_message' => $app['request']->get('notice')
                       );
-
-                      $twig->addFilter(array('prettyDate' => 'phraseadate::getPrettyString'));
 
                       return new Response($twig->render('prod/actions/Bridge/element_list.twig', $params));
                     })

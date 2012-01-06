@@ -32,7 +32,8 @@ class Feed implements ControllerProviderInterface
   public function connect(Application $app)
   {
     $controllers = new ControllerCollection();
-    $twig = new \supertwig();
+    /* @var $twig \Twig_Environment */
+    $twig = $app['Core']->getTwig();
     $appbox = \appbox::get_instance();
 
     /**
@@ -70,7 +71,7 @@ class Feed implements ControllerProviderInterface
                 $author_mail = $request->get('author_mail');
 
                 $entry = \Feed_Entry_Adapter::create($appbox, $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
-                
+
                 $publishing = new RecordHelper\Feed($app['Core']);
 
                 foreach ($publishing->get_elements() as $record)
@@ -149,13 +150,6 @@ class Feed implements ControllerProviderInterface
                 }
                 $appbox->get_connection()->commit();
 
-                $twig->addFilter(
-                        array(
-                            'sbasFromBas' => 'phrasea::sbasFromBas'
-                            , 'getPrettyDate' => 'phraseadate::getPrettyString'
-                            , 'nl2br' => 'nl2br'
-                        )
-                );
                 $entry = $twig->render('prod/feeds/entry.html', array('entry' => $entry));
 
                 $datas = array('error' => false, 'message' => 'succes', 'datas' => $entry);
@@ -240,14 +234,6 @@ class Feed implements ControllerProviderInterface
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
               $feeds = \Feed_Collection::load_all($appbox, $user);
 
-
-              $twig->addFilter(
-                      array(
-                          'sbasFromBas' => 'phrasea::sbasFromBas'
-                          , 'getPrettyDate' => 'phraseadate::getPrettyString'
-                          , 'nl2br' => 'nl2br'
-                      )
-              );
               $datas = $twig->render('prod/feeds/feeds.html'
                       , array(
                   'feeds' => $feeds
@@ -272,13 +258,6 @@ class Feed implements ControllerProviderInterface
               $feed = \Feed_Adapter::load_with_user($appbox, $user, $id);
               $feeds = \Feed_Collection::load_all($appbox, $user);
 
-              $twig->addFilter(
-                      array(
-                          'sbasFromBas' => 'phrasea::sbasFromBas'
-                          , 'getPrettyDate' => 'phraseadate::getPrettyString'
-                          , 'nl2br' => 'nl2br'
-                      )
-              );
               $datas = $twig->render('prod/feeds/feeds.html', array('feed' => $feed, 'feeds' => $feeds, 'page' => $page));
 
               return new Response($datas);
