@@ -633,6 +633,8 @@ class User_Query implements User_QueryInterface
 
     $this->bases_restrictions = true;
 
+    $this->include_phantoms(false);
+
     if (count($this->base_ids) > 0)
       $this->base_ids = array_intersect($this->base_ids, $base_ids);
     else
@@ -656,6 +658,8 @@ class User_Query implements User_QueryInterface
 
     $this->sbas_restrictions = true;
 
+    $this->include_phantoms(false);
+    
     if (count($this->sbas_ids) > 0)
       $this->sbas_ids = array_intersect($this->sbas_ids, $sbas_ids);
     else
@@ -664,23 +668,6 @@ class User_Query implements User_QueryInterface
     $this->total = $this->page = null;
 
     return $this;
-//    $base_ids = array();
-//    foreach ($sbas_ids as $sbas_id)
-//    {
-//      try
-//      {
-//        foreach ($this->appbox->get_databox($sbas_id)->get_collections() as $collection)
-//          $base_ids[] = $collection->get_base_id();
-//        if(count($base_ids) > 0)
-//          $this->bases_restrictions;
-//      }
-//      catch (Exception $e)
-//      {
-//
-//      }
-//    }
-//
-//    return $this->on_base_ids($base_ids);
   }
 
   /**
