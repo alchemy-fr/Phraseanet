@@ -66,8 +66,9 @@ if (count($avBases) == 0)
     </head>
     <body>
       <?php
-      $twig = new supertwig();
-      $twig->display('common/menubar.twig', array('module' => 'upload'));
+      $core = \bootstrap::getCore();
+      $twig = $core->getTwig();
+      echo $twig->render('common/menubar.twig', array('module' => 'upload'));
       ?>
 
       <div id="content">
@@ -183,158 +184,159 @@ echo $theFont;
         'ok':'<?php echo str_replace("'", "\'", _('boutton::valider')) ?>',
         'annuler':'<?php echo str_replace("'", "\'", _('boutton::annuler')) ?>',
         'pleaseselect':'<?php echo str_replace("'", "\'", _('Selectionner une action')) ?>',
-            'norecordselected':'<?php echo str_replace("'", "\'", _('Aucune enregistrement selectionne')) ?>',
-            'transfert_active':'<?php echo str_replace("'", "\'", _('Transfert en court, vous devez attendre la fin du transfert')) ?>',
-            'queue_not_empty' : '<?php echo str_replace("'", "\'", _('File d\'attente n\'est pas vide, souhaitez vous supprimer ces elements ?')) ?>'
-          };
+        'norecordselected':'<?php echo str_replace("'", "\'", _('Aucune enregistrement selectionne')) ?>',
+        'transfert_active':'<?php echo str_replace("'", "\'", _('Transfert en court, vous devez attendre la fin du transfert')) ?>',
+        'queue_not_empty' : '<?php echo str_replace("'", "\'", _('File d\'attente n\'est pas vide, souhaitez vous supprimer ces elements ?')) ?>'
+      };
 
-          function sessionactive(){
-            $.ajax({
-              type: "POST",
-              url: "/include/updses.php",
-              dataType: 'json',
-              data: {
-                app : 8,
-                usr : <?php echo $usr_id ?>
-              },
-              error: function(){
-                window.setTimeout("sessionactive();", 10000);
-              },
-              timeout: function(){
-                window.setTimeout("sessionactive();", 10000);
-              },
-              success: function(data){
-                if(data)
-                  manageSession(data);
-                var t = 120000;
-                if(data.apps && parseInt(data.apps)>1)
-                  t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
-                window.setTimeout("sessionactive();", t);
-
-                return;
-              }
-            })
-          };
-          sessionactive();
-
-          window.onbeforeunload = function()
-          {
-            var xhr_object = null;
-            if(window.XMLHttpRequest) // Firefox
-              xhr_object = new XMLHttpRequest();
-            else if(window.ActiveXObject) // Internet Explorer
-              xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-            else  // XMLHttpRequest non supporte par le navigateur
+      function sessionactive(){
+        $.ajax({
+          type: "POST",
+          url: "/include/updses.php",
+          dataType: 'json',
+          data: {
+            app : 8,
+            usr : <?php echo $usr_id ?>
+          },
+          error: function(){
+            window.setTimeout("sessionactive();", 10000);
+          },
+          timeout: function(){
+            window.setTimeout("sessionactive();", 10000);
+          },
+          success: function(data){
+            if(data)
+              manageSession(data);
+            var t = 120000;
+            if(data.apps && parseInt(data.apps)>1)
+              t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
+            window.setTimeout("sessionactive();", t);
 
             return;
-          url= "../include/delses.php?app=8&t="+Math.random();
-          xhr_object.open("GET", url, false);
-          xhr_object.send(null);
+          }
+        })
+      };
+      sessionactive();
 
-        };
+      window.onbeforeunload = function()
+      {
+        var xhr_object = null;
+        if(window.XMLHttpRequest) // Firefox
+          xhr_object = new XMLHttpRequest();
+        else if(window.ActiveXObject) // Internet Explorer
+          xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+        else  // XMLHttpRequest non supporte par le navigateur
 
-        //This event comes from the Queue Plugin
-        function queueComplete(numFilesUploaded) {
-          var status = document.getElementById("divStatus");
-          if(numFilesUploaded>1)
-            status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichiers uploades')); ?>",numFilesUploaded);
-          else
-            status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichier uploade')); ?>",numFilesUploaded);
+        return;
+      url= "../include/delses.php?app=8&t="+Math.random();
+      xhr_object.open("GET", url, false);
+      xhr_object.send(null);
 
-          var n_quarantine = $('#QUEUE li.progressWrapper.done .progressContainer.orange.quarantine').size();
-          if(n_quarantine > 0)
-            alert('<?php echo str_replace("'", "\'", _('Certains elements uploades sont passes en quarantaine')); ?>');
+    };
 
-          $('#QUEUE li.done .quarantine').removeClass('quarantine');
-          checkQuarantineSize();
-        }
+    //This event comes from the Queue Plugin
+    function queueComplete(numFilesUploaded) {
+      var status = document.getElementById("divStatus");
+      if(numFilesUploaded>1)
+        status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichiers uploades')); ?>",numFilesUploaded);
+      else
+        status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichier uploade')); ?>",numFilesUploaded);
 
-        $(document).ready(function() {
-          var settings = {
-            flash_url : "swfupload/swfupload.swf",
-            upload_url: "upload.php",
-            post_params: {"session" : "<?php echo session_id(); ?>"},
-            file_size_limit : "<?php echo $maxVolume . ' MB'; ?>",
-            file_types : "<?php echo implode(';', array_map("filize", explode(',', $registry->get('GV_appletAllowedFileExt')))) ?>",
-            file_types_description : "These Files",
-            file_upload_limit : 0,
-            requeue_on_error : true,
-            file_post_name : "Filedata",
-            file_queue_limit : 0,
-            custom_settings : {
-              progressTarget : "fsUploadProgress",
-              cancelButtonId : "btnCancel"
-            },
-            debug:false,
+      var n_quarantine = $('#QUEUE li.progressWrapper.done .progressContainer.orange.quarantine').size();
+      if(n_quarantine > 0)
+        alert('<?php echo str_replace("'", "\'", _('Certains elements uploades sont passes en quarantaine')); ?>');
 
-            // Button settings
-            button_image_url: "images/fond400.gif",
-            button_width: "400",
-            button_height: "30",
-            button_placeholder_id: "spanButtonPlaceHolder",
-            button_text: '<span class="theFont"><?php echo str_replace("'", "\'", sprintf(_('upload :: choisir les fichiers  a uploader (max : %d MB)'), $maxVolume)); ?></span>',
-            button_text_style: "<?php echo $theFont ?>",
-            button_text_left_padding: 12,
-            button_text_top_padding: 3,
-            button_window_mode:'transparent',
-            button_cursor : SWFUpload.CURSOR.HAND,
+      $('#QUEUE li.done .quarantine').removeClass('quarantine');
+      checkQuarantineSize();
+    }
+
+    $(document).ready(function() {
+      var settings = {
+        flash_url : "swfupload/swfupload.swf",
+        upload_url: "upload.php",
+        post_params: {"session" : "<?php echo session_id(); ?>"},
+        file_size_limit : "<?php echo $maxVolume . ' MB'; ?>",
+        file_types : "<?php echo implode(';', array_map("filize", explode(',', $registry->get('GV_appletAllowedFileExt')))) ?>",
+        file_types_description : "These Files",
+        file_upload_limit : 0,
+        requeue_on_error : true,
+        file_post_name : "Filedata",
+        file_queue_limit : 0,
+        custom_settings : {
+          progressTarget : "fsUploadProgress",
+          cancelButtonId : "btnCancel"
+        },
+        debug:false,
+
+        // Button settings
+        button_image_url: "images/fond400.gif",
+        button_width: "400",
+        button_height: "30",
+        button_placeholder_id: "spanButtonPlaceHolder",
+        button_text: '<span class="theFont"><?php echo str_replace("'", "\'", sprintf(_('upload :: choisir les fichiers  a uploader (max : %d MB)'), $maxVolume)); ?></span>',
+        button_text_style: "<?php echo $theFont ?>",
+        button_text_left_padding: 12,
+        button_text_top_padding: 3,
+        button_window_mode:'transparent',
+        button_cursor : SWFUpload.CURSOR.HAND,
 
 
-            // The event handler functions are defined in handlers.js
-            file_queued_handler : fileQueued,
-            file_queue_error_handler : fileQueueError,
-            file_dialog_complete_handler : fileDialogComplete,
-            upload_start_handler : uploadStart,
-            upload_progress_handler : uploadProgress,
-            upload_error_handler : uploadError,
-            upload_success_handler : uploadSuccess,
-            upload_complete_handler : uploadComplete,
-            queue_complete_handler : queueComplete  // Queue plugin event
-          };
+        // The event handler functions are defined in handlers.js
+        file_queued_handler : fileQueued,
+        file_queue_error_handler : fileQueueError,
+        file_dialog_complete_handler : fileDialogComplete,
+        upload_start_handler : uploadStart,
+        upload_progress_handler : uploadProgress,
+        upload_error_handler : uploadError,
+        upload_success_handler : uploadSuccess,
+        upload_complete_handler : uploadComplete,
+        queue_complete_handler : queueComplete  // Queue plugin event
+      };
 
-          swfu = new SWFUpload(settings);
+      swfu = new SWFUpload(settings);
 
-          $('#step1 .classic_switch, #flash_return .classic_switch').bind('click', function(event){
-            classic_switch();
+      $('#step1 .classic_switch, #flash_return .classic_switch').bind('click', function(event){
+        classic_switch();
 
-            return false;
-          });
-        });
+        return false;
+      });
+    });
 
-        function reverseOrder()
-        {
-          var elems = $('#fsUploadProgress li');
-          var arr = $.makeArray(elems);
-          arr.reverse();
-          $(arr).appendTo($('#fsUploadProgress'));
-        }
-        function classic_switch()
-        {
-          $('#step1, #step2, #step2classic, #step4, #flash_return').toggle();
-        }
+    function reverseOrder()
+    {
+      var elems = $('#fsUploadProgress li');
+      var arr = $.makeArray(elems);
+      arr.reverse();
+      $(arr).appendTo($('#fsUploadProgress'));
+    }
+    function classic_switch()
+    {
+      $('#step1, #step2, #step2classic, #step4, #flash_return').toggle();
+    }
 
     </script>
   </head>
   <body>
-<?php
-$count = 0;
-try
-{
-  $lazaret = new lazaret();
-  $count = $lazaret->get_count();
-}
-catch (Exception $e)
-{
-  
-}
+    <?php
+    $count = 0;
+    try
+    {
+      $lazaret = new lazaret();
+      $count = $lazaret->get_count();
+    }
+    catch (Exception $e)
+    {
+      
+    }
 
-$twig = new supertwig();
-$twig->display('common/menubar.twig'
-        , array(
-    'module' => 'upload'
-    , 'events' => eventsmanager_broker::getInstance($appbox, $Core)
-));
-?>
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
+    echo $twig->render('common/menubar.twig'
+            , array(
+        'module' => 'upload'
+        , 'events' => eventsmanager_broker::getInstance($appbox, $Core)
+    ));
+    ?>
     <div id="content">
       <div class="tabs">
         <ul>
@@ -365,7 +367,7 @@ $twig->display('common/menubar.twig'
                       </div>
                       <div style="text-align:right">
                         <a href="javascript:void();" onclick="reverseOrder(); return(false);">
-<?php echo _('upload:: inverser') ?>
+                          <?php echo _('upload:: inverser') ?>
                         </a>
                       </div>
                     </div>
@@ -388,14 +390,14 @@ $twig->display('common/menubar.twig'
                       <span class="legend"><?php echo _('upload:: Que faire avec les fichiers') ?></span>
                       <div id="coll_selector">
                         <label for="collselect"><?php echo _('upload:: Destination (collection) :') ?></label><select id="collselect" onchange="showStatus();"><?php echo $colls ?></select>
-<?php echo _('upload:: Status :') ?>
+                        <?php echo _('upload:: Status :') ?>
                         <div id="status_wrapper">
-                        <?php
-                        foreach ($datasSB as $base_id => $dat)
-                        {
-                          echo $dat;
-                        }
-                        ?>
+                          <?php
+                          foreach ($datasSB as $base_id => $dat)
+                          {
+                            echo $dat;
+                          }
+                          ?>
                         </div>
                       </div>
                     </div>
@@ -429,7 +431,7 @@ $twig->display('common/menubar.twig'
       <div>
         <select name="action">
           <option value="">
-<?php echo _('Action'); ?>
+            <?php echo _('Action'); ?>
           </option>
           <option value="add">
             <?php echo _('Ajouter les documents bloques'); ?>
@@ -445,7 +447,7 @@ $twig->display('common/menubar.twig'
       <div>
         <input type="checkbox" class="delete_previous" id="delete_previous_global" />
         <label for="delete_previous_global">
-<?php echo _('Supprimer precedentes propositions a la substitution'); ?>
+          <?php echo _('Supprimer precedentes propositions a la substitution'); ?>
         </label>
       </div>
     </div>

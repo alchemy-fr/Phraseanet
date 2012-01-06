@@ -128,14 +128,11 @@ switch ($action)
     {
       $lazaret = new lazaret();
 
-      $twig = new supertwig();
-      $twig->addFilter(array('nl2br' => 'nl2br'));
-      $twig->addFilter(array('phraseadate' => 'phraseadate::getPrettyString'));
-      $twig->addFilter(array('basnames' => 'phrasea::bas_names'));
+      $core = \bootstrap::getCore();
+      $twig = $core->getTwig();
 
       $output = $twig->render(
-                      'upload/lazaret.twig',
-                      array('lazaret' => $lazaret)
+              'upload/lazaret.twig', array('lazaret' => $lazaret)
       );
     }
     catch (Exception $e)
