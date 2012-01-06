@@ -1,11 +1,11 @@
 <div style="height:180px;position:relative;">
         <div style="height:95px;width:220px;float:right;margin:25px 10px 0;">
                 <div style="margin-top:0px;height:20px;">
-                    {{login.get_register_link}}
-                    {{login.get_guest_link}}
+                    {{login.get_register_link|raw}}
+                    {{login.get_guest_link|raw}}
                 </div>
                 <div style="margin-top:10px;height:20px;">
-                    {{login.get_password_link}}
+                    {{login.get_password_link|raw}}
                 </div>
                 <div style="margin-top:10px;height:25px;">
                     <div style="float:left;text-align:left;">
