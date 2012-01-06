@@ -30,64 +30,63 @@ $parm = $request->get_parms('section');
 
 
 
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
+$appbox = appbox::get_instance();
+$session = $appbox->get_session();
 
-    $usr_id = $session->get_usr_id();
+$usr_id = $session->get_usr_id();
 
-    $user = User_Adapter::getInstance($usr_id, $appbox);
+$user = User_Adapter::getInstance($usr_id, $appbox);
 
-    $available = array(
-        'connected'
-        , 'registrations'
-        , 'taskmanager'
-        , 'base'
-        , 'bases'
-        , 'collection'
-        , 'user'
-        , 'users'
-    );
+$available = array(
+    'connected'
+    , 'registrations'
+    , 'taskmanager'
+    , 'base'
+    , 'bases'
+    , 'collection'
+    , 'user'
+    , 'users'
+);
 
-    $feature = 'connected';
-    $featured = false;
-    $position = explode(':', $parm['section']);
-    if (count($position) > 0)
-    {
-      if (in_array($position[0], $available))
-      {
-        $feature = $position[0];
-        if (isset($position[1]))
-          $featured = $position[1];
-      }
-    }
+$feature = 'connected';
+$featured = false;
+$position = explode(':', $parm['section']);
+if (count($position) > 0)
+{
+  if (in_array($position[0], $available))
+  {
+    $feature = $position[0];
+    if (isset($position[1]))
+      $featured = $position[1];
+  }
+}
 
-    $databoxes = $off_databoxes = array();
-    foreach ($appbox->get_databoxes() as $databox)
-    {
-      try
-      {
-        if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id()))
-          continue;
+$databoxes = $off_databoxes = array();
+foreach ($appbox->get_databoxes() as $databox)
+{
+  try
+  {
+    if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id()))
+      continue;
 
-        $connbas = $databox->get_connection();
-      }
-      catch (Exception $e)
-      {
-        $off_databoxes[] = $databox;
-        continue;
-      }
-      $databoxes[] = $databox;
-    }
-
-
+    $connbas = $databox->get_connection();
+  }
+  catch (Exception $e)
+  {
+    $off_databoxes[] = $databox;
+    continue;
+  }
+  $databoxes[] = $databox;
+}
 
 
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
 
-$twig = new supertwig();
-$twig->display('admin/index.html.twig', array(
+echo $twig->render('admin/index.html.twig', array(
     'module' => 'admin'
-    ,'events'=>  eventsmanager_broker::getInstance($appbox, $Core)
-    ,'module_name' => 'Admin'
+    , 'events' => eventsmanager_broker::getInstance($appbox, $Core)
+    , 'module_name' => 'Admin'
     , 'feature' => $feature
     , 'featured' => $featured
     , 'databoxes' => $databoxes

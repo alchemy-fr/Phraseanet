@@ -20,9 +20,9 @@ $session = $appbox->get_session();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('act'  // NEWTASK or SAVETASK
-                , "tid"
-                , 'tcl' // task class
-                , 'view' // XML ou GRAPHIC
+        , "tid"
+        , 'tcl' // task class
+        , 'view' // XML ou GRAPHIC
 );
 
 $lng = Session_Handler::get_locale();
@@ -72,20 +72,20 @@ else
 
 function stripdoublequotes($value)
 {
-  return str_replace(array("\r\n","\r","\n","\""),array('','','','\"'),$value);
+  return str_replace(array("\r\n", "\r", "\n", "\""), array('', '', '', '\"'), $value);
 }
 
-if(!$task->getGraphicForm())
+if (!$task->getGraphicForm())
 {
   $parm['view'] = 'XML';
 }
 
-$twig = new supertwig();
-$twig->addFilter(array('stripdoublequotes'=>'stripdoublequotes'));
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
 
-if(!$task->getGraphicForm())
+if (!$task->getGraphicForm())
 {
   $parm['view'] = 'XML';
 }
 
-$twig->display('admin/task.html', array('task'=>$task, 'view'=>$parm['view']));
+echo $twig->render('admin/task.html', array('task' => $task, 'view' => $parm['view']));
