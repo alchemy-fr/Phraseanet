@@ -26,7 +26,7 @@ require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
  */
 class Core extends \Pimple
 {
-  
+
   protected static $availableLanguages = array(
       'ar_SA' => 'العربية'
       , 'de_DE' => 'Deutsch'
@@ -76,6 +76,12 @@ class Core extends \Pimple
               return $doctrine->getEntityManager();
             });
 
+    $twigConf = $this->configuration->getServices()->get('twig');
+    $this["Twig"] = $this->share(function() use ($twigConf)
+            {
+              $twig = new Core\Service\Twig($twigConf);
+              return $twig->getTwig();
+            });
 
     if (\setup::is_installed())
     {
@@ -129,7 +135,7 @@ class Core extends \Pimple
       define('JETON_WRITE_META_SUBDEF', 0x04);
       define('JETON_WRITE_META', 0x06);
     }
-    
+
     if (\setup::is_installed())
     {
       $gatekeeper = \gatekeeper::getInstance();
@@ -189,6 +195,16 @@ class Core extends \Pimple
     return $this['EM'];
   }
 
+  /**
+   * Getter
+   * 
+   * @return \Twig_Environment
+   */
+  public function getTwig()
+  {
+    return $this['Twig'];
+  }
+  
   /**
    * Getter
    * 
