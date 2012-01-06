@@ -29,12 +29,12 @@ $gatekeeper->require_session();
 
 if ($registry->get('GV_needAuth2DL') && $user->is_guest())
 {
-?>
+  ?>
   <script>
     parent.hideDwnl();
     parent.login('{act:"dwnl",lst:"<?php echo $parm['lst'] ?>",SSTTID:"<?php echo $parm['SSTTID'] ?>"}');
   </script>
-<?php
+  <?php
   exit();
 }
 
@@ -42,12 +42,10 @@ if ($registry->get('GV_needAuth2DL') && $user->is_guest())
 $download = new set_export($parm['lst'], $parm['SSTTID']);
 $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
-$twig = new supertwig();
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
 
-$twig->addFilter(array('geoname_display' => 'geonames::name_from_id'));
-$twig->addFilter(array('format_octets' => 'p4string::format_octets'));
-
-$twig->display('common/dialog_export.twig', array(
+echo $twig->render('common/dialog_export.twig', array(
     'download' => $download,
     'ssttid' => $parm['SSTTID'],
     'lst' => $parm['lst'],
