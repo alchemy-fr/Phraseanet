@@ -1252,7 +1252,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $template = '';
     if ($this->applied_template)
     {
-      $sql = 'SELECT usr_login FROM usr WHERE usr_login = :login';
+      $sql = 'SELECT usr_login FROM usr WHERE usr_id = :login';
       $stmt = $this->appbox->get_connection()->prepare($sql);
       $stmt->execute(array(':login' => $this->applied_template));
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
