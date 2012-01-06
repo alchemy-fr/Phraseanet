@@ -527,9 +527,11 @@ class User_Query implements User_QueryInterface
     $baslist = array_keys($ACL->get_granted_base($rights));
 
     if (count($this->base_ids) > 0)
-      $this->base_ids = array_intersect($this->base_ids, $baslist);
+      $base_ids = array_intersect($this->base_ids, $baslist);
     else
-      $this->base_ids = $baslist;
+      $base_ids = $baslist;
+    
+    $this->on_base_ids($base_ids);
 
     $this->total = $this->page = null;
 
@@ -548,9 +550,11 @@ class User_Query implements User_QueryInterface
     $sbaslist = array_keys($ACL->get_granted_sbas($rights));
 
     if (count($this->sbas_ids) > 0)
-      $this->sbas_ids = array_intersect($this->sbas_ids, $sbaslist);
+      $sbas_ids = array_intersect($this->sbas_ids, $sbaslist);
     else
-      $this->sbas_ids = $sbaslist;
+      $sbas_ids = $sbaslist;
+    
+    $this->on_sbas_ids($sbas_ids);
 
     $this->total = $this->page = null;
 
