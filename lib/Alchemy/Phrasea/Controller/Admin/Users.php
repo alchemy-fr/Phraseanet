@@ -42,11 +42,8 @@ class Users implements ControllerProviderInterface
               $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers.twig';
-              $twig = new \supertwig();
-              $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
-              $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
-              $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
-              $twig->addFilter(array('geoname_name_from_id' => 'geonames::name_from_id'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, $rights->get_users_rights());
             }
@@ -57,11 +54,8 @@ class Users implements ControllerProviderInterface
               $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers.twig';
-              $twig = new \supertwig();
-              $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
-              $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
-              $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
-              $twig->addFilter(array('geoname_name_from_id' => 'geonames::name_from_id'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, $rights->get_users_rights());
             }
@@ -112,10 +106,8 @@ class Users implements ControllerProviderInterface
               $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers_quotas.twig';
-              $twig = new \supertwig();
-              $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
-              $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
-              $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, $rights->get_quotas());
             }
@@ -135,10 +127,8 @@ class Users implements ControllerProviderInterface
               $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers_timelimit.twig';
-              $twig = new \supertwig();
-              $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
-              $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
-              $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, $rights->get_time());
             }
@@ -158,10 +148,8 @@ class Users implements ControllerProviderInterface
               $rights = new UserHelper\Edit($app['Core']);
 
               $template = 'admin/editusers_masks.twig';
-              $twig = new \supertwig();
-              $twig->addFilter(array('bas_name' => 'phrasea::bas_names'));
-              $twig->addFilter(array('sbas_name' => 'phrasea::sbas_names'));
-              $twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, $rights->get_masks());
             }
@@ -181,9 +169,8 @@ class Users implements ControllerProviderInterface
               $users = new UserHelper\Manage($app['Core']);
               $template = 'admin/users.html';
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('floor' => 'floor'));
-              $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, $users->search());
             }

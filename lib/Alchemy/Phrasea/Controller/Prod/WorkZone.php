@@ -37,8 +37,6 @@ class WorkZone implements ControllerProviderInterface
 
     $controllers->get('/', function(Application $app)
             {
-              $twig = new \supertwig();
-
               $params = array(
                   'WorkZone' => new Helper\WorkZone($app['Core'])
                   , 'selected_type' => $app['request']->get('type')
@@ -47,7 +45,7 @@ class WorkZone implements ControllerProviderInterface
               );
 
 
-              return new Response($twig->render('prod/WorkZone/WorkZone.html.twig', $params));
+              return new Response($app['Core']->getTwig()->render('prod/WorkZone/WorkZone.html.twig', $params));
             });
 
 

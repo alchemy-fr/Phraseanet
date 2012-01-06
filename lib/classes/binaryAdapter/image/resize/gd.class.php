@@ -98,8 +98,23 @@ class binaryAdapter_image_resize_gd extends binaryAdapter_processorAbstract
     {
       $size = max($tech_datas[system_file::TC_DATAS_WIDTH], $tech_datas[system_file::TC_DATAS_HEIGHT]);
     }
-
-    $imag_original = imagecreatefromjpeg($origine->getPathname());
+    
+    switch($origine->get_mime())
+    {
+      case "image/jpeg" :
+        $imag_original = imagecreatefromjpeg($origine->getPathname());
+        break;
+      case "image/gif" :
+        $imag_original = imagecreatefromgif($origine->getPathname());
+        break;
+      case "image/png" :
+        $imag_original = imagecreatefrompng($origine->getPathname());
+        break;
+      default:
+        return $this;
+        break;
+    }
+    
 
     if ($imag_original)
     {

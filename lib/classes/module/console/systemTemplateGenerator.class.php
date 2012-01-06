@@ -54,7 +54,9 @@ class module_console_systemTemplateGenerator extends Command
             ));
     $twig->addExtension(new Twig_Extensions_Extension_I18n());
 
-
+    /**
+     * @todo clean all duplicate filters
+     */
     $twig->addFilter('serialize', new Twig_Filter_Function('serialize'));
     $twig->addFilter('sbas_names', new Twig_Filter_Function('phrasea::sbas_names'));
     $twig->addFilter('sbas_name', new Twig_Filter_Function('phrasea::sbas_names'));

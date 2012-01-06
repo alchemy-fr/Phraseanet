@@ -38,7 +38,7 @@
                 <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur mot de passe' %}</div>
                 <div style="margin-top:3px;"><input {% if maintenance == true %}disabled{% endif %} tabindex="2" name="pwd"
                     id="pwd" value="" type="password" style="width:100%" /></div>
-                <div style="text-align:right;margin-top:3px;">{{login.get_password_link}}</div>
+                <div style="text-align:right;margin-top:3px;">{{login.get_password_link|raw}}</div>
             </div>
             {{captcha_system}}
             <div style="margin-top:10px;">
@@ -50,10 +50,10 @@
                     tabindex="5" type="submit" value="{% trans 'login:: connexion' %}"/></div>
             </div>
             <div style="margin-top:20px;">
-                {{login.get_register_link}}
+               {{login.get_register_link|raw}}
             </div>
             <div style="margin-top:10px;">
-                {{login.get_guest_link}}
+                {{login.get_guest_link|raw}}
             </div>
         </div>
 </div>

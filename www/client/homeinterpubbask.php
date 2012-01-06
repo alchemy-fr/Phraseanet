@@ -62,8 +62,8 @@ if ($rawMe)
   $info_usr = $rawMe;
 }
 
-$twig = new supertwig();
-$twig->addFilter(array('formatoctet'=>'p4string::format_octets'));
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
 
 $stmt = $conn->prepare($sql);
 $usr_id = $session->get_usr_id();
@@ -173,7 +173,7 @@ foreach ($rs as $row)
     }
     catch (Exception $e)
     {
-
+      
     }
   }
 
@@ -202,7 +202,7 @@ foreach ($rs as $row)
 
 
     if (trim($preview) != '')
-      $preview = "<div tooltipsrc='/prod/tooltip/preview/" . phrasea::sbasFromBas ($row["base_id"]) . "/" . $row["record_id"] . "/' class=\"previewTips\"></div>&nbsp;";
+      $preview = "<div tooltipsrc='/prod/tooltip/preview/" . phrasea::sbasFromBas($row["base_id"]) . "/" . $row["record_id"] . "/' class=\"previewTips\"></div>&nbsp;";
 
     $docType = $record->get_type();
     $isVideo = ($docType == 'video');

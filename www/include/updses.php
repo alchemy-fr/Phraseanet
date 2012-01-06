@@ -65,7 +65,9 @@ $notif = $evt_mngr->get_notifications();
 
 $browser = Browser::getInstance();
 
-$twig = new supertwig();
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
 $ret['notifications'] = $twig->render('prod/notifications.twig', array('notifications' => $notif));
 
 $ret['changed'] = array();

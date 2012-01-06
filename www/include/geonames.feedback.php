@@ -27,8 +27,10 @@ switch ($action)
 {
   case 'FIND':
     $geoname = new geonames();
-    $twig = new supertwig();
-    $output = $twig->render('geonames/city_list.twig', array('geonames'=>$geoname->find_city($parm['city'])));
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
+
+    $output = $twig->render('geonames/city_list.twig', array('geonames' => $geoname->find_city($parm['city'])));
     break;
 }
 

@@ -21,7 +21,7 @@ $session = $appbox->get_session();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("srt", "ord", "act", "p0", // base_id
-        "str" // si act=CHGSTRUCTURE, structure en xml
+                            "str" // si act=CHGSTRUCTURE, structure en xml
 );
 
 
@@ -161,5 +161,8 @@ $params = array(
     'available_dc_fields' => $available_dc_fields
 );
 
-$twig = new supertwig();
-$twig->display('admin/databox/doc_structure.twig', $params);
+
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
+echo $twig->render('admin/databox/doc_structure.twig', $params);

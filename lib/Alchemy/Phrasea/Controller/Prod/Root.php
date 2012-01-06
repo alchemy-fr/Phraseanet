@@ -101,13 +101,9 @@ class Root implements ControllerProviderInterface
                 }
               }
 
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('get_collection_logo' => 'collection::getLogo'));
-              $twig->addFilter(array('sbas_names' => 'phrasea::sbas_names'));
-              $twig->addFilter(array('bas_names' => 'phrasea::bas_names'));
-              $twig->addFilter(array('implode' => 'implode'));
-              $twig->addFilter(array('array_keys' => 'array_keys'));
               $out = $twig->render('prod/index.html', array(
                   'module_name' => 'Production',
                   'WorkZone' => new Helper\WorkZone($app['Core']),

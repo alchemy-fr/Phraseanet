@@ -38,7 +38,8 @@ class Story implements ControllerProviderInterface
 
     $controllers->get('/create/', function(Application $app)
             {
-              $twig = new \supertwig();
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response($twig->render('prod/Story/Create.html.twig', array()));
             });
@@ -121,7 +122,8 @@ class Story implements ControllerProviderInterface
             {
               $Story = new \record_adapter($sbas_id, $record_id);
 
-              $twig = new \supertwig();
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               $html = $twig->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
 

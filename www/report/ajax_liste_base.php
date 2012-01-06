@@ -19,21 +19,21 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
-                "dmin"
-                , "dmax"
-                , "baslst"
-                , "popbases"
-                , "tbl"
-                , "precise"
-                , "preciseWord"
-                , "preciseUser"
-                , "page"
-                , "limit"
-                , "fonction"
-                , "pays"
-                , "societe"
-                , "activite"
-                , "on"
+        "dmin"
+        , "dmax"
+        , "baslst"
+        , "popbases"
+        , "tbl"
+        , "precise"
+        , "preciseWord"
+        , "preciseUser"
+        , "page"
+        , "limit"
+        , "fonction"
+        , "pays"
+        , "societe"
+        , "activite"
+        , "on"
 );
 
 extract($parm);
@@ -74,7 +74,8 @@ $selection[$id_sbas]['liste'] = $liste;
 
 $registry = registry::get_instance();
 
-$twig = new supertwig($registry->get('GV_RootPath') . 'www/report_mobile/templates/mobile', array('I18n' => true), array('debug' => true));
-$twig->addFilter(array('sbas_names' => 'phrasea::sbas_names'));
-$twig->display('liste_base.twig', array('selection' => $selection, 'param' => $parm));
-?>
+
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
+echo $twig->render('liste_base.twig', array('selection' => $selection, 'param' => $parm));

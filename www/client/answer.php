@@ -32,17 +32,17 @@ if (!isset($parm))
 
   $request = http_request::getInstance();
   $parm = $request->get_parms("mod", "bas"
-                  , "pag"
-                  , "qry", "search_type", "recordtype"
-                  , "qryAdv", 'opAdv', 'status', 'datemin', 'datemax'
+          , "pag"
+          , "qry", "search_type", "recordtype"
+          , "qryAdv", 'opAdv', 'status', 'datemin', 'datemax'
           , 'dateminfield', 'datemaxfield'
           , 'datefield'
           , 'sort'
           , 'stemme'
           , 'infield'
-                  , "nba"
-                  , "regroup" // si rech par doc, regroup ,ou pizza
-                  , "ord"
+          , "nba"
+          , "regroup" // si rech par doc, regroup ,ou pizza
+          , "ord"
   );
 }
 $qry = '';
@@ -148,157 +148,157 @@ $page = $result->get_current_page();
 
 $ACL = $user->ACL();
 
-    if ($registry->get('GV_thesaurus'))
-    {
-?>
-      <script language="javascr<?php ?>ipt">
-        document.getElementById('proposals').innerHTML = "<div style='height:0px; overflow:hidden'>\n<?php echo p4string::MakeString($qp['main']->proposals["QRY"], "JS") ?>\n</div>\n<?php echo p4string::MakeString(proposalsToHTML($qp['main']->proposals), "JS") ?>";
-<?php
-      if ($registry->get('GV_clientAutoShowProposals'))
-      {
-?>
-          if("<?php echo p4string::MakeString(proposalsToHTML($qp['main']->proposals), "JS") ?>" != "<div class=\"proposals\"></div>")
-          chgOng(4);
-<?php
-      }
-?>
-      </script>
-<?php
-    }
-
-
-
-    $history = queries::history();
-
-    echo '<script language="javascript" type="text/javascript">$("#history").empty().append("' . str_replace('"', '\"', $history) . '")</script>';
-    
-    $nbanswers = $result->get_count_available_results();
-  $longueur = strlen($parm['qry']);
-
-  $qrys = '<div>' . _('client::answers: rapport de questions par bases') . '</div>';
-
-  foreach ($qrySbas as $sbas => $qryBas)
-    $qrys .= '<div style="font-weight:bold;">' . phrasea::sbas_names($sbas) . '</div><div>' . $qryBas . '</div>';
-
-  $txt = "<b>" . substr($parm['qry'], 0, 36) . ($longueur > 36 ? "..." : "") . "</b>" . sprintf(_('client::answers: %d reponses'), (int) $nbanswers) . " <a style=\"float:none;display:inline-block;padding:2px 3px\" class=\"infoTips\" title=\"" . str_replace('"', "'", $qrys) . "\">&nbsp;</a>";
-?>
-  <script type="text/javascript">
-    $(document).ready(function(){
-      p4.tot = <?php echo ($nbanswers > 0) ? $nbanswers : '0' ?>;
-      document.getElementById("nb_answers").innerHTML = "<?php echo p4string::JSstring($txt) ?>";
-    });
+if ($registry->get('GV_thesaurus'))
+{
+  ?>
+  <script language="javascr<?php ?>ipt">
+    document.getElementById('proposals').innerHTML = "<div style='height:0px; overflow:hidden'>\n<?php echo p4string::MakeString($qp['main']->proposals["QRY"], "JS") ?>\n</div>\n<?php echo p4string::MakeString(proposalsToHTML($qp['main']->proposals), "JS") ?>";
+  <?php
+  if ($registry->get('GV_clientAutoShowProposals'))
+  {
+    ?>
+    if("<?php echo p4string::MakeString(proposalsToHTML($qp['main']->proposals), "JS") ?>" != "<div class=\"proposals\"></div>")
+    chgOng(4);
+    <?php
+  }
+  ?>
   </script>
+  <?php
+}
+
+
+
+$history = queries::history();
+
+echo '<script language="javascript" type="text/javascript">$("#history").empty().append("' . str_replace('"', '\"', $history) . '")</script>';
+
+$nbanswers = $result->get_count_available_results();
+$longueur = strlen($parm['qry']);
+
+$qrys = '<div>' . _('client::answers: rapport de questions par bases') . '</div>';
+
+foreach ($qrySbas as $sbas => $qryBas)
+  $qrys .= '<div style="font-weight:bold;">' . phrasea::sbas_names($sbas) . '</div><div>' . $qryBas . '</div>';
+
+$txt = "<b>" . substr($parm['qry'], 0, 36) . ($longueur > 36 ? "..." : "") . "</b>" . sprintf(_('client::answers: %d reponses'), (int) $nbanswers) . " <a style=\"float:none;display:inline-block;padding:2px 3px\" class=\"infoTips\" title=\"" . str_replace('"', "'", $qrys) . "\">&nbsp;</a>";
+?>
+<script type="text/javascript">
+  $(document).ready(function(){
+    p4.tot = <?php echo ($nbanswers > 0) ? $nbanswers : '0' ?>;
+    document.getElementById("nb_answers").innerHTML = "<?php echo p4string::JSstring($txt) ?>";
+  });
+</script>
 <?php
 $npages = $result->get_total_pages();
-  $pages = '';
-  $ecart = 3;
-  $max = (2 * $ecart) + 3;
+$pages = '';
+$ecart = 3;
+$max = (2 * $ecart) + 3;
 
-  if ($npages > $max)
+if ($npages > $max)
+{
+  for ($p = 0; $p < $npages; $p++)
   {
-    for ($p = 0; $p < $npages; $p++)
-    {
-      if ($p == $page)
-        $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
-      elseif (( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
-      elseif (($page < ($ecart + 2)) && ($p < ($max - $ecart + 2) ))          // si je suis dans les premieres pages ...
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
-      elseif (($page >= ($npages - $ecart - 2)) && ($p >= ($npages - (2 * $ecart) - 2) ))  // si je suis dans les dernieres pages ...
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
-      elseif ($p == ($npages - 1)) // c"est la derniere
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">...' . ($p + 1) . '</span>';
-      elseif ($p == 0)    // c"est la premiere
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '...</span>';
+    if ($p == $page)
+      $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
+    elseif (( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
+      $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+    elseif (($page < ($ecart + 2)) && ($p < ($max - $ecart + 2) ))          // si je suis dans les premieres pages ...
+      $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+    elseif (($page >= ($npages - $ecart - 2)) && ($p >= ($npages - (2 * $ecart) - 2) ))  // si je suis dans les dernieres pages ...
+      $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+    elseif ($p == ($npages - 1)) // c"est la derniere
+      $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">...' . ($p + 1) . '</span>';
+    elseif ($p == 0)    // c"est la premiere
+      $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '...</span>';
 
-      if (($p == $page)
-              || ( ( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
-              || ( ($page < ($ecart + 2)) && ($p < ($max - $ecart + 2) ) )
-              || ( ($page >= ($npages - $ecart - 2)) && ($p >= ($npages - (2 * $ecart) - 2) ) )
-              || ( $p == 0)
-      )
-        $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
-    }
+    if (($p == $page)
+            || ( ( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
+            || ( ($page < ($ecart + 2)) && ($p < ($max - $ecart + 2) ) )
+            || ( ($page >= ($npages - $ecart - 2)) && ($p >= ($npages - (2 * $ecart) - 2) ) )
+            || ( $p == 0)
+    )
+      $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
   }
-  else
+}
+else
+{
+  for ($p = 0; $p < $npages; $p++)
   {
-    for ($p = 0; $p < $npages; $p++)
-    {
-      if ($p == $page)
-        $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
-      else
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
-      if ($p + 1 < $npages)
-        $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
-    }
+    if ($p == $page)
+      $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
+    else
+      $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+    if ($p + 1 < $npages)
+      $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
   }
+}
 
-  $string2 = $pages . '<div class="navigButtons">';
-  $string2.= '<div id="PREV_PAGE" class="PREV_PAGE"></div>';
-  $string2.= '<div id="NEXT_PAGE" class="NEXT_PAGE"></div>';
-  $string2.= '</div>';
+$string2 = $pages . '<div class="navigButtons">';
+$string2.= '<div id="PREV_PAGE" class="PREV_PAGE"></div>';
+$string2.= '<div id="NEXT_PAGE" class="NEXT_PAGE"></div>';
+$string2.= '</div>';
 ?>
-  <script type="text/javascript">
-    $(document).ready(function(){
-      $("#navigation").empty().append("<?php echo p4string::JSstring($string2) ?>");
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#navigation").empty().append("<?php echo p4string::JSstring($string2) ?>");
 
 <?php
-  if ($page != 0 && $nbanswers)
-  {
-?>
-        $("#PREV_PAGE").bind('click',function(){gotopage(<?php echo ($page - 1) ?>)});
-<?php
-  }
-  else
-  {
-?>
-        $("#PREV_PAGE").unbind('click');
-<?php
-  }
-  if ($page != $npages - 1 && $nbanswers)
-  {
-?>
-        $("#NEXT_PAGE").bind('click',function(){gotopage(<?php echo ($page + 1) ?>)});
-<?php
-  }
-  else
-  {
-?>
-        $("#NEXT_PAGE").unbind('click');
+if ($page != 0 && $nbanswers)
+{
+  ?>
+    $("#PREV_PAGE").bind('click',function(){gotopage(<?php echo ($page - 1) ?>)});
+  <?php
+}
+else
+{
+  ?>
+    $("#PREV_PAGE").unbind('click');
+  <?php
+}
+if ($page != $npages - 1 && $nbanswers)
+{
+  ?>
+    $("#NEXT_PAGE").bind('click',function(){gotopage(<?php echo ($page + 1) ?>)});
+  <?php
+}
+else
+{
+  ?>
+    $("#NEXT_PAGE").unbind('click');
 <?php } ?>
-    });
-  </script>
+});
+</script>
 <?php
 
+$layoutmode = "grid";
+if ($mod_col == 1)
+  $layoutmode = "list";
+else
   $layoutmode = "grid";
-  if ($mod_col == 1)
-    $layoutmode = "list";
-  else
-    $layoutmode = "grid";
 
-  $count = $result->get_datas();
+$count = $result->get_datas();
 
-  $i = 0;
+$i = 0;
 
-  if (count($result->get_datas()) > 0)
+if (count($result->get_datas()) > 0)
+{
+  ?><div><table id="grid" cellpadding="0" cellspacing="0" border="0" style="xwidth:95%;"><?php
+  if ($mod_col == 1) // MODE LISTE
   {
-?><div><table id="grid" cellpadding="0" cellspacing="0" border="0" style="xwidth:95%;"><?php
-    if ($mod_col == 1) // MODE LISTE
+    ?><tr style="visibility:hidden"><td class="w160px" /><td /></tr><?php
+  }
+  else // MODE GRILLE
+  {
+    ?><tr style="visibility:hidden"><?php
+    for ($ii = 0; $ii < $mod_col; $ii++)
     {
-?><tr style="visibility:hidden"><td class="w160px" /><td /></tr><?php
+      ?><td class="w160px"></td><?php
     }
-    else // MODE GRILLE
-    {
-?><tr style="visibility:hidden"><?php
-      for ($ii = 0; $ii < $mod_col; $ii++)
-      {
-?><td class="w160px"></td><?php
-      }
-?></tr><?php
+    ?></tr><?php
     }
 
-    $twig = new supertwig();
-    $twig->addFilter(array('formatoctet'=>'p4string::format_octets'));
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
 
     foreach ($result->get_datas() as $record)
     {
@@ -317,192 +317,194 @@ $npages = $result->get_total_pages();
 
       if ($i == 0)
       {
-?><tr><?php
-      }
-      if (($i % $mod_col == 0 && $i != 0))
-      {
-?></tr><tr><?php
+      ?><tr><?php
+    }
+    if (($i % $mod_col == 0 && $i != 0))
+    {
+      ?></tr><tr><?php
       }
       if ($mod_col == 1 && $i != 0)
       {
-?></tr><tr style="height:20px;">
-      <td colspan="2" class="td_mod_lst_img"><hr></td>
-    </tr><tr><?php
-      }
+      ?></tr><tr style="height:20px;">
+            <td colspan="2" class="td_mod_lst_img"><hr></td>
+          </tr><tr><?php
+    }
 
-      if ($mod_col == 1)
-      {
-?><td valign="top" class="td_mod_lst_desc"><?php
-      }
-      else
-      {
-?><td class="w160px"><?php
-      }
-?><div class="diapo w160px" style="margin-bottom:0;border-bottom:none;">
-  <div class="title"><?php echo $title ?></div><?php
-
-
-          $status = '';
-          $status .= '<div class="status">';
-          $status .= $record->get_status_icons();
-          $status .= '</div>';
-
-          echo $status;
-
-          $isVideo = ($docType == 'video');
-          $isAudio = ($docType == 'audio');
-          $isImage = ($docType == 'image');
-          $isDocument = ($docType == 'document');
+    if ($mod_col == 1)
+    {
+      ?><td valign="top" class="td_mod_lst_desc"><?php
+    }
+    else
+    {
+      ?><td class="w160px"><?php
+    }
+    ?><div class="diapo w160px" style="margin-bottom:0;border-bottom:none;">
+              <div class="title"><?php echo $title ?></div><?php
 
 
-          $sd = $record->get_subdefs();
-          
-          $isImage = false;
-          $isDocument = false;
-          if (!$isVideo && !$isAudio)
+        $status = '';
+        $status .= '<div class="status">';
+        $status .= $record->get_status_icons();
+        $status .= '</div>';
+
+        echo $status;
+
+        $isVideo = ($docType == 'video');
+        $isAudio = ($docType == 'audio');
+        $isImage = ($docType == 'image');
+        $isDocument = ($docType == 'document');
+
+
+        $sd = $record->get_subdefs();
+
+        $isImage = false;
+        $isDocument = false;
+        if (!$isVideo && !$isAudio)
+        {
+          $isImage = true;
+        }
+
+    ?><table cellpadding="0" cellspacing="0" style="margin: 0pt auto;"><?php
+    ?><tr class="h160px"><?php
+    ?><td class="image w160px h160px"><?php
+          if ($isVideo)
           {
-            $isImage = true;
+            $duration = $record->get_formated_duration();
+            if ($duration != '')
+              echo '<div class="dmco_text duration">' . $duration . '</div>';
+          }
+          if ($isAudio)
+          {
+            $duration = $record->get_formated_duration();
+            if ($duration != '')
+              echo '<div class="dmco_text duration">' . $duration . '</div>';
           }
 
-?><table cellpadding="0" cellspacing="0" style="margin: 0pt auto;"><?php
-?><tr class="h160px"><?php
-?><td class="image w160px h160px"><?php
-              if ($isVideo)
+          $onclick = "";
+
+          if ($record->is_grouping())
+          {
+            $onclick = 'openPreview(\'REG\',0,\'' . $sbas_id . '_' . $record->get_record_id() . '\');';
+          }
+          else
+          {
+            $onclick = 'openPreview(\'RESULT\',' . $record->get_number() . ');';
+          }
+
+          if ($mod_col == '1')
+            $pic_roll = '/prod/tooltip/preview/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/';
+          else
+            $pic_roll = '/prod/tooltip/caption/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/answer/';
+
+          $pic_roll = str_replace(array('&', '"'), array('&amp;', '&quot;'), $pic_roll);
+    ?><img style="<?php if ($thumbnail->get_width() > $thumbnail->get_height())
+              { ?>width:128px;<?php }
+            else
+            { ?>height:128px;<?php } ?>" onclick="<?php echo $onclick ?>" class=" captionTips"  id="IMG<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>"  src="<?php echo $thumbnail->get_url() ?>"  tooltipsrc="<?php echo ($pic_roll) ?>" />
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="diapo w160px" style="border-top:none;"><?php ?><div class="buttons"><?php
+              $minilogos = "";
+
+              $minilogos .= '<div class="minilogos">' . collection::getLogo($record->get_base_id());
+              $minilogos .= '</div>';
+              $sbas_id = $record->get_sbas_id();
+              echo $minilogos;
+
+              if (
+                      $ACL->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
+                      $ACL->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
+                      $ACL->has_right_on_base($record->get_base_id(), 'cancmd')
+              )
               {
-                $duration = $record->get_formated_duration();
-                if ($duration != '')
-                  echo '<div class="dmco_text duration">' . $duration . '</div>';
-              }
-              if ($isAudio)
-              {
-                $duration = $record->get_formated_duration();
-                if ($duration != '')
-                  echo '<div class="dmco_text duration">' . $duration . '</div>';
-              }
-
-              $onclick = "";
-
-              if ($record->is_grouping())
-              {
-                $onclick = 'openPreview(\'REG\',0,\'' . $sbas_id . '_' . $record->get_record_id() . '\');';
-              }
-              else
-              {
-                $onclick = 'openPreview(\'RESULT\',' . $record->get_number() . ');';
-              }
-
-              if ($mod_col == '1')
-                $pic_roll = '/prod/tooltip/preview/'.$record->get_sbas_id().'/'.$record->get_record_id().'/';
-              else
-                $pic_roll = '/prod/tooltip/caption/'.$record->get_sbas_id().'/'.$record->get_record_id().'/answer/';
-
-              $pic_roll = str_replace(array('&', '"'), array('&amp;', '&quot;'), $pic_roll);
-?><img style="<?php if($thumbnail->get_width() > $thumbnail->get_height()){?>width:128px;<?php }else{?>height:128px;<?php } ?>" onclick="<?php echo $onclick ?>" class=" captionTips"  id="IMG<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>"  src="<?php echo $thumbnail->get_url() ?>"  tooltipsrc="<?php echo ($pic_roll) ?>" />
-</td>
-</tr>
-</table>
-</div>
-<div class="diapo w160px" style="border-top:none;"><?php
-?><div class="buttons"><?php
-                $minilogos = "";
-
-                $minilogos .= '<div class="minilogos">' . collection::getLogo($record->get_base_id());
-                $minilogos .= '</div>';
-                $sbas_id = $record->get_sbas_id();
-                echo $minilogos;
-
-                if (
-                        $ACL->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
-                        $ACL->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
-                        $ACL->has_right_on_base($record->get_base_id(), 'cancmd')
-                )
-                {
-?><div class="downloader" title="<?php echo _('action : exporter') ?>" onclick="evt_dwnl('<?php echo $sbas_id ?>_<?php echo $record->get_record_id() ?>');"></div><?php
-                }
-?>
+      ?><div class="downloader" title="<?php echo _('action : exporter') ?>" onclick="evt_dwnl('<?php echo $sbas_id ?>_<?php echo $record->get_record_id() ?>');"></div><?php
+        }
+    ?>
                 <div class="printer" title="<?php echo _('action : print') ?>" onClick="evt_print('<?php echo $sbas_id ?>_<?php echo $record->get_record_id() ?>');"></div>
-            <?php
+                <?php
                 if ($ACL->has_right_on_base($record->get_base_id(), "canputinalbum"))
                 {
-            ?><div class="baskAdder" title="<?php echo _('action : ajouter au panier') ?>" onClick="evt_add_in_chutier('<?php echo $record->get_base_id() ?>', '<?php echo $record->get_record_id() ?>');"></div><?php
-                }
-                if ($mod_col != '1')
-                {
-            ?>
+                  ?><div class="baskAdder" title="<?php echo _('action : ajouter au panier') ?>" onClick="evt_add_in_chutier('<?php echo $record->get_base_id() ?>', '<?php echo $record->get_record_id() ?>');"></div><?php
+          }
+          if ($mod_col != '1')
+          {
+                  ?>
                   <div style="margin-right:3px;" class="infoTips" id="INFO<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>" tooltipsrc="/prod/tooltip/tc_datas/<?php echo $record->get_sbas_id() ?>/<?php echo $record->get_record_id() ?>/"></div>
-              <?php
+                  <?php
                   try
                   {
-                    if($record->get_preview()->is_physically_present())
+                    if ($record->get_preview()->is_physically_present())
                     {
-              ?>
+                      ?>
                       <div class="previewTips" tooltipsrc="/prod/tooltip/preview/<?php echo $record->get_sbas_id(); ?>/<?php echo $record->get_record_id(); ?>/" id="ZOOM<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>">&nbsp;</div>
-              <?php
+                      <?php
                     }
                   }
-                  catch(Exception $e)
+                  catch (Exception $e)
                   {
-
+                    
                   }
                 }
-            ?></div><?php
-            ?></div><?php
-            ?></td><?php
-                if ($mod_col == 1) // 1X10 ou 1X100
-                {
-            ?><td valign="top"><?php
-            ?><div class="desc1"><?php
-            ?><div class="caption" class="desc2"><?php echo ($caption . '<hr/>' . $light_info) ?></div><?php
-            ?></div><?php
-            ?></td><?php
-                }
-
-                $i++;
-              }
-            ?></tr>
-  </table>
-<script type="text/javascript">
-  $(document).ready(function(){
-    
-  p4.tot = <?php echo $result->get_count_available_results(); ?>;
-  p4.tot_options = '<?php echo serialize($options) ?>';
-  p4.tot_query = '<?php echo $parm['qry'] ?>';
-
-  });
-
-</script>
-</div><?php
-            }
-            else
+                ?></div><?php
+                ?></div><?php
+                ?></td><?php
+            if ($mod_col == 1) // 1X10 ou 1X100
             {
-            ?><div><?php echo _('reponses:: Votre recherche ne retourne aucun resultat'); ?></div><?php
-              phrasea::getHome('HELP', 'client');
-            }
+                  ?><td valign="top"><?php
+                  ?><div class="desc1"><?php
+                  ?><div class="caption" class="desc2"><?php echo ($caption . '<hr/>' . $light_info) ?></div><?php
+                  ?></div><?php
+                  ?></td><?php
+        }
 
-          function proposalsToHTML(&$proposals)
-          {
+        $i++;
+      }
+              ?></tr>
+    </table>
+    <script type="text/javascript">
+      $(document).ready(function(){
+      
+        p4.tot = <?php echo $result->get_count_available_results(); ?>;
+        p4.tot_options = '<?php echo serialize($options) ?>';
+        p4.tot_query = '<?php echo $parm['qry'] ?>';
 
-            $html = '<div class="proposals">';
-            $b = true;
-            foreach ($proposals["BASES"] as $zbase)
-            {
-              if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0)
-              {
-                $style = $b ? 'style="margin-top:0px;"' : '';
-                $b = false;
-                $html .= "<h1 $style>" . sprintf(_('reponses::propositions pour la base %s'), htmlentities($zbase["NAME"])) . "</h1>";
-              }
-              $t = true;
-              foreach ($zbase["TERMS"] as $path => $props)
-              {
-                $style = $t ? 'style="margin-top:0px;"' : '';
-                $t = false;
-                $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), htmlentities($props["TERM"])) . "</h2>";
-                $html .= $props["HTML"];
-              }
-            }
-            $html .= '</div>';
+      });
 
-            return($html);
-          }
+    </script>
+  </div><?php
+    }
+    else
+    {
+              ?><div><?php echo _('reponses:: Votre recherche ne retourne aucun resultat'); ?></div><?php
+  phrasea::getHome('HELP', 'client');
+}
+
+function proposalsToHTML(&$proposals)
+{
+
+  $html = '<div class="proposals">';
+  $b = true;
+  foreach ($proposals["BASES"] as $zbase)
+  {
+    if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0)
+    {
+      $style = $b ? 'style="margin-top:0px;"' : '';
+      $b = false;
+      $html .= "<h1 $style>" . sprintf(_('reponses::propositions pour la base %s'), htmlentities($zbase["NAME"])) . "</h1>";
+    }
+    $t = true;
+    foreach ($zbase["TERMS"] as $path => $props)
+    {
+      $style = $t ? 'style="margin-top:0px;"' : '';
+      $t = false;
+      $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), htmlentities($props["TERM"])) . "</h2>";
+      $html .= $props["HTML"];
+    }
+  }
+  $html .= '</div>';
+
+  return($html);
+}
 

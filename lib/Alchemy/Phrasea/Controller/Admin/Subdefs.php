@@ -126,9 +126,10 @@ class Subdefs
    */
   public function render()
   {
-
-    $twig = new supertwig();
-    $twig->display(
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
+    
+    echo $twig->render(
             'admin/subdefs.twig',
             array(
                 'databox' => $this->databox,

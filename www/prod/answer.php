@@ -29,8 +29,8 @@ $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
 if (!isset($parm))
   $parm = $request->get_parms("bas", "qry", "pag"
-                  , "sel", "ord", "sort", "stemme"
-                  , "search_type", "recordtype", "status", "fields", "datemin", "datemax", "datefield");
+          , "sel", "ord", "sort", "stemme"
+          , "search_type", "recordtype", "status", "fields", "datemin", "datemax", "datefield");
 
 
 $parm['sel'] = explode(';', $parm['sel']);
@@ -221,10 +221,10 @@ if ($search_engine->is_first_page())
   }
 }
 
-$twig = new supertwig();
-$twig->addFilter(array('sbasFromBas' => 'phrasea::sbasFromBas'));
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
 
-if($result->get_count_total_results() === 0)
+if ($result->get_count_total_results() === 0)
 {
   $template = 'prod/results/help.twig';
 }
@@ -242,13 +242,13 @@ else
 
 
 $json['results'] = $twig->render($template, array(
-            'results' => $result,
-            'GV_social_tools' => $registry->get('GV_social_tools'),
-            'array_selected' => $parm['sel'],
-            'highlight' => $search_engine->get_query(),
-            'searchEngine' => $search_engine,
-            'suggestions' => $prop
-                )
+    'results' => $result,
+    'GV_social_tools' => $registry->get('GV_social_tools'),
+    'array_selected' => $parm['sel'],
+    'highlight' => $search_engine->get_query(),
+    'searchEngine' => $search_engine,
+    'suggestions' => $prop
+        )
 );
 
 

@@ -32,16 +32,10 @@ $var = array(
     'ajax_chart' => true
 );
 
-$twig = new supertwig();
 
-$twig->addFilter(
-        array(
-            'serialize' => 'serialize'
-            , 'sbas_names' => 'phrasea::sbas_names'
-            , 'unite' => 'p4string::format_octets'
-            , 'stristr' => 'stristr'
-        )
-);
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
 $html = $twig->render('report/chart.twig', $var);
 $t = array("rs" => $html);
 echo json_encode($t);

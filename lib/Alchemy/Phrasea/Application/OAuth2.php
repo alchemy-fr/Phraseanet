@@ -46,13 +46,6 @@ return call_user_func(function()
                             return appbox::get_instance();
                           };
 
-                  $app['supertwig'] = $app->share(function()
-                          {
-                            $twig = new supertwig();
-                            $twig->addFilter(array('prettyDate' => 'phraseadate::getPrettyString'));
-
-                            return $twig;
-                          });
 
                   $app['oauth'] = function($app)
                           {
@@ -85,8 +78,11 @@ return call_user_func(function()
                    */
                   $app['response'] = $app->protect(function ($template, $variable) use ($app)
                           {
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
+                            
                             $response = new Response(
-                                            $app['supertwig']->render($template, $variable)
+                                            $twig->render($template, $variable)
                                             , 200
                                             , array('Content-Type' => 'text/html')
                             );
@@ -111,7 +107,8 @@ return call_user_func(function()
                           {
                             $request = $app['request'];
                             $oauth2_adapter = $app['oauth'];
-                            $twig = $app['supertwig'];
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
                             $session = $app['appbox']->get_session();
 
                             //Check for auth params, send error or redirect if not valid

@@ -42,14 +42,7 @@ $var = array(
     'ajax_chart' => false
 );
 
-$twig = new supertwig();
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
 
-$twig->addFilter(array(
-    'serialize' => 'serialize',
-    'sbas_names' => 'phrasea::sbas_names',
-    'unite' => 'p4string::format_octets',
-    'stristr' => 'stristr',
-    'key_exists' => 'array_key_exists')
-);
-
-$twig->display('report/report_layout_child.twig', $var);
+echo $twig->render('report/report_layout_child.twig', $var);

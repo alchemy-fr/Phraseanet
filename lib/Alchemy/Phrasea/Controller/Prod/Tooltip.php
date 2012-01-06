@@ -33,19 +33,19 @@ class Tooltip implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
     $app['appbox'] = \appbox::get_instance();
-    $twig = new \supertwig();
 
     $controllers->post('/basket/{basket_id}/'
-            , function($basket_id) use ($app)
+            , function(Application $app, $basket_id)
             {
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
-              
-              $twig = new \supertwig();
-              
-              return $twig->render('prod/Tooltip/Basket.html.twig', array('basket'=>$basket));
+
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
+
+              return $twig->render('prod/Tooltip/Basket.html.twig', array('basket' => $basket));
             })->assert('basket_id', '\d+');
 
     $controllers->post('/Story/{sbas_id}/{record_id}/'
@@ -53,18 +53,20 @@ class Tooltip implements ControllerProviderInterface
             {
               $Story = new \record_adapter($sbas_id, $record_id);
 
-              $twig = new \supertwig();
-              
-              return $twig->render('prod/Tooltip/Story.html.twig', array('Story'=>$Story));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
+
+              return $twig->render('prod/Tooltip/Story.html.twig', array('Story' => $Story));
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
 
     $controllers->post('/preview/{sbas_id}/{record_id}/'
-            , function($sbas_id, $record_id) use ($app)
+            , function(Application $app, $sbas_id, $record_id)
             {
               $record = new \record_adapter($sbas_id, $record_id);
 
-              $twig = new \supertwig();
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response($twig->render(
                                       'common/preview.html'
@@ -78,7 +80,7 @@ class Tooltip implements ControllerProviderInterface
 
 
     $controllers->post('/caption/{sbas_id}/{record_id}/{view}/'
-            , function($sbas_id, $record_id, $view) use ($app)
+            , function(Application $app, $sbas_id, $record_id, $view)
             {
               $number = (int) $app['request']->get('number');
               $record = new \record_adapter($sbas_id, $record_id, $number);
@@ -90,8 +92,8 @@ class Tooltip implements ControllerProviderInterface
                 $search_engine->set_options($search_engine_options);
               }
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('formatoctet' => 'p4string::format_octets'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response(
                               $twig->render(
@@ -108,13 +110,13 @@ class Tooltip implements ControllerProviderInterface
 
 
     $controllers->post('/tc_datas/{sbas_id}/{record_id}/'
-            , function($sbas_id, $record_id) use ($app)
+            , function(Application $app, $sbas_id, $record_id)
             {
               $record = new \record_adapter($sbas_id, $record_id);
               $document = $record->get_subdef('document');
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('formatoctet' => 'p4string::format_octets'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response(
                               $twig->render(
@@ -126,12 +128,13 @@ class Tooltip implements ControllerProviderInterface
 
 
     $controllers->post('/metas/FieldInfos/{sbas_id}/{field_id}/'
-            , function($sbas_id, $field_id) use ($app)
+            , function(Application $app, $sbas_id, $field_id)
             {
               $databox = \databox::get_instance((int) $sbas_id);
               $field = \databox_field::get_instance($databox, $field_id);
 
-              $twig = new \supertwig();
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response(
                               $twig->render(
@@ -143,14 +146,15 @@ class Tooltip implements ControllerProviderInterface
 
 
     $controllers->post('/metas/DCESInfos/{sbas_id}/{field_id}/'
-            , function($sbas_id, $field_id) use ($app)
+            , function(Application $app, $sbas_id, $field_id)
             {
               try
               {
                 $databox = \databox::get_instance((int) $sbas_id);
                 $field = \databox_field::get_instance($databox, $field_id);
 
-                $twig = new \supertwig();
+                /* @var $twig \Twig_Environment */
+                $twig = $app['Core']->getTwig();
 
                 return new Response(
                                 $twig->render(
@@ -167,12 +171,13 @@ class Tooltip implements ControllerProviderInterface
 
 
     $controllers->post('/metas/restrictionsInfos/{sbas_id}/{field_id}/'
-            , function($sbas_id, $field_id) use ($app)
+            , function(Application $app, $sbas_id, $field_id)
             {
               $databox = \databox::get_instance((int) $sbas_id);
               $field = \databox_field::get_instance($databox, $field_id);
 
-              $twig = new \supertwig();
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return new Response(
                               $twig->render(
