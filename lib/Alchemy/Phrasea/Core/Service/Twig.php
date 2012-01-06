@@ -201,14 +201,20 @@ class Twig
     }
     else
     {
-      $options = array();
+      $options = array(
+          'cache' => $registry->get('GV_RootPath') . 'tmp/cache_twig',
+          'debug' => false,
+          'strict_variables' => false,
+          'trim_blocks' => true,
+          'charset' => 'utf-8'
+      );
     }
-    
+
     $confApp = new Core\Configuration\Application();
     $confParser = new Core\Configuration\Parser\Yaml();
     $handler = new Core\Configuration\Handler($confApp, $confParser);
     $configuration = new Core\Configuration($handler);
-    
+
     if ($configuration->isDebug())
     {
       $options["debug"] = true;
@@ -217,6 +223,7 @@ class Twig
     else
     {
       $options["debug"] = false;
+      $options["cache"] = $registry->get('GV_RootPath') . 'tmp/cache_twig';
     }
 
 
