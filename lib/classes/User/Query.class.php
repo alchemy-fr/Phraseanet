@@ -23,96 +23,115 @@ class User_Query implements User_QueryInterface
    * @var appbox
    */
   protected $appbox;
+
   /**
    *
    * @var Array
    */
   protected $results = array();
+
   /**
    *
    * @var Array
    */
   protected $sort = array();
+
   /**
    *
    * @var Array
    */
   protected $like_field = array();
+
   /**
    *
    * @var Array
    */
   protected $have_rights;
+
   /**
    *
    * @var Array
    */
   protected $have_not_rights;
+
   /**
    *
    * @var string
    */
   protected $like_match = 'OR';
+
   /**
    *
    * @var string
    */
   protected $get_inactives = '';
+
   /**
    *
    * @var int
    */
   protected $total = 0;
+
   /**
    *
    * @var Array
    */
   protected $active_bases = array();
+
   /**
    *
    * @var Array
    */
   protected $active_sbas = array();
+
   /**
    *
    * @var boolean
    */
   protected $bases_restrictions = false;
+
   /**
    *
    * @var boolean
    */
   protected $sbas_restrictions = false;
+
   /**
    *
    * @var boolean
    */
   protected $include_templates = false;
+
   /**
    *
    * @var boolean
    */
   protected $only_templates = false;
+
   /**
    *
    * @var Array
    */
   protected $base_ids = array();
+
   /**
    *
    * @var Array
    */
   protected $sbas_ids = array();
+
   /**
    *
    * @var int
    */
   protected $page;
+
   /**
    *
    * @var int
    */
   protected $offset_start;
+
   /**
    *
    * @var int
@@ -124,9 +143,8 @@ class User_Query implements User_QueryInterface
 
   const ORD_ASC = 'asc';
   const ORD_DESC = 'desc';
-
-  const SORT_FIRSTNAME= 'usr_prenom';
-  const SORT_LASTNAME= 'usr_nom';
+  const SORT_FIRSTNAME = 'usr_prenom';
+  const SORT_LASTNAME = 'usr_nom';
   const SORT_COMPANY = 'societe';
   const SORT_LOGIN = 'usr_login';
   const SORT_EMAIL = 'usr_mail';
@@ -134,15 +152,13 @@ class User_Query implements User_QueryInterface
   const SORT_CREATIONDATE = 'usr_creationdate';
   const SORT_COUNTRY = 'pays';
   const SORT_LASTMODEL = 'lastModel';
-
-  const LIKE_FIRSTNAME= 'usr_prenom';
-  const LIKE_LASTNAME= 'usr_nom';
-  const LIKE_NAME= 'name';
+  const LIKE_FIRSTNAME = 'usr_prenom';
+  const LIKE_LASTNAME = 'usr_nom';
+  const LIKE_NAME = 'name';
   const LIKE_COMPANY = 'societe';
   const LIKE_LOGIN = 'usr_login';
   const LIKE_EMAIL = 'usr_mail';
   const LIKE_COUNTRY = 'pays';
-
   const LIKE_MATCH_AND = 'AND';
   const LIKE_MATCH_OR = 'OR';
 
@@ -225,16 +241,13 @@ class User_Query implements User_QueryInterface
     else
     {
       $extra = $this->include_phantoms ? ' OR base_id IS NULL ' : '';
-      if (count($this->active_bases) > count($this->base_ids))
+
+      $not_base_id = array_diff($this->active_bases, $this->base_ids);
+
+      if (count($not_base_id) > 0 && count($not_base_id) < count($this->base_ids))
       {
         $sql .= sprintf('  AND ((base_id != %s ) ' . $extra . ')'
-                , implode(
-                        ' AND base_id != '
-                        , array_diff(
-                                $this->active_bases
-                                , $this->base_ids
-                        )
-                )
+                , implode(' AND base_id != ', $not_base_id)
         );
       }
       else
@@ -246,7 +259,6 @@ class User_Query implements User_QueryInterface
     }
 
 
-
     if (count($this->sbas_ids) == 0)
     {
       if ($this->sbas_restrictions)
@@ -255,16 +267,13 @@ class User_Query implements User_QueryInterface
     else
     {
       $extra = $this->include_phantoms ? ' OR sbas_id IS NULL ' : '';
-      if (count($this->active_sbas) > count($this->sbas_ids))
+
+      $not_sbas_id = array_diff($this->active_sbas, $this->sbas_ids);
+      
+      if (count($not_sbas_id) > 0 && count($not_sbas_id) < count($this->sbas_ids))
       {
         $sql .= sprintf('  AND ((sbas_id != %s ) ' . $extra . ')'
-                , implode(
-                        ' AND sbas_id != '
-                        , array_diff(
-                                $this->active_sbas
-                                , $this->sbas_ids
-                        )
-                )
+                , implode(' AND sbas_id != ', $not_sbas_id)
         );
       }
       else
@@ -293,7 +302,7 @@ class User_Query implements User_QueryInterface
     }
 
     $sql_like = array();
-    
+
     foreach ($this->like_field as $like_field => $like_value)
     {
       switch ($like_field)
@@ -366,6 +375,7 @@ class User_Query implements User_QueryInterface
 
     return $this;
   }
+
   /**
    *
    * @param boolean $boolean
@@ -479,7 +489,6 @@ class User_Query implements User_QueryInterface
   public function get_total()
   {
     if ($this->total)
-
       return $this->total;
 
     $conn = $this->appbox->get_connection();
@@ -527,11 +536,9 @@ class User_Query implements User_QueryInterface
     $baslist = array_keys($ACL->get_granted_base($rights));
 
     if (count($this->base_ids) > 0)
-      $base_ids = array_intersect($this->base_ids, $baslist);
+      $this->base_ids = array_intersect($this->base_ids, $baslist);
     else
-      $base_ids = $baslist;
-    
-    $this->on_base_ids($base_ids);
+      $this->base_ids = $baslist;
 
     $this->total = $this->page = null;
 
@@ -550,11 +557,9 @@ class User_Query implements User_QueryInterface
     $sbaslist = array_keys($ACL->get_granted_sbas($rights));
 
     if (count($this->sbas_ids) > 0)
-      $sbas_ids = array_intersect($this->sbas_ids, $sbaslist);
+      $this->sbas_ids = array_intersect($this->sbas_ids, $sbaslist);
     else
-      $sbas_ids = $sbaslist;
-    
-    $this->on_sbas_ids($sbas_ids);
+      $this->sbas_ids = $sbaslist;
 
     $this->total = $this->page = null;
 
@@ -585,8 +590,8 @@ class User_Query implements User_QueryInterface
    */
   public function like($like_field, $like_value)
   {
-    
-    if($like_field == self::LIKE_NAME)
+
+    if ($like_field == self::LIKE_NAME)
     {
       $this->like_field[self::LIKE_FIRSTNAME] = trim($like_value);
       $this->like_field[self::LIKE_LASTNAME] = trim($like_value);
@@ -595,7 +600,7 @@ class User_Query implements User_QueryInterface
     {
       $this->like_field[trim($like_field)] = trim($like_value);
     }
-    
+
     $this->total = $this->page = null;
 
     return $this;
@@ -632,7 +637,6 @@ class User_Query implements User_QueryInterface
   public function on_base_ids(Array $base_ids = null)
   {
     if (!$base_ids)
-
       return $this;
 
     $this->bases_restrictions = true;
@@ -657,13 +661,12 @@ class User_Query implements User_QueryInterface
   public function on_sbas_ids(Array $sbas_ids = null)
   {
     if (!$sbas_ids)
-
       return $this;
 
     $this->sbas_restrictions = true;
 
     $this->include_phantoms(false);
-    
+
     if (count($this->sbas_ids) > 0)
       $this->sbas_ids = array_intersect($this->sbas_ids, $sbas_ids);
     else
