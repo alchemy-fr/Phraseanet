@@ -24,6 +24,8 @@ return call_user_func(
                 {
                   $app = new Application();
 
+                  $app['Core'] = bootstrap::getCore();
+                  
                   $app->mount('/publications', new Controller\Publications());
                   $app->mount('/users', new Controller\Users());
                   $app->mount('/fields', new Controller\Fields());
