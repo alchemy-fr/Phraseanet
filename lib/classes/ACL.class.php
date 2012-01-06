@@ -872,11 +872,15 @@ class ACL implements cache_cacheableInterface
       if ($row['order_master'] == '1')
         $this->_global_rights['order_master'] = true;
 
-      if ($row['time_limited'] == '1')
+      $row['limited_from'] = $row['limited_from'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_from']);
+      $row['limited_to'] = $row['limited_to'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_to']);
+      
+      if ($row['time_limited'] == '1' 
+              && ($row['limited_from'] !== '' || $row['limited_to'] !== ''))
       {
         $this->_limited[$row['base_id']] = array(
-            'dmin' => new DateTime($row['limited_from'])
-            , 'dmax' => new DateTime($row['limited_to'])
+            'dmin' => $row['limited_from'] ? new DateTime($row['limited_from']) : null
+            , 'dmax' => $row['limited_to'] ? new DateTime($row['limited_to']) : null
         );
       }
 
@@ -1444,11 +1448,12 @@ class ACL implements cache_cacheableInterface
     {
       return false;
     }
+    
+    $lim_min = $this->_limited[$base_id]['dmin'] && $this->_limited[$base_id]['dmin'] > $datetime;
 
-    $ret = ($this->_limited[$base_id]['dmin'] > $datetime
-            || $this->_limited[$base_id]['dmax'] < $datetime);
+    $lim_max = $this->_limited[$base_id]['dmax'] && $this->_limited[$base_id]['dmax'] < $datetime;
 
-    return $ret;
+    return $lim_max || $lim_min;
   }
 
   public function get_limits($base_id)
