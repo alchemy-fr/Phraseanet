@@ -30,22 +30,30 @@ class Doctrine
 
   public function __construct(Array $doctrineConfiguration = array())
   {
-    require_once __DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
-
     static::loadClasses();
     
     $config = new \Doctrine\ORM\Configuration();
 
-    //debug mode
+    /*
+     * debug mode
+     */
     $debug = isset($doctrineConfiguration["debug"]) ? : false;
-    //doctrine cache
+    /*
+     * doctrine cache
+     */
     $cache = isset($doctrineConfiguration["orm"]["cache"]) ? $doctrineConfiguration["orm"]["cache"] : false;
-    //doctrine log configuration
+    /*
+     * doctrine log configuration
+     */
     $log = isset($doctrineConfiguration["log"]) ? $doctrineConfiguration["log"] : false;
-    //service logger configuration
+    /*
+     * service logger configuration
+     */
     $logger = !isset($doctrineConfiguration['logger']) ? : $doctrineConfiguration['logger'];
 
-    //default query cache & meta chache
+    /*
+     * default query cache & meta chache
+     */
     $metaCache = $this->getCache();
     $queryCache = $this->getCache();
 
@@ -110,13 +118,13 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\ORM'
-                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib')
+                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\DBAL'
-                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib')
+                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib/vendor/doctrine-dbal/lib')
     );
     $classLoader->register();
 
@@ -134,7 +142,7 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\Common'
-                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib')
+                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib/vendor/doctrine-common/lib')
     );
     $classLoader->register();
 
@@ -158,7 +166,7 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Symfony'
-                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor')
+                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib/vendor')
     );
 
     $classLoader->register();
@@ -186,7 +194,7 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Gedmo'
-                    , __DIR__ . "/../../../../vendor/doctrine2-gedmo/lib"
+                    , __DIR__ . "/../../../../../vendor/gedmo/doctrine-extensions/lib"
     );
     $classLoader->register();
 

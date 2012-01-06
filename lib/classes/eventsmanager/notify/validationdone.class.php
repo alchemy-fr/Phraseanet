@@ -208,7 +208,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
     $subject = sprintf(
                     _('push::mail:: Rapport de validation de %1$s pour %2$s'),
-                    $to['name'],
+                    $from['name'],
                     $basket->getName()
     );
 

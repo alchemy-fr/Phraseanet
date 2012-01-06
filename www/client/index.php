@@ -217,7 +217,18 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
 
 
 
-                          foreach ($appbox->get_databoxes() as $databox)
+                      foreach ($user->ACL()->get_granted_sbas() as $databox)
+                      {
+                        if ($showbases)
+                        {
+                          $options .= '<optgroup label="' . $databox->get_viewname() . '">';
+                          $allbcol = array();
+                          $n_allbcol = 0;
+                          if (count($databox->get_collections()) > 0)
+                          {
+                            $options .= '<option value="' . implode(';', $allbcol) . '">`' . $databox->get_viewname() . '`' . '</option>';
+                          }
+                          foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
                           {
                             if ($showbases)
                             {
@@ -342,11 +353,13 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                             <input id="bases_none" class="actives" type="button" value="<?php echo _('boutton:: selectionner aucune base') ?>" onclick="checkBases(false);"/>
                           </div>
 
-                        </div>
-                        <div>
-                          <div class="basesContainer">
-                            <?php
-                            foreach ($appbox->get_databoxes() as $databox)
+                            </div>
+                            <div>
+                              <div class="basesContainer">
+<?php
+                          foreach ($user->ACL()->get_granted_sbas() as $databox)
+                          {
+                            if ($registry->get('GV_view_bas_and_coll'))
                             {
                               if ($registry->get('GV_view_bas_and_coll'))
                               {

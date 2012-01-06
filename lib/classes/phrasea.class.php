@@ -276,7 +276,7 @@ class phrasea
     $appbox = appbox::get_instance();
     $user = User_Adapter::getInstance($usr_id, $appbox);
 
-    return $user->ACL()->get_granted_base() > 0;
+    return count($user->ACL()->get_granted_base()) > 0;
   }
 
   public static function use_i18n($locale, $textdomain = 'phraseanet')

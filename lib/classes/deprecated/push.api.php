@@ -801,7 +801,7 @@ function sqlFromFilters($usr, $filters)
           $params[':like1'] = $start . $filter->fieldsearch . $end;
           break;
         case "NAME" :
-          $precise.=" (usr_nom " . $like . " :like2 OR usr_prenom like like2bis)";
+          $precise.=" (usr_nom " . $like . " :like2 OR usr_prenom like :like2bis)";
           $params[':like2'] = $start . $filter->fieldsearch . $end;
           $params[':like2bis'] = $start . $filter->fieldsearch . $end;
           break;
@@ -845,7 +845,7 @@ function sqlFromFilters($usr, $filters)
         $c['country' . $n] = $country;
       }
       $n++;
-      $precise.=" AND usr.pays IN (" . implode(", ", array_keys($c)) . ")";
+      $precise.=" AND usr.pays IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
     if (count($filters->activite) > 0 && trim($filters->activite[0]) != '')
@@ -857,7 +857,7 @@ function sqlFromFilters($usr, $filters)
         $c['activite' . $n] = $activite;
       }
       $n++;
-      $precise.=" AND usr.activite IN ('" . implode(", ", array_keys($c)) . "')";
+      $precise.=" AND usr.activite IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
     if (count($filters->fonction) > 0 && trim($filters->fonction[0]) != '')
@@ -869,7 +869,7 @@ function sqlFromFilters($usr, $filters)
         $c['fonction' . $n] = $fonction;
       }
       $n++;
-      $precise.=" AND usr.fonction IN ('" . implode(", ", array_keys($c)) . "')";
+      $precise.=" AND usr.fonction IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
     if (count($filters->societe) > 0 && trim($filters->societe[0]) != '')
@@ -881,7 +881,7 @@ function sqlFromFilters($usr, $filters)
         $c['societe' . $n] = $societe;
       }
       $n++;
-      $precise.=" AND usr.societe IN ('" . implode(", ", array_keys($c)) . "')";
+      $precise.=" AND usr.societe IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
     if (count($filters->template) > 0 && trim($filters->template[0]) != '')
@@ -893,7 +893,7 @@ function sqlFromFilters($usr, $filters)
         $c['template' . $n] = $template;
       }
       $n++;
-      $precise.=" AND usr.lastModel IN ('" . implode(", ", array_keys($c)) . "')";
+      $precise.=" AND usr.lastModel IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
   }
