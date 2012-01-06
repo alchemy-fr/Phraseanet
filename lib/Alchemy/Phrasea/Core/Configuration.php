@@ -24,7 +24,7 @@ use Alchemy\Phrasea\Core\Configuration\Parser as ConfigurationParser;
  */
 class Configuration
 {
-
+ 
   /**
    * The finale configuration values as an array
    * @var ParameterBag\ParameterBag
@@ -89,6 +89,10 @@ class Configuration
    */
   public function getEnvironnement()
   {
+    if( null === $this->environment)
+    {
+      $this->getConfiguration();
+    }
     return $this->environment;
   }
 
@@ -330,6 +334,18 @@ class Configuration
     return $this;
   }
 
+  /**
+   * Return all services defined in service.yml
+   * @return ParameterBag
+   */
+  public function getServices()
+  {
+    $serviceFile = $this->configurationHandler->getSpecification()->getServiceFile();
+    $services = $this->configurationHandler->getParser()->parse($serviceFile);
+  
+    return new ParameterBag($services);
+  }
+  
   /**
    * Write into the main file the serverName
    * @param type $serverName
