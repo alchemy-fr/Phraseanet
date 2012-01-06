@@ -22,8 +22,6 @@ use Alchemy\Phrasea\Controller\Prod as Controller;
  */
 return call_user_func(function()
                 {
-                  $twig = new \supertwig();
-
                   $app = new Application();
                   $app['Core'] = bootstrap::getCore();
 
@@ -49,11 +47,10 @@ return call_user_func(function()
                   $app->mount('/tooltip', new Controller\Tooltip());
                   $app->mount('/', new Controller\Root());
 
-                  $app->error(function (\Exception $e, $code) use ($app, $twig)
+                  $app->error(function (\Exception $e, $code) use ($app)
                           {
-                            $request = $app['request'];
-
                             /* @var $request \Symfony\Component\HttpFoundation\Request */
+                            $request = $app['request'];
 
                             if ($e instanceof \Bridge_Exception)
                             {
@@ -66,6 +63,9 @@ return call_user_func(function()
                                   , 'r_action' => $request->getRequestUri()
                                   , 'r_parameters' => ($request->getMethod() == 'GET' ? array() : $request->request->all())
                               );
+
+                              /* @var $twig \Twig_Environment */
+                              $twig = $app['Core']->getTwig();
 
                               if ($e instanceof \Bridge_Exception_ApiConnectorNotConfigured)
                               {

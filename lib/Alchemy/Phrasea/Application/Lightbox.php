@@ -42,9 +42,9 @@ return call_user_func(
                             $basket_collection = $repository->findActiveByUser(
                                     $app['Core']->getAuthenticatedUser()
                             );
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
-                            $twig = new supertwig();
-                            $twig->addFilter(array('nl2br' => 'nl2br'));
                             $browser = Browser::getInstance();
 
                             $template = 'lightbox/index.twig';
@@ -68,12 +68,14 @@ return call_user_func(
 
                   $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(Silex\Application $app, $sselcont_id) use ($session, $appbox)
                           {
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
+//                            var_dump($twig->getLoader()->getPaths());
                             $browser = Browser::getInstance();
+
                             if (!$browser->isMobile())
                               return new Response('');
 
-                            $twig = new supertwig();
-                            $twig->addFilter(array('nl2br' => 'nl2br'));
 
                             $em = $app['Core']->getEntityManager();
 
@@ -82,7 +84,7 @@ return call_user_func(
 
                             $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
 
-                            $template = '/lightbox/note_form.twig';
+                            $template = 'lightbox/note_form.twig';
                             $output = $twig->render($template, array('basket_element' => $basket_element, 'module_name' => ''));
 
                             return new Response($output);
@@ -91,10 +93,10 @@ return call_user_func(
 
                   $app->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(Silex\Application $app, $sselcont_id)
                           {
-                            $twig = new supertwig();
-                            $twig->addFilter(array('nl2br' => 'nl2br', 'formatoctet' => 'p4string::format_octets'));
-
                             $browser = Browser::getInstance();
+
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
                             $em = $app['Core']->getEntityManager();
 
@@ -155,8 +157,8 @@ return call_user_func(
 
                   $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(Silex\Application $app, $entry_id, $item_id)
                           {
-                            $twig = new supertwig();
-                            $twig->addFilter(array('nl2br' => 'nl2br', 'formatoctet' => 'p4string::format_octets'));
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
                             $appbox = appbox::get_instance();
                             $entry = Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
@@ -225,9 +227,8 @@ return call_user_func(
                                     , $app['Core']->getAuthenticatedUser()
                             );
 
-                            $twig = new supertwig();
-
-                            $twig->addFilter(array('nl2br' => 'nl2br'));
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
                             $template = 'lightbox/validate.twig';
 
@@ -268,9 +269,8 @@ return call_user_func(
                                     , $app['Core']->getAuthenticatedUser()
                             );
 
-                            $twig = new supertwig();
-
-                            $twig->addFilter(array('nl2br' => 'nl2br'));
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
                             $template = 'lightbox/validate.twig';
 
@@ -302,9 +302,8 @@ return call_user_func(
 
                             $feed_entry = Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
 
-                            $twig = new supertwig();
-
-                            $twig->addFilter(array('nl2br' => 'nl2br'));
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
                             $template = 'lightbox/feed.twig';
 
@@ -328,8 +327,8 @@ return call_user_func(
 
                   $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(Silex\Application $app, $ssel_id)
                           {
-                            $twig = new supertwig();
-                            $twig->addFilter(array('nl2br' => 'nl2br'));
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
                             $browser = Browser::getInstance();
 
@@ -373,8 +372,8 @@ return call_user_func(
 
                             $basket_element->getUserValidationDatas($app['Core']->getAuthenticatedUser())
                                     ->setNote($note);
-                            $twig = new supertwig();
-                            $twig->addFilter(array('nl2br' => 'nl2br'));
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
                             $browser = Browser::getInstance();
 
@@ -462,7 +461,7 @@ return call_user_func(
                             $em = $app['Core']->getEntityManager();
 
                             $user = $app['Core']->getAuthenticatedUser();
-                            
+
                             $repository = $em->getRepository('\Entities\Basket');
 
                             /* @var $repository \Repositories\BasketRepository */
@@ -492,11 +491,12 @@ return call_user_func(
 
 
 
-                  $app->error(function($e)
+                  $app->error(function($e) use($app)
                           {
-                            $twig = new supertwig();
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
                             $registry = registry::get_instance();
-
+                            var_dump($e->getMessage());
                             $template = 'lightbox/error.twig';
 
                             if ($registry->get('GV_debug'))

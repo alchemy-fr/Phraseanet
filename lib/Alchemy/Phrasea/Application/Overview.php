@@ -136,15 +136,15 @@ return call_user_func(
 
 
                   $app->get('/permalink/v1/{label}/{sbas_id}/{record_id}/{key}/{subdef}/view/'
-                          , function($label, $sbas_id, $record_id, $key, $subdef)
+                          , function($label, $sbas_id, $record_id, $key, $subdef) use($app)
                           {
 
                             $databox = databox::get_instance((int) $sbas_id);
                             $record = media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
                             if (!($record instanceof record_adapter))
                               throw new Exception('bad luck');
-                            $twig = new supertwig();
-                            $twig->addFilter(array('formatoctet' => 'p4string::format_octets'));
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
 
                             return $twig->render('overview.twig', array('subdef_name' => $subdef, 'module_name' => 'overview', 'module' => 'overview', 'view' => 'overview', 'record' => $record));
                           })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
