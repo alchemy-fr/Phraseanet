@@ -137,6 +137,7 @@ class User_Query implements User_QueryInterface
 
   const LIKE_FIRSTNAME= 'usr_prenom';
   const LIKE_LASTNAME= 'usr_nom';
+  const LIKE_NAME= 'name';
   const LIKE_COMPANY = 'societe';
   const LIKE_LOGIN = 'usr_login';
   const LIKE_EMAIL = 'usr_mail';
@@ -292,6 +293,7 @@ class User_Query implements User_QueryInterface
     }
 
     $sql_like = array();
+    
     foreach ($this->like_field as $like_field => $like_value)
     {
       switch ($like_field)
@@ -303,7 +305,7 @@ class User_Query implements User_QueryInterface
         case self::LIKE_LOGIN:
         case self::LIKE_COUNTRY:
           $sql_like[] = sprintf(
-                  ' usr.`%s` LIKE "%s%%" '
+                  ' usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
                   , $like_field
                   , str_replace(array('"', '%'), array('\"', '\%'), $like_value)
           );
@@ -579,8 +581,17 @@ class User_Query implements User_QueryInterface
    */
   public function like($like_field, $like_value)
   {
-    $this->like_field[trim($like_field)] = trim($like_value);
-
+    
+    if($like_field == self::LIKE_NAME)
+    {
+      $this->like_field[self::LIKE_FIRSTNAME] = trim($like_value);
+      $this->like_field[self::LIKE_LASTNAME] = trim($like_value);
+    }
+    else
+    {
+      $this->like_field[trim($like_field)] = trim($like_value);
+    }
+    
     $this->total = $this->page = null;
 
     return $this;

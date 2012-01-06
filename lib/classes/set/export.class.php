@@ -984,6 +984,7 @@ class set_export extends set_abstract
         );
         $response->headers->set('X-Sendfile', $file);
         $response->headers->set('X-Accel-Redirect', $file_xaccel);
+        $response->headers->set('Pragma', 'public', true);
         $response->headers->set('Content-Type', $mime);
         $response->headers->set('Content-Name', $exportname);
         $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
@@ -993,12 +994,25 @@ class set_export extends set_abstract
       }
       else
       {
+        /**
+         * 
+         * Header "Pragma: public" SHOULD be present.
+         * In case it is not present, download on IE 8 and previous over HTTPS
+         * will fail.
+         * 
+         * @todo : merge this shitty fix with Response object.
+         * 
+         */
+        if(!headers_sent())
+        {
+          header("Pragma: public");
+        }
+        
         $response->headers->set('Content-Type', $mime);
         $response->headers->set('Content-Name', $exportname);
         $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
         $response->headers->set('Content-Length', filesize($file));
         $response->setContent(file_get_contents($file));
-
         return $response;
       }
     }
@@ -1014,22 +1028,42 @@ class set_export extends set_abstract
    * @param String $disposition
    * @return Void
    */
-  function stream_data($data, $exportname, $mime, $disposition='attachment')
+  public static function stream_data($data, $exportname, $mime, $disposition='attachment')
   {
 
-    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-    header("Cache-Control: no-store, no-cache, must-revalidate");
-    header("Cache-Control: post-check=0, pre-check=0", false);
-    header("Pragma: no-cache");
-    header("Content-Type: " . $mime);
-    header("Content-Length: " . strlen($data));
-    header("Cache-Control: max-age=3600, must-revalidate ");
-    header("Content-Disposition: " . $disposition
-            . "; filename=" . $exportname . ";");
-
-    echo $data;
-
+          header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+          header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+          header("Cache-Control: no-store, no-cache, must-revalidate");
+          header("Cache-Control: post-check=0, pre-check=0", false);
+          header("Pragma: public");
+          header("Content-Type: " . $mime);
+          header("Content-Length: " . strlen($data));
+          header("Cache-Control: max-age=3600, must-revalidate ");
+          header("Content-Disposition: " . $disposition . "; filename=" . $exportname . ";");
+echo $data;
+          exit();
+    $response = new \Symfony\Component\HttpFoundation\Response();
+    $response->headers->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+    $response->setLastModified(new DateTime());
+    $response->headers->set('Pragma', 'public', true);
+    $response->headers->set('Content-Type', $mime);
+    $response->headers->set('Content-Length', strlen($data));
+    $response->headers->set('Content-Disposition', $disposition. "; filename=" . $exportname . ";");
+//    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+//    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+//        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+//
+//        header("Pragma: public");
+//
+//    header("Content-Type: " . $mime);
+//    header("Content-Length: " . strlen($data));
+//    header("Cache-Control: max-age=3600, must-revalidate ");
+//    header("Content-Disposition: " . $disposition
+//            . "; filename=" . $exportname . ";");
+//
+//    echo $data;
+    $response->send();
+exit();
     return true;
   }
 
