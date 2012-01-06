@@ -93,6 +93,13 @@ class http_request
       return true;
     return false;
   }
+  
+  public function is_secure()
+  {
+    return (
+        isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) == 'on' || $_SERVER['HTTPS'] == 1)
+    );
+  }
 
   public function comes_from_flash()
   {

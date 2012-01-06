@@ -1747,14 +1747,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
           echo $e->getMessage() . "\n";
       }
 
-      if (!array_key_exists($subdefname, $record_subdefs))
+      if (array_key_exists($subdefname, $record_subdefs))
       {
-        continue;
+        $record_subdefs[$subdefname]->delete_data_from_cache();
       }
 
-      $record_subdefs[$subdefname]->delete_data_from_cache();
-
-      $this->delete_data_from_cache(self::CACHE_SUBDEFS);
       try
       {
         $subdef = $this->get_subdef($subdefname);
