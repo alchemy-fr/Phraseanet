@@ -153,7 +153,7 @@ phrasea::headers();
       </div>
       <?php ?>
       <div style="display:<?php echo $zip_done ? 'block' : 'none' ?>;" id="ready">
-        <p><?php echo sprintf(_('telechargement::Vos documents sont prets. Si le telechargement ne demarre pas, %s cliquez ici %s'), '<a href="/download/' . $parm['token'] . '/get/'.$list['export_name'].'" target="_self">', '</a>'); ?></p>
+        <p><?php echo sprintf(_('telechargement::Vos documents sont prets. Si le telechargement ne demarre pas, %s cliquez ici %s'), '<a href="/download/' . $parm['token'] . '/get" target="_self">', '</a>'); ?></p>
       </div>
       <div style="margin:20px 0;">
         <p><?php echo _('telechargement::Le fichier contient les elements suivants'); ?></p>
