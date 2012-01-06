@@ -151,10 +151,14 @@
     {% for usr in users.get_results %}
     <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.get_id()}}">
       <td style="text-align: center;">
-        {% if usr.ACL().is_phantom() %}
-          <img src="/skins/admin/ghost.png"/>
+        {% if usr.is_template() %}
+          <img title="{% trans 'This is a template' %}" src="/skins/icons/template.png"/>
+        {% else %}
+          {% if usr.ACL().is_phantom() %}
+          <img title="{% trans 'This user has no rights' %}" src="/skins/admin/ghost.png"/>
+          {% endif %}
+          {{usr.get_id()}}
         {% endif %}
-        {{usr.get_id()}}
       </td>
       <td>
         {{usr.get_login()}}
