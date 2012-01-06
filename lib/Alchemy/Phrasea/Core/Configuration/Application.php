@@ -89,5 +89,15 @@ class Application implements Specification
   {
     return new \SplFileObject($this->getConfigurationPathName());
   }
+  
+    /**
+   * Return the main configuration file 
+   * 
+   * @return \SplFileObject
+   */
+  public function getServiceFile()
+  {
+    return new \SplFileObject(__DIR__ . '/../../../../../config/service.yml');
+  }
 
 }
