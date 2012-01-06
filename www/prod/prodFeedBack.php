@@ -38,8 +38,8 @@ switch ($action)
     $engine = new searchEngine_adapter_sphinx_engine();
 
     $parm = $request->get_parms("bas", "term"
-                    , "stemme"
-                    , "search_type", "recordtype", "status", "fields", "datemin", "datemax", "datefield");
+            , "stemme"
+            , "search_type", "recordtype", "status", "fields", "datemin", "datemax", "datefield");
 
     $options = new searchEngine_options();
 
@@ -173,7 +173,8 @@ switch ($action)
 
     $record = new record_preview('RESULT', $parm['pos'], '', '', $search_engine, $parm['query']);
     $records = $record->get_train($parm['pos'], $parm['query'], $search_engine);
-    $twig = new supertwig();
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
     $output = p4string::jsonencode(
                     array('current' =>
                         $twig->render(
@@ -190,16 +191,18 @@ switch ($action)
     $parm = $request->get_parms('cont', 'pos');
     $record = new record_preview('REG', $parm['pos'], $parm['cont']);
     $output = $twig->render('prod/preview/reg_train.html', array('container_records' => $record->get_container()->get_children(),
-                'record' => $record, 'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')));
+        'record' => $record, 'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')));
     break;
-  
+
   case 'GET_ORDERMANAGER':
     try
     {
       $parm = $request->get_parms('sort', 'page');
       $orders = new set_ordermanager($parm['sort'], $parm['page']);
-      $twig = new supertwig();
-      $twig->addFilter(array('phraseadate' => 'phraseadate::getPrettyString'));
+
+      $core = \bootstrap::getCore();
+      $twig = $core->getTwig();
+
       $render = $twig->render('prod/orders/order_box.twig', array('ordermanager' => $orders));
       $ret = array('error' => false, 'datas' => $render);
     }
@@ -217,9 +220,9 @@ switch ($action)
       $parm = $request->get_parms('order_id');
       $order = new set_order($parm['order_id']);
 
-      $twig = new supertwig();
-      $twig->addFilter(array('phraseadate' => 'phraseadate::getPrettyString'));
-      $twig->addFilter(array('nl2br' => 'nl2br'));
+      $core = \bootstrap::getCore();
+      $twig = $core->getTwig();
+
       $render = $twig->render('prod/orders/order_item.twig', array('order' => $order));
       $ret = array('error' => false, 'datas' => $render);
     }
@@ -285,21 +288,21 @@ switch ($action)
 
     $request = http_request::getInstance();
     $parm = $request->get_parms(
-                    "addr"   // addr du srv ftp
-                    , "login" // login ftp
-                    , "pwd"  // pwd ftp
-                    , "passif" // mode passif ou non
-                    , "nbretry" // nb retry
-                    , "ssl" // nb retry
-                    , "obj" // les types d'obj a exporter
-                    , "destfolder"// le folder de destination
-                    , "usr_dest"  // le mail dudestinataire ftp
-                    , "lst"  // la liste des objets
-                    , "ssttid"
-                    , "sendermail"
-                    , "namecaract"
-                    , "NAMMKDFOLD"
-                    , "logfile"
+            "addr"   // addr du srv ftp
+            , "login" // login ftp
+            , "pwd"  // pwd ftp
+            , "passif" // mode passif ou non
+            , "nbretry" // nb retry
+            , "ssl" // nb retry
+            , "obj" // les types d'obj a exporter
+            , "destfolder"// le folder de destination
+            , "usr_dest"  // le mail dudestinataire ftp
+            , "lst"  // la liste des objets
+            , "ssttid"
+            , "sendermail"
+            , "namecaract"
+            , "NAMMKDFOLD"
+            , "logfile"
     );
 
     $download = new set_exportftp($parm['lst'], $parm['ssttid']);
@@ -327,10 +330,10 @@ switch ($action)
 
     $request = http_request::getInstance();
     $parm = $request->get_parms(
-                    "addr"   // addr du srv ftp
-                    , "login" // login ftp
-                    , "pwd"  // pwd ftp
-                    , "ssl" // nb retry
+            "addr"   // addr du srv ftp
+            , "login" // login ftp
+            , "pwd"  // pwd ftp
+            , "ssl" // nb retry
     );
 
     $ssl = $parm['ssl'] == '1';
