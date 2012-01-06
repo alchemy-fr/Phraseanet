@@ -405,14 +405,14 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     if (trim($email) == '')
       $email = null;
-    
+
     $test_user = User_Adapter::get_usr_id_from_email($email);
 
-    if($test_user && $test_user != $this->get_id())
+    if ($test_user && $test_user != $this->get_id())
     {
-      throw new Exception_InvalidArgument (sprintf(_('A user already exists with email addres %s'), $email));
+      throw new Exception_InvalidArgument(sprintf(_('A user already exists with email addres %s'), $email));
     }
-    
+
     $sql = 'UPDATE usr SET usr_mail = :new_email WHERE usr_id = :usr_id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':new_email' => $email, ':usr_id' => $this->get_id()));
@@ -593,7 +593,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     return $this;
   }
 
-   /**
+  /**
    *
    * @param boolean $boolean
    * @return User_Adapter
@@ -861,7 +861,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':owner_id' => $owner->get_id(), ':usr_id' => $this->get_id()));
     $stmt->closeCursor();
-    
+
     $this->set_ftp_address('')
             ->set_activeftp(false)
             ->set_city('')
@@ -893,10 +893,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     return $this->is_template;
   }
-  
+
   public function is_special()
   {
-    return in_array($this->login, array('invite', 'autoregister')); 
+    return in_array($this->login, array('invite', 'autoregister'));
   }
 
   public function get_template_owner()
@@ -906,9 +906,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
   public static function get_usr_id_from_email($email)
   {
-    if(is_null($email))
+    if (is_null($email))
       return false;
-    
+
     $conn = connection::getPDOConnection();
     $sql = 'SELECT usr_id FROM usr
             WHERE usr_mail = :email
@@ -1069,7 +1069,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $this->id = (int) $row['usr_id'];
     $this->email = $row['usr_mail'];
     $this->login = $row['usr_login'];
-    
+
     $this->ldap_created = $row['ldap_created'];
 
     $this->defaultftpdatas = $row['defaultftpdatasent'];
@@ -1117,8 +1117,14 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   public function set_last_template(User_Interface $template)
   {
     $sql = 'UPDATE usr  SET lastModel = :template_id WHERE usr_id = :usr_id';
+
+    $params = array(
+        ':usr_id' => $this->get_id()
+        , ':template_id' => $template->get_login()
+    );
+
     $stmt = $this->appbox->get_connection()->prepare($sql);
-    $stmt->execute(array(':usr_id' => $this->get_id(), ':template_id' => $template->get_id()));
+    $stmt->execute($params);
     $stmt->closeCursor();
     $this->delete_data_from_cache();
 
@@ -1249,18 +1255,8 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
   public function get_applied_template()
   {
-    $template = '';
-    if ($this->applied_template)
-    {
-      $sql = 'SELECT usr_login FROM usr WHERE usr_login = :login';
-      $stmt = $this->appbox->get_connection()->prepare($sql);
-      $stmt->execute(array(':login' => $this->applied_template));
-      $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-      $template = $row['usr_login'];
-    }
-
-    return $template;
+    
+    return $this->applied_template;
   }
 
   public function get_creation_date()
@@ -1281,7 +1277,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   protected function load_preferences()
   {
     if ($this->_prefs)
-
       return $this;
     $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -1376,32 +1371,32 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return $this;
   }
 
-  public function get_cache_key($option=null)
+  public function get_cache_key($option = null)
   {
     return '_user_' . $this->get_id() . ($option ? '_' . $option : '');
   }
 
-  public function delete_data_from_cache($option=null)
+  public function delete_data_from_cache($option = null)
   {
     $this->appbox->delete_data_from_cache($this->get_cache_key($option));
 
     return $this;
   }
 
-  public function get_data_from_cache($option=null)
+  public function get_data_from_cache($option = null)
   {
     $this->appbox->get_data_from_cache($this->get_cache_key($option));
 
     return $this;
   }
 
-  public function set_data_to_cache($value, $option=null, $duration = 0)
+  public function set_data_to_cache($value, $option = null, $duration = 0)
   {
     $this->appbox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
 
@@ -1519,7 +1514,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     if (!$session->is_authenticated())
-
       return;
 
     $ses_id = $session->get_ses_id();
@@ -1578,7 +1572,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         }
         catch (Exception $e)
         {
-
+          
         }
       }
     }
@@ -1642,7 +1636,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return false;
@@ -1728,7 +1722,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return $locale;
@@ -1794,7 +1788,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   public function get_nonce()
   {
     if ($this->nonce)
-
       return $this->nonce;
     $nonce = false;
 
@@ -1811,7 +1804,6 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     return $this->nonce;
   }
-
 
   public function __sleep()
   {
