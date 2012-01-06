@@ -196,7 +196,9 @@ class Edit extends RecordHelper
   {
     $_lst = array();
     $user = $this->getCore()->getAuthenticatedUser();
-    $twig = new \supertwig();
+        
+    $twig = $this->getCore()->getTwig();
+
 
     foreach ($this->selection as $record)
     {
