@@ -264,12 +264,12 @@ class setup
   {
     if (system_server::get_platform() == 'WINDOWS')
     {
-      $exiftool = dirname(__DIR__) . '/../vendor/alchemy/exiftool/exiftool.exe';
+      $exiftool = dirname(__DIR__) . '/vendor/exiftool/exiftool.exe';
       $indexer = dirname(dirname(__DIR__)) . '/bin/phraseanet_indexer.exe';
     }
     else
     {
-      $exiftool = dirname(__DIR__) . '/../vendor/alchemy/exiftool/exiftool';
+      $exiftool = dirname(__DIR__) . '/vendor/exiftool/exiftool';
       $indexer = null;
     }
 

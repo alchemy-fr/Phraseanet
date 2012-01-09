@@ -30,6 +30,8 @@ class Doctrine
 
   public function __construct(Array $doctrineConfiguration = array())
   {
+    require_once __DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
+
     static::loadClasses();
     
     $config = new \Doctrine\ORM\Configuration();
@@ -118,13 +120,13 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\ORM'
-                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib')
+                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\DBAL'
-                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib/vendor/doctrine-dbal/lib')
+                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib')
     );
     $classLoader->register();
 
@@ -142,7 +144,7 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\Common'
-                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib/vendor/doctrine-common/lib')
+                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib')
     );
     $classLoader->register();
 
@@ -166,7 +168,7 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Symfony'
-                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib/vendor')
+                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor')
     );
 
     $classLoader->register();
@@ -194,7 +196,7 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Gedmo'
-                    , __DIR__ . "/../../../../../vendor/gedmo/doctrine-extensions/lib"
+                    , __DIR__ . "/../../../../vendor/doctrine2-gedmo/lib"
     );
     $classLoader->register();
 

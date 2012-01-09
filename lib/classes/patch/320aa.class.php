@@ -85,7 +85,7 @@ class patch_320aa implements patchInterface
 
         if($datas['name'] == 'GV_exiftool' && strpos($val, 'lib/exiftool/exiftool') !== false)
         {
-          $val = str_replace('lib/exiftool/exiftool', 'vendor/alchemy/exiftool/exiftool', $val);
+          $val = str_replace('lib/exiftool/exiftool', 'lib/vendor/exiftool/exiftool', $val);
         }
 
         switch ($datas['type'])
