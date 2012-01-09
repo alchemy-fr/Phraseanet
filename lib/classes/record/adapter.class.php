@@ -1080,6 +1080,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ':record_id' => $this->record_id
             )
     );
+    
+    $this->reindex();
 
     return $this;
   }
