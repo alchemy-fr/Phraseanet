@@ -200,6 +200,12 @@ class Doctrine
     );
     $classLoader->register();
 
+    $classLoader = new \Doctrine\Common\ClassLoader(
+                    'DoctrineExtensions'
+                    , __DIR__ . "/../../../../vendor/doctrine2-beberlei/lib"
+    );
+    $classLoader->register();
+
 
     return;
   }
