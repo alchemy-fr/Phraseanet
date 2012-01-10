@@ -48,40 +48,64 @@ class WorkZone implements ControllerProviderInterface
               return new Response($app['Core']->getTwig()->render('prod/WorkZone/WorkZone.html.twig', $params));
             });
 
+    $controllers->get('/Browse/', function(Application $app)
+            {
+
+              $user = $app['Core']->getAuthenticatedUser();
+
+              $request = $app['Core']->getRequest();
+
+              $em = $app['Core']->getEntityManager();
+              /* @var $em \Doctrine\ORM\EntityManager */
+
+              $BasketRepo = $em->getRepository('\Entities\Basket');
+
+              $Baskets = $BasketRepo->findWorkzoneBasket(
+                      $user
+                      , $request->get('Query')
+                      , $request->get('Year')
+                      , $request->get('Type')
+              );
+
+              $params = array('Baskets' => $Baskets);
+              
+              return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser.html.twig', $params));
+            });
+
 
     $controllers->post(
             '/attachStories/'
             , function(Application $app, Request $request)
             {
 
-              
+
               $user = $app['Core']->getAuthenticatedUser();
 
               $em = $app['Core']->getEntityManager();
-             /* @var $em \Doctrine\ORM\EntityManager */
-             
+              /* @var $em \Doctrine\ORM\EntityManager */
+
               $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
 
               $alreadyFixed = $done = 0;
 
-              foreach ( explode(';', $request->get('stories')) as $element)
+              foreach (explode(';', $request->get('stories')) as $element)
               {
                 $element = explode('_', $element);
                 $Story = new \record_adapter($element[0], $element[1]);
 
                 if (!$Story->is_grouping())
                   throw new \Exception('You can only attach stories');
-                
+
                 if (!$user->ACL()->has_access_to_base($Story->get_base_id()))
                   throw new \Exception_Forbidden('You do not have access to this Story');
 
-                
+
                 if ($StoryWZRepo->findUserStory($user, $Story))
                 {
                   $alreadyFixed++;
                   continue;
                 }
-                
+
                 $StoryWZ = new \Entities\StoryWZ();
                 $StoryWZ->setUser($user);
                 $StoryWZ->setRecord($Story);
@@ -89,7 +113,7 @@ class WorkZone implements ControllerProviderInterface
                 $em->persist($StoryWZ);
                 $done++;
               }
-              
+
               $em->flush();
 
               if ($alreadyFixed === 0)
@@ -146,8 +170,8 @@ class WorkZone implements ControllerProviderInterface
                 return new RedirectResponse('/{sbas_id}/{record_id}/');
               }
             });
-            
-            
+
+
     $controllers->post(
             '/detachStory/{sbas_id}/{record_id}/'
             , function(Application $app, Request $request, $sbas_id, $record_id)
@@ -162,13 +186,13 @@ class WorkZone implements ControllerProviderInterface
 
               /* @var $repository \Repositories\StoryWZRepository */
               $StoryWZ = $repository->findUserStory($user, $Story);
-              
+
               if (!$StoryWZ)
               {
                 throw new \Exception_NotFound('Story not found');
               }
               $em->remove($StoryWZ);
-              
+
               $em->flush();
 
               $data = array(
