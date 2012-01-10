@@ -12,6 +12,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use DoctrineExtensions\Paginate\Paginate;
 
 /**
  *
@@ -21,6 +22,10 @@ use Doctrine\ORM\EntityRepository;
  */
 class BasketRepository extends EntityRepository
 {
+
+  const RECEIVED = 'received';
+  const VALIDATION_SENT = 'validation_sent';
+  const VALIDATION_DONE = 'validation_done';
 
   /**
    * Returns all basket for a given user that are not marked as archived
@@ -38,7 +43,7 @@ class BasketRepository extends EntityRepository
 
     return $query->getResult();
   }
-  
+
   /**
    * Returns all unread basket for a given user that are not marked as archived
    *
@@ -120,6 +125,57 @@ class BasketRepository extends EntityRepository
     $query->setParameters($params);
 
     return $query->getResult();
+  }
+
+  public function findWorkzoneBasket(\User_Adapter $user, $query, $year, $type)
+  {
+    $params = array();
+
+    switch ($type)
+    {
+      case self::RECEIVED:
+        $dql = 'SELECT b FROM Entities\Basket b 
+                  WHERE b.usr_id = :usr_id AND pusher_id IS NOT NULL';
+        $params = array(
+            'usr_id' => $user->get_id()
+        );
+        break;
+      case self::VALIDATION_DONE:
+        $dql = 'SELECT b FROM Entities\Basket b 
+                  JOIN b.validation s 
+                  JOIN s.participants p  
+                WHERE b.usr_id != ?1 AND p.usr_id = ?2';
+        $params = array(
+            1 => $user->get_id()
+            , 2 => $user->get_id()
+        );
+        break;
+      case self::VALIDATION_SENT:
+        $dql = 'SELECT b FROM Entities\Basket b 
+                WHERE b.validation IS NOT NULL AND b.usr_id = :usr_id';
+        $params = array(
+            'usr_id' => $user->get_id()
+        );
+        break;
+      default:
+        $dql = 'SELECT b FROM Entities\Basket b 
+                LEFT JOIN b.validation s LEFT JOIN s.participants p 
+                WHERE b.usr_id = :usr_id OR p.usr_id = :validating_usr_id';
+        $params = array(
+            'usr_id' => $user->get_id(),
+            'validating_usr_id' => $user->get_id()
+        );
+        break;
+    }
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters($params);
+
+    $count = Paginate::getTotalQueryResults($query);
+    $paginateQuery = Paginate::getPaginateQuery($query, 0, 10);
+    $result = $paginateQuery->getResult();
+
+    return array('count' => $count, 'result' => $result);
   }
 
 }
