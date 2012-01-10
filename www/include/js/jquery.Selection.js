@@ -190,8 +190,5 @@
     }
   };
 
-console.log('SELECTABALE to be declare');
-
   window.Selectable = Selectable;
-console.log('SELECTABALE declared');
 })(window);
