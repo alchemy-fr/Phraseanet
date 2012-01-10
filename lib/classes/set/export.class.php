@@ -683,7 +683,6 @@ class set_export extends set_abstract
         $desc = self::get_caption(
                         $download_element->get_base_id()
                         , $download_element->get_record_id()
-                        , $session->get_ses_id()
         );
 
         $file = $files[$id]["export_name"]
@@ -713,7 +712,6 @@ class set_export extends set_abstract
         $desc = self::get_caption(
                         $download_element->get_base_id()
                         , $download_element->get_record_id()
-                        , $session->get_ses_id()
                         , true
                         , 'yaml'
         );
@@ -906,9 +904,8 @@ class set_export extends set_abstract
               case 'yml':
 
                 $vi = trim($vi);
-                $int_vi = (int) $vi;
-                if ($int_vi == $vi)
-                  $vi = $int_vi . ' est egal a ' . $vi;
+                if (ctype_digit($vi))
+                  $vi = (int) $vi;
 
                 $buffer[trim($ki)] = $vi;
                 break;
