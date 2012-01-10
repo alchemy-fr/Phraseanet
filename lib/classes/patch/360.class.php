@@ -92,6 +92,12 @@ class patch_360 implements patchInterface
     $stmt->execute();
     $stmt->closeCursor();
     
+    $sql = 'UPDATE Baskets SET pusher_id = NULL WHERE pusher_id = 0';
+    
+    $stmt = $appbox->get_connection()->prepare($sql);
+    $stmt->execute();
+    $stmt->closeCursor();
+    
     $sql = 'INSERT INTO ValidationSessions 
       (
         SELECT id, v.ssel_id as basket_id ,created_on as created
