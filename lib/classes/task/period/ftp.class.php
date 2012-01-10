@@ -459,7 +459,7 @@ class task_period_ftp extends task_appboxAbstract
 
       if (in_array(trim($basefolder), array('.', './', '')))
         $basefolder = '/';
-
+      
       foreach ($ftp_export['files'] as $fileid => $file)
       {
         $base_id = $file["base_id"];
