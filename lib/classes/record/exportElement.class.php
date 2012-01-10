@@ -82,148 +82,142 @@ class record_exportElement extends record_adapter
 
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
-    if (isset($sd['document']) &&
-            ($user->ACL()->has_right_on_base($this->get_base_id(), 'candwnldhd') ||
-            $user->ACL()->has_preview_grant($this))
-    )
+    $subdefgroups = $appbox->get_databox($sbas_id)->get_subdef_structure();
+
+    $subdefs = array();
+
+    foreach ($subdefgroups as $subdef_type => $subdefs_obj)
     {
-      $subdefgroups = $appbox->get_databox($sbas_id)->get_subdef_structure();
-
-      $subdefs = array();
-
-      foreach ($subdefgroups as $subdef_type => $subdefs_obj)
+      if ($subdef_type == $this->get_type())
       {
-        if ($subdef_type == $this->get_type())
+        $subdefs = $subdefs_obj;
+        break;
+      }
+    }
+
+    $go_dl = array(
+        'document' => false,
+        'preview' => false,
+        'thumbnail' => true
+    );
+
+    if ($user->ACL()->has_right_on_base($this->get_base_id(), 'candwnldhd'))
+    {
+      $go_dl['document'] = true;
+    }
+    if ($user->ACL()->has_right_on_base($this->get_base_id(), 'candwnldpreview'))
+    {
+      $go_dl['preview'] = true;
+    }
+    if ($user->ACL()->has_hd_grant($this))
+    {
+      $go_dl['document'] = true;
+      $go_dl['preview'] = true;
+    }
+    if ($user->ACL()->has_preview_grant($this))
+    {
+      $go_dl['preview'] = true;
+    }
+
+    $query = new User_Query($appbox);
+
+    $masters = $query->on_base_ids(array($this->base_id))
+                    ->who_have_right(array('order_master'))
+                    ->execute()->get_results();
+
+    $go_cmd = (count($masters) > 0 && $user->ACL()->has_right_on_base($this->base_id, 'cancmd'));
+
+    $orderable['document'] = false;
+    $downloadable['document'] = false;
+
+    if (isset($sd['document']) && is_file($sd['document']->get_pathfile()))
+    {
+      if ($go_dl['document'] === true)
+      {
+        if ($user->ACL()->is_restricted_download($this->base_id))
         {
-          $subdefs = $subdefs_obj;
-          break;
-        }
-      }
-
-      $go_dl = array(
-          'document' => false,
-          'preview' => false,
-          'thumbnail' => true
-      );
-
-      if ($user->ACL()->has_right_on_base($this->get_base_id(), 'candwnldhd'))
-      {
-        $go_dl['document'] = true;
-      }
-      if ($user->ACL()->has_right_on_base($this->get_base_id(), 'candwnldpreview'))
-      {
-        $go_dl['preview'] = true;
-      }
-      if ($user->ACL()->has_hd_grant($this))
-      {
-        $go_dl['document'] = true;
-        $go_dl['preview'] = true;
-      }
-      if ($user->ACL()->has_preview_grant($this))
-      {
-        $go_dl['preview'] = true;
-      }
-
-      $query = new User_Query($appbox);
-
-      $masters = $query->on_base_ids(array($this->base_id))
-                      ->who_have_right(array('order_master'))
-                      ->execute()->get_results();
-
-      $go_cmd = (count($masters) > 0 && $user->ACL()->has_right_on_base($this->base_id, 'cancmd'));
-
-      $orderable['document'] = false;
-      $downloadable['document'] = false;
-
-      if (isset($sd['document']) && is_file($sd['document']->get_pathfile()))
-      {
-        if ($go_dl['document'] === true)
-        {
-          if ($user->ACL()->is_restricted_download($this->base_id))
-          {
-            $this->remain_hd--;
-            if ($this->remain_hd >= 0)
-              $downloadable['document'] = array(
-                  'class' => 'document',
-                  'label' => _('document original')
-              );
-          }
-          else
+          $this->remain_hd--;
+          if ($this->remain_hd >= 0)
             $downloadable['document'] = array(
                 'class' => 'document',
                 'label' => _('document original')
             );
         }
-        if ($go_cmd === true)
-        {
-          $orderable['document'] = true;
-        }
-
-        $this->add_count('document', $sd['document']->get_size());
+        else
+          $downloadable['document'] = array(
+              'class' => 'document',
+              'label' => _('document original')
+          );
+      }
+      if ($go_cmd === true)
+      {
+        $orderable['document'] = true;
       }
 
+      $this->add_count('document', $sd['document']->get_size());
+    }
 
-      foreach ($subdefs as $subdef)
+
+    foreach ($subdefs as $subdef)
+    {
+      $name = $subdef->get_name();
+      $class = $subdef->get_class();
+
+
+      $subdef_label = $name;
+      foreach ($subdef->get_labels() as $lang => $label)
       {
-        $name = $subdef->get_name();
-        $class = $subdef->get_class();
-
-
-        $subdef_label = $name;
-        foreach ($subdef->get_labels() as $lang => $label)
-        {
-          if (trim($label) == '')
-            continue;
-
-          if ($lang == $session->get_I18n())
-          {
-            $subdef_label = $label;
-            break;
-          }
-          $subdef_label = $label;
-        }
-
-        $downloadable[$name] = false;
-
-        $downloadable_settings = $subdef->is_downloadable();
-
-        if (!$downloadable_settings || $go_dl[$class] === false)
-        {
+        if (trim($label) == '')
           continue;
-        }
 
-        if ($go_dl[$class])
+        if ($lang == $session->get_I18n())
         {
-          if (isset($sd[$name]) && is_file($sd[$name]->get_pathfile()))
-          {
-            if ($class == 'document')
-            {
+          $subdef_label = $label;
+          break;
+        }
+        $subdef_label = $label;
+      }
 
-              if ($user->ACL()->is_restricted_download($this->base_id))
-              {
-                $this->remain_hd--;
-                if ($this->remain_hd >= 0)
-                  $downloadable[$name] = array(
-                      'class' => $class,
-                      'label' => $subdef_label
-                  );
-              }
-              else
+      $downloadable[$name] = false;
+
+      $downloadable_settings = $subdef->is_downloadable();
+
+      if (!$downloadable_settings || $go_dl[$class] === false)
+      {
+        continue;
+      }
+
+      if ($go_dl[$class])
+      {
+        if (isset($sd[$name]) && is_file($sd[$name]->get_pathfile()))
+        {
+          if ($class == 'document')
+          {
+
+            if ($user->ACL()->is_restricted_download($this->base_id))
+            {
+              $this->remain_hd--;
+              if ($this->remain_hd >= 0)
                 $downloadable[$name] = array(
                     'class' => $class,
                     'label' => $subdef_label
                 );
             }
             else
-            {
               $downloadable[$name] = array(
                   'class' => $class,
                   'label' => $subdef_label
               );
-            }
-
-            $this->add_count($name, $sd[$name]->get_size());
           }
+          else
+          {
+            $downloadable[$name] = array(
+                'class' => $class,
+                'label' => $subdef_label
+            );
+          }
+
+          $this->add_count($name, $sd[$name]->get_size());
         }
       }
     }
