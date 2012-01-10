@@ -99,7 +99,7 @@ class set_export extends set_abstract
         {
           $record = new record_adapter($basrec[0], $basrec[1]);
         }
-        catch(Exception_Record_AdapterNotFound $e)
+        catch (Exception_Record_AdapterNotFound $e)
         {
           continue;
         }
@@ -411,7 +411,7 @@ class set_export extends set_abstract
    * @param boolean $rename_title
    * @return Array
    */
-  public function prepare_export(Array $subdefs, $rename_title=false)
+  public function prepare_export(Array $subdefs, $rename_title = false)
   {
     if (!is_array($subdefs))
     {
@@ -434,6 +434,7 @@ class set_export extends set_abstract
 
     foreach ($this->elements as $download_element)
     {
+      echo "eleme";
       $id = count($files);
 
       $files[$id] = array(
@@ -481,16 +482,12 @@ class set_export extends set_abstract
       $sd = $download_element->get_subdefs();
 
       foreach ($download_element->get_downloadable() as $name => $properties)
-      {
+      {        
         if ($properties === false || !in_array($name, $subdefs))
         {
           continue;
         }
         if (!in_array($name, array('caption', 'caption-yaml')) && !isset($sd[$name]))
-        {
-          continue;
-        }
-        if (!isset($sd[$name]))
         {
           continue;
         }
@@ -689,7 +686,9 @@ class set_export extends set_abstract
         system_file::mkdir($caption_dir);
 
         $desc = self::get_caption(
-                        $download_element->get_base_id(), $download_element->get_record_id(), $session->get_ses_id()
+                        $download_element->get_base_id()
+                        , $download_element->get_record_id()
+                        , $session->get_ses_id()
         );
 
         $file = $files[$id]["export_name"]
@@ -717,7 +716,11 @@ class set_export extends set_abstract
 
 
         $desc = self::get_caption(
-                        $download_element->get_base_id(), $download_element->get_record_id(), $session->get_ses_id(), true, 'yaml'
+                        $download_element->get_base_id()
+                        , $download_element->get_record_id()
+                        , $session->get_ses_id()
+                        , true
+                        , 'yaml'
         );
 
         $file = $files[$id]["export_name"]
@@ -736,12 +739,14 @@ class set_export extends set_abstract
         }
       }
     }
+
     $this->list = array(
         'files' => $files,
         'names' => $file_names,
         'size' => $size,
         'count' => $n_files
     );
+
 
     return $this->list;
   }
@@ -762,7 +767,6 @@ class set_export extends set_abstract
       return false;
     }
     if (isset($list['complete']) && $list['complete'] === true)
-
       return;
 
 
@@ -839,7 +843,7 @@ class set_export extends set_abstract
    * @param boolean $check_rights
    * @return string
    */
-  public static function get_caption($bas, $rec, $check_rights=true, $format = 'xml')
+  public static function get_caption($bas, $rec, $check_rights = true, $format = 'xml')
   {
     $dom = new DOMDocument();
     $dom->formatOutput = true;
@@ -954,7 +958,7 @@ class set_export extends set_abstract
    * @return Void
    */
   public static function stream_file(
-  $file, $exportname, $mime, $disposition='attachment')
+  $file, $exportname, $mime, $disposition = 'attachment')
   {
     require_once __DIR__ . "/../../../lib/vendor/Silex/autoload.php";
     $registry = registry::get_instance();
@@ -1003,11 +1007,11 @@ class set_export extends set_abstract
          * @todo : merge this shitty fix with Response object.
          * 
          */
-        if(!headers_sent())
+        if (!headers_sent())
         {
           header("Pragma: public");
         }
-        
+
         $response->headers->set('Content-Type', $mime);
         $response->headers->set('Content-Name', $exportname);
         $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
@@ -1028,7 +1032,7 @@ class set_export extends set_abstract
    * @param String $disposition
    * @return Void
    */
-  public static function stream_data($data, $exportname, $mime, $disposition='attachment')
+  public static function stream_data($data, $exportname, $mime, $disposition = 'attachment')
   {
 
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
@@ -1063,7 +1067,7 @@ class set_export extends set_abstract
     $user = false;
     if ($anonymous)
     {
-
+      
     }
     else
     {
