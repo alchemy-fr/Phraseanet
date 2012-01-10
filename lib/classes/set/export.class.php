@@ -430,7 +430,6 @@ class set_export extends set_abstract
 
     foreach ($this->elements as $download_element)
     {
-      echo "eleme";
       $id = count($files);
 
       $files[$id] = array(
