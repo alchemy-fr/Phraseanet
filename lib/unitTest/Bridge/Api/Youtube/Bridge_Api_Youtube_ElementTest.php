@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/../../Bridge_datas.inc';
 
-$new_include_path = __DIR__ . '/../../../../../vendor/alchemy/gdata/' . PATH_SEPARATOR . get_include_path();
+$new_include_path = __DIR__ . '/../../../../vendor/gdata/' . PATH_SEPARATOR . get_include_path();
 set_include_path($new_include_path);
 
 
