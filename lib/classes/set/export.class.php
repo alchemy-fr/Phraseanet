@@ -100,9 +100,7 @@ class set_export extends set_abstract
 
         if ($record->is_grouping())
         {
-          $xml = $record->get_xml();
-
-          $regfield = basket_adapter::getRegFields($basrec[0], $xml);
+          $regfield = basket_adapter::getRegFields($basrec[0], $record->get_caption());
 
           foreach ($record->get_children() as $child_basrec)
           {
