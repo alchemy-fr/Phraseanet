@@ -51,7 +51,9 @@ class task_Scheduler
     );
     $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
-    $connexion = $configuration->getConnexion();
+    $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+    $connexion = $configuration->getConnexion($choosenConnexion);
 
     $hostname = $connexion->get('host');
     $port = $connexion->get('port');
@@ -287,12 +289,12 @@ class task_Scheduler
        * Launch task that are not yet launched
        */
       $runningtask = 0;
-      
+
       $common_status = array(
           task_abstract::STATUS_STARTED
           , task_abstract::RETURNSTATUS_STOPPED
       );
-      
+
       foreach ($ttask as $tkey => $tv)
       {
         if (!in_array($ttask[$tkey]["task"]->get_status(), $common_status))
