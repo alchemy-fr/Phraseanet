@@ -106,8 +106,6 @@ class set_export extends set_abstract
 
         if ($record->is_grouping())
         {
-          $xml = $record->get_xml();
-
           foreach ($record->get_children() as $child_basrec)
           {
             $base_id = $child_basrec->get_base_id();
