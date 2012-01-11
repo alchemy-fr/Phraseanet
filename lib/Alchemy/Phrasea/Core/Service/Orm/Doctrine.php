@@ -9,10 +9,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Service;
+namespace Alchemy\Phrasea\Core\Service\Orm;
 
-use Doctrine\DBAL\Types\Type;
-use Doctrine\Common\Cache\AbstractCache;
+use Alchemy\Phrasea\Core,
+    Alchemy\Phrasea\Core\Service,
+    Alchemy\Phrasea\Core\Service\ServiceAbstract,
+    Alchemy\Phrasea\Core\Service\ServiceInterface;
+
+use Doctrine\DBAL\Types\Type,
+    Doctrine\Common\Cache\AbstractCache;
 
 /**
  * 
@@ -20,38 +25,43 @@ use Doctrine\Common\Cache\AbstractCache;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Doctrine
+class Doctrine extends ServiceAbstract implements ServiceInterface
 {
   const MEMCACHED = 'memcached';
   const ARRAYCACHE = 'array';
   const APC = 'apc';
 
+  protected $outputs = array(
+      'json', 'yaml', 'normal'
+  );
+  protected $loggers = array(
+      'monolog', 'echo'
+  );
   protected $entityManager;
 
-  public function __construct(Array $doctrineConfiguration = array())
+  public function __construct($name, Array $options = array())
   {
-    require_once __DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
+    parent::__construct($name, $options);
 
     static::loadClasses();
-    
+
     $config = new \Doctrine\ORM\Configuration();
+
+    $handler = new Core\Configuration\Handler(
+                    new Core\Configuration\Application(),
+                    new Core\Configuration\Parser\Yaml()
+    );
+
+    $phraseaConfig = new Core\Configuration($handler);
 
     /*
      * debug mode
      */
-    $debug = isset($doctrineConfiguration["debug"]) ? : false;
+    $debug = isset($options["debug"]) ? : false;
     /*
      * doctrine cache
      */
-    $cache = isset($doctrineConfiguration["orm"]["cache"]) ? $doctrineConfiguration["orm"]["cache"] : false;
-    /*
-     * doctrine log configuration
-     */
-    $log = isset($doctrineConfiguration["log"]) ? $doctrineConfiguration["log"] : false;
-    /*
-     * service logger configuration
-     */
-    $logger = !isset($doctrineConfiguration['logger']) ? : $doctrineConfiguration['logger'];
+    $cache = isset($options["orm"]["cache"]) ? $options["orm"]["cache"] : false;
 
     /*
      * default query cache & meta chache
@@ -59,10 +69,17 @@ class Doctrine
     $metaCache = $this->getCache();
     $queryCache = $this->getCache();
 
+    //Handle logs
+    $logServiceName = isset($options["log"]) ? $options["log"] : false;
+
+    if ($logServiceName)
+    {
+      $serviceConf = $phraseaConfig->getService($logServiceName);
+      $this->handleLogs($config, $logServiceName, $serviceConf->all());
+    }
+
     //handle cache
     $this->handleCache($metaCache, $queryCache, $cache, $debug);
-    //Handle logs
-    $this->handleLogs($config, $log, $logger);
 
     //set caches
     $config->setMetadataCacheImpl($metaCache);
@@ -74,7 +91,7 @@ class Doctrine
     $chainDriverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
 
     $driverYaml = new \Doctrine\ORM\Mapping\Driver\YamlDriver(
-                    array(__DIR__ . '/../../../../conf.d/Doctrine')
+                    array(__DIR__ . '/../../../../../conf.d/Doctrine')
     );
 
     $chainDriverImpl->addDriver($driverYaml, 'Entities');
@@ -83,15 +100,24 @@ class Doctrine
 
     $config->setMetadataDriverImpl($chainDriverImpl);
 
-    $config->setProxyDir(realpath(__DIR__ . '/../../../../Doctrine/Proxies'));
+    $config->setProxyDir(realpath(__DIR__ . '/../../../../../Doctrine/Proxies'));
 
     $config->setProxyNamespace('Proxies');
 
-    $dbalConf = isset($doctrineConfiguration["dbal"]) ? $doctrineConfiguration["dbal"] : false;
+    $connexion = isset($options["dbal"]) ? $options["dbal"] : false;
 
-    if (!$dbalConf)
+    if(!$connexion)
     {
-      throw new \Exception("Unable to read dbal configuration");
+      throw new \Exception("Missing dbal connexion for doctrine");
+    }
+    
+    try
+    {
+      $dbalConf = $phraseaConfig->getConnexion($connexion)->all();
+    }
+    catch(\Exception $e)
+    {
+      throw new \Exception(sprintf("Unable to read %s configuration", $connexion));
     }
 
     $evm = new \Doctrine\Common\EventManager();
@@ -117,52 +143,54 @@ class Doctrine
 
   protected static function loadClasses()
   {
+    require_once __DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
 
+    
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\ORM'
-                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib')
+                    , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\DBAL'
-                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Doctrine\Common\DataFixtures'
-                    , realpath(__DIR__ . '/../../../../vendor/data-fixtures/lib')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-                    'PhraseaFixture'
-                    , realpath(__DIR__ . '/../../../../conf.d/')
+                    , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\Common'
-                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib')
+                    , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib')
+    );
+    $classLoader->register();
+
+    $classLoader = new \Doctrine\Common\ClassLoader(
+                    'Doctrine\Common\DataFixtures'
+                    , realpath(__DIR__ . '/../../../../../vendor/data-fixtures/lib')
+    );
+    $classLoader->register();
+
+    $classLoader = new \Doctrine\Common\ClassLoader(
+                    'PhraseaFixture'
+                    , realpath(__DIR__ . '/../../../../../conf.d/')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Entities'
-                    , realpath(__DIR__ . '/../../../../Doctrine')
+                    , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Repositories'
-                    , realpath(__DIR__ . '/../../../../Doctrine')
+                    , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Proxies'
-                    , realpath(__DIR__ . '/../../../../Doctrine')
+                    , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
 
@@ -175,34 +203,34 @@ class Doctrine
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\Logger'
-                    , realpath(__DIR__ . '/../../../../')
+                    , realpath(__DIR__ . '/../../../../../../../')
     );
 
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Monolog'
-                    , realpath(__DIR__ . '/../../../../vendor/Silex/vendor/monolog/src')
+                    , realpath(__DIR__ . '/../../../../../vendor/Silex/vendor/monolog/src')
     );
 
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Types'
-                    , realpath(__DIR__ . '/../../../../Doctrine')
+                    , realpath(__DIR__ . '/../../../../../Doctrine')
     );
 
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Gedmo'
-                    , __DIR__ . "/../../../../vendor/doctrine2-gedmo/lib"
+                    , __DIR__ . "/../../../../../vendor/doctrine2-gedmo/lib"
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'DoctrineExtensions'
-                    , __DIR__ . "/../../../../vendor/doctrine2-beberlei/lib"
+                    , __DIR__ . "/../../../../../vendor/doctrine2-beberlei/lib"
     );
     $classLoader->register();
 
@@ -215,14 +243,25 @@ class Doctrine
 
     $platform = $this->entityManager->getConnection()->getDatabasePlatform();
 
-    if(!Type::hasType('blob'))
+    if (!Type::hasType('blob'))
+    {
       Type::addType('blob', 'Types\Blob');
-    if(!Type::hasType('enum'))
+    }
+
+    if (!Type::hasType('enum'))
+    {
       Type::addType('enum', 'Types\Enum');
-    if(!Type::hasType('longblob'))
+    }
+
+    if (!Type::hasType('longblob'))
+    {
       Type::addType('longblob', 'Types\LongBlob');
-    if(!Type::hasType('varbinary'))
+    }
+
+    if (!Type::hasType('varbinary'))
+    {
       Type::addType('varbinary', 'Types\VarBinary');
+    }
 
     $platform->registerDoctrineTypeMapping('enum', 'enum');
     $platform->registerDoctrineTypeMapping('blob', 'blob');
@@ -285,99 +324,53 @@ class Doctrine
    * @param type $log
    * @param type $logger 
    */
-  private function handleLogs(\Doctrine\ORM\Configuration &$config, $log, $logger)
+  private function handleLogs(\Doctrine\ORM\Configuration &$config, $serviceName, Array $serviceConf)
   {
-    $logEnable = isset($log["enable"]) ? !!$log["enable"] : false;
-    
-    if ($logEnable)
+    $logType = $serviceConf['type'];
+    $logService = null;
+
+    switch ($logType)
     {
-      $loggerService = isset($log["type"]) ? $log["type"] : '';
+      case 'monolog':
+        $logService = Core\ServiceBuilder::build(
+                          $serviceName
+                        , Core\ServiceBuilder::LOG
+                        , $logType
+                        , $serviceConf['options']
+                        , 'doctrine'
+        );
+        break;
+      case 'echo':
+      default:
+        $logService = Core\ServiceBuilder::build(
+                        $serviceName
+                        , Core\ServiceBuilder::LOG
+                        , 'normal'
+                        , array()
+                        , 'doctrine'
+        );
+        break;
+    }
 
-      switch ($loggerService)
-      {
-        case 'monolog':
-          //defaut to main handler
-          $doctrineHandler = isset($log["handler"]) ? $log["handler"] : 'main';
-
-          if (!isset($logger["handlers"]))
-          {
-            throw new \Exception("You must specify at least on monolog handler");
-          }
-
-          if (!array_key_exists($doctrineHandler, $logger["handlers"]))
-          {
-            throw new \Exception(sprintf('Unknow monolog handler %s'), $handlerType);
-          }
-
-          $handlerName = ucfirst($logger["handlers"][$doctrineHandler]["type"]);
-
-          $handlerClassName = sprintf('\Monolog\Handler\%sHandler', $handlerName);
-
-          if (!class_exists($handlerClassName))
-          {
-            throw new \Exception(sprintf('Unknow monolog handler class %s', $handlerClassName));
-          }
-          
-          if (!isset($log["filename"]))
-          {
-            throw new \Exception('you must specify a file to write "filename: my_filename"');
-          }
-
-          $logPath = __DIR__ . '/../../../../../logs';
-          $file = sprintf('%s/%s', $logPath, $log["filename"]);
-          
-          if ($doctrineHandler == 'rotate')
-          {
-            $maxDay = isset($log["max_day"]) ? (int) $log["max_day"] : false;
-            
-            if(!$maxDay && isset($logger["handlers"]['rotate']["max_day"]))
-            {
-              $maxDay = (int) $logger["handlers"]['rotate']["max_day"];
-            }
-            else
-            {
-              $maxDay = 10;
-            }
-            $handlerInstance = new $handlerClassName($file, $maxDay);
-          }
-          else
-          {
-            $handlerInstance = new $handlerClassName($file);
-          }
-          
-          $monologLogger = new \Monolog\Logger('query-logger');
-          $monologLogger->pushHandler($handlerInstance);
-
-          if (isset($log["output"]))
-          {
-            $output = $log["output"];
-          }
-          elseif (isset($logger["output"]))
-          {
-            $output = $logger["output"];
-          }
-          else
-          {
-            $output = null;
-          }
-
-          if (null === $output)
-          {
-            $sqlLogger = new \Doctrine\Logger\MonologSQLLogger($monologLogger);
-          }
-          else
-          {
-            $sqlLogger = new \Doctrine\Logger\MonologSQLLogger($monologLogger, $output);
-          }
-
-          $config->setSQLLogger($sqlLogger);
-          break;
-        case 'echo':
-        default:
-          $config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger);
-          break;
-      }
+    if ($logService instanceof Alchemy\Phrasea\Core\Service\ServiceAbstract)
+    {
+      $config->setSQLLogger($logService->getService());
     }
   }
 
+  public function getService()
+  {
+    return $this->entityManager;
+  }
+
+  public function getType()
+  {
+    return 'doctrine';
+  }
+
+  public function getScope()
+  {
+    return 'orm';
+  }
+  
 }

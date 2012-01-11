@@ -24,7 +24,7 @@ use Alchemy\Phrasea\Core\Configuration\Parser as ConfigurationParser;
  */
 class Configuration
 {
- 
+
   /**
    * The finale configuration values as an array
    * @var ParameterBag\ParameterBag
@@ -47,11 +47,12 @@ class Configuration
    * 
    * @param type $envName the name of the loaded environnement
    */
-  public function __construct(Configuration\Handler $handler)
+  public function __construct(Configuration\Handler $handler, $environment = null)
   {
     $this->configurationHandler = $handler;
     $this->installed = false;
-
+    $this->environment = $environment;
+    
     try
     {
       $handler->getSpecification()->getConfigurationFile();
@@ -89,7 +90,7 @@ class Configuration
    */
   public function getEnvironnement()
   {
-    if( null === $this->environment)
+    if (null === $this->environment && $this->isInstalled())
     {
       $this->getConfiguration();
     }
@@ -104,37 +105,6 @@ class Configuration
   public function setEnvironnement($environement = null)
   {
     $this->environment = $environement;
-  }
-
-  /**
-   * Return the DBAL Doctrine configuration
-   * 
-   * @return ParameterBag 
-   */
-  public function getDoctrine()
-  {
-    $doctrine = $this->getConfiguration()->get('doctrine', array()); //get doctrine scope
-
-    if (count($doctrine) > 0)
-    {
-      $doctrine["debug"] = $this->isDebug(); //set debug
-
-      if (!!$doctrine["log"]['enable'])
-      {
-        $logger = isset($doctrine["log"]["type"]) ? $doctrine["log"]["type"] : 'monolog';
-
-        if (!in_array($doctrine["log"]["type"], $this->getAvailableDoctrineLogger()))
-        {
-          throw new \Exception(sprintf('Unknow logger %s', $logger));
-        }
-
-        $doctrineLogger = $this->getConfiguration()->get($logger); //set logger
-
-        $doctrine["logger"] = $doctrineLogger;
-      }
-    }
-
-    return new ParameterBag($doctrine);
   }
 
   /**
@@ -182,7 +152,7 @@ class Configuration
    * Default to false
    * @return boolean 
    */
-  public function displayErrors()
+  public function isDisplayingErrors()
   {
     $phraseanet = $this->getPhraseanet();
 
@@ -204,7 +174,7 @@ class Configuration
    */
   public function getPhraseanet()
   {
-    $phraseanetConf = $this->getConfiguration()->get('phraseanet', array());
+    $phraseanetConf = $this->getConfiguration()->get('phraseanet');
     return new ParameterBag($phraseanetConf);
   }
 
@@ -227,13 +197,13 @@ class Configuration
   {
     if (null === $this->configuration)
     {
-      $this->configuration = new Configuration\Parameter();
+      $this->configuration = new ParameterBag();
 
       if ($this->installed)
       {
         $configuration = $this->configurationHandler->handle($this->environment);
         $this->environment = $this->configurationHandler->getSelectedEnvironnment();
-        $this->configuration = new Configuration\Parameter($configuration);
+        $this->configuration = new ParameterBag($configuration);
       }
     }
 
@@ -255,9 +225,39 @@ class Configuration
    * 
    * @return ParameterBag
    */
-  public function getConnexion()
+  public function getConnexion($name = 'main_connexion')
   {
-    return new ParameterBag($this->getPhraseanet()->get('database'));
+    $connexions = $this->getConnexions();
+
+    try
+    {
+      $conn = $connexions->get($name);
+    }
+    catch (\Exception $e)
+    {
+      throw new \Exception(sprintf('Unknow connexion name %s declared in %s'
+                      , $name
+                      , $this->configurationHandler
+                              ->getSpecification()
+                              ->getConnexionFile()
+                              ->getPathname()
+              )
+      );
+    }
+
+    return new Parameterbag($conn);
+  }
+
+  /**
+   * Return all connexions defined in connexions.yml
+   * @return ParameterBag 
+   */
+  public function getConnexions()
+  {
+    return new ParameterBag($this->configurationHandler->getParser()->parse(
+                            $this->configurationHandler->getSpecification()->getConnexionFile()
+                    )
+    );
   }
 
   /**
@@ -282,96 +282,15 @@ class Configuration
   }
 
   /**
-   * Write into the main file connexion credentials defined in $connexion
-   * @param array $connexion Array of connexion credentials
-   * @return Configuration 
-   */
-  public function setAllDatabaseConnexion(Array $connexion)
-  {
-    $arrayConf = $this->all();
-
-    foreach ($arrayConf as $key => $value)
-    {
-      if (is_array($value) && array_key_exists('phraseanet', $value))
-      {
-        foreach ($arrayConf[$key]['phraseanet'] as $kee => $value)
-        {
-          if ($kee === 'database')
-          {
-            $arrayConf[$key]['phraseanet']['database'] = $connexion;
-          }
-        }
-      }
-    }
-
-    $connexion["driver"] = 'pdo_mysql';
-    $connexion['charset'] = 'UTF8';
-
-    foreach ($arrayConf as $key => $value)
-    {
-      if (is_array($value) && array_key_exists('phraseanet', $value))
-      {
-        foreach ($arrayConf[$key]['doctrine'] as $kee => $value)
-        {
-          if ($kee === 'dbal')
-          {
-            if ($key == 'test')
-            {
-              $arrayConf[$key]['doctrine']['dbal'] = $this->getTestDBCredentials();
-            }
-            else
-            {
-              $arrayConf[$key]['doctrine']['dbal'] = $connexion;
-            }
-            break;
-          }
-        }
-      }
-    }
-
-    $this->write($arrayConf, FILE_APPEND, true);
-
-    return $this;
-  }
-
-  /**
-   * Return all services defined in service.yml
+   * Return all services defined in services.yml
    * @return ParameterBag
    */
   public function getServices()
   {
-    $serviceFile = $this->configurationHandler->getSpecification()->getServiceFile();
-    $services = $this->configurationHandler->getParser()->parse($serviceFile);
-  
-    return new ParameterBag($services);
-  }
-  
-  /**
-   * Write into the main file the serverName
-   * @param type $serverName
-   * @return Configuration 
-   */
-  public function setServerName($serverName)
-  {
-    $arrayConf = $this->all();
-
-    foreach ($arrayConf as $key => $value)
-    {
-      if (is_array($value) && array_key_exists('phraseanet', $value))
-      {
-        foreach ($arrayConf[$key]['phraseanet'] as $kee => $value)
-        {
-          if ($kee === 'servername')
-          {
-            $arrayConf[$key]['phraseanet']['servername'] = $serverName;
-          }
-        }
-      }
-    }
-
-    $this->write($arrayConf, FILE_APPEND, true);
-
-    return $this;
+    return new ParameterBag($this->configurationHandler->getParser()->parse(
+                            $this->getServiceFile()
+                    )
+    );
   }
 
   /**
@@ -427,16 +346,97 @@ class Configuration
   }
 
   /**
-   * Return the test database credentials
-   * @return Array 
+   * Return configuration service for template_engine
+   * @return string 
    */
-  private function getTestDBCredentials()
+  public function getTemplating()
   {
-    return array(
-        'driver' => 'pdo_sqlite',
-        'path' => __DIR__ . '/../../../unitTest/tests.sqlite',
-        'charset' => 'UTF8'
-    );
+    return $this->getConfiguration()->get('template_engine');
+  }
+  
+  /**
+   * Return configuration service for orm
+   * @return string
+   */
+  public function getOrm()
+  {
+    return $this->getConfiguration()->get('orm');
+  }
+
+  /**
+   * Return the selected service configuration
+   * 
+   * @param type $name
+   * @return ParameterBag 
+   */
+  public function getService($name = 'twig')
+  {
+    $services = $this->getServices();
+
+    try
+    {
+      $template = $services->get($name);
+    }
+    catch (\Exception $e)
+    {
+      throw new \Exception(sprintf('Unknow service name %s declared in %s'
+                      , $name
+                      , $this->configurationHandler
+                              ->getSpecification()
+                              ->getServiceFile()
+                              ->getPathname()
+              )
+      );
+    }
+
+    return new ParameterBag($template);
+  }
+
+  /**
+   * return the service file
+   * @return \SplFileObject 
+   */
+  public function getServiceFile()
+  {
+    return $this->configurationHandler->getSpecification()->getServiceFile();
+  }
+
+  /**
+   * Return the connexion file
+   * @return \SplFileObject 
+   */
+  public function getConnexionFile()
+  {
+    return $this->configurationHandler->getSpecification()->getConnexionFile();
+  }
+
+  /**
+   * Refresh the configuration
+   * @return Configuration 
+   */
+  public function refresh()
+  {
+    try
+    {
+      $this->configurationHandler->getSpecification()->getConfigurationFile();
+
+      $this->installed = true;
+    }
+    catch (\Exception $e)
+    {
+      $this->installed = false;
+    }
+
+    $this->configuration = new ParameterBag();
+
+    if ($this->installed)
+    {
+      $configuration = $this->configurationHandler->handle($this->environment);
+      $this->environment = $this->configurationHandler->getSelectedEnvironnment();
+      $this->configuration = new ParameterBag($configuration);
+    }
+
+    return $this;
   }
 
 }

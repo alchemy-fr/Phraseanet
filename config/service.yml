@@ -1,7 +1,0 @@
-#Twig services options
-twig:
-  options:
-    charset: utf-8
-    strict_variables: true
-    autoescape: true
-    optimizer: true

@@ -46,39 +46,99 @@ return call_user_func(function()
                             }
                             elseif (\setup::needUpgradeConfigurationFile())
                             {
-                              //copy sample
-                              $file = __DIR__ . "/../../../../config/config.sample.yml";
-                              $file1 = __DIR__ . "/../../../../config/config.yml";
-                              if (!copy($file, $file1))
+                              $registry = \registry::get_instance();
+
+                              //copy config sample
+                              $configSampleFile = __DIR__ . "/../../../../config/config.sample.yml";
+                              $configFile = __DIR__ . "/../../../../config/config.yml";
+
+                              if (!copy($configSampleFile, $configFile))
                               {
-                                throw new \Exception(sprintf("Unable to copy %s", $file1));
+                                throw new \Exception(sprintf("Unable to copy %s", $configSampleFile));
                               }
 
-                              //get connexion credentials
-                              $conn = \connection::getPDOConnection();
-                              $credentials = $conn->get_credentials();
+                              //copy service sample
+                              $serviceSampleFile = __DIR__ . "/../../../../config/services.sample.yml";
+                              $serviceFile = __DIR__ . "/../../../../config/services.yml";
+
+                              if (!copy($serviceSampleFile, $serviceFile))
+                              {
+                                throw new \Exception(sprintf("Unable to copy %s", $serviceSampleFile));
+                              }
+                              
+                              //copy connexion sample
+                              $connexionSampleFile = __DIR__ . "/../../../../config/connexions.sample.yml";
+                              $connexionFile = __DIR__ . "/../../../../config/connexions.yml";
+
+                              if (!copy($connexionSampleFile, $connexionFile))
+                              {
+                                throw new \Exception(sprintf("Unable to copy %s", $connexionFile));
+                              }
 
                               //get configuration object
-                              $app = new \Alchemy\Phrasea\Core\Configuration\Application();
+                              $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
                               $parser = new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml();
-                              $handler = new \Alchemy\Phrasea\Core\Configuration\Handler($app, $parser);
+                              $handler = new \Alchemy\Phrasea\Core\Configuration\Handler($appConf, $parser);
                               $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
                               //refactor credentials
                               $connexionINI = array();
-                              foreach ($credentials as $key => $value)
-                              {
-                                $key = $key == 'hostname' ? 'host' : $key;
-                                $connexionINI[$key] = (string) $value;
-                              }
-                              //write credentials to config file
-                              $configuration->setAllDatabaseConnexion($connexionINI);
+
+                              require __DIR__ . "/../../../../config/connexion.inc";
+
+                              $connexionINI['host'] = $hostname;
+                              $connexionINI['port'] = $port;
+                              $connexionINI['user'] = $user;
+                              $connexionINI['password'] = $password;
+                              $connexionINI['dbname'] = $dbname;
+                              $connexionINI['driver'] = 'pdo_mysql';
+                              $connexionINI['charset'] = 'UTF8';
+
                               $request = $app["request"];
                               //write servername
                               $serverName = $request->getScheme() . '://' . $request->getHttpHost() . '/';
-                              $configuration->setServerName($serverName);
 
-                              $app->redirect("/");
+                              //write credentials to connexion file
+                              $connexionFile = $appConf->getConnexionFile();
+
+                              $connexion = array(
+                                  'main_connexion' => $connexionINI,
+                                  'test_connexion' => array(
+                                      'driver' => 'pdo_sqlite',
+                                      'path' => $registry->get("GV_RootPath") . 'lib/unitTest/tests.sqlite',
+                                      'charset' => 'UTF8'
+                                      ));
+
+                              $yaml = $configuration->getConfigurationHandler()->getParser()->dump($connexion, 2);
+
+                              if (!file_put_contents($connexionFile->getPathname(), $yaml) !== false)
+                              {
+                                throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $connexionFile->getPathname()));
+                              }
+
+                              //rewrite service file
+                              $serviceFile = $appConf->getServiceFile();
+                              $service = $configuration->getConfigurationHandler()->getParser()->parse($serviceFile);
+                              $yaml = $configuration->getConfigurationHandler()->getParser()->dump($service, 5);
+
+                              if (!file_put_contents($serviceFile->getPathname(), $yaml) !== false)
+                              {
+                                throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $serviceFile->getPathname()));
+                              }
+                              $arrayConf = $configuration->all();
+
+                              //rewrite main conf
+                              foreach ($arrayConf as $key => $value)
+                              {
+                                if (is_array($value) && array_key_exists('phraseanet', $value))
+                                {
+                                  $arrayConf[$key]["phraseanet"]["servername"] = $serverName;
+                                }
+                              }
+
+                              $configuration->write($arrayConf);
+
+                              $app->redirect("/setup/installer/");
                             }
                             else
                             {

@@ -98,10 +98,9 @@ class Installer implements ControllerProviderInterface
               \phrasea::use_i18n(\Session_Handler::get_locale());
 
               $ld_path = array(__DIR__ . '/../../../../../templates/web');
-
               $loader = new \Twig_Loader_Filesystem($ld_path);
-              $twig = new \Twig_Environment($loader);
 
+              $twig = new \Twig_Environment($loader);
               $twig->addExtension(new \Twig_Extensions_Extension_I18n());
 
               $request = $app['request'];
@@ -180,23 +179,34 @@ class Installer implements ControllerProviderInterface
                                 new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
                 );
                 $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
                 if ($configuration->isInstalled())
                 {
-                  // Get Entity Manager using the new configuration
-                  $doctrineConf = $configuration->getDoctrine()->all();
-                  $doctrine = new \Alchemy\Phrasea\Core\Service\Doctrine($doctrineConf);
+                  $serviceName = $configuration->getOrm();
+                  $confService = $configuration->getService($serviceName);
 
-                  $em = $doctrine->getEntityManager();
-                  /* @var $em \Doctrine\ORM\EntityManager */
+                  $ormService = \Alchemy\Phrasea\Core\ServiceBuilder::build(
+                                  $serviceName
+                                  , \Alchemy\Phrasea\Core\ServiceBuilder::ORM
+                                  , $confService->get("type")
+                                  , $confService->get("options")
+                  );
 
-                  $metadatas = $em->getMetadataFactory()->getAllMetadata();
-
-                  if (!empty($metadatas))
+                  if ($ormService->getType() === 'doctrine')
                   {
-                    // Create SchemaTool
-                    $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-                    // Create schema
-                    $tool->createSchema($metadatas);
+                    /* @var $em \Doctrine\ORM\EntityManager */
+                    
+                    $em = $ormService->getService();
+
+                    $metadatas = $em->getMetadataFactory()->getAllMetadata();
+
+                    if (!empty($metadatas))
+                    {
+                      // Create SchemaTool
+                      $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+                      // Create schema
+                      $tool->createSchema($metadatas);
+                    }
                   }
                 }
 

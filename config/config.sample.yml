@@ -4,7 +4,7 @@
 
 environment : dev
 
-#declare all your environment configuration
+#Declare all your environment configurations
 
 #################
 # DEVELOPPEMENT #
@@ -16,81 +16,16 @@ dev:
     maintenance: false
     debug: true
     display_errors: true
-    #Configure your phraseanet application connection
-    database:
-      host: <YOUR_HOST>
-      port: <YOUR_PORT>
-      dbname: <YOUR_DB_NAME>
-      user: <YOUR_USERNAME>
-      password: <YOUR_PASSWORD>
+    
+    #Assign your phraseanet application connection
+    #Connections are defined in connexions.yml configuration file
+    database: main_connexion
+      
+  #Assign your template engine service & ORM service
+  #Services are defined in service.yml configuration file
+  template_engine: twig_debug
+  orm: doctrine_dev
 
-  # Doctrine scope refers to Doctrine configuration
-  # Pls refer to Doctrine documentation abstraction layer for database connection configuration
-  # DBAL connection : http://www.doctrine-project.org/docs/dbal/2.1/en/reference/configuration.html
-  doctrine:
-    #configure the doctrine database connection
-    dbal:
-      driver: <YOUR_DRIVER> 
-      host: <YOUR_HOST>
-      port: <YOUR_PORT>
-      dbname: <YOUR_DB_NAME>
-      user: <YOUR_USERNAME>
-      password: <YOUR_PASSWORD>
-      charset: UTF8
-    #configure orm
-    orm:
-      #Available cache driver [memcached, apc, array]
-      #Query cache : is used to cache the transformation of a DQL query to its SQL counterpart
-      #Result cache : is used to cache the results of your queries
-      #Metadata cache : is used to cache entity class metadatas
-      cache:
-        query: array
-        result: array
-        metadata: array
-
-    #Configure how to log SQL query
-    #Available type values [echo , monolog]
-    # echo : logs to the standard output using echo/var_dump.
-    # monolog : logs with monolog service using different log handler
-    log:
-      #Active logs
-      enable: false
-      #Define how logs are handling
-      #Available type values [echo , monolog]
-      # echo : logs to the standard output using echo/var_dump.
-      # monolog : logs with monolog service using different log handler
-      type: monolog
-      #Define which handler to use see monolog configuration scope
-      handler: rotate
-      #Define output of logs
-      #Available output [normal, json, yaml]
-      # normal : output logs in a var_dump formatted style
-      # json : output logs in json
-      # yml : output logs yml
-      output: json
-      #Define the logs filename
-      filename: dev-doctrine-query.log
-      #Define how many day of logs is keeping. Override default value
-      max_day: 2
-
-  # Monolog Service Configuration
-  # Handlers type [stream, rotatingFile]
-  #   stream : store logs to a single file
-  #   rotatingFile: logs to files that are rotated every day and a limited number of files are kept
-  monolog:
-    #Define default ouput
-    output: yaml
-    #Define handlers
-    #Only stream & rotating file are currently available
-    handlers:
-      main:
-        type: stream
-      #Rotate handler is used to rotate logs every day in a new file
-      #max_day is used to keep the defined number of day logs
-      rotate:
-        type: rotatingFile
-        max_day: 10
-        
 ##############
 # PRODUCTION #
 ##############
@@ -100,42 +35,10 @@ prod:
     maintenance: false
     debug: false
     display_errors: false
-    database:
-      host: <YOUR_HOST>
-      port: <YOUR_PORT>
-      dbname: <YOUR_DB_NAME>
-      user: <YOUR_USERNAME>
-      password: <YOUR_USERNAME>
-    
-  doctrine:
-    dbal:
-      driver: <YOUR_DRIVER> 
-      host: <YOUR_HOST>
-      port: <YOUR_PORT>
-      dbname: <YOUR_DB_NAME>
-      user: <YOUR_USERNAME>
-      password: <YOUR_PASSWORD>
-      charset: UTF8
-    orm:
-      cache:
-        query: apc
-        result: apc
-        metadata: apc
-    log:
-      enable: true
-      type: monolog 
-      handler: rotate
-      output: json
-      filename: prod-doctrine-query.log
-
-  monolog:
-    output: yaml
-    handlers:
-      main:
-        type:  stream
-      rotate:
-        type: rotatingFile
-        max_day: 10
+    database: main_connexion
+  
+  template_engine: twig
+  orm: doctrine_prod
   
 ##############
 #    TEST    #
@@ -146,37 +49,9 @@ test:
     maintenance: false
     debug: true
     display_errors: true
-    database:
-      host: <YOUR_HOST>
-      port: <YOUR_PORT>
-      dbname: <YOUR_DB_NAME>
-      user: <YOUR_USERNAME>
-      password: <YOUR_USERNAME>
- #doctrine use a sqlite base to run tests   
-  doctrine:
-    dbal:
-      driver: pdo_sqlite
-      path: <PATH_TO_A_SQLITE_DB>
-      charset: UTF8
-    orm:
-      cache:
-        query: array
-        result: array
-        metadata: array
-    log:
-      enable: true
-      type: monolog
-      handler: rotate
-      output: json
-      filename: test-doctrine-query.log
-  monolog:
-    output: yaml
-    handlers:
-      main:
-        type:  stream
-      rotate:
-        type: rotatingFile
-        max_day: 10
-       
+    database: main_connexion
+  
+  template_engine: twig_debug
+  orm: doctrine_dev
 
             

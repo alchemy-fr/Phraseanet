@@ -27,7 +27,7 @@
             {% trans 'Vous etes maintenant deconnecte. A bientot.' %}
           </div>
           {% endif %}
-                    {{errorWarning}}{{confirmWarning}}
+                    {{errorWarning|raw}}{{confirmWarning|raw}}
                 </div>
                 <div style="margin-top:10px;">
                     <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur identifiant' %}</div>

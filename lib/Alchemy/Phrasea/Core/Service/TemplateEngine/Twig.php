@@ -9,11 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Service;
+namespace Alchemy\Phrasea\Core\Service\TemplateEngine;
 
-use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Core,
+    Alchemy\Phrasea\Core\Service,
+    Alchemy\Phrasea\Core\Service\ServiceAbstract,
+    Alchemy\Phrasea\Core\Service\ServiceInterface;
 
-class Twig
+class Twig extends ServiceAbstract implements ServiceInterface
 {
 
   /**
@@ -22,11 +25,11 @@ class Twig
    */
   protected $twig;
   protected $templatesPath = array();
-  protected $options;
 
-  public function __construct(Array $configuration)
+  public function __construct($name, Array $options)
   {
-    $this->options = $this->resolveOptions($configuration);
+    parent::__construct($name, $options);
+    $this->options = $this->resolveOptions($options);
     $this->templatesPath = $this->resolvePaths();
 
     try
@@ -194,41 +197,34 @@ class Twig
    */
   private function resolveOptions(Array $configuration)
   {
-    if (isset($configuration['options']))
-    {
-      $options = $configuration['options'];
-      $options["optimizer"] = !!$options["optimizer"] ? -1 : 0;
-    }
-    else
-    {
-      $options = array(
-          'cache' => $registry->get('GV_RootPath') . 'tmp/cache_twig',
-          'debug' => false,
-          'strict_variables' => false,
-          'trim_blocks' => true,
-          'charset' => 'utf-8'
-      );
-    }
+    $registry = \registry::get_instance();
+    $options = $configuration;
 
-    $confApp = new Core\Configuration\Application();
-    $confParser = new Core\Configuration\Parser\Yaml();
-    $handler = new Core\Configuration\Handler($confApp, $confParser);
-    $configuration = new Core\Configuration($handler);
+    $options["optimizer"] = !!$options["optimizer"] ? -1 : 0;
+    $options['cache'] = $registry->get('GV_RootPath') . 'tmp/cache_twig';
+    $options['charset'] = 'utf-8';
 
-    if ($configuration->isDebug())
+    if (!!$options["debug"])
     {
-      $options["debug"] = true;
       unset($options["cache"]);
     }
-    else
-    {
-      $options["debug"] = false;
-      $options["cache"] = $registry->get('GV_RootPath') . 'tmp/cache_twig';
-    }
-
-
 
     return $options;
+  }
+
+  public function getService()
+  {
+    return $this->twig;
+  }
+
+  public function getType()
+  {
+    return 'twig';
+  }
+
+  public function getScope()
+  {
+    return 'template_engine';
   }
 
 }
