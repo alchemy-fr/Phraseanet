@@ -44,7 +44,6 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function tearDown()
   {
-    $this->feed->delete();
     parent::tearDown();
   }
 
@@ -53,9 +52,14 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    */
   public function testRouteSlash()
   {
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $crawler = $this->client->request('GET', '/');
+    
+    
+    $response = $this->client->getResponse();
+    /* @var $response \Symfony\Component\HttpFoundation\Response */
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+    
   }
 
 }
