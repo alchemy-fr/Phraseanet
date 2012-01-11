@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\Serializer;
 use Alchemy\Phrasea\Core\Configuration;
 
-require_once __DIR__ . '/../../../vendor/.composer/autoload.php';
+require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 
 /**
  * 
@@ -50,13 +50,11 @@ class Core extends \Pimple
     static::initAutoloads();
 
 
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    $handler = new Core\Configuration\Handler(
+                    new Core\Configuration\Application(),
+                    new Core\Configuration\Parser\Yaml()
     );
-    $this->configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
-
-    $this->configuration->setEnvironnement($environement);
+    $this->configuration = new Core\Configuration($handler, $environement);
 
     /**
      * Set version
@@ -66,21 +64,35 @@ class Core extends \Pimple
               return new Core\Version();
             });
 
+    $core = $this;
+
     /**
      * Set Entity Manager using configuration
      */
-    $doctrineConf = $this->configuration->getDoctrine()->all();
-    $this['EM'] = $this->share(function() use ($doctrineConf)
+    $this['EM'] = $this->share(function() use ($core)
             {
-              $doctrine = new Core\Service\Doctrine($doctrineConf);
-              return $doctrine->getEntityManager();
+              $serviceName = $core->getConfiguration()->getOrm();
+
+              $service = $core->getService(
+                      $serviceName
+                      , Core\ServiceBuilder::ORM
+              );
+
+              return $service->getService();
             });
 
-    $twigConf = $this->configuration->getServices()->get('twig');
-    $this["Twig"] = $this->share(function() use ($twigConf)
+
+
+    $this["Twig"] = $this->share(function() use ($core)
             {
-              $twig = new Core\Service\Twig($twigConf);
-              return $twig->getTwig();
+              $serviceName = $core->getConfiguration()->getTemplating();
+
+              $service = $core->getService(
+                      $serviceName
+                      , Core\ServiceBuilder::TEMPLATE_ENGINE
+              );
+
+              return $service->getService();
             });
 
     if (\setup::is_installed())
@@ -149,11 +161,9 @@ class Core extends \Pimple
    * 
    * @param type $environnement 
    */
-  private function init($environnement)
+  private function init()
   {
-    $this->loadConf($environnement);
-
-    if ($this->getConfiguration()->displayErrors())
+    if ($this->getConfiguration()->isDisplayingErrors())
     {
       ini_set('display_errors', 1);
       error_reporting(E_ALL);
@@ -204,7 +214,7 @@ class Core extends \Pimple
   {
     return $this['Twig'];
   }
-  
+
   /**
    * Getter
    * 
@@ -374,8 +384,11 @@ class Core extends \Pimple
    */
   public static function initAutoloads()
   {
-    require_once __DIR__ . '/../../../vendor/twig/extensions/lib/Twig/Extensions/Autoloader.php';
+    require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+    require_once __DIR__ . '/../../vendor/Twig/lib/Twig/Autoloader.php';
+    require_once __DIR__ . '/../../vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
 
+    \Twig_Autoloader::register();
     \Twig_Extensions_Autoloader::register();
 
     $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
@@ -384,9 +397,15 @@ class Core extends \Pimple
 
     $loader->registerNamespaces(array(
         'Alchemy' => __DIR__ . '/../..',
+        'Symfony\\Component\\Yaml' => __DIR__ . '/../../vendor/symfony/src',
+        'Symfony\\Component\\Console' => __DIR__ . '/../../vendor/symfony/src',
+        'Symfony\\Component\\Serializer' => __DIR__ . '/../../vendor/symfony/src',
+        'Symfony\\Component\\DependencyInjection' => __DIR__ . '/../../vendor/symfony/src',
     ));
 
     $loader->register();
+
+    require_once __DIR__ . '/../../vendor/Silex/autoload.php';
 
     return;
   }
@@ -420,6 +439,18 @@ class Core extends \Pimple
   public function getEnv()
   {
     return $this->conf->getEnvironnement();
+  }
+
+  public function getService($serviceName, $serviceScope)
+  {
+    $configuration = $this->configuration->getService($serviceName);
+
+    return Core\ServiceBuilder::build(
+                      $serviceName
+                    , $serviceScope
+                    , $configuration->get('type')
+                    , $configuration->get('options')
+    );
   }
 
 }
