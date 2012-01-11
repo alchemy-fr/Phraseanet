@@ -180,7 +180,7 @@
 
 <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,login/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css" >
 <link id="skinCss" type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=skins/prod/{{cssfile}}/prodcolor.css" >
-<link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css,skins/prod/Basket.css" >
+<link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css" >
 <!--[if IE 7]>
 		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie7.css" >
 <![endif]-->
@@ -231,292 +231,294 @@
   {% set w1 = (100 * ratio)|round %}
   {% set w2 = (100 - w1) %}
   <div id="idFrameC" class="PNB" style="right:auto;width:{{w1}}%;">
-    <div class="tabs ui-tabs">
-      <ul class="PNB ui-tabs-nav ui-helper-reset" style="bottom:auto;height:30px;">
-        <li class="ui-tabs-selected ui-corner-top">
-          <a href="#baskets">
-            {% trans 'phraseanet:: panier' %}
-            <span id="basket_menu_trigger" style="cursor:pointer;padding:3px;font-size:12px;">&#9660;</span>
-          </a>
-        </li>
-        <li>
-          <a href="#adv_search" class="adv_search">
-            {% trans 'recherche' %}
-          </a>
-        </li>
-        {% if GV_thesaurus %}
-        <li>
-          <a href="#proposals">
-            <img class="activeproposals" src="/skins/icons/button-red.png"
-                 style="display:none;vertical-align:middle;margin:0 3px;" title="{% trans 'phraseanet:: propositions' %}" />
-            {% trans 'phraseanet:: propositions' %}
-          </a>
-        </li>
-        <li>
-          <a href="#thesaurus_tab">{% trans 'phraseanet:: thesaurus' %}</a>
-        </li>
-        {% endif %}
-      </ul>
-      <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:30px;">
-        {% import 'prod/WorkZone/Macros.twig'  as  WorkZoneMacros %}
-        {{WorkZoneMacros.make_bloc(WorkZone)}}
-      </div>
-      <div id="adv_search">
-        <div>
-          <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
+    <div class="PNB wrapper">
+      <div class="tabs ui-tabs">
+        <ul class="PNB ui-tabs-nav ui-helper-reset" style="bottom:auto;height:30px;">
+          <li class="ui-tabs-selected ui-corner-top">
+            <a href="#baskets">
+              {% trans 'phraseanet:: panier' %}
+              <span id="basket_menu_trigger" style="cursor:pointer;padding:3px;font-size:12px;">&#9660;</span>
+            </a>
+          </li>
+          <li>
+            <a href="#adv_search" class="adv_search">
+              {% trans 'recherche' %}
+            </a>
+          </li>
+          {% if GV_thesaurus %}
+          <li>
+            <a href="#proposals">
+              <img class="activeproposals" src="/skins/icons/button-red.png"
+                  style="display:none;vertical-align:middle;margin:0 3px;" title="{% trans 'phraseanet:: propositions' %}" />
+              {% trans 'phraseanet:: propositions' %}
+            </a>
+          </li>
+          <li>
+            <a href="#thesaurus_tab">{% trans 'phraseanet:: thesaurus' %}</a>
+          </li>
+          {% endif %}
+        </ul>
+        <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:30px;">
+          {% import 'prod/WorkZone/Macros.twig'  as  WorkZoneMacros %}
+          {{WorkZoneMacros.make_bloc(WorkZone)}}
         </div>
-        <div>
-          <form class="adv_search_bind">
-            <table>
-              <tr>
-                <td>
-                  <label>
-                    {% trans 'Chercher tous les mots' %}
-                  </label>
-                </td>
-                <td>
-                  <input style="width:150px;" name="query_all" type="text" value="" />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>
-                    {% trans 'Cette expression exacte' %}
-                  </label>
-                </td>
-                <td>
-                  <input style="width:150px;" name="query_exact" type="text" value="" />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>
-                    {% trans 'Au moins un des mots suivants' %}
-                  </label>
-                </td>
-                <td>
-                  <input style="width:150px;" name="query_or" type="text" value="" />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label>
-                    {% trans 'Aucun des mots suivants' %}
-                  </label>
-                </td>
-                <td>
-                  <input style="width:150px;" name="query_none" type="text" value="" />
-                </td>
-              </tr>
-            </table>
-          </form>
-        </div>
-        <div>
-          <div class="sbasglob ui-corner-all">
-            <div style="text-align:center;margin:0 10px;">
-              <input class="input-button" type="button"
-                     value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
-              <input class="input-button" type="button"
-                     value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);"/>
-            </div>
-            {{_self.bas_list(module_prod, search_datas)}}
+        <div id="adv_search">
+          <div>
+            <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
           </div>
-          <div id="sbasfiltercont" class="ui-corner-all">
-            <div>
-              {% if registry.get('GV_sphinx') %}
-              {% trans 'Trier par ' %}
-                <select name="sort">
-                  <option value="relevance">{% trans 'pertinence'%}</option>
-                  <option value="created_on">{% trans 'date dajout'%}</option>
-                  <option value="random">{% trans 'aleatoire'%}</option>
-                </select>
-                <select name="ord">
-                  <option value="desc">{% trans 'descendant'%}</option>
-                  <option value="asc">{% trans 'ascendant'%}</option>
-                </select>
-                <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
-              {% else %}
+          <div>
+            <form class="adv_search_bind">
+              <table>
+                <tr>
+                  <td>
+                    <label>
+                      {% trans 'Chercher tous les mots' %}
+                    </label>
+                  </td>
+                  <td>
+                    <input style="width:150px;" name="query_all" type="text" value="" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>
+                      {% trans 'Cette expression exacte' %}
+                    </label>
+                  </td>
+                  <td>
+                    <input style="width:150px;" name="query_exact" type="text" value="" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>
+                      {% trans 'Au moins un des mots suivants' %}
+                    </label>
+                  </td>
+                  <td>
+                    <input style="width:150px;" name="query_or" type="text" value="" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label>
+                      {% trans 'Aucun des mots suivants' %}
+                    </label>
+                  </td>
+                  <td>
+                    <input style="width:150px;" name="query_none" type="text" value="" />
+                  </td>
+                </tr>
+              </table>
+            </form>
+          </div>
+          <div>
+            <div class="sbasglob ui-corner-all">
+              <div style="text-align:center;margin:0 10px;">
+                <input class="input-button" type="button"
+                      value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
+                <input class="input-button" type="button"
+                      value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);"/>
+              </div>
+              {{_self.bas_list(module_prod, search_datas)}}
+            </div>
+            <div id="sbasfiltercont" class="ui-corner-all">
+              <div>
+                {% if registry.get('GV_sphinx') %}
                 {% trans 'Trier par ' %}
-                <select name="sort">
-                  <option value=""></option>
-                  {% for field_id, field in search_datas['fields'] %}
-                    {% if field['type'] == 'date' %}
-                    <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                    {% endif %}
-                  {% endfor %}
-                </select>
-                <select name="ord">
-                  <option value="desc">{% trans 'descendant'%}</option>
-                  <option value="asc">{% trans 'ascendant'%}</option>
-                </select>
-                <input type="hidden" name="ord" id="searchOrd" value="PHRASEA_ORDER_DESC" />
-              {% endif %}
-              <div class="field_filter">
-                <div>
-                  {% trans 'Les termes apparaissent dans le(s) champs' %}
-                </div>
-                <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle;width:100%;">
-                  <option value="phraseanet--all--fields">{% trans 'rechercher dans tous les champs' %}</option>
-                  {% for field_id, field in search_datas['fields'] %}
-                    {% if field['type'] != 'date' %}
+                  <select name="sort">
+                    <option value="relevance">{% trans 'pertinence'%}</option>
+                    <option value="created_on">{% trans 'date dajout'%}</option>
+                    <option value="random">{% trans 'aleatoire'%}</option>
+                  </select>
+                  <select name="ord">
+                    <option value="desc">{% trans 'descendant'%}</option>
+                    <option value="asc">{% trans 'ascendant'%}</option>
+                  </select>
+                  <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
+                {% else %}
+                  {% trans 'Trier par ' %}
+                  <select name="sort">
+                    <option value=""></option>
+                    {% for field_id, field in search_datas['fields'] %}
+                      {% if field['type'] == 'date' %}
                       <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                    {% endif %}
-                  {% endfor %}
-                </select>
-              </div>
-
-              {% set status_length = search_status|length %}
-              {% if status_length > 0 %}
-
-              <div style="margin:5px 0;">
-                <hr/>
-              </div>
-              <div class="status_filter">
-
-                <div>
-                  {% trans 'Status des documents a rechercher' %}
-                </div>
-                <table>
-                  {% for n, stat in search_status %}
-                  {% for s in stat %}
-                  <tr>
-                    <td>
-                      {% if s['imgoff'] %}
-                      <img src="{{s['imgoff']}}" title="{{s['labeloff']}}" />
                       {% endif %}
-                      <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
-                             type="checkbox" value="{{s['sbas']|implode(' field_')}}"
-                             n="{{n}}" name="status[{{n}}][off][]"/><label>{{s['labeloff']}}</label>
-                    </td>
-                    <td>
-                      {% if s['imgoff'] %}
-                      <img src="{{s['imgon']}}" title="{{s['labelon']}}" />
+                    {% endfor %}
+                  </select>
+                  <select name="ord">
+                    <option value="desc">{% trans 'descendant'%}</option>
+                    <option value="asc">{% trans 'ascendant'%}</option>
+                  </select>
+                  <input type="hidden" name="ord" id="searchOrd" value="PHRASEA_ORDER_DESC" />
+                {% endif %}
+                <div class="field_filter">
+                  <div>
+                    {% trans 'Les termes apparaissent dans le(s) champs' %}
+                  </div>
+                  <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle;width:100%;">
+                    <option value="phraseanet--all--fields">{% trans 'rechercher dans tous les champs' %}</option>
+                    {% for field_id, field in search_datas['fields'] %}
+                      {% if field['type'] != 'date' %}
+                        <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
                       {% endif %}
-                      <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
-                             type="checkbox" value="{{s['sbas']|implode(' field_')}}"
-                             n="{{n}}" name="status[{{n}}][on][]"/><label>{{s['labelon']}}</label>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                  {% endfor %}
-                </table>
-              </div>
-              {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
 
-              {% set dates_length = search_datas['dates']|length %}
-              {% if dates_length > 0 %}
-              <div style="margin:5px 0;">
-                <hr/>
-              </div>
-              <div class="date_filter">
-                <div>{% trans 'Rechercher dans un champ date' %}</div>
-                <table>
-                  <tr>
-                    <td colspan="2">
-                      <select name="datefield">
-                        {% for field_id, field in search_datas['dates'] %}
-                        <option onchange="checkFilters(true);"
-                                class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                        {% endfor %}
-                        <option value="{{search_datas['dates']|array_keys|implode('|')}}" selected="selected">
-                          {% trans 'rechercher dans tous les champs' %}
-                        </option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {% trans 'phraseanet::time:: de' %}
-                      <input onchange="checkFilters(true);" class="datepicker" type="text" name="datemin">
-                    </td>
-                    <td>
-                      {% trans 'phraseanet::time:: a' %}
-                      <input onchange="checkFilters(true);" class="datepicker" type="text" name="datemax">
-                    </td>
-                  </tr>
-                </table>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-      {% if GV_thesaurus %}
-      <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;"
-           ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
-      </div>
-      <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;">
-        <div id="THPD_tabs">
-          <ul>
-            <li><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
-            <li><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
-          </ul>
-          <div class="ui-tabs-panels-container">
-            <div id="THPD_T">
-              <div id='THPD_WIZARDS' style="position:relative; top:0px; left:0px; height:auto; width:100%;">
-                <div class="wizard wiz_0">
-                  <!-- empty wizard -->
+                {% set status_length = search_status|length %}
+                {% if status_length > 0 %}
+
+                <div style="margin:5px 0;">
+                  <hr/>
                 </div>
-                <div class="wizard wiz_1" style="display:none">
-                  <div class="txt">{% trans 'prod::thesaurusTab:wizard:accepter le terme candidat' %}</div>
-                </div>
-                <div class="wizard wiz_2" style="display:none">
-                  <div class="txt">{% trans 'prod::thesaurusTab:wizard:remplacer par le terme' %}</div>
-                </div>
-                <form class="gform" href="#" onsubmit="T_Gfilter(this);return(false);">
-                  <input type="text" onkeyup="T_Gfilter_delayed(this.value, 300)" style="width:150px;" />
-                  <input class="th_ok"     type="submit" value="{% trans 'boutton::rechercher' %}" />
-                  <input class="th_cancel" type="button" value="{% trans 'boutton::annuler' %}"
-                         onclick="thesauCancelWizard();return(false);"/>
-                </form>
-              </div>
-              <div id='THPD_T_treeBox' class="searchZone"
-                   style="position:absolute; top:0px; bottom:0px; left:0px; width:100%; overflow:auto">
-                <div onclick="Xclick(event);return(false);" ondblclick="TXdblClick(event);">
-                  <ul class="treeview" id="THPD_T_tree">
-                    {% for base in search_datas['bases'] %}
-                    {% if base['thesaurus'] %}
-                    <li id="TX_P.{{base['sbas_id']}}.T" class="expandable{% if loop.last %} last{% endif %}">
-                      <div class="hitarea expandable-hitarea"></div>
-                      <span>{{base['sbas_id']|sbas_names}}</span>
-                      <ul style="display:none">{% trans 'chargement' %}</ul>
-                    </li>
-                    {% endif %}
+                <div class="status_filter">
+
+                  <div>
+                    {% trans 'Status des documents a rechercher' %}
+                  </div>
+                  <table>
+                    {% for n, stat in search_status %}
+                    {% for s in stat %}
+                    <tr>
+                      <td>
+                        {% if s['imgoff'] %}
+                        <img src="{{s['imgoff']}}" title="{{s['labeloff']}}" />
+                        {% endif %}
+                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
+                              type="checkbox" value="{{s['sbas']|implode(' field_')}}"
+                              n="{{n}}" name="status[{{n}}][off][]"/><label>{{s['labeloff']}}</label>
+                      </td>
+                      <td>
+                        {% if s['imgoff'] %}
+                        <img src="{{s['imgon']}}" title="{{s['labelon']}}" />
+                        {% endif %}
+                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
+                              type="checkbox" value="{{s['sbas']|implode(' field_')}}"
+                              n="{{n}}" name="status[{{n}}][on][]"/><label>{{s['labelon']}}</label>
+                      </td>
+                    </tr>
                     {% endfor %}
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div id="THPD_C">
-              <div id='THPD_C_treeBox' class="searchZone">
-                <div onclick="Xclick(event);return(false);" ondblclick="CXdblClick(event);">
-                  <ul class="treeview" id="THPD_C_tree">
-                    {% for base in search_datas['bases'] %}
-                    {% if base['cterms'] %}
-                    <li id="CX_P.{{base['sbas_id']}}.C" class="expandable{% if loop.last %} last{% endif %}">
-                      <div class="hitarea expandable-hitarea"></div>
-                      <span>{{base['sbas_id']|sbas_names}}</span>
-                      <ul style="display:none">{% trans 'chargement' %}</ul>
-                    </li>
-                    {% endif %}
                     {% endfor %}
-                  </ul>
+                  </table>
                 </div>
+                {% endif %}
+
+                {% set dates_length = search_datas['dates']|length %}
+                {% if dates_length > 0 %}
+                <div style="margin:5px 0;">
+                  <hr/>
+                </div>
+                <div class="date_filter">
+                  <div>{% trans 'Rechercher dans un champ date' %}</div>
+                  <table>
+                    <tr>
+                      <td colspan="2">
+                        <select name="datefield">
+                          {% for field_id, field in search_datas['dates'] %}
+                          <option onchange="checkFilters(true);"
+                                  class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                          {% endfor %}
+                          <option value="{{search_datas['dates']|array_keys|implode('|')}}" selected="selected">
+                            {% trans 'rechercher dans tous les champs' %}
+                          </option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        {% trans 'phraseanet::time:: de' %}
+                        <input onchange="checkFilters(true);" class="datepicker" type="text" name="datemin">
+                      </td>
+                      <td>
+                        {% trans 'phraseanet::time:: a' %}
+                        <input onchange="checkFilters(true);" class="datepicker" type="text" name="datemax">
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                {% endif %}
               </div>
             </div>
           </div>
         </div>
-        <div style="display:none" id="THPD_confirm_del_dlg">
-          <div id="THPD_confirm_del_dlg_msg">{% trans 'prod::thesaurusTab:dlg:supprimer le terme ?' %}</div>
+        {% if GV_thesaurus %}
+        <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;"
+            ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
         </div>
-        <div style="display:none" id="THPD_confirm_accept_dlg">
-          <div id="THPD_confirm_accept_dlg_msg">{% trans 'prod::thesaurusTab:dlg:accepter le terme ?' %}</div>
+        <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;">
+          <div id="THPD_tabs">
+            <ul>
+              <li><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
+              <li><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
+            </ul>
+            <div class="ui-tabs-panels-container">
+              <div id="THPD_T">
+                <div id='THPD_WIZARDS' style="position:relative; top:0px; left:0px; height:auto; width:100%;">
+                  <div class="wizard wiz_0">
+                    <!-- empty wizard -->
+                  </div>
+                  <div class="wizard wiz_1" style="display:none">
+                    <div class="txt">{% trans 'prod::thesaurusTab:wizard:accepter le terme candidat' %}</div>
+                  </div>
+                  <div class="wizard wiz_2" style="display:none">
+                    <div class="txt">{% trans 'prod::thesaurusTab:wizard:remplacer par le terme' %}</div>
+                  </div>
+                  <form class="gform" href="#" onsubmit="T_Gfilter(this);return(false);">
+                    <input type="text" onkeyup="T_Gfilter_delayed(this.value, 300)" style="width:150px;" />
+                    <input class="th_ok"     type="submit" value="{% trans 'boutton::rechercher' %}" />
+                    <input class="th_cancel" type="button" value="{% trans 'boutton::annuler' %}"
+                          onclick="thesauCancelWizard();return(false);"/>
+                  </form>
+                </div>
+                <div id='THPD_T_treeBox' class="searchZone"
+                    style="position:absolute; top:0px; bottom:0px; left:0px; width:100%; overflow:auto">
+                  <div onclick="Xclick(event);return(false);" ondblclick="TXdblClick(event);">
+                    <ul class="treeview" id="THPD_T_tree">
+                      {% for base in search_datas['bases'] %}
+                      {% if base['thesaurus'] %}
+                      <li id="TX_P.{{base['sbas_id']}}.T" class="expandable{% if loop.last %} last{% endif %}">
+                        <div class="hitarea expandable-hitarea"></div>
+                        <span>{{base['sbas_id']|sbas_names}}</span>
+                        <ul style="display:none">{% trans 'chargement' %}</ul>
+                      </li>
+                      {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div id="THPD_C">
+                <div id='THPD_C_treeBox' class="searchZone">
+                  <div onclick="Xclick(event);return(false);" ondblclick="CXdblClick(event);">
+                    <ul class="treeview" id="THPD_C_tree">
+                      {% for base in search_datas['bases'] %}
+                      {% if base['cterms'] %}
+                      <li id="CX_P.{{base['sbas_id']}}.C" class="expandable{% if loop.last %} last{% endif %}">
+                        <div class="hitarea expandable-hitarea"></div>
+                        <span>{{base['sbas_id']|sbas_names}}</span>
+                        <ul style="display:none">{% trans 'chargement' %}</ul>
+                      </li>
+                      {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:none" id="THPD_confirm_del_dlg">
+            <div id="THPD_confirm_del_dlg_msg">{% trans 'prod::thesaurusTab:dlg:supprimer le terme ?' %}</div>
+          </div>
+          <div style="display:none" id="THPD_confirm_accept_dlg">
+            <div id="THPD_confirm_accept_dlg_msg">{% trans 'prod::thesaurusTab:dlg:accepter le terme ?' %}</div>
+          </div>
+          <div style="display:none" id="THPD_confirm_replace_dlg">
+            <div id="THPD_confirm_replace_dlg_msg">{% trans 'prod::thesaurusTab:dlg:remplacer le terme ?' %}</div>
+          </div>
         </div>
-        <div style="display:none" id="THPD_confirm_replace_dlg">
-          <div id="THPD_confirm_replace_dlg_msg">{% trans 'prod::thesaurusTab:dlg:remplacer le terme ?' %}</div>
-        </div>
+        {% endif %}
       </div>
-      {% endif %}
     </div>
 
     <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
@@ -562,251 +564,255 @@
   </div>
   <div class="PNB" id="rightFrame" style="left:auto;width:{{w2}}%;">
     
-    <div id="headBlock" class="PNB" style="height:70px;bottom:auto;">
-      <div id="queryBox">
-        <table style="table-layout:fixed;width:100%;height:60px;top:5px;position:absolute" cellspacing="0" cellpadding="0">
-          <tr valign="top">
-            <td style="width:10px;">&nbsp;</td>
-            <td style="width:475px;">
-              <div id="alternateTrigger" class="ui-corner-all" style="height: 60px;">
-                <table style="height:60px;">
-                  <tr style="height:30px;">
-                    <td colspan="2" style="text-align:right;" id="qry_buttons">
-                      <form style="margin:0;padding:0;" onsubmit="newSearch();return false;">
-                        <input autocomplete="off" id="EDIT_query" type="text" style="font-size:15px;width:370px;height:22px;" name="qry" value="{{user.getPrefs('start_page_query')}}">
-                        <input id="search_submit" type="submit" value="{% trans 'boutton::rechercher' %}" class="input-button" />
-                      </form>
-                    </td>
-                  </tr>
-                  <tr style="height:30px;">
-                    <td style="text-align:left;white-space:nowrap;">
-                      {% if GV_multiAndReport %}
-                      <input type="radio" value="0" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/><label for="mode_type_doc">{% trans 'phraseanet::type:: documents' %}</label>
-                      <input type="radio" value="1" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/><label for="mode_type_reg">{% trans 'phraseanet::type:: reportages' %}</label>
-                      {% else %}
-                      <input type="hidden" value="0" name="search_type" />
-                      {% endif %}
-                      <select name="recordtype" id="recordtype_sel">
-                        <option value="">{% trans 'Tout type' %}</option>
-                        <option value="image">{% trans 'Image' %}</option>
-                        <option value="video">{% trans 'Video' %}</option>
-                        <option value="audio">{% trans 'Audio' %}</option>
-                        <option value="document">{% trans 'Document' %}</option>
-                        <option value="flash">{% trans 'Flash' %}</option>
-                      </select>
-                    </td>
-                    <td style="text-align:right;width:auto;">
-                      <a href="#" onmousedown="advSearch(event);return false;"> &gt; {% trans 'prod:: recherche avancee' %}</a>
-                    </td>
-                  </tr>
-                </table>
+    <div id="headBlock" class="PNB" style="height:60px;bottom:auto;">
+      <div id="alternateTrigger" class="PNB">
+        <form style="margin:15px 20px;padding:0;" onsubmit="newSearch();return false;">
+          <input autocomplete="off" id="EDIT_query" type="text" style="padding:4px;border-radius:5px;font-size:16px;width:370px;height:22px;" name="qry" value="{{user.getPrefs('start_page_query')}}">
+          <input id="search_submit" type="submit" value="{% trans 'boutton::rechercher' %}" class="input-button" />
+          {% if GV_multiAndReport %}
+          <input type="radio" value="0" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/><label for="mode_type_doc">{% trans 'phraseanet::type:: documents' %}</label>
+          <input type="radio" value="1" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/><label for="mode_type_reg">{% trans 'phraseanet::type:: reportages' %}</label>
+          {% else %}
+          <input type="hidden" value="0" name="search_type" />
+          {% endif %}
+          <select name="recordtype" id="recordtype_sel">
+            <option value="">{% trans 'Tout type' %}</option>
+            <option value="image">{% trans 'Image' %}</option>
+            <option value="video">{% trans 'Video' %}</option>
+            <option value="audio">{% trans 'Audio' %}</option>
+            <option value="document">{% trans 'Document' %}</option>
+            <option value="flash">{% trans 'Flash' %}</option>
+          </select>
+          <a href="#" onclick="lookBox(this,event);return false;">{% trans 'Preferences' %} </a>
+        </form>
+          
+          
+          
+        <div id="alternateSearch" class="PNB" style="z-index:510;">
+          <ul class="PNB" style="height:30px;">
+            <li><a href="#bases-queries">{% trans 'recherche :: Bases' %}</a></li>
+            <li><a href="#history-queries">{% trans 'recherche :: Historique' %}</a></li>
+            {% if queries_topics %}
+            <li><a href="#choosen-topics">{% trans 'recherche :: Themes' %}</a></li>
+            {% endif %}
+          </ul>
+          <div id="bases-queries" class="PNB" style="top:30px;overflow:hidden;">
+            <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
+
+
+              <div class="sbasglob ui-corner-all">
+                <div style="text-align:center;margin:0 10px;">
+                  <input class="input-button" type="button" value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
+                  <input class="input-button" type="button" value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);"/>
+                </div>
+
+                {{_self.bas_list(module_prod, search_datas)}}
               </div>
-            </td>
-            <td style="width:auto;">
-
-            </td>
-          </tr>
-        </table>
+            </div>
+          </div>
+          <div id="history-queries" class="PNB" style="top:30px;overflow:hidden;">
+            <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
+              {{queries_history|raw}}
+            </div>
+          </div>
+          {% if queries_topics %}
+          <div id="choosen-topics" class="PNB" style="top:30px;overflow:hidden;">
+            <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
+              {{queries_topics|raw}}
+            </div>
+          </div>
+          {% endif %}
+        </div>
       </div>
+        
     </div>
-    <div id="idFrameT" class="PNB" style="height:80px;top:90px;bottom:auto;">
-      <div class="bloc ui-corner-all">
-        <table valign="middle" style="width:100%;top:5px;" class="PNB">
-          <tr>
-            <td style="width:5px;"></td>
-            <td style="text-align:left;">
+    <div id="idFrameT" class="PNB ui-corner-top" style="top:70px;">
+      <div class="tools PNB10" style="font-size:10px;z-index:200;height:28px;">
 
-              <div class="tools" style="width:100%;xoverflow-x:auto;xoverflow-y:hidden;font-family:verdana;font-size:10px">
-                
-                
-                
-                <span class="verticalbuttonset">
-                  <span>
-                    <button class="default_action">
-                      <img src="/skins/icons/ccoch0.gif"/>&nbsp;
-                    </button>
-                    <button class="trigger">{% trans 'Select' %}</button>
-                  </span>
-                  <div class="submenu">
-                    <button class="answer_selector all_selector">
-                      {% trans 'reponses:: selectionner tout' %}
-                    </button>
-                    <button class="answer_selector none_selector">
-                      {% trans 'reponses:: selectionner rien' %}
-                    </button>
-                    <button class="answer_selector image_selector">
-                      {% trans 'phraseanet::type:: images' %}
-                    </button>
-                    <button class="answer_selector document_selector">
-                      {% trans 'phraseanet::type:: documents' %}
-                    </button>
-                    <button class="answer_selector video_selector">
-                      {% trans 'phraseanet::type:: videos' %}
-                    </button>
-                    <button class="answer_selector audio_selector">
-                      {% trans 'phraseanet::type:: audios' %}
-                    </button>
-                  </div>
-                </span>
-                
-                <span class="verticalbuttonset">
-                  <span>
-                    <button class="default_action TOOL_disktt_btn results_window">
-                      <img src="/skins/prod/000000/images/disktt_history.gif"/> {% trans 'action : exporter' %}
-                    </button>
-                    <button class="trigger">{% trans 'Select an action' %}</button>
-                  </span>
-                  <div class="submenu">
-                    <button class="TOOL_print_btn results_window">
-                      <img src="/skins/prod/000000/images/print_history.gif"/> {% trans 'action : print' %}
-                    </button>
-                  </div>
-                </span>
-                
-                {% set actions = {} %}
-                {% if user.ACL().has_right('modifyrecord') %}
-                  {% set label %}
-                    {% trans 'action : editer' %}
-                  {% endset %}
-                  {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.gif", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
-                {% endif %}
-                {% if user.ACL().has_right('changestatus') %}
-                  {% set label %}
-                    {% trans 'action : status' %}
-                  {% endset %}
-                  {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.gif", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
-                {% endif %}
-                {% if user.ACL().has_right('deleterecord') and user.ACL().has_right('addrecord') %}
-                  {% set label %}
-                    {% trans 'action : collection' %}
-                  {% endset %}
-                  {% set actions = actions|merge( { 'move' : {'icon': "/skins/prod/000000/images/chgcoll_history.gif", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
-                {% endif %}
-                
-                {% set n_actions = actions|length %}
-                
-                {% if n_actions > 1 %}
-                <span class="verticalbuttonset">
-                  <span>
-                    {% for action in actions %}
-                      {% if loop.first %}
-                      <button class="default_action {{ action.class }} results_window">
-                        <img src="{{ action.icon }}"/> {{ action.label }}
-                      </button>
-                      {% endif %}
-                    {% endfor %}
-                    <button class="trigger">{% trans 'Select an action' %}</button>
-                  </span>
-                  <div class="submenu" >
-                    {% for action in actions %}
-                      {% if not loop.first %}
-                      <button class="{{ action.class }} results_window">
-                        <img src="{{ action.icon }}"/> {{ action.label }}
-                      </button>
-                      {% endif %}
-                    {% endfor %}
-                  </div>
-                </span>
-                {% elseif n_actions == 1 %}
-                  <span class="buttonset">
-                    {% for action in actions %}
-                      <button class="{{ action.class }} results_window">
-                        <img src="{{ action.icon }}"/> {{ action.label }}
-                      </button>
-                    {% endfor %}
-                  </span>
-                {% endif %}
-                
-                {% if user.ACL().has_right('push') and user.ACL().has_right('bas_chupub') %}
-                <span class="verticalbuttonset">
-                  <span>
-                    <button class="TOOL_pushdoc_btn default_action results_window">
-                      <img src="/skins/prod/000000/images/pushdoc_history.gif"/>
-                      {% trans 'action : push' %}
-                    </button>
-                    <button class="trigger">{% trans 'Select an action' %}</button>
-                  </span>
-                  <div class="submenu">
-                    <button class="TOOL_bridge_btn results_window">
-                      <img src="/skins/icons/door.png"/>
-                      {% trans 'action : bridge' %}
-                    </button>
-                    <button class="TOOL_publish_btn results_window">
-                      <img src="/skins/icons/rss16.png"/>
-                      {% trans 'action : publier' %}
-                    </button>
-                  </div>
-                </span>
-                {% elseif user.ACL().has_right('push') %}
-                <span class="buttonset">
-                  <button class="TOOL_pushdoc_btn results_window">
-                    <img src="/skins/prod/000000/images/pushdoc_history.gif"/>
-                    {% trans 'action : push' %}
-                  </button>
-                </span>
-                {% elseif user.ACL().has_right('bas_chupub') %}
-                <span class="verticalbuttonset">
-                  <span>
-                    <button class="TOOL_bridge_btn default_action results_window">
-                      <img src="/skins/icons/door.png"/>
-                      {% trans 'action : bridge' %}
-                    </button>
-                    <button class="trigger">{% trans 'Select an action' %}</button>
-                  </span>
-                  <div class="submenu">
-                    <button class="TOOL_publish_btn results_window">
-                      <img src="/skins/icons/rss16.png"/>
-                      {% trans 'action : publier' %}
-                    </button>
-                  </div>
-                </span>
-                {% endif %}
-                {% if user.ACL().has_right('doctools') %}
-                <span class="buttonset">
-                  <button class="TOOL_imgtools_btn results_window">
-                    <img src="/skins/prod/000000/images/imgtools_history.gif"/> {% trans 'action : outils' %}
-                  </button>
-                </span>
-                {% endif %}
-                {% if user.ACL().has_right('deleterecord') %}
-                <span class="buttonset">
-                  <button class="TOOL_trash_btn results_window">
-                      <img src="/skins/icons/delete.png"/>
-                    {% trans 'action : supprimer' %}
-                  </button>
-                </span>
-                {% endif %}
-              </div>
-            </td>
-            <td style="min-width:200px;text-align:right;white-space:nowrap" id="tool_navigate">
 
-            </td>
-            <td style="width:5px;"></td>
-          </tr>
-          <tr>
-            <td style="width:5px;"></td>
-            <td style="text-align:center;" colspan="2">
-              <a href="#" onclick="lookBox(this,event);return false;">{% trans 'Preferences' %} </a>
-              <span id="tool_results">
 
-              </span>
-            </td>
-            <td style="width:5px;"></td>
-          </tr>
-        </table>
+        <span class="verticalbuttonset">
+          <span>
+            <button class="default_action">
+              <img src="/skins/icons/ccoch0.gif"/>&nbsp;
+            </button>
+            <button class="trigger">{% trans 'Select' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="answer_selector all_selector">
+              {% trans 'reponses:: selectionner tout' %}
+            </button>
+            <button class="answer_selector none_selector">
+              {% trans 'reponses:: selectionner rien' %}
+            </button>
+            <button class="answer_selector image_selector">
+              {% trans 'phraseanet::type:: images' %}
+            </button>
+            <button class="answer_selector document_selector">
+              {% trans 'phraseanet::type:: documents' %}
+            </button>
+            <button class="answer_selector video_selector">
+              {% trans 'phraseanet::type:: videos' %}
+            </button>
+            <button class="answer_selector audio_selector">
+              {% trans 'phraseanet::type:: audios' %}
+            </button>
+          </div>
+        </span>
+
+        <span class="verticalbuttonset">
+          <span>
+            <button class="default_action TOOL_disktt_btn results_window">
+              <img src="/skins/prod/000000/images/disktt_history.gif"/> {% trans 'action : exporter' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_print_btn results_window">
+              <img src="/skins/prod/000000/images/print_history.gif"/> {% trans 'action : print' %}
+            </button>
+          </div>
+        </span>
+
+        {% set actions = {} %}
+        {% if user.ACL().has_right('modifyrecord') %}
+          {% set label %}
+            {% trans 'action : editer' %}
+          {% endset %}
+          {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.gif", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
+        {% endif %}
+        {% if user.ACL().has_right('changestatus') %}
+          {% set label %}
+            {% trans 'action : status' %}
+          {% endset %}
+          {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.gif", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
+        {% endif %}
+        {% if user.ACL().has_right('deleterecord') and user.ACL().has_right('addrecord') %}
+          {% set label %}
+            {% trans 'action : collection' %}
+          {% endset %}
+          {% set actions = actions|merge( { 'move' : {'icon': "/skins/prod/000000/images/chgcoll_history.gif", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
+        {% endif %}
+
+        {% set n_actions = actions|length %}
+
+        {% if n_actions > 1 %}
+        <span class="verticalbuttonset">
+          <span>
+            {% for action in actions %}
+              {% if loop.first %}
+              <button class="default_action {{ action.class }} results_window">
+                <img src="{{ action.icon }}"/> {{ action.label }}
+              </button>
+              {% endif %}
+            {% endfor %}
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu" >
+            {% for action in actions %}
+              {% if not loop.first %}
+              <button class="{{ action.class }} results_window">
+                <img src="{{ action.icon }}"/> {{ action.label }}
+              </button>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </span>
+        {% elseif n_actions == 1 %}
+          <span class="buttonset">
+            {% for action in actions %}
+              <button class="{{ action.class }} results_window">
+                <img src="{{ action.icon }}"/> {{ action.label }}
+              </button>
+            {% endfor %}
+          </span>
+        {% endif %}
+
+        {% if user.ACL().has_right('push') and user.ACL().has_right('bas_chupub') %}
+        <span class="verticalbuttonset">
+          <span>
+            <button class="TOOL_pushdoc_btn default_action results_window">
+              <img src="/skins/prod/000000/images/pushdoc_history.gif"/>
+              {% trans 'action : push' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_bridge_btn results_window">
+              <img src="/skins/icons/door.png"/>
+              {% trans 'action : bridge' %}
+            </button>
+            <button class="TOOL_publish_btn results_window">
+              <img src="/skins/icons/rss16.png"/>
+              {% trans 'action : publier' %}
+            </button>
+          </div>
+        </span>
+        {% elseif user.ACL().has_right('push') %}
+        <span class="buttonset">
+          <button class="TOOL_pushdoc_btn results_window">
+            <img src="/skins/prod/000000/images/pushdoc_history.gif"/>
+            {% trans 'action : push' %}
+          </button>
+        </span>
+        {% elseif user.ACL().has_right('bas_chupub') %}
+        <span class="verticalbuttonset">
+          <span>
+            <button class="TOOL_bridge_btn default_action results_window">
+              <img src="/skins/icons/door.png"/>
+              {% trans 'action : bridge' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_publish_btn results_window">
+              <img src="/skins/icons/rss16.png"/>
+              {% trans 'action : publier' %}
+            </button>
+          </div>
+        </span>
+        {% endif %}
+        {% if user.ACL().has_right('doctools') %}
+        <span class="buttonset">
+          <button class="TOOL_imgtools_btn results_window">
+            <img src="/skins/prod/000000/images/imgtools_history.gif"/> {% trans 'action : outils' %}
+          </button>
+        </span>
+        {% endif %}
+        {% if user.ACL().has_right('deleterecord') %}
+        <span class="buttonset">
+          <button class="TOOL_trash_btn results_window">
+              <img src="/skins/icons/delete.png"/>
+            {% trans 'action : supprimer' %}
+          </button>
+        </span>
+        {% endif %}
       </div>
-    </div>
-    <div id="idFrameA" class="PNB" style="top:180px;">
       {% set bool = 0 %}
       {% if user.getPrefs('start_page') == 'QUERY' or user.getPrefs('start_page') == 'LAST_QUERY' %}
       {% set bool = 1 %}
       {% endif %}
-      <div id="answers" class="{% if bool == 1 %}loading{% endif %} PNB">
+      <div id="answers" class="{% if bool == 1 %}loading{% endif %} PNB10" style="top:48px;bottom:30px;">
         {% if bool == 0 %}
         {{start_page_content}}
         {% endif %}
       </div>
-    </div>
+      <div class="PNB" style="top:auto;height:30px;">
+        <table>
+          <tr>
+            <td>
+              <span id="tool_results">
+
+              </span>
+            </td>
+            <td>
+              <div id="tool_navigate">
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+  </div>
   </div>
 </div>
 
@@ -1064,48 +1070,6 @@
   <div id="idFrameE" style="position:absolute;top:10px;left:10px;right:10px;bottom:10px;">
 
   </div>
-</div>
-
-
-
-
-
-
-
-<div id="alternateSearch" class="PNB" style="z-index:510;">
-  <ul class="PNB" style="height:30px;">
-    <li><a href="#bases-queries">{% trans 'recherche :: Bases' %}</a></li>
-    <li><a href="#history-queries">{% trans 'recherche :: Historique' %}</a></li>
-    {% if queries_topics %}
-    <li><a href="#choosen-topics">{% trans 'recherche :: Themes' %}</a></li>
-    {% endif %}
-  </ul>
-  <div id="bases-queries" class="PNB" style="top:30px;overflow:hidden;">
-    <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-
-
-      <div class="sbasglob ui-corner-all">
-        <div style="text-align:center;margin:0 10px;">
-          <input class="input-button" type="button" value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
-          <input class="input-button" type="button" value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);"/>
-        </div>
-
-        {{_self.bas_list(module_prod, search_datas)}}
-      </div>
-    </div>
-  </div>
-  <div id="history-queries" class="PNB" style="top:30px;overflow:hidden;">
-    <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-      {{queries_history|raw}}
-    </div>
-  </div>
-  {% if queries_topics %}
-  <div id="choosen-topics" class="PNB" style="top:30px;overflow:hidden;">
-    <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-      {{queries_topics|raw}}
-    </div>
-  </div>
-  {% endif %}
 </div>
 
 <div id="basket_preferences" style="display:none;">
