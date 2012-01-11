@@ -187,6 +187,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    *
+   * @var record_adapter
+   */
+  protected static $record_no_access;
+
+  /**
+   *
    * @var system_file
    */
   protected static $record_sf_1;
@@ -364,6 +370,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * @var collection 
    */
   protected static $collection;
+  
+  /**
+   *
+   * @var collection 
+   */
+  protected static $collection_no_access;
 
   /**
    * Test start time
@@ -473,6 +485,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     //set Mozilla user agent as default
     $browser = Browser::getInstance();
     $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
+    
+    $this->purgeDatabase();
+    
+    self::$user->ACL()->revoke_access_from_bases(array(self::$collection_no_access->get_base_id()));
   }
 
   public function tearDown()
@@ -492,7 +508,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
     $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$core->getEntityManager(), $purger);
-    $executor->execute($fixtureLoader->getFixtures());
+    $executor->execute($fixtureLoader->getFixtures(), true);
   }
 
   /**
@@ -566,7 +582,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
     catch (\Exception $e)
     {
-      $this->fail('Fail load one Basket : ' . $e->getMessage());
+      $this->fail('Fail load five Basket : ' . $e->getMessage());
     }
   }
 
@@ -901,17 +917,21 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   private static function setCollection()
   {
     $appbox = appbox::get_instance();
-    $coll = null;
+    $coll = $collection_no_acces = null;
 
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
       {
-        $coll = $collection;
-        break;
+        if($coll instanceof collection && !$collection_no_acces)
+          $collection_no_acces = $collection;
+        if(!$coll)
+          $coll = $collection;
+        if($coll instanceof collection && $collection_no_acces instanceof collection)
+          break;
       }
 
-      if ($coll instanceof collection)
+      if ($coll instanceof collection && $collection_no_acces instanceof collection)
       {
         break;
       }
@@ -921,8 +941,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
       self::fail('Unable to find a collection');
     }
+    if (!$collection_no_acces instanceof collection)
+    {
+      self::fail('Unable to find a second collection');
+    }
 
     self::$collection = $coll;
+    
+    self::$collection_no_access = $collection_no_acces;
+    
     return;
   }
 
@@ -1111,6 +1138,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         echo "generate record 1\n";
         self::$record_sf_1 = new system_file(__DIR__ . '/testfiles/test001.CR2');
         self::$record_1 = record_adapter::create(self::$collection, self::$record_sf_1);
+      }
+      if ((static::$need_records === true || static::$need_records >= 1) && !self::$record_no_access instanceof record_adapter)
+      {
+        echo "generate record no access\n";
+        $file = new system_file(__DIR__ . '/testfiles/test001.CR2');
+        self::$record_no_access = record_adapter::create(self::$collection_no_access, $file);
       }
       if ((static::$need_records === true || static::$need_records >= 2) && !self::$record_2 instanceof record_adapter)
       {
