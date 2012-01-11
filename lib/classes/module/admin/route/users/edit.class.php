@@ -572,7 +572,7 @@ class module_admin_route_users_edit
 
     $parm = $request->get_parms_from_serialized_datas($infos, 'user_infos');
 
-    if (!mail::validateEmail($parm['email']))
+    if ($parm['email'] && !mail::validateEmail($parm['email']))
       throw new Exception_InvalidArgument(_('Email addess is not valid'));
 
     $user->set_firstname($parm['first_name'])
