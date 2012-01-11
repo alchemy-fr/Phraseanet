@@ -282,7 +282,7 @@ class Configuration
   }
 
   /**
-   * Return all services defined in service.yml
+   * Return all services defined in services.yml
    * @return ParameterBag
    */
   public function getServices()

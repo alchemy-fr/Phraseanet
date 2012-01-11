@@ -97,7 +97,7 @@ class Application implements Specification
    */
   public function getServiceFile()
   {
-    return new \SplFileObject(__DIR__ . '/../../../../../config/service.yml');
+    return new \SplFileObject(__DIR__ . '/../../../../../config/services.yml');
   }
 
   /**

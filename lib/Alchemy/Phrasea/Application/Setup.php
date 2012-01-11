@@ -58,8 +58,8 @@ return call_user_func(function()
                               }
 
                               //copy service sample
-                              $serviceSampleFile = __DIR__ . "/../../../../config/service.sample.yml";
-                              $serviceFile = __DIR__ . "/../../../../config/service.yml";
+                              $serviceSampleFile = __DIR__ . "/../../../../config/services.sample.yml";
+                              $serviceFile = __DIR__ . "/../../../../config/services.yml";
 
                               if (!copy($serviceSampleFile, $serviceFile))
                               {

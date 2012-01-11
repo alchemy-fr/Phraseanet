@@ -439,8 +439,8 @@ class appbox extends base
       }
 
       //copy service sample
-      $serviceSampleFile = $root . "config/service.sample.yml";
-      $serviceFile = $root . "config/service.yml";
+      $serviceSampleFile = $root . "config/services.sample.yml";
+      $serviceFile = $root . "config/services.yml";
 
       if (!copy($serviceSampleFile, $serviceFile))
       {
