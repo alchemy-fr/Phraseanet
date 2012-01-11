@@ -1,15 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../../PhraseanetWebTestCaseAbstract.class.inc';
-require_once __DIR__ . '/../../../bootstrap.php';
+require_once __DIR__ . '/../../../PhraseanetWebTestCaseAbstract.class.inc';
 
-bootstrap::register_autoloads();
+require_once __DIR__ . '/../../../../Alchemy/Phrasea/Application/Api.php';
+
 API_OAuth2_Autoloader::register();
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
+class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 {
 
   protected $client;
@@ -50,7 +50,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
 
   public function createApplication()
   {
-    return require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Api.php';
+    return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Api.php';
   }
 
   public function testRouteNotFound()
@@ -95,7 +95,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
       $databox = databox::get_instance($databox_id);
 
       $collection = array_shift($databox->get_collections());
-      $system_file = new system_file(__DIR__ . '/../../testfiles/cestlafete.jpg');
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
       $record = record_adapter::create($collection, $system_file);
       $record_id = $record->get_record_id();
@@ -376,7 +376,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
       $databox = databox::get_instance($databox_id);
 
       $collection = array_shift($databox->get_collections());
-      $system_file = new system_file(__DIR__ . '/../../testfiles/cestlafete.jpg');
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
       $record = record_adapter::create($collection, $system_file);
 
@@ -408,7 +408,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     {
       $databox = databox::get_instance($databox_id);
       $collection = array_shift($databox->get_collections());
-      $system_file = new system_file(__DIR__ . '/../../testfiles/cestlafete.jpg');
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
       $record = record_adapter::create($collection, $system_file);
 
@@ -440,7 +440,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     {
       $databox = databox::get_instance($databox_id);
       $collection = array_shift($databox->get_collections());
-      $system_file = new system_file(__DIR__ . '/../../testfiles/cestlafete.jpg');
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
       $record = record_adapter::create($collection, $system_file);
 
@@ -562,7 +562,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     {
       $databox = databox::get_instance($databox_id);
       $collection = array_shift($databox->get_collections());
-      $system_file = new system_file(__DIR__ . '/../../testfiles/cestlafete.jpg');
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
       $record = record_adapter::create($collection, $system_file);
 
@@ -598,7 +598,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     {
       $databox = databox::get_instance($databox_id);
       $collection = array_shift($databox->get_collections());
-      $system_file = new system_file(__DIR__ . '/../../testfiles/cestlafete.jpg');
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
       $record = record_adapter::create($collection, $system_file);
 
@@ -668,7 +668,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     {
       $databox = databox::get_instance($databox_id);
       $collection = array_shift($databox->get_collections());
-      $system_file = new system_file(__DIR__ . '/../../testfiles/cestlafete.jpg');
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
       $record = record_adapter::create($collection, $system_file);
 
@@ -732,7 +732,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     {
       $databox = databox::get_instance($databox_id);
       $collection = array_shift($databox->get_collections());
-      $system_file = new system_file(__DIR__ . '/../../testfiles/cestlafete.jpg');
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
       $record = record_adapter::create($collection, $system_file);
 
