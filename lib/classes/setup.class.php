@@ -69,14 +69,24 @@ class setup
   public static function is_installed()
   {
     $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
-    
-    return is_file($appConf->getConfigurationPathName());
+    $installed = false;
+    try
+    {
+      $appConf->getConfigurationFile();
+      $appConf->getConnexionFile();
+      $appConf->getServiceFile();
+      $installed = true;
+    }
+    catch(\Exception $e)
+    {
+    }
+    return $installed;
   }
   
   public static function needUpgradeConfigurationFile()
   {
-    return (is_file(__DIR__ . "/../../conf/connexion.inc") 
-          && is_file(__DIR__ . "/../../config.inc"));
+    return (is_file(__DIR__ . "/../../config/connexion.inc") 
+          && is_file(__DIR__ . "/../../config/config.inc"));
   }
   
   function create_global_values(registryInterface &$registry, $datas=array())
