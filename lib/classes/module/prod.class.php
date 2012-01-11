@@ -70,10 +70,10 @@ class module_prod
         $name = $meta->get_name();
         if ($meta->get_type() == 'date')
         {
-          if (isset($dates[$id]))
-            $dates[$id]['sbas'][] = $sbas_id;
+          if (isset($dates[$name]))
+            $dates[$name]['sbas'][] = $sbas_id;
           else
-            $dates[$id] = array('sbas' => array($sbas_id), 'fieldname' => $name);
+            $dates[$name] = array('sbas' => array($sbas_id), 'fieldname' => $name);
         }
         
         if (isset($fields[$name]))
