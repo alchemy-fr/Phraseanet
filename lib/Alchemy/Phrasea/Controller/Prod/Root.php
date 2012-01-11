@@ -104,7 +104,7 @@ class Root implements ControllerProviderInterface
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
-              $out = $twig->render('prod/index.html', array(
+              $out = $twig->render('prod/index.html.twig', array(
                   'module_name' => 'Production',
                   'WorkZone' => new Helper\WorkZone($app['Core']),
                   'module_prod' => new Helper\Prod($app['Core']),
