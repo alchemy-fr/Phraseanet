@@ -259,9 +259,9 @@ function checkFilters(save)
     setPref('search',JSON.stringify(search));
 
   if(danger===true || danger=='medium')
-    $('#qry_buttons').addClass('danger');
+    $('#alternateTrigger').addClass('danger');
   else
-    $('#qry_buttons').removeClass('danger');
+    $('#alternateTrigger').removeClass('danger');
 }
 function toggleFilter(filter,ele)
 {
@@ -479,7 +479,7 @@ function afterSearch()
     }
     );
   viewNbSelect();
-  $('#idFrameA div.IMGT').draggable({
+  $('#answers div.IMGT').draggable({
     helper : function(){
       $('body').append('<div id="dragDropCursor" style="position:absolute;z-index:9999;background:red;-moz-border-radius:8px;-webkit-border-radius:8px;"><div style="padding:2px 5px;font-weight:bold;">'+p4.Results.Selection.length()+'</div></div>');
       return $('#dragDropCursor');
@@ -744,23 +744,23 @@ function triggerShortcuts()
 
 function activeZoning()
 {
-  $('#idFrameC, #rightFrame').bind('mousedown',function(event){
+  $('#idFrameC, #idFrameT').bind('mousedown',function(event){
 
     alternateSearch(false);
     var old_zone = p4.active_zone;
     p4.active_zone = $(this).attr('id');
-    if(p4.active_zone != old_zone && p4.active_zone != 'queryBox')
+    if(p4.active_zone != old_zone && p4.active_zone != 'headBlock')
     {
       $('.effectiveZone.activeZone').removeClass('activeZone');
       $('.effectiveZone', this).addClass('activeZone');//.flash('#555555');
     }
     $('#EDIT_query').blur();
   });
-  $('#queryBox').bind('mousedown',function(event){
-    alternateSearch(false);
+  $('#alternateSearch').live('mousedown',function(event){
+    if(event.stopPropagation)
+      event.stopPropagation();
   });
   $('#alternateTrigger').live('mousedown',function(event){
-
     if(!$('#alternateTrigger').hasClass('active'))
       alternateSearch(true);
     else
@@ -2339,13 +2339,6 @@ function activeIcons()
   });
 
 
-
-
-//  $('#queryBox .toolbutton').hover(function(){
-//    $(this).find('.toolbuttonimg').addClass('actif');
-//  },function(){
-//    $(this).find('.toolbuttonimg').removeClass('actif');
-//  });
 }
 
 function checkDeleteThis(type, el)
@@ -2515,7 +2508,7 @@ function selector(el)
 {
   if(el.hasClass('all_selector'))
   {
-    $.each($("#idFrameA .IMGT:not(.selected)"),function(i,n){
+    $.each($("#answers .IMGT:not(.selected)"),function(i,n){
       var k = $(n).attr('id').split('_').slice(1,3).join('_');
       if($.inArray(k,p4.sel) <0)
       {
@@ -2546,7 +2539,7 @@ function selector(el)
             p4.sel=[];
             $('#answers .IMGT.selected').removeClass('selected');
           }
-          $.each($("#idFrameA .IMGT.type-video:not(.selected)"),function(i,n){
+          $.each($("#answers .IMGT.type-video:not(.selected)"),function(i,n){
             var k = $(n).attr('id').split('_').slice(1,3).join('_');
             if($.inArray(k,p4.sel) <0)
             {
@@ -2564,7 +2557,7 @@ function selector(el)
               p4.sel=[];
               $('#answers .IMGT.selected').removeClass('selected');
             }
-            $.each($("#idFrameA .IMGT.type-image:not(.selected)"),function(i,n){
+            $.each($("#answers .IMGT.type-image:not(.selected)"),function(i,n){
               var k = $(n).attr('id').split('_').slice(1,3).join('_');
               if($.inArray(k,p4.sel) <0)
               {
@@ -2581,7 +2574,7 @@ function selector(el)
                 p4.sel=[];
                 $('#answers .IMGT.selected').removeClass('selected');
               }
-              $.each($("#idFrameA .IMGT.type-document:not(.selected)"),function(i,n){
+              $.each($("#answers .IMGT.type-document:not(.selected)"),function(i,n){
                 var k = $(n).attr('id').split('_').slice(1,3).join('_');
                 if($.inArray(k,p4.sel) <0)
                 {
@@ -2598,7 +2591,7 @@ function selector(el)
                   p4.sel=[];
                   $('#answers .IMGT.selected').removeClass('selected');
                 }
-                $.each($("#idFrameA .IMGT.type-audio:not(.selected)"),function(i,n){
+                $.each($("#answers .IMGT.type-audio:not(.selected)"),function(i,n){
                   var k = $(n).attr('id').split('_').slice(1,3).join('_');
                   if($.inArray(k,p4.sel) <0)
                   {
