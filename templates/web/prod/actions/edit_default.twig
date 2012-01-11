@@ -92,6 +92,8 @@
 {% endmacro %}
 
 
+{% set actionable = edit.get_count_actionable() %}
+{% set not_actionable = edit.get_count_not_actionable() %}
 
 <script type="text/javascript">
 
@@ -392,8 +394,6 @@
     </p>
 </div>
 <script type="text/javascript">
-  {% set actionable = edit.get_count_actionable() %}
-  {% set not_actionable = edit.get_count_not_actionable() %}
   {% if edit.has_many_sbas or actionable == 0 %}
     $('#EDITWINDOW').hide();
     hideOverlay(2);
