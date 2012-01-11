@@ -89,8 +89,8 @@ class Application implements Specification
   {
     return new \SplFileObject($this->getConfigurationPathName());
   }
-  
-    /**
+
+  /**
    * Return the main configuration file 
    * 
    * @return \SplFileObject
@@ -98,6 +98,16 @@ class Application implements Specification
   public function getServiceFile()
   {
     return new \SplFileObject(__DIR__ . '/../../../../../config/service.yml');
+  }
+
+  /**
+   * Return the main configuration file 
+   * 
+   * @return \SplFileObject
+   */
+  public function getConnexionFile()
+  {
+    return new \SplFileObject(__DIR__ . '/../../../../../config/connexions.yml');
   }
 
 }
