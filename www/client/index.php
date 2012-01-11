@@ -358,7 +358,7 @@ if ($cssfile)
                                     <img onclick="removeFilters(<?php echo $databox->get_sbas_id() ?>);" id="filter_danger<?php echo $databox->get_sbas_id() ?>" class="filter_danger" src="/skins/icons/alert.png" title="<?php echo _('client::recherche: cliquez ici pour desactiver tous les filtres de cette base') ?>" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                   </div>
 <?php
-                              $status = databox_status::getSearchStatus($databox->get_sbas_id());
+                              $status = $databox->get_statusbits();
 
                               $sbFilters = '';
                               $dateFilters = $fieldsFilters = '';
@@ -366,7 +366,8 @@ if ($cssfile)
                               {
                                 $imgoff = '';
                                 $imgon = '';
-
+                                if(!$datas['searchable'])
+                                  continue;
                                 if ($datas['img_off'])
                                   $imgoff = '<img src="' . $datas['img_off'] . '" title="' . $datas['labeloff'] . '" style="width:16px;height:16px;vertical-align:bottom" />';
 
@@ -395,49 +396,7 @@ if ($cssfile)
                               $sxe = $databox->get_sxml_structure();
                               if ($sxe)
                               {
-                                $sbFilters = '';
                                 $dateFilters = $fieldsFilters = '';
-                                if ($sxe->statbits->bit)
-                                {
-                                  foreach ($sxe->statbits->bit as $sb)
-                                  {
-                                    if ($sb['searchclient'] && $sb['searchclient'] == '1')
-                                    {
-
-
-                                      $sb_pathOff = '/status/' . $databox->get_host() . "-" . $databox->get_port() . "-" . $databox->get_dbname() . '-' . 'stat_' . $sb['n'] . '_0.gif';
-                                      $sb_pathOn = '/status/' . $databox->get_host() . "-" . $databox->get_port() . "-" . $databox->get_dbname() . '-' . 'stat_' . $sb['n'] . '_1.gif';
-
-                                      $imgoff = '';
-                                      $imgon = '';
-
-                                      if (is_file($registry->get('GV_RootPath') . 'config/' . $sb_pathOff))
-                                        $imgoff = '<img src="/custom/' . $sb_pathOff . '" title="' . $labeloff . '" style="width:16px;height:16px;vertical-align:bottom" />';
-
-
-                                      if (is_file($registry->get('GV_RootPath') . 'config/' . $sb_pathOn))
-                                        $imgon = '<img src="/custom/' . $sb_pathOn . '" title="' . $labelon . '" style="width:16px;height:16px;vertical-align:bottom" />';
-
-                                      $labeloff = $sb['labelOff'];
-                                      $labelon = $sb['labelOn'];
-
-                                      $sbFilters .= '<div style="text-align:center;overflow:hidden;">' .
-                                              '<table style="table-layout:fixed;width:90%;text-align:left;" cellspacing="0" cellpadding="0">' .
-                                              '<tr>' .
-                                              '<td style="width:50%" nowrap>' .
-                                              '<input class="checkbox" db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_' . $databox->get_sbas_id() . '_off' . $sb['n'] . '" value="' . $databox->get_sbas_id() . '_of' . $sb['n'] . '"/>' .
-                                              '<label title="' . $labeloff . '" for="statusfil_' . $databox->get_sbas_id() . '_off' . $sb['n'] . '">' . $imgoff . $labeloff . '</label>' .
-                                              '</td>' .
-                                              '<td style="width:50%" nowrap>' .
-                                              '<input class="checkbox" db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_' . $databox->get_sbas_id() . '_on' . $sb['n'] . '" value="' . $databox->get_sbas_id() . '_on' . $sb['n'] . '"/>' .
-                                              '<label title="' . $labelon . '" for="statusfil_' . $databox->get_sbas_id() . '_on' . $sb['n'] . '">' . $imgon . $labelon . '</label>' .
-                                              '</td>' .
-                                              '</tr>' .
-                                              '</table>' .
-                                              '</div>';
-                                    }
-                                  }
-                                }
                                 if ($sxe->description)
                                 {
                                   foreach ($sxe->description->children() as $f => $field)
