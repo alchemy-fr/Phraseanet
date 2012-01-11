@@ -163,7 +163,13 @@ class basketCollection
     {
       try
       {
-        $baskets[] = basket_adapter::getInstance($appbox, $row['ssel_id'], $session->get_usr_id());
+        $basket = basket_adapter::getInstance($appbox, $row['ssel_id'], $session->get_usr_id());
+        
+        if ($basket->is_valid() && !$basket->is_my_valid() && $basket->is_validation_finished())
+          throw new Exception('Finished');
+        
+        $baskets[] = $basket;
+        
       }
       catch(Exception $e)
       {
