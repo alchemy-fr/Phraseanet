@@ -3,11 +3,13 @@
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
 require_once __DIR__ . '/../../../../FeedValidator.inc';
 
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Root/RSSFeeds.php';
+
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\DomCrawler\Crawler;
 
-class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
+class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 {
 
   /**

@@ -2,10 +2,12 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/UsrLists.php';
+
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class Module_Prod_Route_TooltipTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $client;

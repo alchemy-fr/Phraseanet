@@ -11,6 +11,8 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/WorkZone.php';
+
 use Alchemy\Phrasea\Helper;
 use Alchemy\Phrasea\RouteProcessor as routeProcessor;
 
@@ -20,7 +22,7 @@ use Alchemy\Phrasea\RouteProcessor as routeProcessor;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class WorkZoneTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $client;

@@ -2,10 +2,12 @@
 
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+require_once __DIR__ . '/../../../../Alchemy/Phrasea/Application/Lightbox.php';
+
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $client;

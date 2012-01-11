@@ -11,6 +11,8 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/Story.php';
+
 use Doctrine\Common\DataFixtures\Loader;
 use PhraseaFixture\Basket as MyFixture;
 use Alchemy\Phrasea\Helper;
@@ -22,7 +24,7 @@ use Alchemy\Phrasea\RouteProcessor as routeProcessor;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class storyTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $client;

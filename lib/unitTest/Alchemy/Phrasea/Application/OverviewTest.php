@@ -17,11 +17,13 @@
  */
 require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
+require_once __DIR__ . '/../../../../Alchemy/Phrasea/Application/Overview.php';
+
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-class Feed_overviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected static $need_records = 1;
