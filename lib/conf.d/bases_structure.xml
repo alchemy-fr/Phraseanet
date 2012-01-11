@@ -2100,7 +2100,7 @@
             <name>sendermail</name>
             <type>char(255)</type>
 
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
             <default></default>
