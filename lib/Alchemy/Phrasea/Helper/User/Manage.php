@@ -55,8 +55,8 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
         , 'like_value' => $request->get('like_value')
         , 'sbas_id' => $request->get('sbas_id')
         , 'base_id' => $request->get('base_id')
-        , 'srt' => $request->get("srt", User_Query::SORT_CREATIONDATE)
-        , 'ord' => $request->get("ord", User_Query::ORD_DESC)
+        , 'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE)
+        , 'ord' => $request->get("ord", \User_Query::ORD_DESC)
         , 'per_page' => $results_quantity
         , 'offset_start' => $offset_start
     );
@@ -104,7 +104,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
     }
     
     
-    $query = new User_Query($appbox);
+    $query = new \User_Query($appbox);
     $templates = $query
             ->only_templates(true)
             ->execute()->get_results();

@@ -43,7 +43,8 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
   public function __construct(\Alchemy\Phrasea\Core $core)
   {
     parent::__construct($core);
-    $this->users = explode(';', $request->get('users'));
+    
+    $this->users = explode(';', $core->getRequest()->get('users'));
 
     $users = array();
     foreach ($this->users as $usr_id)
@@ -176,7 +177,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
       }
     }
 
-    $query = new User_Query($appbox);
+    $query = new \User_Query($appbox);
     $templates = $query
             ->only_templates(true)
             ->execute()->get_results();
