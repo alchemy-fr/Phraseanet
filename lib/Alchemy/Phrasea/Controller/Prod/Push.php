@@ -47,7 +47,7 @@ class Push implements ControllerProviderInterface
             {
               $pusher = new RecordHelper\Push($app['Core']);
               $user = $app['Core']->getAuthenticatedUser();
-              $appbox = appbox::get_instance();
+              $appbox = \appbox::get_instance();
 
               $push_name = $request->get(
                       'push_name'
@@ -86,6 +86,7 @@ class Push implements ControllerProviderInterface
               $request = $app['request'];
 
               $pusher = new RecordHelper\Push($app['Core']);
+              $user = $app['Core']->getAuthenticatedUser();
 
               $em = $app['Core']->getEntityManager();
 
@@ -93,7 +94,7 @@ class Push implements ControllerProviderInterface
 
               $validation_name = $request->get(
                       'validation_name'
-                      , sprintf(_('Validation from %s', $user->get_display_name()))
+                      , sprintf(_('Validation from %s'), $user->get_display_name())
               );
               $validation_description = $request->get('validation_description');
 
@@ -103,16 +104,16 @@ class Push implements ControllerProviderInterface
               }
               else
               {
-                $Basket = new Basket();
+                $Basket = new \Entities\Basket();
                 $Basket->setName($validation_name);
                 $Basket->setDescription($validation_description);
-                $Basket->setUser($user);
+                $Basket->setOwner($user);
 
                 $em->persist($Basket);
 
                 foreach ($pusher->get_elements() as $element)
                 {
-                  $BasketElement = new BasketELement();
+                  $BasketElement = new \Entities\BasketElement();
                   $BasketElement->setRecord($element);
                   $BasketElement->setBasket($Basket);
 
@@ -137,7 +138,7 @@ class Push implements ControllerProviderInterface
               }
 
 
-              $appbox = appbox::get_instance();
+              $appbox = \appbox::get_instance();
 
               foreach ($request->get('participants') as $participant)
               {
@@ -146,10 +147,11 @@ class Push implements ControllerProviderInterface
                 try
                 {
                   $Participant = $Validation->getParticipant($user);
+                  continue;
                 }
                 catch (\Exception_NotFound $e)
                 {
-                  continue;
+                  
                 }
 
                 $Participant = new \Entities\ValidationParticipant();
