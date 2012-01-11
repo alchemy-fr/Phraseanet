@@ -1,0 +1,21 @@
+#idFrameC{
+  top:10px;
+  bottom:10px;
+}
+
+#idFrameC .wrapper{
+  background-color: #404040;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  right:10px;
+}
+
+#idFrameC .ui-tabs{
+  bottom:10px;
+  left:0;
+}
+
+#answers{
+  overflow-x:hidden;
+  overflow-y:auto;
+}
