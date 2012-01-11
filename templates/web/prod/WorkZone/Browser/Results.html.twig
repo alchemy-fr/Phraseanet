@@ -66,7 +66,7 @@
                 
               {% if Basket.getPusher() %}
               <p>
-                {% set user_name = '<a href="/prod/tooltip/user/' ~ Basket.getPusher().get_id() ~ '/" class="userTips">' ~ Basket.getPusher().get_display_name() ~ '</a>' %}
+                {% set user_name = '<a href="#" tooltipsrc="/prod/tooltip/user/' ~ Basket.getPusher().get_id() ~ '/" class="userTips">' ~ Basket.getPusher().get_display_name() ~ '</a>' %}
                 {% trans %}
                   Received from {{ user_name }}
                 {% endtrans %}
@@ -78,9 +78,9 @@
               <p>
                 {% set list_participants = '' %}
                 {% for Participant in Basket.getValidation().getParticipants() %}
-                  {% set list_participants = list_participants ~ '<a href="/user/{{ Participant.getUser().get_id() }}/">
-                    {{ Participant.getUser().get_display_name }}
-                  </a>' %}
+                  {% set list_participants = list_participants ~ '<a href="/user/' ~ Participant.getUser().get_id() ~ '/">' %}
+                  {% set list_participants = list_participants ~ Participant.getUser().get_display_name %}
+                  {% set list_participants = list_participants ~ '</a>' %}
                 {% endfor %}
                 {% trans %}
                   Sent for validation to {{ list_participants }}
