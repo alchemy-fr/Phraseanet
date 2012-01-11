@@ -569,7 +569,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     $parm = $request->get_parms_from_serialized_datas($infos, 'user_infos');
 
-    if (!\mail::validateEmail($parm['email']))
+    if ($parm['email'] && !\mail::validateEmail($parm['email']))
       throw new \Exception_InvalidArgument(_('Email addess is not valid'));
 
     $user->set_firstname($parm['first_name'])
@@ -589,7 +589,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function apply_template()
   {
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
     
     $template = \User_adapter::getInstance($this->request->get('template'), $appbox);
