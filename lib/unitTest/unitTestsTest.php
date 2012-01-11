@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for random.
@@ -10,7 +10,7 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
 
   public function testFiles()
   {
-    $testDir = dirname(__FILE__).'/';
+    $testDir = __DIR__.'/';
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($testDir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
     {
       if (strpos($file, '/.svn/') !== false)

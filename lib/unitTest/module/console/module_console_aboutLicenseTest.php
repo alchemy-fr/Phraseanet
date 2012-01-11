@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Symfony\Component\Console\Tester\CommandTester;
 use \Symfony\Component\Console\Application;
@@ -30,7 +30,7 @@ class module_console_aboutLicenseTest extends PHPUnit_Framework_TestCase
     $commandTester->execute(array('command' => $command->getName()));
 
     $this->assertEquals(
-            trim(file_get_contents(dirname(__FILE__) . '/../../../../LICENSE'))
+            trim(file_get_contents(__DIR__ . '/../../../../LICENSE'))
             , trim($commandTester->getDisplay())
     );
   }

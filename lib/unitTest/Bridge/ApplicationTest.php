@@ -1,8 +1,8 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once dirname(__FILE__) . '/Bridge_datas.inc';
+require_once __DIR__ . '/../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/Bridge_datas.inc';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;

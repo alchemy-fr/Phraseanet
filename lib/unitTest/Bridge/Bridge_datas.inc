@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 /*
  * This file is part of Phraseanet

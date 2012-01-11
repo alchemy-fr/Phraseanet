@@ -47,7 +47,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../../../Alchemy/Phrasea/Application/Overview.php';
+    return require __DIR__ . '/../../../../Alchemy/Phrasea/Application/Overview.php';
   }
 
 //$deliver_content = function(session $session, record_adapter $record, $subdef, $watermark, $stamp, $app)
