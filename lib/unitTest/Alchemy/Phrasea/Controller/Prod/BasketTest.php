@@ -32,7 +32,6 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
   {
     parent::setUp();
     $this->client = $this->createClient();
-    $this->purgeDatabase();
   }
 
   public function createApplication()
@@ -46,9 +45,12 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $records = array(
         self::$record_1->get_serialize_key(),
-        self::$record_2->get_serialize_key()
+        self::$record_2->get_serialize_key(),
+        ' ',
+        '42',
+        self::$record_no_access->get_serialize_key()
     );
-
+    
     $lst = implode(';', $records);
 
     $this->client->request(
@@ -85,10 +87,14 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $route = '/baskets/';
 
     $this->client->request(
-            'POST', $route, array(
+            'POST'
+            , $route
+            , array(
         'name' => 'panier',
-        'desc' => 'mon beau panier')
-            , array(), array(
+        'desc' => 'mon beau panier',
+            )
+            , array()
+            , array(
         "HTTP_ACCEPT" => "application/json"
             )
     );
@@ -435,7 +441,11 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $records = array(
         self::$record_1->get_serialize_key(),
-        self::$record_2->get_serialize_key()
+        self::$record_2->get_serialize_key(),
+        ' ',
+        '42',
+        'abhak',
+        self::$record_no_access->get_serialize_key(),
     );
 
     $lst = implode(';', $records);
@@ -483,6 +493,83 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(200, $response->getStatusCode());
 
     $this->assertEquals(2, $basket->getElements()->count());
+  }
+  
+  public function testRouteStealElements()
+  {
+    $em = self::$core->getEntityManager();
+    
+    $BasketElement = $this->insertOneBasketElement();
+    
+    $Basket_1 = $BasketElement->getBasket();
+    
+    $Basket_2 = $this->insertOneBasket();
+    
+    $route = sprintf('/baskets/%s/stealElements/', $Basket_2->getId());
+    
+    $crawler = $this->client->request(
+            'POST', $route, array(
+        'elements' => array($BasketElement->getId(), 'ufdsd')
+            ), array()
+    );
+
+    $response = $this->client->getResponse();
+    
+    
+    $this->assertEquals(302, $response->getStatusCode());
+
+    $em = self::$core->getEntityManager();
+    /* @var $em \Doctrine\ORM\EntityManager */
+
+    $basket = $em->getRepository('Entities\Basket')->find($Basket_1->getId());
+    $this->assertInstanceOf('\Entities\Basket', $basket);
+    $this->assertEquals(0, $basket->getElements()->count());
+    
+    $basket = $em->getRepository('Entities\Basket')->find($Basket_2->getId());
+    $this->assertInstanceOf('\Entities\Basket', $basket);
+    $this->assertEquals(1, $basket->getElements()->count());
+
+  }
+  
+  public function testRouteStealElementsJson()
+  {
+    $em = self::$core->getEntityManager();
+    
+    $BasketElement = $this->insertOneBasketElement();
+    
+    $Basket_1 = $BasketElement->getBasket();
+    
+    $Basket_2 = $this->insertOneBasket();
+    
+    $route = sprintf('/baskets/%s/stealElements/', $Basket_2->getId());
+    
+    $crawler = $this->client->request(
+            'POST', $route, array(
+        'elements' => array($BasketElement->getId())
+            ), array()
+            , array(
+        "HTTP_ACCEPT" => "application/json"
+            )
+    );
+
+    $response = $this->client->getResponse();
+    
+    
+    $this->assertEquals(200, $response->getStatusCode());
+    
+    $datas = (array) json_decode($response->getContent());
+    
+    $this->assertArrayHasKey('message', $datas);
+    $this->assertArrayHasKey('success', $datas);
+
+    $basket = $em->getRepository('Entities\Basket')->find($Basket_1->getId());
+    $this->assertInstanceOf('\Entities\Basket', $basket);
+    $this->assertEquals(0, $basket->getElements()->count());
+    
+    $basket = $em->getRepository('Entities\Basket')->find($Basket_2->getId());
+    $this->assertInstanceOf('\Entities\Basket', $basket);
+    $this->assertEquals(1, $basket->getElements()->count());
+
   }
 
   /**
