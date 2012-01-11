@@ -397,13 +397,11 @@ class Core extends \Pimple
 
     $loader->registerNamespaces(array(
         'Alchemy' => __DIR__ . '/../..',
-        'Symfony\\Component\\Yaml' => realpath(__DIR__ . '/../../vendor/symfony/src'),
-        'Symfony\\Component\\Console' => realpath(__DIR__ . '/../../vendor/symfony/src'),
-        'Symfony\\Component\\Serializer' => realpath(__DIR__ . '/../../vendor/symfony/src'),
-        'Symfony\\Component\\DependencyInjection' => realpath(__DIR__ . '/../../vendor/symfony/src'),
+        'Symfony' => realpath(__DIR__ . '/../../vendor/symfony/src'),
         'Doctrine\\ORM' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib'),
         'Doctrine\\DBAL' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib'),
         'Doctrine\\Common' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib'),
+        'Doctrine\\Common\\DataFixtures' =>  realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
         'Entities' => realpath(__DIR__ . '/../../Doctrine/'),
         'Repositories' => realpath(__DIR__ . '/../../Doctrine/'),
         'Proxies' => realpath(__DIR__ . '/../../Doctrine/'),
