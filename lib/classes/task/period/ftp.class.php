@@ -264,6 +264,7 @@ class task_period_ftp extends task_appboxAbstract
 
   protected $proxy;
   protected $proxyport;
+  protected $debug;
 
   protected function load_settings(SimpleXMLElement $sx_task_settings)
   {
@@ -279,12 +280,10 @@ class task_period_ftp extends task_appboxAbstract
   {
     $conn = $appbox->get_connection();
 
-    $proxyport = $proxy = $time2sleep = null;
+    $time2sleep = null;
     $ftp_exports = array();
 
     $period = $this->period;
-    $proxy = $this->proxy;
-    $proxyport = $this->proxyport;
     $time2sleep = (int) ($period);
 
     $sql = "SELECT id FROM ftp_export WHERE crash>=nbretry
@@ -343,6 +342,7 @@ class task_period_ftp extends task_appboxAbstract
   protected function process_one_content(appbox $appbox, Array $ftp_export)
   {
     $conn = $appbox->get_connection();
+    $registry = $appbox->get_registry();
 
     $id = $ftp_export['id'];
     $ftp_export[$id]["crash"] = $ftp_export["crash"];
@@ -366,7 +366,7 @@ class task_period_ftp extends task_appboxAbstract
                       , $ftp_export["destfolder"]
       );
 
-      if ($debug)
+      if ($this->debug)
         echo $line;
     }
 
@@ -376,7 +376,7 @@ class task_period_ftp extends task_appboxAbstract
                     , "  (" . date('r') . ")"
             ) . PHP_EOL;
 
-    if ($debug)
+    if ($this->debug)
       echo $line;
 
     if (($ses_id = phrasea_create_session($usr_id)) == null)
@@ -395,7 +395,7 @@ class task_period_ftp extends task_appboxAbstract
     try
     {
       $ssl = ($ftp_export['ssl'] == '1');
-      $ftp_client = new ftpclient($ftp_server, 21, 300, $ssl, $proxy, $proxyport);
+      $ftp_client = new ftpclient($ftp_server, 21, 300, $ssl, $this->proxy, $this->proxyport);
       $ftp_client->login($ftp_user_name, $ftp_user_pass);
 
       if ($ftp_export["passif"] == "1")
@@ -459,7 +459,7 @@ class task_period_ftp extends task_appboxAbstract
 
       if (in_array(trim($basefolder), array('.', './', '')))
         $basefolder = '/';
-
+      
       foreach ($ftp_export['files'] as $fileid => $file)
       {
         $base_id = $file["base_id"];
@@ -550,7 +550,7 @@ class task_period_ftp extends task_appboxAbstract
                           , basename($localfile), $record_id
                           , phrasea::sbas_names(phrasea::sbasFromBas($base_id))) . "\n<br/>";
 
-          if ($debug)
+          if ($this->debug)
             echo $line;
 
           $done = $file['error'];
@@ -561,7 +561,6 @@ class task_period_ftp extends task_appboxAbstract
           $stmt->execute(array(':done' => $done, ':file_id' => $file['id']));
           $stmt->closeCursor();
         }
-        $done++;
       }
 
       $ftp_client->close();
@@ -571,7 +570,7 @@ class task_period_ftp extends task_appboxAbstract
     {
       $state .= $line = $e . "\n";
 
-      if ($debug)
+      if ($this->debug)
         echo $line;
 
       $sql = "UPDATE ftp_export SET crash=crash+1,date=now()

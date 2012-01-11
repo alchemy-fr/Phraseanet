@@ -1,8 +1,9 @@
 <?php
 
-require_once dirname(__FILE__) . "/../../../../vendor/alchemy/oauth2php/lib/OAuth2.inc";
+require_once dirname(__FILE__) . "/../../../../lib/vendor/oauth2/lib/OAuth2.inc";
 require_once dirname(__FILE__) . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
-
+require_once dirname(__FILE__) . '/../../../../lib/vendor/symfony/src/Symfony/Component/Yaml/Parser.php';
+  
 use Symfony\Component\HttpFoundation\Request;
 
 /**

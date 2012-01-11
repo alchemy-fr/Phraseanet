@@ -1,5 +1,5 @@
 {% block ajax_data_content %}
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="http{{ request.is_secure() ? 's' : '' }}://www.google.com/jsapi"></script>
     <script type="text/javascript">
         $("input[type=button]").button();
 

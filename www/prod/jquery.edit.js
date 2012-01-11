@@ -1836,27 +1836,27 @@ function preset_load(preset_id)
         {
           if(p4.edit.T_fields[i].preset != null)
           {
+            if(!(""+i in p4.edit.T_records[r].fields))
+            {
+              p4.edit.T_records[r].fields[""+i] = {};
+            }
+            
             if(p4.edit.T_fields[i].multi)
             {
-              p4.edit.T_records[r].fields[""+i] = {
-                value:[], 
-                "meta_struct_id":p4.edit.T_fields[i].meta_struct_id,
-                dirty:true
-              };// = {
-              var n = 0;
+              p4.edit.T_records[r].fields[""+i].value = [];
+              p4.edit.T_records[r].fields[""+i].meta_struct_id = p4.edit.T_fields[i].meta_struct_id;
+              p4.edit.T_records[r].fields[""+i].dirty = true;
+              
               for(val in p4.edit.T_fields[i].preset)
               {
-                p4.edit.T_records[r].fields[""+i].value[n] = p4.edit.T_fields[i].preset[val];
-                n++;
+                p4.edit.T_records[r].fields[""+i].push(p4.edit.T_fields[i].preset[val]);
               }
             }
             else
             {
-              p4.edit.T_records[r].fields[""+i] = {
-                "value":p4.edit.T_fields[i].preset[0],
-                "meta_struct_id":p4.edit.T_fields[i].meta_struct_id,
-                "dirty":true
-              };
+              p4.edit.T_records[r].fields[""+i].value = p4.edit.T_fields[i].preset[0];
+              p4.edit.T_records[r].fields[""+i].meta_struct_id = p4.edit.T_fields[i].meta_struct_id;
+              p4.edit.T_records[r].fields[""+i].dirty = true;
             }
           }
         }

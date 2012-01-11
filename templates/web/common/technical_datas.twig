@@ -36,11 +36,11 @@
   {% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
     {% trans 'Dimensions a l\'impression' %}
     <br/>
-    {% set size_w = (document.get_width() / (300*254/100)) %}
-    {% set size_h = (document.get_height() / (300*254/100)) %}
+    {% set size_w = (document.get_width() * (254/100) / 300) %}
+    {% set size_h = (document.get_height() * (254/100) / 300) %}
     300 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
-    {% set size_w = (document.get_width() / (72*254/100)) %}
-    {% set size_h = (document.get_height() / (72*254/100)) %}
+    {% set size_w = (document.get_width() * (254/100) / 72) %}
+    {% set size_h = (document.get_height() * (254/100) / 72) %}
     <br/>   72 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
   {% endif %}
 

@@ -178,7 +178,7 @@
           </tbody>
         </table>
         <div class="PNB10" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;">
-          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;">
+          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:820px;">
       <!--      <thead>
               <tr>
                 <th style="width:122px;">
@@ -194,8 +194,14 @@
               {% for rights in datas %}
               {% if rights['sbas_id'] != sbas %}
               {% set sbas = rights['sbas_id'] %}
+              {% if loop.index != 1 %}
+                <tr style="height:15px;">
+                  <td></td>
+                </tr>
+              {% endif %}
+                
               <tr>
-                <td style="width:122px;">
+                <td style="width:122px;overflow:hidden;white-space:nowrap;">
                   {{rights['sbas_id']|sbas_name}}
                 </td>
                 <td class="users_col options">
@@ -247,7 +253,16 @@
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
-                <td colspan="4">
+                <td class="users_col">
+
+                </td>
+                <td class="users_col">
+
+                </td>
+                <td class="users_col">
+
+                </td>
+                <td>
 
                 </td>
                 <td class="users_col options">
@@ -336,7 +351,7 @@
               </tr>
               {% endif %}
               <tr>
-                <td>
+                <td style="overflow:hidden;white-space:nowrap;">
                   {{rights['base_id']|bas_name}}
                 </td>
                 <td class="users_col case_right_access">

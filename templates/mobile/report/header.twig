@@ -26,7 +26,7 @@
                     dmax : '{{ dashboard_array.dmax_req }}'
                 };
             </script>
-            <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+            <script type="text/javascript" src="http{{ request.is_secure() ? 's' : '' }}://www.google.com/jsapi"></script>
       <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
       <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
             <script type="text/javascript" src="/include/minify/g=reportmobile"></script>

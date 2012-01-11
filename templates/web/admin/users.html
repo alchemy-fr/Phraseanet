@@ -151,10 +151,14 @@
     {% for usr in users.get_results %}
     <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.get_id()}}">
       <td style="text-align: center;">
-        {% if usr.ACL().is_phantom() %}
-          <img src="/skins/admin/ghost.png"/>
+        {% if usr.is_template() %}
+          <img title="{% trans 'This is a template' %}" src="/skins/icons/template.png"/>
+        {% else %}
+          {% if usr.ACL().is_phantom() %}
+          <img title="{% trans 'This user has no rights' %}" src="/skins/admin/ghost.png"/>
+          {% endif %}
+          {{usr.get_id()}}
         {% endif %}
-        {{usr.get_id()}}
       </td>
       <td>
         {{usr.get_login()}}
@@ -220,8 +224,12 @@
   <input name="srt" value="{{parm['srt']}}" type="hidden" />
   <input name="ord" value="{{parm.ord}}" type="hidden" />
   <input name="act" value="{{parm.act}}" type="hidden" />
-  <input name="sbas_id" value="{{parm.sbas_id}}" type="hidden" />
-  <input name="base_id" value="{{parm.base_id}}" type="hidden" />
+  {% for sbas_id in parm.sbas_id %}
+  <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
+  {% endfor %}
+  {% for base_id in parm.base_id %}
+  <input name="base_id[]" value="{{base_id}}" type="hidden" />
+  {% endfor %}
   <input name="usr_ids" value="{{parm.usr_ids}}" type="hidden" />
   <input name="like_value" value="{{parm.like_value}}" type="hidden" />
   <input name="like_field" value="{{parm.like_field}}" type="hidden" />

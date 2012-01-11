@@ -196,7 +196,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Symfony'
-                    , realpath(__DIR__ . '/../../../../../vendor/doctrine/orm/lib/vendor')
+                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor')
     );
 
     $classLoader->register();
@@ -225,6 +225,12 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Gedmo'
                     , __DIR__ . "/../../../../../vendor/doctrine2-gedmo/lib"
+    );
+    $classLoader->register();
+
+    $classLoader = new \Doctrine\Common\ClassLoader(
+                    'DoctrineExtensions'
+                    , __DIR__ . "/../../../../../vendor/doctrine2-beberlei/lib"
     );
     $classLoader->register();
 

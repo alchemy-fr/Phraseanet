@@ -298,6 +298,17 @@ class ACL implements cache_cacheableInterface
     $bas_to_acces = array();
     $rights_to_give = array();
 
+    /**
+     * map masks (and+xor) of template to masks to apply to user on base 
+     * (and_and, and_or, xor_and, xor_or)
+     */
+    $sbmap = array(
+        '00' => array('aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'),
+        '01' => array('aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'),
+        '10' => array('aa' => '1', 'ao' => '1', 'xa' => '0', 'xo' => '0'),
+        '11' => array('aa' => '1', 'ao' => '1', 'xa' => '1', 'xo' => '1')
+    );
+
     foreach ($template_user->ACL()->get_granted_base() as $collection)
     {
       $base_id = $collection->get_base_id();
@@ -317,6 +328,31 @@ class ACL implements cache_cacheableInterface
           $rights_to_give[$base_id][$right] = '1';
         }
       }
+
+      /**
+       * apply sb is substractive
+       */
+      $mand = substr(
+              str_repeat('0', 64)
+              . databox_status::dec2bin($template_user->ACL()->get_mask_and($base_id))
+              , -64
+      );
+      $mxor = substr(
+              str_repeat('0', 64)
+              . databox_status::dec2bin($template_user->ACL()->get_mask_xor($base_id))
+              , -64
+      );
+      $m = array('aa' => '', 'ao' => '', 'xa' => '', 'xo' => '');
+      for ($i = 0; $i < 64; $i++)
+      {
+        $ax = $mand[$i] . $mxor[$i];
+
+        foreach ($m as $k => $v)
+        {
+          $m[$k] .= $sbmap[$ax][$k];
+        }
+      }
+      $this->set_masks_on_base($base_id, $m['aa'], $m['ao'], $m['xa'], $m['xo']);
     }
 
     $this->give_access_to_base($bas_to_acces);
@@ -872,11 +908,15 @@ class ACL implements cache_cacheableInterface
       if ($row['order_master'] == '1')
         $this->_global_rights['order_master'] = true;
 
-      if ($row['time_limited'] == '1')
+      $row['limited_from'] = $row['limited_from'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_from']);
+      $row['limited_to'] = $row['limited_to'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_to']);
+
+      if ($row['time_limited'] == '1'
+              && ($row['limited_from'] !== '' || $row['limited_to'] !== ''))
       {
         $this->_limited[$row['base_id']] = array(
-            'dmin' => new DateTime($row['limited_from'])
-            , 'dmax' => new DateTime($row['limited_to'])
+            'dmin' => $row['limited_from'] ? new DateTime($row['limited_from']) : null
+            , 'dmax' => $row['limited_to'] ? new DateTime($row['limited_to']) : null
         );
       }
 
@@ -1397,7 +1437,6 @@ class ACL implements cache_cacheableInterface
   public function set_masks_on_base($base_id, $and_and, $and_or, $xor_and, $xor_or)
   {
     $vhex = array();
-
     $datas = array(
         'and_and' => $and_and,
         'and_or' => $and_or,
@@ -1420,6 +1459,7 @@ class ACL implements cache_cacheableInterface
         $vhex[$name] .= dechex(bindec($valtmp));
       }
     }
+
     $sql = "UPDATE basusr
         SET mask_and=((mask_and & " . $vhex['and_and'] . ") | " . $vhex['and_or'] . ")
           ,mask_xor=((mask_xor & " . $vhex['xor_and'] . ") | " . $vhex['xor_or'] . ")
@@ -1445,10 +1485,11 @@ class ACL implements cache_cacheableInterface
       return false;
     }
 
-    $ret = ($this->_limited[$base_id]['dmin'] > $datetime
-            || $this->_limited[$base_id]['dmax'] < $datetime);
+    $lim_min = $this->_limited[$base_id]['dmin'] && $this->_limited[$base_id]['dmin'] > $datetime;
 
-    return $ret;
+    $lim_max = $this->_limited[$base_id]['dmax'] && $this->_limited[$base_id]['dmax'] < $datetime;
+
+    return $lim_max || $lim_min;
   }
 
   public function get_limits($base_id)

@@ -825,6 +825,43 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     return $this->original_name;
   }
 
+  public function set_original_name($original_name)
+  {
+    $this->original_name = $original_name;
+
+    foreach ($this->get_caption()->get_fields() as $field)
+    {
+      if ($field->get_databox_field()->get_source() != metadata_description_PHRASEANET_tffilename::get_source())
+      {
+        continue;
+      }
+
+      $this->set_metadatas(
+              array(
+                  'meta_struct_id' => $field->get_meta_struct_id()
+                  , 'meta_id' => get_meta_id
+                  , 'value' => array($original_name)
+              )
+      );
+    }
+
+    $sql = 'UPDATE record 
+            SET originalname = :originalname WHERE record_id = :record_id';
+
+    $params = array(
+        ':originalname' => $original_name
+        , ':record_id' => $this->get_record_id()
+    );
+
+    $stmt = $this->get_databox()->get_connection()->prepare($sql);
+    $stmt->execute($params);
+    $stmt->closeCursor();
+
+    $this->delete_data_from_cache();
+
+    return $this;
+  }
+
   /**
    *
    * @return string
@@ -1028,53 +1065,82 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             . '.' . $pathfile->get_extension();
 
     $base_url = '';
+
     $original_file = $subdef_def = false;
 
-    $subdefs = $this->get_databox()->get_subdef_structure();
-
-    foreach ($subdefs as $type => $datas)
+    if ($name == 'document')
     {
-      if ($this->get_type() != $type)
-        continue;
+      $baseprefs = $this->get_databox()->get_sxml_structure();
 
-      if (!isset($datas[$name]))
-        throw new Exception('No available subdef declaration for this type and name');
+      $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
 
-      $subdef_def = $datas[$name];
-      break;
+      $filehd = $this->get_record_id() . "_document." . $pathfile->get_extension(true);
+      $pathhd = databox::dispatch($pathhd);
+
+      copy($pathfile->getPathname(), $pathhd . $filehd);
+
+      $system_file = new system_file($pathhd . $filehd);
+
+      $meta_writable = true;
     }
-
-    if (!$subdef_def)
-      throw new Exception('Unknown subdef name');
-
-    try
+    else
     {
-      $value = $this->get_subdef($name);
-      
-      if ($value->is_substituted())
+      $subdefs = $this->get_databox()->get_subdef_structure();
+
+      foreach ($subdefs as $type => $datas)
       {
-        throw new Exception('Cannot replace a substitution');
+        if ($this->get_type() != $type)
+          continue;
+
+        if (!isset($datas[$name]))
+          throw new Exception('No available subdef declaration for this type and name');
+
+        $subdef_def = $datas[$name];
+        break;
       }
-      
-      $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
-      unlink($original_file);
-    }
-    catch (Exception $e)
-    {
-      $path = databox::dispatch($subdef_def->get_path());
-      system_file::mkdir($path);
-      $original_file = $path . $newfilename;
-    }
 
-    $path_file_dest = $original_file;
+      if (!$subdef_def)
+        throw new Exception('Unknown subdef name');
 
-    if (trim($subdef_def->get_baseurl()) !== '')
-    {
-      $base_url = str_replace(
-              array((string) $subdef_def->get_path(), $newfilename)
-              , array((string) $subdef_def->get_baseurl(), '')
-              , $path_file_dest
-      );
+      try
+      {
+        $value = $this->get_subdef($name);
+
+        if ($value->is_substituted())
+        {
+          throw new Exception('Cannot replace a substitution');
+        }
+
+        $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
+        unlink($original_file);
+      }
+      catch (Exception $e)
+      {
+        $path = databox::dispatch($subdef_def->get_path());
+        system_file::mkdir($path);
+        $original_file = $path . $newfilename;
+      }
+
+      $path_file_dest = $original_file;
+
+      if (trim($subdef_def->get_baseurl()) !== '')
+      {
+        $base_url = str_replace(
+                array((string) $subdef_def->get_path(), $newfilename)
+                , array((string) $subdef_def->get_baseurl(), '')
+                , $path_file_dest
+        );
+      }
+
+      $registry = registry::get_instance();
+
+      $adapter = new binaryAdapter_image_resize($registry);
+      $adapter->execute($pathfile, $path_file_dest, $subdef_def->get_options());
+
+      $system_file = new system_file($path_file_dest);
+      $system_file->chmod();
+
+      $meta_writable = $subdef_def->meta_writeable();
     }
 
     try
@@ -1090,14 +1156,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               )
       );
 
-      $registry = registry::get_instance();
-
-      $adapter = new binaryAdapter_image_resize($registry);
-      $adapter->execute($pathfile, $path_file_dest, $subdef_def->get_options());
-
-      $system_file = new system_file($path_file_dest);
-      $system_file->chmod();
-
       $image_size = $system_file->get_technical_datas();
 
       $sql = 'INSERT INTO subdef
@@ -1107,6 +1165,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 (:record_id, :name, :baseurl, :filename,
                   :width, :height, :mime, :path, :filesize, "1")';
 
+      echo "substitute subdef $name with $base_url ".$system_file->getPath()." ".$system_file->getFilename()."<br>";
       $stmt = $connbas->prepare($sql);
 
       $stmt->execute(array(
@@ -1129,7 +1188,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
 
 
-      if ($subdef_def->meta_writeable())
+      if ($meta_writable)
       {
         $this->write_metas();
       }
@@ -1137,11 +1196,17 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       {
         $this->rebuild_subdefs();
       }
+
+      $type = $name == 'document' ? 'HD' : $name;
+
+      $session->get_logger($record->get_databox())
+              ->log($record, Session_Logger::EVENT_SUBSTITUTE, $type, '');
     }
     catch (Exception $e)
     {
       unset($e);
     }
+
 
     return $this;
   }
@@ -1162,6 +1227,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ':record_id' => $this->record_id
             )
     );
+
+    $this->reindex();
 
     return $this;
   }
@@ -1386,7 +1453,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    * @param boolean $is_grouping
    * @return record_adapter
    */
-  public static function create(collection $collection, system_file &$system_file, $original_name=false, $is_grouping = false)
+  public static function create(collection $collection, system_file &$system_file, $original_name = false, $is_grouping = false)
   {
     $type = $system_file->get_phrasea_type();
 
@@ -1747,14 +1814,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
           echo $e->getMessage() . "\n";
       }
 
-      if (!array_key_exists($subdefname, $record_subdefs))
+      if (array_key_exists($subdefname, $record_subdefs))
       {
-        continue;
+        $record_subdefs[$subdefname]->delete_data_from_cache();
       }
 
-      $record_subdefs[$subdefname]->delete_data_from_cache();
-
-      $this->delete_data_from_cache(self::CACHE_SUBDEFS);
       try
       {
         $subdef = $this->get_subdef($subdefname);
@@ -1896,7 +1960,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    * @param int $how_many
    * @return type
    */
-  public static function get_records_by_originalname(databox $databox, $original_name, $offset_start=0, $how_many=10)
+  public static function get_records_by_originalname(databox $databox, $original_name, $offset_start = 0, $how_many = 10)
   {
     $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
     $how_many = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);

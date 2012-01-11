@@ -381,11 +381,22 @@ class record_preview extends record_adapter
 
       if (!isset($tab[$hour][$site][$action][$row['usr_id']]))
       {
+        $user = null;
+        
+        try
+        {
+          $user = \User_Adapter::getInstance($row['usr_id'], $appbox);
+        }
+        catch (Exception $e)
+        {
+          
+        }
+
         $tab[$hour][$site][$action][$row['usr_id']] =
                 array(
                     'final' => array()
                     , 'comment' => array()
-                    , 'user' => \User_Adapter::getInstance($row['usr_id'], $appbox)
+                    , 'user' => $user
         );
       }
 

@@ -65,7 +65,7 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertFalse($configuration->displayErrors());
     $this->assertFalse($configuration->isMaintained());
     $this->assertTrue(is_array($configuration->getPhraseanet()->all()));
-    $this->assertTrue(is_array($configuration->getDoctrine()->all()));
+//    $this->assertTrue(is_array($configuration->getDoctrine()->all()));
   }
 
   public function testInstalled()
@@ -86,7 +86,7 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     
     $this->assertFalse($configuration->isInstalled());
     $this->assertTrue(is_array($configuration->getPhraseanet()->all()));
-    $this->assertTrue(is_array($configuration->getDoctrine()->all()));
+//    $this->assertTrue(is_array($configuration->getDoctrine()->all()));
   }
 
   public function testGetAvailableLogger()
@@ -140,36 +140,36 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals('test', $configuration->getConfigurationHandler()->getSpecification()->getConfigurationFile());
   }
 
-  public function testBadDoctrineLogger()
-  {
-    $spec = $this->getMock(
-            '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getConfigurationFile')
-    );
-
-    $fileName = __DIR__ . '/confTestFiles/bad_doctrine_logger.yml';
-
-    $spec->expects($this->any())
-            ->method('getConfigurationFile')
-            ->will(
-                    $this->returnValue(
-                            new \SplFileObject($fileName)
-                    )
-    );
-
-    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
-
-    $configuration = new PhraseaCore\Configuration($handler);
-    $configuration->setEnvironnement('prod');
-    
-    try
-    {
-      $configuration->getDoctrine();
-      $this->fail('An exception should be raised');
-    }
-    catch(Exception $e)
-    {
-      
-    }
-  }
+//  public function testBadDoctrineLogger()
+//  {
+//    $spec = $this->getMock(
+//            '\Alchemy\Phrasea\Core\Configuration\Application'
+//            , array('getConfigurationFile')
+//    );
+//
+//    $fileName = __DIR__ . '/confTestFiles/bad_doctrine_logger.yml';
+//
+//    $spec->expects($this->any())
+//            ->method('getConfigurationFile')
+//            ->will(
+//                    $this->returnValue(
+//                            new \SplFileObject($fileName)
+//                    )
+//    );
+//
+//    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
+//
+//    $configuration = new PhraseaCore\Configuration($handler);
+//    $configuration->setEnvironnement('prod');
+//    
+//    try
+//    {
+//      $configuration->getDoctrine();
+//      $this->fail('An exception should be raised');
+//    }
+//    catch(Exception $e)
+//    {
+//      
+//    }
+//  }
 }

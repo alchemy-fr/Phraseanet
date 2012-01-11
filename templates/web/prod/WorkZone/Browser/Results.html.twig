@@ -1,0 +1,131 @@
+{% import 'common/thumbnail.html' as thumbnail %}
+
+<div class="PNB header">
+  <table>
+    <tr>
+      <td>
+        {% if Total == 0 %}
+          {% trans 'No results' %}
+        {% elseif Total == 1 %}
+          {% trans '1 result' %}
+        {% else %}
+          {% trans %}{{ Total }} results{% endtrans %}
+        {% endif %}
+      </td>
+      <td class="paginator">
+        {% if Page - 1  > 0 %}
+        <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page - 1 }}" class="result">
+          <img src="/skins/prod/Basket/Browser/left.png" />
+        </a>
+        {% endif %}
+        <span>
+          Page {{ Page }} / {{ MaxPage }} 
+        </span>
+        {% if Page + 1  <= MaxPage %}
+        <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page + 1 }}" class="result">
+          <img src="/skins/prod/Basket/Browser/right.png" />
+        </a>
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="PNB datas">
+  <div class="PNB" style="right:10px">
+  {% for Basket in Baskets %}
+    <div class="result {% if loop.index is odd %}odd{% endif %}">
+      <div class="PNB10">
+        <table>
+          <tr>
+            <td class="thumbnail">
+              {% set BasketElement = Basket.getElements().first() %}
+              {% if BasketElement %}
+                {{thumbnail.format(BasketElement.getRecord().get_thumbnail(), 80, 80, '', session, true)}}
+              {% endif %}
+              <div class="counter">
+                 {{ Basket.getElements().count() }}
+              </div>
+            </td>
+            <td class="content">
+              <h1 class="title">
+                <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
+                <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=1" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
+                  <span>
+                    <img src="/skins/prod/Basket/Browser/archive.png"/>
+                  </span>
+                </a>
+                <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=0" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
+                  <span>
+                    <img src="/skins/prod/Basket/Browser/archived.png"/>
+                  </span>
+                </a>
+                <a class="basket_link" href="/prod/WorkZone/Browse/Basket/{{ Basket.getId() }}/">
+                  {{ Basket.getName() }}
+                </a>
+              </h1>
+                
+              {% if Basket.getPusher() %}
+              <p>
+                {% set user_name = '<a href="/prod/tooltip/user/' ~ Basket.getPusher().get_id() ~ '/" class="userTips">' ~ Basket.getPusher().get_display_name() ~ '</a>' %}
+                {% trans %}
+                  Received from {{ user_name }}
+                {% endtrans %}
+              </p>
+              {% endif %}
+              
+              
+              {% if Basket.getValidation() %}
+              <p>
+                {% set list_participants = '' %}
+                {% for Participant in Basket.getValidation().getParticipants() %}
+                  {% set list_participants = list_participants ~ '<a href="/user/{{ Participant.getUser().get_id() }}/">
+                    {{ Participant.getUser().get_display_name }}
+                  </a>' %}
+                {% endfor %}
+                {% trans %}
+                  Sent for validation to {{ list_participants }}
+                {% endtrans %}
+              </p>
+              {% endif %}
+            
+            </td>
+            <td>
+
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+  </div>
+  <div class="PNB footer">
+    <table>
+      <tr>
+        <td>
+          {% if Total == 0 %}
+            {% trans 'No results' %}
+          {% elseif Total == 1 %}
+            {% trans '1 result' %}
+          {% else %}
+            {% trans %}{{ Total }} results{% endtrans %}
+          {% endif %}
+        </td>
+        <td class="paginator">
+          {% if Page - 1  > 0 %}
+          <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page - 1 }}" class="result">
+            <img src="/skins/prod/Basket/Browser/left.png" />
+          </a>
+          {% endif %}
+          <span>
+            Page {{ Page }} / {{ MaxPage }} 
+          </span>
+          {% if Page + 1  <= MaxPage %}
+          <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page + 1 }}" class="result">
+            <img src="/skins/prod/Basket/Browser/right.png" />
+          </a>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>

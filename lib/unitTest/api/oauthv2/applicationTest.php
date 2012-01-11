@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__FILE__) . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . "/../../../../lib/vendor/Silex/autoload.php";
 /*
  * This file is part of Phraseanet
  *

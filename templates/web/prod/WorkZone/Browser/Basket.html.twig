@@ -1,0 +1,48 @@
+<div class="PNB">
+  <div class="PNB header" style="height:40px;bottom:auto;">
+    <table>
+      <tr>
+        <td>
+          <a href="#" class="back">
+            <img src="/skins/prod/Basket/Browser/BASKET_LIST.png"/> 
+            {% trans 'Back to basket list' %}
+          </a>
+        </td>
+        <td>
+          <h1 class="title">
+            <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
+            <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=1" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
+              <span>
+                <img src="/skins/prod/Basket/Browser/archive.png"/>
+              </span>
+            </a>
+            <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=0" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
+              <span>
+                <img src="/skins/prod/Basket/Browser/archived.png"/>
+              </span>
+            </a>
+            <a class="basket_link" href="/prod/WorkZone/Browse/Basket/{{ Basket.getId() }}/">
+              {{ Basket.getName() }}
+            </a>
+          </h1>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="PNB" style="top:40px;bottom:auto;height:160px;">
+  
+  </div>
+  <div class="PNB" style="height:40px;bottom:auto;top:200px;">
+    {% set ElementsCount = Basket.getElements().count() %}
+    {% if ElementsCount == 0 %}
+      {% trans 'No records' %}
+    {% elseif ElementsCount == 1 %}
+      {% trans '1 record' %}
+    {% else %}
+      {% trans %}{{ ElementsCount }} records{% endtrans %}
+    {% endif %}
+  </div>
+  <div class="PNB" style="top:240px;">
+    
+  </div>
+</div>
