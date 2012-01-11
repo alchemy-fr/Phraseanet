@@ -44,7 +44,6 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
 
   public function tearDown()
   {
-    $this->feed->delete();
     parent::tearDown();
   }
 

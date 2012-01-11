@@ -44,7 +44,6 @@ class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAb
 
   public function tearDown()
   {
-    $this->feed->delete();
     parent::tearDown();
   }
 

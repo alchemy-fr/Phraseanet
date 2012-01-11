@@ -44,7 +44,6 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function tearDown()
   {
-    $this->feed->delete();
     parent::tearDown();
   }
 
