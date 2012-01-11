@@ -81,7 +81,9 @@ class appbox extends base
     );
     $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
-    $connexion = $configuration->getConnexion();
+    $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+    $connexion = $configuration->getConnexion($choosenConnexion);
 
     $this->host = $connexion->get('host');
     $this->port = $connexion->get('port');
@@ -415,34 +417,99 @@ class appbox extends base
         $credentials['dbname'] = $dbname;
       }
 
-      $file = __DIR__ . "/../../config/config.sample.yml";
-      $file1 = __DIR__ . "/../../config/config.yml";
-
-      if (!copy($file, $file1))
-      {
-        throw new \Exception(sprintf("Unable to copy %s", $file1));
-      }
-
-      $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                      new \Alchemy\Phrasea\Core\Configuration\Application(),
-                      new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-      );
-      $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
-
-      $connexionINI = array();
-
       foreach ($credentials as $key => $value)
       {
         $key = $key == 'hostname' ? 'host' : $key;
         $connexionINI[$key] = (string) $value;
       }
-      $serverName = $registry->get('GV_ServerName');
-      $configuration->setServerName($serverName);
-      $configuration->setAllDatabaseConnexion($connexionINI);
+      $connexionINI['driver'] = 'pdo_mysql';
+      $connexionINI['charset'] = 'UTF8';
       
+      $serverName = $registry->get('GV_ServerName');
+
+      $root = __DIR__ . '/../../';
+
+      //copy config sample
+      $configSampleFile = $root . "config/config.sample.yml";
+      $configFile = $root . "config/config.yml";
+
+      if (!copy($configSampleFile, $configFile))
+      {
+        throw new \Exception(sprintf("Unable to copy %s", $configSampleFile));
+      }
+
+      //copy service sample
+      $serviceSampleFile = $root . "config/service.sample.yml";
+      $serviceFile = $root . "config/service.yml";
+
+      if (!copy($serviceSampleFile, $serviceFile))
+      {
+        throw new \Exception(sprintf("Unable to copy %s", $serviceSampleFile));
+      }
+
+      //copy connexion sample
+      $connexionSampleFile = $root . "config/connexions.sample.yml";
+      $connexionFile = $root . "config/connexions.yml";
+
+      if (!copy($connexionSampleFile, $connexionFile))
+      {
+        throw new \Exception(sprintf("Unable to copy %s", $serviceSampleFile));
+      }
+
+      //get configuration object
+      $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+      $parser = new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml();
+      $handler = new \Alchemy\Phrasea\Core\Configuration\Handler($appConf, $parser);
+      $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+      //write credentials to config file
+      $connexionFile = $appConf->getConnexionFile();
+
+      $connexion = array(
+          'main_connexion' => $connexionINI,
+          'test_connexion' => array(
+              'driver' => 'pdo_sqlite',
+              'path' => $root . 'lib/unitTest/tests.sqlite',
+              'charset' => 'UTF8'
+              ));
+
+      $yaml = $configuration->getConfigurationHandler()->getParser()->dump($connexion, 2);
+
+      if (!file_put_contents($connexionFile->getPathname(), $yaml) !== false)
+      {
+        throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $connexionFile->getPathname()));
+      }
+
+      //rewrite service file
+      $serviceFile = $appConf->getServiceFile();
+      $service = $configuration->getConfigurationHandler()->getParser()->parse($serviceFile);
+      $yaml = $configuration->getConfigurationHandler()->getParser()->dump($service, 5);
+
+      if (!file_put_contents($serviceFile->getPathname(), $yaml) !== false)
+      {
+        throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $serviceFile->getPathname()));
+      }
+
+      //rewrite servername in main config file
+      $arrayConf = $configuration->all();
+
+      foreach ($arrayConf as $key => $value)
+      {
+        if (is_array($value) && array_key_exists('phraseanet', $value))
+        {
+          $arrayConf[$key]["phraseanet"]["servername"] = $serverName;
+        }
+      }
+
+      $configuration->write($arrayConf);
+
+
+
       if (function_exists('chmod'))
       {
         chmod($configuration->getFile()->getPathname(), 0700);
+        chmod($serviceFile->getPathname(), 0700);
+        chmod($connexionFile->getPathname(), 0700);
       }
     }
     try
