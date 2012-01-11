@@ -58,14 +58,13 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals('prod', $configuration->getEnvironnement());
     $this->assertTrue($configuration->isInstalled());
     $this->assertInstanceOf(
-            'Alchemy\Phrasea\Core\Configuration\Parameter'
+            '\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag'
             , $configuration->getConfiguration()
     );
     $this->assertFalse($configuration->isDebug());
-    $this->assertFalse($configuration->displayErrors());
+    $this->assertFalse($configuration->isDisplayingErrors());
     $this->assertFalse($configuration->isMaintained());
     $this->assertTrue(is_array($configuration->getPhraseanet()->all()));
-//    $this->assertTrue(is_array($configuration->getDoctrine()->all()));
   }
 
   public function testInstalled()
@@ -83,10 +82,17 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     $configuration = new PhraseaCore\Configuration($handler);
     $configuration->setEnvironnement('prod');
-    
+
     $this->assertFalse($configuration->isInstalled());
-    $this->assertTrue(is_array($configuration->getPhraseanet()->all()));
-//    $this->assertTrue(is_array($configuration->getDoctrine()->all()));
+    try
+    {
+      $configuration->getPhraseanet();
+      $this->fail("should raise an exception because application is not yet installed");
+    }
+    catch (\Exception $e)
+    {
+      
+    }
   }
 
   public function testGetAvailableLogger()
@@ -96,14 +102,14 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     $configuration = new PhraseaCore\Configuration($handler);
     $configuration->setEnvironnement('prod');
-    
+
     $availableLogger = $configuration->getAvailableDoctrineLogger();
-    
+
     $this->assertTrue(is_array($availableLogger));
     $this->assertContains('monolog', $availableLogger);
     $this->assertContains('echo', $availableLogger);
   }
-  
+
   public function testGetHandler()
   {
     $spec = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
@@ -111,10 +117,10 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     $configuration = new PhraseaCore\Configuration($handler);
     $configuration->setEnvironnement('prod');
-    
+
     $this->assertInstanceOf('\Alchemy\Phrasea\Core\Configuration\Handler', $configuration->getConfigurationHandler());
   }
-  
+
   public function testSetHandler()
   {
     $spec = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
@@ -122,9 +128,9 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     $configuration = new PhraseaCore\Configuration($handler);
     $configuration->setEnvironnement('prod');
-    
+
     $spec2 = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
-    
+
     $spec2->expects($this->any())
             ->method('getConfigurationFile')
             ->will(
@@ -132,11 +138,11 @@ class ConfigurationTest extends PhraseanetPHPUnitAuthenticatedAbstract
                             'test'
                     )
     );
-    
+
     $newHandler = new Configuration\Handler($spec2, new Configuration\Parser\Yaml());
-    
+
     $configuration->setConfigurationHandler($newHandler);
-    
+
     $this->assertEquals('test', $configuration->getConfigurationHandler()->getSpecification()->getConfigurationFile());
   }
 

@@ -11,19 +11,21 @@
 
 require_once __DIR__ . "/../../lib/classes/bootstrap.class.php";
 
+use Silex\WebTestCase;
+use Symfony\Component\HttpKernel\Client;
+use Symfony\Component\HttpFoundation\Response;
+use Doctrine\Common\DataFixtures\Loader;
+use PhraseaFixture\Basket as MyFixture;
+
 /**
  * 
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
 bootstrap::execute('test');
 
-use Silex\WebTestCase;
-use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\HttpFoundation\Response;
-use Doctrine\Common\DataFixtures\Loader;
-use PhraseaFixture\Basket as MyFixture;
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 {
@@ -394,7 +396,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       self::$time_start = microtime(true);
       echo "\033[1;35m\n==Start==\033[0;37m\r\n";
     }
-    
+
     self::updateTablesSchema();
 
     self::createSetOfUserTests();
@@ -730,8 +732,22 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    */
   protected function resetTwig()
   {
-    $serviceTwig = new \Alchemy\Phrasea\Core\Service\Twig(array());
-    $this->app['Core']["Twig"] = $serviceTwig->getTwig();
+    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                    new \Alchemy\Phrasea\Core\Configuration\Application(),
+                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    );
+    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+    $serviceName = $configuration->getTemplating();
+    $confService = $configuration->getService($serviceName);
+
+    $templateService = \Alchemy\Phrasea\Core\ServiceBuilder::build(
+                    $serviceName
+                    , \Alchemy\Phrasea\Core\ServiceBuilder::TEMPLATE_ENGINE
+                    , $confService->get("type")
+                    , $confService->get("options")
+    );
+    $this->app['Core']["Twig"] = $templateService->getService();
   }
 
   /**
