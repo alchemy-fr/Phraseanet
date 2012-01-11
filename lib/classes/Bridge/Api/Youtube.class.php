@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-$new_include_path = __DIR__ . '/../../../../vendor/alchemy/gdata/' . PATH_SEPARATOR . get_include_path();
+$new_include_path = __DIR__ . '/../../../vendor/gdata/' . PATH_SEPARATOR . get_include_path();
 set_include_path($new_include_path);
 
 require_once('Zend/Loader.php');
