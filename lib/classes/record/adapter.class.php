@@ -1145,8 +1145,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     try
     {
+      $appbox = \appbox::get_instance();
+      $session = $appbox->get_session();
+      
       $connbas = connection::getPDOConnection($this->get_sbas_id());
-
+              
       $sql = 'DELETE FROM subdef WHERE record_id= :record_id AND name=:name';
       $stmt = $connbas->prepare($sql);
       $stmt->execute(
@@ -1165,7 +1168,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 (:record_id, :name, :baseurl, :filename,
                   :width, :height, :mime, :path, :filesize, "1")';
 
-      echo "substitute subdef $name with $base_url ".$system_file->getPath()." ".$system_file->getFilename()."<br>";
       $stmt = $connbas->prepare($sql);
 
       $stmt->execute(array(
@@ -1183,10 +1185,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       $sql = 'UPDATE record SET moddate=NOW() WHERE record_id=:record_id';
       $stmt = $connbas->prepare($sql);
       $stmt->execute(array(':record_id' => $this->get_record_id()));
-      $stmt->execute();
+      $stmt->closeCursor();
 
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
-
 
       if ($meta_writable)
       {
@@ -1199,14 +1200,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       $type = $name == 'document' ? 'HD' : $name;
 
-      $session->get_logger($record->get_databox())
-              ->log($record, Session_Logger::EVENT_SUBSTITUTE, $type, '');
+      $session->get_logger($this->get_databox())
+              ->log($this, Session_Logger::EVENT_SUBSTITUTE, $type, '');
     }
     catch (Exception $e)
     {
       unset($e);
     }
-
 
     return $this;
   }

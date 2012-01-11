@@ -55,7 +55,7 @@
         {% endif %}
           <span class="actor">
           {% if user.ACL().has_right_on_base(record.get_base_id(), 'canreport') %}
-            {% if done['user'].get_id() != session.get_usr_id() %}
+            {% if done['user'] and done['user'].get_id() != session.get_usr_id() %}
               {% set user_infos = done['user'].get_display_name() %}
               {% trans %}report:: par {{ user_infos }}{% endtrans %}
             {% endif %}
