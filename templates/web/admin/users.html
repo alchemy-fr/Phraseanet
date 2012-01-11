@@ -223,14 +223,18 @@
   <input type="hidden" name="page" value="{{users.get_page()}}"/>
   <input name="srt" value="{{parm['srt']}}" type="hidden" />
   <input name="ord" value="{{parm.ord}}" type="hidden" />
+  {% if parm['act'] is defined %}
   <input name="act" value="{{parm.act}}" type="hidden" />
+  {% endif %}
   {% for sbas_id in parm.sbas_id %}
   <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
   {% endfor %}
   {% for base_id in parm.base_id %}
   <input name="base_id[]" value="{{base_id}}" type="hidden" />
   {% endfor %}
+  {% if parm['usr_ids'] is defined %}
   <input name="usr_ids" value="{{parm.usr_ids}}" type="hidden" />
+  {% endif %}
   <input name="like_value" value="{{parm.like_value}}" type="hidden" />
   <input name="like_field" value="{{parm.like_field}}" type="hidden" />
   <input name="inactives" value="{{parm.inactives}}" type="hidden" />
