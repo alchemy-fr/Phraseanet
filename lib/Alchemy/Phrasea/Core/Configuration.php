@@ -174,7 +174,7 @@ class Configuration
    */
   public function getPhraseanet()
   {
-    $phraseanetConf = $this->getConfiguration()->get('phraseanet', array());
+    $phraseanetConf = $this->getConfiguration()->get('phraseanet');
     return new ParameterBag($phraseanetConf);
   }
 
