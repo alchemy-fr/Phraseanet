@@ -57,7 +57,7 @@
   font-size:14px;
 }
 
-#BasketBrowser .result h1.title .loader{
+#BasketBrowser h1.title .loader{
   display:none;
   margin:4px;
 }
