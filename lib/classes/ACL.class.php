@@ -118,7 +118,7 @@ class ACL implements cache_cacheableInterface
 
     $this->load_hd_grant();
 
-    $key = $record->get_base_id() . '_' . $record->get_record_id();
+    $key = $record->get_serialize_key();
 
     if (array_key_exists($key, $this->_rights_records_document))
       return true;
@@ -185,7 +185,7 @@ class ACL implements cache_cacheableInterface
 
     $this->load_hd_grant();
 
-    $key = $record->get_base_id() . '_' . $record->get_record_id();
+    $key = $record->get_serialize_key();
 
     if (array_key_exists($key, $this->_rights_records_preview))
       return true;
@@ -227,7 +227,7 @@ class ACL implements cache_cacheableInterface
     {
       $granted = true;
     }
-
+    
     return $granted;
   }
 
