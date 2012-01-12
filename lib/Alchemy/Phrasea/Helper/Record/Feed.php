@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -29,12 +28,13 @@ class Feed extends RecordHelper
    * @var Array
    */
   protected $required_sbas_rights = array('bas_chupub');
+
   /**
    *
    * @var boolean
    */
   protected $works_on_unique_sbas = true;
-  
+
   /**
    *
    * @var boolean
@@ -46,10 +46,10 @@ class Feed extends RecordHelper
    * @param \Alchemy\Phrasea\Core $core
    * @return Feed 
    */
-  public function __construct(\Alchemy\Phrasea\Core $core)
+  public function __construct(Core $core, Request $Request)
   {
-    parent::__construct($core);
-    
+    parent::__construct($core, $Request);
+
     if ($this->is_single_grouping())
     {
       $record = array_pop($this->selection->get_elements());

@@ -11,7 +11,8 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
+use Alchemy\Phrasea\Core,
+    Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
     Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -80,9 +81,9 @@ class Edit extends RecordHelper
    * @param \Alchemy\Phrasea\Core $core
    * @return Edit 
    */
-  public function __construct(\Alchemy\Phrasea\Core $core)
+  public function __construct(Core $core, Request $Request)
   {
-    parent::__construct($core);
+    parent::__construct($core, $Request);
 
     if ($this->is_single_grouping())
     {
@@ -196,7 +197,7 @@ class Edit extends RecordHelper
   {
     $_lst = array();
     $user = $this->getCore()->getAuthenticatedUser();
-        
+
     $twig = $this->getCore()->getTwig();
 
 

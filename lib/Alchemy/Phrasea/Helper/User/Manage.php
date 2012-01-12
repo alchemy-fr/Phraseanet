@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper\User;
 
+use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -40,23 +41,21 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
 
   public function search()
   {
-    $request = $this->getCore()->getRequest();
-    
     $appbox = \appbox::get_instance();
 
-    $offset_start = (int) $request->get('offset_start');
+    $offset_start = (int) $this->request->get('offset_start');
     $offset_start = $offset_start < 0 ? 0 : $offset_start;
-    $results_quantity = (int) $request->get('per_page');
+    $results_quantity = (int) $this->request->get('per_page');
     $results_quantity = ($results_quantity < 10 || $results_quantity > 50) ? 20 : $results_quantity;
 
     $this->query_parms = array(
-        'inactives' => $request->get('inactives')
-        , 'like_field' => $request->get('like_field')
-        , 'like_value' => $request->get('like_value')
-        , 'sbas_id' => $request->get('sbas_id')
-        , 'base_id' => $request->get('base_id')
-        , 'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE)
-        , 'ord' => $request->get("ord", \User_Query::ORD_DESC)
+        'inactives' => $this->request->get('inactives')
+        , 'like_field' => $this->request->get('like_field')
+        , 'like_value' => $this->request->get('like_value')
+        , 'sbas_id' => $this->request->get('sbas_id')
+        , 'base_id' => $this->request->get('base_id')
+        , 'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE)
+        , 'ord' => $this->request->get("ord", \User_Query::ORD_DESC)
         , 'per_page' => $results_quantity
         , 'offset_start' => $offset_start
     );
@@ -120,7 +119,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
 
   public function create_newuser()
   {
-    $email = $this->getCore()->getRequest()->get('value');
+    $email = $this->request->get('value');
 
     if(!\mail::validateEmail($email))
     {
@@ -152,7 +151,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
 
   public function create_template()
   {
-    $name = $this->getCore()->getRequest()->get('value');
+    $name = $this->request->get('value');
 
     if(trim($name) === '')
     {

@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Helper;
 
 use Alchemy\Phrasea\Core;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * 

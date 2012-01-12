@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
+use Alchemy\Phrasea\Core;
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
     Symfony\Component\HttpFoundation\Request;
 
