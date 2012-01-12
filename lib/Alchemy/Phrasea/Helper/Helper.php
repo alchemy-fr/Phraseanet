@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Helper;
 
 use Alchemy\Phrasea\Core;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -24,29 +25,45 @@ class Helper
 
   /**
    *
-   * @var Alchemy\Phrasea\Core\Kernel 
+   * @var \Alchemy\Phrasea\Core\Kernel 
    */
   protected $core;
+
+  /**
+   *
+   * @var \Symfony\Component\HttpFoundation\Request 
+   */
+  protected $request;
 
   /**
    *
    * @param Kernel $kernel
    * @return Helper 
    */
-  public function __construct(Core $core)
+  public function __construct(Core $core, Request $Request)
   {
     $this->core = $core;
+    $this->request = $Request;
 
     return $this;
   }
 
   /**
    *
-   * @return Alchemy\Phrasea\Core 
+   * @return \Alchemy\Phrasea\Core 
    */
   public function getCore()
   {
     return $this->core;
+  }
+
+  /**
+   *
+   * @return \Symfony\Component\HttpFoundation\Request 
+   */
+  public function getRequest()
+  {
+    return $this->request;
   }
 
 }

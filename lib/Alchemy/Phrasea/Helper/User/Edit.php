@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper\User;
 
+use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -40,10 +41,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
    */
   protected $base_id;
 
-  public function __construct(\Alchemy\Phrasea\Core $core)
+  public function __construct(Core $core, Request $Request)
   {
-    parent::__construct($core);
-    $this->users = explode(';', $request->get('users'));
+    parent::__construct($core, $Request);
+
+    $this->users = explode(';', $Request->get('users'));
 
     $users = array();
     foreach ($this->users as $usr_id)
@@ -78,12 +80,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     $list = array_keys($master->ACL()->get_granted_base(array('canadmin')));
 
     $user->ACL()->revoke_access_from_bases($list);
-    
+
     if ($user->ACL()->is_phantom())
     {
       $user->delete();
     }
-    
+
     return $this;
   }
 
@@ -91,7 +93,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
   {
     $user = $this->getCore()->getAuthenticatedUser();
     $appbox = \appbox::get_instance();
-    
+
     $list = array_keys($user->ACL()->get_granted_base(array('canadmin')));
 
     $sql = "SELECT
@@ -176,11 +178,11 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
       }
     }
 
-    $query = new User_Query($appbox);
+    $query = new \User_Query($appbox);
     $templates = $query
-            ->only_templates(true)
-            ->execute()->get_results();
-    
+                    ->only_templates(true)
+                    ->execute()->get_results();
+
     $this->users_datas = $rs;
     $out = array(
         'datas' => $this->users_datas,
@@ -188,7 +190,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         'users_serial' => implode(';', $this->users),
         'base_id' => $this->base_id,
         'main_user' => null,
-        'templates'=>$templates
+        'templates' => $templates
     );
 
     if (count($this->users) == 1)
@@ -202,7 +204,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function get_quotas()
   {
-    $this->base_id = (int) $this->getCore()->getRequest()->get('base_id');
+    $this->base_id = (int) $this->request->get('base_id');
 
 //    $this->base_id = (int) $parm['base_id'];
 
@@ -229,7 +231,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function get_masks()
   {
-    $this->base_id = (int) $this->getCore()->getRequest()->get('base_id');
+    $this->base_id = (int) $this->request->get('base_id');
 
     $sql = "SELECT BIN(mask_and) AS mask_and, BIN(mask_xor) AS mask_xor
             FROM basusr
@@ -333,7 +335,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function get_time()
   {
-    $this->base_id = (int) $this->getCore()->getRequest()->get('base_id');
+    $this->base_id = (int) $this->request->get('base_id');
 
     $sql = "SELECT u.usr_id, time_limited, limited_from, limited_to
       FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
@@ -540,7 +542,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     }
 
     $users = $this->users;
-    
+
     $user = \User_adapter::getInstance(array_pop($users), appbox::get_instance());
 
     if ($user->is_template())
@@ -591,41 +593,41 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
   {
     $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
-    
+
     $template = \User_adapter::getInstance($this->request->get('template'), $appbox);
 
     if ($template->get_template_owner()->get_id() != $session->get_usr_id())
     {
       throw new \Exception_Forbidden('You are not the owner of the template');
     }
-    
+
     $current_user = \User_adapter::getInstance($session->get_usr_id(), $appbox);
     $base_ids = array_keys($current_user->ACL()->get_granted_base(array('canadmin')));
 
     foreach ($this->users as $usr_id)
     {
       $user = \User_adapter::getInstance($usr_id, $appbox);
-      
-      if($user->is_template())
+
+      if ($user->is_template())
       {
         continue;
       }
-      
+
       $user->ACL()->apply_model($template, $base_ids);
     }
-    
+
     return $this;
   }
 
   public function apply_quotas()
   {
-    $this->base_id = (int) $this->getCore()->getRequest()->get('base_id');
+    $this->base_id = (int) $this->request->get('base_id');
 
     foreach ($this->users as $usr_id)
     {
       $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
-      if ($this->getCore()->getRequest()->get('quota'))
-        $user->ACL()->set_quotas_on_base($this->base_id, $this->getCore()->getRequest()->get('droits'), $this->getCore()->getRequest()->get('restes'));
+      if ($this->request->get('quota'))
+        $user->ACL()->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
       else
         $user->ACL()->remove_quotas_on_base($this->base_id);
     }
@@ -635,13 +637,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function apply_masks()
   {
-    $request = $this->getCore()->getRequest();
-    $this->base_id = (int) $request->get('base_id');
+    $this->base_id = (int) $this->request->get('base_id');
 
-    $vand_and = $request->get('vand_and');
-    $vand_or = $request->get('vand_or');
-    $vxor_and = $request->get('vxor_and');
-    $vxor_or = $request->get('vxor_or');
+    $vand_and = $this->request->get('vand_and');
+    $vand_or = $this->request->get('vand_or');
+    $vxor_and = $this->request->get('vxor_and');
+    $vxor_or = $this->request->get('vxor_or');
 
     if ($vand_and && $vand_or && $vxor_and && $vxor_or)
     {
@@ -659,7 +660,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
   public function apply_time()
   {
     $request = $this->getCore()->getRequest();
-    
+
     $this->base_id = (int) $request->get('base_id');
 
     $dmin = $request->get('dmin') ? new \DateTime($request->get('dmin')) : null;

@@ -16,6 +16,7 @@
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
 $Core = bootstrap::getCore();
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $em = $Core->getEntityManager();
 
 $appbox = appbox::get_instance();
@@ -242,7 +243,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
     $repository = $em->getRepository('\Entities\Basket');
     /* @var $repository \Repositories\BasketRepository */
     
-    $Basket = $repository->findUserBasket($Core->getRequest()->get('SSTTID'), $Core->getAuthenticatedUser());
+    $Basket = $repository->findUserBasket($Request->get('SSTTID'), $Core->getAuthenticatedUser());
     
     foreach ($Basket->getElements() as $basket_element)
     {

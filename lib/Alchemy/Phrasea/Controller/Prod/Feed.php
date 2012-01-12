@@ -39,12 +39,12 @@ class Feed implements ControllerProviderInterface
     /**
      * I got a selection of docs, which publications are available forthese docs ?
      */
-    $controllers->post('/requestavailable/', function() use ($app, $appbox, $twig)
+    $controllers->post('/requestavailable/', function(Application $app) use ($appbox, $twig)
             {
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
               $feeds = \Feed_Collection::load_all($appbox, $user);
               $request = $app['request'];
-              $publishing = new RecordHelper\Feed($app['Core']);
+              $publishing = new RecordHelper\Feed($app['Core'], $app['request']);
 
               $datas = $twig->render('prod/actions/publish/publish.html', array('publishing' => $publishing, 'feeds' => $feeds));
 
@@ -55,7 +55,7 @@ class Feed implements ControllerProviderInterface
     /**
      * I've selected a publication for my ocs, let's publish them
      */
-    $controllers->post('/entry/create/', function() use ($app, $appbox, $twig)
+    $controllers->post('/entry/create/', function(Application $app) use ($appbox, $twig)
             {
               try
               {
@@ -72,7 +72,7 @@ class Feed implements ControllerProviderInterface
 
                 $entry = \Feed_Entry_Adapter::create($appbox, $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
 
-                $publishing = new RecordHelper\Feed($app['Core']);
+                $publishing = new RecordHelper\Feed($app['Core'], $app['request']);
 
                 foreach ($publishing->get_elements() as $record)
                 {

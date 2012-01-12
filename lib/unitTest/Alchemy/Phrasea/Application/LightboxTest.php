@@ -1,11 +1,13 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+
+require_once __DIR__ . '/../../../../Alchemy/Phrasea/Application/Lightbox.php';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $client;
@@ -36,7 +38,7 @@ class Module_LightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../Alchemy/Phrasea/Application/Lightbox.php';
+    return require __DIR__ . '/../../../../Alchemy/Phrasea/Application/Lightbox.php';
   }
 
   public function testRouteSlash()

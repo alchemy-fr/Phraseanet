@@ -15,13 +15,15 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+
+require_once __DIR__ . '/../../../../Alchemy/Phrasea/Application/Overview.php';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-class Feed_overviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected static $need_records = 1;
@@ -45,7 +47,7 @@ class Feed_overviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../../../lib/Alchemy/Phrasea/Application/Overview.php';
+    return require __DIR__ . '/../../../../Alchemy/Phrasea/Application/Overview.php';
   }
 
 //$deliver_content = function(session $session, record_adapter $record, $subdef, $watermark, $stamp, $app)

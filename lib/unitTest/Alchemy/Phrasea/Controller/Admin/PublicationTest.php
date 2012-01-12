@@ -1,6 +1,8 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Admin/Publications.php';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,9 +37,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function createApplication()
   {
-    $app = require dirname(__FILE__) . '/../../../../Alchemy/Phrasea/Application/Admin.php';
-
-    return $app;
+    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Admin.php';
   }
 
   public function testList()

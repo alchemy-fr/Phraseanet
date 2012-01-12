@@ -1849,7 +1849,7 @@ function preset_load(preset_id)
               
               for(val in p4.edit.T_fields[i].preset)
               {
-                p4.edit.T_records[r].fields[""+i].push(p4.edit.T_fields[i].preset[val]);
+                p4.edit.T_records[r].fields[""+i].value.push(p4.edit.T_fields[i].preset[val]);
               }
             }
             else

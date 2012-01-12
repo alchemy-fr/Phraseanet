@@ -31,9 +31,9 @@ class Printer implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $controllers->post('/', function() use ($app)
+    $controllers->post('/', function(Application $app)
             {
-              $printer = new RecordHelper\Printer($app['Core']);
+              $printer = new RecordHelper\Printer($app['Core'], $app['request']);
 
               $template = 'prod/actions/printer_default.html.twig';
 
@@ -46,7 +46,7 @@ class Printer implements ControllerProviderInterface
 
 
 
-    $controllers->post('/print.pdf', function() use ($app)
+    $controllers->post('/print.pdf', function(Application $app)
             {
               $printer = new RecordHelper\Printer($app['Core']);
 

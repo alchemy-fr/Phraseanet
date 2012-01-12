@@ -92,6 +92,9 @@ class ACL implements cache_cacheableInterface
   const CACHE_RIGHTS_SBAS = 'rights_sbas';
   const CACHE_RIGHTS_RECORDS = 'rights_records';
   const CACHE_GLOBAL_RIGHTS = 'global_rights';
+  
+  const GRANT_ACTION_PUSH = 'push';
+  const GRANT_ACTION_VALIDATE = 'validate';
 
   /**
    * Constructor

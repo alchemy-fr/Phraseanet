@@ -113,14 +113,6 @@ class Core extends \Pimple
               });
     }
 
-    /**
-     * Initialize Request
-     */
-    $this['Request'] = $this->share(function()
-            {
-              return Request::createFromGlobals();
-            });
-
     $this['Serializer'] = $this->share(function()
             {
               $encoders = array(
@@ -173,16 +165,6 @@ class Core extends \Pimple
     {
       ini_set('display_errors', 0);
     }
-  }
-
-  /**
-   * Getter
-   * 
-   * @return Request 
-   */
-  public function getRequest()
-  {
-    return $this['Request'];
   }
 
   /**
@@ -271,6 +253,16 @@ class Core extends \Pimple
       date_default_timezone_set('Europe/Berlin');
 
     return;
+  }
+
+  protected $request;
+
+  protected function getRequest()
+  {
+    if (!$this->request)
+      $this->request = Request::createFromGlobals();
+
+    return $this->request;
   }
 
   protected function enableLocales()
@@ -401,7 +393,7 @@ class Core extends \Pimple
         'Doctrine\\ORM' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib'),
         'Doctrine\\DBAL' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib'),
         'Doctrine\\Common' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib'),
-        'Doctrine\\Common\\DataFixtures' =>  realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
+        'Doctrine\\Common\\DataFixtures' => realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
         'Entities' => realpath(__DIR__ . '/../../Doctrine/'),
         'Repositories' => realpath(__DIR__ . '/../../Doctrine/'),
         'Proxies' => realpath(__DIR__ . '/../../Doctrine/'),
@@ -452,7 +444,7 @@ class Core extends \Pimple
     $configuration = $this->configuration->getService($serviceName);
 
     return Core\ServiceBuilder::build(
-                      $serviceName
+                    $serviceName
                     , $serviceScope
                     , $configuration
     );

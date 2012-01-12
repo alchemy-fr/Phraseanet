@@ -17,6 +17,7 @@
  */
 /* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -47,7 +48,7 @@ if ($parm["ssttid"] != "")
   
   /* @var $repository \Repositories\BasketRepository */
   
-  $Basket = $repository->findUserBasket($Core->getRequest()->get('ssttid'), $Core->getAuthenticatedUser());
+  $Basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser());
   $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
 }
 

@@ -52,6 +52,6 @@ test:
     database: main_connexion
   
   template_engine: twig_debug
-  orm: doctrine_dev
+  orm: doctrine_test
 
             

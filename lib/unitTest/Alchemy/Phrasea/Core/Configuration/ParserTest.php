@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/../../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 use Alchemy\Phrasea\Core as PhraseaCore;
 use Alchemy\Phrasea\Core\Configuration\Parser\Yaml;
@@ -20,7 +20,7 @@ use Alchemy\Phrasea\Core\Configuration\Parser\Yaml;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class parserTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class parserTest extends \PhraseanetPHPUnitAbstract
 {
 
   public function setUp()

@@ -1,12 +1,13 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
-require_once dirname(__FILE__) . '/../../../../bootstrap.php';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/UsrLists.php';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class Module_Prod_Route_TooltipTest extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $client;
@@ -21,7 +22,7 @@ class Module_Prod_Route_TooltipTest extends PhraseanetWebTestCaseAuthenticatedAb
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../../../Alchemy/Phrasea/Application/Prod.php';
+    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
   }
 
   public function testRouteBasket()

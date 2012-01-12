@@ -60,6 +60,22 @@ class Tooltip implements ControllerProviderInterface
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
 
+    $controllers->post('/user/{usr_id}/'
+            , function(Application $app, $usr_id)
+            {
+              $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
+
+              return new Response($twig->render(
+                                      'prod/Tooltip/User.html.twig'
+                                      , array('user' => $user)
+                              )
+              );
+            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+
+
     $controllers->post('/preview/{sbas_id}/{record_id}/'
             , function(Application $app, $sbas_id, $record_id)
             {

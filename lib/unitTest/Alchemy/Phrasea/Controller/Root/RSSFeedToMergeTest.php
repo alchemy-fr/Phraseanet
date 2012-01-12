@@ -1,21 +1,9 @@
 <?php
 
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2010 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Root/RSSFeeds.php';
 
-/**
- *
- * @package
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
-require_once dirname(__FILE__) . '/../PhraseanetWebTestCaseAbstract.class.inc';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
+
 use Symfony\Component\HttpFoundation\Response;
 
 class Feed_rssfeedsTest extends PhraseanetWebTestCaseAbstract
@@ -86,14 +74,14 @@ class Feed_rssfeedsTest extends PhraseanetWebTestCaseAbstract
 
     self::$feed_1_private = Feed_Adapter::create($appbox, self::$user, self::$feed_1_private_title, self::$feed_1_private_subtitle);
     self::$feed_1_private->set_public(false);
-    self::$feed_1_private->set_icon(new system_file(dirname(__FILE__) . '/../testfiles/logocoll.gif'));
+    self::$feed_1_private->set_icon(new system_file(__DIR__ . '/../../../../testfiles/logocoll.gif'));
 
     self::$feed_2_private = Feed_Adapter::create($appbox, self::$user, self::$feed_2_private_title, self::$feed_2_private_subtitle);
     self::$feed_2_private->set_public(false);
 
     self::$feed_3_public = Feed_Adapter::create($appbox, self::$user, self::$feed_3_public_title, self::$feed_3_public_subtitle);
     self::$feed_3_public->set_public(true);
-    self::$feed_3_public->set_icon(new system_file(dirname(__FILE__) . '/../testfiles/logocoll.gif'));
+    self::$feed_3_public->set_icon(new system_file(__DIR__ . '/../../../../testfiles/logocoll.gif'));
 
     self::$feed_4_public = Feed_Adapter::create($appbox, self::$user, self::$feed_4_public_title, self::$feed_4_public_subtitle);
     self::$feed_4_public->set_public(true);
@@ -165,7 +153,7 @@ class Feed_rssfeedsTest extends PhraseanetWebTestCaseAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../../lib/Alchemy/Phrasea/Application/Root.php';
+    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Root.php';
   }
 
 //$app->get('/feeds/aggregated/{format}/', function($format) use ($app, $appbox, $display_feed)

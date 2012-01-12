@@ -106,8 +106,8 @@ class Root implements ControllerProviderInterface
 
               $out = $twig->render('prod/index.html.twig', array(
                   'module_name' => 'Production',
-                  'WorkZone' => new Helper\WorkZone($app['Core']),
-                  'module_prod' => new Helper\Prod($app['Core']),
+                  'WorkZone' => new Helper\WorkZone($app['Core'], $app['request']),
+                  'module_prod' => new Helper\Prod($app['Core'], $app['request']),
                   'cssfile' => $cssfile,
                   'module' => 'prod',
                   'events' => \eventsmanager_broker::getInstance($appbox, $app['Core']),

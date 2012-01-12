@@ -1,8 +1,11 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once dirname(__FILE__) . '/Bridge_datas.inc';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+
+
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/Bridge.php';
+
+require_once __DIR__ . '/../../../../Bridge/Bridge_datas.inc';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,31 +20,11 @@ class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-//    try
-//    {
-//      self::$api = Bridge_Api::get_by_api_name(appbox::get_instance(), 'youtube');
-//    }
-//    catch (Bridge_Exception_ApiNotFound $e)
-//    {
-//      self::$api = Bridge_Api::create(appbox::get_instance(), 'youtube');
-//    }
-//
-//    try
-//    {
-//      self::$account = Bridge_Account::load_account_from_distant_id(appbox::get_instance(), self::$api, self::$user, 'kirikoo');
-//    }
-//    catch (Bridge_Exception_AccountNotFound $e)
-//    {
-//      self::$account = Bridge_Account::create(appbox::get_instance(), self::$api, self::$user, 'kirikoo', 'coucou');
-//    }
   }
 
   public static function tearDownAfterClass()
   {
     parent::tearDownAfterClass();
-//    self::$api->delete();
-//    if (self::$account instanceof Bridge_Account)
-//      self::$account->delete();
   }
 
   public function setUp()
@@ -77,7 +60,7 @@ class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    $app = require __DIR__ . '/../../Alchemy/Phrasea/Application/Prod.php';
+    $app = require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
 
     return $app;
   }

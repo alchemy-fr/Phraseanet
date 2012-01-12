@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 /**
  * Test class for record_adapter.
@@ -30,7 +30,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $metadatas = $system_file->extract_metadatas($databox->get_meta_structure());
     static::$record_23->set_metadatas($metadatas['metadatas']);
 
-    $system_file = new system_file(dirname(__FILE__) . '/../testfiles/cestlafete.jpg');
+    $system_file = new system_file(__DIR__ . '/../testfiles/cestlafete.jpg');
   }
 
   public static function tearDownAfterClass()
@@ -195,7 +195,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     if (!($coll instanceof collection))
       $this->fail('Unable to find a collection');
 
-    $record = record_adapter::create($coll, new system_file(dirname(__FILE__) . '/../testfiles/cestlafete.jpg'));
+    $record = record_adapter::create($coll, new system_file(__DIR__ . '/../testfiles/cestlafete.jpg'));
 
     $this->assertEquals('image/jpeg', $record->get_mime());
     $record->delete();

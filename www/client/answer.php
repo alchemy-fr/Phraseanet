@@ -103,6 +103,13 @@ $options = new searchEngine_options();
 $options->set_bases($parm['bas'], $user->ACL());
 if (!is_array($parm['infield']))
   $parm['infield'] = array();
+
+foreach($parm['infield'] as $offset=>$value)
+{
+  if(trim($value) === '')
+    unset($parm['infield'][$offset]);
+}
+
 $options->set_fields($parm['infield']);
 if (!is_array($parm['status']))
   $parm['status'] = array();

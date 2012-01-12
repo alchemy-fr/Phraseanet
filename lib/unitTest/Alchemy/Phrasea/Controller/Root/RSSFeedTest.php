@@ -1,13 +1,15 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetWebTestCaseAbstract.class.inc';
-require_once dirname(__FILE__) . '/../FeedValidator.inc';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
+require_once __DIR__ . '/../../../../FeedValidator.inc';
+
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Root/RSSFeeds.php';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\DomCrawler\Crawler;
 
-class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
+class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 {
 
   /**
@@ -57,7 +59,7 @@ class Module_RssFeedTest extends PhraseanetWebTestCaseAbstract
 
   public function createApplication()
   {
-    return require dirname(__FILE__) . '/../../Alchemy/Phrasea/Application/Root.php';
+    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Root.php';
   }
 
   public function testGetFeedFormat()

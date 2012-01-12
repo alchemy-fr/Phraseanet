@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
+use Alchemy\Phrasea\Core;
 use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,9 +46,9 @@ class MoveCollection extends RecordHelper
    * @param \Alchemy\Phrasea\Core $core
    * @return MoveCollection 
    */
-  public function __construct(\Alchemy\Phrasea\Core $core)
+  public function __construct(Core $core, Request $Request)
   {
-    parent::__construct($core);
+    parent::__construct($core, $Request);
     $this->evaluate_destinations();
 
     return $this;

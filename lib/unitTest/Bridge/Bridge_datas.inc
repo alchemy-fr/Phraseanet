@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 $new_include_path = __DIR__ . "/../../vendor/" . PATH_SEPARATOR . get_include_path();
 set_include_path($new_include_path);

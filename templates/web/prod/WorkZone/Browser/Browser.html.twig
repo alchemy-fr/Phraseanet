@@ -110,7 +110,7 @@
           var results = $('.results', $container);
           results.removeClass('loading').append(data);
           activateLinks(results);
-          
+          active_archiver(results);
           return;
         }
 
@@ -147,6 +147,7 @@
 
             return false;
           });
+          active_archiver($('.Basket', $container));
           return;
         }
 
@@ -172,7 +173,13 @@
 
         return false;
       });
+      
+    }
     
+    function active_archiver($scope)
+    {
+      $('.userTips', $scope).tooltip();
+      
       $('a.archive_toggler', $scope).bind('click', function(){
           var $this = $(this), parent = $this.parent();
 

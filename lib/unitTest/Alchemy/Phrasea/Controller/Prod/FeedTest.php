@@ -1,11 +1,13 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+
+require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/Feed.php';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class Module_Prod_Route_RecordFeedApp extends PhraseanetWebTestCaseAuthenticatedAbstract
+class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   protected $feed;
@@ -63,8 +65,7 @@ class Module_Prod_Route_RecordFeedApp extends PhraseanetWebTestCaseAuthenticated
 
   public function createApplication()
   {
-    $app = require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
-    return $app;
+    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
   }
 
   public function testRequestAvailable()
