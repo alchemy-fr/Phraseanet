@@ -25,11 +25,8 @@ use Doctrine\DBAL\Logging\EchoSQLLogger;
  */
 class Normal extends ServiceAbstract implements ServiceInterface
 {
-  public function __construct($name, Array $options)
-  {
-    parent::__construct($name, $options);
-  }
 
+  
   public function getService()
   {
     return new EchoSQLLogger();

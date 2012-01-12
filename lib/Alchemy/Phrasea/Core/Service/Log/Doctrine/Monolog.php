@@ -40,7 +40,15 @@ class Monolog extends ParentLog implements ServiceInterface
 
     if (!in_array($output, $this->outputs))
     {
-      throw new \Exception(sprintf('Unknow log output class %s', $output));
+      throw new \Exception(sprintf(
+                      "The output type '%s' declared in %s %s service is not valid. 
+          Available types are %s."
+                      , $output
+                      , $this->name
+                      , $this->getScope()
+                      , implode(", ", $this->outputs)
+              )
+      );
     }
 
     return new MonologSQLLogger($this->monolog, $output);
