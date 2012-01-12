@@ -70,7 +70,7 @@ class UsrListRepository extends EntityRepository
   {
     $dql = 'SELECT l FROM Entities\UsrList l 
               JOIN l.owners o
-            WHERE o.usr_id = :usr_id AND e.name LIKE :name';
+            WHERE o.usr_id = :usr_id AND l.name LIKE :name';
     
     $params = array(
         'usr_id' => $user->get_id(),
