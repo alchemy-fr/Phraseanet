@@ -113,14 +113,6 @@ class Core extends \Pimple
               });
     }
 
-    /**
-     * Initialize Request
-     */
-    $this['Request'] = $this->share(function()
-            {
-              return Request::createFromGlobals();
-            });
-
     $this['Serializer'] = $this->share(function()
             {
               $encoders = array(
@@ -173,16 +165,6 @@ class Core extends \Pimple
     {
       ini_set('display_errors', 0);
     }
-  }
-
-  /**
-   * Getter
-   * 
-   * @return Request 
-   */
-  public function getRequest()
-  {
-    return $this['Request'];
   }
 
   /**
