@@ -1075,6 +1075,11 @@ class basket_adapter implements cache_cacheableInterface
       foreach ($this->get_elements() as $basket_element)
       {
         $basket_element->validate($me, $user, $insert_id, $can_hd);
+        
+        if ($can_hd && $me->ACL()->has_hd_grant($basket_element->get_record()))
+          $user->ACL()->grant_hd_on($basket_element->get_record(), $me, 'validate');
+        else
+          $user->ACL()->grant_preview_on($basket_element->get_record(), $me, 'validate');
       }
 
       $this->valid = 'myvalid';
