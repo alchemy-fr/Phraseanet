@@ -35,7 +35,7 @@ class ServiceBuilder
   );
   
   protected static $optionsNotMandatory = array(
-      'twig', 'apc', 'xcache', 'memcache', 'array'
+      'twig', 'apc', 'xcache', 'memcache', 'array', 'echo'
   );
   
   public static function build($serviceName, $serviceScope, ParameterBag $configuration, $namespace = null)
