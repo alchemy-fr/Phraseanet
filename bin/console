@@ -63,6 +63,7 @@ try
   $app->add(new module_console_schedulerState('scheduler:state'));
   $app->add(new module_console_schedulerStop('scheduler:stop'));
   $app->add(new module_console_schedulerStart('scheduler:start'));
+  $app->add(new module_console_fileConfigCheck('check:config'));
   $app->run();
 }
 catch (Exception $e)
