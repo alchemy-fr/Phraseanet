@@ -93,7 +93,7 @@ class Handler
     
     if (!isset($env[$selectedEnv]))
     {
-      throw new \Exception(sprintf('Undeclared environment %s', $selectedEnv));
+      throw new \Exception(sprintf("The choosen development environment  '%s' is not declared in %s", $selectedEnv, $file->getFileName()));
     }
 
     return $env[$selectedEnv];
