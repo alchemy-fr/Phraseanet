@@ -54,7 +54,6 @@ try
   $app->add(new module_console_aboutLicense('about:license'));
   $app->add(new module_console_systemUpgrade('system:upgrade'));
   $app->add(new module_console_systemMailCheck('system:mailCheck'));
-  $app->add(new module_console_systemConfigCheck('system:configCheck'));
   $app->add(new module_console_systemBackupDB('system:backupDB'));
   $app->add(new module_console_systemClearCache('system:clearCache'));
   $app->add(new module_console_systemTemplateGenerator('system:templateGenerator'));
@@ -64,6 +63,7 @@ try
   $app->add(new module_console_schedulerStop('scheduler:stop'));
   $app->add(new module_console_schedulerStart('scheduler:start'));
   $app->add(new module_console_fileConfigCheck('check:config'));
+  $app->add(new module_console_systemConfigCheck('check:system'));
   $app->run();
 }
 catch (Exception $e)
