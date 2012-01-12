@@ -15,6 +15,7 @@
  * @link        www.phraseanet.com
  */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -52,7 +53,7 @@ if ($parm['ACT'] === null)
       /* @var $repository \Repositories\BasketRepository */
 
       $Basket = $repository->findUserBasket(
-              $Core->getRequest()->get('SSTTID')
+              $Request->get('SSTTID')
               , $Core->getAuthenticatedUser()
       );
 

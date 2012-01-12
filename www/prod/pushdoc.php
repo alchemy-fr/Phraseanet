@@ -16,6 +16,7 @@
  */
 define('ZFONT', 'freesans');
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -88,7 +89,7 @@ if ($act == "STEP2")
     $em = $Core->getEntityManager();
     $repository = $em->getRepository('\Entities\Basket');
     
-    $basket = $repository->findUserBasket($Core->getRequest()->get('SSTTID'), $Core->getAuthenticatedUser());
+    $basket = $repository->findUserBasket($Request->get('SSTTID'), $Core->getAuthenticatedUser());
     
     $lst = array();
     foreach ($basket->getElements() as $basket_element)
@@ -621,7 +622,7 @@ if ($act == "SEND")
             $em = $Core->getEntityManager();
 
             $basket = new \Entities\Basket();
-            $basket->setName($Core->getRequest()->get('nameBask'));
+            $basket->setName($Request->get('nameBask'));
             $basket->setIsRead(false);
 
             $em->persist($basket);
