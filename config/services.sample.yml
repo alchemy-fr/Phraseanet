@@ -14,8 +14,6 @@ twig:
     #Twig will silently ignore invalid variables (variables and or attributes/methods that do not exist) 
     #And replace them with a null value. When set to true, Twig throws an exception instead (default to false)
     strict_variables: true
-    #Escaper adds automatic output escaping to Twig. It defines a new tag, autoescape, and a new filter, raw
-    autoescape: true
     #Optimize the node tree before compilation
     optimizer: true
     
