@@ -225,6 +225,8 @@ class collection implements cache_cacheableInterface
     $this->name = $name;
     
     $this->delete_data_from_cache();
+    
+    phrasea::reset_baseDatas();
 
     return $this;
   }
