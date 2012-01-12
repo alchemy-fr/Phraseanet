@@ -454,8 +454,7 @@ class Core extends \Pimple
     return Core\ServiceBuilder::build(
                       $serviceName
                     , $serviceScope
-                    , $configuration->get('type')
-                    , $configuration->get('options')
+                    , $configuration
     );
   }
 
