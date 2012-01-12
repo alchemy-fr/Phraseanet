@@ -17,6 +17,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    * As controllers use WebTestCase, it requires a client 
    */
   protected $client;
+
   /**
    * If the controller tests require some records, specify it her
    * 
@@ -26,7 +27,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    * $need_records = 2; 
    * 
    */
-  protected static $need_records = false;
+  protected static $need_records = 2;
 
   /**
    * The application loader
@@ -35,7 +36,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
   }
-  
+
   public function setUp()
   {
     parent::setUp();
@@ -50,11 +51,114 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   /**
    * Default route test
    */
-  public function testRouteSlash()
+  public function testRouteGETSlash()
   {
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+    $route = '/push/';
+
+    $this->client->request('GET', $route);
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+  }
+
+  public function testRoutePOSTsend()
+  {
+    $route = '/push/send/';
+
+    $records = array(
+        self::$record_1->get_serialize_key()
+        , self::$record_2->get_serialize_key()
     );
+    
+    $receivers = array(
+        array('usr_id'=>self::$user_alt1->get_id(), 'HD'=>1)
+            , array('usr_id'=>self::$user_alt2->get_id(), 'HD'=>0)
+            );
+
+    $params = array(
+        'lst' => implode(';', $records)
+        , 'receivers' => $receivers
+    );
+
+    $this->client->request('POST', $route, $params);
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+    $datas = (array) json_decode($response->getContent());
+
+    $this->assertArrayHasKey('message', $datas);
+    $this->assertArrayHasKey('success', $datas);
+
+    $this->assertTrue($datas['success'], 'Result is successful');
+  }
+
+  public function testRoutePOSTvalidate()
+  {
+    $route = '/push/validate/';
+
+    $records = array(
+        self::$record_1->get_serialize_key()
+        , self::$record_2->get_serialize_key()
+    );
+    
+    $participants = array(
+        array(
+            'usr_id' => self::$user_alt1->get_id(),
+            'agree'=> 0,
+            'see_others'=> 1,
+            'HS'=> 0,
+        )
+        , array(
+            'usr_id' => self::$user_alt2->get_id(),
+            'agree'=> 1,
+            'see_others'=> 0,
+            'HS'=> 1,
+        )
+    );
+
+    $params = array(
+        'lst' => implode(';', $records)
+        , 'participants' => $participants
+    );
+
+    $this->client->request('POST', $route, $params);
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+    $datas = (array) json_decode($response->getContent());
+
+    $this->assertArrayHasKey('message', $datas);
+    $this->assertArrayHasKey('success', $datas);
+
+    $this->assertTrue($datas['success'], 'Result is successful');
+  }
+
+  public function testRouteGETsearchuser()
+  {
+    $route = '/push/search-user/';
+
+    $params = array(
+        'query' => ''
+    );
+
+    $this->client->request('GET', $route, $params);
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+    $datas = (array) json_decode($response->getContent());
+    
+    $this->assertTrue(is_array($datas), 'Json is valid');
   }
 
 }
