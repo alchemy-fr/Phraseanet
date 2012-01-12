@@ -93,7 +93,7 @@ class Monolog extends ServiceAbstract implements ServiceInterface
       );
     }
 
-    $logPath = __DIR__ . '/../../../../logs';
+    $logPath = __DIR__ . '/../../../../../../logs';
 
     $file = sprintf('%s/%s', $logPath, $options["filename"]);
 
