@@ -38,7 +38,7 @@ class WorkZone implements ControllerProviderInterface
     $controllers->get('/', function(Application $app)
             {
               $params = array(
-                  'WorkZone' => new Helper\WorkZone($app['Core'])
+                  'WorkZone' => new Helper\WorkZone($app['Core'], $app['request'])
                   , 'selected_type' => $app['request']->get('type')
                   , 'selected_id' => $app['request']->get('id')
                   , 'srt' => $app['request']->get('sort')
@@ -68,7 +68,7 @@ class WorkZone implements ControllerProviderInterface
 
               $user = $app['Core']->getAuthenticatedUser();
 
-              $request = $app['Core']->getRequest();
+              $request = $app['request'];
 
               $em = $app['Core']->getEntityManager();
               /* @var $em \Doctrine\ORM\EntityManager */

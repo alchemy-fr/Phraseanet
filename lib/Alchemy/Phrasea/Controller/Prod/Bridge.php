@@ -52,9 +52,9 @@ class Bridge implements ControllerProviderInterface
             });
 
     $controllers->post('/manager/'
-            , function() use ($app, $twig)
+            , function(Application $app) use ($twig)
             {
-              $route = new RecordHelper\Bridge($app['Core']);
+              $route = new RecordHelper\Bridge($app['Core'], $app['request']);
               $appbox = \appbox::get_instance();
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
@@ -409,14 +409,14 @@ class Bridge implements ControllerProviderInterface
             })->assert('account_id', '\d+');
 
 
-    $controllers->get('/upload/', function() use ($app, $twig)
+    $controllers->get('/upload/', function(Application $app) use ($twig)
             {
               $request = $app['request'];
               $appbox = \appbox::get_instance();
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
-              $route = new RecordHelper\Bridge($app['Core']);
+              $route = new RecordHelper\Bridge($app['Core'], $app['request']);
               $route->grep_records($account->get_api()->acceptable_records());
 
               $params = array(
@@ -435,7 +435,7 @@ class Bridge implements ControllerProviderInterface
 
 
     $controllers->post('/upload/'
-            , function() use ($app, $twig)
+            , function(Application $app) use ($twig)
             {
               $errors = array();
               $request = $app['request'];
@@ -443,7 +443,7 @@ class Bridge implements ControllerProviderInterface
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
-              $route = new RecordHelper\Bridge($app['Core']);
+              $route = new RecordHelper\Bridge($app['Core'], $app['request']);
               $route->grep_records($account->get_api()->acceptable_records());
               $connector = $account->get_api()->get_connector();
 

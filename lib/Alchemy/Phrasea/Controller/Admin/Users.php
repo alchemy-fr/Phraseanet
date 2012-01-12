@@ -37,9 +37,9 @@ class Users implements ControllerProviderInterface
     $controllers = new ControllerCollection();
 
 
-    $controllers->post('/rights/', function() use ($app)
+    $controllers->post('/rights/', function(Application $app)
             {
-              $rights = new UserHelper\Edit($app['Core']);
+              $rights = new UserHelper\Edit($app['Core'], $app['request']);
 
               $template = 'admin/editusers.twig';
               /* @var $twig \Twig_Environment */
@@ -49,9 +49,9 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->get('/rights/', function() use ($app)
+    $controllers->get('/rights/', function(Application $app)
             {
-              $rights = new UserHelper\Edit($app['Core']);
+              $rights = new UserHelper\Edit($app['Core'], $app['request']);
 
               $template = 'admin/editusers.twig';
               /* @var $twig \Twig_Environment */
@@ -61,22 +61,22 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/delete/', function() use ($app)
+    $controllers->post('/delete/', function(Application $app)
             {
-              $module = new UserHelper\Edit($app['Core']);
+              $module = new UserHelper\Edit($app['Core'], $app['request']);
               $module->delete_users();
 
               return $app->redirect('/admin/users/search/');
             }
     );
 
-    $controllers->post('/rights/apply/', function() use ($app)
+    $controllers->post('/rights/apply/', function(Application $app)
             {
               $datas = array('error' => true);
 
               try
               {
-                $rights = new UserHelper\Edit($app['Core']);
+                $rights = new UserHelper\Edit($app['Core'], $app['request']);
                 $rights->apply_rights();
                 
                 if ($app['request']->get('template'))
@@ -101,9 +101,9 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/rights/quotas/', function() use ($app)
+    $controllers->post('/rights/quotas/', function(Application $app)
             {
-              $rights = new UserHelper\Edit($app['Core']);
+              $rights = new UserHelper\Edit($app['Core'], $app['request']);
 
               $template = 'admin/editusers_quotas.twig';
               /* @var $twig \Twig_Environment */
@@ -113,18 +113,18 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/rights/quotas/apply/', function() use ($app)
+    $controllers->post('/rights/quotas/apply/', function(Application $app)
             {
-              $rights = new UserHelper\Edit($app['Core']);
+              $rights = new UserHelper\Edit($app['Core'], $app['request']);
               $rights->apply_quotas();
 
               return;
             }
     );
 
-    $controllers->post('/rights/time/', function() use ($app)
+    $controllers->post('/rights/time/', function(Application $app)
             {
-              $rights = new UserHelper\Edit($app['Core']);
+              $rights = new UserHelper\Edit($app['Core'], $app['request']);
 
               $template = 'admin/editusers_timelimit.twig';
               /* @var $twig \Twig_Environment */
@@ -134,18 +134,18 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/rights/time/apply/', function() use ($app)
+    $controllers->post('/rights/time/apply/', function(Application $app)
             {
-              $rights = new UserHelper\Edit($app['Core']);
+              $rights = new UserHelper\Edit($app['Core'], $app['request']);
               $rights->apply_time();
 
               return;
             }
     );
 
-    $controllers->post('/rights/masks/', function() use ($app)
+    $controllers->post('/rights/masks/', function(Application $app)
             {
-              $rights = new UserHelper\Edit($app['Core']);
+              $rights = new UserHelper\Edit($app['Core'], $app['request']);
 
               $template = 'admin/editusers_masks.twig';
               /* @var $twig \Twig_Environment */
@@ -155,18 +155,18 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/rights/masks/apply/', function() use ($app)
+    $controllers->post('/rights/masks/apply/', function(Application $app)
             {
-              $rights = new UserHelper\Edit($app['Core']);
+              $rights = new UserHelper\Edit($app['Core'], $app['request']);
               $rights->apply_masks();
 
               return;
             }
     );
 
-    $controllers->match('/search/', function() use ($app)
+    $controllers->match('/search/', function(Application $app)
             {
-              $users = new UserHelper\Manage($app['Core']);
+              $users = new UserHelper\Manage($app['Core'], $app['request']);
               $template = 'admin/users.html';
 
               /* @var $twig \Twig_Environment */
@@ -176,9 +176,9 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/apply_template/', function() use ($app)
+    $controllers->post('/apply_template/', function(Application $app)
             {
-              $users = UserHelper\Manage($app['Core']);
+              $users = UserHelper\Manage($app['Core'], $app['request']);
               
               $users->apply_template();
 
@@ -186,7 +186,7 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->get('/typeahead/search/', function() use ($app, $appbox)
+    $controllers->get('/typeahead/search/', function(Application $app) use ($appbox)
             {
               $request = $app['request'];
               $user_query = new \User_Query($appbox);
@@ -226,14 +226,14 @@ class Users implements ControllerProviderInterface
             });
 
 
-    $controllers->post('/create/', function() use ($app)
+    $controllers->post('/create/', function(Application $app)
             {
 
               $datas = array('error' => false, 'message' => '', 'data' => null);
               try
               {
                 $request = $app['request'];
-                $module = new UserHelper\Manage($app['Core']);
+                $module = new UserHelper\Manage($app['Core'], $app['request']);
                 if ($request->get('template') == '1')
                 {
                   $user = $module->create_template();
@@ -257,7 +257,7 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/export/csv/', function() use ($appbox, $app)
+    $controllers->post('/export/csv/', function(Application $app) use ($appbox)
             {
               $request = $app['request'];
               $user_query = new \User_Query($appbox, $app['Core']);

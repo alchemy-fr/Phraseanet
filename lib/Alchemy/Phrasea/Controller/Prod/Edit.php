@@ -29,9 +29,9 @@ class Edit implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $controllers->post('/', function() use ($app)
+    $controllers->post('/', function(Application $app)
             {
-              $handler = new RecordHelper\Edit($app['Core']);
+              $handler = new RecordHelper\Edit($app['Core'], $app['request']);
 
               $handler->propose_editing();
 
@@ -44,10 +44,10 @@ class Edit implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/apply/', function() use ($app)
+    $controllers->post('/apply/', function(Application $app) 
             {
               $request = $app['request'];
-              $editing = new RecordHelper\Edit($app['Core']);
+              $editing = new RecordHelper\Edit($app['Core'], $app['request']);
               $editing->execute($request);
 
               $template = 'prod/actions/edit_default.twig';
