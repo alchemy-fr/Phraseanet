@@ -255,6 +255,16 @@ class Core extends \Pimple
     return;
   }
 
+  protected $request;
+
+  protected function getRequest()
+  {
+    if (!$this->request)
+      $this->request = Request::createFromGlobals();
+
+    return $this->request;
+  }
+
   protected function enableLocales()
   {
     mb_internal_encoding("UTF-8");
@@ -383,7 +393,7 @@ class Core extends \Pimple
         'Doctrine\\ORM' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib'),
         'Doctrine\\DBAL' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib'),
         'Doctrine\\Common' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib'),
-        'Doctrine\\Common\\DataFixtures' =>  realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
+        'Doctrine\\Common\\DataFixtures' => realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
         'Entities' => realpath(__DIR__ . '/../../Doctrine/'),
         'Repositories' => realpath(__DIR__ . '/../../Doctrine/'),
         'Proxies' => realpath(__DIR__ . '/../../Doctrine/'),
@@ -434,7 +444,7 @@ class Core extends \Pimple
     $configuration = $this->configuration->getService($serviceName);
 
     return Core\ServiceBuilder::build(
-                      $serviceName
+                    $serviceName
                     , $serviceScope
                     , $configuration->get('type')
                     , $configuration->get('options')
