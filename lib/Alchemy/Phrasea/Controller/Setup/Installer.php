@@ -188,8 +188,7 @@ class Installer implements ControllerProviderInterface
                   $ormService = \Alchemy\Phrasea\Core\ServiceBuilder::build(
                                   $serviceName
                                   , \Alchemy\Phrasea\Core\ServiceBuilder::ORM
-                                  , $confService->get("type")
-                                  , $confService->get("options")
+                                  , $confService
                   );
 
                   if ($ormService->getType() === 'doctrine')
