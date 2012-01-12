@@ -28,8 +28,9 @@ class Twig extends ServiceAbstract implements ServiceInterface
 
   public function __construct($name, Array $options)
   {
+
     parent::__construct($name, $options);
-    $this->options = $this->resolveOptions($options);
+
     $this->templatesPath = $this->resolvePaths();
 
     try
@@ -42,7 +43,12 @@ class Twig extends ServiceAbstract implements ServiceInterface
     }
     catch (\Exception $e)
     {
-      throw new \Exception(sprintf('Unable to load twig service %s', $e->getMessage()));
+      throw new \Exception(sprintf(
+                      "Unable to create '%s' service for the following reason %s"
+                      , $this->name
+                      , $e->getMessage()
+              )
+      );
     }
   }
 
@@ -66,7 +72,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
       $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
     }
 
-    $core = \bootstrap::getCore();
+    $core = \bootstrap::execute();
     $eventsmanager = \eventsmanager_broker::getInstance($appbox, $core);
 
     $this->twig->addGlobal('session', $session);
@@ -153,16 +159,14 @@ class Twig extends ServiceAbstract implements ServiceInterface
 
   private function getDefaultTemplatePath()
   {
-    $registry = \registry::get_instance();
-
     return array(
         'mobile' => array(
-            $registry->get('GV_RootPath') . 'config/templates/mobile',
-            $registry->get('GV_RootPath') . 'templates/mobile'
+            __DIR__ . '/../../../../../../config/templates/mobile',
+            __DIR__ . '/../../../../../../templates/mobile'
         ),
         'web' => array(
-            $registry->get('GV_RootPath') . 'config/templates/web',
-            $registry->get('GV_RootPath') . 'templates/web'
+            __DIR__ . '/../../../../../../config/templates/web',
+            __DIR__ . '/../../../../../../templates/web'
         )
     );
   }
@@ -188,28 +192,6 @@ class Twig extends ServiceAbstract implements ServiceInterface
     }
 
     return $paths;
-  }
-
-  /**
-   * Set configuration options
-   * @param array $configuration
-   * @return Array 
-   */
-  private function resolveOptions(Array $configuration)
-  {
-    $registry = \registry::get_instance();
-    $options = $configuration;
-
-    $options["optimizer"] = !!$options["optimizer"] ? -1 : 0;
-    $options['cache'] = $registry->get('GV_RootPath') . 'tmp/cache_twig';
-    $options['charset'] = 'utf-8';
-
-    if (!!$options["debug"])
-    {
-      unset($options["cache"]);
-    }
-
-    return $options;
   }
 
   public function getService()
