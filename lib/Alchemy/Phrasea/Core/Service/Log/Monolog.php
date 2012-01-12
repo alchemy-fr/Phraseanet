@@ -25,33 +25,50 @@ use Alchemy\Phrasea\Core,
 class Monolog extends ServiceAbstract implements ServiceInterface
 {
   const DEFAULT_MAX_DAY = 10;
-  
+
   protected $handlers = array(
       'rotate' => 'RotatingFile'
-      ,'stream' => 'Stream'
+      , 'stream' => 'Stream'
   );
-  
+
   /**
    *
    * @var \Monolog\Logger
    */
   protected $monolog;
-  
+
   public function __construct($name, Array $options)
   {
     parent::__construct($name, $options);
+
+    if (empty($options))
+    {
+      throw new \Exception(sprintf("'%s' service options can not be empty", $this->name));
+    }
 
     //defaut to main handler
     $handler = isset($options["handler"]) ? $options["handler"] : false;
 
     if (!$handler)
     {
-      throw new \Exception("You must specify at least one monolog handler");
+      throw new \Exception(sprintf(
+                      "You must specify at least one handler for %s service"
+                      , $this->name
+              )
+      );
     }
 
     if (!array_key_exists($handler, $this->handlers))
     {
-      throw new \Exception(sprintf('Unknow monolog handler %s'), $handlerType);
+      throw new \Exception(sprintf(
+                      "The handler type '%s' declared in %s %s service is not valid. 
+          Available types are %s."
+                      , $handler
+                      , $this->name
+                      , $this->getScope()
+                      , implode(", ", $this->handler)
+              )
+      );
     }
 
     $handlerName = $this->handlers[$handler];
@@ -60,21 +77,31 @@ class Monolog extends ServiceAbstract implements ServiceInterface
 
     if (!class_exists($handlerClassName))
     {
-      throw new \Exception(sprintf('Unknow monolog handler class %s', $handlerClassName));
+      throw new \Exception(sprintf(
+                      'Unable to log monolog handler ùs looked for class %s'
+                      , $handlerName
+                      , $handlerClassName)
+      );
     }
 
     if (!isset($options["filename"]))
     {
-      throw new \Exception('you must specify a file to write "filename: my_filename"');
+      throw new \Exception(sprintf(
+                      "Missing filename option in '%s' service"
+                      , $this->name
+              )
+      );
     }
 
     $logPath = __DIR__ . '/../../../../logs';
-    
+
     $file = sprintf('%s/%s', $logPath, $options["filename"]);
 
     if ($handler == 'rotate')
     {
-      $maxDay = isset($options["max_day"]) ? (int) $options["max_day"] : self::DEFAULT_MAX_DAY;
+      $maxDay = isset($options["max_day"]) ?
+              (int) $options["max_day"] :
+              self::DEFAULT_MAX_DAY;
 
       $handlerInstance = new $handlerClassName($file, $maxDay);
     }
@@ -82,26 +109,26 @@ class Monolog extends ServiceAbstract implements ServiceInterface
     {
       $handlerInstance = new $handlerClassName($file);
     }
-    
+
     $channel = isset($options["channel"]) ? $options["channel"] : false;
-    
+
     $monologLogger = new \Monolog\Logger($channel);
-    
+
     $monologLogger->pushHandler($handlerInstance);
 
     $this->monolog = $monologLogger;
   }
-  
+
   public function getService()
   {
     return $this->monolog;
   }
-  
+
   public function getType()
   {
     return 'monolog';
   }
-  
+
   public function getScope()
   {
     return 'log';
