@@ -15,6 +15,8 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
+use Symfony\Component\HttpFoundation\Request,
+    Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -44,7 +46,7 @@ class Edit implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/apply/', function(Application $app, Request $request) 
+    $controllers->post('/apply/', function(Application $app, Request $request)
             {
               $editing = new RecordHelper\Edit($app['Core'], $app['request']);
               $editing->execute($request);

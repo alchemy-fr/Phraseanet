@@ -441,7 +441,7 @@ class Edit extends RecordHelper
    * @param http_request $request
    * @return action_edit
    */
-  public function execute(Symfony\Component\HttpFoundation\Request $request)
+  public function execute(Request $request)
   {
     $appbox = \appbox::get_instance();
     if ($request->get('act_option') == 'SAVEGRP' && $request->get('newrepresent'))
