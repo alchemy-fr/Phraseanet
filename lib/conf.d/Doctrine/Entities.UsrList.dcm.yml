@@ -25,7 +25,7 @@ Entities\UsrList:
       targetEntity: UsrListOwner
       mappedBy: list
       cascade: ["ALL"]
-    users:
+    entries:
       targetEntity: UsrListEntry
       mappedBy: list
       cascade: ["ALL"]

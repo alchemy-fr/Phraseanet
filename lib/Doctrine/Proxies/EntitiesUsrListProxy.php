@@ -102,22 +102,22 @@ class EntitiesUsrListProxy extends \Entities\UsrList implements \Doctrine\ORM\Pr
         return parent::getOwner($user);
     }
 
-    public function addUsrListEntry(\Entities\UsrListEntry $users)
+    public function addUsrListEntry(\Entities\UsrListEntry $entry)
     {
         $this->__load();
-        return parent::addUsrListEntry($users);
+        return parent::addUsrListEntry($entry);
     }
 
-    public function getUsers()
+    public function getEntries()
     {
         $this->__load();
-        return parent::getUsers();
+        return parent::getEntries();
     }
 
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'name', 'created', 'updated', 'owners', 'users');
+        return array('__isInitialized__', 'id', 'name', 'created', 'updated', 'owners', 'entries');
     }
 
     public function __clone()
