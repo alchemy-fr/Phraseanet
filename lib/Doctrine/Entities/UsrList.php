@@ -189,7 +189,7 @@ class UsrList
    */
   public function getEntries()
   {
-    return $this->entry;
+    return $this->entries;
   }
 
 }
