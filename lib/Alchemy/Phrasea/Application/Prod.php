@@ -24,7 +24,9 @@ return call_user_func(function()
                 {
                   $app = new Application();
                   $app['Core'] = bootstrap::getCore();
-
+                  
+                  $app["debug"]  = $app["Core"]->getConfiguration()->isDebug();
+                  
                   $app->before(function(Request $request)
                           {
                             $request->setRequestFormat(

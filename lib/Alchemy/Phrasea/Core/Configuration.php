@@ -52,7 +52,7 @@ class Configuration
     $this->configurationHandler = $handler;
     $this->installed = false;
     $this->environment = $environment;
-    
+
     try
     {
       $handler->getSpecification()->getConfigurationFile();
@@ -240,7 +240,7 @@ class Configuration
                       , $this->configurationHandler
                               ->getSpecification()
                               ->getConnexionFile()
-                              ->getPathname()
+                              ->getFileName()
               )
       );
     }
@@ -353,7 +353,7 @@ class Configuration
   {
     return $this->getConfiguration()->get('template_engine');
   }
-  
+
   /**
    * Return configuration service for orm
    * @return string
@@ -384,7 +384,7 @@ class Configuration
                       , $this->configurationHandler
                               ->getSpecification()
                               ->getServiceFile()
-                              ->getPathname()
+                              ->getFileName()
               )
       );
     }

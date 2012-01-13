@@ -26,6 +26,8 @@ return call_user_func(
 
                   $app['Core'] = bootstrap::getCore();
                   
+                  $app["debug"]  = $app["Core"]->getConfiguration()->isDebug();
+                  
                   $app->mount('/publications', new Controller\Publications());
                   $app->mount('/users', new Controller\Users());
                   $app->mount('/fields', new Controller\Fields());

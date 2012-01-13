@@ -30,6 +30,8 @@ return call_user_func(
                   $app = new Silex\Application();
 
                   $app['Core'] = bootstrap::getCore();
+                  
+                  $app["debug"]  = $app["Core"]->getConfiguration()->isDebug();
 
                   $app->get('/', function (Silex\Application $app) use ($session, $appbox)
                           {

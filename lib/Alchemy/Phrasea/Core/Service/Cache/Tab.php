@@ -9,37 +9,42 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Core\Service\Log\Doctrine;
+namespace Alchemy\Phrasea\Core\Service\Cache;
 
 use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
 
-use Doctrine\DBAL\Logging\EchoSQLLogger;
+use Doctrine\Common\Cache\ArrayCache;
+
 /**
- *
+ * it's just like array cache
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Normal extends ServiceAbstract implements ServiceInterface
+class Tab extends ServiceAbstract implements ServiceInterface
 {
-
   
+  public function getScope()
+  {
+    return 'cache';
+  }
+
+  /**
+   *
+   * @return Cache\ApcCache 
+   */
   public function getService()
   {
-    return new EchoSQLLogger();
+    return new ArrayCache();
   }
 
   public function getType()
   {
-    return 'echo';
-  }
-  
-  public function getScope()
-  {
-    return 'log';
+    return 'array';
   }
 
 }
+

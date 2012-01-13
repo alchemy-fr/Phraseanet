@@ -31,7 +31,8 @@ return call_user_func(
                   $app = new Silex\Application();
                   
                   $app['Core'] = bootstrap::getCore();
-
+                  
+                  $app["debug"]  = $app["Core"]->getConfiguration()->isDebug();
 
                   $deliver_content = function(Session_Handler $session, record_adapter $record, $subdef, $watermark, $stamp, $app)
                           {

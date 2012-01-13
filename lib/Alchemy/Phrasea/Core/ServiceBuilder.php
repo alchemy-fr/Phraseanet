@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Core;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+
 /**
  *
  * @package
@@ -22,13 +24,40 @@ class ServiceBuilder
   const LOG = 'log';
   const TEMPLATE_ENGINE = 'template_engine';
   const ORM = 'orm';
-
+  const CACHE = 'cache';
+  
   protected static $scopes = array(
-      self::ORM, self::TEMPLATE_ENGINE, self::LOG
+      self::ORM, self::TEMPLATE_ENGINE, self::LOG, self::CACHE
   );
 
-  public static function build($serviceName, $serviceScope, $serviceType, Array $options, $namespace = null)
+  protected static $typeToService = array(
+      'echo' => 'normal', 'array' => 'tab' 
+  );
+  
+  protected static $optionsNotMandatory = array(
+      'twig', 'apc', 'xcache', 'memcache', 'array', 'echo'
+  );
+  
+  public static function build($serviceName, $serviceScope, ParameterBag $configuration, $namespace = null)
   {
+    $serviceType = $configuration->get("type");
+    
+    if(!in_array($serviceType, self::$optionsNotMandatory))
+    {
+      $options = $configuration->get("options");
+    }
+    else
+    {
+      try
+      {
+        $options = $configuration->get("options");
+      }
+      catch(\Exception $e)
+      {
+        $options = array();
+      }
+    }
+    
     if (!in_array($serviceScope, self::$scopes))
     {
       throw new \Exception(sprintf("Unknow service scope of type %s", $serviceScope));
@@ -48,9 +77,14 @@ class ServiceBuilder
 
     if (is_string($namespace))
     {
-      $scope = sprintf("%s\%s", ucfirst($namespace), ucfirst($serviceScope));
+      $serviceScope = sprintf("%s\%s", ucfirst($serviceScope), ucfirst($namespace));
     }
-
+    
+    if(array_key_exists($serviceType, self::$typeToService))
+    {
+      $serviceType = self::$typeToService[$serviceType];
+    }
+    
     $className = sprintf(
             "\Alchemy\Phrasea\Core\Service\%s\%s"
             , ucfirst($serviceScope)

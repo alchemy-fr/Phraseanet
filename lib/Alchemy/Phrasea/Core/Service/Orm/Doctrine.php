@@ -15,9 +15,9 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
-
 use Doctrine\DBAL\Types\Type,
     Doctrine\Common\Cache\AbstractCache;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
  * 
@@ -27,10 +27,14 @@ use Doctrine\DBAL\Types\Type,
  */
 class Doctrine extends ServiceAbstract implements ServiceInterface
 {
-  const MEMCACHED = 'memcached';
   const ARRAYCACHE = 'array';
+  const MEMCACHED = 'memcached';
+  const XCACHE = 'xcache';
   const APC = 'apc';
 
+  protected $caches = array(
+      self::MEMCACHED, self::APC, self::ARRAYCACHE, self::XCACHE
+  );
   protected $outputs = array(
       'json', 'yaml', 'normal'
   );
@@ -38,6 +42,8 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       'monolog', 'echo'
   );
   protected $entityManager;
+  protected $cacheServices = array();
+  protected $debug;
 
   public function __construct($name, Array $options = array())
   {
@@ -45,45 +51,68 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
     static::loadClasses();
 
+    if (empty($options))
+    {
+      throw new \Exception(sprintf(
+                      "'%s' service options can not be empty"
+                      , $this->name
+              )
+      );
+    }
+
     $config = new \Doctrine\ORM\Configuration();
 
-    $handler = new Core\Configuration\Handler(
-                    new Core\Configuration\Application(),
-                    new Core\Configuration\Parser\Yaml()
-    );
+    //get debug mod : default to false
+    $debug = $this->debug = isset($options["debug"]) ? !!$options["debug"] : false;
 
-    $phraseaConfig = new Core\Configuration($handler);
-
-    /*
-     * debug mode
-     */
-    $debug = isset($options["debug"]) ? : false;
-    /*
-     * doctrine cache
-     */
-    $cache = isset($options["orm"]["cache"]) ? $options["orm"]["cache"] : false;
-
-    /*
-     * default query cache & meta chache
-     */
-    $metaCache = $this->getCache();
-    $queryCache = $this->getCache();
-
-    //Handle logs
+    //get logger
     $logServiceName = isset($options["log"]) ? $options["log"] : false;
 
     if ($logServiceName)
     {
-      $serviceConf = $phraseaConfig->getService($logServiceName);
-      $this->handleLogs($config, $logServiceName, $serviceConf->all());
+      //set logger
+      $config->setSQLLogger($this->getLog($logServiceName));
     }
 
-    //handle cache
-    $this->handleCache($metaCache, $queryCache, $cache, $debug);
+    //get cache
+    $cache = isset($options["orm"]["cache"]) ? $options["orm"]["cache"] : false;
+
+    if (!$cache)
+    {
+      $metaCache = $this->getCache('metadata');
+      $queryCache = $this->getCache('query');
+      $resultCache = $this->getCache('result');
+    }
+    else
+    {
+      //define query cache set to array cache if no defined or if service in on debug mode
+      $queryCache = isset($cache["query"]) && !$debug ?
+              $this->getCache('query', (string) $cache["query"]) :
+              isset($cache["query"]) ?
+                      $this->getCache('query', $cache["query"]) :
+                      $this->getCache('query');
+
+      //define metadatas cache set to array cache if no defined or if service in on debug mode
+      $metaCache = isset($cache["metadata"]) && !$debug ?
+              $this->getCache('metadata', (string) $cache["metadata"]) :
+              isset($cache["metadata"]) ?
+                      $this->getCache('metadata', $cache["metadata"]) :
+                      $this->getCache('metadata');
+
+      //define metadatas cache set to array cache if no defined or if service in on debug mode
+      $resultCache = isset($cache["result"]) && !$debug ?
+              $this->getCache('result', (string) $cache["result"]) :
+              isset($cache["result"]) ?
+                      $this->getCache('result', $cache["result"]) :
+                      $this->getCache('result');
+    }
 
     //set caches
     $config->setMetadataCacheImpl($metaCache);
+
     $config->setQueryCacheImpl($queryCache);
+
+    $config->setResultCacheImpl($resultCache);
 
     //define autoregeneration of proxies base on debug mode
     $config->setAutoGenerateProxyClasses($debug);
@@ -106,25 +135,51 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
     $connexion = isset($options["dbal"]) ? $options["dbal"] : false;
 
-    if(!$connexion)
+    if (!$connexion)
     {
-      throw new \Exception("Missing dbal connexion for doctrine");
+      throw new \Exception(sprintf(
+                      "Missing dbal configuration for '%s' service"
+                      , $this->name
+              )
+      );
     }
-    
+
     try
     {
-      $dbalConf = $phraseaConfig->getConnexion($connexion)->all();
+      $dbalConf = $this->configuration->getConnexion($connexion)->all();
     }
-    catch(\Exception $e)
+    catch (\Exception $e)
     {
-      throw new \Exception(sprintf("Unable to read %s configuration", $connexion));
+      $connexionFile = $this
+              ->configuration
+              ->getConfigurationHandler()
+              ->getSpecification()
+              ->getConnexionFile();
+
+      throw new \Exception(sprintf(
+                      "Connexion '%s' is not declared in %s"
+                      , $connexion
+                      , $connexionFile->getFileName()
+              )
+      );
     }
 
     $evm = new \Doctrine\Common\EventManager();
 
     $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
 
-    $this->entityManager = \Doctrine\ORM\EntityManager::create($dbalConf, $config, $evm);
+    try
+    {
+      $this->entityManager = \Doctrine\ORM\EntityManager::create($dbalConf, $config, $evm);
+    }
+    catch (\Exception $e)
+    {
+      throw new \Exception(sprintf(
+                      "Failed to create doctrine service for the following reason '%s'"
+                      , $e->getMessage()
+              )
+      );
+    }
 
     $this->addTypes();
 
@@ -145,7 +200,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   {
     require_once __DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
 
-    
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Doctrine\ORM'
                     , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib')
@@ -234,7 +288,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     );
     $classLoader->register();
 
-
     return;
   }
 
@@ -272,90 +325,105 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   }
 
   /**
-   * Return a cache object according to the $name
+   * 
    * 
    * @param type $cacheName 
    */
-  private function getCache($cacheName = self::ARRAYCACHE)
+  private function getCache($cacheDoctrine, $serviceName = null)
   {
-    switch ($cacheName)
+    if (null === $serviceName)
     {
-      case self::MEMCACHED:
-        $cache = new \Doctrine\Common\Cache\MemcacheCache();
-        break;
-      case self::APC:
-        $cache = new \Doctrine\Common\Cache\ApcCache();
-        break;
-      case self::ARRAYCACHE:
-      default:
-        $cache = new \Doctrine\Common\Cache\ArrayCache();
-        break;
+      $serviceName = 'default_cache';
+      $configuration = new ParameterBag(array(
+                  'type' => self::ARRAYCACHE
+                  , 'options' => array()
+                      )
+      );
+    }
+    else
+    {
+      try
+      {
+        $configuration = $this->configuration->getService($serviceName);
+      }
+      catch (\Exception $e)
+      {
+        $message = sprintf(
+                "%s from %s service in orm:cache scope"
+                , $e->getMessage()
+                , $this->name
+        );
+
+        $e = new \Exception($message);
+        throw $e;
+      }
+      $type = $configuration->get("type");
+
+      if (!in_array($type, $this->caches))
+      {
+        throw new \Exception(sprintf(
+                        "The cache type '%s' declared in %s  %s service is not valid. 
+          Available types are %s."
+                        , $type
+                        , $this->name
+                        , $this->getScope()
+                        , implode(", ", $this->caches)
+                )
+        );
+      }
     }
 
-    return $cache;
+    $service = $this->findService(
+            $serviceName
+            , Core\ServiceBuilder::CACHE
+            , $configuration
+    );
+
+    $this->cacheServices[$cacheDoctrine] = $service;
+
+    return $service->getService();
   }
 
-  /**
-   * Handle Cache configuration
-   * 
-   * @param AbstractCache $metaCache
-   * @param AbstractCache $queryCache
-   * @param type $cache
-   * @param type $debug 
-   */
-  private function handleCache(AbstractCache &$metaCache, AbstractCache &$queryCache, $cache, $debug)
+  private function getLog($serviceName)
   {
-    if ($cache && !$debug)
+    try
     {
-      //define query cache
-      $cacheName = isset($cache["query"]) ? $cache["query"] : self::ARRAYCACHE;
-      $queryCache = $this->getCache($cacheName);
-
-      //define metadatas cache
-      $cacheName = isset($cache["metadata"]) ? $cache["metadata"] : self::ARRAYCACHE;
-      $metaCache = $this->getCache($cacheName);
+      $configuration = $this->configuration->getService($serviceName);
     }
-  }
-
-  /**
-   * Handle logs configuration
-   * 
-   * @param \Doctrine\ORM\Configuration $config
-   * @param type $log
-   * @param type $logger 
-   */
-  private function handleLogs(\Doctrine\ORM\Configuration &$config, $serviceName, Array $serviceConf)
-  {
-    $logType = $serviceConf['type'];
-    $logService = null;
-
-    switch ($logType)
+    catch (\Exception $e)
     {
-      case 'monolog':
-        $logService = Core\ServiceBuilder::build(
-                          $serviceName
-                        , Core\ServiceBuilder::LOG
-                        , $logType
-                        , $serviceConf['options']
-                        , 'doctrine'
-        );
-        break;
-      case 'echo':
-      default:
-        $logService = Core\ServiceBuilder::build(
-                        $serviceName
-                        , Core\ServiceBuilder::LOG
-                        , 'normal'
-                        , array()
-                        , 'doctrine'
-        );
-        break;
+      $message = sprintf(
+              "%s from %s service in orm:log scope"
+              , $e->getMessage()
+              , $this->name
+      );
+      $e = new \Exception($message);
+      throw $e;
     }
 
-    if ($logService instanceof Alchemy\Phrasea\Core\Service\ServiceAbstract)
+    $type = $configuration->get("type");
+
+    if (!in_array($type, $this->loggers))
     {
-      $config->setSQLLogger($logService->getService());
+      throw new \Exception(sprintf(
+                      "The logger type '%s' declared in %s %s service is not valid. 
+          Available types are %s."
+                      , $type
+                      , $this->name
+                      , $this->getScope()
+                      , implode(", ", $this->loggers)
+              )
+      );
     }
+
+    $service = $this->findService(
+            $serviceName
+            , Core\ServiceBuilder::LOG
+            , $configuration
+            , 'doctrine' //look for Log\Doctrine services
+    );
+
+    return $service->getService();
   }
 
   public function getService()
@@ -372,5 +440,15 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   {
     return 'orm';
   }
-  
+
+  public function getCacheServices()
+  {
+    return new ParameterBag($this->cacheServices);
+  }
+
+  public function isDebug()
+  {
+    return $this->debug;
+  }
+
 }
