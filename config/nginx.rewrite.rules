@@ -16,6 +16,7 @@ rewrite ^/admin/typeahead/.*$     /admin/router.php last;
 rewrite ^/prod/records/edit/.*$   /prod/router.php last;
 rewrite ^/prod/records/movecollection/.*$ /prod/router.php last;
 rewrite ^/prod/bridge/.*$         /prod/router.php last;
+rewrite ^/prod/lists/.*$          /prod/router.php last;
 rewrite ^/prod/feeds/.*$          /prod/router.php last;
 rewrite ^/prod/tooltip/.*$        /prod/router.php last;
 rewrite ^/prod/printer/.*$        /prod/router.php last;
