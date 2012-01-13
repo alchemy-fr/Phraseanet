@@ -17,6 +17,7 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    * As controllers use WebTestCase, it requires a client 
    */
   protected $client;
+
   /**
    * If the controller tests require some records, specify it her
    * 
@@ -26,7 +27,7 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    * $need_records = 2; 
    * 
    */
-  protected static $need_records = false;
+  protected static $need_records = 2;
 
   /**
    * The application loader
@@ -35,7 +36,7 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
   }
-  
+
   public function setUp()
   {
     parent::setUp();
@@ -52,9 +53,40 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    */
   public function testRouteSlash()
   {
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+    $records = array(
+        self::$record_1->get_serialize_key(),
+        self::$record_2->get_serialize_key()
     );
+
+    $lst = implode(';', $records);
+
+    $crawler = $this->client->request('POST', '/printer/', array('lst' => $lst));
+
+    $response = $this->client->getResponse();
+
+    $this->assertTrue($response->isOk());
+  }
+
+  public function testRoutePrintPdf()
+  {
+    $records = array(
+        self::$record_1->get_serialize_key(),
+        self::$record_2->get_serialize_key()
+    );
+
+    $lst = implode(';', $records);
+
+    $crawler = $this->client->request('POST', '/printer/', array(
+        'lst' => $lst,
+        'lay' => \Alchemy\Phrasea\Out\Module\PDF::LAYOUT_PREVIEW
+            )
+    );
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals("application/pdf", $response->headers->get("content-type"));
+
+    $this->assertTrue($response->isOk());
   }
 
 }
