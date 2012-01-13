@@ -15,7 +15,6 @@ use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\DataFixtures\Loader;
-use PhraseaFixture\Basket as MyFixture;
 
 /**
  * 
@@ -504,11 +503,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * 
    * @param Doctrine\Common\DataFixtures\Loader $fixtureLoader 
    */
-  public function insertFixtureInDatabase(Doctrine\Common\DataFixtures\Loader $fixtureLoader)
+  public function insertFixtureInDatabase(Doctrine\Common\DataFixtures\Loader $fixtureLoader, $append = true)
   {
     $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
     $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$core->getEntityManager(), $purger);
-    $executor->execute($fixtureLoader->getFixtures(), true);
+    $executor->execute($fixtureLoader->getFixtures(), $append);
   }
 
   /**
@@ -543,7 +542,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     try
     {
-      $basketFixture = new MyFixture\LoadOneBasket();
+      $basketFixture = new PhraseaFixture\Basket\LoadOneBasket();
 
       $basketFixture->setUser(self::$user);
 
@@ -559,6 +558,70 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       $this->fail('Fail load one Basket : ' . $e->getMessage());
     }
   }
+  
+  
+  protected function insertOneUsrList(\User_Adapter $user)
+  {
+    try
+    {
+      $loader = new Loader();
+      
+      $UsrOwner = new PhraseaFixture\UsrLists\UsrListOwner();
+      $UsrOwner->setUser($user);
+      
+      $loader->addFixture($UsrOwner);
+      
+      $UsrList = new PhraseaFixture\UsrLists\UsrList();
+
+      $loader->addFixture($UsrList);
+      
+
+      $this->insertFixtureInDatabase($loader);
+
+      return $UsrList->list;
+    }
+    catch (\Exception $e)
+    {
+      $this->fail('Fail load one UsrList : ' . $e->getMessage());
+    }
+  }
+  
+  /**
+   *
+   * @param \Entities\UsrList $UsrList
+   * @return \Entities\UsrListEntry 
+   */
+  protected function insertOneUsrListEntry(\User_adapter $owner, \User_adapter $user)
+  {
+    try
+    {
+      $loader = new Loader();
+      
+      $UsrOwner = new PhraseaFixture\UsrLists\UsrListOwner();
+      $UsrOwner->setUser($owner);
+      
+      $loader->addFixture($UsrOwner);
+      
+      $UsrList = new PhraseaFixture\UsrLists\UsrList();
+
+      $loader->addFixture($UsrList);
+      
+      $UsrEntry = new PhraseaFixture\UsrLists\UsrListEntry();
+//      $UsrEntry->setList($UsrList);
+      $UsrEntry->setUser($user);
+
+      $loader->addFixture($UsrEntry);
+      
+
+      $this->insertFixtureInDatabase($loader);
+
+      return $UsrEntry->entry;
+    }
+    catch (\Exception $e)
+    {
+      $this->fail('Fail load one UsrListEntry : ' . $e->getMessage());
+    }
+  }
 
   /**
    * Insert five baskets and set current authenticated user as owner
@@ -569,7 +632,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     try
     {
-      $basketFixture = new MyFixture\LoadFiveBaskets();
+      $basketFixture = new PhraseaFixture\Basket\LoadFiveBaskets();
 
       $basketFixture->setUser(self::$user);
 
@@ -671,7 +734,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       $em = self::$core->getEntityManager();
       /* @var $em \Doctrine\ORM\EntityManager */
 
-      $basketFixture = new MyFixture\LoadOneBasketEnv();
+      $basketFixture = new PhraseaFixture\Basket\LoadOneBasketEnv();
 
       $basketFixture->setUser(self::$user);
 
