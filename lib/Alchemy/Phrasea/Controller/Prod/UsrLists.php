@@ -15,7 +15,8 @@ use Silex\Application,
     Silex\ControllerProviderInterface,
     Silex\ControllerCollection;
 use Alchemy\Phrasea\Helper\Record as RecordHelper,
-    Alchemy\Phrasea\Out\Module\PDF as PDFExport;
+    Alchemy\Phrasea\Out\Module\PDF as PDFExport,
+    Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Symfony\Component\HttpFoundation\Response,
     Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -35,7 +36,7 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Get all lists
      */
-    $controllers->get('/list/all/', function() use ($app)
+    $controllers->get('/list/all/', function(Application $app)
             {
               $em = $app['Core']->getEntityManager();
 
@@ -47,7 +48,6 @@ class UsrLists implements ControllerProviderInterface
 
               foreach ($lists as $list)
               {
-
                 $owners = $entries = array();
 
                 foreach ($list->getOwners() as $owner)
@@ -63,7 +63,7 @@ class UsrLists implements ControllerProviderInterface
                   );
                 }
 
-                foreach ($list->getUsers() as $entry)
+                foreach ($list->getEntries() as $entry)
                 {
                   $entries[] = array(
                       'usr_id' => $owner->getUser()->get_id(),
@@ -95,17 +95,25 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Creates a list
      */
-    $controllers->post('/list/', function() use ($app)
+    $controllers->post('/list/', function(Application $app)
             {
               $request = $app['request'];
-
+              
               $list_name = $request->get('name');
+                
+              $datas = array(
+                  'success' => false
+                  , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+              );
 
               try
               {
+                if(!$list_name)
+                {
+                  throw new ControllerException(_('List name is required'));
+                }
+                
                 $em = $app['Core']->getEntityManager();
-
-                $repository = $em->getRepository('\Entities\Usr');
 
                 $List = new \Entities\UsrList();
 
@@ -123,15 +131,14 @@ class UsrLists implements ControllerProviderInterface
 
                 $datas = array(
                     'success' => true
-                    , 'message' => ''
+                    , 'message' => sprintf(_('List %s has been created'), $list_name)
                 );
               }
-              catch (\Exception $e)
+              catch (ControllerException $e)
               {
-
                 $datas = array(
                     'success' => false
-                    , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+                    , 'message' => $e->getMessage()
                 );
               }
 
@@ -144,7 +151,7 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Gets a list
      */
-    $controllers->get('/list/{list_id}/', function() use ($app)
+    $controllers->get('/list/{list_id}/', function(Application $app, $list_id)
             {
               $user = $app['Core']->getAuthenticatedUser();
               $em = $app['Core']->getEntityManager();
@@ -152,7 +159,7 @@ class UsrLists implements ControllerProviderInterface
               $repository = $em->getRepository('\Entities\UsrList');
 
               $list = $repository->findUserListByUserAndId($user, $list_id);
-
+              
               $owners = $entries = $lists = array();
 
               foreach ($list->getOwners() as $owner)
@@ -168,7 +175,7 @@ class UsrLists implements ControllerProviderInterface
                 );
               }
 
-              foreach ($list->getUsers() as $entry)
+              foreach ($list->getEntries() as $entry)
               {
                 $entries[] = array(
                     'usr_id' => $owner->getUser()->get_id(),
@@ -200,35 +207,46 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Update a list
      */
-    $controllers->post('/list/{list_id}/update/', function() use ($app)
+    $controllers->post('/list/{list_id}/update/', function(Application $app, $list_id)
             {
-              $user = $app['Core']->getAuthenticatedUser();
-              $em = $app['Core']->getEntityManager();
+              $request = $app['request'];
 
+              $datas = array(
+                  'success' => false
+                  , 'message' => _('Unable to update list')
+              );
+                
               try
               {
-                $request = $app['request'];
+                $list_name = $request->get('name');
+              
+                if(!$list_name)
+                {
+                  throw new ControllerException(_('List name is required'));
+                }
+                
+                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['Core']->getEntityManager();
 
                 $repository = $em->getRepository('\Entities\UsrList');
 
                 $list = $repository->findUserListByUserAndId($user, $list_id);
 
-                $list->setName($request->get('name'));
+                $list->setName($list_name);
 
                 $em->merge($list);
                 $em->flush();
 
                 $datas = array(
                     'success' => true
-                    , 'message' => ''
+                    , 'message' => _('List has been updated')
                 );
               }
-              catch (\Exception $e)
+              catch (ControllerException $e)
               {
-
                 $datas = array(
                     'success' => false
-                    , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+                    , 'message' => $e->getMessage()
                 );
               }
 
@@ -241,16 +259,16 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Delete a list
      */
-    $controllers->post('/list/{list_id}/delete/', function() use ($app)
+    $controllers->post('/list/{list_id}/delete/', function(Application $app, $list_id)
             {
               $em = $app['Core']->getEntityManager();
-
-              $repository = $em->getRepository('\Entities\Usr');
 
               try
               {
                 $repository = $em->getRepository('\Entities\UsrList');
-
+                
+                $user = $app['Core']->getAuthenticatedUser();
+                
                 $list = $repository->findUserListByUserAndId($user, $list_id);
 
                 $em->remove($list);
@@ -280,13 +298,15 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Remove a usr_id from a list
      */
-    $controllers->post('/list/{list_id}/remove/{entry_id}/', function() use ($app)
+    $controllers->post('/list/{list_id}/remove/{entry_id}/', function(Application $app, $list_id, $entry_id)
             {
               $em = $app['Core']->getEntityManager();
 
               try
               {
                 $repository = $em->getRepository('\Entities\UsrList');
+                
+                $user = $app['Core']->getAuthenticatedUser();
 
                 $list = $repository->findUserListByUserAndId($user, $list_id);
                 /* @var $list \Entities\UsrList */
@@ -299,7 +319,7 @@ class UsrLists implements ControllerProviderInterface
                 $em->flush();
                 
                 $datas = array(
-                    'success' => false
+                    'success' => true
                     , 'message' => _('Entry removed from list')
                 );
               }
@@ -321,7 +341,7 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Adds a usr_id to a list
      */
-    $controllers->post('/list/{list_id}/add/{usr_id}/', function() use ($app)
+    $controllers->post('/list/{list_id}/add/{usr_id}/', function(Application $app, $list_id, $usr_id)
             {
               $em = $app['Core']->getEntityManager();
 
@@ -345,7 +365,7 @@ class UsrLists implements ControllerProviderInterface
                 $em->flush();
 
                 $datas = array(
-                    'success' => false
+                    'success' => true
                     , 'message' => _('Usr added to list')
                 );
               }
@@ -367,7 +387,7 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Share a list to a user with an optionnal role
      */
-    $controllers->post('/list/{list_id}/share/{usr_id}/', function() use ($app)
+    $controllers->post('/list/{list_id}/share/{usr_id}/', function(Application $app, $list_id, $usr_id)
             {
               $em = $app['Core']->getEntityManager();
               $user = $app['Core']->getAuthenticatedUser();
@@ -410,8 +430,8 @@ class UsrLists implements ControllerProviderInterface
                 $em->flush();
                 
                 $datas = array(
-                    'success' => false
-                    , 'message' => _('Usr added to list')
+                    'success' => true
+                    , 'message' => _('List shared to user')
                 );
               }
               catch (\Exception $e)
@@ -419,7 +439,7 @@ class UsrLists implements ControllerProviderInterface
 
                 $datas = array(
                     'success' => false
-                    , 'message' => _('Unable to add usr to list')
+                    , 'message' => _('Unable to share the list with the usr')
                 );
               }
               
@@ -431,7 +451,7 @@ class UsrLists implements ControllerProviderInterface
     /**
      * UnShare a list to a user 
      */
-    $controllers->post('/list/{list_id}/unshare/{owner_id}/', function() use ($app)
+    $controllers->post('/list/{list_id}/unshare/{owner_id}/', function(Application $app, $list_id, $owner_id)
             {
               $em = $app['Core']->getEntityManager();
               $user = $app['Core']->getAuthenticatedUser();
@@ -456,7 +476,7 @@ class UsrLists implements ControllerProviderInterface
                 $em->flush();
                 
                 $datas = array(
-                    'success' => false
+                    'success' => true
                     , 'message' => _('Owner removed from list')
                 );
               }
