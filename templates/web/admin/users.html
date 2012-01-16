@@ -186,6 +186,23 @@
   </tbody>
 </table>
 
+  
+<form id="export_form" method="post" target="exportwindow" action="/admin/users/search/export/">
+  <input name="srt" value="{{parm['srt']}}" type="hidden" />
+  <input name="ord" value="{{parm.ord}}" type="hidden" />
+  <input name="act" value="{{parm.act}}" type="hidden" />
+  {% for sbas_id in parm.sbas_id %}
+  <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
+  {% endfor %}
+  {% for base_id in parm.base_id %}
+  <input name="base_id[]" value="{{base_id}}" type="hidden" />
+  {% endfor %}
+  <input name="usr_ids" value="{{parm.usr_ids}}" type="hidden" />
+  <input name="like_value" value="{{parm.like_value}}" type="hidden" />
+  <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+  <input name="inactives" value="{{parm.inactives}}" type="hidden" />
+</form>
+  
 <form id="users_page_form" method="post" target="_self" action="/admin/users/search/">
   {{users.get_total}} resultats
 
@@ -273,6 +290,10 @@
 			myObj.myOpener = self;	
 			window.showModalDialog ('/admin/import0.php?rand='+Math.random(),myObj, 'dialogWidth:550px;dialogHeight:330px;center:yes;help:no;status:no;scrollbars:no'  );
 		
+		}
+    function exportlist()
+		{
+			$('#export_form').submit();
 		}
 		
 </script>
