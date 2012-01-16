@@ -206,6 +206,7 @@ class mail
 
     $body = eregi_replace("[\]", '', $body);
 
+    $body .= "<br/>\n"._('Si le lien n\'est pas cliquable, copiez-collez le dans votre navigateur.')."<br/>\n";
     $body .= "<br/><br/><br/><br/>\n\n\n\n";
     $body .= '<div style="font-style:italic;">' . _('phraseanet::signature automatique des notifications par mail, infos a l\'url suivante') . "</div>\n";
     $body .= '<div><a href="' . $registry->get('GV_ServerName') . '">' . $registry->get('GV_ServerName') . "</a></div>\n";

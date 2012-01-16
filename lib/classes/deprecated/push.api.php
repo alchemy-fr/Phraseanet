@@ -843,8 +843,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->countries as $country)
       {
         $c['country' . $n] = $country;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.pays IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -855,8 +855,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->activite as $activite)
       {
         $c['activite' . $n] = $activite;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.activite IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -867,8 +867,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->fonction as $fonction)
       {
         $c['fonction' . $n] = $fonction;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.fonction IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -879,8 +879,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->societe as $societe)
       {
         $c['societe' . $n] = $societe;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.societe IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -891,8 +891,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->template as $template)
       {
         $c['template' . $n] = $template;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.lastModel IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
