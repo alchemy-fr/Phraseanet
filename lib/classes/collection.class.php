@@ -609,7 +609,7 @@ class collection implements cache_cacheableInterface
 
       $registry = registry::get_instance();
       if (is_file($registry->get('GV_RootPath') . 'config/wm/' . $base_id))
-        self::$_watermarks['base_id'] = '<img src="/watermark/' . $base_id . '" />';
+        self::$_watermarks['base_id'] = '<img src="/custom/wm/' . $base_id . '" />';
     }
 
     return isset(self::$_watermarks['base_id']) ? self::$_watermarks['base_id'] : '';
@@ -622,7 +622,7 @@ class collection implements cache_cacheableInterface
 
       $registry = registry::get_instance();
       if (is_file($registry->get('GV_RootPath') . 'config/presentation/' . $base_id))
-        self::$_presentations['base_id'] = '<img src="/presentation/' . $base_id . '" />';
+        self::$_presentations['base_id'] = '<img src="/custom/presentation/' . $base_id . '" />';
     }
 
     return isset(self::$_presentations['base_id']) ? self::$_presentations['base_id'] : '';
@@ -635,7 +635,7 @@ class collection implements cache_cacheableInterface
 
       $registry = registry::get_instance();
       if (is_file($registry->get('GV_RootPath') . 'config/stamp/' . $base_id))
-        self::$_stamps['base_id'] = '<img src="/stamp/' . $base_id . '" />';
+        self::$_stamps['base_id'] = '<img src="/custom/stamp/' . $base_id . '" />';
     }
 
     return isset(self::$_stamps['base_id']) ? self::$_stamps['base_id'] : '';
