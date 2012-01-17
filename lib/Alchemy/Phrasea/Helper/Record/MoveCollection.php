@@ -100,10 +100,18 @@ class MoveCollection extends RecordHelper
     $appbox = \appbox::get_instance();
     $user = $this->getCore()->getAuthenticatedUser();
 
+    $baseId = $request->get('base_id');
+    
     $base_dest =
-            $user->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord') ?
+            $user->ACL()->has_right_on_base($baseId, 'canaddrecord') ?
             $request->get('base_id') : false;
-
+    
+    if(!$user->ACL()->has_right_on_base($baseId, 'canaddrecord'))
+    {
+      throw new \Exception_Unauthorized(sprintf("%s do not have the permission to move records to %s", $user->get_login()));
+    }
+    
+    
     if (!$this->is_possible())
       throw new Exception('This action is not possible');
 
@@ -122,7 +130,8 @@ class MoveCollection extends RecordHelper
         }
       }
     }
-
+    
+    
     $collection = \collection::get_from_base_id($base_dest);
 
     foreach ($this->selection as $record)
