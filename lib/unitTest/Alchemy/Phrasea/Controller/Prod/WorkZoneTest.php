@@ -28,7 +28,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   protected $client;
   protected static $need_records = 1;
   protected static $need_story = true;
-  
+
   public function setUp()
   {
     parent::setUp();
@@ -55,7 +55,6 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(200, $response->getStatusCode());
   }
 
-  
   public function testAttachStoryToWZ()
   {
     $story = self::$story_1;
@@ -73,7 +72,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     try
     {
-      $this->client->request('POST', $route, array('stories'=> $story->get_serialize_key()));
+      $this->client->request('POST', $route, array('stories' => $story->get_serialize_key()));
 
       $response = $this->client->getResponse();
     }
@@ -85,7 +84,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(302, $response->getStatusCode());
 
     $em = self::$core->getEntityManager();
-    /* @var $em \Doctrine\ORM\EntityManager */    
+    /* @var $em \Doctrine\ORM\EntityManager */
     $query = $em->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
     );
@@ -93,24 +92,33 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $count = $query->getSingleScalarResult();
 
     $this->assertEquals(1, $count);
-    
+
     $query = $em->createQuery(
             'SELECT w FROM \Entities\StoryWZ w'
     );
-    
+
     $storyWZ = $query->getResult();
     $em->remove(array_shift($storyWZ));
-    
+
     $em->flush();
- 
-    
+
+
     //attach JSON
-    $this->client->request('POST', $route, array('stories'=> $story->get_serialize_key()), array(), array(
+    $this->client->request('POST', $route, array('stories' => $story->get_serialize_key()), array(), array(
         "HTTP_ACCEPT" => "application/json")
     );
-    
+
     $response = $this->client->getResponse();
-    
+
+    $this->assertEquals(200, $response->getStatusCode());
+
+    //test already attached
+    $this->client->request('POST', $route, array('stories' => $story->get_serialize_key()), array(), array(
+        "HTTP_ACCEPT" => "application/json")
+    );
+
+    $response = $this->client->getResponse();
+
     $this->assertEquals(200, $response->getStatusCode());
   }
 
@@ -133,7 +141,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     //attach
     $attachRoute = sprintf("/WorkZone/attachStories/");
-    $this->client->request('POST', $attachRoute, array('stories'=> $story->get_serialize_key()));
+    $this->client->request('POST', $attachRoute, array('stories' => $story->get_serialize_key()));
 
     $query = self::$core->getEntityManager()->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
@@ -158,7 +166,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(0, $count);
 
     //attach
-    $this->client->request('POST', $attachRoute, array('stories'=> $story->get_serialize_key()));
+    $this->client->request('POST', $attachRoute, array('stories' => $story->get_serialize_key()));
 
     //detach JSON
     $this->client->request('POST', $route, array(), array(), array(
@@ -167,4 +175,35 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $response = $this->client->getResponse();
     $this->assertEquals(200, $response->getStatusCode());
   }
+
+  public function testBrowse()
+  {
+    $this->client->request("GET", "/WorkZone/Browse/");
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isOk());
+  }
+
+  public function testBrowseSearch()
+  {
+    $this->client->request("GET", "/WorkZone/Browse/Search/");
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isOk());
+  }
+
+  public function testBrowseBasket()
+  {
+    $basket = $this->insertOneBasket();
+    $this->client->request("GET", "/WorkZone/Browse/Basket/" . $basket->getId() . "/");
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isOk());
+  }
+
+  public function testDetachStoryFromWZNotFound()
+  {
+    $story = self::$story_1;
+
+    $route = sprintf("/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), 'unknow');
+    //story not yet Attched
+  }
+
 }
