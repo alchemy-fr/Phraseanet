@@ -65,7 +65,7 @@ class collection implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $connbas = $this->databox->get_connection();
@@ -200,9 +200,9 @@ class collection implements cache_cacheableInterface
       $stmt = $this->get_connection()->prepare($sql);
       $stmt->execute(array(':pub_wm' => $publi, ':coll_id' => $this->get_coll_id()));
       $stmt->closeCursor();
-      
+
       $this->pub_wm = $publi;
-      
+
       $this->delete_data_from_cache();
     }
 
@@ -223,9 +223,9 @@ class collection implements cache_cacheableInterface
     $stmt->closeCursor();
 
     $this->name = $name;
-    
+
     $this->delete_data_from_cache();
-    
+
     phrasea::reset_baseDatas();
 
     return $this;
@@ -304,7 +304,7 @@ class collection implements cache_cacheableInterface
 
   public function delete()
   {
-    while($this->get_record_amount() > 0)
+    while ($this->get_record_amount() > 0)
     {
       $this->empty_collection();
     }
@@ -350,8 +350,10 @@ class collection implements cache_cacheableInterface
   {
     $coll_id = phrasea::collFromBas($base_id);
     $sbas_id = phrasea::sbasFromBas($base_id);
-    if(!$sbas_id || !$coll_id)
-      throw new Exception_Databox_CollectionNotFound();
+    if (!$sbas_id || !$coll_id)
+    {
+      throw new Exception_Databox_CollectionNotFound(sprintf("Collection could not be found"));
+    }
     $databox = databox::get_instance($sbas_id);
 
     return self::get_from_coll_id($databox, $coll_id);
@@ -404,7 +406,7 @@ class collection implements cache_cacheableInterface
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute(array(':prefs' => $this->prefs, ':coll_id' => $this->get_coll_id()));
     $stmt->closeCursor();
-    
+
     $this->delete_data_from_cache();
 
     return $this->prefs;
