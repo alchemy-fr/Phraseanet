@@ -242,7 +242,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     if(sizeof(self::$record_1->get_caption()->get_fields()) == 0)
     {
-      $caption_field = caption_field::create(databox_field::get_instance($databox, 1), self::$record_1, array("my_value"));
+      $caption_field_value = caption_Field_Value::create(databox_field::get_instance($databox, 1), self::$record_1, 'my value');
     }
 
 //valide metas
