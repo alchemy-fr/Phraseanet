@@ -78,12 +78,12 @@ class Users implements ControllerProviderInterface
               {
                 $rights = new UserHelper\Edit($app['Core'], $app['request']);
                 $rights->apply_rights();
-                
+
                 if ($app['request']->get('template'))
                 {
                   $rights->apply_template();
                 }
-                
+
                 $rights->apply_infos();
 
                 $datas = array('error' => false);
@@ -176,7 +176,72 @@ class Users implements ControllerProviderInterface
             }
     );
 
-    $controllers->post('/apply_template/', function(Application $app)
+    $controllers->post('/search/export/', function() use ($app)
+            {
+              $request = $app['request'];
+              $users = new module_admin_route_users($request);
+              $template = 'admin/users.html';
+
+              $twig = new supertwig();
+              $twig->addFilter(array('floor' => 'floor'));
+              $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
+
+              $results = $users->export($request);
+
+              $userTable = array(
+                  array(
+                      'ID',
+                      'Login',
+                      'Last Name',
+                      'First Name',
+                      'E-Mail',
+                      'Created',
+                      'Updated',
+                      'Address',
+                      'City',
+                      'Zip',
+                      'Country',
+                      'Phone',
+                      'Fax',
+                      'Job',
+                      'Company',
+                      'Position'
+                  )
+              );
+
+              foreach ($results as $user)
+              {
+                /* @var $user \User_Adapter */
+                $userTable[] = array(
+                    $user->get_id(),
+                    $user->get_login(),
+                    $user->get_lastname(),
+                    $user->get_firstname(),
+                    $user->get_email(),
+                    $user->get_creation_date()->format(DATE_ATOM),
+                    $user->get_modification_date()->format(DATE_ATOM),
+                    $user->get_address(),
+                    $user->get_city(),
+                    $user->get_zipcode(),
+                    $user->get_country(),
+                    $user->get_tel(),
+                    $user->get_fax(),
+                    $user->get_job(),
+                    $user->get_company(),
+                    $user->get_position()
+                );
+              }
+
+              $CSVDatas = format::arr_to_csv($userTable);
+
+              $response = new Response($CSVDatas, 200, array('Content-Type' => 'text/plain'));
+              $response->headers->set('Content-Disposition', 'attachment; filename=export.txt');
+              
+              return $response;
+            }
+    );
+
+    $controllers->post('/apply_template/', function() use ($app)
             {
               $users = UserHelper\Manage($app['Core'], $app['request']);
               
