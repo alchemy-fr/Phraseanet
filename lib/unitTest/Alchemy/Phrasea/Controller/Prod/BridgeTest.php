@@ -1,16 +1,12 @@
 <?php
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
-
-
-require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/Bridge.php';
-
 require_once __DIR__ . '/../../../../Bridge/Bridge_datas.inc';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
+class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   public static $account = null;
@@ -60,9 +56,7 @@ class Bridge_Application extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function createApplication()
   {
-    $app = require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
-
-    return $app;
+    return include realpath(__DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php');
   }
 
   /**
