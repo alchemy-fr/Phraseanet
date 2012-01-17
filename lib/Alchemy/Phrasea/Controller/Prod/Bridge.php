@@ -324,6 +324,7 @@ class Bridge implements ControllerProviderInterface
                           , 'element_type' => $element_type
                           , 'action' => $action
                           , 'elements' => $elements
+                          , 'adapter_action' => $action
                           , 'error_message' => _('Request contains invalid datas')
                           , 'constraint_errors' => $errors
                           , 'notice_message' => $app['request']->get('notice')
@@ -350,9 +351,9 @@ class Bridge implements ControllerProviderInterface
 
                   break;
                 case 'createcontainer':
-
                   try
                   {
+
                     $container_type = $request->get('f_container_type');
 
                     $account->get_api()->create_container($container_type, $app['request']);
@@ -417,6 +418,7 @@ class Bridge implements ControllerProviderInterface
               $app['require_connection']($account);
 
               $route = new RecordHelper\Bridge($app['Core'], $app['request']);
+
               $route->grep_records($account->get_api()->acceptable_records());
 
               $params = array(
@@ -424,6 +426,7 @@ class Bridge implements ControllerProviderInterface
                   , 'account' => $account
                   , 'error_message' => $app['request']->get('error')
                   , 'notice_message' => $app['request']->get('notice')
+                  , 'adapter_action' => 'upload'
               );
 
               $html = $twig->render(
@@ -450,13 +453,11 @@ class Bridge implements ControllerProviderInterface
               /**
                * check constraints
                */
-              $errors = array();
               foreach ($route->get_elements() as $record)
               {
                 $datas = $connector->get_upload_datas($request, $record);
                 $errors = array_merge($errors, $connector->check_upload_constraints($datas, $record));
               }
-
 
               if (count($errors) > 0)
               {
@@ -467,6 +468,7 @@ class Bridge implements ControllerProviderInterface
                     , 'error_message' => _('Request contains invalid datas')
                     , 'constraint_errors' => $errors
                     , 'notice_message' => $app['request']->get('notice')
+                    , 'adapter_action' => 'upload'
                 );
 
                 $html = $twig->render('prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params);
