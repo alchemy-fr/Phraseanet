@@ -96,7 +96,7 @@ class ConnectionTest implements ControllerProviderInterface
                                   , 'is_empty' => $empty
                                   , 'is_appbox' => $is_appbox
                                   , 'is_databox' => $is_databox
-                              )), 200, array('application/json'));
+                              )), 200, array('content-type' => 'application/json'));
             });
 
     return $controllers;
