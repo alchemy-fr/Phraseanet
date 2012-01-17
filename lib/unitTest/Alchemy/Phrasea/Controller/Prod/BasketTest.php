@@ -11,8 +11,6 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/Basket.php';
-
 use Alchemy\Phrasea\Helper;
 use Alchemy\Phrasea\RouteProcessor as routeProcessor;
 

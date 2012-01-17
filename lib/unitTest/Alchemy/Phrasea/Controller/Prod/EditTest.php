@@ -1,7 +1,5 @@
 <?php
 
-namespace Alchemy\Phrasea\Controller\Prod;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/Edit.php';

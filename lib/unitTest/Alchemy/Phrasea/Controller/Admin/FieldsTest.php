@@ -1,10 +1,6 @@
 <?php
 
-namespace Alchemy\Phrasea\Controller\Admin;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
-
-require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Admin/Fields.php';
 
 /**
  * Test class for Fields.
