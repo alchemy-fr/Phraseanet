@@ -32,7 +32,7 @@ class task_manager
     return $this;
   }
 
-  public function get_tasks($refresh = false)
+  public function old_get_tasks($refresh = false)
   {
     if ($this->tasks && !$refresh)
 
@@ -58,6 +58,66 @@ class task_manager
       {
 
       }
+    }
+
+    $this->tasks = $tasks;
+
+    return $this->tasks;
+  }
+
+  public function get_tasks($refresh = false)
+  {
+    if ($this->tasks && !$refresh)
+      return $this->tasks;
+
+    $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
+    $stmt = $this->appbox->get_connection()->prepare($sql);
+    $stmt->execute();
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    $tasks = array();
+
+    $appbox = appbox::get_instance();
+    $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
+
+    foreach ($rs as $row)
+    {
+      $row['pid'] = NULL;
+      
+      $classname = $row['class'];
+      if (!class_exists($classname))
+        continue;
+      try
+      {
+        if( ($lock = fopen( $lockdir . 'task.'.$row['task_id'].'.lock', 'a+')) )
+        {
+          if (flock($lock, LOCK_SH | LOCK_NB) === FALSE)
+          {
+            // already locked : running !
+            $row['pid'] = fgets($lock, 512);
+          }
+          else
+          {
+            // can lock : not running
+            flock($lock, LOCK_UN);
+          }
+          fclose($lock);
+        }
+
+        $tasks[$row['task_id']] = new $classname($row['task_id']);
+      }
+      catch (Exception $e)
+      {
+
+      }
+      
+      
+      
+      
+      
+      
+      
     }
 
     $this->tasks = $tasks;
@@ -111,6 +171,35 @@ class task_manager
     $stmt->closeCursor();
 
     return $row;
+  }
+  
+  public function get_scheduler_state2()
+  {
+    $ret = array('pid'=>NULL, 'qdelay'=>NULL);
+    
+    $appbox = appbox::get_instance();
+    $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
+    if( ($schedlock = fopen( $lockdir . 'scheduler.lock', 'a+')) )
+    {
+      if (flock($schedlock, LOCK_SH | LOCK_NB) === FALSE)
+      {
+        // already locked : running !
+        $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay FROM sitepreff";
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $ret = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $ret['pid'] = fgets($schedlock, 512);
+      }
+      else
+      {
+        // can lock : not running
+        flock($schedlock, LOCK_UN);
+      }
+      fclose($schedlock);
+    }
+    return($ret);
   }
   
   public static function getAvailableTasks()

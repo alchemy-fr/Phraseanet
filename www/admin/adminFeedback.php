@@ -216,7 +216,6 @@ switch ($parm['action'])
 
     $root->setAttribute('time', $dat);
 
-
     $task_manager = new task_manager($appbox);
     $scheduler_state = $task_manager->get_scheduler_state();
 
@@ -268,6 +267,31 @@ switch ($parm['action'])
 
 
     break;
+    
+  case 'PINGSCHEDULER_JS':
+    $ret = array();
+    $ret['time'] = $dat = date("H:i:s");
+
+    $task_manager = new task_manager($appbox);
+    $ret['scheduler'] = $task_manager->get_scheduler_state2();
+
+    $ret['tasks'] = array();
+    foreach ($task_manager->get_tasks(true) as $task)
+    {
+  // var_dump($task);
+      $_t = array(
+                'id'=>$task->get_task_id()
+              , 'pid' =>$task->get_pid()
+              , 'crashed'=>$task->get_crash_counter()
+              , 'completed'=>$task->get_completed_percentage()
+      );
+      $ret['tasks'][$_t['id']] = $_t;
+    }
+
+    $output = json_encode($ret);
+
+    break;
+    
   case 'UNMOUNTBASE':
     $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
     $ret = array('sbas_id' => null);

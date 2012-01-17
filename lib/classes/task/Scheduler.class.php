@@ -348,9 +348,10 @@ class task_Scheduler
 
               if (is_resource($ttask[$tkey]["process"]))
               {
-                $proc_status = proc_get_status($ttask[$tkey]["process"]);
-                if ($proc_status['running'])
-                  $ttask[$tkey]['task']->set_pid($proc_status['pid']);
+// proc_status['pid'] if the pid of the sh !!!
+//                $proc_status = proc_get_status($ttask[$tkey]["process"]);
+//                if ($proc_status['running'])
+//                  $ttask[$tkey]['task']->set_pid($proc_status['pid']);
               }
 
               if ($ttask[$tkey]['task']->get_pid() !== null)
@@ -382,8 +383,6 @@ class task_Scheduler
                                 , $ttask[$tkey]["task"]->get_crash_counter()
                         )
                 );
-
-                $ttask[$tkey]["task"]->increment_crash_counter();
 
                 if ($ttask[$tkey]["task"]->get_crash_counter() > 5)
                 {
@@ -487,7 +486,7 @@ class task_Scheduler
                 unlink($lockdir . 'task_' . $ttask[$tkey]['task']->get_task_id() . '.lock');
 
                 $ttask[$tkey]["task"]->increment_crash_counter();
-                $ttask[$tkey]["task"]->set_pid(null);
+//                $ttask[$tkey]["task"]->set_pid(null);
                 $ttask[$tkey]["task"]->set_status(task_abstract::RETURNSTATUS_STOPPED);
               }
               else

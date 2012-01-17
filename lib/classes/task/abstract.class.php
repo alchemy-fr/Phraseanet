@@ -157,6 +157,7 @@ abstract class task_abstract
     return $this;
   }
 
+  // 'active' means 'auto-start when scheduler starts' 
   public function set_active($boolean)
   {
     $conn = connection::getPDOConnection();
@@ -237,6 +238,7 @@ abstract class task_abstract
     return $this->settings;
   }
 
+  // 'active' means 'auto-start when scheduler starts' 
   public function is_active()
   {
     return $this->active;
@@ -512,12 +514,12 @@ abstract class task_abstract
     }
 
     $this->set_runner($runner);
-    $this->set_pid(getmypid());
+//    $this->set_pid(getmypid());
     $this->set_status(self::STATUS_STARTED);
 
     $this->running = true;
     $this->run2();
-    $this->set_pid(0);
+//    $this->set_pid(0);
 
     flock($tasklock, LOCK_UN | LOCK_NB);
     ftruncate($tasklock, 0);
