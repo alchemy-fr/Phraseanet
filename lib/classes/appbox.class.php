@@ -299,7 +299,7 @@ class appbox extends base
 
   public function forceUpgrade(Setup_Upgrade &$upgrader)
   {
-    $upgrader->add_steps(7 + count($this->get_databoxes()));
+    $upgrader->add_steps(8 + count($this->get_databoxes()));
 
     $registry = $this->get_registry();
 
@@ -311,6 +311,21 @@ class appbox extends base
     {
       $this->get_cache()->flush();
     }
+    $upgrader->add_steps_complete(1);
+
+    
+    $upgrader->set_current_message(_('Creating new tables'));
+    $core = bootstrap::getCore();
+    $em = $core->getEntityManager();
+    //create schema
+      
+    if($em->getConnection()->getDatabasePlatform()->supportsAlterTable())
+    {
+      $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+      $metas = $em->getMetadataFactory()->getAllMetadata();
+      $tool->updateSchema($metas, true);
+    }
+    
     $upgrader->add_steps_complete(1);
 
     /**

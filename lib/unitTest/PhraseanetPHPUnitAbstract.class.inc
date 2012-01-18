@@ -842,10 +842,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         unlink(Setup_Upgrade::get_lock_file());
       }
 
-      $upgrader = new Setup_Upgrade($appbox);
-      $appbox->forceUpgrade($upgrader);
-      unset($upgrader);
-
       if (null !== self::$core)
       {
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -866,6 +862,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $tool->createSchema($metas);
       }
 
+      $upgrader = new Setup_Upgrade($appbox);
+      $appbox->forceUpgrade($upgrader);
+      unset($upgrader);
+      
       self::$updated = true;
     }
 
