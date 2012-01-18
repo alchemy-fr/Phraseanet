@@ -23,16 +23,6 @@ use Alchemy\Phrasea\Core\Configuration\Application;
 class handlerTest extends \PhraseanetPHPUnitAbstract
 {
 
-  public function setUp()
-  {
-    parent::setUp();
-  }
-
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
-
   public function testGetSpec()
   {
     $spec = $this->getMock(

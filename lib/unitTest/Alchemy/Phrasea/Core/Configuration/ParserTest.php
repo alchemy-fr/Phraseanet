@@ -22,16 +22,6 @@ use Alchemy\Phrasea\Core\Configuration\Parser\Yaml;
  */
 class parserTest extends \PhraseanetPHPUnitAbstract
 {
-
-  public function setUp()
-  {
-    parent::setUp();
-  }
-
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
   
   public function testParser()
   {

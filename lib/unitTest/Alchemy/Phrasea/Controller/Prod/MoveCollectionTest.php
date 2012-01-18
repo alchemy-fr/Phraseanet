@@ -39,11 +39,6 @@ class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAb
     $this->client = $this->createClient();
   }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
-
   /**
    * Default route test
    */

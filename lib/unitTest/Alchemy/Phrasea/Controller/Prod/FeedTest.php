@@ -84,8 +84,9 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function tearDown()
   {
+    if($this->feed instanceof Feed_Adapter)
+      $this->feed->delete();
     parent::tearDown();
-    $this->feed->delete();
   }
 
   public function createApplication()

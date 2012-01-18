@@ -40,9 +40,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   public function tearDown()
   {
-    self::$publisher->delete();
-    self::$entry->delete();
-    self::$feed->delete();
+    if(self::$publisher instanceof Feed_Publisher_Adapter)
+      self::$publisher->delete();
+    if(self::$entry instanceof Feed_Entry_Adapter)
+      self::$entry->delete();
+    if(self::$feed instanceof Feed_Adapter)
+      self::$feed->delete();
     parent::tearDown();
   }
 

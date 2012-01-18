@@ -28,11 +28,6 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     $this->client = $this->createClient();
   }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
-
   public function createApplication()
   {
     return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Admin.php';

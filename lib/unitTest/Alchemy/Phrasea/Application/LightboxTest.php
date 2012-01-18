@@ -32,7 +32,8 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function tearDown()
   {
-    $this->feed->delete();
+    if($this->feed instanceof Feed_Adapter)
+      $this->feed->delete();
     parent::tearDown();
   }
 

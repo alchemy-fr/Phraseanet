@@ -32,11 +32,6 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
     parent::setUp();
   }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
-
   public function testGetConfigurationFilePath()
   {
     $app = new Application();

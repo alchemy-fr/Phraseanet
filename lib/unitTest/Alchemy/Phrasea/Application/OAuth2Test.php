@@ -58,11 +58,6 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
       self::deleteInsertedRow(appbox::get_instance(), self::$appli);
   }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
-
   public function setUp()
   {
     parent::setUp();
