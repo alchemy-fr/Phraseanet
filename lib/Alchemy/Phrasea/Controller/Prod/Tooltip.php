@@ -102,19 +102,14 @@ class Tooltip implements ControllerProviderInterface
               $record = new \record_adapter($sbas_id, $record_id, $number);
 
               $search_engine = null;
-              $option = new \searchEngine_options();
-              $options_serial = $app['request']->get('options_serial');
-
-              if ($options_serial)
+              
+              if (($search_engine_options = unserialize($app['request']->get('options_serial'))) !== false)
               {
-                if (($search_engine_options = $option->unserialize($app['request']->get('options_serial'))) !== false)
-                {
-                  $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
-                  $search_engine->set_options($search_engine_options);
-                }
+                $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
+                $search_engine->set_options($search_engine_options);
               }
-
-              /* @var $twig \Twig_Environment */
+              
+                /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return new Response(
