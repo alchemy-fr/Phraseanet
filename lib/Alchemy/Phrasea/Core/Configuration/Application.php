@@ -29,7 +29,7 @@ class Application implements Specification
    */
   public function getConfigurationFilePath()
   {
-    return __DIR__ . '/../../../../../config';
+    return realpath(__DIR__ . '/../../../../../config');
   }
 
   /**
@@ -97,7 +97,7 @@ class Application implements Specification
    */
   public function getServiceFile()
   {
-    return new \SplFileObject(__DIR__ . '/../../../../../config/services.yml');
+    return new \SplFileObject(realpath(__DIR__ . '/../../../../../config/services.yml'));
   }
 
   /**
@@ -107,7 +107,7 @@ class Application implements Specification
    */
   public function getConnexionFile()
   {
-    return new \SplFileObject(__DIR__ . '/../../../../../config/connexions.yml');
+    return new \SplFileObject(realpath(__DIR__ . '/../../../../../config/connexions.yml'));
   }
 
 }
