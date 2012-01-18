@@ -102,6 +102,8 @@ class Core extends \Pimple
                 return \registry::get_instance();
               });
       \phrasea::start();
+      $appbox = \appbox::get_instance();
+      $session = $appbox->get_session();
       $this->enableEvents();
     }
     else
@@ -147,7 +149,7 @@ class Core extends \Pimple
     }
     return;
   }
-
+  
   /**
    * Load Configuration
    * 
@@ -159,7 +161,7 @@ class Core extends \Pimple
     {
       ini_set('display_errors', 1);
       error_reporting(E_ALL);
-      \Symfony\Component\HttpKernel\Debug\ErrorHandler::register();
+//      \Symfony\Component\HttpKernel\Debug\ErrorHandler::register();
     }
     else
     {

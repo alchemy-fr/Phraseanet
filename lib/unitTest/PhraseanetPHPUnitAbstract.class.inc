@@ -898,12 +898,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     if (!$usr_alt1_id)
     {
       $user = User_Adapter::create($appbox, 'test_phpunit_alt1', random::generatePassword(), 'noonealt1@example.com', false);
-      $usr_id = $user->get_id();
+      $usr_alt1_id = $user->get_id();
     }
     if (!$usr_alt2_id)
     {
       $user = User_Adapter::create($appbox, 'test_phpunit_alt2', random::generatePassword(), 'noonealt2@example.com', false);
-      $usr_id = $user->get_id();
+      $usr_alt2_id = $user->get_id();
     }
 
     self::$user = User_Adapter::getInstance($usr_id, $appbox);

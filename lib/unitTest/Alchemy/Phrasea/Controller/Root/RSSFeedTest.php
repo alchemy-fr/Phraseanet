@@ -473,7 +473,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
       {
         if ($p4field = $entry_item->get_record()->get_caption()->get_dc_field($field["dc_field"]))
         {
-          $this->assertEquals($p4field->get_value(true, $field["separator"]), $node->nodeValue
+          $this->assertEquals($p4field->get_serialized_values($field["separator"]), $node->nodeValue
                   , sprintf('Asserting good value for DC %s', $field["dc_field"]));
           if (sizeof($field["media_field"]["attributes"]) > 0)
           {

@@ -852,7 +852,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
           array(
             'meta_struct_id' => $field->get_meta_struct_id()
             , 'meta_id'        => $value->getId()
-            , 'value'          => array($original_name)
+            , 'value'          => $original_name
           )
         );
       }

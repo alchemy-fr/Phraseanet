@@ -407,7 +407,7 @@ class caption_field //implements cache_cacheableInterface
       foreach($this->values as $value)
       {
         /* @var $value Caption_Field_Value */
-        return $value->get_value();
+        return $value->getValue();
       }
     }
     
@@ -472,7 +472,7 @@ class caption_field //implements cache_cacheableInterface
 
     $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
 
-    $value = $this->get_value(true);
+    $value = $this->get_serialized_values();
 
     $databox = databox::get_instance($sbas_id);
     $XPATH_thesaurus = $databox->get_xpath_thesaurus();

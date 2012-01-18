@@ -255,7 +255,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     foreach (self::$record_1->get_caption()->get_fields() as $field)
     {
       $tagname = $field->get_name();
-      $this->assertEquals($field->get_value(true), (string) $sxe->description->$tagname);
+      $this->assertEquals($field->get_serialized_values(), (string) $sxe->description->$tagname);
     }
   }
 
@@ -385,10 +385,10 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
       if ($meta_el->is_multi())
       {
         $this->assertEquals($multi_imploded, implode(' ' . $meta_el->get_separator() . ' ', $field->get_value(false)));
-        $this->assertEquals($multi_imploded, $field->get_value(true));
+        $this->assertEquals($multi_imploded, $field->get_serialized_values());
       }
       else
-        $this->assertEquals('un jeu de test', $field->get_value());
+        $this->assertEquals('un jeu de test', $field->get_serialized_values());
     }
   }
 

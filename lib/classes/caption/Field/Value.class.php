@@ -188,7 +188,7 @@ class caption_Field_Value
         {
           if (!$field->is_indexable())
             continue;
-          $all_datas[] = $field->get_value(true);
+          $all_datas[] = $field->get_serialized_values();
         }
         $all_datas = implode(' ', $all_datas);
 

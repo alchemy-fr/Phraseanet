@@ -543,7 +543,7 @@ class Edit extends RecordHelper
           array(
             'meta_struct_id' => $write_edit_el->get_id()
             , 'meta_id'        => $meta_id
-            , 'value'          => array($date_obj->format('Y-m-d h:i:s'))
+            , 'value'          => $date_obj->format('Y-m-d h:i:s')
           )
         );
         
