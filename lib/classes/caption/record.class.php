@@ -85,7 +85,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
       try
       {
         $databox_meta_struct = databox_field::get_instance($this->databox, $row['structure_id']);
-        $metadata = new caption_field($databox_meta_struct, $this->record, $row['meta_id']);
+        $metadata = new caption_field($databox_meta_struct, $this->record);
 
         $rec_fields[$databox_meta_struct->get_id()] = $metadata;
         $dces_element = $metadata->get_databox_field()->get_dces_element();

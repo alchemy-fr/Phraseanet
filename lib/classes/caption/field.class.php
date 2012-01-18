@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class caption_field implements cache_cacheableInterface
+class caption_field //implements cache_cacheableInterface
 {
 
   /**
@@ -28,13 +28,13 @@ class caption_field implements cache_cacheableInterface
    *
    * @var string
    */
-  protected $value;
+  protected $values;
 
-  /**
-   *
-   * @var int
-   */
-  protected $id;
+//  /**
+//   *
+//   * @var int
+//   */
+//  protected $id;
 
   /**
    *
@@ -49,43 +49,51 @@ class caption_field implements cache_cacheableInterface
    * @param int $id
    * @return caption_field
    */
-  public function __construct(databox_field &$databox_field, record_Interface $record, $id)
+  public function __construct(databox_field &$databox_field, record_Interface $record)
   {
     $this->record = $record;
-    $this->id = (int) $id;
-
-    $row = false;
-    try
-    {
-      try
-      {
-        $row = $this->get_data_from_cache();
-      }
-      catch (Exception $e)
-      {
-
-        $connbas = $databox_field->get_connection();
-
-        $sql = 'SELECT record_id, value FROM metadatas WHERE id = :id';
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':id' => $id));
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        $this->set_data_to_cache($row);
-        unset($e);
-      }
-    }
-    catch (Exception $e)
-    {
-      unset($e);
-    }
-    if (!$row)
-      throw new Exception('Unknown metadata');
-
+//    $this->id = (int) $id;
     $this->databox_field = $databox_field;
-    $this->value = $row['value'];
+    $this->values = array();
+
+    $connbas = $databox_field->get_connection();
+
+    $sql = 'SELECT id FROM metadatas 
+                WHERE record_id = :record_id 
+                  AND meta_struct_id = :meta_struct_id';
+
+    $params = array(
+        ':record_id' => $record->get_record_id()
+        , ':meta_struct_id' => $databox_field->get_id()
+    );
+
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute($params);
+    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    if (!$databox_field->is_multi() && count($rs) > 1)
+    {
+      /**
+       * TRIGG CORRECTION; 
+       */
+    }
+
+    foreach ($rs as $row)
+    {
+      $this->values[$row['id']] = new caption_Field_Value($databox_field, $record, $row['id']);
+    }
 
     return $this;
+  }
+  
+  /**
+   *
+   * @return record_adapter 
+   */
+  public function get_record()
+  {
+    return $this->record;
   }
 
   public function is_required()
@@ -103,208 +111,215 @@ class caption_field implements cache_cacheableInterface
     return $this->databox_field->is_readonly();
   }
 
-  /**
-   *
-   * @return caption_field
-   */
-  public function delete()
+//  /**
+//   *
+//   * @return caption_field
+//   */
+//  public function delete()
+//  {
+//    $connbas = $this->databox_field->get_connection();
+//
+//    $sql = 'DELETE FROM metadatas WHERE id = :id';
+//    $stmt = $connbas->prepare($sql);
+//    $stmt->execute(array(':id' => $this->id));
+//    $stmt->closeCursor();
+//    $this->delete_data_from_cache();
+//
+//    $sbas_id = $this->record->get_sbas_id();
+//    $this->record->get_caption()->delete_data_from_cache();
+//
+//    try
+//    {
+//      $registry = registry::get_instance();
+//      $sphinx_rt = sphinxrt::get_instance($registry);
+//
+//      $sbas_params = phrasea::sbas_params();
+//
+//      if (isset($sbas_params[$sbas_id]))
+//      {
+//        $params = $sbas_params[$sbas_id];
+//        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
+//        $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_fr", "metadatas" . $sbas_crc . "_stemmed_en"), "metas_realtime" . $sbas_crc, $this->id);
+//        $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->record->get_record_id());
+//      }
+//    }
+//    catch (Exception $e)
+//    {
+//      unset($e);
+//    }
+//
+//    return $this;
+//  }
+//
+//  /**
+//   * Part of the cache_cacheableInterface
+//   *
+//   * @param string $option
+//   * @return string
+//   */
+//  public function get_cache_key($option = null)
+//  {
+//    return 'captionfield_' . $this->record->get_serialize_key()
+//            . $this->id . ($option ? '_' . $option : '');
+//  }
+//
+//  /**
+//   * Part of the cache_cacheableInterface
+//   *
+//   * @param string $option
+//   * @return mixed
+//   */
+//  public function get_data_from_cache($option = null)
+//  {
+//    $databox = databox::get_instance($this->record->get_sbas_id());
+//
+//    return $databox->get_data_from_cache($this->get_cache_key($option));
+//  }
+//
+//  /**
+//   * Part of the cache_cacheableInterface
+//   *
+//   * @param mixed $value
+//   * @param string $option
+//   * @param int $duration
+//   * @return caption_field
+//   */
+//  public function set_data_to_cache($value, $option = null, $duration = 0)
+//  {
+//    $databox = databox::get_instance($this->record->get_sbas_id());
+//    $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+//
+//    return $this;
+//  }
+//
+//  /**
+//   * Part of the cache_cacheableInterface
+//   *
+//   * @param string $option
+//   * @return caption_field
+//   */
+//  public function delete_data_from_cache($option = null)
+//  {
+//    $databox = databox::get_instance($this->record->get_sbas_id());
+//    $databox->delete_data_from_cache($this->get_cache_key($option));
+//
+//    return $this;
+//  }
+//
+//  /**
+//   *
+//   * @param array $value
+//   * @param databox_field $databox_field
+//   * @return string
+//   */
+  protected static function serialize_value(Array $values, $separator)
   {
-    $connbas = $this->databox_field->get_connection();
-
-    $sql = 'DELETE FROM metadatas WHERE id = :id';
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':id' => $this->id));
-    $stmt->closeCursor();
-    $this->delete_data_from_cache();
-
-    $sbas_id = $this->record->get_sbas_id();
-    $this->record->get_caption()->delete_data_from_cache();
-
-    try
-    {
-      $registry = registry::get_instance();
-      $sphinx_rt = sphinxrt::get_instance($registry);
-
-      $sbas_params = phrasea::sbas_params();
-
-      if (isset($sbas_params[$sbas_id]))
-      {
-        $params = $sbas_params[$sbas_id];
-        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
-        $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_fr", "metadatas" . $sbas_crc . "_stemmed_en"), "metas_realtime" . $sbas_crc, $this->id);
-        $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->record->get_record_id());
-      }
-    }
-    catch (Exception $e)
-    {
-      unset($e);
-    }
-
-    return $this;
-  }
-
-  /**
-   * Part of the cache_cacheableInterface
-   *
-   * @param string $option
-   * @return string
-   */
-  public function get_cache_key($option = null)
-  {
-    return 'captionfield_' . $this->record->get_serialize_key()
-            . $this->id . ($option ? '_' . $option : '');
-  }
-
-  /**
-   * Part of the cache_cacheableInterface
-   *
-   * @param string $option
-   * @return mixed
-   */
-  public function get_data_from_cache($option = null)
-  {
-    $databox = databox::get_instance($this->record->get_sbas_id());
-
-    return $databox->get_data_from_cache($this->get_cache_key($option));
-  }
-
-  /**
-   * Part of the cache_cacheableInterface
-   *
-   * @param mixed $value
-   * @param string $option
-   * @param int $duration
-   * @return caption_field
-   */
-  public function set_data_to_cache($value, $option = null, $duration = 0)
-  {
-    $databox = databox::get_instance($this->record->get_sbas_id());
-    $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
-
-    return $this;
-  }
-
-  /**
-   * Part of the cache_cacheableInterface
-   *
-   * @param string $option
-   * @return caption_field
-   */
-  public function delete_data_from_cache($option = null)
-  {
-    $databox = databox::get_instance($this->record->get_sbas_id());
-    $databox->delete_data_from_cache($this->get_cache_key($option));
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param array $value
-   * @param databox_field $databox_field
-   * @return string
-   */
-  protected static function serialize_value(Array $value, $separator)
-  {
-    if(strlen($separator) > 1)
+    if (strlen($separator) > 1)
       $separator = $separator[0];
-    
+
     if (trim($separator) === '')
       $separator = ' ';
     else
       $separator = ' ' . $separator . ' ';
+    
+    $array_values = array();
+    
+    foreach($values as $value)
+    {
+      $array_values[] = $value->get_value();
+    }
 
-    return implode($separator, $value);
+    return implode($separator, $array_values);
   }
-
-  /**
-   *
-   * @param array $value
-   * @return caption_field
-   */
-  public function set_value(Array $value)
-  {
-    $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
-    $connbas = $this->databox_field->get_connection();
-
-    $sql_up = 'UPDATE metadatas SET value = :value WHERE id = :meta_id';
-    $stmt_up = $connbas->prepare($sql_up);
-    $stmt_up->execute(array(':meta_id' => $this->get_meta_id(), ':value' => self::serialize_value($value, $this->databox_field->get_separator())));
-    $stmt_up->closeCursor();
-
-    try
-    {
-      $registry = registry::get_instance();
-      $sphinx_rt = sphinxrt::get_instance($registry);
-
-      $sbas_params = phrasea::sbas_params();
-
-      if (isset($sbas_params[$sbas_id]))
-      {
-        $params = $sbas_params[$sbas_id];
-        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
-        $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_fr", "metadatas" . $sbas_crc . "_stemmed_en"), "", $this->get_meta_id());
-        $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "", $this->record->get_record_id());
-      }
-    }
-    catch (Exception $e)
-    {
-
-    }
-
-    $this->update_cache_value($value);
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param array $value
-   * @return caption_field
-   */
-  public function update_cache_value(Array $value)
-  {
-    $this->delete_data_from_cache();
-    $this->record->get_caption()->delete_data_from_cache();
-    $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
-    try
-    {
-      $registry = registry::get_instance();
-
-      $sbas_params = phrasea::sbas_params();
-
-      if (isset($sbas_params[$sbas_id]))
-      {
-        $params = $sbas_params[$sbas_id];
-        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
-
-        $sphinx_rt = sphinxrt::get_instance($registry);
-        $sphinx_rt->replace_in_metas(
-                "metas_realtime" . $sbas_crc, $this->id, $this->databox_field->get_id(), $this->record->get_record_id(), $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $value, $this->record->get_creation_date()
-        );
-
-        $all_datas = array();
-        foreach ($this->record->get_caption()->get_fields() as $field)
-        {
-          if (!$field->is_indexable())
-            continue;
-          $all_datas[] = $field->get_value(true);
-        }
-        $all_datas = implode(' ', $all_datas);
-
-        $sphinx_rt->replace_in_documents(
-                "docs_realtime" . $sbas_crc, //$this->id,
-                $this->record->get_record_id(), $all_datas, $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $this->record->get_creation_date()
-        );
-      }
-    }
-    catch (Exception $e)
-    {
-      unset($e);
-    }
-
-    return $this;
-  }
+//
+//  /**
+//   *
+//   * @param array $value
+//   * @return caption_field
+//   */
+//  public function set_value(Array $value)
+//  {
+//    $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
+//    $connbas = $this->databox_field->get_connection();
+//
+//    $sql_up = 'UPDATE metadatas SET value = :value WHERE id = :meta_id';
+//    $stmt_up = $connbas->prepare($sql_up);
+//    $stmt_up->execute(array(':meta_id' => $this->get_meta_id(), ':value' => self::serialize_value($value, $this->databox_field->get_separator())));
+//    $stmt_up->closeCursor();
+//
+//    try
+//    {
+//      $registry = registry::get_instance();
+//      $sphinx_rt = sphinxrt::get_instance($registry);
+//
+//      $sbas_params = phrasea::sbas_params();
+//
+//      if (isset($sbas_params[$sbas_id]))
+//      {
+//        $params = $sbas_params[$sbas_id];
+//        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
+//        $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_fr", "metadatas" . $sbas_crc . "_stemmed_en"), "", $this->get_meta_id());
+//        $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "", $this->record->get_record_id());
+//      }
+//    }
+//    catch (Exception $e)
+//    {
+//      
+//    }
+//
+//    $this->update_cache_value($value);
+//
+//    return $this;
+//  }
+//
+//  /**
+//   *
+//   * @param array $value
+//   * @return caption_field
+//   */
+//  public function update_cache_value(Array $value)
+//  {
+//    $this->delete_data_from_cache();
+//    $this->record->get_caption()->delete_data_from_cache();
+//    $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
+//    try
+//    {
+//      $registry = registry::get_instance();
+//
+//      $sbas_params = phrasea::sbas_params();
+//
+//      if (isset($sbas_params[$sbas_id]))
+//      {
+//        $params = $sbas_params[$sbas_id];
+//        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
+//
+//        $sphinx_rt = sphinxrt::get_instance($registry);
+//        $sphinx_rt->replace_in_metas(
+//                "metas_realtime" . $sbas_crc, $this->id, $this->databox_field->get_id(), $this->record->get_record_id(), $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $value, $this->record->get_creation_date()
+//        );
+//
+//        $all_datas = array();
+//        foreach ($this->record->get_caption()->get_fields() as $field)
+//        {
+//          if (!$field->is_indexable())
+//            continue;
+//          $all_datas[] = $field->get_value(true);
+//        }
+//        $all_datas = implode(' ', $all_datas);
+//
+//        $sphinx_rt->replace_in_documents(
+//                "docs_realtime" . $sbas_crc, //$this->id,
+//                $this->record->get_record_id(), $all_datas, $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $this->record->get_creation_date()
+//        );
+//      }
+//    }
+//    catch (Exception $e)
+//    {
+//      unset($e);
+//    }
+//
+//    return $this;
+//  }
 
   /**
    *
@@ -312,60 +327,91 @@ class caption_field implements cache_cacheableInterface
    * @param record_Interface $record
    * @param array $value
    * @return caption_field
-   */
-  public static function create(databox_field &$databox_field, record_Interface $record, Array $value)
+//   */
+//  public static function create(databox_field &$databox_field, record_Interface $record, Array $value)
+//  {
+//
+//    $sbas_id = $databox_field->get_databox()->get_sbas_id();
+//    $connbas = $databox_field->get_connection();
+//    $sql_ins = 'INSERT INTO metadatas (id, record_id, meta_struct_id, value)
+//            VALUES
+//            (null, :record_id, :field, :value)';
+//    $stmt_ins = $connbas->prepare($sql_ins);
+//    $stmt_ins->execute(
+//            array(
+//                ':record_id' => $record->get_record_id(),
+//                ':field' => $databox_field->get_id(),
+//                ':value' => self::serialize_value($value, $databox_field->get_separator())
+//            )
+//    );
+//    $stmt_ins->closeCursor();
+//    $meta_id = $connbas->lastInsertId();
+//
+//    $caption_field = new self($databox_field, $record, $meta_id);
+//    $caption_field->update_cache_value($value);
+//
+//    $record->get_caption()->delete_data_from_cache();
+//
+//    return $caption_field;
+//  }
+
+//  /**
+//   *
+//   * @return string
+//   */
+//  public function get_value($as_string = false, $custom_separator = false)
+//  {
+//    if ($this->databox_field->is_multi() === true)
+//    {
+//      if ($as_string === true && $custom_separator === false)
+//      {
+//        return $this->value;
+//      }
+//      $separator = $this->databox_field->get_separator();
+//      $array_values = self::get_multi_values($this->value, $separator);
+//
+//      if ($as_string === true && $custom_separator !== false)
+//        return self::serialize_value($array_values, $custom_separator);
+//      else
+//        return $array_values;
+//    }
+//    else
+//    {
+//      return $this->value;
+//    }
+//  }
+  
+  public function get_values()
   {
-
-    $sbas_id = $databox_field->get_databox()->get_sbas_id();
-    $connbas = $databox_field->get_connection();
-    $sql_ins = 'INSERT INTO metadatas (id, record_id, meta_struct_id, value)
-            VALUES
-            (null, :record_id, :field, :value)';
-    $stmt_ins = $connbas->prepare($sql_ins);
-    $stmt_ins->execute(
-            array(
-                ':record_id' => $record->get_record_id(),
-                ':field' => $databox_field->get_id(),
-                ':value' => self::serialize_value($value, $databox_field->get_separator())
-            )
-    );
-    $stmt_ins->closeCursor();
-    $meta_id = $connbas->lastInsertId();
-
-    $caption_field = new self($databox_field, $record, $meta_id);
-    $caption_field->update_cache_value($value);
-
-    $record->get_caption()->delete_data_from_cache();
-
-    return $caption_field;
+    return $this->values;
   }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_value($as_string = false, $custom_separator = false)
+  
+  public function get_value($meta_id)
+  {
+    return $this->values[$meta_id];
+  }
+  
+  public function get_serialized_values($custom_separator = false)
   {
     if ($this->databox_field->is_multi() === true)
     {
-      if ($as_string === true && $custom_separator === false)
-      {
-        return $this->value;
-      }
-      $separator = $this->databox_field->get_separator();
-      $array_values = self::get_multi_values($this->value, $separator);
-
-      if ($as_string === true && $custom_separator !== false)
-
-        return self::serialize_value($array_values, $custom_separator);
+      if($custom_separator !== false)
+        $separator = $custom_separator;
       else
+        $separator = $this->databox_field->get_separator();
 
-        return $array_values;
+      return self::serialize_value($this->values, $separator);
     }
     else
     {
-      return $this->value;
+      foreach($this->values as $value)
+      {
+        /* @var $value Caption_Field_Value */
+        return $value->get_value();
+      }
     }
+    
+    return null;
   }
 
   /**
@@ -395,14 +441,14 @@ class caption_field implements cache_cacheableInterface
     return $this->databox_field->is_indexable();
   }
 
-  /**
-   *
-   * @return int
-   */
-  public function get_meta_id()
-  {
-    return $this->id;
-  }
+//  /**
+//   *
+//   * @return int
+//   */
+//  public function get_meta_id()
+//  {
+//    return $this->id;
+//  }
 
   /**
    *
@@ -619,7 +665,7 @@ class caption_field implements cache_cacheableInterface
         }
         catch (Exception $e)
         {
-
+          
         }
       }
 

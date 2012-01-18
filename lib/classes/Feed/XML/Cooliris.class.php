@@ -381,7 +381,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
     $title_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Title);
     if ($title_field)
     {
-      $str_title = $title_field->get_value(true, ' ');
+      $str_title = $title_field->get_serialized_values(' ');
     }
     else
     {
@@ -394,7 +394,7 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
     $desc_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Description);
     if ($desc_field)
     {
-      $str_desc = $desc_field->get_value(true, ' ');
+      $str_desc = $desc_field->get_serialized_values(' ');
     }
     else
     {

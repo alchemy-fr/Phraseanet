@@ -235,7 +235,7 @@ abstract class Feed_XML_Abstract
     $title_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Title);
     if ($title_field)
     {
-      $str_title = $title_field->get_value(true, ' ');
+      $str_title = $title_field->get_serialized_values(' ');
       $title = $this->addTag($document, $group, 'media:title', $str_title);
       $title->setAttribute('type', 'plain');
     }
@@ -243,7 +243,7 @@ abstract class Feed_XML_Abstract
     $desc_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Description);
     if ($desc_field)
     {
-      $str_desc = $desc_field->get_value(true, ' ');
+      $str_desc = $desc_field->get_serialized_values(' ');
       $desc = $this->addTag($document, $group, 'media:description', $str_desc);
       $desc->setAttribute('type', 'plain');
     }
@@ -251,7 +251,7 @@ abstract class Feed_XML_Abstract
     $contrib_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Contributor);
     if ($contrib_field)
     {
-      $str_contrib = $contrib_field->get_value(true, ' ');
+      $str_contrib = $contrib_field->get_serialized_values(' ');
       $contrib = $this->addTag($document, $group, 'media:credit', $str_contrib);
       $contrib->setAttribute('role', 'contributor');
       $contrib->setAttribute('scheme', 'urn:ebu');
@@ -260,7 +260,7 @@ abstract class Feed_XML_Abstract
     $director_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Creator);
     if ($director_field)
     {
-      $str_director = $director_field->get_value(true, ' ');
+      $str_director = $director_field->get_serialized_values(' ');
       $director = $this->addTag($document, $group, 'media:credit', $str_director);
       $director->setAttribute('role', 'director');
       $director->setAttribute('scheme', 'urn:ebu');
@@ -269,7 +269,7 @@ abstract class Feed_XML_Abstract
     $publisher_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Publisher);
     if ($publisher_field)
     {
-      $str_publisher = $publisher_field->get_value(true, ' ');
+      $str_publisher = $publisher_field->get_serialized_values(' ');
       $publisher = $this->addTag($document, $group, 'media:credit', $str_publisher);
       $publisher->setAttribute('role', 'publisher');
       $publisher->setAttribute('scheme', 'urn:ebu');
@@ -278,14 +278,14 @@ abstract class Feed_XML_Abstract
     $rights_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Rights);
     if ($rights_field)
     {
-      $str_rights = $rights_field->get_value(true, ' ');
+      $str_rights = $rights_field->get_serialized_values(' ');
       $rights = $this->addTag($document, $group, 'media:copyright', $str_rights);
     }
 
     $keyword_field = $content->get_record()->get_caption()->get_dc_field(databox_Field_DCESAbstract::Subject);
     if ($keyword_field)
     {
-      $str_keywords = $keyword_field->get_value(true, ', ');
+      $str_keywords = $keyword_field->get_serialized_values(', ');
       $keywords = $this->addTag($document, $group, 'media:keywords', $str_keywords);
     }
 
