@@ -384,7 +384,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
       if ($meta_el->is_multi())
       {
-        $this->assertEquals($multi_imploded, implode(' ' . $meta_el->get_separator() . ' ', $field->get_value(false)));
+        $initial_values = array();
+        foreach($field->get_values() as $value)
+        {
+          $initial_values[] = $value->getValue();
+        }
+        
+        $this->assertEquals($multi_imploded, implode(' ' . $meta_el->get_separator() . ' ', $initial_values));
         $this->assertEquals($multi_imploded, $field->get_serialized_values());
       }
       else

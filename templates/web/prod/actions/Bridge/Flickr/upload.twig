@@ -74,7 +74,7 @@
                 <label for='{{ name }}'>{% trans 'Tags' %}</label>
               </td>
               <td>
-                <input class='required_field' type='text' style="width:150px;" name='{{ name }}' value="{{ caption.get_dc_field('Subject') is not none ? caption.get_dc_field('Subject').get_value(true, ' ') : '' }}"/>
+                <input class='required_field' type='text' style="width:150px;" name='{{ name }}' value="{{ caption.get_dc_field('Subject') is not none ? caption.get_dc_field('Subject').get_serialized_values(' ') : '' }}"/>
                 <br />
                   {{ error_form.display_errors(name, constraint_errors) }}
               </td>
