@@ -5335,8 +5335,8 @@
             </fields>
           </index>
           <index>
-            <name>unique</name>
-            <type>UNIQUE</type>
+            <name>index_meta</name>
+            <type>INDEX</type>
             <fields>
               <field>record_id</field>
               <field>meta_struct_id</field>

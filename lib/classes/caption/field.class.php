@@ -226,7 +226,7 @@ class caption_field //implements cache_cacheableInterface
     
     foreach($values as $value)
     {
-      $array_values[] = $value->get_value();
+      $array_values[] = $value->getValue();
     }
 
     return implode($separator, $array_values);
