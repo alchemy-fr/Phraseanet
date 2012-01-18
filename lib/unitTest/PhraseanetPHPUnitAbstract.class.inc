@@ -1001,7 +1001,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
     if (!$collection_no_acces instanceof collection)
     {
-      self::fail('Unable to find a second collection');
+      $collection_no_acces = collection::create($databox, $appbox, 'BIBOO', self::$user);
+//      self::fail('Unable to find a second collection');
     }
 
     self::$collection = $coll;
