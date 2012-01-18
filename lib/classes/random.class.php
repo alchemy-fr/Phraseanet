@@ -39,7 +39,7 @@ class random
       $registry = registry::get_instance();
 
       $sql = 'SELECT * FROM tokens WHERE expire_on < :date
-              AND datas IS NOT NULL AND type="download"';
+              AND datas IS NOT NULL AND (type="download" OR type="email")';
       $stmt = $conn->prepare($sql);
       $stmt->execute(array(':date' => $date));
       $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -49,6 +49,7 @@ class random
         switch ($row['type'])
         {
           case 'download':
+          case 'email':
             $file = $registry->get('GV_RootPath') . 'tmp/download/' . $row['value'] . '.zip';
             if (is_file($file))
               unlink($file);
@@ -56,7 +57,7 @@ class random
         }
       }
 
-      $sql = 'DELETE FROM tokens WHERE expire_on < :date and type="download"';
+      $sql = 'DELETE FROM tokens WHERE expire_on < :date and (type="download" OR type="email")';
       $stmt = $conn->prepare($sql);
       $stmt->execute(array(':date' => $date));
       $stmt->closeCursor();
