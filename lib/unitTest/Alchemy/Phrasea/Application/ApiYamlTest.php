@@ -616,14 +616,17 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
        */
       foreach ($caption->get_fields() as $field)
       {
-        $old_datas[$field->get_meta_id()] = $field->get_value();
-        if ($field->is_readonly() === false && $field->is_multi() === false)
+        foreach($field->get_values() as $value)
         {
-          $toupdate[$field->get_meta_id()] = array(
-              'meta_struct_id' => $field->get_meta_struct_id(),
-              'meta_id' => $field->get_meta_id(),
-              'value' => array($field->get_value() . ' test')
-          );
+          $old_datas[$value->getId()] = $field->get_value();
+          if ($field->is_readonly() === false && $field->is_multi() === false)
+          {
+            $toupdate[$value->getId()] = array(
+                'meta_struct_id' => $field->get_meta_struct_id(),
+                'meta_id' => $value->getId(),
+                'value' => array($value->getValue() . ' test')
+            );
+          }
         }
       }
       $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
@@ -641,11 +644,13 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
       foreach ($caption->get_fields() as $field)
       {
-
-        if ($field->is_readonly() === false && $field->is_multi() === false)
+        foreach($field->get_values() as $value)
         {
-          $saved_value = $toupdate[$field->get_meta_id()]['value'][0];
-          $this->assertEquals($field->get_value(), $saved_value);
+          if ($field->is_readonly() === false && $field->is_multi() === false)
+          {
+            $saved_value = $toupdate[$value->getId()]['value'][0];
+            $this->assertEquals($value->getValue(), $saved_value);
+          }
         }
       }
       $this->evaluateRecordsMetadataResponse($content);

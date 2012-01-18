@@ -14,20 +14,20 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
    */
   protected static $grouping;
   protected static $need_records = true;
-  protected static $need_story = true;
+  protected static $need_story   = true;
   protected static $need_subdefs = true;
 
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
     $system_file = self::$record_1->get_hd_file();
-    $databox = self::$record_1->get_databox();
-    $metadatas = $system_file->extract_metadatas($databox->get_meta_structure());
+    $databox     = self::$record_1->get_databox();
+    $metadatas   = $system_file->extract_metadatas($databox->get_meta_structure());
     static::$record_1->set_metadatas($metadatas['metadatas']);
 
-    $databox = self::$record_23->get_databox();
+    $databox     = self::$record_23->get_databox();
     $system_file = self::$record_23->get_hd_file();
-    $metadatas = $system_file->extract_metadatas($databox->get_meta_structure());
+    $metadatas   = $system_file->extract_metadatas($databox->get_meta_structure());
     static::$record_23->set_metadatas($metadatas['metadatas']);
 
     $system_file = new system_file(__DIR__ . '/../testfiles/cestlafete.jpg');
@@ -37,7 +37,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     parent::tearDownAfterClass();
   }
-
 
   public function testGet_creation_date()
   {
@@ -89,7 +88,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     }
     catch (Exception $e)
     {
-
+      
     }
     $old_type = self::$record_1->get_type();
     self::$record_1->set_type('video');
@@ -137,7 +136,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     // Remove the following lines when you implement this test.
     $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+      'This test has not been implemented yet.'
     );
   }
 
@@ -166,9 +165,8 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGenerate_subdefs()
   {
-
+    
   }
-
 
   public function testGet_sha256()
   {
@@ -180,13 +178,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testGet_mime()
   {
     $appbox = appbox::get_instance();
-    $found = $coll = false;
+    $found  = $coll   = false;
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
       {
         $found = true;
-        $coll = $collection;
+        $coll  = $collection;
         break;
       }
       if ($found)
@@ -234,7 +232,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     // Remove the following lines when you implement this test.
     $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+      'This test has not been implemented yet.'
     );
   }
 
@@ -297,7 +295,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     // Remove the following lines when you implement this test.
     $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+      'This test has not been implemented yet.'
     );
   }
 
@@ -311,15 +309,62 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     foreach ($meta_structure_el as $meta_el)
     {
       $current_fields = $current_caption->get_fields(array($meta_el->get_name()));
-      $meta_id = null;
+      
+      $field = null;
+      
       if (count($current_fields) > 0)
       {
-        $meta_id = $current_fields[0]->get_meta_id();
+        $field = array_pop($current_fields);
       }
-
-      $value = $meta_el->is_multi() ? array('un', 'jeu', 'de', 'test') : array('un jeu de test');
-
-      $metadatas[] = array('meta_struct_id' => $meta_el->get_id(), 'meta_id' => $meta_id, 'value' => $value);
+        
+      if($meta_el->is_multi())
+      {
+        if($field)
+        {
+          foreach($field->get_values() as $value)
+          {
+            $metadatas[] = array(
+              'meta_struct_id' => $meta_el->get_id()
+              , 'meta_id'        => $value->getId()
+              , 'value'          => ''
+            );
+          }
+        }
+        
+        $metadatas[] = array(
+          'meta_struct_id' => $meta_el->get_id()
+          , 'meta_id'        => null
+          , 'value'          => 'un'
+        );
+        $metadatas[] = array(
+          'meta_struct_id' => $meta_el->get_id()
+          , 'meta_id'        => null
+          , 'value'          => 'jeu'
+        );
+        $metadatas[] = array(
+          'meta_struct_id' => $meta_el->get_id()
+          , 'meta_id'        => null
+          , 'value'          => 'de'
+        );
+        $metadatas[] = array(
+          'meta_struct_id' => $meta_el->get_id()
+          , 'meta_id'        => null
+          , 'value'          => 'mots'
+        );
+      }
+      else
+      {
+        if($field)
+        {
+          $meta_id = array_pop($field->get_values())->getId();
+        }
+        
+        $metadatas[] = array(
+          'meta_struct_id' => $meta_el->get_id()
+          , 'meta_id'        => $meta_id
+          , 'value'          => 'un jeu de test'
+        );
+      }
     }
 
     self::$record_1->set_metadatas($metadatas);
@@ -350,12 +395,12 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testReindex()
   {
     self::$record_1->reindex();
-    $sql = 'SELECT record_id FROM record
+    $sql  = 'SELECT record_id FROM record
             WHERE (status & 7) IN (4,5,6) AND record_id = :record_id';
     $stmt = self::$record_1->get_databox()->get_connection()->prepare($sql);
 
     $stmt->execute(array(':record_id' => self::$record_1->get_record_id()));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row         = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     if (!$row)
@@ -368,14 +413,14 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
 
     self::$record_1->rebuild_subdefs();
-    $sql = 'SELECT record_id
+    $sql  = 'SELECT record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
               AND record_id = :record_id';
     $stmt = self::$record_1->get_databox()->get_connection()->prepare($sql);
 
     $stmt->execute(array(':record_id' => self::$record_1->get_record_id()));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row         = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     if (!$row)
@@ -387,13 +432,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testWrite_metas()
   {
     self::$record_1->write_metas();
-    $sql = 'SELECT record_id, coll_id, jeton
+    $sql  = 'SELECT record_id, coll_id, jeton
             FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)
             AND record_id = :record_id';
     $stmt = self::$record_1->get_databox()->get_connection()->prepare($sql);
 
     $stmt->execute(array(':record_id' => self::$record_1->get_record_id()));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row         = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     if (!$row)
@@ -409,7 +454,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     // Remove the following lines when you implement this test.
     $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+      'This test has not been implemented yet.'
     );
   }
 
@@ -453,7 +498,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     // Remove the following lines when you implement this test.
     $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+      'This test has not been implemented yet.'
     );
   }
 
@@ -461,7 +506,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     // Remove the following lines when you implement this test.
     $this->markTestIncomplete(
-            'This test has not been implemented yet.'
+      'This test has not been implemented yet.'
     );
   }
 
@@ -472,28 +517,28 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    
+
     $em = self::$core->getEntityManager();
 
     $basket = $this->insertOneBasket();
     $this->assertInstanceOf('\Entities\Basket', $basket);
-    
+
     /* @var $basket \Entities\Basket */
     $basket_element = new \Entities\BasketElement();
     $basket_element->setRecord(self::$record_1);
     $basket_element->setBasket($basket);
-    
-    $em->persist($basket_element);
-    
-    $basket->addBasketElement($basket_element);
-    
-    $em->merge($basket);
-    
-    $em->flush();
-    
-    $found = $sselcont_id = false;
 
-    $sbas_id = self::$record_1->get_sbas_id();
+    $em->persist($basket_element);
+
+    $basket->addBasketElement($basket_element);
+
+    $em->merge($basket);
+
+    $em->flush();
+
+    $found       = $sselcont_id = false;
+
+    $sbas_id   = self::$record_1->get_sbas_id();
     $record_id = self::$record_1->get_record_id();
 
     foreach (self::$record_1->get_container_baskets() as $c_basket)
@@ -512,7 +557,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     if (!$found)
       $this->fail();
-
   }
 
 }
