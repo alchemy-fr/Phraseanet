@@ -122,11 +122,14 @@ return call_user_func(
                               
                               /* @var $repository \Repositories\BasketElementRepository */
                               
-                              if ($repository->findReceivedValidationElementsByRecord($record, $user)->count() > 0)
+                              $ValidationByRecord = $repository->findReceivedValidationElementsByRecord($record, $user);
+                              $ReceptionByRecord = $repository->findReceivedElementsByRecord($record, $user);
+                              
+                              if ($ValidationByRecord && $ValidationByRecord->count() > 0)
                               {
                                 $watermark = false;
                               }
-                              elseif ($repository->findReceivedElementsByRecord($record, $user)->count() > 0)
+                              elseif ($ReceptionByRecord && $ReceptionByRecord->count() > 0)
                               {
                                 $watermark = false;
                               }
