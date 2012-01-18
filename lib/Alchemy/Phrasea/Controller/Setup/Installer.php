@@ -132,6 +132,9 @@ class Installer implements ControllerProviderInterface
               set_time_limit(360);
               \phrasea::use_i18n(\Session_Handler::get_locale());
               $request = $app['request'];
+              
+              $setupRegistry = new \Setup_Registry();
+              $setupRegistry->set('GV_ServerName', $servername);
 
               $conn = $connbas = null;
 
@@ -145,7 +148,7 @@ class Installer implements ControllerProviderInterface
 
               try
               {
-                $conn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $password, $appbox_name);
+                $conn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $password, $appbox_name, array(), $setupRegistry);
               }
               catch (\Exception $e)
               {
@@ -156,20 +159,20 @@ class Installer implements ControllerProviderInterface
               {
                 if ($databox_name)
                 {
-                  $connbas = new \connection_pdo('databox', $hostname, $port, $user_ab, $password, $databox_name);
+                  $connbas = new \connection_pdo('databox', $hostname, $port, $user_ab, $password, $databox_name, array(), $setupRegistry);
                 }
               }
               catch (\Exception $e)
               {
                 return $app->redirect('/setup/installer/step2/?error=' . _('Databox is unreachable'));
               }
+              
               \setup::rollback($conn, $connbas);
 
               try
               {
                 $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
-                $setupRegistry = new \Setup_Registry();
-                $setupRegistry->set('GV_ServerName', $servername);
+                
                 $appbox = \appbox::create($setupRegistry, $conn, $appbox_name, true);
 
                 $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
@@ -202,6 +205,7 @@ class Installer implements ControllerProviderInterface
                       // Create SchemaTool
                       $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
                       // Create schema
+                      $tool->dropSchema($metadatas);
                       $tool->createSchema($metadatas);
                     }
                   }
