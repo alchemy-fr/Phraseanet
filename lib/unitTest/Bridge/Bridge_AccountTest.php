@@ -23,24 +23,24 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     try
     {
-    $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance();
 
-    $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
-    $stmt = $appbox->get_connection()->prepare($sql);
-    $stmt->execute();
-    $stmt->closeCursor();
+      $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
+      $stmt = $appbox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
 
-    $this->api = Bridge_Api::create($appbox, 'Apitest');
-    $this->dist_id = 'EZ1565loPP';
+      $this->api = Bridge_Api::create($appbox, 'Apitest');
+      $this->dist_id = 'EZ1565loPP';
       $this->named = 'Fête à pinpins';
-    $account = Bridge_Account::create($appbox, $this->api, self::$user, $this->dist_id, $this->named);
-    $this->id = $account->get_id();
+      $account = Bridge_Account::create($appbox, $this->api, self::$user, $this->dist_id, $this->named);
+      $this->id = $account->get_id();
 
-    $this->object = new Bridge_Account($appbox, $this->api, $this->id);
+      $this->object = new Bridge_Account($appbox, $this->api, $this->id);
     }
-    catch(Exception $e)
+    catch (Exception $e)
     {
-      var_dump($e->getMessage(), $e->getFile(), $e->getLine());exit;
+      $this->fail($e->getMessage());
     }
   }
 
@@ -56,7 +56,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
     }
     catch (Bridge_Exception_AccountNotFound $e)
     {
-
+      
     }
 
     $this->api->delete();
@@ -144,9 +144,9 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $accounts = Bridge_Account::get_accounts_by_user(appbox::get_instance(), self::$user);
 
     $this->assertTrue(is_array($accounts));
-    $this->assertTrue(count($accounts)>0);
+    $this->assertTrue(count($accounts) > 0);
 
-    foreach($accounts as $account)
+    foreach ($accounts as $account)
     {
       $this->assertInstanceOf('Bridge_Account', $account);
     }

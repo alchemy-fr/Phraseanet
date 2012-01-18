@@ -1,10 +1,6 @@
 <?php
 
-namespace Alchemy\Phrasea\Controller\Prod;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
-
-require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Prod/Root.php';
 
 /**
  * Test class for Root.

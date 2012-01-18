@@ -313,7 +313,6 @@ class Installer implements ControllerProviderInterface
               catch (\Exception $e)
               {
                 \setup::rollback($conn, $connbas);
-                exit($e->getMessage() . ' ' . $e->getFile() . ' ' . $e->getLine());
               }
 
               return $app->redirect('/setup/installer/step2/?error=' . sprintf(_('an error occured : %s'), $e->getMessage()));

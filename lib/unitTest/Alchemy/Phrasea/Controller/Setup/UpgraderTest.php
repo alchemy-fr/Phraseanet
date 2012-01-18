@@ -1,10 +1,6 @@
 <?php
 
-namespace Alchemy\Phrasea\Controller\Setup;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
-
-require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Setup/Upgrader.php';
 
 /**
  * Test class for Upgrader.

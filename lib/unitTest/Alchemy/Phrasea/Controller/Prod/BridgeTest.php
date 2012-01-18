@@ -12,6 +12,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
   public static $account = null;
   public static $api = null;
   protected $client;
+  protected static $need_records = 1;
 
   public static function setUpBeforeClass()
   {
@@ -81,6 +82,14 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     $test = new Bridge_Api_Apitest(registry::get_instance(), new Bridge_Api_Auth_None());
     $this->assertTrue($this->client->getResponse()->getStatusCode() == 302);
     $this->assertTrue($this->client->getResponse()->isRedirect($test->get_auth_url()));
+  }
+
+  public function testCallBackFailed()
+  {
+    $appbox = appbox::get_instance();
+    $session = $appbox->get_session();
+    $crawler = $this->client->request('GET', '/bridge/callback/unknow_api/');
+    $this->assertTrue($this->client->getResponse()->isOk());
   }
 
   public function testCallBackAccountAlreadyDefined()
@@ -253,6 +262,16 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
       
     }
+
+    try
+    {
+      $crawler = $this->client->request('POST', $url, array("elements_list" => "1;2;3"));
+      $this->fail("expected Exception here");
+    }
+    catch (Exception $e)
+    {
+      
+    }
   }
 
   public function testActionModifyTooManyElements()
@@ -265,6 +284,9 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertContains($redirect, $this->client->getResponse()->headers->get("location"));
     $this->assertContains("error=", $this->client->getResponse()->headers->get("location"));
     $this->assertNotContains(self::$account->get_api()->generate_login_url(registry::get_instance(), self::$account->get_api()->get_connector()->get_name()), $this->client->getResponse()->getContent());
+
+    $this->client->request('POST', $url, array("element_list" => "1_2;1_3;1_4"));
+    $this->assertTrue($this->client->getResponse()->isRedirect());
   }
 
   public function testActionModifyElement()
@@ -274,6 +296,67 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     $crawler = $this->client->request('GET', $url, array("elements_list" => "element123qcs789"));
     $this->assertTrue($this->client->getResponse()->isOk());
     $this->assertNotContains(self::$account->get_api()->generate_login_url(registry::get_instance(), self::$account->get_api()->get_connector()->get_name()), $this->client->getResponse()->getContent());
+
+    $this->client->request('POST', $url, array("elements_list" => "element123qcs789"));
+    $this->assertTrue($this->client->getResponse()->isRedirect());
+  }
+
+  public function testActionModifyElementError()
+  {
+    self::$account->get_settings()->set("auth_token", "somethingNotNull");
+    Bridge_Api_Apitest::$hasError = true;
+    $url = sprintf("/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
+    $this->client->request('POST', $url, array("elements_list" => "element123qcs789"));
+    $this->assertTrue($this->client->getResponse()->isOk());
+  }
+
+  public function testActionModifyElementException()
+  {
+    self::$account->get_settings()->set("auth_token", "somethingNotNull");
+    Bridge_Api_Apitest::$hasException = true;
+    $url = sprintf("/bridge/action/%s/modify/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
+    $this->client->request('POST', $url, array("elements_list" => "element123qcs789"));
+    $this->assertTrue($this->client->getResponse()->isRedirect());
+    $this->assertRegexp('/error/', $this->client->getResponse()->headers->get('location'));
+  }
+
+  public function testActionDeleteElement()
+  {
+    self::$account->get_settings()->set("auth_token", "somethingNotNull");
+    $url = sprintf("/bridge/action/%s/deleteelement/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
+    $this->client->request('GET', $url, array("elements_list" => "element123qcs789"));
+    $this->assertTrue($this->client->getResponse()->isOk());
+
+    Bridge_Api_Apitest::$hasException = true;
+    $url = sprintf("/bridge/action/%s/deleteelement/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
+    $this->client->request('POST', $url, array("elements_list" => "element123qcs789"));
+    $this->assertTrue($this->client->getResponse()->isRedirect());
+    $this->assertRegexp('/error/', $this->client->getResponse()->headers->get('location'));
+
+    $url = sprintf("/bridge/action/%s/deleteelement/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
+    $this->client->request('POST', $url, array("elements_list" => "element123qcs789"));
+    $this->assertTrue($this->client->getResponse()->isRedirect());
+  }
+
+  public function testActionCreateContainer()
+  {
+    self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
+
+    $url = sprintf("/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
+    $this->client->request('GET', $url);
+    $this->assertTrue($this->client->getResponse()->isOk());
+
+
+    Bridge_Api_Apitest::$hasException = true;
+    $url = sprintf("/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
+    $this->client->request('POST', $url);
+    $this->assertTrue($this->client->getResponse()->isRedirect());
+    $this->assertRegexp('/error/', $this->client->getResponse()->headers->get('location'));
+
+    $url = sprintf("/bridge/action/%s/createcontainer/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
+    $this->client->request('POST', $url, array('title' => 'test', 'description' => 'description'));
+    $this->assertTrue($this->client->getResponse()->isRedirect());
+    $this->assertRegexp('/success/', $this->client->getResponse()->headers->get('location'));
   }
 
   /**
@@ -288,6 +371,9 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertTrue($this->client->getResponse()->isOk());
     $pageContent = $this->client->getResponse()->getContent();
     $this->assertNotContains(self::$account->get_api()->generate_login_url(registry::get_instance(), self::$account->get_api()->get_connector()->get_name()), $this->client->getResponse()->getContent());
+
+    $this->client->request('POST', $url, array("elements_list" => "containerudt456shn"));
+    $this->assertTrue($this->client->getResponse()->isOk());
   }
 
   public function testActionMoveInto()
@@ -297,14 +383,45 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     $crawler = $this->client->request('GET', $url, array("elements_list" => "containerudt456shn", 'destination' => self::$account->get_api()->get_connector()->get_default_container_type()));
     $this->assertNotContains("http://dev.phrasea.net/prod/bridge/login/youtube/", $this->client->getResponse()->getContent());
     $this->assertTrue($this->client->getResponse()->isOk());
+
+    $this->client->request('POST', $url, array("elements_list" => "containerudt456shn", 'destination' => self::$account->get_api()->get_connector()->get_default_container_type()));
+    $this->assertRegexp('/success/', $this->client->getResponse()->headers->get('location'));
+    $this->assertTrue($this->client->getResponse()->isRedirect());
+
+    Bridge_Api_Apitest::$hasException = true;
+    $this->client->request('POST', $url, array("elements_list" => "containerudt456shn", 'destination' => self::$account->get_api()->get_connector()->get_default_container_type()));
+    $this->assertRegexp('/error/', $this->client->getResponse()->headers->get('location'));
+    $this->assertTrue($this->client->getResponse()->isRedirect());
   }
 
   public function deconnected($crawler, $pageContent)
   {
-
     $this->assertTrue($this->client->getResponse()->isOk());
+    $this->assertContains("prod/bridge/login/" . mb_strtolower(self::$account->get_api()->get_connector()->get_name()) . "/", $pageContent);
+  }
 
-    $this->assertContains("prod/bridge/login/" . mb_strtolower(self::$account->get_api()->get_connector()->get_name())."/", $pageContent);
+  public function testUpload()
+  {
+    self::$account->get_settings()->set("auth_token", "somethingNotNull");
+    $url = "/bridge/upload/";
+    $this->client->request('GET', $url, array("account_id" => self::$account->get_id()));
+
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isOk());
+
+    $records = array(
+        self::$record_1->get_serialize_key()
+    );
+
+    Bridge_Api_Apitest::$hasError = true;
+    $lst = implode(';', $records);
+    $this->client->request('POST', $url, array("account_id" => self::$account->get_id(), 'lst' => $lst));
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isOk());
+
+    $this->client->request('POST', $url, array("account_id" => self::$account->get_id(), 'lst' => $lst));
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isRedirect());
   }
 
 }

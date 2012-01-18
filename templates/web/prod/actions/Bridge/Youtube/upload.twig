@@ -34,7 +34,7 @@
               </div>
           </td>
           <td>
-            <input class="required_field" type='text' name='{{name}}' value="{{ caption.get_dc_field('Title').get_value()|default(record.get_title()) }}"/>
+            <input class="required_field" type='text' name='{{name}}' value="{{ caption.get_dc_field('Title') is not none ? caption.get_dc_field('Title').get_value()|default(record.get_title()) : record.get_title() }}"/>
              <br />
               {{ error_form.display_errors(name, constraint_errors) }}
             </label>
@@ -49,7 +49,7 @@
             </div>
           </td>
           <td class='column_right'>
-            <textarea class="required_field" name="{{ name }}" rows="5">{{ caption.get_dc_field('Description').get_value() }}</textarea>
+            <textarea class="required_field" name="{{ name }}" rows="5">{{ caption.get_dc_field('Description') is not none ? caption.get_dc_field('Description').get_value() : ""}}</textarea>
             <br />
               {{ error_form.display_errors(name, constraint_errors) }}
           </td>
@@ -78,7 +78,7 @@
             </div>
           </td>
           <td>
-            <input class='required_field' type='text' name='{{ name }}' value="{{ caption.get_dc_field('Subject').get_value(true, ' ') }}"/>
+            <input class='required_field' type='text' name='{{ name }}' value="{{ caption.get_dc_field('Subject') is not none ? caption.get_dc_field('Subject').get_value(true, ' ') : ""}}"/>
             <br />
               {{ error_form.display_errors(name, constraint_errors) }}
           </td>

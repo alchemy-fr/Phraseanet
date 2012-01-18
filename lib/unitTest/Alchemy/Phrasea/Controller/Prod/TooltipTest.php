@@ -13,6 +13,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   protected $client;
   protected static $need_records = 1;
   protected static $need_subdefs = true;
+  protected static $need_story = 1;
 
   public function setUp()
   {
@@ -72,6 +73,28 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     {
       $crawler = $this->client->request('POST', $route);
       $pageContent = $this->client->getResponse()->getContent();
+      $this->assertTrue($this->client->getResponse()->isOk());
+    }
+  }
+
+  public function testRouteCaptionSearchEngine()
+  {
+    $route_base = '/tooltip/caption/' . self::$record_1->get_sbas_id()
+            . '/' . self::$record_1->get_record_id() . '/%s/';
+
+    $routes = array(
+        sprintf($route_base, 'answer')
+        , sprintf($route_base, 'lazaret')
+        , sprintf($route_base, 'preview')
+        , sprintf($route_base, 'basket')
+        , sprintf($route_base, 'overview')
+    );
+
+    foreach ($routes as $route)
+    {
+      $option = new \searchEngine_options();
+      $crawler = $this->client->request('POST', $route, array('options_serial' => $option->serialize()));
+      
       $this->assertTrue($this->client->getResponse()->isOk());
     }
   }
@@ -148,6 +171,26 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
       $this->assertGreaterThan(0, strlen($this->client->getResponse()->getContent()));
       $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
+  }
+
+  public function testRouteStory()
+  {
+    $databox = self::$story_1->get_databox();
+
+
+    $route = '/tooltip/Story/' . $databox->get_sbas_id()
+            . '/' . self::$story_1->get_record_id() . '/';
+
+    $this->client->request('POST', $route);
+    $this->assertTrue($this->client->getResponse()->isOk());
+  }
+
+  public function testUser()
+  {
+
+    $route = '/tooltip/user/' . self::$user->get_id() . '/';
+    $this->client->request('POST', $route);
+    $this->assertTrue($this->client->getResponse()->isOk());
   }
 
 }

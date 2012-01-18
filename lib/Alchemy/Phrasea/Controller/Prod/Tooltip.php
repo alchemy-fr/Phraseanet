@@ -102,10 +102,16 @@ class Tooltip implements ControllerProviderInterface
               $record = new \record_adapter($sbas_id, $record_id, $number);
 
               $search_engine = null;
-              if (($search_engine_options = unserialize($app['request']->get('options_serial'))) !== false)
+              $option = new \searchEngine_options();
+              $options_serial = $app['request']->get('options_serial');
+
+              if ($options_serial)
               {
-                $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
-                $search_engine->set_options($search_engine_options);
+                if (($search_engine_options = $option->unserialize($app['request']->get('options_serial'))) !== false)
+                {
+                  $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
+                  $search_engine->set_options($search_engine_options);
+                }
               }
 
               /* @var $twig \Twig_Environment */
@@ -164,25 +170,18 @@ class Tooltip implements ControllerProviderInterface
     $controllers->post('/metas/DCESInfos/{sbas_id}/{field_id}/'
             , function(Application $app, $sbas_id, $field_id)
             {
-              try
-              {
-                $databox = \databox::get_instance((int) $sbas_id);
-                $field = \databox_field::get_instance($databox, $field_id);
+              $databox = \databox::get_instance((int) $sbas_id);
+              $field = \databox_field::get_instance($databox, $field_id);
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
-                return new Response(
-                                $twig->render(
-                                        'common/databox_field_DCES.twig'
-                                        , array('field' => $field)
-                                )
-                );
-              }
-              catch (\Exception $e)
-              {
-                exit($e->getMessage());
-              }
+              return new Response(
+                              $twig->render(
+                                      'common/databox_field_DCES.twig'
+                                      , array('field' => $field)
+                              )
+              );
             })->assert('sbas_id', '\d+')->assert('field_id', '\d+');
 
 

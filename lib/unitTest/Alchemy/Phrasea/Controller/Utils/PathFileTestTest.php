@@ -1,10 +1,6 @@
 <?php
 
-namespace Alchemy\Phrasea\Controller\Utils;
-
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
-
-require_once __DIR__ . '/../../../../../Alchemy/Phrasea/Controller/Utils/PathFileTest.php';
 
 /**
  * Test class for PathFileTest.
