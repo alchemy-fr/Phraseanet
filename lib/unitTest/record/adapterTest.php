@@ -305,7 +305,9 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $meta_structure_el = self::$collection->get_databox()->get_meta_structure()->get_elements();
 
     $current_caption = self::$record_1->get_caption();
-
+    
+    $metadatas = array();
+    
     foreach ($meta_structure_el as $meta_el)
     {
       $current_fields = $current_caption->get_fields(array($meta_el->get_name()));
@@ -349,11 +351,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $metadatas[] = array(
           'meta_struct_id' => $meta_el->get_id()
           , 'meta_id'        => null
-          , 'value'          => 'mots'
+          , 'value'          => 'test'
         );
       }
       else
       {
+        $meta_id = null;
+        
         if($field)
         {
           $meta_id = array_pop($field->get_values())->getId();
