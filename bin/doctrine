@@ -25,7 +25,7 @@ use Symfony\Component\Console\Application;
 use Alchemy\Phrasea;
 
 require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
-bootstrap::register_autoloads();
+bootstrap::execute();
 
 try
 {
@@ -46,8 +46,7 @@ try
   $ormService = \Alchemy\Phrasea\Core\ServiceBuilder::build(
                   $serviceName
                   , \Alchemy\Phrasea\Core\ServiceBuilder::ORM
-                  , $confService->get("type")
-                  , $confService->get("options")
+                  , $confService
   );
 
   $em = $ormService->getService();
