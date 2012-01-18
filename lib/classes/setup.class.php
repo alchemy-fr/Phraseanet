@@ -77,19 +77,20 @@ class setup
       $appConf->getServiceFile();
       $installed = true;
     }
-    catch(\Exception $e)
+    catch (\Exception $e)
     {
+      
     }
     return $installed;
   }
-  
+
   public static function needUpgradeConfigurationFile()
   {
-    return (is_file(__DIR__ . "/../../config/connexion.inc") 
-          && is_file(__DIR__ . "/../../config/config.inc"));
+    return (is_file(__DIR__ . "/../../config/connexion.inc")
+            && is_file(__DIR__ . "/../../config/config.inc"));
   }
-  
-  function create_global_values(registryInterface &$registry, $datas=array())
+
+  function create_global_values(registryInterface &$registry, $datas = array())
   {
     require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
@@ -761,12 +762,14 @@ class setup
         return $current;
     }
 
-    public static function rollback(connection_pdo $conn, connection_pdo $connbas =null)
+    public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)
     {
       $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
 
       if (!$structure)
+      {
         throw new Exception('Unable to load schema');
+      }
 
       $appbox = $structure->appbox;
       $databox = $structure->databox;
@@ -803,9 +806,10 @@ class setup
         }
       }
 
+      $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+
       try
       {
-        $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
         $configFile = $appConf->getConfigurationFile();
         unlink($configFile->getPathname());
       }
@@ -813,7 +817,27 @@ class setup
       {
         
       }
-      
+
+      try
+      {
+        $serviceFile = $appConf->getServiceFile();
+        unlink($serviceFile->getPathname());
+      }
+      catch (\Exception $e)
+      {
+        
+      }
+
+      try
+      {
+        $connexionfFile = $appConf->getConnexionFile();
+        unlink($connexionfFile->getPathname());
+      }
+      catch (\Exception $e)
+      {
+        
+      }
+
       return;
     }
 
