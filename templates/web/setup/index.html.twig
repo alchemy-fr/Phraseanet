@@ -2,7 +2,7 @@
 
 {# This file MUST NOT CONTAINS trans tag #}
 
-{% extends '/setup/wrapper.twig' %}
+{% extends '/setup/wrapper.html.twig' %}
 
 {% macro constraint_format(constraint) %}
     {% if not constraint.is_ok() %}

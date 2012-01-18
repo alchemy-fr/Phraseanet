@@ -19,8 +19,6 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 
-date_default_timezone_set('Europe/Berlin');
-
 /**
  *
  * @package
@@ -80,7 +78,7 @@ class Installer implements ControllerProviderInterface
               $twig = new \Twig_Environment($loader);
 
               $html = $twig->render(
-                      '/setup/index.twig'
+                      '/setup/index.html.twig'
                       , array_merge($constraints_coll, array(
                           'locale' => Session_Handler::get_locale()
                           , 'available_locales' => $app['Core']::getAvailableLanguages()
@@ -112,7 +110,7 @@ class Installer implements ControllerProviderInterface
               }
 
               $html = $twig->render(
-                      '/setup/step2.twig'
+                      '/setup/step2.html.twig'
                       , array(
                   'locale' => \Session_Handler::get_locale()
                   , 'available_locales' => $app['Core']::getAvailableLanguages()

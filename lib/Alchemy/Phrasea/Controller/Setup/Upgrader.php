@@ -42,7 +42,7 @@ class Upgrader implements ControllerProviderInterface
               
               ini_set('display_errors', 'on');
               $html = $twig->render(
-                      '/setup/upgrader.twig'
+                      '/setup/upgrader.html.twig'
                       , array(
                   'locale' => \Session_Handler::get_locale()
                   , 'upgrade_status' => $upgrade_status
