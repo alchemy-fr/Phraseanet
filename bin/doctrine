@@ -25,7 +25,7 @@ use Symfony\Component\Console\Application;
 use Alchemy\Phrasea;
 
 require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
-bootstrap::execute();
+bootstrap::register_autoloads();
 
 try
 {

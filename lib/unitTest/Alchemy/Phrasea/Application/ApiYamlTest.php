@@ -618,7 +618,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
       {
         foreach($field->get_values() as $value)
         {
-          $old_datas[$value->getId()] = $field->get_value();
+          $old_datas[$value->getId()] = $value->getValue();
           if ($field->is_readonly() === false && $field->is_multi() === false)
           {
             $toupdate[$value->getId()] = array(
