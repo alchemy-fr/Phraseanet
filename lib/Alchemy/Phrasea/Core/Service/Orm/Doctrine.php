@@ -27,6 +27,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  */
 class Doctrine extends ServiceAbstract implements ServiceInterface
 {
+
   const ARRAYCACHE = 'array';
   const MEMCACHED = 'memcached';
   const XCACHE = 'xcache';
@@ -45,9 +46,9 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   protected $cacheServices = array();
   protected $debug;
 
-  public function __construct($name, Array $options = array())
+  public function __construct($name, Array $options, Array $dependencies)
   {
-    parent::__construct($name, $options);
+    parent::__construct($name, $options, $dependencies);
 
     static::loadClasses();
 
@@ -373,11 +374,15 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       }
     }
 
-    $service = $this->findService(
-            $serviceName
-            , Core\ServiceBuilder::CACHE
-            , $configuration
+    $registry = $this->getDependency("registry");
+
+    $serviceBuilder = new Core\ServiceBuilder\Cache(
+                    $serviceName,
+                    $configuration,
+                    array("registry" => $registry)
     );
+
+    $service = $serviceBuilder->buildService();
 
     $this->cacheServices[$cacheDoctrine] = $service;
 
@@ -416,14 +421,14 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       );
     }
 
-    $service = $this->findService(
-            $serviceName
-            , Core\ServiceBuilder::LOG
-            , $configuration
-            , 'doctrine' //look for Log\Doctrine services
+    $serviceBuilder = new Core\ServiceBuilder\Log(
+                    $serviceName,
+                    $configuration,
+                    array(),
+                    "Doctrine"
     );
 
-    return $service->getService();
+    return $serviceBuilder->buildService()->getService();
   }
 
   public function getService()
