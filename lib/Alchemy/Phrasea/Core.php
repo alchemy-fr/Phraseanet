@@ -56,43 +56,14 @@ class Core extends \Pimple
     );
     $this->configuration = new Core\Configuration($handler, $environement);
 
+    $this->init();
+
     /**
      * Set version
      */
     $this['Version'] = $this->share(function()
             {
               return new Core\Version();
-            });
-
-    $core = $this;
-
-    /**
-     * Set Entity Manager using configuration
-     */
-    $this['EM'] = $this->share(function() use ($core)
-            {
-              $serviceName = $core->getConfiguration()->getOrm();
-
-              $service = $core->getService(
-                      $serviceName
-                      , Core\ServiceBuilder::ORM
-              );
-
-              return $service->getService();
-            });
-
-
-
-    $this["Twig"] = $this->share(function() use ($core)
-            {
-              $serviceName = $core->getConfiguration()->getTemplating();
-
-              $service = $core->getService(
-                      $serviceName
-                      , Core\ServiceBuilder::TEMPLATE_ENGINE
-              );
-
-              return $service->getService();
             });
 
     if (\setup::is_installed())
@@ -112,6 +83,54 @@ class Core extends \Pimple
                 return new \Setup_Registry();
               });
     }
+
+    $core = $this;
+    /**
+     * Set Entity Manager using configuration
+     */
+    $this['EM'] = $this->share(function() use ($core)
+            {
+              $serviceName = $core->getConfiguration()->getOrm();
+              $configuration = $core->getConfiguration()->getService($serviceName);
+
+              $serviceBuilder = new Core\ServiceBuilder\Orm(
+                              $serviceName
+                              , $configuration
+                              , array("registry" => $core["Registry"])
+              );
+
+              return $serviceBuilder->buildService()->getService();
+            });
+
+
+
+    $this["Twig"] = $this->share(function() use ($core)
+            {
+              $serviceName = $core->getConfiguration()->getTemplating();
+
+              $configuration = $core->getConfiguration()->getService($serviceName);
+
+              $serviceBuilder = new Core\ServiceBuilder\TemplateEngine(
+                              $serviceName, $configuration
+              );
+
+              return $serviceBuilder->buildService()->getService();
+            });
+
+    $this["Cache"] = $this->share(function() use ($core)
+            {
+              $serviceName = $core->getConfiguration()->getCache();
+
+              $configuration = $core->getConfiguration()->getService($serviceName);
+
+              $serviceBuilder = new Core\ServiceBuilder\Cache(
+                              $serviceName
+                              , $configuration
+                              , array("registry" => $core["Registry"])
+              );
+
+              return $serviceBuilder->buildService()->getService();
+            });
 
     $this['Serializer'] = $this->share(function()
             {
@@ -157,13 +176,12 @@ class Core extends \Pimple
   {
     if ($this->getConfiguration()->isDisplayingErrors())
     {
-      ini_set('display_errors', 1);
+      ini_set('display_errors', 'on');
       error_reporting(E_ALL);
-      \Symfony\Component\HttpKernel\Debug\ErrorHandler::register();
     }
     else
     {
-      ini_set('display_errors', 0);
+      ini_set('display_errors', 'off');
     }
   }
 
@@ -175,6 +193,16 @@ class Core extends \Pimple
   public function getRegistry()
   {
     return $this['Registry'];
+  }
+  
+    /**
+   * Getter
+   * 
+   * @return \Registry 
+   */
+  public function getCache()
+  {
+    return $this['Cache'];
   }
 
   /**
@@ -291,17 +319,6 @@ class Core extends \Pimple
     $php_log = $this->getRegistry()->get('GV_RootPath') . 'logs/php_error.log';
 
     ini_set('error_log', $php_log);
-
-    if ($this->getRegistry()->get('GV_debug'))
-    {
-      ini_set('display_errors', 'on');
-      ini_set('display_startup_errors', 'on');
-    }
-    else
-    {
-      ini_set('display_errors', 'off');
-      ini_set('display_startup_errors', 'off');
-    }
 
     if ($this->getRegistry()->get('GV_log_errors'))
     {
@@ -437,17 +454,6 @@ class Core extends \Pimple
   public function getEnv()
   {
     return $this->conf->getEnvironnement();
-  }
-
-  public function getService($serviceName, $serviceScope)
-  {
-    $configuration = $this->configuration->getService($serviceName);
-
-    return Core\ServiceBuilder::build(
-                    $serviceName
-                    , $serviceScope
-                    , $configuration
-    );
   }
 
 }
