@@ -40,7 +40,6 @@ class Upgrader implements ControllerProviderInterface
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
               
-              ini_set('display_errors', 'on');
               $html = $twig->render(
                       '/setup/upgrader.twig'
                       , array(
@@ -60,7 +59,6 @@ class Upgrader implements ControllerProviderInterface
     $controllers->get('/status/', function() use ($app)
             {
               require_once __DIR__ . '/../../../../bootstrap.php';
-              ini_set('display_errors', 'on');
 
               $datas = \Setup_Upgrade::get_status();
 
@@ -70,7 +68,6 @@ class Upgrader implements ControllerProviderInterface
     $controllers->post('/execute/', function() use ($app)
             {
               require_once __DIR__ . '/../../../../bootstrap.php';
-              ini_set('display_errors', 'on');
               set_time_limit(0);
               session_write_close();
               ignore_user_abort(true);
