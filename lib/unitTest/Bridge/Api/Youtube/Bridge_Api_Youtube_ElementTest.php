@@ -3,9 +3,12 @@
 require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 require_once __DIR__ . '/../../Bridge_datas.inc';
 
-$new_include_path = realpath(__DIR__ . '/../../../../vendor/gdata/') . PATH_SEPARATOR . get_include_path();
-set_include_path($new_include_path);
-
+$include_path = realpath(__DIR__ . '/../../../../vendor/gdata/');
+if(strpos(get_include_path(), $include_path) === false)
+{
+  $new_include_path = $include_path . PATH_SEPARATOR . get_include_path();
+  set_include_path($new_include_path);
+}
 
 require_once('Zend/Loader.php');
 Zend_Loader::loadClass('Zend_Gdata_YouTube');

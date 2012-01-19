@@ -21,12 +21,11 @@ class HelperPushTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   public function setUp()
   {
     parent::setUp();
-    $this->object = new Push(self::$core, \Symfony\Component\HttpFoundation\Request::createFromGlobals());
   }
 
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testSearch().
    */
   public function testSearch()

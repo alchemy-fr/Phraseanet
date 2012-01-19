@@ -44,9 +44,9 @@ doctrine_dev:
       #Metadata cache : is used to cache entity class metadatas
       #If No cache is provided all cache are setted to default_cache which is an array cache type
       cache:
-        query: array
-        result: array
-        metadata: array
+        query: array_cache
+        result: array_cache
+        metadata: array_cache
     # Assign a service to log doctrine queries    
     log: query_logger
   
@@ -59,9 +59,9 @@ doctrine_test:
     dbal: test_connexion
     orm:
       cache:
-        query: array
-        result: array
-        metadata: array
+        query: array_cache
+        result: array_cache
+        metadata: array_cache
     log: query_logger
   
 # Doctrine production service options
@@ -72,9 +72,9 @@ doctrine_prod:
     dbal: main_connexion
     orm:
       cache:
-        query: apc
-        result: apc
-        metadata: apc
+        query: apc_cache
+        result: apc_cache
+        metadata: apc_cache
     log: query_logger
     
     

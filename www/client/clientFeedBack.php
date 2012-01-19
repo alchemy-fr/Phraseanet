@@ -44,7 +44,7 @@ switch ($parm['action'])
     $twig = $core->getTwig();
 
     $search_engine = null;
-    if (($options = unserialize($parm['options_serial'])) !== false)
+    if ($parm['env'] == 'RESULT' && ($options = unserialize($parm['options_serial'])) !== false)
     {
       $search_engine = new searchEngine_adapter($registry);
       $search_engine->set_options($options);

@@ -24,11 +24,6 @@ class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->client = $this->createClient();
   }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
-
   public function testRouteSlash()
   {
     $this->markTestIncomplete(

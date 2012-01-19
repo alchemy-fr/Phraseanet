@@ -166,7 +166,7 @@ class Core extends \Pimple
     }
     return;
   }
-
+  
   /**
    * Load Configuration
    * 
@@ -178,6 +178,7 @@ class Core extends \Pimple
     {
       ini_set('display_errors', 'on');
       error_reporting(E_ALL);
+//      \Symfony\Component\HttpKernel\Debug\ErrorHandler::register();
     }
     else
     {

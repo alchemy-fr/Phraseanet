@@ -24,7 +24,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testPropose_editing().
    */
   public function testPropose_editing()
@@ -36,7 +36,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testHas_thesaurus().
    */
   public function testHas_thesaurus()
@@ -48,7 +48,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_javascript_elements_ids().
    */
   public function testGet_javascript_elements_ids()
@@ -60,7 +60,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_javascript_elements().
    */
   public function testGet_javascript_elements()
@@ -72,7 +72,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_javascript_sugg_values().
    */
   public function testGet_javascript_sugg_values()
@@ -84,7 +84,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_javascript_status().
    */
   public function testGet_javascript_status()
@@ -96,7 +96,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_javascript_fields().
    */
   public function testGet_javascript_fields()
@@ -108,7 +108,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_status().
    */
   public function testGet_status()
@@ -120,7 +120,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_fields().
    */
   public function testGet_fields()
@@ -132,7 +132,7 @@ class HelperEditTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testExecute().
    */
   public function testExecute()

@@ -79,7 +79,7 @@ class Story implements ControllerProviderInterface
                 $metadatas[] = array(
                     'meta_struct_id' => $meta->get_id()
                     , 'meta_id' => null
-                    , 'value' => array($value)
+                    , 'value' => $value
                 );
               }
 

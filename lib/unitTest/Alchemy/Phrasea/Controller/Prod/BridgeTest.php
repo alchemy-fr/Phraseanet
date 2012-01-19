@@ -50,7 +50,8 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
   public function tearDown()
   {
     parent::tearDown();
-    self::$api->delete();
+    if(self::$api instanceof Bridge_Api)
+      self::$api->delete();
     if (self::$account instanceof Bridge_Account)
       self::$account->delete();
   }

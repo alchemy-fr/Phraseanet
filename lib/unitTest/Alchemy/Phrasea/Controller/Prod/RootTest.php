@@ -38,11 +38,6 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->client = $this->createClient();
   }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
-
   /**
    * Default route test
    */

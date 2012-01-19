@@ -40,9 +40,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   public function tearDown()
   {
-    self::$publisher->delete();
-    self::$entry->delete();
-    self::$feed->delete();
+    if(self::$publisher instanceof Feed_Publisher_Adapter)
+      self::$publisher->delete();
+    if(self::$entry instanceof Feed_Entry_Adapter)
+      self::$entry->delete();
+    if(self::$feed instanceof Feed_Adapter)
+      self::$feed->delete();
     parent::tearDown();
   }
 
@@ -473,7 +476,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
       {
         if ($p4field = $entry_item->get_record()->get_caption()->get_dc_field($field["dc_field"]))
         {
-          $this->assertEquals($p4field->get_value(true, $field["separator"]), $node->nodeValue
+          $this->assertEquals($p4field->get_serialized_values($field["separator"]), $node->nodeValue
                   , sprintf('Asserting good value for DC %s', $field["dc_field"]));
           if (sizeof($field["media_field"]["attributes"]) > 0)
           {

@@ -28,11 +28,6 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     parent::setUp();
   }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
-
   public function testInitialization()
   {
     $spec = $this->getMock(

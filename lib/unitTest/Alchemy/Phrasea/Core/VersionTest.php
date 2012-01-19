@@ -22,20 +22,6 @@ use Alchemy\Phrasea\Core\Version;
 class VersionTest extends \PhraseanetPHPUnitAbstract
 {
 
-  /**
-   *
-   * @var \Alchemy\Phrasea\Core\Configuration\Application 
-   */
-  public function setUp()
-  {
-    parent::setUp();
-  }
-
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
- 
   public function testGetNumber()
   {
     $this->assertTrue(is_string(Version::getNumber()));

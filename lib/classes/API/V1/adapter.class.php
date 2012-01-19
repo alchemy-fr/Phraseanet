@@ -1080,7 +1080,10 @@ class API_V1_adapter extends API_V1_Abstract
     $ret = array();
     foreach ($caption->get_fields() as $field)
     {
-      $ret[$field->get_meta_id()] = $this->list_record_caption_field($field);
+      foreach($field->get_values as $value)
+      {
+        $ret[$value->getId()] = $this->list_record_caption_field($value);
+      }
     }
 
     return $ret;
@@ -1092,17 +1095,17 @@ class API_V1_adapter extends API_V1_Abstract
    * @param caption_field $field
    * @return array
    */
-  protected function list_record_caption_field(caption_field $field)
+  protected function list_record_caption_field(caption_Field_Value $value, caption_field $field)
   {
     /**
      * @todo  ajouter une option pour avoir les values serialisées
      *        dans un cas multi
      */
     return array(
-        'meta_id' => $field->get_meta_id()
+        'meta_id' => $value->getId()
         , 'meta_structure_id' => $field->get_meta_struct_id()
         , 'name' => $field->get_name()
-        , 'value' => $field->get_value()
+        , 'value' => $value->getValue()
     );
   }
 

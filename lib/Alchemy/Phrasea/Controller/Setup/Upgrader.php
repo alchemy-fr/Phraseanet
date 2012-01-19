@@ -41,7 +41,7 @@ class Upgrader implements ControllerProviderInterface
               $twig = $app['Core']->getTwig();
               
               $html = $twig->render(
-                      '/setup/upgrader.twig'
+                      '/setup/upgrader.html.twig'
                       , array(
                   'locale' => \Session_Handler::get_locale()
                   , 'upgrade_status' => $upgrade_status

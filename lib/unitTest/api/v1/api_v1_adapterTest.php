@@ -249,11 +249,15 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $metadatas = array();
     foreach (self::$record_1->get_caption()->get_fields() as $field)
     {
-      $metadatas[] = array(
-          'meta_id' => $field->get_meta_id()
-          , 'meta_struct_id' => $field->get_meta_struct_id()
-          , 'value' => $field->get_value()
-      );
+      $values = $field->get_values();
+      foreach($values as $value)
+      {
+        $metadatas[] = array(
+            'meta_id' => $value->getId()
+            , 'meta_struct_id' => $field->get_meta_struct_id()
+            , 'value' => $value->getValue()
+        );
+      }
     }
 
     $metadatas = array_shift($metadatas);

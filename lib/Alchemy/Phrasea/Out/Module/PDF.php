@@ -317,7 +317,7 @@ class PDF
         $this->pdf->Write(5, $field->get_name() . " : ");
 
         $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-        $this->pdf->Write(5, $field->get_value(true));
+        $this->pdf->Write(5, $field->get_serialized_values());
 
         $this->pdf->Write(6, "\n");
         $nf++;
@@ -512,7 +512,7 @@ class PDF
         $t = str_replace(
                 array("&lt;", "&gt;", "&amp;")
                 , array("<", ">", "&")
-                , $field->get_value(true)
+                , $field->get_serialized_values()
         );
 
         $this->pdf->Write(5, $t);

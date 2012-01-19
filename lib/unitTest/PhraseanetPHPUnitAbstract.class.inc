@@ -842,10 +842,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         unlink(Setup_Upgrade::get_lock_file());
       }
 
-      $upgrader = new Setup_Upgrade($appbox);
-      $appbox->forceUpgrade($upgrader);
-      unset($upgrader);
-
       if (null !== self::$core)
       {
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -866,6 +862,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $tool->createSchema($metas);
       }
 
+      $upgrader = new Setup_Upgrade($appbox);
+      $appbox->forceUpgrade($upgrader);
+      unset($upgrader);
+      
       self::$updated = true;
     }
 
@@ -898,12 +898,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     if (!$usr_alt1_id)
     {
       $user = User_Adapter::create($appbox, 'test_phpunit_alt1', random::generatePassword(), 'noonealt1@example.com', false);
-      $usr_id = $user->get_id();
+      $usr_alt1_id = $user->get_id();
     }
     if (!$usr_alt2_id)
     {
       $user = User_Adapter::create($appbox, 'test_phpunit_alt2', random::generatePassword(), 'noonealt2@example.com', false);
-      $usr_id = $user->get_id();
+      $usr_alt2_id = $user->get_id();
     }
 
     self::$user = User_Adapter::getInstance($usr_id, $appbox);
@@ -1001,7 +1001,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
     if (!$collection_no_acces instanceof collection)
     {
-      self::fail('Unable to find a second collection');
+      $collection_no_acces = collection::create($databox, $appbox, 'BIBOO', self::$user);
+//      self::fail('Unable to find a second collection');
     }
 
     self::$collection = $coll;
