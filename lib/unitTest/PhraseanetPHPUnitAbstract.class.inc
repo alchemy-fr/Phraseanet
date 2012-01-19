@@ -818,12 +818,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $serviceName = $configuration->getTemplating();
     $confService = $configuration->getService($serviceName);
 
-    $templateService = \Alchemy\Phrasea\Core\ServiceBuilder::build(
+    $templateServiceBuilder = new \Alchemy\Phrasea\Core\ServiceBuilder\TemplateEngine(
                     $serviceName
-                    , \Alchemy\Phrasea\Core\ServiceBuilder::TEMPLATE_ENGINE
                     , $confService
     );
-    $this->app['Core']["Twig"] = $templateService->getService();
+    
+    $this->app['Core']["Twig"] = $templateServiceBuilder->buildService()->getService();
   }
 
   /**
@@ -1020,13 +1020,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     if (static::$need_story && !self::$story_1 instanceof record_adapter)
     {
+      echo "generate story 1\n";
       self::$story_1 = \record_adapter::create(
                       self::$collection
                       , new system_file(__DIR__ . '/testfiles/test001.CR2')
                       , false
                       , true
       );
-//      echo "generate story 1\n";
     }
 
     return;
@@ -1043,116 +1043,139 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
       if (self::$record_1 instanceof record_adapter && !isset(self::$generated_subdefs['a1']))
       {
+        echo "Generate subdefs 1 \n";
         self::$record_1->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a1'] = true;
       }
       if (self::$record_2 instanceof record_adapter && !isset(self::$generated_subdefs['a2']))
       {
+        echo "Generate subdefs 2 \n";
         self::$record_2->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a2'] = true;
       }
       if (self::$record_3 instanceof record_adapter && !isset(self::$generated_subdefs['a3']))
       {
+        echo "Generate subdefs 3 \n";
         self::$record_3->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a3'] = true;
       }
       if (self::$record_4 instanceof record_adapter && !isset(self::$generated_subdefs['a4']))
       {
+        echo "Generate subdefs 4 \n";
         self::$record_4->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a4'] = true;
       }
       if (self::$record_5 instanceof record_adapter && !isset(self::$generated_subdefs['a5']))
       {
+        echo "Generate subdefs 5 \n";
         self::$record_5->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a5'] = true;
       }
       if (self::$record_6 instanceof record_adapter && !isset(self::$generated_subdefs['a6']))
       {
+        echo "Generate subdefs 6 \n";
         self::$record_6->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a6'] = true;
       }
       if (self::$record_7 instanceof record_adapter && !isset(self::$generated_subdefs['a7']))
       {
+        echo "Generate subdefs 7 \n";
         self::$record_7->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a7'] = true;
       }
       if (self::$record_8 instanceof record_adapter && !isset(self::$generated_subdefs['a8']))
       {
+        echo "Generate subdefs 8 \n";
         self::$record_8->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a8'] = true;
       }
       if (self::$record_9 instanceof record_adapter && !isset(self::$generated_subdefs['a9']))
       {
+        echo "Generate subdefs 9 \n";
         self::$record_9->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a9'] = true;
       }
       if (self::$record_10 instanceof record_adapter && !isset(self::$generated_subdefs['a10']))
       {
+        echo "Generate subdefs 10 \n";
         self::$record_10->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a10'] = true;
       }
       if (self::$record_11 instanceof record_adapter && !isset(self::$generated_subdefs['a11']))
       {
+        echo "Generate subdefs 11 \n";
         self::$record_11->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a11'] = true;
       }
       if (self::$record_12 instanceof record_adapter && !isset(self::$generated_subdefs['a12']))
       {
+        echo "Generate subdefs 12 \n";
         self::$record_12->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a12'] = true;
       }
       if (self::$record_13 instanceof record_adapter && !isset(self::$generated_subdefs['a13']))
       {
+        echo "Generate subdefs 13 \n";
         self::$record_13->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a13'] = true;
       }
       if (self::$record_14 instanceof record_adapter && !isset(self::$generated_subdefs['a14']))
       {
+        echo "Generate subdefs 14 \n";
         self::$record_14->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a14'] = true;
       }
       if (self::$record_15 instanceof record_adapter && !isset(self::$generated_subdefs['a15']))
       {
+        echo "Generate subdefs 15 \n";
         self::$record_15->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a15'] = true;
       }
       if (self::$record_16 instanceof record_adapter && !isset(self::$generated_subdefs['a16']))
       {
+        echo "Generate subdefs 16 \n";
         self::$record_16->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a16'] = true;
       }
       if (self::$record_17 instanceof record_adapter && !isset(self::$generated_subdefs['a17']))
       {
+        echo "Generate subdefs 17 \n";
         self::$record_17->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a17'] = true;
       }
       if (self::$record_18 instanceof record_adapter && !isset(self::$generated_subdefs['a18']))
       {
+        echo "Generate subdefs 18 \n";
         self::$record_18->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a18'] = true;
       }
       if (self::$record_19 instanceof record_adapter && !isset(self::$generated_subdefs['a19']))
       {
+        echo "Generate subdefs 19 \n";
         self::$record_19->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a19'] = true;
       }
       if (self::$record_20 instanceof record_adapter && !isset(self::$generated_subdefs['a20']))
       {
+        echo "Generate subdefs 20 \n";
         self::$record_20->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a20'] = true;
       }
       if (self::$record_21 instanceof record_adapter && !isset(self::$generated_subdefs['a21']))
       {
+        echo "Generate subdefs 21 \n";
         self::$record_21->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a21'] = true;
       }
       if (self::$record_22 instanceof record_adapter && !isset(self::$generated_subdefs['a22']))
       {
+        echo "Generate subdefs 22 \n";
         self::$record_22->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a22'] = true;
       }
       if (self::$record_23 instanceof record_adapter && !isset(self::$generated_subdefs['a23']))
       {
+        echo "Generate subdefs 23 \n";
         self::$record_23->generate_subdefs(self::$collection->get_databox());
         self::$generated_subdefs['a23'] = true;
       }
@@ -1170,121 +1193,145 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
       if ((static::$need_records === true || static::$need_records >= 1) && !self::$record_1 instanceof record_adapter)
       {
+      echo "generate story 1\n";
         self::$record_sf_1 = new system_file(__DIR__ . '/testfiles/test001.CR2');
         self::$record_1 = record_adapter::create(self::$collection, self::$record_sf_1);
       }
       if ((static::$need_records === true || static::$need_records >= 1) && !self::$record_no_access instanceof record_adapter)
       {
+      echo "generate story 1\n";
         $file = new system_file(__DIR__ . '/testfiles/test001.CR2');
         self::$record_no_access = record_adapter::create(self::$collection_no_access, $file);
       }
       if ((static::$need_records === true || static::$need_records >= 2) && !self::$record_2 instanceof record_adapter)
       {
+      echo "generate story 2\n";
         self::$record_sf_2 = new system_file(__DIR__ . '/testfiles/test002.CR2');
         self::$record_2 = record_adapter::create(self::$collection, self::$record_sf_2);
       }
       if ((static::$need_records === true || static::$need_records >= 3) && !self::$record_3 instanceof record_adapter)
       {
+      echo "generate story 3\n";
         self::$record_sf_3 = new system_file(__DIR__ . '/testfiles/test003.CR2');
         self::$record_3 = record_adapter::create(self::$collection, self::$record_sf_3);
       }
       if ((static::$need_records === true || static::$need_records >= 4) && !self::$record_4 instanceof record_adapter)
       {
+      echo "generate story 4\n";
         self::$record_sf_4 = new system_file(__DIR__ . '/testfiles/test004.CR2');
         self::$record_4 = record_adapter::create(self::$collection, self::$record_sf_4);
       }
       if ((static::$need_records === true || static::$need_records >= 5) && !self::$record_5 instanceof record_adapter)
       {
+      echo "generate story 5\n";
         self::$record_sf_5 = new system_file(__DIR__ . '/testfiles/test005.CR2');
         self::$record_5 = record_adapter::create(self::$collection, self::$record_sf_5);
       }
       if ((static::$need_records === true || static::$need_records >= 6) && !self::$record_6 instanceof record_adapter)
       {
+      echo "generate story 6\n";
         self::$record_sf_6 = new system_file(__DIR__ . '/testfiles/test006.wav');
         self::$record_6 = record_adapter::create(self::$collection, self::$record_sf_6);
       }
       if ((static::$need_records === true || static::$need_records >= 7) && !self::$record_7 instanceof record_adapter)
       {
+      echo "generate story 7\n";
         self::$record_sf_7 = new system_file(__DIR__ . '/testfiles/test007.ppt');
         self::$record_7 = record_adapter::create(self::$collection, self::$record_sf_7);
       }
       if ((static::$need_records === true || static::$need_records >= 8) && !self::$record_8 instanceof record_adapter)
       {
+      echo "generate story 8\n";
         self::$record_sf_8 = new system_file(__DIR__ . '/testfiles/test008.ai');
         self::$record_8 = record_adapter::create(self::$collection, self::$record_sf_8);
       }
       if ((static::$need_records === true || static::$need_records >= 9) && !self::$record_9 instanceof record_adapter)
       {
+      echo "generate story 9\n";
         self::$record_sf_9 = new system_file(__DIR__ . '/testfiles/test009.TIFF');
         self::$record_9 = record_adapter::create(self::$collection, self::$record_sf_9);
       }
       if ((static::$need_records === true || static::$need_records >= 10) && !self::$record_10 instanceof record_adapter)
       {
+      echo "generate story 10\n";
         self::$record_sf_10 = new system_file(__DIR__ . '/testfiles/test010.fla');
         self::$record_10 = record_adapter::create(self::$collection, self::$record_sf_10);
       }
       if ((static::$need_records === true || static::$need_records >= 11) && !self::$record_11 instanceof record_adapter)
       {
+      echo "generate story 11\n";
         self::$record_sf_11 = new system_file(__DIR__ . '/testfiles/test011.swf');
         self::$record_11 = record_adapter::create(self::$collection, self::$record_sf_11);
       }
       if ((static::$need_records === true || static::$need_records >= 12) && !self::$record_12 instanceof record_adapter)
       {
+      echo "generate story 12\n";
         self::$record_sf_12 = new system_file(__DIR__ . '/testfiles/test012.wav');
         self::$record_12 = record_adapter::create(self::$collection, self::$record_sf_12);
       }
       if ((static::$need_records === true || static::$need_records >= 13) && !self::$record_13 instanceof record_adapter)
       {
+      echo "generate story 13\n";
         self::$record_sf_13 = new system_file(__DIR__ . '/testfiles/test013.ai');
         self::$record_13 = record_adapter::create(self::$collection, self::$record_sf_13);
       }
       if ((static::$need_records === true || static::$need_records >= 14) && !self::$record_14 instanceof record_adapter)
       {
+      echo "generate story 14\n";
         self::$record_sf_14 = new system_file(__DIR__ . '/testfiles/test014.swf');
         self::$record_14 = record_adapter::create(self::$collection, self::$record_sf_14);
       }
       if ((static::$need_records === true || static::$need_records >= 15) && !self::$record_15 instanceof record_adapter)
       {
+      echo "generate story 15\n";
         self::$record_sf_15 = new system_file(__DIR__ . '/testfiles/test015.eps');
         self::$record_15 = record_adapter::create(self::$collection, self::$record_sf_15);
       }
       if ((static::$need_records === true || static::$need_records >= 16) && !self::$record_16 instanceof record_adapter)
       {
+      echo "generate story 16\n";
         self::$record_sf_16 = new system_file(__DIR__ . '/testfiles/test016.ai');
         self::$record_16 = record_adapter::create(self::$collection, self::$record_sf_16);
       }
       if ((static::$need_records === true || static::$need_records >= 17) && !self::$record_17 instanceof record_adapter)
       {
+      echo "generate story 17\n";
         self::$record_sf_17 = new system_file(__DIR__ . '/testfiles/test017.wav');
         self::$record_17 = record_adapter::create(self::$collection, self::$record_sf_17);
       }
       if ((static::$need_records === true || static::$need_records >= 18) && !self::$record_18 instanceof record_adapter)
       {
+      echo "generate story 18\n";
         self::$record_sf_18 = new system_file(__DIR__ . '/testfiles/test018.TIFF');
         self::$record_18 = record_adapter::create(self::$collection, self::$record_sf_18);
       }
       if ((static::$need_records === true || static::$need_records >= 19) && !self::$record_19 instanceof record_adapter)
       {
+      echo "generate story 19\n";
         self::$record_sf_19 = new system_file(__DIR__ . '/testfiles/test019.mp3');
         self::$record_19 = record_adapter::create(self::$collection, self::$record_sf_19);
       }
       if ((static::$need_records === true || static::$need_records >= 20) && !self::$record_20 instanceof record_adapter)
       {
+      echo "generate story 20\n";
         self::$record_sf_20 = new system_file(__DIR__ . '/testfiles/test020.mp3');
         self::$record_20 = record_adapter::create(self::$collection, self::$record_sf_20);
       }
       if ((static::$need_records === true || static::$need_records >= 21) && !self::$record_21 instanceof record_adapter)
       {
+      echo "generate story 21\n";
         self::$record_sf_21 = new system_file(__DIR__ . '/testfiles/test021.fla');
         self::$record_21 = record_adapter::create(self::$collection, self::$record_sf_21);
       }
       if ((static::$need_records === true || static::$need_records >= 22) && !self::$record_22 instanceof record_adapter)
       {
+      echo "generate story 22\n";
         self::$record_sf_22 = new system_file(__DIR__ . '/testfiles/test022.swf');
         self::$record_22 = record_adapter::create(self::$collection, self::$record_sf_22);
       }
       if ((static::$need_records === true || static::$need_records >= 23) && !self::$record_23 instanceof record_adapter)
       {
+      echo "generate story 23\n";
         self::$record_sf_23 = new system_file(__DIR__ . '/testfiles/test023.mp4');
         self::$record_23 = record_adapter::create(self::$collection, self::$record_sf_23);
       }
