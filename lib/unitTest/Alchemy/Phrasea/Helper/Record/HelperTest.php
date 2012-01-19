@@ -24,7 +24,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testIs_basket().
    */
   public function testIs_basket()
@@ -36,7 +36,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_original_basket().
    */
   public function testGet_original_basket()
@@ -48,7 +48,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testIs_single_grouping().
    */
   public function testIs_single_grouping()
@@ -60,7 +60,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_grouping_head().
    */
   public function testGet_grouping_head()
@@ -72,7 +72,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_elements().
    */
   public function testGet_elements()
@@ -84,7 +84,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testHas_many_sbas().
    */
   public function testHas_many_sbas()
@@ -96,7 +96,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testIs_possible().
    */
   public function testIs_possible()
@@ -108,7 +108,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_count_not_actionable().
    */
   public function testGet_count_not_actionable()
@@ -120,7 +120,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_count_actionable().
    */
   public function testGet_count_actionable()
@@ -132,7 +132,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_count_actionable_groupings().
    */
   public function testGet_count_actionable_groupings()
@@ -144,7 +144,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_count_element_received().
    */
   public function testGet_count_element_received()
@@ -156,7 +156,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_sbas_id().
    */
   public function testGet_sbas_id()
@@ -168,7 +168,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGet_serialize_list().
    */
   public function testGet_serialize_list()
@@ -180,7 +180,7 @@ class HelperHelperTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testGrep_records().
    */
   public function testGrep_records()

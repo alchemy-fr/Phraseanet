@@ -24,7 +24,7 @@ class HelperMoveCollectionTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testAvailable_destination().
    */
   public function testAvailable_destination()
@@ -36,7 +36,7 @@ class HelperMoveCollectionTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testPropose().
    */
   public function testPropose()
@@ -48,7 +48,7 @@ class HelperMoveCollectionTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * 
    * @todo Implement testExecute().
    */
   public function testExecute()
