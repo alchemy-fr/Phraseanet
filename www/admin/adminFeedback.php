@@ -107,9 +107,7 @@ switch ($parm['action'])
     break;
 
   case 'SETTASKSTATUS':
-
     $parm = $request->get_parms("task_id", "status");
-
     try
     {
       $task_manager = new task_manager($appbox);
@@ -120,13 +118,10 @@ switch ($parm['action'])
     {
 
     }
-
     break;
 
   case 'SETSCHEDSTATUS':
-
     $parm = $request->get_parms('status');
-
     try
     {
       $task_manager = new task_manager($appbox);
@@ -145,10 +140,9 @@ switch ($parm['action'])
 
     $output = $ret->saveXML();
     break;
+  
   case 'RESETTASKCRASHCOUNTER':
-
     $parm = $request->get_parms("task_id");
-
     try
     {
       $task_manager = new task_manager($appbox);
@@ -166,15 +160,10 @@ switch ($parm['action'])
     $root->appendChild($ret->createCDATASection(var_export($parm, true)));
 
     $output = $ret->saveXML();
-
-
     break;
 
   case 'CHANGETASK':
-
     $parm = $request->get_parms('act', 'task_id', "usr");
-
-
     $ret = new DOMDocument("1.0", "UTF-8");
     $ret->standalone = true;
     $ret->preserveWhiteSpace = false;
@@ -200,7 +189,7 @@ switch ($parm['action'])
 
     $output = $ret->saveXML();
     break;
-
+/*
   case 'PINGSCHEDULER':
     $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
 
@@ -267,7 +256,7 @@ switch ($parm['action'])
 
 
     break;
-    
+*/    
   case 'PINGSCHEDULER_JS':
     $ret = array();
     $ret['time'] = $dat = date("H:i:s");
@@ -284,6 +273,7 @@ switch ($parm['action'])
               , 'pid' =>$task->get_pid()
               , 'crashed'=>$task->get_crash_counter()
               , 'completed'=>$task->get_completed_percentage()
+              , 'status'=>$task->get_status()
       );
       $ret['tasks'][$_t['id']] = $_t;
     }
