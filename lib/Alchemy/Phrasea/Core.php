@@ -166,7 +166,7 @@ class Core extends \Pimple
     }
     return;
   }
-  
+
   /**
    * Load Configuration
    * 
@@ -174,15 +174,18 @@ class Core extends \Pimple
    */
   private function init()
   {
-    if ($this->getConfiguration()->isDisplayingErrors())
+    if ($this->getConfiguration()->isInstalled())
     {
-      ini_set('display_errors', 'on');
-      error_reporting(E_ALL);
+      if ($this->getConfiguration()->isDisplayingErrors())
+      {
+        ini_set('display_errors', 'on');
+        error_reporting(E_ALL);
 //      \Symfony\Component\HttpKernel\Debug\ErrorHandler::register();
-    }
-    else
-    {
-      ini_set('display_errors', 'off');
+      }
+      else
+      {
+        ini_set('display_errors', 'off');
+      }
     }
   }
 
@@ -195,8 +198,8 @@ class Core extends \Pimple
   {
     return $this['Registry'];
   }
-  
-    /**
+
+  /**
    * Getter
    * 
    * @return \Registry 
