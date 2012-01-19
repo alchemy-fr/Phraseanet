@@ -39,16 +39,9 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
    */
   protected $usr_id;
 
-  public function __construct(Symfony\Component\HttpFoundation\Request $request)
+  public function export()
   {
-    $this->request = $request;
-
-
-    return $this;
-  }
-  
-  public function export(Symfony\Component\HttpFoundation\Request $request)
-  {
+    $request = $this->request;
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
 
@@ -84,8 +77,9 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
     return $this->results->get_results();
   }
 
-  public function search(Symfony\Component\HttpFoundation\Request $request)
+  public function search()
   {
+    $request = $this->request;
     $appbox = \appbox::get_instance();
 
     $offset_start = (int) $this->request->get('offset_start');

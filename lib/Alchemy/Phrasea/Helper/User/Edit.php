@@ -543,7 +543,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     $users = $this->users;
 
-    $user = \User_adapter::getInstance(array_pop($users), appbox::get_instance());
+    $user = \User_adapter::getInstance(array_pop($users), \appbox::get_instance());
 
     if ($user->is_template())
     {
