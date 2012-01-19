@@ -105,7 +105,7 @@ return call_user_func(function()
                                   'main_connexion' => $connexionINI,
                                   'test_connexion' => array(
                                       'driver' => 'pdo_sqlite',
-                                      'path' => $registry->get("GV_RootPath") . 'lib/unitTest/tests.sqlite',
+                                      'path' => realpath($registry->get("GV_RootPath") . 'lib/unitTest/tests.sqlite'),
                                       'charset' => 'UTF8'
                                       ));
 
