@@ -307,27 +307,27 @@ function editField(evt, meta_struct_id)
         if(!p4.edit.T_records[r]._selected)
           continue;
 
-        if(p4.edit.T_records[r].fields[meta_struct_id])
+        var values = p4.edit.T_records[r].fields[meta_struct_id].getValues();
+
+        for(v in values)
         {
-          // le champ est present dans le record
-          for(var f=0; f<p4.edit.T_records[r].fields[meta_struct_id].value.length; f++)
+          var word = values[v].getValue();
+
+          if(typeof(a['%' + word]) == 'undefined')
           {
-            var v = p4.edit.T_records[r].fields[meta_struct_id].value[f];		// le mot
-							
-            if(typeof(a['%'+v]) == 'undefined')
-            {
-              a['%'+v] = {
-                'n':0,
-                'f':new Array()
-              };	// n:nbr d'occurences DISTINCTES du mot ; f:flag presence mot dans r
-              p4.edit.T_mval.push(v);
-            }
-						
-            if(!a['%'+v].f[r])
-              a['%'+v].n++;		// premiere apparition du mot dans le record r
-            a['%'+v].f[r] = true;	// on ne recomptera pas le mot s'il apparait a nouveau dans le meme record
+            a['%' + word] = {
+              'n':0,
+              'f':new Array()
+            };	// n:nbr d'occurences DISTINCTES du mot ; f:flag presence mot dans r
+            p4.edit.T_mval.push(word);
           }
+
+          if(!a['%' + word].f[r])
+            a['%' + word].n++;		// premiere apparition du mot dans le record r
+          a['%' + word].f[r] = true;	// on ne recomptera pas le mot s'il apparait a nouveau dans le meme record
+
         }
+          
         n++;
       }
       p4.edit.T_mval.sort(SortCompareStrings);
@@ -436,24 +436,7 @@ function reveal_mval()
 		
     for(var r=0; r<tot_records; r++)
     {
-      //			if(p4.edit.T_records[r]._selected)
-      //				nsel++;
-			
-      isin = false;
-      if(p4.edit.T_records[r].fields[p4.edit.curField])
-      {
-        // le champ est present dans le record
-        var tot_fields = p4.edit.T_records[r].fields[p4.edit.curField].value.length;
-        for(var f=0; !isin && f<tot_fields; f++)
-        {
-          if(p4.edit.T_records[r].fields[p4.edit.curField].value[f] == v)
-          {
-            isin = true;
-            break;
-          }
-        }
-      }
-      if(isin)
+      if(p4.edit.T_records[r].fields[p4.edit.curField].hasValue(v))
       {
         $("#idEditDiaButtonsP_"+r).hide();
         var talt = $.sprintf(language.editDelSimple,v);
@@ -490,44 +473,14 @@ function edit_diabutton(irec, act)
   var meta_struct_id = p4.edit.curField;		// le champ en cours d'editing
   var v = $('#EditTextMultiValued', p4.edit.editBox).val();
 
-  // on ajoute/supprime le mot dans le record
-  if(p4.edit.T_records[irec].fields[meta_struct_id])
+  if(act == 'del')
   {
-    // le champ est present dans le record
-    var found = false;
-    for(var f=0; !found && f<p4.edit.T_records[irec].fields[meta_struct_id].value.length; f++)
-    {
-      if(p4.edit.T_records[irec].fields[meta_struct_id].value[f] == v)
-      {
-        found = true;	// le mot existe dans le champ
-        if(act == 'del')
-        {
-          // on le supprime
-          p4.edit.T_records[irec].fields[meta_struct_id].value.splice(f,1);
-        }
-      }
-    }
-    if(!found && act=='add')
-    {
-      // la valeur n'existait pas, on l'ajoute
-      p4.edit.T_records[irec].fields[meta_struct_id].value.push(v);
-      // on trie
-      p4.edit.T_records[irec].fields[meta_struct_id].value = p4.edit.T_records[irec].fields[meta_struct_id].value.sort(SortCompareStrings);
-      p4.edit.T_records[irec].fields[meta_struct_id].dirty = true;
-      p4.edit.T_records[irec].fields[meta_struct_id].meta_struct_id = meta_struct_id;
-    }
+    p4.edit.T_records[irec].fields[meta_struct_id].removeValue(v);
   }
-  else
+
+  if(act=='add')
   {
-    if(act=='add')
-    {
-      // le champ n'existe pas dans le record, on le cree
-      p4.edit.T_records[irec].fields[meta_struct_id] = {
-        'dirty': true,
-        'value': [ v ],
-        'meta_struct_id':meta_struct_id
-      };
-    }
+    p4.edit.T_records[irec].fields[meta_struct_id].addValue(v);
   }
 
   p4.edit.T_mval = [];			// tab des mots, pour trier
@@ -538,27 +491,26 @@ function edit_diabutton(irec, act)
     if(!p4.edit.T_records[r]._selected)
       continue;
 
-    if(p4.edit.T_records[r].fields[meta_struct_id])
+    var values = p4.edit.T_records[r].fields[meta_struct_id].getValues();
+
+    for(v in values)
     {
-      // le champ est present dans le record
-      for(var f=0; f<p4.edit.T_records[r].fields[meta_struct_id].value.length; f++)
+      var word = values[v].getValue();		// le mot
+
+      if(typeof(a['%' + word]) == 'undefined')
       {
-        var v = p4.edit.T_records[r].fields[meta_struct_id].value[f];		// le mot
-					
-        if(typeof(a['%'+v]) == 'undefined')
-        {
-          a['%'+v] = {
-            'n':0,
-            'f':new Array()
-          };	// n:nbr d'occurences DISTINCTES du mot ; f:flag presence mot dans r
-          p4.edit.T_mval.push(v);
-        }
-				
-        if(!a['%'+v].f[r])
-          a['%'+v].n++;		// premiere apparition du mot dans le record r
-        a['%'+v].f[r] = true;	// on ne recomptera pas le mot s'il apparait a nouveau dans le meme record
+        a['%' + word] = {
+          'n':0,
+          'f':new Array()
+        };	// n:nbr d'occurences DISTINCTES du mot ; f:flag presence mot dans r
+        p4.edit.T_mval.push(word);
       }
+
+      if(!a['%' + word].f[r])
+        a['%' + word].n++;		// premiere apparition du mot dans le record r
+      a['%' + word].f[r] = true;	// on ne recomptera pas le mot s'il apparait a nouveau dans le meme record
     }
+    
     n++;
   }
 	
@@ -601,34 +553,7 @@ function edit_addmval()
     if(!p4.edit.T_records[r]._selected)
       continue;
 
-    if(p4.edit.T_records[r].fields[meta_struct_id])
-    {
-      // le champ est present dans le record
-      var found = false;
-      for(var f=0; !found && f<p4.edit.T_records[r].fields[meta_struct_id].value.length; f++)
-      {
-        if(p4.edit.T_records[r].fields[meta_struct_id].value[f] == v)
-          found = true;	// le mot existe deja dans le champ pour ce record
-      }
-      if(!found)
-      {
-        // la valeur n'existait pas, on l'ajoute
-        p4.edit.T_records[r].fields[meta_struct_id].value.push(v);
-        // on trie
-        p4.edit.T_records[r].fields[meta_struct_id].value = p4.edit.T_records[r].fields[meta_struct_id].value.sort(SortCompareStrings);
-        p4.edit.T_records[r].fields[meta_struct_id].dirty = true;
-        p4.edit.T_records[r].fields[meta_struct_id].meta_struct_id = meta_struct_id;
-      }
-    }
-    else
-    {
-      // le champ n'existe pas dans le record, on le cree
-      p4.edit.T_records[r].fields[meta_struct_id] = {
-        'dirty': true,
-        'value': [ v ],
-        'meta_struct_id' : meta_struct_id
-      };
-    }
+    p4.edit.T_records[r].fields[meta_struct_id].addValue(v);
   }
 	
   updateEditSelectedRecords(null);
@@ -647,19 +572,7 @@ function edit_delmval()
     if(!p4.edit.T_records[r]._selected)
       continue;
 
-    if(p4.edit.T_records[r].fields[meta_struct_id])
-    {
-      // le champ est present dans le record
-      var t=0;		// to
-      for(var f=0; f < p4.edit.T_records[r].fields[meta_struct_id].value.length; f++ )
-      {
-        if(p4.edit.T_records[r].fields[meta_struct_id].value[f] != v)
-          p4.edit.T_records[r].fields[meta_struct_id].value[t++] = p4.edit.T_records[r].fields[meta_struct_id].value[f];
-      }
-      p4.edit.T_records[r].fields[meta_struct_id].value.length = t;
-      p4.edit.T_records[r].fields[meta_struct_id].dirty = true;
-      p4.edit.T_records[r].fields[meta_struct_id].meta_struct_id = meta_struct_id;
-    }
+    p4.edit.T_records[r].fields[meta_struct_id].removeValue(v);
   }
 	
   updateEditSelectedRecords(null);
@@ -703,37 +616,20 @@ function edit_validField(evt, action)
 
       if(action == "ok" || action == "ask_ok")
       {
-        // remplace tout le contenu
-        if(typeof(p4.edit.T_records[i].fields[p4.edit.curField]) == "undefined")
-          p4.edit.T_records[i].fields[p4.edit.curField] = {
-            'dirty': null,
-            'value': null
-          };		// si le champ n'existait pas, on le cree
-        newvalue = t;
+        p4.edit.T_records[i].fields[p4.edit.curField].addValue(t);
       }
       else if(action == "fusion" || action == "ask_fusion")
       {
-        // ajoute a la fin
-        if(typeof(p4.edit.T_records[i].fields[p4.edit.curField]) == "undefined")
-        {
-          // si le champ n'existait pas, on le cree
-          p4.edit.T_records[i].fields[p4.edit.curField] = {
-            'dirty': null,
-            'value': null
-          };
-          newvalue = t;
-        }
-        else
-        {
-          if(p4.edit.T_fields[p4.edit.curField].multi)
-            oldvalue = getConcatMulti(p4.edit.T_records[i].fields[p4.edit.curField].value);
-          else
-            oldvalue = p4.edit.T_records[i].fields[p4.edit.curField].value;
-          if(oldvalue == "")
-            newvalue = t;
-          else
-            newvalue = oldvalue + (p4.edit.T_fields[p4.edit.curField].multi ? " ; " : " ") + t;
-        }
+        p4.edit.T_records[i].fields[p4.edit.curField].addValue(t, true);
+      }
+      
+      if(p4.edit.T_records[i].fields[p4.edit.curField].isMulti())
+      {
+        var newvalue = p4.edit.T_records[i].fields[p4.edit.curField].getSerializedValues();
+      }
+      else
+      {
+        var newvalue = p4.edit.T_records[i].fields[p4.edit.curField].getValue().getValue();
       }
 			
       // on compare les valeurs du champ sur toutes les fiches selectionnees
@@ -748,13 +644,6 @@ function edit_validField(evt, action)
         if(newvalue != firstvalue)
           status = 2;		// mixed
       }
-			
-      if(p4.edit.T_fields[p4.edit.curField].multi)
-        newvalue = getSplitMulti(newvalue);
-
-      p4.edit.T_records[i].fields[p4.edit.curField].dirty = true;
-      p4.edit.T_records[i].fields[p4.edit.curField].value = newvalue;
-      p4.edit.T_records[i].fields[p4.edit.curField].meta_struct_id = p4.edit.curField;
 			
       check_required(i, p4.edit.curField);
     }
@@ -1094,10 +983,10 @@ function updateEditSelectedRecords(evt)
     {
       if(!p4.edit.T_records[i]._selected)
         continue;
-				
-      if(typeof(p4.edit.T_records[i].fields[f])=="undefined")
+			
+      
+      if(p4.edit.T_records[i].fields[f].isEmpty())
       {
-        // le champ n'existe pas dans ce record, on le considere comme 'vide'
         v = "";
       }
       else
@@ -1106,11 +995,11 @@ function updateEditSelectedRecords(evt)
         if(p4.edit.T_fields[f].multi)
         {
           // champ multi : on compare la concat des valeurs
-          v = getConcatMulti(p4.edit.T_records[i].fields[f].value);
+          v = p4.edit.T_records[i].fields[f].getSerializedValues()
         }
         else
         {
-          v = p4.edit.T_records[i].fields[f].value;
+          v = p4.edit.T_records[i].fields[f].getValue().getValue();
         }
       }
 			
@@ -1143,44 +1032,15 @@ function updateEditSelectedRecords(evt)
 
 function SortCompareStrings(a, b)
 {
-  if(typeof(a) != 'string')
+  if(typeof(a) != 'object')
     return(-1);
-  if(typeof(b) != 'string')
+  if(typeof(b) != 'object')
     return(1);
   var na = a.toUpperCase();
   var nb = b.toUpperCase();
   if(na == nb)
     return(0);
   return(na < nb ? -1 : 1);
-}
-
-// ---------------------------------------------------------------------
-// retourne une valeur concatenee pour comparer des champs multi-val
-// ---------------------------------------------------------------------
-function getConcatMulti(a)
-{
-  var v = "";
-  var i;
-  if(typeof(a)=="string")
-    return(a);
-  a = a.sort();
-  for(i in a)
-  {
-    if(a[i]=="")
-      continue;	// on n'accepte pas les mots vides
-    if(i==0 || a[i]!=a[i-1])	// on supprime les doublons
-      v += (v ? " ; ":"") + a[i];
-  }
-  return(v);
-}
-
-// ---------------------------------------------------------------------
-// retourne une valeur decoupee en multi-val
-// ---------------------------------------------------------------------
-function getSplitMulti(s)
-{
-  var v = new RegExp("\b*;\b*", "g");
-  return(s.split(v));
 }
 
 //---------------------------------------------------------------------
@@ -1238,9 +1098,7 @@ function check_required(id_r, id_f)
       }
       else
       {
-        var values = p4.edit.T_fields[f].multi ? (p4.edit.T_records[r].fields[f].value.length > 0 ? p4.edit.T_records[r].fields[f].value : ['']) : [ p4.edit.T_records[r].fields[f].value ];
-	
-        var check_required = $.trim(values.join(''));
+        var check_required = $.trim(p4.edit.T_records[r].fields[f].getSerializedValues());
         if(check_required == '')
         {
           elem.show();
@@ -1291,30 +1149,41 @@ function edit_applyMultiDesc(evt)
 
     for(f in p4.edit.T_records[r].fields)
     {
-      var name    = p4.edit.T_fields[f].name;
-      var meta_id = '';
-      if(typeof p4.edit.T_records[r].fields[f].meta_id != 'undefined')
-        var meta_id = p4.edit.T_records[r].fields[f].meta_id;
-      var type    = p4.edit.T_fields[f].type;
-      var values  = p4.edit.T_fields[f].multi ? (p4.edit.T_records[r].fields[f].value.length > 0 ? p4.edit.T_records[r].fields[f].value : ['']) : [ p4.edit.T_records[r].fields[f].value ];
-			
-      if(!p4.edit.T_records[r].fields[f].dirty)
+      if(!p4.edit.T_records[r].fields[f].isDirty())
         continue;
-      
+      var name    = p4.edit.T_fields[f].name;
+
+      var type    = p4.edit.T_fields[f].type;
+			
       editDirty = true;
       record_datas.edit = 1;
-
-      var temp = {
-        meta_id : meta_id,
-        meta_struct_id : p4.edit.T_records[r].fields[f].meta_struct_id,
-        value  : []
-      };
-
-      for(v in values)
+      
+      if(p4.edit.T_records[r].fields[f].isMulti())
       {
-        temp.value.push(cleanTags(values[v]));
+        var values = p4.edit.T_records[r].fields[f].getValues();
+        
+        for(v in values)
+        {
+          var temp = {
+            meta_id : values[v].getMetaId() ? values[v].getMetaId() : '',
+            meta_struct_id : p4.edit.T_records[r].fields[f].meta_struct_id,
+            value  : cleanTags(values[v].getValue())
+          };
+          record_datas.metadatas.push(temp);
+        }
       }
-      record_datas.metadatas.push(temp);
+      else
+      {
+        var value = p4.edit.T_records[r].fields[f].getValue();
+        
+        var temp = {
+          meta_id : value.getMetaId() ? value.getMetaId() : '',
+          meta_struct_id : p4.edit.T_records[r].fields[f].meta_struct_id,
+          value  : cleanTags(value.getValue())
+        };
+        record_datas.metadatas.push(temp);
+      }
+      
     }
     // les statbits
     var tsb  = [];
@@ -1339,6 +1208,11 @@ function edit_applyMultiDesc(evt)
     }
   }
 	
+  if(window.console)
+  {
+    console.log('sending datas ',t);
+  }
+  
   var options = {
     mds:t,
     sbid : p4.edit.sbas_id,
@@ -1397,7 +1271,7 @@ function edit_cancelMultiDesc(evt)
   {
     for(f in p4.edit.T_records[r].fields)
     {
-      if( (dirty |= p4.edit.T_records[r].fields[f].dirty) )
+      if( (dirty |= p4.edit.T_records[r].fields[f].isDirty()) )
         break;
     }
     for(var n in p4.edit.T_records[r].statbits)
@@ -1604,33 +1478,8 @@ function EditThesaurusSeeker(sbas_id)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function replace()
 {
-	
-	
   var field   = $("#EditSRField", p4.edit.editBox).val();
   var search  = $("#EditSearch",  p4.edit.editBox).val();
   var replace = $("#EditReplace", p4.edit.editBox).val();
@@ -1663,7 +1512,7 @@ function replace()
 	
   search = new RegExp(r_search, commut);
 	
-  var r, f, v, oldv, oldlist;
+  var r, f;
   for(r in p4.edit.T_records)
   {
     if(!p4.edit.T_records[r]._selected)
@@ -1672,49 +1521,7 @@ function replace()
     {
       if(field == '' || field==f)
       {
-        if(typeof(p4.edit.T_records[r].fields[f].value) == "string")
-        {
-          var oldv = p4.edit.T_records[r].fields[f].value;
-          var newv = oldv.replace(search, replace);
-          if(newv != oldv)
-          {
-            p4.edit.T_records[r].fields[f].value = newv;
-            p4.edit.T_records[r].fields[f].dirty = true;
-            p4.edit.T_records[r].fields[f].meta_struct_id = f;
-          }
-        }
-        else
-        {
-          for(v in p4.edit.T_records[r].fields[f].value)
-          {
-            var oldv = p4.edit.T_records[r].fields[f].value[v];
-            var newv = oldv.replace(search, replace);
-            if(newv != oldv)
-            {
-              p4.edit.T_records[r].fields[f].value[v] = newv;
-              p4.edit.T_records[r].fields[f].dirty = true;
-              p4.edit.T_records[r].fields[f].meta_struct_id = f;
-            }
-          }
-          // no duplicates in multi-valued please
-          var oldlist = p4.edit.T_records[r].fields[f].value;
-          p4.edit.T_records[r].fields[f].value = [];
-          for(var i in oldlist)
-          {
-            var found = false;
-            for(v in p4.edit.T_records[r].fields[f].value)
-            {
-              if(p4.edit.T_records[r].fields[f].value[v] == oldlist[i])
-              {
-                found = true;
-                break;
-              }
-            }
-            if(!found)
-              p4.edit.T_records[r].fields[f].value.push(oldlist[i]);
-          }
-          p4.edit.T_records[r].fields[f].value.sort(SortCompareStrings);
-        }
+        p4.edit.T_records[r].fields[f].replaceValue(search, replace);
       }
     }
   }
@@ -1838,27 +1645,9 @@ function preset_load(preset_id)
         {
           if(p4.edit.T_fields[i].preset != null)
           {
-            if(!(""+i in p4.edit.T_records[r].fields))
+            for(val in p4.edit.T_fields[i].preset)
             {
-              p4.edit.T_records[r].fields[""+i] = {};
-            }
-            
-            if(p4.edit.T_fields[i].multi)
-            {
-              p4.edit.T_records[r].fields[""+i].value = [];
-              p4.edit.T_records[r].fields[""+i].meta_struct_id = p4.edit.T_fields[i].meta_struct_id;
-              p4.edit.T_records[r].fields[""+i].dirty = true;
-              
-              for(val in p4.edit.T_fields[i].preset)
-              {
-                p4.edit.T_records[r].fields[""+i].value.push(p4.edit.T_fields[i].preset[val]);
-              }
-            }
-            else
-            {
-              p4.edit.T_records[r].fields[""+i].value = p4.edit.T_fields[i].preset[0];
-              p4.edit.T_records[r].fields[""+i].meta_struct_id = p4.edit.T_fields[i].meta_struct_id;
-              p4.edit.T_records[r].fields[""+i].dirty = true;
+              p4.edit.T_records[r].fields[""+i].addValue(p4.edit.T_fields[i].preset[val]);
             }
           }
         }
@@ -2061,6 +1850,37 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   p4.edit.regbasprid = regbasprid;
   p4.edit.ssel = ssel;
 	
+  
+//  var records = [];
+  
+  for(r in p4.edit.T_records)
+  {
+    var fields = {};
+    
+    for(f in p4.edit.T_records[r].fields)
+    {
+      var values = [];
+      var meta_struct_id = p4.edit.T_records[r].fields[f].meta_struct_id;
+      
+      for(v in p4.edit.T_records[r].fields[f].values)
+      {
+        var meta_id = p4.edit.T_records[r].fields[f].values[v].meta_id;
+        var value = p4.edit.T_records[r].fields[f].values[v].value;
+        
+        values.push(new p4.recordFieldValue(meta_id, value));
+      }
+      
+      var name = p4.edit.T_fields[meta_struct_id].name;
+      var multi = p4.edit.T_fields[meta_struct_id].multi;
+      var required = p4.edit.T_fields[meta_struct_id].required;
+      
+      fields[f] = new p4.recordField(name, meta_struct_id, {multi:multi, required:required}, values);
+    }
+    
+    p4.edit.T_records[r].fields = fields;
+    
+  }
+  
   $('#EDIT_MID_R .tabs').tabs();
 	
   $('#divS div.edit_field:odd').addClass('odd');
@@ -2335,3 +2155,5 @@ function setRegDefault(n,record_id)
 	
   $('#EDIT_GRPDIAPO .edit_IMGT').attr('src',src).attr('style',style);
 }
+
+
