@@ -353,6 +353,15 @@ class Configuration
   {
     return $this->getConfiguration()->get('template_engine');
   }
+  
+  /**
+   * Return cache service
+   * @return string 
+   */
+  public function getCache()
+  {
+    return $this->getConfiguration()->get('cache');
+  }
 
   /**
    * Return configuration service for orm
