@@ -2,7 +2,7 @@
 
 #Declare which environment will be used by the application
 
-environment : dev
+environment : prod
 
 #Declare all your environment configurations
 
