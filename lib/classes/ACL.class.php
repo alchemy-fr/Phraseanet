@@ -620,33 +620,43 @@ class ACL implements cache_cacheableInterface
   {
     $this->load_rights_bas();
     $ret = array();
-
-    foreach ($this->_rights_bas as $base_id => $datas)
+    
+    foreach($this->appbox->get_databoxes() as $databox)
     {
-      $continue = false;
-
-      if ($sbas_ids && !in_array(phrasea::sbasFromBas($base_id), $sbas_ids))
+      if ($sbas_ids && !in_array($databox->get_sbas_id(), $sbas_ids))
       {
         continue;
       }
-      foreach ($rights as $right)
+      
+      foreach ($databox->get_collections() as $collection)
       {
-        if (!$this->has_right_on_base($base_id, $right))
-        {
-          $continue = true;
-          break;
-        }
-      }
-      if ($continue || $this->is_limited($base_id))
-        continue;
+        $continue = false;
 
-      try
-      {
-        $ret[$base_id] = collection::get_from_base_id($base_id);
-      }
-      catch (Exception $e)
-      {
+        if(!array_key_exists($collection->get_base_id(), $this->_rights_bas))
+          continue;
         
+        $base_id = $collection->get_base_id();
+        $datas = $this->_rights_bas[$base_id];
+
+        foreach ($rights as $right)
+        {
+          if (!$this->has_right_on_base($base_id, $right))
+          {
+            $continue = true;
+            break;
+          }
+        }
+        if ($continue || $this->is_limited($base_id))
+          continue;
+
+        try
+        {
+          $ret[$base_id] = collection::get_from_base_id($base_id);
+        }
+        catch (Exception $e)
+        {
+
+        }
       }
     }
 
