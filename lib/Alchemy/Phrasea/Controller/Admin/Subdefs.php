@@ -30,7 +30,6 @@ class Subdefs
    *
    * @param http_request $request
    * @param databox $databox
-   * @return controller_admin_subdefs
    */
   public function __construct(\http_request $request, \databox &$databox)
   {
@@ -120,10 +119,6 @@ class Subdefs
     return $this;
   }
 
-  /**
-   *
-   * @return controller_admin_subdefs
-   */
   public function render()
   {
     $core = \bootstrap::getCore();
