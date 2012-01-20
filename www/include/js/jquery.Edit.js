@@ -1,13 +1,21 @@
 
 (function( window ) {
-
   
-  var recordFieldValue = function(meta_id, value) {
+  var recordFieldValue = function(meta_id, value, VocabularyId) {
     
-    this.datas = {meta_id:meta_id, value:value};
+    if(typeof VocabularyId === 'undefined')
+    {
+      VocabularyId = null;
+    }
+    
+    this.datas = {
+      meta_id:meta_id, 
+      value:value, 
+      VocabularyId:VocabularyId
+    };
     
     var $this = this;
-  }
+  };
   
   recordFieldValue.prototype = {
     getValue : function() {
@@ -15,6 +23,9 @@
     },
     getMetaId : function() {
       return this.datas.meta_id;
+    },
+    getVocabularyId : function() {
+      return this.datas.VocabularyId;
     },
     setValue : function(value) {
       this.datas.value = value;
@@ -27,23 +38,68 @@
     }
   };
   
-  var recordField = function(name, meta_struct_id, options, arrayValues) {
+  var databoxField = function(name, meta_struct_id, options) {
     
     var defaults = {
-          name : name,
-          multi : false,
-          required : false,
-          dirty : false
-        },
-        options = (typeof options == 'object') ? options : {};
-    
+      multi : false,
+      required : false,
+      readonly : false,
+      maxLength : null,
+      minLength : null,
+      type : 'string',
+      separator : null,
+      vocabularyControl : null,
+      vocabularyRestricted : false
+    },
+    options = (typeof options == 'object') ? options : {};
+        
     if(isNaN(meta_struct_id))
     {
       throw 'meta_struct_id should be a number';
     }
     
+    this.name = name;
     this.meta_struct_id = meta_struct_id;
     this.options = jQuery.extend(defaults, options);
+    
+  };
+  
+  databoxField.prototype = {
+    getMetaStructId : function() {
+      return this.meta_struct_id;
+    },
+    getName : function() {
+      return this.name;
+    },
+    isMulti : function() {
+      return this.options.multi;
+    },
+    isRequired : function() {
+      return this.options.required;
+    },
+    isReadonly : function() {
+      return this.options.readonly;
+    },
+    getMaxLength : function() {
+      return this.options.maxLength;
+    },
+    getMinLength : function() {
+      return this.options.minLength;
+    },
+    getType : function() {
+      return this.options.type;
+    },
+    getSeparator : function() {
+      return this.options.separator;
+    }
+  };
+  
+  var recordField = function(databoxField, arrayValues) {
+    
+    this.databoxField = databoxField;
+    this.options = {
+      dirty : false
+    };
     this.datas = new Array();
 
     if(typeof arrayValues === 'object')
@@ -85,34 +141,45 @@
   }
   recordField.prototype = {
     getName : function() {
-      return this.options.name;
+      return this.databoxField.getName();
     },
     isMulti : function() {
-      return this.options.multi;
+      return this.databoxField.isMulti();
     },
     isRequired : function() {
-      return this.options.required;
+      return this.databoxField.isRequired();
     },
     isDirty : function() {
       return this.options.dirty;
     },
-    addValue : function(value, merge) {
+    addValue : function(value, merge, VocabularyId) {
+      
+      if(typeof VocabularyId === 'undefined')
+        VocabularyId = null;
+      
       merge = !!merge;
+      
+      if(this.databoxField.isReadonly())
+      {
+        if(window.console)
+          console.error('Unable to set a value to a readonly field');
+        return;
+      }
       
       if(window.console)
       {
-        console.log('adding value ',value,' ; merge is ',merge);
+        console.log('adding value ',value,' vocId : ', VocabularyId , '  ; merge is ',merge);
       }
       
       if(this.isMulti())
       {
-        if(!this.hasValue(value))
+        if(!this.hasValue(value, VocabularyId))
         {
           if(window.console)
           {
             console.log('adding new multi value ',value);
           }
-          this.datas.push(new recordFieldValue(null, value));
+          this.datas.push(new recordFieldValue(null, value, VocabularyId));
           this.options.dirty = true;
         }
       }
@@ -125,11 +192,13 @@
             console.log('Merging value ',value);
           }
           this.datas[0].setValue(this.datas[0].getValue() + ' ' + value);
+          this.datas[0].setVocabularyId(VocabularyId);
+          
           this.options.dirty = true;
         }
         else  
         {
-          if(!this.hasValue(value))
+          if(!this.hasValue(value, VocabularyId))
           {
             if(this.datas.length === 0)
             {
@@ -137,7 +206,7 @@
               {
                 console.log('Adding new value ',value);
               }
-              this.datas.push(new recordFieldValue(null, value));
+              this.datas.push(new recordFieldValue(null, value, VocabularyId));
             }
             else
             {
@@ -146,6 +215,7 @@
                 console.log('Updating value ',value);
               }
               this.datas[0].setValue(value);
+              this.datas[0].setVocabularyId(VocabularyId);
             }
             this.options.dirty = true;
           }
@@ -154,7 +224,7 @@
       
       return this;
     },
-    hasValue : function(value) {
+    hasValue : function(value, VocabularyId) {
       
       if(typeof value === 'undefined')
       {
@@ -162,14 +232,31 @@
           console.error('Trying to check the presence of an undefined value');
       }
       
+      if(typeof VocabularyId === 'undefined')
+        VocabularyId = null;
+      
       for(d in this.datas)
       {
-        if(this.datas[d].getValue() == value)
+        if(this.datas[d].getVocabularyId() !== null && VocabularyId !== null)
+        {
+          if(this.datas[d].getVocabularyId() === VocabularyId)
+            return true;
+        }
+        else if(this.datas[d].getValue() == value)
+        {
           return true;
+        }
       }
       return false;
     },
     removeValue : function(value) {
+      
+      if(this.databoxField.isReadonly())
+      {
+        if(window.console)
+          console.error('Unable to set a value to a readonly field');
+        return;
+      }
       
       for(d in this.datas)
       {
@@ -193,6 +280,13 @@
     },
     empty : function() {
       
+      if(this.databoxField.isReadonly())
+      {
+        if(window.console)
+          console.error('Unable to set a value to a readonly field');
+        return;
+      }
+      
       for(d in this.datas)
       {
         this.datas[d].remove();
@@ -213,8 +307,10 @@
     getValues : function() {
       
       if(!this.isMulti())
+      {
         throw 'This field is not multi, I can not give you multiple values';
-      
+      }
+    
       if(this.isEmpty())
         return new Array();
       
@@ -240,21 +336,40 @@
         arrayValues.push(values[v].getValue());
       }
       
-      return arrayValues.join(' ; ');
+      return arrayValues.join(' ' + this.databoxField.getSeparator() + ' ');
     },
     replaceValue : function(search, replace) {
       
+      if(this.databoxField.isReadonly())
+      {
+        if(window.console)
+          console.error('Unable to set a value to a readonly field');
+        return;
+      }
+      
+      console.log('Search / Replace');
+      
       for(d in this.datas)
       {
+        if(this.datas[d].getVocabularyId() !== null)
+        {
+          console.log('value has vocabId, continue;');
+          continue;
+        }
+        
         var value = this.datas[d].getValue();
         var replacedValue = value.replace(search, replace);
         
         if(value === replacedValue)
+        {
+          console.log('value', value, ' has not change, continue;');
           continue;
-        
+        }
         this.removeValue(value);
+        
         if(!this.hasValue(replacedValue))
         {
+          console.log('adding value ', replacedValue);
           this.addValue(replacedValue);
         }
         
@@ -270,7 +385,8 @@
   };
 
   window.p4 = window.p4 || {};
-
+  
+  window.p4.databoxField = databoxField;
   window.p4.recordFieldValue = recordFieldValue;
   window.p4.recordField = recordField;
   
