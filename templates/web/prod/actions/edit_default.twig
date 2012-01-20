@@ -53,8 +53,8 @@
       </table>
     </div>
     <div class="editDiaButtons" style="position:absolute; bottom:0px; right:0px; width:30px; height:12px; display:none">
-      <img id="idEditDiaButtonsP_{{i}}" onclick="edit_diabutton({{i}}, 'add');" style="cursor:pointer" src="/skins/icons/tri_plus.gif"/>
-      <img id="idEditDiaButtonsM_{{i}}" onclick="edit_diabutton({{i}}, 'del');" style="cursor:pointer" src="/skins/icons/tri_minus.gif"/>
+      <img id="idEditDiaButtonsP_{{i}}" style="cursor:pointer" src="/skins/icons/tri_plus.gif"/>
+      <img id="idEditDiaButtonsM_{{i}}" style="cursor:pointer" src="/skins/icons/tri_minus.gif"/>
     </div>
   </div>
 {% endmacro %}
@@ -184,7 +184,7 @@
             <div id="ZTextMultiValued" style="position:absolute; top:0px; left:0px; width:100%; height:100%; display:none;">
               <form onsubmit="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);return(false);" style="position:absolute; height:30px; left:2px; right:2px;">
                 <div style="position:absolute; top:0px; left:0px; right:70px; height:17px;">
-                  <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" onkeyup="reveal_mval();" value="" />
+                  <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" value="" />
                 </div>
                 <div style="position:absolute; top:6px; width:60px; right:0px; height:11px;">
                   <img id="EditButAddMultiValued" style="cursor:pointer" src="/skins/icons/tri_plus.gif"  onclick="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);" />
@@ -192,7 +192,7 @@
                   <img id="EditButDelMultiValued" style="cursor:pointer" src="/skins/icons/tri_minus.gif" onclick="edit_delmval();" />
                 </div>
               </form>
-              <div id="ZTextMultiValued_values" style="position:absolute; top:22px; left:4px; right:4px; bottom:4px; overflow:scroll;">
+              <div id="ZTextMultiValued_values">
               </div>
             </div>
             <div id="ZTextStatus" style="position:absolute; top:0px; left:0px; width:100%; height:100%; display:none;">
