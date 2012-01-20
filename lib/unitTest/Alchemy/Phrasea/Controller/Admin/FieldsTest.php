@@ -13,6 +13,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    * As controllers use WebTestCase, it requires a client 
    */
   protected $client;
+
   /**
    * If the controller tests require some records, specify it her
    * 
@@ -31,7 +32,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Admin.php';
   }
-  
+
   public function setUp()
   {
     parent::setUp();
@@ -41,11 +42,45 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   /**
    * Default route test
    */
-  public function testRouteSlash()
+  public function testCheckMulti()
   {
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $appbox = \appbox::get_instance();
+    $databox = array_shift($appbox->get_databoxes());
+
+    $field = \databox_field::create($databox, "test" . time());
+    $source = $field->get_source();
+
+    $this->client->request("GET", "/fields/checkmulti/", array(
+        'souce' => $source, 'multi' => 'false'));
+
+    $response = $this->client->getResponse();
+    $this->assertEquals("application/json", $response->headers->get("content-type"));
+    $datas = json_decode($response->getContent());
+    $this->assertTrue(is_object($datas));
+    $this->assertTrue(!!$datas->result);
+    $this->assertEquals($field->is_multi(), !!$datas->is_multi);
+    $field->delete();
+  }
+
+  public function testCheckReadOnly()
+  {
+    $appbox = \appbox::get_instance();
+    $databox = array_shift($appbox->get_databoxes());
+
+    $field = \databox_field::create($databox, "test" . time());
+    $source = $field->get_source();
+
+    $this->client->request("GET", "/fields/checkreadonly/", array(
+        'souce' => $source, 'readonly' => 'false'));
+
+    $response = $this->client->getResponse();
+    $this->assertEquals("application/json", $response->headers->get("content-type"));
+    $datas = json_decode($response->getContent());
+    $this->assertTrue(is_object($datas));
+    $this->assertTrue(!!$datas->result);
+    $this->assertEquals($field->is_readonly(), !!$datas->is_readonly);
+    
+    $field->delete();
   }
 
 }
