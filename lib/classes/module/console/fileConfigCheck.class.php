@@ -324,13 +324,13 @@ class module_console_fileConfigCheck extends Command
       }
 
 
-      $service = Core\ServiceBuilder::build(
+      $serviceBuilder = new Core\ServiceBuilder\TemplateEngine(
                       $templateEngineName
-                      , Core\ServiceBuilder::TEMPLATE_ENGINE
                       , $configuration
       );
 
-
+      $service = $serviceBuilder->buildService();
+      
       if ($service->getType() === 'twig')
       {
         $twig = $service->getService();
@@ -415,11 +415,15 @@ class module_console_fileConfigCheck extends Command
         throw $e;
       }
 
-      $service = Core\ServiceBuilder::build(
+      $registry = \registry::get_instance();
+      
+      $serviceBuilder = new Core\ServiceBuilder\Orm(
                       $ormName
-                      , Core\ServiceBuilder::ORM
                       , $configuration
+                      , array('registry'=> $registry)
       );
+
+      $service = $serviceBuilder->buildService();
 
       if ($service->getType() === 'doctrine')
       {

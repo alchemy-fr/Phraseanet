@@ -15,8 +15,7 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
-
-use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache as CacheService;
 
 /**
  * it's just like array cache
@@ -24,9 +23,9 @@ use Doctrine\Common\Cache\ArrayCache;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Tab extends ServiceAbstract implements ServiceInterface
+class XcacheCache extends ServiceAbstract implements ServiceInterface
 {
-  
+
   public function getScope()
   {
     return 'cache';
@@ -38,13 +37,34 @@ class Tab extends ServiceAbstract implements ServiceInterface
    */
   public function getService()
   {
-    return new ArrayCache();
+    if (!extension_loaded('xcache'))
+    {
+      throw new \Exception('The XCache cache requires the XCache extension.');
+    }
+
+    $registry = $this->getRegistry();
+
+    $service = new CacheService\XcacheCache();
+    $service->setNamespace($registry->get("GV_sit", ""));
+
+    return $service;
   }
 
   public function getType()
   {
-    return 'array';
+    return 'xcache';
+  }
+
+  private function getRegistry()
+  {
+    $registry = $this->getDependency("registry");
+
+    if (!$registry instanceof \registryInterface)
+    {
+      throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
+    }
+
+    return $registry;
   }
 
 }
-

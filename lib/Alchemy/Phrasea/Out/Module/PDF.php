@@ -50,7 +50,6 @@ class PDF
         case self::LAYOUT_PREVIEWCAPTIONTDM:
           try
           {
-//          exit('prout');
             $subdef = $record->get_subdef('preview');
             if (!$subdef->is_physically_present())
             {

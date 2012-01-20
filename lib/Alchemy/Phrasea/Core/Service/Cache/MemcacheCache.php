@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
-use Doctrine\Common\Cache\MemcacheCache;
+use Doctrine\Common\Cache as CacheService;
 
 /**
  *
@@ -54,7 +54,12 @@ class Memcache extends ServiceAbstract implements ServiceInterface
     $memchache = new \Memcache();
     $memchache->connect($this->host, $this->port);
 
-    return new MemcacheCache($memchache);
+    $registry = $this->getRegistry();
+
+    $service = new CacheService\MemcacheCache($memchache);
+    $service->setNamespace($registry->get("GV_sit", ""));
+
+    return $service;
   }
 
   public function getType()
@@ -72,5 +77,16 @@ class Memcache extends ServiceAbstract implements ServiceInterface
     return $this->port;
   }
 
+  private function getRegistry()
+  {
+    $registry = $this->getDependency("registry");
+
+    if (!$registry instanceof \registryInterface)
+    {
+      throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
+    }
+    
+    return $registry;
+  }
 }
 

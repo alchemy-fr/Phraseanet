@@ -20,18 +20,21 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class ServiceAbstract
+abstract class ServiceAbstract
 {
 
   protected $name;
   protected $options;
   protected $configuration;
+  
+  private $dependencies;
 
-  public function __construct($name, Array $options)
+  public function __construct($name, Array $options, Array $dependencies)
   {
     $this->name = $name;
     $this->options = $options;
-
+    $this->dependencies = $dependencies;
+    
     $spec = new Core\Configuration\Application();
     $parser = new Core\Configuration\Parser\Yaml();
     $handler = new Core\Configuration\Handler($spec, $parser);
@@ -39,15 +42,36 @@ class ServiceAbstract
     $this->configuration = new Core\Configuration($handler);
   }
 
+  protected function getDependency($name)
+  {
+    if(!array_key_exists($name, $this->dependencies))
+    {
+      throw new \Exception(sprintf("Unknow dependency %s for %s service ", $name, $this->name));
+    }
+    
+    return $this->dependencies[$name];
+  }
+  
+  
   /**
    *
-   * @return Core\Configuration 
+   * @return Array 
    */
   protected function getConfiguration()
   {
     return $this->configuration;
   }
+  
+  /**
+   *
+   * @return Array 
+   */
+  public function getDependencies()
+  {
+    return $this->dependencies;
+  }
 
+  
   /**
    *
    * @return string
@@ -75,20 +99,4 @@ class ServiceAbstract
     return '';
   }
 
-  /**
-   *
-   * @param type $serviceName
-   * @param type $serviceScope
-   * @return ServiceInterface
-   */
-  protected function findService($serviceName, $serviceScope, ParameterBag $configuration, $namespace = null)
-  {
-    
-    return Core\ServiceBuilder::build(
-                      $serviceName
-                    , $serviceScope
-                    , $configuration
-                    , $namespace
-    );
-  }
 }

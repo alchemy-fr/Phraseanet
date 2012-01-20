@@ -257,7 +257,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
       $this->assertArrayHasKey('meta_struct_id', $metadata);
       $this->assertArrayHasKey('meta_id', $metadata);
       $this->assertArrayHasKey('value', $metadata);
-      $this->assertTrue(is_array($metadata['value']));
+      $this->assertTrue(is_scalar($metadata['value']));
       $this->assertNull($metadata['meta_id']);
       $this->assertTrue(is_int($metadata['meta_struct_id']));
       $this->assertTrue($metadata['meta_struct_id'] > 0);

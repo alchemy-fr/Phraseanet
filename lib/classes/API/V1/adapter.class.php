@@ -588,9 +588,9 @@ class API_V1_adapter extends API_V1_Abstract
     $em = $this->core->getEntityManager();
     $repo = $em->getRepository('\Entities\Basket');
     /* @var $repo \Repositories\BasketRepository */
-    
+
     $baskets = $repo->findActiveByUser($this->core->getAuthenticatedUser());
-    
+
     $ret = array();
     foreach ($baskets as $basket)
     {
@@ -737,8 +737,8 @@ class API_V1_adapter extends API_V1_Abstract
             'updated_on' => $validation_datas->getUpdated()->format(DATE_ATOM),
             'note' => $validation_datas->getNote()
         );
-        
-        if($user->get_id() == $this->core->getAuthenticatedUser()->get_id())
+
+        if ($user->get_id() == $this->core->getAuthenticatedUser()->get_id())
         {
           $agreement = $validation_datas->getAgreement();
           $note = $validation_datas->getNote();
@@ -1080,9 +1080,9 @@ class API_V1_adapter extends API_V1_Abstract
     $ret = array();
     foreach ($caption->get_fields() as $field)
     {
-      foreach($field->get_values as $value)
+      foreach ($field->get_values() as $value)
       {
-        $ret[$value->getId()] = $this->list_record_caption_field($value);
+        $ret[$value->getId()] = $this->list_record_caption_field($value, $field);
       }
     }
 

@@ -37,9 +37,9 @@ class Monolog extends ServiceAbstract implements ServiceInterface
    */
   protected $monolog;
 
-  public function __construct($name, Array $options)
+  public function __construct($name, Array $options,Array $dependencies)
   {
-    parent::__construct($name, $options);
+    parent::__construct($name, $options, $dependencies);
 
     if (empty($options))
     {

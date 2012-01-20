@@ -43,12 +43,13 @@ try
     exit(sprintf("Doctrine is not declared as your ORM but %s is", $confService->get("type")));
   }
   
-  $ormService = \Alchemy\Phrasea\Core\ServiceBuilder::build(
+  $ormServiceBuilder = new \Alchemy\Phrasea\Core\ServiceBuilder\Orm(
                   $serviceName
-                  , \Alchemy\Phrasea\Core\ServiceBuilder::ORM
                   , $confService
+                  , array('registry' => \registry::get_instance())
   );
 
+  $ormService = $ormServiceBuilder->buildService();
   $em = $ormService->getService();
   /* @var $em \Doctrine\ORM\EntityManager */
 

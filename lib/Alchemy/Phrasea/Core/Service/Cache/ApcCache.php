@@ -15,8 +15,7 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
-
-use Doctrine\Common\Cache\ApcCache;
+use Doctrine\Common\Cache as CacheService;
 
 /**
  *
@@ -24,7 +23,7 @@ use Doctrine\Common\Cache\ApcCache;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Apc extends ServiceAbstract implements ServiceInterface
+class ApcCache extends ServiceAbstract implements ServiceInterface
 {
 
   public function getScope()
@@ -43,12 +42,29 @@ class Apc extends ServiceAbstract implements ServiceInterface
       throw new \Exception('The APC cache requires the APC extension.');
     }
 
-    return new ApcCache();
+    $registry = $this->getRegistry();
+
+    $service = new CacheService\ApcCache();
+    $service->setNamespace($registry->get("GV_sit", ""));
+
+    return $service;
   }
 
   public function getType()
   {
     return 'apc';
+  }
+
+  private function getRegistry()
+  {
+    $registry = $this->getDependency("registry");
+
+    if (!$registry instanceof \registryInterface)
+    {
+      throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
+    }
+    
+    return $registry;
   }
 
 }

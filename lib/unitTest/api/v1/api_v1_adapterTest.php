@@ -261,10 +261,13 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     }
 
     $metadatas = array_shift($metadatas);
-    $metadatas["value"] = array("new_value");
+    $metadatas["value"] = "new_value";
 
+    
     $request = new Request(array("metadatas" => array($metadatas)), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+      
     $result = $this->object->set_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+
     $this->checkResponseField($result, "metadatas", PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT);
   }
 

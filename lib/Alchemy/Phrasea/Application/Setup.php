@@ -65,7 +65,7 @@ return call_user_func(function()
                               {
                                 throw new \Exception(sprintf("Unable to copy %s", $serviceSampleFile));
                               }
-                              
+
                               //copy connexion sample
                               $connexionSampleFile = __DIR__ . "/../../../../config/connexions.sample.yml";
                               $connexionFile = __DIR__ . "/../../../../config/connexions.yml";
@@ -105,7 +105,7 @@ return call_user_func(function()
                                   'main_connexion' => $connexionINI,
                                   'test_connexion' => array(
                                       'driver' => 'pdo_sqlite',
-                                      'path' => $registry->get("GV_RootPath") . 'lib/unitTest/tests.sqlite',
+                                      'path' => realpath($registry->get("GV_RootPath") . 'lib/unitTest/tests.sqlite'),
                                       'charset' => 'UTF8'
                                       ));
 
@@ -116,10 +116,34 @@ return call_user_func(function()
                                 throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $connexionFile->getPathname()));
                               }
 
+                              $cacheService = "array_cache";
+
+                              if (extension_loaded('apc'))
+                              {
+                                $cacheService = "apc_cache";
+                              }
+                              elseif (extension_loaded('xcache'))
+                              {
+                                $cacheService = "xcache_cache";
+                              }
+
                               //rewrite service file
                               $serviceFile = $appConf->getServiceFile();
-                              $service = $configuration->getConfigurationHandler()->getParser()->parse($serviceFile);
-                              $yaml = $configuration->getConfigurationHandler()->getParser()->dump($service, 5);
+                              $services = $configuration->getConfigurationHandler()->getParser()->parse($serviceFile);
+
+                              foreach ($services as $serviceName => $service)
+                              {
+                                if ($serviceName === "doctrine_prod")
+                                {
+
+                                  $services["doctrine_prod"]["options"]["orm"]["cache"] = array(
+                                      "query" => $cacheService,
+                                      "result" => $cacheService,
+                                      "metadata" => $cacheService
+                                  );
+                                }
+                              }
+                              $yaml = $configuration->getConfigurationHandler()->getParser()->dump($services, 5);
 
                               if (!file_put_contents($serviceFile->getPathname(), $yaml) !== false)
                               {
@@ -134,11 +158,17 @@ return call_user_func(function()
                                 {
                                   $arrayConf[$key]["phraseanet"]["servername"] = $serverName;
                                 }
+
+                                if (is_array($value) && $key === 'prod')
+                                {
+                                  $arrayConf[$key]["cache"] = $cacheService;
+                                }
                               }
 
                               $configuration->write($arrayConf);
-
-                              $app->redirect("/setup/installer/");
+                              
+                              $app['install'] = true;
+//                              $app->redirect("/setup/installer/");
                             }
                             else
                             {

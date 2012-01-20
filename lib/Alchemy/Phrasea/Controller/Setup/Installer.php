@@ -133,6 +133,8 @@ class Installer implements ControllerProviderInterface
               \phrasea::use_i18n(\Session_Handler::get_locale());
               $request = $app['request'];
               
+               $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
+               
               $setupRegistry = new \Setup_Registry();
               $setupRegistry->set('GV_ServerName', $servername);
 
@@ -171,7 +173,8 @@ class Installer implements ControllerProviderInterface
 
               try
               {
-                $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
+                $setupRegistry = new \Setup_Registry();
+                $setupRegistry->set('GV_ServerName', $servername);
                 
                 $appbox = \appbox::create($setupRegistry, $conn, $appbox_name, true);
 
@@ -186,12 +189,14 @@ class Installer implements ControllerProviderInterface
                   $serviceName = $configuration->getOrm();
                   $confService = $configuration->getService($serviceName);
 
-                  $ormService = \Alchemy\Phrasea\Core\ServiceBuilder::build(
+                  $ormServiceBuilder = new \Alchemy\Phrasea\Core\ServiceBuilder\Orm(
                                   $serviceName
-                                  , \Alchemy\Phrasea\Core\ServiceBuilder::ORM
                                   , $confService
+                                  , array('registry' => $setupRegistry)
                   );
 
+                  $ormService = $ormServiceBuilder->buildService();
+                  
                   if ($ormService->getType() === 'doctrine')
                   {
                     /* @var $em \Doctrine\ORM\EntityManager */

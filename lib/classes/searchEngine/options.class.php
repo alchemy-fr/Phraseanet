@@ -451,7 +451,17 @@ class searchEngine_options implements Serializable
         $value = new DateTime($value);
       }
       elseif ($value instanceof stdClass)
-        $value = (array) $value;
+      {
+        $tmpvalue = (array) $value;
+        $value = array();
+        
+        foreach($tmpvalue as $k=>$data)
+        {
+          $k = ctype_digit($k) ? (int) $k : $k;
+          $value[$k] = $data;
+        }
+        
+      }
 
       $this->$key = $value;
     }

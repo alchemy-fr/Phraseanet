@@ -26,10 +26,9 @@ class Twig extends ServiceAbstract implements ServiceInterface
   protected $twig;
   protected $templatesPath = array();
 
-  public function __construct($name, Array $options)
+  public function __construct($name, Array $options, Array $dependencies)
   {
-
-    parent::__construct($name, $options);
+    parent::__construct($name, $options, $dependencies);
 
     $this->templatesPath = $this->resolvePaths();
 
