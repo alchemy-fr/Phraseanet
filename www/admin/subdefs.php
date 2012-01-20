@@ -32,7 +32,7 @@ try
 {
   $databox = databox::get_instance((int) $parm['p0']);
 
-  $controller = new Controller_Admin_Subdefs($request, $databox);
+  $controller = new \Alchemy\Phrasea\Controller\Admin\Subdefs($request, $databox);
   $controller->render();
 }
 catch (Exception $e)
