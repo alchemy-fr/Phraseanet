@@ -344,14 +344,15 @@ class UsrLists implements ControllerProviderInterface
     $controllers->post('/list/{list_id}/add/{usr_id}/', function(Application $app, $list_id, $usr_id)
             {
               $em = $app['Core']->getEntityManager();
-
+              $user = $app['Core']->getAuthenticatedUser();
+              
               try
               {
                 $repository = $em->getRepository('\Entities\UsrList');
 
                 $list = $repository->findUserListByUserAndId($user, $list_id);
                 /* @var $list \Entities\UsrList */
-                $user_entry = \User_Adapter::getInstance($usr_id, appbox::get_instance());
+                $user_entry = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
 
                 $entry = new \Entities\UsrListEntry();
                 $entry->setUser($user_entry);
@@ -399,12 +400,12 @@ class UsrLists implements ControllerProviderInterface
                 $list = $repository->findUserListByUserAndId($user, $list_id);
                 /* @var $list \Entities\UsrList */
                 
-                if($list->getOwner($user)->getList() < \Entities\UsrListOwner::ROLE_EDITOR)
+                if($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
                 {
                   throw new \Exception('You are not authorized to do this');
                 }
                 
-                $new_owner = \User_Adapter::getInstance($usr_id, appbox::get_instance());
+                $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
                 
                 if($list->hasAccess($new_owner))
                 {
@@ -436,7 +437,7 @@ class UsrLists implements ControllerProviderInterface
               }
               catch (\Exception $e)
               {
-
+                
                 $datas = array(
                     'success' => false
                     , 'message' => _('Unable to share the list with the usr')
