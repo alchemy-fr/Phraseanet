@@ -19,9 +19,10 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
         continue;
       if (substr($file->getFilename(), -4) !== '.php')
         continue;
+      if($file->getFilename() === "BoilerPlate.php")
+        continue;
 
-
-      $this->assertRegExp('/[a-zA-Z0-9-_\.]+Test.php/', $file->getFilename(), 'Verify that all tests files names');
+      $this->assertRegExp('/[a-zA-Z0-9-_\.]+Test.php/', $file->getPathname(), 'Verify that all tests files names');
     }
   }
 
