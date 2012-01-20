@@ -411,10 +411,7 @@ class databox_field implements cache_cacheableInterface
    */
   public function set_name($name)
   {
-    $unicode_processor = new unicode();
-    $name              = $unicode_processor->remove_nonazAZ09($name, false, false);
-    $name              = $unicode_processor->remove_first_digits($name);
-    $this->name = $name;
+    $this->name = self::generateName($name);
 
     return $this;
   }
@@ -852,11 +849,6 @@ class databox_field implements cache_cacheableInterface
   {
     $sorter = 0;
 
-    $unicode_processor = new unicode();
-
-    $name = $unicode_processor->remove_nonazAZ09($name, false, false);
-    $name = $unicode_processor->remove_first_digits($name);
-
     $sql  = 'SELECT (MAX(sorter) + 1) as sorter FROM metadatas_structure';
     $stmt = $databox->get_connection()->prepare($sql);
     $stmt->execute();
@@ -875,13 +867,23 @@ class databox_field implements cache_cacheableInterface
           1, :sorter)";
 
     $stmt = $databox->get_connection()->prepare($sql);
-    $stmt->execute(array(':name'   => $name, ':sorter' => $sorter));
+    $stmt->execute(array(':name'   => self::generateName($name), ':sorter' => $sorter));
     $id       = $databox->get_connection()->lastInsertId();
     $stmt->closeCursor();
 
     $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
     return self::get_instance($databox, $id);
+  }
+  
+  
+  public static function generateName($name)
+  {
+    $unicode_processor = new unicode();
+
+    $name = $unicode_processor->remove_nonazAZ09($name, false, false);
+    
+    return $unicode_processor->remove_first_digits($name);
   }
 
   /**
