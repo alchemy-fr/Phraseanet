@@ -182,12 +182,12 @@
               </div>
             </div>
             <div id="ZTextMultiValued" style="position:absolute; top:0px; left:0px; width:100%; height:100%; display:none;">
-              <form onsubmit="edit_addmval();return(false);" style="position:absolute; height:30px; left:2px; right:2px;">
+              <form onsubmit="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);return(false);" style="position:absolute; height:30px; left:2px; right:2px;">
                 <div style="position:absolute; top:0px; left:0px; right:70px; height:17px;">
                   <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" onkeyup="reveal_mval();" value="" />
                 </div>
                 <div style="position:absolute; top:6px; width:60px; right:0px; height:11px;">
-                  <img id="EditButAddMultiValued" style="cursor:pointer" src="/skins/icons/tri_plus.gif"  onclick="edit_addmval();" />
+                  <img id="EditButAddMultiValued" style="cursor:pointer" src="/skins/icons/tri_plus.gif"  onclick="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);" />
 
                   <img id="EditButDelMultiValued" style="cursor:pointer" src="/skins/icons/tri_minus.gif" onclick="edit_delmval();" />
                 </div>
