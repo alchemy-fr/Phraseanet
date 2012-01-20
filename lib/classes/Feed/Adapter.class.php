@@ -55,9 +55,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   protected $icon_url;
 
   const CACHE_ENTRY_NUMBER = 'entrynumber';
-
   const CACHE_USER_TOKEN = 'usr_token';
-  
   const MAX_ENTRIES = 20;
 
   /**
@@ -93,7 +91,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $sql = 'SELECT id, title, subtitle, created_on, updated_on, base_id, public
@@ -137,7 +135,6 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   public function get_icon_url()
   {
     if ($this->icon_url)
-
       return $this->icon_url;
 
     $url = '/skins/icons/rss32.gif';
@@ -250,9 +247,8 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
    */
   public function has_access(User_Adapter $user)
   {
-    if($this->get_collection() instanceof collection)
-
-      return $user->ACL ()->has_access_to_base ($this->collection->get_base_id ());
+    if ($this->get_collection() instanceof collection)
+      return $user->ACL()->has_access_to_base($this->collection->get_base_id());
     return true;
   }
 
@@ -263,8 +259,10 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   public function is_public()
   {
     if ($this->get_collection() instanceof collection)
-
+    {
       return false;
+    }
+    
     return $this->public;
   }
 
@@ -294,7 +292,6 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   public function add_publisher(User_Adapter $user)
   {
     if (in_array($user->get_id(), array_keys($this->get_publishers())))
-
       return $this;
 
     Feed_Publisher_Adapter::create($this->appbox, $user, $this, false);
@@ -310,7 +307,6 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   protected function load_publishers()
   {
     if (is_array($this->publishers))
-
       return $this->publishers;
 
     $sql = 'SELECT id, usr_id, owner FROM feed_publishers
@@ -497,7 +493,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $sql = 'SELECT count(id) as number
@@ -600,7 +596,6 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   public function get_homepage_link(registryInterface $registry, $format, $page = null)
   {
     if (!$this->is_public())
-
       return null;
     switch ($format)
     {
@@ -642,12 +637,11 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     try
     {
       if (!$renew)
-
         return $this->get_data_from_cache($cache_key);
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $sql = 'SELECT token FROM feed_tokens
