@@ -5208,6 +5208,22 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>VocabularyControlType</name>
+            <type>CHAR(16)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>RestrictToVocabularyControl</name>
+            <type>TINYINT(1)</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
