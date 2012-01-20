@@ -80,6 +80,7 @@ $groups = array(
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
         , '//include/js/jquery.Selection.js'
+        , '//include/js/jquery.Edit.js'
         , '//prod/jquery.Prod.js'
         , '//prod/jquery.Results.js'
         , '//prod/page0.js'

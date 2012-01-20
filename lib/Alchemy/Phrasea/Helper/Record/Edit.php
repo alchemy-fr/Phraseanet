@@ -201,6 +201,18 @@ class Edit extends RecordHelper
     $twig = $this->getCore()->getTwig();
 
 
+    $databox = \databox::get_instance($this->get_sbas_id());
+
+    $databox_fields = array();
+    foreach ($databox->get_meta_structure() as $field)
+    {
+      $databox_fields[$field->get_id()] = array(
+        'dirty'          => false,
+        'meta_struct_id' => $field->get_id(),
+        'values'         => array()
+      );
+    }
+
     foreach ($this->selection as $record)
     {
       $indice        = $record->get_number();
@@ -208,7 +220,8 @@ class Edit extends RecordHelper
         'bid'         => $record->get_base_id(),
         'rid'         => $record->get_record_id(),
         'sselcont_id' => null,
-        '_selected'   => false
+        '_selected'   => false,
+        'fields'      => $databox_fields
       );
 
       $_lst[$indice]['statbits'] = array();
@@ -221,8 +234,7 @@ class Edit extends RecordHelper
           $_lst[$indice]['statbits'][$n]['dirty'] = false;
         }
       }
-      $_lst[$indice]['fields']                = array();
-      $_lst[$indice]['originalname'] = '';
+      $_lst[$indice]['originalname']          = '';
 
       $_lst[$indice]['originalname'] = $record->get_original_name();
 
@@ -245,7 +257,6 @@ class Edit extends RecordHelper
 
         $_lst[$indice]['fields'][$meta_struct_id] = array(
           'dirty'          => false,
-//          'meta_id'        => $field->get_meta_id(),
           'meta_struct_id' => $meta_struct_id,
           'values'         => $values
         );
@@ -416,7 +427,7 @@ class Edit extends RecordHelper
 
     $regfield = ($meta->is_regname() || $meta->is_regdesc() || $meta->is_regdate());
 
-
+    $source = $meta->get_source();
     $separator = $meta->get_separator();
 
     $datas = array(
@@ -425,17 +436,19 @@ class Edit extends RecordHelper
       , '_status'        => 0
       , '_value'         => ''
       , '_sgval'         => array()
-      , 'required'  => $meta->is_required()
-      , 'readonly'  => $meta->is_readonly()
-      , 'type'      => $meta->get_type()
-      , 'format'    => $format
-      , 'explain'   => $explain
-      , 'tbranch'   => $meta->get_tbranch()
-      , 'maxLength' => $meta->get_source()->maxlength()
-      , 'minLength' => $meta->get_source()->minLength()
-      , 'regfield'  => $regfield
-      , 'multi'     => $meta->is_multi()
-      , 'separator' => $separator
+      , 'required'             => $meta->is_required()
+      , 'readonly'             => $meta->is_readonly()
+      , 'type'                 => $meta->get_type()
+      , 'format'               => $format
+      , 'explain'              => $explain
+      , 'tbranch'              => $meta->get_tbranch()
+      , 'maxLength'            => $source ? $source->maxlength() : 0
+      , 'minLength'            => $source ? $source->minLength() : 0
+      , 'regfield'             => $regfield
+      , 'multi'                => $meta->is_multi()
+      , 'separator'            => $separator
+      , 'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null
+      , 'vocabularyRestricted' => $meta->getVocabularyControl() ? $meta->isVocabularyRestricted() : false
     );
 
     if (trim($meta->get_tbranch()) !== '')
@@ -485,7 +498,7 @@ class Edit extends RecordHelper
     $databox       = \databox::get_instance($sbas_id);
     $meta_struct   = $databox->get_meta_structure();
     $write_edit_el = false;
-    $date_obj      = new DateTime();
+    $date_obj      = new \DateTime();
     foreach ($meta_struct->get_elements() as $meta_struct_el)
     {
       if ($meta_struct_el->get_metadata_namespace() == "PHRASEANET" && $meta_struct_el->get_metadata_tagname() == 'tf-editdate')
@@ -525,20 +538,20 @@ class Edit extends RecordHelper
       }
 
       /**
-       *todo : this should not work 
+       * todo : this should not work 
        */
       if ($write_edit_el instanceof \databox_field)
       {
         $fields = $record->get_caption()->get_fields(array($write_edit_el->get_name()));
         $field = array_pop($fields);
-        
+
         $meta_id = null;
-        
-        if($field && !$field->is_multi())
+
+        if ($field && !$field->is_multi())
         {
           $meta_id = array_pop($field->get_values())->getId();
         }
-        
+
         $metas = array(
           array(
             'meta_struct_id' => $write_edit_el->get_id()
@@ -546,7 +559,7 @@ class Edit extends RecordHelper
             , 'value'          => $date_obj->format('Y-m-d h:i:s')
           )
         );
-        
+
         $record->set_metadatas($metas);
       }
 
@@ -573,13 +586,13 @@ class Edit extends RecordHelper
       {
         $appbox->get_session()
           ->get_logger($record->get_databox())
-          ->log($record, Session_Logger::EVENT_STATUS, '', '');
+          ->log($record, \Session_Logger::EVENT_STATUS, '', '');
       }
       if ($editDirty)
       {
         $appbox->get_session()
           ->get_logger($record->get_databox())
-          ->log($record, Session_Logger::EVENT_EDIT, '', '');
+          ->log($record, \Session_Logger::EVENT_EDIT, '', '');
       }
     }
 

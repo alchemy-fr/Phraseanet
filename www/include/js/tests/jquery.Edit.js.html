@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/include/vendor/qunit/qunit/qunit.js"></script>
+    <script src="/include/js/jquery.Edit.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/vendor/qunit/qunit/qunit.css"/> 
+    <script>  $(document).ready(function(){
+    
+      
+      test("Selection instanciation", function() {
+        
+        var DBField = new p4.databoxField('Champ', 25)
+        
+        var field = new p4.recordField(DBField);
+        equal( field.isMulti(), false, "Field is not multi" );
+        equal( field.isRequired(), false, "Field is not required" );
+        equal( field.isEmpty(), true, "Field is empty" );
+        
+        var DBFieldMulti = new p4.databoxField('Champ', 25, {multi:true})
+        
+        var fieldMulti = new p4.recordField(DBFieldMulti);
+        equal( fieldMulti.isMulti(), true, "Field is multi" );
+        equal( fieldMulti.isRequired(), false, "Field is not required" );
+        
+        var DBFieldRequired = new p4.databoxField('Champ', 25, {required:true})
+        
+        var fieldRequired = new p4.recordField(DBFieldRequired);
+        equal( fieldRequired.isMulti(), false, "Field is not multi" );
+        equal( fieldRequired.isRequired(), true, "Field is required" );
+        
+        var DBFieldRequiredMulti = new p4.databoxField('Champ', 25, {required:true, multi:true})
+        
+        var fieldMultiRequired = new p4.recordField(DBFieldRequiredMulti);
+        equal( fieldMultiRequired.isMulti(), true, "Field is not multi" );
+        equal( fieldMultiRequired.isRequired(), true, "Field is required" );
+        
+        field.addValue('Une valeur');
+        
+        equal( field.isEmpty(), false, "Field is not empty" );
+        equal( field.isDirty(), true, "Field is dirty" );
+        equal( field.getValue().getValue(), 'Une valeur', "Field value" );
+        
+        field.empty();
+        equal( field.getValue(), null, "Field is empty " );
+        
+        
+        var arrayValues = [
+          new p4.recordFieldValue(1, 'valeur')
+        ];
+        
+        var field = new p4.recordField(DBField, arrayValues);
+        equal( field.isEmpty(), false, "Field is not empty" );
+        
+        field.empty();
+        equal( field.getValue(), null, "Field is empty " );
+        
+      });
+
+      module("Add datas");
+      
+    });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">QUnit example</h1>
+    <h2 id="qunit-banner"></h2>
+    <div id="qunit-testrunner-toolbar"></div>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+    <div id="qunit-fixture">test markup, will be hidden</div>
+  </body>
+</html>

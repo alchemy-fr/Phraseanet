@@ -73,6 +73,8 @@ if (!empty($_POST))
                   , 'tbranch_' . $id
                   , 'report_' . $id
                   , 'dces_' . $id
+                  , 'vocabulary_' . $id
+                  , 'vocabularyrestricted_' . $id
           );
 
           $field = databox_field::get_instance($databox, $id);
@@ -87,6 +89,20 @@ if (!empty($_POST))
           $field->set_type($local_parms['type_' . $id]);
           $field->set_tbranch($local_parms['tbranch_' . $id]);
           $field->set_report($local_parms['report_' . $id]);
+          
+          $field->setVocabularyControl(null);
+          $field->setVocabularyRestricted(false);
+          
+          try
+          {
+            $vocabulary = databox_Field_VocabularyControl::get($local_parms['vocabulary_' . $id]);
+            $field->setVocabularyControl($vocabulary);
+            $field->setVocabularyRestricted($local_parms['vocabularyrestricted_' . $id]);
+          }
+          catch(\Exception $e)
+          {
+            
+          }
 
           $dces_element = null;
           if ($local_parms['dces_' . $id] !== '')
@@ -158,7 +174,8 @@ $params = array(
     'databox' => $databox,
     'fields' => $fields,
     'available_fields' => $available_fields,
-    'available_dc_fields' => $available_dc_fields
+    'available_dc_fields' => $available_dc_fields,
+    'vocabularies' => databox_Field_VocabularyControl::getAvailable(),
 );
 
 

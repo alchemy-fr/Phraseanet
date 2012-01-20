@@ -46,6 +46,37 @@ class Edit implements ControllerProviderInterface
             }
     );
 
+    $controllers->get('/vocabulary/{vocabulary}/', function(Application $app, Request $request, $vocabulary)
+            {
+              $datas = array('success'=>false, 'message'=>'', 'results'=>array());
+                
+              $Serializer = $app['Core']['Serializer'];
+              
+              $sbas_id = (int) $request->get('sbas_id');
+              
+              try
+              {
+                $VC = \databox_Field_VocabularyControl::get($vocabulary);
+                $databox = \databox::get_instance($sbas_id);
+              }
+              catch(\Exception $e)
+              {
+                $datas['message'] = _('Vocabulary not found');
+                
+                $datas = $Serializer->serialize($datas, 'json');
+                
+                return new response($datas, 200, array('Content-Type'=>'application/json'));
+              }
+      
+              $query = $request->get('query');
+              
+              $datas['success'] = true;
+              $datas['results'] = $VC->find($query, $app['Core']->getAuthenticatedUser(), $databox);
+      
+              return new response($Serializer->serialize($datas, 'json'), 200, array('Content-Type'=>'application/json'));
+            }
+    );
+
     $controllers->post('/apply/', function(Application $app, Request $request)
             {
               $editing = new RecordHelper\Edit($app['Core'], $app['request']);
