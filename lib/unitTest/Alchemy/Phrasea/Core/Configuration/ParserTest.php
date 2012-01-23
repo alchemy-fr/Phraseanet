@@ -22,21 +22,21 @@ use Alchemy\Phrasea\Core\Configuration\Parser\Yaml;
  */
 class parserTest extends \PhraseanetPHPUnitAbstract
 {
-  
+
   public function testParser()
   {
     $parser = new Yaml();
-   
+
     $filename = $fileName = __DIR__ . '/confTestFiles/good.yml';
-    
+
     $file = new SplFileObject($filename);
 
     $result = $parser->parse($file);
-    
+
     $this->assertTrue(is_array($result));
-    
+
     $filename = $fileName = __DIR__ . '/confTestFiles/test.json';
-    
+
     $file = new SplFileObject($filename);
 
     try
@@ -44,11 +44,28 @@ class parserTest extends \PhraseanetPHPUnitAbstract
       $result = $parser->parse($file);
       $this->fail('An exception shoud have been raised');
     }
-    catch(Exception $e)
+    catch (Exception $e)
     {
       
     }
-    
-    
   }
+
+  public function testDumper()
+  {
+    $parser = new Yaml();
+
+    $test = array("hello" => "you");
+
+    try
+    {
+      $result = $parser->dump($test);
+      $this->assertTrue(is_string($result));
+      $this->assertRegexp("#hello: you#", $result);
+    }
+    catch (Exception $e)
+    {
+      
+    }
+  }
+
 }
