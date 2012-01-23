@@ -42,7 +42,7 @@ abstract class ServiceAbstract
     $this->configuration = new Core\Configuration($handler);
   }
 
-  protected function getDependency($name)
+  public function getDependency($name)
   {
     if(!array_key_exists($name, $this->dependencies))
     {
@@ -52,15 +52,6 @@ abstract class ServiceAbstract
     return $this->dependencies[$name];
   }
   
-  
-  /**
-   *
-   * @return Array 
-   */
-  protected function getConfiguration()
-  {
-    return $this->configuration;
-  }
   
   /**
    *
