@@ -23,7 +23,7 @@ use Doctrine\Common\Cache as CacheService;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Memcache extends ServiceAbstract implements ServiceInterface
+class MemcacheCache extends ServiceAbstract implements ServiceInterface
 {
   const DEFAULT_HOST = "localhost";
   const DEFAULT_PORT = "11211";
