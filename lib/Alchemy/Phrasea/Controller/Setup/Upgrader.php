@@ -33,51 +33,57 @@ class Upgrader implements ControllerProviderInterface
     $controllers = new ControllerCollection();
 
     $controllers->get('/', function() use ($app)
-            {
-              require_once __DIR__ . '/../../../../bootstrap.php';
-              $upgrade_status = \Setup_Upgrade::get_status();
+      {
+        require_once __DIR__ . '/../../../../bootstrap.php';
+        $upgrade_status = \Setup_Upgrade::get_status();
 
-              /* @var $twig \Twig_Environment */
-              $twig = $app['Core']->getTwig();
-              
-              $html = $twig->render(
-                      '/setup/upgrader.html.twig'
-                      , array(
-                  'locale' => \Session_Handler::get_locale()
-                  , 'upgrade_status' => $upgrade_status
-                  , 'available_locales' => $app['Core']::getAvailableLanguages()
-                  , 'bad_users' => \User_Adapter::get_wrong_email_users(\appbox::get_instance())
-                  , 'version_number' => $app['Core']['Version']->getNumber()
-                  , 'version_name' => $app['Core']['Version']->getName()
-                      )
-              );
-              ini_set('display_errors', 'on');
+        /* @var $twig \Twig_Environment */
+        $twig = $app['Core']->getTwig();
 
-              return new Response($html);
-            });
+        $html = $twig->render(
+          '/setup/upgrader.html.twig'
+          , array(
+          'locale'            => \Session_Handler::get_locale()
+          , 'upgrade_status'    => $upgrade_status
+          , 'available_locales' => $app['Core']::getAvailableLanguages()
+          , 'bad_users'         => \User_Adapter::get_wrong_email_users(\appbox::get_instance())
+          , 'version_number'    => $app['Core']['Version']->getNumber()
+          , 'version_name'      => $app['Core']['Version']->getName()
+          )
+        );
+        ini_set('display_errors', 'on');
+
+        return new Response($html);
+      });
 
     $controllers->get('/status/', function() use ($app)
-            {
-              require_once __DIR__ . '/../../../../bootstrap.php';
+      {
+        require_once __DIR__ . '/../../../../bootstrap.php';
 
-              $datas = \Setup_Upgrade::get_status();
+        $datas = \Setup_Upgrade::get_status();
 
-              return new Response(\p4string::jsonencode($datas), 200, array('Content-Type: application/json'));
-            });
+        $Serializer = $app['Core']['Serializer'];
+
+        return new Response(
+            $Serializer->serialize($datas, 'json')
+            , 200
+            , array('Content-Type: application/json')
+        );
+      });
 
     $controllers->post('/execute/', function() use ($app)
-            {
-              require_once __DIR__ . '/../../../../bootstrap.php';
-              set_time_limit(0);
-              session_write_close();
-              ignore_user_abort(true);
+      {
+        require_once __DIR__ . '/../../../../bootstrap.php';
+        set_time_limit(0);
+        session_write_close();
+        ignore_user_abort(true);
 
-              $appbox = \appbox::get_instance();
-              $upgrader = new \Setup_Upgrade($appbox);
-              $appbox->forceUpgrade($upgrader);
+        $appbox   = \appbox::get_instance();
+        $upgrader = new \Setup_Upgrade($appbox);
+        $appbox->forceUpgrade($upgrader);
 
-              return;
-            });
+        return;
+      });
 
     return $controllers;
   }
