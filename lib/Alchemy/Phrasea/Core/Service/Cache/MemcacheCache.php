@@ -31,6 +31,14 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
   protected $host;
   protected $port;
 
+  public function __construct($name, Array $options, Array $dependencies)
+  {
+    parent::__construct($name, $options, $dependencies);
+            
+    $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
+
+    $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
+  }
   public function getScope()
   {
     return 'cache';
@@ -46,10 +54,6 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
     {
       throw new \Exception('The Memcache cache requires the Memcache extension.');
     }
-
-    $this->host = isset($this->options["host"]) ? $this->options["host"] : self::DEFAULT_HOST;
-
-    $this->port = isset($this->options["port"]) ? $this->options["port"] : self::DEFAULT_PORT;
 
     $memchache = new \Memcache();
     $memchache->connect($this->host, $this->port);
