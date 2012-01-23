@@ -55,7 +55,11 @@ class Configuration
 
     try
     {
+
+      //if one of this files are missing consider phraseanet not installed
       $handler->getSpecification()->getConfigurationFile();
+      $handler->getSpecification()->getServiceFile();
+      $handler->getSpecification()->getConnexionFile();
 
       $this->installed = true;
     }
@@ -353,7 +357,7 @@ class Configuration
   {
     return $this->getConfiguration()->get('template_engine');
   }
-  
+
   /**
    * Return cache service
    * @return string 
