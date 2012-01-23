@@ -116,6 +116,27 @@ class caption_Field_Value
 
     return $this;
   }
+  
+  public function setVocab(\Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface $vocabulary, $vocab_id)
+  {
+    
+    $params = array(
+        ':VocabType' => $vocabulary->getType()
+        , ':VocabularyId' => $vocab_id
+    );
+
+    $sql_up = 'UPDATE metadatas 
+              SET VocabularyType = :VocabType, VocabularyId = :VocabularyId 
+              WHERE id = :meta_id';
+    $stmt_up = $connbas->prepare($sql_up);
+    $stmt_up->execute($params);
+    $stmt_up->closeCursor();
+    
+    $this->set_value($vocabulary->getValue($vocab_id));
+    
+    return $this;
+  }
+  
 
   public function set_value($value)
   {
@@ -206,21 +227,24 @@ class caption_Field_Value
     return $this;
   }
 
-  public static function create(databox_field &$databox_field, record_Interface $record, $value)
+  public static function create(databox_field &$databox_field, record_Interface $record, $value, \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
   {
 
     $sbas_id = $databox_field->get_databox()->get_sbas_id();
     $connbas = $databox_field->get_connection();
     
-    $sql_ins = 'INSERT INTO metadatas (id, record_id, meta_struct_id, value)
-            VALUES
-            (null, :record_id, :field, :value)';
+    $sql_ins = 'INSERT INTO metadatas 
+              (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)
+              VALUES
+              (null, :record_id, :field, :value, :VocabType, :VocabId)';
     $stmt_ins = $connbas->prepare($sql_ins);
     $stmt_ins->execute(
             array(
                 ':record_id' => $record->get_record_id(),
                 ':field' => $databox_field->get_id(),
-                ':value' => $value
+                ':value' => $value,
+                ':VocabType' => $vocabulary ? $vocabulary->getType() : null,
+                ':VocabId' => $vocabulary ? $vocabularyId : null,
             )
     );
     $stmt_ins->closeCursor();
