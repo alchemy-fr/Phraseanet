@@ -13,6 +13,7 @@ namespace Alchemy\Phrasea\Controller\Admin;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Silex\Application;
@@ -179,12 +180,13 @@ class Users implements ControllerProviderInterface
     $controllers->post('/search/export/', function() use ($app)
             {
               $request = $app['request'];
-              $users = new module_admin_route_users($request);
+
+              $users = new UserHelper\Manage($app['Core'], $app['request']);
+
               $template = 'admin/users.html';
 
-              $twig = new supertwig();
-              $twig->addFilter(array('floor' => 'floor'));
-              $twig->addFilter(array('getDate' => 'phraseadate::getDate'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               $results = $users->export($request);
 
@@ -232,31 +234,33 @@ class Users implements ControllerProviderInterface
                 );
               }
 
-              $CSVDatas = format::arr_to_csv($userTable);
+              $CSVDatas = \format::arr_to_csv($userTable);
 
               $response = new Response($CSVDatas, 200, array('Content-Type' => 'text/plain'));
               $response->headers->set('Content-Disposition', 'attachment; filename=export.txt');
-              
+
               return $response;
             }
     );
 
     $controllers->post('/apply_template/', function() use ($app)
             {
-              $users = UserHelper\Manage($app['Core'], $app['request']);
-              
+              $users = new UserHelper\Edit($app['Core'], $app['request']);
+
               $users->apply_template();
 
-              return new Symfony\Component\HttpFoundation\RedirectResponse('/admin/users/search/');
+              return new RedirectResponse('/admin/users/search/');
             }
     );
 
     $controllers->get('/typeahead/search/', function(Application $app) use ($appbox)
             {
               $request = $app['request'];
+
               $user_query = new \User_Query($appbox);
 
-              $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+
               $like_value = $request->get('term');
               $rights = $request->get('filter_rights') ? : array();
               $have_right = $request->get('have_right') ? : array();
@@ -264,16 +268,18 @@ class Users implements ControllerProviderInterface
               $on_base = $request->get('on_base') ? : array();
 
 
-              $elligible_users = $user_query->on_sbas_where_i_am($user->ACL(), $rights)
-                              ->like(\User_Query::LIKE_EMAIL, $like_value)
-                              ->like(\User_Query::LIKE_FIRSTNAME, $like_value)
-                              ->like(\User_Query::LIKE_LASTNAME, $like_value)
-                              ->like(\User_Query::LIKE_LOGIN, $like_value)
-                              ->like_match(\User_Query::LIKE_MATCH_OR)
-                              ->who_have_right($have_right)
-                              ->who_have_not_right($have_not_right)
-                              ->on_base_ids($on_base)
-                              ->execute()->get_results();
+              $elligible_users = $user_query
+                      ->on_sbas_where_i_am($user->ACL(), $rights)
+                      ->like(\User_Query::LIKE_EMAIL, $like_value)
+                      ->like(\User_Query::LIKE_FIRSTNAME, $like_value)
+                      ->like(\User_Query::LIKE_LASTNAME, $like_value)
+                      ->like(\User_Query::LIKE_LOGIN, $like_value)
+                      ->like_match(\User_Query::LIKE_MATCH_OR)
+                      ->who_have_right($have_right)
+                      ->who_have_not_right($have_not_right)
+                      ->on_base_ids($on_base)
+                      ->execute()
+                      ->get_results();
 
               $datas = array();
 
@@ -293,12 +299,14 @@ class Users implements ControllerProviderInterface
 
     $controllers->post('/create/', function(Application $app)
             {
-
               $datas = array('error' => false, 'message' => '', 'data' => null);
+              
               try
               {
                 $request = $app['request'];
+                
                 $module = new UserHelper\Manage($app['Core'], $app['request']);
+
                 if ($request->get('template') == '1')
                 {
                   $user = $module->create_template();
@@ -307,8 +315,11 @@ class Users implements ControllerProviderInterface
                 {
                   $user = $module->create_newuser();
                 }
+
                 if (!($user instanceof \User_Adapter))
+                {
                   throw new \Exception('Unknown error');
+                }
 
                 $datas['data'] = $user->get_id();
               }
@@ -318,7 +329,7 @@ class Users implements ControllerProviderInterface
                 $datas['message'] = $e->getMessage();
               }
 
-              return new Response(\p4string::jsonencode($datas));
+              return new Response(\p4string::jsonencode($datas), 200, array('Content-type' => 'application/json'));
             }
     );
 
@@ -395,7 +406,7 @@ class Users implements ControllerProviderInterface
 
               $headers = array(
                   'Content-type' => 'text/csv'
-                  , 'Content-Disposition' => 'attachment; filename=export.txt;'
+                  , 'Content-Disposition' => 'attachment; filename=export.txt'
               );
               $response = new Response($out, 200, $headers);
               $response->setCharset('UTF-8');
