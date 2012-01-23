@@ -332,7 +332,7 @@ class Users implements ControllerProviderInterface
 
               $Serializer = $app['Core']['Serializer'];
 
-              return new Response($Serializer->serialize($datas, 'json'));
+              return new Response($Serializer->serialize($datas, 'json'), 200, array("Content-Type" => "application/json"));
             }
     );
 
@@ -409,7 +409,7 @@ class Users implements ControllerProviderInterface
 
               $headers = array(
                   'Content-type' => 'text/csv'
-                  , 'Content-Disposition' => 'attachment; filename=export.txt;'
+                  , 'Content-Disposition' => 'attachment; filename=export.txt'
               );
               $response = new Response($out, 200, $headers);
               $response->setCharset('UTF-8');
