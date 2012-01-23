@@ -1124,7 +1124,7 @@ function edit_applyMultiDesc(evt)
         
         var temp = {
           meta_id : value.getMetaId() ? value.getMetaId() : '',
-          meta_struct_id : p4.edit.T_records[r].fields[f]..getMetaStructId(),
+          meta_struct_id : p4.edit.T_records[r].fields[f].getMetaStructId(),
           vocabularyId : value.getVocabularyId() ? value.getVocabularyId() : '',
           value  : cleanTags(value.getValue())
         };
