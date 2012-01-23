@@ -5327,6 +5327,24 @@
             <comment></comment>
             <collation>utf8_unicode_ci</collation>
           </field>
+          <field>
+            <name>VocabularyType</name>
+            <type>char(16)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+            <collation>utf8_unicode_ci</collation>
+          </field>
+          <field>
+            <name>VocabularyId</name>
+            <type>int(11)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+            <collation></collation>
+          </field>
         </fields>
         <indexes>
           <index>
