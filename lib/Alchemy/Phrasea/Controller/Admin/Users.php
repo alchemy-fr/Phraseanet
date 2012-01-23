@@ -33,7 +33,6 @@ class Users implements ControllerProviderInterface
   public function connect(Application $app)
   {
     $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
 
     $controllers = new ControllerCollection();
 
@@ -94,8 +93,10 @@ class Users implements ControllerProviderInterface
                 $datas['message'] = $e->getMessage();
               }
 
+              $Serializer = $app['Core']['Serializer'];
+
               return new Response(
-                              \p4string::jsonencode($datas)
+                              $Serializer->serialize($datas, 'json')
                               , 200
                               , array('Content-Type' => 'application/json')
               );
@@ -188,8 +189,6 @@ class Users implements ControllerProviderInterface
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
-              $results = $users->export($request);
-
               $userTable = array(
                   array(
                       'ID',
@@ -233,6 +232,7 @@ class Users implements ControllerProviderInterface
                     $user->get_position()
                 );
               }
+
 
               $CSVDatas = \format::arr_to_csv($userTable);
 
@@ -293,20 +293,24 @@ class Users implements ControllerProviderInterface
                 );
               }
 
-              return new Response(\p4string::jsonencode($datas), 200, array('Content-type' => 'application/json'));
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('Content-type' => 'application/json')
+              );
             });
 
 
     $controllers->post('/create/', function(Application $app)
             {
+
               $datas = array('error' => false, 'message' => '', 'data' => null);
-              
               try
               {
                 $request = $app['request'];
-                
                 $module = new UserHelper\Manage($app['Core'], $app['request']);
-
                 if ($request->get('template') == '1')
                 {
                   $user = $module->create_template();
@@ -315,11 +319,8 @@ class Users implements ControllerProviderInterface
                 {
                   $user = $module->create_newuser();
                 }
-
                 if (!($user instanceof \User_Adapter))
-                {
                   throw new \Exception('Unknown error');
-                }
 
                 $datas['data'] = $user->get_id();
               }
@@ -329,7 +330,9 @@ class Users implements ControllerProviderInterface
                 $datas['message'] = $e->getMessage();
               }
 
-              return new Response(\p4string::jsonencode($datas), 200, array('Content-type' => 'application/json'));
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response($Serializer->serialize($datas, 'json'));
             }
     );
 
@@ -406,7 +409,7 @@ class Users implements ControllerProviderInterface
 
               $headers = array(
                   'Content-type' => 'text/csv'
-                  , 'Content-Disposition' => 'attachment; filename=export.txt'
+                  , 'Content-Disposition' => 'attachment; filename=export.txt;'
               );
               $response = new Response($out, 200, $headers);
               $response->setCharset('UTF-8');

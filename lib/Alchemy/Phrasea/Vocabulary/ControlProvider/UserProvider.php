@@ -9,34 +9,45 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
+
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
+ * User Provider
  *
- * @package     Databox DCES
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class databox_Field_VocabularyControl_User implements databox_Field_VocabularyControl_Interface
+class UserProvider implements ControlProviderInterface
 {
 
-  public function __construct()
-  {
-
-    return $this;
-  }
-
+  /**
+   * @return string 
+   */
   public static function getType()
   {
     return 'User';
   }
 
+  /**
+   *
+   * @return type 
+   */
   public static function getName()
   {
     return _('Users');
   }
 
+  /**
+   *
+   * @param string $query
+   * @param \User_Adapter $for_user
+   * @param \databox $on_databox
+   * @return \Doctrine\Common\Collections\ArrayCollection 
+   */
   public static function find($query, \User_Adapter $for_user, \databox $on_databox)
   {
-
     $user_query = new \User_Query(appbox::get_instance());
 
     $users = $user_query
@@ -49,17 +60,48 @@ class databox_Field_VocabularyControl_User implements databox_Field_VocabularyCo
         ->limit(0, 50)
         ->execute()->get_results();
 
-    $results = array();
+    $results = new ArrayCollection();
 
     foreach ($users as $user)
     {
-      $results[] = array(
-        'id'    => $user->get_id(),
-        'label' => $user->get_display_name(),
+      $results->add(
+        new Term($user->get_display_name(), '', $this, $user->get_id())
       );
     }
 
     return $results;
+  }
+
+  /**
+   *
+   * @param mixed $id
+   * @return boolean 
+   */
+  public static function validate($id)
+  {
+    try
+    {
+      \User_Adapter::getInstance($id, appbox::get_instance());
+      return true;
+    }
+    catch (\Exception $e)
+    {
+      
+    }
+
+    return false;
+  }
+
+  /**
+   *
+   * @param mixed $id
+   * @return string 
+   */
+  public static function getValue($id)
+  {
+    $user = \User_Adapter::getInstance($id, appbox::get_instance());
+
+    return $user->get_display_name();
   }
 
 }

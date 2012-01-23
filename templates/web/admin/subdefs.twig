@@ -171,7 +171,7 @@
   </form>
 </div>
 
-<form method="post" action="/admin/subdefs.php" target="_self" class="subdefs">
+<form method="post" action="/admin/subdefs/{{ databox.get_sbas_id }}/" target="_self" class="subdefs">
   <div class="tabs">
     <ul>
       {% for subdefgroup, subdeflist in subdefs %}
@@ -315,7 +315,6 @@
     {% endfor %}
   </div>
   <input type="hidden" name="delete_subdef" id="delete_subdef" value=""/>
-  <input type="hidden" name="p0" value="{{databox.get_sbas_id}}"/>
   <input type="hidden" name="add_subdef[group]" value=""/>
   <input type="hidden" name="add_subdef[name]" value=""/>
   <input type="hidden" name="add_subdef[class]" value=""/>

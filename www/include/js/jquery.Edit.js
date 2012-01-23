@@ -33,6 +33,7 @@
     },
     remove : function() {
       this.datas.value = '';
+      this.datas.VocabularyId = null;
       
       return this;
     }
@@ -143,6 +144,9 @@
     getName : function() {
       return this.databoxField.getName();
     },
+    getMetaStructId : function() {
+      return this.databoxField.getMetaStructId();
+    },
     isMulti : function() {
       return this.databoxField.isMulti();
     },
@@ -181,6 +185,13 @@
           }
           this.datas.push(new recordFieldValue(null, value, VocabularyId));
           this.options.dirty = true;
+        }
+        else
+        {
+          if(window.console)
+          {
+            console.log('already have ',value);
+          }
         }
       }
       else
@@ -226,6 +237,7 @@
     },
     hasValue : function(value, VocabularyId) {
       
+      console.log('has value ', value, VocabularyId);
       if(typeof value === 'undefined')
       {
         if(window.console)
@@ -237,19 +249,29 @@
       
       for(d in this.datas)
       {
-        if(this.datas[d].getVocabularyId() !== null && VocabularyId !== null)
+        if(VocabularyId !== null)
         {
           if(this.datas[d].getVocabularyId() === VocabularyId)
+          {
+            if(window.console)
+            {
+              console.log('already got the vocab ID');
+            }
             return true;
+          }
         }
-        else if(this.datas[d].getValue() == value)
+        else if(this.datas[d].getVocabularyId() === null && this.datas[d].getValue() == value)
         {
+          if(window.console)
+          {
+            console.log('already got this value');
+          }
           return true;
         }
       }
       return false;
     },
-    removeValue : function(value) {
+    removeValue : function(value, vocabularyId) {
       
       if(this.databoxField.isReadonly())
       {
@@ -258,10 +280,38 @@
         return;
       }
       
+      if(typeof VocabularyId === 'undefined')
+        VocabularyId = null;
+      
+      if(window.console)
+      {
+        console.log('Try to remove value ', value, vocabularyId, this.datas);
+      }
+      
       for(d in this.datas)
       {
-        if(this.datas[d].getValue() == value)
+        if(window.console)
         {
+          console.log('loopin... ', this.datas[d].getValue());
+        }
+        if(this.datas[d].getVocabularyId() !== null)
+        {
+          if(this.datas[d].getVocabularyId() == vocabularyId)
+          {
+            if(window.console)
+            {
+              console.log('Found within the vocab ! removing... ');
+            }
+            this.datas[d].remove();
+            this.options.dirty = true;
+          }
+        }
+        else if(this.datas[d].getValue() == value)
+        {
+          if(window.console)
+          {
+            console.log('Found ! removing... ');
+          }
           this.datas[d].remove();
           this.options.dirty = true;
         }
@@ -325,6 +375,11 @@
       }
       
       return arrayValues;
+    },
+    sort : function(algo) {
+      this.datas.sort(algo);
+      
+      return this;
     },
     getSerializedValues : function() {
 

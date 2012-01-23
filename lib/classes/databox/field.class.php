@@ -185,7 +185,7 @@ class databox_field implements cache_cacheableInterface
 
     try
     {
-      $this->Vocabulary = databox_Field_VocabularyControl::get($row['VocabularyControlType']);
+      $this->Vocabulary = \Alchemy\Phrasea\Vocabulary\Controller::get($row['VocabularyControlType']);
       $this->VocabularyRestriction = !!$row['RestrictToVocabularyControl'];
     }
     catch (Exception $e)
@@ -498,7 +498,7 @@ class databox_field implements cache_cacheableInterface
     return $this;
   }
 
-  public function setVocabularyControl(databox_Field_VocabularyControl_Interface $vocabulary = null)
+  public function setVocabularyControl(\Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null)
   {
     $this->Vocabulary = $vocabulary;
 

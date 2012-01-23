@@ -56,7 +56,7 @@ class Edit implements ControllerProviderInterface
               
               try
               {
-                $VC = \databox_Field_VocabularyControl::get($vocabulary);
+                $VC = \Alchemy\Phrasea\Vocabulary\Controller::get($vocabulary);
                 $databox = \databox::get_instance($sbas_id);
               }
               catch(\Exception $e)

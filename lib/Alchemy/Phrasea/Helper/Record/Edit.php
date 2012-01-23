@@ -125,7 +125,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_elements_ids()
   {
-    return \p4string::jsonencode(array_keys($this->javascript_elements));
+    return $this->core['Serializer']->serialize(
+        array_keys($this->javascript_elements)
+        , 'json'
+    );
   }
 
   /**
@@ -135,7 +138,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_elements()
   {
-    return \p4string::jsonencode($this->javascript_elements);
+    return $this->core['Serializer']->serialize(
+        $this->javascript_elements
+        , 'json'
+    );
   }
 
   /**
@@ -145,7 +151,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_sugg_values()
   {
-    return \p4string::jsonencode($this->javascript_sugg_values);
+    return $this->core['Serializer']->serialize(
+        $this->javascript_sugg_values
+        , 'json'
+    );
   }
 
   /**
@@ -155,7 +164,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_status()
   {
-    return \p4string::jsonencode($this->javascript_status);
+    return $this->core['Serializer']->serialize(
+        $this->javascript_status
+        , 'json'
+    );
   }
 
   /**
@@ -165,7 +177,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_fields()
   {
-    return \p4string::jsonencode(($this->javascript_fields));
+    return $this->core['Serializer']->serialize(
+        $this->javascript_fields
+        , 'json'
+    );
   }
 
   /**
@@ -262,10 +277,9 @@ class Edit extends RecordHelper
         );
       }
 
-      $_lst[$indice]['subdefs'] = array('thumbnail' => null, 'preview'   => null);
+      $_lst[$indice]['subdefs'] = array();
 
       $thumbnail = $record->get_thumbnail();
-
 
       $_lst[$indice]['subdefs']['thumbnail'] = array(
         'url' => $thumbnail->get_url()
@@ -275,14 +289,6 @@ class Edit extends RecordHelper
 
       $_lst[$indice]['preview'] = $twig->render('common/preview.html', array('record' => $record));
 
-      try
-      {
-        $_lst[$indice]['subdefs']['preview'] = $record->get_subdef('preview');
-      }
-      catch (Exception $e)
-      {
-        
-      }
       $_lst[$indice]['type'] = $record->get_type();
     }
 
@@ -427,7 +433,7 @@ class Edit extends RecordHelper
 
     $regfield = ($meta->is_regname() || $meta->is_regdesc() || $meta->is_regdate());
 
-    $source = $meta->get_source();
+    $source    = $meta->get_source();
     $separator = $meta->get_separator();
 
     $datas = array(
