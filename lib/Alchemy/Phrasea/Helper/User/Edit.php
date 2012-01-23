@@ -433,7 +433,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $rights[$k] = $right . '_' . $base_id;
       }
       $parm = $request->get_parms_from_serialized_datas($rights, 'values');
-
+      
       foreach ($parm as $p => $v)
       {
         if (trim($v) == '')
@@ -602,6 +602,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     }
 
     $current_user = \User_adapter::getInstance($session->get_usr_id(), $appbox);
+    
     $base_ids = array_keys($current_user->ACL()->get_granted_base(array('canadmin')));
 
     foreach ($this->users as $usr_id)
@@ -659,14 +660,12 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function apply_time()
   {
-    $request = $this->getCore()->getRequest();
+    $this->base_id = (int) $this->request->get('base_id');
 
-    $this->base_id = (int) $request->get('base_id');
+    $dmin = $this->request->get('dmin') ? new \DateTime($this->request->get('dmin')) : null;
+    $dmax = $this->request->get('dmax') ? new \DateTime($this->request->get('dmax')) : null;
 
-    $dmin = $request->get('dmin') ? new \DateTime($request->get('dmin')) : null;
-    $dmax = $request->get('dmax') ? new \DateTime($request->get('dmax')) : null;
-
-    $activate = $request->get('limit');
+    $activate = !!$this->request->get('limit');
 
     foreach ($this->users as $usr_id)
     {

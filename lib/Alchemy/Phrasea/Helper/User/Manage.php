@@ -42,7 +42,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
   public function export()
   {
     $request = $this->request;
-    $appbox = appbox::get_instance();
+    $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
 
     $offset_start = (int) $request->get('offset_start');
@@ -54,13 +54,13 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
         , 'like_value' => $request->get('like_value')
         , 'sbas_id' => $request->get('sbas_id')
         , 'base_id' => $request->get('base_id')
-        , 'srt' => $request->get("srt", User_Query::SORT_CREATIONDATE)
-        , 'ord' => $request->get("ord", User_Query::ORD_DESC)
+        , 'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE)
+        , 'ord' => $request->get("ord", \User_Query::ORD_DESC)
         , 'offset_start' => 0
     );
 
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-    $query = new User_Query($appbox);
+    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $query = new \User_Query($appbox);
 
     if (is_array($this->query_parms['base_id']))
       $query->on_base_ids($this->query_parms['base_id']);
@@ -171,7 +171,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
     $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':email' => $email));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
     $count = count($row);
 
     if (!is_array($row) || $count == 0)
