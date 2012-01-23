@@ -1286,7 +1286,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     $vocab = $vocab_id   = null;
 
-    if ($params['vocabularyId'] && $databox_field->getVocabularyControl())
+    if (isset($params['vocabularyId']) && $databox_field->getVocabularyControl())
     {
       try
       {
