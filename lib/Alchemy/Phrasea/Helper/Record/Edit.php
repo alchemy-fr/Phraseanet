@@ -277,10 +277,9 @@ class Edit extends RecordHelper
         );
       }
 
-      $_lst[$indice]['subdefs'] = array('thumbnail' => null, 'preview'   => null);
+      $_lst[$indice]['subdefs'] = array();
 
       $thumbnail = $record->get_thumbnail();
-
 
       $_lst[$indice]['subdefs']['thumbnail'] = array(
         'url' => $thumbnail->get_url()
@@ -290,14 +289,6 @@ class Edit extends RecordHelper
 
       $_lst[$indice]['preview'] = $twig->render('common/preview.html', array('record' => $record));
 
-      try
-      {
-        $_lst[$indice]['subdefs']['preview'] = $record->get_subdef('preview');
-      }
-      catch (Exception $e)
-      {
-        
-      }
       $_lst[$indice]['type'] = $record->get_type();
     }
 
