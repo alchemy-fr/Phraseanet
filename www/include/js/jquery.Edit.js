@@ -144,6 +144,9 @@
     getName : function() {
       return this.databoxField.getName();
     },
+    getMetaStructId : function() {
+      return this.databoxField.getMetaStructId();
+    },
     isMulti : function() {
       return this.databoxField.isMulti();
     },

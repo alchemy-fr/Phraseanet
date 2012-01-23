@@ -1111,7 +1111,8 @@ function edit_applyMultiDesc(evt)
         {
           var temp = {
             meta_id : values[v].getMetaId() ? values[v].getMetaId() : '',
-            meta_struct_id : p4.edit.T_records[r].fields[f].meta_struct_id,
+            meta_struct_id : p4.edit.T_records[r].fields[f].getMetaStructId(),
+            vocabularyId : values[v].getVocabularyId() ? values[v].getVocabularyId() : '',
             value  : cleanTags(values[v].getValue())
           };
           record_datas.metadatas.push(temp);
@@ -1123,13 +1124,20 @@ function edit_applyMultiDesc(evt)
         
         var temp = {
           meta_id : value.getMetaId() ? value.getMetaId() : '',
-          meta_struct_id : p4.edit.T_records[r].fields[f].meta_struct_id,
+          meta_struct_id : p4.edit.T_records[r].fields[f]..getMetaStructId(),
+          vocabularyId : value.getVocabularyId() ? value.getVocabularyId() : '',
           value  : cleanTags(value.getValue())
         };
         record_datas.metadatas.push(temp);
       }
       
     }
+    
+    if(window.console)
+    {
+      console.log(record_datas.metadatas);
+    }
+    
     // les statbits
     var tsb  = [];
     for(var n=0; n<64; n++)
