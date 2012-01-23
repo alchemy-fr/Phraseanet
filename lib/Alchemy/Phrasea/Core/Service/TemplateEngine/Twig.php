@@ -147,15 +147,6 @@ class Twig extends ServiceAbstract implements ServiceInterface
     $this->twig->addFilter('geoname_name_from_id', new \Twig_Filter_Function('geonames::name_from_id'));
   }
 
-  /**
-   * Getter
-   * @return \Twig_Environment
-   */
-  public function getTwig()
-  {
-    return $this->twig;
-  }
-
   private function getDefaultTemplatePath()
   {
     return array(
