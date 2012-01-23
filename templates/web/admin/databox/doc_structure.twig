@@ -230,7 +230,7 @@
               {% trans 'boutton::ajouter' %}
             </button>
           </div>
-          <form action="/admin/description.php" method="post" target="_self" id="form_struct">
+          <form action="/admin/description/{{ databox.get_sbas_id() }}/" method="post" target="_self" id="form_struct">
             <input name="newfield" id="newfield" type="hidden" />
             <table class="admintable">
               <thead>
@@ -376,7 +376,6 @@
         {% endfor %}
                                       </tbody>
                                     </table>
-                                    <input type="hidden" name="p0" value="{{databox.get_sbas_id()}}" />
                                     <button type="submit">Submit</button>
                                   </form>
                                 </body>
