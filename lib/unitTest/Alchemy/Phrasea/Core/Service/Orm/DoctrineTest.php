@@ -56,8 +56,6 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
                     'hello', $this->options, array('registry' => $registry)
     );
 
-    \Doctrine\ORM\EntityManager;
-            
     $this->assertInstanceOf("\Doctrine\ORM\EntityManager", $doctrine->getService());
   }
 
