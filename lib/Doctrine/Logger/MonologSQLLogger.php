@@ -25,7 +25,8 @@ class MonologSQLLogger implements \Doctrine\DBAL\Logging\SQLLogger
 {
   const JSON = 'json';
   const YAML = 'yaml';
-  const NORMAL = 'normal';
+  const VDUMP = 'vdump';
+  
   /**
    *
    * @var \Monolog\Logger

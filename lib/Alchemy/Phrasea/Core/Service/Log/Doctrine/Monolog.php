@@ -28,7 +28,7 @@ class Monolog extends ParentLog implements ServiceInterface
 {
   const JSON_OUTPUT = 'json';
   const YAML_OUTPUT = 'yaml';
-  const VAR_DUMP_OUTPUT = 'normal';
+  const VAR_DUMP_OUTPUT = 'vdump';
   
   protected $outputs = array(
       self::JSON_OUTPUT, self::YAML_OUTPUT, self::VAR_DUMP_OUTPUT
