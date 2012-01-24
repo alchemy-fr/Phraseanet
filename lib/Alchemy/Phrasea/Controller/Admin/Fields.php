@@ -30,16 +30,15 @@ class Fields implements ControllerProviderInterface
 
   public function connect(Application $app)
   {
-    $appbox  = \appbox::get_instance();
-    $session = $appbox->get_session();
+    $appbox = \appbox::get_instance();
 
     $controllers = new ControllerCollection();
 
-
     $controllers->get('/checkmulti/', function() use ($app, $appbox)
-      {
-        $request = $app['request'];
-        $multi   = ($request->get('multi') === 'true');
+            {
+              $request = $app['request'];
+              
+              $multi = ($request->get('multi') === 'true');
 
         $metadata = \databox_field::load_class_from_xpath($request->get('source'));
 

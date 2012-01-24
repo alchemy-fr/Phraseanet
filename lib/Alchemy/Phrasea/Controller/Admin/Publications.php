@@ -41,7 +41,7 @@ class Publications implements ControllerProviderInterface
               $feeds = \Feed_Collection::load_all($appbox, $user);
 
               $template = 'admin/publications/list.html';
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('feeds' => $feeds));
@@ -55,9 +55,9 @@ class Publications implements ControllerProviderInterface
               $request = $app['request'];
 
               $feed = \Feed_Adapter::create($appbox, $user, $request->get('title'), $request->get('subtitle'));
-              
-              if($request->get('public') == '1')
-                $feed->set_public (true);
+
+              if ($request->get('public') == '1')
+                $feed->set_public(true);
               elseif ($request->get('base_id'))
                 $feed->set_collection(\collection::get_from_base_id($request->get('base_id')));
 
@@ -118,10 +118,14 @@ class Publications implements ControllerProviderInterface
               if (!$feed->is_owner($user))
                 return new Response('ERROR:you are not allowed');
 
-              if ($_FILES['Filedata']['error'] !== 0)
+              $request = $app["request"];
+
+              $fileData = $request->files->get("Filedata");
+
+              if ($fileData['error'] !== 0)
                 return new Response('ERROR:error while upload');
 
-              $file = new \system_file($_FILES['Filedata']['tmp_name']);
+              $file = new \system_file($fileData['tmp_name']);
               if (!in_array($file->get_mime(), array('image/jpeg', 'image/jpg', 'image/gif')))
                 return new Response('ERROR:bad filetype');
 
@@ -156,7 +160,7 @@ class Publications implements ControllerProviderInterface
                 $error = $e->getMessage();
               }
 
-              return $app->redirect('/admin/publications/feed/' . $id . '/');
+              return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
             });
 
 

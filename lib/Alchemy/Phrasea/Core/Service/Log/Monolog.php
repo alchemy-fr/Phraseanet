@@ -110,7 +110,7 @@ class Monolog extends ServiceAbstract implements ServiceInterface
       $handlerInstance = new $handlerClassName($file);
     }
 
-    $channel = isset($options["channel"]) ? $options["channel"] : false;
+    $channel = isset($options["channel"]) ? $options["channel"] : "monolog";
 
     $monologLogger = new \Monolog\Logger($channel);
 

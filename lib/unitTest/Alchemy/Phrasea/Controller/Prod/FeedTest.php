@@ -84,8 +84,19 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function tearDown()
   {
-    if($this->feed instanceof Feed_Adapter)
+    if ($this->feed instanceof Feed_Adapter)
+    {
       $this->feed->delete();
+    }
+    else if($this->entry instanceof Feed_Entry_Adapter)
+    {
+      $this->entry->delete();
+      if ($this->publisher instanceof Feed_Publisher_Adapter)
+      {
+        $this->publisher->delete();
+      }
+    }
+    
     parent::tearDown();
   }
 
@@ -98,7 +109,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $crawler = $this->client->request('POST', '/feeds/requestavailable/');
-    $pageContent = $this->client->getResponse()->getContent();
+    var_dump($this->client->getResponse()->getStatusCode());
     $this->assertTrue($this->client->getResponse()->isOk());
     $feeds = Feed_Collection::load_all($appbox, self::$user);
     foreach ($feeds->get_feeds() as $one_feed)
@@ -158,7 +169,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     foreach ($this->entry->get_content() as $content)
     {
-      $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $content->get_id() . "']")->count());
+      $this->assertEquals(1, $crawler->filterXPath("//input[@value='" . $content->get_id() . "' and @name='item_id']")->count());
     }
 
     $this->assertEquals(1, $crawler->filterXPath("//form[@action='/prod/feeds/entry/" . $this->entry->get_id() . "/update/']")->count());

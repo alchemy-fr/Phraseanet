@@ -55,7 +55,11 @@ class Configuration
 
     try
     {
+
+      //if one of this files are missing consider phraseanet not installed
       $handler->getSpecification()->getConfigurationFile();
+      $handler->getSpecification()->getServiceFile();
+      $handler->getSpecification()->getConnexionFile();
 
       $this->installed = true;
     }
@@ -195,19 +199,15 @@ class Configuration
    */
   public function getConfiguration()
   {
-    if (null === $this->configuration)
+    $configuration = array();
+    
+    if ($this->installed)
     {
-      $this->configuration = new ParameterBag();
-
-      if ($this->installed)
-      {
-        $configuration = $this->configurationHandler->handle($this->environment);
-        $this->environment = $this->configurationHandler->getSelectedEnvironnment();
-        $this->configuration = new ParameterBag($configuration);
-      }
+      $configuration = $this->configurationHandler->handle($this->environment);
+      $this->environment = $this->configurationHandler->getSelectedEnvironnment();
     }
 
-    return $this->configuration;
+    return $this->configuration = new ParameterBag($configuration);
   }
 
   /**
@@ -353,7 +353,7 @@ class Configuration
   {
     return $this->getConfiguration()->get('template_engine');
   }
-  
+
   /**
    * Return cache service
    * @return string 

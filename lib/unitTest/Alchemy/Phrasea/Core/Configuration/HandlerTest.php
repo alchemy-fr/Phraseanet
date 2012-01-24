@@ -30,7 +30,7 @@ class handlerTest extends \PhraseanetPHPUnitAbstract
             , array('getConfigurationFile')
     );
 
-    $fileName = __DIR__ . '/confTestFiles/good.yml';
+    $fileName = __DIR__ . '/confTestFiles/config.yml';
 
     $spec->expects($this->any())
             ->method('getConfigurationFile')
@@ -52,7 +52,7 @@ class handlerTest extends \PhraseanetPHPUnitAbstract
             , array('getConfigurationFile')
     );
 
-    $fileName = __DIR__ . '/confTestFiles/good.yml';
+    $fileName = __DIR__ . '/confTestFiles/config.yml';
 
     $spec->expects($this->any())
             ->method('getConfigurationFile')
@@ -66,8 +66,6 @@ class handlerTest extends \PhraseanetPHPUnitAbstract
 
     $this->assertInstanceOf('\Alchemy\Phrasea\Core\Configuration\Parser', $handler->getParser());
   }
-
-
 
   public function testHandle()
   {
@@ -132,6 +130,42 @@ class handlerTest extends \PhraseanetPHPUnitAbstract
     catch (\Exception $e)
     {
       $this->fail($e->getMessage());
+    }
+  }
+
+  public function testHandleException()
+  {
+    $spec = $this->getMock(
+            '\Alchemy\Phrasea\Core\Configuration\Application'
+            , array('getConfigurationFilePath', 'getNonExtendablePath')
+    );
+
+    $spec->expects($this->any())
+            ->method('getConfigurationFilePath')
+            ->will(
+                    $this->returnValue(
+                            __DIR__ . '/confTestFiles'
+                    )
+    );
+
+    $spec->expects($this->any())
+            ->method('getNonExtendablePath')
+            ->will(
+                    $this->returnValue(
+                            array(array('NON', 'EXISTING', 'VALUE'))
+                    )
+    );
+
+    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
+
+    try
+    {
+      $result = $handler->handle('unknowEnv');
+      $this->fail($e->getMessage());
+    }
+    catch (\Exception $e)
+    {
+      
     }
   }
 

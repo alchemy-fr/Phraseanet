@@ -49,11 +49,11 @@ class Core extends \Pimple
      */
     static::initAutoloads();
 
-
     $handler = new Core\Configuration\Handler(
                     new Core\Configuration\Application(),
                     new Core\Configuration\Parser\Yaml()
     );
+
     $this->configuration = new Core\Configuration($handler, $environement);
 
     $this->init();
@@ -66,13 +66,15 @@ class Core extends \Pimple
               return new Core\Version();
             });
 
-    if (\setup::is_installed())
+    if ($this->configuration->isInstalled())
     {
       $this['Registry'] = $this->share(function()
               {
                 return \registry::get_instance();
               });
+
       \phrasea::start();
+
       $this->enableEvents();
     }
     else
@@ -151,13 +153,10 @@ class Core extends \Pimple
 
     $this->enableLocales();
 
-    if (!defined('JETON_MAKE_SUBDEF'))
-    {
-      define('JETON_MAKE_SUBDEF', 0x01);
-      define('JETON_WRITE_META_DOC', 0x02);
-      define('JETON_WRITE_META_SUBDEF', 0x04);
-      define('JETON_WRITE_META', 0x06);
-    }
+    !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
+    !defined('JETON_WRITE_META_DOC') ? define('JETON_WRITE_META_DOC', 0x02) : '';
+    !defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
+    !defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
 
     if (\setup::is_installed())
     {
@@ -180,7 +179,6 @@ class Core extends \Pimple
       {
         ini_set('display_errors', 'on');
         error_reporting(E_ALL);
-//      \Symfony\Component\HttpKernel\Debug\ErrorHandler::register();
       }
       else
       {
@@ -237,6 +235,16 @@ class Core extends \Pimple
   public function getVersion()
   {
     return $this['Version'];
+  }
+
+  /**
+   * Getter
+   * 
+   * @return \Symfony\Component\Serializer\Serializer
+   */
+  public function getSerializer()
+  {
+    return $this['Serializer'];
   }
 
   /**
@@ -457,7 +465,7 @@ class Core extends \Pimple
    */
   public function getEnv()
   {
-    return $this->conf->getEnvironnement();
+    return $this->configuration->getEnvironnement();
   }
 
 }

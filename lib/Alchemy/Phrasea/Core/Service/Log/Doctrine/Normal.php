@@ -34,7 +34,7 @@ class Normal extends ServiceAbstract implements ServiceInterface
 
   public function getType()
   {
-    return 'echo';
+    return 'normal';
   }
   
   public function getScope()

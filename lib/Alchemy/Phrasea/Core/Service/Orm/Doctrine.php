@@ -40,7 +40,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       'json', 'yaml', 'normal'
   );
   protected $loggers = array(
-      'monolog', 'echo'
+      'monolog', 'normal'
   );
   protected $entityManager;
   protected $cacheServices = array();
@@ -135,7 +135,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $config->setProxyNamespace('Proxies');
 
     $connexion = isset($options["dbal"]) ? $options["dbal"] : false;
-
+   
     if (!$connexion)
     {
       throw new \Exception(sprintf(
@@ -185,11 +185,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $this->addTypes();
 
     return $this;
-  }
-
-  public function getEntityManager()
-  {
-    return $this->entityManager;
   }
 
   public function getVersion()
