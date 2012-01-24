@@ -27,8 +27,12 @@
     getVocabularyId : function() {
       return this.datas.VocabularyId;
     },
-    setValue : function(value) {
+    setValue : function(value, VocabularyId) {
+      if(typeof VocabularyId === 'undefined')
+        VocabularyId = null;
+      
       this.datas.value = value;
+      this.datas.VocabularyId = VocabularyId;
       return this;
     },
     remove : function() {
@@ -62,6 +66,11 @@
     this.name = name;
     this.meta_struct_id = meta_struct_id;
     this.options = jQuery.extend(defaults, options);
+    
+    if(this.options.multi === true && this.options.separator === null)
+    {
+      this.options.separator = ';';
+    }
     
   };
   
@@ -103,15 +112,21 @@
     };
     this.datas = new Array();
 
-    if(typeof arrayValues === 'object')
+    if(arrayValues instanceof Array)
     {
+      if(arrayValues.length > 1 && !databoxField.isMulti())
+        throw 'You can not add multiple values to a non multi field';
+      
       var first = true;
+      
       for(v in arrayValues)
       {
         if(typeof arrayValues[v] !== 'object')
         {
           if(window.console)
+          {
             console.error('Trying to add a non-recordFieldValue to the field...');
+          }
           
           continue;
         }
@@ -119,7 +134,9 @@
         if(isNaN(arrayValues[v].getMetaId()))
         {
           if(window.console)
+          {
             console.error('Trying to add a recordFieldValue without metaId...');
+          }
           
           continue;
         }
@@ -127,12 +144,16 @@
         if(!first && this.options.multi === false)
         {
           if(window.console)
+          {
             console.error('Trying to add multi values in a non-multi field');
+          }
         }
         
         if(window.console)
+        {
           console.log('adding a value : ', arrayValues[v]);
-
+        }
+        
         this.datas.push(arrayValues[v]);
         first = false;
       }
@@ -166,7 +187,10 @@
       if(this.databoxField.isReadonly())
       {
         if(window.console)
+        {
           console.error('Unable to set a value to a readonly field');
+        }
+        
         return;
       }
       
@@ -196,39 +220,49 @@
       }
       else
       {
-        if(merge === true && this.isEmpty() === false)
+        if(merge === true && this.isEmpty() === false && VocabularyId === null)
         {
           if(window.console)
           {
             console.log('Merging value ',value);
           }
-          this.datas[0].setValue(this.datas[0].getValue() + ' ' + value);
-          this.datas[0].setVocabularyId(VocabularyId);
+          this.datas[0].setValue(this.datas[0].getValue() + ' ' + value, VocabularyId);
           
           this.options.dirty = true;
         }
         else  
         {
-          if(!this.hasValue(value, VocabularyId))
+          if(merge === true && this.isEmpty() === false && VocabularyId !== null)
           {
-            if(this.datas.length === 0)
+            if(window.console)
             {
-              if(window.console)
-              {
-                console.log('Adding new value ',value);
-              }
-              this.datas.push(new recordFieldValue(null, value, VocabularyId));
+              console.error('Cannot merge vocabularies');
             }
-            else
+            this.datas[0].setValue(value, VocabularyId);
+          }
+          else
+          {
+           
+            if(!this.hasValue(value, VocabularyId))
             {
-              if(window.console)
+              if(this.datas.length === 0)
               {
-                console.log('Updating value ',value);
+                if(window.console)
+                {
+                  console.log('Adding new value ',value);
+                }
+                this.datas.push(new recordFieldValue(null, value, VocabularyId));
               }
-              this.datas[0].setValue(value);
-              this.datas[0].setVocabularyId(VocabularyId);
+              else
+              {
+                if(window.console)
+                {
+                  console.log('Updating value ',value);
+                }
+                this.datas[0].setValue(value, VocabularyId);
+              }
+              this.options.dirty = true;
             }
-            this.options.dirty = true;
           }
         }
       }
@@ -237,11 +271,12 @@
     },
     hasValue : function(value, VocabularyId) {
       
-      console.log('has value ', value, VocabularyId);
       if(typeof value === 'undefined')
       {
         if(window.console)
+        {
           console.error('Trying to check the presence of an undefined value');
+        }
       }
       
       if(typeof VocabularyId === 'undefined')
@@ -276,7 +311,10 @@
       if(this.databoxField.isReadonly())
       {
         if(window.console)
+        {
           console.error('Unable to set a value to a readonly field');
+        }
+        
         return;
       }
       
@@ -333,7 +371,10 @@
       if(this.databoxField.isReadonly())
       {
         if(window.console)
+        {
           console.error('Unable to set a value to a readonly field');
+        }
+        
         return;
       }
       
@@ -398,17 +439,17 @@
       if(this.databoxField.isReadonly())
       {
         if(window.console)
+        {
           console.error('Unable to set a value to a readonly field');
+        }
+        
         return;
       }
-      
-      console.log('Search / Replace');
       
       for(d in this.datas)
       {
         if(this.datas[d].getVocabularyId() !== null)
         {
-          console.log('value has vocabId, continue;');
           continue;
         }
         
@@ -417,14 +458,12 @@
         
         if(value === replacedValue)
         {
-          console.log('value', value, ' has not change, continue;');
           continue;
         }
         this.removeValue(value);
         
         if(!this.hasValue(replacedValue))
         {
-          console.log('adding value ', replacedValue);
           this.addValue(replacedValue);
         }
         

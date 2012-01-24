@@ -6,34 +6,38 @@
 
 (function( window ) {
 
-  var Selectable = function(options) {
+  var Selectable = function($container, options) {
     
     var defaults = {
           allow_multiple : false,
-          container : window.document,
-          selector : '*',
+          selector : '',
           callbackSelection : null,
           selectStart : null,
           selectStop : null
         },
         options = (typeof options == 'object') ? options : {};
     
+    var $this = this;
+        
+    if($container.data('selectionnable'))
+    {
+      /* this container is already selectionnable */
+      if(window.console)
+      {
+        console.error('Trying to apply new selection to existing one');
+      }
+      
+      return $container.data('selectionnable');
+    }
+    
+    this.$container = $container;
     this.options = jQuery.extend(defaults, options);
     this.datas = new Array();
     
-    var $container = jQuery(this.options.container),
-        $this = this;
+    this.$container.data('selectionnable', this);
+    this.$container.addClass('selectionnable');
     
-    if(jQuery($container).hasClass('selectionnable'))
-    {
-      /* this container is already selectionnable */
-      
-      return;
-    }
-    
-    jQuery($container).addClass('selectionnable');
-    
-    jQuery(this.options.selector, $container)
+    jQuery(this.options.selector, this.$container)
     .live('click', function(event){
       
       if(typeof $this.options.selectStart === 'function')
@@ -45,11 +49,11 @@
       
       var k = get_value($that, $this);
 
-      if(is_shift_key(event) && jQuery('.last_selected', $container).filter($this.options.selector).length != 0)
+      if(is_shift_key(event) && jQuery('.last_selected', this.$container).filter($this.options.selector).length != 0)
       {
-        var lst = jQuery($this.options.selector, $container);
+        var lst = jQuery($this.options.selector, this.$container);
         
-        var index1 = jQuery.inArray( jQuery('.last_selected', $container).filter($this.options.selector)[0], lst );
+        var index1 = jQuery.inArray( jQuery('.last_selected', this.$container).filter($this.options.selector)[0], lst );
         var index2 = jQuery.inArray( $that[0], lst );
 
         if(index2<index1)
@@ -63,10 +67,10 @@
         {
           var exp = $this.options.selector + ':gt(' + index1 + '):lt(' + (index2-index1) + ')';
 
-          $.each(jQuery(exp, $container),function(i,n){
+          $.each(jQuery(exp, this.$container),function(i,n){
             if(!jQuery(n).hasClass('selected'))
             {
-              var k = get_value(jQuery(n), $this);              
+              var k = get_value(jQuery(n), $this);  
               $this.push(k);
               jQuery(n).addClass('selected');
             }
@@ -74,7 +78,7 @@
         }
 
         if($this.has(k) === false)
-        {
+        {     
           $this.push(k);
           $that.addClass('selected');
         }
@@ -82,9 +86,9 @@
       else
       {
         if(!is_ctrl_key(event))
-        {
+        {  
           $this.empty().push(k);
-          jQuery('.selected', $container).filter($this.options.selector).removeClass('selected');
+          jQuery('.selected', this.$container).filter($this.options.selector).removeClass('selected');
           $that.addClass('selected');
         }
         else
@@ -95,14 +99,14 @@
             $that.removeClass('selected');
           }
           else
-          {
+          {  
             $this.push(k);
             $that.addClass('selected');
           }
         }
       }
 
-      jQuery('.last_selected', $container).removeClass('last_selected');
+      jQuery('.last_selected', this.$container).removeClass('last_selected');
       $that.addClass('last_selected');
       
       
@@ -130,13 +134,35 @@
     }
   }
   
+  function is_ctrl_key(event)
+  {
+    if(event.altKey)
+      return true;
+    if(event.ctrlKey)
+      return true;
+    if(event.metaKey)	// apple key opera
+      return true;
+    if(event.keyCode == '17')	// apple key opera
+      return true;
+    if(event.keyCode == '224')	// apple key mozilla
+      return true;
+    if(event.keyCode == '91')	// apple key safari
+      return true;
+
+    return false;
+  }
+
+  function is_shift_key(event)
+  {
+    if(event.shiftKey)
+      return true;
+    return false;
+  }
+
+  
   
   Selectable.prototype = {
     push : function(element){
-      if(window.console)
-      {
-        window.console.log('pushing ',element);
-      }
       if(this.options.allow_multiple === true || !this.has(element))
       {
         this.datas.push(element);
@@ -162,6 +188,8 @@
     empty : function(){
       this.datas = new Array();
       
+      jQuery(this.options.selector, this.$container).filter('.selected:visible').removeClass('selected');
+      
       return this;
     },
     length : function(){
@@ -181,7 +209,7 @@
     selectAll : function(separator){
       var $this = this;
       
-      jQuery(this.optionsthis.options.selector, $container).not('.selected').filter(':visible').each(function(){
+      jQuery(this.options.selector, this.$container).not('.selected').filter(':visible').each(function(){
         $this.push(get_value(this, $this));
         $(this).addClass('selected');
       });
