@@ -105,11 +105,11 @@ query_logger:
     #Name of the file where logs are written
     filename: doctrine-query.log
     
-# Define a normal log service for Doctrine
-# normal logger logs doctrine queries to the standard output using echo/var_dump
-# Notice that normal logger do not have options
+# Define a phpecho log service for Doctrine
+# phpecho logger logs doctrine queries to the standard output using echo/var_dump
+# Notice that phpecho logger do not have options
 sql_logger:
-  type: normal
+  type: phpecho
   
 #Define cache services
 #There are Four deffirent cache type available [array, xcache, apc, memcache]

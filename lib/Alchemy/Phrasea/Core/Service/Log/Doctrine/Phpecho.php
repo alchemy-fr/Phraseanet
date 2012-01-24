@@ -23,7 +23,7 @@ use Doctrine\DBAL\Logging\EchoSQLLogger;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Normal extends ServiceAbstract implements ServiceInterface
+class Phpecho extends ServiceAbstract implements ServiceInterface
 {
 
   
@@ -34,7 +34,7 @@ class Normal extends ServiceAbstract implements ServiceInterface
 
   public function getType()
   {
-    return 'normal';
+    return 'phpecho';
   }
   
   public function getScope()

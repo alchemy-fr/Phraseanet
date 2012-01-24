@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 class Log extends AbstractBuilder
 {
 
-  protected static $optionsNotMandatory = array('normal');
+  protected static $optionsNotMandatory = array('phpecho');
 
   public static function create($name, ParameterBag $configuration, Array $dependencies = array(), $namespace = null)
   {

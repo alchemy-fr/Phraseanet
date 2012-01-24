@@ -40,7 +40,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       'json', 'yaml', 'normal'
   );
   protected $loggers = array(
-      'monolog', 'normal'
+      'monolog', 'phpecho'
   );
   protected $entityManager;
   protected $cacheServices = array();
