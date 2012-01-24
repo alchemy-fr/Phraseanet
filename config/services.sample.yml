@@ -88,8 +88,8 @@ query_logger:
   options:
     #You can precise the output format
     #This option is only available when log are used to log doctrine queries
-    #Available output [normal, json, yaml]
-    # normal : output logs in a var_dump formatted style
+    #Available output [vdump, json, yaml]
+    # vdump : output logs in a var_dump formatted style
     # json : output logs in json
     # yml : output logs yml
     output: json
