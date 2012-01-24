@@ -54,11 +54,7 @@ class LogBuilderTest extends PhraseanetPHPUnitAbstract
   public function testCreateNamespace()
   {
     $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
-                    array("type" => "normal", "options" => array(
-                            "handler" => "rotate"
-                            , "filename" => "test"
-                        )
-                    )
+                    array("type" => "phpecho", "options" => array())
     );
 
     $service = Alchemy\Phrasea\Core\ServiceBuilder\Log::create("test", $configuration, array(), "Doctrine");
