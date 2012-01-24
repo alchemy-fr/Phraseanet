@@ -29,15 +29,15 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 {
 
   const ARRAYCACHE = 'array';
-  const MEMCACHED = 'memcached';
+  const MEMCACHE = 'memcache';
   const XCACHE = 'xcache';
   const APC = 'apc';
 
   protected $caches = array(
-      self::MEMCACHED, self::APC, self::ARRAYCACHE, self::XCACHE
+      self::MEMCACHE, self::APC, self::ARRAYCACHE, self::XCACHE
   );
   protected $outputs = array(
-      'json', 'yaml', 'normal'
+      'json', 'yaml', 'vdump'
   );
   protected $loggers = array(
       'monolog', 'phpecho'
