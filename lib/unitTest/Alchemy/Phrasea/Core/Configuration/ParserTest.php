@@ -27,7 +27,7 @@ class parserTest extends \PhraseanetPHPUnitAbstract
   {
     $parser = new Yaml();
 
-    $filename = $fileName = __DIR__ . '/confTestFiles/good.yml';
+    $filename = $fileName = __DIR__ . '/confTestFiles/config.yml';
 
     $file = new SplFileObject($filename);
 

@@ -30,7 +30,7 @@ class handlerTest extends \PhraseanetPHPUnitAbstract
             , array('getConfigurationFile')
     );
 
-    $fileName = __DIR__ . '/confTestFiles/good.yml';
+    $fileName = __DIR__ . '/confTestFiles/config.yml';
 
     $spec->expects($this->any())
             ->method('getConfigurationFile')
@@ -52,7 +52,7 @@ class handlerTest extends \PhraseanetPHPUnitAbstract
             , array('getConfigurationFile')
     );
 
-    $fileName = __DIR__ . '/confTestFiles/good.yml';
+    $fileName = __DIR__ . '/confTestFiles/config.yml';
 
     $spec->expects($this->any())
             ->method('getConfigurationFile')
