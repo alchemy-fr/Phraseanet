@@ -36,7 +36,7 @@ class DoctrineNormalTest extends PhraseanetPHPUnitAbstract
                     'hello', array(), array()
     );
 
-    $this->assertEquals("normal", $log->getType());
+    $this->assertEquals("phpecho", $log->getType());
   }
 
   public function testScope()
