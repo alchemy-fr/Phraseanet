@@ -23,154 +23,147 @@ use Alchemy\Phrasea\Core\Configuration;
 class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 {
 
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core\Configuration
+   */
+  protected $confProd;
+
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core\Configuration
+   */
+  protected $confDev;
+
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core\Configuration
+   */
+  protected $confTest;
+
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core\Configuration
+   */
+  protected $confNotInstalled;
+
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core\Configuration
+   */
+  protected $confExperience;
+
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core\Configuration
+   */
+  protected $object;
+
   public function setUp()
   {
     parent::setUp();
-  }
 
-  public function testInitialization()
-  {
-    $spec = $this->getMock(
+    $specNotInstalled = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
             , array('getConfigurationFile')
     );
 
-    $fileName = __DIR__ . '/confTestFiles/good.yml';
-
-    $spec->expects($this->any())
+    $specNotInstalled->expects($this->any())
             ->method('getConfigurationFile')
             ->will(
-                    $this->returnValue(
-                            new \SplFileObject($fileName)
-                    )
+                    $this->throwException(new Exception)
     );
 
-    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
-
-    $configuration = new PhraseaCore\Configuration($handler);
-    $configuration->setEnvironnement('prod');
-
-    $this->assertEquals('prod', $configuration->getEnvironnement());
-    $this->assertTrue($configuration->isInstalled());
-    $this->assertInstanceOf(
-            '\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag'
-            , $configuration->getConfiguration()
-    );
-    $this->assertFalse($configuration->isDebug());
-    $this->assertFalse($configuration->isDisplayingErrors());
-    $this->assertFalse($configuration->isMaintained());
-    $this->assertTrue(is_array($configuration->getPhraseanet()->all()));
-  }
-
-  public function testInstalled()
-  {
-    $spec = $this->getMock(
+    $specExperience = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
             , array('getConfigurationFile')
     );
 
-    $spec->expects($this->any())
-            ->method('getConfigurationFile')
-            ->will($this->throwException(new \Exception()));
-
-    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
-
-    $configuration = new PhraseaCore\Configuration($handler);
-    $configuration->setEnvironnement('prod');
-
-    $this->assertFalse($configuration->isInstalled());
-    try
-    {
-      $configuration->getPhraseanet();
-      $this->fail("should raise an exception because application is not yet installed");
-    }
-    catch (\Exception $e)
-    {
-      
-    }
-  }
-
-  public function testGetAvailableLogger()
-  {
-    $spec = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
-    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
-
-    $configuration = new PhraseaCore\Configuration($handler);
-    $configuration->setEnvironnement('prod');
-
-    $availableLogger = $configuration->getAvailableDoctrineLogger();
-
-    $this->assertTrue(is_array($availableLogger));
-    $this->assertContains('monolog', $availableLogger);
-    $this->assertContains('echo', $availableLogger);
-  }
-
-  public function testGetHandler()
-  {
-    $spec = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
-    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
-
-    $configuration = new PhraseaCore\Configuration($handler);
-    $configuration->setEnvironnement('prod');
-
-    $this->assertInstanceOf('\Alchemy\Phrasea\Core\Configuration\Handler', $configuration->getConfigurationHandler());
-  }
-
-  public function testSetHandler()
-  {
-    $spec = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
-    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
-
-    $configuration = new PhraseaCore\Configuration($handler);
-    $configuration->setEnvironnement('prod');
-
-    $spec2 = $this->getMock('\Alchemy\Phrasea\Core\Configuration\Application');
-
-    $spec2->expects($this->any())
+    $specExperience->expects($this->any())
             ->method('getConfigurationFile')
             ->will(
                     $this->returnValue(
-                            'test'
+                            new \SplFileObject(__DIR__ . '/confTestFiles/config.yml')
                     )
     );
 
-    $newHandler = new Configuration\Handler($spec2, new Configuration\Parser\Yaml());
 
-    $configuration->setConfigurationHandler($newHandler);
+    $handler = new Configuration\Handler($specNotInstalled, new Configuration\Parser\Yaml());
+    $this->confNotInstalled = new PhraseaCore\Configuration($handler);
 
-    $this->assertEquals('test', $configuration->getConfigurationHandler()->getSpecification()->getConfigurationFile());
+
+    $handler = new Configuration\Handler($specExperience, new Configuration\Parser\Yaml());
+    $this->object = new PhraseaCore\Configuration($handler);
   }
 
-//  public function testBadDoctrineLogger()
+  public function testGetEnvironment()
+  {
+    $this->assertEquals("dev", $this->object->getEnvironnement());
+    $this->assertEquals(null, $this->confNotInstalled->getEnvironnement());
+  }
+
+  public function testSetEnvironment()
+  {
+    $this->object->setEnvironnement("ok");
+    $this->assertEquals("ok", $this->object->getEnvironnement());
+    $this->confNotInstalled->setEnvironnement("ok");
+    $this->assertEquals("ok", $this->confNotInstalled->getEnvironnement());
+  }
+
+  public function testIsDebug()
+  {
+    $this->object->setEnvironnement("test");
+    $this->assertTrue($this->object->isDebug());
+    $this->object->setEnvironnement("dev");
+    $this->assertTrue($this->object->isDebug());
+    $this->object->setEnvironnement("prod");
+    $this->assertFalse($this->object->isDebug());
+    $this->object->setEnvironnement("no_debug");
+    $this->assertFalse($this->object->isDebug());
+  }
+
+  public function testIsMaintened()
+  {
+    $this->object->setEnvironnement("test");
+    $this->assertFalse($this->object->isMaintained());
+    $this->object->setEnvironnement("dev");
+    $this->assertFalse($this->object->isMaintained());
+    $this->object->setEnvironnement("prod");
+    $this->assertFalse($this->object->isMaintained());
+    $this->object->setEnvironnement("no_maintenance");
+    $this->assertFalse($this->object->isMaintained());
+  }
+
+  public function testIsDisplayinErrors()
+  {
+    $this->object->setEnvironnement("test");
+    $this->assertFalse($this->object->isDisplayingErrors());
+    $this->object->setEnvironnement("dev");
+    $this->assertFalse($this->object->isDisplayingErrors());
+    $this->object->setEnvironnement("prod");
+    $this->assertFalse($this->object->isDisplayingErrors());
+    $this->object->setEnvironnement("no_display_errors");
+    $this->assertFalse($this->object->isDisplayingErrors());
+  }
+
+//  public function testgetPhraseanet()
 //  {
-//    $spec = $this->getMock(
-//            '\Alchemy\Phrasea\Core\Configuration\Application'
-//            , array('getConfigurationFile')
-//    );
-//
-//    $fileName = __DIR__ . '/confTestFiles/bad_doctrine_logger.yml';
-//
-//    $spec->expects($this->any())
-//            ->method('getConfigurationFile')
-//            ->will(
-//                    $this->returnValue(
-//                            new \SplFileObject($fileName)
-//                    )
-//    );
-//
-//    $handler = new Configuration\Handler($spec, new Configuration\Parser\Yaml());
-//
-//    $configuration = new PhraseaCore\Configuration($handler);
-//    $configuration->setEnvironnement('prod');
-//    
+//    $this->object->setEnvironnement("test");
+//    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
+//    $this->object->setEnvironnement("dev");
+//    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
+//    $this->object->setEnvironnement("prod");
+//    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
+//    $this->object->setEnvironnement("missing_phraseanet");
 //    try
 //    {
-//      $configuration->getDoctrine();
-//      $this->fail('An exception should be raised');
+//      $this->object->getPhraseanet();
+//      $this->fail("should raise an exeception");
 //    }
-//    catch(Exception $e)
+//    catch (\Exception $e)
 //    {
 //      
 //    }
 //  }
+
 }

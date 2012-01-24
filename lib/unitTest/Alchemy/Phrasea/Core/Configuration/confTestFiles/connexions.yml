@@ -1,0 +1,13 @@
+main_connexion:
+    host: hostname
+    port: port
+    user: username
+    password: password
+    dbname: dbname
+    driver: pdo_mysql
+    charset: UTF8
+
+test_connexion:
+    driver: pdo_sqlite
+    path: one/path/to/database
+    charset: UTF8
