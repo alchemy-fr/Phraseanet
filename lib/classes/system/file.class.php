@@ -1056,7 +1056,6 @@ class system_file extends SplFileObject
             {
               $value = $base64_encoded ? base64_decode($li->item($ili)->nodeValue) : $li->item($ili)->nodeValue;
               $utf8value = trim($this->guessCharset($value));
-              var_dump($utf8value);
               $tfields[$src][] = $utf8value;
             }
           }
@@ -1132,11 +1131,14 @@ class system_file extends SplFileObject
           $tmpval[] = $val;
       }
 
+      foreach ($tmpval as $val)
+      {
       $ret[] = array(
           'meta_struct_id' => $meta->get_id(),
           'meta_id' => null,
-          'value' => $tmpval
+            'value' => $val
       );
+    }
     }
 
 

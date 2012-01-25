@@ -1154,7 +1154,6 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
      *
      * @todo
      */
-//    var_dump($record["technical_informations"]);
 
     $this->assertTrue(is_array($record["technical_informations"]));
 

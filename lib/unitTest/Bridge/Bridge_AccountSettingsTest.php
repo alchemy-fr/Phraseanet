@@ -38,8 +38,7 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     }
     catch (Exception $e)
     {
-      var_dump($e->getMessage());
-      $this->fail();
+      $this->fail($e->getMessage());
     }
   }
 
