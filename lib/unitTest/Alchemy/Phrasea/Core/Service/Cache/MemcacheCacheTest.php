@@ -41,7 +41,7 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
 
     if (extension_loaded('memcache'))
     {
-      $this->assertInstanceOf("\Doctrine\Common\Cache\MemcacheCache", $cache->getService());
+      $this->assertInstanceOf("\Doctrine\Common\Cache\AbstractCache", $cache->getService());
     }
     else
     {

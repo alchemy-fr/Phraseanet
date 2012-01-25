@@ -39,7 +39,7 @@ class ArrayCacheTest extends PhraseanetPHPUnitAbstract
                     'hello', array(), array('registry' => $registry)
     );
 
-    $this->assertInstanceOf("\Doctrine\Common\Cache\ArrayCache", $cache->getService());
+    $this->assertInstanceOf("\Doctrine\Common\Cache\AbstractCache", $cache->getService());
   }
 
   public function testServiceException()
