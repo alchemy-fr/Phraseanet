@@ -41,7 +41,8 @@ class ApcCacheTest extends PhraseanetPHPUnitAbstract
 
     if (extension_loaded('apc'))
     {
-      $this->assertInstanceOf("\Doctrine\Common\Cache\ApcCache", $cache->getService());
+      $service = $cache->getService();
+      $this->assertTrue($service instanceof \Doctrine\Common\Cache\AbstractCache);
     }
     else
     {

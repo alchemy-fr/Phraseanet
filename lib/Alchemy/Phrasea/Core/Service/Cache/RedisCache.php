@@ -14,7 +14,8 @@ namespace Alchemy\Phrasea\Core\Service\Cache;
 use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface;
+    Alchemy\Phrasea\Core\Service\ServiceInterface,
+    Alchemy\Phrasea\Cache as PhraseaCache;
 use Doctrine\Common\Cache as CacheService;
 
 /**
@@ -23,11 +24,11 @@ use Doctrine\Common\Cache as CacheService;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class MemcacheCache extends ServiceAbstract implements ServiceInterface
+class RedisCache extends ServiceAbstract implements ServiceInterface
 {
 
   const DEFAULT_HOST = "localhost";
-  const DEFAULT_PORT = "11211";
+  const DEFAULT_PORT = "6379";
 
   protected $host;
   protected $port;
@@ -52,24 +53,22 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
    */
   public function getService()
   {
-    if (!extension_loaded('memcache'))
+    if (!extension_loaded('redis'))
     {
-      throw new \Exception('The Memcache cache requires the Memcache extension.');
+      throw new \Exception('The Redis cache requires the Redis extension.');
     }
 
-    $memcache = new \Memcache();
+    $redis = new \Redis();
 
-    $memcache->addServer($this->host, $this->port);
-    
-    $key = sprintf("%s:%s", $this->host, $this->port);
-    
-    $stats = @$memcache->getExtendedStats();
-    
-    if ($stats[$key])
+    if (!$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY))
     {
-      $memcache->connect($this->host, $this->port);
-      $service = new CacheService\MemcacheCache();
-      $service->setMemcache($memcache);
+      $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
+    }
+
+    if ($redis->connect($this->host, $this->port))
+    {
+      $service = new PhraseaCache\RedisCache();
+      $service->setRedis($redis);
     }
     else
     {
@@ -85,7 +84,7 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
 
   public function getType()
   {
-    return 'memcache';
+    return 'redis';
   }
 
   public function getHost()

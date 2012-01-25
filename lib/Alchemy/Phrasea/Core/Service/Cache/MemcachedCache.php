@@ -14,7 +14,8 @@ namespace Alchemy\Phrasea\Core\Service\Cache;
 use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface;
+    Alchemy\Phrasea\Core\Service\ServiceInterface,
+    Alchemy\Phrasea\Cache as PhraseaCache;
 use Doctrine\Common\Cache as CacheService;
 
 /**
@@ -23,7 +24,7 @@ use Doctrine\Common\Cache as CacheService;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class MemcacheCache extends ServiceAbstract implements ServiceInterface
+class MemcachedCache extends ServiceAbstract implements ServiceInterface
 {
 
   const DEFAULT_HOST = "localhost";
@@ -52,24 +53,25 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
    */
   public function getService()
   {
-    if (!extension_loaded('memcache'))
+    if (!extension_loaded('memcached'))
     {
-      throw new \Exception('The Memcache cache requires the Memcache extension.');
+      throw new \Exception('The Memcached cache requires the Memcached extension.');
     }
 
-    $memcache = new \Memcache();
+    $memcached = new \Memcached();
 
-    $memcache->addServer($this->host, $this->port);
-    
-    $key = sprintf("%s:%s", $this->host, $this->port);
-    
-    $stats = @$memcache->getExtendedStats();
-    
-    if ($stats[$key])
+    $memcached->addServer($this->host, $this->port);
+
+    $memcached->setOption(\Memcached::OPT_CONNECT_TIMEOUT, 500);
+    $memcached->setOption(\Memcached::OPT_SEND_TIMEOUT, 500);
+    $memcached->setOption(\Memcached::OPT_RECV_TIMEOUT, 500);
+    $memcached->setOption(\Memcached::OPT_SERVER_FAILURE_LIMIT, 1);
+    $memcached->setOption(\Memcached::OPT_DISTRIBUTION, \Memcached::DISTRIBUTION_CONSISTENT);
+
+    if ($memcached->getVersion())
     {
-      $memcache->connect($this->host, $this->port);
-      $service = new CacheService\MemcacheCache();
-      $service->setMemcache($memcache);
+      $service = new PhraseaCache\MemcachedCache();
+      $service->setMemcached($memcached);
     }
     else
     {
@@ -85,7 +87,7 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
 
   public function getType()
   {
-    return 'memcache';
+    return 'memcached';
   }
 
   public function getHost()
