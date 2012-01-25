@@ -40,11 +40,6 @@ class CoreTest extends PhraseanetPHPUnitAbstract
     $this->assertInstanceOf('\Twig_Environment', self::$core->getTwig());
   }
 
-  public function testCoreCache()
-  {
-    $this->assertInstanceOf('\Doctrine\Common\Cache\AbstractCache', self::$core->getCache());
-  }
-
   public function testCoreSerializer()
   {
     $this->assertInstanceOf('\Symfony\Component\Serializer\Serializer', self::$core->getSerializer());
