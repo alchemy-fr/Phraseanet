@@ -210,7 +210,7 @@ class Users implements ControllerProviderInterface
                   )
               );
 
-              foreach ($results as $user)
+              foreach ($users->export() as $user)
               {
                 /* @var $user \User_Adapter */
                 $userTable[] = array(
