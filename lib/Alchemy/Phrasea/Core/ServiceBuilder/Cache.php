@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  */
 class Cache extends AbstractBuilder
 {
-  protected static $optionsNotMandatory = array('apc', 'xcache', 'memcache', 'array');
+  protected static $optionsNotMandatory = array('apc', 'xcache', 'memcache', 'array', 'memcached', 'redis');
   
   public static function create($name, ParameterBag $configuration, Array $dependencies = array(), $namespace = null)
   {
