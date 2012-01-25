@@ -566,7 +566,7 @@ class Edit extends RecordHelper
           )
         );
 
-        $record->set_metadatas($metas);
+        $record->set_metadatas($metas, true);
       }
 
       $newstat  = $record->get_status();

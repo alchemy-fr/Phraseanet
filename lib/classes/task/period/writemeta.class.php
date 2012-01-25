@@ -282,7 +282,6 @@ class task_period_writemeta extends task_databoxAbstract
   {
     $coll_id = $row['coll_id'];
     $record_id = $row['record_id'];
-    $base_id = phrasea::baseFromColl($this->sbas_id, $coll_id);
     $jeton = $row['jeton'];
 
     $record = new record_adapter($this->sbas_id, $record_id);
@@ -303,91 +302,50 @@ class task_period_writemeta extends task_databoxAbstract
       }
     }
 
-    $uuid = $record->get_uuid();
-
     $registry = $databox->get_registry();
-
-    $dom = new DOMDocument('1.0', 'UTF-8');
-    $dom->formatOutput = true;
-    $dom->preserveWhiteSpace = true;
-
-    $noderoot = $dom->appendChild($dom->createElement('rdf:RDF'));
-    $noderoot->setAttribute('xmlns:rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-
-    $nodedesc = $noderoot->appendChild($dom->createElement('rdf:Description'));
-
-    if ($uuid)
-    {
-      $node = $nodedesc->appendChild($dom->createElement('XMP-exif:ImageUniqueID'));
-      $node->appendChild($dom->createTextNode($uuid));
-      $node = $nodedesc->appendChild($dom->createElement('IPTC:UniqueDocumentID'));
-      $node->appendChild($dom->createTextNode($uuid));
-    }
-
-    $nodedesc->setAttribute('xmlns:et', 'http://ns.exiftool.ca/1.0/');
-    $nodedesc->setAttribute('et:toolkit', 'Image::ExifTool 7.62');
-
-    $nodedesc->setAttribute('xmlns:ExifTool', 'http://ns.exiftool.ca/ExifTool/1.0/');
-    $nodedesc->setAttribute('xmlns:File', 'http://ns.exiftool.ca/File/1.0/');
-    $nodedesc->setAttribute('xmlns:JFIF', 'http://ns.exiftool.ca/JFIF/JFIF/1.0/');
-    $nodedesc->setAttribute('xmlns:Photoshop', 'http://ns.exiftool.ca/Photoshop/Photoshop/1.0/');
-    $nodedesc->setAttribute('xmlns:IPTC', 'http://ns.exiftool.ca/IPTC/IPTC/1.0/');
-    $nodedesc->setAttribute('xmlns:Adobe', 'http://ns.exiftool.ca/APP14/Adobe/1.0/');
-    $nodedesc->setAttribute('xmlns:FotoStation', 'http://ns.exiftool.ca/FotoStation/FotoStation/1.0/');
-    $nodedesc->setAttribute('xmlns:File2', 'http://ns.exiftool.ca/File/1.0/');
-    $nodedesc->setAttribute('xmlns:IPTC2', 'http://ns.exiftool.ca/IPTC/IPTC2/1.0/');
-    $nodedesc->setAttribute('xmlns:Composite', 'http://ns.exiftool.ca/Composite/1.0/');
-
-    $nodedesc->setAttribute('xmlns:IFD0', 'http://ns.exiftool.ca/EXIF/IFD0/1.0/');
-    $nodedesc->setAttribute('xmlns:XMP-x', 'http://ns.exiftool.ca/XMP/XMP-x/1.0/');
-    $nodedesc->setAttribute('xmlns:XMP-exif', 'http://ns.exiftool.ca/XMP/XMP-exif/1.0/');
-    $nodedesc->setAttribute('xmlns:XMP-photoshop', 'http://ns.exiftool.ca/XMP/XMP-photoshop/1.0/');
-    $nodedesc->setAttribute('xmlns:XMP-tiff', 'http://ns.exiftool.ca/XMP/XMP-tiff/1.0/');
-    $nodedesc->setAttribute('xmlns:XMP-xmp', 'http://ns.exiftool.ca/XMP/XMP-xmp/1.0/');
-    $nodedesc->setAttribute('xmlns:XMP-xmpMM', 'http://ns.exiftool.ca/XMP/XMP-xmpMM/1.0/');
-    $nodedesc->setAttribute('xmlns:XMP-xmpRights', 'http://ns.exiftool.ca/XMP/XMP-xmpRights/1.0/');
-    $nodedesc->setAttribute('xmlns:XMP-dc', 'http://ns.exiftool.ca/XMP/XMP-dc/1.0/');
-    $nodedesc->setAttribute('xmlns:ExifIFD', 'http://ns.exiftool.ca/EXIF/ExifIFD/1.0/');
-    $nodedesc->setAttribute('xmlns:GPS', 'http://ns.exiftool.ca/EXIF/GPS/1.0/');
-    $nodedesc->setAttribute('xmlns:PDF', 'http://ns.exiftool.ca/PDF/PDF/1.0/');
-
-    $meta_struct = $databox->get_meta_structure();
 
     $fields = $record->get_caption()->get_fields();
 
+    $subCMD = '';
+    
+    if ($record->get_uuid())
+    {
+      $subCMD .= '-XMP-exif:ImageUniqueID=';
+      $subCMD .= escapeshellarg($record->get_uuid());
+      $subCMD .= '-IPTC:UniqueDocumentID=';
+      $subCMD .= escapeshellarg($record->get_uuid());
+    }
+    
     foreach ($fields as $field)
     {
       $meta = $field->get_databox_field();
 
-      $fname = $field->get_name();
       if (trim($meta->get_metadata_source()) === '')
         continue;
 
-      $tag = $meta->get_metadata_tagname();
       $multi = $meta->is_multi();
       $type = $meta->get_type();
       $datas = $field->get_value();
-      $node = $nodedesc->appendChild($dom->createElement($tag));
+      
       if ($multi)
       {
-        $node = $node->appendChild($dom->createElement('rdf:Bag'));
         $datas = $field->get_value();
         foreach ($datas as $value)
         {
           $value = $this->format_value($type, $value);
-          $node->appendChild($dom->createElement('rdf:li'))->appendChild($dom->createTextNode($value));
+          
+          $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'='; 
+          $subCMD .= escapeshellarg($value).' ';
         }
       }
       else
       {
         $datas = $this->format_value($type, $datas);
-        $node->appendChild($dom->createTextNode($datas));
+        
+        $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'='; 
+        $subCMD .= escapeshellarg($datas).' ';
       }
     }
-
-    $temp = tempnam($registry->get('GV_RootPath') . 'tmp/', 'meta');
-    rename($temp, $tempxml = $temp . '.xml');
-    $dom->save($tempxml);
 
     foreach ($tsub as $name => $file)
     {
@@ -397,16 +355,18 @@ class task_period_writemeta extends task_databoxAbstract
       $cmd .= ( $registry->get('GV_exiftool') . ' -m -overwrite_original ');
       if ($name != 'document' || $this->clear_doc)
         $cmd .= '-all:all= ';
-      $cmd .= ( ' -codedcharacterset=utf8 -TagsFromFile ' . escapeshellarg($tempxml) . ' ' . escapeshellarg($file) );
-
+      
+      $cmd .= ' -codedcharacterset=utf8 ';
+      
+      $cmd .= $subCMD.' '.escapeshellarg($file);
+      
       $this->log(sprintf(('writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name));
 
       $s = trim(shell_exec($cmd));
 
       $this->log("\t" . $s);
     }
-
-    unlink($tempxml);
+    return $this;
   }
 
   protected function flush_records_sbas()

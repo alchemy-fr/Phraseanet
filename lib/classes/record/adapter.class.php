@@ -862,6 +862,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             , 'meta_id'        => $value->getId()
             , 'value'          => $original_name
           )
+          , true
         );
       }
     }
@@ -1211,7 +1212,19 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       $stmt->execute(array(':record_id' => $this->get_record_id()));
       $stmt->closeCursor();
 
+
+      try
+      {
+        $subdef = $this->get_subdef($name);
+        $subdef->delete_data_from_cache();
+      }
+      catch (Exception $e)
+      {
+        
+      }
+
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+
 
       if ($meta_writable)
       {
@@ -1337,12 +1350,19 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    * @param array $metadatas
    * @return record_adapter
    */
-  public function set_metadatas(Array $metadatas)
+  public function set_metadatas(Array $metadatas, $force_readonly = false)
   {
     foreach ($metadatas as $param)
     {
       if (!is_array($param))
         throw new Exception_InvalidArgument();
+
+      $db_field = \databox_field::get_instance($this->get_databox(), $param['meta_struct_id']);
+
+      if ($db_field->is_readonly() === false && !$force_readonly)
+      {
+        continue;
+      }
 
       $this->set_metadata($param, $this->databox);
     }

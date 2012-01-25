@@ -292,7 +292,7 @@ class recordutils_image extends recordutils
         $txtlines = recordutils_image::wrap(
                         $fontsize,
                         0,
-                        $registry->get('GV_RootPath') . 'lib/stamper/arial.ttf',
+                        __DIR__ . '/arial.ttf',
                         $txtline,
                         $text_width
         );
@@ -352,7 +352,7 @@ class recordutils_image extends recordutils
       {
         imagettftext($im, $block['s'], 0, $block['x'],
                 $txt_ypos - $block['dy'], $black,
-                $registry->get('GV_RootPath') . 'lib/stamper/arial.ttf', $block['t']);
+                __DIR__ . '/arial.ttf', $block['t']);
         $txt_ypos += $block['h'];
       }
       imagecolordeallocate($im, $black);

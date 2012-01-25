@@ -24,7 +24,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
    */
   public static $entry;
   public static $publisher;
-  public static $need_records = 1;
+  public static $need_records = 2;
+  public static $need_subdefs = true;
   protected $client;
 
   public function setUp()
@@ -35,6 +36,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     self::$publisher = Feed_Publisher_Adapter::getPublisher(appbox::get_instance(), self::$feed, self::$user);
     self::$entry = Feed_Entry_Adapter::create(appbox::get_instance(), self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
     Feed_Entry_Item::create(appbox::get_instance(), self::$entry, self::$record_1);
+    Feed_Entry_Item::create(appbox::get_instance(), self::$entry, self::$record_2);
     self::$feed->set_public(true);
   }
 
@@ -73,6 +75,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
     $this->assertEquals("application/rss+xml", $this->client->getResponse()->headers->get("content-type"));
     $xml = $this->client->getResponse()->getContent();
+
     $this->verifyXML($xml);
     $this->verifyRSS($feed, $xml);
 
@@ -141,6 +144,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
     $this->assertTrue($this->client->getResponse()->isOk());
     $xml = $this->client->getResponse()->getContent();
+    $this->verifyXML($xml);
     $this->verifyRSS($feed, $xml);
 
     $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/atom/");
@@ -161,7 +165,12 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   public function verifyXML($xml)
   {
+    /**
+     * XML is not verified due to Validator Service bug
+     */
+    
     return;
+    
     try
     {
       $validator = new W3CFeedRawValidator($xml);
@@ -177,8 +186,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   function verifyRSS(Feed_Adapter $feed, $xml_string)
   {
-    $this->verifyXML($xml_string);
-
     $dom_doc = new DOMDocument();
     $dom_doc->loadXML($xml_string);
 
@@ -213,7 +220,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
             break;
           case 'pubDate':
             $this->assertTrue(new DateTime() >= new DateTime($child->nodeValue));
-
             break;
           case 'generator':
             $this->assertEquals("Phraseanet", $child->nodeValue);
@@ -314,8 +320,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
           case 'media:content' :
             $this->checkMediaContentAttributes($item, $node);
             break;
-          case 'media:thumbnail' :
-            break;
+          case 'media:thumbnail':
           default :
             $this->checkOptionnalMediaGroupNode($node, $item);
             break;
@@ -470,6 +475,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         )
     );
 
+    
     foreach ($fields as $key_field => $field)
     {
       if ($field["media_field"]["name"] == $node->nodeName)
@@ -482,7 +488,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
           {
             foreach ($node->attributes as $attribute)
             {
-              $this->assertTrue(array_key_exists($attribute->name, $field["media_field"]["attributes"]), "MIssing attribute " . $attribute->name . " for " . $field['media_field']['name']);
+              $this->assertTrue(array_key_exists($attribute->name, $field["media_field"]["attributes"]), "Checkin attribute ".$attribute->name." for " . $field['media_field']['name']);
+              $this->assertEquals($attribute->value, $field["media_field"]["attributes"][$attribute->name], "Checkin attribute ".$attribute->name." for " . $field['media_field']['name']);
             }
           }
         }

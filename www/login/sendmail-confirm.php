@@ -18,7 +18,7 @@
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $request = http_request::getInstance();
-$parm = $request->get_post_datas('usr_id');
+$parm = $request->get_parms('usr_id');
 $appbox = appbox::get_instance();
 
 $confirm = '';
