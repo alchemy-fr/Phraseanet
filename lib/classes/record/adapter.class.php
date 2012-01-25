@@ -856,6 +856,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
           , 'meta_id'        => get_meta_id
           , 'value'          => array($original_name)
         )
+        , true
       );
     }
 

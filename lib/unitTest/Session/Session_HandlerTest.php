@@ -380,20 +380,6 @@ class Session_HandlerTest extends PhraseanetPHPUnitAbstract
 
     $this->object->logout();
 
-    foreach($user->ACL()->get_granted_sbas() as $databox)
-    {
-      $sql = 'SELECT usr_id FROM collusr WHERE site = :site AND usr_id = :usr_id AND coll_id = :coll_id';
-      $stmt = $databox->get_connection()->prepare($sql);
-
-      foreach($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $collection)
-      {
-        $stmt->execute(array(':site'=>$registry->get('GV_sit'),':usr_id'=>$user->get_id(), ':coll_id'=>$collection->get_coll_id()));
-        $this->assertEquals(0, $stmt->rowCount());
-      }
-
-      $stmt->closeCursor();
-    }
-
   }
 
   /**

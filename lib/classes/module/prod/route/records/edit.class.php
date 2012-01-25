@@ -513,7 +513,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
           )
         );
 
-        $record->set_metadatas($metas);
+        $record->set_metadatas($metas, true);
       }
 
       $newstat  = $record->get_status();

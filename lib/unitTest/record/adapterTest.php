@@ -323,7 +323,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
       $metadatas[] = array('meta_struct_id' => $meta_el->get_id(), 'meta_id' => $meta_id, 'value' => $value);
     }
 
-    self::$record_1->set_metadatas($metadatas);
+    self::$record_1->set_metadatas($metadatas, true);
 
     $caption = self::$record_1->get_caption();
 
@@ -333,7 +333,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
       $current_fields = $caption->get_fields(array($meta_el->get_name()));
 
-      $this->assertTrue(count($current_fields) == 1);
+      $this->assertEquals(1, count($current_fields));
       $field = $current_fields[0];
 
       $multi_imploded = implode(' ' . $meta_el->get_separator() . ' ', array('un', 'jeu', 'de', 'test'));

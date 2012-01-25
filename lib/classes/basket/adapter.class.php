@@ -1780,7 +1780,7 @@ class basket_adapter implements cache_cacheableInterface
           );
         }
 
-        $record->set_metadatas($metadatas)
+        $record->set_metadatas($metadatas, true)
                 ->rebuild_subdefs();
 
         $ret = true;
