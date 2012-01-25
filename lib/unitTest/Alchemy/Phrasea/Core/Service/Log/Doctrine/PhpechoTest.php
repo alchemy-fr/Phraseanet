@@ -17,13 +17,13 @@ require_once __DIR__ . '/../../../../../../PhraseanetPHPUnitAbstract.class.inc';
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class DoctrineNormalTest extends PhraseanetPHPUnitAbstract
+class DoctrinePhpechoTest extends PhraseanetPHPUnitAbstract
 {
 
   public function testService()
   {
 
-    $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Normal(
+    $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Phpecho(
                     'hello', array(), array()
     );
 
@@ -32,7 +32,7 @@ class DoctrineNormalTest extends PhraseanetPHPUnitAbstract
 
   public function testType()
   {
-    $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Normal(
+    $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Phpecho(
                     'hello', array(), array()
     );
 
@@ -41,7 +41,7 @@ class DoctrineNormalTest extends PhraseanetPHPUnitAbstract
 
   public function testScope()
   {
-    $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Normal(
+    $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Phpecho(
                     'hello', array(), array());
     $this->assertEquals("log", $log->getScope());
   }
