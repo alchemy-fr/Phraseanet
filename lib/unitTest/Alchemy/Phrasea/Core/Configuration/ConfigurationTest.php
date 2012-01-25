@@ -134,12 +134,12 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     $this->assertFalse($this->object->isMaintained());
   }
 
-  public function testIsDisplayinErrors()
+  public function testIsDisplayingErrors()
   {
     $this->object->setEnvironnement("test");
-    $this->assertFalse($this->object->isDisplayingErrors());
+    $this->assertTrue($this->object->isDisplayingErrors());
     $this->object->setEnvironnement("dev");
-    $this->assertFalse($this->object->isDisplayingErrors());
+    $this->assertTrue($this->object->isDisplayingErrors());
     $this->object->setEnvironnement("prod");
     $this->assertFalse($this->object->isDisplayingErrors());
     $this->object->setEnvironnement("no_display_errors");
