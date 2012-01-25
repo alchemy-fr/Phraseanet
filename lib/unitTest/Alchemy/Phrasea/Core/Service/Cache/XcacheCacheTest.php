@@ -41,7 +41,8 @@ class XcacheCacheTest extends PhraseanetPHPUnitAbstract
 
     if (extension_loaded('xcache'))
     {
-      $this->assertInstanceOf("\Doctrine\Common\Cache\AbstractCache", $cache->getService());
+      $service = $cache->getService();
+      $this->assertTrue($service instanceof \Doctrine\Common\Cache\AbstractCache);
     }
     else
     {
