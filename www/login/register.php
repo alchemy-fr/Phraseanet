@@ -175,17 +175,8 @@ if ($request->has_post_datas())
                 ->set_company($parm['form_company'])
                 ->set_position($parm['form_activity'])
                 ->set_geonameid($parm['form_geonameid']);
-
-        /**
-         * @todo implement this shit
-         */
-        $fieldsname.= ",mail_locked";
-        $fieldsvalue.= ",'1'";
-
+        
         $newid = $user->get_id();
-
-//        //user cree, je branche autoregister si ya
-//        $autoSB = $autoB = array();
 
         $demandOK = array();
 
@@ -228,6 +219,7 @@ if ($request->has_post_datas())
 
         if ($newUsrEmail)
         {
+          $user->set_mail_locked(true);
           return phrasea::redirect('/login/sendmail-confirm.php?usr_id=' . $newid);
         }
 

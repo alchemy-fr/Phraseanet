@@ -896,12 +896,6 @@ $GV = array(
         'vars' => array(
             array(
                 'type' => 'boolean',
-                'name' => 'GV_needMail',
-                'comment' => _('reglages:: Une addresse email valide est necessaire pour l\'inscription online'),
-                'default' => false
-            ),
-            array(
-                'type' => 'boolean',
                 'name' => 'GV_autoselectDB',
                 'comment' => _('reglages:: A true, cette option descative le choix de selection des bases sur lesquelles on s\'inscrit, et l\'inscription se fait sur toutes les bases ou jai le droit de m\'inscrire'),
                 'default' => true
