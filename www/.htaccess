@@ -21,6 +21,7 @@
   RewriteRule ^prod/records/edit/.*$  /prod/router.php [L]
   RewriteRule ^prod/records/movecollection/.*$    /prod/router.php [L]
   RewriteRule ^prod/bridge/.*$        /prod/router.php [L]
+  RewriteRule ^prod/MustacheLoader/.*$            /prod/router.php [L]
   RewriteRule ^prod/feeds/.*$         /prod/router.php [L]
   RewriteRule ^prod/tooltip/.*$       /prod/router.php [L]
   RewriteRule ^prod/lists/.*$         /prod/router.php [L]
