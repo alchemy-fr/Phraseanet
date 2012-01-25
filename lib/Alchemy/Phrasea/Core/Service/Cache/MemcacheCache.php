@@ -25,6 +25,7 @@ use Doctrine\Common\Cache as CacheService;
  */
 class MemcacheCache extends ServiceAbstract implements ServiceInterface
 {
+
   const DEFAULT_HOST = "localhost";
   const DEFAULT_PORT = "11211";
 
@@ -34,11 +35,12 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
   public function __construct($name, Array $options, Array $dependencies)
   {
     parent::__construct($name, $options, $dependencies);
-            
+
     $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
 
     $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
   }
+
   public function getScope()
   {
     return 'cache';
@@ -55,12 +57,27 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
       throw new \Exception('The Memcache cache requires the Memcache extension.');
     }
 
-    $memchache = new \Memcache();
-    $memchache->connect($this->host, $this->port);
+    $memcache = new \Memcache();
+
+    $memcache->addServer($this->host, $this->port);
+    
+    $key = sprintf("%s:%s", $this->host, $this->port);
+    
+    $stats = @$memcache->getExtendedStats();
+    
+    if ($stats[$key])
+    {
+      $memcache->connect($this->host, $this->port);
+      $service = new CacheService\MemcacheCache();
+      $service->setMemcache($memcache);
+    }
+    else
+    {
+      $service = new CacheService\ArrayCache();
+    }
 
     $registry = $this->getRegistry();
 
-    $service = new CacheService\MemcacheCache($memchache);
     $service->setNamespace($registry->get("GV_sit", ""));
 
     return $service;
@@ -89,8 +106,9 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
     {
       throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
     }
-    
+
     return $registry;
   }
+
 }
 
