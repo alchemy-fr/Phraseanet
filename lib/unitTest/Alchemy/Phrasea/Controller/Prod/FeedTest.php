@@ -109,7 +109,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $crawler = $this->client->request('POST', '/feeds/requestavailable/');
-    var_dump($this->client->getResponse()->getStatusCode());
     $this->assertTrue($this->client->getResponse()->isOk());
     $feeds = Feed_Collection::load_all($appbox, self::$user);
     foreach ($feeds->get_feeds() as $one_feed)

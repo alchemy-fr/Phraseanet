@@ -1232,9 +1232,6 @@ class task_period_outofdate extends task_abstract
     );
 
     phrasea::headers(200, true, 'application/json', 'UTF-8', false);
-// return("hello4");
-//var_dump($parm2);
-//return;
     $ret = NULL;
     switch($parm2['ACT'])
     {
