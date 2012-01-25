@@ -69,3 +69,6 @@
 [submodule "lib/vendor/doctrine2-beberlei"]
 	path = lib/vendor/doctrine2-beberlei
 	url = git://github.com/beberlei/DoctrineExtensions.git
+[submodule "www/include/vendor/mustache-js"]
+	path = www/include/vendor/mustache-js
+	url = https://github.com/janl/mustache.js.git
