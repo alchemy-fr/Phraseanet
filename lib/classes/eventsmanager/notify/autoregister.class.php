@@ -256,7 +256,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
     $body .= "<br/>\n<div>"
             . _('admin::register: l\'utilisateur s\'est inscrit sur les bases suivantes')
             . "</div>\n";
-    $body .= "<ul>";
+    $body .= "<ul>\n";
 
     foreach ($base_ids->base_id as $base_id)
     {
@@ -265,7 +265,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
               . ' - ' . phrasea::bas_names((string) $base_id) . "</li>\n";
     }
 
-    $body .= "</ul>";
+    $body .= "</ul>\n";
 
     $body .= "<br/>\n<div><a href='/login/?redirect=/admin' target='_blank'>"
             . _('admin::register: vous pourrez consulter son compte en ligne via l\'interface d\'administration')

@@ -256,7 +256,7 @@ class mail
         $mail->ConfirmReadingTo = $reading_confirm_to;
       }
 
-      $mail->MsgHTML(strip_tags($body, '<div><br>'));
+      $mail->MsgHTML(strip_tags($body, '<div><br><ul><li>'));
 
       foreach ($files as $f)
       {
