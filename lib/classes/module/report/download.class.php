@@ -38,8 +38,7 @@ class module_report_download extends module_report
       'mime' => 'subdef.mime',
       'file' => 'subdef.file'
   );
-
-  protected $isInformative;
+  
   /**
    * constructor
    *
@@ -276,16 +275,6 @@ class module_report_download extends module_report
     }
 
     return $array;
-  }
-
-  public function IsInformative()
-  {
-    return $this->isInformative;
-  }
-
-  public function setIsInformative($isInformative)
-  {
-    $this->isInformative = $isInformative;
   }
 
 

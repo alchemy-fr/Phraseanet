@@ -74,7 +74,6 @@ return call_user_func(
         {
           /* @var $twig \Twig_Environment */
           $twig    = $app['Core']->getTwig();
-//                            var_dump($twig->getLoader()->getPaths());
           $browser = \Browser::getInstance();
 
           if (!$browser->isMobile())

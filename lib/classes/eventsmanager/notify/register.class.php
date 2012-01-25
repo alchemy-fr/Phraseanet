@@ -261,7 +261,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
     $body .= "<br/>\n<div>"
             . _('admin::register: les demandes de l\'utilisateur portent sur les bases suivantes')
             . "</div>\n";
-    $body .= "<ul>";
+    $body .= "<ul>\n";
 
     foreach ($base_ids->base_id as $base_id)
     {
@@ -271,7 +271,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
               . phrasea::bas_names((string) $base_id) . "</li>\n";
     }
 
-    $body .= "</ul>";
+    $body .= "</ul>\n";
 
     $body .= "<br/>\n<div><a href='" . $this->registry->get('GV_ServerName')
             . "login/admin' target='_blank'>"

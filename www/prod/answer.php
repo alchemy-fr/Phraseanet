@@ -41,16 +41,12 @@ if (!$parm['bas'])
 
 $parm["pag"] = (int) $parm["pag"];
 $mod = $user->getPrefs('view');
-//var_dump($session->get_ses_id(), phrasea_open_session($session->get_ses_id(), $session->get_usr_id()));
 function dmicrotime_float($message = '', $stack = 'def')
 {
   static $last = array();
   list($usec, $sec) = explode(' ', microtime());
 
   $new = ((float) $usec + (float) $sec);
-
-//  if (isset($last[$stack]) && $message)
-//    echo "$stack \t\t temps : $message " . ($new - $last[$stack]) . "\n";
 
   $last[$stack] = $new;
 

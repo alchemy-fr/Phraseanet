@@ -19,7 +19,7 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $request = http_request::getInstance();
-$parm = $request->get_post_datas('code');
+$parm = $request->get_parms('code');
 
 try
 {
@@ -27,7 +27,7 @@ try
 }
 catch(Exception_NotFound $e)
 {
-  return phrasea::redirect('/login/?redirect=/prod');
+  return phrasea::redirect('/login/?redirect=/prod&error=TokenNotFound');
 }
 
   $usr_id = $datas['usr_id'];

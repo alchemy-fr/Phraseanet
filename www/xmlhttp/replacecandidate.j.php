@@ -242,10 +242,7 @@ function simplified($t)
   return(array('a' => $sa, 'u' => $su));
 }
 
-if ($parm['debug'])
-  var_dump($result);
-else
-  print(p4string::jsonencode(array('parm' => $parm, 'result' => $result)));
+print(p4string::jsonencode(array('parm' => $parm, 'result' => $result)));
 
 if ($parm['debug'])
   print("</pre>");

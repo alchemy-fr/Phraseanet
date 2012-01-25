@@ -338,7 +338,7 @@ class task_period_upgradetov32 extends task_abstract
                 }
               }
             }
-            $record->set_metadatas($metadatas);
+            $record->set_metadatas($metadatas, true);
             unset($record);
           }
           catch (Exception $e)

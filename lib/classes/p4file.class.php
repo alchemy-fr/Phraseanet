@@ -113,7 +113,7 @@ class p4file
     {
       $record = record_adapter::create($collection, $system_file, $name);
       $record_id = $record->get_record_id();
-      $record->set_metadatas($metadatas['metadatas']);
+      $record->set_metadatas($metadatas['metadatas'], true);
     }
     catch (Exception $e)
     {

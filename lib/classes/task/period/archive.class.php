@@ -1538,7 +1538,7 @@ class task_period_archive extends task_abstract
         $collection = collection::get_from_coll_id($databox, $cid);
         $record = record_adapter::create($collection, $system_file, false, true);
 
-        $record->set_metadatas($meta['metadatas']);
+        $record->set_metadatas($meta['metadatas'], true);
         $record->set_binary_status(databox_status::operation_or($stat0, $stat1));
         $record->rebuild_subdefs();
         $record->reindex();
@@ -1879,7 +1879,7 @@ class task_period_archive extends task_abstract
       {
         $collection = collection::get_from_base_id($base_id);
         $record = record_adapter::create($collection, $system_file, false, false);
-        $record->set_metadatas($meta['metadatas']);
+        $record->set_metadatas($meta['metadatas'], true);
         $record->set_binary_status(databox_status::operation_or(databox_status::operation_or($stat0, $stat1), databox_status::hex2bin($hexstat)));
         $record->rebuild_subdefs();
         $record->reindex();

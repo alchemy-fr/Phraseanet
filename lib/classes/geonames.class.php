@@ -2,7 +2,16 @@
 
 class geonames
 {
-
+  protected static $NamesFromId = array();
+  
+  protected static $CountryFromId = array();
+  
+  protected static $CountryCodeFromId = array();
+  
+  protected static $GeonameFromIp = array();
+  
+  protected static $Searches = array();
+  
   public function name_from_id($geonameid)
   {
     $registry = registry::get_instance();
