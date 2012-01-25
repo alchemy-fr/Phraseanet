@@ -1051,12 +1051,10 @@ class system_file extends SplFileObject
           $li = $xptrdf->query('rdf:li', $bag->item(0));
           if ($li->length > 0)
           {
-//            $tfields[$src] = array();
             for ($ili = 0; $ili < $li->length; $ili++)
             {
               $value = $base64_encoded ? base64_decode($li->item($ili)->nodeValue) : $li->item($ili)->nodeValue;
               $utf8value = trim($this->guessCharset($value));
-              var_dump($utf8value);
               $tfields[$src][] = $utf8value;
             }
           }
