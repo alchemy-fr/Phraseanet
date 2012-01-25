@@ -497,21 +497,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
 
       if (is_array($rec['metadatas']))
       {
-        try
-        {
-          $db_field = \databox_field::get_instance($databox, $rec['metadatas']['meta_struct_id']);
-
-          if ($db_field->is_readonly())
-          {
-            throw new \Exception('Can not write a readonly field');
-          }
-
-          $record->set_metadatas($rec['metadatas']);
-        }
-        catch (\Exception $e)
-        {
-          
-        }
+        $record->set_metadatas($rec['metadatas']);
       }
 
       if ($write_edit_el instanceof databox_field)
