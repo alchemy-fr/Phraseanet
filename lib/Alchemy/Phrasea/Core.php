@@ -119,20 +119,6 @@ class Core extends \Pimple
               return $serviceBuilder->buildService()->getService();
             });
 
-    $this["Cache"] = $this->share(function() use ($core)
-            {
-              $serviceName = $core->getConfiguration()->getCache();
-
-              $configuration = $core->getConfiguration()->getService($serviceName);
-
-              $serviceBuilder = new Core\ServiceBuilder\Cache(
-                              $serviceName
-                              , $configuration
-                              , array("registry" => $core["Registry"])
-              );
-
-              return $serviceBuilder->buildService()->getService();
-            });
 
     $this['Serializer'] = $this->share(function()
             {

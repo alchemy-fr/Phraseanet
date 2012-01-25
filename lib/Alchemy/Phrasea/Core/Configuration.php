@@ -355,15 +355,6 @@ class Configuration
   }
 
   /**
-   * Return cache service
-   * @return string 
-   */
-  public function getCache()
-  {
-    return $this->getConfiguration()->get('cache');
-  }
-
-  /**
    * Return configuration service for orm
    * @return string
    */
