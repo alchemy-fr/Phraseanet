@@ -170,7 +170,7 @@ class mail
 
   public static function mail_confirmation($email, $usr_id)
   {
-
+    $registry = registry::get_instance();
     $expire = new DateTime('+3 days');
     $token = random::getUrlToken('password', $usr_id, $expire, $email);
 
