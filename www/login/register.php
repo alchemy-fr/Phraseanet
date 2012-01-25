@@ -191,7 +191,10 @@ if ($request->has_post_datas())
 
         if ($registry->get('GV_autoregister'))
         {
-          $template_user = User_Adapter::get_usr_id_from_login('autoregister');
+          $template_user_id = User_Adapter::get_usr_id_from_login('autoregister');
+          
+          $template_user = User_Adapter::getInstance($template_user_id, appbox::get_instance());
+          
           $user->ACL()->apply_model($template_user, array_keys($inscOK[$base_id]));
         }
 
