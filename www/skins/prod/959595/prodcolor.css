@@ -2137,20 +2137,52 @@ EDITING
 {
 	background-color:#FFFFFF;
 	border:1px solid #999999;
+  position:absolute; 
+  top:22px; 
+  left:4px; 
+  right:4px; 
+  bottom:4px; 
+  overflow:auto;
 }
 #idFrameE #ZTextMultiValued_values div
 {
 	cursor:pointer;
+  height:20px;
 	padding:2px;
 }
+#idFrameE #ZTextMultiValued_values div table
+{
+	width:100%;
+  border:none;
+}
+#idFrameE #ZTextMultiValued_values div table td
+{
+  vertical-align: middle;
+}
+#idFrameE #ZTextMultiValued_values div table td.options
+{
+	width:40px;
+  text-align:right;
+}
+#idFrameE #ZTextMultiValued_values div table td.options .add_all
+{
+  display:none;
+}
+#idFrameE #ZTextMultiValued_values div.hetero table td.options .add_all
+{
+  display:inline;
+}
+
 #idFrameE .hetero
 {
 	color:#ff8000;
 }
+
 #idFrameE #ZTextMultiValued_values DIV.hilighted
 {
 	background-color:#d0d0d0;
 }
+
 #idFrameE #ZTextMultiValued_values DIV I
 {
 	color:#FFFF00;
