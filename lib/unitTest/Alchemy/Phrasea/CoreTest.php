@@ -87,7 +87,7 @@ class CoreTest extends PhraseanetPHPUnitAbstract
   {
     \Alchemy\Phrasea\Core::initPHPConf();
 //    $this->assertEquals("4096", ini_get('output_buffering'));
-    $this->assertEquals("2048M", ini_get('memory_limit'));
+    $this->assertGreaterThanOrEqual(2048, (int) ini_get('memory_limit'));
     $this->assertEquals("6143", ini_get('error_reporting'));
     $this->assertEquals("UTF-8", ini_get('default_charset'));
     $this->assertEquals("1", ini_get('session.use_cookies'));
