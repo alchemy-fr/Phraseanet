@@ -1866,32 +1866,30 @@ function chgStatusThis(url)
 
 function pushThis(sstt_id, lst)
 {
-  $('#MODALDL').attr('src','about:blank');
-  
-  var $form = $('#push_form');
-  
-  $('input[name="lst"]', $form).val(lst);
-  $('input[name="SSTTID"]', $form).val(sstt_id);
-  
-  $form.submit();
+        $('#DIALOG').attr('title', 'Push')
+                  .empty().addClass('loading')
+                  .dialog({
+                    resizable:false,
+                    closeOnEscape:true,
+                    modal:true,
+                    width:'800',
+                    height:'500'
+                  })
+                  .dialog('open');
 
-  var w = bodySize.x - 40;
-  var h = bodySize.y - 40;
-  var t = (bodySize.y - h) / 2;
-  var l = (bodySize.x - w) / 2;
+  var options = {
+    lst:lst,
+    ssel:sstt_id
+  };
 
-  $('#MODALDL').css({
-    'display': 'block',
-    'opacity': 0,
-    'width': w+'px',
-    'position': 'absolute',
-    'top': t,
-    'left': l,
-    'height': h+'px'
-  }).fadeTo(500, 1);
+  $.post("/prod/push/"
+    , options
+    , function(data){
+      $('#DIALOG').removeClass('loading').empty().html(data);
+      return;
+    }
+  );
 
-  showOverlay(2);
-  $('#tooltip').hide();
 }
 
 function toolThis(url)
@@ -2230,14 +2228,14 @@ function activeIcons()
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
-        value = "lst=" + p4.Results.Selection.serialize();
+        value = p4.Results.Selection.serialize();
     }
     else
     {
       if($(this).hasClass('basket_window'))
       {
         if(p4.WorkZone.Selection.length() > 0)
-          value = "lst=" + p4.WorkZone.Selection.serialize();
+          value = p4.WorkZone.Selection.serialize();
         else
           sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
       }

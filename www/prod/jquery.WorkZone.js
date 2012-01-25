@@ -561,7 +561,7 @@ var p4 = p4 || {};
     });
     
     p4.WorkZone = {
-      'Selection':new Selectable({selector : '.CHIM', container:$('#baskets')}),
+      'Selection':new Selectable($('#baskets'), {selector : '.CHIM'}),
       'refresh':refreshBaskets,
       'reloadCurrent':function(){
         var sstt = $('#baskets .content:visible');

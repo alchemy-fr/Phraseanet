@@ -1,0 +1,29 @@
+#PushBox .content{
+  background-color: #404040;
+}
+
+#PushBox table{
+  width:100%;
+  border:none;
+}
+
+#PushBox .user_content .header{
+  height:35px;
+  bottom:auto;
+}
+
+#PushBox .user_content .badges{
+  top:35px;
+  overflow:auto;
+}
+
+#PushBox .user_content .badges .badge{
+  width:230px;
+  height:80px;
+  margin:5px;
+  display:inline-block;
+}
+
+#PushBox .user_content .header .options{
+  text-align: right;
+}

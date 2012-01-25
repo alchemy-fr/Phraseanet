@@ -31,7 +31,7 @@ class Push implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $controllers->get('/', function(Application $app)
+    $controllers->post('/', function(Application $app)
             {
               $push = new RecordHelper\Push($app['Core'], $app['request']);
 

@@ -3,9 +3,8 @@ var p4 = p4 || {};
 (function(p4, window){
   
       p4.Results = {
-        'Selection':new Selectable({
+        'Selection':new Selectable($('#answers'), {
           selector : '.IMGT', 
-          container:$('#answers'),
           selectStart:function(event, selection){
             $('#answercontextwrap table:visible').hide();
           },

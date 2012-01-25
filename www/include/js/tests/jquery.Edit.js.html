@@ -5,21 +5,74 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="/include/vendor/qunit/qunit/qunit.js"></script>
-    <script src="/include/js/jquery.Edit.js"></script>
+    <script src="../jquery.Edit.js"></script>
     <link type="text/css" rel="stylesheet" href="/include/vendor/qunit/qunit/qunit.css"/> 
     <script>  $(document).ready(function(){
     
+
+      module("Add datas");
+    
+      test("Record field value", function(){
+        
+        var FieldValue1 = new p4.recordFieldValue(1, 'valeur');
+        var FieldValue2 = new p4.recordFieldValue(2, 'valeur bidule', 3);
+        
+        equal( FieldValue1.getVocabularyId(), null, "VocabularyId is null" );
+        equal( FieldValue2.getVocabularyId(), 3, "VocabularyId is not null" );
+        
+        equal( FieldValue1.getValue(), 'valeur', "VocabularyId is null" );
+        equal( FieldValue2.getValue(), 'valeur bidule', "VocabularyId is not null" );
+        
+        FieldValue1.setValue('Chouette');
+        FieldValue2.setValue('Caribosse');
+        
+        equal( FieldValue1.getValue(), 'Chouette', "VocabularyId is null" );
+        equal( FieldValue2.getValue(), 'Caribosse', "VocabularyId is not null" );
+        
+        equal( FieldValue1.getVocabularyId(), null, "VocabularyId is null" );
+        equal( FieldValue2.getVocabularyId(), null, "VocabularyId is not null" );
+        
+        FieldValue2.setValue('Trou', 24);
+        equal( FieldValue2.getVocabularyId(), 24, "VocabularyId is not null" );
+        equal( FieldValue2.getValue(), 'Trou', "VocabularyId is not null" );
+        
+      });
       
       test("Selection instanciation", function() {
         
         var DBField = new p4.databoxField('Champ', 25)
         
         var field = new p4.recordField(DBField);
+        equal( field.getName(), 'Champ', "Field name is correct" );
+        equal( field.getMetaStructId(), 25, "Field meta_struct_id is correct" );
+        
         equal( field.isMulti(), false, "Field is not multi" );
         equal( field.isRequired(), false, "Field is not required" );
         equal( field.isEmpty(), true, "Field is empty" );
         
-        var DBFieldMulti = new p4.databoxField('Champ', 25, {multi:true})
+        var DBFieldMulti = new p4.databoxField('Champ', 25, {separator:''});
+        equal( DBFieldMulti.getSeparator(), '', "Empty separator is available" );
+        
+        var DBFieldMulti = new p4.databoxField('Champ', 25, 
+          {
+            minLength:2,
+            maxLength:344,
+            type:'ChaineEnOr',
+            separator:'-'
+          }
+        );
+        
+        equal( DBFieldMulti.getMaxLength(), 344, "Default MaxLength is null" );
+        equal( DBFieldMulti.getMinLength(), 2, "Default MinLength is null" );
+        equal( DBFieldMulti.getType(), 'ChaineEnOr', "Default Type is string" );
+        equal( DBFieldMulti.getSeparator(), '-', "Default Separator is ;" );
+        
+        var DBFieldMulti = new p4.databoxField('Champ', 25, {multi:true});
+        
+        equal( DBFieldMulti.getMaxLength(), null, "Default MaxLength is null" );
+        equal( DBFieldMulti.getMinLength(), null, "Default MinLength is null" );
+        equal( DBFieldMulti.getType(), 'string', "Default Type is string" );
+        equal( DBFieldMulti.getSeparator(), ';', "Default Separator is ;" );
         
         var fieldMulti = new p4.recordField(DBFieldMulti);
         equal( fieldMulti.isMulti(), true, "Field is multi" );
@@ -47,6 +100,20 @@
         equal( field.getValue(), null, "Field is empty " );
         
         
+        var arrayValues = new p4.recordFieldValue(1, 'valeur');
+        
+        var field = new p4.recordField(DBField, arrayValues);
+        equal( field.isEmpty(), true, "Field  empty" );
+        
+        var arrayValues = 'valeur';
+        var field = new p4.recordField(DBField, arrayValues);
+        equal( field.isEmpty(), true, "Field  empty" );
+        
+        var arrayValues = ['valeur'];
+        var field = new p4.recordField(DBField, arrayValues);
+        equal( field.isEmpty(), true, "Field  empty" );
+        
+        
         var arrayValues = [
           new p4.recordFieldValue(1, 'valeur')
         ];
@@ -54,12 +121,260 @@
         var field = new p4.recordField(DBField, arrayValues);
         equal( field.isEmpty(), false, "Field is not empty" );
         
+        
         field.empty();
         equal( field.getValue(), null, "Field is empty " );
         
+        
       });
-
-      module("Add datas");
+      
+      
+      test("Test recordFieldValue non-multi", function() {
+        
+        
+        var DBField = new p4.databoxField('Champ', 25)
+        
+        var arrayValues = [
+          new p4.recordFieldValue(1, 'valeur')
+        ];
+        
+        var field = new p4.recordField(DBField, arrayValues);
+        equal( field.isEmpty(), false, "Field is not empty" );
+        
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('TADAM', true);
+        
+        equal( field.getValue().getValue(), 'valeur TADAM' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Brouille', true, 24);
+        
+        equal( field.getValue().getValue(), 'Brouille' );
+        equal( field.getValue().getVocabularyId(), 24 );
+        
+        field.addValue('Brouille', true);
+        
+        equal( field.getValue().getValue(), 'Brouille Brouille' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Brouille Brouille', false);
+        
+        equal( field.getValue().getValue(), 'Brouille Brouille' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Grenouille');
+        
+        equal( field.getValue().getValue(), 'Grenouille' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        
+        field.removeValue('Grenouille');
+        equal( field.getValue(), null );
+        
+        field.addValue('Grenouille', false, 23);
+        field.removeValue('Grenouille');
+        
+        equal( field.getValue().getValue(), 'Grenouille' );
+        
+        field.removeValue('Grenouillette', 24);
+        
+        equal( field.getValue().getValue(), 'Grenouille' );
+        
+        field.removeValue('Grenouillette', 23);
+        
+        equal( field.getValue(), null);
+        
+        field.addValue('Champignons de campagne');
+        
+        equal( field.getValue().getValue(), 'Champignons de campagne');
+        
+        field.replaceValue('Champignons', 'Champions');
+        
+        equal( field.getValue().getValue(), 'Champions de campagne');
+        
+        field.addValue('Champignons de campagne', false, 51);
+        field.replaceValue('Champignons', 'Champions');
+        
+        equal( field.getValue().getValue(), 'Champignons de campagne');
+        
+        
+        
+      });
+      
+      
+      
+      test("Test recordFieldValue Multi", function() {
+        
+        
+        var DBField = new p4.databoxField('Champ', 25,{multi:true})
+        
+        var arrayValues = [
+          new p4.recordFieldValue(1, 'valeur')
+        ];
+        
+        
+        var field = new p4.recordField(DBField, arrayValues);
+        equal( field.isEmpty(), false, "Field is not empty" );
+        
+        
+        equal( field.getSerializedValues(), 'valeur' );
+        
+        for(v in field.getValues())
+        {
+          equal( field.getValues()[v].getValue(), 'valeur' );
+          equal( field.getValues()[v].getVocabularyId(), null );
+        }
+        
+        field.addValue('TADAM', true);
+        
+        equal( field.getValues().length, 2 );
+        
+        field.addValue('BADOUM', true, 54);
+        
+        equal( field.getValues().length, 3 );
+        
+        field.addValue('BADOUM', true);
+        
+        equal( field.getValues().length, 4 );
+        
+        field.addValue('BADOUM', true);
+        
+        equal( field.getValues().length, 4 );
+        
+        field.addValue('TROLOLO', true, 54);
+        
+        equal( field.getValues().length, 4 );
+        
+        field.removeValue('chameau', 54);
+        
+        equal( field.getValues().length, 3 );
+        
+        field.removeValue('TADAM');
+        
+        equal( field.getValues().length, 2 );
+        
+        field.empty();
+        
+        equal( field.getValues().length, 0 );
+        
+        
+        field.addValue('Champignons de campagne');
+        
+        equal( field.hasValue('Champignons de campagne'), true);
+        
+        field.replaceValue('Champignons', 'Champions');
+        
+        equal( field.hasValue('Champignons de campagne'), false);
+        equal( field.hasValue('Champions de campagne'), true);
+        
+        field.empty();
+        
+        equal( field.getValues().length, 0);
+        
+        field.addValue('Champignons de campagne', false, 51);
+        field.replaceValue('Champignons', 'Champions');
+        
+        equal( field.hasValue('Champignons de campagne', 51), true);
+        
+        for(v in field.getValues())
+        {
+          equal( field.getValues()[v].getValue() , 'Champignons de campagne');
+          equal( field.getValues()[v].getVocabularyId() , 51);
+        }
+        
+      });
+      
+    });
+    
+    
+      
+      test("Test recordFieldValue Readonly", function() {
+        
+        
+        var DBField = new p4.databoxField('Champ', 25,{readonly:true})
+        
+        var arrayValues = [
+          new p4.recordFieldValue(1, 'valeur')
+        ];
+        
+        var field = new p4.recordField(DBField, arrayValues);
+        equal( field.isEmpty(), false, "Field is not empty" );
+        
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.empty();
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('TADAM', true);
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Brouille', true, 24);
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Brouille', true);
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Brouille Brouille', false);
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Grenouille');
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        
+        field.removeValue('Grenouille');
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Grenouille', false, 23);
+        field.removeValue('Grenouille');
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.removeValue('Grenouillette', 24);
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.removeValue('Grenouillette', 23);
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Champignons de campagne');
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.replaceValue('Champignons', 'Champions');
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        field.addValue('Champignons de campagne', false, 51);
+        field.replaceValue('Champignons', 'Champions');
+        
+        equal( field.getValue().getValue(), 'valeur' );
+        equal( field.getValue().getVocabularyId(), null );
+        
+        
       
     });
     </script>

@@ -42,11 +42,11 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   /**
    * Default route test
    */
-  public function testRouteGETSlash()
+  public function testRoutePOSTSlash()
   {
     $route = '/push/';
 
-    $this->client->request('GET', $route);
+    $this->client->request('POST', $route);
 
     $response = $this->client->getResponse();
 
