@@ -43,6 +43,7 @@ return call_user_func(function()
       $app->mount('/story', new Controller\Story());
       $app->mount('/WorkZone', new Controller\WorkZone());
       $app->mount('/lists', new Controller\UsrLists());
+      $app->mount('/MustacheLoader', new Controller\MustacheLoader());
       $app->mount('/records/edit', new Controller\Edit());
       $app->mount('/records/movecollection', new Controller\MoveCollection());
       $app->mount('/bridge/', new Controller\Bridge());
