@@ -1105,8 +1105,20 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       $stmt->execute(array(':record_id' => $this->get_record_id()));
       $stmt->closeCursor();
 
+      
+      try
+      {
+        $subdef = $this->get_subdef($name);
+        $subdef->delete_data_from_cache();
+      }
+      catch(Exception $e)
+      {
+        
+      }
+      
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
 
+      
       if ($meta_writable)
       {
         $this->write_metas();
