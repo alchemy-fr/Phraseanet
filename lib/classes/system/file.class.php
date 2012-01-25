@@ -713,8 +713,6 @@ class system_file extends SplFileObject
 
   public function read_uuid()
   {
-    $registry = registry::get_instance();
-
     if ($this->uuid)
 
       return $this->uuid;
@@ -1058,6 +1056,7 @@ class system_file extends SplFileObject
             {
               $value = $base64_encoded ? base64_decode($li->item($ili)->nodeValue) : $li->item($ili)->nodeValue;
               $utf8value = trim($this->guessCharset($value));
+              var_dump($utf8value);
               $tfields[$src][] = $utf8value;
             }
           }
@@ -1133,14 +1132,11 @@ class system_file extends SplFileObject
           $tmpval[] = $val;
       }
 
-      foreach ($tmpval as $val)
-      {
-        $ret[$meta->get_id()] = array(
-            'meta_struct_id' => $meta->get_id(),
-            'meta_id' => null,
-            'value' => array($val)
-        );
-      }
+      $ret[$meta->get_id()] = array(
+          'meta_struct_id' => $meta->get_id(),
+          'meta_id' => null,
+          'value' => $tmpval
+      );
     }
 
 
@@ -1387,7 +1383,7 @@ if (!function_exists('mime_content_type'))
         , 'movie' => 'video/x-sgi-movie'  // Videos MoviePlayer
     );
     $fileinfo = new system_file($f);
-    $extension = $fileinfo->get_extension(true);
+    $ext = $fileinfo->get_extension(true);
 
     return array_key_exists($ext, $ext2mime) ?
             $ext2mime[$ext] : 'application/octet-stream';
