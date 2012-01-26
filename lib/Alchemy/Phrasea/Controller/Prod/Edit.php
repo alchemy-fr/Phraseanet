@@ -86,7 +86,7 @@ class Edit implements ControllerProviderInterface
 
         $datas['success'] = true;
         $datas['results'] = $list;
-        
+
         return new response($Serializer->serialize($datas, 'json'), 200, array('Content-Type' => 'application/json'));
       }
     );

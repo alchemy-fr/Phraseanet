@@ -61,7 +61,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertTrue($response->isOk());
   }
-  
+
 
   public function testVocabulary()
   {
@@ -71,14 +71,14 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertTrue($response->isOk());
     $datas = json_decode($response->getContent());
     $this->assertFalse($datas->success);
-    
+
     $this->client->request('GET', '/records/edit/vocabulary/User/');
 
     $response = $this->client->getResponse();
     $this->assertTrue($response->isOk());
     $datas = json_decode($response->getContent());
     $this->assertFalse($datas->success);
-    
+
     $params = array('sbas_id'=>self::$collection->get_sbas_id());
     $this->client->request('GET', '/records/edit/vocabulary/Zanzibar/', $params);
 
@@ -86,7 +86,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertTrue($response->isOk());
     $datas = json_decode($response->getContent());
     $this->assertFalse($datas->success);
-    
+
     $params = array('sbas_id'=>self::$collection->get_sbas_id());
     $this->client->request('GET', '/records/edit/vocabulary/User/', $params);
 
