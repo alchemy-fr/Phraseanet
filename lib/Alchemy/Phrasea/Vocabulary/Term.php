@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
+namespace Alchemy\Phrasea\Vocabulary;
 
 /**
  * Vocabulary Term
@@ -58,7 +58,7 @@ class Term
    * @return \Alchemy\Phrasea\Vocabulary\ControlProvider\Term
    * @throws Exception
    */
-  public function __construct($value, $context = null, ControlProviderInterface $type = null, $id = null)
+  public function __construct($value, $context = null, ControlProvider\ControlProviderInterface $type = null, $id = null)
   {
 
     if (!assert(is_scalar($value)))
