@@ -253,7 +253,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 //  {
 //    if (!extension_loaded('test_helpers'))
 //    {
-//      $this->markTestSkipped();
+//      $this->fail("test_helpers extension required");
 //    }
 //
 //
