@@ -51,13 +51,15 @@ class PathFileTest implements ControllerProviderInterface
               , 'json'
             )
             , 200
-            , array('application/json')
+            , array('content-type' => 'application/json')
         );
       });
 
     $controllers->get('/url/', function() use ($app)
       {
         $url = $app['request']->get('url');
+        
+        $Serializer = $app['Core']['Serializer'];
 
         return new Response(
             $Serializer->serialize(
@@ -67,7 +69,7 @@ class PathFileTest implements ControllerProviderInterface
               , 'json'
             )
             , 200
-            , array('application/json')
+            , array('content-type' => 'application/json')
         );
       });
 
