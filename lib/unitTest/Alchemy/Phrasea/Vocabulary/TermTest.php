@@ -26,7 +26,7 @@ class TermTest extends \PhraseanetPHPUnitAbstract
    */
   protected $objectWithControl;
   protected $value2     = 'Supa valu&é"\'(§è!)';
-  protected $context2   = 'context 
+  protected $context2   = 'context
     oualibi';
   protected $basicValue = 'Joli chien';
   protected $value      = 'One value';

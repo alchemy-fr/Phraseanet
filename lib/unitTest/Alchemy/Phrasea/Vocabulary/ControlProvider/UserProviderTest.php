@@ -25,11 +25,11 @@ class UserProviderTest extends \PhraseanetPHPUnitAbstract
   public function testGetType()
   {
     $type = $this->object->getType();
-    
+
     $this->assertTrue(is_scalar($type));
-    
+
     $classname = array_pop(explode('\\', get_class($this->object)));
-    
+
     $this->assertEquals($classname, $type . 'Provider');
   }
 
@@ -41,21 +41,21 @@ class UserProviderTest extends \PhraseanetPHPUnitAbstract
   public function testFind()
   {
     $results = $this->object->find('BABE', self::$user, self::$collection->get_databox());
-    
+
     $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
-    
+
     $results = $this->object->find(self::$user->get_email(), self::$user, self::$collection->get_databox());
-    
+
     $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
     $this->assertTrue($results->count() > 0);
-    
+
     $results = $this->object->find(self::$user->get_firstname(), self::$user, self::$collection->get_databox());
-    
+
     $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
     $this->assertTrue($results->count() > 0);
-    
+
     $results = $this->object->find(self::$user->get_lastname(), self::$user, self::$collection->get_databox());
-    
+
     $this->assertInstanceOf('\\Doctrine\\Common\\Collections\\ArrayCollection', $results);
     $this->assertTrue($results->count() > 0);
   }
@@ -76,9 +76,9 @@ class UserProviderTest extends \PhraseanetPHPUnitAbstract
     }
     catch(\Exception $e)
     {
-      
+
     }
-    
+
     try
     {
       $this->object->getValue('A');
@@ -86,9 +86,9 @@ class UserProviderTest extends \PhraseanetPHPUnitAbstract
     }
     catch(\Exception $e)
     {
-      
+
     }
-    
+
     $this->assertEquals(self::$user->get_display_name(), $this->object->getValue(self::$user->get_id()));
   }
 

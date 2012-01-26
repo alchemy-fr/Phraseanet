@@ -58,7 +58,7 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
     $this->assertObjectHasAttribute('readable', $content);
     $this->assertObjectHasAttribute('executable', $content);
   }
-  
+
   public function testRouteUrl()
   {
     $this->client->request("GET", "/tests/pathurl/url/", array('url' => "www.google.com"));

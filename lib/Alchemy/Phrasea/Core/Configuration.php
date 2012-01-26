@@ -205,7 +205,7 @@ class Configuration
    */
   public function getConfiguration()
   {
-    
+
     if ($this->installed && null === $this->configuration)
     {
       $configuration = $this->configurationHandler->handle($this->environment);
@@ -333,7 +333,7 @@ class Configuration
   public function delete()
   {
     $deleted = false;
-    
+
     try
     {
       $filePathName = $this

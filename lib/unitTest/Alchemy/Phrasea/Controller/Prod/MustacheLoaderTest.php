@@ -24,7 +24,7 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteSlash()
   {
-    
+
     $this->client->request('GET', '/MustacheLoader/');
 
     $response = $this->client->getResponse();
@@ -32,7 +32,7 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertFalse($response->isOk());
-    
+
     $this->client->request('GET', '/MustacheLoader/', array('template' => '/../../../../config/config.yml'));
 
     $response = $this->client->getResponse();
@@ -40,7 +40,7 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertFalse($response->isOk());
-    
+
     $this->client->request('GET', '/MustacheLoader/', array('template' => 'patator_lala'));
 
     $response = $this->client->getResponse();
@@ -48,7 +48,7 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(404, $response->getStatusCode());
     $this->assertFalse($response->isOk());
-    
+
     $this->client->request('GET', '/MustacheLoader/', array('template' => 'Push-Badge'));
 
     $response = $this->client->getResponse();

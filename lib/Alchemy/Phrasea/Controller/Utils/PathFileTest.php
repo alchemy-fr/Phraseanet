@@ -58,7 +58,7 @@ class PathFileTest implements ControllerProviderInterface
     $controllers->get('/url/', function() use ($app)
       {
         $url = $app['request']->get('url');
-        
+
         $Serializer = $app['Core']['Serializer'];
 
         return new Response(
