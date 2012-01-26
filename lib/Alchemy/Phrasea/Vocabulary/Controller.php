@@ -31,7 +31,7 @@ class Controller
    */
   public static function get($type)
   {
-    $classname = 'ControlProvider\\' . $type;
+    $classname = __NAMESPACE__ . '\\ControlProvider\\' . $type . 'Provider';
 
     if (!class_exists($classname))
     {

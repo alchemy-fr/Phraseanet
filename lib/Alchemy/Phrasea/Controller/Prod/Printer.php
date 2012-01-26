@@ -48,7 +48,7 @@ class Printer implements ControllerProviderInterface
 
     $controllers->post('/print.pdf', function(Application $app)
             {
-              $printer = new RecordHelper\Printer($app['Core']);
+              $printer = new RecordHelper\Printer($app['Core'], $app['request']);
 
               $request = $app['request'];
 
