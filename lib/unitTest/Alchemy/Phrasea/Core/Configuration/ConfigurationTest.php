@@ -514,4 +514,3 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     $this->assertEquals($handler, $this->object->getConfigurationHandler());
   }
 }
-
