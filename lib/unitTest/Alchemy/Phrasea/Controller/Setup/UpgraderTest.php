@@ -29,7 +29,7 @@ class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
    */
   public function createApplication()
   {
-    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Setup.php';
+    return require __DIR__ . '/FakeUpgradeApplication.inc';
   }
 
   public function setUp()
@@ -43,9 +43,50 @@ class ControllerUpgraderTest extends \PhraseanetWebTestCaseAbstract
    */
   public function testRouteSlash()
   {
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->client->request('GET', '/');
+
+    $response = $this->client->getResponse();
+    /* @var $response \Symfony\Component\HttpFoundation\Response */
+
+    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertEquals('/setup/upgrader/', $response->headers->get('location'));
+  }
+
+  /**
+   * Default route test
+   */
+  public function testRouteUpgrader()
+  {
+    $this->client->request('GET', '/upgrader/');
+
+    $response = $this->client->getResponse();
+    /* @var $response \Symfony\Component\HttpFoundation\Response */
+
+    $this->assertEquals(200, $response->getStatusCode());
+  }
+  /**
+   * Default route test
+   */
+  public function testRouteStatus()
+  {
+    $this->client->request('GET', '/upgrader/status/');
+
+    $response = $this->client->getResponse();
+    /* @var $response \Symfony\Component\HttpFoundation\Response */
+
+    $this->assertEquals(200, $response->getStatusCode());
+  }
+  /**
+   * Default route test
+   */
+  public function testRouteExecute()
+  {
+    $this->client->request('POST', '/upgrader/execute/');
+
+    $response = $this->client->getResponse();
+    /* @var $response \Symfony\Component\HttpFoundation\Response */
+    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertEquals('/', $response->headers->get('location'));
   }
 
 }

@@ -29,7 +29,7 @@ class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
    */
   public function createApplication()
   {
-    return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Setup.php';
+    return require __DIR__ . '/FakeSetupApplication.inc';
   }
 
   public function setUp()
@@ -43,9 +43,35 @@ class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
    */
   public function testRouteSlash()
   {
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->client->request('GET', '/');
+
+    $response = $this->client->getResponse();
+    /* @var $response \Symfony\Component\HttpFoundation\Response */
+
+    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertEquals('/setup/installer/', $response->headers->get('location'));
+  }
+  
+  public function testRouteInstaller()
+  {
+    $this->client->request('GET', '/installer/');
+
+    $response = $this->client->getResponse();
+    /* @var $response \Symfony\Component\HttpFoundation\Response */
+
+    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertEquals('/setup/installer/step2/', $response->headers->get('location'));
+  }
+  
+  public function testRouteInstallerStep2()
+  {
+    $this->client->request('GET', '/installer/step2/');
+
+    $response = $this->client->getResponse();
+    /* @var $response \Symfony\Component\HttpFoundation\Response */
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertTrue($response->isOk());
   }
 
 }

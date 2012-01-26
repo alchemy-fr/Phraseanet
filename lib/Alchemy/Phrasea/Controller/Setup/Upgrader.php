@@ -82,7 +82,7 @@ class Upgrader implements ControllerProviderInterface
         $upgrader = new \Setup_Upgrade($appbox);
         $appbox->forceUpgrade($upgrader);
 
-        return;
+        return new \Symfony\Component\HttpFoundation\RedirectResponse('/');
       });
 
     return $controllers;
