@@ -270,7 +270,7 @@ class PDF
 
       $y = $this->pdf->GetY();
 
-      $t = phrasea::bas_names($rec->get_base_id());
+      $t = \phrasea::bas_names($rec->get_base_id());
       $this->pdf->SetFont(PhraseaPDF::FONT, '', 10);
       $this->pdf->SetFillColor(220, 220, 220);
       $this->pdf->SetLeftMargin($lmargin);
