@@ -27,6 +27,7 @@ $finder
   ->files()
   ->name('*.md')
   ->name('*.php')
+  ->name('*.inc')
   ->name('*.php.dist')
   ->name('*.twig')
   ->name('*.xml')

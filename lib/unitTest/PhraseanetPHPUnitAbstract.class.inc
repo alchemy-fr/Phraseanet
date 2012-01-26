@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Doctrine\Common\DataFixtures\Loader;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -36,7 +36,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   const USER_AGENT_IPHONE = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 2_1 like Mac OS X; fr-fr) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5F137 Safari/525.20';
   /**
    *
-   * @var Symfony\Component\HttpKernel\Client 
+   * @var Symfony\Component\HttpKernel\Client
    */
   protected $client;
 
@@ -353,14 +353,14 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    * Tell if tables were updated with new schemas
-   * @var boolean 
+   * @var boolean
    */
   protected static $updated;
 
   /**
    * if yo need record for your test
-   * just tell how many 
-   * example = $need_records = 2 
+   * just tell how many
+   * example = $need_records = 2
    * will create 2 records self::$record_1 & self::$record_2
    * You can use the same mechanism for subdef and stories
    * @var mixed int|boolean
@@ -371,13 +371,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    *
-   * @var collection 
+   * @var collection
    */
   protected static $collection;
-  
+
   /**
    *
-   * @var collection 
+   * @var collection
    */
   protected static $collection_no_access;
 
@@ -395,7 +395,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    *
-   * @var \Alchemy\Phrasea\Core 
+   * @var \Alchemy\Phrasea\Core
    */
   protected static $core;
 
@@ -439,8 +439,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * Delete temporay sqlite database
    * Create schema using $this->classesMetatdas
    * Load DoctrineTestServices
-   * 
-   * @return 
+   *
+   * @return
    */
   public function __construct()
   {
@@ -487,9 +487,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     //set Mozilla user agent as default
     $browser = Browser::getInstance();
     $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);
-    
+
     $this->purgeDatabase();
-    
+
     self::$user->ACL()->revoke_access_from_bases(array(self::$collection_no_access->get_base_id()));
   }
 
@@ -503,8 +503,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   /**
    * Insert fixture contained in the specified fixtureLoader
    * into sqlLite test temporary database
-   * 
-   * @param Doctrine\Common\DataFixtures\Loader $fixtureLoader 
+   *
+   * @param Doctrine\Common\DataFixtures\Loader $fixtureLoader
    */
   public function insertFixtureInDatabase(Doctrine\Common\DataFixtures\Loader $fixtureLoader, $append = true)
   {
@@ -538,7 +538,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    * Insert one basket entry ans set current authenticated user as owner
-   * 
+   *
    * @return \Entities\Basket
    */
   protected function insertOneBasket()
@@ -561,23 +561,23 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       $this->fail('Fail load one Basket : ' . $e->getMessage());
     }
   }
-  
-  
+
+
   protected function insertOneUsrList(\User_Adapter $user)
   {
     try
     {
       $loader = new Loader();
-      
+
       $UsrOwner = new PhraseaFixture\UsrLists\UsrListOwner();
       $UsrOwner->setUser($user);
-      
+
       $loader->addFixture($UsrOwner);
-      
+
       $UsrList = new PhraseaFixture\UsrLists\UsrList();
 
       $loader->addFixture($UsrList);
-      
+
 
       $this->insertFixtureInDatabase($loader);
 
@@ -588,33 +588,33 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       $this->fail('Fail load one UsrList : ' . $e->getMessage());
     }
   }
-  
+
   /**
    *
    * @param \Entities\UsrList $UsrList
-   * @return \Entities\UsrListEntry 
+   * @return \Entities\UsrListEntry
    */
   protected function insertOneUsrListEntry(\User_adapter $owner, \User_adapter $user)
   {
     try
     {
       $loader = new Loader();
-      
+
       $UsrOwner = new PhraseaFixture\UsrLists\UsrListOwner();
       $UsrOwner->setUser($owner);
-      
+
       $loader->addFixture($UsrOwner);
-      
+
       $UsrList = new PhraseaFixture\UsrLists\UsrList();
 
       $loader->addFixture($UsrList);
-      
+
       $UsrEntry = new PhraseaFixture\UsrLists\UsrListEntry();
 //      $UsrEntry->setList($UsrList);
       $UsrEntry->setUser($user);
 
       $loader->addFixture($UsrEntry);
-      
+
 
       $this->insertFixtureInDatabase($loader);
 
@@ -628,7 +628,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    * Insert five baskets and set current authenticated user as owner
-   * 
+   *
    * @return \Entities\Basket
    */
   protected function insertFiveBasket()
@@ -724,10 +724,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   /**
    * Create a new basket with current auhtenticated user as owner
    * Create a new sessionValidation with the newly created basket
-   * Set current authenticated user as sessionValidation initiator 
+   * Set current authenticated user as sessionValidation initiator
    * Add 2 records as elments of the newly created basket
    * Add 2 participants to the newly created sessionValidation
-   * 
+   *
    * @return \Entities\Basket
    */
   protected function insertOneBasketEnv()
@@ -765,7 +765,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * One basket
    * One story
    * One ValidationSession & one participant
-   * @return 
+   * @return
    */
   protected function insertOneWZ()
   {
@@ -827,7 +827,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     $serviceName
                     , $confService
     );
-    
+
     $this->app['Core']["Twig"] = $templateServiceBuilder->buildService()->getService();
   }
 
@@ -870,7 +870,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
       $upgrader = new Setup_Upgrade($appbox);
       $appbox->forceUpgrade($upgrader);
       unset($upgrader);
-      
+
       self::$updated = true;
     }
 
@@ -884,7 +884,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * self::$user
    * self::$user_alt1
    * self::$user_alt2
-   * 
+   *
    * @return void;
    */
   private static function createSetOfUserTests()
@@ -920,8 +920,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    * Give Bases Rights to User
-   * 
-   * @param \User_AAdapter $user 
+   *
+   * @param \User_AAdapter $user
    */
   private static function giveRightsToUser(\User_Adapter $user)
   {
@@ -975,7 +975,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    * Set self::$collection
-   * @return void 
+   * @return void
    */
   private static function setCollection()
   {
@@ -1011,15 +1011,15 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     self::$collection = $coll;
-    
+
     self::$collection_no_access = $collection_no_acces;
-    
+
     return;
   }
 
   /**
    * Generate a set of stories for the current test suites
-   * 
+   *
    * @return void
    */
   private static function generateStories()
@@ -1033,7 +1033,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                       , true
       );
     }
-    
+
     if (static::$need_story && !self::$story_2 instanceof record_adapter)
     {
       self::$story_2 = \record_adapter::create(
@@ -1048,9 +1048,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   }
 
   /**
-   * Generate a set subdef according to the records previously created 
-   * 
-   * @return void 
+   * Generate a set subdef according to the records previously created
+   *
+   * @return void
    */
   private static function generateSubdefs()
   {
@@ -1172,6 +1172,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         self::$generated_subdefs['a23'] = true;
       }
     }
+
     return;
   }
 
@@ -1310,8 +1311,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    * Delete previously created Ressources
-   * 
-   * @return void 
+   *
+   * @return void
    */
   private static function deleteRessources()
   {
