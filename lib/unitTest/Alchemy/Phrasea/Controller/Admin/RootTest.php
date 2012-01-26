@@ -46,7 +46,7 @@ class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     $this->client->request('GET', '/', array('section' => 'base:featured'));
     $this->assertTrue($this->client->getResponse()->isOk());
-    
+
     $this->client->request('GET', '/');
     $this->assertTrue($this->client->getResponse()->isOk());
   }

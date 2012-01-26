@@ -45,18 +45,18 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   public function testRouteSlash()
   {
     $this->markTestIncomplete();
-    
+
     $appbox = appbox::get_instance();
     $databox = array_shift($appbox->get_databoxes());
     $fields = $databox->get_meta_structure();
-    
+
     $fieldIds = array();
-    
+
     foreach($fields as $field)
     {
       $fieldIds[] = $field->get_id();
     }
-    
+
     $this->client->request("POST", "/description/" . $databox->get_sbas_id());
   }
 

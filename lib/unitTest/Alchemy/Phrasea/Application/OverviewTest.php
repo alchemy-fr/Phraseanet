@@ -50,13 +50,8 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     return require __DIR__ . '/../../../../Alchemy/Phrasea/Application/Overview.php';
   }
 
-//$deliver_content = function(session $session, record_adapter $record, $subdef, $watermark, $stamp, $app)
-//
-//$app->get('/datafiles/{sbas_id}/{record_id}/{subdef}/'
-
   function testDatafilesRouteAuthenticated()
   {
-//    $this->client->followRedirects();
     $registry = registry::get_instance();
     $crawler = $this->client->request('GET', '/datafiles/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/preview/');
     $response = $this->client->getResponse();

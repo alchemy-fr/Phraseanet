@@ -207,7 +207,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->client->request('POST', '/users/search/export/');
     $response = $this->client->getResponse();
     $this->assertTrue($response->isOK());
-    $this->assertRegexp("#text/plain#", $response->headers->get("content-type"));
+    $this->assertEquals("text/plain; charset=UTF-8", $response->headers->get("Content-type"));
     $this->assertEquals("attachment; filename=export.txt", $response->headers->get("content-disposition"));
   }
 

@@ -23,7 +23,7 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    * $need_records = 2;
    *
    */
-  protected static $need_records = 2;
+  protected static $need_records = 4;
 
   /**
    * The application loader
@@ -62,7 +62,9 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     $records = array(
       self::$record_1->get_serialize_key(),
-      self::$record_2->get_serialize_key()
+      self::$record_2->get_serialize_key(),
+      self::$record_3->get_serialize_key(),
+      self::$record_4->get_serialize_key(),
     );
 
     $lst = implode(';', $records);

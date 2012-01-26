@@ -29,7 +29,9 @@ return call_user_func(function()
 
       if (!\setup::is_installed())
       {
-        return $app->redirect("/setup/")->send();
+        $response = new \Symfony\Component\HttpFoundation\RedirectResponse('/setup/');
+
+        return $response->send();
       }
 
       $app->get('/', function() use ($app)
@@ -46,9 +48,8 @@ return call_user_func(function()
             return $app->redirect("/login/?redirect=/client");
         });
 
-      $app->get('robots.txt', function() use ($app)
+      $app->get('/robots.txt', function() use ($app)
         {
-          require __DIR__ . "/../lib/bootstrap.php";
           $appbox = \appbox::get_instance();
 
           $registry = $appbox->get_registry();
@@ -64,7 +65,7 @@ return call_user_func(function()
               . "Disallow: /\n";
           }
 
-          $response = new Response($buffer, 200, array('Content-Type: text/plain'));
+          $response = new Response($buffer, 200, array('Content-Type' => 'text/plain'));
           $response->setCharset('UTF-8');
 
           return $response;

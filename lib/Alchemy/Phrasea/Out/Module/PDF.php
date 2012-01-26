@@ -106,10 +106,10 @@ class PDF
     switch ($layout)
     {
       case "preview":
-        $this->print_preview();
+        $this->print_preview(false);
         break;
       case "previewCaption":
-        $this->print_preview();
+        $this->print_preview(false);
         break;
       case "previewCaptionTdm":
         $this->print_preview(true);
@@ -329,7 +329,7 @@ class PDF
     $this->pdf->SetLeftMargin($lmargin);
   }
 
-  protected function print_preview($withtdm=false)
+  protected function print_preview($withtdm)
   {
     $appbox = \appbox::get_instance();
     $registry = \registry::get_instance();

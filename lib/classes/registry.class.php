@@ -153,7 +153,7 @@ class registry implements registryInterface
    * @param mixed $value
    * @return registry
    */
-  public function set($key, $value, $type = 'string')
+  public function set($key, $value, $type)
   {
     $this->load();
     $delete_cache = false;
