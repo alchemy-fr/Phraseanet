@@ -127,7 +127,8 @@ class WorkZone implements ControllerProviderInterface
             '/attachStories/'
             , function(Application $app, Request $request)
             {
-
+              if(!$request->get('stories'))
+                throw new \Exception_BadRequest();
 
               $user = $app['Core']->getAuthenticatedUser();
 
@@ -137,7 +138,7 @@ class WorkZone implements ControllerProviderInterface
               $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
 
               $alreadyFixed = $done = 0;
-
+              
               foreach (explode(';', $request->get('stories')) as $element)
               {
                 $element = explode('_', $element);
@@ -196,7 +197,7 @@ class WorkZone implements ControllerProviderInterface
                 else
                 {
                   $message = sprintf(
-                          _('%1$d Story attached to the WorkZone, %2$d already attached')
+                          _('%1$d Stories attached to the WorkZone, %2$d already attached')
                           , $done
                           , $alreadyFixed
                   );
