@@ -102,13 +102,13 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             'usr_id' => self::$user_alt1->get_id(),
             'agree'=> 0,
             'see_others'=> 1,
-            'HS'=> 0,
+            'HD'=> 0,
         )
         , array(
             'usr_id' => self::$user_alt2->get_id(),
             'agree'=> 1,
             'see_others'=> 0,
-            'HS'=> 1,
+            'HD'=> 1,
         )
     );
 
