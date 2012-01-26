@@ -12,6 +12,7 @@
 namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Alchemy\Phrasea\Vocabulary\Term;
 
 /**
  * User Provider
@@ -46,9 +47,9 @@ class UserProvider implements ControlProviderInterface
    * @param \databox $on_databox
    * @return \Doctrine\Common\Collections\ArrayCollection
    */
-  public static function find($query, \User_Adapter $for_user, \databox $on_databox)
+  public function find($query, \User_Adapter $for_user, \databox $on_databox = null)
   {
-    $user_query = new \User_Query(appbox::get_instance());
+    $user_query = new \User_Query(\appbox::get_instance());
 
     $users = $user_query
         ->like(\User_Query::LIKE_EMAIL, $query)
@@ -77,17 +78,17 @@ class UserProvider implements ControlProviderInterface
    * @param mixed $id
    * @return boolean
    */
-  public static function validate($id)
+  public function validate($id)
   {
     try
     {
-      \User_Adapter::getInstance($id, appbox::get_instance());
+      \User_Adapter::getInstance($id, \appbox::get_instance());
 
       return true;
     }
     catch (\Exception $e)
     {
-
+      
     }
 
     return false;
@@ -98,9 +99,9 @@ class UserProvider implements ControlProviderInterface
    * @param mixed $id
    * @return string
    */
-  public static function getValue($id)
+  public function getValue($id)
   {
-    $user = \User_Adapter::getInstance($id, appbox::get_instance());
+    $user = \User_Adapter::getInstance($id, \appbox::get_instance());
 
     return $user->get_display_name();
   }

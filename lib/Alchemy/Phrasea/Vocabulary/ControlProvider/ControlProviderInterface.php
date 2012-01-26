@@ -38,13 +38,13 @@ interface ControlProviderInterface
   /**
    * @return boolean validate an $id in the vocabulary
    */
-  public static function validate($id);
+  public function validate($id);
 
   /**
    * @return string returns the value corresponding to an id
    * @throws \Exception if the $id is invalid
    */
-  public static function getValue($id);
+  public function getValue($id);
 
   /**
    * Find matching Term in the vocabulary repository
@@ -55,6 +55,6 @@ interface ControlProviderInterface
    *
    * @return Doctrine\Common\Collections\ArrayCollection
    */
-  public static function find($query, \User_Adapter $for_user, \databox $on_databox);
+  public function find($query, \User_Adapter $for_user, \databox $on_databox);
 
 }
