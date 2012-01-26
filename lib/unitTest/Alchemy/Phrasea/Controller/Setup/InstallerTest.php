@@ -51,7 +51,7 @@ class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
     $this->assertEquals(302, $response->getStatusCode());
     $this->assertEquals('/setup/installer/', $response->headers->get('location'));
   }
-  
+
   public function testRouteInstaller()
   {
     $this->client->request('GET', '/installer/');
@@ -62,7 +62,7 @@ class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
     $this->assertEquals(302, $response->getStatusCode());
     $this->assertEquals('/setup/installer/step2/', $response->headers->get('location'));
   }
-  
+
   public function testRouteInstallerStep2()
   {
     $this->client->request('GET', '/installer/step2/');

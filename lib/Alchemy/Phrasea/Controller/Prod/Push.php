@@ -257,7 +257,7 @@ class Push implements ControllerProviderInterface
             }
             catch (\Exception_NotFound $e)
             {
-              
+
             }
 
             $Participant = new \Entities\ValidationParticipant();
