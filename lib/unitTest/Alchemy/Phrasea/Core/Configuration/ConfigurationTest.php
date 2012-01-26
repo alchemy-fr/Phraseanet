@@ -374,45 +374,6 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     $configuration->delete();
 
     $this->assertFileNotExists($file->getPathname());
-<<<<<<< HEAD
-
-  }
-
-//  public function testDeleteException()
-//  {
-//    touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-//
-//    $stub = $this->getMock(
-//            '\Alchemy\Phrasea\Core\Configuration\Application'
-//            , array('getConfigurationPathName')
-//    );
-//
-//    $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-//
-//    $stub->expects($this->any())
-//            ->method('getConfigurationPathName')
-//            ->will(
-//                    $this->returnValue($file->getPathname())
-//    );
-//
-//    $handler = new Configuration\Handler($stub, new Configuration\Parser\Yaml());
-//
-//    $configuration = new PhraseaCore\Configuration($handler);
-//
-//    try
-//    {
-//      $configuration->delete();
-//      $this->fail("should raise an exception");
-//    }
-//    catch (\exception $e)
-//    {
-//
-//    }
-//
-//    $this->assertFileExists($file->getPathname());
-//
-//  }
-=======
   }
 
   public function testDeleteException()
@@ -540,7 +501,6 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     $this->object->setConfigurationHandler($handler);
     $this->assertEquals($handler, $this->object->getConfigurationHandler());
   }
->>>>>>> 6c616f05de57005857dd23faafef4c028992e770
 
   public function testGetHandler()
   {
@@ -554,3 +514,4 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     $this->assertEquals($handler, $this->object->getConfigurationHandler());
   }
 }
+
