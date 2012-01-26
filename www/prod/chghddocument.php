@@ -53,6 +53,7 @@ try
   {
     $record->set_original_name($_FILES["newHD"]["name"]);
   }
+}
 catch (Exception $e)
 {
   echo '<center>', $e->getMessage(), '<br/><br/>';
