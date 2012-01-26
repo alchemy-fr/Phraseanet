@@ -29,9 +29,9 @@ class bootstrap
   }
 
   /**
-   * 
-   * @param $env 
-   * @return Alchemy\Phrasea\Core 
+   *
+   * @param $env
+   * @return Alchemy\Phrasea\Core
    */
   public static function execute($env = null)
   {
@@ -47,7 +47,7 @@ class bootstrap
 
   /**
    *
-   * @return Alchemy\Phrasea\Core 
+   * @return Alchemy\Phrasea\Core
    */
   public static function getCore()
   {

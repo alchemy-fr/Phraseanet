@@ -53,7 +53,7 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
       }
       catch (\Exception $e)
       {
-        
+
       }
     }
   }
@@ -71,7 +71,7 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 

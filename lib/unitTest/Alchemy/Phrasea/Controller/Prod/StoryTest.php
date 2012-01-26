@@ -229,7 +229,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
   }
 
-  
 
-  
+
+
 }

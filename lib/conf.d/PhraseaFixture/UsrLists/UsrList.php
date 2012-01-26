@@ -37,10 +37,10 @@ class UsrList extends ListAbstract implements FixtureInterface
 
     $list->setName('new list');
     $list->addUsrListOwner($owner);
-    
+
     /* @var $owner \Entities\UsrListOwner */
     $owner->setList($list);
-    
+
     $manager->persist($list);
     $manager->merge($owner);
     $manager->flush();

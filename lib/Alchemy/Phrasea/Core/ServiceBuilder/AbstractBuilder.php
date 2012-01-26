@@ -23,7 +23,7 @@ abstract class AbstractBuilder
 {
 
   protected static $optionsNotMandatory = array();
-  
+
   private $service;
 
   public function __construct($name, ParameterBag $configuration, Array $dependencies = array(), $namespace = null)
@@ -38,7 +38,7 @@ abstract class AbstractBuilder
 
   /**
    *
-   * @return ServiceAbstract 
+   * @return ServiceAbstract
    */
   public function buildService()
   {
@@ -49,7 +49,7 @@ abstract class AbstractBuilder
   {
     throw new \Exception("Abstract factory does not create any concrete Service");
   }
-  
+
   protected static function getServiceOptions($type, ParameterBag $configuration)
   {
     if(!in_array($type, static::$optionsNotMandatory))
@@ -67,7 +67,8 @@ abstract class AbstractBuilder
         $options = array();
       }
     }
+
     return $options;
   }
-  
+
 }

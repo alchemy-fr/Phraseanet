@@ -17,7 +17,7 @@ class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
   {
     return require __DIR__ . '/../../../../Alchemy/Phrasea/Application/Root.php';
   }
-  
+
   public function setUp()
   {
     parent::setUp();

@@ -15,14 +15,14 @@ use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class Prod extends \Alchemy\Phrasea\Helper\Helper
 {
-  
+
   public function get_search_datas()
   {
     $search_datas = array(
@@ -35,7 +35,7 @@ class Prod extends \Alchemy\Phrasea\Helper\Helper
     $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
     $user = $this->getCore()->getAuthenticatedUser();
-    
+
     $searchSet = $user->getPrefs('search');
 
     foreach ($user->ACL()->get_granted_sbas() as $databox)
@@ -75,7 +75,7 @@ class Prod extends \Alchemy\Phrasea\Helper\Helper
           else
             $dates[$id] = array('sbas' => array($sbas_id), 'fieldname' => $name);
         }
-        
+
         if (isset($fields[$name]))
         {
           $fields[$name]['sbas'][] = $sbas_id;
@@ -108,7 +108,7 @@ class Prod extends \Alchemy\Phrasea\Helper\Helper
 
     return $search_datas;
   }
-  
+
   public function getRandom()
   {
     return md5(time() . mt_rand(100000, 999999));

@@ -12,7 +12,7 @@
 namespace Entities;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -73,7 +73,7 @@ class ValidationParticipant
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -93,7 +93,7 @@ class ValidationParticipant
   /**
    * Get usr_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getUsrId()
   {
@@ -123,7 +123,7 @@ class ValidationParticipant
   /**
    * Get session
    *
-   * @return Entities\ValidationSession 
+   * @return Entities\ValidationSession
    */
   public function getSession()
   {
@@ -143,7 +143,7 @@ class ValidationParticipant
   /**
    * Get is_aware
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getIsAware()
   {
@@ -153,11 +153,12 @@ class ValidationParticipant
   /**
    *
    * @param \User_Adapter $user
-   * @return ValidationParticipant 
+   * @return ValidationParticipant
    */
   public function setUser(\User_Adapter $user)
   {
     $this->usr_id = $user->get_id();
+
     return $this;
   }
 
@@ -179,7 +180,7 @@ class ValidationParticipant
   /**
    * Get reminded
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getReminded()
   {
@@ -189,7 +190,7 @@ class ValidationParticipant
   /**
    * Get datas
    *
-   * @return Doctrine\Common\Collections\Collection 
+   * @return Doctrine\Common\Collections\Collection
    */
   public function getDatas()
   {
@@ -209,7 +210,7 @@ class ValidationParticipant
   /**
    * Get is_confirmed
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getIsConfirmed()
   {
@@ -229,7 +230,7 @@ class ValidationParticipant
   /**
    * Get can_agree
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getCanAgree()
   {
@@ -249,7 +250,7 @@ class ValidationParticipant
   /**
    * Get can_see_others
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getCanSeeOthers()
   {

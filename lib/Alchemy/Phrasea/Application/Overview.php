@@ -71,7 +71,7 @@ return call_user_func(
           }
           catch (\Exception $e)
           {
-            
+
           }
 
           return \set_export::stream_file($pathOut, $file->get_file(), $file->get_mime(), 'attachment');

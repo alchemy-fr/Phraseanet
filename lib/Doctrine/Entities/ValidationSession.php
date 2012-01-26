@@ -78,7 +78,7 @@ class ValidationSession
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -98,7 +98,7 @@ class ValidationSession
   /**
    * Get name
    *
-   * @return string 
+   * @return string
    */
   public function getName()
   {
@@ -118,7 +118,7 @@ class ValidationSession
   /**
    * Get description
    *
-   * @return text 
+   * @return text
    */
   public function getDescription()
   {
@@ -138,7 +138,7 @@ class ValidationSession
   /**
    * Get archived
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getArchived()
   {
@@ -158,7 +158,7 @@ class ValidationSession
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {
@@ -178,7 +178,7 @@ class ValidationSession
   /**
    * Get updated
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getUpdated()
   {
@@ -198,7 +198,7 @@ class ValidationSession
   /**
    * Get expires
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getExpires()
   {
@@ -218,7 +218,7 @@ class ValidationSession
   /**
    * Get reminded
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getReminded()
   {
@@ -238,7 +238,7 @@ class ValidationSession
   /**
    * Get basket
    *
-   * @return Entities\Basket 
+   * @return Entities\Basket
    */
   public function getBasket()
   {
@@ -258,7 +258,7 @@ class ValidationSession
   /**
    * Get participants
    *
-   * @return Doctrine\Common\Collections\Collection 
+   * @return Doctrine\Common\Collections\Collection
    */
   public function getParticipants()
   {
@@ -306,7 +306,7 @@ class ValidationSession
   /**
    * Get initiator_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getInitiatorId()
   {
@@ -321,6 +321,7 @@ class ValidationSession
   public function setInitiator(\User_Adapter $user)
   {
     $this->initiator_id = $user->get_id();
+
     return;
   }
 

@@ -13,10 +13,10 @@ namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
 /**
  * Vocabulary Term
- * 
+ *
  * A Term of vocabulary has a Value, and optionnal context, ControllerProvider
  * and an Id
- * 
+ *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -25,38 +25,38 @@ class Term
 
   /**
    *
-   * @var string 
+   * @var string
    */
   protected $value;
 
   /**
    *
-   * @var string 
+   * @var string
    */
   protected $context;
 
   /**
    *
-   * @var ControlProviderInterface 
+   * @var ControlProviderInterface
    */
   protected $type;
 
   /**
    *
-   * @var mixed 
+   * @var mixed
    */
   protected $id;
 
   /**
    * Construct a Term
-   * 
+   *
    * @param string $value the scalar value of the Term
    * @param string $context A string defining the context of the Term
    * @param ControlProviderInterface $type A Vocabulary Controller
    * @param mixed $id The id of the term in the Vocabulary Controller
-   * 
+   *
    * @return \Alchemy\Phrasea\Vocabulary\ControlProvider\Term
-   * @throws Exception 
+   * @throws Exception
    */
   public function __construct($value, $context = null, ControlProviderInterface $type = null, $id = null)
   {
@@ -76,8 +76,8 @@ class Term
 
   /**
    * Get the scalar value of a term
-   * 
-   * @return string 
+   *
+   * @return string
    */
   public function getValue()
   {
@@ -86,8 +86,8 @@ class Term
 
   /**
    * Get the content of a term
-   * 
-   * @return string 
+   *
+   * @return string
    */
   public function getContext()
   {
@@ -95,8 +95,8 @@ class Term
   }
 
   /**
-   * 
-   * @return ControlProviderInterface 
+   *
+   * @return ControlProviderInterface
    */
   public function getType()
   {
@@ -105,7 +105,7 @@ class Term
 
   /**
    *
-   * @return mixed 
+   * @return mixed
    */
   public function getId()
   {

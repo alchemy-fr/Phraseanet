@@ -34,7 +34,7 @@ class LoadParticipantWithSession extends \PhraseaFixture\AbstractWZ implements F
    * @var \Entities\ValidationSession
    */
   private $session;
-  
+
   public function load($manager)
   {
     $validationParticipant = new \Entities\ValidationParticipant();

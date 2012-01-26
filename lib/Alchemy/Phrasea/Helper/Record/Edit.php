@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Core,
 /**
  * Edit Record Helper
  * This object handles /edit/ request and filters records that user can edit
- * 
+ *
  * It prepares metadatas, databases structures.
  *
  * @package
@@ -72,14 +72,14 @@ class Edit extends RecordHelper
 
   /**
    *
-   * @var type 
+   * @var type
    */
   protected $has_thesaurus = false;
 
   /**
    *
    * @param \Alchemy\Phrasea\Core $core
-   * @return Edit 
+   * @return Edit
    */
   public function __construct(Core $core, Request $Request)
   {
@@ -493,11 +493,12 @@ class Edit extends RecordHelper
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
     if (!is_array($request->get('mds')))
+
       return $this;
 
     $sbas_id       = (int) $request->get('sbid');
@@ -544,7 +545,7 @@ class Edit extends RecordHelper
       }
 
       /**
-       * todo : this should not work 
+       * todo : this should not work
        */
       if ($write_edit_el instanceof \databox_field)
       {

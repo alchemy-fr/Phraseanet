@@ -165,7 +165,7 @@ class handlerTest extends \PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 

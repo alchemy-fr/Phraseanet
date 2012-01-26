@@ -45,9 +45,9 @@ if ($parm["ssttid"] != "")
 {
   $em = $Core->getEntityManager();
   $repository = $em->getRepository('\Entities\Basket');
-  
+
   /* @var $repository \Repositories\BasketRepository */
-  
+
   $Basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser());
   $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
 }

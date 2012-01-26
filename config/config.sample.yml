@@ -9,18 +9,18 @@ environment : prod
 #################
 # DEVELOPPEMENT #
 #################
-dev: 
+dev:
   #Phraseanet refers to phraseanet app specific configuration
   phraseanet:
     servername: 'http://sub.domain.tld/'
     maintenance: false
     debug: true
     display_errors: true
-    
+
     #Assign your phraseanet application connection
     #Connections are defined in connexions.yml configuration file
     database: main_connexion
-      
+
   #Assign your template engine service & ORM service
   #Services are defined in service.yml configuration file
   template_engine: twig_debug
@@ -36,10 +36,10 @@ prod:
     debug: false
     display_errors: false
     database: main_connexion
-  
+
   template_engine: twig
   orm: doctrine_prod
-  
+
 ##############
 #    TEST    #
 ##############
@@ -50,8 +50,7 @@ test:
     debug: true
     display_errors: true
     database: main_connexion
-  
+
   template_engine: twig_debug
   orm: doctrine_test
 
-            

@@ -108,12 +108,12 @@ class CoreTest extends PhraseanetPHPUnitAbstract
 
   public function testNotInstalled()
   {
-    
+
     if (!extension_loaded('test_helpers'))
     {
       $this->fail("test_helpers extension required");
     }
-    
+
     set_new_overload(array($this, 'newCallback'));
 
     $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(

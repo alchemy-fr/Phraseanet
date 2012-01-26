@@ -62,9 +62,9 @@ class module_console_systemUpgrade extends Command
         }
 
         $conn = \connection::getPDOConnection();
-        
+
         $credentials = $conn->get_credentials();
-        
+
         $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
                         new \Alchemy\Phrasea\Core\Configuration\Application(),
                         new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()

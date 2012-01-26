@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -99,7 +99,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
   /**
    *
    * @param \Alchemy\Phrasea\Core $core
-   * @return Helper 
+   * @return Helper
    */
   public function __construct(Core $core, Request $Request)
   {
@@ -195,6 +195,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     if (!$this->is_single_grouping())
       throw new Exception('Cannot use ' . __METHOD__ . ' here');
     foreach ($this->get_elements() as $record)
+
       return $record;
   }
 
@@ -287,8 +288,10 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
   public function get_serialize_list()
   {
     if ($this->is_single_grouping())
+
       return $this->get_grouping_head()->get_serialize_key();
     else
+
       return $this->selection->serialize_list();
   }
 

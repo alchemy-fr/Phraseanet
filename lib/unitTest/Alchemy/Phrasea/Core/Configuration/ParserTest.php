@@ -46,7 +46,7 @@ class parserTest extends \PhraseanetPHPUnitAbstract
     }
     catch (Exception $e)
     {
-      
+
     }
   }
 
@@ -64,7 +64,7 @@ class parserTest extends \PhraseanetPHPUnitAbstract
     }
     catch (Exception $e)
     {
-      
+
     }
   }
 

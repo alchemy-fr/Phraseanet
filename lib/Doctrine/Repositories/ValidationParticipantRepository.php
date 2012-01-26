@@ -21,6 +21,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class ValidationParticipantRepository extends EntityRepository
 {
-  
+
 }
 

@@ -10,7 +10,7 @@
  */
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -44,15 +44,15 @@ class UsrListEntry extends ListAbstract implements FixtureInterface
     {
       throw new \LogicException('Fill a user to store a new basket');
     }
-    
+
     $list = $this->getReference('one-list');
-    
+
     $entry->setUser($this->user);
     $entry->setList($list);
-    
+
     /* @var $list \Entities\UsrList */
     $list->addUsrListEntry($entry);
-    
+
     $manager->persist($entry);
     $manager->flush();
 

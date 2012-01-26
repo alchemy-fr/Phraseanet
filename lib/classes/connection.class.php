@@ -54,6 +54,7 @@ class connection
   {
     $registry = registry::get_instance();
     if (!$registry->get('GV_debug'))
+
       return;
     $totalTime = 0;
 
@@ -120,6 +121,7 @@ class connection
       $name = (int) $name;
     }
     else
+
       return false;
 
     if (!isset(self::$_PDO_instance[$name]))
@@ -173,6 +175,7 @@ class connection
       }
     }
     if (array_key_exists($name, self::$_PDO_instance))
+
       return self::$_PDO_instance[$name];
     throw new Exception('Connection not available');
   }

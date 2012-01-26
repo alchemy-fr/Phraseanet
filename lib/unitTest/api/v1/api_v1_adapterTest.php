@@ -263,9 +263,9 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $metadatas = array_shift($metadatas);
     $metadatas["value"] = "new_value";
 
-    
+
     $request = new Request(array("metadatas" => array($metadatas)), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-      
+
     $result = $this->object->set_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
 
     $this->checkResponseField($result, "metadatas", PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT);
@@ -377,10 +377,10 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     $usr_id = $session->get_usr_id();
-    
+
     $em = self::$core->getEntityManager();
     $repo = $em->getRepository('\Entities\Basket');
-    
+
     /* @var $repo \Repositories\BasketRepository */
     $basket = $repo->findUserBasket($ssel_id, self::$core->getAuthenticatedUser());
 
@@ -394,16 +394,16 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
     $user = User_Adapter::getInstance($usr_id, $appbox);
-    
+
     $em = self::$core->getEntityManager();
-    
+
     $Basket = new Entities\Basket();
     $Basket->setName('Delete test');
     $Basket->setOwner($user);
-    
+
     $em->persist($Basket);
     $em->flush();
-    
+
     $ssel_id = $Basket->getId();
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
@@ -413,7 +413,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertTrue(is_object(json_decode($result->format())));
 
     $repo = $em->getRepository('\Entities\Basket');
-    
+
     try
     {
       $repo->findUserBasket($ssel_id, $user);
@@ -429,7 +429,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    
+
     $basket = $this->insertOneBasket();
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
@@ -443,9 +443,9 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    
+
     $basket = $this->insertOneBasket();
-    
+
     $request = new Request(array(), array(), array('name' => 'PROUTO'), array(), array(), array('HTTP_Accept' => 'application/json'));
     $result = $this->object->set_basket_title($request, $basket->getId());
     $this->assertEquals(200, $result->get_http_code());
@@ -453,9 +453,9 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertTrue(is_object(json_decode($result->format())));
 
     $repository =self::$core->getEntityManager()->getRepository('\Entities\Basket');
-    
+
     $ret_bask = $repository->find($basket->getId());
-    
+
     $this->assertEquals('PROUTO', $ret_bask->getName());
   }
 
@@ -463,7 +463,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    
+
     $basket = $this->insertOneBasket();
 
     $request = new Request(array(), array(), array('description' => 'une belle description'), array(), array(), array('HTTP_Accept' => 'application/json'));
@@ -473,9 +473,9 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertTrue(is_object(json_decode($result->format())));
 
     $repository =self::$core->getEntityManager()->getRepository('\Entities\Basket');
-    
+
     $ret_bask = $repository->find($basket->getId());
-    
+
     $this->assertEquals('une belle description', $ret_bask->getDescription());
   }
 

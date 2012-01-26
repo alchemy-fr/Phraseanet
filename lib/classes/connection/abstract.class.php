@@ -40,7 +40,7 @@ abstract class connection_abstract extends PDO
   public static function html_pdo_exception(PDOException $e)
   {
     $p = array('e' => $e);
-    
+
     $core = \bootstrap::getCore();
     $twig = $core->getTwig();
 

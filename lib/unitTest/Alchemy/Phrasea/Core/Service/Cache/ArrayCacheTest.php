@@ -56,7 +56,7 @@ class ArrayCacheTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 

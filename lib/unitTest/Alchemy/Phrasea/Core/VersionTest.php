@@ -27,7 +27,7 @@ class VersionTest extends \PhraseanetPHPUnitAbstract
     $this->assertTrue(is_string(Version::getNumber()));
     $this->assertRegExp('/[\d]{1}\.[\d]{1,2}\.[\d]{1,2}/', Version::getNumber());
   }
-  
+
   public function testGetName()
   {
     $this->assertTrue(is_string(Version::getName()));

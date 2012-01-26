@@ -77,6 +77,7 @@ return call_user_func(
           $browser = \Browser::getInstance();
 
           if (!$browser->isMobile())
+
             return new Response('');
 
 
@@ -506,7 +507,7 @@ return call_user_func(
               , 200
               , array('Content-Type' => 'application/json')
           );
-          
+
           $response->setCharset('UTF-8');
 
           return $response;

@@ -19,7 +19,7 @@ use Doctrine\Common\Cache as CacheService;
 
 /**
  * Array cache
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -34,7 +34,7 @@ class ArrayCache extends ServiceAbstract implements ServiceInterface
 
   /**
    *
-   * @return Cache\ApcCache 
+   * @return Cache\ApcCache
    */
   public function getService()
   {

@@ -92,7 +92,7 @@ class ACL implements cache_cacheableInterface
   const CACHE_RIGHTS_SBAS    = 'rights_sbas';
   const CACHE_RIGHTS_RECORDS = 'rights_records';
   const CACHE_GLOBAL_RIGHTS = 'global_rights';
-  
+
   const GRANT_ACTION_PUSH = 'push';
   const GRANT_ACTION_VALIDATE = 'validate';
 
@@ -124,6 +124,7 @@ class ACL implements cache_cacheableInterface
     $key = $record->get_serialize_key();
 
     if (array_key_exists($key, $this->_rights_records_document))
+
       return true;
 
     return false;
@@ -191,6 +192,7 @@ class ACL implements cache_cacheableInterface
     $key = $record->get_serialize_key();
 
     if (array_key_exists($key, $this->_rights_records_preview))
+
       return true;
 
     return false;
@@ -244,6 +246,7 @@ class ACL implements cache_cacheableInterface
   public function apply_model(User_Interface $template_user, Array $base_ids)
   {
     if (count($base_ids) == 0)
+
       return $this;
 
     $sbas_ids = array();
@@ -301,7 +304,7 @@ class ACL implements cache_cacheableInterface
     $bas_to_acces   = $masks_to_give  = $rights_to_give = array();
 
     /**
-     * map masks (and+xor) of template to masks to apply to user on base 
+     * map masks (and+xor) of template to masks to apply to user on base
      * (and_and, and_or, xor_and, xor_or)
      */
     $sbmap = array(
@@ -400,6 +403,7 @@ class ACL implements cache_cacheableInterface
     $this->load_rights_bas();
 
     if (!$this->has_access_to_base($base_id))
+
       return false;
 
     if ($this->is_limited($base_id))
@@ -487,6 +491,7 @@ class ACL implements cache_cacheableInterface
     $this->load_rights_bas();
 
     if (!$this->has_access_to_base($base_id))
+
       return false;
 
     return $this->_rights_bas[$base_id]['restrict_dwnld'];
@@ -503,6 +508,7 @@ class ACL implements cache_cacheableInterface
     $this->load_rights_bas();
 
     if (!$this->has_access_to_base($base_id))
+
       return false;
 
     return (int) $this->_rights_bas[$base_id]['remain_dwnld'];
@@ -520,6 +526,7 @@ class ACL implements cache_cacheableInterface
     $this->load_rights_bas();
 
     if (!$this->has_access_to_base($base_id))
+
       return false;
 
     $this->_rights_bas[$base_id]['remain_dwnld'] =
@@ -559,12 +566,14 @@ class ACL implements cache_cacheableInterface
     $this->load_rights_sbas();
 
     if (!isset($this->_rights_sbas[$sbas_id]))
+
       return false;
 
     if (!isset($this->_rights_sbas[$sbas_id][$right]))
       throw new Exception('This right does not exists');
 
     if ($this->_rights_sbas[$sbas_id][$right] === true)
+
       return true;
 
     return false;
@@ -580,6 +589,7 @@ class ACL implements cache_cacheableInterface
   {
     $this->load_rights_bas();
     if (!$this->has_access_to_base($base_id))
+
       return false;
 
     return $this->_rights_bas[$base_id]['mask_and'];
@@ -595,6 +605,7 @@ class ACL implements cache_cacheableInterface
   {
     $this->load_rights_bas();
     if (!$this->has_access_to_base($base_id))
+
       return false;
 
     return $this->_rights_bas[$base_id]['mask_xor'];
@@ -638,21 +649,21 @@ class ACL implements cache_cacheableInterface
   {
     $this->load_rights_bas();
     $ret = array();
-    
+
     foreach($this->appbox->get_databoxes() as $databox)
     {
       if ($sbas_ids && !in_array($databox->get_sbas_id(), $sbas_ids))
       {
         continue;
       }
-      
+
       foreach ($databox->get_collections() as $collection)
       {
         $continue = false;
 
         if(!array_key_exists($collection->get_base_id(), $this->_rights_bas))
           continue;
-        
+
         $base_id = $collection->get_base_id();
         $datas = $this->_rights_bas[$base_id];
 
@@ -720,7 +731,7 @@ class ACL implements cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -736,6 +747,7 @@ class ACL implements cache_cacheableInterface
   {
 
     if ($this->_rights_records_preview)
+
       return $this;
 
     try
@@ -748,7 +760,7 @@ class ACL implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
     $sql = 'SELECT sbas_id, record_id, preview, document
             FROM records_rights WHERE usr_id = :usr_id';
@@ -789,6 +801,7 @@ class ACL implements cache_cacheableInterface
   {
 
     if ($this->_rights_sbas && $this->_global_rights)
+
       return $this;
 
     try
@@ -800,7 +813,7 @@ class ACL implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $sql = 'SELECT sbasusr.* FROM sbasusr, sbas
@@ -850,6 +863,7 @@ class ACL implements cache_cacheableInterface
   protected function load_rights_bas()
   {
     if ($this->_rights_bas && $this->_global_rights && is_array($this->_limited))
+
       return $this;
 
     try
@@ -862,7 +876,7 @@ class ACL implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $sql = 'SELECT  u.* FROM basusr u, bas b, sbas s
@@ -1353,6 +1367,7 @@ class ACL implements cache_cacheableInterface
     $stmt->closeCursor();
 
     if (!$row)
+
       return $this;
 
     $this->give_access_to_base(array($base_id_dest));
@@ -1519,6 +1534,7 @@ class ACL implements cache_cacheableInterface
   {
     $this->load_rights_bas();
     if (!isset($this->_limited[$base_id]))
+
       return null;
     return ($this->_limited[$base_id]);
   }
@@ -1527,18 +1543,18 @@ class ACL implements cache_cacheableInterface
   {
     if ($limit)
     {
-      $sql = 'UPDATE basusr 
+      $sql = 'UPDATE basusr
               SET time_limited = 1
-                  , limited_from = :limited_from 
-                  , limited_to = :limited_to 
+                  , limited_from = :limited_from
+                  , limited_to = :limited_to
               WHERE base_id = :base_id AND usr_id = :usr_id';
     }
     else
     {
-      $sql = 'UPDATE basusr 
+      $sql = 'UPDATE basusr
               SET time_limited = 0
-                  , limited_from = :limited_from 
-                  , limited_to = :limited_to 
+                  , limited_from = :limited_from
+                  , limited_to = :limited_to
               WHERE base_id = :base_id AND usr_id = :usr_id';
     }
 

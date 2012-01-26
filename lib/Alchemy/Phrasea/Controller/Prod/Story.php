@@ -105,7 +105,7 @@ class Story implements ControllerProviderInterface
                         'record_id' => $Story->get_record_id(),
                     )
                 );
-                  
+
                 $datas = $app['Core']['Serializer']->serialize($data, 'json');
 
                 return new Response($datas, 200, array('Content-type' => 'application/json'));

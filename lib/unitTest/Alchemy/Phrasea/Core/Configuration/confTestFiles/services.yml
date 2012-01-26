@@ -5,7 +5,7 @@ twig:
     charset: utf-8
     strict_variables: true
     optimizer: true
-    
+
 twig_debug:
   type: twig
   options:
@@ -14,7 +14,7 @@ twig_debug:
     strict_variables: true
     autoescape: true
     optimizer: true
-    
+
 doctrine_dev:
   type: doctrine
   options:
@@ -26,7 +26,7 @@ doctrine_dev:
         result: array_cache
         metadata: array_cache
     log: query_logger
-  
+
 doctrine_test:
   type: doctrine
   options:
@@ -38,7 +38,7 @@ doctrine_test:
         result: array_cache
         metadata: array_cache
     log: query_logger
-  
+
 doctrine_prod:
   type: doctrine
   options:
@@ -50,30 +50,30 @@ doctrine_prod:
         result: apc_cache
         metadata: apc_cache
     log: query_logger
-    
-    
+
+
 query_logger:
-  type: monolog 
+  type: monolog
   options:
     output: json
     channel: query-logger
     max_day: 2
     filename: doctrine-query.log
-    
+
 sql_logger:
   type: normal
-  
+
 array_cache:
   type: array
-  
+
 memcache_cache:
   type: memcache
   options:
     host: localhost
     port: 11211
-    
+
 apc_cache:
   type: apc
-  
+
 xcache_cache:
   type: xcache

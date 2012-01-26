@@ -182,7 +182,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $connbas = $this->databox->get_connection();
@@ -516,7 +516,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return null;
@@ -566,7 +566,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
     $sql  = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -650,7 +650,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $connbas = $this->get_databox()->get_connection();
@@ -749,8 +749,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if ($data)
     {
       if (isset($this->technical_datas[$data]))
+
         return $this->technical_datas[$data];
       else
+
         return false;
     }
 
@@ -846,7 +848,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       /* @var $field caption_field */
       /**
-       * Replacing original name in multi values is non sense 
+       * Replacing original name in multi values is non sense
        */
       if (!$field->is_multi())
       {
@@ -867,7 +869,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
     }
 
-    $sql = 'UPDATE record 
+    $sql = 'UPDATE record
             SET originalname = :originalname WHERE record_id = :record_id';
 
     $params = array(
@@ -1220,7 +1222,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
 
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
@@ -1472,7 +1474,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
     $this->delete_data_from_cache(self::CACHE_STATUS);
 
@@ -1487,6 +1489,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_reg_name()
   {
     if (!$this->is_grouping())
+
       return false;
 
     $balisename = '';
@@ -1683,6 +1686,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $hd = $this->get_subdef('document');
     if ($hd->is_physically_present())
+
       return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
     return null;
   }
@@ -1901,7 +1905,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
     }
@@ -1995,7 +1999,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -2020,6 +2024,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $repo = $em->getRepository('\Entities\Basket');
 
     /* @var $$repo \Repositories\BasketRepository */
+
     return $repo->findContainingRecord($this);
   }
 

@@ -29,11 +29,11 @@ class Monolog extends ParentLog implements ServiceInterface
   const JSON_OUTPUT = 'json';
   const YAML_OUTPUT = 'yaml';
   const VAR_DUMP_OUTPUT = 'vdump';
-  
+
   protected $outputs = array(
       self::JSON_OUTPUT, self::YAML_OUTPUT, self::VAR_DUMP_OUTPUT
   );
-  
+
   public function getService()
   {
     $output = isset($this->options["output"]) ? $this->options["output"] : self::JSON_OUTPUT;
@@ -41,7 +41,7 @@ class Monolog extends ParentLog implements ServiceInterface
     if (!in_array($output, $this->outputs))
     {
       throw new \Exception(sprintf(
-                      "The output type '%s' declared in %s %s service is not valid. 
+                      "The output type '%s' declared in %s %s service is not valid.
           Available types are %s."
                       , $output
                       , $this->name
@@ -53,10 +53,10 @@ class Monolog extends ParentLog implements ServiceInterface
 
     return new MonologSQLLogger($this->monolog, $output);
   }
-  
+
   public function getType()
   {
     return 'doctrine_monolog';
   }
-  
+
 }

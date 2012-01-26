@@ -98,9 +98,9 @@ class UsrLists implements ControllerProviderInterface
     $controllers->post('/list/', function(Application $app)
             {
               $request = $app['request'];
-              
+
               $list_name = $request->get('name');
-                
+
               $datas = array(
                   'success' => false
                   , 'message' => sprintf(_('Unable to create list %s'), $list_name)
@@ -112,7 +112,7 @@ class UsrLists implements ControllerProviderInterface
                 {
                   throw new ControllerException(_('List name is required'));
                 }
-                
+
                 $em = $app['Core']->getEntityManager();
 
                 $List = new \Entities\UsrList();
@@ -159,7 +159,7 @@ class UsrLists implements ControllerProviderInterface
               $repository = $em->getRepository('\Entities\UsrList');
 
               $list = $repository->findUserListByUserAndId($user, $list_id);
-              
+
               $owners = $entries = $lists = array();
 
               foreach ($list->getOwners() as $owner)
@@ -215,16 +215,16 @@ class UsrLists implements ControllerProviderInterface
                   'success' => false
                   , 'message' => _('Unable to update list')
               );
-                
+
               try
               {
                 $list_name = $request->get('name');
-              
+
                 if(!$list_name)
                 {
                   throw new ControllerException(_('List name is required'));
                 }
-                
+
                 $user = $app['Core']->getAuthenticatedUser();
                 $em = $app['Core']->getEntityManager();
 
@@ -266,9 +266,9 @@ class UsrLists implements ControllerProviderInterface
               try
               {
                 $repository = $em->getRepository('\Entities\UsrList');
-                
+
                 $user = $app['Core']->getAuthenticatedUser();
-                
+
                 $list = $repository->findUserListByUserAndId($user, $list_id);
 
                 $em->remove($list);
@@ -305,19 +305,19 @@ class UsrLists implements ControllerProviderInterface
               try
               {
                 $repository = $em->getRepository('\Entities\UsrList');
-                
+
                 $user = $app['Core']->getAuthenticatedUser();
 
                 $list = $repository->findUserListByUserAndId($user, $list_id);
                 /* @var $list \Entities\UsrList */
-                
+
                 $entry_repository = $em->getRepository('\Entities\UsrListEntry');
-                
+
                 $user_entry = $entry_repository->findEntryByListAndEntryId($list, $entry_id);
 
                 $em->remove($user_entry);
                 $em->flush();
-                
+
                 $datas = array(
                     'success' => true
                     , 'message' => _('Entry removed from list')
@@ -345,7 +345,7 @@ class UsrLists implements ControllerProviderInterface
             {
               $em = $app['Core']->getEntityManager();
               $user = $app['Core']->getAuthenticatedUser();
-              
+
               try
               {
                 $repository = $em->getRepository('\Entities\UsrList');
@@ -399,14 +399,14 @@ class UsrLists implements ControllerProviderInterface
 
                 $list = $repository->findUserListByUserAndId($user, $list_id);
                 /* @var $list \Entities\UsrList */
-                
+
                 if($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
                 {
                   throw new \Exception('You are not authorized to do this');
                 }
-                
+
                 $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
-                
+
                 if($list->hasAccess($new_owner))
                 {
                   $owner = $list->getOwner($new_owner);
@@ -416,20 +416,20 @@ class UsrLists implements ControllerProviderInterface
                   $owner = new \Entities\UsrListOwner();
                   $owner->setList($list);
                   $owner->setUser($new_owner);
-                  
+
                   $list->addUsrListOwner($owner);
-                  
+
                   $em->persist($owner);
                   $em->merge($list);
                 }
-                
+
                 $role = $app['request']->get('role', \Entities\UsrListOwner::ROLE_USER);
-                
+
                 $owner->setRole($role);
-                
+
                 $em->merge($owner);
                 $em->flush();
-                
+
                 $datas = array(
                     'success' => true
                     , 'message' => _('List shared to user')
@@ -437,20 +437,20 @@ class UsrLists implements ControllerProviderInterface
               }
               catch (\Exception $e)
               {
-                
+
                 $datas = array(
                     'success' => false
                     , 'message' => _('Unable to share the list with the usr')
                 );
               }
-              
+
               $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
               return new Response($Json, 200, array('Content-Type' => 'application/json'));
             }
     );
     /**
-     * UnShare a list to a user 
+     * UnShare a list to a user
      */
     $controllers->post('/list/{list_id}/unshare/{owner_id}/', function(Application $app, $list_id, $owner_id)
             {
@@ -463,19 +463,19 @@ class UsrLists implements ControllerProviderInterface
 
                 $list = $repository->findUserListByUserAndId($user, $list_id);
                 /* @var $list \Entities\UsrList */
-                
+
                 if($list->getOwner($user)->getList() < \Entities\UsrListOwner::ROLE_ADMIN)
                 {
                   throw new \Exception('You are not authorized to do this');
                 }
-                
+
                 $owners_repository = $em->getRepository('\Entities\UsrListOwner');
-                
+
                 $owner = $owners_repository->findByListAndOwner($list, $owner_id);
-                
+
                 $em->remove($owner);
                 $em->flush();
-                
+
                 $datas = array(
                     'success' => true
                     , 'message' => _('Owner removed from list')
@@ -489,7 +489,7 @@ class UsrLists implements ControllerProviderInterface
                     , 'message' => _('Unable to add usr to list')
                 );
               }
-              
+
               $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
               return new Response($Json, 200, array('Content-Type' => 'application/json'));

@@ -25,7 +25,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
 
   /**
    *
-   * @var \Alchemy\Phrasea\Core\Configuration\Application 
+   * @var \Alchemy\Phrasea\Core\Configuration\Application
    */
   public function setUp()
   {
@@ -41,7 +41,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
   public function testGetConfigurationFile()
   {
     $app = new Application();
-    
+
     try
     {
       $this->assertInstanceOf('SplFileObject', $app->getConfigurationFile());
@@ -61,7 +61,7 @@ class ApplicationTest extends \PhraseanetPHPUnitAbstract
   public function testIsExtended()
   {
     $app = new Application();
-    
+
     $envs = array(Application::KEYWORD_ENV => 'dev');
     $this->assertEquals('dev', $app->getSelectedEnv($envs));
     $envs = array('blabla' => 'blabla');

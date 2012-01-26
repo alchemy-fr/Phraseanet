@@ -78,7 +78,7 @@
 
 
 </style>
-<style type="text/css">	/* NE PAS FUSIONER AVEC LE BLOC PRECEDENT */
+<style type="text/css">  /* NE PAS FUSIONER AVEC LE BLOC PRECEDENT */
   .MenuSG
   {
   }
@@ -182,10 +182,10 @@
 <link id="skinCss" type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=skins/prod/{{cssfile}}/prodcolor.css" >
 <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css" >
 <!--[if IE 7]>
-		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie7.css" >
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie7.css" >
 <![endif]-->
 <!--[if IE 8]>
-		<link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie8.css" >
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie8.css" >
 <![endif]-->
 <style title="color_selection" type="text/css">
 
@@ -563,7 +563,7 @@
     </div>
   </div>
   <div class="PNB" id="rightFrame" style="left:auto;width:{{w2}}%;">
-    
+
     <div id="headBlock" class="PNB" style="height:60px;bottom:auto;">
       <div id="alternateTrigger" class="PNB">
         <form style="margin:15px 20px;padding:0;" onsubmit="newSearch();return false;">
@@ -585,9 +585,9 @@
           </select>
           <a href="#" onclick="lookBox(this,event);return false;">{% trans 'Preferences' %} </a>
         </form>
-          
-          
-          
+
+
+
         <div id="alternateSearch" class="PNB" style="z-index:510;">
           <ul class="PNB" style="height:30px;">
             <li><a href="#bases-queries">{% trans 'recherche :: Bases' %}</a></li>
@@ -624,7 +624,7 @@
           {% endif %}
         </div>
       </div>
-        
+
     </div>
     <div id="idFrameT" class="PNB ui-corner-top" style="top:70px;">
       <div class="tools PNB10" style="font-size:10px;z-index:200;height:28px;">
@@ -1149,7 +1149,7 @@
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
-          
+
   {% if user.getPrefs('start_page') == 'QUERY' or user.getPrefs('start_page') == 'LAST_QUERY' %}
 
   $(document).ready(function(){
@@ -1186,6 +1186,7 @@
         if(data.apps && parseInt(data.apps)>1)
           t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 60000));
         window.setTimeout("sessionactive();", t);
+
         return;
       }
     })

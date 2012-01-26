@@ -11,12 +11,12 @@ twig:
     debug: false
     #The charset used by the templates
     charset: utf-8
-    #Twig will silently ignore invalid variables (variables and or attributes/methods that do not exist) 
+    #Twig will silently ignore invalid variables (variables and or attributes/methods that do not exist)
     #And replace them with a null value. When set to true, Twig throws an exception instead (default to false)
     strict_variables: true
     #Optimize the node tree before compilation
     optimizer: true
-    
+
 twig_debug:
   type: twig
   options:
@@ -25,7 +25,7 @@ twig_debug:
     strict_variables: true
     autoescape: true
     optimizer: true
-    
+
 #Doctrine developement service options
 #Service name
 doctrine_dev:
@@ -47,15 +47,15 @@ doctrine_dev:
         query: array_cache
         result: array_cache
         metadata: array_cache
-    # Assign a service to log doctrine queries    
+    # Assign a service to log doctrine queries
     log: query_logger
-  
+
 # Doctrine test service options
 doctrine_test:
   type: doctrine
   options:
     debug: true
-    #Doctrine use a different connection configuration base to run tests   
+    #Doctrine use a different connection configuration base to run tests
     dbal: test_connexion
     orm:
       cache:
@@ -63,7 +63,7 @@ doctrine_test:
         result: array_cache
         metadata: array_cache
     log: query_logger
-  
+
 # Doctrine production service options
 doctrine_prod:
   type: doctrine
@@ -76,15 +76,15 @@ doctrine_prod:
         result: apc_cache
         metadata: apc_cache
     log: query_logger
-    
-    
+
+
 # Define a Log service
 # This one is defined to handle the logs of doctrine queries
 # Only Monolog is available as a logger service
 # Please Notice that for doctrine ONLY a echo logger service is available, see below
 # Monolog logger use the PHP Monolog library to handle logs using differents handlers
 query_logger:
-  type: monolog 
+  type: monolog
   options:
     #You can precise the output format
     #This option is only available when log are used to log doctrine queries
@@ -97,34 +97,34 @@ query_logger:
     channel: query-logger
     #Define how the logs will be handled
     #Avalaibale Handler are [rotate, stream]
-    #Rotate handler is used to stores logs to files that are rotated every day 
+    #Rotate handler is used to stores logs to files that are rotated every day
     #And a limited number of files are kept by defining the max_day value
     #Stream handler is used to stores logs in a single local file
     handler: rotate
     max_day: 2
     #Name of the file where logs are written
     filename: doctrine-query.log
-    
+
 # Define a phpecho log service for Doctrine
 # phpecho logger logs doctrine queries to the standard output using echo/var_dump
 # Notice that phpecho logger do not have options
 sql_logger:
   type: phpecho
-  
+
 #Define cache services
 #There are Four deffirent cache type available [array, xcache, apc, memcache]
 #Only a memcache service can take option to define port & host for the memcache server
 array_cache:
   type: array
-  
+
 memcache_cache:
   type: memcache
   options:
     host: localhost
     port: 11211
-    
+
 apc_cache:
   type: apc
-  
+
 xcache_cache:
   type: xcache

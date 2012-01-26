@@ -62,6 +62,7 @@ class Printer implements ControllerProviderInterface
                         ->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
               }
               $PDF = new PDFExport($printer->get_elements(), $layout);
+
               return new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
             }
     );

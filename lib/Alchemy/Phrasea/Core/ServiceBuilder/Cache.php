@@ -23,15 +23,15 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 class Cache extends AbstractBuilder
 {
   protected static $optionsNotMandatory = array('apc', 'xcache', 'memcache', 'array', 'memcached', 'redis');
-  
+
   public static function create($name, ParameterBag $configuration, Array $dependencies = array(), $namespace = null)
   {
     $type = $configuration->get("type");
-    
+
     $options = parent::getServiceOptions($type, $configuration);
-    
+
     $className = sprintf("\Alchemy\Phrasea\Core\Service\Cache\%sCache", ucfirst($type));
-    
+
     if (class_exists($className))
     {
        return new $className($name, $options, $dependencies);

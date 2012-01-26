@@ -339,9 +339,9 @@ return call_user_func(function()
           }
           catch (Exception $e)
           {
-            
+
           }
-          
+
           $Serializer = $app['Core']['Serializer'];
 
           return new Response(
@@ -374,9 +374,9 @@ return call_user_func(function()
           }
           catch (Exception $e)
           {
-            
+
           }
-          
+
           $Serializer = $app['Core']['Serializer'];
 
           return new Response(
@@ -400,9 +400,9 @@ return call_user_func(function()
           }
           catch (Exception $e)
           {
-            
+
           }
-          
+
           $Serializer = $app['Core']['Serializer'];
 
           return new Response(
@@ -424,9 +424,9 @@ return call_user_func(function()
           }
           catch (\Exception $e)
           {
-            
+
           }
-          
+
           $Serializer = $app['Core']['Serializer'];
 
           return new Response(

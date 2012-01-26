@@ -21,12 +21,12 @@ namespace Alchemy\Phrasea\Core\Service;
 interface ServiceInterface
 {
   public function getName();
-  
+
   public function getType();
-  
+
   public function getService();
-  
+
   public function getOptions();
-  
+
   public function getScope();
 }

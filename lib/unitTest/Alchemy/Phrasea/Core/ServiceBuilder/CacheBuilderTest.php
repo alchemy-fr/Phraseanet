@@ -33,7 +33,7 @@ class CacheBuilderTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 

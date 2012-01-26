@@ -20,7 +20,7 @@ function deleteRecord($lst, $del_children)
   $Core = bootstrap::getCore();
   $em = $Core->getEntityManager();
   $BE_repository = $em->getRepository('\Entities\BasketElement');
-  
+
   $appbox = appbox::get_instance();
   $session = $appbox->get_session();
   $registry = $Core->getRegistry();
@@ -96,14 +96,14 @@ function deleteRecord($lst, $del_children)
           }
         }
         $ret[] = implode('_', $rid);
-        
+
         $basket_elements = $BE_repository->findElementsByRecord($record);
 
         foreach($basket_elements as $basket_element)
         {
           $em->remove($basket_element);
         }
-        
+
         $record->delete();
         unset($record);
       }
@@ -115,7 +115,7 @@ function deleteRecord($lst, $del_children)
   }
 
   $em->flush();
-    
+
   return p4string::jsonencode($ret);
 }
 

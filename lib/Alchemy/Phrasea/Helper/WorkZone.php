@@ -15,7 +15,7 @@ use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * 
+ *
  * WorkZone provides methods for working with the working zone of Phraseanet
  * Production. This zones handles Non-Archived baskets, stories and Validation
  * people are waiting from me.
@@ -26,20 +26,20 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class WorkZone extends Helper
 {
-  
+
   const BASKETS = 'baskets';
   const STORIES = 'stories';
   const VALIDATIONS = 'validations';
-  
+
   /**
-   * 
+   *
    * Returns an ArrayCollection containing three keys :
-   *    - self::BASKETS : an ArrayCollection of the actives baskets 
+   *    - self::BASKETS : an ArrayCollection of the actives baskets
    *     (Non Archived)
    *    - self::STORIES : an ArrayCollection of working stories
    *    - self::VALIDATIONS : the validation people are waiting from me
    *
-   * @return \Doctrine\Common\Collections\ArrayCollection 
+   * @return \Doctrine\Common\Collections\ArrayCollection
    */
   public function getContent()
   {
@@ -51,17 +51,17 @@ class WorkZone extends Helper
 
 
     $ret = new \Doctrine\Common\Collections\ArrayCollection();
-    
+
     $baskets = $repo_baskets->findActiveByUser($current_user);
     $validations = $repo_baskets->findActiveValidationByUser($current_user);
 
     /* @var $repo_stories \Doctrine\Repositories\StoryWZRepository */
     $repo_stories = $em->getRepository('Entities\StoryWZ');
-    
+
     $ret->set(self::BASKETS, $baskets);
     $ret->set(self::VALIDATIONS, $validations);
     $ret->set(self::STORIES, $repo_stories->findByUser($current_user));
-    
+
     return $ret;
   }
 

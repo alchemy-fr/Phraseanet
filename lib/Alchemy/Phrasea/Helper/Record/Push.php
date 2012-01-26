@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
 /**
  * Edit Record Helper
  * This object handles /edit/ request and filters records that user can edit
- * 
+ *
  * It prepares metadatas, databases structures.
  *
  * @package
@@ -29,7 +29,7 @@ class Push extends RecordHelper
 {
 
   protected $flatten_groupings = true;
-  
+
   protected $required_rights = array('canpush');
-  
+
 }

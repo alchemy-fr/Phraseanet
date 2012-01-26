@@ -10,18 +10,18 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   /**
-   * As controllers use WebTestCase, it requires a client 
+   * As controllers use WebTestCase, it requires a client
    */
   protected $client;
 
   /**
    * If the controller tests require some records, specify it her
-   * 
-   * For example, this will loacd 2 records 
+   *
+   * For example, this will loacd 2 records
    * (self::$record_1 and self::$record_2) :
-   * 
-   * $need_records = 2; 
-   * 
+   *
+   * $need_records = 2;
+   *
    */
   protected static $need_records = 2;
 
@@ -60,9 +60,9 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRoutePrintPdf()
   {
-    
+
     $this->markTestSkipped("Undefined variable: k_path_url \n /Users/nicolasl/workspace/phraseanet/lib/vendor/tcpdf/config/tcpdf_config.php:75");
-    
+
     $records = array(
         self::$record_1->get_serialize_key(),
         self::$record_2->get_serialize_key()

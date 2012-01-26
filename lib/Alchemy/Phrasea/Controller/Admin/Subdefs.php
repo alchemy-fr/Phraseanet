@@ -126,11 +126,12 @@ class Subdefs implements ControllerProviderInterface
               }
             }
             $subdefs->set_subdef($group, $name, $class, $downloadable, $options);
-          } 
+          }
         }
 
         return \phrasea::redirect('/admin/subdefs/' . $databox->get_sbas_id() . '/');
       });
+
     return $controllers;
   }
 }

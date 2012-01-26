@@ -142,7 +142,7 @@ class databox extends base
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -157,7 +157,7 @@ class databox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $conn = connection::getPDOConnection();
@@ -451,6 +451,7 @@ class databox extends base
     $stmt->closeCursor();
 
     if ($row)
+
       return self::get_instance((int) $row['sbas_id']);
 
     try
@@ -463,7 +464,7 @@ class databox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $sql = 'USE `' . $dbname . '`';
@@ -575,6 +576,7 @@ class databox extends base
   public function get_meta_structure()
   {
     if ($this->meta_struct)
+
       return $this->meta_struct;
 
     try
@@ -697,6 +699,7 @@ class databox extends base
       }
     }
     if ($n > $limit)
+
       return true;
 
     return false;
@@ -986,7 +989,7 @@ class databox extends base
       }
       catch (Exception $e)
       {
-        
+
       }
 
       if (isset($field['regname']))
@@ -1220,6 +1223,7 @@ class databox extends base
   public function get_structure()
   {
     if ($this->structure)
+
       return $this->structure;
     $this->structure = $this->retrieve_structure();
 
@@ -1234,7 +1238,7 @@ class databox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $structure = null;
@@ -1260,6 +1264,7 @@ class databox extends base
   public function get_cterms()
   {
     if ($this->cterms)
+
       return $this->cterms;
 
     $sql = "SELECT value FROM pref WHERE prop='cterms'";
@@ -1426,6 +1431,7 @@ class databox extends base
   public function get_cgus()
   {
     if ($this->cgus)
+
       return $this->cgus;
 
     $this->load_cgus();
@@ -1443,7 +1449,7 @@ class databox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $sql = 'SELECT value, locale, updated_on FROM pref WHERE prop ="ToU"';

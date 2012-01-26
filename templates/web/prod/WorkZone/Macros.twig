@@ -3,10 +3,10 @@
   <div class="bloc">
   <div class="insidebloc">
     {% set content = WorkZone.getContent() %}
-    
+
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
 
-    
+
         <div tooltipsrc="/prod/tooltip/basket/{{basket.getId()}}/"
              id="SSTT_{{basket.getId()}}"
              class="basketTips ui-accordion-header ui-state-default
@@ -94,12 +94,12 @@
         <div id="SSTT_content_{{basket.getId()}}" class="content basket" style="overflow:hidden;">
 
         </div>
-    
+
     {% endfor %}
-    
+
     {% for story in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::STORIES')) %}
 
-          
+
         <div tooltipsrc="/prod/tooltip/Story/{{story.getRecord().get_sbas_id()}}/{{story.getRecord().get_record_id()}}/"
              id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
              class="basketTips ui-accordion-header ui-state-default
@@ -158,16 +158,16 @@
 
         </div>
 
-          
-          
-    
+
+
+
     {% endfor %}
-    
+
   </div>
 </div>
 {% endmacro %}
 
-  
+
 {% macro element(wz_scope, container, contained, record, ord, user, session) %}
   {% set box_height = 110 %}
   {% if user.getPrefs('basket_title_display') == '1' %}
@@ -198,15 +198,15 @@
           </div>
     {{thumbnail.format(record.get_thumbnail,82,82, '', session, true)}}
       <div class="bottom">
-          <a 
+          <a
             {% if wz_scope == 'groupings' %}
-              id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}" 
-              href="/prod/story/{{ container.get_sbas_id() }}/{{ container.get_record_id() }}/delete/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/" 
+              id="WZEL{{ container.get_sbas_id() }}_{{ container.get_record_id() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
+              href="/prod/story/{{ container.get_sbas_id() }}/{{ container.get_record_id() }}/delete/{{ record.get_sbas_id() }}/{{ record.get_record_id() }}/"
             {% elseif wz_scope == 'basket' %}
               id="WZEL_{{ container.getId() }}_{{ record.get_sbas_id() }}_{{ record.get_record_id() }}"
-              href="/prod/baskets/{{ container.getId() }}/delete/{{ contained.getId() }}/" 
+              href="/prod/baskets/{{ container.getId() }}/delete/{{ contained.getId() }}/"
             {% elseif wz_scope == 'basket' %}
-              href="#" 
+              href="#"
             {% endif %}
             class="WorkZoneElementRemover {{ wz_scope }}" title="{% trans 'delete'%}" >
             X
@@ -217,7 +217,7 @@
       </div>
   </div>
 {% endmacro %}
-  
+
 {% macro display_basket(basket, user, session) %}
   {% for basket_element in basket.getElements() %}
       <span class="wrapCHIM_{{ basket_element.getRecord().get_serialize_key() }}">
@@ -225,7 +225,7 @@
       </span>
   {% endfor %}
 {% endmacro %}
-  
+
 {% macro display_validation(basket, ordre, user, session) %}
   <div style="margin:5px 0;text-align:center;">
       <form>

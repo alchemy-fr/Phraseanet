@@ -10,17 +10,17 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   /**
-   * As controllers use WebTestCase, it requires a client 
+   * As controllers use WebTestCase, it requires a client
    */
   protected $client;
   /**
    * If the controller tests require some records, specify it her
-   * 
-   * For example, this will loacd 2 records 
+   *
+   * For example, this will loacd 2 records
    * (self::$record_1 and self::$record_2) :
-   * 
-   * $need_records = 2; 
-   * 
+   *
+   * $need_records = 2;
+   *
    */
   protected static $need_records = false;
 
@@ -31,7 +31,7 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Prod.php';
   }
-  
+
   public function setUp()
   {
     parent::setUp();
@@ -44,13 +44,13 @@ class ControllerRootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   public function testRouteSlash()
   {
     $crawler = $this->client->request('GET', '/');
-    
-    
+
+
     $response = $this->client->getResponse();
     /* @var $response \Symfony\Component\HttpFoundation\Response */
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertEquals('UTF-8', $response->getCharset());
-    
+
   }
 
 }

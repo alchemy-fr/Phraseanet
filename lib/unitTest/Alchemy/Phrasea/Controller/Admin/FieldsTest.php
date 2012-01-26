@@ -10,18 +10,18 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   /**
-   * As controllers use WebTestCase, it requires a client 
+   * As controllers use WebTestCase, it requires a client
    */
   protected $client;
 
   /**
    * If the controller tests require some records, specify it her
-   * 
-   * For example, this will loacd 2 records 
+   *
+   * For example, this will loacd 2 records
    * (self::$record_1 and self::$record_2) :
-   * 
-   * $need_records = 2; 
-   * 
+   *
+   * $need_records = 2;
+   *
    */
   protected static $need_records = false;
 
@@ -79,7 +79,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertTrue(is_object($datas));
     $this->assertTrue(!!$datas->result);
     $this->assertEquals($field->is_readonly(), !!$datas->is_readonly);
-    
+
     $field->delete();
   }
 

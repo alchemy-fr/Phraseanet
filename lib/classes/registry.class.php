@@ -71,6 +71,7 @@ class registry implements registryInterface
       $this->cache->set('GV_debug', $configuration->isDebug());
       $this->cache->set('GV_maintenance', $configuration->isMaintained());
     }
+
     return $this;
   }
 
@@ -96,7 +97,7 @@ class registry implements registryInterface
       }
       catch (Exception $e)
       {
-        
+
       }
       foreach ($rs as $row)
       {
@@ -139,8 +140,10 @@ class registry implements registryInterface
       $this->load();
 
     if (!$this->cache->is_set($key) && !is_null($defaultvalue))
+
       return $defaultvalue;
     else
+
       return $this->cache->get($key);
   }
 

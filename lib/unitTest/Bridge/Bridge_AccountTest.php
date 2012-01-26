@@ -56,7 +56,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
     }
     catch (Bridge_Exception_AccountNotFound $e)
     {
-      
+
     }
 
     $this->api->delete();

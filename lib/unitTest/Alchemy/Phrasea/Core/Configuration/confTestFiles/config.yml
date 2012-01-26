@@ -29,7 +29,7 @@ test:
     template_engine: twig_debug
     orm: doctrine_test
     cache: array_cache
-    
+
 no_debug:
     phraseanet:
         servername: 'http://dev.phrasea.net/'
@@ -40,7 +40,7 @@ no_debug:
     template_engine: twig_debug
     orm: doctrine_test
     cache: array_cache
-    
+
 no_maintenance:
     phraseanet:
         servername: 'http://dev.phrasea.net/'
@@ -51,7 +51,7 @@ no_maintenance:
     template_engine: twig_debug
     orm: doctrine_test
     cache: array_cache
-    
+
 no_display_errors:
     phraseanet:
         servername: 'http://dev.phrasea.net/'
@@ -62,7 +62,7 @@ no_display_errors:
     template_engine: twig_debug
     orm: doctrine_test
     cache: array_cache
-    
+
 missing_phraseanet:
     ##phraseanet:
         ##servername: 'http://dev.phrasea.net/'

@@ -4,7 +4,7 @@
       <tr>
         <td style="width:230px;">
           <a href="#" class="back">
-            <img src="/skins/prod/Basket/Browser/BASKET_LIST.png"/> 
+            <img src="/skins/prod/Basket/Browser/BASKET_LIST.png"/>
             {% trans 'Back to basket list' %}
           </a>
         </td>
@@ -29,9 +29,9 @@
       </tr>
     </table>
   </div>
-  
+
   {% set top = 0 %}
-    
+
   {% if Basket.getPusher() %}
     {% set top = top + 40 %}
     <div class="PNB" style="top:40px;bottom:auto;height:40px;background-color:#404040;">
@@ -45,7 +45,7 @@
       </div>
     </div>
   {% endif %}
-    
+
   {% if Basket.getValidation() %}
     {% set top = top + 160 %}
     <div class="PNB" style="top:40px;bottom:auto;height:160px;background-color:#404040;">
@@ -64,9 +64,9 @@
       </div>
     </div>
   {% endif %}
-    
+
   {% set top = top + 40 %}
-    
+
   <div class="PNB" style="height:40px;bottom:auto;top:{{ top }}px;">
     <div class="PNB10">
     {% set ElementsCount = Basket.getElements().count() %}
@@ -79,14 +79,14 @@
     {% endif %}
     </div>
   </div>
-    
-    
+
+
   {% set top = top + 40 %}
-    
-    
+
+
   {% import 'common/thumbnail.html' as thumbnail %}
-    
-    
+
+
   <div class="PNB" style="top:{{ top }}px;">
     <div class="PNB10">
     {% for BasketElement in Basket.getElements() %}

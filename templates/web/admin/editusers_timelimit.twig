@@ -21,13 +21,13 @@
     </tr>
     <tr>
       <td colspan="2">
-        {% trans 'De' %} 
+        {% trans 'De' %}
         <input type="text" class="dmin datepicker" name="dmin" {% if datas.time_limited == 0 %}readonly="readonly"{% endif %} value="{{datas.limited_from}}" />
       </td>
     </tr>
     <tr>
       <td colspan="2">
-        {% trans 'A' %} 
+        {% trans 'A' %}
         <input type="text" class="dmax datepicker" name="dmax" {% if datas.time_limited == 0 %}readonly="readonly"{% endif %} value="{{datas.limited_to}}" />
       </td>
     </tr>

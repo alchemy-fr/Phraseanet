@@ -10,18 +10,18 @@
  */
 namespace PhraseaFixture\UsrLists;
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 abstract class ListAbstract extends \Doctrine\Common\DataFixtures\AbstractFixture
 {
-  
+
   protected $user;
-  
+
   protected $list;
-  
+
   public function getUser()
   {
     return $this->user;

@@ -37,7 +37,7 @@ class Fields implements ControllerProviderInterface
     $controllers->get('/checkmulti/', function() use ($app, $appbox)
             {
               $request = $app['request'];
-              
+
               $multi = ($request->get('multi') === 'true');
 
         $metadata = \databox_field::load_class_from_xpath($request->get('source'));

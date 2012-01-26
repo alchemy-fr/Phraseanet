@@ -10,7 +10,7 @@
  */
 namespace Entities;
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -51,7 +51,7 @@ class ValidationData
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -71,7 +71,7 @@ class ValidationData
     /**
      * Get agreement
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getAgreement()
     {
@@ -91,7 +91,7 @@ class ValidationData
     /**
      * Get note
      *
-     * @return text 
+     * @return text
      */
     public function getNote()
     {
@@ -111,7 +111,7 @@ class ValidationData
     /**
      * Get updated
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getUpdated()
     {
@@ -131,7 +131,7 @@ class ValidationData
     /**
      * Get participant
      *
-     * @return Entities\ValidationParticipant 
+     * @return Entities\ValidationParticipant
      */
     public function getParticipant()
     {
@@ -151,7 +151,7 @@ class ValidationData
     /**
      * Get basket_element
      *
-     * @return Entities\BasketElement 
+     * @return Entities\BasketElement
      */
     public function getBasketElement()
     {

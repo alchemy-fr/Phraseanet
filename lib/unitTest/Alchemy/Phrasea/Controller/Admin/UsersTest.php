@@ -10,18 +10,18 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   /**
-   * As controllers use WebTestCase, it requires a client 
+   * As controllers use WebTestCase, it requires a client
    */
   protected $client;
 
   /**
    * If the controller tests require some records, specify it her
-   * 
-   * For example, this will loacd 2 records 
+   *
+   * For example, this will loacd 2 records
    * (self::$record_1 and self::$record_2) :
-   * 
-   * $need_records = 2; 
-   * 
+   *
+   * $need_records = 2;
+   *
    */
   protected static $need_records = false;
   protected $usersParameters;
@@ -74,7 +74,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -302,6 +302,6 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertRegexp("#charset=UTF-8#", $response->headers->get("content-type"));
     $this->assertEquals("attachment; filename=export.txt", $response->headers->get("content-disposition"));
   }
-  
-  
+
+
 }

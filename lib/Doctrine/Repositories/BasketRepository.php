@@ -32,11 +32,11 @@ class BasketRepository extends EntityRepository
    * Returns all basket for a given user that are not marked as archived
    *
    * @param \User_Adapter $user
-   * @return \Doctrine\Common\Collections\ArrayCollection 
+   * @return \Doctrine\Common\Collections\ArrayCollection
    */
   public function findActiveByUser(\User_Adapter $user)
   {
-    $dql = 'SELECT b FROM Entities\Basket b 
+    $dql = 'SELECT b FROM Entities\Basket b
             WHERE b.usr_id = :usr_id AND b.archived = false';
 
     $query = $this->_em->createQuery($dql);
@@ -49,12 +49,12 @@ class BasketRepository extends EntityRepository
    * Returns all unread basket for a given user that are not marked as archived
    *
    * @param \User_Adapter $user
-   * @return \Doctrine\Common\Collections\ArrayCollection 
+   * @return \Doctrine\Common\Collections\ArrayCollection
    */
   public function findUnreadActiveByUser(\User_Adapter $user)
   {
-    $dql = 'SELECT b FROM Entities\Basket b 
-            WHERE b.usr_id = :usr_id 
+    $dql = 'SELECT b FROM Entities\Basket b
+            WHERE b.usr_id = :usr_id
               AND b.archived = false AND b.is_read = false';
 
     $query = $this->_em->createQuery($dql);
@@ -64,18 +64,18 @@ class BasketRepository extends EntityRepository
   }
 
   /**
-   * Returns all baskets that are in validation session not expired  and 
+   * Returns all baskets that are in validation session not expired  and
    * where a specified user is participant (not owner)
    *
    * @param \User_Adapter $user
-   * @return \Doctrine\Common\Collections\ArrayCollection 
+   * @return \Doctrine\Common\Collections\ArrayCollection
    */
   public function findActiveValidationByUser(\User_Adapter $user)
   {
-    $dql = 'SELECT b FROM Entities\Basket b 
-              JOIN b.validation s 
-              JOIN s.participants p  
-            WHERE b.usr_id != ?1 AND p.usr_id = ?2 
+    $dql = 'SELECT b FROM Entities\Basket b
+              JOIN b.validation s
+              JOIN s.participants p
+            WHERE b.usr_id != ?1 AND p.usr_id = ?2
                   AND s.expires > CURRENT_TIMESTAMP()';
 
     $query = $this->_em->createQuery($dql);
@@ -91,7 +91,7 @@ class BasketRepository extends EntityRepository
    * @throws \Exception_Forbidden
    * @param type $basket_id
    * @param \User_Adapter $user
-   * @return \Entities\Basket 
+   * @return \Entities\Basket
    */
   public function findUserBasket($basket_id, \User_Adapter $user)
   {
@@ -114,8 +114,8 @@ class BasketRepository extends EntityRepository
   public function findContainingRecord(\record_adapter $record)
   {
 
-    $dql = 'SELECT b FROM Entities\Basket b 
-              JOIN b.elements e 
+    $dql = 'SELECT b FROM Entities\Basket b
+              JOIN b.elements e
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id';
 
     $params = array(
@@ -135,16 +135,16 @@ class BasketRepository extends EntityRepository
     switch ($type)
     {
       case self::RECEIVED:
-        $dql = 'SELECT b FROM Entities\Basket b 
+        $dql = 'SELECT b FROM Entities\Basket b
                   WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
         $params = array(
             'usr_id' => $user->get_id()
         );
         break;
       case self::VALIDATION_DONE:
-        $dql = 'SELECT b FROM Entities\Basket b 
-                  JOIN b.validation s 
-                  JOIN s.participants p  
+        $dql = 'SELECT b FROM Entities\Basket b
+                  JOIN b.validation s
+                  JOIN s.participants p
                 WHERE b.usr_id != ?1 AND p.usr_id = ?2';
         $params = array(
             1 => $user->get_id()
@@ -152,7 +152,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::VALIDATION_SENT:
-        $dql = 'SELECT b FROM Entities\Basket b 
+        $dql = 'SELECT b FROM Entities\Basket b
                 JOIN b.validation v
                 WHERE b.usr_id = :usr_id';
         $params = array(
@@ -160,8 +160,8 @@ class BasketRepository extends EntityRepository
         );
         break;
       default:
-        $dql = 'SELECT b FROM Entities\Basket b 
-                LEFT JOIN b.validation s LEFT JOIN s.participants p 
+        $dql = 'SELECT b FROM Entities\Basket b
+                LEFT JOIN b.validation s LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id OR p.usr_id = :validating_usr_id)';
         $params = array(
             'usr_id' => $user->get_id(),
@@ -169,19 +169,19 @@ class BasketRepository extends EntityRepository
         );
         break;
     }
-    
+
     if (ctype_digit($year) && strlen($year) == 4)
     {
       $dql .= ' AND b.created >= :min_date AND b.created <= :max_date ';
-      
+
       $params['min_date'] = sprintf('%d-01-01 00:00:00', $year);
       $params['max_date'] = sprintf('%d-12-31 23:59:59', $year);
     }
-    
+
     if (trim($query) !== '')
     {
       $dql .= ' AND (b.name LIKE :name OR b.description LIKE :description) ';
-      
+
       $params['name'] = '%'.$query.'%';
       $params['description'] = '%'.$query.'%';
     }

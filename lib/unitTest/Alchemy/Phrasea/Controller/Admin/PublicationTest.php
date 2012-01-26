@@ -316,7 +316,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     }
     catch (\Exception $e)
     {
-      
+
     }
 
     $this->assertRegexp("#FILEHREF:/custom/feed_" . $feed->get_id() . ".jpg?[0-9]*#", $response->getContent());
@@ -437,7 +437,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     }
     catch(\Exception $e)
     {
-      
+
     }
 
   }

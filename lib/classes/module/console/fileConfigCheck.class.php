@@ -34,7 +34,7 @@ class module_console_fileConfigCheck extends Command
 
   /**
    *
-   * @var \Alchemy\Phrasea\Core\Configuration 
+   * @var \Alchemy\Phrasea\Core\Configuration
    */
   protected $configuration;
   protected $env;
@@ -169,6 +169,7 @@ class module_console_fileConfigCheck extends Command
       throw new \Exception(sprintf("Check parsing file\n"), null, $e);
     }
     $output->writeln("<info>Parsing File OK</info>");
+
     return;
   }
 
@@ -183,6 +184,7 @@ class module_console_fileConfigCheck extends Command
       throw new \Exception(sprintf("Check get selected environment\n"), null, $e);
     }
     $output->writeln("<info>Get Selected Environment OK</info>");
+
     return;
   }
 
@@ -203,6 +205,7 @@ class module_console_fileConfigCheck extends Command
       throw new \Exception(sprintf("Check get selected environment from file\n"), null, $e);
     }
     $output->writeln("<info>Get Selected Environment from file OK</info>");
+
     return;
   }
 
@@ -262,6 +265,7 @@ class module_console_fileConfigCheck extends Command
     }
 
     $output->writeln("<info>Phraseanet Scope OK</info>");
+
     return;
   }
 
@@ -297,6 +301,7 @@ class module_console_fileConfigCheck extends Command
       throw new \Exception(sprintf("Check Database Scope\n"), null, $e);
     }
     $output->writeln("<info>Database Scope OK</info>");
+
     return;
   }
 
@@ -330,7 +335,7 @@ class module_console_fileConfigCheck extends Command
       );
 
       $service = $serviceBuilder->buildService();
-      
+
       if ($service->getType() === 'twig')
       {
         $twig = $service->getService();
@@ -383,6 +388,7 @@ class module_console_fileConfigCheck extends Command
     }
 
     $output->writeln("<info>Template engine service OK</info>");
+
     return;
   }
 
@@ -391,6 +397,7 @@ class module_console_fileConfigCheck extends Command
     if (!$this->connexionOk)
     {
       $output->writeln("<comment>As ORM service test depends on database test success, it is not executed</comment>");
+
       return;
     }
 
@@ -416,7 +423,7 @@ class module_console_fileConfigCheck extends Command
       }
 
       $registry = \registry::get_instance();
-      
+
       $serviceBuilder = new Core\ServiceBuilder\Orm(
                       $ormName
                       , $configuration
@@ -502,6 +509,7 @@ class module_console_fileConfigCheck extends Command
     }
 
     $output->writeln("<info>ORM service OK</info>");
+
     return;
   }
 

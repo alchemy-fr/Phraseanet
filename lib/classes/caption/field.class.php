@@ -58,8 +58,8 @@ class caption_field //implements cache_cacheableInterface
 
     $connbas = $databox_field->get_connection();
 
-    $sql = 'SELECT id FROM metadatas 
-                WHERE record_id = :record_id 
+    $sql = 'SELECT id FROM metadatas
+                WHERE record_id = :record_id
                   AND meta_struct_id = :meta_struct_id';
 
     $params = array(
@@ -75,7 +75,7 @@ class caption_field //implements cache_cacheableInterface
     if (!$databox_field->is_multi() && count($rs) > 1)
     {
       /**
-       * TRIGG CORRECTION; 
+       * TRIGG CORRECTION;
        */
     }
 
@@ -86,10 +86,10 @@ class caption_field //implements cache_cacheableInterface
 
     return $this;
   }
-  
+
   /**
    *
-   * @return record_adapter 
+   * @return record_adapter
    */
   public function get_record()
   {
@@ -221,9 +221,9 @@ class caption_field //implements cache_cacheableInterface
       $separator = ' ';
     else
       $separator = ' ' . $separator . ' ';
-    
+
     $array_values = array();
-    
+
     foreach($values as $value)
     {
       $array_values[] = $value->getValue();
@@ -264,7 +264,7 @@ class caption_field //implements cache_cacheableInterface
 //    }
 //    catch (Exception $e)
 //    {
-//      
+//
 //    }
 //
 //    $this->update_cache_value($value);
@@ -380,17 +380,17 @@ class caption_field //implements cache_cacheableInterface
 //      return $this->value;
 //    }
 //  }
-  
+
   public function get_values()
   {
     return $this->values;
   }
-  
+
   public function get_value($meta_id)
   {
     return $this->values[$meta_id];
   }
-  
+
   public function get_serialized_values($custom_separator = false)
   {
     if ($this->databox_field->is_multi() === true)
@@ -407,10 +407,11 @@ class caption_field //implements cache_cacheableInterface
       foreach($this->values as $value)
       {
         /* @var $value Caption_Field_Value */
+
         return $value->getValue();
       }
     }
-    
+
     return null;
   }
 
@@ -665,7 +666,7 @@ class caption_field //implements cache_cacheableInterface
         }
         catch (Exception $e)
         {
-          
+
         }
       }
 

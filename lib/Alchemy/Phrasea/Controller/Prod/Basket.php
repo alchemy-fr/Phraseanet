@@ -37,13 +37,13 @@ class Basket implements ControllerProviderInterface
 
     /**
      * This route is used to create a Basket
-     * 
+     *
      * @params name : title (mandatory)
      * @params desc : description (optionnal)
      * @params lst  : Phraseanet serialized record list (optionnal)
-     *  
+     *
      * @accept JSON / YAML
-     * 
+     *
      */
     $controllers->post('/', function(Application $app)
             {
@@ -119,9 +119,9 @@ class Basket implements ControllerProviderInterface
 
     /**
      * This route is used to delete a basket
-     * 
+     *
      * @accept JSON / HTML
-     * 
+     *
      */
     $controllers->post('/{basket_id}/delete/', function(Application $app, Request $request, $basket_id)
             {
@@ -152,7 +152,7 @@ class Basket implements ControllerProviderInterface
             });
 
     /**
-     * Removes a BasketElement 
+     * Removes a BasketElement
      */
     $controllers->post(
             '/{basket_id}/delete/{basket_element_id}/'
@@ -194,10 +194,10 @@ class Basket implements ControllerProviderInterface
 
     /**
      * Update name and description of a basket
-     * 
+     *
      * @param name string mandatory
      * @param description string optionnal
-     *  
+     *
      */
     $controllers->post('/{basket_id}/update/', function(Application $app, Request $request, $basket_id)
             {
@@ -255,7 +255,7 @@ class Basket implements ControllerProviderInterface
 
 
     /**
-     * Get the Basket reorder form 
+     * Get the Basket reorder form
      */
     $controllers->get(
             '/{basket_id}/reorder/'
@@ -280,10 +280,10 @@ class Basket implements ControllerProviderInterface
 
     /**
      * Toggle the status of a Basket
-     * 
+     *
      * @param acrhive : 0|1 (mandatory)
-     * 
-     * @returns JSON / HTML 
+     *
+     * @returns JSON / HTML
      */
     $controllers->post('/{basket_id}/archive/', function(Application $app, Request $request, $basket_id)
             {
@@ -307,7 +307,7 @@ class Basket implements ControllerProviderInterface
               {
                 $message = _('Basket has been unarchived');
               }
-              
+
               $data = array(
                   'success' => true
                   , 'archive' => $archive_status
@@ -399,11 +399,11 @@ class Basket implements ControllerProviderInterface
 
 
     /**
-     * 
+     *
      * Move Basket element from a basket to another
-     * 
+     *
      * @params elements Array : list of basket element id
-     * 
+     *
      */
     $controllers->post(
             '/{basket_id}/stealElements/'
@@ -459,7 +459,7 @@ class Basket implements ControllerProviderInterface
             });
 
     /**
-     * Get basket creation form 
+     * Get basket creation form
      */
     $controllers->get('/create/', function(Application $app)
             {
@@ -470,7 +470,7 @@ class Basket implements ControllerProviderInterface
             });
 
     /**
-     * Get a basket 
+     * Get a basket
      */
     $controllers->get('/{basket_id}/', function(Application $app, $basket_id)
             {

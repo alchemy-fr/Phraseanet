@@ -38,7 +38,7 @@ class module_report_download extends module_report
       'mime' => 'subdef.mime',
       'file' => 'subdef.file'
   );
-  
+
   /**
    * constructor
    *

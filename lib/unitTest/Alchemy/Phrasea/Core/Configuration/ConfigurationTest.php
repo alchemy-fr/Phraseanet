@@ -378,7 +378,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 //    }
 //    catch (\exception $e)
 //    {
-//      
+//
 //    }
 //    
 //    $this->assertFileExists($file->getPathname());

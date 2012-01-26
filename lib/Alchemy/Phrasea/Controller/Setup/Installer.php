@@ -132,9 +132,9 @@ class Installer implements ControllerProviderInterface
               set_time_limit(360);
               \phrasea::use_i18n(\Session_Handler::get_locale());
               $request = $app['request'];
-              
+
                $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
-               
+
               $setupRegistry = new \Setup_Registry();
               $setupRegistry->set('GV_ServerName', $servername);
 
@@ -168,14 +168,14 @@ class Installer implements ControllerProviderInterface
               {
                 return $app->redirect('/setup/installer/step2/?error=' . _('Databox is unreachable'));
               }
-              
+
               \setup::rollback($conn, $connbas);
 
               try
               {
                 $setupRegistry = new \Setup_Registry();
                 $setupRegistry->set('GV_ServerName', $servername);
-                
+
                 $appbox = \appbox::create($setupRegistry, $conn, $appbox_name, true);
 
                 $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
@@ -196,11 +196,11 @@ class Installer implements ControllerProviderInterface
                   );
 
                   $ormService = $ormServiceBuilder->buildService();
-                  
+
                   if ($ormService->getType() === 'doctrine')
                   {
                     /* @var $em \Doctrine\ORM\EntityManager */
-                    
+
                     $em = $ormService->getService();
 
                     $metadatas = $em->getMetadataFactory()->getAllMetadata();
