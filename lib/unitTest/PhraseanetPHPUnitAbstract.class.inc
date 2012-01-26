@@ -45,6 +45,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    * @var record_adapter
    */
   protected static $story_1;
+  /**
+   *
+   * @var record_adapter
+   */
+  protected static $story_2;
 
   /**
    *
@@ -1028,6 +1033,16 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                       , true
       );
     }
+    
+    if (static::$need_story && !self::$story_2 instanceof record_adapter)
+    {
+      self::$story_2 = \record_adapter::create(
+                      self::$collection
+                      , new system_file(__DIR__ . '/testfiles/test001.CR2')
+                      , false
+                      , true
+      );
+    }
 
     return;
   }
@@ -1304,6 +1319,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
       self::$story_1->delete();
       self::$story_1 = null;
+    }
+    if (self::$story_2 instanceof record_adapter)
+    {
+      self::$story_2->delete();
+      self::$story_2 = null;
     }
     if (self::$record_1 instanceof record_adapter)
     {
