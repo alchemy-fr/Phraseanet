@@ -33,7 +33,7 @@ class MustacheLoader implements ControllerProviderInterface
       {
         $template_name = $request->get('template');
 
-        if (!preg_match('/[a-zA-Z0-9-_]+/', $template_name))
+        if (!preg_match('/^[a-zA-Z0-9-_]+$/', $template_name))
         {
           throw new \Exception_BadRequest('Wrong template name : ' . $template_name);
         }
@@ -45,7 +45,7 @@ class MustacheLoader implements ControllerProviderInterface
           throw new \Exception_NotFound('Template does not exists : ' . $template_path);
         }
 
-        return new \Symfony\Component\HttpFoundation\Response(include $template_path);
+        return new \Symfony\Component\HttpFoundation\Response(file_get_contents($template_path));
       });
 
     return $controllers;
