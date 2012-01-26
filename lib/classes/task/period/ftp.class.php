@@ -459,7 +459,7 @@ class task_period_ftp extends task_appboxAbstract
 
       if (in_array(trim($basefolder), array('.', './', '')))
         $basefolder = '/';
-      
+
       foreach ($ftp_export['files'] as $fileid => $file)
       {
         $base_id = $file["base_id"];
@@ -567,7 +567,7 @@ class task_period_ftp extends task_appboxAbstract
       {
         if($this->debug)
           echo "\nlogfile \n";
-        
+
         $date = new DateTime();
         $remote_file = $date->format('U');
 
@@ -575,12 +575,12 @@ class task_period_ftp extends task_appboxAbstract
           FROM ftp_export_elements
           WHERE ftp_export_id = :ftp_export_id
             AND error = "0" AND done="1"';
-        
+
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':ftp_export_id'=>$id));
         $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        
+
         $buffer = '#transfert finished '.$date->format(DATE_ATOM)."\n\n";
 
         foreach ($rs as $row)
@@ -602,7 +602,7 @@ class task_period_ftp extends task_appboxAbstract
         $ftp_client->chdir($ftp_export["destfolder"]);
 
         $ftp_client->put($remotefile, $tmpfile);
-        
+
         unlink($tmpfile);
       }
 
@@ -766,7 +766,7 @@ class task_period_ftp extends task_appboxAbstract
                     _('task::ftp:Status about your FTP transfert from %1$s to %2$s')
                     , $registry->get('GV_homeTitle'), $ftp_server
     );
-    
+
     mail::ftp_sent($sendermail, $subject, $sender_message);
 
     mail::ftp_receive($mail, $receiver_message);

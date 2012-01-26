@@ -22,10 +22,10 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 abstract class AbstractWZ extends AbstractFixture
 {
   protected $user;
-  
+
   protected $record;
-  
-  
+
+
   public function getUser()
   {
     return $this->user;

@@ -3,15 +3,15 @@
 class geonames
 {
   protected static $NamesFromId = array();
-  
+
   protected static $CountryFromId = array();
-  
+
   protected static $CountryCodeFromId = array();
-  
+
   protected static $GeonameFromIp = array();
-  
+
   protected static $Searches = array();
-  
+
   public function name_from_id($geonameid)
   {
     $registry = registry::get_instance();
@@ -42,7 +42,7 @@ class geonames
     {
       return '';
     }
-    
+
     $registry = registry::get_instance();
     $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
             . 'get_name.php?geonameid='
@@ -103,6 +103,7 @@ class geonames
     $cityName = self::clean_input($cityName);
 
     if (strlen($cityName) === 0)
+
       return $output;
 
     $registry = registry::get_instance();
@@ -143,6 +144,7 @@ class geonames
   public function find_geoname_from_ip($ip)
   {
     if (array_key_exists($ip, $this->cache_ips))
+
       return $this->cache_ips[$ip];
 
     $output = array(

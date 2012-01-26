@@ -23,5 +23,5 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Bridge extends RecordHelper
 {
-  
+
 }

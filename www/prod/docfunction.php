@@ -239,12 +239,12 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
   if ($parm['SSTTID'] != '' && ($parm['lst'] == null || $parm['lst'] == ''))
   {
     $parm['lst'] = array();
-    
+
     $repository = $em->getRepository('\Entities\Basket');
     /* @var $repository \Repositories\BasketRepository */
-    
+
     $Basket = $repository->findUserBasket($Request->get('SSTTID'), $Core->getAuthenticatedUser());
-    
+
     foreach ($Basket->getElements() as $basket_element)
     {
       /* @var $basket_element \Entities\BasketElement */

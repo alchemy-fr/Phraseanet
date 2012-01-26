@@ -202,8 +202,8 @@ class random
     self::cleanTokens();
 
     $conn = connection::getPDOConnection();
-    $sql = 'SELECT * FROM tokens 
-            WHERE value = :token 
+    $sql = 'SELECT * FROM tokens
+            WHERE value = :token
               AND (expire_on > NOW() OR expire_on IS NULL)';
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':token' => $token));

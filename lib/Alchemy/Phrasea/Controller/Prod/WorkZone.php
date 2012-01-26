@@ -51,11 +51,11 @@ class WorkZone implements ControllerProviderInterface
     $controllers->get('/Browse/', function(Application $app)
             {
               $date_obj = new \DateTime();
-              
+
               $params = array(
                   'CurrentYear' => $date_obj->format('Y')
               );
-              
+
               return new Response(
                               $app['Core']->getTwig()->render('prod/WorkZone/Browser/Browser.html.twig'
                                       , $params
@@ -76,10 +76,10 @@ class WorkZone implements ControllerProviderInterface
               $BasketRepo = $em->getRepository('\Entities\Basket');
 
               $Page = (int) $request->get('Page', 0);
-              
+
               $PerPage = 10;
               $offsetStart = max(($Page - 1) * $PerPage, 0);
-              
+
 
               $Baskets = $BasketRepo->findWorkzoneBasket(
                       $user
@@ -106,7 +106,7 @@ class WorkZone implements ControllerProviderInterface
 
               return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Results.html.twig', $params));
             });
-            
+
     $controllers->get('/Browse/Basket/{basket_id}/', function(Application $app, $basket_id)
             {
 
@@ -114,7 +114,7 @@ class WorkZone implements ControllerProviderInterface
 
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
-              
+
               $params = array(
                   'Basket'=>$basket
               );

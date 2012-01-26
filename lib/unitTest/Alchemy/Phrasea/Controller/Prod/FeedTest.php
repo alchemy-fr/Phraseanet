@@ -12,25 +12,25 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   /**
    *
-   * @var Feed_Adapter 
+   * @var Feed_Adapter
    */
   protected $feed;
 
   /**
    *
-   * @var Feed_Entry_Adapter 
+   * @var Feed_Entry_Adapter
    */
   protected $entry;
 
   /**
    *
-   * @var Feed_Entry_Item 
+   * @var Feed_Entry_Item
    */
   protected $item;
 
   /**
    *
-   * @var Feed_Publisher_Adapter 
+   * @var Feed_Publisher_Adapter
    */
   protected $publisher;
   protected $client;
@@ -96,7 +96,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->publisher->delete();
       }
     }
-    
+
     parent::tearDown();
   }
 
@@ -343,7 +343,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
     catch (Exception $e)
     {
-      
+
     }
   }
 

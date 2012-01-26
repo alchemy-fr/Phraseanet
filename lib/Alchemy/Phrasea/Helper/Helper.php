@@ -25,20 +25,20 @@ class Helper
 
   /**
    *
-   * @var \Alchemy\Phrasea\Core\Kernel 
+   * @var \Alchemy\Phrasea\Core\Kernel
    */
   protected $core;
 
   /**
    *
-   * @var \Symfony\Component\HttpFoundation\Request 
+   * @var \Symfony\Component\HttpFoundation\Request
    */
   protected $request;
 
   /**
    *
    * @param Kernel $kernel
-   * @return Helper 
+   * @return Helper
    */
   public function __construct(Core $core, Request $Request)
   {
@@ -50,7 +50,7 @@ class Helper
 
   /**
    *
-   * @return \Alchemy\Phrasea\Core 
+   * @return \Alchemy\Phrasea\Core
    */
   public function getCore()
   {
@@ -59,7 +59,7 @@ class Helper
 
   /**
    *
-   * @return \Symfony\Component\HttpFoundation\Request 
+   * @return \Symfony\Component\HttpFoundation\Request
    */
   public function getRequest()
   {

@@ -29,11 +29,11 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
    */
   public function tearDown()
   {
-    
+
   }
 
   /**
-   * 
+   *
    */
   public function testSet_locale()
   {
@@ -43,7 +43,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_locale().
    */
   public function testGet_locale()
@@ -54,7 +54,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_sort().
    */
   public function testSet_sort()
@@ -70,7 +70,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_sortby().
    */
   public function testGet_sortby()
@@ -83,7 +83,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_sortord().
    */
   public function testGet_sortord()
@@ -96,7 +96,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_use_stemming().
    */
   public function testSet_use_stemming()
@@ -110,7 +110,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_use_stemming().
    */
   public function testGet_use_stemming()
@@ -124,7 +124,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_search_type().
    */
   public function testSet_search_type()
@@ -141,7 +141,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_search_type().
    */
   public function testGet_search_type()
@@ -158,7 +158,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_bases().
    */
   public function testSet_bases()
@@ -169,7 +169,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_bases().
    */
   public function testGet_bases()
@@ -180,7 +180,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_fields().
    */
   public function testSet_fields()
@@ -192,7 +192,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_fields().
    */
   public function testGet_fields()
@@ -204,7 +204,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_status().
    */
   public function testSet_status()
@@ -216,7 +216,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_status().
    */
   public function testGet_status()
@@ -228,7 +228,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_record_type().
    */
   public function testSet_record_type()
@@ -240,7 +240,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_record_type().
    */
   public function testGet_record_type()
@@ -252,7 +252,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_min_date().
    */
   public function testSet_min_date()
@@ -264,7 +264,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_min_date().
    */
   public function testGet_min_date()
@@ -276,7 +276,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_max_date().
    */
   public function testSet_max_date()
@@ -288,7 +288,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_max_date().
    */
   public function testGet_max_date()
@@ -300,7 +300,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSet_date_fields().
    */
   public function testSet_date_fields()
@@ -312,7 +312,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_date_fields().
    */
   public function testGet_date_fields()
@@ -324,7 +324,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testSerialize().
    */
   public function testSerialize()
@@ -344,7 +344,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testUnserialize().
    */
   public function testUnserialize()

@@ -19,7 +19,7 @@
         </a>
         {% endif %}
         <span>
-          Page {{ Page }} / {{ MaxPage }} 
+          Page {{ Page }} / {{ MaxPage }}
         </span>
         {% if Page + 1  <= MaxPage %}
         <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page + 1 }}" class="result">
@@ -63,7 +63,7 @@
                   {{ Basket.getName() }}
                 </a>
               </h1>
-                
+
               {% if Basket.getPusher() %}
               <p>
                 {% set user_name = '<a href="#" tooltipsrc="/prod/tooltip/user/' ~ Basket.getPusher().get_id() ~ '/" class="userTips">' ~ Basket.getPusher().get_display_name() ~ '</a>' %}
@@ -72,8 +72,8 @@
                 {% endtrans %}
               </p>
               {% endif %}
-              
-              
+
+
               {% if Basket.getValidation() %}
               <p>
                 {% set list_participants = '' %}
@@ -87,7 +87,7 @@
                 {% endtrans %}
               </p>
               {% endif %}
-            
+
             </td>
             <td>
 
@@ -118,7 +118,7 @@
           </a>
           {% endif %}
           <span>
-            Page {{ Page }} / {{ MaxPage }} 
+            Page {{ Page }} / {{ MaxPage }}
           </span>
           {% if Page + 1  <= MaxPage %}
           <a href="/prod/WorkZone/Browse/Search/?Query={{ Query }}&Year={{ Year }}&Type={{ Type }}&Page={{ Page + 1 }}" class="result">

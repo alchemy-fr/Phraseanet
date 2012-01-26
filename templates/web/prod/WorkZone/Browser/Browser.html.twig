@@ -4,7 +4,7 @@
     <div class="PNB10" style="width:190px;right:auto;">
       <form name="BasketBrowser" method="GET" action="/prod/WorkZone/Browse/Search/">
         <input name="Query" class="Query" placeholder="{% trans 'Search baskets' %}" type="text"/>
-      
+
         <h1>{% trans 'See' %}</h1>
         <ul>
           <li class="first">
@@ -85,9 +85,9 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function(){
-    
+
     var $container = $('#BasketBrowser'),results = null;
-    
+
     function loadResults(datas, url)
     {
       results = $.ajax({
@@ -111,13 +111,14 @@
           results.removeClass('loading').append(data);
           activateLinks(results);
           active_archiver(results);
+
           return;
         }
 
       });
     }
-    
-    
+
+
     function loadBasket(url)
     {
       results = $.ajax({
@@ -140,7 +141,7 @@
         },
         success: function(data){
           $('.Basket', $container).removeClass('loading').append(data);
-          
+
           $('.Basket a.back', $container).bind('click', function(){
             $('.Basket', $container).hide();
             $('.Browser', $container).show();
@@ -148,16 +149,17 @@
             return false;
           });
           active_archiver($('.Basket', $container));
+
           return;
         }
 
       });
     }
-    
+
     function activateLinks($scope)
     {
-      
-      
+
+
       $('a.result', $scope).bind('click', function(){
         var $this = $(this);
 
@@ -165,7 +167,7 @@
 
         return false;
       });
-      
+
       $('a.basket_link', $scope).bind('click', function(){
         var $this = $(this);
 
@@ -173,13 +175,13 @@
 
         return false;
       });
-      
+
     }
-    
+
     function active_archiver($scope)
     {
       $('.userTips', $scope).tooltip();
-      
+
       $('a.archive_toggler', $scope).bind('click', function(){
           var $this = $(this), parent = $this.parent();
 
@@ -205,6 +207,7 @@
               if(!data.success)
               {
                 humane.error(data.message);
+
                 return;
               }
               if(data.archive === true)
@@ -217,8 +220,9 @@
                 $('.unarchiver', parent).hide();
                 $('.archiver', parent).show();
               }
-            
+
               p4.WorkZone.refresh();
+
               return;
             }
 
@@ -227,17 +231,17 @@
         return false;
       });
     }
-    
+
     $('form[name="BasketBrowser"]', $container).bind('submit', function(){
-      
+
       var $this = $(this);
-      
+
       loadResults($this.serializeArray(), $this.attr('action'));
-    
+
       return false;
     }).trigger('submit').find('input').bind('change', function(){
       $('form[name="BasketBrowser"]', $container).trigger('submit')
     });
-    
+
   });
 </script>

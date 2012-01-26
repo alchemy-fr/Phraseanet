@@ -13,11 +13,11 @@ use Doctrine\ORM\EntityRepository;
 class UsrListOwnerRepository extends EntityRepository
 {
   /**
-   * 
+   *
    *
    * @param \Entities\UsrList $list
    * @param type $owner_id
-   * @return \Entities\UsrList 
+   * @return \Entities\UsrList
    */
   public function findByListAndOwner(\Entities\UsrList $list, $owner_id)
   {
@@ -36,5 +36,5 @@ class UsrListOwnerRepository extends EntityRepository
 
     return $owner;
   }
-  
+
 }

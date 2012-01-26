@@ -37,7 +37,7 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -58,7 +58,7 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 }

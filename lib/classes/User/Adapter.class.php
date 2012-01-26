@@ -907,6 +907,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   public static function get_usr_id_from_email($email)
   {
     if (is_null($email))
+
       return false;
 
     $conn = connection::getPDOConnection();
@@ -1255,7 +1256,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
   public function get_applied_template()
   {
-    
+
     return $this->applied_template;
   }
 
@@ -1277,6 +1278,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   protected function load_preferences()
   {
     if ($this->_prefs)
+
       return $this;
     $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -1371,7 +1373,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $this;
@@ -1477,6 +1479,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     $this->load_preferences();
     if (isset($this->_prefs[$prop]) && $this->_prefs[$prop] === $value)
+
       return $value;
 
     $ok = true;
@@ -1514,6 +1517,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     if (!$session->is_authenticated())
+
       return;
 
     $ses_id = $session->get_ses_id();
@@ -1572,7 +1576,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
         }
         catch (Exception $e)
         {
-          
+
         }
       }
     }
@@ -1636,7 +1640,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return false;
@@ -1722,7 +1726,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $locale;
@@ -1788,6 +1792,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   public function get_nonce()
   {
     if ($this->nonce)
+
       return $this->nonce;
     $nonce = false;
 

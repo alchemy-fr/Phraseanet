@@ -22,7 +22,7 @@ class HelperTooltipTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   {
     parent::setUp();
   }
-  
+
   public function testFooBar()
   {
     // Remove the following lines when you implement this test.

@@ -33,7 +33,7 @@ class TemplateBuilderTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 

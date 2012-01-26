@@ -20,7 +20,7 @@ use Doctrine\DBAL\Types\Type,
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -137,7 +137,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $config->setProxyNamespace('Proxies');
 
     $connexion = isset($options["dbal"]) ? $options["dbal"] : false;
-   
+
     if (!$connexion)
     {
       throw new \Exception(sprintf(
@@ -323,9 +323,9 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   }
 
   /**
-   * 
-   * 
-   * @param type $cacheName 
+   *
+   *
+   * @param type $cacheName
    */
   private function getCache($cacheDoctrine, $serviceName = null)
   {
@@ -360,7 +360,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       if (!in_array($type, $this->caches))
       {
         throw new \Exception(sprintf(
-                        "The cache type '%s' declared in %s  %s service is not valid. 
+                        "The cache type '%s' declared in %s  %s service is not valid.
           Available types are %s."
                         , $type
                         , $this->name
@@ -408,7 +408,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     if (!in_array($type, $this->loggers))
     {
       throw new \Exception(sprintf(
-                      "The logger type '%s' declared in %s %s service is not valid. 
+                      "The logger type '%s' declared in %s %s service is not valid.
           Available types are %s."
                       , $type
                       , $this->name

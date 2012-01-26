@@ -67,7 +67,7 @@ class DoctrineMonologTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 

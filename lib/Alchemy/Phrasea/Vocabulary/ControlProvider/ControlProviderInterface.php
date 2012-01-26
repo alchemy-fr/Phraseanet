@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Vocabulary\ControlProvider;
 
 /**
  * ControlProvider Interface
- * 
+ *
  * This interface should be used to interconnect vocabularies and metadatas
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -24,19 +24,19 @@ interface ControlProviderInterface
 
   /**
    * @return the type of the ControlProvider
-   * 
-   * ControlProvider class should be named like {type}Provider 
+   *
+   * ControlProvider class should be named like {type}Provider
    * in the ControlProvider namespace
    */
   public static function getType();
 
   /**
-   * @return stringa simple i18n word to reprsent this vocabullary  
+   * @return stringa simple i18n word to reprsent this vocabullary
    */
   public static function getName();
 
   /**
-   * @return boolean validate an $id in the vocabulary 
+   * @return boolean validate an $id in the vocabulary
    */
   public static function validate($id);
 
@@ -48,12 +48,12 @@ interface ControlProviderInterface
 
   /**
    * Find matching Term in the vocabulary repository
-   * 
+   *
    * @param string $query A scalar quaery
-   * @param \User_Adapter $for_user The user doing the query 
+   * @param \User_Adapter $for_user The user doing the query
    * @param \databox $on_databox The databox where vocabulary should be requested
-   *  
-   * @return Doctrine\Common\Collections\ArrayCollection  
+   *
+   * @return Doctrine\Common\Collections\ArrayCollection
    */
   public static function find($query, \User_Adapter $for_user, \databox $on_databox);
 

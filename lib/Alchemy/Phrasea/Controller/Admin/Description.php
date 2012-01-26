@@ -88,7 +88,7 @@ class Description implements ControllerProviderInterface
                 }
                 catch (\Exception $e)
                 {
-                  
+
                 }
 
                 $dces_element = null;
@@ -136,7 +136,7 @@ class Description implements ControllerProviderInterface
               }
               catch (\Exception $e)
               {
-                
+
               }
             }
           }
@@ -183,6 +183,7 @@ class Description implements ControllerProviderInterface
 
         return new Response($Core->getTwig()->render('admin/databox/doc_structure.twig', $params));
       });
+
     return $controllers;
   }
 

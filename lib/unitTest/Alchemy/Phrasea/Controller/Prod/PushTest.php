@@ -10,18 +10,18 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   /**
-   * As controllers use WebTestCase, it requires a client 
+   * As controllers use WebTestCase, it requires a client
    */
   protected $client;
 
   /**
    * If the controller tests require some records, specify it her
-   * 
-   * For example, this will loacd 2 records 
+   *
+   * For example, this will loacd 2 records
    * (self::$record_1 and self::$record_2) :
-   * 
-   * $need_records = 2; 
-   * 
+   *
+   * $need_records = 2;
+   *
    */
   protected static $need_records = 2;
 
@@ -62,7 +62,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$record_1->get_serialize_key()
         , self::$record_2->get_serialize_key()
     );
-    
+
     $receivers = array(
         array('usr_id'=>self::$user_alt1->get_id(), 'HD'=>1)
             , array('usr_id'=>self::$user_alt2->get_id(), 'HD'=>0)
@@ -96,7 +96,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         self::$record_1->get_serialize_key()
         , self::$record_2->get_serialize_key()
     );
-    
+
     $participants = array(
         array(
             'usr_id' => self::$user_alt1->get_id(),
@@ -148,7 +148,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals('UTF-8', $response->getCharset());
 
     $datas = (array) json_decode($response->getContent());
-    
+
     $this->assertTrue(is_array($datas), 'Json is valid');
   }
 

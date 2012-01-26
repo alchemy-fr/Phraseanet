@@ -249,7 +249,7 @@ class Push implements ControllerProviderInterface
                   }
                   catch (\Exception_NotFound $e)
                   {
-                    
+
                   }
 
                   $Participant = new \Entities\ValidationParticipant();
@@ -335,7 +335,7 @@ class Push implements ControllerProviderInterface
                 ->like(\User_Query::LIKE_LASTNAME, $request->get('query'))
                 ->like(\User_Query::LIKE_LOGIN, $request->get('query'))
                 ->like_match(\User_Query::LIKE_MATCH_OR);
-              
+
               $result = $query->include_phantoms()
                               ->limit(0, 50)
                               ->execute()->get_results();

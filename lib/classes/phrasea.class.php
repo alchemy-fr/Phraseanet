@@ -112,7 +112,7 @@ class phrasea
     $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
     $choosenConnexion = $configuration->getPhraseanet()->get('database');
-    
+
     $connexion = $configuration->getConnexion($choosenConnexion);
 
     $hostname = $connexion->get('host');
@@ -238,6 +238,7 @@ class phrasea
   public static function sbas_params()
   {
     if (self::$_sbas_params)
+
       return self::$_sbas_params;
 
     $appbox = appbox::get_instance();
@@ -249,7 +250,7 @@ class phrasea
     }
     catch (Exception $e)
     {
-      
+
     }
 
     self::$_sbas_params = array();
@@ -274,6 +275,7 @@ class phrasea
   {
     $usr_id = User_Adapter::get_usr_id_from_login('invite');
     if (!$usr_id)
+
       return false;
     $appbox = appbox::get_instance();
     $user = User_Adapter::getInstance($usr_id, $appbox);

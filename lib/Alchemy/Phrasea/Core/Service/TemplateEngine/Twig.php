@@ -53,7 +53,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
 
   /**
    * Load phraseanet global variable
-   * it' s like any other template variable, 
+   * it' s like any other template variable,
    * except that it’s available in all templates and macros
    * @return void
    */

@@ -17,7 +17,7 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAuthenticatedAbstract
   {
     return require __DIR__ . '/../../../../Alchemy/Phrasea/Application/Setup.php';
   }
-  
+
   public function setUp()
   {
     parent::setUp();

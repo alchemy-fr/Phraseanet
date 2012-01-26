@@ -33,14 +33,14 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
   public function testCreate()
   {
     $registry = $this->getMock("\RegistryInterface");
-    
+
     $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
                     array("type" => "doctrine", "options" => array(
                             "debug" => false

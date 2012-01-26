@@ -175,7 +175,7 @@ if ($request->has_post_datas())
                 ->set_company($parm['form_company'])
                 ->set_position($parm['form_activity'])
                 ->set_geonameid($parm['form_geonameid']);
-        
+
         $newid = $user->get_id();
 
         $demandOK = array();
@@ -183,9 +183,9 @@ if ($request->has_post_datas())
         if ($registry->get('GV_autoregister'))
         {
           $template_user_id = User_Adapter::get_usr_id_from_login('autoregister');
-          
+
           $template_user = User_Adapter::getInstance($template_user_id, appbox::get_instance());
-          
+
           $user->ACL()->apply_model($template_user, array_keys($inscOK[$base_id]));
         }
 
@@ -220,6 +220,7 @@ if ($request->has_post_datas())
         if ($newUsrEmail)
         {
           $user->set_mail_locked(true);
+
           return phrasea::redirect('/login/sendmail-confirm.php?usr_id=' . $newid);
         }
 

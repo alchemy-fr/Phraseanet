@@ -17,7 +17,7 @@ abstract class eventsmanager_eventAbstract
   protected $registry;
   /**
    *
-   * @var \Alchemy\Phrasea\Core 
+   * @var \Alchemy\Phrasea\Core
    */
   protected $core;
   /**

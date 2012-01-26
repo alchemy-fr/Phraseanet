@@ -258,7 +258,7 @@ phrasea::headers();
       }
       catch (Exception $e)
       {
-        
+
       }
     }
     ?>

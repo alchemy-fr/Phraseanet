@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
 /**
  * Edit Record Helper
  * This object handles /edit/ request and filters records that user can edit
- * 
+ *
  * It prepares metadatas, databases structures.
  *
  * @package
@@ -33,7 +33,7 @@ class Printer extends RecordHelper
   /**
    *
    * @param \Alchemy\Phrasea\Core $core
-   * @return Printer 
+   * @return Printer
    */
   public function __construct(Core $core, Request $Request)
   {
@@ -68,7 +68,7 @@ class Printer extends RecordHelper
       }
       catch (\Exception $e)
       {
-        
+
       }
     }
 
@@ -87,7 +87,7 @@ class Printer extends RecordHelper
       }
       catch (\Exception $e)
       {
-        
+
       }
     }
 

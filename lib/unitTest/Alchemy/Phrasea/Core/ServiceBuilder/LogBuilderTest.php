@@ -33,7 +33,7 @@ class LogBuilderTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 

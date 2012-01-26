@@ -48,7 +48,7 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
 
   /**
    *
-   * @return Cache\ApcCache 
+   * @return Cache\ApcCache
    */
   public function getService()
   {
@@ -60,11 +60,11 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
     $memcache = new \Memcache();
 
     $memcache->addServer($this->host, $this->port);
-    
+
     $key = sprintf("%s:%s", $this->host, $this->port);
-    
+
     $stats = @$memcache->getExtendedStats();
-    
+
     if ($stats[$key])
     {
       $memcache->connect($this->host, $this->port);

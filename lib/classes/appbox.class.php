@@ -138,10 +138,12 @@ class appbox extends base
     $custom_path.= $collection->get_base_id();
 
     if (is_null($pathfile))
+
       return $this;
 
     $datas = file_get_contents($pathfile->getPathname());
     if (is_null($datas))
+
       return $this;
 
     file_put_contents($file, $datas);
@@ -193,10 +195,12 @@ class appbox extends base
     $custom_path.= $pic_type . '_' . $databox->get_sbas_id();
 
     if (is_null($pathfile))
+
       return $this;
 
     $datas = file_get_contents($pathfile->getPathname());
     if (is_null($datas))
+
       return $this;
 
     file_put_contents($file, $datas);
@@ -513,12 +517,12 @@ class appbox extends base
       //rewrite service file
       $serviceFile = $appConf->getServiceFile();
       $services = $configuration->getConfigurationHandler()->getParser()->parse($serviceFile);
-      
+
       foreach ($services as $serviceName => $service)
       {
         if ($serviceName === "doctrine_prod")
         {
-          
+
           $services["doctrine_prod"]["options"]["orm"]["cache"] = array(
               "query" => $cacheService,
               "result" => $cacheService,
@@ -526,7 +530,7 @@ class appbox extends base
           );
         }
       }
-      
+
       $yaml = $configuration->getConfigurationHandler()->getParser()->dump($services, 5);
 
       if (!file_put_contents($serviceFile->getPathname(), $yaml) !== false)
@@ -571,7 +575,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
 
     try
@@ -608,6 +612,7 @@ class appbox extends base
   public function get_databoxes()
   {
     if ($this->databoxes)
+
       return $this->databoxes;
 
     $ret = array();
@@ -619,7 +624,7 @@ class appbox extends base
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -636,7 +641,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
     $sql = 'SELECT sbas_id FROM sbas';
 

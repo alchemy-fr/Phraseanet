@@ -10,17 +10,17 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
 {
 
   /**
-   * As controllers use WebTestCase, it requires a client 
+   * As controllers use WebTestCase, it requires a client
    */
   protected $client;
   /**
    * If the controller tests require some records, specify it her
-   * 
-   * For example, this will loacd 2 records 
+   *
+   * For example, this will loacd 2 records
    * (self::$record_1 and self::$record_2) :
-   * 
-   * $need_records = 2; 
-   * 
+   *
+   * $need_records = 2;
+   *
    */
   protected static $need_records = false;
 
@@ -31,7 +31,7 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
   {
     return require __DIR__ . '/../../../../../Alchemy/Phrasea/Application/Admin.php';
   }
-  
+
   public function setUp()
   {
     parent::setUp();

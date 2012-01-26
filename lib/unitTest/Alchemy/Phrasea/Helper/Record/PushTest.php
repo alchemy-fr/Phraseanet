@@ -25,7 +25,7 @@ class HelperPushTest extends \PhraseanetPHPUnitAuthenticatedAbstract
 
 
   /**
-   * 
+   *
    * @todo Implement testSearch().
    */
   public function testSearch()

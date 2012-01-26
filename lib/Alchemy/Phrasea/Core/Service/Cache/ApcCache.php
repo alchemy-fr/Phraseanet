@@ -33,7 +33,7 @@ class ApcCache extends ServiceAbstract implements ServiceInterface
 
   /**
    *
-   * @return Cache\ApcCache 
+   * @return Cache\ApcCache
    */
   public function getService()
   {
@@ -63,7 +63,7 @@ class ApcCache extends ServiceAbstract implements ServiceInterface
     {
       throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
     }
-    
+
     return $registry;
   }
 

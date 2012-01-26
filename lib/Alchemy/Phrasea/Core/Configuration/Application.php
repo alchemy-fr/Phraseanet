@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core\Configuration;
 
 /**
  * Precise some informations about phraseanet configuration mechanism
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -44,6 +44,7 @@ class Application implements Specification
             , $this->getConfigurationFileName()
             , $this->getConfigurationFileExtension()
     );
+
     return $path;
   }
 
@@ -67,7 +68,7 @@ class Application implements Specification
 
   /**
    * Return the selected environnment from configuration file
-   * 
+   *
    * @return string
    */
   public function getSelectedEnv(Array $config)
@@ -81,8 +82,8 @@ class Application implements Specification
   }
 
   /**
-   * Return the main configuration file 
-   * 
+   * Return the main configuration file
+   *
    * @return \SplFileObject
    */
   public function getConfigurationFile()
@@ -91,8 +92,8 @@ class Application implements Specification
   }
 
   /**
-   * Return the main configuration file 
-   * 
+   * Return the main configuration file
+   *
    * @return \SplFileObject
    */
   public function getServiceFile()
@@ -101,8 +102,8 @@ class Application implements Specification
   }
 
   /**
-   * Return the main configuration file 
-   * 
+   * Return the main configuration file
+   *
    * @return \SplFileObject
    */
   public function getConnexionFile()

@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Core,
 use Doctrine\Common\Cache as CacheService;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -33,7 +33,7 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
 
   /**
    *
-   * @return Cache\ApcCache 
+   * @return Cache\ApcCache
    */
   public function getService()
   {
@@ -45,7 +45,7 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
     $registry = $this->getRegistry();
 
     $service = new CacheService\XcacheCache();
-    
+
     $service->setNamespace($registry->get("GV_sit", ""));
 
     return $service;

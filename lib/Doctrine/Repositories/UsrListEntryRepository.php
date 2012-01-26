@@ -12,19 +12,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsrListEntryRepository extends EntityRepository
 {
-  
+
   /**
    * Get all lists entries matching a given User
    *
    * @param \User_Adapter $user
-   * @param type $like 
+   * @param type $like
    */
   public function findUserList(\User_Adapter $user)
   {
-    $dql = 'SELECT e FROM Entities\UsrListEntry e 
+    $dql = 'SELECT e FROM Entities\UsrListEntry e
             WHERE e.usr_id = :usr_id';
-    
-    
+
+
     $params = array(
         'usr_id' => $user->get_id(),
     );
@@ -34,16 +34,16 @@ class UsrListEntryRepository extends EntityRepository
 
     return $query->getResult();
   }
-  
+
   public function findEntryByListAndEntryId(\Entities\UsrList $list, $entry_id)
   {
     $entry = $this->find($entry_id);
-    
+
     if(!$entry)
     {
       throw new \Exception_NotFound('Entry not found');
     }
-    
+
     /* @var $entry \Entities\UsrListEntry */
     if($entry->getList()->getId() != $list->getId())
     {

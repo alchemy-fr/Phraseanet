@@ -140,8 +140,8 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
       if (is_null($v))
         $this->query_parms[$k] = false;
     }
-    
-    
+
+
     $query = new \User_Query($appbox);
     $templates = $query
             ->only_templates(true)

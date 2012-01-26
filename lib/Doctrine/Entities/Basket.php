@@ -76,7 +76,7 @@ class Basket
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -96,7 +96,7 @@ class Basket
   /**
    * Get name
    *
-   * @return string 
+   * @return string
    */
   public function getName()
   {
@@ -116,7 +116,7 @@ class Basket
   /**
    * Get description
    *
-   * @return text 
+   * @return text
    */
   public function getDescription()
   {
@@ -136,7 +136,7 @@ class Basket
   /**
    * Get usr_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getUsrId()
   {
@@ -156,7 +156,7 @@ class Basket
   /**
    * Get pusher_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getPusherId()
   {
@@ -176,7 +176,7 @@ class Basket
   /**
    * Get archived
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getArchived()
   {
@@ -196,7 +196,7 @@ class Basket
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {
@@ -216,7 +216,7 @@ class Basket
   /**
    * Get updated
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getUpdated()
   {
@@ -236,7 +236,7 @@ class Basket
   /**
    * Get elements
    *
-   * @return Doctrine\Common\Collections\Collection 
+   * @return Doctrine\Common\Collections\Collection
    */
   public function getElements()
   {
@@ -287,7 +287,7 @@ class Basket
   /**
    * Get validation
    *
-   * @return Entities\ValidationSession 
+   * @return Entities\ValidationSession
    */
   public function getValidation()
   {
@@ -312,7 +312,7 @@ class Basket
   /**
    * Get is_read
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getIsRead()
   {
@@ -349,7 +349,7 @@ class Basket
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 

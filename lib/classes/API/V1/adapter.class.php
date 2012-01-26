@@ -557,7 +557,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function add_record_tobasket(Request $request, $databox_id, $record_id)
   {
-    
+
   }
 
   /**
@@ -857,7 +857,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function remove_publications(Request $request, $publication_id)
   {
-    
+
   }
 
   /**
@@ -985,7 +985,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function search_users(Request $request)
   {
-    
+
   }
 
   /**
@@ -995,7 +995,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function get_user_acces(Request $request, $usr_id)
   {
-    
+
   }
 
   /**
@@ -1004,7 +1004,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function add_user(Request $request)
   {
-    
+
   }
 
   /**
@@ -1101,6 +1101,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @todo  ajouter une option pour avoir les values serialisées
      *        dans un cas multi
      */
+
     return array(
         'meta_id' => $value->getId()
         , 'meta_structure_id' => $field->get_meta_struct_id()

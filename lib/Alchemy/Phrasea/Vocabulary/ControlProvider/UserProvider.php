@@ -23,7 +23,7 @@ class UserProvider implements ControlProviderInterface
 {
 
   /**
-   * @return string 
+   * @return string
    */
   public static function getType()
   {
@@ -32,7 +32,7 @@ class UserProvider implements ControlProviderInterface
 
   /**
    *
-   * @return type 
+   * @return type
    */
   public static function getName()
   {
@@ -44,7 +44,7 @@ class UserProvider implements ControlProviderInterface
    * @param string $query
    * @param \User_Adapter $for_user
    * @param \databox $on_databox
-   * @return \Doctrine\Common\Collections\ArrayCollection 
+   * @return \Doctrine\Common\Collections\ArrayCollection
    */
   public static function find($query, \User_Adapter $for_user, \databox $on_databox)
   {
@@ -75,18 +75,19 @@ class UserProvider implements ControlProviderInterface
   /**
    *
    * @param mixed $id
-   * @return boolean 
+   * @return boolean
    */
   public static function validate($id)
   {
     try
     {
       \User_Adapter::getInstance($id, appbox::get_instance());
+
       return true;
     }
     catch (\Exception $e)
     {
-      
+
     }
 
     return false;
@@ -95,7 +96,7 @@ class UserProvider implements ControlProviderInterface
   /**
    *
    * @param mixed $id
-   * @return string 
+   * @return string
    */
   public static function getValue($id)
   {

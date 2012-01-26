@@ -168,9 +168,9 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     /**
      * XML is not verified due to Validator Service bug
      */
-    
+
     return;
-    
+
     try
     {
       $validator = new W3CFeedRawValidator($xml);
@@ -258,7 +258,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $offset_start = ($offset_start++) * $n_entries;
         $collection = $feed->get_entries($offset_start, $n_entries);
         $entries = $collection->get_entries();
-        if (sizeof($entries) == 0) //no more 
+        if (sizeof($entries) == 0) //no more
           break;
       }
       $feed_entry = array_shift($entries);
@@ -336,6 +336,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     {
       $current_attributes[$attribute->name] = $attribute->value;
     }
+
     return $current_attributes;
   }
 
@@ -475,7 +476,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         )
     );
 
-    
+
     foreach ($fields as $key_field => $field)
     {
       if ($field["media_field"]["name"] == $node->nodeName)
@@ -521,6 +522,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
                 unset($item_entries[$key]); //remove
               }
             };
+
     return $remove;
   }
 
@@ -567,7 +569,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         $offset_start = ($offset_start++) * $n_entries;
         $collection = $feed->get_entries($offset_start, $n_entries);
         $entries = $collection->get_entries();
-        if (sizeof($entries) == 0) //no more 
+        if (sizeof($entries) == 0) //no more
           break;
       }
       $feed_entry = array_shift($entries);

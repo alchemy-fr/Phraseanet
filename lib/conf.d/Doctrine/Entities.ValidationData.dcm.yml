@@ -7,10 +7,10 @@ Entities\ValidationData:
       generator:
         strategy: AUTO
   fields:
-    agreement: 
+    agreement:
       type: boolean
       nullable: true
-    note: 
+    note:
       type: text
       nullable: true
     updated:

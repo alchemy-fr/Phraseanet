@@ -26,9 +26,11 @@ class http_query
   public static function getHttpCodeFromUrl($url)
   {
     if (!is_scalar($url))
+
       return null;
 
     if (trim($url) === '')
+
       return null;
 
     $ch = curl_init();
@@ -52,9 +54,11 @@ class http_query
   public static function getHttpHeaders($url)
   {
     if (!is_scalar($url))
+
       return null;
 
     if (trim($url) === '')
+
       return null;
     $ch = curl_init();
 
@@ -83,9 +87,11 @@ class http_query
   public static function getUrl($url, $post_data = false)
   {
     if (!is_scalar($url))
+
       return null;
 
     if (trim($url) === '')
+
       return null;
 
     $ch = curl_init();

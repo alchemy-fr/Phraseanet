@@ -119,7 +119,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $crawler = $this->client->request('GET', $url);
     $response = $this->client->getResponse();
-    
+
     if (self::$record_1->get_preview()->get_baseurl() !== '')
     {
       $this->assertEquals(302, $response->getStatusCode());

@@ -44,7 +44,7 @@ class Root implements ControllerProviderInterface
         $Core     = $app['Core'];
         $appbox   = \appbox::get_instance();
         $user = $Core->getAuthenticatedUser();
-        
+
         \User_Adapter::updateClientInfos(3);
 
         $section    = $app['request']->get('section', false);
@@ -106,6 +106,7 @@ class Root implements ControllerProviderInterface
             ))
         );
       });
+
     return $controllers;
   }
 

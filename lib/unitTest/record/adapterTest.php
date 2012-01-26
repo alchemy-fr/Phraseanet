@@ -88,7 +88,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     }
     catch (Exception $e)
     {
-      
+
     }
     $old_type = self::$record_1->get_type();
     self::$record_1->set_type('video');
@@ -165,7 +165,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGenerate_subdefs()
   {
-    
+
   }
 
   public function testGet_sha256()
@@ -305,20 +305,20 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $meta_structure_el = self::$collection->get_databox()->get_meta_structure()->get_elements();
 
     $current_caption = self::$record_1->get_caption();
-    
+
     $metadatas = array();
-    
+
     foreach ($meta_structure_el as $meta_el)
     {
       $current_fields = $current_caption->get_fields(array($meta_el->get_name()));
-      
+
       $field = null;
-      
+
       if (count($current_fields) > 0)
       {
         $field = array_pop($current_fields);
       }
-        
+
       if($meta_el->is_multi())
       {
         if($field)
@@ -332,7 +332,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             );
           }
         }
-        
+
         $metadatas[] = array(
           'meta_struct_id' => $meta_el->get_id()
           , 'meta_id'        => null
@@ -357,12 +357,12 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
       else
       {
         $meta_id = null;
-        
+
         if($field)
         {
           $meta_id = array_pop($field->get_values())->getId();
         }
-        
+
         $metadatas[] = array(
           'meta_struct_id' => $meta_el->get_id()
           , 'meta_id'        => $meta_id
@@ -393,7 +393,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         {
           $initial_values[] = $value->getValue();
         }
-        
+
         $this->assertEquals($multi_imploded, implode(' ' . $meta_el->get_separator() . ' ', $initial_values));
         $this->assertEquals($multi_imploded, $field->get_serialized_values());
       }

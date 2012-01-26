@@ -53,7 +53,7 @@ class StoryWZ
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -73,7 +73,7 @@ class StoryWZ
   /**
    * Get sbas_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getSbasId()
   {
@@ -93,7 +93,7 @@ class StoryWZ
   /**
    * Get record_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getRecordId()
   {
@@ -113,7 +113,7 @@ class StoryWZ
   /**
    * Get usr_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getUsrId()
   {
@@ -133,7 +133,7 @@ class StoryWZ
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {

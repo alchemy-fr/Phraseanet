@@ -14,7 +14,7 @@ class eventsmanager_broker
   protected $appbox;
   /**
    *
-   * @var \Alchemy\Phrasea\Core 
+   * @var \Alchemy\Phrasea\Core
    */
   protected $core;
 

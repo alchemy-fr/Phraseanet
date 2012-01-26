@@ -45,7 +45,7 @@ class Feed extends RecordHelper
   /**
    *
    * @param \Alchemy\Phrasea\Core $core
-   * @return Feed 
+   * @return Feed
    */
   public function __construct(Core $core, Request $Request)
   {

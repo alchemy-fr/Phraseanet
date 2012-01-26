@@ -81,7 +81,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -103,7 +103,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   {
     $registry = $this->getMock('RegistryInterface');
     $this->options["orm"]["cache"]["result"] = "unknowCache";
-    
+
     try
     {
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
@@ -113,7 +113,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     }
     catch(\Exception $e)
     {
-      
+
     }
   }
 
@@ -183,7 +183,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
       }
       catch (\Exception $e)
       {
-        
+
       }
     }
   }
@@ -201,7 +201,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -218,7 +218,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -235,7 +235,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -288,7 +288,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 //    }
 //    catch (\Exception $e)
 //    {
-//      
+//
 //    }
 //  }
 //
@@ -296,10 +296,10 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 //  {
 //    switch ($className)
 //    {
-//      case 'Alchemy\Phrasea\Core\Configuration': 
+//      case 'Alchemy\Phrasea\Core\Configuration':
 //        echo('yo');return 'ConfMock';
 //        break;
-//      default: 
+//      default:
 //        return $className;
 //        break;
 //    }

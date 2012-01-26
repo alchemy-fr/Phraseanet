@@ -809,9 +809,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
   {
     $appbox = appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    
+
     $basket = $this->insertOneBasket();
-    
+
     $route = '/baskets/' . $basket->getId() . '/content/?oauth_token=' . self::$token;
 
     $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -849,7 +849,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
   {
 
     $basket = $this->insertOneBasket();
-    
+
     $route = '/baskets/' . $basket->getId() . '/setname/?oauth_token=' . self::$token;
 
     $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
@@ -905,7 +905,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
   public function testSetBasketDescription()
   {
     $basket = $this->insertOneBasket();
-    
+
     $route = '/baskets/' . $basket->getId() . '/setdescription/?oauth_token=' . self::$token;
 
     $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
@@ -944,7 +944,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     $this->evaluateMetaJson200($content);
 
     $this->assertObjectHasAttribute("baskets", $content->response);
-    
+
     $found = false;
     foreach ($content->response->baskets as $basket)
     {

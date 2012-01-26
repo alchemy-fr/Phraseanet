@@ -37,13 +37,13 @@ class set_export extends set_abstract
   public function __construct($lst, $sstid)
   {
     $Core = bootstrap::getCore();
-    
+
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
 
     $user = $Core->getAuthenticatedUser();
-            
+
     $download_list = array();
 
     $remain_hd = array();
@@ -52,7 +52,7 @@ class set_export extends set_abstract
     {
       $em = $Core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
-      
+
       /* @var $repository \Repositories\BasketRepository */
       $Basket = $repository->findUserBasket($sstid, $user);
 
@@ -479,7 +479,7 @@ class set_export extends set_abstract
       $sd = $download_element->get_subdefs();
 
       foreach ($download_element->get_downloadable() as $name => $properties)
-      {        
+      {
         if ($properties === false || !in_array($name, $subdefs))
         {
           continue;
@@ -762,6 +762,7 @@ class set_export extends set_abstract
       return false;
     }
     if (isset($list['complete']) && $list['complete'] === true)
+
       return;
 
 
@@ -993,13 +994,13 @@ class set_export extends set_abstract
       else
       {
         /**
-         * 
+         *
          * Header "Pragma: public" SHOULD be present.
          * In case it is not present, download on IE 8 and previous over HTTPS
          * will fail.
-         * 
+         *
          * @todo : merge this shitty fix with Response object.
-         * 
+         *
          */
         if (!headers_sent())
         {
@@ -1011,6 +1012,7 @@ class set_export extends set_abstract
         $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
         $response->headers->set('Content-Length', filesize($file));
         $response->setContent(file_get_contents($file));
+
         return $response;
       }
     }
@@ -1061,7 +1063,7 @@ class set_export extends set_abstract
     $user = false;
     if ($anonymous)
     {
-      
+
     }
     else
     {

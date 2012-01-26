@@ -667,7 +667,7 @@ class databox_field implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $this;
@@ -875,14 +875,14 @@ class databox_field implements cache_cacheableInterface
 
     return self::get_instance($databox, $id);
   }
-  
-  
+
+
   public static function generateName($name)
   {
     $unicode_processor = new unicode();
 
     $name = $unicode_processor->remove_nonazAZ09($name, false, false);
-    
+
     return $unicode_processor->remove_first_digits($name);
   }
 

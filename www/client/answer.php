@@ -72,6 +72,7 @@ $qrySbas = array();
 if (is_null($parm['bas']))
 {
   echo 'vous devez selectionner des collections dans lesquelles chercher';
+
   return;
 }
 
@@ -451,7 +452,7 @@ if (count($result->get_datas()) > 0)
                   }
                   catch (Exception $e)
                   {
-                    
+
                   }
                 }
                 ?></div><?php
@@ -472,7 +473,7 @@ if (count($result->get_datas()) > 0)
     </table>
     <script type="text/javascript">
       $(document).ready(function(){
-      
+
         p4.tot = <?php echo $result->get_count_available_results(); ?>;
         p4.tot_options = '<?php echo serialize($options) ?>';
         p4.tot_query = '<?php echo $parm['qry'] ?>';

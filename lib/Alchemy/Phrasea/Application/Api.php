@@ -44,7 +44,7 @@ return call_user_func(function()
       $app['p4user'] = null;
 
       /**
-       * @var API_OAuth2_Token 
+       * @var API_OAuth2_Token
        */
       $app['token'] = null;
 
@@ -123,6 +123,7 @@ return call_user_func(function()
               }
             }
           }
+
           return array('ressource' => $ressource, 'general'   => $general, 'aspect'    => $aspect, 'action'    => $action);
         };
 
@@ -141,6 +142,7 @@ return call_user_func(function()
           $app['token']  = \API_OAuth2_Token::load_by_oauth_token($app["appbox"], $oauth2_adapter->getToken());
 
           if ($session->is_authenticated())
+
             return;
           if ($oauth2_adapter->has_ses_id())
           {
@@ -152,7 +154,7 @@ return call_user_func(function()
             }
             catch (\Exception $e)
             {
-              
+
             }
           }
           $auth = new \Session_Authentication_None($app['p4user']);

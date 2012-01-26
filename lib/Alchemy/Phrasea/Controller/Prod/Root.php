@@ -103,7 +103,7 @@ class Root implements ControllerProviderInterface
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
-              
+
               $Serializer = $app['Core']['Serializer'];
 
               $out = $twig->render('prod/index.html.twig', array(

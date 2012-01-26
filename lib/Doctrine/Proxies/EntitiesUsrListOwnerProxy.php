@@ -34,83 +34,96 @@ class EntitiesUsrListOwnerProxy extends \Entities\UsrListOwner implements \Doctr
             unset($this->_entityPersister, $this->_identifier);
         }
     }
-    
-    
+
+
     public function getId()
     {
         $this->__load();
+
         return parent::getId();
     }
 
     public function setUsrId($usrId)
     {
         $this->__load();
+
         return parent::setUsrId($usrId);
     }
 
     public function getUsrId()
     {
         $this->__load();
+
         return parent::getUsrId();
     }
 
     public function setRole($role)
     {
         $this->__load();
+
         return parent::setRole($role);
     }
 
     public function getRole()
     {
         $this->__load();
+
         return parent::getRole();
     }
 
     public function setCreated($created)
     {
         $this->__load();
+
         return parent::setCreated($created);
     }
 
     public function getCreated()
     {
         $this->__load();
+
         return parent::getCreated();
     }
 
     public function setUpdated($updated)
     {
         $this->__load();
+
         return parent::setUpdated($updated);
     }
 
     public function getUpdated()
     {
         $this->__load();
+
         return parent::getUpdated();
     }
 
     public function setList(\Entities\UsrList $list)
     {
         $this->__load();
+
         return parent::setList($list);
     }
 
     public function getList()
     {
         $this->__load();
+
         return parent::getList();
     }
 
     public function setUser(\User_Adapter $user)
     {
         $this->__load();
+
         return parent::setUser($user);
     }
 
     public function getUser()
     {
         $this->__load();
+
         return parent::getUser();
     }
 
@@ -134,6 +147,6 @@ class EntitiesUsrListOwnerProxy extends \Entities\UsrListOwner implements \Doctr
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-        
+
     }
 }

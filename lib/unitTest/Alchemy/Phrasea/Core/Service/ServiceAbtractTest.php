@@ -22,7 +22,7 @@ class ServiceAbstractTest extends PhraseanetPHPUnitAbstract
 
   /**
    *
-   * @var \Alchemy\Phrasea\Core\Service\ServiceAbstract 
+   * @var \Alchemy\Phrasea\Core\Service\ServiceAbstract
    */
   protected $object;
 
@@ -67,14 +67,14 @@ class ServiceAbstractTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
   public function testGetDependency()
   {
     $dep = $this->object->getDependency('dependency');
-  
+
     $this->assertEquals('one_dependency', $dep);
   }
 

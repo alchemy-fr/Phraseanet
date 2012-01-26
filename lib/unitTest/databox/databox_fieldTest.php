@@ -26,12 +26,12 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
   {
     $this->databox = self::$record_1->get_databox();
     $this->name = 'Field Test';
-    
+
     $this->object = $this->databox->get_meta_structure()->get_element_by_name($this->name);
-    
+
     if(!$this->object instanceof databox_field)
       $this->object = databox_field::create($this->databox, $this->name);
-    
+
     $this->id = $this->object->get_id();
   }
 

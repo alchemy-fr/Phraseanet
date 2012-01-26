@@ -16,15 +16,15 @@ class UsrListRepository extends EntityRepository
    * Get all lists readable for a given User
    *
    * @param \User_Adapter $user
-   * @return \Doctrine\Common\Collections\ArrayCollection 
+   * @return \Doctrine\Common\Collections\ArrayCollection
    */
   public function findUserLists(\User_Adapter $user)
   {
-    $dql = 'SELECT l FROM Entities\UsrList l 
+    $dql = 'SELECT l FROM Entities\UsrList l
               JOIN l.owners o
             WHERE o.usr_id = :usr_id';
-    
-    
+
+
     $params = array(
         'usr_id' => $user->get_id(),
     );
@@ -34,12 +34,12 @@ class UsrListRepository extends EntityRepository
 
     return $query->getResult();
   }
-  
+
   /**
    *
    * @param \User_Adapter $user
    * @param type $list_id
-   * @return \Entities\UsrList 
+   * @return \Entities\UsrList
    */
   public function findUserListByUserAndId(\User_Adapter $user, $list_id)
   {
@@ -58,20 +58,20 @@ class UsrListRepository extends EntityRepository
 
     return $list;
   }
-  
+
   /**
    * Search for a UsrList like '' with a given value, for a user
    *
    * @param \User_Adapter $user
    * @param type $name
-   * @return \Doctrine\Common\Collections\ArrayCollection 
+   * @return \Doctrine\Common\Collections\ArrayCollection
    */
   public function findUserListLike(\User_Adapter $user, $name)
   {
-    $dql = 'SELECT l FROM Entities\UsrList l 
+    $dql = 'SELECT l FROM Entities\UsrList l
               JOIN l.owners o
             WHERE o.usr_id = :usr_id AND l.name LIKE :name';
-    
+
     $params = array(
         'usr_id' => $user->get_id(),
         'name' => $name.'%'
@@ -82,5 +82,5 @@ class UsrListRepository extends EntityRepository
 
     return $query->getResult();
   }
-  
+
 }

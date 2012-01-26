@@ -302,7 +302,7 @@ function getBasId($param)
   }
   catch (Exception $e)
   {
-    
+
   }
 
   return false;
@@ -336,6 +336,7 @@ function doUserConf($conf, $param)
     return $new_conf;
   }
   else
+
     return $conf;
 }
 

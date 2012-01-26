@@ -15,7 +15,7 @@ use \Symfony\Component\Yaml\Yaml;
 
 /**
  * Handle configuration mechanism
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -24,27 +24,27 @@ class Handler
 {
   /**
    * Configuration file specification interface
-   * @var ConfigurationSpecification 
+   * @var ConfigurationSpecification
    */
   protected $confSpecification;
 
   /**
-   * A file parser interface 
+   * A file parser interface
    * @var Parser\ParserInterface
    */
   protected $parser;
-  
+
   /**
-   * The environnment selected 
-   * @var string 
+   * The environnment selected
+   * @var string
    */
   private $selectedEnvironnment;
 
   /**
    * Tell handler the configuration specification ans which parser to use
-   * 
+   *
    * @param ConfigurationSpecification $configSpec
-   * @param Parser\ParserInterface $parser 
+   * @param Parser\ParserInterface $parser
    */
   public function __construct(Specification $configSpec, Parser $parser)
   {
@@ -54,7 +54,7 @@ class Handler
 
   /**
    * Getter
-   * @return Specification 
+   * @return Specification
    */
   public function getSpecification()
   {
@@ -72,7 +72,7 @@ class Handler
 
   /**
    * Handle the configuration process and return the final configuration
-   * 
+   *
    * @param strinig $name the name of the loaded environnement
    * @return Array
    */
@@ -90,7 +90,7 @@ class Handler
     }
 
     $this->selectedEnvironnment = $selectedEnv;
-    
+
     if (!isset($env[$selectedEnv]))
     {
       throw new \Exception(sprintf("The choosen development environment  '%s' is not declared in %s", $selectedEnv, $file->getFileName()));

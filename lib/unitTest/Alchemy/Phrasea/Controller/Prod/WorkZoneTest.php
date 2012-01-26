@@ -67,7 +67,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
 
     try
@@ -136,7 +136,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
 
     //attach

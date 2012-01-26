@@ -60,7 +60,7 @@
 {% set basket_scope = 'objects'%}
 
 {% import 'prod/WorkZone/Macros.twig' as Macros %}
-            
+
 {% if basket.getValidation() and basket.getValidation().getInitiator() == core.getAuthenticatedUser() %}
     {{ Macros.display_validation(basket, ordre, user, session) }}
 {% else %}

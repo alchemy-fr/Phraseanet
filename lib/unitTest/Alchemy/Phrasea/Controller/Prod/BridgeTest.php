@@ -264,7 +264,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     }
     catch (Exception $e)
     {
-      
+
     }
 
     try
@@ -274,7 +274,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     }
     catch (Exception $e)
     {
-      
+
     }
   }
 

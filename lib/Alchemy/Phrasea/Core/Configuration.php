@@ -17,7 +17,7 @@ use Alchemy\Phrasea\Core\Configuration\Parser as ConfigurationParser;
 
 /**
  * Handle configuration file mechanism of phraseanet
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -33,7 +33,7 @@ class Configuration
 
   /**
    * Class that take care of configuration process
-   * @var Configuration\Handler 
+   * @var Configuration\Handler
    */
   private $configurationHandler;
 
@@ -44,7 +44,7 @@ class Configuration
   private $environment;
 
   /**
-   * 
+   *
    * @param type $envName the name of the loaded environnement
    */
   public function __construct(Configuration\Handler $handler, $environment = null)
@@ -65,7 +65,7 @@ class Configuration
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -80,7 +80,7 @@ class Configuration
 
   /**
    * Setter
-   * @param Configuration\Handler $configurationHandler 
+   * @param Configuration\Handler $configurationHandler
    */
   public function setConfigurationHandler(Configuration\Handler $configurationHandler)
   {
@@ -89,8 +89,8 @@ class Configuration
 
   /**
    * Return the current used environnement
-   * 
-   * @return string 
+   *
+   * @return string
    */
   public function getEnvironnement()
   {
@@ -98,13 +98,14 @@ class Configuration
     {
       $this->getConfiguration();
     }
+
     return $this->environment;
   }
 
   /**
    * Return the current used environnement
-   * 
-   * @return string 
+   *
+   * @return string
    */
   public function setEnvironnement($environement = null)
   {
@@ -114,7 +115,7 @@ class Configuration
   /**
    * Check if current environnement is on debug mode
    * Default to false
-   * @return boolean 
+   * @return boolean
    */
   public function isDebug()
   {
@@ -128,13 +129,14 @@ class Configuration
     {
       $debug = false;
     }
+
     return $debug;
   }
 
   /**
    * Check if phrasea is currently maintained
    * Default to false
-   * @return boolean 
+   * @return boolean
    */
   public function isMaintained()
   {
@@ -148,13 +150,14 @@ class Configuration
     {
       $maintained = false;
     }
+
     return $maintained;
   }
 
   /**
    * Check if current environnement should display errors
    * Default to false
-   * @return boolean 
+   * @return boolean
    */
   public function isDisplayingErrors()
   {
@@ -168,24 +171,26 @@ class Configuration
     {
       $displayErrors = false;
     }
+
     return $displayErrors;
   }
 
   /**
    * Return the phraseanet scope configurations values
-   * 
+   *
    * @return ParameterBag
    */
   public function getPhraseanet()
   {
     $phraseanetConf = $this->getConfiguration()->get('phraseanet');
+
     return new ParameterBag($phraseanetConf);
   }
 
   /**
    * Tell if the application is installed
-   * 
-   * @return boolean 
+   *
+   * @return boolean
    */
   public function isInstalled()
   {
@@ -194,13 +199,13 @@ class Configuration
 
   /**
    * Return the configuration
-   * 
+   *
    * @return ParameterBag\ParameterBag
    */
   public function getConfiguration()
   {
     $configuration = array();
-    
+
     if ($this->installed)
     {
       $configuration = $this->configurationHandler->handle($this->environment);
@@ -212,8 +217,8 @@ class Configuration
 
   /**
    * Return Available logger
-   * 
-   * @return Array 
+   *
+   * @return Array
    */
   public function getAvailableDoctrineLogger()
   {
@@ -222,7 +227,7 @@ class Configuration
 
   /**
    * Return the connexion parameters as configuration parameter object
-   * 
+   *
    * @return ParameterBag
    */
   public function getConnexion($name = 'main_connexion')
@@ -250,7 +255,7 @@ class Configuration
 
   /**
    * Return all connexions defined in connexions.yml
-   * @return ParameterBag 
+   * @return ParameterBag
    */
   public function getConnexions()
   {
@@ -262,7 +267,7 @@ class Configuration
 
   /**
    * Return a the configuration file as an SplFileObject
-   * 
+   *
    * @return \SplFileObject
    */
   public function getFile()
@@ -272,12 +277,13 @@ class Configuration
 
   /**
    * Return the full configuration file as an Array
-   * 
-   * @return Array 
+   *
+   * @return Array
    */
   public function all()
   {
     $allConf = $this->configurationHandler->getParser()->parse($this->getFile());
+
     return $allConf;
   }
 
@@ -295,10 +301,10 @@ class Configuration
 
   /**
    * Write datas in config file
-   * 
+   *
    * @param array $data
    * @param type $flag
-   * @return Configuration 
+   * @return Configuration
    */
   public function write(Array $data, $flag = 0, $delete = false)
   {
@@ -326,7 +332,7 @@ class Configuration
 
   /**
    * Delete configuration file
-   * @return Configuration 
+   * @return Configuration
    */
   public function delete()
   {
@@ -339,7 +345,7 @@ class Configuration
     }
     catch (\Exception $e)
     {
-      
+
     }
 
     return $this;
@@ -347,7 +353,7 @@ class Configuration
 
   /**
    * Return configuration service for template_engine
-   * @return string 
+   * @return string
    */
   public function getTemplating()
   {
@@ -365,9 +371,9 @@ class Configuration
 
   /**
    * Return the selected service configuration
-   * 
+   *
    * @param type $name
-   * @return ParameterBag 
+   * @return ParameterBag
    */
   public function getService($name = 'twig')
   {
@@ -394,7 +400,7 @@ class Configuration
 
   /**
    * return the service file
-   * @return \SplFileObject 
+   * @return \SplFileObject
    */
   public function getServiceFile()
   {
@@ -403,7 +409,7 @@ class Configuration
 
   /**
    * Return the connexion file
-   * @return \SplFileObject 
+   * @return \SplFileObject
    */
   public function getConnexionFile()
   {
@@ -412,7 +418,7 @@ class Configuration
 
   /**
    * Refresh the configuration
-   * @return Configuration 
+   * @return Configuration
    */
   public function refresh()
   {

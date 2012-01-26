@@ -433,7 +433,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
         $rights[$k] = $right . '_' . $base_id;
       }
       $parm = $request->get_parms_from_serialized_datas($rights, 'values');
-      
+
       foreach ($parm as $p => $v)
       {
         if (trim($v) == '')
@@ -602,7 +602,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     }
 
     $current_user = \User_adapter::getInstance($session->get_usr_id(), $appbox);
-    
+
     $base_ids = array_keys($current_user->ACL()->get_granted_base(array('canadmin')));
 
     foreach ($this->users as $usr_id)

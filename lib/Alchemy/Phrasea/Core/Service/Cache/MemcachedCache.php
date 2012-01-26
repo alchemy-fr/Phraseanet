@@ -49,7 +49,7 @@ class MemcachedCache extends ServiceAbstract implements ServiceInterface
 
   /**
    *
-   * @return Cache\ApcCache 
+   * @return Cache\ApcCache
    */
   public function getService()
   {

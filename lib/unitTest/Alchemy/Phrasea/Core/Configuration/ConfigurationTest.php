@@ -162,7 +162,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 //    }
 //    catch (\Exception $e)
 //    {
-//      
+//
 //    }
 //  }
 

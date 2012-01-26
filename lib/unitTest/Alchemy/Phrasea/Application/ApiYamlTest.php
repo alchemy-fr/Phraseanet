@@ -215,7 +215,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
       }
       catch (Exception_Databox_FieldNotFound $e)
       {
-        
+
       }
 
       $route = '/databoxes/' . $databox_id . '/metadatas/?oauth_token=' . self::$token;

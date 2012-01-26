@@ -47,7 +47,7 @@ class UsrListEntry
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -67,7 +67,7 @@ class UsrListEntry
   /**
    * Get usr_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getUsrId()
   {
@@ -87,7 +87,7 @@ class UsrListEntry
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {
@@ -107,7 +107,7 @@ class UsrListEntry
   /**
    * Get updated
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getUpdated()
   {
@@ -127,7 +127,7 @@ class UsrListEntry
   /**
    * Get list
    *
-   * @return Entities\UsrList 
+   * @return Entities\UsrList
    */
   public function getList()
   {

@@ -10,7 +10,7 @@
  */
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -20,22 +20,22 @@ class caption_Field_Value
 
   /**
    *
-   * @var int 
+   * @var int
    */
   protected $id;
   /**
    *
-   * @var string 
+   * @var string
    */
   protected $value;
   /**
    *
-   * @var databox_field 
+   * @var databox_field
    */
   protected $databox_field;
   /**
    *
-   * @var record_adapter 
+   * @var record_adapter
    */
   protected $record;
 
@@ -44,7 +44,7 @@ class caption_Field_Value
    * @param databox_field $databox_field
    * @param record_adapter $record
    * @param type $id
-   * @return \caption_Field_Value 
+   * @return \caption_Field_Value
    */
   public function __construct(databox_field $databox_field, record_adapter $record, $id)
   {
@@ -116,27 +116,27 @@ class caption_Field_Value
 
     return $this;
   }
-  
+
   public function setVocab(\Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface $vocabulary, $vocab_id)
   {
-    
+
     $params = array(
         ':VocabType' => $vocabulary->getType()
         , ':VocabularyId' => $vocab_id
     );
 
-    $sql_up = 'UPDATE metadatas 
-              SET VocabularyType = :VocabType, VocabularyId = :VocabularyId 
+    $sql_up = 'UPDATE metadatas
+              SET VocabularyType = :VocabType, VocabularyId = :VocabularyId
               WHERE id = :meta_id';
     $stmt_up = $connbas->prepare($sql_up);
     $stmt_up->execute($params);
     $stmt_up->closeCursor();
-    
+
     $this->set_value($vocabulary->getValue($vocab_id));
-    
+
     return $this;
   }
-  
+
 
   public function set_value($value)
   {
@@ -170,7 +170,7 @@ class caption_Field_Value
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $this->update_cache_value($value);
@@ -232,8 +232,8 @@ class caption_Field_Value
 
     $sbas_id = $databox_field->get_databox()->get_sbas_id();
     $connbas = $databox_field->get_connection();
-    
-    $sql_ins = 'INSERT INTO metadatas 
+
+    $sql_ins = 'INSERT INTO metadatas
               (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)
               VALUES
               (null, :record_id, :field, :value, :VocabType, :VocabId)';

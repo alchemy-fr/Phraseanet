@@ -24,7 +24,7 @@ class HelperPrinterTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_count_preview().
    */
   public function testGet_count_preview()
@@ -36,7 +36,7 @@ class HelperPrinterTest extends \PhraseanetPHPUnitAuthenticatedAbstract
   }
 
   /**
-   * 
+   *
    * @todo Implement testGet_count_thumbnail().
    */
   public function testGet_count_thumbnail()

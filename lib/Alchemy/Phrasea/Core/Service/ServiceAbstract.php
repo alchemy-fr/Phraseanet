@@ -26,7 +26,7 @@ abstract class ServiceAbstract
   protected $name;
   protected $options;
   protected $configuration;
-  
+
   private $dependencies;
 
   public function __construct($name, Array $options, Array $dependencies)
@@ -34,7 +34,7 @@ abstract class ServiceAbstract
     $this->name = $name;
     $this->options = $options;
     $this->dependencies = $dependencies;
-    
+
     $spec = new Core\Configuration\Application();
     $parser = new Core\Configuration\Parser\Yaml();
     $handler = new Core\Configuration\Handler($spec, $parser);
@@ -48,21 +48,21 @@ abstract class ServiceAbstract
     {
       throw new \Exception(sprintf("Unknow dependency %s for %s service ", $name, $this->name));
     }
-    
+
     return $this->dependencies[$name];
   }
-  
-  
+
+
   /**
    *
-   * @return Array 
+   * @return Array
    */
   public function getDependencies()
   {
     return $this->dependencies;
   }
 
-  
+
   /**
    *
    * @return string

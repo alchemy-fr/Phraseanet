@@ -12,8 +12,8 @@
 namespace Alchemy\Phrasea\Vocabulary;
 
 /**
- * Vocabulary Controller 
- * 
+ * Vocabulary Controller
+ *
  * Various methods fro controlling vocabularies inside Phraseanet
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -44,7 +44,7 @@ class Controller
   /**
    * Returns an array of available ControlProviders
    *
-   * @return array 
+   * @return array
    */
   public static function getAvailable()
   {

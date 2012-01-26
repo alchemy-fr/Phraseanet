@@ -15,7 +15,7 @@ class BasketElementRepository extends EntityRepository
 
   public function findUserElement($element_id, \User_Adapter $user)
   {
-    $dql = 'SELECT e FROM Entities\BasketElement e 
+    $dql = 'SELECT e FROM Entities\BasketElement e
               JOIN e.basket b
             WHERE b.usr_id = :usr_id AND e.id = :element_id';
 
@@ -29,10 +29,10 @@ class BasketElementRepository extends EntityRepository
 
     return $query->getOneOrNullResult();
   }
-  
+
   public function findElementsByRecord(\record_adapter $record)
   {
-    $dql = 'SELECT e FROM Entities\BasketElement e 
+    $dql = 'SELECT e FROM Entities\BasketElement e
             WHERE e.record_id = :record_id AND e.sbas_id = :sbas_id';
 
     $params = array(
@@ -45,7 +45,7 @@ class BasketElementRepository extends EntityRepository
 
     return $query->getResult();
   }
-  
+
   /**
    *
    * @param \record_adapter $record
@@ -54,9 +54,9 @@ class BasketElementRepository extends EntityRepository
    */
   public function findReceivedElementsByRecord(\record_adapter $record, \User_Adapter $user)
   {
-    $dql = 'SELECT e FROM Entities\BasketElement e 
+    $dql = 'SELECT e FROM Entities\BasketElement e
               JOIN e.basket b
-            WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL 
+            WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL
               AND e.record_id = :record_id AND e.sbas_id = :sbas_id';
 
     $params = array(
@@ -70,14 +70,14 @@ class BasketElementRepository extends EntityRepository
 
     return $query->getResult();
   }
-  
+
   public function findReceivedValidationElementsByRecord(\record_adapter $record, \User_Adapter $user)
   {
-    $dql = 'SELECT e FROM Entities\BasketElement e 
-              JOIN e.basket b 
+    $dql = 'SELECT e FROM Entities\BasketElement e
+              JOIN e.basket b
               JOIN b.validation v
               JOIN v.participants p
-            WHERE p.usr_id = :usr_id  
+            WHERE p.usr_id = :usr_id
               AND e.record_id = :record_id AND e.sbas_id = :sbas_id';
 
     $params = array(
@@ -91,12 +91,12 @@ class BasketElementRepository extends EntityRepository
 
     return $query->getResult();
   }
-  
+
   /**
    *
    * @param type $element_id
    * @param \User_Adapter $user
-   * @return \Entities\BasketELement 
+   * @return \Entities\BasketELement
    */
   public function findElement($element_id, \User_Adapter $user)
   {

@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Core\Configuration;
 require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 
 /**
- * 
+ *
  * Phraseanet Core Container
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -149,13 +149,14 @@ class Core extends \Pimple
       $gatekeeper = \gatekeeper::getInstance();
       $gatekeeper->check_directory();
     }
+
     return;
   }
 
   /**
    * Load Configuration
-   * 
-   * @param type $environnement 
+   *
+   * @param type $environnement
    */
   private function init()
   {
@@ -175,8 +176,8 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
-   * @return \Registry 
+   *
+   * @return \Registry
    */
   public function getRegistry()
   {
@@ -185,8 +186,8 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
-   * @return \Registry 
+   *
+   * @return \Registry
    */
   public function getCache()
   {
@@ -195,8 +196,8 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
-   * @return \Doctrine\ORM\EntityManager 
+   *
+   * @return \Doctrine\ORM\EntityManager
    */
   public function getEntityManager()
   {
@@ -205,7 +206,7 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
+   *
    * @return \Twig_Environment
    */
   public function getTwig()
@@ -215,8 +216,8 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
-   * @return Alchemy\Phrasea\Core\Version 
+   *
+   * @return Alchemy\Phrasea\Core\Version
    */
   public function getVersion()
   {
@@ -225,7 +226,7 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
+   *
    * @return \Symfony\Component\Serializer\Serializer
    */
   public function getSerializer()
@@ -235,8 +236,8 @@ class Core extends \Pimple
 
   /**
    * Tell if current seession is authenticated
-   * 
-   * @return boolean 
+   *
+   * @return boolean
    */
   public function isAuthenticated()
   {
@@ -247,8 +248,8 @@ class Core extends \Pimple
 
   /**
    * Return the current authenticated phraseanet user
-   * 
-   * @return \User_adapter 
+   *
+   * @return \User_adapter
    */
   public function getAuthenticatedUser()
   {
@@ -260,7 +261,7 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
+   *
    * @return Core\Configuration
    */
   public function getConfiguration()
@@ -309,8 +310,8 @@ class Core extends \Pimple
 
   /**
    * Initialiaze phraseanet log process
-   * 
-   * @return Core 
+   *
+   * @return Core
    */
   protected function initLoggers()
   {
@@ -332,8 +333,8 @@ class Core extends \Pimple
 
   /**
    * Return available language for phraseanet
-   * 
-   * @return Array 
+   *
+   * @return Array
    */
   public static function getAvailableLanguages()
   {
@@ -341,8 +342,8 @@ class Core extends \Pimple
   }
 
   /**
-   * Set Language 
-   * 
+   * Set Language
+   *
    */
   protected function detectLanguage()
   {
@@ -387,7 +388,7 @@ class Core extends \Pimple
 
   /**
    * Register directory and namespaces for autoloading app classes
-   *  
+   *
    */
   public static function initAutoloads()
   {
@@ -425,7 +426,7 @@ class Core extends \Pimple
 
   /**
    * Initialize some PHP configuration variables
-   * 
+   *
    */
   public static function initPHPConf()
   {
@@ -446,7 +447,7 @@ class Core extends \Pimple
 
   /**
    * Return the current working environnement (test, dev, prod etc ...)
-   * 
+   *
    * @return string
    */
   public function getEnv()

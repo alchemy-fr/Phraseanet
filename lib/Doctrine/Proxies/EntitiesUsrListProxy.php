@@ -34,83 +34,96 @@ class EntitiesUsrListProxy extends \Entities\UsrList implements \Doctrine\ORM\Pr
             unset($this->_entityPersister, $this->_identifier);
         }
     }
-    
-    
+
+
     public function getId()
     {
         $this->__load();
+
         return parent::getId();
     }
 
     public function setName($name)
     {
         $this->__load();
+
         return parent::setName($name);
     }
 
     public function getName()
     {
         $this->__load();
+
         return parent::getName();
     }
 
     public function setCreated($created)
     {
         $this->__load();
+
         return parent::setCreated($created);
     }
 
     public function getCreated()
     {
         $this->__load();
+
         return parent::getCreated();
     }
 
     public function setUpdated($updated)
     {
         $this->__load();
+
         return parent::setUpdated($updated);
     }
 
     public function getUpdated()
     {
         $this->__load();
+
         return parent::getUpdated();
     }
 
     public function addUsrListOwner(\Entities\UsrListOwner $owners)
     {
         $this->__load();
+
         return parent::addUsrListOwner($owners);
     }
 
     public function getOwners()
     {
         $this->__load();
+
         return parent::getOwners();
     }
 
     public function hasAccess(\User_Adapter $user)
     {
         $this->__load();
+
         return parent::hasAccess($user);
     }
 
     public function getOwner(\User_Adapter $user)
     {
         $this->__load();
+
         return parent::getOwner($user);
     }
 
     public function addUsrListEntry(\Entities\UsrListEntry $entry)
     {
         $this->__load();
+
         return parent::addUsrListEntry($entry);
     }
 
     public function getEntries()
     {
         $this->__load();
+
         return parent::getEntries();
     }
 
@@ -134,6 +147,6 @@ class EntitiesUsrListProxy extends \Entities\UsrList implements \Doctrine\ORM\Pr
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-        
+
     }
 }

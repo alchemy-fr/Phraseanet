@@ -22,15 +22,15 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  */
 class TemplateEngine extends AbstractBuilder
 {
-  
+
   public static function create($name, ParameterBag $configuration, Array $dependencies = array(), $namespace = null)
   {
     $type = $configuration->get("type");
-    
+
     $options = parent::getServiceOptions($type, $configuration);
-    
+
     $className = sprintf("\Alchemy\Phrasea\Core\Service\TemplateEngine\%s", ucfirst($type));
-    
+
     if (class_exists($className))
     {
       return new $className($name, $options, $dependencies);

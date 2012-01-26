@@ -79,8 +79,9 @@ class setup
     }
     catch (\Exception $e)
     {
-      
+
     }
+
     return $installed;
   }
 
@@ -304,11 +305,13 @@ class setup
   protected static function discover_binary($binary, array $look_here = array())
   {
     if (system_server::get_platform() == 'WINDOWS')
+
       return null;
 
     foreach ($look_here as $place)
     {
       if (is_executable($place))
+
         return $place;
     }
 
@@ -320,6 +323,7 @@ class setup
     $registry = registry::get_instance();
 
     if ($registry->get('GV_h264_streaming') !== true)
+
       return;
     ?>
     <h1>mod_auth_token configuration </h1>
@@ -531,6 +535,7 @@ class setup
       </form>
 
       <?php
+
       return;
     }
 
@@ -722,6 +727,7 @@ class setup
       $constraints = array();
 
       if (!extension_loaded('gettext'))
+
         return new Setup_ConstraintsIterator($constraints);
 
       foreach (User_Adapter::$locales as $code => $language_name)
@@ -754,11 +760,14 @@ class setup
 
       if (($current === '' || $current === 'off' || $current === '0') && $is_flag)
         if ($value === 'off' || $value === '0' || $value === '')
+
           return $current;
       if (($current === '1' || $current === 'on') && $is_flag)
         if ($value === 'on' || $value === '1')
+
           return $current;
       if ($current === $value)
+
         return $current;
     }
 
@@ -785,7 +794,7 @@ class setup
         }
         catch (Exception $e)
         {
-          
+
         }
       }
       if ($connbas)
@@ -801,7 +810,7 @@ class setup
           }
           catch (Exception $e)
           {
-            
+
           }
         }
       }
@@ -815,7 +824,7 @@ class setup
       }
       catch (\Exception $e)
       {
-        
+
       }
 
       try
@@ -825,7 +834,7 @@ class setup
       }
       catch (\Exception $e)
       {
-        
+
       }
 
       try
@@ -835,7 +844,7 @@ class setup
       }
       catch (\Exception $e)
       {
-        
+
       }
 
       return;
@@ -843,4 +852,3 @@ class setup
 
   }
 
-  

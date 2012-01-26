@@ -12,18 +12,18 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
 
   /**
-   * As controllers use WebTestCase, it requires a client 
+   * As controllers use WebTestCase, it requires a client
    */
   protected $client;
 
   /**
    * If the controller tests require some records, specify it her
-   * 
-   * For example, this will loacd 2 records 
+   *
+   * For example, this will loacd 2 records
    * (self::$record_1 and self::$record_2) :
-   * 
-   * $need_records = 2; 
-   * 
+   *
+   * $need_records = 2;
+   *
    */
   protected static $need_records = 1;
 
@@ -47,18 +47,18 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   public function testRouteSlash()
   {
     $this->client->request('POST', '/records/edit/', array('lst' => self::$record_1->get_serialize_key()));
-    
+
     $response = $this->client->getResponse();
-    
+
     $this->assertTrue($response->isOk());
   }
-  
+
   public function testApply()
   {
     $this->client->request('POST', '/records/edit/apply/', array('lst' => self::$record_1->get_serialize_key()));
-    
+
     $response = $this->client->getResponse();
-    
+
     $this->assertTrue($response->isOk());
   }
 

@@ -65,7 +65,7 @@ class collection implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $connbas = $this->databox->get_connection();
