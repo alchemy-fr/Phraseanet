@@ -20,10 +20,7 @@ require_once __DIR__ . '/../../../../../PhraseanetPHPUnitAbstract.class.inc';
 class MonologTest extends PhraseanetPHPUnitAbstract
 {
 
-  protected $options = array(
-      "handler" => "rotate"
-      , "filename" => "test"
-  );
+  protected $options;
 
   public function setUp()
   {
@@ -74,7 +71,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-
+      
     }
   }
 
@@ -90,7 +87,7 @@ class MonologTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-
+      
     }
   }
 
@@ -106,8 +103,34 @@ class MonologTest extends PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-
+      
     }
+  }
+
+  public function testMissingFile()
+  {
+    try
+    {
+      unset($this->options["filename"]);
+      $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
+                      'hello', $this->options, array()
+      );
+      $this->fail("should raise an exception");
+    }
+    catch (\Exception $e)
+    {
+      
+    }
+  }
+
+  public function testStreamLogger()
+  {
+
+    $this->options["handler"] = "stream";
+    $log = new \Alchemy\Phrasea\Core\Service\Log\Monolog(
+                    'hello', $this->options, array()
+    );
+    $this->assertInstanceOf("\Monolog\Logger", $log->getService());
   }
 
 }
