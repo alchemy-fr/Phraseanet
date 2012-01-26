@@ -278,7 +278,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertEquals('UTF-8', $response->getCharset());
-    
+
 
     $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
 
@@ -314,13 +314,13 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(2, $list->getOwners()->count());
   }
-  
-  
-  
+
+
+
 
   public function testPostUnShareList()
   {
-    
+
     $list = $this->insertOneUsrList(self::$user);
 
     $this->assertEquals(1, $list->getOwners()->count());
@@ -347,9 +347,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $list = $repository->find($list->getId());
 
     $this->assertEquals(2, $list->getOwners()->count());
-    
-    
-    
+
+
+
     $route = '/lists/list/' . $list->getId() . '/unshare/' . self::$user_alt1->get_id() . '/';
 
     $this->client->request('POST', $route);
@@ -360,23 +360,23 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals('UTF-8', $response->getCharset());
 
     $datas = (array) json_decode($response->getContent());
-    
+
     $this->assertTrue($datas['success']);
 
     $repository = self::$core->getEntityManager()->getRepository('Entities\UsrList');
 
     $list = $repository->find($list->getId());
-    
+
     self::$core->getEntityManager()->refresh($list);
 
     $this->assertEquals(1, $list->getOwners()->count());
   }
 
-  
+
 
   public function testPostUnShareFail()
   {
-    
+
     $list = $this->insertOneUsrList(self::$user);
 
     $this->assertEquals(1, $list->getOwners()->count());
@@ -397,9 +397,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertArrayHasKey('message', $datas);
 
     $this->assertTrue($datas['success']);
-    
-    
-    
+
+
+
     $route = '/lists/list/' . $list->getId() . '/share/' . self::$user->get_id() . '/';
 
     $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
@@ -416,18 +416,18 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertArrayHasKey('message', $datas);
 
     $this->assertTrue($datas['success']);
-    
-    
-    
+
+
+
 
     $repository = self::$core->getEntityManager()->getRepository('Entities\UsrList');
 
     $list = $repository->find($list->getId());
 
     $this->assertEquals(2, $list->getOwners()->count());
-    
-    
-    
+
+
+
     $route = '/lists/list/' . $list->getId() . '/unshare/' . self::$user_alt1->get_id() . '/';
 
     $this->client->request('POST', $route);
@@ -438,7 +438,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals('UTF-8', $response->getCharset());
 
     $datas = (array) json_decode($response->getContent());
-    
+
     $this->assertFalse($datas['success']);
   }
 

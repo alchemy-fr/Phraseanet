@@ -138,7 +138,7 @@ class WorkZone implements ControllerProviderInterface
               $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
 
               $alreadyFixed = $done = 0;
-              
+
               foreach (explode(';', $request->get('stories')) as $element)
               {
                 $element = explode('_', $element);

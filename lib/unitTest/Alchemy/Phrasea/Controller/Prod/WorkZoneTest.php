@@ -60,7 +60,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $story = self::$story_1;
     /* @var $story \Record_Adapter */
     $route = sprintf("/WorkZone/attachStories/");
-    
+
     $this->client->request('POST', $route);
     $response = $this->client->getResponse();
 
@@ -71,7 +71,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $response = $this->client->getResponse();
 
     $this->assertEquals(302, $response->getStatusCode());
-    
+
     $em = self::$core->getEntityManager();
     /* @var $em \Doctrine\ORM\EntityManager */
     $query = $em->createQuery(
@@ -81,17 +81,17 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $count = $query->getSingleScalarResult();
 
     $this->assertEquals(1, $count);
-    
+
     $story2 = self::$story_2;
-    
+
     $stories = implode(';', array($story->get_serialize_key(), $story2->get_serialize_key()));
 
     $this->client->request('POST', $route, array('stories' => $stories));
     $response = $this->client->getResponse();
 
     $this->assertEquals(302, $response->getStatusCode());
-    
-    
+
+
 
     $em = self::$core->getEntityManager();
     /* @var $em \Doctrine\ORM\EntityManager */

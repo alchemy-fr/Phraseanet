@@ -162,7 +162,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -204,7 +204,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -222,7 +222,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -246,7 +246,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
   public function testWrite()
   {
     touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-    
+
     $stub = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
             , array('getConfigurationPathName')
@@ -284,7 +284,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
   public function testWriteException()
   {
     touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-    
+
     $stub = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
             , array('getConfigurationPathName')
@@ -318,7 +318,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     }
     catch (\exception $e)
     {
-      
+
     }
     chmod($file->getPathname(), 0666);
   }
@@ -326,7 +326,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
   public function testDelete()
   {
     touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-    
+
     $stub = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
             , array('getConfigurationPathName')
@@ -343,17 +343,17 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     $handler = new Configuration\Handler($stub, new Configuration\Parser\Yaml());
 
     $configuration = new PhraseaCore\Configuration($handler);
-    
+
     $configuration->delete();
-    
+
     $this->assertFileNotExists($file->getPathname());
-    
+
   }
 
 //  public function testDeleteException()
 //  {
 //    touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-//    
+//
 //    $stub = $this->getMock(
 //            '\Alchemy\Phrasea\Core\Configuration\Application'
 //            , array('getConfigurationPathName')
@@ -380,9 +380,9 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 //    {
 //
 //    }
-//    
+//
 //    $this->assertFileExists($file->getPathname());
-//    
+//
 //  }
 
 }

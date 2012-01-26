@@ -88,7 +88,7 @@ class UserProvider implements ControlProviderInterface
     }
     catch (\Exception $e)
     {
-      
+
     }
 
     return false;

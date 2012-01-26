@@ -50,7 +50,7 @@ class UsrListOwnerRepository extends EntityRepository
     $dql = 'SELECT o FROM Entities\UsrListOwner o
               JOIN o.list l
             WHERE l.id = :list_id AND o.usr_id = :usr_id';
-    
+
     $params = array(
         'usr_id' => $usr_id,
         'list_id' => $list->getId()
@@ -60,7 +60,7 @@ class UsrListOwnerRepository extends EntityRepository
     $query->setParameters($params);
 
     $owner = $query->getSingleResult();
-    
+
     /* @var $owner \Entities\UsrListOwner */
     if (null === $owner)
     {
