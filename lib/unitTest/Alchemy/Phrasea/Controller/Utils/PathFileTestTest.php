@@ -13,6 +13,7 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
    * As controllers use WebTestCase, it requires a client
    */
   protected $client;
+
   /**
    * If the controller tests require some records, specify it her
    *
@@ -41,11 +42,32 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
   /**
    * Default route test
    */
-  public function testRouteSlash()
+  public function testRoutePath()
   {
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $file = new \SplFileObject(__DIR__ . '/../../../../testfiles/cestlafete.jpg');
+    $this->client->request("GET", "/tests/pathurl/path/", array('path' => $file->getPathname()));
+
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isOk());
+    $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
+    $content = json_decode($this->client->getResponse()->getContent());
+    $this->assertTrue(is_object($content));
+    $this->assertObjectHasAttribute('exists', $content);
+    $this->assertObjectHasAttribute('file', $content);
+    $this->assertObjectHasAttribute('dir', $content);
+    $this->assertObjectHasAttribute('readable', $content);
+    $this->assertObjectHasAttribute('executable', $content);
+  }
+
+  public function testRouteUrl()
+  {
+    $this->client->request("GET", "/tests/pathurl/url/", array('url' => "www.google.com"));
+
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isOk());
+    $this->assertEquals("application/json", $this->client->getResponse()->headers->get("content-type"));
+    $content = json_decode($this->client->getResponse()->getContent());
+    $this->assertTrue(is_object($content));
   }
 
 }

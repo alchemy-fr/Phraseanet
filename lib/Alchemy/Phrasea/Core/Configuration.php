@@ -96,7 +96,7 @@ class Configuration
   {
     if (null === $this->environment && $this->isInstalled())
     {
-      $this->getConfiguration();
+      $this->refresh();
     }
 
     return $this->environment;
@@ -110,6 +110,7 @@ class Configuration
   public function setEnvironnement($environement = null)
   {
     $this->environment = $environement;
+    $this->refresh();
   }
 
   /**
@@ -204,15 +205,20 @@ class Configuration
    */
   public function getConfiguration()
   {
-    $configuration = array();
 
-    if ($this->installed)
+    if ($this->installed && null === $this->configuration)
     {
       $configuration = $this->configurationHandler->handle($this->environment);
       $this->environment = $this->configurationHandler->getSelectedEnvironnment();
+      $this->configuration = new ParameterBag($configuration);
+    }
+    elseif(!$this->installed)
+    {
+      $configuration = array();
+      $this->configuration = new ParameterBag($configuration);
     }
 
-    return $this->configuration = new ParameterBag($configuration);
+    return $this->configuration;
   }
 
   /**
@@ -309,7 +315,7 @@ class Configuration
             ->getSpecification()
             ->getConfigurationPathName();
 
-    if (!file_put_contents($filePathName, $yaml, $flag) !== false)
+    if (false === file_put_contents($filePathName, $yaml, $flag))
     {
       $filePath = $this->configurationHandler
               ->getSpecification()
@@ -326,6 +332,8 @@ class Configuration
    */
   public function delete()
   {
+    $deleted = false;
+
     try
     {
       $filePathName = $this
@@ -422,6 +430,8 @@ class Configuration
     try
     {
       $this->configurationHandler->getSpecification()->getConfigurationFile();
+      $this->configurationHandler->getSpecification()->getServiceFile();
+      $this->configurationHandler->getSpecification()->getConnexionFile();
 
       $this->installed = true;
     }
@@ -429,8 +439,6 @@ class Configuration
     {
       $this->installed = false;
     }
-
-    $this->configuration = new ParameterBag();
 
     if ($this->installed)
     {
