@@ -200,7 +200,7 @@ class Configuration
   public function getConfiguration()
   {
     $configuration = array();
-    
+
     if ($this->installed)
     {
       $configuration = $this->configurationHandler->handle($this->environment);
@@ -208,16 +208,6 @@ class Configuration
     }
 
     return $this->configuration = new ParameterBag($configuration);
-  }
-
-  /**
-   * Return Available logger
-   * 
-   * @return Array 
-   */
-  public function getAvailableDoctrineLogger()
-  {
-    return array('echo', 'monolog');
   }
 
   /**
@@ -332,14 +322,21 @@ class Configuration
   {
     try
     {
-      $filePathName = $this->configurationHandler
+      $filePathName = $this
+              ->configurationHandler
               ->getSpecification()
               ->getConfigurationPathName();
-      unlink($filePathName);
+
+      $deleted = unlink($filePathName);
     }
     catch (\Exception $e)
     {
       
+    }
+
+    if (!$deleted)
+    {
+      throw new \Exception(sprintf(_('Impossible d\'effacer le fichier %s'), $filePathName));
     }
 
     return $this;

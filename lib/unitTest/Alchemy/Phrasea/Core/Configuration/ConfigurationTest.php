@@ -146,24 +146,243 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
     $this->assertFalse($this->object->isDisplayingErrors());
   }
 
-//  public function testgetPhraseanet()
+  public function testGetPhraseanet()
+  {
+    $this->object->setEnvironnement("test");
+    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
+    $this->object->setEnvironnement("dev");
+    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
+    $this->object->setEnvironnement("prod");
+    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
+    $this->object->setEnvironnement("missing_phraseanet");
+    try
+    {
+      $this->object->getPhraseanet();
+      $this->fail("should raise an exeception");
+    }
+    catch (\Exception $e)
+    {
+      
+    }
+  }
+
+  public function testisInstalled()
+  {
+    $this->assertFalse($this->confNotInstalled->isInstalled());
+    $this->assertTrue($this->object->isInstalled());
+  }
+
+  public function testGetConfiguration()
+  {
+    $config = $this->object->getConfiguration();
+    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $config);
+    $this->assertNotEmpty($config->all());
+    $config = $this->confNotInstalled->getConfiguration();
+    $this->assertEmpty($config->all());
+  }
+
+  public function testGetConnexions()
+  {
+    $connexions = $this->object->getConnexions();
+    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $connexions);
+    $this->assertGreaterThan(0, sizeof($connexions->all()));
+  }
+
+  public function testGetConnexion()
+  {
+    $connexion = $this->object->getConnexion();
+    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $connexion);
+    $this->assertGreaterThan(0, sizeof($connexion->all()));
+  }
+
+  public function testGetConnexionException()
+  {
+    try
+    {
+      $connexion = $this->object->getConnexion('unknow_connexion');
+      $this->fail('should raise an exception');
+    }
+    catch (\Exception $e)
+    {
+      
+    }
+  }
+
+  public function testGetFile()
+  {
+    $this->assertInstanceOf("\SplFileObject", $this->object->getFile());
+  }
+
+  public function testGetFileExeption()
+  {
+    try
+    {
+      $this->assertInstanceOf("\SplFileObject", $this->confNotInstalled->getFile());
+      $this->fail("should raise an excpetion");
+    }
+    catch (\Exception $e)
+    {
+      
+    }
+  }
+
+  public function testAll()
+  {
+    $all = $this->object->all();
+    $this->assertTrue(is_array($all));
+    $this->assertArrayHasKey("test", $all);
+    $this->assertArrayHasKey("dev", $all);
+    $this->assertArrayHasKey("prod", $all);
+    $this->assertArrayHasKey("environment", $all);
+  }
+
+  public function testGetService()
+  {
+    $services = $this->object->getServices();
+    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $services);
+    $this->assertGreaterThan(0, sizeof($services->all()));
+  }
+
+  public function testWrite()
+  {
+    touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+    
+    $stub = $this->getMock(
+            '\Alchemy\Phrasea\Core\Configuration\Application'
+            , array('getConfigurationPathName')
+    );
+
+    $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+
+    $stub->expects($this->any())
+            ->method('getConfigurationPathName')
+            ->will(
+                    $this->returnValue($file->getPathname())
+    );
+
+    $handler = new Configuration\Handler($stub, new Configuration\Parser\Yaml());
+
+    $configuration = new PhraseaCore\Configuration($handler);
+
+    $arrayToBeWritten = array(
+        'hello' => 'world'
+        , 'key' => array(
+            'keyone' => 'valueone'
+            , 'keytwo' => 'valuetwo'
+        )
+    );
+
+    $configuration->write($arrayToBeWritten, 0, true);
+
+    $all = $configuration->all();
+
+    $this->assertArrayHasKey("hello", $all);
+    $this->assertArrayHasKey("key", $all);
+    $this->assertTrue(is_array($all["key"]));
+  }
+
+  public function testWriteException()
+  {
+    touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+    
+    $stub = $this->getMock(
+            '\Alchemy\Phrasea\Core\Configuration\Application'
+            , array('getConfigurationPathName')
+    );
+
+    $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+
+    $stub->expects($this->any())
+            ->method('getConfigurationPathName')
+            ->will(
+                    $this->returnValue($file->getPathname())
+    );
+
+    $handler = new Configuration\Handler($stub, new Configuration\Parser\Yaml());
+
+    $configuration = new PhraseaCore\Configuration($handler);
+
+    $arrayToBeWritten = array(
+        'hello' => 'world'
+        , 'key' => array(
+            'keyone' => 'valueone'
+            , 'keytwo' => 'valuetwo'
+        )
+    );
+
+    try
+    {
+      chmod($file->getPathname(), 0444);
+      $configuration->write($arrayToBeWritten);
+      $this->fail("should raise an exception");
+    }
+    catch (\exception $e)
+    {
+      
+    }
+    chmod($file->getPathname(), 0666);
+  }
+
+  public function testDelete()
+  {
+    touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+    
+    $stub = $this->getMock(
+            '\Alchemy\Phrasea\Core\Configuration\Application'
+            , array('getConfigurationPathName')
+    );
+
+    $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+
+    $stub->expects($this->any())
+            ->method('getConfigurationPathName')
+            ->will(
+                    $this->returnValue($file->getPathname())
+    );
+
+    $handler = new Configuration\Handler($stub, new Configuration\Parser\Yaml());
+
+    $configuration = new PhraseaCore\Configuration($handler);
+    
+    $configuration->delete();
+    
+    $this->assertFileNotExists($file->getPathname());
+    
+  }
+
+//  public function testDeleteException()
 //  {
-//    $this->object->setEnvironnement("test");
-//    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
-//    $this->object->setEnvironnement("dev");
-//    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
-//    $this->object->setEnvironnement("prod");
-//    $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->object->getPhraseanet());
-//    $this->object->setEnvironnement("missing_phraseanet");
+//    touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+//    
+//    $stub = $this->getMock(
+//            '\Alchemy\Phrasea\Core\Configuration\Application'
+//            , array('getConfigurationPathName')
+//    );
+//
+//    $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+//
+//    $stub->expects($this->any())
+//            ->method('getConfigurationPathName')
+//            ->will(
+//                    $this->returnValue($file->getPathname())
+//    );
+//
+//    $handler = new Configuration\Handler($stub, new Configuration\Parser\Yaml());
+//
+//    $configuration = new PhraseaCore\Configuration($handler);
+//
 //    try
 //    {
-//      $this->object->getPhraseanet();
-//      $this->fail("should raise an exeception");
+//      $configuration->delete();
+//      $this->fail("should raise an exception");
 //    }
-//    catch (\Exception $e)
+//    catch (\exception $e)
 //    {
 //      
 //    }
+//    
+//    $this->assertFileExists($file->getPathname());
+//    
 //  }
 
 }
