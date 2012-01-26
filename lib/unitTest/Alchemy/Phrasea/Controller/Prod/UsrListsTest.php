@@ -13,6 +13,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    * As controllers use WebTestCase, it requires a client
    */
   protected $client;
+
   /**
    * If the controller tests require some records, specify it her
    *
@@ -43,12 +44,12 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    */
   public function testRouteSlash()
   {
-    $entry1 = $this->insertOneUsrListEntry(self::$user,self::$user);
-    $entry2 = $this->insertOneUsrListEntry(self::$user,self::$user_alt1);
+    $entry1 = $this->insertOneUsrListEntry(self::$user, self::$user);
+    $entry2 = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
     $entry3 = $this->insertOneUsrListEntry(self::$user, self::$user);
-    $entry4 = $this->insertOneUsrListEntry(self::$user,self::$user_alt1);
-    $entry5 = $this->insertOneUsrListEntry(self::$user_alt1,self::$user_alt1);
-    $entry6 = $this->insertOneUsrListEntry(self::$user_alt1,self::$user_alt2);
+    $entry4 = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
+    $entry5 = $this->insertOneUsrListEntry(self::$user_alt1, self::$user_alt1);
+    $entry6 = $this->insertOneUsrListEntry(self::$user_alt1, self::$user_alt2);
 
     $route = '/lists/list/all/';
 
@@ -73,18 +74,18 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertObjectHasAttribute('owners', $list);
     $this->assertObjectHasAttribute('users', $list);
 
-    if($owners)
+    if ($owners)
       $this->assertTrue(count($list->owners) > 0);
 
-    foreach($list->owners as $owner)
+    foreach ($list->owners as $owner)
     {
       $this->checkOwner($owner);
     }
 
-    if($users)
-     $this->assertTrue(count($list->users) > 0);
+    if ($users)
+      $this->assertTrue(count($list->users) > 0);
 
-    foreach($list->users as $user)
+    foreach ($list->users as $user)
     {
       $this->checkUser($user);
     }
@@ -108,7 +109,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertFalse($datas['success']);
 
-    $this->client->request('POST', $route, array('name'=>'New List'));
+    $this->client->request('POST', $route, array('name' => 'New List'));
 
     $response = $this->client->getResponse();
 
@@ -125,7 +126,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testGetList()
   {
-    $entry = $this->insertOneUsrListEntry(self::$user,self::$user_alt1);
+    $entry   = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
     $list_id = $entry->getList()->getId();
 
     $route = '/lists/list/' . $list_id . '/';
@@ -146,7 +147,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostUpdate()
   {
-    $entry = $this->insertOneUsrListEntry(self::$user,self::$user_alt1);
+    $entry   = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
     $list_id = $entry->getList()->getId();
 
     $route = '/lists/list/' . $list_id . '/update/';
@@ -166,7 +167,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertFalse($datas['success']);
 
 
-    $this->client->request('POST', $route, array('name'=>'New NAME'));
+    $this->client->request('POST', $route, array('name' => 'New NAME'));
 
     $response = $this->client->getResponse();
 
@@ -181,12 +182,9 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertTrue($datas['success']);
   }
 
-
-
-
   public function testPostDelete()
   {
-    $entry = $this->insertOneUsrListEntry(self::$user,self::$user_alt1);
+    $entry   = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
     $list_id = $entry->getList()->getId();
 
     $route = '/lists/list/' . $list_id . '/delete/';
@@ -212,8 +210,8 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostRemoveEntry()
   {
-    $entry = $this->insertOneUsrListEntry(self::$user,self::$user_alt1);
-    $list_id = $entry->getList()->getId();
+    $entry    = $this->insertOneUsrListEntry(self::$user, self::$user_alt1);
+    $list_id  = $entry->getList()->getId();
     $entry_id = $entry->getId();
 
     $route = '/lists/list/' . $list_id . '/remove/' . $entry_id . '/';
@@ -278,8 +276,30 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $response = $this->client->getResponse();
 
+    $this->assertEquals(400, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+    
+
+    $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+
+    $this->client->request('POST', $route, array('role' => 'general'));
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(400, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+
+
+    $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+
+    $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+
+    $response = $this->client->getResponse();
+
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertEquals('UTF-8', $response->getCharset());
+
 
     $datas = (array) json_decode($response->getContent());
 
@@ -294,7 +314,133 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(2, $list->getOwners()->count());
   }
+  
+  
+  
 
+  public function testPostUnShareList()
+  {
+    
+    $list = $this->insertOneUsrList(self::$user);
+
+    $this->assertEquals(1, $list->getOwners()->count());
+
+    $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+
+    $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+
+    $datas = (array) json_decode($response->getContent());
+
+    $this->assertArrayHasKey('success', $datas);
+    $this->assertArrayHasKey('message', $datas);
+
+    $this->assertTrue($datas['success']);
+
+    $repository = self::$core->getEntityManager()->getRepository('Entities\UsrList');
+
+    $list = $repository->find($list->getId());
+
+    $this->assertEquals(2, $list->getOwners()->count());
+    
+    
+    
+    $route = '/lists/list/' . $list->getId() . '/unshare/' . self::$user_alt1->get_id() . '/';
+
+    $this->client->request('POST', $route);
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+    $datas = (array) json_decode($response->getContent());
+    
+    $this->assertTrue($datas['success']);
+
+    $repository = self::$core->getEntityManager()->getRepository('Entities\UsrList');
+
+    $list = $repository->find($list->getId());
+    
+    self::$core->getEntityManager()->refresh($list);
+
+    $this->assertEquals(1, $list->getOwners()->count());
+  }
+
+  
+
+  public function testPostUnShareFail()
+  {
+    
+    $list = $this->insertOneUsrList(self::$user);
+
+    $this->assertEquals(1, $list->getOwners()->count());
+
+    $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+
+    $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_ADMIN));
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+
+    $datas = (array) json_decode($response->getContent());
+
+    $this->assertArrayHasKey('success', $datas);
+    $this->assertArrayHasKey('message', $datas);
+
+    $this->assertTrue($datas['success']);
+    
+    
+    
+    $route = '/lists/list/' . $list->getId() . '/share/' . self::$user->get_id() . '/';
+
+    $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+
+    $datas = (array) json_decode($response->getContent());
+
+    $this->assertArrayHasKey('success', $datas);
+    $this->assertArrayHasKey('message', $datas);
+
+    $this->assertTrue($datas['success']);
+    
+    
+    
+
+    $repository = self::$core->getEntityManager()->getRepository('Entities\UsrList');
+
+    $list = $repository->find($list->getId());
+
+    $this->assertEquals(2, $list->getOwners()->count());
+    
+    
+    
+    $route = '/lists/list/' . $list->getId() . '/unshare/' . self::$user_alt1->get_id() . '/';
+
+    $this->client->request('POST', $route);
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+    $datas = (array) json_decode($response->getContent());
+    
+    $this->assertFalse($datas['success']);
+  }
 
   protected function checkOwner($owner)
   {

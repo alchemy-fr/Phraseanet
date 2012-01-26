@@ -60,29 +60,18 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $story = self::$story_1;
     /* @var $story \Record_Adapter */
     $route = sprintf("/WorkZone/attachStories/");
-    try
-    {
-      $this->client->request('POST', $route);
-      $this->fail("we can attach none stories to WZ");
-    }
-    catch (\Exception $e)
-    {
+    
+    $this->client->request('POST', $route);
+    $response = $this->client->getResponse();
 
-    }
+    $this->assertEquals(400, $response->getStatusCode());
+    $this->assertFalse($response->isOk());
 
-    try
-    {
-      $this->client->request('POST', $route, array('stories' => $story->get_serialize_key()));
-
-      $response = $this->client->getResponse();
-    }
-    catch (\Exception $e)
-    {
-      $this->fail($e->getMessage());
-    }
+    $this->client->request('POST', $route, array('stories' => $story->get_serialize_key()));
+    $response = $this->client->getResponse();
 
     $this->assertEquals(302, $response->getStatusCode());
-
+    
     $em = self::$core->getEntityManager();
     /* @var $em \Doctrine\ORM\EntityManager */
     $query = $em->createQuery(
@@ -92,6 +81,27 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $count = $query->getSingleScalarResult();
 
     $this->assertEquals(1, $count);
+    
+    $story2 = self::$story_2;
+    
+    $stories = implode(';', array($story->get_serialize_key(), $story2->get_serialize_key()));
+
+    $this->client->request('POST', $route, array('stories' => $stories));
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(302, $response->getStatusCode());
+    
+    
+
+    $em = self::$core->getEntityManager();
+    /* @var $em \Doctrine\ORM\EntityManager */
+    $query = $em->createQuery(
+            'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+    );
+
+    $count = $query->getSingleScalarResult();
+
+    $this->assertEquals(2, $count);
 
     $query = $em->createQuery(
             'SELECT w FROM \Entities\StoryWZ w'
@@ -129,15 +139,11 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $route = sprintf("/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), $story->get_record_id());
     //story not yet Attched
 
-    try
-    {
-      $this->client->request('POST', $route);
-      $this->fail("Story should not be found");
-    }
-    catch (\Exception $e)
-    {
+    $this->client->request('POST', $route);
+    $response = $this->client->getResponse();
 
-    }
+    $this->assertEquals(404, $response->getStatusCode());
+    $this->assertFalse($response->isOk());
 
     //attach
     $attachRoute = sprintf("/WorkZone/attachStories/");
