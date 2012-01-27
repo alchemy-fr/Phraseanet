@@ -247,7 +247,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         , 'lst' => self::$record_1->get_serialize_key()
     );
 
-    $crawler = $this->client->request('POST', '/feeds/entry/UNKNOW/update/', $params);
+    $crawler = $this->client->request('POST', '/feeds/entry/99999999/update/', $params);
 
     $response = $this->client->getResponse();
 
@@ -351,7 +351,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     $appbox = appbox::get_instance();
 
-    $crawler = $this->client->request('POST', '/feeds/entry/UNKNOW/delete/');
+    $crawler = $this->client->request('POST', '/feeds/entry/9999999/delete/');
 
     $response = $this->client->getResponse();
 
