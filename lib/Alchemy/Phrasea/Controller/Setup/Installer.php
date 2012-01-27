@@ -136,7 +136,7 @@ class Installer implements ControllerProviderInterface
               $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
 
               $setupRegistry = new \Setup_Registry();
-              $setupRegistry->set('GV_ServerName', $servername);
+              $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
 
               $conn = $connbas = null;
 
@@ -174,7 +174,7 @@ class Installer implements ControllerProviderInterface
               try
               {
                 $setupRegistry = new \Setup_Registry();
-                $setupRegistry->set('GV_ServerName', $servername);
+                $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
 
                 $appbox = \appbox::create($setupRegistry, $conn, $appbox_name, true);
 
@@ -221,22 +221,22 @@ class Installer implements ControllerProviderInterface
 
                 $appbox->set_registry($registry);
 
-                $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')));
-                $registry->set('GV_base_datapath_web', \p4string::addEndSlash($request->get('datapath_web')));
-                $registry->set('GV_base_dataurl', \p4string::addEndSlash($request->get('mount_point_web')));
-                $registry->set('GV_ServerName', $servername);
-                $registry->set('GV_cli', $request->get('binary_php'));
-                $registry->set('GV_imagick', $request->get('binary_convert'));
-                $registry->set('GV_pathcomposite', $request->get('binary_composite'));
-                $registry->set('GV_exiftool', $request->get('binary_exiftool'));
-                $registry->set('GV_swf_extract', $request->get('binary_swfextract'));
-                $registry->set('GV_pdf2swf', $request->get('binary_pdf2swf'));
-                $registry->set('GV_swf_render', $request->get('binary_swfrender'));
-                $registry->set('GV_unoconv', $request->get('binary_unoconv'));
-                $registry->set('GV_ffmpeg', $request->get('binary_ffmpeg'));
-                $registry->set('GV_mp4box', $request->get('binary_MP4Box'));
-                $registry->set('GV_mplayer', $request->get('binary_mplayer'));
-                $registry->set('GV_pdftotext', $request->get('binary_xpdf'));
+                $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')), \registry::TYPE_STRING);
+                $registry->set('GV_base_datapath_web', \p4string::addEndSlash($request->get('datapath_web')), \registry::TYPE_STRING);
+                $registry->set('GV_base_dataurl', \p4string::addEndSlash($request->get('mount_point_web')), \registry::TYPE_STRING);
+                $registry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
+                $registry->set('GV_cli', $request->get('binary_php'), \registry::TYPE_STRING);
+                $registry->set('GV_imagick', $request->get('binary_convert'), \registry::TYPE_STRING);
+                $registry->set('GV_pathcomposite', $request->get('binary_composite'), \registry::TYPE_STRING);
+                $registry->set('GV_exiftool', $request->get('binary_exiftool'), \registry::TYPE_STRING);
+                $registry->set('GV_swf_extract', $request->get('binary_swfextract'), \registry::TYPE_STRING);
+                $registry->set('GV_pdf2swf', $request->get('binary_pdf2swf'), \registry::TYPE_STRING);
+                $registry->set('GV_swf_render', $request->get('binary_swfrender'), \registry::TYPE_STRING);
+                $registry->set('GV_unoconv', $request->get('binary_unoconv'), \registry::TYPE_STRING);
+                $registry->set('GV_ffmpeg', $request->get('binary_ffmpeg'), \registry::TYPE_STRING);
+                $registry->set('GV_mp4box', $request->get('binary_MP4Box'), \registry::TYPE_STRING);
+                $registry->set('GV_mplayer', $request->get('binary_mplayer'), \registry::TYPE_STRING);
+                $registry->set('GV_pdftotext', $request->get('binary_xpdf'), \registry::TYPE_STRING);
 
                 $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);
 

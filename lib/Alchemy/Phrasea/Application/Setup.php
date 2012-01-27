@@ -198,19 +198,12 @@ return call_user_func(function()
 
       $app->error(function($e) use ($app)
         {
-          if ($e instanceof Exception_Setup_PhraseaAlreadyInstalled)
+          if ($e instanceof \Exception_Setup_PhraseaAlreadyInstalled)
+          {
+            return $app->redirect('/login/');
+          }
 
-            return $app->redirect('/login');
-
-          return new Response(
-              sprintf(
-                'Error %s @%s:%s'
-                , $e->getFile()
-                , $e->getLine()
-                , $e->getMessage()
-              )
-              , 500
-          );
+          return new Response('Internal Server Error', 500);
         });
 
       return $app;

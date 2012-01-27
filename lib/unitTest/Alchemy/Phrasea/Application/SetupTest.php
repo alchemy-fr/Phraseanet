@@ -26,9 +26,10 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteSlash()
   {
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $crawler = $this->client->request('GET', '/');
+    $response = $this->client->getResponse();
+    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertEquals('/login/', $response->headers->get('location'));
   }
 
 }
