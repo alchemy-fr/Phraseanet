@@ -130,7 +130,7 @@ class Bridge implements ControllerProviderInterface
               $account->get_api()->get_connector()->disconnect();
 
               return $app->redirect('/prod/bridge/adapter/' . $account_id . '/load-elements/' . $account->get_api()->get_connector()->get_default_element_type() . '/');
-            });
+            })->assert('account_id', '\d+');
 
 
     $controllers->get('/adapter/{account_id}/load-records/'

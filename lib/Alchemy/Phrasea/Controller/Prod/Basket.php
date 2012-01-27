@@ -149,7 +149,7 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
     /**
      * Removes a BasketElement
@@ -190,7 +190,7 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+')->assert('basket_element_id', '\d+');
 
     /**
      * Update name and description of a basket
@@ -229,7 +229,7 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
     /**
      * Get the form to update the Basket attributes (name and description)
@@ -251,7 +251,7 @@ class Basket implements ControllerProviderInterface
                                       , array('basket' => $basket)
                               )
               );
-            });
+            })->assert('basket_id', '\d+');
 
 
     /**
@@ -276,7 +276,7 @@ class Basket implements ControllerProviderInterface
                                       , array('basket' => $basket)
                               )
               );
-            });
+            })->assert('basket_id', '\d+');
 
     /**
      * Toggle the status of a Basket
@@ -325,7 +325,7 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
     /**
      * Add a BasketElement to a basket
@@ -393,7 +393,7 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
 
 
@@ -456,7 +456,7 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
     /**
      * Get basket creation form

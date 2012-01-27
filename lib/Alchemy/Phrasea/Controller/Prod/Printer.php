@@ -37,7 +37,7 @@ class Printer implements ControllerProviderInterface
 
               $template = 'prod/actions/printer_default.html.twig';
 
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('printer' => $printer, 'message' => ''));

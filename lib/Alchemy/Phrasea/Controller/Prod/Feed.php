@@ -109,7 +109,7 @@ class Feed implements ControllerProviderInterface
               $datas = $twig->render('prod/actions/publish/publish_edit.html', array('entry' => $entry, 'feeds' => $feeds));
 
               return new Response($datas);
-            });
+            })->assert('id', '\d+');
 
 
     $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) use ($appbox, $twig)
@@ -176,7 +176,7 @@ class Feed implements ControllerProviderInterface
                               , 200
                               , array('Content-Type' => 'application/json')
               );
-            });
+            })->assert('id', '\d+');
 
 
     $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) use ($appbox, $twig)
@@ -219,7 +219,7 @@ class Feed implements ControllerProviderInterface
                               , 200
                               , array('Content-Type' => 'application/json')
               );
-            });
+            })->assert('id', '\d+');
 
 //$app->post('/entry/{id}/addelement/', function($id) use ($app, $appbox, $twig)
 //        {
@@ -275,7 +275,7 @@ class Feed implements ControllerProviderInterface
               $datas = $twig->render('prod/feeds/feeds.html', array('feed' => $feed, 'feeds' => $feeds, 'page' => $page));
 
               return new Response($datas);
-            });
+            })->assert('id', '\d+');
 
 
     $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) use ( $appbox, $twig)
@@ -326,7 +326,7 @@ class Feed implements ControllerProviderInterface
                               , 200
                               , array('Content-Type' => 'application/json')
               );
-            });
+            })->assert('id', '\d+');
 
     return $controllers;
   }
