@@ -222,7 +222,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
     }
 
     </script>
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jquery.p4.modal.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jquery.p4.modal.js"></script>
     <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
   </head>
   <?php

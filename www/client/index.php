@@ -54,7 +54,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
 
 
     </style>
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
     <script type="text/javascript" src="/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,skins/common/main.css" />
     <?php

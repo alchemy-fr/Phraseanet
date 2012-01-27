@@ -220,7 +220,7 @@ if ($act == "STEP2")
         die();
       }
       ?>
-      <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+      <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
       <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
       <script type="text/javascript" src="/include/minify/g=push"></script>
       <script type="text/javascript" src="/include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>

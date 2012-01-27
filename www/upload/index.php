@@ -60,7 +60,7 @@ if (count($avBases) == 0)
           color:white;
         }
       </style>
-      <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+      <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
       <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
       <script type="text/javascript" src="/include/minify/g=upload"></script>
     </head>
@@ -173,7 +173,7 @@ $theFont = '.theFont {font-weight:bold;color:#73B304;font-size: 14px;font-family
 echo $theFont;
 ?>
     </style>
-    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
     <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
     <script type="text/javascript" src="/include/minify/g=upload"></script>
     <script type="text/javascript">
