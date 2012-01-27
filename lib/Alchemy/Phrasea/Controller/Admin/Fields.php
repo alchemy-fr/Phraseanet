@@ -40,42 +40,42 @@ class Fields implements ControllerProviderInterface
 
               $multi = ($request->get('multi') === 'true');
 
-        $metadata = \databox_field::load_class_from_xpath($request->get('source'));
+              $metadata = \databox_field::load_class_from_xpath($request->get('source'));
 
-        $datas = array(
-          'result'   => ($multi === $metadata->is_multi())
-          , 'is_multi' => $metadata->is_multi()
-        );
+              $datas = array(
+                  'result' => ($multi === $metadata->is_multi())
+                  , 'is_multi' => $metadata->is_multi()
+              );
 
-        $Serializer = $app['Core']['Serializer'];
+              $Serializer = $app['Core']['Serializer'];
 
-        return new Response(
-            $Serializer->serialize($datas, 'json')
-            , 200
-            , array('Content-Type' => 'application/json')
-        );
-      });
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('Content-Type' => 'application/json')
+              );
+            });
 
     $controllers->get('/checkreadonly/', function() use ($app, $appbox)
-      {
-        $request  = $app['request'];
-        $readonly = ($request->get('readonly') === 'true');
+            {
+              $request = $app['request'];
+              $readonly = ($request->get('readonly') === 'true');
 
-        $metadata = \databox_field::load_class_from_xpath($request->get('source'));
+              $metadata = \databox_field::load_class_from_xpath($request->get('source'));
 
-        $datas = array(
-          'result'      => ($readonly === $metadata->is_readonly())
-          , 'is_readonly' => $metadata->is_readonly()
-        );
+              $datas = array(
+                  'result' => ($readonly === $metadata->is_readonly())
+                  , 'is_readonly' => $metadata->is_readonly()
+              );
 
-        $Serializer = $app['Core']['Serializer'];
+              $Serializer = $app['Core']['Serializer'];
 
-        return new Response(
-            $Serializer->serialize($datas, 'json')
-            , 200
-            , array('Content-Type' => 'application/json')
-        );
-      });
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('Content-Type' => 'application/json')
+              );
+            });
 
     return $controllers;
   }
