@@ -113,12 +113,9 @@ function getHome(cas, page){
 
 function getLanguage(){
   $.ajax({
-    type: "POST",
-    url: "/prod/prodFeedBack.php",
+    type: "GET",
+    url: "/prod/language/",
     dataType: 'json',
-    data: {
-      action: "LANGUAGE"
-    },
     success: function(data){
       language = data;
       return;
