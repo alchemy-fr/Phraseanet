@@ -17,7 +17,7 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class ControllerBasketTest extends PhraseanetWebTestCaseAbstract
+class ControllerLanguageTest extends PhraseanetWebTestCaseAbstract
 {
 
   protected $client;
