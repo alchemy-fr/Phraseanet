@@ -61,7 +61,7 @@ if ($parm["act"] == "START" || $parm["act"] == "WORK")
       foreach ($lst as $basrec)
       {
         $basrec = explode('_', $basrec);
-        $record = new record_adapter($barec[0], $basrec[1]);
+        $record = new record_adapter($basrec[0], $basrec[1]);
 
         if ($record->is_grouping())
         {
@@ -100,7 +100,7 @@ if ($parm["act"] == "START" || $parm["act"] == "WORK")
       $basrec = explode('_', $basrec);
       if (count($basrec) !== 2)
         continue;
-      
+
       try
       {
         $record = new record_adapter($basrec[0], $basrec[1]);

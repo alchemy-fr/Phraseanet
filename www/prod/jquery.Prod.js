@@ -10,6 +10,8 @@
       $('#DIALOG').attr('title', $this.attr('title'))
                   .empty().addClass('loading')
                   .dialog({
+                    buttons:{},
+                    draggable:false,
                     resizable:false,
                     closeOnEscape:true,
                     modal:true,

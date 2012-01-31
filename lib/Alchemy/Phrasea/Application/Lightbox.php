@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Application;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -21,512 +23,535 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @link        www.phraseanet.com
  */
 return call_user_func(
-                function()
-                {
-                  $appbox = appbox::get_instance();
+    function()
+    {
+      $appbox = \appbox::get_instance();
 
-                  $session = $appbox->get_session();
-
-                  $app = new Silex\Application();
-
-                  $app['Core'] = bootstrap::getCore();
-
-                  $app->get('/', function (Silex\Application $app) use ($session, $appbox)
-                          {
-                            User_Adapter::updateClientInfos((6));
-
-                            $em = $app['Core']->getEntityManager();
-                            $repository = $em->getRepository('\Entities\Basket');
+      $session = $appbox->get_session();
 
-                            /* @var $repository \Repositories\BasketRepository */
-                            $basket_collection = $repository->findActiveByUser(
-                                    $app['Core']->getAuthenticatedUser()
-                            );
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
-
-                            $browser = Browser::getInstance();
-
-                            $template = 'lightbox/index.twig';
-                            if (!$browser->isNewGeneration() && !$browser->isMobile())
-                            {
-                              $template = 'lightbox/IE6/index.twig';
-                            }
-
-                            $output = $twig->render($template, array(
-                                'baskets_collection' => $basket_collection,
-                                'module_name' => 'Lightbox',
-                                'module' => 'lightbox'
-                                    )
-                            );
-                            $response = new Response($output);
-                            $response->setCharset('UTF-8');
+      $app = new \Silex\Application();
 
-                            return $response;
-                          }
-                  );
+      $app['Core'] = \bootstrap::getCore();
 
-                  $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(Silex\Application $app, $sselcont_id) use ($session, $appbox)
-                          {
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
-//                            var_dump($twig->getLoader()->getPaths());
-                            $browser = Browser::getInstance();
+      $app["debug"] = $app["Core"]->getConfiguration()->isDebug();
 
-                            if (!$browser->isMobile())
-                              return new Response('');
+      $app->get('/', function (\Silex\Application $app) use ($session, $appbox)
+        {
+          \User_Adapter::updateClientInfos((6));
 
+          $em         = $app['Core']->getEntityManager();
+          $repository = $em->getRepository('\Entities\Basket');
 
-                            $em = $app['Core']->getEntityManager();
-
-                            /* @var $repository \Repositories\BasketElementRepository */
-                            $repository = $em->getRepository('\Entities\BasketElement');
-
-                            $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
-
-                            $template = 'lightbox/note_form.twig';
-                            $output = $twig->render($template, array('basket_element' => $basket_element, 'module_name' => ''));
-
-                            return new Response($output);
-                          }
-                  )->assert('sselcont_id', '\d+');
-
-                  $app->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(Silex\Application $app, $sselcont_id)
-                          {
-                            $browser = Browser::getInstance();
-
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
+          /* @var $repository \Repositories\BasketRepository */
+          $basket_collection = $repository->findActiveByUser(
+            $app['Core']->getAuthenticatedUser()
+          );
+          /* @var $twig \Twig_Environment */
+          $twig              = $app['Core']->getTwig();
 
-                            $em = $app['Core']->getEntityManager();
+          $browser = \Browser::getInstance();
 
-                            /* @var $repository \Repositories\BasketElementRepository */
-                            $repository = $em->getRepository('\Entities\BasketElement');
+          $template = 'lightbox/index.twig';
+          if (!$browser->isNewGeneration() && !$browser->isMobile())
+          {
+            $template = 'lightbox/IE6/index.twig';
+          }
 
-                            $BasketElement = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
+          $output = $twig->render($template, array(
+            'baskets_collection' => $basket_collection,
+            'module_name'        => 'Lightbox',
+            'module'             => 'lightbox'
+            )
+          );
+          $response            = new Response($output);
+          $response->setCharset('UTF-8');
 
-                            if ($browser->isMobile())
-                            {
-                              $output = $twig->render('lightbox/basket_element.twig', array(
-                                  'basket_element' => $BasketElement,
-                                  'module_name' => $BasketElement->getRecord()->get_title()
-                                      )
-                              );
+          return $response;
+        }
+      );
 
-                              return new Response($output);
-                            }
-                            else
-                            {
-                              $template_options = 'lightbox/sc_options_box.twig';
-                              $template_agreement = 'lightbox/agreement_box.twig';
-                              $template_selector = 'lightbox/selector_box.twig';
-                              $template_note = 'lightbox/sc_note.twig';
-                              $template_preview = 'common/preview.html';
-                              $template_caption = 'common/caption.html';
+      $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id) use ($session, $appbox)
+        {
+          /* @var $twig \Twig_Environment */
+          $twig    = $app['Core']->getTwig();
+          $browser = \Browser::getInstance();
 
-                              if (!$browser->isNewGeneration())
-                              {
-                                $template_options = 'lightbox/IE6/sc_options_box.twig';
-                                $template_agreement = 'lightbox/IE6/agreement_box.twig';
-                              }
-                              $appbox = appbox::get_instance();
-                              $usr_id = $appbox->get_session()->get_usr_id();
+          if (!$browser->isMobile())
 
+            return new Response('');
 
-                              $Basket = $BasketElement->getBasket();
 
-                              $ret = array();
-                              $ret['number'] = $BasketElement->getRecord()->get_number();
-                              $ret['title'] = $BasketElement->getRecord()->get_title();
+          $em = $app['Core']->getEntityManager();
 
-                              $ret['preview'] = $twig->render($template_preview, array('record' => $BasketElement->getRecord(), 'not_wrapped' => true));
-                              $ret['options_html'] = $twig->render($template_options, array('basket_element' => $BasketElement));
-                              $ret['agreement_html'] = $twig->render($template_agreement, array('basket' => $Basket, 'basket_element' => $BasketElement));
-                              $ret['selector_html'] = $twig->render($template_selector, array('basket_element' => $BasketElement));
-                              $ret['note_html'] = $twig->render($template_note, array('basket_element' => $BasketElement));
-                              $ret['caption'] = $twig->render($template_caption, array('view' => 'preview', 'record' => $BasketElement->getRecord()));
-                              $output = p4string::jsonencode($ret);
+          /* @var $repository \Repositories\BasketElementRepository */
+          $repository = $em->getRepository('\Entities\BasketElement');
 
-                              return new Response($output, 200, array('Content-Type' => 'application/json'));
-                            }
-                          }
-                  )->assert('sselcont_id', '\d+');
+          $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
 
+          $template = 'lightbox/note_form.twig';
+          $output   = $twig->render($template, array('basket_element' => $basket_element, 'module_name'    => ''));
 
+          return new Response($output);
+        }
+      )->assert('sselcont_id', '\d+');
 
+      $app->get('/ajax/LOAD_BASKET_ELEMENT/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id)
+        {
+          $browser = \Browser::getInstance();
 
-                  $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(Silex\Application $app, $entry_id, $item_id)
-                          {
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
+          /* @var $twig \Twig_Environment */
+          $twig = $app['Core']->getTwig();
 
-                            $appbox = appbox::get_instance();
-                            $entry = Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
-                            $item = new Feed_Entry_Item($appbox, $entry, $item_id);
+          $em = $app['Core']->getEntityManager();
 
-                            $browser = Browser::getInstance();
+          /* @var $repository \Repositories\BasketElementRepository */
+          $repository = $em->getRepository('\Entities\BasketElement');
 
-                            if ($browser->isMobile())
-                            {
-                              $output = $twig->render('lightbox/feed_element.twig', array(
-                                  'feed_element' => $item,
-                                  'module_name' => $item->get_record()->get_title()
-                                      )
-                              );
+          $BasketElement = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
 
-                              return new Response($output);
-                            }
-                            else
-                            {
-                              $template_options = 'lightbox/feed_options_box.twig';
-                              $template_preview = 'common/preview.html';
-                              $template_caption = 'common/caption.html';
+          if ($browser->isMobile())
+          {
+            $output = $twig->render('lightbox/basket_element.twig', array(
+              'basket_element' => $BasketElement,
+              'module_name'    => $BasketElement->getRecord()->get_title()
+              )
+            );
 
-                              if (!$browser->isNewGeneration())
-                              {
-                                $template_options = 'lightbox/IE6/feed_options_box.twig';
-                              }
-                              $usr_id = $appbox->get_session()->get_usr_id();
+            return new Response($output);
+          }
+          else
+          {
+            $template_options   = 'lightbox/sc_options_box.twig';
+            $template_agreement = 'lightbox/agreement_box.twig';
+            $template_selector  = 'lightbox/selector_box.twig';
+            $template_note      = 'lightbox/sc_note.twig';
+            $template_preview   = 'common/preview.html';
+            $template_caption   = 'common/caption.html';
 
-                              $ret = array();
-                              $ret['number'] = $item->get_record()->get_number();
-                              $ret['title'] = $item->get_record()->get_title();
+            if (!$browser->isNewGeneration())
+            {
+              $template_options   = 'lightbox/IE6/sc_options_box.twig';
+              $template_agreement = 'lightbox/IE6/agreement_box.twig';
+            }
+            $appbox             = \appbox::get_instance();
+            $usr_id             = $appbox->get_session()->get_usr_id();
 
-                              $ret['preview'] = $twig->render($template_preview, array('record' => $item->get_record(), 'not_wrapped' => true));
-                              $ret['options_html'] = $twig->render($template_options, array('feed_element' => $item));
-                              $ret['caption'] = $twig->render($template_caption, array('view' => 'preview', 'record' => $item->get_record()));
+
+            $Basket = $BasketElement->getBasket();
+
+            $ret = array();
+            $ret['number'] = $BasketElement->getRecord()->get_number();
+            $ret['title']  = $BasketElement->getRecord()->get_title();
 
+            $ret['preview'] = $twig->render($template_preview, array('record'             => $BasketElement->getRecord(), 'not_wrapped'        => true));
+            $ret['options_html'] = $twig->render($template_options, array('basket_element'       => $BasketElement));
+            $ret['agreement_html'] = $twig->render($template_agreement, array('basket'              => $Basket, 'basket_element'      => $BasketElement));
+            $ret['selector_html'] = $twig->render($template_selector, array('basket_element'  => $BasketElement));
+            $ret['note_html'] = $twig->render($template_note, array('basket_element' => $BasketElement));
+            $ret['caption']  = $twig->render($template_caption, array('view'   => 'preview', 'record' => $BasketElement->getRecord()));
 
-                              $ret['agreement_html'] = $ret['selector_html'] = $ret['note_html'] = '';
+            $Serializer = $app['Core']['Serializer'];
 
+            return new Response(
+                $Serializer->serialize($ret, 'json')
+                , 200
+                , array('Content-Type' => 'application/json')
+            );
+          }
+        }
+      )->assert('sselcont_id', '\d+');
+
+
+
+
+      $app->get('/ajax/LOAD_FEED_ITEM/{entry_id}/{item_id}/', function(\Silex\Application $app, $entry_id, $item_id)
+        {
+          /* @var $twig \Twig_Environment */
+          $twig = $app['Core']->getTwig();
 
-                              $output = p4string::jsonencode($ret);
+          $appbox = \appbox::get_instance();
+          $entry  = \Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
+          $item   = new \Feed_Entry_Item($appbox, $entry, $item_id);
 
-                              return new Response($output, 200, array('Content-type' => 'application/json'));
-                            }
-                          }
-                  )->assert('entry_id', '\d+')->assert('item_id', '\d+');
+          $browser = \Browser::getInstance();
 
-                  $app->get('/validate/{ssel_id}/', function (Silex\Application $app, $ssel_id) use ($session, $appbox)
-                          {
+          if ($browser->isMobile())
+          {
+            $output = $twig->render('lightbox/feed_element.twig', array(
+              'feed_element' => $item,
+              'module_name'  => $item->get_record()->get_title()
+              )
+            );
 
-                            User_Adapter::updateClientInfos((6));
+            return new Response($output);
+          }
+          else
+          {
+            $template_options = 'lightbox/feed_options_box.twig';
+            $template_preview = 'common/preview.html';
+            $template_caption = 'common/caption.html';
 
-                            $browser = Browser::getInstance();
+            if (!$browser->isNewGeneration())
+            {
+              $template_options = 'lightbox/IE6/feed_options_box.twig';
+            }
+            $usr_id           = $appbox->get_session()->get_usr_id();
+
+            $ret = array();
+            $ret['number'] = $item->get_record()->get_number();
+            $ret['title']  = $item->get_record()->get_title();
+
+            $ret['preview'] = $twig->render($template_preview, array('record'             => $item->get_record(), 'not_wrapped'        => true));
+            $ret['options_html'] = $twig->render($template_options, array('feed_element'  => $item));
+            $ret['caption'] = $twig->render($template_caption, array('view'   => 'preview', 'record' => $item->get_record()));
 
-                            $em = $app['Core']->getEntityManager();
-                            $repository = $em->getRepository('\Entities\Basket');
 
-                            /* @var $repository \Repositories\BasketRepository */
-                            $basket_collection = $repository->findActiveByUser(
-                                    $app['Core']->getAuthenticatedUser()
-                            );
+            $ret['agreement_html'] = $ret['selector_html']  = $ret['note_html']      = '';
 
-                            $basket = $repository->findUserBasket(
-                                    $ssel_id
-                                    , $app['Core']->getAuthenticatedUser()
-                            );
+            $Serializer = $app['Core']['Serializer'];
 
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
+            return new Response(
+                $Serializer->serialize($ret, 'json')
+                , 200
+                , array('Content-type' => 'application/json')
+            );
+          }
+        }
+      )->assert('entry_id', '\d+')->assert('item_id', '\d+');
 
-                            $template = 'lightbox/validate.twig';
+      $app->get('/validate/{ssel_id}/', function (\Silex\Application $app, $ssel_id) use ($session, $appbox)
+        {
 
-                            if (!$browser->isNewGeneration() && !$browser->isMobile())
-                              $template = 'lightbox/IE6/validate.twig';
+          \User_Adapter::updateClientInfos((6));
 
-                            $response = new Response($twig->render($template, array(
-                                                'baskets_collection' => $basket_collection,
-                                                'basket' => $basket,
-                                                'local_title' => strip_tags($basket->getName()),
-                                                'module' => 'lightbox',
-                                                'module_name' => _('admin::monitor: module validation')
-                                                    )
-                                    ));
-                            $response->setCharset('UTF-8');
+          $browser = \Browser::getInstance();
 
-                            return $response;
-                          }
-                  )->assert('ssel_id', '\d+');
+          $em         = $app['Core']->getEntityManager();
+          $repository = $em->getRepository('\Entities\Basket');
 
-                  $app->get('/compare/{ssel_id}/', function (Silex\Application $app, $ssel_id) use ($session, $appbox)
-                          {
+          /* @var $repository \Repositories\BasketRepository */
+          $basket_collection = $repository->findActiveByUser(
+            $app['Core']->getAuthenticatedUser()
+          );
 
-                            User_Adapter::updateClientInfos((6));
+          $basket = $repository->findUserBasket(
+            $ssel_id
+            , $app['Core']->getAuthenticatedUser()
+          );
 
-                            $browser = Browser::getInstance();
+          /* @var $twig \Twig_Environment */
+          $twig = $app['Core']->getTwig();
 
-                            $em = $app['Core']->getEntityManager();
-                            $repository = $em->getRepository('\Entities\Basket');
+          $template = 'lightbox/validate.twig';
 
-                            /* @var $repository \Repositories\BasketRepository */
-                            $basket_collection = $repository->findActiveByUser(
-                                    $app['Core']->getAuthenticatedUser()
-                            );
+          if (!$browser->isNewGeneration() && !$browser->isMobile())
+            $template = 'lightbox/IE6/validate.twig';
 
-                            $basket = $repository->findUserBasket(
-                                    $ssel_id
-                                    , $app['Core']->getAuthenticatedUser()
-                            );
+          $response = new Response($twig->render($template, array(
+                'baskets_collection' => $basket_collection,
+                'basket'             => $basket,
+                'local_title'        => strip_tags($basket->getName()),
+                'module'             => 'lightbox',
+                'module_name'        => _('admin::monitor: module validation')
+                )
+            ));
+          $response->setCharset('UTF-8');
 
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
+          return $response;
+        }
+      )->assert('ssel_id', '\d+');
 
-                            $template = 'lightbox/validate.twig';
+      $app->get('/compare/{ssel_id}/', function (\Silex\Application $app, $ssel_id) use ($session, $appbox)
+        {
 
-                            if (!$browser->isNewGeneration() && !$browser->isMobile())
-                              $template = 'lightbox/IE6/validate.twig';
+          \User_Adapter::updateClientInfos((6));
 
-                            $response = new Response($twig->render($template, array(
-                                                'baskets_collection' => $basket_collection,
-                                                'basket' => $basket,
-                                                'local_title' => strip_tags($basket->getName()),
-                                                'module' => 'lightbox',
-                                                'module_name' => _('admin::monitor: module validation')
-                                                    )
-                                    ));
-                            $response->setCharset('UTF-8');
+          $browser = \Browser::getInstance();
 
-                            return $response;
-                          }
-                  )->assert('ssel_id', '\d+');
+          $em         = $app['Core']->getEntityManager();
+          $repository = $em->getRepository('\Entities\Basket');
 
+          /* @var $repository \Repositories\BasketRepository */
+          $basket_collection = $repository->findActiveByUser(
+            $app['Core']->getAuthenticatedUser()
+          );
 
+          $basket = $repository->findUserBasket(
+            $ssel_id
+            , $app['Core']->getAuthenticatedUser()
+          );
 
-                  $app->get('/feeds/entry/{entry_id}/', function (Silex\Application $app, $entry_id) use ($session, $appbox)
-                          {
+          /* @var $twig \Twig_Environment */
+          $twig = $app['Core']->getTwig();
 
-                            User_Adapter::updateClientInfos((6));
+          $template = 'lightbox/validate.twig';
 
-                            $browser = Browser::getInstance();
+          if (!$browser->isNewGeneration() && !$browser->isMobile())
+            $template = 'lightbox/IE6/validate.twig';
 
-                            $feed_entry = Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
+          $response = new Response($twig->render($template, array(
+                'baskets_collection' => $basket_collection,
+                'basket'             => $basket,
+                'local_title'        => strip_tags($basket->getName()),
+                'module'             => 'lightbox',
+                'module_name'        => _('admin::monitor: module validation')
+                )
+            ));
+          $response->setCharset('UTF-8');
 
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
+          return $response;
+        }
+      )->assert('ssel_id', '\d+');
 
-                            $template = 'lightbox/feed.twig';
 
-                            if (!$browser->isNewGeneration() && !$browser->isMobile())
-                              $template = 'lightbox/IE6/feed.twig';
 
-                            $output = $twig->render($template, array(
-                                'feed_entry' => $feed_entry,
-                                'first_item' => array_shift($feed_entry->get_content()),
-                                'local_title' => $feed_entry->get_title(),
-                                'module' => 'lightbox',
-                                'module_name' => _('admin::monitor: module validation')
-                                    )
-                            );
-                            $response = new Response($output, 200);
-                            $response->setCharset('UTF-8');
+      $app->get('/feeds/entry/{entry_id}/', function (\Silex\Application $app, $entry_id) use ($session, $appbox)
+        {
 
-                            return $response;
-                          }
-                  )->assert('entry_id', '\d+');
+          \User_Adapter::updateClientInfos((6));
 
-                  $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(Silex\Application $app, $ssel_id)
-                          {
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
+          $browser = \Browser::getInstance();
 
-                            $browser = Browser::getInstance();
+          $feed_entry = \Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
 
-                            $template = 'lightbox/basket_content_report.twig';
+          /* @var $twig \Twig_Environment */
+          $twig = $app['Core']->getTwig();
 
-                            $em = $app['Core']->getEntityManager();
-                            $repository = $em->getRepository('\Entities\Basket');
+          $template = 'lightbox/feed.twig';
 
-                            /* @var $repository \Repositories\BasketRepository */
-                            $basket = $repository->findUserBasket(
-                                    $ssel_id
-                                    , $app['Core']->getAuthenticatedUser()
-                            );
+          if (!$browser->isNewGeneration() && !$browser->isMobile())
+            $template = 'lightbox/IE6/feed.twig';
 
-                            $response = new Response($twig->render($template, array('basket' => $basket)));
-                            $response->setCharset('UTF-8');
+          $output = $twig->render($template, array(
+            'feed_entry'  => $feed_entry,
+            'first_item'  => array_shift($feed_entry->get_content()),
+            'local_title' => $feed_entry->get_title(),
+            'module'      => 'lightbox',
+            'module_name' => _('admin::monitor: module validation')
+            )
+          );
+          $response     = new Response($output, 200);
+          $response->setCharset('UTF-8');
 
-                            return $response;
-                          }
-                  )->assert('ssel_id', '\d+');
+          return $response;
+        }
+      )->assert('entry_id', '\d+');
 
-                  $app->post('/ajax/SET_NOTE/{sselcont_id}/', function (Silex\Application $app, $sselcont_id)
-                          {
-                            $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
+      $app->get('/ajax/LOAD_REPORT/{ssel_id}/', function(\Silex\Application $app, $ssel_id)
+        {
+          /* @var $twig \Twig_Environment */
+          $twig = $app['Core']->getTwig();
 
-                            $request = $app['request'];
-                            $note = $request->get('note');
+          $browser = \Browser::getInstance();
 
-                            if (is_null($note))
-                            {
-                              Return new Response('You must provide a note value', 400);
-                            }
+          $template = 'lightbox/basket_content_report.twig';
 
-                            $em = $app['Core']->getEntityManager();
+          $em         = $app['Core']->getEntityManager();
+          $repository = $em->getRepository('\Entities\Basket');
 
-                            /* @var $repository \Repositories\BasketElementRepository */
-                            $repository = $em->getRepository('\Entities\BasketElement');
+          /* @var $repository \Repositories\BasketRepository */
+          $basket = $repository->findUserBasket(
+            $ssel_id
+            , $app['Core']->getAuthenticatedUser()
+          );
 
-                            $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
+          $response = new Response($twig->render($template, array('basket' => $basket)));
+          $response->setCharset('UTF-8');
 
+          return $response;
+        }
+      )->assert('ssel_id', '\d+');
 
-                            $basket_element->getUserValidationDatas($app['Core']->getAuthenticatedUser())
-                                    ->setNote($note);
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
+      $app->post('/ajax/SET_NOTE/{sselcont_id}/', function (\Silex\Application $app, $sselcont_id)
+        {
+          $output = array('error' => true, 'datas' => _('Erreur lors de l\'enregistrement des donnees'));
 
-                            $browser = Browser::getInstance();
+          $request = $app['request'];
+          $note    = $request->get('note');
 
-                            if ($browser->isMobile())
-                            {
-                              $datas = $twig->render('lightbox/sc_note.twig', array('basket_element' => $basket_element));
+          if (is_null($note))
+          {
+            Return new Response('You must provide a note value', 400);
+          }
 
-                              $output = array('error' => false, 'datas' => $datas);
-                            }
-                            else
-                            {
-                              $template = 'lightbox/sc_note.twig';
+          $em = $app['Core']->getEntityManager();
 
-                              $datas = $twig->render($template, array('basket_element' => $basket_element));
+          /* @var $repository \Repositories\BasketElementRepository */
+          $repository = $em->getRepository('\Entities\BasketElement');
 
-                              $output = array('error' => false, 'datas' => $datas);
-                            }
+          $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
 
-                            $output = p4string::jsonencode($output);
 
-                            return new Response($output, 200, array('Content-Type' => 'application/json'));
-                          }
-                  )->assert('sselcont_id', '\d+');
+          $basket_element->getUserValidationDatas($app['Core']->getAuthenticatedUser())
+            ->setNote($note);
+          /* @var $twig \Twig_Environment */
+          $twig = $app['Core']->getTwig();
 
-                  $app->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(Silex\Application $app, $sselcont_id)
-                          {
-                            $request = $app['request'];
-                            $agreement = $request->get('agreement');
+          $browser = \Browser::getInstance();
 
-                            if (is_null($agreement))
-                            {
-                              Return new Response('You must provide an agreement value', 400);
-                            }
+          if ($browser->isMobile())
+          {
+            $datas = $twig->render('lightbox/sc_note.twig', array('basket_element' => $basket_element));
 
-                            $agreement = $agreement > 0;
+            $output = array('error' => false, 'datas' => $datas);
+          }
+          else
+          {
+            $template = 'lightbox/sc_note.twig';
 
-                            $ret = array(
-                                'error' => true,
-                                'releasable' => false,
-                                'datas' => _('Erreur lors de la mise a jour des donnes ')
-                            );
+            $datas = $twig->render($template, array('basket_element' => $basket_element));
 
-                            $user = $app['Core']->getAuthenticatedUser();
-                            $em = $app['Core']->getEntityManager();
-                            $repository = $em->getRepository('\Entities\BasketElement');
+            $output = array('error' => false, 'datas' => $datas);
+          }
 
-                            /* @var $repository \Repositories\BasketElementRepository */
-                            $basket_element = $repository->findUserElement(
-                                    $sselcont_id
-                                    , $user
-                            );
-                            /* @var $basket_element \Entities\BasketElement */
-                            $basket_element->getUserValidationDatas($user)
-                                    ->setAgreement($agreement);
+          $Serializer = $app['Core']['Serializer'];
 
-                            $participant = $basket_element->getBasket()
-                                    ->getValidation()
-                                    ->getParticipant($user);
+          return new Response(
+              $Serializer->serialize($output, 'json')
+              , 200
+              , array('Content-Type' => 'application/json')
+          );
+        }
+      )->assert('sselcont_id', '\d+');
 
-                            if ($participant->getIsConfirmed() === true)
-                            {
-                              $releasable = false;
-                            }
-                            else
-                            {
-                              $releasable = _('Do you want to send your report ?');
-                            }
+      $app->post('/ajax/SET_ELEMENT_AGREEMENT/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id)
+        {
+          $request   = $app['request'];
+          $agreement = $request->get('agreement');
 
-                            $ret = array(
-                                'error' => false
-                                , 'datas' => ''
-                                , 'releasable' => $releasable
-                            );
+          if (is_null($agreement))
+          {
+            Return new Response('You must provide an agreement value', 400);
+          }
 
-                            $output = p4string::jsonencode($ret);
+          $agreement = $agreement > 0;
 
-                            return new Response($output, 200, array('Content-Type' => 'application/json'));
-                          }
-                  )->assert('sselcont_id', '\d+');
+          $ret = array(
+            'error'      => true,
+            'releasable' => false,
+            'datas'      => _('Erreur lors de la mise a jour des donnes ')
+          );
 
+          $user       = $app['Core']->getAuthenticatedUser();
+          $em         = $app['Core']->getEntityManager();
+          $repository = $em->getRepository('\Entities\BasketElement');
 
-                  $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(Silex\Application $app, $ssel_id) use ($session, $appbox)
-                          {
-
-                            $em = $app['Core']->getEntityManager();
-
-                            $user = $app['Core']->getAuthenticatedUser();
-
-                            $repository = $em->getRepository('\Entities\Basket');
-
-                            /* @var $repository \Repositories\BasketRepository */
-                            $basket = $repository->findUserBasket(
-                                    $ssel_id
-                                    , $user
-                            );
-
-                            if (!$basket->getValidation())
-                            {
-                              Return new Response('There is no validation session attached to this basket', 400);
-                            }
-                            /* @var $basket \Entities\Basket */
-                            $participant = $basket->getValidation()->getParticipant($user);
-                            $participant->setIsConfirmed(true);
-
-                            $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
-
-                            $output = p4string::jsonencode($datas);
-
-                            $response = new Response($output, 200, array('Content-Type' => 'application/json'));
-                            $response->setCharset('UTF-8');
-
-                            return $response;
-                          }
-                  )->assert('ssel_id', '\d+');
-
-
-
-                  $app->error(function($e) use($app)
-                          {
-                            /* @var $twig \Twig_Environment */
-                            $twig = $app['Core']->getTwig();
-                            $registry = registry::get_instance();
-                            var_dump($e->getMessage());
-                            $template = 'lightbox/error.twig';
-
-                            if ($registry->get('GV_debug'))
-                            {
-                              $options = array(
-                                  'module' => 'validation',
-                                  'module_name' => _('admin::monitor: module validation'),
-                                  'error' => sprintf(
-                                          '%s in %s on line %s '
-                                          , $e->getMessage()
-                                          , $e->getFile()
-                                          , $e->getLine()
-                                  )
-                              );
-                            }
-                            else
-                            {
-                              $options = array(
-                                  'module' => 'validation',
-                                  'module_name' => _('admin::monitor: module validation'),
-                                  'error' => ''
-                              );
-                            }
-                            $output = $twig->render($template, $options);
-                            $response = new Response($output, 404);
-                            $response->setCharset('UTF-8');
-
-                            return $response;
-                          });
-
-                  return $app;
-                }
+          /* @var $repository \Repositories\BasketElementRepository */
+          $basket_element = $repository->findUserElement(
+            $sselcont_id
+            , $user
+          );
+          /* @var $basket_element \Entities\BasketElement */
+          $basket_element->getUserValidationDatas($user)
+            ->setAgreement($agreement);
+
+          $participant = $basket_element->getBasket()
+            ->getValidation()
+            ->getParticipant($user);
+
+          if ($participant->getIsConfirmed() === true)
+          {
+            $releasable = false;
+          }
+          else
+          {
+            $releasable = _('Do you want to send your report ?');
+          }
+
+          $ret = array(
+            'error'      => false
+            , 'datas'      => ''
+            , 'releasable' => $releasable
+          );
+
+          $Serializer = $app['Core']['Serializer'];
+
+          return new Response(
+              $Serializer->serialize($ret, 'json')
+              , 200
+              , array('Content-Type' => 'application/json')
+          );
+        }
+      )->assert('sselcont_id', '\d+');
+
+
+      $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(\Silex\Application $app, $ssel_id) use ($session, $appbox)
+        {
+
+          $em = $app['Core']->getEntityManager();
+
+          $user = $app['Core']->getAuthenticatedUser();
+
+          $repository = $em->getRepository('\Entities\Basket');
+
+          /* @var $repository \Repositories\BasketRepository */
+          $basket = $repository->findUserBasket(
+            $ssel_id
+            , $user
+          );
+
+          if (!$basket->getValidation())
+          {
+            Return new Response('There is no validation session attached to this basket', 400);
+          }
+          /* @var $basket \Entities\Basket */
+          $participant = $basket->getValidation()->getParticipant($user);
+          $participant->setIsConfirmed(true);
+
+          $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
+
+          $Serializer = $app['Core']['Serializer'];
+
+          $response = new Response(
+              $Serializer->serialize($datas, 'json')
+              , 200
+              , array('Content-Type' => 'application/json')
+          );
+
+          $response->setCharset('UTF-8');
+
+          return $response;
+        }
+      )->assert('ssel_id', '\d+');
+
+
+
+      $app->error(function($e) use($app)
+        {
+          /* @var $twig \Twig_Environment */
+          $twig     = $app['Core']->getTwig();
+          $registry = \registry::get_instance();
+
+          $template = 'lightbox/error.twig';
+
+          if ($registry->get('GV_debug'))
+          {
+            $options = array(
+              'module'      => 'validation',
+              'module_name' => _('admin::monitor: module validation'),
+              'error'       => sprintf(
+                '%s in %s on line %s '
+                , $e->getMessage()
+                , $e->getFile()
+                , $e->getLine()
+              )
+            );
+          }
+          else
+          {
+            $options = array(
+              'module'      => 'validation',
+              'module_name' => _('admin::monitor: module validation'),
+              'error'       => ''
+            );
+          }
+          $output       = $twig->render($template, $options);
+          $response     = new Response($output, 404);
+          $response->setCharset('UTF-8');
+
+          return $response;
+        });
+
+      return $app;
+    }
 );

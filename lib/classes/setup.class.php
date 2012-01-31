@@ -43,6 +43,8 @@ class setup
       , "xml"
       , "zip"
       , "zlib"
+      , "intl"
+      , "twig"
   );
   protected static $PHP_CONF = array(
       'output_buffering' => '4096'  //INI_ALL
@@ -69,17 +71,29 @@ class setup
   public static function is_installed()
   {
     $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
-    
-    return is_file($appConf->getConfigurationPathName());
+    $installed = false;
+    try
+    {
+      $appConf->getConfigurationFile();
+      $appConf->getConnexionFile();
+      $appConf->getServiceFile();
+      $installed = true;
+    }
+    catch (\Exception $e)
+    {
+
+    }
+
+    return $installed;
   }
-  
+
   public static function needUpgradeConfigurationFile()
   {
-    return (is_file(__DIR__ . "/../../conf/connexion.inc") 
-          && is_file(__DIR__ . "/../../config.inc"));
+    return (is_file(__DIR__ . "/../../config/connexion.inc")
+            && is_file(__DIR__ . "/../../config/config.inc"));
   }
-  
-  function create_global_values(registryInterface &$registry, $datas=array())
+
+  function create_global_values(registryInterface &$registry, $datas = array())
   {
     require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
@@ -293,11 +307,13 @@ class setup
   protected static function discover_binary($binary, array $look_here = array())
   {
     if (system_server::get_platform() == 'WINDOWS')
+
       return null;
 
     foreach ($look_here as $place)
     {
       if (is_executable($place))
+
         return $place;
     }
 
@@ -309,6 +325,7 @@ class setup
     $registry = registry::get_instance();
 
     if ($registry->get('GV_h264_streaming') !== true)
+
       return;
     ?>
     <h1>mod_auth_token configuration </h1>
@@ -520,6 +537,7 @@ class setup
       </form>
 
       <?php
+
       return;
     }
 
@@ -554,10 +572,18 @@ class setup
       {
         if (extension_loaded($ext) !== true)
         {
-          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), true);
+          $blocker = true;
+          if("twig" === $ext)
+          {
+            $blocker = false;
+          }
+          
+          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), $blocker);
         }
         else
-          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext), true);
+        {
+          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext));
+        }
       }
 
       return new Setup_ConstraintsIterator($constraints);
@@ -711,6 +737,7 @@ class setup
       $constraints = array();
 
       if (!extension_loaded('gettext'))
+
         return new Setup_ConstraintsIterator($constraints);
 
       foreach (User_Adapter::$locales as $code => $language_name)
@@ -743,20 +770,25 @@ class setup
 
       if (($current === '' || $current === 'off' || $current === '0') && $is_flag)
         if ($value === 'off' || $value === '0' || $value === '')
+
           return $current;
       if (($current === '1' || $current === 'on') && $is_flag)
         if ($value === 'on' || $value === '1')
+
           return $current;
       if ($current === $value)
+
         return $current;
     }
 
-    public static function rollback(connection_pdo $conn, connection_pdo $connbas =null)
+    public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)
     {
       $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
 
       if (!$structure)
+      {
         throw new Exception('Unable to load schema');
+      }
 
       $appbox = $structure->appbox;
       $databox = $structure->databox;
@@ -772,7 +804,7 @@ class setup
         }
         catch (Exception $e)
         {
-          
+
         }
       }
       if ($connbas)
@@ -788,25 +820,45 @@ class setup
           }
           catch (Exception $e)
           {
-            
+
           }
         }
       }
 
+      $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+
       try
       {
-        $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
         $configFile = $appConf->getConfigurationFile();
         unlink($configFile->getPathname());
       }
       catch (\Exception $e)
       {
-        
+
       }
-      
+
+      try
+      {
+        $serviceFile = $appConf->getServiceFile();
+        unlink($serviceFile->getPathname());
+      }
+      catch (\Exception $e)
+      {
+
+      }
+
+      try
+      {
+        $connexionfFile = $appConf->getConnexionFile();
+        unlink($connexionfFile->getPathname());
+      }
+      catch (\Exception $e)
+      {
+
+      }
+
       return;
     }
 
   }
 
-  

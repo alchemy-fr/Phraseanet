@@ -9,8 +9,12 @@
  * file that was distributed with this source code.
  */
 
-$new_include_path = __DIR__ . "/../../../../vendor/" . PATH_SEPARATOR . get_include_path();
-set_include_path($new_include_path);
+$include_path = realpath(__DIR__ . '/../../../../vendor/');
+if(strpos(get_include_path(), $include_path) === false)
+{
+  $new_include_path = $include_path . PATH_SEPARATOR . get_include_path();
+  set_include_path($new_include_path);
+}
 
 /**
  *

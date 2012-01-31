@@ -32,20 +32,20 @@ class LoadOneBasket extends \PhraseaFixture\AbstractWZ implements FixtureInterfa
   public function load($manager)
   {
     $basket = new \Entities\Basket();
-    
+
     $basket->setName('test');
     $basket->setDescription('description');
-    
+
     if (null === $this->user)
     {
       throw new \LogicException('Fill a user to store a new basket');
     }
-    
+
     $basket->setOwner($this->user);
-    
+
     $manager->persist($basket);
     $manager->flush();
-    
+
     $this->basket = $basket;
 
     $this->addReference('one-basket', $basket);

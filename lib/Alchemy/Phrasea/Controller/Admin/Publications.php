@@ -41,7 +41,7 @@ class Publications implements ControllerProviderInterface
               $feeds = \Feed_Collection::load_all($appbox, $user);
 
               $template = 'admin/publications/list.html';
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('feeds' => $feeds));
@@ -55,9 +55,9 @@ class Publications implements ControllerProviderInterface
               $request = $app['request'];
 
               $feed = \Feed_Adapter::create($appbox, $user, $request->get('title'), $request->get('subtitle'));
-              
-              if($request->get('public') == '1')
-                $feed->set_public (true);
+
+              if ($request->get('public') == '1')
+                $feed->set_public(true);
               elseif ($request->get('base_id'))
                 $feed->set_collection(\collection::get_from_base_id($request->get('base_id')));
 
@@ -78,7 +78,7 @@ class Publications implements ControllerProviderInterface
                           , 'error' => $app['request']->get('error')
                               )
               );
-            });
+            })->assert('id', '\d+');
 
 
     $controllers->post('/feed/{id}/update/', function($id) use ($app, $appbox)
@@ -88,6 +88,7 @@ class Publications implements ControllerProviderInterface
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
               if (!$feed->is_owner($user))
+
                 return $app->redirect('/admin/publications/feed/' . $id . '/?error=' . _('You are not the owner of this feed, you can not edit it'));
 
               $request = $app['request'];
@@ -107,7 +108,7 @@ class Publications implements ControllerProviderInterface
               $feed->set_public($request->get('public'));
 
               return $app->redirect('/admin/publications/list/');
-            });
+            })->assert('id', '\d+');
 
 
     $controllers->post('/feed/{id}/iconupload/', function($id) use ($app, $appbox)
@@ -116,30 +117,40 @@ class Publications implements ControllerProviderInterface
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
               if (!$feed->is_owner($user))
+
                 return new Response('ERROR:you are not allowed');
 
-              if ($_FILES['Filedata']['error'] !== 0)
+              $request = $app["request"];
+
+              $fileData = $request->files->get("Filedata");
+
+              if ($fileData['error'] !== 0)
+
                 return new Response('ERROR:error while upload');
 
-              $file = new \system_file($_FILES['Filedata']['tmp_name']);
+              $file = new \system_file($fileData['tmp_name']);
               if (!in_array($file->get_mime(), array('image/jpeg', 'image/jpg', 'image/gif')))
+
                 return new Response('ERROR:bad filetype');
 
               if ($file->getSize() > 200000)
+
                 return new Response('ERROR:file too large');
 
               $datas = $file->get_technical_datas();
               if (!isset($datas[\system_file::TC_DATAS_WIDTH]) || !isset($datas[\system_file::TC_DATAS_HEIGHT]))
+
                 return new Response('ERROR:file is not square');
 
               if ($datas[\system_file::TC_DATAS_WIDTH] != $datas[\system_file::TC_DATAS_HEIGHT])
+
                 return new Response('ERROR:file is not square');
 
               $feed->set_icon($file);
               unlink($file->getPathname());
 
               return new Response('FILEHREF:' . $feed->get_icon_url() . '?' . mt_rand(100000, 999999));
-            });
+            })->assert('id', '\d+');
 
     $controllers->post('/feed/{id}/addpublisher/', function($id) use ($app, $appbox)
             {
@@ -156,8 +167,8 @@ class Publications implements ControllerProviderInterface
                 $error = $e->getMessage();
               }
 
-              return $app->redirect('/admin/publications/feed/' . $id . '/');
-            });
+              return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
+            })->assert('id', '\d+');
 
 
     $controllers->post('/feed/{id}/removepublisher/', function($id) use ($app, $appbox)
@@ -178,7 +189,7 @@ class Publications implements ControllerProviderInterface
               }
 
               return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
-            });
+            })->assert('id', '\d+');
 
     $controllers->post('/feed/{id}/delete/', function($id) use ($app, $appbox)
             {

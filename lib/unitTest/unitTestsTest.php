@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for random.
@@ -10,7 +10,7 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
 
   public function testFiles()
   {
-    $testDir = dirname(__FILE__).'/';
+    $testDir = __DIR__.'/';
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($testDir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
     {
       if (strpos($file, '/.svn/') !== false)
@@ -19,9 +19,10 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
         continue;
       if (substr($file->getFilename(), -4) !== '.php')
         continue;
+      if($file->getFilename() === "BoilerPlate.php")
+        continue;
 
-
-      $this->assertRegExp('/[a-zA-Z0-9-_\.]+Test.php/', $file->getFilename(), 'Verify that all tests files names');
+      $this->assertRegExp('/[a-zA-Z0-9-_\.]+Test.php/', $file->getPathname(), 'Verify that all tests files names');
     }
   }
 

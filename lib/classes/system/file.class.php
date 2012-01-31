@@ -713,8 +713,6 @@ class system_file extends SplFileObject
 
   public function read_uuid()
   {
-    $registry = registry::get_instance();
-
     if ($this->uuid)
 
       return $this->uuid;
@@ -1053,7 +1051,6 @@ class system_file extends SplFileObject
           $li = $xptrdf->query('rdf:li', $bag->item(0));
           if ($li->length > 0)
           {
-//            $tfields[$src] = array();
             for ($ili = 0; $ili < $li->length; $ili++)
             {
               $value = $base64_encoded ? base64_decode($li->item($ili)->nodeValue) : $li->item($ili)->nodeValue;
@@ -1135,12 +1132,12 @@ class system_file extends SplFileObject
 
       foreach ($tmpval as $val)
       {
-        $ret[$meta->get_id()] = array(
-            'meta_struct_id' => $meta->get_id(),
-            'meta_id' => null,
-            'value' => array($val)
-        );
-      }
+      $ret[] = array(
+          'meta_struct_id' => $meta->get_id(),
+          'meta_id' => null,
+            'value' => $val
+      );
+    }
     }
 
 
@@ -1211,16 +1208,19 @@ class system_file extends SplFileObject
         $fv = array($fv);
       }
 
-      if (isset($metadatas[$meta->get_id()]) && $meta->is_multi() === true)
-      {
-        $fv = array_unique(array_merge($metadatas[$meta->get_id()], $fv));
-      }
+//      if (isset($metadatas[$meta->get_id()]) && $meta->is_multi() === true)
+//      {
+//        $fv = array_unique(array_merge($metadatas[$meta->get_id()], $fv));
+//      }
 
-      $metadatas[$meta->get_id()] = array(
-          'meta_struct_id' => $meta->get_id(),
-          'meta_id' => null,
-          'value' => $fv
-      );
+      foreach($fv as $value)
+      {
+        $metadatas[] = array(
+            'meta_struct_id' => $meta->get_id(),
+            'meta_id' => null,
+            'value' => $value
+        );
+      }
 
       unset($meta);
     }
@@ -1387,7 +1387,7 @@ if (!function_exists('mime_content_type'))
         , 'movie' => 'video/x-sgi-movie'  // Videos MoviePlayer
     );
     $fileinfo = new system_file($f);
-    $extension = $fileinfo->get_extension(true);
+    $ext = $fileinfo->get_extension(true);
 
     return array_key_exists($ext, $ext2mime) ?
             $ext2mime[$ext] : 'application/octet-stream';

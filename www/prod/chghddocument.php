@@ -48,7 +48,11 @@ if (!isset($_FILES["newHD"]) || $_FILES["newHD"]["tmp_name"] == "" || $_FILES["n
 try
 {
   $record = new record_adapter($parm['sbas_id'], $parm['record_id']);
-  p4file::substitute($record, $_FILES["newHD"]["tmp_name"], $_FILES["newHD"]["name"], ($parm['ccfilename'] == '1'));
+  $record->substitute_subdef('document', new system_file($_FILES["newHD"]["tmp_name"]));
+  if($parm['ccfilename'] == '1')
+  {
+    $record->set_original_name($_FILES["newHD"]["name"]);
+  }
 }
 catch (Exception $e)
 {

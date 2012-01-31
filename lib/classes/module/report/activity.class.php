@@ -935,7 +935,7 @@ class module_report_activity extends module_report
                 AND (" . $collfilter['sql'] . ")
                 GROUP by ddate
                 ORDER BY ddate ASC";
-    
+
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -951,7 +951,7 @@ class module_report_activity extends module_report
     {
       $res[$key] = number_format($act, 2, '.', '');
     }
-    
+
     return $res;
   }
 
@@ -1102,7 +1102,7 @@ class module_report_activity extends module_report
             AND (" . $collfilter['sql'] . ")
             GROUP BY ddate
             ORDER BY activity ASC ";
-    
+
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1112,6 +1112,7 @@ class module_report_activity extends module_report
       $date = new DateTime($row['ddate']);
       $result[$date->format(DATE_ATOM)] = $row['activity'];
     }
+
     return $result;
   }
 

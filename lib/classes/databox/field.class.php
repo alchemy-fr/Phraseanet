@@ -121,6 +121,8 @@ class databox_field implements cache_cacheableInterface
   protected $sbas_id;
   protected static $_instance = array();
   protected $dces_element;
+  protected $Vocabulary;
+  protected $VocabularyRestriction = false;
 
   const TYPE_TEXT = "text";
   const TYPE_DATE = "date";
@@ -162,6 +164,7 @@ class databox_field implements cache_cacheableInterface
     $sql = "SELECT `regdate`, `regdesc`, `regname`, `thumbtitle`, `separator`
               , `dces_element`, `tbranch`, `type`, `report`, `multi`, `required`
               , `readonly`, `indexable`, `name`, `src`
+              , `VocabularyControlType`, `RestrictToVocabularyControl`
             FROM metadatas_structure WHERE id=:id";
 
     $stmt = $connbas->prepare($sql);
@@ -177,8 +180,19 @@ class databox_field implements cache_cacheableInterface
     $this->required = !!$row['required'];
     $this->multi = !!$row['multi'];
     $this->report = !!$row['report'];
-    $this->type = $row['type'] ?: self::TYPE_STRING;
+    $this->type = $row['type'] ? : self::TYPE_STRING;
     $this->tbranch = $row['tbranch'];
+
+    try
+    {
+      $this->Vocabulary = \Alchemy\Phrasea\Vocabulary\Controller::get($row['VocabularyControlType']);
+      $this->VocabularyRestriction = !!$row['RestrictToVocabularyControl'];
+    }
+    catch (Exception $e)
+    {
+      
+    }
+
     if ($row['dces_element'])
     {
       $dc_class = 'databox_Field_DCES_' . $row['dces_element'];
@@ -205,6 +219,16 @@ class databox_field implements cache_cacheableInterface
     $this->regdate = !!$row['regdate'];
 
     return $this;
+  }
+
+  public function getVocabularyControl()
+  {
+    return $this->Vocabulary;
+  }
+
+  public function isVocabularyRestricted()
+  {
+    return $this->VocabularyRestriction;
   }
 
   /**
@@ -277,7 +301,7 @@ class databox_field implements cache_cacheableInterface
             '/record/description/*[@meta_id=' . $this->id . ']'
     );
 
-    foreach($nodes as $node)
+    foreach ($nodes as $node)
     {
       /* @var $node DOMNode */
       $node->parentNode->removeChild($node);
@@ -308,7 +332,9 @@ class databox_field implements cache_cacheableInterface
           `report` = :report,
           `type` = :type,
           `tbranch` = :tbranch,
-          `thumbtitle` = :thumbtitle
+          `thumbtitle` = :thumbtitle,
+          `VocabularyControlType` = :VocabularyControlType,
+          `RestrictToVocabularyControl` = :RestrictVocab
           WHERE id = :id';
 
     $params = array(
@@ -323,6 +349,8 @@ class databox_field implements cache_cacheableInterface
         ':type' => $this->type,
         ':tbranch' => $this->tbranch,
         ':thumbtitle' => $this->thumbtitle,
+        ':VocabularyControlType' => $this->Vocabulary ? $this->Vocabulary->getType() : null,
+        ':RestrictVocab' => $this->Vocabulary ? ($this->VocabularyRestriction ? '1' : '0') : '0',
         ':id' => $this->id
     );
 
@@ -383,10 +411,7 @@ class databox_field implements cache_cacheableInterface
    */
   public function set_name($name)
   {
-    $unicode_processor = new unicode();
-    $name = $unicode_processor->remove_nonazAZ09($name, false, false);
-    $name = $unicode_processor->remove_first_digits($name);
-    $this->name = $name;
+    $this->name = self::generateName($name);
 
     return $this;
   }
@@ -473,6 +498,20 @@ class databox_field implements cache_cacheableInterface
     return $this;
   }
 
+  public function setVocabularyControl(\Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null)
+  {
+    $this->Vocabulary = $vocabulary;
+
+    return $this;
+  }
+
+  public function setVocabularyRestricted($boolean)
+  {
+    $this->VocabularyRestriction = !!$boolean;
+
+    return $this;
+  }
+
   /**
    *
    * @param boolean $bool
@@ -554,7 +593,7 @@ class databox_field implements cache_cacheableInterface
   {
     if (strpos($separator, ';') === false)
       $separator .= ';';
-      
+
     $this->separator = $separator;
 
     return $this;
@@ -628,7 +667,7 @@ class databox_field implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return $this;
@@ -810,11 +849,6 @@ class databox_field implements cache_cacheableInterface
   {
     $sorter = 0;
 
-    $unicode_processor = new unicode();
-
-    $name = $unicode_processor->remove_nonazAZ09($name, false, false);
-    $name = $unicode_processor->remove_first_digits($name);
-
     $sql = 'SELECT (MAX(sorter) + 1) as sorter FROM metadatas_structure';
     $stmt = $databox->get_connection()->prepare($sql);
     $stmt->execute();
@@ -833,13 +867,22 @@ class databox_field implements cache_cacheableInterface
           1, :sorter)";
 
     $stmt = $databox->get_connection()->prepare($sql);
-    $stmt->execute(array(':name' => $name, ':sorter' => $sorter));
+    $stmt->execute(array(':name' => self::generateName($name), ':sorter' => $sorter));
     $id = $databox->get_connection()->lastInsertId();
     $stmt->closeCursor();
 
     $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);
 
     return self::get_instance($databox, $id);
+  }
+
+  public static function generateName($name)
+  {
+    $unicode_processor = new unicode();
+
+    $name = $unicode_processor->remove_nonazAZ09($name, false, false);
+
+    return $unicode_processor->remove_first_digits($name);
   }
 
   /**

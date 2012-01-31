@@ -63,11 +63,14 @@ class registry implements registryInterface
                     new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
     );
     $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
-    $phraseanet = $configuration->getPhraseanet();
+
     $this->cache->set('GV_RootPath', dirname(dirname(__DIR__)) . '/');
-    $this->cache->set('GV_ServerName', $phraseanet->get('servername'));
-    $this->cache->set('GV_debug', $configuration->isDebug());
-    $this->cache->set('GV_maintenance', $configuration->isMaintained());
+    if ($configuration->isInstalled())
+    {
+      $this->cache->set('GV_ServerName', $configuration->getPhraseanet()->get('servername'));
+      $this->cache->set('GV_debug', $configuration->isDebug());
+      $this->cache->set('GV_maintenance', $configuration->isMaintained());
+    }
 
     return $this;
   }
@@ -94,7 +97,7 @@ class registry implements registryInterface
       }
       catch (Exception $e)
       {
-        
+
       }
       foreach ($rs as $row)
       {
@@ -137,8 +140,10 @@ class registry implements registryInterface
       $this->load();
 
     if (!$this->cache->is_set($key) && !is_null($defaultvalue))
+
       return $defaultvalue;
     else
+
       return $this->cache->get($key);
   }
 
@@ -148,7 +153,7 @@ class registry implements registryInterface
    * @param mixed $value
    * @return registry
    */
-  public function set($key, $value, $type = 'string')
+  public function set($key, $value, $type)
   {
     $this->load();
     $delete_cache = false;

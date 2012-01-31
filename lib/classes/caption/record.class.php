@@ -60,6 +60,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
   protected function retrieve_fields()
   {
     if (is_array($this->fields))
+
       return $this->fields;
 
     $fields = array();
@@ -85,7 +86,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
       try
       {
         $databox_meta_struct = databox_field::get_instance($this->databox, $row['structure_id']);
-        $metadata = new caption_field($databox_meta_struct, $this->record, $row['meta_id']);
+        $metadata = new caption_field($databox_meta_struct, $this->record);
 
         $rec_fields[$databox_meta_struct->get_id()] = $metadata;
         $dces_element = $metadata->get_databox_field()->get_dces_element();
@@ -96,7 +97,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
     }
     $this->fields = $rec_fields;
@@ -133,6 +134,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
   {
     $fields = $this->retrieve_fields();
     if (isset($this->dces_elements[$label]))
+
       return $fields[$this->dces_elements[$label]];
     return null;
   }

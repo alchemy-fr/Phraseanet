@@ -23,12 +23,12 @@
 </form>
 
 
-  
+
   <script type="text/javascript">
     $(document).ready(function(){
-      
+
       var container = $('#DIALOG');
-      
+
       $('.elements', container).sortable({
         appendTo : container,
         placeholder: 'diapo ui-sortable-placeholder',
@@ -117,13 +117,12 @@
         }
 
       }).disableSelection();
-      
-      var OrderSelection = new Selectable({
-          selector : '.CHIM', 
-          container:$('#DIALOG .elements'),
+
+      var OrderSelection = new Selectable($('#DIALOG .elements'), {
+          selector : '.CHIM'
         });
-      
-      
+
+
       $('#DIALOG form[name="reorder"]').bind('submit', function(event){
 
         //$this.SetLoader(true);

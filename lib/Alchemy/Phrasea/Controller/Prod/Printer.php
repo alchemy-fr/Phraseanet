@@ -31,13 +31,13 @@ class Printer implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $controllers->post('/', function() use ($app)
+    $controllers->post('/', function(Application $app)
             {
-              $printer = new RecordHelper\Printer($app['Core']);
+              $printer = new RecordHelper\Printer($app['Core'], $app['request']);
 
               $template = 'prod/actions/printer_default.html.twig';
 
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('printer' => $printer, 'message' => ''));
@@ -46,9 +46,9 @@ class Printer implements ControllerProviderInterface
 
 
 
-    $controllers->post('/print.pdf', function() use ($app)
+    $controllers->post('/print.pdf', function(Application $app)
             {
-              $printer = new RecordHelper\Printer($app['Core']);
+              $printer = new RecordHelper\Printer($app['Core'], $app['request']);
 
               $request = $app['request'];
 
@@ -62,6 +62,7 @@ class Printer implements ControllerProviderInterface
                         ->log($record, \Session_Logger::EVENT_PRINT, $layout, '');
               }
               $PDF = new PDFExport($printer->get_elements(), $layout);
+
               return new Response($PDF->render(), 200, array('Content-Type' => 'application/pdf'));
             }
     );

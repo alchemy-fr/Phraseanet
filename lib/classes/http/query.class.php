@@ -25,26 +25,41 @@ class http_query
    */
   public static function getHttpCodeFromUrl($url)
   {
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $url);
-      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-      curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-      curl_setopt($ch, CURLOPT_NOBODY, true);
-      curl_setopt($ch, CURLOPT_HEADER, true);
+    if (!is_scalar($url))
 
-      curl_exec($ch);
-      $result = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      return null;
 
-      curl_close($ch);
+    if (trim($url) === '')
 
-      return $result;
+      return null;
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_setopt($ch, CURLOPT_HEADER, true);
+
+    curl_exec($ch);
+    $result = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+
+    return $result;
   }
 
   public static function getHttpHeaders($url)
   {
+    if (!is_scalar($url))
+
+      return null;
+
+    if (trim($url) === '')
+
+      return null;
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -69,24 +84,32 @@ class http_query
    * @param array $post_data
    * @return string
    */
-  public static function getUrl($url, $post_data=false)
+  public static function getUrl($url, $post_data = false)
   {
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $url);
-      curl_setopt($ch, CURLOPT_HEADER, false);
-      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-      curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+    if (!is_scalar($url))
 
-      if ($post_data)
-      {
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-      }
+      return null;
 
-      $result = (curl_exec($ch));
-      curl_close($ch);
+    if (trim($url) === '')
+
+      return null;
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+
+    if ($post_data)
+    {
+      curl_setopt($ch, CURLOPT_POST, true);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+    }
+
+    $result = (curl_exec($ch));
+    curl_close($ch);
 
     return $result;
   }

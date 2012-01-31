@@ -37,13 +37,13 @@ class set_export extends set_abstract
   public function __construct($lst, $sstid)
   {
     $Core = bootstrap::getCore();
-    
+
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
 
     $user = $Core->getAuthenticatedUser();
-            
+
     $download_list = array();
 
     $remain_hd = array();
@@ -52,7 +52,7 @@ class set_export extends set_abstract
     {
       $em = $Core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
-      
+
       /* @var $repository \Repositories\BasketRepository */
       $Basket = $repository->findUserBasket($sstid, $user);
 
@@ -99,15 +99,13 @@ class set_export extends set_abstract
         {
           $record = new record_adapter($basrec[0], $basrec[1]);
         }
-        catch(Exception_Record_AdapterNotFound $e)
+        catch (Exception_Record_AdapterNotFound $e)
         {
           continue;
         }
 
         if ($record->is_grouping())
         {
-          $xml = $record->get_xml();
-
           foreach ($record->get_children() as $child_basrec)
           {
             $base_id = $child_basrec->get_base_id();
@@ -411,7 +409,7 @@ class set_export extends set_abstract
    * @param boolean $rename_title
    * @return Array
    */
-  public function prepare_export(Array $subdefs, $rename_title=false)
+  public function prepare_export(Array $subdefs, $rename_title = false)
   {
     if (!is_array($subdefs))
     {
@@ -487,10 +485,6 @@ class set_export extends set_abstract
           continue;
         }
         if (!in_array($name, array('caption', 'caption-yaml')) && !isset($sd[$name]))
-        {
-          continue;
-        }
-        if (!isset($sd[$name]))
         {
           continue;
         }
@@ -689,7 +683,8 @@ class set_export extends set_abstract
         system_file::mkdir($caption_dir);
 
         $desc = self::get_caption(
-                        $download_element->get_base_id(), $download_element->get_record_id(), $session->get_ses_id()
+                        $download_element->get_base_id()
+                        , $download_element->get_record_id()
         );
 
         $file = $files[$id]["export_name"]
@@ -717,7 +712,10 @@ class set_export extends set_abstract
 
 
         $desc = self::get_caption(
-                        $download_element->get_base_id(), $download_element->get_record_id(), $session->get_ses_id(), true, 'yaml'
+                        $download_element->get_base_id()
+                        , $download_element->get_record_id()
+                        , true
+                        , 'yaml'
         );
 
         $file = $files[$id]["export_name"]
@@ -736,12 +734,14 @@ class set_export extends set_abstract
         }
       }
     }
+
     $this->list = array(
         'files' => $files,
         'names' => $file_names,
         'size' => $size,
         'count' => $n_files
     );
+
 
     return $this->list;
   }
@@ -839,7 +839,7 @@ class set_export extends set_abstract
    * @param boolean $check_rights
    * @return string
    */
-  public static function get_caption($bas, $rec, $check_rights=true, $format = 'xml')
+  public static function get_caption($bas, $rec, $check_rights = true, $format = 'xml')
   {
     $dom = new DOMDocument();
     $dom->formatOutput = true;
@@ -907,9 +907,8 @@ class set_export extends set_abstract
               case 'yml':
 
                 $vi = trim($vi);
-                $int_vi = (int) $vi;
-                if ($int_vi == $vi)
-                  $vi = $int_vi . ' est egal a ' . $vi;
+                if (ctype_digit($vi))
+                  $vi = (int) $vi;
 
                 $buffer[trim($ki)] = $vi;
                 break;
@@ -954,7 +953,7 @@ class set_export extends set_abstract
    * @return Void
    */
   public static function stream_file(
-  $file, $exportname, $mime, $disposition='attachment')
+  $file, $exportname, $mime, $disposition = 'attachment')
   {
     require_once __DIR__ . "/../../../lib/vendor/Silex/autoload.php";
     $registry = registry::get_instance();
@@ -995,24 +994,25 @@ class set_export extends set_abstract
       else
       {
         /**
-         * 
+         *
          * Header "Pragma: public" SHOULD be present.
          * In case it is not present, download on IE 8 and previous over HTTPS
          * will fail.
-         * 
+         *
          * @todo : merge this shitty fix with Response object.
-         * 
+         *
          */
-        if(!headers_sent())
+        if (!headers_sent())
         {
           header("Pragma: public");
         }
-        
+
         $response->headers->set('Content-Type', $mime);
         $response->headers->set('Content-Name', $exportname);
         $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
         $response->headers->set('Content-Length', filesize($file));
         $response->setContent(file_get_contents($file));
+
         return $response;
       }
     }
@@ -1028,7 +1028,7 @@ class set_export extends set_abstract
    * @param String $disposition
    * @return Void
    */
-  public static function stream_data($data, $exportname, $mime, $disposition='attachment')
+  public static function stream_data($data, $exportname, $mime, $disposition = 'attachment')
   {
 
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");

@@ -104,10 +104,12 @@ class Root implements ControllerProviderInterface
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
-              $out = $twig->render('prod/index.html', array(
+              $Serializer = $app['Core']['Serializer'];
+
+              $out = $twig->render('prod/index.html.twig', array(
                   'module_name' => 'Production',
-                  'WorkZone' => new Helper\WorkZone($app['Core']),
-                  'module_prod' => new Helper\Prod($app['Core']),
+                  'WorkZone' => new Helper\WorkZone($app['Core'], $app['request']),
+                  'module_prod' => new Helper\Prod($app['Core'], $app['request']),
                   'cssfile' => $cssfile,
                   'module' => 'prod',
                   'events' => \eventsmanager_broker::getInstance($appbox, $app['Core']),
@@ -122,8 +124,8 @@ class Root implements ControllerProviderInterface
                   'search_status' => \databox_status::getSearchStatus(),
                   'queries_history' => \queries::history(),
                   'thesau_js_list' => $thjslist,
-                  'thesau_json_sbas' => \p4string::jsonencode($sbas),
-                  'thesau_json_bas2sbas' => \p4string::jsonencode($bas2sbas),
+                  'thesau_json_sbas' => $Serializer->serialize($sbas, 'json'),
+                  'thesau_json_bas2sbas' => $Serializer->serialize($bas2sbas, 'json'),
                   'thesau_languages' => \User_Adapter::avLanguages(),
                   'GV_bitly_user' => $registry->get('GV_bitly_user'),
                   'GV_bitly_key' => $registry->get('GV_bitly_key')

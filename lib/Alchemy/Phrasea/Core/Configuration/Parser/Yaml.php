@@ -14,7 +14,7 @@ use Symfony\Component\Yaml\Yaml as SfYaml;
 
 /**
  * Parse a configuration file in yaml format and return an array of values
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -36,7 +36,7 @@ class Yaml implements \Alchemy\Phrasea\Core\Configuration\Parser
       throw new \Exception(sprintf('Failed to parse the configuration file %s', $e->getMessage()));
     }
   }
-  
+
   /**
    *
    * @Override

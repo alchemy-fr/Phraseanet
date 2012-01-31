@@ -100,7 +100,7 @@ class task_period_batchupload extends task_appboxAbstract
           $collection = collection::get_from_coll_id($databox, $coll_id);
 
           $record = record_adapter::create($collection, $system_file, $row2['filename'], false);
-          $record->set_metadatas($meta['metadatas']);
+          $record->set_metadatas($meta['metadatas'], true);
           $record->rebuild_subdefs();
           $record->reindex();
           unset($record);

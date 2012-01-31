@@ -1,0 +1,247 @@
+
+<div class="PNB" id="BasketBrowser">
+  <div class="PNB10 Browser">
+    <div class="PNB10" style="width:190px;right:auto;">
+      <form name="BasketBrowser" method="GET" action="/prod/WorkZone/Browse/Search/">
+        <input name="Query" class="Query" placeholder="{% trans 'Search baskets' %}" type="text"/>
+
+        <h1>{% trans 'See' %}</h1>
+        <ul>
+          <li class="first">
+            <input id="basket_browse_all" type="radio" name="Type" value="" checked="checked" />
+            <label for="basket_browse_all">
+              {% trans 'All' %}
+            </label>
+          </li>
+          <li>
+            <input id="basket_browse_my_bask" type="radio" name="Type" value="{{ constant('\\Repositories\\BasketRepository::MYBASKETS') }}" />
+            <label for="basket_browse_my_bask">
+              {% trans 'My baskets' %}
+            </label>
+          </li>
+          <li>
+            <input id="basket_browse_received" type="radio" name="Type" value="{{ constant('\\Repositories\\BasketRepository::RECEIVED') }}" />
+            <label for="basket_browse_received">
+              {% trans 'Received baskets' %}
+            </label>
+          </li>
+          <li>
+            <input id="basket_browse_valid_sent" type="radio" name="Type" value="{{ constant('\\Repositories\\BasketRepository::VALIDATION_SENT') }}" />
+            <label for="basket_browse_valid_sent">
+              {% trans 'Validations sent' %}
+            </label>
+          </li>
+          <li>
+            <input id="basket_browse_valid_done" type="radio" name="Type" value="{{ constant('\\Repositories\\BasketRepository::VALIDATION_DONE') }}" />
+            <label for="basket_browse_valid_done">
+              {% trans 'Validations received' %}
+            </label>
+          </li>
+        </ul>
+        <h1>{% trans 'When' %}</h1>
+        <ul>
+          <li class="first">
+            <input id="basket_browse_all_time" type="radio" name="Year" value="" checked="checked" />
+            <label for="basket_browse_all_time">
+              {% trans 'Any time' %}
+            </label>
+          </li>
+          <li>
+            <input id="basket_browse_this_year" type="radio" name="Year" value="{{ CurrentYear }}" />
+            <label for="basket_browse_this_year">
+              {% trans 'This year' %}
+            </label>
+          </li>
+          {% set CurrentYear = CurrentYear - 1 %}
+          <li>
+            <input id="basket_browse_last_year" type="radio" name="Year" value="{{ CurrentYear }}" />
+            <label for="basket_browse_last_year">
+              {% trans 'Past year' %}
+            </label>
+          </li>
+          {% set CurrentYear = CurrentYear - 1 %}
+          <li>
+            <input id="basket_browse_year{{ CurrentYear }}" type="radio" name="Year" value="{{ CurrentYear }}" />
+            <label for="basket_browse_year{{ CurrentYear }}">
+              {{ CurrentYear }}
+            </label>
+          </li>
+          {% set CurrentYear = CurrentYear - 1 %}
+          <li>
+            <input id="basket_browse_year{{ CurrentYear }}" type="radio" name="Year" value="{{ CurrentYear }}" />
+            <label for="basket_browse_year{{ CurrentYear }}">
+              {{ CurrentYear }}
+            </label>
+          </li>
+        </ul>
+      </form>
+
+    </div>
+    <div class="PNB results" style="left:220px;">
+    </div>
+  </div>
+  <div class="PNB10 Basket">
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    var $container = $('#BasketBrowser'),results = null;
+
+    function loadResults(datas, url)
+    {
+      results = $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'html',
+        data: datas,
+        beforeSend: function(){
+          if(results && results.abort && typeof results.abort == 'function')
+            results.abort();
+          $('.results', $container).addClass('loading').empty();
+        },
+        error: function(){
+          $('.results', $container).removeClass('loading');
+        },
+        timeout: function(){
+          $('.results', $container).removeClass('loading');
+        },
+        success: function(data){
+          var results = $('.results', $container);
+          results.removeClass('loading').append(data);
+          activateLinks(results);
+          active_archiver(results);
+
+          return;
+        }
+
+      });
+    }
+
+
+    function loadBasket(url)
+    {
+      results = $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'html',
+        beforeSend: function(){
+          if(results && results.abort && typeof results.abort == 'function')
+            results.abort();
+          $('.Browser', $container).hide();
+          $('.Basket', $container).addClass('loading').empty().show();
+        },
+        error: function(){
+          $('.Browser', $container).show();
+          $('.Basket', $container).removeClass('loading').hide();
+        },
+        timeout: function(){
+          $('.Browser', $container).show();
+          $('.Basket', $container).removeClass('loading').hide();
+        },
+        success: function(data){
+          $('.Basket', $container).removeClass('loading').append(data);
+
+          $('.Basket a.back', $container).bind('click', function(){
+            $('.Basket', $container).hide();
+            $('.Browser', $container).show();
+
+            return false;
+          });
+          active_archiver($('.Basket', $container));
+
+          return;
+        }
+
+      });
+    }
+
+    function activateLinks($scope)
+    {
+
+
+      $('a.result', $scope).bind('click', function(){
+        var $this = $(this);
+
+        loadResults({}, $this.attr('href'));
+
+        return false;
+      });
+
+      $('a.basket_link', $scope).bind('click', function(){
+        var $this = $(this);
+
+        loadBasket($this.attr('href'));
+
+        return false;
+      });
+
+    }
+
+    function active_archiver($scope)
+    {
+      $('.userTips', $scope).tooltip();
+
+      $('a.archive_toggler', $scope).bind('click', function(){
+          var $this = $(this), parent = $this.parent();
+
+          $.ajax({
+            type: 'POST',
+            url: $this.attr('href'),
+            dataType: 'json',
+            beforeSend: function(){
+              $('.loader',parent).show();
+              $('.archive_toggler:visible', parent).addClass('last_act').hide();
+            },
+            error: function(){
+              $('.loader',parent).hide();
+              $('.last_act', parent).removeClass('last_act').show();
+            },
+            timeout: function(){
+              $('.loader',parent).hide();
+              $('.last_act', parent).removeClass('last_act').show();
+            },
+            success: function(data){
+              $('.loader',parent).hide();
+              $('.last_act', parent).removeClass('last_act');
+              if(!data.success)
+              {
+                humane.error(data.message);
+
+                return;
+              }
+              if(data.archive === true)
+              {
+                $('.unarchiver', parent).show();
+                $('.archiver', parent).hide();
+              }
+              else
+              {
+                $('.unarchiver', parent).hide();
+                $('.archiver', parent).show();
+              }
+
+              p4.WorkZone.refresh();
+
+              return;
+            }
+
+          });
+
+        return false;
+      });
+    }
+
+    $('form[name="BasketBrowser"]', $container).bind('submit', function(){
+
+      var $this = $(this);
+
+      loadResults($this.serializeArray(), $this.attr('action'));
+
+      return false;
+    }).trigger('submit').find('input').bind('change', function(){
+      $('form[name="BasketBrowser"]', $container).trigger('submit')
+    });
+
+  });
+</script>

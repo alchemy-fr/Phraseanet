@@ -39,10 +39,9 @@ class Upgrader implements ControllerProviderInterface
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
-              
-              ini_set('display_errors', 'on');
+
               $html = $twig->render(
-                      '/setup/upgrader.twig'
+                      '/setup/upgrader.html.twig'
                       , array(
                   'locale' => \Session_Handler::get_locale()
                   , 'upgrade_status' => $upgrade_status
@@ -60,17 +59,21 @@ class Upgrader implements ControllerProviderInterface
     $controllers->get('/status/', function() use ($app)
             {
               require_once __DIR__ . '/../../../../bootstrap.php';
-              ini_set('display_errors', 'on');
 
               $datas = \Setup_Upgrade::get_status();
 
-              return new Response(\p4string::jsonencode($datas), 200, array('Content-Type: application/json'));
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('Content-Type: application/json')
+              );
             });
 
     $controllers->post('/execute/', function() use ($app)
             {
               require_once __DIR__ . '/../../../../bootstrap.php';
-              ini_set('display_errors', 'on');
               set_time_limit(0);
               session_write_close();
               ignore_user_abort(true);
@@ -79,7 +82,7 @@ class Upgrader implements ControllerProviderInterface
               $upgrader = new \Setup_Upgrade($appbox);
               $appbox->forceUpgrade($upgrader);
 
-              return;
+              return new \Symfony\Component\HttpFoundation\RedirectResponse('/');
             });
 
     return $controllers;

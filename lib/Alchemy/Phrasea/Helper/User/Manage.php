@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper\User;
 
+use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -38,16 +39,14 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
    */
   protected $usr_id;
 
-  public function search()
+  public function export()
   {
-    $request = $this->getCore()->getRequest();
-    
+    $request = $this->request;
     $appbox = \appbox::get_instance();
+    $session = $appbox->get_session();
 
     $offset_start = (int) $request->get('offset_start');
     $offset_start = $offset_start < 0 ? 0 : $offset_start;
-    $results_quantity = (int) $request->get('per_page');
-    $results_quantity = ($results_quantity < 10 || $results_quantity > 50) ? 20 : $results_quantity;
 
     $this->query_parms = array(
         'inactives' => $request->get('inactives')
@@ -55,8 +54,47 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
         , 'like_value' => $request->get('like_value')
         , 'sbas_id' => $request->get('sbas_id')
         , 'base_id' => $request->get('base_id')
-        , 'srt' => $request->get("srt", User_Query::SORT_CREATIONDATE)
-        , 'ord' => $request->get("ord", User_Query::ORD_DESC)
+        , 'srt' => $request->get("srt", \User_Query::SORT_CREATIONDATE)
+        , 'ord' => $request->get("ord", \User_Query::ORD_DESC)
+        , 'offset_start' => 0
+    );
+
+    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $query = new \User_Query($appbox);
+
+    if (is_array($this->query_parms['base_id']))
+      $query->on_base_ids($this->query_parms['base_id']);
+    elseif (is_array($this->query_parms['sbas_id']))
+      $query->on_sbas_ids($this->query_parms['sbas_id']);
+
+    $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
+            ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
+            ->get_inactives($this->query_parms['inactives'])
+            ->include_templates(false)
+            ->on_bases_where_i_am($user->ACL(), array('canadmin'))
+            ->execute();
+
+    return $this->results->get_results();
+  }
+
+  public function search()
+  {
+    $request = $this->request;
+    $appbox = \appbox::get_instance();
+
+    $offset_start = (int) $this->request->get('offset_start');
+    $offset_start = $offset_start < 0 ? 0 : $offset_start;
+    $results_quantity = (int) $this->request->get('per_page');
+    $results_quantity = ($results_quantity < 10 || $results_quantity > 50) ? 20 : $results_quantity;
+
+    $this->query_parms = array(
+        'inactives' => $this->request->get('inactives')
+        , 'like_field' => $this->request->get('like_field')
+        , 'like_value' => $this->request->get('like_value')
+        , 'sbas_id' => $this->request->get('sbas_id')
+        , 'base_id' => $this->request->get('base_id')
+        , 'srt' => $this->request->get("srt", \User_Query::SORT_CREATIONDATE)
+        , 'ord' => $this->request->get("ord", \User_Query::ORD_DESC)
         , 'per_page' => $results_quantity
         , 'offset_start' => $offset_start
     );
@@ -102,9 +140,9 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
       if (is_null($v))
         $this->query_parms[$k] = false;
     }
-    
-    
-    $query = new User_Query($appbox);
+
+
+    $query = new \User_Query($appbox);
     $templates = $query
             ->only_templates(true)
             ->execute()->get_results();
@@ -120,7 +158,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
 
   public function create_newuser()
   {
-    $email = $this->getCore()->getRequest()->get('value');
+    $email = $this->request->get('value');
 
     if(!\mail::validateEmail($email))
     {
@@ -133,7 +171,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
     $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':email' => $email));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
     $count = count($row);
 
     if (!is_array($row) || $count == 0)
@@ -152,7 +190,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
 
   public function create_template()
   {
-    $name = $this->getCore()->getRequest()->get('value');
+    $name = $this->request->get('value');
 
     if(trim($name) === '')
     {

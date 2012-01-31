@@ -60,6 +60,22 @@ class Tooltip implements ControllerProviderInterface
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
 
+    $controllers->post('/user/{usr_id}/'
+            , function(Application $app, $usr_id)
+            {
+              $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
+
+              return new Response($twig->render(
+                                      'prod/Tooltip/User.html.twig'
+                                      , array('user' => $user)
+                              )
+              );
+            })->assert('usr_id', '\d+');
+
+
     $controllers->post('/preview/{sbas_id}/{record_id}/'
             , function(Application $app, $sbas_id, $record_id)
             {
@@ -86,13 +102,14 @@ class Tooltip implements ControllerProviderInterface
               $record = new \record_adapter($sbas_id, $record_id, $number);
 
               $search_engine = null;
+
               if (($search_engine_options = unserialize($app['request']->get('options_serial'))) !== false)
               {
                 $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
                 $search_engine->set_options($search_engine_options);
               }
 
-              /* @var $twig \Twig_Environment */
+                /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return new Response(
@@ -148,25 +165,18 @@ class Tooltip implements ControllerProviderInterface
     $controllers->post('/metas/DCESInfos/{sbas_id}/{field_id}/'
             , function(Application $app, $sbas_id, $field_id)
             {
-              try
-              {
-                $databox = \databox::get_instance((int) $sbas_id);
-                $field = \databox_field::get_instance($databox, $field_id);
+              $databox = \databox::get_instance((int) $sbas_id);
+              $field = \databox_field::get_instance($databox, $field_id);
 
-                /* @var $twig \Twig_Environment */
-                $twig = $app['Core']->getTwig();
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
-                return new Response(
-                                $twig->render(
-                                        'common/databox_field_DCES.twig'
-                                        , array('field' => $field)
-                                )
-                );
-              }
-              catch (\Exception $e)
-              {
-                exit($e->getMessage());
-              }
+              return new Response(
+                              $twig->render(
+                                      'common/databox_field_DCES.twig'
+                                      , array('field' => $field)
+                              )
+              );
             })->assert('sbas_id', '\d+')->assert('field_id', '\d+');
 
 

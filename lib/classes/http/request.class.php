@@ -93,7 +93,7 @@ class http_request
       return true;
     return false;
   }
-  
+
   public function is_secure()
   {
     return (

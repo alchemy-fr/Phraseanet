@@ -324,7 +324,7 @@ class Session_Handler
   {
     if (!$this->phrasea_session instanceof Session_Phrasea)
       throw new \Exception('No phrasea session available');
-    
+
     $this->phrasea_session->open();
 
     return $this;
@@ -395,6 +395,7 @@ class Session_Handler
     foreach ($user->ACL()->get_granted_sbas() as $databox)
     {
       Session_Logger::create($databox, $browser, $this, $user);
+      \cache_databox::insertClient($databox);
     }
 
     $this->set_usr_lastconn($conn, $user->get_id());
@@ -571,7 +572,7 @@ class Session_Handler
     }
 
     $Core = bootstrap::getCore();
-    
+
     $registry = $Core->getRegistry();
     $date_two_day = new DateTime('+' . (int) $registry->get('GV_validation_reminder') . ' days');
 
@@ -598,7 +599,7 @@ class Session_Handler
           'ssel_id' => $row['ssel_id'],
           'from' => $row['owner'],
           'validate_id' => $row['validate_id'],
-          'url' => $registry->get('GV_ServerName') 
+          'url' => $registry->get('GV_ServerName')
               . 'lightbox/validate/'.$row['ssel_id'].'/?LOG=' . $row['value']
       );
 

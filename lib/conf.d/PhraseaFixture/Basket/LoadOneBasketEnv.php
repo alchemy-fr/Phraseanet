@@ -63,11 +63,11 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
     {
       throw new \LogicException('Fill a user to store a new basket');
     }
-    
+
     $basket->setOwner($this->user);
 
     $this->addElementToBasket($manager, $basket);
-    
+
     $validationSession = new \Entities\ValidationSession();
 
     $validationSession->setBasket($basket);
@@ -120,13 +120,13 @@ class LoadOneBasketEnv extends \PhraseaFixture\AbstractWZ implements FixtureInte
     {
       throw new \LogicException('Add new elements to basket');
     }
-    
+
     foreach ($this->basketElements as $record)
     {
       $basketElement = new \Entities\BasketElement();
 
       $basketElement->setRecord($record);
-      
+
       $basketElement->setBasket($basket);
 
       $manager->persist($basketElement);

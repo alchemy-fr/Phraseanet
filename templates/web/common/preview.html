@@ -1,7 +1,7 @@
 
 {% import 'common/thumbnail.html' as thumbnail %}
 
-{% if not_wrapped %}
+{% if not_wrapped is defined and not_wrapped %}
   {% set wrap = false %}
 {% else %}
   {% set wrap = true %}

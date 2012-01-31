@@ -117,7 +117,8 @@ if (!is_null($templates) || !is_null($parm['deny']) || !is_null($parm['accept'])
         $done[$usr][$base_id] = true;
     }
 
-    $sql = "DELETE FROM demand WHERE usr_id = :usr_id";
+    $sql = "DELETE FROM demand
+            WHERE usr_id = :usr_id AND (base_id = ".implode(' OR base_id = ', $base_ids).")";
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':usr_id' => $usr));
     $stmt->closeCursor();

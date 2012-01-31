@@ -11,18 +11,18 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-
+use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class Helper extends \Alchemy\Phrasea\Helper\Helper
 {
-  
+
   /**
    *
    * @var set_selection
@@ -95,39 +95,37 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
    * @var \Entities\Basket
    */
   protected $original_basket;
-  
+
   /**
    *
    * @param \Alchemy\Phrasea\Core $core
-   * @return Helper 
+   * @return Helper
    */
-  public function __construct(\Alchemy\Phrasea\Core $core)
+  public function __construct(Core $core, Request $Request)
   {
-    parent::__construct($core);
-    
+    parent::__construct($core, $Request);
+
     $this->selection = new \set_selection();
-    
-    $request = $core->getRequest();
-    
+
     $appbox = \appbox::get_instance();
     $usr_id = $appbox->get_session()->get_usr_id();
-    
-    if (trim($request->get('ssel')) !== '')
+
+    if (trim($Request->get('ssel')) !== '')
     {
       $em = $this->getCore()->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
-      
+
       /* @var $$repository \Repositories\BasketRepository */
-      $Basket = $repository->findUserBasket($request->get('ssel'), $this->getCore()->getAuthenticatedUser());
-      
+      $Basket = $repository->findUserBasket($Request->get('ssel'), $this->getCore()->getAuthenticatedUser());
+
       $this->selection->load_basket($Basket);
-      
+
       $this->is_basket = true;
       $this->original_basket = $Basket;
     }
     else
     {
-      $this->selection->load_list(explode(";", $request->get('lst')), $this->flatten_groupings);
+      $this->selection->load_list(explode(";", $Request->get('lst')), $this->flatten_groupings);
     }
     $this->elements_received = $this->selection->get_count();
 
@@ -307,5 +305,5 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
     return $this;
   }
-  
+
 }

@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Core\Configuration;
 
 /**
  * A interface to parse configuration file
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -22,15 +22,15 @@ interface Parser
 {
   /**
    * Parse the configuration file $file  to an array
-   * 
+   *
    * @param \SplFileObject $file the file to parse
    * @return Array
    */
   public function parse(\SplFileObject $file);
-  
+
   /**
    * Dump into string from array
-   * 
+   *
    * @param $conf
    * @return string
    */

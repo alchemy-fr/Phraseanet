@@ -108,17 +108,6 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $date = $this->basket->getUpdated();
     $this->assertInstanceOf('\DateTime', $date);
 
-//    sleep(5);
-//    $this->basket->setName('hello COCOCOCO');
-//    $this->basket->setDescription('44WDFDFOLSDF');
-//    $this->em->persist($this->basket);
-//    $this->em->flush();
-//    var_dump($this->basket->getId());
-//    $basket = $this->em->getRepository('\Entities\Basket')->find($this->basket->getId());
-//    $dateUpdated = $basket->getUpdated();
-//    var_dump($date->format(DATE_ATOM), $dateUpdated->format(DATE_ATOM));
-//    $this->assertGreaterThan($dateUpdated, $date);
-//    $this->assertGreaterThan($dateUpdated, $this->basket->getCreated());
   }
 
   public function testGetElements()
@@ -163,7 +152,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testGetValidation()
   {
     $this->assertNull($this->basket->getValidation());
-    
+
     $validationSession = new \Entities\ValidationSession();
 
     $validationSession->setBasket($this->basket);
@@ -176,13 +165,13 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $expires->modify('+1 week');
 
     $validationSession->setExpires($expires);
-    
+
     $validationSession->setInitiator(self::$user);
-    
+
     $this->em->persist($validationSession);
-    
+
     $this->em->flush();
-    
+
     $this->em->refresh($this->basket);
 
     $this->assertInstanceOf('\Entities\ValidationSession', $this->basket->getValidation());

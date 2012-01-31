@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../PhraseanetPHPUnitAbstract.class.inc';
 
 use Alchemy\Phrasea\Core\Version;
 
@@ -19,30 +19,18 @@ use Alchemy\Phrasea\Core\Version;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class VersionTest extends PhraseanetPHPUnitAuthenticatedAbstract
+class VersionTest extends \PhraseanetPHPUnitAbstract
 {
 
-  /**
-   *
-   * @var \Alchemy\Phrasea\Core\Configuration\Application 
-   */
-  public function setUp()
-  {
-    parent::setUp();
-  }
-
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
- 
   public function testGetNumber()
   {
-    $this->assertTrue(is_string(Version::getName()));
+    $this->assertTrue(is_string(Version::getNumber()));
+    $this->assertRegExp('/[\d]{1}\.[\d]{1,2}\.[\d]{1,2}/', Version::getNumber());
   }
-  
+
   public function testGetName()
   {
-    $this->assertTrue(is_string(Version::getNumber()));
+    $this->assertTrue(is_string(Version::getName()));
+    $this->assertTrue(strlen(Version::getName()) > 3);
   }
 }

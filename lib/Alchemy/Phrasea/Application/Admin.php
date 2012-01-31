@@ -9,7 +9,8 @@
  * file that was distributed with this source code.
  */
 
-use Silex\Application;
+namespace Alchemy\Phrasea\Application;
+
 use Alchemy\Phrasea\Controller\Admin as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 
@@ -20,22 +21,27 @@ use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
  * @link        www.phraseanet.com
  */
 return call_user_func(
-                function()
-                {
-                  $app = new Application();
+    function()
+    {
+      $app = new \Silex\Application();
 
-                  $app['Core'] = bootstrap::getCore();
-                  
-                  $app->mount('/publications', new Controller\Publications());
-                  $app->mount('/users', new Controller\Users());
-                  $app->mount('/fields', new Controller\Fields());
-                  $app->mount('/tests/connection', new ControllerUtils\ConnectionTest());
-                  $app->mount('/tests/pathurl', new ControllerUtils\PathFileTest());
+      $app['Core'] = \bootstrap::getCore();
 
-                  $app->error(function(\Exception $e)
-                          {
-                            return $e->getMessage();
-                          });
+      $app["debug"] = $app["Core"]->getConfiguration()->isDebug();
 
-                  return $app;
-                });
+      $app->mount('/', new Controller\Root());
+      $app->mount('/publications', new Controller\Publications());
+      $app->mount('/users', new Controller\Users());
+      $app->mount('/fields', new Controller\Fields());
+      $app->mount('/subdefs', new Controller\Subdefs);
+      $app->mount('/description', new Controller\Description());
+      $app->mount('/tests/connection', new ControllerUtils\ConnectionTest());
+      $app->mount('/tests/pathurl', new ControllerUtils\PathFileTest());
+
+      $app->error(function(\Exception $e)
+        {
+          return $e->getMessage();
+        });
+
+      return $app;
+    });

@@ -54,6 +54,7 @@ class connection
   {
     $registry = registry::get_instance();
     if (!$registry->get('GV_debug'))
+
       return;
     $totalTime = 0;
 
@@ -120,6 +121,7 @@ class connection
       $name = (int) $name;
     }
     else
+
       return false;
 
     if (!isset(self::$_PDO_instance[$name]))
@@ -142,7 +144,9 @@ class connection
         );
         $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
-        $connexion = $configuration->getConnexion();
+        $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+        $connexion = $configuration->getConnexion($choosenConnexion);
 
         $hostname = $connexion->get('host');
         $port = $connexion->get('port');
@@ -171,6 +175,7 @@ class connection
       }
     }
     if (array_key_exists($name, self::$_PDO_instance))
+
       return self::$_PDO_instance[$name];
     throw new Exception('Connection not available');
   }
@@ -183,8 +188,10 @@ class connection
   public static function close_PDO_connection($name)
   {
     if (isset(self::$_PDO_instance[$name]))
+    {
+      self::$_PDO_instance[$name] = null;
       unset(self::$_PDO_instance[$name]);
-
+    }
     return;
   }
 

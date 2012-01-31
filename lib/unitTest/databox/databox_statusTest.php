@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for databox_status.
@@ -153,13 +153,13 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
   public function testDec2bin()
   {
     $this->assertEquals('1010', databox_status::dec2bin('10'));
-    
+
     try
     {
     }
     catch(Exception $e)
     {
-      
+
     }
   }
 
@@ -167,7 +167,7 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
   {
     $this->assertEquals('10100001', databox_status::hex2bin('0x0A1'));
     $this->assertEquals('10100001', databox_status::hex2bin('0A1'));
-    
+
     try
     {
       databox_status::hex2bin('G1');
@@ -175,7 +175,7 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
     }
     catch(Exception $e)
     {
-      
+
     }
   }
 

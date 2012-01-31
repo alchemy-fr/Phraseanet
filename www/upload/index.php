@@ -326,7 +326,7 @@ echo $theFont;
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $core = \bootstrap::getCore();

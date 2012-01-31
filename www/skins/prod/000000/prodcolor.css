@@ -458,24 +458,13 @@ div.diapo
 }
 
 
-
-#idFrameA{
-	z-index:50;
+#answers{
+  background-color: #111111;
+  border:1px solid #111111;
 }
 
-
-#idFrameT .bloc
+#idFrameT
 {
-  z-index: 60;
-}
-
-#idFrameT .bloc
-{
-	position:absolute;
-	left:10px;
-	top:0;
-	right:10px;
-	bottom:0;
 	background-color:#404040;	
 }
 
@@ -508,7 +497,7 @@ div.diapo
 
 #idFrameT .tools .verticalbuttonset .submenu{
   position: absolute; 
-  top:2.0em;
+  top:1.5em;
   left:0;
   z-index:30;
 }
@@ -529,9 +518,9 @@ div.diapo
 
 
 #alternateSearch{
-	left:10px;
+	left:0px;
 	top:60px;
-	width:375px;
+	width:575px;
 	height:400px;
 	background-color:#404040;
 	display:none;
@@ -821,11 +810,6 @@ div.diapo
 	position: absolute; bottom: 0px;	
 }
 
-#answers{
-  overflow-x:hidden;
-  overflow-y:auto;
-  left:10px;
-}
 
 #answers .list
 {
@@ -901,17 +885,20 @@ div.diapo
 	color:red;
 }
 
+#EDIT_query{
+  border:2px solid #111111;
+}
 
 /* QRY */
 
 
-#qry_buttons.danger input,
+#alternateTrigger.danger input,
 #adv_search .date_filter.danger,
 #adv_search .field_filter.danger,
 #adv_search .status_filter.danger
 {
 	border-color:#c9c900;	
-	background-color:#707000;
+	background-color:#FFFDDA;
 }
 
 #adv_search table.colllist
@@ -2148,20 +2135,52 @@ EDITING
 {
 	background-color:#444444;
 	border:1px solid #999999;
+  position:absolute; 
+  top:22px; 
+  left:4px; 
+  right:4px; 
+  bottom:4px; 
+  overflow:auto;
 }
 #idFrameE #ZTextMultiValued_values div
 {
 	cursor:pointer;
+  height:20px;
 	padding:2px;
 }
+#idFrameE #ZTextMultiValued_values div table
+{
+	width:100%;
+  border:none;
+}
+#idFrameE #ZTextMultiValued_values div table td
+{
+  vertical-align: middle;
+}
+#idFrameE #ZTextMultiValued_values div table td.options
+{
+	width:40px;
+  text-align:right;
+}
+#idFrameE #ZTextMultiValued_values div table td.options .add_all
+{
+  display:none;
+}
+#idFrameE #ZTextMultiValued_values div.hetero table td.options .add_all
+{
+  display:inline;
+}
+
 #idFrameE .hetero
 {
 	color:#ff8000;
 }
+
 #idFrameE #ZTextMultiValued_values DIV.hilighted
 {
 	background-color:#222222;
 }
+
 #idFrameE #ZTextMultiValued_values DIV I
 {
 	color:#FFFF00;
@@ -2227,13 +2246,6 @@ EDITING
 #mainMenu, .publi_group{
 	background-color:#404040;
 }
-#queryBox{
-	height:70px;
-	top:30px;
-	bottom:auto;
-	z-index:600;
-}
-
 .context-menu-item a{
 	color:#75ABFF;
 }

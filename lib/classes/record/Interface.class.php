@@ -85,7 +85,7 @@ interface record_Interface
 
   public function substitute_subdef($name, system_file $pathfile);
 
-  public function set_metadatas(Array $metadatas);
+  public function set_metadatas(Array $metadatas, $force_readonly = false);
 
   public function reindex();
 

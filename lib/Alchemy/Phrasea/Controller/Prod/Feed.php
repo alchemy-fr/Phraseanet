@@ -39,12 +39,11 @@ class Feed implements ControllerProviderInterface
     /**
      * I got a selection of docs, which publications are available forthese docs ?
      */
-    $controllers->post('/requestavailable/', function() use ($app, $appbox, $twig)
+    $controllers->post('/requestavailable/', function(Application $app, Request $request) use ($appbox, $twig)
             {
-              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = $app["Core"]->getAuthenticatedUser();
               $feeds = \Feed_Collection::load_all($appbox, $user);
-              $request = $app['request'];
-              $publishing = new RecordHelper\Feed($app['Core']);
+              $publishing = new RecordHelper\Feed($app['Core'], $request);
 
               $datas = $twig->render('prod/actions/publish/publish.html', array('publishing' => $publishing, 'feeds' => $feeds));
 
@@ -55,13 +54,11 @@ class Feed implements ControllerProviderInterface
     /**
      * I've selected a publication for my ocs, let's publish them
      */
-    $controllers->post('/entry/create/', function() use ($app, $appbox, $twig)
+    $controllers->post('/entry/create/', function(Application $app, Request $request) use ($appbox, $twig)
             {
               try
               {
-                $request = $app['request'];
-
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+                $user = $app["Core"]->getAuthenticatedUser();
                 $feed = new \Feed_Adapter($appbox, $request->get('feed_id'));
                 $publisher = \Feed_Publisher_Adapter::getPublisher($appbox, $feed, $user);
 
@@ -72,7 +69,7 @@ class Feed implements ControllerProviderInterface
 
                 $entry = \Feed_Entry_Adapter::create($appbox, $feed, $publisher, $title, $subtitle, $author_name, $author_mail);
 
-                $publishing = new RecordHelper\Feed($app['Core']);
+                $publishing = new RecordHelper\Feed($app['Core'], $app['request']);
 
                 foreach ($publishing->get_elements() as $record)
                 {
@@ -85,16 +82,20 @@ class Feed implements ControllerProviderInterface
                 $datas = array('error' => true, 'message' => _('An error occured'), 'details' => $e->getMessage());
               }
 
-              return new Response(\p4string::jsonencode($datas), 200, array('Content-Type' => 'application/json'));
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('Content-Type' => 'application/json')
+              );
             });
 
 
-    $controllers->get('/entry/{id}/edit/', function($id) use ($app, $appbox, $twig)
+    $controllers->get('/entry/{id}/edit/', function(Application $app, Request $request, $id) use ($appbox, $twig)
             {
 
-              $request = $app['request'];
-
-              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = $app["Core"]->getAuthenticatedUser();
 
               $entry = \Feed_Entry_Adapter::load_from_id($appbox, $id);
 
@@ -102,24 +103,23 @@ class Feed implements ControllerProviderInterface
               {
                 throw new \Exception_UnauthorizedAction();
               }
-              $feeds = \Feed_Collection::load_all($appbox, $user);
 
+              $feeds = \Feed_Collection::load_all($appbox, $user);
 
               $datas = $twig->render('prod/actions/publish/publish_edit.html', array('entry' => $entry, 'feeds' => $feeds));
 
               return new Response($datas);
-            });
+            })->assert('id', '\d+');
 
 
-    $controllers->post('/entry/{id}/update/', function($id) use ($app, $appbox, $twig)
+    $controllers->post('/entry/{id}/update/', function(Application $app, Request $request, $id) use ($appbox, $twig)
             {
               $datas = array('error' => true, 'message' => '', 'datas' => '');
               try
               {
                 $appbox->get_connection()->beginTransaction();
-                $request = $app['request'];
 
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+                $user = $app["Core"]->getAuthenticatedUser();
 
                 $entry = \Feed_Entry_Adapter::load_from_id($appbox, $id);
 
@@ -139,13 +139,17 @@ class Feed implements ControllerProviderInterface
                         ->set_subtitle($subtitle);
 
                 $items = explode(';', $request->get('sorted_lst'));
+
                 foreach ($items as $item_sort)
                 {
                   $item_sort_datas = explode('_', $item_sort);
                   if (count($item_sort_datas) != 2)
+                  {
                     continue;
+                  }
 
                   $item = new \Feed_Entry_Item($appbox, $entry, $item_sort_datas[0]);
+
                   $item->set_ord($item_sort_datas[1]);
                 }
                 $appbox->get_connection()->commit();
@@ -159,25 +163,30 @@ class Feed implements ControllerProviderInterface
                 $appbox->get_connection()->rollBack();
                 $datas['message'] = _('Feed entry not found');
               }
-              catch (Exception $e)
+              catch (\Exception $e)
               {
                 $appbox->get_connection()->rollBack();
                 $datas['message'] = $e->getMessage();
               }
 
-              return new Response(\p4string::jsonencode($datas), 200, array('Content-Type' => 'application/json'));
-            });
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('Content-Type' => 'application/json')
+              );
+            })->assert('id', '\d+');
 
 
-    $controllers->post('/entry/{id}/delete/', function($id) use ($app, $appbox, $twig)
+    $controllers->post('/entry/{id}/delete/', function(Application $app, Request $request, $id) use ($appbox, $twig)
             {
               $datas = array('error' => true, 'message' => '');
               try
               {
                 $appbox->get_connection()->beginTransaction();
-                $request = $app['request'];
 
-                $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+                $user = $app["Core"]->getAuthenticatedUser();
 
                 $entry = \Feed_Entry_Adapter::load_from_id($appbox, $id);
 
@@ -203,8 +212,14 @@ class Feed implements ControllerProviderInterface
                 $datas['message'] = $e->getMessage();
               }
 
-              return new Response(\p4string::jsonencode($datas), 200, array('Content-Type' => 'application/json'));
-            });
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('Content-Type' => 'application/json')
+              );
+            })->assert('id', '\d+');
 
 //$app->post('/entry/{id}/addelement/', function($id) use ($app, $appbox, $twig)
 //        {
@@ -225,13 +240,14 @@ class Feed implements ControllerProviderInterface
 //
 //        });
 
-    $controllers->get('/', function() use ($app, $appbox, $twig)
+    $controllers->get('/', function(Application $app, Request $request) use ($appbox, $twig)
             {
               $request = $app['request'];
               $page = (int) $request->get('page');
               $page = $page > 0 ? $page : 1;
 
-              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = $app["Core"]->getAuthenticatedUser();
+
               $feeds = \Feed_Collection::load_all($appbox, $user);
 
               $datas = $twig->render('prod/feeds/feeds.html'
@@ -246,14 +262,12 @@ class Feed implements ControllerProviderInterface
             });
 
 
-    $controllers->get('/feed/{id}/', function($id) use ($app, $appbox, $twig)
+    $controllers->get('/feed/{id}/', function(Application $app, Request $request, $id) use ($appbox, $twig)
             {
-
-              $request = $app['request'];
               $page = (int) $request->get('page');
               $page = $page > 0 ? $page : 1;
 
-              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = $app["Core"]->getAuthenticatedUser();
 
               $feed = \Feed_Adapter::load_with_user($appbox, $user, $id);
               $feeds = \Feed_Collection::load_all($appbox, $user);
@@ -261,55 +275,58 @@ class Feed implements ControllerProviderInterface
               $datas = $twig->render('prod/feeds/feeds.html', array('feed' => $feed, 'feeds' => $feeds, 'page' => $page));
 
               return new Response($datas);
-            });
+            })->assert('id', '\d+');
 
 
-    $controllers->get('/subscribe/aggregated/', function() use ($app, $appbox, $twig)
+    $controllers->get('/subscribe/aggregated/', function(Application $app, Request $request) use ( $appbox, $twig)
             {
-
-              $request = $app['request'];
-
               $renew = ($request->get('renew') === 'true');
 
-              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = $app["Core"]->getAuthenticatedUser();
+
               $feeds = \Feed_Collection::load_all($appbox, $user);
               $registry = $appbox->get_registry();
 
 
-              $output = \p4string::jsonencode(
-                              array(
-                                  'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
-                                  . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
+              $output = array(
+                  'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
+                  . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
                 <div><input type="text" readonly="readonly" class="input_select_copy" value="' . $feeds->get_aggregate()->get_user_link($registry, $user, \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
-                                  'titre' => _('publications::votre rss personnel')
-                              )
+                  'titre' => _('publications::votre rss personnel')
               );
 
-              return new Response($output, 200, array('Content-Type' => 'application/json'));
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize($output, 'json')
+                              , 200
+                              , array('Content-Type' => 'application/json')
+              );
             });
 
 
-    $controllers->get('/subscribe/{id}/', function($id) use ($app, $appbox, $twig)
+    $controllers->get('/subscribe/{id}/', function(Application $app, Request $request, $id) use ($appbox, $twig)
             {
-
-              $request = $app['request'];
-
               $renew = ($request->get('renew') === 'true');
-              $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
+              $user = $app["Core"]->getAuthenticatedUser();
               $feed = \Feed_Adapter::load_with_user($appbox, $user, $id);
               $registry = $appbox->get_registry();
 
-              $output = \p4string::jsonencode(
-                              array(
-                                  'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
-                                  . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
+              $output = array(
+                  'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
+                  . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
                 <div><input type="text" style="width:100%" value="' . $feed->get_user_link($registry, $user, \Feed_Adapter::FORMAT_RSS, null, $renew)->get_href() . '"/></div>',
-                                  'titre' => _('publications::votre rss personnel')
-                              )
+                  'titre' => _('publications::votre rss personnel')
               );
 
-              return new Response($output, 200, array('Content-Type' => 'application/json'));
-            });
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize($output, 'json')
+                              , 200
+                              , array('Content-Type' => 'application/json')
+              );
+            })->assert('id', '\d+');
 
     return $controllers;
   }

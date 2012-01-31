@@ -12,12 +12,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class UsrListOwnerRepository extends EntityRepository
 {
+
   /**
-   * 
+   *
    *
    * @param \Entities\UsrList $list
    * @param type $owner_id
-   * @return \Entities\UsrList 
+   * @return \Entities\UsrList
    */
   public function findByListAndOwner(\Entities\UsrList $list, $owner_id)
   {
@@ -36,5 +37,37 @@ class UsrListOwnerRepository extends EntityRepository
 
     return $owner;
   }
-  
+
+  /**
+   *
+   *
+   * @param \Entities\UsrList $list
+   * @param type $usr_id
+   * @return \Entities\UsrList
+   */
+  public function findByListAndUsrId(\Entities\UsrList $list, $usr_id)
+  {
+    $dql = 'SELECT o FROM Entities\UsrListOwner o
+              JOIN o.list l
+            WHERE l.id = :list_id AND o.usr_id = :usr_id';
+
+    $params = array(
+        'usr_id' => $usr_id,
+        'list_id' => $list->getId()
+    );
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters($params);
+
+    $owner = $query->getSingleResult();
+
+    /* @var $owner \Entities\UsrListOwner */
+    if (null === $owner)
+    {
+      throw new \Exception_NotFound(_('Owner is not found'));
+    }
+
+    return $owner;
+  }
+
 }

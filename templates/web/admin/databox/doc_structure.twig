@@ -230,7 +230,7 @@
               {% trans 'boutton::ajouter' %}
             </button>
           </div>
-          <form action="/admin/description.php" method="post" target="_self" id="form_struct">
+          <form action="/admin/description/{{ databox.get_sbas_id() }}/" method="post" target="_self" id="form_struct">
             <input name="newfield" id="newfield" type="hidden" />
             <table class="admintable">
               <thead>
@@ -251,6 +251,12 @@
                   </th>
                   <th>
                     {% trans 'Indexable' %}
+                  </th>
+                  <th>
+                    {% trans 'Vocabulary Type' %}
+                  </th>
+                  <th>
+                    {% trans 'Vocabulary restricted' %}
                   </th>
                   <th>
                     {% trans 'Required' %}
@@ -313,6 +319,19 @@
                                         <td>
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="indexable_{{field.get_id()}}" type="checkbox" {% if field.is_indexable() %}checked="checked"{% endif %}/>
                                         </td>
+
+                                        <td>
+                                          <select class="metafield_{{field.get_id()}}" {{disabled}} name="vocabulary_{{field.get_id()}}">
+                                            <option value=""></option>
+                                            {% for vocabulary in vocabularies %}
+                                            <option {% if field.getVocabularyControl() and field.getVocabularyControl().getType() == vocabulary.getType() %}selected="selected"{% endif %} value="{{ vocabulary.getType() }}">{{ vocabulary.getName() }}</option>
+                                            {% endfor %}
+                                          </select>
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} name="vocabularyrestricted_{{field.get_id()}}" type="checkbox" {% if field.isVocabularyRestricted() %}checked="checked"{% endif %}/>
+                                        </td>
+
                                         <td>
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="required_{{field.get_id()}}" type="checkbox" {% if field.is_required() %}checked="checked"{% endif %}/>
                                         </td>
@@ -357,7 +376,6 @@
         {% endfor %}
                                       </tbody>
                                     </table>
-                                    <input type="hidden" name="p0" value="{{databox.get_sbas_id()}}" />
                                     <button type="submit">Submit</button>
                                   </form>
                                 </body>

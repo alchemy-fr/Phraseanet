@@ -26,7 +26,7 @@ class Setup_Registry implements registryInterface
     return isset($this->datas[$key]) ? $this->datas[$key] : $defaultvalue;
   }
 
-  public function set($key, $value)
+  public function set($key, $value, $type)
   {
     $this->datas[$key] = $value;
   }

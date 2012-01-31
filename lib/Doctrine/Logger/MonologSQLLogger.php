@@ -16,7 +16,7 @@ use Monolog\Handler\StreamHandler;
 
 /**
  * Log doctrine sql request with monolog
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -25,7 +25,8 @@ class MonologSQLLogger implements \Doctrine\DBAL\Logging\SQLLogger
 {
   const JSON = 'json';
   const YAML = 'yaml';
-  const NORMAL = 'normal';
+  const VDUMP = 'vdump';
+
   /**
    *
    * @var \Monolog\Logger
@@ -37,7 +38,7 @@ class MonologSQLLogger implements \Doctrine\DBAL\Logging\SQLLogger
 
   /**
    * Tell which monolog user to use and which format to output
-   * 
+   *
    * @param \Monolog\Logger $logger A monolog logger instance
    * @param type $type the output format
    */

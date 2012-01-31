@@ -31,14 +31,14 @@ class MoveCollection implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $controllers->post('/', function() use ($app)
+    $controllers->post('/', function(Application $app, Request $request)
             {
               $request = $app['request'];
-              $move = new RecordHelper\MoveCollection($app['Core']);
+              $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
               $move->propose();
 
               $template = 'prod/actions/collection_default.twig';
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('action' => $move, 'message' => ''));
@@ -46,14 +46,14 @@ class MoveCollection implements ControllerProviderInterface
     );
 
 
-    $controllers->post('/apply/', function() use ($app)
+    $controllers->post('/apply/', function(Application $app)
             {
               $request = $app['request'];
-              $move = new RecordHelper\MoveCollection($app['Core']);
+              $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
               $move->execute($request);
               $template = 'prod/actions/collection_submit.twig';
 
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('action' => $move, 'message' => ''));

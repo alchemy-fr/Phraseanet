@@ -18,7 +18,7 @@ use Alchemy\Phrasea\Core\Configuration;
 require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 
 /**
- * 
+ *
  * Phraseanet Core Container
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -49,14 +49,14 @@ class Core extends \Pimple
      */
     static::initAutoloads();
 
-
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    $handler = new Core\Configuration\Handler(
+                    new Core\Configuration\Application(),
+                    new Core\Configuration\Parser\Yaml()
     );
-    $this->configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
-    $this->configuration->setEnvironnement($environement);
+    $this->configuration = new Core\Configuration($handler, $environement);
+
+    $this->init();
 
     /**
      * Set version
@@ -66,30 +66,15 @@ class Core extends \Pimple
               return new Core\Version();
             });
 
-    /**
-     * Set Entity Manager using configuration
-     */
-    $doctrineConf = $this->configuration->getDoctrine()->all();
-    $this['EM'] = $this->share(function() use ($doctrineConf)
-            {
-              $doctrine = new Core\Service\Doctrine($doctrineConf);
-              return $doctrine->getEntityManager();
-            });
-
-    $twigConf = $this->configuration->getServices()->get('twig');
-    $this["Twig"] = $this->share(function() use ($twigConf)
-            {
-              $twig = new Core\Service\Twig($twigConf);
-              return $twig->getTwig();
-            });
-
-    if (\setup::is_installed())
+    if ($this->configuration->isInstalled())
     {
       $this['Registry'] = $this->share(function()
               {
                 return \registry::get_instance();
               });
+
       \phrasea::start();
+
       $this->enableEvents();
     }
     else
@@ -101,13 +86,39 @@ class Core extends \Pimple
               });
     }
 
+    $core = $this;
     /**
-     * Initialize Request
+     * Set Entity Manager using configuration
      */
-    $this['Request'] = $this->share(function()
+    $this['EM'] = $this->share(function() use ($core)
             {
-              return Request::createFromGlobals();
+              $serviceName = $core->getConfiguration()->getOrm();
+              $configuration = $core->getConfiguration()->getService($serviceName);
+
+              $serviceBuilder = new Core\ServiceBuilder\Orm(
+                              $serviceName
+                              , $configuration
+                              , array("registry" => $core["Registry"])
+              );
+
+              return $serviceBuilder->buildService()->getService();
             });
+
+
+
+    $this["Twig"] = $this->share(function() use ($core)
+            {
+              $serviceName = $core->getConfiguration()->getTemplating();
+
+              $configuration = $core->getConfiguration()->getService($serviceName);
+
+              $serviceBuilder = new Core\ServiceBuilder\TemplateEngine(
+                              $serviceName, $configuration
+              );
+
+              return $serviceBuilder->buildService()->getService();
+            });
+
 
     $this['Serializer'] = $this->share(function()
             {
@@ -128,57 +139,45 @@ class Core extends \Pimple
 
     $this->enableLocales();
 
-    if (!defined('JETON_MAKE_SUBDEF'))
-    {
-      define('JETON_MAKE_SUBDEF', 0x01);
-      define('JETON_WRITE_META_DOC', 0x02);
-      define('JETON_WRITE_META_SUBDEF', 0x04);
-      define('JETON_WRITE_META', 0x06);
-    }
+    !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
+    !defined('JETON_WRITE_META_DOC') ? define('JETON_WRITE_META_DOC', 0x02) : '';
+    !defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
+    !defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
 
     if (\setup::is_installed())
     {
       $gatekeeper = \gatekeeper::getInstance();
       $gatekeeper->check_directory();
     }
+
     return;
   }
 
   /**
    * Load Configuration
-   * 
-   * @param type $environnement 
+   *
+   * @param type $environnement
    */
-  private function init($environnement)
+  private function init()
   {
-    $this->loadConf($environnement);
-
-    if ($this->getConfiguration()->displayErrors())
+    if ($this->getConfiguration()->isInstalled())
     {
-      ini_set('display_errors', 1);
-      error_reporting(E_ALL);
-      \Symfony\Component\HttpKernel\Debug\ErrorHandler::register();
-    }
-    else
-    {
-      ini_set('display_errors', 0);
+      if ($this->getConfiguration()->isDisplayingErrors())
+      {
+        ini_set('display_errors', 'on');
+        error_reporting(E_ALL);
+      }
+      else
+      {
+        ini_set('display_errors', 'off');
+      }
     }
   }
 
   /**
    * Getter
-   * 
-   * @return Request 
-   */
-  public function getRequest()
-  {
-    return $this['Request'];
-  }
-
-  /**
-   * Getter
-   * 
-   * @return \Registry 
+   *
+   * @return \Registry
    */
   public function getRegistry()
   {
@@ -187,8 +186,18 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
-   * @return \Doctrine\ORM\EntityManager 
+   *
+   * @return \Registry
+   */
+  public function getCache()
+  {
+    return $this['Cache'];
+  }
+
+  /**
+   * Getter
+   *
+   * @return \Doctrine\ORM\EntityManager
    */
   public function getEntityManager()
   {
@@ -197,18 +206,18 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
+   *
    * @return \Twig_Environment
    */
   public function getTwig()
   {
     return $this['Twig'];
   }
-  
+
   /**
    * Getter
-   * 
-   * @return Alchemy\Phrasea\Core\Version 
+   *
+   * @return Alchemy\Phrasea\Core\Version
    */
   public function getVersion()
   {
@@ -216,9 +225,19 @@ class Core extends \Pimple
   }
 
   /**
+   * Getter
+   *
+   * @return \Symfony\Component\Serializer\Serializer
+   */
+  public function getSerializer()
+  {
+    return $this['Serializer'];
+  }
+
+  /**
    * Tell if current seession is authenticated
-   * 
-   * @return boolean 
+   *
+   * @return boolean
    */
   public function isAuthenticated()
   {
@@ -229,8 +248,8 @@ class Core extends \Pimple
 
   /**
    * Return the current authenticated phraseanet user
-   * 
-   * @return \User_adapter 
+   *
+   * @return \User_adapter
    */
   public function getAuthenticatedUser()
   {
@@ -242,7 +261,7 @@ class Core extends \Pimple
 
   /**
    * Getter
-   * 
+   *
    * @return Core\Configuration
    */
   public function getConfiguration()
@@ -263,6 +282,16 @@ class Core extends \Pimple
     return;
   }
 
+  protected $request;
+
+  protected function getRequest()
+  {
+    if (!$this->request)
+      $this->request = Request::createFromGlobals();
+
+    return $this->request;
+  }
+
   protected function enableLocales()
   {
     mb_internal_encoding("UTF-8");
@@ -281,25 +310,14 @@ class Core extends \Pimple
 
   /**
    * Initialiaze phraseanet log process
-   * 
-   * @return Core 
+   *
+   * @return Core
    */
   protected function initLoggers()
   {
     $php_log = $this->getRegistry()->get('GV_RootPath') . 'logs/php_error.log';
 
     ini_set('error_log', $php_log);
-
-    if ($this->getRegistry()->get('GV_debug'))
-    {
-      ini_set('display_errors', 'on');
-      ini_set('display_startup_errors', 'on');
-    }
-    else
-    {
-      ini_set('display_errors', 'off');
-      ini_set('display_startup_errors', 'off');
-    }
 
     if ($this->getRegistry()->get('GV_log_errors'))
     {
@@ -315,8 +333,8 @@ class Core extends \Pimple
 
   /**
    * Return available language for phraseanet
-   * 
-   * @return Array 
+   *
+   * @return Array
    */
   public static function getAvailableLanguages()
   {
@@ -324,8 +342,8 @@ class Core extends \Pimple
   }
 
   /**
-   * Set Language 
-   * 
+   * Set Language
+   *
    */
   protected function detectLanguage()
   {
@@ -370,12 +388,11 @@ class Core extends \Pimple
 
   /**
    * Register directory and namespaces for autoloading app classes
-   *  
+   *
    */
   public static function initAutoloads()
   {
     require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-
     require_once __DIR__ . '/../../vendor/Twig/lib/Twig/Autoloader.php';
     require_once __DIR__ . '/../../vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
 
@@ -388,10 +405,16 @@ class Core extends \Pimple
 
     $loader->registerNamespaces(array(
         'Alchemy' => __DIR__ . '/../..',
-        'Symfony\\Component\\Yaml' => __DIR__ . '/../../vendor/symfony/src',
-        'Symfony\\Component\\Console' => __DIR__ . '/../../vendor/symfony/src',
-        'Symfony\\Component\\Serializer' => __DIR__ . '/../../vendor/symfony/src',
-        'Symfony\\Component\\DependencyInjection' => __DIR__ . '/../../vendor/symfony/src',
+        'Symfony' => realpath(__DIR__ . '/../../vendor/symfony/src'),
+        'Doctrine\\ORM' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib'),
+        'Doctrine\\DBAL' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib'),
+        'Doctrine\\Common' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib'),
+        'Doctrine\\Common\\DataFixtures' => realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
+        'Entities' => realpath(__DIR__ . '/../../Doctrine/'),
+        'Repositories' => realpath(__DIR__ . '/../../Doctrine/'),
+        'Proxies' => realpath(__DIR__ . '/../../Doctrine/'),
+        'Doctrine\\Logger' => realpath(__DIR__ . '/../../'),
+        'Monolog' => realpath(__DIR__ . '/../../vendor/Silex/vendor/monolog/src'),
     ));
 
     $loader->register();
@@ -403,7 +426,7 @@ class Core extends \Pimple
 
   /**
    * Initialize some PHP configuration variables
-   * 
+   *
    */
   public static function initPHPConf()
   {
@@ -424,12 +447,12 @@ class Core extends \Pimple
 
   /**
    * Return the current working environnement (test, dev, prod etc ...)
-   * 
+   *
    * @return string
    */
   public function getEnv()
   {
-    return $this->conf->getEnvironnement();
+    return $this->configuration->getEnvironnement();
   }
 
 }

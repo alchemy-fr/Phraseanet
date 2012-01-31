@@ -1,6 +1,15 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
+require_once __DIR__ . '/../../bootstrap.php';
+
+$include_path = realpath(__DIR__ . '/../../vendor/');
+if(strpos(get_include_path(), $include_path) === false)
+{
+  $new_include_path = $include_path . PATH_SEPARATOR . get_include_path();
+  set_include_path($new_include_path);
+}
+
+require_once __DIR__ . "/../../vendor/Phlickr/Api.php";
 
 /*
  * This file is part of Phraseanet
@@ -12,7 +21,7 @@ require_once dirname(__FILE__) . '/../../bootstrap.php';
  */
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -25,17 +34,17 @@ class Bridge_Api_Apitest_Containers implements Bridge_Api_ContainerInterface
 
   public function __construct()
   {
-    
+
   }
 
   public function get_created_on()
   {
-    
+
   }
 
   public function get_description()
   {
-    
+
   }
 
   public function get_id()
@@ -45,12 +54,12 @@ class Bridge_Api_Apitest_Containers implements Bridge_Api_ContainerInterface
 
   public function get_thumbnail($width = 120, $height = 90)
   {
-    
+
   }
 
   public function get_title()
   {
-    
+
   }
 
   public function get_type()
@@ -60,27 +69,27 @@ class Bridge_Api_Apitest_Containers implements Bridge_Api_ContainerInterface
 
   public function get_updated_on()
   {
-    
+
   }
 
   public function get_url()
   {
-    
+
   }
-  
+
   public function get_category()
   {
-    
+
   }
-  
+
   public function is_private()
   {
-    
+
   }
-  
+
   public function get_rating()
   {
-    
+
   }
 
 }
@@ -93,27 +102,27 @@ class Bridge_Api_Apitest_Element implements Bridge_Api_ElementInterface
 
   public function __construct()
   {
-    
+
   }
 
   public function get_category()
   {
-    
+
   }
 
   public function get_created_on()
   {
-    
+
   }
 
   public function get_description()
   {
-    
+
   }
 
   public function get_duration()
   {
-    
+
   }
 
   public function get_id()
@@ -123,17 +132,17 @@ class Bridge_Api_Apitest_Element implements Bridge_Api_ElementInterface
 
   public function get_rating()
   {
-    
+
   }
 
   public function get_thumbnail()
   {
-    
+
   }
 
   public function get_title()
   {
-    
+
   }
 
   public function get_type()
@@ -143,29 +152,33 @@ class Bridge_Api_Apitest_Element implements Bridge_Api_ElementInterface
 
   public function get_updated_on()
   {
-    
+
   }
 
   public function get_url()
   {
-    
+
   }
 
   public function get_view_count()
   {
-    
+
   }
 
   public function is_private()
   {
-    
+
   }
 
 }
 
 class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Interface
 {
+
   const AUTH_TYPE = 'None';
+
+  public static $hasError = false;
+  public static $hasException = false;
 
   public function __construct(registryInterface $registry, Bridge_Api_Auth_Interface $auth)
   {
@@ -174,17 +187,17 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   protected function initialize_transport()
   {
-    
+
   }
 
   protected function set_auth_params()
   {
-    
+
   }
 
   protected function set_transport_authentication_params()
   {
-    
+
   }
 
   public function get_terms_url()
@@ -193,7 +206,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
   }
 
   /**
-   * 
+   *
    * @return Array
    */
   public function connect()
@@ -203,7 +216,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   /**
    *
-   * @return Bridge_Api_Interface 
+   * @return Bridge_Api_Interface
    */
   public function reconnect()
   {
@@ -212,7 +225,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   /**
    *
-   * @return Bridge_Api_Interface 
+   * @return Bridge_Api_Interface
    */
   public function disconnect()
   {
@@ -221,7 +234,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   /**
    *
-   * @return boolean 
+   * @return boolean
    */
   public function is_connected()
   {
@@ -229,16 +242,16 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
   }
 
   /**
-   * 
-   * @return Bridge_Api_Interface 
+   *
+   * @return Bridge_Api_Interface
    */
   public function set_locale($locale)
   {
-    
+
   }
 
   /**
-   * 
+   *
    * @return string
    */
   public function get_name()
@@ -247,39 +260,39 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
   }
 
   /**
-   * 
+   *
    * @return string
    */
   public function get_icon_url()
   {
-    
+
   }
 
   /**
-   * 
+   *
    * @return string
    */
   public function get_image_url()
   {
-    
+
   }
 
   /**
-   * 
+   *
    * @return string
    */
   public function get_url()
   {
-    
+
   }
 
   /**
-   * 
+   *
    * @return string
    */
   public function get_infos()
   {
-    
+
   }
 
   public function get_object_class_from_type($type)
@@ -307,12 +320,12 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   public function get_element_types()
   {
-    
+
   }
 
   public function get_container_types()
   {
-    
+
   }
 
   public function get_element_from_id($element_id, $object)
@@ -320,6 +333,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
     $element = new Bridge_Api_Apitest_Element();
     $element->id = $element_id;
     $element->type = $object;
+
     return $element;
   }
 
@@ -328,12 +342,13 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
     $container = new Bridge_Api_Apitest_Containers();
     $container->id = $element_id;
     $container->type = $object;
+
     return $container;
   }
 
   public function get_category_list()
   {
-    
+
   }
 
   public function get_user_name()
@@ -355,6 +370,7 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
       $element_collection->add_element(new Bridge_Api_Apitest_Element());
       $i++;
     }
+
     return $element_collection;
   }
 
@@ -367,61 +383,79 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
       $container_collection->add_element(new Bridge_Api_Apitest_Containers());
       $i++;
     }
+
     return $container_collection;
   }
 
   public function update_element($object, $object_id, Array $datas)
   {
-    
+
   }
 
-  public function create_container($container_type, Request $request)
+  public function create_container($container_type, \Symfony\Component\HttpFoundation\Request $request)
   {
-    
+    if (self::$hasException)
+    {
+      self::$hasException = false;
+      throw new \Exception("une erreur");
+    }
   }
 
   public function add_element_to_container($element_type, $element_id, $destination, $container_id)
   {
-    
+    if (self::$hasException)
+    {
+      self::$hasException = false;
+      throw new \Exception("une erreur");
+    }
   }
 
   public function delete_object($object, $object_id)
   {
-    
+    if (self::$hasException)
+    {
+      self::$hasException = false;
+      throw new \Exception("une erreur");
+    }
   }
 
   /**
-   * 
+   *
    * @return Closure
    */
   public function acceptable_records()
   {
-    
+    $func = function($record)
+            {
+              return true;
+            };
+
+    return $func;
   }
 
   public function get_element_status(Bridge_Element $element)
   {
-    
+
   }
 
   public function map_connector_to_element_status($status)
   {
-    
+
   }
 
   public function get_error_message_from_status($connector_status)
   {
-    
+
   }
 
   public function upload(record_adapter &$record, array $options = array())
   {
-    
+
   }
 
   public function is_valid_object_id($object_id)
   {
-    
+
   }
 
   public function is_configured()
@@ -431,27 +465,49 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   public function check_upload_constraints(array $datas, record_adapter $record)
   {
-    
+    if (self::$hasError)
+    {
+      self::$hasError = false;
+
+      return array('title' => 'too long');
+    }
+
+    return array();
   }
 
-  public function get_upload_datas(Request $request, record_adapter $record)
+  public function get_upload_datas(\Symfony\Component\HttpFoundation\Request $request, record_adapter $record)
   {
-    
+    return array();
   }
 
   public function is_multiple_upload()
   {
-    
+
   }
 
   public function check_update_constraints(Array $datas)
   {
-    
+    if (!self::$hasError)
+    {
+      if (self::$hasException)
+      {
+        self::$hasException = false;
+        throw new \Exception('une erreur');
+      }
+
+      return array();
+    }
+    elseif (self::$hasError)
+    {
+      self::$hasError = false;
+
+      return array('title' => 'too long');
+    }
   }
 
-  public function get_update_datas(Request $request)
+  public function get_update_datas(\Symfony\Component\HttpFoundation\Request $request)
   {
-    
+    return array();
   }
 
 }
@@ -461,12 +517,12 @@ class Bridge_Api_Auth_None extends Bridge_Api_Auth_Abstract implements Bridge_Ap
 
   public function connect($param)
   {
-    
+
   }
 
   public function parse_request_token()
   {
-    
+
   }
 
   public function reconnect()
@@ -491,12 +547,12 @@ class Bridge_Api_Auth_None extends Bridge_Api_Auth_Abstract implements Bridge_Ap
 
   public function get_auth_signatures()
   {
-    
+
   }
 
   public function set_parameters(Array $parameters)
   {
-    
+
   }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for system_file.
@@ -16,9 +16,9 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
   public function setUp()
   {
-    $this->objects['indd'] = new system_file(dirname(__FILE__) . '/../../vendor/exiftool/t/images/InDesign.indd');
-    $this->objects['wav'] = new system_file(dirname(__FILE__) . '/../testfiles/test012.wav');
-    $this->objects['jpg'] = new system_file(dirname(__FILE__) . '/../../vendor/exiftool/t/images/Casio.jpg');
+    $this->objects['indd'] = new system_file(__DIR__ . '/../../vendor/exiftool/t/images/InDesign.indd');
+    $this->objects['wav'] = new system_file(__DIR__ . '/../testfiles/test012.wav');
+    $this->objects['jpg'] = new system_file(__DIR__ . '/../../vendor/exiftool/t/images/Casio.jpg');
   }
 
   public function testGet_mime()
@@ -83,7 +83,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
   public function testGetPath()
   {
-    $supposed = dirname(__FILE__) . '/../../vendor/exiftool/t/images/';
+    $supposed = __DIR__ . '/../../vendor/exiftool/t/images/';
     $this->assertEquals($supposed, $this->objects['indd']->getPath());
   }
 
@@ -155,7 +155,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
   public function testMkdir()
   {
-    $path = dirname(__FILE__) . '/test/dir/to/create/';
+    $path = __DIR__ . '/test/dir/to/create/';
     if (is_dir($path))
     {
       $this->fail('unable to create directory : directory already extists');
@@ -168,14 +168,14 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     $path = dirname($path);
     rmdir($path);
     $path = dirname($path);
-    rmdir(dirname(__FILE__) . '/test');
+    rmdir(__DIR__ . '/test');
     $path = dirname($path);
   }
 
   public function testChmod()
   {
-    $file = dirname(__FILE__) . '/../testfiles/cestlafete.jpg';
-    $dir = dirname(__FILE__) . '/testchmod';
+    $file = __DIR__ . '/../testfiles/cestlafete.jpg';
+    $dir = __DIR__ . '/testchmod';
     system_file::mkdir($dir);
 
     chmod($file, 0700);
@@ -192,8 +192,8 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
   public function testEmpty_directory()
   {
-    $file = dirname(__FILE__) . '/../testfiles/cestlafete.jpg';
-    $dir = dirname(__FILE__) . '/testchmod';
+    $file = __DIR__ . '/../testfiles/cestlafete.jpg';
+    $dir = __DIR__ . '/testchmod';
     system_file::mkdir($dir);
 
     copy($file, $dir . '/v1.test');
@@ -257,7 +257,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
       $this->assertArrayHasKey('meta_struct_id', $metadata);
       $this->assertArrayHasKey('meta_id', $metadata);
       $this->assertArrayHasKey('value', $metadata);
-      $this->assertTrue(is_array($metadata['value']));
+      $this->assertTrue(is_scalar($metadata['value']));
       $this->assertNull($metadata['meta_id']);
       $this->assertTrue(is_int($metadata['meta_struct_id']));
       $this->assertTrue($metadata['meta_struct_id'] > 0);

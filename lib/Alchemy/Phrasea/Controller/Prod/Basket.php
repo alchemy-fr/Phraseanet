@@ -35,6 +35,16 @@ class Basket implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
+    /**
+     * This route is used to create a Basket
+     *
+     * @params name : title (mandatory)
+     * @params desc : description (optionnal)
+     * @params lst  : Phraseanet serialized record list (optionnal)
+     *
+     * @accept JSON / YAML
+     *
+     */
     $controllers->post('/', function(Application $app)
             {
               $request = $app['request'];
@@ -107,6 +117,12 @@ class Basket implements ControllerProviderInterface
               }
             });
 
+    /**
+     * This route is used to delete a basket
+     *
+     * @accept JSON / HTML
+     *
+     */
     $controllers->post('/{basket_id}/delete/', function(Application $app, Request $request, $basket_id)
             {
               $em = $app['Core']->getEntityManager();
@@ -133,8 +149,11 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
+    /**
+     * Removes a BasketElement
+     */
     $controllers->post(
             '/{basket_id}/delete/{basket_element_id}/'
             , function(Application $app, Request $request, $basket_id, $basket_element_id)
@@ -171,10 +190,15 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+')->assert('basket_element_id', '\d+');
 
-
-
+    /**
+     * Update name and description of a basket
+     *
+     * @param name string mandatory
+     * @param description string optionnal
+     *
+     */
     $controllers->post('/{basket_id}/update/', function(Application $app, Request $request, $basket_id)
             {
               $em = $app['Core']->getEntityManager();
@@ -182,7 +206,7 @@ class Basket implements ControllerProviderInterface
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
-              $basket->setName($request->get('name'));
+              $basket->setName($request->get('name', ''));
               $basket->setDescription($request->get('description'));
 
               $em->merge($basket);
@@ -205,9 +229,11 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
-
+    /**
+     * Get the form to update the Basket attributes (name and description)
+     */
     $controllers->get('/{basket_id}/update/', function(Application $app, $basket_id)
             {
               /* @var $em \Doctrine\ORM\EntityManager */
@@ -215,7 +241,7 @@ class Basket implements ControllerProviderInterface
 
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
-              
+
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
@@ -225,9 +251,12 @@ class Basket implements ControllerProviderInterface
                                       , array('basket' => $basket)
                               )
               );
-            });
+            })->assert('basket_id', '\d+');
 
 
+    /**
+     * Get the Basket reorder form
+     */
     $controllers->get(
             '/{basket_id}/reorder/'
             , function(Application $app, $basket_id)
@@ -238,7 +267,7 @@ class Basket implements ControllerProviderInterface
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return new Response(
@@ -247,9 +276,15 @@ class Basket implements ControllerProviderInterface
                                       , array('basket' => $basket)
                               )
               );
-            });
+            })->assert('basket_id', '\d+');
 
-
+    /**
+     * Toggle the status of a Basket
+     *
+     * @param acrhive : 0|1 (mandatory)
+     *
+     * @returns JSON / HTML
+     */
     $controllers->post('/{basket_id}/archive/', function(Application $app, Request $request, $basket_id)
             {
               $em = $app['Core']->getEntityManager();
@@ -257,14 +292,26 @@ class Basket implements ControllerProviderInterface
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
-              $basket->setArchived(!!$request->get('archive'));
+              $archive_status = !!$request->get('archive');
+
+              $basket->setArchived($archive_status);
 
               $em->merge($basket);
               $em->flush();
 
+              if($archive_status)
+              {
+                $message = _('Basket has been archived');
+              }
+              else
+              {
+                $message = _('Basket has been unarchived');
+              }
+
               $data = array(
                   'success' => true
-                  , 'message' => _('Basket has been deleted')
+                  , 'archive' => $archive_status
+                  , 'message' => $message
               );
 
               if ($request->getRequestFormat() == 'json')
@@ -278,8 +325,11 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
+    /**
+     * Add a BasketElement to a basket
+     */
     $controllers->post(
             '/{basket_id}/addElements/'
             , function(Application $app, Request $request, $basket_id)
@@ -343,10 +393,18 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
-            
-            
-            
+            })->assert('basket_id', '\d+');
+
+
+
+
+    /**
+     *
+     * Move Basket element from a basket to another
+     *
+     * @params elements Array : list of basket element id
+     *
+     */
     $controllers->post(
             '/{basket_id}/stealElements/'
             , function(Application $app, Request $request, $basket_id)
@@ -365,17 +423,17 @@ class Basket implements ControllerProviderInterface
               foreach ($request->get('elements') as $bask_element_id)
               {
                 $basket_element = $em->getRepository('\Entities\BasketElement')
-                      ->findUserElement($bask_element_id, $user);
-                
-                if(!$basket_element)
+                        ->findUserElement($bask_element_id, $user);
+
+                if (!$basket_element)
                 {
                   continue;
                 }
-                
+
                 $basket_element->setBasket($basket);
-                
+
                 $em->merge($basket_element);
-                
+
                 $n++;
               }
 
@@ -398,20 +456,26 @@ class Basket implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('basket_id', '\d+');
 
+    /**
+     * Get basket creation form
+     */
     $controllers->get('/create/', function(Application $app)
             {
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return new Response($twig->render('prod/Baskets/Create.html.twig', array()));
             });
 
+    /**
+     * Get a basket
+     */
     $controllers->get('/{basket_id}/', function(Application $app, $basket_id)
             {
               $em = $app['Core']->getEntityManager();
-              
+
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
@@ -420,9 +484,9 @@ class Basket implements ControllerProviderInterface
               $em->merge($basket);
               $em->flush();
 
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
-              
+
               $html = $twig->render('prod/WorkZone/Basket.html.twig', array('basket' => $basket));
 
               return new Response($html);

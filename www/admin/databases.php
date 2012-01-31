@@ -105,7 +105,9 @@ phrasea::headers();
               );
               $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
-              $connexion = $configuration->getConnexion();
+              $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+              $connexion = $configuration->getConnexion($choosenConnexion);
 
               $hostname = $connexion->get('host');
               $port = $connexion->get('port');
@@ -256,7 +258,7 @@ phrasea::headers();
       }
       catch (Exception $e)
       {
-        
+
       }
     }
     ?>

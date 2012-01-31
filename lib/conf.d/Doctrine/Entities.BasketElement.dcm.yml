@@ -10,7 +10,7 @@ Entities\BasketElement:
       type: integer
       generator:
         strategy: AUTO
-    
+
   fields:
     record_id:
       type: integer

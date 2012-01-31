@@ -137,7 +137,8 @@ class lazaretFile
     $pathfile = $registry->get('GV_RootPath') . 'tmp/lazaret/' . $this->filepath;
 
     $record = new record_adapter($sbas_id, $record_id);
-    p4file::substitute($record, $pathfile, $this->filename, false);
+    $record->substitute_subdef('document', new system_file($pathfile));
+
     $this->delete();
 
     return $this;

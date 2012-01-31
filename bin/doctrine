@@ -34,13 +34,26 @@ try
                   new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
   );
   $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+  $serviceName = $configuration->getOrm();
+  $confService = $configuration->getService($serviceName);
+
+  if($confService->get("type") !== 'doctrine')
+  {
+    exit(sprintf("Doctrine is not declared as your ORM but %s is", $confService->get("type")));
+  }
   
-  $doctrine = new Phrasea\Core\Service\Doctrine($configuration->getDoctrine()->all());
+  $ormServiceBuilder = new \Alchemy\Phrasea\Core\ServiceBuilder\Orm(
+                  $serviceName
+                  , $confService
+                  , array('registry' => \registry::get_instance())
+  );
 
-  $app = new Application("Phraseanet Doctrine Console", $doctrine->getVersion());
+  $ormService = $ormServiceBuilder->buildService();
+  $em = $ormService->getService();
+  /* @var $em \Doctrine\ORM\EntityManager */
 
-
-  $em = $doctrine->getEntityManager();
+  $app = new Application("Phraseanet Doctrine Console", $ormService->getVersion());
 
   $helpers = array(
       'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($em->getConnection()),

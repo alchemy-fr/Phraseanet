@@ -64,9 +64,6 @@ if ($parm["bid"] !== null)
       $s_thits .= ( str_replace('d', '.', $rowbas['value']) . ';');
     }
 
-    if ($parm['debug'])
-      var_dump($s_thits);
-
     if ($parm['typ'] == 'CT')
     {
       $dom = $databox->get_dom_cterms();

@@ -19,7 +19,7 @@ interface registryInterface
 {
   public function get($key, $defaultvalue = null);
 
-  public function set($key, $value);
+  public function set($key, $value, $type);
 
   public function is_set($key);
 

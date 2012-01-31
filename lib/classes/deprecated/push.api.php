@@ -843,8 +843,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->countries as $country)
       {
         $c['country' . $n] = $country;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.pays IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -855,8 +855,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->activite as $activite)
       {
         $c['activite' . $n] = $activite;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.activite IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -867,8 +867,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->fonction as $fonction)
       {
         $c['fonction' . $n] = $fonction;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.fonction IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -879,8 +879,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->societe as $societe)
       {
         $c['societe' . $n] = $societe;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.societe IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -891,8 +891,8 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->template as $template)
       {
         $c['template' . $n] = $template;
+        $n++;
       }
-      $n++;
       $precise.=" AND usr.lastModel IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
@@ -1509,7 +1509,7 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
   }
 
   $em = $Core->getEntityManager();
-  
+
   foreach ($users as $oneuser => $rights)
   {
     $new_basket = null;
@@ -1524,26 +1524,26 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
       $new_basket->setIsRead(false);
       $new_basket->setPusher($pusher);
       $new_basket->setOwner($user);
-      
+
       $em->persist($new_basket);
-      
+
       $nbchu++;
 
       foreach($parmLST as $basrec)
       {
         $basrec = explode('_', $basrec);
-        
+
         $record = new record_adapter($basrec[0], $basrec[1]);
-        
+
         $BasketElement = new Entities\BasketElement();
         $BasketElement->setRecord($record);
         $BasketElement->setBasket($new_basket);
-        
+
         $em->persist($BasketElement);
-        
+
         $new_basket->addBasketElement($BasketElement);
       }
-      
+
       $em->flush();
 
       $finalUsers[] = $user->get_id();
@@ -1631,13 +1631,13 @@ function pushValidation($usr, $ssel_id, $listUsrs, $time, $mail_content, $accuse
 
   $em = $Core->getEntityManager();
   $repository = $em->getRepository('\Entities\Basket');
-  
+
   $basket = $repository->findUserBasket($ssel_id, $Core->getAuthenticatedUser());
 
   $basket->setIsRead(false);
-  
+
   $em->merge($basket);
-  
+
   $em->flush();
 
   foreach ($listUsrs as $oneuser => $rights)

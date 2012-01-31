@@ -55,7 +55,7 @@ class UsrListOwner
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -75,7 +75,7 @@ class UsrListOwner
   /**
    * Get usr_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getUsrId()
   {
@@ -98,7 +98,7 @@ class UsrListOwner
   /**
    * Get role
    *
-   * @return string 
+   * @return string
    */
   public function getRole()
   {
@@ -118,7 +118,7 @@ class UsrListOwner
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {
@@ -138,7 +138,7 @@ class UsrListOwner
   /**
    * Get updated
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getUpdated()
   {
@@ -158,7 +158,7 @@ class UsrListOwner
   /**
    * Get list
    *
-   * @return Entities\UsrList 
+   * @return Entities\UsrList
    */
   public function getList()
   {

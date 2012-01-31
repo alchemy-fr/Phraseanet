@@ -47,18 +47,18 @@ class UsrList
   /**
    * @var Entities\UsrListEntry
    */
-  private $users;
+  private $entries;
 
   public function __construct()
   {
     $this->owners = new \Doctrine\Common\Collections\ArrayCollection();
-    $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+    $this->entries = new \Doctrine\Common\Collections\ArrayCollection();
   }
 
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -78,7 +78,7 @@ class UsrList
   /**
    * Get name
    *
-   * @return string 
+   * @return string
    */
   public function getName()
   {
@@ -98,7 +98,7 @@ class UsrList
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {
@@ -118,7 +118,7 @@ class UsrList
   /**
    * Get updated
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getUpdated()
   {
@@ -138,7 +138,7 @@ class UsrList
   /**
    * Get owners
    *
-   * @return Doctrine\Common\Collections\Collection 
+   * @return Doctrine\Common\Collections\Collection
    */
   public function getOwners()
   {
@@ -150,6 +150,7 @@ class UsrList
     foreach ($this->getOwners() as $owner)
     {
       if ($owner->getUser()->get_id() == $user->get_id())
+
         return true;
     }
 
@@ -159,13 +160,14 @@ class UsrList
   /**
    *
    * @param \User_Adapter $user
-   * @return \Entities\UsrListOwner 
+   * @return \Entities\UsrListOwner
    */
   public function getOwner(\User_Adapter $user)
   {
     foreach ($this->getOwners() as $owner)
     {
       if ($owner->getUser()->get_id() == $user->get_id())
+
         return $owner;
     }
 
@@ -173,23 +175,23 @@ class UsrList
   }
 
   /**
-   * Add users
+   * Add entry
    *
-   * @param Entities\UsrListContent $users
+   * @param Entities\UsrListEntry $entry
    */
-  public function addUsrListEntry(\Entities\UsrListEntry $users)
+  public function addUsrListEntry(\Entities\UsrListEntry $entry)
   {
-    $this->users[] = $users;
+    $this->entries[] = $entry;
   }
 
   /**
-   * Get users
+   * Get entries
    *
-   * @return Doctrine\Common\Collections\Collection 
+   * @return Doctrine\Common\Collections\Collection
    */
-  public function getUsers()
+  public function getEntries()
   {
-    return $this->users;
+    return $this->entries;
   }
 
 }

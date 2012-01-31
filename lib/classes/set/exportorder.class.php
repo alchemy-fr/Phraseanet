@@ -28,7 +28,7 @@ class set_exportorder extends set_export
   public function order_available_elements($from_usr_id, $usage, $deadline)
   {
     $Core = bootstrap::getCore();
-    
+
     $lst = $this->get_orderable_lst();
 
     $conn = connection::getPDOConnection();

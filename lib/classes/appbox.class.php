@@ -34,6 +34,7 @@ class appbox extends base
    *
    * constant defining the app type
    */
+
   const BASE_TYPE = self::APPLICATION_BOX;
 
   /**
@@ -44,6 +45,7 @@ class appbox extends base
   protected $cache;
   protected $connection;
   protected $registry;
+
   const CACHE_LIST_BASES = 'list_bases';
   const CACHE_SBAS_IDS = 'sbas_ids';
 
@@ -67,7 +69,7 @@ class appbox extends base
    *
    * @return appbox
    */
-  protected function __construct(registryInterface $registry=null)
+  protected function __construct(registryInterface $registry = null)
   {
     $this->connection = connection::getPDOConnection();
     if (!$registry)
@@ -81,7 +83,9 @@ class appbox extends base
     );
     $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
-    $connexion = $configuration->getConnexion();
+    $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+    $connexion = $configuration->getConnexion($choosenConnexion);
 
     $this->host = $connexion->get('host');
     $this->port = $connexion->get('port');
@@ -99,7 +103,7 @@ class appbox extends base
    * @param string $pic_type
    * @return appbox
    */
-  public function write_collection_pic(collection $collection, system_file $pathfile=null, $pic_type)
+  public function write_collection_pic(collection $collection, system_file $pathfile = null, $pic_type)
   {
     if ($pathfile instanceof system_file)
     {
@@ -134,10 +138,12 @@ class appbox extends base
     $custom_path.= $collection->get_base_id();
 
     if (is_null($pathfile))
+
       return $this;
 
     $datas = file_get_contents($pathfile->getPathname());
     if (is_null($datas))
+
       return $this;
 
     file_put_contents($file, $datas);
@@ -157,7 +163,7 @@ class appbox extends base
    * @param <type> $pic_type
    * @return appbox
    */
-  public function write_databox_pic(databox $databox, system_file $pathfile=null, $pic_type)
+  public function write_databox_pic(databox $databox, system_file $pathfile = null, $pic_type)
   {
 
     if ($pathfile instanceof system_file)
@@ -189,10 +195,12 @@ class appbox extends base
     $custom_path.= $pic_type . '_' . $databox->get_sbas_id();
 
     if (is_null($pathfile))
+
       return $this;
 
     $datas = file_get_contents($pathfile->getPathname());
     if (is_null($datas))
+
       return $this;
 
     file_put_contents($file, $datas);
@@ -216,8 +224,10 @@ class appbox extends base
   {
     $sqlupd = "UPDATE bas SET ord = :ordre WHERE base_id = :base_id";
     $stmt = $this->get_connection()->prepare($sqlupd);
-    $stmt->execute(array(':ordre' => $ord, ':base_id' => $collection->get_base_id()));
+    $stmt->execute(array(':ordre' => $ordre, ':base_id' => $collection->get_base_id()));
     $stmt->closeCursor();
+
+    $collection->get_databox()->delete_data_from_cache(\databox::CACHE_COLLECTIONS);
 
     return $this;
   }
@@ -295,7 +305,7 @@ class appbox extends base
 
   public function forceUpgrade(Setup_Upgrade &$upgrader)
   {
-    $upgrader->add_steps(7 + count($this->get_databoxes()));
+    $upgrader->add_steps(8 + count($this->get_databoxes()));
 
     $registry = $this->get_registry();
 
@@ -307,6 +317,21 @@ class appbox extends base
     {
       $this->get_cache()->flush();
     }
+    $upgrader->add_steps_complete(1);
+
+
+    $upgrader->set_current_message(_('Creating new tables'));
+    $core = bootstrap::getCore();
+    $em = $core->getEntityManager();
+    //create schema
+
+    if ($em->getConnection()->getDatabasePlatform()->supportsAlterTable())
+    {
+      $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+      $metas = $em->getMetadataFactory()->getAllMetadata();
+      $tool->updateSchema($metas, true);
+    }
+
     $upgrader->add_steps_complete(1);
 
     /**
@@ -415,34 +440,129 @@ class appbox extends base
         $credentials['dbname'] = $dbname;
       }
 
-      $file = __DIR__ . "/../../config/config.sample.yml";
-      $file1 = __DIR__ . "/../../config/config.yml";
-
-      if (!copy($file, $file1))
-      {
-        throw new \Exception(sprintf("Unable to copy %s", $file1));
-      }
-
-      $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                      new \Alchemy\Phrasea\Core\Configuration\Application(),
-                      new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-      );
-      $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
-
-      $connexionINI = array();
-
       foreach ($credentials as $key => $value)
       {
         $key = $key == 'hostname' ? 'host' : $key;
         $connexionINI[$key] = (string) $value;
       }
+      $connexionINI['driver'] = 'pdo_mysql';
+      $connexionINI['charset'] = 'UTF8';
+
       $serverName = $registry->get('GV_ServerName');
-      $configuration->setServerName($serverName);
-      $configuration->setAllDatabaseConnexion($connexionINI);
-      
+
+      $root = __DIR__ . '/../../';
+
+      //copy config sample
+      $configSampleFile = $root . "config/config.sample.yml";
+      $configFile = $root . "config/config.yml";
+
+      if (!copy($configSampleFile, $configFile))
+      {
+        throw new \Exception(sprintf("Unable to copy %s", $configSampleFile));
+      }
+
+      //copy service sample
+      $serviceSampleFile = $root . "config/services.sample.yml";
+      $serviceFile = $root . "config/services.yml";
+
+      if (!copy($serviceSampleFile, $serviceFile))
+      {
+        throw new \Exception(sprintf("Unable to copy %s", $serviceSampleFile));
+      }
+
+      //copy connexion sample
+      $connexionSampleFile = $root . "config/connexions.sample.yml";
+      $connexionFile = $root . "config/connexions.yml";
+
+      if (!copy($connexionSampleFile, $connexionFile))
+      {
+        throw new \Exception(sprintf("Unable to copy %s", $serviceSampleFile));
+      }
+
+      //get configuration object
+      $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+      $parser = new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml();
+      $handler = new \Alchemy\Phrasea\Core\Configuration\Handler($appConf, $parser);
+      $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+      //write credentials to config file
+      $connexionFile = $appConf->getConnexionFile();
+
+      $connexion = array(
+          'main_connexion' => $connexionINI,
+          'test_connexion' => array(
+              'driver' => 'pdo_sqlite',
+              'path' => realpath($root . 'lib/unitTest/tests.sqlite'),
+              'charset' => 'UTF8'
+              ));
+
+      $cacheService = "array_cache";
+
+      if (extension_loaded('apc'))
+      {
+        $cacheService = "apc_cache";
+      }
+      elseif (extension_loaded('xcache'))
+      {
+        $cacheService = "xcache_cache";
+      }
+
+      $yaml = $configuration->getConfigurationHandler()->getParser()->dump($connexion, 2);
+
+      if (!file_put_contents($connexionFile->getPathname(), $yaml) !== false)
+      {
+        throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $connexionFile->getPathname()));
+      }
+
+      //rewrite service file
+      $serviceFile = $appConf->getServiceFile();
+      $services = $configuration->getConfigurationHandler()->getParser()->parse($serviceFile);
+
+      foreach ($services as $serviceName => $service)
+      {
+        if ($serviceName === "doctrine_prod")
+        {
+
+          $services["doctrine_prod"]["options"]["orm"]["cache"] = array(
+              "query" => $cacheService,
+              "result" => $cacheService,
+              "metadata" => $cacheService
+          );
+        }
+      }
+
+      $yaml = $configuration->getConfigurationHandler()->getParser()->dump($services, 5);
+
+      if (!file_put_contents($serviceFile->getPathname(), $yaml) !== false)
+      {
+        throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $serviceFile->getPathname()));
+      }
+
+      //rewrite servername in main config file
+      $arrayConf = $configuration->all();
+
+      foreach ($arrayConf as $key => $value)
+      {
+        if (is_array($value) && array_key_exists('phraseanet', $value))
+        {
+          $arrayConf[$key]["phraseanet"]["servername"] = $serverName;
+        }
+
+        if (is_array($value) && $key === 'prod')
+        {
+          $arrayConf[$key]["cache"] = $cacheService;
+        }
+      }
+
+      $configuration->write($arrayConf);
+
+
+
       if (function_exists('chmod'))
       {
         chmod($configuration->getFile()->getPathname(), 0700);
+        chmod($serviceFile->getPathname(), 0700);
+        chmod($connexionFile->getPathname(), 0700);
       }
     }
     try
@@ -455,7 +575,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
 
     try
@@ -492,6 +612,7 @@ class appbox extends base
   public function get_databoxes()
   {
     if ($this->databoxes)
+
       return $this->databoxes;
 
     $ret = array();
@@ -503,7 +624,7 @@ class appbox extends base
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -520,7 +641,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
     $sql = 'SELECT sbas_id FROM sbas';
 

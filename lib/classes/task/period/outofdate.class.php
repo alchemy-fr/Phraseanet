@@ -162,6 +162,7 @@ class task_period_outofdate extends task_abstract
         parent.calcSQL();
       </script>
       <?php
+
       return("");
     }
     else // ... so we NEVER come here
@@ -218,11 +219,12 @@ class task_period_outofdate extends task_abstract
           jQuery.map($(this).serializeArray(), function(n, i){
             json[n['name']] = n['value'];
           });
+
           return json;
         };
       })( jQuery );
 
-                		
+
       function chgxmltxt(textinput, fieldname)
       {
         var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
@@ -274,7 +276,7 @@ class task_period_outofdate extends task_abstract
             }
             $("#cmd").html(s);
           }
-        });	
+        });
       }
 
       function chgsbas(sbaspopup)
@@ -289,7 +291,7 @@ class task_period_outofdate extends task_abstract
           , async:false
           , success:function(data)
           {
-            //							console.log(data);
+            //              console.log(data);
             var html = "<option value=\"\">...</option>";
             for(i in data.date_fields)
               html += "\n<option class=\"jsFilled\" value=\"" + data.date_fields[i] + "\">" + data.date_fields[i] + "</option>";
@@ -308,12 +310,13 @@ class task_period_outofdate extends task_abstract
             for(fld=0; fld<=2; fld++)
               $("#status"+fld).html(html);
           }
-        });	
+        });
+
         return;
       }
-                      
-                      
-                      
+
+
+
     <?php
     /*
 
@@ -682,12 +685,13 @@ class task_period_outofdate extends task_abstract
     }
 
     $ret = ($nchanged > 0 ? $nchanged : 'NORECSTODO');
+
     return($ret);
   }
 
-  
-  
-  
+
+
+
   /*
     function doRecords()
     {
@@ -911,9 +915,9 @@ class task_period_outofdate extends task_abstract
   private function calcSQL($sxTaskSettings)
   {
     $ret = array();
-    
+
     $this->sxTaskSettings = $sxTaskSettings;
-    
+
     $date1 = $date2 = NULL;
     $field1 = $field2 = '';
 
@@ -1007,7 +1011,7 @@ class task_period_outofdate extends task_abstract
               SET " . $sqlset[0] .
               " WHERE " . $w;
 // printf("%d : %s \n%s", __LINE__, $sql, var_export($params, true));
- 
+
       $ret[] = array('sql'=>$sql, 'params'=>$params);
 
 //      $stmt = $this->connbas->prepare($sql);
@@ -1232,9 +1236,6 @@ class task_period_outofdate extends task_abstract
     );
 
     phrasea::headers(200, true, 'application/json', 'UTF-8', false);
-// return("hello4");
-//var_dump($parm2);
-//return;
     $ret = NULL;
     switch($parm2['ACT'])
     {
@@ -1274,7 +1275,7 @@ class task_period_outofdate extends task_abstract
           }
           catch(Exception $e)
           {
-            
+
           }
         }
         break;

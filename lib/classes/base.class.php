@@ -258,8 +258,10 @@ abstract class base implements cache_cacheableInterface
   public function upgradeavailable()
   {
     if ($this->get_version())
+
       return version_compare(\Alchemy\Phrasea\Core\Version::getNumber(), $this->get_version(), '>');
     else
+
       return true;
   }
 
@@ -337,7 +339,7 @@ abstract class base implements cache_cacheableInterface
     $current_version = $this->get_version();
 
     $Core = bootstrap::getCore();
-    
+
     $upgrader->set_current_message(sprintf(_('Applying patches on %s'), $this->get_dbname()));
     if ($apply_patches)
     {

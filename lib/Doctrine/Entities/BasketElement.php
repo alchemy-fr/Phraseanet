@@ -61,7 +61,7 @@ class BasketElement
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -81,7 +81,7 @@ class BasketElement
   /**
    * Get record_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getRecordId()
   {
@@ -101,7 +101,7 @@ class BasketElement
   /**
    * Get sbas_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getSbasId()
   {
@@ -121,7 +121,7 @@ class BasketElement
   /**
    * Get ord
    *
-   * @return integer 
+   * @return integer
    */
   public function getOrd()
   {
@@ -141,7 +141,7 @@ class BasketElement
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {
@@ -161,7 +161,7 @@ class BasketElement
   /**
    * Get updated
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getUpdated()
   {
@@ -181,7 +181,7 @@ class BasketElement
   /**
    * Get basket
    *
-   * @return Entities\Basket 
+   * @return Entities\Basket
    */
   public function getBasket()
   {
@@ -227,7 +227,7 @@ class BasketElement
   /**
    * Get validation_datas
    *
-   * @return Doctrine\Common\Collections\Collection 
+   * @return Doctrine\Common\Collections\Collection
    */
   public function getValidationDatas()
   {
@@ -237,7 +237,7 @@ class BasketElement
   /**
    *
    * @param \User_Adapter $user
-   * @return \Entities\ValidationData 
+   * @return \Entities\ValidationData
    */
   public function getUserValidationDatas(\User_Adapter $user)
   {

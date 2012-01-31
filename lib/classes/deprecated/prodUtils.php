@@ -20,7 +20,7 @@ function deleteRecord($lst, $del_children)
   $Core = bootstrap::getCore();
   $em = $Core->getEntityManager();
   $BE_repository = $em->getRepository('\Entities\BasketElement');
-  
+
   $appbox = appbox::get_instance();
   $session = $appbox->get_session();
   $registry = $Core->getRegistry();
@@ -95,9 +95,17 @@ function deleteRecord($lst, $del_children)
             $ret[] = implode('_', array($oneson->get_sbas_id(), $oneson->get_record_id(), $oneson->get_base_id()));
           }
         }
+        $ret[] = implode('_', $rid);
+
+        $basket_elements = $BE_repository->findElementsByRecord($record);
+
+        foreach($basket_elements as $basket_element)
+        {
+          $em->remove($basket_element);
+        }
+
         $record->delete();
         unset($record);
-        $ret[] = implode('_', $rid);
       }
     }
     catch (Exception $e)
@@ -106,14 +114,8 @@ function deleteRecord($lst, $del_children)
     }
   }
 
-  $basket_elements = $BE_repository->findElementsByRecord($record);
-  
-  foreach($basket_elements as $basket_element)
-  {
-    $em->remove($basket_element);
-  }
   $em->flush();
-    
+
   return p4string::jsonencode($ret);
 }
 

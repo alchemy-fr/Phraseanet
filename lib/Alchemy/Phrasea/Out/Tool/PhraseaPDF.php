@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Out\Tool;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -23,7 +23,7 @@ class PhraseaPDF extends \TCPDF
 
   function Header()
   {
-    
+
   }
 
   function Footer()
@@ -32,13 +32,13 @@ class PhraseaPDF extends \TCPDF
     $mr = $this->SetRightMargin(0);
 
     $this->SetY(-15);
-    
+
     $this->SetFont(self::FONT, 'I', 8);
     $this->Cell(0, 10, 'Page ' . $this->PageNo(), 0, 0, 'C');
 
     $this->SetFont(self::FONT, '', 8);
     $w = $this->GetStringWidth('Printed by');
-    
+
     $this->SetFont(self::FONT, 'B', 8);
     $w += $this->GetStringWidth(' Phraseanet');
 
@@ -46,7 +46,7 @@ class PhraseaPDF extends \TCPDF
 
     $this->SetFont(self::FONT, '', 8);
     $this->Write(8, 'Printed by');
-    
+
     $this->SetFont(self::FONT, 'B', 8);
     $this->Write(8, ' Phraseanet');
   }

@@ -17,7 +17,7 @@ require_once __DIR__ . '/../../../../vendor/tcpdf/tcpdf.php';
 
 /**
  * Creates a PDF
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -50,7 +50,6 @@ class PDF
         case self::LAYOUT_PREVIEWCAPTIONTDM:
           try
           {
-//          exit('prout');
             $subdef = $record->get_subdef('preview');
             if (!$subdef->is_physically_present())
             {
@@ -107,10 +106,10 @@ class PDF
     switch ($layout)
     {
       case "preview":
-        $this->print_preview();
+        $this->print_preview(false);
         break;
       case "previewCaption":
-        $this->print_preview();
+        $this->print_preview(false);
         break;
       case "previewCaptionTdm":
         $this->print_preview(true);
@@ -271,7 +270,7 @@ class PDF
 
       $y = $this->pdf->GetY();
 
-      $t = phrasea::bas_names($rec->get_base_id());
+      $t = \phrasea::bas_names($rec->get_base_id());
       $this->pdf->SetFont(PhraseaPDF::FONT, '', 10);
       $this->pdf->SetFillColor(220, 220, 220);
       $this->pdf->SetLeftMargin($lmargin);
@@ -318,7 +317,7 @@ class PDF
         $this->pdf->Write(5, $field->get_name() . " : ");
 
         $this->pdf->SetFont(PhraseaPDF::FONT, '', 12);
-        $this->pdf->Write(5, $field->get_value(true));
+        $this->pdf->Write(5, $field->get_serialized_values());
 
         $this->pdf->Write(6, "\n");
         $nf++;
@@ -330,7 +329,7 @@ class PDF
     $this->pdf->SetLeftMargin($lmargin);
   }
 
-  protected function print_preview($withtdm=false)
+  protected function print_preview($withtdm)
   {
     $appbox = \appbox::get_instance();
     $registry = \registry::get_instance();
@@ -513,7 +512,7 @@ class PDF
         $t = str_replace(
                 array("&lt;", "&gt;", "&amp;")
                 , array("<", ">", "&")
-                , $field->get_value(true)
+                , $field->get_serialized_values()
         );
 
         $this->pdf->Write(5, $t);

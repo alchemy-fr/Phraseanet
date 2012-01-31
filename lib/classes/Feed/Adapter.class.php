@@ -55,9 +55,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   protected $icon_url;
 
   const CACHE_ENTRY_NUMBER = 'entrynumber';
-
   const CACHE_USER_TOKEN = 'usr_token';
-  
   const MAX_ENTRIES = 20;
 
   /**
@@ -250,9 +248,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
    */
   public function has_access(User_Adapter $user)
   {
-    if($this->get_collection() instanceof collection)
+    if ($this->get_collection() instanceof collection)
 
-      return $user->ACL ()->has_access_to_base ($this->collection->get_base_id ());
+      return $user->ACL()->has_access_to_base($this->collection->get_base_id());
     return true;
   }
 
@@ -263,8 +261,10 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   public function is_public()
   {
     if ($this->get_collection() instanceof collection)
-
+    {
       return false;
+    }
+
     return $this->public;
   }
 

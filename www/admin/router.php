@@ -26,7 +26,7 @@ if ($parm["session"])
   session_id($parm["session"]);
 }
 
-$app = require __DIR__ . "/../../lib/Alchemy/Application/Admin.php";
+$app = require __DIR__ . "/../../lib/Alchemy/Phrasea/Application/Admin.php";
 
 $app->run();
 
