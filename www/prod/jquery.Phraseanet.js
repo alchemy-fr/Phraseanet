@@ -1,11 +1,24 @@
 var p4 = p4 || {};
 
-(function(p4){
+(function(p4, $){
   
   var templates = [];
   
+  var waitStack = [];
+  
   var LoadAndRender = function(TemplateName, datas, callback) {
     
+    
+    if(waitStack[TemplateName] instanceof Array)
+    {
+      waitStack[TemplateName].push({ datas : datas, callback : callback });
+      return;
+    }
+    else
+    {
+      waitStack[TemplateName] = [];
+    }
+  
     $.ajax({
       type: "GET",
       url: "/prod/MustacheLoader/",
@@ -16,7 +29,16 @@ var p4 = p4 || {};
       success: function(data){
         templates[TemplateName] = data;
         
-        return MustacheRender(TemplateName, datas, callback);
+        MustacheRender(TemplateName, datas, callback);
+        
+        for(s in waitStack[TemplateName])
+        {
+          MustacheRender(TemplateName, waitStack[TemplateName][s].datas, waitStack[TemplateName][s].callback);
+        }
+        
+        waitStack[TemplateName] = null;
+        
+        return;
       }
     });
   }
@@ -24,12 +46,24 @@ var p4 = p4 || {};
   var MustacheRender = function(TemplateName, datas, callback) {
     if(templates[TemplateName])
     {
-      return callback(Mustache.render(templates[TemplateName], datas));
+      var rendered = Mustache.render(templates[TemplateName], datas);
+      
+      if(typeof callback === 'function')
+        return callback(rendered);
+      else
+        return rendered;
     }
     else
       return LoadAndRender(TemplateName, datas, callback);
   };
-
-  p4.Mustache = MustacheRender;
   
-}(p4));
+  var ClearCache = function() {
+    templates = new Array();
+  };
+
+  p4.Mustache = {
+    Render : MustacheRender,
+    ClearCache : ClearCache
+  };
+  
+}(p4, jQuery));
