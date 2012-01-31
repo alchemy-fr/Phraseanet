@@ -88,7 +88,7 @@ if ((!is_null($parm['login']) && !is_null($parm['pwd'])) || $is_guest)
   }
   catch (Exception_Session_MailLocked $e)
   {
-    return phrasea::redirect("/login/?redirect=" . $parm['redirect'] . "&error=mailNotConfirm&usr=" . $logged['usr_id']);
+    return phrasea::redirect("/login/?redirect=" . $parm['redirect'] . "&error=mailNotConfirm&usr=" . $e->get_usr_id());
   }
   catch (Exception_Session_WrongToken $e)
   {

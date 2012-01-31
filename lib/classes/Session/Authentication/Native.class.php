@@ -141,7 +141,7 @@ class Session_Authentication_Native implements Session_Authentication_Interface
     $stmt->closeCursor();
 
     if ($row && $row['mail_locked'] == "1")
-      throw new Exception_Session_MailLocked();
+      throw new Exception_Session_MailLocked($this->user->get_id());
 
     return $this;
   }

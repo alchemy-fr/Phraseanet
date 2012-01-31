@@ -208,7 +208,7 @@ class caption_field implements cache_cacheableInterface
   {
     if(strlen($separator) > 1)
       $separator = $separator[0];
-    
+
     if (trim($separator) === '')
       $separator = ' ';
     else

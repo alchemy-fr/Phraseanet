@@ -351,9 +351,10 @@ foreach ($tasks as $t)
               {
                 if(window.console)
                   console.log('No task like this');
+
                 return(false);
               }
-              
+
               switch(T_task[tid])
               {
                 case "stopped_0":  // normal

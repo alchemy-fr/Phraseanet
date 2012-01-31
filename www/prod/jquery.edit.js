@@ -1796,14 +1796,15 @@ function preset_delete(preset_id, li)
     "act":"DELETE",
     "presetid":preset_id
   };
-  $.getJSON(
-    "/xmlhttp/editing_presets.j.php",
-    p,
-    function(data, textStatus)
-    {
-      li.remove();
+  $.ajax({
+    type: 'POST',
+    url: "/xmlhttp/editing_presets.j.php",
+    data: p,
+    dataType: 'json',
+    success: function(data, textStatus){
+        li.remove();
     }
-    );
+  });
 }
 
 function preset_load(preset_id)
@@ -1812,6 +1813,7 @@ function preset_load(preset_id)
     "act":"LOAD",
     "presetid":preset_id
   };
+  
   $.getJSON(
     "/xmlhttp/editing_presets.j.php",
     p,
@@ -1849,7 +1851,7 @@ function preset_load(preset_id)
               
               for(val in p4.edit.T_fields[i].preset)
               {
-                p4.edit.T_records[r].fields[""+i].push(p4.edit.T_fields[i].preset[val]);
+                p4.edit.T_records[r].fields[""+i].value.push(p4.edit.T_fields[i].preset[val]);
               }
             }
             else
@@ -2224,15 +2226,17 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     x += "</fields>";
     p["f"] = x;
 
-    $.getJSON(
-      "/xmlhttp/editing_presets.j.php",
-      p,
-      function(data, textStatus)
+    $.ajax({
+      type: 'POST',
+      url: "/xmlhttp/editing_presets.j.php",
+      data: p,
+      dataType: 'json',
+      success: function(data, textStatus)
       {
         preset_paint(data);
         $("#Edit_copyPreset_dlg").dialog("close");
       }
-      );
+    });
   };
   buttons[language.annuler] = function()
   {

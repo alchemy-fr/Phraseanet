@@ -548,20 +548,20 @@ class basket_element_adapter implements cache_cacheableInterface
     }
 
     $this->delete_data_from_cache();
-    
+
     $sql = 'SELECT distinct v.usr_id FROM ssel s, validate v
       WHERE v.ssel_id = s.ssel_id AND s.ssel_id = :ssel_id';
-    
+
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':ssel_id' => $this->get_ssel_id()));
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
-    
+
     foreach($rs as $row)
     {
       $appbox->delete_data_from_cache('basket_element_' . $row['usr_id'] . '_' . $this->sselcont_id);
     }
-    
+
     try
     {
       $basket = basket_adapter::getInstance($appbox, $this->ssel_id, $usr_id);
@@ -654,23 +654,23 @@ class basket_element_adapter implements cache_cacheableInterface
     $stmt->closeCursor();
 
     $this->delete_data_from_cache();
-    
+
     $sql = 'SELECT distinct v.usr_id FROM ssel s, validate v
       WHERE v.ssel_id = s.ssel_id AND s.ssel_id = :ssel_id';
-    
+
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':ssel_id' => $this->get_ssel_id()));
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
-    
+
     foreach($rs as $row)
     {
       $appbox->delete_data_from_cache('basket_element_' . $row['usr_id'] . '_' . $this->sselcont_id);
     }
-    
+
     $basket = basket_adapter::getInstance($appbox, $this->ssel_id, $usr_id);
     $basket->delete_cache();
-    
+
     return $this;
   }
 

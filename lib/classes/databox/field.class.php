@@ -554,7 +554,7 @@ class databox_field implements cache_cacheableInterface
   {
     if (strpos($separator, ';') === false)
       $separator .= ';';
-      
+
     $this->separator = $separator;
 
     return $this;

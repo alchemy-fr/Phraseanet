@@ -94,12 +94,12 @@ class databox_cgu
     $terms = array();
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
-    
+
     if(!$home)
     {
       $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
     }
-    
+
     foreach ($appbox->get_databoxes() as $databox)
     {
       try

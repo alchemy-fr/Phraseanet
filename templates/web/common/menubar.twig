@@ -32,7 +32,7 @@
               {% endif %}
             {% endif %}
           </li>
-          
+
           {% if browser.isNewGeneration and registry.get('GV_thesaurus') == true and user.ACL.has_access_to_module('thesaurus') %}
           <li>
             <a target="_blank" href="/thesaurus2/">
@@ -42,8 +42,8 @@
             </a>
           </li>
           {% endif %}
-          
-          
+
+
           {# MODULE #}
           {% if user.ACL.has_access_to_module('admin') %}
           <li>
@@ -104,20 +104,20 @@
             </a>
           </li>
           {% endif %}
-              
+
         {% endif %}
       </ol>
 
     </div>
     <div class="PNB" style="left:auto;overflow:hidden;">
       <ol>
-        
+
     {% if module == "client" or module == "prod" %}
         <li id="notification_trigger">
           <a href="#" style="font-weight:bold;text-decoration:none;">
             <span>
               {% trans 'Notifications' %}
-              
+
               <span class="counter" style="visibility:{% if events.get_unread_notifications_number > 0 %}visible{% else %}hidden{% endif %};">
                 <div style="padding:1px 3px 0;">
                   {% if events.get_unread_notifications_number > 0 %}
