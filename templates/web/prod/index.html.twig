@@ -178,7 +178,7 @@
   .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
 </style>
 
-<link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,login/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css" >
+<link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,login/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css" >
 <link id="skinCss" type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=skins/prod/{{cssfile}}/prodcolor.css" >
 <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css" >
 <!--[if IE 7]>
@@ -204,7 +204,7 @@
 
 
 {% block javascript %}
-<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
+<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
 {% endblock %}
 
 
@@ -213,7 +213,7 @@
 {% set search_datas = module_prod.get_search_datas() %}
 <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-color:#1a1a1a;z-index:32766;">
   <div id="loader" style="top:200px;margin:0 auto;-moz-border-radius:5px;-webkit-border-radius:5px;background-color:#CCCCCC;position:relative;margin:0 auto;text-align:center;left:color:black;width:400px;height:100px;padding:20px;;z-index:32767;">
-    <div style="margin:0 10px 10px;font-family:Helvetica,Arial,sans-serif;font-size:18px;color:#1A1A1A;text-align:left;">{% trans 'phraseanet::Nom de l\'application' %}</div>
+    <div style="margin:0 10px 10px;font-family:Helvetica,Arial,sans-serif;font-size:18px;color:#1A1A1A;text-align:left;">Phraseanet</div>
     <div style="text-align:center;">{% trans 'Chargement' %}</div>
     <div style="width:220px;height:19px;margin:20px auto;">
       <div id="loader_bar" style="height:19px;width:10%;background-image:url(/skins/icons/main-loader.gif)"></div>
@@ -567,7 +567,7 @@
     <div id="headBlock" class="PNB" style="height:60px;bottom:auto;">
       <div id="alternateTrigger" class="PNB">
         <form style="margin:15px 20px;padding:0;" onsubmit="newSearch();return false;">
-          <input autocomplete="off" id="EDIT_query" type="text" style="padding:4px;border-radius:5px;font-size:16px;width:370px;height:22px;" name="qry" value="{{user.getPrefs('start_page_query')}}">
+          <input autocomplete="off" class="search" id="EDIT_query" type="text" name="qry" value="{{user.getPrefs('start_page_query')}}">
           <input id="search_submit" type="submit" value="{% trans 'boutton::rechercher' %}" class="input-button" />
           {% if GV_multiAndReport %}
           <input type="radio" value="0" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/><label for="mode_type_doc">{% trans 'phraseanet::type:: documents' %}</label>
@@ -738,6 +738,10 @@
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
+            <button class="TOOL_feedback_btn results_window">
+              <img src="/skins/prod/000000/images/pushdoc_history.gif"/>
+              {% trans 'Feedback' %}
+            </button>
             <button class="TOOL_bridge_btn results_window">
               <img src="/skins/icons/door.png"/>
               {% trans 'action : bridge' %}
@@ -1146,7 +1150,7 @@
   {% include "prod/thesaurus.js" %}
 </script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/g=prod"></script>
-<script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+<script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
 

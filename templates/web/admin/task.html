@@ -151,7 +151,7 @@
         {{task.printInterfaceHEAD()}}
         <!-- ______________ end of head part of graphic interface of '{{task.getName()}}' ______________ -->
         <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
-        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
         <script type="text/javascript" src="/include/minify/g=admin"></script>
         <script type="text/javascript">
 
@@ -321,7 +321,7 @@
                     o = document.createElement('input');
                     o.setAttribute("name", "__class");
                     o.setAttribute("type", "hidden");
-                    o.setAttribute("value", "{{task.get_class_name()}}");
+                    o.setAttribute("value", "{{ task|get_class }}");
                     f.appendChild(o);
 
                     o = document.createElement('input');
@@ -421,7 +421,7 @@
                 <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.printInterfaceHTML() %}display:none;{% endif %}">
                     <form style="position:absolute; top:0px; left:0px; right:4px; bottom:20px;" action="./task2utils.php" onsubmit="return(false);" name="fxml" method="post">
                         <input type="hidden" name="__act" value="???" />
-                        <input type="hidden" name="__class" value="{{task.get_class_name()}}" />
+                        <input type="hidden" name="__class" value="{{ task|get_class }}" />
                         <input type="hidden" name="__tid" value="{{task.get_task_id()}}" />
                         <input type="hidden" name="__tname" value="" />
                         <input type="hidden" name="__tactive" value="" />
