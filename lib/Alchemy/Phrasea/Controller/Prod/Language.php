@@ -86,6 +86,9 @@ class Language implements ControllerProviderInterface
               $out['warning_delete_publi'] = _('Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci');
               $out['some_required_fields'] = _('edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing');
               $out['nodocselected'] = _('Aucun document selectionne');
+              $out['sureToRemoveList'] = _('Are you sure you want to delete this list ?');
+              $out['newListName'] = _('New list name ?');
+              $out['listNameCannotBeEmpty'] = _('List name can not be empty');
 
 
 
