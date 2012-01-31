@@ -52,4 +52,29 @@ class UsrListEntryRepository extends EntityRepository
 
     return $entry;
   }
+  
+
+  public function findEntryByListAndUsrId(\Entities\UsrList $list, $usr_id)
+  {
+    $dql = 'SELECT e FROM Entities\UsrListEntry e
+              JOIN e.list l
+            WHERE e.usr_id = :usr_id AND l.id = :list_id';
+
+    $params = array(
+        'usr_id' => $usr_id,
+        'list_id' => $list->getId(),
+    );
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters($params);
+    
+    $entry = $query->getResult();
+    
+    if(!$entry)
+    {
+      throw new \Exception_NotFound('Entry not found');
+    }
+    
+    return $query->getSingleResult();
+  }
 }
