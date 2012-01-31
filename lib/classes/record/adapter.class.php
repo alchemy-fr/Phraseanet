@@ -1227,7 +1227,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       $db_field = \databox_field::get_instance($this->get_databox(), $param['meta_struct_id']);
 
-      if ($db_field->is_readonly() === false && !$force_readonly)
+      if ($db_field->is_readonly() === true && !$force_readonly)
       {
         continue;
       }
@@ -1802,15 +1802,17 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function get_data_from_cache($option = null)
   {
+    \cache_databox::refresh($this->get_sbas_id());
+    
     $databox = $this->get_databox();
-
+    
     return $databox->get_data_from_cache($this->get_cache_key($option));
   }
 
   public function set_data_to_cache($value, $option = null, $duration = 0)
   {
     $databox = $this->get_databox();
-
+    
     return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
   }
 
@@ -1828,6 +1830,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         break;
     }
     $databox = $this->get_databox();
+    
+    \cache_databox::update($this->get_sbas_id(), 'record', $this->get_record_id());
 
     return $databox->delete_data_from_cache($this->get_cache_key($option));
   }

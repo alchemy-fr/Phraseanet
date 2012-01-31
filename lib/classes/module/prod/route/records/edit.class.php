@@ -46,7 +46,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
    *
    * @var Array
    */
-  protected $javascript_elements;
+  protected $javascript_elements = array();
 
   /**
    *

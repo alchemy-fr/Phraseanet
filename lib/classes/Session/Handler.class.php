@@ -395,6 +395,7 @@ class Session_Handler
     foreach ($user->ACL()->get_granted_sbas() as $databox)
     {
       Session_Logger::create($databox, $browser, $this, $user);
+      \cache_databox::insertClient($databox);
     }
 
     $this->set_usr_lastconn($conn, $user->get_id());
