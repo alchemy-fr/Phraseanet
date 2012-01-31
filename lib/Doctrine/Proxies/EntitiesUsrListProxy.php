@@ -127,6 +127,13 @@ class EntitiesUsrListProxy extends \Entities\UsrList implements \Doctrine\ORM\Pr
         return parent::getEntries();
     }
 
+    public function has(\User_Adapter $user)
+    {
+        $this->__load();
+
+        return parent::has($user);
+    }
+
 
     public function __sleep()
     {
