@@ -443,7 +443,6 @@ return call_user_func(function()
                    */
                   $app->error(function (\Exception $e) use ($app)
                           {
-                            var_dump($e->getMessage());
                             if ($e instanceof NotFoundHttpException || $e instanceof \Exception_NotFound)
                             {
                               return new Response('The requested page could not be found.', 404);
