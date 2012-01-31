@@ -546,7 +546,7 @@ class module_admin_route_users_edit
     
     $user = User_adapter::getInstance(array_pop($users), appbox::get_instance());
 
-    if ($user->is_template())
+    if ($user->is_template() || $user->is_special())
     {
       return $this;
     }
