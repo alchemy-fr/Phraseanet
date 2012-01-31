@@ -52,7 +52,7 @@ class ConnectionTest implements ControllerProviderInterface
               }
               catch (\Exception $e)
               {
-
+                
               }
 
               if ($dbname && $connection_ok === true)
@@ -85,7 +85,7 @@ class ConnectionTest implements ControllerProviderInterface
                 }
                 catch (\Exception $e)
                 {
-
+                  
                 }
               }
 

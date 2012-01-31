@@ -43,7 +43,7 @@ class cache_databox
     }
     catch (\Exception $e)
     {
-
+      
     }
 
     if ($last_update)
