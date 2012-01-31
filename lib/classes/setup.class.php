@@ -43,6 +43,8 @@ class setup
       , "xml"
       , "zip"
       , "zlib"
+      , "intl"
+      , "twig"
   );
   protected static $PHP_CONF = array(
       'output_buffering' => '4096'  //INI_ALL
@@ -570,10 +572,18 @@ class setup
       {
         if (extension_loaded($ext) !== true)
         {
-          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), true);
+          $blocker = true;
+          if("twig" === $ext)
+          {
+            $blocker = false;
+          }
+
+          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), $blocker);
         }
         else
-          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext), true);
+        {
+          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext));
+        }
       }
 
       return new Setup_ConstraintsIterator($constraints);
