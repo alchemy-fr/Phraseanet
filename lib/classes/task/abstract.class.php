@@ -89,6 +89,9 @@ abstract class task_abstract
    */
   protected $return_value;
   protected $runner;
+  
+  private $input;
+  private $output;
 
   /**
    * delay between two loops
@@ -104,7 +107,15 @@ abstract class task_abstract
 
   public function get_status()
   {
-    return $this->task_status;
+    $conn = connection::getPDOConnection();
+    $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':taskid' => $this->taskid));
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    if(!$row)
+      throw new Exception('Unknown task id');
+    return $row['status'];
   }
 
   public function printInterfaceHEAD()
@@ -141,7 +152,7 @@ abstract class task_abstract
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':status' => $status, ':taskid' => $this->get_task_id()));
     $stmt->closeCursor();
-
+$this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
     $this->task_status = $status;
 
     return $this->task_status;
@@ -265,6 +276,7 @@ abstract class task_abstract
   function __construct($taskid)
   {
     $this->taskid = $taskid;
+
     phrasea::use_i18n(Session_Handler::get_locale());
 
     $this->system = system_server::get_platform();
@@ -296,7 +308,7 @@ abstract class task_abstract
       $this->log($e->getMessage());
       $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-      for($t = 60 * 10; $t > 0; $t--) // DON'T do sleep(600) because it prevents ticks !
+      for($t = 60 * 10; $this->running && $t > 0; $t--) // DON'T do sleep(600) because it prevents ticks !
         sleep(1);
 
       $this->running = false;
@@ -354,18 +366,18 @@ abstract class task_abstract
 
   public function delete()
   {
-    $conn = connection::getPDOConnection();
-    $registry = registry::get_instance();
-    $sql = "DELETE FROM task2 WHERE task_id = :task_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':task_id' => $this->get_task_id()));
-    $stmt->closeCursor();
+    if(!$this->get_pid()) // do not delete a running task
+    {
+      $conn = connection::getPDOConnection();
+      $registry = registry::get_instance();
+      $sql = "DELETE FROM task2 WHERE task_id = :task_id";
+      $stmt = $conn->prepare($sql);
+      $stmt->execute(array(':task_id' => $this->get_task_id()));
+      $stmt->closeCursor();
 
-    $lock_file = $registry->get('GV_RootPath') . 'tmp/locks/task_' . $this->get_task_id() . '.lock';
-    if(is_writable($lock_file))
-      unlink($lock_file);
-
-    return;
+      $lock_file = $registry->get('GV_RootPath') . 'tmp/locks/task_' . $this->get_task_id() . '.lock';
+      @unlink($lock_file);
+    }
   }
 
   protected function check_memory_usage()
@@ -520,6 +532,11 @@ abstract class task_abstract
 
     return $this;
   }
+  
+  public function set_running($stat)
+  {
+    $this->running = $stat;
+  }
 
   protected function pause($when_started=0)
   {
@@ -532,15 +549,16 @@ abstract class task_abstract
         $conn = connection::getPDOConnection();
         $conn->close();
         unset($conn);
-//        sleep($this->period - $when_started);
-        for($t = $this->period - $when_started; $t > 0; $t--) // DON'T do sleep($this->period - $when_started) because it prevents ticks !
+        for($t = $this->period - $when_started; $this->running && $t > 0; $t--) // DON'T do sleep($this->period - $when_started) because it prevents ticks !
           sleep(1);
       }
     }
   }
 
-  final public function run($runner)
+  final public function run($runner, $input=null, $output = null)
   {
+    $this->input = $input;
+    $this->output = $output;
 
 // ************************************************
 // file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : LAUNCHING : tid=%s \n", __FILE__, __LINE__, $this->get_task_id()), FILE_APPEND);
@@ -555,7 +573,7 @@ abstract class task_abstract
     {
 // ************************************************
 // file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : LAUNCH OPENED AND CANT LOCK : pid=%s \n", __FILE__, __LINE__, getmypid()), FILE_APPEND);
-      printf(("runtask::ERROR : task already running.\n"), $taskid);
+      $this->log("runtask::ERROR : task already running.");
       fclose($tasklock);
 
       return;
@@ -574,8 +592,8 @@ abstract class task_abstract
     $this->set_status(self::STATUS_STARTED);
 
     $this->running = true;
+
     $this->run2();
-//    $this->set_pid(0);
 
     flock($tasklock, LOCK_UN | LOCK_NB);
     ftruncate($tasklock, 0);
@@ -586,7 +604,6 @@ abstract class task_abstract
       $this->delete();
     else
       $this->set_status($this->return_value);
-
     return $this;
   }
 
@@ -651,13 +668,31 @@ abstract class task_abstract
     // print($s);
   }
 
-  function log($msg = '')
+  public function log($message)
   {
-    // $d = debug_backtrace(false);
-    // printf("%s\t[%s]\t%s\r\n", date('r'), $d[0]['line'], $msg);
-    printf("%s\t%s\r\n", date('r'), $msg);
-  }
+    $registry = registry::get_instance();
+    $logdir = $registry->get('GV_RootPath') . 'logs/';
 
+    logs::rotate($logdir . 'task_l_'.$this->taskid.'.log');
+    logs::rotate($logdir . 'task_o_'.$this->taskid.'.log');
+    logs::rotate($logdir . 'task_e_'.$this->taskid.'.log');
+
+    $date_obj = new DateTime();
+    $message = sprintf("%s\t%s", $date_obj->format(DATE_ATOM), $message);
+
+    if($this->output)
+    {
+      $this->output->writeln($message);
+    }
+    if( $this->input && !($this->input->getOption('nolog')) )
+    {
+      file_put_contents($logdir . 'task_l_'.$this->taskid.'.log', $message."\n", FILE_APPEND);
+    }
+
+    return $this;
+  }
+  
+  
   public static function interfaceAvailable()
   {
     return true;

@@ -30,12 +30,32 @@ if(!$user->ACL()->has_right('taskmanager'))
 
 phrasea::headers();
 $registry = $appbox->get_registry();
+
 $task_manager = new task_manager($appbox);
+
+$refresh_tasklist = false;
+if($parm["act"] == "DELETETASK")
+{
+  try
+  {
+    $task = $task_manager->get_task($parm['tid']);
+    $task->delete();
+    $refresh_tasklist = true;
+  }
+  catch(Exception $e)
+  {
+
+  }
+}
+
+
+
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
 
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/admin/admincolor.css" />
+    <link rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css" type="text/css" media="screen" />
     <style>
       .divTop
       {
@@ -45,10 +65,38 @@ $task_manager = new task_manager($appbox);
       #redbox0 table{
         font-size:10px;
         text-align:center;
+        table-layout: fixed;
       }
-
+      table.task_manager {
+        border: 1px solid #e0e0e0;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      table.task_manager tr {
+        height:auto;
+      }
+      table.task_manager th, table.task_manager td {
+        height:auto;
+        padding: 2px;
+        margin: 0px;
+        border: 1px solid #e0e0e0;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+      #db_processlist table {
+        border: 1px solid #e0e0e0;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      #db_processlist table th, table td {
+        height:auto;
+        padding: 2px;
+        margin: 0px;
+        border: 1px solid #e0e0e0;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
     </style>
-    <link rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css" type="text/css" media="screen" />
     <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js,include/jslibs/jquery.contextmenu.js"></script>
     <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
     <script type="text/javascript">
@@ -66,8 +114,6 @@ $task_manager = new task_manager($appbox);
         $("#redbox0").width($("#tableau_center").width()-4);
         $("#redbox1").width = ($("#tableau_center").width()-4);
       }
-
- 
 
       function newTask(tclass)
       {
@@ -88,14 +134,13 @@ $task_manager = new task_manager($appbox);
             setSchedStatus('tostop');
             break;
           case "log":
-            window.open("/admin/showlogtask.php?fil=<?php echo urlencode('scheduler.log') ?>", "SCHEDLOG");
+            window.open("/admin/showlogtask.php?fil=scheduler&log=l", "scheduler.log");
             break;
           case "preferences":
             preferencesScheduler();
             break;
           }
         }
-
 
         function doMenuTask(context, act)
         {
@@ -107,59 +152,22 @@ $task_manager = new task_manager($appbox);
               editTask(tid);
               break;
             case "start":
-              setTaskStatus(tid, 'tostart', true);  // true : reset crash counter
+              setTaskStatus(tid, 'tostart', null, true);  // null:no signal, true : reset crash counter
               break;
             case "stop":
-              setTaskStatus(tid, 'tostop', false);
+              setTaskStatus(tid, 'tostop', 15, false);  // 15 = SIGTERM
               break;
-            /*              
-            case "fix":
-              switch(T_task[tid])
+            case 'delete':
+              if(confirm("<?php echo p4string::MakeString(_('admin::tasks: supprimer la tache ?'), 'js', '"') ?>"))
               {
-                case "started_0":
-                case "starting_0":
-                case "stopping_0":
-                case "tostart_0":
-                case "tostop_0":
-                case "manual_0":
-                  setTaskStatus(tid, 'stopped');
-                  break;
-
-                case "stopped_1":
-                case "starting_1":
-                case "stopping_1":
-                case "tostart_1":
-                case "tostop_1":
-                  //  case "manual_1":
-                  //  case "torestart_1":
-                  setTaskStatus(tid, 'started');
-                  break;
-              }
-              break;
-             */
-          case 'delete':
-            switch(T_task[tid])
-            {
-              case "stopped_0":
-              case "started_0":
-              case "starting_0":
-              case "stopping_0":
-              case "tostart_0":
-              case "tostop_0":
-              case "manual_0":
-              case "torestart_0":
-                if(confirm("<?php echo p4string::MakeString(_('admin::tasks: supprimer la tache ?'), 'js', '"') ?>"))
-                {
-                  document.forms["taskManager"].target = "";
-                  document.forms["taskManager"].act.value = "DELETETASK";
-                  document.forms["taskManager"].tid.value = tid;
-                  document.forms["taskManager"].submit();
-                }
-                break;
+                document.forms["taskManager"].target = "";
+                document.forms["taskManager"].act.value = "DELETETASK";
+                document.forms["taskManager"].tid.value = tid;
+                document.forms["taskManager"].submit();
               }
               break;
             case "log":
-              window.open("/admin/showlogtask.php?fil=<?php echo urlencode('task_t_') ?>"+tid+"%2Elog", "TASKLOG_"+tid);
+              window.open("/admin/showlogtask.php?fil=task&id="+tid+"&log=l", "task_"+tid+".log");
               break;
             }
           }
@@ -368,40 +376,24 @@ foreach($tasks as $t)
 
 
     <?php
-    if($parm["act"] == "DELETETASK")
-    {
-      try
-      {
-        $task = $task_manager->get_task($parm['tid']);
-        $task->delete();
-      }
-      catch(Exception $e)
-      {
-        
-      }
-    }
     ?>
     <iframe id="zsched" src="about:blank" style="position:absolute; top:0px; left:0px; width:50px; height:50px; visibility:hidden"></iframe>
 
-    <h1><?php echo _('admin::tasks: planificateur de taches') ?></h1>
-
-    <form method="post" name="taskManager" action="/admin/taskmanager.php" target="???" onsubmit="return(false);" >
-      <input type="hidden" name="act" value="" />
-      <input type="hidden" name="tid" value="" />
-      <input type="hidden" name="att" value="" />
-    </form>
-    <p>
-      <?php echo sprintf(_('Last update at %s.'), '<span id="pingTime"></span>'); ?>
-      <a id="newTaskButton" href="#"><?php echo _('admin::tasks: Nouvelle tache') ?></a>
-    </p>
+    <h1><?php echo _('admin::tasks: planificateur de taches') ?>
+      <span style="font-size:12px;">
+        <?php echo sprintf(_('Last update at %s.'), '<span id="pingTime"></span>'); ?>
+      </span>
+    </h1>
+ 
     <table class="admintable task_manager" cellpadding="0" cellSpacing="0">
       <thead>
         <tr>
           <th style="width:20px;"></th>
-          <th style="width:40px;">ID</th>
-          <th style="width:80px;"><?php echo _('admin::tasks: statut de la tache') ?></th>
-          <th style="width:60px;"><?php echo _('admin::tasks: process_id de la tache') ?></th>
-          <th style="width:120px;"><?php echo _('admin::tasks: etat de progression de la tache') ?></th>
+          <th style="text-align:center; width:40px;">ID</th>
+          <th style="text-align:center; width:30px;">!</th>
+          <th style="text-align:center; width:80px;"><?php echo _('admin::tasks: statut de la tache') ?></th>
+          <th style="text-align:center; width:60px;"><?php echo _('admin::tasks: process_id de la tache') ?></th>
+          <th style="text-align:center; width:120px;"><?php echo _('admin::tasks: etat de progression de la tache') ?></th>
           <th style="width:auto;"><?php echo _('admin::tasks: nom de la tache') ?></th>
         </tr>
       </thead>
@@ -411,23 +403,15 @@ foreach($tasks as $t)
             <img src="/skins/admin/dropdown.png"/>
           </td>
           <td>&nbsp</td>
-
-          <td style="text-align:center" id="STATUS_SCHED">
-            <img id="STATUSIMG_SCHED" style="display:none;" />
-            <img id='WARNING_SCHED' style='display:none' src="/skins/icons/alert.png" alt="" />
-          </td>
-
+          <td>&nbsp</td>
+          <td style="text-align:center" id="STATUS_SCHED"></td>
           <td id="PID_SCHED" style="text-align:center;">&nbsp;</td>
-
-          <td>
-            &nbsp;
-          </td>
-
+          <td>&nbsp;</td>
           <td style="font-weight:900" class="taskname">TaskManager</td>
         </tr>
         <?php
         $n = 0;
-        foreach($task_manager->get_tasks() as $task)
+        foreach($task_manager->get_tasks($refresh_tasklist) as $task)
         {
           $n++;
           $tid = $task->get_task_id()
@@ -437,28 +421,39 @@ foreach($tasks as $t)
               <img src="/skins/admin/dropdown.png"/>
             </td>
             <td style="text-align:center; font-weight:900"><?php echo $tid ?></td>
-
-            <td style="text-align:center" id="STATUS_<?php echo $tid ?>">
-              <img id="STATUSIMG_<?php echo $tid ?>" style="display:none;" />
-              <img id='WARNING_<?php echo $tid ?>' style='display:none' src="/skins/icons/alert.png" alt="" />
-            </td>
-
-            <td id="PID_<?php echo $tid ?>" style="text-align:center;width:60px;">&nbsp;</td>
-
+            <td style="text-align:center"><img id="WARNING_<?php echo $tid ?>" src="/skins/icons/alert.png" title="" style="display:none;"/></td>
+            <td style="text-align:center" id="STATUS_<?php echo $tid ?>"></td>
+            <td style="text-align:center" id="PID_<?php echo $tid ?>">&nbsp;</td>
             <td>
-              <div id="COMPBOX_<?php echo $tid ?>" style="position:relative; top:1px; left:5px; width:110px; height:5px; background-color:#787878">
-                <div id="COMP_<?php echo $tid ?>" style="position:absolute; top:1px; left:0px; width:0%; height:3px; background-color:#FFFF80">
+              <div style="position:relative; top:0px; left:0px; right:0px;" >
+                <div id="COMPBOX_<?php echo $tid ?>" style="position:absolute; top:1px; left:3px; right:3px; height:5px; background-color:#787878">
+                  <div id="COMP_<?php echo $tid ?>" style="position:absolute; top:1px; left:0px; width:0%; height:3px; background-color:#FFFF80">
+                  </div>
                 </div>
               </div>
             </td>
-
-            <td style="width:auto" class="taskname"><?php echo p4string::MakeString($task->get_title()) ?> [<?php echo p4string::MakeString($task::getName()) ?>]</td>
+            <td class="taskname"><?php echo p4string::MakeString($task->get_title()) ?> [<?php echo p4string::MakeString($task::getName()) ?>]</td>
           </tr>
           <?php
-//              $i = 1 - $i;
         }
-        ?>          </tbody>
+        ?>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="dropdown scheduler">
+            <img id="newTaskButton" src="/skins/admin/dropdown.png"/>
+          </td>
+          <td colspan="6">
+            <?php echo _('admin::tasks: Nouvelle tache') ?>
+          </td>
+        </tr>
+      </tfoot>
     </table>
+
+    <div id="db_processlist"></div>
+    <!--
+      <a id="newTaskButton" href="#"><?php echo _('admin::tasks: Nouvelle tache') ?></a>
+    -->
 
     <?php ?>
     <script type="text/javascript">
@@ -471,7 +466,7 @@ foreach($tasks as $t)
             document.forms["task"].submit();
           }
 
-          function setTaskStatus(tid, status, resetCrashCounter)
+          function setTaskStatus(tid, status, signal, resetCrashCounter)
           {
             if(resetCrashCounter)
             {
@@ -487,8 +482,8 @@ foreach($tasks as $t)
               
             $.ajax({
               url: "/admin/adminFeedback.php",
-              data : {task_id:tid, action:"SETTASKSTATUS", status:status},
-              dataType:'xml',
+              data : {task_id:tid, action:"SETTASKSTATUS", status:status, signal:signal},
+              dataType:'json',
               success: function(ret)
               {
                 pingScheduler(false); // false : just one time
@@ -502,7 +497,7 @@ foreach($tasks as $t)
             $.ajax({
               url: "/admin/adminFeedback.php",
               data : { action:"SETSCHEDSTATUS", status:status },
-              dataType:'xml',
+              dataType:'json',
               success: function(ret)
               {
                 pingScheduler(false); // false : just one time
@@ -704,6 +699,16 @@ foreach($tasks as $t)
                     else
                       $("#PID_"+id).html('-');
                     
+                    if(ret.tasks[id].crashed)
+                    {
+//                      $("#WARNING_"+id).show().setAttribute("src", "/skins/icons/alert.png");
+                      $("#WARNING_"+id).show().attr("title", "crashed "+ret.tasks[id].crashed+" times");
+                    }
+                    else
+                    {
+                      $("#WARNING_"+id).hide();
+                    }
+                    
                     if(ret.tasks[id].completed && ret.tasks[id].completed>0 && ret.tasks[id].completed<=100)
                     {
                       $("#COMP_"+id).width(ret.tasks[id].completed + "%");
@@ -716,13 +721,29 @@ foreach($tasks as $t)
                     }
                   }
                 }
+                
+                if(ret.db_processlist)
+                {
+                  var _table = document.createElement('table');
+                  for(p in ret.db_processlist)
+                  {
+                    if(p==0)
+                    {
+                      var _tr = _table.appendChild(document.createElement('tr'));
+                      for(c in ret.db_processlist[p])
+                        _tr.appendChild(document.createElement('th')).appendChild(document.createTextNode(c));
+                    }
+                    var _tr = _table.appendChild(document.createElement('tr'));
+                    for(c in ret.db_processlist[p])
+                      _tr.appendChild(document.createElement('td')).appendChild(document.createTextNode(ret.db_processlist[p][c]));
+                  }
+                  $("#db_processlist").html(_table);
+                }
                 if(repeat)
                   self.setTimeout("pingScheduler(true);", 1000);
               }
             });
           }
-
-
 
           function lauchScheduler()
           {
@@ -734,11 +755,15 @@ foreach($tasks as $t)
     </script>
 
     <div id="scheduler-preferences" style="display:none;" title="<?php echo _('Preferences du TaskManager'); ?>">
-
       <div style="margin:5px 0;"><span><?php echo _('Cette URL vous permet de controler le sheduler depuis un manager comme cron') ?></span></div>
       <div style="margin:5px 0;"><input id="scheduler_key" style="width:100%;" type="text" readonly="readonly" value="<?php echo $registry->get('GV_ServerName') ?>admin/runscheduler.php?key=<?php echo phrasea::scheduler_key(); ?>" /></div>
     </div>
 
+    <form method="post" name="taskManager" action="/admin/taskmanager.php" target="???" onsubmit="return(false);" >
+      <input type="hidden" name="act" value="" />
+      <input type="hidden" name="tid" value="" />
+      <input type="hidden" name="att" value="" />
+    </form>
     <form method="post"  name="task" action="/admin/task2.php" target="???" onsubmit="return(false);">
       <input type="hidden" name="act" value="???" />
       <input type="hidden" name="tid" value="" />

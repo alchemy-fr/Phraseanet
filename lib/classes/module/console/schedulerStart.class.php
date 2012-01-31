@@ -29,6 +29,20 @@ class module_console_schedulerStart extends Command
     parent::__construct($name);
 
     $this->setDescription('Start the scheduler');
+    $this->addOption(
+            'nolog'
+            , NULL
+            , 1 | InputOption::VALUE_NONE
+            , 'do not log (scheduler) to logfile'
+            , NULL
+    );
+    $this->addOption(
+            'notasklog'
+            , NULL
+            , 1 | InputOption::VALUE_NONE
+            , 'do not log (tasks) to logfiles'
+            , NULL
+    );
     $this->setHelp(
             "You should use launch the command and finish it with `&`"
             . " to return to the console\n\n"
@@ -38,7 +52,7 @@ class module_console_schedulerStart extends Command
     return $this;
   }
 
-  public function execute(InputInterface $input, OutputInterface $output)
+  public function execute(InputInterface $zinput, OutputInterface $output)
   {
     if(!setup::is_installed())
     {
@@ -48,7 +62,7 @@ class module_console_schedulerStart extends Command
     require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
 
     $scheduler = new task_Scheduler();
-    $scheduler->run($output, true);
+    $scheduler->run($zinput, $output); //, !$input->getOption('nolog'), !$input->getOption('notasklog'));
 
     return;
   }

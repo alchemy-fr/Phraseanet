@@ -43,9 +43,26 @@ class module_console_taskrun extends Command
             , 'The name of the runner (manual, scheduler...)'
             , task_abstract::RUNNER_MANUAL
     );
+    $this->addOption(
+            'nolog'
+            , NULL
+            , 1 | InputOption::VALUE_NONE
+            , 'do not log to logfile'
+            , NULL
+    );
     $this->setDescription('Run task');
 
     return $this;
+  }
+  
+  function sig_handler($signo)
+  {
+    if($this->task)
+    {
+      $this->task->log(sprintf("signal %s received", $signo));
+      if($signo == SIGTERM)
+        $this->task->set_running(false);
+    }
   }
 
   public function execute(InputInterface $input, OutputInterface $output)
@@ -81,9 +98,12 @@ class module_console_taskrun extends Command
 
     register_tick_function(array($this, 'tick_handler'), true);
     declare(ticks=1);
+    pcntl_signal(SIGTERM, array($this, 'sig_handler'));
+            
+    $this->task->run($runner, $input, $output);
+    
+$this->task->log(sprintf("%s [%d] taskrun : returned from 'run()', get_status()=%s \n", __FILE__, __LINE__, $this->task->get_status()));
 
-    $this->task->run($runner);
-    printf("TASK QUIT\n");
     return $this;
   }
 

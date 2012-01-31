@@ -16,6 +16,11 @@
  */
 class task_period_cindexer extends task_abstract
 {
+  // how to execute indexer (choose in 'run2' method)
+  private $method;
+  const METHOD_FORK = 'METHOD_FORK';
+  const METHOD_EXEC = 'METHOD_EXEC';
+  const METHOD_PROC_OPEN = 'METHOD_PROC_OPEN';
 
   /**
    *
@@ -115,18 +120,18 @@ class task_period_cindexer extends task_abstract
     );
     $dom = new DOMDocument();
     $dom->formatOutput = true;
-    if ($dom->loadXML($oldxml))
+    if($dom->loadXML($oldxml))
     {
       $xmlchanged = false;
-      foreach (array("str:binpath", "str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset") as $pname)
+      foreach(array("str:binpath", "str:host", "str:port", "str:base", "str:user", "str:password", "str:socket", "boo:use_sbas", "boo:nolog", "str:clng", "boo:winsvc_run", "str:charset") as $pname)
       {
         $ptype = substr($pname, 0, 3);
         $pname = substr($pname, 4);
         $pvalue = $parm2[$pname];
-        if ($ns = $dom->getElementsByTagName($pname)->item(0))
+        if($ns = $dom->getElementsByTagName($pname)->item(0))
         {
           // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-          while (($n = $ns->firstChild))
+          while(($n = $ns->firstChild))
             $ns->removeChild($n);
         }
         else
@@ -135,7 +140,7 @@ class task_period_cindexer extends task_abstract
           $ns = $dom->documentElement->appendChild($dom->createElement($pname));
         }
         // on fixe sa valeur
-        switch ($ptype)
+        switch($ptype)
         {
           case "str":
             $ns->appendChild($dom->createTextNode($pvalue));
@@ -159,7 +164,7 @@ class task_period_cindexer extends task_abstract
    */
   public function xml2graphic($xml, $form)
   {
-    if (($sxml = simplexml_load_string($xml))) // in fact XML IS always valid here...
+    if(($sxml = simplexml_load_string($xml))) // in fact XML IS always valid here...
     {
       ?>
       <script type="text/javascript">
@@ -175,10 +180,9 @@ class task_period_cindexer extends task_abstract
       <?php echo $form ?>.nolog.checked      = <?php echo p4field::isyes($sxml->nolog) ? 'true' : 'false' ?>;
       <?php echo $form ?>.winsvc_run.checked = <?php echo p4field::isyes($sxml->winsvc_run) ? 'true' : 'false' ?>;
       <?php echo $form ?>.charset.value      = "<?php echo trim((string) $sxml->charset) != '' ? p4string::MakeString($sxml->charset, "js", '"') : 'utf8' ?>";
-      parent.calccmd();
+        parent.calccmd();
       </script>
       <?php
-
       return("");
     }
     else // ... so we NEVER come here
@@ -195,7 +199,7 @@ class task_period_cindexer extends task_abstract
   public function printInterfaceJS()
   {
     $appname = 'phraseanet_indexer';
-    if ($this->system == 'WINDOWS')
+    if($this->system == 'WINDOWS')
       $appname .= '.exe';
     ?>
     <script type="text/javascript">
@@ -247,7 +251,6 @@ class task_period_cindexer extends task_abstract
       }
     </script>
     <?php
-
     return;
   }
 
@@ -267,7 +270,7 @@ class task_period_cindexer extends task_abstract
   public function printInterfaceHTML()
   {
     $appname = 'phraseanet_indexer';
-    if ($this->system == 'WINDOWS')
+    if($this->system == 'WINDOWS')
       $appname .= '.exe';
     ob_start();
     ?>
@@ -276,19 +279,19 @@ class task_period_cindexer extends task_abstract
       <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
       <input type="text" name="binpath" style="width:300px;" onchange="chgxmltxt(this, 'binpath');" value="">&nbsp;/&nbsp;<?php echo $appname ?>
       <br/>
-    <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" onchange="chgxmltxt(this, 'host');" value="">
+      <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" onchange="chgxmltxt(this, 'host');" value="">
       <br/>
       <?php echo _('task::cindexer:port') ?>&nbsp;:&nbsp;<input type="text" name="port" style="width:100px;" onchange="chgxmltxt(this, 'port');" value="">
       <br/>
-    <?php echo _('task::cindexer:base') ?>&nbsp;:&nbsp;<input type="text" name="base" style="width:200px;" onchange="chgxmltxt(this, 'base');" value="">
+      <?php echo _('task::cindexer:base') ?>&nbsp;:&nbsp;<input type="text" name="base" style="width:200px;" onchange="chgxmltxt(this, 'base');" value="">
       <br/>
-    <?php echo _('task::cindexer:user') ?>&nbsp;:&nbsp;<input type="text" name="user" style="width:200px;" onchange="chgxmltxt(this, 'user');" value="">
+      <?php echo _('task::cindexer:user') ?>&nbsp;:&nbsp;<input type="text" name="user" style="width:200px;" onchange="chgxmltxt(this, 'user');" value="">
       <br/>
-    <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="text" name="password" style="width:200px;" onchange="chgxmltxt(this, 'password');" value="">
+      <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="text" name="password" style="width:200px;" onchange="chgxmltxt(this, 'password');" value="">
       <br/>
       <br/>
 
-    <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:200px;" onchange="chgxmltxt(this, 'socket');" value="">
+      <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:200px;" onchange="chgxmltxt(this, 'socket');" value="">
       <br/>
       <br/>
 
@@ -297,21 +300,21 @@ class task_period_cindexer extends task_abstract
         <br/>
       </div>
 
-    <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:200px;" onchange="chgxmltxt(this, 'charset');" value="">
+      <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:200px;" onchange="chgxmltxt(this, 'charset');" value="">
       <br/>
       <br/>
 
       <input type="checkbox" name="nolog" onclick="chgxmlck(this, 'nolog');">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
       <br/>
 
-    <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
+      <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
       <br/>
       <br/>
 
       <hr/>
 
       <br/>
-    <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
+      <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
       <input type="checkbox" name="winsvc_run" onclick="chgxmlck(this, 'run');">&nbsp;<?php echo _('task::cindexer:run as application, not as service') ?>
       <br/>
 
@@ -356,128 +359,281 @@ class task_period_cindexer extends task_abstract
    */
   protected function run2()
   {
-    $cmd = $this->binpath . 'phraseanet_indexer';
-    $nulfile = '/dev/null';
+    $this->method = self::METHOD_PROC_OPEN;
+    $this->method = self::METHOD_FORK;
+    $this->method = self::METHOD_EXEC;
 
-    if ($this->system == 'WINDOWS')
+    $cmd = $this->binpath . 'phraseanet_indexer';
+    $nullfile = '/dev/null';
+
+    if($this->system == 'WINDOWS')
     {
       $cmd .= '.exe';
-      $nulfile = 'nul';
+      $nullfile = 'NULL';
     }
 
-    if (!file_exists($cmd) || !is_executable($cmd))
+    if(!file_exists($cmd) || !is_executable($cmd))
     {
       $this->log(sprintf(_('task::cindexer:file \'%s\' does not exists'), $cmd));
 
       return;
     }
 
-    $cmd .= $this->host ? " -h=" . $this->host : '';
-    $cmd .= $this->port ? " -P=" . $this->port : '';
-    $cmd .= $this->base ? " -b=" . $this->base : '';
-    $cmd .= $this->user ? " -u=" . $this->user : '';
-    $cmd .= $this->password ? " -p=" . $this->password : '';
-    $cmd .= $this->socket ? " --socket=" . $this->socket : '';
-    $cmd .= $this->use_sbas ? " -o" : '';
-    $cmd .= $this->charset ? " --default-character-set=" . $this->charset : '';
-    $cmd .= $this->nolog ? " -n" : '';
-    $cmd .= $this->winsvc_run ? " --run" : '';
+//    $cmd .= $this->host ? " -h=" . $this->host : '';
+//    $cmd .= $this->port ? " -P=" . $this->port : '';
+//    $cmd .= $this->base ? " -b=" . $this->base : '';
+//    $cmd .= $this->user ? " -u=" . $this->user : '';
+//    $cmd .= $this->password ? " -p=" . $this->password : '';
+//    $cmd .= $this->socket ? " --socket=" . $this->socket : '';
+//    $cmd .= $this->use_sbas ? " -o" : '';
+//    $cmd .= $this->charset ? " --default-character-set=" . $this->charset : '';
+//    $cmd .= $this->nolog ? " -n" : '';
+//    $cmd .= $this->winsvc_run ? " --run" : '';
+
+    $args = array();
+    if($this->host)
+      $args[] = '-h=' . $this->host;
+    if($this->port)
+      ;
+    $args[] = '-P=' . $this->port;
+    if($this->base)
+      $args[] = '-b=' . $this->base;
+    if($this->user)
+      $args[] = '-u=' . $this->user;
+    if($this->password)
+      $args[] = '-p=' . $this->password;
+    if($this->socket)
+      $args[] = '--socket=' . $this->socket;
+    if($this->use_sbas)
+      $args[] = '-o';
+    if($this->charset)
+      $args[] = '--default-character-set=' . $this->charset;
+    if($this->nolog)
+      $args[] = '-n';
+    if($this->winsvc_run)
+      $args[] = '--run';
 
     $registry = registry::get_instance();
     $logdir = p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
 
-    $descriptors = array();
-    $descriptors[1] = array("file", $logdir . "/phraseanet_indexer_" . $this->get_task_id() . ".log", "a+");
-    $descriptors[2] = array("file", $logdir . "/phraseanet_indexer_" . $this->get_task_id() . ".error.log", "a+");
-
-    $pipes = array();
-
-    $this->log(sprintf('cmd=\'%s\'', $cmd));
-    $process = proc_open($cmd, $descriptors, $pipes, $this->binpath, null, array('bypass_shell' => true));
-
-    $pid = NULL;
-    if (is_resource($process))
+    $this->return_value = self::RETURNSTATUS_STOPPED; // will be normal ending
+    
+    if($this->method == self::METHOD_PROC_OPEN)
     {
-      $proc_status = proc_get_status($process);
-      if ($proc_status['running'])
-        $pid = $proc_status['pid'];
-    }
+      $descriptors = array();
+//      $descriptors[1] = array("file", $logdir . "/phraseanet_indexer_" . $this->get_task_id() . ".log", "a+");
+//      $descriptors[2] = array("file", $logdir . "/phraseanet_indexer_" . $this->get_task_id() . ".error.log", "a+");
+      $descriptors[1] = array("file", $nullfile, "a+");
+      $descriptors[2] = array("file", $nullfile, "a+");
 
-    $qsent = '';
-    $timetokill = NULL;
-    $sock = NULL;
+      $pipes = array();
 
-    $this->running = true;
+      $this->log(sprintf('cmd=\'%s %s\'', $cmd, implode(' ', $args)));
+      $process = proc_open($cmd . ' ' . implode(' ', $args), $descriptors, $pipes, $this->binpath, null, array('bypass_shell' => true));
 
-    while ($this->running)
-    {
-      $this->check_task_status();
-
-      if ($this->task_status == self::STATUS_TOSTOP && $this->socket > 0)
+      $pid = NULL;
+      if(is_resource($process))
       {
-        // must quit task, so send 'Q' to port 127.0.0.1:XXXX to cindexer
-        if (!$qsent && (($sock = socket_create(AF_INET, SOCK_STREAM, 0)) !== false))
+        $proc_status = proc_get_status($process);
+        if($proc_status['running'])
+          $pid = $proc_status['pid'];
+      }
+
+      $qsent = '';
+      $timetokill = NULL;
+      $sock = NULL;
+
+      $this->running = true;
+
+      while($this->running)
+      {
+        $this->check_task_status();
+
+        if($this->task_status == self::STATUS_TOSTOP && $this->socket > 0)
         {
-          if (socket_connect($sock, '127.0.0.1', $this->socket) === true)
+          // must quit task, so send 'Q' to port 127.0.0.1:XXXX to cindexer
+          if(!$qsent && (($sock = socket_create(AF_INET, SOCK_STREAM, 0)) !== false))
           {
-            socket_write($sock, 'Q', 1);
-            socket_write($sock, "\r\n", strlen("\r\n"));
-            sleep(5);
-            $qsent = 'Q';
-            $timetokill = time() + 10;
+            if(socket_connect($sock, '127.0.0.1', $this->socket) === true)
+            {
+              socket_write($sock, 'Q', 1);
+              socket_write($sock, "\r\n", strlen("\r\n"));
+              sleep(5);
+              $qsent = 'Q';
+              $timetokill = time() + 10;
+            }
+            else
+            {
+              socket_close($sock);
+              $sock = NULL;
+            }
+          }
+        }
+
+        $proc_status = proc_get_status($process);
+        if(!$proc_status['running'])
+        {
+          // the cindexer died
+          if($qsent == 'Q')
+          {
+            $this->log(_('task::cindexer:the cindexer clean-quit'));
+          }
+          elseif($qsent == 'K')
+          {
+            $this->log(_('task::cindexer:the cindexer has been killed'));
           }
           else
           {
-            socket_close($sock);
-            $sock = NULL;
+            $this->log(_('task::cindexer:the cindexer crashed'));
+            $this->return_value = NULL; // NOT normal ending will enforce restart from scheduler
+          }
+          $this->running = false;
+        }
+        else
+        {
+          if($qsent == 'Q')
+          {
+            if(time() > $timetokill)
+            {
+              // must kill cindexer
+              $this->log(_('task::cindexer:killing the cindexer'));
+              $qsent = 'K';
+              proc_terminate($process); // sigint
+            }
           }
         }
+        sleep(5);
       }
 
-      $proc_status = proc_get_status($process);
-      if (!$proc_status['running'])
+      if($sock)
       {
-        // the cindexer died
-        if ($qsent == 'Q')
-          $this->log(_('task::cindexer:the cindexer clean-quit'));
-        elseif ($qsent == 'K')
-          $this->log(_('task::cindexer:the cindexer has been killed'));
-        else
-          $this->log(_('task::cindexer:the cindexer crashed'));
-        $this->running = false;
+        socket_close($sock);
+        $sock = NULL;
+      }
+
+      foreach(array_keys($pipes) as $offset)
+      {
+        if(is_resource($pipes[$offset]))
+          fclose($pipes[$offset]);
+      }
+
+      proc_terminate($process); // sigint
+      proc_close($process);
+    }
+    elseif($this->method == self::METHOD_FORK)
+    {
+      $pid = pcntl_fork();
+      if($pid == -1)
+      {
+        die("failed to fork");
+      }
+      elseif($pid == 0)
+      {
+        // child
+        umask(0);
+        // openlog('MyLog', LOG_PID | LOG_PERROR, LOG_LOCAL0);
+        if(posix_setsid() < 0)
+          die("Forked process could not detach from terminal\n");
+        //chdir(dirname(__FILE__));
+        fclose(STDIN);
+        fclose(STDOUT);
+        fclose(STDERR);
+        $fdIN = fopen($nullfile, 'r');
+//        $fdOUT = fopen($nullfile, 'a+');
+//        $fdERR = fopen($nullfile, 'a+');
+        $fdOUT = fopen($logdir . "/task_o_" . $this->get_task_id() . ".log", "a+");
+        $fdERR = fopen($logdir . "/task_e_" . $this->get_task_id() . ".log", "a+");
+        
+        pcntl_exec($cmd, $args);
+
+        sleep(2);
       }
       else
       {
-        if ($qsent == 'Q')
+        // parent
+        $this->running = true;
+
+        $sigsent = NULL;
+        while($this->running)
         {
-          if (time() > $timetokill)
+          // is the cindexer alive ?
+          if(!posix_kill($pid, 0))
           {
-            // must kill cindexer
-            $this->log(_('task::cindexer:killing the cindexer'));
-            $qsent = 'K';
-            proc_terminate($process); // sigint
+printf("%d \n", __LINE__);
+            // dead...
+            if($sigsent === NULL)
+            {
+printf("%d \n", __LINE__);
+              // but it's not my fault
+               $this->log(_('task::cindexer:the cindexer crashed'));
+               $this->running = false;
+               // return self::RETURNSTATUS_STOPPED;
+               break;
+             }
           }
-        }
+          
+printf("%d \n", __LINE__);
+          $this->check_task_status();
+
+          if($this->task_status == self::STATUS_TOSTOP)
+          {
+printf("%d \n", __LINE__);
+            posix_kill($pid, ($sigsent=SIGINT));
+            sleep(2);
+          }
+          
+          $status = NULL;
+          if(pcntl_wait($status, WNOHANG) == $pid)
+          {
+printf("%d \n", __LINE__);
+            // child (indexer) has exited
+            if($sigsent == SIGINT)
+            {
+              $this->log(_('task::cindexer:the cindexer clean-quit'));
+            }
+            elseif($sigsent == SIGKILL)
+            {
+              $this->log(_('task::cindexer:the cindexer has been killed'));
+            }
+            else
+            {
+              $this->log(_('task::cindexer:the cindexer crashed'));
+              $this->return_value = NULL; // NOT normal ending will enforce restart from scheduler
+            }
+            $this->running = false;
+          }
+          else
+          {
+printf("%d \n", __LINE__);
+            if($sigsent == SIGINT && time() > $timetokill)
+            {
+printf("%d \n", __LINE__);
+              // must kill cindexer
+              $this->log(_('task::cindexer:killing the cindexer'));
+              $qsent = 'K';
+              posix_kill($pid, ($sigsent=SIGKILL));
+            }
+            sleep(2);
+          }
+        } // while running (method fork)
       }
-      sleep(5);
     }
-
-    if ($sock)
+    elseif($this->method == self::METHOD_EXEC)
     {
-      socket_close($sock);
-      $sock = NULL;
+        umask(0);
+        fclose(STDIN);
+        fclose(STDOUT);
+        fclose(STDERR);
+        $fdIN = fopen($nullfile, 'r');
+        $fdOUT = fopen($logdir . "/task_o_" . $this->get_task_id() . ".log", "a+");
+        $fdERR = fopen($logdir . "/task_e_" . $this->get_task_id() . ".log", "a+");
+        
+        pcntl_exec($cmd, $args);
+
+        sleep(2);
     }
-
-    foreach (array_keys($pipes) as $offset)
-    {
-      if (is_resource($pipes[$offset]))
-        fclose($pipes[$offset]);
-    }
-
-    proc_terminate($process); // sigint
-    proc_close($process);
-
-    return self::RETURNSTATUS_STOPPED;
+    
+    return($this->return_value);
   }
 
 }

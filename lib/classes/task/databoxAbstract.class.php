@@ -33,27 +33,32 @@ abstract class task_databoxAbstract extends task_abstract
 
   protected function run2()
   {
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
     while($this->running)
     {
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
       try
       {
         $conn = connection::getPDOConnection();
       }
       catch(Exception $e)
       {
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
         $this->log($e->getMessage());
         $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-        for($t = 60 * 10; $t; $t--) // DON'T do sleep(600) because it prevents ticks !
+        for($t = 60 * 10; $this->running && $t; $t--) // DON'T do sleep(600) because it prevents ticks !
           sleep(1);
 
         $this->running = false;
         $this->return_value = self::RETURNSTATUS_TORESTART;
 
+$this->log(sprintf("%s [%d] returning from 'run2()' rv=%s \n", __FILE__, __LINE__, $this->return_value));
         return;
       }
 
       $this->set_last_exec_time();
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
 
       try
       {
@@ -67,12 +72,14 @@ abstract class task_databoxAbstract extends task_abstract
       }
       catch(Exception $e)
       {
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
         $this->task_status = self::STATUS_TOSTOP;
         $this->return_value = self::RETURNSTATUS_STOPPED;
         $rs = array();
       }
       foreach($rs as $row)
       {
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
         if(!$this->running)
           break;
 
@@ -89,6 +96,7 @@ abstract class task_databoxAbstract extends task_abstract
 
         try
         {
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
           $this->load_settings(simplexml_load_string($row['settings']));
         }
         catch(Exception $e)
@@ -98,14 +106,26 @@ abstract class task_databoxAbstract extends task_abstract
         }
 
         $this->current_state = self::STATE_OK;
-        $this->process_sbas()
-                ->check_current_state()
-                ->flush_records_sbas();
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
+        $this->process_sbas()->check_current_state();
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
+        $this->process_sbas()->flush_records_sbas();
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
       }
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
 
       $this->increment_loops();
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
       $this->pause($duration);
     }
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
+    $this->process_sbas()->check_current_state();
+$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
+    $this->process_sbas()->flush_records_sbas();
+
+    $this->set_status($this->return_value);
+
+$this->log(sprintf("%s [%d] returning from 'run2()' rv=%s \n", __FILE__, __LINE__, $this->return_value));
 
     return;
   }

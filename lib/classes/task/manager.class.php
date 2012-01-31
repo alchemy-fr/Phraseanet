@@ -167,13 +167,7 @@ class task_manager
   
   public function get_scheduler_state2()
   {
-    $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay, schedstatus AS status FROM sitepreff";
-    $stmt = $this->appbox->get_connection()->prepare($sql);
-    $stmt->execute();
-    $ret = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
-    $ret['pid'] = NULL;
-
+    $pid = NULL;
     $appbox = appbox::get_instance();
     $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
     if( ($schedlock = fopen( $lockdir . 'scheduler.lock', 'a+')) )
@@ -181,7 +175,7 @@ class task_manager
       if (flock($schedlock, LOCK_SH | LOCK_NB) === FALSE)
       {
         // already locked : running !
-        $ret['pid'] = fgets($schedlock, 512);
+        $pid = trim(fgets($schedlock, 512));
       }
       else
       {
@@ -190,6 +184,20 @@ class task_manager
       }
       fclose($schedlock);
     }
+    
+    $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay, schedstatus AS status FROM sitepreff";
+    $stmt = $this->appbox->get_connection()->prepare($sql);
+    $stmt->execute();
+    $ret = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    
+    if($pid === NULL && $ret['status'] !== 'stopped')
+    {
+      // auto fix
+      $this->appbox->get_connection()->exec('UPDATE sitepreff SET schedstatus=\'stopped\'');
+      $ret['status'] = 'stopped';
+    }
+    $ret['pid'] = $pid;
     return($ret);
   }
   

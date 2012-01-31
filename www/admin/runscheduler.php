@@ -15,6 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
 require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
@@ -52,31 +53,35 @@ $logdir = p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
 
 $phpcli = $registry->get('GV_cli');
 
+$nullfile = '';
 switch ($system)
 {
   case "DARWIN":
     $cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
+    $nullfile = '/dev/null';
     break;
   case "LINUX":
     $cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
+    $nullfile = '/dev/null';
     break;
   case "WINDOWS":
   case "WINDOWS NT":
     $cmd = $phpcli . ' -f ' . $registry->get('GV_RootPath') . "bin/console scheduler:start";
+    $nullfile = 'NUL';
     break;
 }
 
 
-if ($logdir)
-{
-  $descriptors[1] = array("file", $logdir . "scheduler.log", "a+");
-  $descriptors[2] = array("file", $logdir . "scheduler.error.log", "a+");
-}
-else
-{
-  $descriptors[1] = array("file", "NUL", "a+");
-  $descriptors[2] = array("file", "NUL", "a+");
-}
+//if ($logdir)
+//{
+//  $descriptors[1] = array("file", $logdir . "scheduler.log", "a+");
+//  $descriptors[2] = array("file", $logdir . "scheduler.error.log", "a+");
+//}
+//else
+//{
+  $descriptors[1] = array("file", $nullfile, "a+");
+  $descriptors[2] = array("file", $nullfile, "a+");
+//}
 
 $pipes = null;
 $cwd = $registry->get('GV_RootPath') . "bin/";
