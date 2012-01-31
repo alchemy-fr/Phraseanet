@@ -51,8 +51,8 @@ class Controller_Setup_Installer implements ControllerProviderInterface
               $request = $app['request'];
               $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
               setup::write_config($servername);
-              
-              
+
+
               $php_constraint = setup::check_php_version();
               $writability_constraints = setup::check_writability(new Setup_Registry());
               $extension_constraints = setup::check_php_extension();
@@ -89,11 +89,11 @@ class Controller_Setup_Installer implements ControllerProviderInterface
                 return $app->redirect('/setup/installer/step2/');
               }
 
-              
+
               $ld_path = array(dirname(__FILE__) . '/../../../../templates/web');
               $loader = new Twig_Loader_Filesystem($ld_path);
               $twig = new Twig_Environment($loader);
-              
+
               $html = $twig->render(
                       '/setup/index.twig'
                       , array_merge($constraints_coll, array(
@@ -111,12 +111,12 @@ class Controller_Setup_Installer implements ControllerProviderInterface
     $controllers->get('/step2/', function() use ($app)
             {
               phrasea::use_i18n(Session_Handler::get_locale());
-              
+
               $ld_path = array(dirname(__FILE__) . '/../../../../templates/web');
-              
+
               $loader = new Twig_Loader_Filesystem($ld_path);
               $twig = new Twig_Environment($loader);
-              
+
               $twig->addExtension(new Twig_Extensions_Extension_I18n());
 
               $request = $app['request'];

@@ -454,13 +454,13 @@ class searchEngine_options implements Serializable
       {
         $tmpvalue = (array) $value;
         $value = array();
-        
+
         foreach($tmpvalue as $k=>$data)
         {
           $k = ctype_digit($k) ? (int) $k : $k;
           $value[$k] = $data;
         }
-        
+
       }
 
       $this->$key = $value;

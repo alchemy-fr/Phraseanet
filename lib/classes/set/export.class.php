@@ -475,7 +475,7 @@ class set_export extends set_abstract
       $sd = $download_element->get_subdefs();
 
       foreach ($download_element->get_downloadable() as $name => $properties)
-      {        
+      {
         if ($properties === false || !in_array($name, $subdefs))
         {
           continue;
@@ -758,6 +758,7 @@ class set_export extends set_abstract
       return false;
     }
     if (isset($list['complete']) && $list['complete'] === true)
+
       return;
 
 
@@ -989,13 +990,13 @@ class set_export extends set_abstract
       else
       {
         /**
-         * 
+         *
          * Header "Pragma: public" SHOULD be present.
          * In case it is not present, download on IE 8 and previous over HTTPS
          * will fail.
-         * 
+         *
          * @todo : merge this shitty fix with Response object.
-         * 
+         *
          */
         if (!headers_sent())
         {
@@ -1007,6 +1008,7 @@ class set_export extends set_abstract
         $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
         $response->headers->set('Content-Length', filesize($file));
         $response->setContent(file_get_contents($file));
+
         return $response;
       }
     }
@@ -1057,7 +1059,7 @@ class set_export extends set_abstract
     $user = false;
     if ($anonymous)
     {
-      
+
     }
     else
     {

@@ -175,6 +175,7 @@ class connection
       self::$_PDO_instance[$name] = null;
       unset(self::$_PDO_instance[$name]);
     }
+
     return;
   }
 

@@ -149,8 +149,10 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
   public function isValid()
   {
     if (isset($this->arraySorted) && sizeof($this->arraySorted) > 0)
+
       return true;
     else
+
       return false;
   }
 
@@ -162,10 +164,11 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
   public function getTop($nbtop)
   {
     if (!is_int($nbtop))
+
       return array();
-    
+
     $tmp = array();
-    
+
     if ($this->isValid())
     {
       foreach ($this->arraySorted as $k => $v)
@@ -182,6 +185,7 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
         }
       }
     }
+
     return $tmp;
   }
 

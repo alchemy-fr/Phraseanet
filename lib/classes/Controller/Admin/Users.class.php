@@ -260,7 +260,7 @@ class Controller_Admin_Users implements ControllerProviderInterface
 
               $response = new Response($CSVDatas, 200, array('Content-Type' => 'text/plain'));
               $response->headers->set('Content-Disposition', 'attachment; filename=export.txt');
-              
+
               return $response;
             }
     );

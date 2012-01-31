@@ -205,6 +205,7 @@ class record_preview extends record_adapter
   public function get_train($pos = 0, $query='', searchEngine_adapter $search_engine=null)
   {
     if ($this->train)
+
       return $this->train;
 
     switch ($this->env)
@@ -267,10 +268,11 @@ class record_preview extends record_adapter
   public function get_title($highlight = '', searchEngine_adapter $search_engine=null)
   {
     if ($this->title)
+
       return $this->title;
-    
+
     $this->title = collection::getLogo($this->get_base_id()) . ' ';
-    
+
     switch ($this->env)
     {
 
@@ -323,6 +325,7 @@ class record_preview extends record_adapter
   public function get_short_history()
   {
     if (!is_null($this->short_history))
+
       return $this->short_history;
 
     $tab = array();
@@ -376,14 +379,14 @@ class record_preview extends record_adapter
       if (!isset($tab[$hour][$site][$action][$row['usr_id']]))
       {
         $user = null;
-        
+
         try
         {
           $user = \User_Adapter::getInstance($row['usr_id'], $appbox);
         }
         catch (Exception $e)
         {
-          
+
         }
 
         $tab[$hour][$site][$action][$row['usr_id']] =
@@ -415,6 +418,7 @@ class record_preview extends record_adapter
   public function get_view_popularity()
   {
     if (!is_null($this->view_popularity))
+
       return $this->view_popularity;
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
@@ -512,6 +516,7 @@ class record_preview extends record_adapter
   public function get_refferer_popularity()
   {
     if (!is_null($this->refferer_popularity))
+
       return $this->refferer_popularity;
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
@@ -598,6 +603,7 @@ class record_preview extends record_adapter
   {
 
     if (!is_null($this->download_popularity))
+
       return $this->download_popularity;
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();

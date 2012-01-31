@@ -14,11 +14,9 @@
  *
  */
 
-require_once __DIR__ . '/lib/Alchemy/Phrasea/Core.php';
+require_once __DIR__ . '/lib/bootstrap.php';
 
 use Symfony\Component\Finder\Finder;
-
-\Alchemy\Phrasea\Core::initAutoloads();
 
 $fix = isset($argv[1]) && 'fix' == $argv[1];
 

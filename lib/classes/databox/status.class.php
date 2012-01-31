@@ -159,13 +159,13 @@ class databox_status
     $statuses = array();
 
     $sbas_ids = $user->ACL()->get_granted_sbas();
-    
+
     $see_all = array();
 
     foreach ($sbas_ids as $databox)
     {
       $see_all[$databox->get_sbas_id()] = false;
-      
+
       foreach($databox->get_collections() as $collection)
       {
         if($user->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus'))
@@ -193,7 +193,7 @@ class databox_status
 
       if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct'))
         $see_this = true;
-      
+
       foreach ($status as $bit => $props)
       {
 
@@ -491,7 +491,7 @@ class databox_status
     $conn = connection::getPDOConnection();
 
     $status = '0';
-    
+
     if(substr($stat1, 0, 2) === '0x')
     {
       $stat1 = self::hex2bin(substr($stat1, 2));
@@ -530,7 +530,7 @@ class databox_status
     {
       $stat2 = self::hex2bin(substr($stat2, 2));
     }
-    
+
     $sql = 'select bin(0b' . trim($stat1) . ' & ~0b' . trim($stat2) . ') as result';
 
     $stmt = $conn->prepare($sql);
@@ -560,7 +560,7 @@ class databox_status
     {
       $stat2 = self::hex2bin(substr($stat2, 2));
     }
-    
+
     $sql = 'select bin(0b' . trim($stat1) . ' | 0b' . trim($stat2) . ') as result';
 
     $stmt = $conn->prepare($sql);
@@ -579,12 +579,12 @@ class databox_status
   public static function dec2bin($status)
   {
     $status = (string) $status;
-    
+
     if(!ctype_digit($status))
     {
       throw new \Exception('Non-decimal value');
     }
-    
+
     $conn = connection::getPDOConnection();
 
     $sql = 'select bin(' .  $status . ') as result';
@@ -595,7 +595,7 @@ class databox_status
     $stmt->closeCursor();
 
     $status = '0';
-    
+
     if ($row)
     {
       $status = $row['result'];
@@ -611,12 +611,12 @@ class databox_status
     {
       $status = substr($status, 2);
     }
-    
+
     if(!ctype_xdigit($status))
     {
       throw new \Exception('Non-hexadecimal value');
     }
-    
+
     $conn = connection::getPDOConnection();
 
     $sql = 'select BIN( CAST( 0x'.trim($status).' AS UNSIGNED ) ) as result';
@@ -627,7 +627,7 @@ class databox_status
     $stmt->closeCursor();
 
     $status = '0';
-    
+
     if ($row)
     {
       $status = $row['result'];

@@ -500,6 +500,7 @@ class module_report
   public function getOrder($k = false)
   {
     if ($k === false)
+
       return $this->tab_order;
     return $this->tab_order[$k];
   }
@@ -819,6 +820,7 @@ class module_report
   public function buildReport($tab = false, $groupby = false, $on = false)
   {
     if (sizeof($this->report) > 0)
+
       return $this->report;
     $conn = connection::getPDOConnection($this->sbas_id);
 

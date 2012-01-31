@@ -112,7 +112,7 @@ class task_manager
 
     return $row;
   }
-  
+
   public static function getAvailableTasks()
   {
     $registry = registry::get_instance();
@@ -150,6 +150,7 @@ class task_manager
       closedir($hdir);
     }
     }
+
     return $tasks;
   }
 }

@@ -53,7 +53,7 @@ class task_Scheduler
     {
       self::$connection = new connection_pdo ('appbox', $hostname, $port, $user, $password, $dbname);
     }
-    
+
     return self::$connection;
   }
 

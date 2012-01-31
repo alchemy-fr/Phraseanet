@@ -29,7 +29,7 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
    */
   public function tearDown()
   {
-    
+
   }
 
   /**

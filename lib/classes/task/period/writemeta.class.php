@@ -307,7 +307,7 @@ class task_period_writemeta extends task_databoxAbstract
     $fields = $record->get_caption()->get_fields();
 
     $subCMD = '';
-    
+
     if ($record->get_uuid())
     {
       $subCMD .= '-XMP-exif:ImageUniqueID=';
@@ -315,7 +315,7 @@ class task_period_writemeta extends task_databoxAbstract
       $subCMD .= '-IPTC:UniqueDocumentID=';
       $subCMD .= escapeshellarg($record->get_uuid());
     }
-    
+
     foreach ($fields as $field)
     {
       $meta = $field->get_databox_field();
@@ -326,23 +326,23 @@ class task_period_writemeta extends task_databoxAbstract
       $multi = $meta->is_multi();
       $type = $meta->get_type();
       $datas = $field->get_value();
-      
+
       if ($multi)
       {
         $datas = $field->get_value();
         foreach ($datas as $value)
         {
           $value = $this->format_value($type, $value);
-          
-          $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'='; 
+
+          $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
           $subCMD .= escapeshellarg($value).' ';
         }
       }
       else
       {
         $datas = $this->format_value($type, $datas);
-        
-        $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'='; 
+
+        $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
         $subCMD .= escapeshellarg($datas).' ';
       }
     }
@@ -355,17 +355,18 @@ class task_period_writemeta extends task_databoxAbstract
       $cmd .= ( $registry->get('GV_exiftool') . ' -m -overwrite_original ');
       if ($name != 'document' || $this->clear_doc)
         $cmd .= '-all:all= ';
-      
+
       $cmd .= ' -codedcharacterset=utf8 ';
-      
+
       $cmd .= $subCMD.' '.escapeshellarg($file);
-      
+
       $this->log(sprintf(('writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name));
 
       $s = trim(shell_exec($cmd));
 
       $this->log("\t" . $s);
     }
+
     return $this;
   }
 

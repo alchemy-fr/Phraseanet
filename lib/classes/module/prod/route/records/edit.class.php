@@ -244,7 +244,7 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
       }
       catch (Exception $e)
       {
-        
+
       }
       $_lst[$indice]['type'] = $record->get_type();
     }
@@ -450,11 +450,12 @@ class module_prod_route_records_edit extends module_prod_route_records_abstract
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
     if (!is_array($request->get('mds')))
+
       return $this;
 
     $sbas_id       = (int) $request->get('sbid');

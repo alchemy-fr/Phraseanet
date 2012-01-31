@@ -338,7 +338,7 @@ return call_user_func(function()
                             }
                             catch (Exception $e)
                             {
-                              
+
                             }
 
                             return new Response(json_encode($result), 200, array("content-type" => "application/json"));
@@ -367,7 +367,7 @@ return call_user_func(function()
                             }
                             catch (Exception $e)
                             {
-                              
+
                             }
 
                             return new response(json_encode($result), 200, array("content-type" => "application/json"));
@@ -387,7 +387,7 @@ return call_user_func(function()
                             }
                             catch (Exception $e)
                             {
-                              
+
                             }
 
                             return new Response(json_encode($result), 200, array("content-type" => "application/json"));
@@ -405,7 +405,7 @@ return call_user_func(function()
                             }
                             catch (Exception $e)
                             {
-                              
+
                             }
 
                             return new Response(json_encode($result), 200, array("content-type" => "application/json"));

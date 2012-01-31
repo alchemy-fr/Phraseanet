@@ -71,7 +71,7 @@ class API_V1_Log
 
   /**
    *
-   * @var API_OAuth2_Account 
+   * @var API_OAuth2_Account
    */
   protected $account;
 
@@ -85,7 +85,7 @@ class API_V1_Log
    *
    * @param appbox $appbox
    * @param Request $request
-   * @param API_OAuth2_Account $account 
+   * @param API_OAuth2_Account $account
    */
   public function __construct(appbox &$appbox, $log_id)
   {
@@ -93,16 +93,16 @@ class API_V1_Log
     $this->id = (int) $log_id;
 
     $sql = '
-      SELECT 
+      SELECT
         api_log_id,
         api_account_id,
         api_log_route,
-        api_log_date, 
-        api_log_status_code, 
-        api_log_format, 
-        api_log_ressource, 
-        api_log_general, 
-        api_log_aspect, 
+        api_log_date,
+        api_log_status_code,
+        api_log_format,
+        api_log_ressource,
+        api_log_general,
+        api_log_aspect,
         api_log_action
       FROM
         api_logs
@@ -172,7 +172,7 @@ class API_V1_Log
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
-    
+
     return $this;
   }
 
@@ -184,7 +184,7 @@ class API_V1_Log
   public function set_status_code($status_code)
   {
     $this->status_code = (int) $status_code;
-    
+
     $sql = 'UPDATE api_log
             SET api_log_status_code = :code
             WHERE api_log_id = :log_id';
@@ -197,7 +197,7 @@ class API_V1_Log
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
-    
+
     return $this;
   }
 
@@ -208,12 +208,12 @@ class API_V1_Log
 
   public function set_format($format)
   {
-    
+
     if (!in_array($format, array('json', 'jsonp', 'yaml', 'unknow')))
       throw new Exception_InvalidArgument();
-    
+
     $this->format = $format;
-    
+
     $sql = 'UPDATE api_log
             SET api_log_format = :format
             WHERE api_log_id = :log_id';
@@ -226,7 +226,7 @@ class API_V1_Log
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
-    
+
     return $this;
   }
 
@@ -239,9 +239,9 @@ class API_V1_Log
   {
     if (!in_array($format, array(self::DATABOXES_RESSOURCE,self::BASKETS_RESSOURCE, self::FEEDS_RESSOURCE, self::RECORDS_RESSOURCE)))
       throw new Exception_InvalidArgument();
-    
+
     $this->ressource = $ressource;
-    
+
     $sql = 'UPDATE api_log
             SET api_log_ressource = :ressource
             WHERE api_log_id = :log_id';
@@ -254,7 +254,7 @@ class API_V1_Log
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
-    
+
     return $this;
   }
 
@@ -266,7 +266,7 @@ class API_V1_Log
   public function set_general($general)
   {
     $this->general = $general;
-    
+
     $sql = 'UPDATE api_log
             SET api_log_general = :general
             WHERE api_log_id = :log_id';
@@ -279,7 +279,7 @@ class API_V1_Log
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
-    
+
     return $this;
   }
 
@@ -291,7 +291,7 @@ class API_V1_Log
   public function set_aspect($aspect)
   {
     $this->aspect = $aspect;
-    
+
     $sql = 'UPDATE api_log
             SET api_log_aspect = :aspect
             WHERE api_log_id = :log_id';
@@ -304,7 +304,7 @@ class API_V1_Log
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
-    
+
     return $this;
   }
 
@@ -316,7 +316,7 @@ class API_V1_Log
   public function set_action($action)
   {
     $this->action = $action;
-    
+
     $sql = 'UPDATE api_log
             SET api_log_action = :action
             WHERE api_log_id = :log_id';
@@ -329,7 +329,7 @@ class API_V1_Log
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
-    
+
     return $this;
   }
 
@@ -338,8 +338,8 @@ class API_V1_Log
     return $this->account;
   }
 
-  
-  public static function create(appbox &$appbox, API_OAuth2_Account $account, $route, $status_code, $format, $ressource, $general = null, $aspect = null, $action = null) 
+
+  public static function create(appbox &$appbox, API_OAuth2_Account $account, $route, $status_code, $format, $ressource, $general = null, $aspect = null, $action = null)
   {
     $sql = '
       INSERT INTO
@@ -347,38 +347,38 @@ class API_V1_Log
           api_log_id,
           api_account_id,
           api_log_route,
-          api_log_date, 
-          api_log_status_code, 
-          api_log_format, 
-          api_log_ressource, 
-          api_log_general, 
-          api_log_aspect, 
+          api_log_date,
+          api_log_status_code,
+          api_log_format,
+          api_log_ressource,
+          api_log_general,
+          api_log_aspect,
           api_log_action
         )
       VALUES (
         null,
         :account_id,
         :route,
-        NOW(), 
-        :status_code, 
-        :format, 
-        :ressource, 
-        :general, 
-        :aspect, 
+        NOW(),
+        :status_code,
+        :format,
+        :ressource,
+        :general,
+        :aspect,
         :action
       )';
-    
+
     $params = array(
         ':account_id' => $account->get_id(),
         ':route' => $route,
-        ':status_code' => $status_code, 
-        ':format' => $format, 
-        ':ressource' => $ressource, 
-        ':general' => $general, 
-        ':aspect' => $aspect, 
-        ':action' => $action 
+        ':status_code' => $status_code,
+        ':format' => $format,
+        ':ressource' => $ressource,
+        ':general' => $general,
+        ':aspect' => $aspect,
+        ':action' => $action
     );
-    
+
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();

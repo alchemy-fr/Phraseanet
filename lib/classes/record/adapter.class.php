@@ -180,7 +180,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $connbas = $this->databox->get_connection();
@@ -530,7 +530,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return null;
@@ -580,7 +580,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
     $sql  = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
@@ -617,6 +617,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       throw new Exception_Media_SubdefNotFound ();
 
     if (isset($this->subdefs[$name]))
+
       return $this->subdefs[$name];
 
     if (!$this->subdefs)
@@ -657,7 +658,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $connbas = $this->get_databox()->get_connection();
@@ -756,8 +757,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if ($data)
     {
       if (isset($this->technical_datas[$data]))
+
         return $this->technical_datas[$data];
       else
+
         return false;
     }
 
@@ -860,7 +863,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       );
     }
 
-    $sql = 'UPDATE record 
+    $sql = 'UPDATE record
             SET originalname = :originalname WHERE record_id = :record_id';
 
     $params = array(
@@ -1114,7 +1117,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
 
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
@@ -1340,7 +1343,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
     $this->delete_data_from_cache(self::CACHE_STATUS);
 
@@ -1355,6 +1358,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_reg_name()
   {
     if (!$this->is_grouping())
+
       return false;
 
     $balisename = '';
@@ -1551,6 +1555,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $hd = $this->get_subdef('document');
     if ($hd->is_physically_present())
+
       return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
     return null;
   }
@@ -1773,7 +1778,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
       $this->delete_data_from_cache(self::CACHE_SUBDEFS);
     }
@@ -1803,16 +1808,16 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_data_from_cache($option = null)
   {
     \cache_databox::refresh($this->get_sbas_id());
-    
+
     $databox = $this->get_databox();
-    
+
     return $databox->get_data_from_cache($this->get_cache_key($option));
   }
 
   public function set_data_to_cache($value, $option = null, $duration = 0)
   {
     $databox = $this->get_databox();
-    
+
     return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
   }
 
@@ -1830,7 +1835,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         break;
     }
     $databox = $this->get_databox();
-    
+
     \cache_databox::update($this->get_sbas_id(), 'record', $this->get_record_id());
 
     return $databox->delete_data_from_cache($this->get_cache_key($option));
@@ -1871,7 +1876,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -1891,6 +1896,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_container_baskets()
   {
     if ($this->container_basket)
+
       return $this->container_basket;
 
     $appbox  = appbox::get_instance();

@@ -72,6 +72,7 @@ $qrySbas = array();
 if (is_null($parm['bas']))
 {
   echo 'vous devez selectionner des collections dans lesquelles chercher';
+
   return;
 }
 
@@ -178,7 +179,7 @@ $ACL = $user->ACL();
     $history = queries::history();
 
     echo '<script language="javascript" type="text/javascript">$("#history").empty().append("' . str_replace('"', '\"', $history) . '")</script>';
-    
+
     $nbanswers = $result->get_count_available_results();
   $longueur = strlen($parm['qry']);
 
@@ -363,7 +364,7 @@ $npages = $result->get_total_pages();
 
 
           $sd = $record->get_subdefs();
-          
+
           $isImage = false;
           $isDocument = false;
           if (!$isVideo && !$isAudio)
@@ -470,7 +471,7 @@ $npages = $result->get_total_pages();
   </table>
 <script type="text/javascript">
   $(document).ready(function(){
-    
+
   p4.tot = <?php echo $result->get_count_available_results(); ?>;
   p4.tot_options = '<?php echo serialize($options) ?>';
   p4.tot_query = '<?php echo $parm['qry'] ?>';

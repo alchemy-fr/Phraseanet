@@ -64,6 +64,7 @@ class Module_Prod_Route_RecordFeedApp extends PhraseanetWebTestCaseAuthenticated
   public function createApplication()
   {
     $app = require __DIR__ . '/../../../../../classes/module/Prod.php';
+
     return $app;
   }
 
@@ -211,7 +212,7 @@ class Module_Prod_Route_RecordFeedApp extends PhraseanetWebTestCaseAuthenticated
 //    }
 //    catch (Exception $e)
 //    {
-//      
+//
 //    }
 //  }
 //

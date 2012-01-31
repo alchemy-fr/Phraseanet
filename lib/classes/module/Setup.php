@@ -49,8 +49,10 @@ return call_user_func(function()
                   $app->get('/', function() use ($app)
                           {
                             if ($app['install'] === true)
+
                               return $app->redirect('/setup/installer/');
                             if ($app['upgrade'] === true)
+
                               return $app->redirect('/setup/upgrader/');
                           });
 
@@ -63,6 +65,7 @@ return call_user_func(function()
                   $app->error(function($e) use ($app)
                           {
                             if ($e instanceof Exception_Setup_PhraseaAlreadyInstalled)
+
                               return $app->redirect('/login');
 
                             return new Response(

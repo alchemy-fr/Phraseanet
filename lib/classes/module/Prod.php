@@ -70,6 +70,7 @@ return call_user_func(function()
 
                                 return new response($twig->render('/prod/actions/Bridge/deactivated.twig', $params), 200);
                               }
+
                               return new response($twig->render('/prod/actions/Bridge/error.twig', $params), 200);
                             }
                           });

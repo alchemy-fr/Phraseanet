@@ -603,10 +603,10 @@ class module_report_nav extends module_report
         , 'titre' => $record->get_title()
         , 'taille' => $document->get_size()
     );
-    
+
     $this->setDisplayNav();
     $this->setReport();
-    
+
     return $this->report;
   }
 
