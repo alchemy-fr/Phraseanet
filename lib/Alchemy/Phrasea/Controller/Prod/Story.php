@@ -186,41 +186,46 @@ class Story implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
     $controllers->post(
-            '/{sbas_id}/{record_id}/delete/{child_sbas_id}/{child_record_id}/'
-            , function(Application $app, Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id)
-            {
-              $Story = new \record_adapter($sbas_id, $record_id);
+                    '/{sbas_id}/{record_id}/delete/{child_sbas_id}/{child_record_id}/'
+                    , function(Application $app, Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id)
+                    {
+                      $Story = new \record_adapter($sbas_id, $record_id);
 
-              $record = new \record_adapter($child_sbas_id, $child_record_id);
+                      $record = new \record_adapter($child_sbas_id, $child_record_id);
 
-              $user = $app['Core']->getAuthenticatedUser();
+                      $user = $app['Core']->getAuthenticatedUser();
 
-              if (!$user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
-                throw new \Exception_Forbidden('You can not add document to this Story');
+                      if (!$user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+                        throw new \Exception_Forbidden('You can not add document to this Story');
 
-              /* @var $user \User_Adapter */
+                      /* @var $user \User_Adapter */
 
-              $Story->removeChild($record);
+                      $Story->removeChild($record);
 
-              $data = array(
-                  'success' => true
-                  , 'message' => _('Record removed from story')
-              );
+                      $data = array(
+                          'success' => true
+                          , 'message' => _('Record removed from story')
+                      );
 
-              if ($request->getRequestFormat() == 'json')
-              {
-                $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                      if ($request->getRequestFormat() == 'json')
+                      {
+                        $datas = $app['Core']['Serializer']->serialize($data, 'json');
 
-                return new Response($datas, 200, array('Content-type' => 'application/json'));
-              }
-              else
-              {
-                return new RedirectResponse('/');
-              }
-            });
+                        return new Response($datas, 200, array('Content-type' => 'application/json'));
+                      }
+                      else
+                      {
+                        return new RedirectResponse('/');
+                      }
+                    })
+            ->assert('sbas_id', '\d+')
+            ->assert('record_id', '\d+')
+            ->assert('child_sbas_id', '\d+')
+            ->assert('child_record_id', '\d+');
+
 //    $controllers->post('/{basket_id}/delete/', function(Application $app, Request $request, $basket_id)
 //            {
 //              $em = $app['Core']->getEntityManager();

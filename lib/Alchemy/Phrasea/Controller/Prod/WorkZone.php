@@ -99,9 +99,9 @@ class WorkZone implements ControllerProviderInterface
                   , 'Page' => $page
                   , 'MaxPage' => $maxPage
                   , 'Total' => $Baskets['count']
-                  , 'Query' =>$request->get('Query')
-                  , 'Year' =>$request->get('Year')
-                  , 'Type' =>$request->get('Type')
+                  , 'Query' => $request->get('Query')
+                  , 'Year' => $request->get('Year')
+                  , 'Type' => $request->get('Type')
               );
 
               return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Results.html.twig', $params));
@@ -116,18 +116,18 @@ class WorkZone implements ControllerProviderInterface
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
               $params = array(
-                  'Basket'=>$basket
+                  'Basket' => $basket
               );
 
               return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Basket.html.twig', $params));
-            });
+            })->assert('basket_id', '\d+');
 
 
     $controllers->post(
             '/attachStories/'
             , function(Application $app, Request $request)
             {
-              if(!$request->get('stories'))
+              if (!$request->get('stories'))
                 throw new \Exception_BadRequest();
 
               $user = $app['Core']->getAuthenticatedUser();
@@ -261,7 +261,7 @@ class WorkZone implements ControllerProviderInterface
               {
                 return new RedirectResponse('/');
               }
-            });
+            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
 
     return $controllers;

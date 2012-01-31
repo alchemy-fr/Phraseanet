@@ -78,7 +78,7 @@ class Publications implements ControllerProviderInterface
                           , 'error' => $app['request']->get('error')
                               )
               );
-            });
+            })->assert('id', '\d+');
 
 
     $controllers->post('/feed/{id}/update/', function($id) use ($app, $appbox)
@@ -108,7 +108,7 @@ class Publications implements ControllerProviderInterface
               $feed->set_public($request->get('public'));
 
               return $app->redirect('/admin/publications/list/');
-            });
+            })->assert('id', '\d+');
 
 
     $controllers->post('/feed/{id}/iconupload/', function($id) use ($app, $appbox)
@@ -150,7 +150,7 @@ class Publications implements ControllerProviderInterface
               unlink($file->getPathname());
 
               return new Response('FILEHREF:' . $feed->get_icon_url() . '?' . mt_rand(100000, 999999));
-            });
+            })->assert('id', '\d+');
 
     $controllers->post('/feed/{id}/addpublisher/', function($id) use ($app, $appbox)
             {
@@ -168,7 +168,7 @@ class Publications implements ControllerProviderInterface
               }
 
               return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
-            });
+            })->assert('id', '\d+');
 
 
     $controllers->post('/feed/{id}/removepublisher/', function($id) use ($app, $appbox)
@@ -189,7 +189,7 @@ class Publications implements ControllerProviderInterface
               }
 
               return $app->redirect('/admin/publications/feed/' . $id . '/?err=' . $error);
-            });
+            })->assert('id', '\d+');
 
     $controllers->post('/feed/{id}/delete/', function($id) use ($app, $appbox)
             {

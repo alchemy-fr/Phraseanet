@@ -73,7 +73,7 @@ class Tooltip implements ControllerProviderInterface
                                       , array('user' => $user)
                               )
               );
-            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+            })->assert('usr_id', '\d+');
 
 
     $controllers->post('/preview/{sbas_id}/{record_id}/'

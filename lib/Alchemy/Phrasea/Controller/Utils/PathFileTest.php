@@ -33,45 +33,45 @@ class PathFileTest implements ControllerProviderInterface
     $controllers = new ControllerCollection();
 
     $controllers->get('/path/', function() use ($app)
-      {
-        $path = $app['request']->get('path');
+            {
+              $path = $app['request']->get('path');
 
-        $Serializer = $app['Core']['Serializer'];
+              $Serializer = $app['Core']['Serializer'];
 
-        return new Response(
-            $Serializer->serialize(
-              array(
-              'exists'     => file_exists($path)
-              , 'file'       => is_file($path)
-              , 'dir'        => is_dir($path)
-              , 'readable'   => is_readable($path)
-              , 'writeable'  => is_writable($path)
-              , 'executable' => is_executable($path)
-              )
-              , 'json'
-            )
-            , 200
-            , array('content-type' => 'application/json')
-        );
-      });
+              return new Response(
+                              $Serializer->serialize(
+                                      array(
+                                  'exists' => file_exists($path)
+                                  , 'file' => is_file($path)
+                                  , 'dir' => is_dir($path)
+                                  , 'readable' => is_readable($path)
+                                  , 'writeable' => is_writable($path)
+                                  , 'executable' => is_executable($path)
+                                      )
+                                      , 'json'
+                              )
+                              , 200
+                              , array('content-type' => 'application/json')
+              );
+            });
 
     $controllers->get('/url/', function() use ($app)
-      {
-        $url = $app['request']->get('url');
+            {
+              $url = $app['request']->get('url');
 
-        $Serializer = $app['Core']['Serializer'];
+              $Serializer = $app['Core']['Serializer'];
 
-        return new Response(
-            $Serializer->serialize(
-              array(
-              'code' => \http_query::getHttpCodeFromUrl($url)
-              )
-              , 'json'
-            )
-            , 200
-            , array('content-type' => 'application/json')
-        );
-      });
+              return new Response(
+                              $Serializer->serialize(
+                                      array(
+                                  'code' => \http_query::getHttpCodeFromUrl($url)
+                                      )
+                                      , 'json'
+                              )
+                              , 200
+                              , array('content-type' => 'application/json')
+              );
+            });
 
 
     return $controllers;

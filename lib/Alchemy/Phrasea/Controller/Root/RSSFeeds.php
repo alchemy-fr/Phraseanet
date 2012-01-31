@@ -154,7 +154,7 @@ class RSSFeeds implements ControllerProviderInterface
               $page = $page < 1 ? 1 : $page;
 
               return $display_feed($feed, $format, $page, $token->get_user());
-            })->assert('id', '\d+')->assert('format', '(rss|atom)');
+            })->assert('format', '(rss|atom)');
 
 
 

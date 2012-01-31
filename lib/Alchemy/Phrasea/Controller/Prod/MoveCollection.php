@@ -38,7 +38,7 @@ class MoveCollection implements ControllerProviderInterface
               $move->propose();
 
               $template = 'prod/actions/collection_default.twig';
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('action' => $move, 'message' => ''));
@@ -53,7 +53,7 @@ class MoveCollection implements ControllerProviderInterface
               $move->execute($request);
               $template = 'prod/actions/collection_submit.twig';
 
-               /* @var $twig \Twig_Environment */
+              /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('action' => $move, 'message' => ''));

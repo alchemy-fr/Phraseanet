@@ -133,7 +133,7 @@ class Installer implements ControllerProviderInterface
               \phrasea::use_i18n(\Session_Handler::get_locale());
               $request = $app['request'];
 
-               $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
+              $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
 
               $setupRegistry = new \Setup_Registry();
               $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);

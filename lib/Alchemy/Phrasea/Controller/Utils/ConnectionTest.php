@@ -33,78 +33,78 @@ class ConnectionTest implements ControllerProviderInterface
     $controllers = new ControllerCollection();
 
     $controllers->get('/mysql/', function() use ($app)
-      {
-        require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';
-
-        $request  = $app['request'];
-        $hostname = $request->get('hostname', '127.0.0.1');
-        $port     = (int) $request->get('port', 3306);
-        $user     = $request->get('user');
-        $password = $request->get('password');
-        $dbname   = $request->get('dbname');
-
-        $connection_ok = $db_ok         = $is_databox    = $is_appbox     = $empty         = false;
-
-        try
-        {
-          $conn          = new \connection_pdo('test', $hostname, $port, $user, $password);
-          $connection_ok = true;
-        }
-        catch (\Exception $e)
-        {
-
-        }
-
-        if ($dbname && $connection_ok === true)
-        {
-          try
-          {
-            $conn  = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname);
-            $db_ok = true;
-
-            $sql  = "SHOW TABLE STATUS";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-
-            $empty = $stmt->rowCount() === 0;
-
-            $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            foreach ($rs as $row)
             {
-              if ($row["Name"] === 'sitepreff')
+              require_once __DIR__ . '/../../../../classes/connection/pdo.class.php';
+
+              $request = $app['request'];
+              $hostname = $request->get('hostname', '127.0.0.1');
+              $port = (int) $request->get('port', 3306);
+              $user = $request->get('user');
+              $password = $request->get('password');
+              $dbname = $request->get('dbname');
+
+              $connection_ok = $db_ok = $is_databox = $is_appbox = $empty = false;
+
+              try
               {
-                $is_appbox = true;
+                $conn = new \connection_pdo('test', $hostname, $port, $user, $password);
+                $connection_ok = true;
               }
-              if ($row["Name"] === 'pref')
+              catch (\Exception $e)
               {
-                $is_databox = true;
+
               }
-            }
-          }
-          catch (\Exception $e)
-          {
 
-          }
-        }
+              if ($dbname && $connection_ok === true)
+              {
+                try
+                {
+                  $conn = new \connection_pdo('test', $hostname, $port, $user, $password, $dbname);
+                  $db_ok = true;
 
-        $Serializer = $app['Core']['Serializer'];
+                  $sql = "SHOW TABLE STATUS";
+                  $stmt = $conn->prepare($sql);
+                  $stmt->execute();
 
-        $datas = array(
-          'connection' => $connection_ok
-          , 'database'   => $db_ok
-          , 'is_empty'   => $empty
-          , 'is_appbox'  => $is_appbox
-          , 'is_databox' => $is_databox
-        );
+                  $empty = $stmt->rowCount() === 0;
 
-        return new Response(
-            $Serializer->serialize($datas, 'json')
-            , 200
-            , array('content-type' => 'application/json')
-        );
-      });
+                  $rs = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                  $stmt->closeCursor();
+
+                  foreach ($rs as $row)
+                  {
+                    if ($row["Name"] === 'sitepreff')
+                    {
+                      $is_appbox = true;
+                    }
+                    if ($row["Name"] === 'pref')
+                    {
+                      $is_databox = true;
+                    }
+                  }
+                }
+                catch (\Exception $e)
+                {
+
+                }
+              }
+
+              $Serializer = $app['Core']['Serializer'];
+
+              $datas = array(
+                  'connection' => $connection_ok
+                  , 'database' => $db_ok
+                  , 'is_empty' => $empty
+                  , 'is_appbox' => $is_appbox
+                  , 'is_databox' => $is_databox
+              );
+
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('content-type' => 'application/json')
+              );
+            });
 
     return $controllers;
   }

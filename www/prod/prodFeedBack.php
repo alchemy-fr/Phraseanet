@@ -66,12 +66,6 @@ switch ($action)
 
     break;
 
-  case 'LANGUAGE':
-    $session->close_storage();
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-    $module_prod = new module_prod();
-    $output = $module_prod->getLanguage();
-    break;
   case 'CSS':
     require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
     $parm = $request->get_parms('color');

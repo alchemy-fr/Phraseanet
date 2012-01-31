@@ -39,73 +39,73 @@ class Root implements ControllerProviderInterface
     $controllers = new ControllerCollection();
 
     $controllers->get('/', function(Application $app)
-      {
+            {
 
-        $Core     = $app['Core'];
-        $appbox   = \appbox::get_instance();
-        $user = $Core->getAuthenticatedUser();
+              $Core = $app['Core'];
+              $appbox = \appbox::get_instance();
+              $user = $Core->getAuthenticatedUser();
 
-        \User_Adapter::updateClientInfos(3);
+              \User_Adapter::updateClientInfos(3);
 
-        $section    = $app['request']->get('section', false);
+              $section = $app['request']->get('section', false);
 
-        $available = array(
-          'connected'
-          , 'registrations'
-          , 'taskmanager'
-          , 'base'
-          , 'bases'
-          , 'collection'
-          , 'user'
-          , 'users'
-        );
+              $available = array(
+                  'connected'
+                  , 'registrations'
+                  , 'taskmanager'
+                  , 'base'
+                  , 'bases'
+                  , 'collection'
+                  , 'user'
+                  , 'users'
+              );
 
-        $feature  = 'connected';
-        $featured = false;
-        $position = explode(':', $section);
-        if (count($position) > 0)
-        {
-          if (in_array($position[0], $available))
-          {
-            $feature  = $position[0];
-            if (isset($position[1]))
-              $featured = $position[1];
-          }
-        }
+              $feature = 'connected';
+              $featured = false;
+              $position = explode(':', $section);
+              if (count($position) > 0)
+              {
+                if (in_array($position[0], $available))
+                {
+                  $feature = $position[0];
+                  if (isset($position[1]))
+                    $featured = $position[1];
+                }
+              }
 
-        $databoxes     = $off_databoxes = array();
-        foreach ($appbox->get_databoxes() as $databox)
-        {
-          try
-          {
-            if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id()))
-              continue;
+              $databoxes = $off_databoxes = array();
+              foreach ($appbox->get_databoxes() as $databox)
+              {
+                try
+                {
+                  if (!$user->ACL()->has_access_to_sbas($databox->get_sbas_id()))
+                    continue;
 
-            $connbas = $databox->get_connection();
-          }
-          catch (\Exception $e)
-          {
-            $off_databoxes[] = $databox;
-            continue;
-          }
-          $databoxes[]     = $databox;
-        }
+                  $connbas = $databox->get_connection();
+                }
+                catch (\Exception $e)
+                {
+                  $off_databoxes[] = $databox;
+                  continue;
+                }
+                $databoxes[] = $databox;
+              }
 
 
-        $twig = $Core->getTwig();
+              $twig = $Core->getTwig();
 
-        return new Response($twig->render('admin/index.html.twig', array(
-              'module'        => 'admin'
-              , 'events'        => \eventsmanager_broker::getInstance($appbox, $Core)
-              , 'module_name'   => 'Admin'
-              , 'feature'       => $feature
-              , 'featured'      => $featured
-              , 'databoxes'     => $databoxes
-              , 'off_databoxes' => $off_databoxes
-              , 'tree'          => \module_admin::getTree($section)
-            ))
-        );
-      });
+              return new Response($twig->render('admin/index.html.twig', array(
+                                  'module' => 'admin'
+                                  , 'events' => \eventsmanager_broker::getInstance($appbox, $Core)
+                                  , 'module_name' => 'Admin'
+                                  , 'feature' => $feature
+                                  , 'featured' => $featured
+                                  , 'databoxes' => $databoxes
+                                  , 'off_databoxes' => $off_databoxes
+                                  , 'tree' => \module_admin::getTree($section)
+                              ))
+              );
+            });
 
     return $controllers;
   }

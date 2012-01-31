@@ -290,34 +290,34 @@ class UsrLists implements ControllerProviderInterface
      * Update a list
      */
     $controllers->post('/list/{list_id}/update/', function(Application $app, $list_id)
-      {
-        $request = $app['request'];
+            {
+              $request = $app['request'];
 
-        $datas = array(
-          'success' => false
-          , 'message' => _('Unable to update list')
-        );
+              $datas = array(
+                  'success' => false
+                  , 'message' => _('Unable to update list')
+              );
 
-        try
-        {
-          $list_name = $request->get('name');
+              try
+              {
+                $list_name = $request->get('name');
 
-          if (!$list_name)
-          {
-            throw new ControllerException(_('List name is required'));
-          }
+                if (!$list_name)
+                {
+                  throw new ControllerException(_('List name is required'));
+                }
 
-          $user = $app['Core']->getAuthenticatedUser();
-          $em   = $app['Core']->getEntityManager();
+                $user = $app['Core']->getAuthenticatedUser();
+                $em = $app['Core']->getEntityManager();
 
-          $repository = $em->getRepository('\Entities\UsrList');
+                $repository = $em->getRepository('\Entities\UsrList');
 
-          $list = $repository->findUserListByUserAndId($user, $list_id);
+                $list = $repository->findUserListByUserAndId($user, $list_id);
 
-          $list->setName($list_name);
+                $list->setName($list_name);
 
-          $em->merge($list);
-          $em->flush();
+                $em->merge($list);
+                $em->flush();
 
           $datas = array(
             'success' => true
@@ -336,29 +336,29 @@ class UsrLists implements ControllerProviderInterface
 
         }
 
-        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-        return new Response($Json, 200, array('Content-Type' => 'application/json'));
-      }
-    );
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
+            }
+    )->assert('list_id', '\d+');
 
     /**
      * Delete a list
      */
     $controllers->post('/list/{list_id}/delete/', function(Application $app, $list_id)
-      {
-        $em = $app['Core']->getEntityManager();
+            {
+              $em = $app['Core']->getEntityManager();
 
-        try
-        {
-          $repository = $em->getRepository('\Entities\UsrList');
+              try
+              {
+                $repository = $em->getRepository('\Entities\UsrList');
 
-          $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['Core']->getAuthenticatedUser();
 
-          $list = $repository->findUserListByUserAndId($user, $list_id);
+                $list = $repository->findUserListByUserAndId($user, $list_id);
 
-          $em->remove($list);
-          $em->flush();
+                $em->remove($list);
+                $em->flush();
 
           $datas = array(
             'success' => true
@@ -375,17 +375,17 @@ class UsrLists implements ControllerProviderInterface
         catch (\Exception $e)
         {
 
-          $datas = array(
-            'success' => false
-            , 'message' => sprintf(_('Unable to delete list'))
-          );
-        }
+                $datas = array(
+                    'success' => false
+                    , 'message' => sprintf(_('Unable to delete list'))
+                );
+              }
 
-        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-        return new Response($Json, 200, array('Content-Type' => 'application/json'));
-      }
-    );
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
+            }
+    )->assert('list_id', '\d+');
 
 
     /**
@@ -395,21 +395,21 @@ class UsrLists implements ControllerProviderInterface
       {
         $em = $app['Core']->getEntityManager();
 
-        try
-        {
-          $repository = $em->getRepository('\Entities\UsrList');
+              try
+              {
+                $repository = $em->getRepository('\Entities\UsrList');
 
-          $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['Core']->getAuthenticatedUser();
 
-          $list = $repository->findUserListByUserAndId($user, $list_id);
-          /* @var $list \Entities\UsrList */
+                $list = $repository->findUserListByUserAndId($user, $list_id);
+                /* @var $list \Entities\UsrList */
 
-          $entry_repository = $em->getRepository('\Entities\UsrListEntry');
+                $entry_repository = $em->getRepository('\Entities\UsrListEntry');
 
           $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
 
-          $em->remove($user_entry);
-          $em->flush();
+                $em->remove($user_entry);
+                $em->flush();
 
           $datas = array(
             'success' => true
@@ -432,11 +432,11 @@ class UsrLists implements ControllerProviderInterface
           );
         }
 
-        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-        return new Response($Json, 200, array('Content-Type' => 'application/json'));
-      }
-    );
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
+            }
+    )->assert('list_id', '\d+')->assert('entry_id', '\d+');
 
     /**
      * Adds a usr_id to a list
@@ -479,7 +479,7 @@ class UsrLists implements ControllerProviderInterface
             $inserted_usr_ids[] = $user_entry->get_id();
           }
 
-          $em->flush();
+                $em->flush();
 
           if (count($inserted_usr_ids) > 1)
           {
@@ -508,17 +508,17 @@ class UsrLists implements ControllerProviderInterface
         catch (\Exception $e)
         {
 
-          $datas = array(
-            'success' => false
-            , 'message' => _('Unable to add usr to list')
-          );
-        }
+                $datas = array(
+                    'success' => false
+                    , 'message' => _('Unable to add usr to list')
+                );
+              }
 
-        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-        return new Response($Json, 200, array('Content-Type' => 'application/json'));
-      }
-    );
+              return new Response($Json, 200, array('Content-Type' => 'application/json'));
+            }
+    )->assert('list_id', '\d+')->assert('usr_id', '\d+');
 
     /**
      * Share a list to a user with an optionnal role
