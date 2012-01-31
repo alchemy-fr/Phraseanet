@@ -113,7 +113,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-
+          
         }
 
         if ($request->getRequestFormat() == 'json')
