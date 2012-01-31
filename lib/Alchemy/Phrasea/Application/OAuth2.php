@@ -271,7 +271,7 @@ return call_user_func(function()
                   $route = "/applications/dev/new";
                   $app->get($route, function() use ($app)
                           {
-                            $var = array("violations" => null);
+                            $var = array("violations" => null, 'form' => null);
 
                             return $app['response']('api/auth/application_dev_new.twig', $var);
                           });

@@ -51,6 +51,7 @@ return call_user_func(function()
       $app->mount('/printer/', new Controller\Printer());
       $app->mount('/feeds', new Controller\Feed());
       $app->mount('/tooltip', new Controller\Tooltip());
+      $app->mount('/language', new Controller\Language());
       $app->mount('/', new Controller\Root());
 
       $app->error(function (\Exception $e, $code) use ($app)
