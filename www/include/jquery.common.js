@@ -439,6 +439,7 @@ function disconnected()
 function showModal(cas, options){
 	
 	var content = '';
+  var callback = null;
 	var button = {
 			"OK": function(e)
 			{
@@ -459,45 +460,15 @@ function showModal(cas, options){
 		case 'disconnected':
 			content = language.serverDisconnected;
 			escape=false;
-			button = {"OK":function(e){
-				self.location.replace(self.location.href);
-			}};
-			onClose = function(){
-				self.location.replace(self.location.href);
-			};
-			break;
-		case 'prompt':
-			content = "<input type='text' value='' id='" + options.id + "' />";
-			escape=false;
-			button = {
-				"OK":function(e){
-					(options.callback)();
-					hideOverlay(3);
-					$(this).dialog("close");
-				},
-				"Cancel":function(e){
-					hideOverlay(3);
-					$(this).dialog("close");
-				}
-			};
+      callback  = function(e){ self.location.replace(self.location.href)};
 			break;
     default:
       break;
 	}
 	
-	var buttons = {"OK": function(e){$(this).dialog('close');}};
-	
-	$('#DIALOG').empty().append(content).attr('title',options.title).dialog({
-		autoOpen:false,
-		buttons: button,
-		closeOnEscape :escape,
-		resizable:false,
-		draggable:false,
-		modal:true,
-		close:onClose
-	}).dialog('open').dialog('option','buttons',buttons);
+  p4.Alerts(options.title, content, callback);
+  
 	return;
-	
 }
 
 function showOverlay(n,appendto,callback, zIndex){
