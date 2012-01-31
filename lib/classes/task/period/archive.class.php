@@ -481,10 +481,7 @@ class task_period_archive extends task_abstract
                 $duration = time() - $duration;
                 if ($duration < ($period + $cold))
                 {
-                  $conn->close();
                   sleep(($period + $cold) - $duration);
-                  unset($conn);
-                  $conn = connection::getPDOConnection();
                 }
                 break;
               case 'MAXRECSDONE':

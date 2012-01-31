@@ -45,23 +45,7 @@ class task_Scheduler
 
   protected static function get_connection()
   {
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
-    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
-
-    $choosenConnexion = $configuration->getPhraseanet()->get('database');
-
-    $connexion = $configuration->getConnexion($choosenConnexion);
-
-    $hostname = $connexion->get('host');
-    $port = $connexion->get('port');
-    $user = $connexion->get('user');
-    $password = $connexion->get('password');
-    $dbname = $connexion->get('dbname');
-
-    return new connection_pdo('appbox', $hostname, $port, $user, $password, $dbname);
+    return \connection::getPDOConnection();
   }
 
   public function run(OutputInterface $output = null, $log_tasks = true)
@@ -532,18 +516,7 @@ class task_Scheduler
         }
       }
 
-      $to_reopen = false;
-      if ($conn->ping())
-      {
-        $conn->close();
-        unset($conn);
-        $to_reopen = true;
-      }
       sleep($sleeptime);
-      if ($to_reopen)
-      {
-        $conn = self::get_connection();
-      }
     }
 
     $sql = "UPDATE sitepreff SET schedstatus='stopped', schedpid='0'";

@@ -626,9 +626,7 @@ class task_period_outofdate extends task_abstract
               $duration = time() - $duration;
               if($duration < $period)
               {
-                $conn->close();
                 sleep($period - $duration);
-                unset($conn);
                 $conn = connection::getPDOConnection();
               }
               break;
