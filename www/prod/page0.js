@@ -1882,7 +1882,36 @@ function pushThis(sstt_id, lst)
     ssel:sstt_id
   };
 
-  $.post("/prod/push/"
+  $.post("/prod/push/sendform/"
+    , options
+    , function(data){
+      $('#DIALOG').removeClass('loading').empty().html(data);
+      return;
+    }
+  );
+
+}
+
+
+function feedbackThis(sstt_id, lst)
+{
+        $('#DIALOG').attr('title', 'Feedback')
+                  .empty().addClass('loading')
+                  .dialog({
+                    resizable:false,
+                    closeOnEscape:true,
+                    modal:true,
+                    width:'800',
+                    height:'500'
+                  })
+                  .dialog('open');
+
+  var options = {
+    lst:lst,
+    ssel:sstt_id
+  };
+
+  $.post("/prod/push/validateform/"
     , options
     , function(data){
       $('#DIALOG').removeClass('loading').empty().html(data);
@@ -2250,6 +2279,41 @@ function activeIcons()
     if(value !== '' || sstt_id !== '')
     {
       pushThis(sstt_id, value);
+    }
+    else
+    {
+      alert(language.nodocselected);
+    }
+  });
+
+
+  $('.TOOL_feedback_btn').live('click', function(){
+    var value="",type="",sstt_id="";
+    if($(this).hasClass('results_window'))
+    {
+      if(p4.Results.Selection.length() > 0)
+        value = p4.Results.Selection.serialize();
+    }
+    else
+    {
+      if($(this).hasClass('basket_window'))
+      {
+        if(p4.WorkZone.Selection.length() > 0)
+          value = p4.WorkZone.Selection.serialize();
+        else
+          sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+      }
+      else
+      {
+        if($(this).hasClass('basket_element'))
+        {
+          sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        }
+      }
+    }
+    if(value !== '' || sstt_id !== '')
+    {
+      feedbackThis(sstt_id, value);
     }
     else
     {
