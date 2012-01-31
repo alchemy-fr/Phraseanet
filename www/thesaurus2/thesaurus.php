@@ -52,7 +52,7 @@ User_Adapter::updateClientInfos(5);
 
     <link rel="shortcut icon" type="image/x-icon" href="/thesaurus2/favicon.ico">
     <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/minify/g=thesaurus"></script>
     <script type="text/javascript">
 
