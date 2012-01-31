@@ -113,7 +113,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         if ($request->getRequestFormat() == 'json')
@@ -183,7 +183,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         $Json = $app['Core']['Serializer']->serialize($datas, 'json');
@@ -217,7 +217,7 @@ class UsrLists implements ControllerProviderInterface
 
           $entries = new \Doctrine\Common\Collections\ArrayCollection();
           $owners  = new \Doctrine\Common\Collections\ArrayCollection();
-          
+
           foreach ($list->getOwners() as $owner)
           {
             $owners[] = array(
@@ -269,7 +269,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         if ($request->getRequestFormat() == 'json')
@@ -333,7 +333,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         $Json = $app['Core']['Serializer']->serialize($datas, 'json');

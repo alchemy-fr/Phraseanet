@@ -324,7 +324,7 @@ class Push implements ControllerProviderInterface
             }
             catch (\Exception_NotFound $e)
             {
-              
+
             }
 
             $Participant = new \Entities\ValidationParticipant();
@@ -439,7 +439,7 @@ class Push implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         if (!$user instanceof \User_Adapter)
