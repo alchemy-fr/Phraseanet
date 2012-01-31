@@ -56,7 +56,7 @@ class Edit extends RecordHelper
    *
    * @var Array
    */
-  protected $javascript_elements;
+  protected $javascript_elements = array();
 
   /**
    *
