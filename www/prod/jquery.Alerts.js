@@ -12,21 +12,24 @@ var p4 = p4 || {};
     return $('#p4_alerts');
   }
   
-  function alert(title, message)
+  function alert(title, message, callback)
   {
     var dialog = create_dialog();
     
     var button = new Object();
     
-    button[language.annuler] = function(){
-      dialog.dialog('close');
+    button['Ok'] = function(){
+      if(typeof callback === 'function')
+        callback();
+      else
+        dialog.dialog('close');
     };
 
-    dialog.attr('title',title)
+    dialog.dialog('destroy').attr('title',title)
     .empty()
     .append(message)
     .dialog({
-
+      
       autoOpen:false,
       closeOnEscape:true,
       resizable:false,
@@ -39,6 +42,15 @@ var p4 = p4 || {};
         opacity: 0.7
       }
     }).dialog('open');
+    
+    if(typeof callback === 'function')
+    {
+      dialog.bind( "dialogclose", function(event, ui) {callback();});
+    }
+    else
+    {
+
+    }
     
     return;
   }
