@@ -1280,6 +1280,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     if ($this->_prefs)
 
       return $this;
+    
+    $registry = \registry::get_instance();
+    
     $sql = 'SELECT prop, value FROM usr_settings WHERE usr_id= :id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':id' => $this->id));
@@ -1295,6 +1298,11 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
       if (!isset($this->_prefs[$k]))
       {
+        if($k == 'start_page_query' && $registry->get('GV_defaultQuery'))
+        {
+          $v = $registry->get('GV_defaultQuery');
+        }
+        
         $this->_prefs[$k] = $v;
         $this->update_pref($k, $v);
       }

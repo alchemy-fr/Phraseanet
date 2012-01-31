@@ -159,9 +159,21 @@ class databox_status
     $statuses = array();
 
     $sbas_ids = $user->ACL()->get_granted_sbas();
+    
+    $see_all = array();
 
     foreach ($sbas_ids as $databox)
     {
+      $see_all[$databox->get_sbas_id()] = false;
+      
+      foreach($databox->get_collections() as $collection)
+      {
+        if($user->ACL()->has_right_on_base($collection->get_base_id(), 'chgstatus'))
+        {
+          $see_all[$databox->get_sbas_id()] = true;
+          break;
+        }
+      }
       try
       {
         $statuses[$databox->get_sbas_id()] = $databox->get_statusbits();
@@ -177,15 +189,15 @@ class databox_status
     foreach ($statuses as $sbas_id => $status)
     {
 
-      $see_all = false;
+      $see_this = isset($see_all[$sbas_id]) ? $see_all[$sbas_id] : false;
 
       if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct'))
-        $see_all = true;
-
+        $see_this = true;
+      
       foreach ($status as $bit => $props)
       {
 
-        if ($props['searchable'] == 0 && !$see_all)
+        if ($props['searchable'] == 0 && !$see_this)
           continue;
 
         $set = false;

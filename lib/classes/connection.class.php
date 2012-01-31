@@ -188,8 +188,10 @@ class connection
   public static function close_PDO_connection($name)
   {
     if (isset(self::$_PDO_instance[$name]))
+    {
+      self::$_PDO_instance[$name] = null;
       unset(self::$_PDO_instance[$name]);
-
+    }
     return;
   }
 
