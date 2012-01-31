@@ -102,7 +102,7 @@ if ($cssfile)
   }
 ?>
   </head>
-  <body style="overflow:hidden;">
+  <body class="PNB" style="overflow:hidden;">
     <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
 <?php
