@@ -1,0 +1,70 @@
+<div class="PNB10">
+  <div class="PNB" style="height:120px;bottom:auto;">
+    <table>
+      <tr>
+        <td>
+          <form method="POST" action="/prod/lists/list/{{ id }}/update/">
+            <label>{% trans 'List Name' %}</label>
+            <input name="name" value="{{ name }}"/>
+          </form>
+        </td>
+        <td>
+          <a href="/prod/lists/list/share" class="list_sharer">
+            <img src="/skins/prod/Push/list-icon.png" />
+            {% trans "Set sharing permission" %}
+          </a>
+        </td>
+      </tr>
+    </table>
+    <input name="list-add-user" />
+    <a href="/prod/push/add-user/" class="user_adder">{% trans 'Add user' %}</a>
+  </div>
+  <div class="PNB" style="top:120px;">
+    <div class="PNB content user_content">
+      <p>
+        {% set length = '<span class="counter current">' ~ users.count() ~ '</span>' %}
+        {% trans %}
+          {{ length }} peoples
+        {% endtrans %}
+      </p>
+      <div class="badges">
+        {% for entry in users %}
+          <div class="badge badge_{{ entry.usr_id }}">
+            <input name="id" value="{{ entry.usr_id }}" type="hidden" />
+            <table>
+              <tr>
+                <td class="icon">
+                  <img src="/skins/icons/user.png"/>
+                </td>
+                <td class="infos">
+                  <div style="margin:5px 10px 5px;">
+                    <table>
+                      <tr>
+                        <td colspan="3">
+                          <span class="name">{{ entry.display_name }}</span>
+                          <a href="#" class="deleter">
+                            <img src="/skins/prod/Push/close_badge.png"/>
+                          </a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">
+                          <span class="subtite">{{ entry.company }}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    p4.ListManager.workOn({{ id }});
+  });
+</script>

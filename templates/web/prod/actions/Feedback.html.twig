@@ -1,0 +1,92 @@
+<div class="PNB PushBox" id="PushBox" style="display:none;">
+  <div class="PNB" style="width:205px;">
+    <div class="PNB10">
+      <div class="PNB" style="height:80px;bottom:auto;text-align:center;">
+        <img src="/skins/prod/Push/feedback_logo.png"/>
+      </div>
+      <div class="PNB content" style="top:100px;height:240px;bottom:auto;">
+        <div class="PNB10">
+          {% trans 'Set selected users to' %}
+
+          <ul class="general_togglers">
+            <li>
+              <a class="general_toggler" feature="agree" href="#">
+                <img src="/skins/prod/Push/contributeur_menu.png" />
+                {% trans 'Contributor' %}
+              </a>
+            </li>
+            <li>
+              <a class="general_toggler" feature="see_others" href="#">
+                <img src="/skins/prod/Push/see_other_menu.png" />
+                {% trans 'See others' %}
+              </a>
+            </li>
+            <li>
+              <a class="general_toggler" feature="HD" href="#">
+                <img src="/skins/prod/Push/download_menu.png" />
+                {% trans 'HD Download' %}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="PNB" style="left:205px;">
+    <div class="PNB" style="height:75px;bottom:auto;">
+      <div class="PNB10">
+
+        <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" />
+
+        <a href="/prod/push/add-user/" class="user_adder">{% trans 'Add user' %}</a>
+
+      </div>
+    </div>
+    <div class="PNB" style="top:75px;bottom:75px;">
+      <div class="PNB10 content user_content">
+        <div class="PNB10 header">
+          <table>
+            <tr>
+              <td>
+                <form class="list_saver">
+                  <input name="name" placeholder="{% trans 'Save this list' %}"/>
+                  <button>
+                    <img src="/skins/prod/Push/save_list_as.png" />
+                  </button>
+                </form>
+              </td>
+              <td class="options">
+                <button>{% trans 'Select all' %}</button>
+                <button>{% trans 'Deselect all' %}</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="PNB badges">
+        </div>
+      </div>
+    </div>
+    <div class="PNB" style="height:75px;top:auto;">
+      <div class="PNB10">
+
+      </div>
+    </div>
+  </div>
+</div>
+<div id="ListManager" class="PNB PushBox">
+  <div class="PNB" style="width:320px;right:auto;">
+    <div class="PNB10 content all-lists">
+      {% include 'prod/actions/Feedback/lists-all.html.twig' %}
+    </div>
+  </div>
+  <div class="editor PNB" style="left:320px;">
+  </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    p4.Feedback = new Feedback($('#PushBox'));
+    p4.ListManager = new ListManager($('#ListManager'));
+
+  });
+</script>
