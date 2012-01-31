@@ -16,7 +16,8 @@ use Silex\Application,
     Silex\ControllerCollection;
 use Alchemy\Phrasea\Helper\Record as RecordHelper,
     Alchemy\Phrasea\Controller\Exception as ControllerException;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response,
+    Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -27,11 +28,56 @@ use Symfony\Component\HttpFoundation\Response;
 class Push implements ControllerProviderInterface
 {
 
+  protected function getUserFormatter()
+  {
+    return function(\User_Adapter $user)
+      {
+        return array(
+          'type'         => 'USER'
+          , 'usr_id'       => $user->get_id()
+          , 'firstname'    => $user->get_firstname()
+          , 'lastname'     => $user->get_lastname()
+          , 'email'        => $user->get_email()
+          , 'display_name' => $user->get_display_name()
+        );
+      };
+  }
+
+  protected function getListFormatter()
+  {
+    $userFormatter = $this->getUserFormatter();
+
+    return function(\Entities\UsrList $List) use ($userFormatter)
+      {
+        $entries = array();
+
+        foreach ($List->getEntries() as $entry)
+        {
+          /* @var $entry \Entities\UsrListEntry */
+          $entries[] = array(
+            'Id'   => $entry->getId(),
+            'User' => $userFormatter($entry->getUser())
+          );
+        }
+
+        return array(
+          'type'    => 'LIST'
+          , 'list_id' => $List->getId()
+          , 'name'    => $List->getName()
+          , 'entries' => $entries
+        );
+      };
+  }
+
   public function connect(Application $app)
   {
     $controllers = new ControllerCollection();
 
-    $controllers->post('/', function(Application $app)
+    $userFormatter = $this->getUserFormatter();
+
+    $listFormatter = $this->getListFormatter();
+
+    $controllers->post('/sendform/', function(Application $app)
       {
         $push = new RecordHelper\Push($app['Core'], $app['request']);
 
@@ -41,6 +87,27 @@ class Push implements ControllerProviderInterface
         $twig = $app['Core']->getTwig();
 
         return new Response($twig->render($template, array('push'    => $push, 'message' => '')));
+      }
+    );
+    $controllers->post('/validateform/', function(Application $app)
+      {
+        $push = new RecordHelper\Push($app['Core'], $app['request']);
+
+        $em         = $app['Core']->getEntityManager();
+        $repository = $em->getRepository('\Entities\UsrList');
+
+        $params = array(
+          'push'    => $push,
+          'message' => '',
+          'lists'   => $repository->findUserLists($app['Core']->getAuthenticatedUser())
+        );
+
+        $template = 'prod/actions/Feedback.html.twig';
+
+        /* @var $twig \Twig_Environment */
+        $twig = $app['Core']->getTwig();
+
+        return new Response($twig->render($template, $params));
       }
     );
     $controllers->post('/send/', function(Application $app)
@@ -257,7 +324,7 @@ class Push implements ControllerProviderInterface
             }
             catch (\Exception_NotFound $e)
             {
-
+              
             }
 
             $Participant = new \Entities\ValidationParticipant();
@@ -329,7 +396,92 @@ class Push implements ControllerProviderInterface
       }
     );
 
-    $controllers->get('/search-user/', function(Application $app)
+    $controllers->post('/add-user/', function(Application $app, Request $request) use ($userFormatter)
+      {
+        $result = array('success' => false, 'message' => '', 'user'    => null);
+
+        $Serializer = $app['Core']['Serializer'];
+
+        try
+        {
+          if (!$request->get('firstname'))
+            throw new ControllerException(_('First name is required'));
+
+          if (!$request->get('lastname'))
+            throw new ControllerException(_('Last name is required'));
+
+          if (!$request->get('email'))
+            throw new ControllerException(_('Email is required'));
+
+          if (!\mail::validateEmail($request->get('email')))
+            throw new ControllerException(_('Email is invalid'));
+        }
+        catch (ControllerException $e)
+        {
+          $result['message'] = $e->getMessage();
+
+          return new Response($Serializer->serialize($result, 'json'), 200, array('Content-Type' => 'application/json'));
+        }
+
+        $appbox = \appbox::get_instance();
+
+        $user  = null;
+        $email = $request->get('email');
+
+        try
+        {
+          $usr_id = \User_Adapter::get_usr_id_from_email($email);
+          $user   = \User_Adapter::getInstance($usr_id, $appbox);
+
+          $result['message'] = _('User already exists');
+          $result['success'] = true;
+          $result['user']    = $userFormatter($user);
+        }
+        catch (\Exception $e)
+        {
+          
+        }
+
+        if (!$user instanceof \User_Adapter)
+        {
+          try
+          {
+            $password = \random::generatePassword();
+
+            $user = \User_Adapter::create($appbox, $email, $password, $email, false);
+
+            $user->set_firstname($request->get('firstname'))
+              ->set_lastname($request->get('lastname'));
+
+            if ($request->get('company'))
+              $user->set_company($request->get('company'));
+            if ($request->get('job'))
+              $user->set_company($request->get('job'));
+            if ($request->get('form_geonameid'))
+              $user->set_geonameid($request->get('form_geonameid'));
+
+            $result['message'] = _('User successfully created');
+            $result['success'] = true;
+            $result['user']    = $userFormatter($user);
+          }
+          catch (\Exception $e)
+          {
+            $result['message'] = _('Error while creating user');
+          }
+        }
+
+
+        return new Response($Serializer->serialize($result, 'json'), 200, array('Content-Type' => 'application/json'));
+      });
+
+    $controllers->get('/add-user/', function(Application $app, Request $request)
+      {
+        $params = array('callback' => $request->get('callback'));
+
+        return new Response($app['Core']['Twig']->render('prod/User/Add.html.twig', $params));
+      });
+
+    $controllers->get('/search-user/', function(Application $app) use ($userFormatter, $listFormatter)
       {
         $request = $app['request'];
         $em      = $app['Core']->getEntityManager();
@@ -358,11 +510,7 @@ class Push implements ControllerProviderInterface
         {
           foreach ($lists as $list)
           {
-            $datas[] = array(
-              'type'     => 'LIST'
-              , 'name'     => $list->getName()
-              , 'quantity' => $list->getUsers()->count()
-            );
+            $datas[] = $listFormatter($list);
           }
         }
 
@@ -370,14 +518,7 @@ class Push implements ControllerProviderInterface
         {
           foreach ($result as $user)
           {
-            $datas[] = array(
-              'type'         => 'USER'
-              , 'usr_id'       => $user->get_id()
-              , 'firstname'    => $user->get_firstname()
-              , 'lastname'     => $user->get_lastname()
-              , 'email'        => $user->get_email()
-              , 'display_name' => $user->get_display_name()
-            );
+            $datas[] = $userFormatter($user);
           }
         }
 
