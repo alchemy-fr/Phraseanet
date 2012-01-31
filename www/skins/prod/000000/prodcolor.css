@@ -269,7 +269,7 @@ span.ww_winTitle{
 }
 .ui-state-active .ui-icon
 {
-  background-image: url("/include/jslibs/jquery-ui-1.8.12/css/dark-hive/images/ui-icons_cccccc_256x240.png");
+  background-image: url("/include/jslibs/jquery-ui-1.8.17/css/dark-hive/images/ui-icons_cccccc_256x240.png");
 }
 #baskets .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
   color:#FFFFFF; 
@@ -887,6 +887,13 @@ div.diapo
 
 #EDIT_query{
   border:2px solid #111111;
+  padding:4px;
+  padding-left:30px;
+  background-position: 6px center;
+  border-radius:5px;
+  font-size:16px;
+  width:370px;
+  height:22px;
 }
 
 /* QRY */
@@ -1186,9 +1193,17 @@ input.input-button.hover
 {
 	color:#FEFEFE;
 }
-	
+
+input.search{
+  padding-left: 25px;
+  background-image: url(/skins/icons/SEARCH.png);
+  background-repeat: no-repeat;
+  background-position: 3px center;
+}
+
 input,select,textarea{
 	margin:2px;
+	padding:2px;
 	border:1px solid #b1b1b1;
 	background:white;
 }
