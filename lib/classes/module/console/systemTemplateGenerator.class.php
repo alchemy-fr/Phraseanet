@@ -80,6 +80,7 @@ class module_console_systemTemplateGenerator extends Command
     $twig->addFilter('key_exists', new Twig_Filter_Function('array_key_exists'));
     $twig->addFilter('array_keys', new Twig_Filter_Function('array_keys'));
     $twig->addFilter('round', new Twig_Filter_Function('round'));
+    $twig->addFilter('get_class', new Twig_Filter_Function('get_class'));
     $twig->addFilter('formatdate', new Twig_Filter_Function('phraseadate::getDate'));
     $twig->addFilter('getPrettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
     $twig->addFilter('prettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
