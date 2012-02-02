@@ -1,4 +1,4 @@
-<div class="PNB PushBox" id="PushBox" style="display:none;">
+<div class="PNB PushBox" id="PushBox" >
   <div class="PNB" style="width:205px;">
     <div class="PNB10">
       <div class="PNB" style="height:80px;bottom:auto;text-align:center;">
@@ -55,6 +55,9 @@
                   </button>
                 </form>
               </td>
+              <td>
+                <a href="#" class="list_manager">{% trans 'List Manager' %}</a>
+              </td>
               <td class="options">
                 <button>{% trans 'Select all' %}</button>
                 <button>{% trans 'Deselect all' %}</button>
@@ -73,13 +76,25 @@
     </div>
   </div>
 </div>
-<div id="ListManager" class="PNB PushBox">
+<div id="ListManager" class="PNB PushBox" style="display:none;">
   <div class="PNB" style="width:320px;right:auto;">
     <div class="PNB10 content all-lists">
       {% include 'prod/actions/Feedback/lists-all.html.twig' %}
     </div>
   </div>
   <div class="editor PNB" style="left:320px;">
+    <div class="welcome">
+      <h1>{% trans 'Welcome to the ListManager !' %}</h1>
+      {% if lists|length == 0 %}
+      <p class="welcome">
+        {% trans 'Start by creating one by using the "add" button on the left !' %}
+      </p>
+      {% else %}
+      <p class="welcome">
+        {% trans 'Select a list on the left and edit it !' %}
+      </p>
+      {% endif %}
+    </div>
   </div>
 </div>
 <script type="text/javascript">
