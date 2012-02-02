@@ -79,6 +79,55 @@
   padding:3px 0;
 }
 
+.PushBox .welcome{
+  text-align: center;
+  font-size: 16px;
+  line-height: 18px;
+  margin : 20px 0;
+}
+.PushBox .welcome h1{
+  font-weight: bold;
+  margin:40px 0;
+}
+
+#list-editor-search-results{
+  
+}
+
+#list-editor-search-results td{
+  padding:1px 0;
+  overflow:hidden;
+}
+#list-editor-search-results tr{
+  line-height: 24px;
+  vertical-align: middle;
+  cursor:pointer;
+}
+#list-editor-search-results tr.odd{
+  background-color: #515151;
+}
+#list-editor-search-results tr.selected{
+  background-color:#D18827;
+}
+
+
+#list-editor-search-results th.sortable span{
+  margin:0 5px;
+}
+#list-editor-search-results th.sortable{
+  cursor:pointer;
+}
+#list-editor-search-results th.sortable.hover,
+#list-editor-search-results th.sortable.sorted{
+  background-color:#F0AD30;
+}
+#list-editor-search-results th.sortable span.ord_notifier{
+  display:none;
+}
+#list-editor-search-results th.sortable.sorted span.ord_notifier{
+  display:inline;
+}
+
 
 
 .ui-autocomplete.ui-state-hover, 
