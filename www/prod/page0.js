@@ -1869,8 +1869,8 @@ function pushThis(sstt_id, lst)
                     resizable:false,
                     closeOnEscape:true,
                     modal:true,
-                    width:'800',
-                    height:'500'
+                    width:(bodySize.x-50),
+                    height:(bodySize.y-50)
                   })
                   .dialog('open');
 
@@ -1898,8 +1898,8 @@ function feedbackThis(sstt_id, lst)
                     resizable:false,
                     closeOnEscape:true,
                     modal:true,
-                    width:'800',
-                    height:'500'
+                    width:(bodySize.x-50),
+                    height:(bodySize.y-50)
                   })
                   .dialog('open');
 
