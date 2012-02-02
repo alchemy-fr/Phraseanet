@@ -21,7 +21,7 @@
   </div>
   <form name="list-editor-search" method="POST" action="/prod/push/edit-list/{{ list.getId() }}/">
     <div class="PNB" style="top:40px;height:40px;bottom:auto;">
-      
+
       <select name="like_field">
         <option value="usr_login">
           {% trans 'Push::filter on login' %}
@@ -48,9 +48,9 @@
       <button type="submit">
         {% trans 'boutton::chercher' %}
       </button>
-      
-      
-      
+
+
+
     </div>
     <div class="PNB" style="top:80px;height:120px;bottom:auto;">
       <table style="table-layout:fixed;">
@@ -113,7 +113,7 @@
         </tr>
       </table>
     </div>
-      
+
     <input type="hidden" name="page" value="" />
     <input type="hidden" name="srt" value="{{ sort }}" />
     <input type="hidden" name="ord" value="{{ ord }}" />

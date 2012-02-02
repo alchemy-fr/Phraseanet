@@ -53,7 +53,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(200, $response->getStatusCode());
     $this->assertEquals('UTF-8', $response->getCharset());
   }
-  
+
   public function testRoutePOSTValidateSlash()
   {
     $route = '/push/validateform/';

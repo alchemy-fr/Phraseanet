@@ -829,12 +829,14 @@ class task_period_archive extends task_abstract
         {
           $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
           if($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+
             return;
           elseif($magicmethod == 'UNLOCK' && !file_exists($path . '/' . $magicfile))
+
             return;
         }
       }
-      
+
       while(($file = $listFolder->read()) !== NULL)
       {
         if ($this->isIgnoredFile($file))

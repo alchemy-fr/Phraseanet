@@ -83,10 +83,10 @@
       </tbody>
   </table>
   <script>
-  
+
   $(document).ready(function(){
     var $editor = $('#list-editor-search-results');
-    
+
     $('th.sortable', $editor).bind('click', function(){
 
       var $this = $(this);
@@ -95,7 +95,7 @@
 
       var $form = $this.closest('.editor').find('form[name="list-editor-search"]');
 
-      if((sort == $('input[name="srt"]', $form).val()) 
+      if((sort == $('input[name="srt"]', $form).val())
         && ($('input[name="ord"]', $form).val() == 'asc'))
       {
         var ord = 'desc';
@@ -112,19 +112,19 @@
     })
     .bind('mouseover', function(){$(this).addClass('hover');})
     .bind('mouseout', function(){$(this).removeClass('hover');});
-    
+
     $('tbody tr', $editor).bind('click', function(){
-      
+
       var $this = $(this);
       var usr_id = $('input[name="usr_id"]', $this).val();
-      
+
       var counters = $('#ListManager .counter.current, #ListManager .lists .list.selected .counter');
-      
+
       if($this.hasClass('selected'))
       {
         $this.removeClass('selected');
         p4.ListManager.getList().removeUser(usr_id);
-        
+
         counters.each(function(i,el){
           var n = parseInt($(el).text());
           $(el).text(n - 1);
@@ -134,13 +134,13 @@
       {
         $this.addClass('selected');
         p4.ListManager.getList().addUser(usr_id);
-        
+
         counters.each(function(i,el){
           var n = parseInt($(el).text());
           $(el).text(n + 1);
         });
       }
-      
+
     });
   });
   </script>

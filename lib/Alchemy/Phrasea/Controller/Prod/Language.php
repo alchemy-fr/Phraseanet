@@ -92,7 +92,7 @@ class Language implements ControllerProviderInterface
               $out['FeedBackName'] = _('Name');
               $out['FeedBackMessage'] = _('Message');
               $out['FeedBackNoUsersSelected'] = _('No users selected');
-              
+
               $Serializer = $app['Core']['Serializer'];
 
               return new Response(

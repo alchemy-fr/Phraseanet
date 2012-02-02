@@ -334,7 +334,7 @@ class Push implements ControllerProviderInterface
             }
             catch (\Exception_NotFound $e)
             {
-              
+
             }
 
             $Participant = new \Entities\ValidationParticipant();
@@ -507,7 +507,7 @@ class Push implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         if (!$user instanceof \User_Adapter)
@@ -638,10 +638,10 @@ class Push implements ControllerProviderInterface
         {
           $query->havePositions($request->get('Position'));
         }
-        
+
         $sort  = $request->get('srt', 'usr_creationdate');
         $ord  = $request->get('ord', 'desc');
-        
+
         $query->sort_by($sort, $ord);
 
         $results = $query->include_phantoms()

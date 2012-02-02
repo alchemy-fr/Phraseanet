@@ -113,7 +113,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         if ($request->getRequestFormat() == 'json')
@@ -183,7 +183,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         $Json = $app['Core']['Serializer']->serialize($datas, 'json');
@@ -298,7 +298,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-          
+
         }
 
         $Json = $app['Core']['Serializer']->serialize($datas, 'json');

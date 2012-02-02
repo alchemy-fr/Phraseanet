@@ -542,6 +542,7 @@ class User_Query implements User_QueryInterface
   public function get_total()
   {
     if ($this->total)
+
       return $this->total;
 
     $conn = $this->appbox->get_connection();
@@ -702,6 +703,7 @@ class User_Query implements User_QueryInterface
   public function on_base_ids(Array $base_ids = null)
   {
     if (!$base_ids)
+
       return $this;
 
     $this->bases_restrictions = true;
@@ -726,6 +728,7 @@ class User_Query implements User_QueryInterface
   public function on_sbas_ids(Array $sbas_ids = null)
   {
     if (!$sbas_ids)
+
       return $this;
 
     $this->sbas_restrictions = true;
