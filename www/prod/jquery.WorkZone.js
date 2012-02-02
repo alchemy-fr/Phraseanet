@@ -32,10 +32,10 @@ var p4 = p4 || {};
         $(".SSTT",cache).droppable('destroy');
 
         $('.bloc',cache).droppable('destroy');
-        cache.accordion('destroy')
 
-        .empty()
-        .append(data);
+        cache.accordion('destroy')
+          .empty()
+          .append(data);
 
         activeBaskets();
         $('.basketTips').tooltip({

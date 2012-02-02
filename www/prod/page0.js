@@ -2777,6 +2777,34 @@ function doDelete(lst)
   });
 }
 
+function archiveBasket(basket_id)
+{
+  $.ajax({
+    type: "POST",
+    url: "/prod/baskets/" + basket_id + "/archive/?archive=1",
+    dataType:'json',
+    beforeSend:function(){
+
+    },
+    success: function(data){
+      if(data.success)
+      {
+        $('#SSTT_'+basket_id).next().slideUp().droppable('destroy').remove();
+        $('#SSTT_'+basket_id).slideUp().droppable('destroy').remove();
+
+        if($('#baskets .SSTT').length == 0)
+          return p4.WorkZone.refresh(false);
+      }
+      else
+      {
+        alert(data.message);
+      }
+      return;
+    }
+  });
+}
+
+
 function deleteBasket(item)
 {
   $('#DIALOG').dialog("destroy");
