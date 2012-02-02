@@ -82,7 +82,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $params = array(
         'lst' => implode(';', $records)
-        , 'receivers' => $receivers
+        , 'participants' => $receivers
     );
 
     $this->client->request('POST', $route, $params);
