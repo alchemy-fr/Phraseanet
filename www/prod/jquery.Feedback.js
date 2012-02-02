@@ -14,6 +14,12 @@
     
     var $this = this;
     
+    $('.content .options .select-all', this.container).bind('click', function(){
+      $this.selection.selectAll();
+    });
+    $('.content .options .unselect-all', this.container).bind('click', function(){
+      $this.selection.empty();
+    });
     
     /* disable push closeonescape as an over dialog may exist (add user) */
     this.container.closest('.ui-dialog-content').dialog( "option", "closeOnEscape", false );
