@@ -1014,7 +1014,7 @@ $(document).ready(function(){
       });
     };
     buttons[language.fermer] = function() {
-      $('#DIALOG').dialog('close');
+      $('#DIALOG').empty().dialog('destroy');
     };
     
     event.stopPropagation();
@@ -1029,7 +1029,7 @@ $(document).ready(function(){
       success : function(data){
         if(data.texte !== false && data.titre !== false)
         {
-          $("#DIALOG").attr('title',data.titre)
+          $("#DIALOG").dialog('destroy').attr('title',data.titre)
           .empty()
           .append(data.texte)
           .dialog({
@@ -1789,7 +1789,7 @@ function deleteThis(lst)
         };
 
 
-        $("#DIALOG").attr('title',language.deleteTitle)
+        $("#DIALOG").dialog('destroy').attr('title',language.deleteTitle)
         .empty()
         .append(texte)
         .dialog({
@@ -1863,7 +1863,7 @@ function chgStatusThis(url)
 
 function pushThis(sstt_id, lst)
 {
-        $('#DIALOG').attr('title', 'Push')
+        $('#DIALOG').dialog('destroy').attr('title', 'Push')
                   .empty().addClass('loading')
                   .dialog({
                     resizable:false,
@@ -1892,7 +1892,7 @@ function pushThis(sstt_id, lst)
 
 function feedbackThis(sstt_id, lst)
 {
-        $('#DIALOG').attr('title', 'Feedback')
+        $('#DIALOG').dialog('destroy').attr('title', 'Feedback')
                   .empty().addClass('loading')
                   .dialog({
                     resizable:false,
@@ -2490,7 +2490,7 @@ function printThis(value)
 {
   
   
-      $('#DIALOG').attr('title', 'Print')
+      $('#DIALOG').dialog('destroy').attr('title', 'Print')
                   .empty().addClass('loading')
                   .dialog({
                     resizable:false,
@@ -2779,7 +2779,7 @@ function doDelete(lst)
 
 function deleteBasket(item)
 {
-  $('#DIALOG').dialog("close");
+  $('#DIALOG').dialog("destroy");
   k = $(item).attr('id').split('_').slice(1,2).pop();	// id de chutier
   $.ajax({
     type: "POST",

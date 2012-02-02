@@ -7,7 +7,7 @@
       var $this = $(this);
       
       
-      $('#DIALOG').attr('title', $this.attr('title'))
+      $('#DIALOG').dialog('destroy').attr('title', $this.attr('title'))
                   .empty().addClass('loading')
                   .dialog({
                     buttons:{},
