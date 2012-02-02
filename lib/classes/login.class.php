@@ -31,16 +31,13 @@ class login
 
   public function get_language_selector(registryInterface $registry)
   {
-    $lngSelect = '<select name="lng" id="lng-select" onchange="setLanguage();">';
-    $currentLanguage = $registry->get('GV_default_lng');
-    $avLanguages = User_Adapter::detectlanguage($registry);
-    foreach ($avLanguages as $lng => $languages)
-      foreach ($languages as $locale => $language)
-      {
-        if ($language['selected'] === true)
-          $currentLanguage = $locale;
-        $lngSelect .= '<option value="' . $locale . '" ' . ($language['selected'] === true ? 'selected' : '') . '>' . $language['name'] . '</option>';
-      }
+    $lngSelect       = '<select name="lng" id="lng-select" onchange="setLanguage();">';
+    
+    foreach (\Alchemy\Phrasea\Core::getAvailableLanguages() as $code => $language)
+    {
+      $lngSelect .= '<option value="' . $code . '" ' . ($code == \Session_Handler::get_locale() ? 'selected' : '') . '>' . $language . '</option>';
+    }
+    
     $lngSelect .= '</select>';
 
     return $lngSelect;
