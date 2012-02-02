@@ -267,8 +267,6 @@ abstract class base implements cache_cacheableInterface
 
   protected function upgradeDb($apply_patches, Setup_Upgrade &$upgrader)
   {
-    require_once __DIR__ . '/../version.inc';
-
     $recommends = array();
 
     $allTables = array();
