@@ -29,25 +29,6 @@ class login
     return false;
   }
 
-  public function get_language_selector(registryInterface $registry)
-  {
-    $lngSelect       = '<select name="lng" id="lng-select" onchange="setLanguage();">';
-    
-    foreach (\Alchemy\Phrasea\Core::getAvailableLanguages() as $code => $language)
-    {
-      $lngSelect .= '<option value="' . $code . '" ' . ($code == \Session_Handler::get_locale() ? 'selected' : '') . '>' . $language . '</option>';
-    }
-    
-    $lngSelect .= '</select>';
-
-    return $lngSelect;
-  }
-
-  public function get_password_link()
-  {
-    return '<a target="_self" class="link" rel="external" href="/login/forgotpwd.php">' . _('login:: Forgot your password') . '</a>';
-  }
-
   public function get_register_link()
   {
     $demandLinkBox = '';
