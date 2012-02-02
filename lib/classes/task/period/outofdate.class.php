@@ -291,7 +291,6 @@ class task_period_outofdate extends task_abstract
           , async:false
           , success:function(data)
           {
-            //              console.log(data);
             var html = "<option value=\"\">...</option>";
             for(i in data.date_fields)
               html += "\n<option class=\"jsFilled\" value=\"" + data.date_fields[i] + "\">" + data.date_fields[i] + "</option>";

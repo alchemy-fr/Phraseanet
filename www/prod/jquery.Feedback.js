@@ -153,7 +153,6 @@
     });
     
     $('.general_togglers .general_toggler', this.container).bind('click', function(){
-      console.log('togglers');
       var feature = $(this).attr('feature');
       
       var $badges = $('.user_content .badge.selected', this.container);
