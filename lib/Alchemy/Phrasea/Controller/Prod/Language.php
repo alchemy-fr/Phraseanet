@@ -89,9 +89,10 @@ class Language implements ControllerProviderInterface
               $out['sureToRemoveList'] = _('Are you sure you want to delete this list ?');
               $out['newListName'] = _('New list name ?');
               $out['listNameCannotBeEmpty'] = _('List name can not be empty');
-
-
-
+              $out['FeedBackName'] = _('Name');
+              $out['FeedBackMessage'] = _('Message');
+              $out['FeedBackNoUsersSelected'] = _('No users selected');
+              
               $Serializer = $app['Core']['Serializer'];
 
               return new Response(

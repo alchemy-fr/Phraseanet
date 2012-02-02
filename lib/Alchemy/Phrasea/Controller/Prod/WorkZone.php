@@ -36,232 +36,232 @@ class WorkZone implements ControllerProviderInterface
     $controllers = new ControllerCollection();
 
     $controllers->get('/', function(Application $app)
-            {
-              $params = array(
-                  'WorkZone' => new Helper\WorkZone($app['Core'], $app['request'])
-                  , 'selected_type' => $app['request']->get('type')
-                  , 'selected_id' => $app['request']->get('id')
-                  , 'srt' => $app['request']->get('sort')
-              );
+      {
+        $params = array(
+          'WorkZone'      => new Helper\WorkZone($app['Core'], $app['request'])
+          , 'selected_type' => $app['request']->get('type')
+          , 'selected_id'   => $app['request']->get('id')
+          , 'srt'           => $app['request']->get('sort')
+        );
 
 
-              return new Response($app['Core']->getTwig()->render('prod/WorkZone/WorkZone.html.twig', $params));
-            });
+        return new Response($app['Core']->getTwig()->render('prod/WorkZone/WorkZone.html.twig', $params));
+      });
 
     $controllers->get('/Browse/', function(Application $app)
-            {
-              $date_obj = new \DateTime();
+      {
+        $date_obj = new \DateTime();
 
-              $params = array(
-                  'CurrentYear' => $date_obj->format('Y')
-              );
+        $params = array(
+          'CurrentYear' => $date_obj->format('Y')
+        );
 
-              return new Response(
-                              $app['Core']->getTwig()->render('prod/WorkZone/Browser/Browser.html.twig'
-                                      , $params
-                              )
-              );
-            });
+        return new Response(
+            $app['Core']->getTwig()->render('prod/WorkZone/Browser/Browser.html.twig'
+              , $params
+            )
+        );
+      });
 
     $controllers->get('/Browse/Search/', function(Application $app)
-            {
+      {
 
-              $user = $app['Core']->getAuthenticatedUser();
+        $user = $app['Core']->getAuthenticatedUser();
 
-              $request = $app['request'];
+        $request = $app['request'];
 
-              $em = $app['Core']->getEntityManager();
-              /* @var $em \Doctrine\ORM\EntityManager */
+        $em = $app['Core']->getEntityManager();
+        /* @var $em \Doctrine\ORM\EntityManager */
 
-              $BasketRepo = $em->getRepository('\Entities\Basket');
+        $BasketRepo = $em->getRepository('\Entities\Basket');
 
-              $Page = (int) $request->get('Page', 0);
+        $Page = (int) $request->get('Page', 0);
 
-              $PerPage = 10;
-              $offsetStart = max(($Page - 1) * $PerPage, 0);
-
-
-              $Baskets = $BasketRepo->findWorkzoneBasket(
-                      $user
-                      , $request->get('Query')
-                      , $request->get('Year')
-                      , $request->get('Type')
-                      , $offsetStart
-                      , $PerPage
-              );
-
-              $page = floor($offsetStart / $PerPage) + 1;
-              $maxPage = floor($Baskets['count'] / $PerPage) + 1;
+        $PerPage     = 10;
+        $offsetStart = max(($Page - 1) * $PerPage, 0);
 
 
-              $params = array(
-                  'Baskets' => $Baskets['result']
-                  , 'Page' => $page
-                  , 'MaxPage' => $maxPage
-                  , 'Total' => $Baskets['count']
-                  , 'Query' => $request->get('Query')
-                  , 'Year' => $request->get('Year')
-                  , 'Type' => $request->get('Type')
-              );
+        $Baskets = $BasketRepo->findWorkzoneBasket(
+          $user
+          , $request->get('Query')
+          , $request->get('Year')
+          , $request->get('Type')
+          , $offsetStart
+          , $PerPage
+        );
 
-              return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Results.html.twig', $params));
-            });
-
-    $controllers->get('/Browse/Basket/{basket_id}/', function(Application $app, $basket_id)
-            {
-
-              $em = $app['Core']->getEntityManager();
-
-              $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
-
-              $params = array(
-                  'Basket' => $basket
-              );
-
-              return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Basket.html.twig', $params));
-            })->assert('basket_id', '\d+');
+        $page    = floor($offsetStart / $PerPage) + 1;
+        $maxPage = floor($Baskets['count'] / $PerPage) + 1;
 
 
-    $controllers->post(
-            '/attachStories/'
-            , function(Application $app, Request $request)
-            {
-              if (!$request->get('stories'))
-                throw new \Exception_BadRequest();
+        $params = array(
+          'Baskets' => $Baskets['result']
+          , 'Page'    => $page
+          , 'MaxPage' => $maxPage
+          , 'Total'   => $Baskets['count']
+          , 'Query'   => $request->get('Query')
+          , 'Year'    => $request->get('Year')
+          , 'Type'    => $request->get('Type')
+        );
 
-              $user = $app['Core']->getAuthenticatedUser();
+        return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Results.html.twig', $params));
+      });
 
-              $em = $app['Core']->getEntityManager();
-              /* @var $em \Doctrine\ORM\EntityManager */
+    $controllers->get('/Browse/Basket/{basket_id}/', function(Application $app, Request $request, $basket_id)
+      {
 
-              $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
+        $em = $app['Core']->getEntityManager();
 
-              $alreadyFixed = $done = 0;
+        $basket = $em->getRepository('\Entities\Basket')
+          ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
 
-              foreach (explode(';', $request->get('stories')) as $element)
-              {
-                $element = explode('_', $element);
-                $Story = new \record_adapter($element[0], $element[1]);
+        $params = array(
+          'Basket' => $basket
+        );
 
-                if (!$Story->is_grouping())
-                  throw new \Exception('You can only attach stories');
-
-                if (!$user->ACL()->has_access_to_base($Story->get_base_id()))
-                  throw new \Exception_Forbidden('You do not have access to this Story');
-
-
-                if ($StoryWZRepo->findUserStory($user, $Story))
-                {
-                  $alreadyFixed++;
-                  continue;
-                }
-
-                $StoryWZ = new \Entities\StoryWZ();
-                $StoryWZ->setUser($user);
-                $StoryWZ->setRecord($Story);
-
-                $em->persist($StoryWZ);
-                $done++;
-              }
-
-              $em->flush();
-
-              if ($alreadyFixed === 0)
-              {
-                if ($done <= 1)
-                {
-                  $message = sprintf(
-                          _('%d Story attached to the WorkZone')
-                          , $done
-                  );
-                }
-                else
-                {
-                  $message = sprintf(
-                          _('%d Stories attached to the WorkZone')
-                          , $done
-                  );
-                }
-              }
-              else
-              {
-                if ($done <= 1)
-                {
-                  $message = sprintf(
-                          _('%1$d Story attached to the WorkZone, %2$d already attached')
-                          , $done
-                          , $alreadyFixed
-                  );
-                }
-                else
-                {
-                  $message = sprintf(
-                          _('%1$d Stories attached to the WorkZone, %2$d already attached')
-                          , $done
-                          , $alreadyFixed
-                  );
-                }
-              }
-
-              $data = array(
-                  'success' => true
-                  , 'message' => $message
-              );
-
-              if ($request->getRequestFormat() == 'json')
-              {
-
-                $datas = $app['Core']['Serializer']->serialize($data, 'json');
-
-                return new Response($datas, 200, array('Content-type' => 'application/json'));
-              }
-              else
-              {
-                return new RedirectResponse('/{sbas_id}/{record_id}/');
-              }
-            });
+        return new Response($app['Core']->getTwig()->render('prod/WorkZone/Browser/Basket.html.twig', $params));
+      })->assert('basket_id', '\d+');
 
 
     $controllers->post(
-            '/detachStory/{sbas_id}/{record_id}/'
-            , function(Application $app, Request $request, $sbas_id, $record_id)
-            {
-              $Story = new \record_adapter($sbas_id, $record_id);
+      '/attachStories/'
+      , function(Application $app, Request $request)
+      {
+        if (!$request->get('stories'))
+          throw new \Exception_BadRequest();
 
-              $user = $app['Core']->getAuthenticatedUser();
+        $user = $app['Core']->getAuthenticatedUser();
 
-              $em = $app['Core']->getEntityManager();
+        $em = $app['Core']->getEntityManager();
+        /* @var $em \Doctrine\ORM\EntityManager */
 
-              $repository = $em->getRepository('\Entities\StoryWZ');
+        $StoryWZRepo = $em->getRepository('\Entities\StoryWZ');
 
-              /* @var $repository \Repositories\StoryWZRepository */
-              $StoryWZ = $repository->findUserStory($user, $Story);
+        $alreadyFixed = $done         = 0;
 
-              if (!$StoryWZ)
-              {
-                throw new \Exception_NotFound('Story not found');
-              }
-              $em->remove($StoryWZ);
+        foreach (explode(';', $request->get('stories')) as $element)
+        {
+          $element = explode('_', $element);
+          $Story   = new \record_adapter($element[0], $element[1]);
 
-              $em->flush();
+          if (!$Story->is_grouping())
+            throw new \Exception('You can only attach stories');
 
-              $data = array(
-                  'success' => true
-                  , 'message' => _('Story detached from the WorkZone')
-              );
+          if (!$user->ACL()->has_access_to_base($Story->get_base_id()))
+            throw new \Exception_Forbidden('You do not have access to this Story');
 
-              if ($request->getRequestFormat() == 'json')
-              {
-                $datas = $app['Core']['Serializer']->serialize($data, 'json');
 
-                return new Response($datas, 200, array('Content-type' => 'application/json'));
-              }
-              else
-              {
-                return new RedirectResponse('/');
-              }
-            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+          if ($StoryWZRepo->findUserStory($user, $Story))
+          {
+            $alreadyFixed++;
+            continue;
+          }
+
+          $StoryWZ = new \Entities\StoryWZ();
+          $StoryWZ->setUser($user);
+          $StoryWZ->setRecord($Story);
+
+          $em->persist($StoryWZ);
+          $done++;
+        }
+
+        $em->flush();
+
+        if ($alreadyFixed === 0)
+        {
+          if ($done <= 1)
+          {
+            $message = sprintf(
+              _('%d Story attached to the WorkZone')
+              , $done
+            );
+          }
+          else
+          {
+            $message = sprintf(
+              _('%d Stories attached to the WorkZone')
+              , $done
+            );
+          }
+        }
+        else
+        {
+          if ($done <= 1)
+          {
+            $message = sprintf(
+              _('%1$d Story attached to the WorkZone, %2$d already attached')
+              , $done
+              , $alreadyFixed
+            );
+          }
+          else
+          {
+            $message = sprintf(
+              _('%1$d Stories attached to the WorkZone, %2$d already attached')
+              , $done
+              , $alreadyFixed
+            );
+          }
+        }
+
+        $data = array(
+          'success' => true
+          , 'message' => $message
+        );
+
+        if ($request->getRequestFormat() == 'json')
+        {
+
+          $datas = $app['Core']['Serializer']->serialize($data, 'json');
+
+          return new Response($datas, 200, array('Content-type' => 'application/json'));
+        }
+        else
+        {
+          return new RedirectResponse('/{sbas_id}/{record_id}/');
+        }
+      });
+
+
+    $controllers->post(
+      '/detachStory/{sbas_id}/{record_id}/'
+      , function(Application $app, Request $request, $sbas_id, $record_id)
+      {
+        $Story = new \record_adapter($sbas_id, $record_id);
+
+        $user = $app['Core']->getAuthenticatedUser();
+
+        $em = $app['Core']->getEntityManager();
+
+        $repository = $em->getRepository('\Entities\StoryWZ');
+
+        /* @var $repository \Repositories\StoryWZRepository */
+        $StoryWZ = $repository->findUserStory($user, $Story);
+
+        if (!$StoryWZ)
+        {
+          throw new \Exception_NotFound('Story not found');
+        }
+        $em->remove($StoryWZ);
+
+        $em->flush();
+
+        $data = array(
+          'success' => true
+          , 'message' => _('Story detached from the WorkZone')
+        );
+
+        if ($request->getRequestFormat() == 'json')
+        {
+          $datas = $app['Core']['Serializer']->serialize($data, 'json');
+
+          return new Response($datas, 200, array('Content-type' => 'application/json'));
+        }
+        else
+        {
+          return new RedirectResponse('/');
+        }
+      })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
 
     return $controllers;

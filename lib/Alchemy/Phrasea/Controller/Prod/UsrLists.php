@@ -183,7 +183,7 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-
+          
         }
 
         $Json = $app['Core']['Serializer']->serialize($datas, 'json');
@@ -198,91 +198,56 @@ class UsrLists implements ControllerProviderInterface
     $controllers->get('/list/{list_id}/', function(Application $app, Request $request, $list_id)
       {
 
-        $datas = array(
-          'success' => false
-          , 'message' => ''
-          , 'result'  => null
-        );
-
         $result = array();
 
-        try
+        $user = $app['Core']->getAuthenticatedUser();
+        $em   = $app['Core']->getEntityManager();
+
+        $repository = $em->getRepository('\Entities\UsrList');
+
+        $list = $repository->findUserListByUserAndId($user, $list_id);
+
+        $entries = new \Doctrine\Common\Collections\ArrayCollection();
+        $owners  = new \Doctrine\Common\Collections\ArrayCollection();
+
+        foreach ($list->getOwners() as $owner)
         {
-          $user = $app['Core']->getAuthenticatedUser();
-          $em   = $app['Core']->getEntityManager();
-
-          $repository = $em->getRepository('\Entities\UsrList');
-
-          $list = $repository->findUserListByUserAndId($user, $list_id);
-
-          $entries = new \Doctrine\Common\Collections\ArrayCollection();
-          $owners  = new \Doctrine\Common\Collections\ArrayCollection();
-
-          foreach ($list->getOwners() as $owner)
-          {
-            $owners[] = array(
-              'usr_id'       => $owner->getUser()->get_id(),
-              'display_name' => $owner->getUser()->get_display_name(),
-              'position'     => $owner->getUser()->get_position(),
-              'job'          => $owner->getUser()->get_job(),
-              'company'      => $owner->getUser()->get_company(),
-              'email'        => $owner->getUser()->get_email(),
-              'role'         => $owner->getRole()
-            );
-          }
-
-          foreach ($list->getEntries() as $entry)
-          {
-            $entries[] = array(
-              'usr_id'       => $entry->getUser()->get_id(),
-              'display_name' => $entry->getUser()->get_display_name(),
-              'position'     => $entry->getUser()->get_position(),
-              'job'          => $entry->getUser()->get_job(),
-              'company'      => $entry->getUser()->get_company(),
-              'email'        => $entry->getUser()->get_email(),
-            );
-          }
-
-
-          /* @var $list \Entities\UsrList */
-          $result = array(
-            'id'      => $list->getId(),
-            'name'    => $list->getName(),
-            'created' => $list->getCreated()->format(DATE_ATOM),
-            'updated' => $list->getUpdated()->format(DATE_ATOM),
-            'owners'  => $owners,
-            'users'   => $entries
-          );
-
-          $datas = array(
-            'success' => true
-            , 'message' => ''
-            , 'result'  => $result
+          $owners[] = array(
+            'usr_id'       => $owner->getUser()->get_id(),
+            'display_name' => $owner->getUser()->get_display_name(),
+            'position'     => $owner->getUser()->get_position(),
+            'job'          => $owner->getUser()->get_job(),
+            'company'      => $owner->getUser()->get_company(),
+            'email'        => $owner->getUser()->get_email(),
+            'role'         => $owner->getRole()
           );
         }
-        catch (ControllerException $e)
+
+        foreach ($list->getEntries() as $entry)
         {
-          $datas = array(
-            'success' => false
-            , 'message' => $e->getMessage()
+          $entries[] = array(
+            'usr_id'       => $entry->getUser()->get_id(),
+            'display_name' => $entry->getUser()->get_display_name(),
+            'position'     => $entry->getUser()->get_position(),
+            'job'          => $entry->getUser()->get_job(),
+            'company'      => $entry->getUser()->get_company(),
+            'email'        => $entry->getUser()->get_email(),
           );
         }
-        catch (\Exception $e)
-        {
 
-        }
 
-        if ($request->getRequestFormat() == 'json')
-        {
-          $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        /* @var $list \Entities\UsrList */
+        $result = array(
+          'id'      => $list->getId(),
+          'name'    => $list->getName(),
+          'created' => $list->getCreated()->format(DATE_ATOM),
+          'updated' => $list->getUpdated()->format(DATE_ATOM),
+          'owners'  => $owners,
+          'users'   => $entries
+        );
 
-          return new Response($Json, 200, array('Content-Type' => 'application/json'));
-        }
-        else
-        {
 
-          return new Response($app['Core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $result));
-        }
+        return new Response($app['Core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $result));
       }
     );
 
@@ -290,34 +255,34 @@ class UsrLists implements ControllerProviderInterface
      * Update a list
      */
     $controllers->post('/list/{list_id}/update/', function(Application $app, $list_id)
-            {
-              $request = $app['request'];
+      {
+        $request = $app['request'];
 
-              $datas = array(
-                  'success' => false
-                  , 'message' => _('Unable to update list')
-              );
+        $datas = array(
+          'success' => false
+          , 'message' => _('Unable to update list')
+        );
 
-              try
-              {
-                $list_name = $request->get('name');
+        try
+        {
+          $list_name = $request->get('name');
 
-                if (!$list_name)
-                {
-                  throw new ControllerException(_('List name is required'));
-                }
+          if (!$list_name)
+          {
+            throw new ControllerException(_('List name is required'));
+          }
 
-                $user = $app['Core']->getAuthenticatedUser();
-                $em = $app['Core']->getEntityManager();
+          $user = $app['Core']->getAuthenticatedUser();
+          $em   = $app['Core']->getEntityManager();
 
-                $repository = $em->getRepository('\Entities\UsrList');
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
+          $list = $repository->findUserListByUserAndId($user, $list_id);
 
-                $list->setName($list_name);
+          $list->setName($list_name);
 
-                $em->merge($list);
-                $em->flush();
+          $em->merge($list);
+          $em->flush();
 
           $datas = array(
             'success' => true
@@ -333,32 +298,32 @@ class UsrLists implements ControllerProviderInterface
         }
         catch (\Exception $e)
         {
-
+          
         }
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     )->assert('list_id', '\d+');
 
     /**
      * Delete a list
      */
     $controllers->post('/list/{list_id}/delete/', function(Application $app, $list_id)
-            {
-              $em = $app['Core']->getEntityManager();
+      {
+        $em = $app['Core']->getEntityManager();
 
-              try
-              {
-                $repository = $em->getRepository('\Entities\UsrList');
+        try
+        {
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $user = $app['Core']->getAuthenticatedUser();
+          $user = $app['Core']->getAuthenticatedUser();
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
+          $list = $repository->findUserListByUserAndId($user, $list_id);
 
-                $em->remove($list);
-                $em->flush();
+          $em->remove($list);
+          $em->flush();
 
           $datas = array(
             'success' => true
@@ -375,16 +340,16 @@ class UsrLists implements ControllerProviderInterface
         catch (\Exception $e)
         {
 
-                $datas = array(
-                    'success' => false
-                    , 'message' => sprintf(_('Unable to delete list'))
-                );
-              }
+          $datas = array(
+            'success' => false
+            , 'message' => sprintf(_('Unable to delete list'))
+          );
+        }
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     )->assert('list_id', '\d+');
 
 
@@ -395,21 +360,21 @@ class UsrLists implements ControllerProviderInterface
       {
         $em = $app['Core']->getEntityManager();
 
-              try
-              {
-                $repository = $em->getRepository('\Entities\UsrList');
+        try
+        {
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $user = $app['Core']->getAuthenticatedUser();
+          $user = $app['Core']->getAuthenticatedUser();
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
-                /* @var $list \Entities\UsrList */
+          $list = $repository->findUserListByUserAndId($user, $list_id);
+          /* @var $list \Entities\UsrList */
 
-                $entry_repository = $em->getRepository('\Entities\UsrListEntry');
+          $entry_repository = $em->getRepository('\Entities\UsrListEntry');
 
           $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
 
-                $em->remove($user_entry);
-                $em->flush();
+          $em->remove($user_entry);
+          $em->flush();
 
           $datas = array(
             'success' => true
@@ -432,10 +397,10 @@ class UsrLists implements ControllerProviderInterface
           );
         }
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     )->assert('list_id', '\d+')->assert('entry_id', '\d+');
 
     /**
@@ -479,7 +444,7 @@ class UsrLists implements ControllerProviderInterface
             $inserted_usr_ids[] = $user_entry->get_id();
           }
 
-                $em->flush();
+          $em->flush();
 
           if (count($inserted_usr_ids) > 1)
           {
@@ -508,16 +473,16 @@ class UsrLists implements ControllerProviderInterface
         catch (\Exception $e)
         {
 
-                $datas = array(
-                    'success' => false
-                    , 'message' => _('Unable to add usr to list')
-                );
-              }
+          $datas = array(
+            'success' => false
+            , 'message' => _('Unable to add usr to list')
+          );
+        }
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     )->assert('list_id', '\d+')->assert('usr_id', '\d+');
 
     /**

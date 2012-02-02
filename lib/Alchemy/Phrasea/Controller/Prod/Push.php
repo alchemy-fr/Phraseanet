@@ -64,6 +64,7 @@ class Push implements ControllerProviderInterface
           'type'    => 'LIST'
           , 'list_id' => $List->getId()
           , 'name'    => $List->getName()
+          , 'length'  => count($entries)
           , 'entries' => $entries
         );
       };
@@ -90,7 +91,7 @@ class Push implements ControllerProviderInterface
           'lists'   => $repository->findUserLists($app['Core']->getAuthenticatedUser())
         );
 
-        $template = 'prod/actions/Feedback.html.twig';
+        $template = 'prod/actions/Push.html.twig';
 
         /* @var $twig \Twig_Environment */
         $twig = $app['Core']->getTwig();
@@ -145,7 +146,7 @@ class Push implements ControllerProviderInterface
 
           $push_description = $request->get('push_description');
 
-          $receivers = $request->get('receivers');
+          $receivers = $request->get('participants');
 
           if (!is_array($receivers) || count($receivers) === 0)
           {
@@ -209,7 +210,7 @@ class Push implements ControllerProviderInterface
           $message = sprintf(
             _('%1$d records have been sent to %2$d users')
             , count($pusher->get_elements())
-            , count($request->get('receivers'))
+            , count($receivers)
           );
 
           $ret = array(
@@ -286,11 +287,11 @@ class Push implements ControllerProviderInterface
 
               $em->persist($BasketElement);
             }
-
-            $em->flush();
+//
+//            $em->flush();
           }
 
-          $em->refresh($Basket);
+//          $em->refresh($Basket);
 
           if (!$Basket->getValidation())
           {
@@ -309,7 +310,7 @@ class Push implements ControllerProviderInterface
 
           $appbox = \appbox::get_instance();
 
-          foreach ($participants as $participant)
+          foreach ($participants as $key=>$participant)
           {
             foreach (array('see_others', 'usr_id', 'agree', 'HD') as $mandatoryparam)
             {
@@ -386,7 +387,7 @@ class Push implements ControllerProviderInterface
           $message = sprintf(
             _('%1$d records have been sent for validation to %2$d users')
             , count($pusher->get_elements())
-            , count($request->get('$participants'))
+            , count($request->get('participants'))
           );
 
           $ret = array(
@@ -596,6 +597,79 @@ class Push implements ControllerProviderInterface
     );
 
 
+
+
+    $controllers->match('/edit-list/{list_id}/', function(Application $app, Request $request, $list_id)
+      {
+
+        $user = $app['Core']->getAuthenticatedUser();
+        $em   = $app['Core']->getEntityManager();
+
+        $repository = $em->getRepository('\Entities\UsrList');
+
+        $list = $repository->findUserListByUserAndId($user, $list_id);
+
+        $query = new \User_Query(\appbox::get_instance());
+
+        $query->on_bases_where_i_am($user->ACL(), array('canpush'));
+
+        if ($request->get('query'))
+        {
+          $query->like($request->get('like_field'), $request->get('query'))
+            ->like_match(\User_Query::LIKE_MATCH_OR);
+        }
+        if (is_array($request->get('Activity')))
+        {
+          $query->haveActivities($request->get('Activity'));
+        }
+        if (is_array($request->get('Template')))
+        {
+          $query->haveTemplate($request->get('Template'));
+        }
+        if (is_array($request->get('Company')))
+        {
+          $query->inCompanies($request->get('Company'));
+        }
+        if (is_array($request->get('Country')))
+        {
+          $query->inCountries($request->get('Country'));
+        }
+        if (is_array($request->get('Position')))
+        {
+          $query->havePositions($request->get('Position'));
+        }
+        
+        $sort  = $request->get('srt', 'usr_creationdate');
+        $ord  = $request->get('ord', 'desc');
+        
+        $query->sort_by($sort, $ord);
+
+        $results = $query->include_phantoms()
+            ->limit(0, 10)
+            ->execute()->get_results();
+
+        $params = array(
+          'query'   => $query
+          , 'results' => $results
+          , 'list'    => $list
+          , 'sort'    => $sort
+          , 'ord'    => $ord
+        );
+
+        if($request->get('type') === 'fragment')
+        {
+          return new Response(
+              $app['Core']->getTwig()->render('prod/actions/Feedback/ResultTable.html.twig', $params)
+          );
+        }
+        else
+        {
+          return new Response(
+              $app['Core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $params)
+          );
+        }
+      }
+    )->assert('list_id', '\d+');
 
     return $controllers;
   }
