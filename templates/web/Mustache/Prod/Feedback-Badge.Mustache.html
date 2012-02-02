@@ -7,7 +7,7 @@
       </td>
       <td class="infos">
         <div style="margin:5px 10px 5px;">
-          <input type="hidden" name="participant[{{ usr_id }}][usr_id]" value="{{ usr_id }}" />
+          <input type="hidden" name="participants[{{ usr_id }}][usr_id]" value="{{ usr_id }}" />
           <table>
             <tr>
               <td colspan="3">
@@ -26,17 +26,17 @@
               <td class="toggle status_on toggle_agree">
                 <img class="toggle_off" src="/skins/prod/Push/contributeur_off_badge.png" />
                 <img class="toggle_on" src="/skins/prod/Push/contributeur_badge.png" />
-                <input type="hidden" name="participant[{{ usr_id }}][agree]" value="1" />
+                <input type="hidden" name="participants[{{ usr_id }}][agree]" value="1" />
               </td>
               <td class="toggle status_off toggle_see_others">
                 <img class="toggle_off" src="/skins/prod/Push/see_other_off_badge.png" />
                 <img class="toggle_on" src="/skins/prod/Push/see_other_badge.png" />
-                <input type="hidden" name="participant[{{ usr_id }}][see_others]" value="0" />
+                <input type="hidden" name="participants[{{ usr_id }}][see_others]" value="0" />
               </td>
               <td class="toggle status_off toggle_HD">
                 <img class="toggle_off" src="/skins/prod/Push/download_off_badge.png" />
                 <img class="toggle_on" src="/skins/prod/Push/download_badge.png" />
-                <input type="hidden" name="participant[{{ usr_id }}][HD]" value="0" />
+                <input type="hidden" name="participants[{{ usr_id }}][HD]" value="0" />
               </td>
             </tr>
           </table>
