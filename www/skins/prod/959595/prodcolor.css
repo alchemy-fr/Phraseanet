@@ -265,9 +265,14 @@ span.ww_winTitle{
 	padding:0;
 	min-height:120px;	
 }
+.ui-accordion-icons .ui-accordion-header,
+.ui-accordion-icons .ui-accordion-header a {
+  overflow:hidden;
+}
 .ui-accordion-icons .ui-accordion-header a
 {
   padding:2px 25px;
+  white-space: nowrap;
 }
 .ui-state-active .ui-icon
 {
