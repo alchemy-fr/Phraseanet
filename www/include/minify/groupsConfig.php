@@ -77,7 +77,7 @@ $groups = array(
         , '//include/jslibs/jquery.vertical.buttonset.js'
         , '//include/js/jquery.Selection.js'
         , '//include/js/jquery.Edit.js'
-        , '//include/js/jquery.Lists.js'
+        , '//include/js/jquery.lists.js'
         , '//prod/jquery.Phraseanet.js'
         , '//prod/jquery.Prod.js'
         , '//prod/jquery.Feedback.js'

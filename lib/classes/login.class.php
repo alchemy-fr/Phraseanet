@@ -45,12 +45,7 @@ class login
 
   public function get_password_link()
   {
-//    $findpwd = '';
-//    if(GV_find_password )
-//    {
-    $findpwd = '<a target="_self" class="link" rel="external" href="/login/forgotpwd.php">' . _('login:: Forgot your password') . '</a>';
-//    }
-    return $findpwd;
+    return '<a target="_self" class="link" rel="external" href="/login/forgotpwd.php">' . _('login:: Forgot your password') . '</a>';
   }
 
   public function get_register_link()
