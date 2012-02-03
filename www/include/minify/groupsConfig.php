@@ -80,6 +80,7 @@ $groups = array(
         , '//include/js/jquery.lists.js'
         , '//prod/jquery.Phraseanet.js'
         , '//prod/jquery.Prod.js'
+        , '//prod/jquery.Dialog.js'
         , '//prod/jquery.Feedback.js'
         , '//prod/jquery.Results.js'
         , '//prod/page0.js'
