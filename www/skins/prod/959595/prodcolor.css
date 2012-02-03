@@ -1203,7 +1203,7 @@ input.input-button.hover
 	
 input.search{
   padding-left: 25px;
-  background-image: url(/skins/icons/SEARCH.png);
+  background-image: url(/skins/icons/search.png);
   background-repeat: no-repeat;
   background-position: 3px center;
 }
