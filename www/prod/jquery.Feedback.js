@@ -1,6 +1,6 @@
 
 
-(function(window){
+;(function(window){
   
   var Feedback = function($container){
     this.container = $($container);
@@ -21,8 +21,6 @@
       $this.selection.empty();
     });
     
-    /* disable push closeonescape as an over dialog may exist (add user) */
-    this.container.closest('.ui-dialog-content').dialog( "option", "closeOnEscape", false );
 
     $('a.user_adder', this.container).bind('click', function(){
 

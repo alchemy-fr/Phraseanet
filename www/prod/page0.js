@@ -1780,10 +1780,12 @@ function deleteThis(lst)
         texte += '</p>';
 
         var buttons = {};
+        
         buttons[language.deleteTitle+' ('+data.lst.length+')'] = function() {
           $("#DIALOG").dialog('close').dialog('destroy');
           doDelete(data.lst);
         };
+        
         buttons[language.annuler] = function() {
           $("#DIALOG").dialog('close').dialog('destroy');
         };
@@ -1863,26 +1865,17 @@ function chgStatusThis(url)
 
 function pushThis(sstt_id, lst)
 {
-        $('#DIALOG').dialog('destroy').attr('title', 'Push')
-                  .empty().addClass('loading')
-                  .dialog({
-                    resizable:false,
-                    closeOnEscape:true,
-                    modal:true,
-                    width:(bodySize.x-50),
-                    height:(bodySize.y-50)
-                  })
-                  .dialog('open');
-
-  var options = {
-    lst:lst,
-    ssel:sstt_id
-  };
+    /* disable push closeonescape as an over dialog may exist (add user) */
+  $dialog = p4.Dialog.Create({
+    size:'Full',
+    title:'Push',
+    closeOnEscape:false
+  });
 
   $.post("/prod/push/sendform/"
-    , options
+    , { lst : lst, ssel : sstt_id }
     , function(data){
-      $('#DIALOG').removeClass('loading').empty().html(data);
+      p4.Dialog.setContent(data);
       return;
     }
   );
@@ -1892,30 +1885,20 @@ function pushThis(sstt_id, lst)
 
 function feedbackThis(sstt_id, lst)
 {
-        $('#DIALOG').dialog('destroy').attr('title', 'Feedback')
-                  .empty().addClass('loading')
-                  .dialog({
-                    resizable:false,
-                    closeOnEscape:true,
-                    modal:true,
-                    width:(bodySize.x-50),
-                    height:(bodySize.y-50)
-                  })
-                  .dialog('open');
-
-  var options = {
-    lst:lst,
-    ssel:sstt_id
-  };
+    /* disable push closeonescape as an over dialog may exist (add user) */
+  $dialog = p4.Dialog.Create({
+    size:'Full',
+    title:'Feedback',
+    closeOnEscape:false
+  });
 
   $.post("/prod/push/validateform/"
-    , options
+    , { lst : lst, ssel : sstt_id }
     , function(data){
-      $('#DIALOG').removeClass('loading').empty().html(data);
+      p4.Dialog.setContent(data);
       return;
     }
   );
-
 }
 
 function toolThis(url)

@@ -1,6 +1,6 @@
-var p4 = p4 || {};
+;var p4 = p4 || {};
 
-(function(p4, $){
+;(function(p4, $){
   
   var templates = [];
   
