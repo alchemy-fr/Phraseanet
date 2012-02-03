@@ -163,11 +163,11 @@ var p4 = p4 || {};
       header:'div.header',
       change:function(event,ui){
 
+        var b_active = $('#baskets .SSTT.active');
         if(p4.next_bask_scroll)
         {
           p4.next_bask_scroll = false;
 
-          var b_active = $('#baskets .SSTT.active');
 
           if(!b_active.next().is(':visible'))
             return;
@@ -181,8 +181,10 @@ var p4 = p4 || {};
           });
         }
 
+        
         var uiactive = $(this).find('.ui-state-active');
-
+        b_active.not('.ui-state-active').removeClass('active');
+        
         if(uiactive.length === 0)
         {
           return; /* everything is closed */
@@ -199,6 +201,7 @@ var p4 = p4 || {};
 
       },
       changestart:function(event,ui){
+        ui.newHeader.addClass('active');
         $('#basketcontextwrap .basketcontextmenu').hide();
       }
     });
