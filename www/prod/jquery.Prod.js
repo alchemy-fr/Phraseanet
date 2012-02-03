@@ -32,7 +32,7 @@
 
         },
         success: function(data){
-          p4.Dialog.setContent(data);
+          $dialog.setContent(data);
           return;
         }
       });
