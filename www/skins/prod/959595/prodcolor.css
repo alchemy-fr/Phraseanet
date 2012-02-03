@@ -470,6 +470,34 @@ div.diapo
   border:1px solid #111111;
 }
 
+#answers_status{
+  top:auto;
+  left:10px;
+  right:10px;
+  height:30px;
+  overflow:hidden;
+}
+
+#answers_status table{
+  width:100%;
+  height:20px;
+  margin:5px 0;
+}
+
+#answers_status table tr{
+  height:20px;
+  vertical-align:middle;
+}
+
+#answers_status table tr td.navigation{
+  text-align:right;
+}
+
+#answers_status table tr td.infos{
+  text-align:left;
+}
+
+
 #idFrameT
 {
 	background-color:#B1B1B1;	
@@ -932,6 +960,10 @@ div.diapo
 	background-position:center left;
 	padding-left:30px;
 	min-height:20px;
+}
+.history-validate
+{
+	background-image:url(/skins/icons/push.png);
 }
 .history-edit
 {
