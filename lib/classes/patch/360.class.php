@@ -54,20 +54,6 @@ class patch_360 implements patchInterface
 
   function apply(base &$appbox)
   {
-//    $Core = bootstrap::getCore();
-//
-//    $sql = 'SELECT ssel_id, name FROM ssel';
-//
-//    $stmt = $appbox->get_connection()->prepare($sql);
-//    $stmt->execute();
-//    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//    $stmt->closeCursor();
-
-
-    $stmt = $appbox->get_connection()->prepare($sql);
-    $stmt->execute();
-    $stmt->closeCursor();
-
     $sql = 'INSERT INTO StoryWZ
       (
         SELECT null as id, sbas_id, rid as record_id, usr_id, date as created
