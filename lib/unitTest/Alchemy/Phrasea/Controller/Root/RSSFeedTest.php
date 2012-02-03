@@ -405,6 +405,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     /**
      * XML is not verified due to Validator Service bug
      */
+
     return;
 
     try

@@ -577,7 +577,7 @@ class setup
           {
             $blocker = false;
           }
-          
+
           $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), $blocker);
         }
         else

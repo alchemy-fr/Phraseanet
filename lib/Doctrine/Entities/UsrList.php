@@ -45,7 +45,7 @@ class UsrList
   private $owners;
 
   /**
-   * @var Entities\UsrListEntry
+   * @var \Doctrine\Common\Collections\Collection
    */
   private $entries;
 
@@ -150,8 +150,9 @@ class UsrList
     foreach ($this->getOwners() as $owner)
     {
       if ($owner->getUser()->get_id() == $user->get_id())
-
+      {
         return true;
+      }
     }
 
     return false;
@@ -167,8 +168,9 @@ class UsrList
     foreach ($this->getOwners() as $owner)
     {
       if ($owner->getUser()->get_id() == $user->get_id())
-
+      {
         return $owner;
+      }
     }
 
     throw new \Exception('This user is not an owner of the list');
@@ -187,11 +189,27 @@ class UsrList
   /**
    * Get entries
    *
-   * @return Doctrine\Common\Collections\Collection
+   * @return \Doctrine\Common\Collections\Collection
    */
   public function getEntries()
   {
     return $this->entries;
+  }
+
+  /**
+   * Return true if one of the entry is related to the given user
+   *
+   * @param \User_Adapter $user
+   * @return boolean
+   */
+  public function has(\User_Adapter $user)
+  {
+    return $this->entries->exists(
+        function($key, $entry) use ($user)
+        {
+          return $entry->getUser()->get_id() === $user->get_id();
+        }
+    );
   }
 
 }

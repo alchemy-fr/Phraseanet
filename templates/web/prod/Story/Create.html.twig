@@ -1,30 +1,32 @@
 <form method="POST" action="/prod/story/">
 
-  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
-  <input type="checkbox" id="story_create_sel" name="lst" value=""/>
-
-  <label>{% trans 'Story name' %}</label>
-  <input name="name" value="" type="text"/>
-
-  <label>{% trans 'Story description' %}</label>
-  <textarea name="description"></textarea>
-
   <label>{% trans 'Collection' %}</label>
   <select name="base_id">
     {% for collection in user.ACL().get_granted_base(['canaddrecord']) %}
      <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_viewname() }} / {{ collection.get_name() }}</option>
     {% endfor %}
   </select>
+  
+  <label>{% trans 'Story name' %}</label>
+  <input name="name" value="" type="text"/>
 
-  <button>{% trans 'boutton::valider' %}</button>
+  <label>{% trans 'Story description' %}</label>
+  <textarea name="description"></textarea>
+
+  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
+  <input type="checkbox" name="lst" value=""/>
 
   <script type="text/javascript">
     $(document).ready(function(){
-      $('#story_create_sel').val(p4.Results.Selection.serialize());
+      var $dialog = p4.Dialog.getDialog();
 
-      $('#DIALOG form').bind('submit', function(event){
-
-        //$this.SetLoader(true);
+      $('input[name="lst"]', $dialog).val(p4.Results.Selection.serialize());
+      
+      var buttons = $dialog.dialog('option', 'buttons');
+      buttons[language.create] = function(){$('form', $dialog).trigger('submit')};
+      $dialog.dialog('option', 'buttons', buttons);
+      
+      $('form', $dialog).bind('submit', function(event){
 
         var $form = $(this);
 
@@ -39,7 +41,7 @@
           success: function(data){
 
             p4.WorkZone.refresh(data.basket.id);
-            $('#DIALOG').dialog('close').empty();
+            p4.Dialog.Close();
 
             return;
           },

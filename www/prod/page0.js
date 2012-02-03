@@ -1014,7 +1014,7 @@ $(document).ready(function(){
       });
     };
     buttons[language.fermer] = function() {
-      $('#DIALOG').dialog('close');
+      $('#DIALOG').empty().dialog('destroy');
     };
     
     event.stopPropagation();
@@ -1029,7 +1029,7 @@ $(document).ready(function(){
       success : function(data){
         if(data.texte !== false && data.titre !== false)
         {
-          $("#DIALOG").attr('title',data.titre)
+          $("#DIALOG").dialog('destroy').attr('title',data.titre)
           .empty()
           .append(data.texte)
           .dialog({
@@ -1780,16 +1780,18 @@ function deleteThis(lst)
         texte += '</p>';
 
         var buttons = {};
+        
         buttons[language.deleteTitle+' ('+data.lst.length+')'] = function() {
           $("#DIALOG").dialog('close').dialog('destroy');
           doDelete(data.lst);
         };
+        
         buttons[language.annuler] = function() {
           $("#DIALOG").dialog('close').dialog('destroy');
         };
 
 
-        $("#DIALOG").attr('title',language.deleteTitle)
+        $("#DIALOG").dialog('destroy').attr('title',language.deleteTitle)
         .empty()
         .append(texte)
         .dialog({
@@ -1863,30 +1865,40 @@ function chgStatusThis(url)
 
 function pushThis(sstt_id, lst)
 {
-        $('#DIALOG').attr('title', 'Push')
-                  .empty().addClass('loading')
-                  .dialog({
-                    resizable:false,
-                    closeOnEscape:true,
-                    modal:true,
-                    width:'800',
-                    height:'500'
-                  })
-                  .dialog('open');
+    /* disable push closeonescape as an over dialog may exist (add user) */
+  $dialog = p4.Dialog.Create({
+    size:'Full',
+    title:'Push',
+    closeOnEscape:false
+  });
 
-  var options = {
-    lst:lst,
-    ssel:sstt_id
-  };
-
-  $.post("/prod/push/"
-    , options
+  $.post("/prod/push/sendform/"
+    , { lst : lst, ssel : sstt_id }
     , function(data){
-      $('#DIALOG').removeClass('loading').empty().html(data);
+      p4.Dialog.setContent(data);
       return;
     }
   );
 
+}
+
+
+function feedbackThis(sstt_id, lst)
+{
+    /* disable push closeonescape as an over dialog may exist (add user) */
+  $dialog = p4.Dialog.Create({
+    size:'Full',
+    title:'Feedback',
+    closeOnEscape:false
+  });
+
+  $.post("/prod/push/validateform/"
+    , { lst : lst, ssel : sstt_id }
+    , function(data){
+      p4.Dialog.setContent(data);
+      return;
+    }
+  );
 }
 
 function toolThis(url)
@@ -2254,6 +2266,41 @@ function activeIcons()
     }
   });
 
+
+  $('.TOOL_feedback_btn').live('click', function(){
+    var value="",type="",sstt_id="";
+    if($(this).hasClass('results_window'))
+    {
+      if(p4.Results.Selection.length() > 0)
+        value = p4.Results.Selection.serialize();
+    }
+    else
+    {
+      if($(this).hasClass('basket_window'))
+      {
+        if(p4.WorkZone.Selection.length() > 0)
+          value = p4.WorkZone.Selection.serialize();
+        else
+          sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+      }
+      else
+      {
+        if($(this).hasClass('basket_element'))
+        {
+          sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        }
+      }
+    }
+    if(value !== '' || sstt_id !== '')
+    {
+      feedbackThis(sstt_id, value);
+    }
+    else
+    {
+      alert(language.nodocselected);
+    }
+  });
+
   $('.TOOL_imgtools_btn').live('click', function(){
     var value="";
     
@@ -2426,7 +2473,7 @@ function printThis(value)
 {
   
   
-      $('#DIALOG').attr('title', 'Print')
+      $('#DIALOG').dialog('destroy').attr('title', 'Print')
                   .empty().addClass('loading')
                   .dialog({
                     resizable:false,
@@ -2713,9 +2760,37 @@ function doDelete(lst)
   });
 }
 
+function archiveBasket(basket_id)
+{
+  $.ajax({
+    type: "POST",
+    url: "/prod/baskets/" + basket_id + "/archive/?archive=1",
+    dataType:'json',
+    beforeSend:function(){
+
+    },
+    success: function(data){
+      if(data.success)
+      {
+        $('#SSTT_'+basket_id).next().slideUp().droppable('destroy').remove();
+        $('#SSTT_'+basket_id).slideUp().droppable('destroy').remove();
+
+        if($('#baskets .SSTT').length == 0)
+          return p4.WorkZone.refresh(false);
+      }
+      else
+      {
+        alert(data.message);
+      }
+      return;
+    }
+  });
+}
+
+
 function deleteBasket(item)
 {
-  $('#DIALOG').dialog("close");
+  $('#DIALOG').dialog("destroy");
   k = $(item).attr('id').split('_').slice(1,2).pop();	// id de chutier
   $.ajax({
     type: "POST",

@@ -481,10 +481,7 @@ class task_period_archive extends task_abstract
                 $duration = time() - $duration;
                 if ($duration < ($period + $cold))
                 {
-                  $conn->close();
                   sleep(($period + $cold) - $duration);
-                  unset($conn);
-                  $conn = connection::getPDOConnection();
                 }
                 break;
               case 'MAXRECSDONE':
@@ -825,7 +822,22 @@ class task_period_archive extends task_abstract
 
       $xp = new DOMXPath($dom);
 
-      while (($file = $listFolder->read()) !== NULL)
+      if(($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')))
+      {
+        // on gere le magicfile
+        if(($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '')
+        {
+          $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
+          if($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+
+            return;
+          elseif($magicmethod == 'UNLOCK' && !file_exists($path . '/' . $magicfile))
+
+            return;
+        }
+      }
+
+      while(($file = $listFolder->read()) !== NULL)
       {
         if ($this->isIgnoredFile($file))
           continue;

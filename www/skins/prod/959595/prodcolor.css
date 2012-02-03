@@ -265,13 +265,18 @@ span.ww_winTitle{
 	padding:0;
 	min-height:120px;	
 }
+.ui-accordion-icons .ui-accordion-header,
+.ui-accordion-icons .ui-accordion-header a {
+  overflow:hidden;
+}
 .ui-accordion-icons .ui-accordion-header a
 {
   padding:2px 25px;
+  white-space: nowrap;
 }
 .ui-state-active .ui-icon
 {
-  background-image: url("/include/jslibs/jquery-ui-1.8.12/css/ui-lightness/images/ui-icons_ffffff_256x240.png");
+  background-image: url("/include/jslibs/jquery-ui-1.8.17/css/ui-lightness/images/ui-icons_ffffff_256x240.png");
 }
 #baskets .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
   color:#FFFFFF; 
@@ -464,6 +469,34 @@ div.diapo
   background-color: #111111;
   border:1px solid #111111;
 }
+
+#answers_status{
+  top:auto;
+  left:10px;
+  right:10px;
+  height:30px;
+  overflow:hidden;
+}
+
+#answers_status table{
+  width:100%;
+  height:20px;
+  margin:5px 0;
+}
+
+#answers_status table tr{
+  height:20px;
+  vertical-align:middle;
+}
+
+#answers_status table tr td.navigation{
+  text-align:right;
+}
+
+#answers_status table tr td.infos{
+  text-align:left;
+}
+
 
 #idFrameT
 {
@@ -889,6 +922,13 @@ div.diapo
 
 #EDIT_query{
   border:2px solid #111111;
+  padding:4px;
+  padding-left:30px;
+  background-position: 6px center;
+  border-radius:5px;
+  font-size:16px;
+  width:370px;
+  height:22px;
 }
 
 /* QRY */
@@ -920,6 +960,10 @@ div.diapo
 	background-position:center left;
 	padding-left:30px;
 	min-height:20px;
+}
+.history-validate
+{
+	background-image:url(/skins/icons/push.png);
 }
 .history-edit
 {
@@ -1189,10 +1233,19 @@ input.input-button.hover
 	color:#FEFEFE;
 }
 	
+input.search{
+  padding-left: 25px;
+  background-image: url(/skins/icons/search.png);
+  background-repeat: no-repeat;
+  background-position: 3px center;
+}
+
 input,select,textarea{
 	margin:2px;
+	padding:2px;
 	border:1px solid #b1b1b1;
 	background:white;
+  resize: none;
 }
 input:radio, input:checkbox, .checkbox{
 	border:none;
@@ -2856,14 +2909,21 @@ dans l'onglet thesaurus : arbres, menus contextuels
   vertical-align:middle;
 }
 
+#DIALOG.dialog-Small select,
+#DIALOG.dialog-Small input[type="text"],
+#DIALOG.dialog-Small textarea{
+  width:100%;
+}
+#DIALOG.dialog-Small textarea{
+  height:60px;
+}
+
+#DIALOG label{
+  line-height:26px;
+}
+
 #DIALOG p{
   line-height:18px;
-}
-#DIALOG input:text{
-  height:24px;
-  font-size:15px;
-  margin:15px auto;
-  width:100%;
 }
 
 

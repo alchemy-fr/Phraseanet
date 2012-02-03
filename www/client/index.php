@@ -54,7 +54,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
 
 
     </style>
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
     <script type="text/javascript" src="/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,skins/common/main.css" />
     <?php
@@ -102,7 +102,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
     }
     ?>
   </head>
-  <body style="overflow:hidden;">
+  <body class="PNB" style="overflow:hidden;">
     <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
       <?php
@@ -634,7 +634,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
     <form name="logout" target="_self" id="logout" action="/login/logout.php" method="post" style="visibility:hidden; display:none" >
       <input type="hidden" name="app" value="client">
     </form>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/minify/g=client"></script>
     <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.6.min.js"></script>
     <script type="text/javascript">

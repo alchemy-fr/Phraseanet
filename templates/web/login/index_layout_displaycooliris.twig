@@ -5,7 +5,9 @@
                     {{login.get_guest_link|raw}}
                 </div>
                 <div style="margin-top:10px;height:20px;">
-                    {{login.get_password_link|raw}}
+                  <a target="_self" class="link" rel="external" href="/login/forgotpwd.php">
+                    {% trans 'login:: Forgot your password' %}
+                  </a>
                 </div>
                 <div style="margin-top:10px;height:25px;">
                     <div style="float:left;text-align:left;">

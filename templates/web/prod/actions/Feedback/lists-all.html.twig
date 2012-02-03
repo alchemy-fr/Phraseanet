@@ -1,0 +1,29 @@
+
+      <div class="PNB10">
+        <h1>{% trans 'Lists' %}</h1>
+        <a href="/prod/lists/list/" class="list_adder">
+          {% trans "Add" %}
+        </a>
+        <a href="/prod/lists/all/" class="list_refresh">
+          {% trans "Refresh" %}
+        </a>
+        <ul class="lists">
+          {% for list in lists %}
+            {% set length = '<span class="counter">' ~ list.getEntries().count() ~ '</span>' %}
+            <li class="list">
+              <a href="/prod/push/edit-list/{{ list.getId() }}/" class="link">
+                <img src="/skins/prod/Push/list-icon.png" />
+                "{{ list.getName() }}"
+                {% trans %}
+                  {{ length }} peoples
+                {% endtrans %}
+              </a>
+
+              <a href="/prod/lists/list/{{ list.getId() }}/delete/" class="deleter">
+                {% trans 'Delete' %}
+                <input type="hidden" name="list_id" value="{{ list.getId() }}"/>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>

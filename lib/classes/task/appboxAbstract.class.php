@@ -153,12 +153,6 @@ abstract class task_appboxAbstract extends task_abstract
             ->check_records_done()
             ->check_task_status();
 
-    if ($conn instanceof PDO)
-    {
-      $conn->close();
-      unset($conn);
-    }
-
     if ($rowstodo > 0)
       $this->setProgress(0, 0);
 

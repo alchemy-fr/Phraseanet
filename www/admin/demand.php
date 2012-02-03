@@ -218,7 +218,7 @@ if (!is_null($templates) || !is_null($parm['deny']) || !is_null($parm['accept'])
   <head>
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js">
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js">
     </script>
     <script type="text/javascript" src="/include/minify/f=include/jquery.tooltip.js">
     </script>

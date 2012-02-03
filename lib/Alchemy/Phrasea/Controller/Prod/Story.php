@@ -225,7 +225,7 @@ class Story implements ControllerProviderInterface
             ->assert('record_id', '\d+')
             ->assert('child_sbas_id', '\d+')
             ->assert('child_record_id', '\d+');
-                    
+
 //    $controllers->post('/{basket_id}/delete/', function(Application $app, Request $request, $basket_id)
 //            {
 //              $em = $app['Core']->getEntityManager();

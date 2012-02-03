@@ -959,7 +959,6 @@ function scid_click(event, el)
 		request.abort();
 	}
 	
-  console.log(el, $(el).attr('href'));
 	request = $.ajax({
     type: "GET",
     url: $(el).attr('href'),//"/lightbox/ajax/LOAD_BASKET_ELEMENT/"+sselcont_id+'/',

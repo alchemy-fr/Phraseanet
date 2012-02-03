@@ -77,10 +77,10 @@ class Edit implements ControllerProviderInterface
               foreach ($results as $Term)
               {
                 /* @var $Term \Alchemy\Phrasea\Vocabulary\Term */
-                $list = array(
-                    'Id' => $Term->getId(),
-                    'Context' => $Term->getContext(),
-                    'Value' => $Term->getValue(),
+                $list[] = array(
+                    'id' => $Term->getId(),
+                    'context' => $Term->getContext(),
+                    'value' => $Term->getValue(),
                 );
               }
 

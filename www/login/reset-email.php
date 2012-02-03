@@ -45,7 +45,7 @@ if (!is_null($parm['token']))
 
         <link REL="stylesheet" TYPE="text/css" HREF="/login/home.css" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js"></script>
+        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js"></script>
       </head>
       <body>
         <div style="width:950px;margin-left:auto;margin-right:auto;">
@@ -79,7 +79,7 @@ if (!is_null($parm['token']))
 
         <link REL="stylesheet" TYPE="text/css" HREF="/login/home.css" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js"></script>
+        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js"></script>
       </head>
       <body>
         <div style="width:950px;margin-left:auto;margin-right:auto;">
@@ -158,7 +158,7 @@ phrasea::headers();
   <title><?php echo $registry->get('GV_homeTitle') ?> - <?php echo _('admin::compte-utilisateur changer mon mot de passe') ?></title>
   <link REL="stylesheet" TYPE="text/css" HREF="/login/home.css" />
   <link rel="icon" type="image/png" href="/favicon.ico" />
-  <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js"></script>
+  <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#mainform").validate(

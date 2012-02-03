@@ -1,27 +1,21 @@
-<div class="PNB" id="PushBox">
+<div class="PNB PushBox" id="PushBox" >
   <div class="PNB" style="width:205px;">
     <div class="PNB10">
-      <div class="PNB content" style="top:130px;height:240px;bottom:auto;">
+      <div class="PNB" style="height:80px;bottom:auto;text-align:center;">
+        <img src="/skins/prod/Push/pushback_logo.png"/>
+      </div>
+      <div class="PNB content" style="top:100px;">
         <div class="PNB10">
-          {% trans 'Set users to' %}
+          {% trans 'Set selected users to' %}
 
-            <ul>
-              <li>
-                <img src="/skins/prod/Push/contributeur_menu.png" />
-                <input type="checkbox" />
-                {% trans 'Contributor' %}
-              </li>
-              <li>
-                <img src="/skins/prod/Push/see_other_menu.png" />
-                <input type="checkbox" />
-                {% trans 'See others' %}
-              </li>
-              <li>
+          <ul class="general_togglers">
+            <li>
+              <a class="general_toggler" feature="HD" href="#">
                 <img src="/skins/prod/Push/download_menu.png" />
-                <input type="checkbox" />
                 {% trans 'HD Download' %}
-              </li>
-            </ul>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -29,84 +23,90 @@
   <div class="PNB" style="left:205px;">
     <div class="PNB" style="height:75px;bottom:auto;">
       <div class="PNB10">
+        <p>
+          {% trans 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' %}
+        </p>
 
-        <input name="users-search" placeholder="{% trans 'Users' %}" type="text" />
+        <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" />
 
-        <a href="/users/add/" class="user_adder">{% trans 'Add user' %}</a>
+        <a href="/prod/push/add-user/" class="user_adder">{% trans 'Add user' %}</a>
+
+        <button class="FeedbackSend">{% trans "Send" %}</button>
 
       </div>
     </div>
-    <div class="PNB" style="top:75px;bottom:75px;">
+    <div class="PNB" style="top:75px;">
       <div class="PNB10 content user_content">
         <div class="PNB10 header">
           <table>
             <tr>
               <td>
-                {% trans 'Send to n users' %}
+                <form class="list_saver">
+                  <input name="name" placeholder="{% trans 'Save this list' %}"/>
+                  <button>
+                    <img src="/skins/prod/Push/save_list_as.png" />
+                  </button>
+                </form>
+              </td>
+              <td>
+                <a href="#" class="list_manager">{% trans 'List Manager' %}</a>
               </td>
               <td class="options">
-                <button>{% trans 'Select all' %}</button>
-                <button>{% trans 'Deselect all' %}</button>
+                <button class="select-all">{% trans 'Select all' %}</button>
+                <button class="unselect-all">{% trans 'Deselect all' %}</button>
               </td>
             </tr>
           </table>
         </div>
-        <div class="PNB badges">
-        </div>
-      </div>
-    </div>
-    <div class="PNB" style="height:75px;top:auto;">
-      <div class="PNB10">
-
+        <form name="FeedBackForm" method="post" action="/prod/push/send/">
+          <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}" />
+          <input name="ssel" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}" />
+          <input name="name" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}" />
+          <textarea name="message" style="display:none;"></textarea>
+          <div class="PNB badges">
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
+<div id="ListManager" class="PNB PushBox" style="display:none;">
+  <div class="PNB" style="height:30px;bottom:auto;">
+    <a href="#" class="back_link">{% trans 'Back to Push' %}</a>
+  </div>
+  <div class="PNB" style="top:30px;">
+    <div class="PNB" style="width:320px;right:auto;">
+      <div class="PNB10 content all-lists">
+        {% include 'prod/actions/Feedback/lists-all.html.twig' %}
+      </div>
+    </div>
+    <div class="editor PNB" style="left:320px;">
+      <div class="welcome">
+        <h1>{% trans 'Welcome to the ListManager !' %}</h1>
+        {% if lists|length == 0 %}
+        <p class="welcome">
+          {% trans 'Start by creating one by using the "add" button on the left !' %}
+        </p>
+        {% else %}
+        <p class="welcome">
+          {% trans 'Select a list on the left and edit it !' %}
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<div id="FeedbackSendForm">
+  <form method="post">
+
+
+  </form>
+</div>
 <script type="text/javascript">
   $(document).ready(function(){
 
-    var $container = $('#PushBox');
-
-    $('button', $container).button();
-
-
-
-
-    $('input[name="users-search"]', $container).autocomplete({
-        minLength: 2,
-        source: function( request, response ) {
-          $.ajax({
-            url: '/prod/push/search-user/',
-            dataType: "json",
-            data: {
-              query: request.term
-            },
-            success: function( data ) {
-              console.log(response);
-              response( data );
-            }
-          });
-        },
-        select: function( event, ui ) {
-          p4.Mustache('Push-Badge', ui.item, appendBadge);
-
-          return false;
-        }
-      })
-      .data( "autocomplete" )._renderItem = function( ul, item ) {
-        return $( "<li></li>" )
-          .data( "item.autocomplete", item )
-          .append( "<a>" + item.display_name + "</a>" )
-          .appendTo( ul );
-      };
-
-    function appendBadge(badge)
-    {
-      $('.user_content .badges', $container).append(badge);
-    }
-
-
-
+    p4.Feedback = new Feedback($('#PushBox'));
+    p4.ListManager = new ListManager($('#ListManager'));
 
   });
 </script>

@@ -29,33 +29,6 @@ class login
     return false;
   }
 
-  public function get_language_selector(registryInterface $registry)
-  {
-    $lngSelect = '<select name="lng" id="lng-select" onchange="setLanguage();">';
-    $currentLanguage = $registry->get('GV_default_lng');
-    $avLanguages = User_Adapter::detectlanguage($registry);
-    foreach ($avLanguages as $lng => $languages)
-      foreach ($languages as $locale => $language)
-      {
-        if ($language['selected'] === true)
-          $currentLanguage = $locale;
-        $lngSelect .= '<option value="' . $locale . '" ' . ($language['selected'] === true ? 'selected' : '') . '>' . $language['name'] . '</option>';
-      }
-    $lngSelect .= '</select>';
-
-    return $lngSelect;
-  }
-
-  public function get_password_link()
-  {
-//    $findpwd = '';
-//    if(GV_find_password )
-//    {
-    $findpwd = '<a target="_self" class="link" rel="external" href="/login/forgotpwd.php">' . _('login:: Forgot your password') . '</a>';
-//    }
-    return $findpwd;
-  }
-
   public function get_register_link()
   {
     $demandLinkBox = '';

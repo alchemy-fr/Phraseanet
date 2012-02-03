@@ -87,7 +87,7 @@ class Description implements ControllerProviderInterface
                       }
                       catch (\Exception $e)
                       {
-                        
+
                       }
 
                       $dces_element = null;
@@ -135,7 +135,7 @@ class Description implements ControllerProviderInterface
                     }
                     catch (\Exception $e)
                     {
-                      
+
                     }
                   }
                 }

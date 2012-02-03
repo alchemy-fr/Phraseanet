@@ -2,7 +2,7 @@
   <ul>
     {% for child in record.get_container().getElements() %}
 
-      {% set thumbnail = child.get_record().get_thumbnail() %}
+      {% set thumbnail = child.getRecord().get_thumbnail() %}
       {% if thumbnail.is_paysage() %}
         {% set style = 'width:65px;top:' %}
         {% set top = ((66 - (65 / (thumbnail.get_width() / thumbnail.get_height()))) / 2)|round %}
@@ -14,16 +14,16 @@
 
       {% set tooltip = '' %}
       {% if GV_rollover_reg_preview %}
-        {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/' ~ child.get_record().get_sbas_id() ~ '/' ~ child.get_record().get_record_id() ~ '/basket/"' %}
+        {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/' ~ child.getRecord().get_sbas_id() ~ '/' ~ child.getRecord().get_record_id() ~ '/basket/"' %}
       {% endif %}
 
       {% set class = '' %}
-      {% if record.get_number() == child.get_order() %}
+      {% if record.get_number() == child.getOrd() %}
         {% set class = ' selected' %}
       {% endif %}
 
       <li class="{{class}} prevTrainCurrent">
-        <img {{tooltip|raw}} jsargs="BASK|{{child.get_order()}}|{{record.get_container().getId()}}"
+        <img {{tooltip|raw}} jsargs="BASK|{{child.getOrd()}}|{{record.get_container().getId()}}"
           class="openPreview prevRegToolTip" return(false);" src="{{thumbnail.get_url()}}"
             style="{{style}}margin:7px;position:relative;"/></li>
     {% endfor %}

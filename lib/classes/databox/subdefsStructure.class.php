@@ -65,6 +65,7 @@ class databox_subdefsStructure implements IteratorAggregate
     );
 
     if (!$sx_struct)
+
       return $this;
 
     $subdefgroup = $sx_struct->subdefs[0];

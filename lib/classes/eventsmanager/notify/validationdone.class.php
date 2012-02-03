@@ -42,7 +42,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
    */
   public function icon_url()
   {
-    return '/skins/prod/000000/images/pushdoc_history.gif';
+    return '/skins/icons/push.png';
   }
 
   /**

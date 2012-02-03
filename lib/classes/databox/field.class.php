@@ -190,7 +190,7 @@ class databox_field implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     if ($row['dces_element'])
@@ -667,7 +667,7 @@ class databox_field implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $this;

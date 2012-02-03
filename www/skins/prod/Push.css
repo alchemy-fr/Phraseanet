@@ -1,29 +1,175 @@
-#PushBox .content{
+.PushBox .content{
   background-color: #404040;
 }
-
-#PushBox table{
+.PushBox button{
+  margin:0;padding:0;
+  background-color:transparent;
+  border:none;
+  vertical-align:top;
+}
+.PushBox table{
   width:100%;
   border:none;
 }
 
-#PushBox .user_content .header{
+.PushBox .user_content .header{
   height:35px;
   bottom:auto;
 }
 
-#PushBox .user_content .badges{
+.PushBox .user_content .badges{
   top:35px;
   overflow:auto;
 }
 
-#PushBox .user_content .badges .badge{
-  width:230px;
-  height:80px;
-  margin:5px;
-  display:inline-block;
+.PushBox .user_content .badges .badge .deleter{
+  float:right;
+  
 }
 
-#PushBox .user_content .header .options{
+.PushBox .user_content .badges .badge{
+  width:230px;
+  height:80px;
+  margin:10px;
+  display:inline-block;
+  background-color: #515150;
+  border:3px solid #515150;
+}
+.PushBox .user_content .badges .badge.selected{
+  border:3px solid #EFEFEF;
+}
+
+.PushBox .user_content .badges .badge .toggles .status_on .toggle_off{
+  display:none;
+}
+.PushBox .user_content .badges .badge .toggles .status_off .toggle_on{
+  display:none;
+}
+
+.PushBox .user_content .badges .badge td{
+  vertical-align: top;
+}
+
+.PushBox .user_content .badges .badge .icon{
+  width:80px;
+  background-color:#404040;
+}
+.PushBox .user_content .badges .badge .infos tr{
+  height:20px;
+}
+
+.PushBox .user_content .badges .badge .infos tr.toggles{
+  height:25px;
+  text-align:center;
+}
+
+.PushBox .user_content .badges .badge .icon img{
+  margin:7px;
+}
+
+.PushBox .user_content .header .options{
   text-align: right;
+}
+
+
+.PushBox .lists .list.selected{
+  background-color: #515151;
+}
+.PushBox .lists .list{
+  padding:3px 0;
+}
+
+.PushBox .welcome{
+  text-align: center;
+  font-size: 16px;
+  line-height: 18px;
+  margin : 20px 0;
+}
+.PushBox .welcome h1{
+  font-weight: bold;
+  margin:40px 0;
+}
+
+#list-editor-search-results{
+  
+}
+
+#list-editor-search-results td{
+  padding:1px 0;
+  overflow:hidden;
+}
+#list-editor-search-results tr{
+  line-height: 24px;
+  vertical-align: middle;
+  cursor:pointer;
+}
+#list-editor-search-results tr.odd{
+  background-color: #515151;
+}
+#list-editor-search-results tr.selected{
+  background-color:#D18827;
+}
+
+
+#list-editor-search-results th.sortable span{
+  margin:0 5px;
+}
+#list-editor-search-results th.sortable{
+  cursor:pointer;
+}
+#list-editor-search-results th.sortable.hover,
+#list-editor-search-results th.sortable.sorted{
+  background-color:#F0AD30;
+}
+#list-editor-search-results th.sortable span.ord_notifier{
+  display:none;
+}
+#list-editor-search-results th.sortable.sorted span.ord_notifier{
+  display:inline;
+}
+
+
+
+.ui-autocomplete.ui-state-hover, 
+.ui-autocomplete.ui-widget-content .ui-state-hover, 
+.ui-autocomplete.ui-widget-header .ui-state-hover, 
+.ui-autocomplete.ui-state-focus, 
+.ui-autocomplete.ui-widget-content .ui-state-focus, 
+.ui-autocomplete.ui-widget-header .ui-state-focus {
+  background-image:none;
+  background-color:#515151;
+  border:none;
+  margin:0;
+  border-radius: 0;
+}
+
+.ui-autocomplete.ui-menu .ui-menu-item a.ui-state-hover, 
+.ui-autocomplete.ui-menu .ui-menu-item a.ui-state-active {
+  margin:0;
+}
+
+.ui-autocomplete li.list-item{
+  width:280px;
+  height:45px;
+  display:block;
+}
+.ui-autocomplete li.list-item .icon{
+  width:42px;
+}
+.ui-autocomplete li.list-item .icon img{
+  max-width:32px;
+  max-height:32px;
+  text-align: center;
+  vertical-align: middle;
+  margin:5px;
+}
+.ui-autocomplete {
+		min-height: 42px;
+		max-height: 200px;
+		overflow-y: auto;
+		overflow-x: hidden;
+    padding:1px 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+		padding-right: 20px;
 }

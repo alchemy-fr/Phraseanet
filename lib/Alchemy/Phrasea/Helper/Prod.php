@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Prod extends \Alchemy\Phrasea\Helper\Helper
+class Prod extends Helper
 {
 
   public function get_search_datas()

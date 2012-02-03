@@ -18,6 +18,7 @@ use Alchemy\Phrasea\Helper\Record as RecordHelper,
     Alchemy\Phrasea\Out\Module\PDF as PDFExport,
     Alchemy\Phrasea\Controller\Exception as ControllerException;
 use Symfony\Component\HttpFoundation\Response,
+    Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -36,476 +37,588 @@ class UsrLists implements ControllerProviderInterface
     /**
      * Get all lists
      */
-    $controllers->get('/list/all/', function(Application $app)
+    $controllers->get('/all/', function(Application $app, Request $request)
+      {
+
+        $datas = array(
+          'success' => false
+          , 'message' => ''
+          , 'result'  => null
+        );
+
+        $lists = new \Doctrine\Common\Collections\ArrayCollection();
+
+        try
+        {
+          $em = $app['Core']->getEntityManager();
+
+          $repository = $em->getRepository('\Entities\UsrList');
+
+          $lists = $repository->findUserLists($app['Core']->getAuthenticatedUser());
+
+          $result = array();
+
+          foreach ($lists as $list)
+          {
+            $owners  = $entries = array();
+
+            foreach ($list->getOwners() as $owner)
             {
-              $em = $app['Core']->getEntityManager();
-
-              $repository = $em->getRepository('\Entities\UsrList');
-
-              $lists = $repository->findUserLists($app['Core']->getAuthenticatedUser());
-
-              $datas = array('lists' => array());
-
-              foreach ($lists as $list)
-              {
-                $owners = $entries = array();
-
-                foreach ($list->getOwners() as $owner)
-                {
-                  $owners[] = array(
-                      'usr_id' => $owner->getUser()->get_id(),
-                      'display_name' => $owner->getUser()->get_display_name(),
-                      'position' => $owner->getUser()->get_position(),
-                      'job' => $owner->getUser()->get_job(),
-                      'company' => $owner->getUser()->get_company(),
-                      'email' => $owner->getUser()->get_email(),
-                      'role' => $owner->getRole()
-                  );
-                }
-
-                foreach ($list->getEntries() as $entry)
-                {
-                  $entries[] = array(
-                      'usr_id' => $owner->getUser()->get_id(),
-                      'display_name' => $owner->getUser()->get_display_name(),
-                      'position' => $owner->getUser()->get_position(),
-                      'job' => $owner->getUser()->get_job(),
-                      'company' => $owner->getUser()->get_company(),
-                      'email' => $owner->getUser()->get_email(),
-                  );
-                }
-
-
-                /* @var $list \Entities\UsrList */
-                $datas['lists'][] = array(
-                    'name' => $list->getName(),
-                    'created' => $list->getCreated()->format(DATE_ATOM),
-                    'updated' => $list->getUpdated()->format(DATE_ATOM),
-                    'owners' => $owners,
-                    'users' => $entries
-                );
-              }
-
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
-
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
+              $owners[] = array(
+                'usr_id'       => $owner->getUser()->get_id(),
+                'display_name' => $owner->getUser()->get_display_name(),
+                'position'     => $owner->getUser()->get_position(),
+                'job'          => $owner->getUser()->get_job(),
+                'company'      => $owner->getUser()->get_company(),
+                'email'        => $owner->getUser()->get_email(),
+                'role'         => $owner->getRole()
+              );
             }
+
+            foreach ($list->getEntries() as $entry)
+            {
+              $entries[] = array(
+                'usr_id'       => $owner->getUser()->get_id(),
+                'display_name' => $owner->getUser()->get_display_name(),
+                'position'     => $owner->getUser()->get_position(),
+                'job'          => $owner->getUser()->get_job(),
+                'company'      => $owner->getUser()->get_company(),
+                'email'        => $owner->getUser()->get_email(),
+              );
+            }
+
+
+            /* @var $list \Entities\UsrList */
+            $result[] = array(
+              'name'    => $list->getName(),
+              'created' => $list->getCreated()->format(DATE_ATOM),
+              'updated' => $list->getUpdated()->format(DATE_ATOM),
+              'owners'  => $owners,
+              'users'   => $entries
+            );
+          }
+
+          $datas = array(
+            'success' => true
+            , 'message' => ''
+            , 'result'  => $result
+          );
+        }
+        catch (ControllerException $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => $e->getMessage()
+          );
+        }
+        catch (\Exception $e)
+        {
+
+        }
+
+        if ($request->getRequestFormat() == 'json')
+        {
+          $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+          return new Response($Json, 200, array('Content-Type' => 'application/json'));
+        }
+        else
+        {
+
+          return new Response($app['Core']->getTwig()->render('prod/actions/Feedback/lists-all.html.twig', array('lists' => $lists)));
+        }
+      }
     );
 
     /**
      * Creates a list
      */
     $controllers->post('/list/', function(Application $app)
-            {
-              $request = $app['request'];
+      {
+        $request = $app['request'];
 
-              $list_name = $request->get('name');
+        $list_name = $request->get('name');
 
-              $datas = array(
-                  'success' => false
-                  , 'message' => sprintf(_('Unable to create list %s'), $list_name)
-              );
+        $datas = array(
+          'success' => false
+          , 'message' => sprintf(_('Unable to create list %s'), $list_name)
+          , 'list_id' => null
+        );
 
-              try
-              {
-                if (!$list_name)
-                {
-                  throw new ControllerException(_('List name is required'));
-                }
+        try
+        {
+          if (!$list_name)
+          {
+            throw new ControllerException(_('List name is required'));
+          }
 
-                $em = $app['Core']->getEntityManager();
+          $em = $app['Core']->getEntityManager();
 
-                $List = new \Entities\UsrList();
+          $List = new \Entities\UsrList();
 
-                $Owner = new \Entities\UsrListOwner();
-                $Owner->setRole(\Entities\UsrListOwner::ROLE_ADMIN);
-                $Owner->setUser($app['Core']->getAuthenticatedUser());
-                $Owner->setList($List);
+          $Owner = new \Entities\UsrListOwner();
+          $Owner->setRole(\Entities\UsrListOwner::ROLE_ADMIN);
+          $Owner->setUser($app['Core']->getAuthenticatedUser());
+          $Owner->setList($List);
 
-                $List->setName($list_name);
-                $List->addUsrListOwner($Owner);
+          $List->setName($list_name);
+          $List->addUsrListOwner($Owner);
 
-                $em->persist($Owner);
-                $em->persist($List);
-                $em->flush();
+          $em->persist($Owner);
+          $em->persist($List);
+          $em->flush();
 
-                $datas = array(
-                    'success' => true
-                    , 'message' => sprintf(_('List %s has been created'), $list_name)
-                );
-              }
-              catch (ControllerException $e)
-              {
-                $datas = array(
-                    'success' => false
-                    , 'message' => $e->getMessage()
-                );
-              }
+          $datas = array(
+            'success' => true
+            , 'message' => sprintf(_('List %s has been created'), $list_name)
+            , 'list_id' => $List->getId()
+          );
+        }
+        catch (ControllerException $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => $e->getMessage()
+          );
+        }
+        catch (\Exception $e)
+        {
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        }
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     );
 
     /**
      * Gets a list
      */
-    $controllers->get('/list/{list_id}/', function(Application $app, $list_id)
-            {
-              $user = $app['Core']->getAuthenticatedUser();
-              $em = $app['Core']->getEntityManager();
+    $controllers->get('/list/{list_id}/', function(Application $app, Request $request, $list_id)
+      {
 
-              $repository = $em->getRepository('\Entities\UsrList');
+        $result = array();
 
-              $list = $repository->findUserListByUserAndId($user, $list_id);
+        $user = $app['Core']->getAuthenticatedUser();
+        $em   = $app['Core']->getEntityManager();
 
-              $owners = $entries = $lists = array();
+        $repository = $em->getRepository('\Entities\UsrList');
 
-              foreach ($list->getOwners() as $owner)
-              {
-                $owners[] = array(
-                    'usr_id' => $owner->getUser()->get_id(),
-                    'display_name' => $owner->getUser()->get_display_name(),
-                    'position' => $owner->getUser()->get_position(),
-                    'job' => $owner->getUser()->get_job(),
-                    'company' => $owner->getUser()->get_company(),
-                    'email' => $owner->getUser()->get_email(),
-                    'role' => $owner->getRole()
-                );
-              }
+        $list = $repository->findUserListByUserAndId($user, $list_id);
 
-              foreach ($list->getEntries() as $entry)
-              {
-                $entries[] = array(
-                    'usr_id' => $owner->getUser()->get_id(),
-                    'display_name' => $owner->getUser()->get_display_name(),
-                    'position' => $owner->getUser()->get_position(),
-                    'job' => $owner->getUser()->get_job(),
-                    'company' => $owner->getUser()->get_company(),
-                    'email' => $owner->getUser()->get_email(),
-                );
-              }
+        $entries = new \Doctrine\Common\Collections\ArrayCollection();
+        $owners  = new \Doctrine\Common\Collections\ArrayCollection();
+
+        foreach ($list->getOwners() as $owner)
+        {
+          $owners[] = array(
+            'usr_id'       => $owner->getUser()->get_id(),
+            'display_name' => $owner->getUser()->get_display_name(),
+            'position'     => $owner->getUser()->get_position(),
+            'job'          => $owner->getUser()->get_job(),
+            'company'      => $owner->getUser()->get_company(),
+            'email'        => $owner->getUser()->get_email(),
+            'role'         => $owner->getRole()
+          );
+        }
+
+        foreach ($list->getEntries() as $entry)
+        {
+          $entries[] = array(
+            'usr_id'       => $entry->getUser()->get_id(),
+            'display_name' => $entry->getUser()->get_display_name(),
+            'position'     => $entry->getUser()->get_position(),
+            'job'          => $entry->getUser()->get_job(),
+            'company'      => $entry->getUser()->get_company(),
+            'email'        => $entry->getUser()->get_email(),
+          );
+        }
 
 
-              /* @var $list \Entities\UsrList */
-              $datas = array('list' => array(
-                      'name' => $list->getName(),
-                      'created' => $list->getCreated()->format(DATE_ATOM),
-                      'updated' => $list->getUpdated()->format(DATE_ATOM),
-                      'owners' => $owners,
-                      'users' => $entries
-                  )
-              );
+        /* @var $list \Entities\UsrList */
+        $result = array(
+          'id'      => $list->getId(),
+          'name'    => $list->getName(),
+          'created' => $list->getCreated()->format(DATE_ATOM),
+          'updated' => $list->getUpdated()->format(DATE_ATOM),
+          'owners'  => $owners,
+          'users'   => $entries
+        );
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
-    )->assert('list_id', '\d+');
+        return new Response($app['Core']->getTwig()->render('prod/actions/Feedback/list.html.twig', $result));
+      }
+    );
 
     /**
      * Update a list
      */
     $controllers->post('/list/{list_id}/update/', function(Application $app, $list_id)
-            {
-              $request = $app['request'];
+      {
+        $request = $app['request'];
 
-              $datas = array(
-                  'success' => false
-                  , 'message' => _('Unable to update list')
-              );
+        $datas = array(
+          'success' => false
+          , 'message' => _('Unable to update list')
+        );
 
-              try
-              {
-                $list_name = $request->get('name');
+        try
+        {
+          $list_name = $request->get('name');
 
-                if (!$list_name)
-                {
-                  throw new ControllerException(_('List name is required'));
-                }
+          if (!$list_name)
+          {
+            throw new ControllerException(_('List name is required'));
+          }
 
-                $user = $app['Core']->getAuthenticatedUser();
-                $em = $app['Core']->getEntityManager();
+          $user = $app['Core']->getAuthenticatedUser();
+          $em   = $app['Core']->getEntityManager();
 
-                $repository = $em->getRepository('\Entities\UsrList');
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
+          $list = $repository->findUserListByUserAndId($user, $list_id);
 
-                $list->setName($list_name);
+          $list->setName($list_name);
 
-                $em->merge($list);
-                $em->flush();
+          $em->merge($list);
+          $em->flush();
 
-                $datas = array(
-                    'success' => true
-                    , 'message' => _('List has been updated')
-                );
-              }
-              catch (ControllerException $e)
-              {
-                $datas = array(
-                    'success' => false
-                    , 'message' => $e->getMessage()
-                );
-              }
+          $datas = array(
+            'success' => true
+            , 'message' => _('List has been updated')
+          );
+        }
+        catch (ControllerException $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => $e->getMessage()
+          );
+        }
+        catch (\Exception $e)
+        {
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        }
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     )->assert('list_id', '\d+');
 
     /**
      * Delete a list
      */
     $controllers->post('/list/{list_id}/delete/', function(Application $app, $list_id)
-            {
-              $em = $app['Core']->getEntityManager();
+      {
+        $em = $app['Core']->getEntityManager();
 
-              try
-              {
-                $repository = $em->getRepository('\Entities\UsrList');
+        try
+        {
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $user = $app['Core']->getAuthenticatedUser();
+          $user = $app['Core']->getAuthenticatedUser();
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
+          $list = $repository->findUserListByUserAndId($user, $list_id);
 
-                $em->remove($list);
-                $em->flush();
+          $em->remove($list);
+          $em->flush();
 
-                $datas = array(
-                    'success' => true
-                    , 'message' => sprintf(_('List has been deleted'))
-                );
-              }
-              catch (\Exception $e)
-              {
+          $datas = array(
+            'success' => true
+            , 'message' => sprintf(_('List has been deleted'))
+          );
+        }
+        catch (ControllerException $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => $e->getMessage()
+          );
+        }
+        catch (\Exception $e)
+        {
 
-                $datas = array(
-                    'success' => false
-                    , 'message' => sprintf(_('Unable to delete list'))
-                );
-              }
+          $datas = array(
+            'success' => false
+            , 'message' => sprintf(_('Unable to delete list'))
+          );
+        }
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     )->assert('list_id', '\d+');
 
 
     /**
      * Remove a usr_id from a list
      */
-    $controllers->post('/list/{list_id}/remove/{entry_id}/', function(Application $app, $list_id, $entry_id)
-            {
-              $em = $app['Core']->getEntityManager();
+    $controllers->post('/list/{list_id}/remove/{usr_id}/', function(Application $app, $list_id, $usr_id)
+      {
+        $em = $app['Core']->getEntityManager();
 
-              try
-              {
-                $repository = $em->getRepository('\Entities\UsrList');
+        try
+        {
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $user = $app['Core']->getAuthenticatedUser();
+          $user = $app['Core']->getAuthenticatedUser();
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
-                /* @var $list \Entities\UsrList */
+          $list = $repository->findUserListByUserAndId($user, $list_id);
+          /* @var $list \Entities\UsrList */
 
-                $entry_repository = $em->getRepository('\Entities\UsrListEntry');
+          $entry_repository = $em->getRepository('\Entities\UsrListEntry');
 
-                $user_entry = $entry_repository->findEntryByListAndEntryId($list, $entry_id);
+          $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
 
-                $em->remove($user_entry);
-                $em->flush();
+          $em->remove($user_entry);
+          $em->flush();
 
-                $datas = array(
-                    'success' => true
-                    , 'message' => _('Entry removed from list')
-                );
-              }
-              catch (\Exception $e)
-              {
+          $datas = array(
+            'success' => true
+            , 'message' => _('Entry removed from list')
+          );
+        }
+        catch (ControllerException $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => $e->getMessage()
+          );
+        }
+        catch (\Exception $e)
+        {
 
-                $datas = array(
-                    'success' => false
-                    , 'message' => _('Unable to remove entry from list')
-                );
-              }
+          $datas = array(
+            'success' => false
+            , 'message' => _('Unable to remove entry from list ' . $e->getMessage())
+          );
+        }
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     )->assert('list_id', '\d+')->assert('entry_id', '\d+');
 
     /**
      * Adds a usr_id to a list
      */
-    $controllers->post('/list/{list_id}/add/{usr_id}/', function(Application $app, $list_id, $usr_id)
-            {
-              $em = $app['Core']->getEntityManager();
-              $user = $app['Core']->getAuthenticatedUser();
+    $controllers->post('/list/{list_id}/add/', function(Application $app, Request $request, $list_id)
+      {
+        $em   = $app['Core']->getEntityManager();
+        $user = $app['Core']->getAuthenticatedUser();
 
-              try
-              {
-                $repository = $em->getRepository('\Entities\UsrList');
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
-                /* @var $list \Entities\UsrList */
-                $user_entry = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
 
-                $entry = new \Entities\UsrListEntry();
-                $entry->setUser($user_entry);
-                $entry->setList($list);
+        try
+        {
+          if (!is_array($request->get('usr_ids')))
+          {
+            throw new Controller\Exception('Invalid or missing parameter usr_ids');
+          }
 
-                $list->addUsrListEntry($entry);
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $em->persist($entry);
-                $em->merge($list);
+          $list = $repository->findUserListByUserAndId($user, $list_id);
+          /* @var $list \Entities\UsrList */
 
-                $em->flush();
+          $inserted_usr_ids = array();
+          foreach ($request->get('usr_ids') as $usr_id)
+          {
+            $user_entry = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
 
-                $datas = array(
-                    'success' => true
-                    , 'message' => _('Usr added to list')
-                );
-              }
-              catch (\Exception $e)
-              {
+            if ($list->has($user_entry))
+              continue;
 
-                $datas = array(
-                    'success' => false
-                    , 'message' => _('Unable to add usr to list')
-                );
-              }
+            $entry = new \Entities\UsrListEntry();
+            $entry->setUser($user_entry);
+            $entry->setList($list);
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+            $list->addUsrListEntry($entry);
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
+            $em->persist($entry);
+            $em->merge($list);
+            $inserted_usr_ids[] = $user_entry->get_id();
+          }
+
+          $em->flush();
+
+          if (count($inserted_usr_ids) > 1)
+          {
+            $datas = array(
+              'success' => true
+              , 'message' => sprintf(_('%d Users added to list'), count($inserted_usr_ids))
+              , 'result'  => $inserted_usr_ids
+            );
+          }
+          else
+          {
+            $datas = array(
+              'success' => true
+              , 'message' => sprintf(_('%d User added to list'), count($inserted_usr_ids))
+              , 'result'  => $inserted_usr_ids
+            );
+          }
+        }
+        catch (ControllerException $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => $e->getMessage()
+          );
+        }
+        catch (\Exception $e)
+        {
+
+          $datas = array(
+            'success' => false
+            , 'message' => _('Unable to add usr to list')
+          );
+        }
+
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
     )->assert('list_id', '\d+')->assert('usr_id', '\d+');
 
     /**
      * Share a list to a user with an optionnal role
      */
     $controllers->post('/list/{list_id}/share/{usr_id}/', function(Application $app, $list_id, $usr_id)
-            {
-              $em = $app['Core']->getEntityManager();
-              $user = $app['Core']->getAuthenticatedUser();
+      {
+        $em   = $app['Core']->getEntityManager();
+        $user = $app['Core']->getAuthenticatedUser();
 
-              $availableRoles = array(
-                  \Entities\UsrListOwner::ROLE_USER,
-                  \Entities\UsrListOwner::ROLE_EDITOR,
-                  \Entities\UsrListOwner::ROLE_ADMIN,
-              );
+        $availableRoles = array(
+          \Entities\UsrListOwner::ROLE_USER,
+          \Entities\UsrListOwner::ROLE_EDITOR,
+          \Entities\UsrListOwner::ROLE_ADMIN,
+        );
 
-              if (!$app['request']->get('role'))
-                throw new \Exception_BadRequest('Missing role parameter');
-              elseif (!in_array($app['request']->get('role'), $availableRoles))
-                throw new \Exception_BadRequest('Role is invalid');
+        if (!$app['request']->get('role'))
+          throw new \Exception_BadRequest('Missing role parameter');
+        elseif (!in_array($app['request']->get('role'), $availableRoles))
+          throw new \Exception_BadRequest('Role is invalid');
 
-              try
-              {
-                $repository = $em->getRepository('\Entities\UsrList');
+        try
+        {
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
-                /* @var $list \Entities\UsrList */
+          $list = $repository->findUserListByUserAndId($user, $list_id);
+          /* @var $list \Entities\UsrList */
 
-                if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
-                {
-                  throw new \Exception('You are not authorized to do this');
-                }
+          if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
+          {
+            throw new \Exception('You are not authorized to do this');
+          }
 
-                $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+          $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
 
-                if ($list->hasAccess($new_owner))
-                {
-                  $owner = $list->getOwner($new_owner);
-                }
-                else
-                {
-                  $owner = new \Entities\UsrListOwner();
-                  $owner->setList($list);
-                  $owner->setUser($new_owner);
+          if ($list->hasAccess($new_owner))
+          {
+            $owner = $list->getOwner($new_owner);
+          }
+          else
+          {
+            $owner = new \Entities\UsrListOwner();
+            $owner->setList($list);
+            $owner->setUser($new_owner);
 
-                  $list->addUsrListOwner($owner);
+            $list->addUsrListOwner($owner);
 
-                  $em->persist($owner);
-                  $em->merge($list);
-                }
+            $em->persist($owner);
+            $em->merge($list);
+          }
 
-                $role = $app['request']->get('role');
+          $role = $app['request']->get('role');
 
-                $owner->setRole($role);
+          $owner->setRole($role);
 
-                $em->merge($owner);
-                $em->flush();
+          $em->merge($owner);
+          $em->flush();
 
-                $datas = array(
-                    'success' => true
-                    , 'message' => _('List shared to user')
-                );
-              }
-              catch (\Exception $e)
-              {
+          $datas = array(
+            'success' => true
+            , 'message' => _('List shared to user')
+          );
+        }
+        catch (ControllerException $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => $e->getMessage()
+          );
+        }
+        catch (\Exception $e)
+        {
 
-                $datas = array(
-                    'success' => false
-                    , 'message' => _('Unable to share the list with the usr')
-                );
-              }
+          $datas = array(
+            'success' => false
+            , 'message' => _('Unable to share the list with the usr')
+          );
+        }
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
-    )->assert('list_id', '\d+')->assert('usr_id', '\d+');
-
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
+    );
     /**
      * UnShare a list to a user
      */
     $controllers->post('/list/{list_id}/unshare/{usr_id}/', function(Application $app, $list_id, $usr_id)
-            {
-              $em = $app['Core']->getEntityManager();
-              $user = $app['Core']->getAuthenticatedUser();
+      {
+        $em   = $app['Core']->getEntityManager();
+        $user = $app['Core']->getAuthenticatedUser();
 
-              try
-              {
-                $repository = $em->getRepository('\Entities\UsrList');
+        try
+        {
+          $repository = $em->getRepository('\Entities\UsrList');
 
-                $list = $repository->findUserListByUserAndId($user, $list_id);
-                /* @var $list \Entities\UsrList */
+          $list = $repository->findUserListByUserAndId($user, $list_id);
+          /* @var $list \Entities\UsrList */
 
-                if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_ADMIN)
-                {
-                  throw new \Exception('You are not authorized to do this');
-                }
+          if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_ADMIN)
+          {
+            throw new \Exception('You are not authorized to do this');
+          }
 
-                $owners_repository = $em->getRepository('\Entities\UsrListOwner');
+          $owners_repository = $em->getRepository('\Entities\UsrListOwner');
 
-                $owner = $owners_repository->findByListAndUsrId($list, $usr_id);
+          $owner = $owners_repository->findByListAndUsrId($list, $usr_id);
 
-                $em->remove($owner);
-                $em->flush();
+          $em->remove($owner);
+          $em->flush();
 
-                $datas = array(
-                    'success' => true
-                    , 'message' => _('Owner removed from list')
-                );
-              }
-              catch (\Exception $e)
-              {
-                $datas = array(
-                    'success' => false
-                    , 'message' => _('Unable to remove usr from list')
-                );
-              }
+          $datas = array(
+            'success' => true
+            , 'message' => _('Owner removed from list')
+          );
+        }
+        catch (ControllerException $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => $e->getMessage()
+          );
+        }
+        catch (\Exception $e)
+        {
+          $datas = array(
+            'success' => false
+            , 'message' => _('Unable to remove usr from list')
+          );
+        }
 
-              $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
-              return new Response($Json, 200, array('Content-Type' => 'application/json'));
-            }
-    )->assert('list_id', '\d+')->assert('usr_id', '\d+');
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      }
+    );
 
 
     return $controllers;

@@ -175,12 +175,6 @@ abstract class task_databoxAbstract extends task_abstract
             ->check_records_done()
             ->check_task_status();
 
-    if ($connbas instanceof PDO)
-    {
-      $connbas->close();
-      unset($connbas);
-    }
-
     if ($rowstodo > 0)
       $this->setProgress(0, 0);
 
