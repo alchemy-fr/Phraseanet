@@ -1245,6 +1245,7 @@ input,select,textarea{
 	padding:2px;
 	border:1px solid #b1b1b1;
 	background:white;
+  resize: none;
 }
 input:radio, input:checkbox, .checkbox{
 	border:none;
@@ -2908,14 +2909,21 @@ dans l'onglet thesaurus : arbres, menus contextuels
   vertical-align:middle;
 }
 
+#DIALOG.dialog-Small select,
+#DIALOG.dialog-Small input[type="text"],
+#DIALOG.dialog-Small textarea{
+  width:100%;
+}
+#DIALOG.dialog-Small textarea{
+  height:60px;
+}
+
+#DIALOG label{
+  line-height:26px;
+}
+
 #DIALOG p{
   line-height:18px;
-}
-#DIALOG input:text{
-  height:24px;
-  font-size:15px;
-  margin:15px auto;
-  width:100%;
 }
 
 
