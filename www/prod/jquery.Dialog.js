@@ -4,22 +4,40 @@ var p4 = p4 || {};
 ;
 (function(p4, $){
   
-  
-  function createDialog() {
-    var $dialog = $('#DIALOG');
-    
-    if($dialog.length === 0)
+  function getLevel (level) {
+
+    level = parseInt(level);
+
+    if(isNaN(level) || level < 1)
     {
-      $dialog = $('<div style="display:none;" id="DIALOG"></div>');
-      $('body').append($dialog);
+      return 1;
     }
-    
-    return $dialog;
+
+    return level; 
   };
   
+  function getId (level)
+  {
+    return 'DIALOG' + getLevel(level); 
+  };
   
-  var Create = function(options) {
-    
+  var phraseaDialog = function (options, level) {
+    c
+    var createDialog = function(level) {
+
+      var $dialog = $('#' + getId(level));
+
+      if($dialog.length > 0)
+      {
+        throw 'Dialog already exists at this level';
+      }
+
+      $dialog = $('<div style="display:none;" id="' + getId(level) + '"></div>');
+      $('body').append($dialog);
+
+      return $dialog;
+    }
+
     var defaults = { 
       size : 'Medium',
       buttons : {},
@@ -34,18 +52,20 @@ var p4 = p4 || {};
     width,
     height,
     $dialog;
-    
+
     this.options = $.extend(defaults, options);
-    
+      
+    this.level = getLevel(level);
+
     if(this.options.closeButton === true)
     {
-      this.options.buttons[language.fermer] = Close;
+      this.options.buttons[language.fermer] = this.Close;
     }
     if(this.options.cancelButton === true)
     {
-      this.options.buttons[language.annuler] = Close;
+      this.options.buttons[language.annuler] = this.Close;
     }
-    
+
     switch(this.options.size)
     {
       case 'Full':
@@ -62,64 +82,119 @@ var p4 = p4 || {};
         height = 300;
         break;
     }
-    
+
     /*
-       * 3 avaailable dimensions :
-       * 
-       *  - Full   | Full size ()
-       *  - Medium | 420 x 450
-       *  - Small  | 730 x 480
-       *  
-       **/
-    var $dialog = createDialog();
-    
-    $dialog.dialog('destroy').attr('title', this.options.title)
-      .empty()
-      .dialog({
-        buttons:this.options.buttons,
-        draggable:false,
-        resizable:false,
-        closeOnEscape:this.options.closeOnEscape,
-        modal:true,
-        width:width,
-        height:height,
-        close:Close
-      })
-      .dialog('open').addClass('dialog-' + this.options.size);
-    
+        * 3 avaailable dimensions :
+        * 
+        *  - Full   | Full size ()
+        *  - Medium | 420 x 450
+        *  - Small  | 730 x 480
+        *  
+        **/
+    this.$dialog = createDialog(this.level),
+    zIndex = Math.min(this.level * 5000 + 5000, 32767);
+
+    this.$dialog.dialog('destroy').attr('title', this.options.title)
+    .empty()
+    .dialog({
+      buttons:this.options.buttons,
+      draggable:false,
+      resizable:false,
+      closeOnEscape:this.options.closeOnEscape,
+      modal:true,
+      width:width,
+      height:height,
+      close:this.Close,
+      zIndex:zIndex
+    })
+    .dialog('open').addClass('dialog-' + this.options.size);
+
     if(this.options.loading === true)
     {
-      $dialog.addClass('loading');
+      this.$dialog.addClass('loading');
     }
-    
+
     if(this.options.size === 'Full')
     {
-      $(window).unbind('resize.DIALOG').bind('resize.DIALOG', function(){
-        $dialog.dialog('option', { width : bodySize.x - 30, height : bodySize.y - 30 });
+      var $this = this;
+      $(window).unbind('resize.DIALOG' + getLevel(level))
+      .bind('resize.DIALOG' + getLevel(level), function(){
+        $this.$dialog.dialog('option', {
+          width : bodySize.x - 30, 
+          height : bodySize.y - 30
+        });
       });
     }
-    
-    return $dialog;
-  };
 
-  var Close = function () {
-    $(window).unbind('resize.DIALOG');
-    createDialog().dialog('destroy').remove();
+    return this;
   };
   
-  var setContent = function (content) {
-    createDialog().removeClass('loading').empty().append(content);
+  phraseaDialog.prototype = {
+    Close : function() {
+      p4.Dialog.Close(this.level);
+    },
+    setContent : function (content) {
+      this.$dialog.removeClass('loading').empty().append(content);
+    },
+    getId : function () {
+      return this.$dialog.attr('id');
+    },
+    getDomElement : function () {
+      return this.$dialog;
+    },
+    getOption : function (optionName) {
+      return this.$dialog.dialog('option', optionName);
+    },
+    setOption : function (optionName, optionValue) {
+      this.$dialog.dialog('option', optionName, optionValue);
+    }
   };
   
-  var getDialog = function () {
-    return $('#DIALOG');
+  var Dialog = function () {
+    this.currentStack = {};
+
   };
   
-  p4.Dialog = {
-    Create : Create,
-    getDialog : getDialog,
-    Close : Close,
-    setContent : setContent
+  Dialog.prototype = {
+    Create : function(options, level) {
+
+      if(this.get(level) instanceof phraseaDialog)
+      {
+        this.get(level).Close();
+      }
+      
+      $dialog = new phraseaDialog(options, level);
+      
+      this.currentStack[$dialog.getId()] = $dialog;
+      
+      return $dialog;
+    },
+    get : function (level) {
+      
+      var id = getId(level);
+      
+      if(id in this.currentStack)
+      {
+        return this.currentStack[id];
+      }
+      
+      return null;
+    },
+    Close : function (level) {
+      
+      $(window).unbind('resize.DIALOG' + getLevel(level));
+      
+      this.get(level).getDomElement().dialog('destroy').remove();
+      
+      var id = this.get(level).getId();
+      
+      if(id in this.currentStack)
+      {
+        delete this.currentStack.id;
+      }
+    }
   };
+  
+  p4.Dialog = new Dialog();
   
 }(p4, jQuery));

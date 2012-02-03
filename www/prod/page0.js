@@ -1868,14 +1868,13 @@ function pushThis(sstt_id, lst)
     /* disable push closeonescape as an over dialog may exist (add user) */
   $dialog = p4.Dialog.Create({
     size:'Full',
-    title:'Push',
-    closeOnEscape:false
+    title:'Push'
   });
 
   $.post("/prod/push/sendform/"
     , { lst : lst, ssel : sstt_id }
     , function(data){
-      p4.Dialog.setContent(data);
+      $dialog.setContent(data);
       return;
     }
   );
@@ -1888,14 +1887,13 @@ function feedbackThis(sstt_id, lst)
     /* disable push closeonescape as an over dialog may exist (add user) */
   $dialog = p4.Dialog.Create({
     size:'Full',
-    title:'Feedback',
-    closeOnEscape:false
+    title:'Feedback'
   });
 
   $.post("/prod/push/validateform/"
     , { lst : lst, ssel : sstt_id }
     , function(data){
-      p4.Dialog.setContent(data);
+      $dialog.setContent(data);
       return;
     }
   );

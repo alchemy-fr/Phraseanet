@@ -2905,20 +2905,20 @@ dans l'onglet thesaurus : arbres, menus contextuels
   vertical-align:middle;
 }
 
-#DIALOG.dialog-Small select,
-#DIALOG.dialog-Small input[type="text"],
-#DIALOG.dialog-Small textarea{
+.ui-dialog-content.dialog-Small select,
+.ui-dialog-content.dialog-Small input[type="text"],
+.ui-dialog-content.dialog-Small textarea{
   width:100%;
 }
-#DIALOG.dialog-Small textarea{
+.ui-dialog-content.dialog-Small textarea{
   height:60px;
 }
 
-#DIALOG label{
+.ui-dialog-content label{
   line-height:26px;
 }
 
-#DIALOG p{
+.ui-dialog-content p{
   line-height:18px;
 }
 
