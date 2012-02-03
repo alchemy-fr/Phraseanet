@@ -74,7 +74,7 @@ class login
 
     if (phrasea::guest_allowed())
     {
-      $inviteBox = '<a class="link" rel="external" href="/prod/index.php?nolog=1">' . _('login:: guest Access') . '</a>';
+      $inviteBox = '<a class="link" rel="external" href="/prod/?nolog=1">' . _('login:: guest Access') . '</a>';
     }
 
     return $inviteBox;
