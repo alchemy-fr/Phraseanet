@@ -54,6 +54,7 @@ class Language implements ControllerProviderInterface
               $out['loading'] = _('phraseanet::chargement');
               $out['valider'] = _('boutton::valider');
               $out['annuler'] = _('boutton::annuler');
+              $out['create'] = _('boutton::creer');
               $out['rechercher'] = _('boutton::rechercher');
               $out['renewRss'] = _('boutton::renouveller');
               $out['candeletesome'] = _('Vous n\'avez pas les droits pour supprimer certains documents');
