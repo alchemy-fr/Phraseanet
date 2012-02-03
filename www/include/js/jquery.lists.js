@@ -94,12 +94,13 @@ var p4 = p4 || {};
       }
       
       var $this = this;
-
+      var data = {usr_ids : $(arrayUsers).toArray()};
+      
       $.ajax({
         type: 'POST',
-        url: '/prod/lists/list/' + this.id + '/add/',
+        url: '/prod/lists/list/' + $this.id + '/add/',
         dataType: 'json',
-        data: {usr_ids : arrayUsers},
+        data: data,
         success: function(data){
           if(data.success)
           {
