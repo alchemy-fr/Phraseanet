@@ -22,7 +22,7 @@ var p4 = p4 || {};
   };
   
   var phraseaDialog = function (options, level) {
-    c
+
     var createDialog = function(level) {
 
       var $dialog = $('#' + getId(level));
