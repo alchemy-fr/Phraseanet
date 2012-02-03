@@ -180,7 +180,7 @@ class databox_subdefsStructure implements IteratorAggregate
 
     $subdef = $dom_struct->createElement('subdef');
     $subdef->setAttribute('class', $class);
-    $subdef->setAttribute('name', $name);
+    $subdef->setAttribute('name', mb_strtolower($name));
 
     $dom_xp = $this->databox->get_xpath_structure();
     $query = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
