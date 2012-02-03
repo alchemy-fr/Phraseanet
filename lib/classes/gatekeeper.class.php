@@ -249,7 +249,7 @@ class gatekeeper
                 . '&error=' . urlencode($e->getMessage());
         phrasea::redirect($url);
       }
-      phrasea::redirect('/' . $this->_directory . '/index.php');
+      phrasea::redirect('/' . $this->_directory . '/');
     }
 
     return $this;
