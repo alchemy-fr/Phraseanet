@@ -69,16 +69,16 @@ class Subdefs implements ControllerProviderInterface
                 $delete_subef = explode('_', $delete_subdef);
                 $group = $delete_subef[0];
                 $name = $delete_subef[1];
-
                 $subdefs = $databox->get_subdef_structure();
                 $subdefs->delete_subdef($group, $name);
               }
               elseif (count($add_subdef) === 3)
               {
                 $subdefs = $databox->get_subdef_structure();
-
+                $UnicodeProcessor = new \unicode();
+                
                 $group = $add_subdef['group'];
-                $name = $add_subdef['name'];
+                $name = $UnicodeProcessor->remove_nonazAZ09($add_subdef['name'], false);
                 $class = $add_subdef['class'];
 
                 $subdefs->add_subdef($group, $name, $class);
