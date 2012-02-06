@@ -45,6 +45,7 @@ $finder
   ->notName(basename(__FILE__))
   ->exclude('.git')
   ->exclude('vendor')
+  ->exclude('Doctrine/Proxies')
 ;
 
 $count = 0;
