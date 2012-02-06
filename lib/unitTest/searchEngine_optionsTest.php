@@ -32,9 +32,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   */
   public function testSet_locale()
   {
     $locale = 'BABA';
@@ -42,10 +39,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals($locale, $this->object->get_locale());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_locale().
-   */
   public function testGet_locale()
   {
     $locale = null;
@@ -53,10 +46,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals($locale, $this->object->get_locale());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_sort().
-   */
   public function testSet_sort()
   {
     $by = 'NAME';
@@ -69,10 +58,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals(searchEngine_options::SORT_MODE_DESC, $this->object->get_sortord());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_sortby().
-   */
   public function testGet_sortby()
   {
     $by = 'NAME';
@@ -82,10 +67,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals($sort, $this->object->get_sortord());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_sortord().
-   */
   public function testGet_sortord()
   {
     $by = 'NAME';
@@ -95,10 +76,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals($sort, $this->object->get_sortord());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_use_stemming().
-   */
   public function testSet_use_stemming()
   {
     $bool = true;
@@ -109,10 +86,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals($bool, $this->object->get_use_stemming());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_use_stemming().
-   */
   public function testGet_use_stemming()
   {
     $bool = true;
@@ -123,10 +96,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals($bool, $this->object->get_use_stemming());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_search_type().
-   */
   public function testSet_search_type()
   {
     $type = "caca";
@@ -140,10 +109,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals(searchEngine_options::RECORD_GROUPING, $this->object->get_search_type());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_search_type().
-   */
   public function testGet_search_type()
   {
     $type = "caca";
@@ -157,10 +122,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals(searchEngine_options::RECORD_GROUPING, $this->object->get_search_type());
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_bases().
-   */
   public function testSet_bases()
   {
     $bases = array_keys(self::$user->ACL()->get_granted_base());
@@ -168,10 +129,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals(array_values($bases), array_values($this->object->get_bases()));
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_bases().
-   */
   public function testGet_bases()
   {
     $bases = array_keys(self::$user->ACL()->get_granted_base());
@@ -179,10 +136,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals(array_values($bases), array_values($this->object->get_bases()));
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_fields().
-   */
   public function testSet_fields()
   {
     // Remove the following lines when you implement this test.
@@ -191,10 +144,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_fields().
-   */
   public function testGet_fields()
   {
     // Remove the following lines when you implement this test.
@@ -203,10 +152,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_status().
-   */
   public function testSet_status()
   {
     // Remove the following lines when you implement this test.
@@ -215,10 +160,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_status().
-   */
   public function testGet_status()
   {
     // Remove the following lines when you implement this test.
@@ -227,10 +168,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_record_type().
-   */
   public function testSet_record_type()
   {
     // Remove the following lines when you implement this test.
@@ -239,10 +176,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_record_type().
-   */
   public function testGet_record_type()
   {
     // Remove the following lines when you implement this test.
@@ -251,10 +184,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_min_date().
-   */
   public function testSet_min_date()
   {
     // Remove the following lines when you implement this test.
@@ -263,10 +192,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_min_date().
-   */
   public function testGet_min_date()
   {
     // Remove the following lines when you implement this test.
@@ -275,10 +200,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_max_date().
-   */
   public function testSet_max_date()
   {
     // Remove the following lines when you implement this test.
@@ -287,10 +208,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_max_date().
-   */
   public function testGet_max_date()
   {
     // Remove the following lines when you implement this test.
@@ -299,10 +216,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSet_date_fields().
-   */
   public function testSet_date_fields()
   {
     // Remove the following lines when you implement this test.
@@ -311,10 +224,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testGet_date_fields().
-   */
   public function testGet_date_fields()
   {
     // Remove the following lines when you implement this test.
@@ -323,10 +232,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSerialize().
-   */
   public function testSerialize()
   {
     $bases = array_keys(self::$user->ACL()->get_granted_base());
@@ -343,10 +248,6 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertEquals($this->object, unserialize(serialize($this->object)));
   }
 
-  /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testUnserialize().
-   */
   public function testUnserialize()
   {
     // Remove the following lines when you implement this test.
@@ -356,5 +257,3 @@ class searchEngine_optionsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   }
 
 }
-
-?>
