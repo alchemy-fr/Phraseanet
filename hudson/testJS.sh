@@ -2,19 +2,13 @@
 
 printHelp(){
 	echo "";
-	echo "Utilisation : [/bin/bash] testJS.sh /path/to/sources/ \"http[s]://your.instance.com/\" [full]";
+	echo "Use : [/bin/bash] testJS.sh /path/to/sources/ \"http[s]://your.instance.com/\" ";
 	echo "";
-	echo "Lance les test unitaires javascripts, l'option full permet d'avoir les prints même si les tests unitaires sont bons.";
-	echo "Les trailings slashes du répertoire des sources et de l'instance sont obligatoires.";
+	echo "Run JS Unittest recursively.";
+	echo "You have to put trailing slashes !";
 	echo "";
 }
 
-# printHelp;
-
-
-# Sources : $1
-# Lien des tests : $2
-# Full : $3
 
 sources=$1;
 instance=$2;
@@ -22,32 +16,32 @@ fullprint=$3;
 
 readme=$sources"README.md"
 
-# test si le répertoire existe
-echo -n "Test de la validité du fichier : ";
+# Directory exists ?
+echo -n "Directory check  : ";
 if [ ! -d $sources ]
 then
-	echo "Le repertoire n'existe pas";
+	echo "Directory does not exists";
 	printHelp;
 	exit 1;
 fi
 
-# test si le répertoire est bien un source Phraseanet
+# Phraseanet directory ?
 if [ ! -e $readme ]
 then
-	echo "Le repertoire n'est pasa une source phraseanet";
+	echo "Not a Phraseanet Directory";
 	exit 1;
 fi
 
 echo "ok !";
 
 
-# test si le lien est valable
+# Valid link ?
 
-echo -n "Test de la validité du lien : ";
+echo -n "Check link validity : ";
 wget --no-check-certificate $instance -o /dev/null
 if [ ! $? -eq 0 ]
 then
-	echo "Le site n'existe pas";
+	echo "Link does not exists.";
 	exit 1;
 fi
 
@@ -56,7 +50,7 @@ echo "ok !";
 echo "";
 echo "";
 testOK=0
-# recursivité des fichiers
+# recursively tests files
 for jsfiles in `ls $sources"www/include/js/tests/"`
 do
 	echo -n $jsfiles" : ";
