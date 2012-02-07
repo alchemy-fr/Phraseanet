@@ -27,7 +27,7 @@ class cache_databox
   {
     $databox = \databox::get_instance((int) $sbas_id);
 
-    $date = new \DateTime('-30 seconds');
+    $date = new \DateTime('-3 seconds');
 
     $appbox = \appbox::get_instance();
 
@@ -37,7 +37,7 @@ class cache_databox
 
     try
     {
-      $last_update = $appbox->get_data_from_cache('memcached_update');
+      $last_update = $appbox->get_data_from_cache('memcached_update_' . $sbas_id);
     }
     catch (\Exception $e)
     {
@@ -127,7 +127,7 @@ class cache_databox
     $date = new \DateTime();
     $now  = $date->format(DATE_ISO8601);
 
-    $appbox->set_data_to_cache($now, 'memcached_update');
+    $appbox->set_data_to_cache($now, 'memcached_update_' . $sbas_id);
 
     $conn = \connection::getPDOConnection();
 
