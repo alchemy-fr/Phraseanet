@@ -143,6 +143,8 @@ class mail
 
   public static function mail_confirm_registered($email)
   {
+    $registry = \registry::get_instance();
+    
     $subject = _('login::register: sujet email : confirmation de votre adresse email');
 
     $body = "<div>" . _('login::register: merci d\'avoir confirme votre adresse email') . "</div>\n";
