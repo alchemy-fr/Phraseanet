@@ -93,6 +93,9 @@ class ACL implements cache_cacheableInterface
   const CACHE_RIGHTS_RECORDS = 'rights_records';
   const CACHE_GLOBAL_RIGHTS  = 'global_rights';
 
+  const GRANT_ACTION_PUSH    = 'push';
+  const GRANT_ACTION_VALIDATE = 'validate';
+
   /**
    * Constructor
    *
@@ -300,11 +303,15 @@ class ACL implements cache_cacheableInterface
 
     $bas_to_acces   = $masks_to_give  = $rights_to_give = array();
 
-    $sbmap = array(// map masks (and+xor) of template to masks to apply to user on base (and_and, and_or, xor_and, xor_or)
-      '00' => array('aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'),
-      '01' => array('aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'),
-      '10' => array('aa' => '1', 'ao' => '1', 'xa' => '0', 'xo' => '0'),
-      '11' => array('aa' => '1', 'ao' => '1', 'xa' => '1', 'xo' => '1')
+    /**
+     * map masks (and+xor) of template to masks to apply to user on base
+     * (and_and, and_or, xor_and, xor_or)
+     */
+    $sbmap = array(
+        '00' => array('aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'),
+        '01' => array('aa' => '1', 'ao' => '0', 'xa' => '1', 'xo' => '0'),
+        '10' => array('aa' => '1', 'ao' => '1', 'xa' => '0', 'xo' => '0'),
+        '11' => array('aa' => '1', 'ao' => '1', 'xa' => '1', 'xo' => '1')
     );
 
     foreach ($template_user->ACL()->get_granted_base() as $collection)
@@ -327,17 +334,35 @@ class ACL implements cache_cacheableInterface
         }
       }
 
-      // apply sb : unchecked boxes on template will be unchecked on user
-      //            checked boxes on template does nothing (left unchanged on user)
-      // get masks from 64 bits int AS DECIMAL STRING to BINARY STRING
-      $mand = substr(str_repeat('0', 64) . databox_status::dec2bin($template_user->ACL()->get_mask_and($base_id)), -64);
-      $mxor = substr(str_repeat('0', 64) . databox_status::dec2bin($template_user->ACL()->get_mask_xor($base_id)), -64);
-      $m    = array('aa' => '', 'ao' => '', 'xa' => '', 'xo' => '');
-      for ($i   = 0; $i < 64; $i++)
+      $mask_and = $template_user->ACL()->get_mask_and($base_id);
+      $mask_xor = $template_user->ACL()->get_mask_xor($base_id);
+      
+      $mask_and = ctype_digit($mask_and) ? $mask_and : '0';
+      $mask_xor = ctype_digit($mask_xor) ? $mask_xor : '0';
+      
+      
+      /**
+       * apply sb is substractive
+       */
+      $mand = substr(
+              str_repeat('0', 64)
+              . databox_status::dec2bin($mask_and)
+              , -64
+      );
+      $mxor = substr(
+              str_repeat('0', 64)
+              . databox_status::dec2bin($mask_xor)
+              , -64
+      );
+      $m = array('aa' => '', 'ao' => '', 'xa' => '', 'xo' => '');
+      for ($i = 0; $i < 64; $i++)
       {
         $ax = $mand[$i] . $mxor[$i];
+
         foreach ($m as $k => $v)
+        {
           $m[$k] .= $sbmap[$ax][$k];
+        }
       }
 
       $masks_to_give[$base_id] = array(
@@ -928,10 +953,10 @@ class ACL implements cache_cacheableInterface
         $this->_global_rights['order_master'] = true;
 
       $row['limited_from'] = $row['limited_from'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_from']);
-      $row['limited_to']   = $row['limited_to'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_to']);
+      $row['limited_to'] = $row['limited_to'] == '0000-00-00 00:00:00' ? '' : trim($row['limited_to']);
 
       if ($row['time_limited'] == '1'
-        && ($row['limited_from'] !== '' || $row['limited_to'] !== ''))
+              && ($row['limited_from'] !== '' || $row['limited_to'] !== ''))
       {
         $this->_limited[$row['base_id']] = array(
           'dmin' => $row['limited_from'] ? new DateTime($row['limited_from']) : null
