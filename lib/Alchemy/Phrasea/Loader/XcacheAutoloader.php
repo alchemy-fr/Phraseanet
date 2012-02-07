@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Loader;
 
+require_once __DIR__ . '/LoaderStrategy.php';
+
 use Alchemy\Phrasea\Loader\LoaderStrategy as CacheStrategy;
 
 /**
@@ -22,48 +24,28 @@ use Alchemy\Phrasea\Loader\LoaderStrategy as CacheStrategy;
 Class XcacheAutoloader extends Autoloader implements CacheStrategy
 {
 
-  private $prefix;
-
   /**
-   * Constructor.
-   *
-   * @param string $prefix A prefix to create a namespace in APC
-   *
-   * @api
+   * {@inheritdoc}
    */
-  public function __construct($prefix)
-  {
-    if (!$this->isAvailable())
-    {
-      throw new \Exception("Xcache cache is not enable");
-    }
-
-    $this->prefix = $prefix;
-  }
-
-  /**
-   * Finds a file by class name while caching lookups to APC.
-   *
-   * @param string $class A class name to resolve to file
-   */
-  public function findFile($class)
-  {
-    if (false === $file = xcache_get($this->prefix . $class))
-    {
-      xcache_set($this->prefix . $class, $file = parent::findFile($class));
-    }
-
-    return $file;
-  }
-
   public function isAvailable()
   {
     return extension_loaded('xcache');
   }
 
-  public function register($prepend = false)
+  /**
+   * {@inheritdoc}
+   */
+  public function fetch($key)
   {
-    spl_autoload_register(array($this, 'loadClass'), true, $prepend);
+    return xcache_get($key);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save($key, $file)
+  {
+    return xcache_set($key, $file);
   }
 
 }
