@@ -51,7 +51,6 @@
 
     delayAjax : function(a,b,c)
     {
-//
   var options_serial = p4.tot_options;
   var query = p4.tot_query;
       var datas = {
@@ -83,7 +82,7 @@
         this.tooltipText = $(this).attr('title');
         this.tooltipSrc = $(this).attr('tooltipsrc');
 
-        this.ajaxLoad = (this.tooltipText === '' && this.tooltipSrc !== '');
+        this.ajaxLoad = ($.trim(this.tooltipText) === '' && this.tooltipSrc !== '');
         this.ajaxTimeout;
 
         this.orEl = $(this);
@@ -241,8 +240,8 @@
 
   function positioning(event)
   {
-
-    helper.body.html(title).show();
+    helper.body.html(title);
+    helper.body.show();
     $this = $.tooltip.current;
     // fix PNG background for IE
     if (settings($this).fixPNG )

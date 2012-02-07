@@ -33,7 +33,7 @@ phrasea::headers();
   <head>
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
     <style type="text/css">
       blockquote{
         margin:0 15px;

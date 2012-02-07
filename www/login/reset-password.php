@@ -79,7 +79,7 @@ phrasea::headers();
   <title></title>
   <link REL="stylesheet" TYPE="text/css" HREF="/login/home.css" />
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-  <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js"></script>
+  <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
 

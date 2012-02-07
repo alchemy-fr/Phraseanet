@@ -49,7 +49,7 @@ class MustacheLoaderTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(404, $response->getStatusCode());
     $this->assertFalse($response->isOk());
 
-    $this->client->request('GET', '/MustacheLoader/', array('template' => 'Push-Badge'));
+    $this->client->request('GET', '/MustacheLoader/', array('template' => 'Feedback-Badge'));
 
     $response = $this->client->getResponse();
     /* @var $response \Symfony\Component\HttpFoundation\Response */

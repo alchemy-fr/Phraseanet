@@ -80,7 +80,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 

@@ -481,8 +481,6 @@ abstract class task_abstract
       if ($when_started < $this->period)
       {
         $conn = connection::getPDOConnection();
-        $conn->close();
-        unset($conn);
         sleep($this->period - $when_started);
       }
     }

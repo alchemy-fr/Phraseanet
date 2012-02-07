@@ -411,17 +411,17 @@ class API_OAuth2_Adapter extends OAuth2
 
     $scope = $request->get('scope', false);
     $state = $request->get('state', false);
-    
+
     if($state)
     {
       $datas["state"] = $state;
     }
-    
+
     if($scope)
     {
       $datas["scope"] = $scope;
     }
-    
+
     $filters = array(
         "client_id" => array(
             "filter" => FILTER_VALIDATE_REGEXP

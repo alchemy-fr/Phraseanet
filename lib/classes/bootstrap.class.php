@@ -42,6 +42,12 @@ class bootstrap
 
     static::$core = new Core($env);
 
+    if (\setup::is_installed())
+    {
+      $gatekeeper = \gatekeeper::getInstance();
+      $gatekeeper->check_directory();
+    }
+
     return static::$core;
   }
 

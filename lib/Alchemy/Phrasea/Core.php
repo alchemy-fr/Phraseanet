@@ -144,12 +144,6 @@ class Core extends \Pimple
     !defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
     !defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
 
-    if (\setup::is_installed())
-    {
-      $gatekeeper = \gatekeeper::getInstance();
-      $gatekeeper->check_directory();
-    }
-
     return;
   }
 
@@ -364,47 +358,21 @@ class Core extends \Pimple
   }
 
   /**
-   * Finds the path to the file where the class is defined.
-   *
-   * @param string $class_name the name of the class we are looking for
-   */
-  protected static function phraseaAutoload($class_name)
-  {
-    if (file_exists(__DIR__ . '/../../../config/classes/'
-                    . str_replace('_', '/', $class_name) . '.class.php'))
-    {
-      require_once __DIR__ . '/../../../config/classes/'
-              . str_replace('_', '/', $class_name) . '.class.php';
-    }
-    elseif (file_exists(__DIR__ . '/../../classes/'
-                    . str_replace('_', '/', $class_name) . '.class.php'))
-    {
-      require_once __DIR__ . '/../../classes/'
-              . str_replace('_', '/', $class_name) . '.class.php';
-    }
-
-    return;
-  }
-
-  /**
    * Register directory and namespaces for autoloading app classes
    *
    */
-  public static function initAutoloads()
+  public static function initAutoloads($debug = false)
   {
-    require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-    require_once __DIR__ . '/../../vendor/Twig/lib/Twig/Autoloader.php';
-    require_once __DIR__ . '/../../vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
+//    require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+    require_once __DIR__ . '/Loader/Autoloader.php';
 
-    \Twig_Autoloader::register();
-    \Twig_Extensions_Autoloader::register();
+    $loader = new Loader\Autoloader();
 
-    $loader = new \Symfony\Component\ClassLoader\UniversalClassLoader();
-
-    spl_autoload_register(array('Alchemy\Phrasea\Core', 'phraseaAutoload'));
+    $loader->registerPrefixes(array('Twig' => realpath(__DIR__ . '/../../vendor/Twig/lib')));
+    $loader->registerPrefixes(array('Twig_Extensions' => realpath(__DIR__ . '/../../vendor/Twig-extensions/lib')));
 
     $loader->registerNamespaces(array(
-        'Alchemy' => __DIR__ . '/../..',
+        'Alchemy' => realpath(__DIR__ . '/../..'),
         'Symfony' => realpath(__DIR__ . '/../../vendor/symfony/src'),
         'Doctrine\\ORM' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib'),
         'Doctrine\\DBAL' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib'),

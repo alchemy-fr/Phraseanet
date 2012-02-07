@@ -34,145 +34,125 @@ class EntitiesValidationParticipantProxy extends \Entities\ValidationParticipant
             unset($this->_entityPersister, $this->_identifier);
         }
     }
-
-
+    
+    
     public function getId()
     {
         $this->__load();
-
         return parent::getId();
     }
 
     public function setUsrId($usrId)
     {
         $this->__load();
-
         return parent::setUsrId($usrId);
     }
 
     public function getUsrId()
     {
         $this->__load();
-
         return parent::getUsrId();
     }
 
     public function addValidationData(\Entities\ValidationData $datas)
     {
         $this->__load();
-
         return parent::addValidationData($datas);
     }
 
     public function setSession(\Entities\ValidationSession $session)
     {
         $this->__load();
-
         return parent::setSession($session);
     }
 
     public function getSession()
     {
         $this->__load();
-
         return parent::getSession();
     }
 
     public function setIsAware($isAware)
     {
         $this->__load();
-
         return parent::setIsAware($isAware);
     }
 
     public function getIsAware()
     {
         $this->__load();
-
         return parent::getIsAware();
     }
 
     public function setUser(\User_Adapter $user)
     {
         $this->__load();
-
         return parent::setUser($user);
     }
 
     public function getUser()
     {
         $this->__load();
-
         return parent::getUser();
     }
 
     public function setReminded($reminded)
     {
         $this->__load();
-
         return parent::setReminded($reminded);
     }
 
     public function getReminded()
     {
         $this->__load();
-
         return parent::getReminded();
     }
 
     public function getDatas()
     {
         $this->__load();
-
         return parent::getDatas();
     }
 
     public function setIsConfirmed($isConfirmed)
     {
         $this->__load();
-
         return parent::setIsConfirmed($isConfirmed);
     }
 
     public function getIsConfirmed()
     {
         $this->__load();
-
         return parent::getIsConfirmed();
     }
 
     public function setCanAgree($canAgree)
     {
         $this->__load();
-
         return parent::setCanAgree($canAgree);
     }
 
     public function getCanAgree()
     {
         $this->__load();
-
         return parent::getCanAgree();
     }
 
     public function setCanSeeOthers($canSeeOthers)
     {
         $this->__load();
-
         return parent::setCanSeeOthers($canSeeOthers);
     }
 
     public function getCanSeeOthers()
     {
         $this->__load();
-
         return parent::getCanSeeOthers();
     }
 
     public function isReleasable()
     {
         $this->__load();
-
         return parent::isReleasable();
     }
 
@@ -196,6 +176,6 @@ class EntitiesValidationParticipantProxy extends \Entities\ValidationParticipant
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }

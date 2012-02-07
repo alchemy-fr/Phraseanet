@@ -53,7 +53,7 @@
                       </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner">
-                          <a class="dialog" title="{% trans 'action::renommer' %}" href="/prod/baskets/{{basket.getId()}}/update/">
+                          <a class="dialog small-dialog" title="{% trans 'action::renommer' %}" href="/prod/baskets/{{basket.getId()}}/update/">
                             {% trans 'action::renommer' %}
                           </a>
                         </div>
@@ -69,6 +69,12 @@
                         </div>
                       {% endif %}
 
+                      <div title="" class="context-menu-item">
+                        <div class="context-menu-item-inner"
+                             onclick="archiveBasket({{ basket.getId() }});return false;">
+                          {% trans 'Archive' %}
+                        </div>
+                      </div>
                       <div title="" class="context-menu-item">
                         <div class="context-menu-item-inner" id="SSTTREMOVER_{{basket.getId()}}"
                              onclick="checkDeleteThis('SSTT',this);return false;">
@@ -243,7 +249,7 @@
           <table style="width: 100%; min-width: 330px; display: inline-block;">
               <tr>
                   <td style="width:80px;">
-                    {{ _self.element('basket', basket, basket_element, basket.getRecord(), basket_element.getOrd(), user, session) }}
+                    {{ _self.element('basket', basket, basket_element, basket_element.getRecord(), basket_element.getOrd(), user, session) }}
                   </td>
                   <td style="width:100%;">
                       <table style=width:100%>

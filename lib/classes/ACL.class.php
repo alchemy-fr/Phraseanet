@@ -334,17 +334,24 @@ class ACL implements cache_cacheableInterface
         }
       }
 
+      $mask_and = $template_user->ACL()->get_mask_and($base_id);
+      $mask_xor = $template_user->ACL()->get_mask_xor($base_id);
+      
+      $mask_and = ctype_digit($mask_and) ? $mask_and : '0';
+      $mask_xor = ctype_digit($mask_xor) ? $mask_xor : '0';
+      
+      
       /**
        * apply sb is substractive
        */
       $mand = substr(
               str_repeat('0', 64)
-              . databox_status::dec2bin($template_user->ACL()->get_mask_and($base_id))
+              . databox_status::dec2bin($mask_and)
               , -64
       );
       $mxor = substr(
               str_repeat('0', 64)
-              . databox_status::dec2bin($template_user->ACL()->get_mask_xor($base_id))
+              . databox_status::dec2bin($mask_xor)
               , -64
       );
       $m = array('aa' => '', 'ao' => '', 'xa' => '', 'xo' => '');

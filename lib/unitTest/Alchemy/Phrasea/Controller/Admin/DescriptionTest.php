@@ -90,7 +90,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     }
     catch (\Exception $e)
     {
-      
+
     }
   }
 
@@ -156,7 +156,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertTrue($this->client->getResponse()->isRedirect());
     $field->delete();
-    
+
     $name = "test" . uniqid();
     $field = \databox_field::create($databox, $name);
     $id = $field->get_id();
@@ -269,17 +269,17 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $session->authenticate($auth);
 
     $databox = array_shift($appbox->get_databoxes());
-    
+
     $this->client->request("GET", "/description/" . $databox->get_sbas_id() . "/");
     $this->assertTrue($this->client->getResponse()->isOk());
     $this->assertEquals("You are not allowed to access this zone", $this->client->getResponse()->getContent());
   }
-  
+
     public function testGetDescription()
   {
     $appbox = appbox::get_instance();
     $databox = array_shift($appbox->get_databoxes());
-    
+
     $this->client->request("GET", "/description/" . $databox->get_sbas_id() . "/");
     $this->assertTrue($this->client->getResponse()->isOk());
   }

@@ -54,6 +54,7 @@ class Language implements ControllerProviderInterface
               $out['loading'] = _('phraseanet::chargement');
               $out['valider'] = _('boutton::valider');
               $out['annuler'] = _('boutton::annuler');
+              $out['create'] = _('boutton::creer');
               $out['rechercher'] = _('boutton::rechercher');
               $out['renewRss'] = _('boutton::renouveller');
               $out['candeletesome'] = _('Vous n\'avez pas les droits pour supprimer certains documents');
@@ -86,8 +87,12 @@ class Language implements ControllerProviderInterface
               $out['warning_delete_publi'] = _('Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci');
               $out['some_required_fields'] = _('edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing');
               $out['nodocselected'] = _('Aucun document selectionne');
-
-
+              $out['sureToRemoveList'] = _('Are you sure you want to delete this list ?');
+              $out['newListName'] = _('New list name ?');
+              $out['listNameCannotBeEmpty'] = _('List name can not be empty');
+              $out['FeedBackName'] = _('Name');
+              $out['FeedBackMessage'] = _('Message');
+              $out['FeedBackNoUsersSelected'] = _('No users selected');
 
               $Serializer = $app['Core']['Serializer'];
 

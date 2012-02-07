@@ -47,7 +47,7 @@
         <label lang="fr">Prévisualisation</label>
         <label lang="en">Preview</label>
       </subdef>
-      <subdef class="thumbnail" name="thumbnailGIF" downloadable="true">
+      <subdef class="thumbnail" name="thumbnailgif" downloadable="true">
         <path>{{datapathweb}}{{basename}}/subdefs</path>
         <size>200</size>
         <mediatype>gif</mediatype>

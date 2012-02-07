@@ -4,22 +4,26 @@
     
     $('a.dialog').live('click', function(event){
 
-      var $this = $(this);
+      var $this = $(this), size = 'Medium';
       
+      if($this.hasClass('small-dialog'))
+      {
+        size = 'Small';
+      }
+      else if($this.hasClass('full-dialog'))
+      {
+        size = 'Full';
+      }
       
-      $('#DIALOG').attr('title', $this.attr('title'))
-                  .empty().addClass('loading')
-                  .dialog({
-                    buttons:{},
-                    draggable:false,
-                    resizable:false,
-                    closeOnEscape:true,
-                    modal:true,
-                    width:'800',
-                    height:'500'
-                  })
-                  .dialog('open');
+      var options = {
+        size : size,
+        loading : true,
+        title : $this.attr('title'),
+        closeOnEscape : true
+      };
 
+      $dialog = p4.Dialog.Create(options);
+      
       $.ajax({
         type: "GET",
         url: $this.attr('href'),
@@ -28,8 +32,7 @@
 
         },
         success: function(data){
-          $('#DIALOG').removeClass('loading').empty()
-                      .append(data);
+          $dialog.setContent(data);
           return;
         }
       });

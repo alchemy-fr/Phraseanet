@@ -44,16 +44,16 @@ if ((int) $parm['p0'] > 0 && is_array($parm['TOU']))
     $databox->update_cgus($loc, $terms, $parm['valid']);
   }
 }
-$avLanguages = User_Adapter::detectlanguage($registry, Session_Handler::get_locale());
+$avLanguages = \Alchemy\Phrasea\Core::getAvailableLanguages();
 
 $TOU = $databox->get_cgus();
 ?>
 
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/admin/admincolor.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css"/>
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/admin/admincolor.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css"/>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
       tinyMCE.init({
@@ -92,35 +92,29 @@ $TOU = $databox->get_cgus();
       <div id="tabs" style="background:transparent;padding:0;">
         <ul style="background:transparent;border:none;border-bottom:1px solid #959595;">
           <?php
-          foreach ($avLanguages as $lang)
+          foreach ($avLanguages as $code=>$lang)
           {
-            foreach ($lang as $k => $v)
+            if (isset($TOU[$code]))
             {
-              if (isset($TOU[$k]))
-              {
-                $s = ( $k == Session_Handler::get_locale() ? 'selected' : '' );
-                echo '<li class="' . $s . '" style="border:none;"><a href="#terms-' . $k . '">' . $v['name'] . '</a></li>';
-              }
+              $s = ( $code == Session_Handler::get_locale() ? 'selected' : '' );
+              echo '<li class="' . $s . '" style="border:none;"><a href="#terms-' . $code . '">' . $lang . '</a></li>';
             }
           }
           ?>
         </ul>
         <?php
-        foreach ($avLanguages as $lang)
+        foreach ($avLanguages as $code=>$lang)
         {
-          foreach ($lang as $k => $v)
-          {
-            if (isset($TOU[$k]))
+            if (isset($TOU[$code]))
             {
               ?>
-              <div id="terms-<?php echo $k; ?>">
-                <textarea name="TOU[<?php echo $k; ?>]" style="width:100%;height:600px;margin:0 auto;">
-                  <?php echo $TOU[$k]['value']; ?>
+              <div id="terms-<?php echo $code; ?>">
+                <textarea name="TOU[<?php echo $code; ?>]" style="width:100%;height:600px;margin:0 auto;">
+                  <?php echo $TOU[$code]['value']; ?>
                 </textarea>
               </div>
               <?php
             }
-          }
         }
         ?>
       </div>

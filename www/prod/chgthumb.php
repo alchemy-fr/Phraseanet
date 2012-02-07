@@ -32,7 +32,7 @@ $size = null;
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
   </head>
   <body>
 

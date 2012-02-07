@@ -2,6 +2,9 @@ Entities\UsrListEntry:
   type: entity
   repositoryClass: Repositories\UsrListEntryRepository
   table: UsrListsContent
+  uniqueConstraints:
+    unique_usr_per_list:
+      columns: usr_id,list_id
   id:
     id:
       type: integer

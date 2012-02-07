@@ -121,6 +121,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
     $this->twig->addFilter('unite', new \Twig_Filter_Function('p4string::format_octets'));
     $this->twig->addFilter('stristr', new \Twig_Filter_Function('stristr'));
     $this->twig->addFilter('implode', new \Twig_Filter_Function('implode'));
+    $this->twig->addFilter('get_class', new \Twig_Filter_Function('get_class'));
     $this->twig->addFilter('stripdoublequotes', new \Twig_Filter_Function('stripdoublequotes'));
     $this->twig->addFilter('phraseadate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
     $this->twig->addFilter('format_octets', new \Twig_Filter_Function('p4string::format_octets'));

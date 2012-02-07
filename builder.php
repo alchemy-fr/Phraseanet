@@ -27,6 +27,8 @@ $finder
   ->name('.gitmodules')
   ->name('.gitignore')
   ->name('check_cs.php')
+  ->name('launchpadToLocales.php')
+  ->name('localesToLaunchpad.php')
   ->name('pom.xml')
   ->name('vendors.php')
   ->name('builder.php')

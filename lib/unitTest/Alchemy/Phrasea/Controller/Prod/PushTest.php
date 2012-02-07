@@ -42,9 +42,21 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   /**
    * Default route test
    */
-  public function testRoutePOSTSlash()
+  public function testRoutePOSTSendSlash()
   {
-    $route = '/push/';
+    $route = '/push/sendform/';
+
+    $this->client->request('POST', $route);
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+  }
+
+  public function testRoutePOSTValidateSlash()
+  {
+    $route = '/push/validateform/';
 
     $this->client->request('POST', $route);
 
@@ -70,7 +82,7 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $params = array(
         'lst' => implode(';', $records)
-        , 'receivers' => $receivers
+        , 'participants' => $receivers
     );
 
     $this->client->request('POST', $route, $params);

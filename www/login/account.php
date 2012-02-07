@@ -171,8 +171,8 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
   <head>
     <title><?php echo $appbox->get_registry()->get('GV_homeTitle') ?> <?php echo _('login:: Mon compte') ?></title>
     <link REL="stylesheet" TYPE="text/css" HREF="/include/minify/f=login/home.css,login/geonames.css"/>
-    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" language="javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" language="javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/login/geonames.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
