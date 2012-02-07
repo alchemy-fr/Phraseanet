@@ -213,7 +213,7 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
   function mail($to, $from, $datas)
   {
     $subject = sprintf(_('admin::register: Inscription automatique sur %s')
-                    , $this->registry->get('GV_homeTitle'));
+                    , GV_homeTitle);
 
     $body = "<div>" . _('admin::register: un utilisateur s\'est inscrit')
             . "</div>\n";
