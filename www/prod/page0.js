@@ -153,7 +153,7 @@ function is_shift_key(event)
 
 function checkBases(bool)
 {
-  $('#bases-queries .sbas_list,#adv_search .sbas_list').each(function(){
+  $('#bases-queries .sbas_list,form[name="phrasea_query"] .sbas_list').each(function(){
 
     var id = $(this).find('input[name=reference]:first').val();
     if(bool)
@@ -189,9 +189,9 @@ function checkFilters(save)
   switches.filter('option').hide().filter('option[selected]').removeAttr('selected').addClass('was');
   switches.filter(':checkbox').parent().hide().find(':checkbox[checked]').removeAttr('checked').addClass('was');
 
-  $('#adv_search .field_filter,#adv_search .status_filter,#adv_search .date_filter').removeClass('danger');
+  $('form[name="phrasea_query"] .field_filter,form[name="phrasea_query"] .status_filter,form[name="phrasea_query"] .date_filter').removeClass('danger');
 
-  $.each($('#adv_search .sbascont'),
+  $.each($('form[name="phrasea_query"] .sbascont'),
     function(){
 
       var id = $(this).parent().find('input[name=reference]').val();
@@ -230,7 +230,7 @@ function checkFilters(save)
   if(!reset_field && search.fields.length>0)
   {
     danger = true;
-    $('#adv_search .field_filter').addClass('danger');
+    $('form[name="phrasea_query"] .field_filter').addClass('danger');
   }
 
   $('.status_filter :checkbox[checked]').each(function(){
@@ -238,7 +238,7 @@ function checkFilters(save)
     var n = $(this).attr('n');
     search.status[n] = $(this).val().split('_');
     danger = true;
-    $('#adv_search .status_filter') .addClass('danger');
+    $('form[name="phrasea_query"] .status_filter') .addClass('danger');
   });
 
   search.dates.minbound 	= $('.date_filter input[name=datemin]').val();
@@ -248,7 +248,7 @@ function checkFilters(save)
   if($.trim(search.dates.minbound) || $.trim(search.dates.maxbound))
   {
     danger = true;
-    $('#adv_search .date_filter').addClass('danger');
+    $('form[name="phrasea_query"] .date_filter').addClass('danger');
   }
 
   $('.field_filter select').scrollTop(scroll);
@@ -256,9 +256,9 @@ function checkFilters(save)
     setPref('search',JSON.stringify(search));
 
   if(danger===true || danger=='medium')
-    $('#alternateTrigger').addClass('danger');
+    $('#headBlock').addClass('danger');
   else
-    $('#alternateTrigger').removeClass('danger');
+    $('#headBlock').removeClass('danger');
 }
 function toggleFilter(filter,ele)
 {
@@ -326,24 +326,24 @@ function search_doubles()
 
 function newSearch()
 {
-  alternateSearch(false);
-  $('#searchForm input[name=search_type]').val($('#alternateTrigger input[name=search_type]:checked').val());
+//  alternateSearch(false);
+  $('#searchForm input[name=search_type]').val($('form[name=phrasea_query] input[name=search_type]:checked').val());
 
   var fields = $('#searchForm div.fields');
   fields.empty();
-  $('#adv_search select[name="fields[]"] option:selected').each(function(){
+  $('form[name="phrasea_query"] select[name="fields[]"] option:selected').each(function(){
     fields.append('<input type="text" name="fields[]" value="'+$(this).val()+'"/>');
   });
 
   var status = $('#searchForm div.status');
   status.empty();
-  $('#adv_search div.status_filter input:checked').each(function(){
+  $('form[name="phrasea_query"] div.status_filter input:checked').each(function(){
     status.append('<input type="text" name="'+$(this).attr('name')+'" value="'+$(this).val()+'"/>');
   });
 
   var bases = $('#searchForm div.bases');
   bases.empty();
-  $('#adv_search input[name="bas[]"]:checked').each(function(){
+  $('form[name="phrasea_query"] input[name="bas[]"]:checked').each(function(){
     bases.append('<input type="text" name="bas[]" value="'+$(this).val()+'"/>');
   });
 
@@ -363,12 +363,12 @@ function newSearch()
   var recordtype = $('#recordtype_sel').val();
   $('#searchForm input[name=recordtype]').val(recordtype);
 
-  var searchtype = $('#alternateTrigger input[name=search_type]:checked');
+  var searchtype = $('form[name=phrasea_query] input[name=search_type]:checked');
   searchtype = searchtype.length > 0 ? searchtype.val() : '0';
 
-  $('#searchForm input[name=datemin]').val($('#adv_search input[name=datemin]').val());
-  $('#searchForm input[name=datemax]').val($('#adv_search input[name=datemax]').val());
-  $('#searchForm input[name=datefield]').val($('#adv_search select[name=datefield]').val());
+  $('#searchForm input[name=datemin]').val($('form[name="phrasea_query"] input[name=datemin]').val());
+  $('#searchForm input[name=datemax]').val($('form[name="phrasea_query"] input[name=datemax]').val());
+  $('#searchForm input[name=datefield]').val($('form[name="phrasea_query"] select[name=datefield]').val());
 
   $('#searchForm input[name=search_type]').val(searchtype);
 
@@ -389,7 +389,7 @@ function newSearch()
 
 function newAdvSearch()
 {
-  var cont = $('#adv_search');
+  var cont = $('form[name="phrasea_query"]');
   var val_all 	= $.trim($('input[name=query_all]',cont).val()).split(' ').join(' AND ');
   var val_or 		= $.trim($('input[name=query_or]',cont).val()).split(' ').join(' OR ');
   var val_exact 	= $.trim($('input[name=query_exact]',cont).val());
@@ -498,6 +498,7 @@ function afterSearch()
 }
 
 function initAnswerForm(){
+  $('form[name="phrasea_query"] button').button();
   $('#searchForm').bind('submit',function(){
     answAjax = $.ajax({
       type: "POST",
@@ -743,7 +744,7 @@ function activeZoning()
 {
   $('#idFrameC, #idFrameT').bind('mousedown',function(event){
 
-    alternateSearch(false);
+//    alternateSearch(false);
     var old_zone = p4.active_zone;
     p4.active_zone = $(this).attr('id');
     if(p4.active_zone != old_zone && p4.active_zone != 'headBlock')
@@ -753,35 +754,35 @@ function activeZoning()
     }
     $('#EDIT_query').blur();
   });
-  $('#alternateSearch').live('mousedown',function(event){
-    if(event.stopPropagation)
-      event.stopPropagation();
-  });
-  $('#alternateTrigger').live('mousedown',function(event){
-    if(!$('#alternateTrigger').hasClass('active'))
-      alternateSearch(true);
-    else
-      alternateSearch(false);
-    if(event.stopPropagation)
-      event.stopPropagation();
-  });
+//  $('#alternateSearch').live('mousedown',function(event){
+//    if(event.stopPropagation)
+//      event.stopPropagation();
+//  });
+//  $('#alternateTrigger').live('mousedown',function(event){
+//    if(!$('#alternateTrigger').hasClass('active'))
+//      alternateSearch(true);
+//    else
+//      alternateSearch(false);
+//    if(event.stopPropagation)
+//      event.stopPropagation();
+//  });
 
 }
 
-function alternateSearch(open)
-{
-  if(open === true)
-  {
-    $('#alternateTrigger').addClass('active');
-    $('#alternateSearch').slideDown();
-  }
-  else
-  {
-    $('#alternateSearch').slideUp('fast',function(){
-      $('#alternateTrigger').removeClass('active');
-    });
-  }
-}
+//function alternateSearch(open)
+//{
+//  if(open === true)
+//  {
+//    $('#alternateTrigger').addClass('active');
+//    $('#alternateSearch').slideDown();
+//  }
+//  else
+//  {
+//    $('#alternateSearch').slideUp('fast',function(){
+//      $('#alternateTrigger').removeClass('active');
+//    });
+//  }
+//}
 function RGBtoHex(R,G,B) {
   return toHex(R)+toHex(G)+toHex(B);
 }
@@ -842,6 +843,29 @@ function HueToRgb(m1, m2, hue) {
 
 
 $(document).ready(function(){
+
+  $('a.adv_search_button').live('click', function(){
+    
+    var options = {
+      closeCallback: function(dialog){
+        $('form[name=phrasea_query]').html(dialog.html());
+        $('form[name=phrasea_query]').find('.adv_options').hide();
+        $('form[name=phrasea_query]').find('.adv_trigger').show();
+        initAnswerForm();
+      }
+    };
+    
+    $dialog = p4.Dialog.Create(options);
+    
+    var html = $('<form class="phrasea_query"></form>').append($('form[name=phrasea_query]').html());
+    $('form[name=phrasea_query]').empty();
+    
+    $dialog.setContent(html);
+    $dialog.getDomElement().find('.adv_options').show();
+    $dialog.getDomElement().find('.adv_trigger').hide();
+    
+    return false;
+  });
 
   $(document).bind('contextmenu', function(event){
     var targ;
@@ -1057,11 +1081,11 @@ $(document).ready(function(){
   });
 
   $('#adv_search .tabs').tabs();
-  $('#adv_search form.adv_search_bind input').bind('keydown',function(event){
+  $('form[name="phrasea_query"] form.adv_search_bind input').bind('keydown',function(event){
     if(event.keyCode == '13')
       newAdvSearch();
   });
-  $('#alternateSearch').tabs();
+//  $('#alternateSearch').tabs();
 
 
   $('#search_submit').live('mousedown',function(event){
@@ -1218,7 +1242,7 @@ $(document).ready(function(){
     .autocomplete({
       source: function( request, response ) {
 
-      var bases = $('#adv_search input[name="bas[]"]:checked').map(function(){
+      var bases = $('form[name="phrasea_query"] input[name="bas[]"]:checked').map(function(){
         return $(this).val()
         });
 
@@ -1227,15 +1251,15 @@ $(document).ready(function(){
       term: request.term,
       "bas[]" : bases.toArray(),
       stemme : ($('#sbasfiltercont input[name="stemme"]').attr('checked') ? '1':'0'),
-      search_type : ($('#alternateTrigger input[name=search_type]:checked')> 0 ? $('#alternateTrigger input[name=search_type]:checked').val() : '0'),
+      search_type : ($('form[name="phrasea_query"] input[name=search_type]:checked')> 0 ? $('form[name="phrasea_query"] input[name=search_type]:checked').val() : '0'),
       recordtype : $('#recordtype_sel').val(),
       status : [],
-      fields : $('#adv_search select[name="fields[]"] option:selected').map(function(){
+      fields : $('form[name="phrasea_query"] select[name="fields[]"] option:selected').map(function(){
         return $(this).val();
         }).toArray(),
-      datemin : $('#adv_search input[name=datemin]').val(),
-      datemax : $('#adv_search input[name=datemax]').val(),
-      datefield : $('#adv_search select[name=datefield]').val()
+      datemin : $('form[name="phrasea_query"] input[name=datemin]').val(),
+      datemax : $('form[name="phrasea_query"] input[name=datemax]').val(),
+      datefield : $('form[name="phrasea_query"] select[name=datefield]').val()
       };
 
       var ajax_sugg = $( "#EDIT_query" ).data('ajax_sugg');
@@ -1273,7 +1297,7 @@ $(document).ready(function(){
       }
       })
     .data( "autocomplete" )._renderItem = function( ul, item ) {
-      alternateSearch(false);
+//      alternateSearch(false);
       if(item.hits > 0)
         return $( "<li></li>" )
         .data( "item.autocomplete", item )
@@ -1373,8 +1397,8 @@ $(document).ready(function(){
           if($('.ui-widget-overlay').is(':visible'))
             return true;
 
-          if($('#alternateTrigger').hasClass('active'))
-            alternateSearch(false);
+//          if($('#alternateTrigger').hasClass('active'))
+//            alternateSearch(false);
 
           switch(p4.active_zone)
           {
@@ -1533,7 +1557,7 @@ $(document).ready(function(){
 
   $('#answers').disableSelection();
   $('#mainMenu').disableSelection();
-  $('#headBlock .tools, #alternateSearch, #idFrameT').disableSelection();
+  $('#headBlock .tools, #idFrameT').disableSelection();
   $('#baskets').disableSelection();
 
   $('#idFrameC .tabs').tabs({
@@ -2882,7 +2906,7 @@ function infoSbas(el,num,donotfilter, event)
 function advSearch(event)
 {
   event.cancelBubble = true;
-  alternateSearch(false);
+//  alternateSearch(false);
 
 $('#idFrameC .tabs a.adv_search').trigger('click');
 

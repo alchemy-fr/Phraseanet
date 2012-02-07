@@ -543,29 +543,6 @@ div.diapo
 }
 
 
-
-
-
-
-
-
-
-#alternateSearch{
-	left:0px;
-	top:60px;
-	width:575px;
-	height:400px;
-	background-color:#404040;
-	display:none;
-}
-#alternateSearch .ui-tabs-nav{
-	background-color:#404040;
-}
-
-#alternateTrigger.active, #alternateSearch .ui-tabs-panel, #alternateSearch.ui-tabs .ui-tabs-nav li.ui-tabs-selected{
-	background-color:#666666;
-}
-
 #history-queries ul{
 	list-style-type:none;
 	margin:0;
@@ -577,9 +554,6 @@ div.diapo
 #history-queries ul li.hover{
 	color:#838383;
 }
-
-
-
 
 #TOPIC_UL li{
 	float:none;
@@ -918,7 +892,7 @@ div.diapo
 	color:red;
 }
 
-#EDIT_query{
+form.phrasea_query input.query{
   border:2px solid #111111;
   padding:4px;
   padding-left:30px;
