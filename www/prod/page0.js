@@ -281,7 +281,7 @@ function dropOnBask(event,from,destKey)
   {
     sselcont = [];
     lstbr = p4.sel.join(';');
-    if($(from).hasClass('.baskAdder'))
+    if($(from).hasClass('baskAdder'))
       lstbr = $(from).attr('id').split('_').slice(2,4).join('_');
   }
   else
