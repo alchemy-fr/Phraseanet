@@ -19,6 +19,6 @@ namespace Alchemy\Phrasea\Loader;
 interface LoaderStrategy
 {
   public function isAvailable();
-  
+
   public function register();
 }

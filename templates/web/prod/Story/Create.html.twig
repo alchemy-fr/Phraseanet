@@ -6,7 +6,7 @@
      <option value="{{ collection.get_base_id() }}">{{ collection.get_databox().get_viewname() }} / {{ collection.get_name() }}</option>
     {% endfor %}
   </select>
-  
+
   <label>{% trans 'Story name' %}</label>
   <input name="name" value="" type="text"/>
 
@@ -22,11 +22,11 @@
       var $dialogBox = $dialog.getDomElement();
 
       $('input[name="lst"]', $dialogBox).val(p4.Results.Selection.serialize());
-      
+
       var buttons = $dialog.getOption('buttons');
       buttons[language.create] = function(){$('form', $dialogBox).trigger('submit')};
       $dialog.setOption('buttons', buttons);
-      
+
       $('form', $dialogBox).bind('submit', function(event){
 
         var $form = $(this);

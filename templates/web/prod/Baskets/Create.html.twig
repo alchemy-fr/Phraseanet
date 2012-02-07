@@ -11,12 +11,12 @@
 
   <script type="text/javascript">
     $(document).ready(function(){
-      
+
       var $dialog = p4.Dialog.get(1);
       var $dialogBox = $dialog.getDomElement();
-      
+
       $('input[name="lst"]', $dialogBox).val(p4.Results.Selection.serialize());
-      
+
       var buttons = $dialog.getOption('buttons');
       buttons[language.create] = function(){$('form', $dialogBox).trigger('submit')};
       $dialog.setOption('buttons', buttons);

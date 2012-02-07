@@ -2,25 +2,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-02 17:49+0100\n"
-"PO-Revision-Date: 2012-02-02 18:13+0100\n"
+"POT-Creation-Date: 2012-02-06 12:59+0100\n"
+"PO-Revision-Date: 2012-02-06 13:05+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2012-02-02 16:20+0000\n"
-"X-Generator: Launchpad (build 14738)\n"
-"Language: \n"
+"X-Launchpad-Export-Date: 2012-02-06 11:01+0000\n"
+"X-Generator: Launchpad (build 14747)\n"
+"Language: de_DE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: /Users/romain/Documents/workspace/Phraseanet\n"
 "X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
 "X-Poedit-SearchPath-0: config\n"
 "X-Poedit-SearchPath-1: lib/classes\n"
 "X-Poedit-SearchPath-2: lib/conf.d\n"
 "X-Poedit-SearchPath-3: tmp\n"
 "X-Poedit-SearchPath-4: www\n"
+"X-Poedit-SearchPath-5: lib/Alchemy\n"
+"X-Poedit-SearchPath-6: lib/Doctrine\n"
+"X-Poedit-SearchPath-7: bin\n"
 
 #: lib/classes/appbox.class.php:315
 #: lib/classes/appbox.class.php:390
@@ -29,7 +34,7 @@ msgstr "Cache wird gespüllt"
 
 #: lib/classes/appbox.class.php:323
 msgid "Creating new tables"
-msgstr ""
+msgstr "Neue Tabellen erstellen"
 
 #: lib/classes/appbox.class.php:340
 #: lib/classes/appbox.class.php:348
@@ -61,7 +66,7 @@ msgstr "falsche Datenbankname"
 #: lib/classes/appbox.class.php:538
 #, php-format
 msgid "Impossible d'ecrire dans le fichier %s"
-msgstr ""
+msgstr "Unmöglich, in %s Datei zu schreiben"
 
 #: lib/classes/appbox.class.php:590
 msgid "setup::la base de donnees existe deja et vous n'avez pas les droits ou vous n'avez pas les droits de la creer"
@@ -123,16 +128,11 @@ msgstr "Unmöglich, die Datei zur Datenbank hinzuzufügen"
 msgid "Impossible de trouver la base"
 msgstr "Unmöglich, die Datenbank zu finden"
 
-#: lib/classes/login.class.php:48
-#: lib/classes/mail.class.php:70
-msgid "login:: Forgot your password"
-msgstr "Passwort vergessen?"
-
-#: lib/classes/login.class.php:57
+#: lib/classes/login.class.php:38
 msgid "login:: register"
 msgstr "Anmeldung"
 
-#: lib/classes/login.class.php:69
+#: lib/classes/login.class.php:50
 msgid "login:: guest Access"
 msgstr "Gast Zugriff"
 
@@ -161,6 +161,10 @@ msgstr "Sie haben Dockument(e) bekommen, bitte klicken Sie auf dem Link, um heru
 #, php-format
 msgid "Attention, ce lien lien est valable jusqu'au %s"
 msgstr "Vorsicht, dieses Link ist bis %s gültig"
+
+#: lib/classes/mail.class.php:70
+msgid "login:: Forgot your password"
+msgstr "Passwort vergessen?"
 
 #: lib/classes/mail.class.php:72
 msgid "login:: Quelqu'un a demande a reinitialiser le mode passe correspondant au login suivant : "
@@ -235,7 +239,7 @@ msgstr "Um Ihre Anmeldung zu der Datenbank zu bestätigen, bitte bestätigen Sie
 
 #: lib/classes/mail.class.php:209
 msgid "Si le lien n'est pas cliquable, copiez-collez le dans votre navigateur."
-msgstr ""
+msgstr "Wenn der Link nicht klickbar ist, bitte kopieren und fügen Sie ihn in die Adresszeile Ihres Browsers ein."
 
 #: lib/classes/mail.class.php:211
 msgid "phraseanet::signature automatique des notifications par mail, infos a l'url suivante"
@@ -401,22 +405,18 @@ msgid "Url non valide"
 msgstr "URL nicht gültig"
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:187
-#: lib/classes/Bridge/Api/Youtube.class.php:185
 msgid "Videos"
 msgstr "Videos"
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:196
-#: lib/classes/Bridge/Api/Youtube.class.php:194
 msgid "Playlists"
 msgstr "Playlisten"
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:539
-#: lib/classes/Bridge/Api/Youtube.class.php:536
 msgid "La video a ete supprimee"
 msgstr "Das Video wurde gelöscht"
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:542
-#: lib/classes/Bridge/Api/Youtube.class.php:539
 msgid "La video a ete rejetee"
 msgstr "Das Video wurde abgelehnt"
 
@@ -425,12 +425,10 @@ msgid "Erreur d'encodage"
 msgstr "Kodierungsfehler"
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:548
-#: lib/classes/Bridge/Api/Youtube.class.php:546
 msgid "En cours d'encodage"
 msgstr "Kodierung läuft"
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:554
-#: lib/classes/Bridge/Api/Youtube.class.php:552
 msgid "OK"
 msgstr "OK"
 
@@ -438,10 +436,6 @@ msgstr "OK"
 #: lib/classes/Bridge/Api/Dailymotion.class.php:859
 #: lib/classes/Bridge/Api/Flickr.class.php:746
 #: lib/classes/Bridge/Api/Flickr.class.php:772
-#: lib/classes/Bridge/Api/Youtube.class.php:979
-#: lib/classes/Bridge/Api/Youtube.class.php:984
-#: lib/classes/Bridge/Api/Youtube.class.php:1011
-#: lib/classes/Bridge/Api/Youtube.class.php:1016
 msgid "Ce champ est obligatoire"
 msgstr "Dieses Feld ist ein Pflichtfeld"
 
@@ -449,8 +443,6 @@ msgstr "Dieses Feld ist ein Pflichtfeld"
 #: lib/classes/Bridge/Api/Dailymotion.class.php:864
 #: lib/classes/Bridge/Api/Flickr.class.php:751
 #: lib/classes/Bridge/Api/Flickr.class.php:777
-#: lib/classes/Bridge/Api/Youtube.class.php:989
-#: lib/classes/Bridge/Api/Youtube.class.php:1021
 #, php-format
 msgid "Ce champ est trop long %s caracteres max"
 msgstr "Dieses Feld ist zu lang, max. %s Zeichen"
@@ -463,29 +455,25 @@ msgstr "Dieses Feld ist zu kurz, min. %s Zeichen"
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:932
 #: lib/classes/Bridge/Api/Flickr.class.php:863
-#: lib/classes/Bridge/Api/Youtube.class.php:1088
 msgid "Le record n'a pas de fichier physique"
 msgstr "Der Datensatz hat keine physikalische Datei"
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:935
-#: lib/classes/Bridge/Api/Youtube.class.php:1091
 #, php-format
 msgid "La taille maximale d'une video est de %d minutes."
 msgstr "Das maximale Gewicht für eine Video ist %d Minuten."
 
 #: lib/classes/Bridge/Api/Dailymotion.class.php:938
 #: lib/classes/Bridge/Api/Flickr.class.php:865
-#: lib/classes/Bridge/Api/Youtube.class.php:1094
 #, php-format
 msgid "Le poids maximum d'un fichier est de %s"
-msgstr ""
+msgstr "Maximales Gewicht für eine Datei ist %s"
 
 #: lib/classes/Bridge/Api/Flickr.class.php:154
 msgid "Ce produit utilise l'API Flickr mais n'est ni soutenu, ni certifie par Flickr"
 msgstr "Dieses Produkt verwendet das Flickr API, ist jedoch nicht von Flickr zugelassen oder lizenziert."
 
 #: lib/classes/Bridge/Api/Flickr.class.php:529
-#: lib/classes/Bridge/Api/Youtube.class.php:542
 msgid "L'upload a echoue"
 msgstr "Upload ist fehlgeschlagen"
 
@@ -511,7 +499,7 @@ msgstr "Fehler bei der Youtube Authentifizierung. Bitte loggen Sie sich zuerst a
 
 #: lib/classes/Bridge/Api/Youtube.class.php:588
 msgid "Erreur lors de l'envoi de la requête. Erreur d'authentification."
-msgstr ""
+msgstr "Fehler beim Versenden einer Anfrage. Authentifizierungsfehler."
 
 #: lib/classes/Bridge/Api/Youtube.class.php:591
 msgid "Erreur la ressource que vous tentez de modifier n'existe pas."
@@ -690,50 +678,34 @@ msgid "admin::register: un utilisateur s'est inscrit"
 msgstr "Ein Benutzer hat sich angemeldet"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:235
-#: lib/classes/eventsmanager/notify/order.class.php:221
-#: lib/classes/eventsmanager/notify/register.class.php:240
 msgid "admin::compte-utilisateur nom"
 msgstr "Name"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:237
-#: lib/classes/eventsmanager/notify/order.class.php:223
-#: lib/classes/eventsmanager/notify/register.class.php:242
 msgid "admin::compte-utilisateur prenom"
 msgstr "Vorname"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:239
-#: lib/classes/eventsmanager/notify/order.class.php:225
-#: lib/classes/eventsmanager/notify/register.class.php:244
 msgid "admin::compte-utilisateur email"
 msgstr "E-Mail"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:241
-#: lib/classes/eventsmanager/notify/order.class.php:227
-#: lib/classes/eventsmanager/notify/register.class.php:246
 msgid "admin::compte-utilisateur adresse"
 msgstr "Adresse"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:245
-#: lib/classes/eventsmanager/notify/order.class.php:231
-#: lib/classes/eventsmanager/notify/register.class.php:250
 msgid "admin::compte-utilisateur telephone"
 msgstr "Telefon"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:247
-#: lib/classes/eventsmanager/notify/order.class.php:233
-#: lib/classes/eventsmanager/notify/register.class.php:252
 msgid "admin::compte-utilisateur fax"
 msgstr "Fax"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:249
-#: lib/classes/eventsmanager/notify/order.class.php:235
-#: lib/classes/eventsmanager/notify/register.class.php:254
 msgid "admin::compte-utilisateur poste"
 msgstr "Beruf"
 
 #: lib/classes/eventsmanager/notify/autoregister.class.php:250
-#: lib/classes/eventsmanager/notify/order.class.php:236
-#: lib/classes/eventsmanager/notify/register.class.php:255
 msgid "admin::compte-utilisateur societe"
 msgstr "Unternehmensname"
 
@@ -1171,7 +1143,7 @@ msgstr "***ÜBERPRÜFEN SIE DIE BINÄRE KONFIGURATION***"
 
 #: lib/classes/module/console/systemConfigCheck.class.php:61
 msgid "*** FILESYSTEM CONFIGURATION ***"
-msgstr ""
+msgstr "*** FILESYSTEM KONFIGURATION ***"
 
 #: lib/classes/module/console/systemConfigCheck.class.php:64
 msgid "*** CHECK CACHE OPCODE ***"
@@ -1199,7 +1171,7 @@ msgstr "***ÜBERPRÜFEN SIE DIE SYSTEMSSPRACHUMGEBUNGEN***"
 
 #: lib/classes/module/console/systemUpgrade.class.php:49
 msgid "Create automatically"
-msgstr ""
+msgstr "Automatisch erstellen"
 
 #: lib/classes/module/console/systemUpgrade.class.php:97
 msgid "Continuer ?"
@@ -1239,8 +1211,6 @@ msgid "report:: Detail des telechargements"
 msgstr "Herunterladen"
 
 #: lib/classes/module/report/add.class.php:50
-#: lib/classes/module/report/edit.class.php:50
-#: lib/classes/module/report/push.class.php:50
 msgid "report:: document ajoute"
 msgstr "hinzugefügte Dokumente"
 
@@ -1421,17 +1391,11 @@ msgid "task::_common_:hotfolder"
 msgstr "Hot Folder"
 
 #: lib/classes/task/period/archive.class.php:253
-#: lib/classes/task/period/outofdate.class.php:429
-#: lib/classes/task/period/subdef.class.php:228
-#: lib/classes/task/period/workflow01.class.php:335
-#: lib/classes/task/period/writemeta.class.php:197
 msgid "task::_common_:periodicite de la tache"
 msgstr "Periodizität"
 
 #: lib/classes/task/period/archive.class.php:254
 #: lib/classes/task/period/archive.class.php:257
-#: lib/classes/task/period/subdef.class.php:230
-#: lib/classes/task/period/writemeta.class.php:199
 msgid "task::_common_:secondes (unite temporelle)"
 msgstr "Sekunden"
 
@@ -1621,7 +1585,7 @@ msgstr "SSL"
 
 #: lib/classes/task/period/outofdate.class.php:26
 msgid "Documents perimes"
-msgstr ""
+msgstr "Veraltete Dokumente"
 
 #: lib/classes/task/period/outofdate.class.php:411
 #: lib/classes/task/period/workflow01.class.php:317
@@ -1713,7 +1677,7 @@ msgstr "Strukturfehlende Metadaten löschen"
 #: lib/classes/User/Adapter.class.php:413
 #, php-format
 msgid "A user already exists with email addres %s"
-msgstr ""
+msgstr "Ein Benutzer existiert schon mit Email %s"
 
 #: lib/classes/User/Adapter.class.php:1356
 #, php-format
@@ -2238,609 +2202,11 @@ msgstr "Google Analytics ID (UA-XXXXXXX-X)"
 
 #: lib/conf.d/_GV_template.php:962
 msgid "Allow the website to be indexed by search engines like Google"
-msgstr ""
+msgstr "Die Website ermöglichen, von Suchmaschinen wie Google indexiert zu werden."
 
 #: lib/conf.d/_GV_template.php:968
 msgid "reglages:: Afficher le bandeau Google Chrome Frame"
 msgstr "Google Chrome Frame Banner anzeigen"
-
-#: lib/Alchemy/Phrasea/Application/Lightbox.php:367
-msgid "Erreur lors de l'enregistrement des donnees"
-msgstr "Fehler bei Speicherung der Daten"
-
-#: lib/Alchemy/Phrasea/Application/Lightbox.php:432
-msgid "Erreur lors de la mise a jour des donnes "
-msgstr "Fehler während Datenaktualisierung "
-
-#: lib/Alchemy/Phrasea/Application/Lightbox.php:458
-msgid "Do you want to send your report ?"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Application/Lightbox.php:501
-msgid "Envoie avec succes"
-msgstr "erfolgreich versendet"
-
-#: lib/Alchemy/Phrasea/Controller/Admin/Publications.php:92
-msgid "You are not the owner of this feed, you can not edit it"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:368
-msgid "admin::compte-utilisateur ville"
-msgstr "Ort"
-
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:369
-msgid "admin::compte-utilisateur code postal"
-msgstr "PLZ"
-
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:370
-msgid "admin::compte-utilisateur pays"
-msgstr "Land"
-
-#: lib/Alchemy/Phrasea/Controller/Admin/Users.php:375
-msgid "admin::compte-utilisateur activite"
-msgstr "Tätigkeit"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:104
-msgid "Basket created"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:138
-msgid "Basket has been deleted"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:180
-msgid "Record removed from basket"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:217
-msgid "Basket has been updated"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:304
-msgid "Basket has been archived"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:308
-msgid "Basket has been unarchived"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:382
-#: lib/Alchemy/Phrasea/Controller/Prod/Story.php:175
-#, php-format
-msgid "%d records added"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:445
-#, php-format
-msgid "%d records moved"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:237
-#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:308
-msgid "Vous ne pouvez pas editer plusieurs elements simultanement"
-msgstr "Sie dürfen nicht, mehrere Elemente gleichzeitig zu bearbeiten"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:262
-msgid "Vous essayez de faire une action que je ne connais pas !"
-msgstr "Sie versuchen eine Handlung, die ich nicht kenne !"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:328
-#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:468
-msgid "Request contains invalid datas"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:488
-#, php-format
-msgid "%d elements en attente"
-msgstr "%d schwebende Elemente"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Edit.php:64
-msgid "Vocabulary not found"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:82
-msgid "An error occured"
-msgstr "Ein Fehler ist aufgetreten"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:164
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:207
-msgid "Feed entry not found"
-msgstr "Eintritt für Eingabe nicht gefunden"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:196
-msgid "Action Forbidden : You are not the publisher"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:292
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:316
-msgid "publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications."
-msgstr "Hier finden Sie bitte Ihr eigenes RSS Feed, Sie werden dann dank dem RSS über die Veröffentlichungen gut unterrichtet sein"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:293
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:317
-msgid "publications::Ne le partagez pas, il est strictement confidentiel"
-msgstr "Bitte tauchen Sie es nicht, es ist streng vertraulich"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:295
-#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:319
-msgid "publications::votre rss personnel"
-msgstr "Ihr eigenes RSS"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:41
-msgid "prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee."
-msgstr "Vorsicht : die ausgewählte Datenbanken Liste für die Suche wurde verändert"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:47
-msgid "phraseanet::Ne plus afficher ce message"
-msgstr "Diese Meldung nicht mehr anzeigen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:48
-msgid "Supprimer egalement les documents rattaches a ces regroupements"
-msgstr "Auch die Dokumente, die mit diesen Berichten verknüpft sind, löschen?"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:49
-msgid "reponses:: Ces enregistrements vont etre definitivement supprimes et ne pourront etre recuperes. Etes vous sur ?"
-msgstr "Diese Datensätze werden endgültig gelöscht sein und es wird unmöglich sein, sie abzurufen. Bestätigen?"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:51
-msgid "boutton::supprimer"
-msgstr "löschen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:52
-msgid "prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'"
-msgstr "heterogene Werte, bitte wählen Sie \"ersetzen\", \"hinzufügen\" oder \"abbrechen\""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:53
-msgid "prod::editing::annulation: abandonner les modification ?"
-msgstr "Abbrechung: Änderungen verzichten?"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:54
-msgid "phraseanet::chargement"
-msgstr "ladend"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:57
-msgid "boutton::rechercher"
-msgstr "suchen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:59
-msgid "Vous n'avez pas les droits pour supprimer certains documents"
-msgstr "Sie haben keinen Zugriff, einige Dokumente zu löschen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:60
-msgid "Vous n'avez pas les droits pour supprimer ces documents"
-msgstr "Sie haben keinen Zugriff, diese Dokumente zu löschen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:61
-msgid "Vous devez donner un titre"
-msgstr "Sie müssen einen Titel geben"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:62
-msgid "Nouveau modele"
-msgstr "Neue Vorlage"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:64
-msgid "Vous n'avez pas rempli tous les champ requis"
-msgstr "Sie haben alle erforderliche Felder nicht ausgefüllt"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:65
-msgid "Vous n'avez pas selectionne de fil de publication"
-msgstr "Sie haben den Veröffentlichung Thread nicht ausgewählt"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:66
-msgid "panier::Supression d'un element d'un reportage"
-msgstr "Löschen von einem Element einer Reportage"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:67
-msgid "panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action."
-msgstr "Vorsicht : Sie sind dabei, ein Element des Berichtes zu löschen. Bitte bestätigen Sie Ihre Handlung."
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:68
-msgid "phraseanet::recherche avancee"
-msgstr "erweiterte Suche"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:69
-msgid "panier:: renommer le panier"
-msgstr "umbenennen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:70
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:79
-msgid "panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre"
-msgstr "Ein Bericht darf nur Elemente bekommen, die aus der selben Datenbank kommen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:71
-msgid "phraseanet:: Erreur"
-msgstr "Fehler"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:72
-msgid "cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus acces"
-msgstr "Vorsicht: Wenn Sie die ANB ablehnen, werden Sie nicht erlaubt, auf diese Datenbank einzuloggen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:73
-msgid "cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris en compte."
-msgstr "Änderungen werden wirken beim nächsten Anmeldung"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:74
-#, php-format
-msgid "edit:: Supprimer %s du champ dans les records selectionnes"
-msgstr "%s von allen ausgewählten Dokumente löschen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:75
-#, php-format
-msgid "edit:: Ajouter %s au champ courrant pour les records selectionnes"
-msgstr "%s an allen ausgewählte Dokumente hinzufügen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:76
-#, php-format
-msgid "edit:: Supprimer %s du champ courrant"
-msgstr "%s von ausgewähltem Dokument löschen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:77
-#, php-format
-msgid "edit:: Ajouter %s au champ courrant"
-msgstr "%s zum ausgewählten Dokument hinzufügen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:78
-msgid "panier:: vous ne pouvez pas supprimer un panier public"
-msgstr "Sie dürfen nicht, einen leeren öffentlichen Sammelkorb löschen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:80
-msgid "Vous ne pouvez pas selectionner plus de 400 enregistrements"
-msgstr "Sie dürfen nicht mehr als 400 Datensätze auswählen"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:82
-msgid "Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas"
-msgstr "Falsche Parameter oder entfernter Server antwortet nicht"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:83
-msgid "Les parametres sont corrects, le serveur distant est operationnel"
-msgstr "die Parameter sind korrekt, entfernter Server ist betriebsfähig"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:84
-msgid "Certaines publications n'ont pu etre effectuees, verifiez vos parametres"
-msgstr "einige Veröffentlichung wurden nicht ausgeführt, überprüfen Sie Ihre Parameter"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:85
-msgid "Aucune publication effectuee, verifiez vos parametres"
-msgstr "keine Veröffentlichung ausgeführt, überprüfen Sie Ihre Parameter"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:86
-msgid "Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci"
-msgstr "Vorsicht, wenn Sie diese Voreinstellung löschen, werden Sie nicht mehr Veröffentlichungen (die mit dieser Voreinstellung ausgeführt wurde) verändern oder löschen können"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:87
-msgid "edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing"
-msgstr "einige Dokumente haben fehlend erforderliche Felder. Bitte ausfüllen vor der Validierung."
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:88
-msgid "Aucun document selectionne"
-msgstr "kein ausgewähltes Dokument"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:89
-msgid "Are you sure you want to delete this list ?"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:90
-msgid "New list name ?"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:91
-msgid "List name can not be empty"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:92
-msgid "Name"
-msgstr "Name"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:93
-msgid "Message"
-msgstr "Nachricht"
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:94
-msgid "No users selected"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:129
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:238
-msgid "Unable to send the documents"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:144
-#, php-format
-msgid "Push from %s"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:153
-msgid "No receivers specified"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:158
-msgid "No elements to push"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:169
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:327
-#, php-format
-msgid "Unknown user %d"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:211
-#, php-format
-msgid "%1$d records have been sent to %2$d users"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:252
-#, php-format
-msgid "Validation from %s"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:261
-msgid "No participants specified"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:266
-msgid "No elements to validate"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:318
-#, php-format
-msgid "Missing mandatory participant parameter %s"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:388
-#, php-format
-msgid "%1$d records have been sent for validation to %2$d users"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:476
-msgid "First name is required"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:479
-msgid "Last name is required"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:482
-msgid "Email is required"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:485
-msgid "Email is invalid"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:504
-msgid "User already exists"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:531
-msgid "User successfully created"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:537
-msgid "Error while creating user"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Story.php:101
-msgid "Story created"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/Story.php:210
-msgid "Record removed from story"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:144
-#, php-format
-msgid "Unable to create list %s"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:152
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:272
-msgid "List name is required"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:173
-#, php-format
-msgid "List %s has been created"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:263
-msgid "Unable to update list"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:289
-msgid "List has been updated"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:330
-#, php-format
-msgid "List has been deleted"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:345
-#, php-format
-msgid "Unable to delete list"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:381
-msgid "Entry removed from list"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:396
-msgid "Unable to remove entry from list "
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:453
-#, php-format
-msgid "%d Users added to list"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:461
-#, php-format
-msgid "%d User added to list"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:478
-msgid "Unable to add usr to list"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:546
-msgid "List shared to user"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:561
-msgid "Unable to share the list with the usr"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:599
-msgid "Owner removed from list"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:613
-msgid "Unable to remove usr from list"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:175
-#, php-format
-msgid "%d Story attached to the WorkZone"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:182
-#, php-format
-msgid "%d Stories attached to the WorkZone"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:192
-#, php-format
-msgid "%1$d Story attached to the WorkZone, %2$d already attached"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:200
-#, php-format
-msgid "%1$d Stories attached to the WorkZone, %2$d already attached"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:251
-msgid "Story detached from the WorkZone"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:109
-msgid "It is not recommended to install Phraseanet without HTTPS support"
-msgstr "Es wird nicht empfohlen, Phraseanet ohne HTTPS Unterstützung zu installieren."
-
-#: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:157
-msgid "Appbox is unreachable"
-msgstr "Appbox ist unerreichbar"
-
-#: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:169
-msgid "Databox is unreachable"
-msgstr "Databox ist unerreichbar"
-
-#: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:327
-#, php-format
-msgid "an error occured : %s"
-msgstr "Ein Fehler ist aufgetreten: %s"
-
-#: lib/Alchemy/Phrasea/Core/Configuration.php:323
-#, php-format
-msgid "Impossible d'ecrire dans le dossier %s"
-msgstr "Unmöglich, im Ordner %s zu schreiben"
-
-#: lib/Alchemy/Phrasea/Core/Configuration.php:353
-#, php-format
-msgid "Impossible d'effacer le fichier %s"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:418
-msgid "phraseanet::technique::datetime-edit-format"
-msgstr "YYYY/MM/DD HH:NN:SS"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:419
-msgid "phraseanet::technique::datetime-edit-explain"
-msgstr "yyyy/mm/dd hh:mm:ss"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:422
-msgid "phraseanet::technique::date-edit-format"
-msgstr "YYYY/MM/DD"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:423
-msgid "phraseanet::technique::date-edit-explain"
-msgstr "yyyy/mm/dd"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:426
-msgid "phraseanet::technique::time-edit-format"
-msgstr "HH:NN:SS"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:427
-msgid "phraseanet::technique::time-edit-explain"
-msgstr "hh:mm:ss"
-
-#: lib/Alchemy/Phrasea/Helper/User/Edit.php:575
-msgid "Email addess is not valid"
-msgstr ""
-
-#: lib/Alchemy/Phrasea/Helper/User/Manage.php:165
-msgid "Invalid mail address"
-msgstr "ungültige Mail Adresse"
-
-#: lib/Alchemy/Phrasea/Helper/User/Manage.php:197
-msgid "Invalid template name"
-msgstr "ungültiger Vorlagenname"
-
-#: lib/Alchemy/Phrasea/Vocabulary/ControlProvider/UserProvider.php:40
-msgid "Users"
-msgstr ""
-
-#: lib/Doctrine/Entities/ValidationSession.php:356
-#, php-format
-msgid "Vous aviez envoye cette demande a %d utilisateurs"
-msgstr "Sie haben diese Anfrage zu %d Benutzer versendet"
-
-#: lib/Doctrine/Entities/ValidationSession.php:363
-#, php-format
-msgid "Vous avez envoye cette demande a %d utilisateurs"
-msgstr "Sie haben diese Anfrage zu %d Benutzer gesendet"
-
-#: lib/Doctrine/Entities/ValidationSession.php:373
-#, php-format
-msgid "Processus de validation recu de %s et concernant %d utilisateurs"
-msgstr "Validierungsprozess von %s für %d Benutzer bekommen"
-
-#: lib/Doctrine/Entities/ValidationSession.php:380
-#, php-format
-msgid "Processus de validation recu de %s"
-msgstr "Validierungsprozess von %s bekommen"
-
-#: lib/Doctrine/Repositories/BasketElementRepository.php:108
-msgid "Element is not found"
-msgstr ""
-
-#: lib/Doctrine/Repositories/BasketElementRepository.php:113
-msgid "You have not access to this basket element"
-msgstr ""
-
-#: lib/Doctrine/Repositories/BasketRepository.php:103
-msgid "Basket is not found"
-msgstr ""
-
-#: lib/Doctrine/Repositories/BasketRepository.php:108
-msgid "You have not access to this basket"
-msgstr ""
-
-#: lib/Doctrine/Repositories/UsrListOwnerRepository.php:30
-#: lib/Doctrine/Repositories/UsrListOwnerRepository.php:67
-msgid "Owner is not found"
-msgstr ""
-
-#: lib/Doctrine/Repositories/UsrListOwnerRepository.php:35
-msgid "Owner and list mismatch"
-msgstr ""
-
-#: lib/Doctrine/Repositories/UsrListRepository.php:51
-msgid "List is not found"
-msgstr ""
-
-#: lib/Doctrine/Repositories/UsrListRepository.php:56
-msgid "You have not access to this list"
-msgstr ""
 
 #: tmp/cache_twig/02/d3/4b60220e73710eb8b684b06b6e7e.php:20
 #, php-format
@@ -2852,24 +2218,18 @@ msgid "le service sera de nouveau disponible dans quelques minutes"
 msgstr "Die Dienstleistung wird in einige Minuten wieder verfügbar sein."
 
 #: tmp/cache_twig/04/1e/4d8028e185a990e32c751929f93b.php:28
-#: tmp/cache_twig/07/fc/40153184d66ad31ac62daad2522e.php:128
-#: tmp/cache_twig/07/fc/40153184d66ad31ac62daad2522e.php:233
-#: tmp/cache_twig/07/fc/40153184d66ad31ac62daad2522e.php:360
 msgid "report:: 3 - Type de report"
 msgstr "3 - Bericht Typ"
 
 #: tmp/cache_twig/04/1e/4d8028e185a990e32c751929f93b.php:35
-#: tmp/cache_twig/07/fc/40153184d66ad31ac62daad2522e.php:374
 msgid "report:: toutes les questions"
 msgstr "häufigsten Suchabfragen"
 
 #: tmp/cache_twig/04/1e/4d8028e185a990e32c751929f93b.php:42
-#: tmp/cache_twig/07/fc/40153184d66ad31ac62daad2522e.php:381
 msgid "report:: Les questions les plus posees"
 msgstr "häufigsten gestellten Fragen"
 
 #: tmp/cache_twig/04/1e/4d8028e185a990e32c751929f93b.php:56
-#: tmp/cache_twig/07/fc/40153184d66ad31ac62daad2522e.php:395
 msgid "report:: activite du site"
 msgstr "Tätigkeit der Webseite"
 
@@ -3023,6 +2383,7 @@ msgid "login:: Mon compte"
 msgstr "Mein Benutzerkonto"
 
 #: tmp/cache_twig/08/5a/dbbbe587162391037b233de045b2.php:313
+#: tmp/cache_twig/10/05/672e4a01e13ca90ac430fe043825.php:197
 msgid "phraseanet:: aide"
 msgstr "Hilfe"
 
@@ -3038,28 +2399,28 @@ msgstr "Über"
 msgid "phraseanet:: deconnection"
 msgstr "Abmeldung"
 
-#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:39
+#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:41
 msgid "login:: connexion"
 msgstr "Einloggen"
 
-#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:44
+#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:46
 msgid "login::Remember me"
 msgstr "angemeldet bleiben"
 
-#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:58
+#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:60
 msgid "login::erreur: Les cookies sont desactives sur votre navigateur"
 msgstr "Ihre Webbrowser sollte so konfiguriert werden, dass er Cookies akzeptiert; Sie müssen diese Option aktivieren, wenn Sie Phraseanet IV benutzen möchten"
 
-#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:68
+#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:70
 msgid "Vous etes maintenant deconnecte. A bientot."
 msgstr "Sie sind nun erfolgreich abgemeldet. Bis bald!"
 
-#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:82
+#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:84
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:244
 msgid "admin::compte-utilisateur identifiant"
 msgstr "Benutzername"
 
-#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:97
+#: tmp/cache_twig/08/65/d09b4a0e666fb11e5b0666a0cb93.php:99
 msgid "admin::compte-utilisateur mot de passe"
 msgstr "Passwort"
 
@@ -3083,6 +2444,11 @@ msgstr "Von %author%"
 msgid "boutton::editer"
 msgstr "bearbeiten"
 
+#: tmp/cache_twig/09/09/565a2afac5c75ab06c1c2dbec4d1.php:78
+#: tmp/cache_twig/0b/4e/1f430effbbcb0daf1b9a9acb4b78.php:1436
+msgid "boutton::supprimer"
+msgstr "löschen"
+
 #: tmp/cache_twig/09/09/565a2afac5c75ab06c1c2dbec4d1.php:109
 msgid "Derniere mise a jour le %updated_on%"
 msgstr "letzte Update am %updated_on%"
@@ -3103,6 +2469,10 @@ msgstr "Beschreibung"
 #: tmp/cache_twig/09/36/bf77d681b54db86a8445f384ca88.php:39
 msgid "Pour davantage d'informations, consulter le lien suivant %lien%"
 msgstr "Für mehrere Informationen, bitte sehen Sie folgendes Link %lien%"
+
+#: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:47
+msgid "Users"
+msgstr "Benutzer"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:54
 msgid "admin::user: nouvel utilisateur"
@@ -3130,7 +2500,7 @@ msgstr "Auto Register Einstellungen"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:114
 msgid "Filter"
-msgstr ""
+msgstr "Filtern"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:123
 msgid "Push::filter on login"
@@ -3162,15 +2532,15 @@ msgstr "beginnt mit"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:184
 msgid "Apply a template"
-msgstr ""
+msgstr "Eine Schablone anwenden"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:189
 msgid "boutton::choisir"
-msgstr ""
+msgstr "Auswählen"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:211
 msgid "boutton::appliquer"
-msgstr ""
+msgstr "Anwenden"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:227
 msgid "admin::compte-utilisateur id utilisateur"
@@ -3179,6 +2549,10 @@ msgstr "Benutzername"
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:264
 msgid "admin::compte-utilisateur nom/prenom"
 msgstr "Nachname/Vorname"
+
+#: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:324
+msgid "admin::compte-utilisateur pays"
+msgstr "Land"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:344
 msgid "admin::compte-utilisateur dernier modele applique"
@@ -3190,11 +2564,11 @@ msgstr "Erstellungsdatum"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:412
 msgid "This is a template"
-msgstr ""
+msgstr "Hier ist eine Schablone"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:421
 msgid "This user has no rights"
-msgstr ""
+msgstr "Dieser Benutzer besitzt keine Rechte"
 
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:622
 #: tmp/cache_twig/09/81/951f3c987474b17a9686305be82e.php:633
@@ -3373,7 +2747,7 @@ msgstr "ANB"
 msgid "login:: accueil"
 msgstr "Startseite"
 
-#: tmp/cache_twig/10/05/672e4a01e13ca90ac430fe043825.php:287
+#: tmp/cache_twig/10/05/672e4a01e13ca90ac430fe043825.php:288
 msgid "phraseanet:: language"
 msgstr "Sprache"
 
@@ -3388,11 +2762,11 @@ msgstr "Sie haben kein Element ausgewählt."
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:68
 msgid "Les elements ne peuvent etre uploades (problemes de type ou de droit)"
-msgstr ""
+msgstr "Die Elemente können nicht hochgeladen werden (Typ oder Recht Probleme)."
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:71
 msgid "Le bridge Dailymotion ne prend en charge que les videos"
-msgstr ""
+msgstr "Dailymotion Bridge unterstüzt nur Videos"
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:75
 msgid "Vous ne pouvez uploader des elements sur Dailymotion qu'un par un"
@@ -3416,7 +2790,7 @@ msgstr "250 Zeichen max."
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:179
 msgid "10 tags maximum"
-msgstr ""
+msgstr "10 Tags maximal"
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:183
 msgid "Séparez les tags par un espace: Paris vacances restaurant"
@@ -3440,7 +2814,7 @@ msgstr "öffentlich"
 
 #: tmp/cache_twig/10/14/f294b28413d46d6959201fd37c02.php:255
 msgid "Nous vous rappelons qu'il est de votre responsabilité de vous assurer que le contenu de la vidéo que vous allez mettre en ligne est conforme aux conditions d'utilisations"
-msgstr ""
+msgstr "Sie erklären sich damit einverstanden, dass Sie dafür verantwortlich sind: Stellen Sie sicher, dass der Video Inhalt, der Sie Online hochladen werden, entspricht die Nutzungsbedingungen."
 
 #: tmp/cache_twig/10/8e/67ad474f1160c83a96f843815e7d.php:23
 msgid "Type texte"
@@ -3496,11 +2870,11 @@ msgstr "eine Veröffentlichung hinzufügen"
 
 #: tmp/cache_twig/12/a2/2021d9942666a7bae0d71012739c.php:58
 msgid "Feed name"
-msgstr ""
+msgstr "Feed Name"
 
 #: tmp/cache_twig/12/a2/2021d9942666a7bae0d71012739c.php:68
 msgid "Short description"
-msgstr ""
+msgstr "Kurzbeschreibung"
 
 #: tmp/cache_twig/12/a2/2021d9942666a7bae0d71012739c.php:72
 msgid "Sous-titre"
@@ -3528,11 +2902,11 @@ msgstr "Einschränkung"
 
 #: tmp/cache_twig/12/a2/2021d9942666a7bae0d71012739c.php:153
 msgid "Public"
-msgstr ""
+msgstr "Öffentlich"
 
 #: tmp/cache_twig/12/a2/2021d9942666a7bae0d71012739c.php:231
 msgid "This feed is public"
-msgstr ""
+msgstr "Dieses Feed ist öffentlich"
 
 #: tmp/cache_twig/12/a2/2021d9942666a7bae0d71012739c.php:278
 msgid "Une fois la publication supprimee, les donnees publiees seront definitivement perdues. Continuer ?"
@@ -3557,35 +2931,36 @@ msgstr "exportieren"
 
 #: tmp/cache_twig/1f/8f/faccfb0bde3569829b665706fabc.php:20
 msgid "First Name"
-msgstr ""
+msgstr "Vorname"
 
 #: tmp/cache_twig/1f/8f/faccfb0bde3569829b665706fabc.php:31
 msgid "Last Name"
-msgstr ""
+msgstr "Nachname"
 
 #: tmp/cache_twig/1f/8f/faccfb0bde3569829b665706fabc.php:42
 msgid "Email Name"
-msgstr ""
+msgstr "Email Adresse"
 
 #: tmp/cache_twig/1f/8f/faccfb0bde3569829b665706fabc.php:53
 msgid "Job"
-msgstr ""
+msgstr "Beruf"
 
 #: tmp/cache_twig/1f/8f/faccfb0bde3569829b665706fabc.php:64
+#: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:174
 msgid "Company"
-msgstr ""
+msgstr "Unternehmen"
 
 #: tmp/cache_twig/1f/8f/faccfb0bde3569829b665706fabc.php:75
 msgid "City"
-msgstr ""
+msgstr "Stadt"
 
 #: tmp/cache_twig/1f/8f/faccfb0bde3569829b665706fabc.php:86
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: tmp/cache_twig/1f/8f/faccfb0bde3569829b665706fabc.php:90
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: tmp/cache_twig/1f/b8/8eb333db33342e0e3065cf81acdb.php:17
 #: tmp/cache_twig/1f/b8/8eb333db33342e0e3065cf81acdb.php:23
@@ -3619,15 +2994,15 @@ msgstr "wird gesendet"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:25
 msgid "List Name"
-msgstr ""
+msgstr "Name der Liste"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:38
 msgid "Set sharing permission"
-msgstr ""
+msgstr "Legen sie die Teilung Zugriffe fest"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:112
 msgid "Activite"
-msgstr ""
+msgstr "Aktivität"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:118
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:149
@@ -3635,23 +3010,23 @@ msgstr ""
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:211
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:242
 msgid "All"
-msgstr ""
+msgstr "Alle"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:143
 msgid "Template"
-msgstr ""
+msgstr "Schablone"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:205
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:236
 msgid "Position"
-msgstr ""
+msgstr "Funktion"
 
 #: tmp/cache_twig/24/9e/91b44faaa7a1a779d0bbe6403278.php:287
 msgid "%length% peoples"
-msgstr ""
+msgstr "%length% Leute"
 
 #: tmp/cache_twig/26/4a/a88de5c8ef8ff0f4e7b7c33fd479.php:19
 msgid "VALIDATION"
@@ -3737,8 +3112,6 @@ msgid "action : ajouter au panier"
 msgstr "Zum Sammelkorb hinzufügen"
 
 #: tmp/cache_twig/33/4d/8e964832ba08789a3b4d0d8e9eff.php:92
-#: tmp/cache_twig/3b/46/7c9d73ae03d7ae2f45b155ef213f.php:27
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1295
 msgid "action : print"
 msgstr "drucken"
 
@@ -3860,7 +3233,7 @@ msgstr "Pflichtfeld"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:591
 msgid "Phraseanet may require many binaries."
-msgstr ""
+msgstr "Phraseanet kann mehrere Binärprogramme erfordern"
 
 #: tmp/cache_twig/33/bd/3f7434a025a7f4ace343dfa5715b.php:597
 msgid "Some of them are required, like the indexer, Exiftool or ImageMagick components, some others are optionnal, like FFmpeg which is used to preview video files."
@@ -4274,7 +3647,7 @@ msgstr "Thesaurus"
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:401
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2297
 msgid "Re-initialiser"
-msgstr "zurücksetzen"
+msgstr "Zurücksetzen"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:412
 msgid "Chercher tous les mots"
@@ -4374,6 +3747,11 @@ msgstr "mögliche Begriffe annehmen"
 msgid "prod::thesaurusTab:wizard:remplacer par le terme"
 msgstr "ersetzen durch den Begriff"
 
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:832
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1090
+msgid "boutton::rechercher"
+msgstr "suchen"
+
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:881
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:945
 msgid "chargement"
@@ -4400,13 +3778,13 @@ msgstr "Neuer"
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1017
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1021
 msgid "Browse Baskets"
-msgstr ""
+msgstr "Sammelkörbe durchsuchen"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1028
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1032
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1036
 msgid "action:: nouveau reportage"
-msgstr ""
+msgstr "Neuer Bericht"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1045
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1049
@@ -4471,7 +3849,7 @@ msgstr "Themen"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1235
 msgid "Select"
-msgstr ""
+msgstr "Auswählen"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1242
 msgid "reponses:: selectionner tout"
@@ -4498,11 +3876,11 @@ msgstr "Audios"
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1522
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1575
 msgid "Select an action"
-msgstr ""
+msgstr "Wählen Sie eine Handlung aus"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1530
 msgid "Feedback"
-msgstr ""
+msgstr "Feedback"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1702
 msgid "raccourci :: a propos des raccourcis claviers"
@@ -4738,7 +4116,7 @@ msgstr "Sind Sie sicher, %number% Fotos zu löschen?"
 
 #: tmp/cache_twig/46/21/f5a038e4c5a3f4677f8ee17a5d45.php:38
 msgid "Erreur lors de votre authentification"
-msgstr ""
+msgstr "Authentifizierungsfehler"
 
 #: tmp/cache_twig/46/21/f5a038e4c5a3f4677f8ee17a5d45.php:53
 msgid "Vous etes authentifie avec succes"
@@ -4765,7 +4143,6 @@ msgid "Creer"
 msgstr "erstellen"
 
 #: tmp/cache_twig/4b/1d/eeda3c99bc5c1ea2b32c1b5030e1.php:32
-#: tmp/cache_twig/56/df/8e9606b65d5b86ebe83193d18d40.php:48
 msgid "Actions"
 msgstr "Handlungen"
 
@@ -4780,6 +4157,10 @@ msgstr "Wenn Sie sie nicht beachten, werden die Dokumente korrekt indiziert aber
 #: tmp/cache_twig/4d/c1/7d0c2228d36d650b2be2d9a43835.php:26
 msgid "Ces informations sont directement fournies par la norme de metadonnees de ce champ : %norm_name%"
 msgstr "Diese Informationen werden direkt von Metadaten Norm von diesem Feld: %norm_name%"
+
+#: tmp/cache_twig/4d/c1/7d0c2228d36d650b2be2d9a43835.php:37
+msgid "phraseanet::technique::datetime-edit-explain"
+msgstr "yyyy/mm/dd hh:mm:ss"
 
 #: tmp/cache_twig/4d/c1/7d0c2228d36d650b2be2d9a43835.php:43
 msgid "phraseanet::technique::date-edit-explain (aaaa/mm/jj)"
@@ -4864,11 +4245,11 @@ msgstr "updaten"
 
 #: tmp/cache_twig/52/48/d7b24984e78d1532173f20658d9a.php:138
 msgid "Before any upgrade, you have to fix your database."
-msgstr ""
+msgstr "Vor einer Aktualisierung müssen Sie zuerst Ihre Datenbank beheben"
 
 #: tmp/cache_twig/52/48/d7b24984e78d1532173f20658d9a.php:141
 msgid "Some users have the same email address. You can fix this problem with this script :"
-msgstr ""
+msgstr "Einige Benutzer haben die selbe Email Adresse. Sie können dieses Problem mit diesem Skript beheben:"
 
 #: tmp/cache_twig/52/48/d7b24984e78d1532173f20658d9a.php:163
 msgid "Une mise a jour de l'application est necessaire, il est vivement recommande de l'effectuer en ligne de commande via la commande :"
@@ -4881,6 +4262,10 @@ msgstr "Wenn keinen Zugriff zur Konsole, bitte folgen Sie das Link:"
 #: tmp/cache_twig/52/48/d7b24984e78d1532173f20658d9a.php:202
 msgid "Progression de la mise a jour : "
 msgstr "Update Verlauf: "
+
+#: tmp/cache_twig/52/e0/087ada02cf9ccedbf1c84a81eab5.php:65
+msgid "Name"
+msgstr "Name"
 
 #: tmp/cache_twig/54/f8/2480d317ffebf431a7719a048fbd.php:25
 msgid "Page"
@@ -4912,11 +4297,11 @@ msgstr "erlischt in %expiration_date%"
 
 #: tmp/cache_twig/5b/28/4dc2a8dc9d82dd44c67a7e324643.php:68
 msgid "Rights"
-msgstr ""
+msgstr "Rechte"
 
 #: tmp/cache_twig/5b/28/4dc2a8dc9d82dd44c67a7e324643.php:78
 msgid "Infos"
-msgstr ""
+msgstr "Informationen"
 
 #: tmp/cache_twig/5b/28/4dc2a8dc9d82dd44c67a7e324643.php:125
 msgid "Edition des droits de %display_name%"
@@ -4941,6 +4326,18 @@ msgstr "Frau"
 #: tmp/cache_twig/5b/28/4dc2a8dc9d82dd44c67a7e324643.php:695
 msgid "admin::compte-utilisateur:sexe: monsieur"
 msgstr "Herr"
+
+#: tmp/cache_twig/5b/28/4dc2a8dc9d82dd44c67a7e324643.php:760
+msgid "admin::compte-utilisateur code postal"
+msgstr "PLZ"
+
+#: tmp/cache_twig/5b/28/4dc2a8dc9d82dd44c67a7e324643.php:774
+msgid "admin::compte-utilisateur ville"
+msgstr "Ort"
+
+#: tmp/cache_twig/5b/28/4dc2a8dc9d82dd44c67a7e324643.php:818
+msgid "admin::compte-utilisateur activite"
+msgstr "Tätigkeit"
 
 #: tmp/cache_twig/5c/72/a1b63fb5c6635e4efaa3f5331d5f.php:110
 msgid "Quotas"
@@ -4973,25 +4370,25 @@ msgstr "Beschreibung"
 #: tmp/cache_twig/5d/e5/ae2ed2d48a3db8fa0da92ccdf779.php:23
 #: tmp/cache_twig/5d/e5/ae2ed2d48a3db8fa0da92ccdf779.php:262
 msgid "No results"
-msgstr ""
+msgstr "Keine Ergebnisse"
 
 #: tmp/cache_twig/5d/e5/ae2ed2d48a3db8fa0da92ccdf779.php:29
 #: tmp/cache_twig/5d/e5/ae2ed2d48a3db8fa0da92ccdf779.php:268
 msgid "1 result"
-msgstr ""
+msgstr "1 Ergebnis"
 
 #: tmp/cache_twig/5d/e5/ae2ed2d48a3db8fa0da92ccdf779.php:35
 #: tmp/cache_twig/5d/e5/ae2ed2d48a3db8fa0da92ccdf779.php:274
 msgid "%Total% results"
-msgstr ""
+msgstr "%Total% Ergebnisse"
 
 #: tmp/cache_twig/5d/e5/ae2ed2d48a3db8fa0da92ccdf779.php:184
 msgid "Received from %user_name%"
-msgstr ""
+msgstr "Von %user_name% bekommen"
 
 #: tmp/cache_twig/5d/e5/ae2ed2d48a3db8fa0da92ccdf779.php:222
 msgid "Sent for validation to %list_participants%"
-msgstr ""
+msgstr "Für die Bestätigung zu %list_participants% gesendet"
 
 #: tmp/cache_twig/5e/37/71e1b63407b0767110817c7b875f.php:34
 msgid "Vous avez autorise ces applications a acceder a votre compte"
@@ -5075,21 +4472,21 @@ msgid "boutton::publier"
 msgstr "veröffentlichen"
 
 #: tmp/cache_twig/61/e3/8dbd14ad2bd30ee1ee235d4c224c.php:15
-#: tmp/cache_twig/68/9a/19071b2e057711fb84181cac2287.php:15
+msgid "Collection"
+msgstr "Kollektion"
+
+#: tmp/cache_twig/61/e3/8dbd14ad2bd30ee1ee235d4c224c.php:41
+msgid "Story name"
+msgstr "Bericht Name"
+
+#: tmp/cache_twig/61/e3/8dbd14ad2bd30ee1ee235d4c224c.php:47
+msgid "Story description"
+msgstr "Bericht Beschreibung"
+
+#: tmp/cache_twig/61/e3/8dbd14ad2bd30ee1ee235d4c224c.php:53
+#: tmp/cache_twig/68/9a/19071b2e057711fb84181cac2287.php:28
 msgid "Ajouter ma selection courrante"
 msgstr "Meine aktuelle Auswahl hinzufügen"
-
-#: tmp/cache_twig/61/e3/8dbd14ad2bd30ee1ee235d4c224c.php:21
-msgid "Story name"
-msgstr ""
-
-#: tmp/cache_twig/61/e3/8dbd14ad2bd30ee1ee235d4c224c.php:27
-msgid "Story description"
-msgstr ""
-
-#: tmp/cache_twig/61/e3/8dbd14ad2bd30ee1ee235d4c224c.php:33
-msgid "Collection"
-msgstr ""
 
 #: tmp/cache_twig/63/54/32f78e10cecde152548c2c0fb033.php:133
 msgid "Garder ma session active"
@@ -5097,7 +4494,7 @@ msgstr "Meine Session aktiv aushalten"
 
 #: tmp/cache_twig/67/4b/1f49350072fcb833abd4d43aba1c.php:73
 msgid "Le bridge FlickR ne prend en charge que les photos"
-msgstr ""
+msgstr "Flickr Bridge unterstützt nur Fotos"
 
 #: tmp/cache_twig/67/4b/1f49350072fcb833abd4d43aba1c.php:83
 msgid "%n_elements% elements ne peuvent etre uploades"
@@ -5110,13 +4507,13 @@ msgstr ""
 
 #: tmp/cache_twig/67/4b/1f49350072fcb833abd4d43aba1c.php:206
 msgid "2000 caracteres maximum, separe par des espaces"
-msgstr ""
+msgstr "2000 Zeichen max., durch Leerzeichen getrennt"
 
-#: tmp/cache_twig/68/9a/19071b2e057711fb84181cac2287.php:21
+#: tmp/cache_twig/68/9a/19071b2e057711fb84181cac2287.php:15
 msgid "Nom du nouveau panier"
 msgstr "Titel"
 
-#: tmp/cache_twig/68/9a/19071b2e057711fb84181cac2287.php:27
+#: tmp/cache_twig/68/9a/19071b2e057711fb84181cac2287.php:21
 msgid "paniers::description du nouveau panier"
 msgstr "Beschreibung"
 
@@ -5154,15 +4551,15 @@ msgstr "Anzahl von bearbeiteten Dokumenten"
 
 #: tmp/cache_twig/70/71/684a331ee0c04c8c5cc46cff707b.php:15
 msgid "Lists"
-msgstr ""
+msgstr "Liste"
 
 #: tmp/cache_twig/70/71/684a331ee0c04c8c5cc46cff707b.php:26
 msgid "Refresh"
-msgstr ""
+msgstr "Aktualisieren"
 
 #: tmp/cache_twig/70/71/684a331ee0c04c8c5cc46cff707b.php:61
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 #: tmp/cache_twig/71/b9/c18fe9ea50eddc914b07ec715297.php:36
 msgid "Playlist"
@@ -5206,7 +4603,7 @@ msgstr "Vorsicht, zwei Felder können nicht das gleiche Dublin Core Element dars
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:143
 msgid "La precedente attribution a ete desactivee"
-msgstr ""
+msgstr "Die letzte Zuordnung wurde deaktiviert"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:219
 msgid "Attention !"
@@ -5234,11 +4631,11 @@ msgstr "indizierbar"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:325
 msgid "Vocabulary Type"
-msgstr ""
+msgstr "Vokabeln Typ"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:331
 msgid "Vocabulary restricted"
-msgstr ""
+msgstr "Vokabeln beschränkt"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:343
 msgid "Lecture seule"
@@ -5246,11 +4643,11 @@ msgstr "schreibgeschützt"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:349
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:355
 msgid "Separateur"
-msgstr ""
+msgstr "Trennzeichen"
 
 #: tmp/cache_twig/7e/38/00f8ed117d6893741e4218ff0a39.php:361
 msgid "Branche Thesaurus"
@@ -5383,7 +4780,7 @@ msgstr "anmelden"
 
 #: tmp/cache_twig/8d/cc/87605d787f752de8d5b6201bfad5.php:83
 msgid "Aller a"
-msgstr ""
+msgstr "Gehen Sie zu"
 
 #: tmp/cache_twig/8d/cc/87605d787f752de8d5b6201bfad5.php:143
 msgid "Aucune entree pour le moment"
@@ -5412,7 +4809,7 @@ msgstr "Welche Playlist möchten Sie für Ihre %number% Elemente benutzen?"
 
 #: tmp/cache_twig/98/30/8af814961d8dbdaa5ebef159ef2b.php:39
 msgid "mauvais login / mot de passe"
-msgstr ""
+msgstr "Schlechte Benutzername / Passwort"
 
 #: tmp/cache_twig/98/30/8af814961d8dbdaa5ebef159ef2b.php:45
 msgid "Bonjour, veuillez vous identifier sur %home_title%"
@@ -5481,15 +4878,15 @@ msgstr "Liste der Personen, die auf diesen Thread  veröffentlichen dürfen"
 
 #: tmp/cache_twig/9e/be/1977c6e64a7acf4902aff6940cb6.php:198
 msgid "Id"
-msgstr ""
+msgstr "ID"
 
 #: tmp/cache_twig/9e/be/1977c6e64a7acf4902aff6940cb6.php:203
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: tmp/cache_twig/9e/be/1977c6e64a7acf4902aff6940cb6.php:207
 msgid "Owner"
-msgstr ""
+msgstr "Besitzer"
 
 #: tmp/cache_twig/9e/be/1977c6e64a7acf4902aff6940cb6.php:305
 msgid "Ajouter un publisher"
@@ -5497,11 +4894,11 @@ msgstr "einen Veröffentlicher hinzufügen"
 
 #: tmp/cache_twig/9e/be/1977c6e64a7acf4902aff6940cb6.php:309
 msgid "Name or email"
-msgstr ""
+msgstr "Name oder Email"
 
 #: tmp/cache_twig/9e/be/1977c6e64a7acf4902aff6940cb6.php:434
 msgid "You are not the feed owner"
-msgstr ""
+msgstr "Sie sind nicht der Besitzer von diesem Feed"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:36
 msgid "Vous avez recu un nouveau panier"
@@ -5516,12 +4913,12 @@ msgid "paniers:: panier recu de %pusher%"
 msgstr "Sammelkorb von %pusher% bekommen"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:126
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:297
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:309
 msgid "action::exporter"
 msgstr "exportieren"
 
 #: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:137
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:308
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:320
 msgid "action::editer"
 msgstr "bearbeiten"
 
@@ -5534,35 +4931,39 @@ msgstr "umbenennen"
 msgid "action::Valider"
 msgstr "validieren"
 
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:323
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:194
+msgid "Archive"
+msgstr ""
+
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:335
 msgid "action::detacher"
 msgstr "entfernen"
 
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:549
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:561
 msgid "delete"
 msgstr "löschen"
 
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:640
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:652
 msgid "panier:: ordre du panier"
 msgstr "Sammelkorb Reihenfolge"
 
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:648
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:660
 msgid "panier:: ordre Validation ascendante"
 msgstr "gut bewertet"
 
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:656
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:668
 msgid "panier:: ordre Validation descendante"
 msgstr "weniger bewertet"
 
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:699
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:711
 msgid "L'utilisateur approuve ce document"
 msgstr "Benutzer genehmigt dieses Dokument"
 
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:705
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:717
 msgid "L'utilisateur desapprouve ce document"
 msgstr "Benutzer lehnt dieses Dokument ab"
 
-#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:711
+#: tmp/cache_twig/a0/1f/23035961a122daf082c676a2f508.php:723
 msgid "L'utilisateur n'a pas encore donne son avis sur ce document"
 msgstr "Benutzer hat seine Meinung nocht nicht gegeben"
 
@@ -5572,7 +4973,7 @@ msgstr "Kommentare"
 
 #: tmp/cache_twig/a4/00/d98993c4d1376e42f625680c1d4b.php:37
 msgid "%nb_records% records"
-msgstr ""
+msgstr "%nb_records% Datensätze"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:21
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:21
@@ -5582,7 +4983,7 @@ msgstr ""
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:30
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:48
 msgid "HD Download"
-msgstr ""
+msgstr "HD Download"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:45
 msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
@@ -5591,59 +4992,63 @@ msgstr "Ein Push ermöglicht, einen Stapel Bildern an Emfängern zu senden. Sie 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:56
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:74
 msgid "Add user"
-msgstr ""
+msgstr "Benutzer hinzufügen"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:61
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:79
 msgid "Send"
-msgstr ""
+msgstr "Senden"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:75
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:93
 msgid "Save this list"
-msgstr ""
+msgstr "Diese Liste speichern"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:85
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:103
 msgid "List Manager"
-msgstr ""
+msgstr "Liste Manager"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:91
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:109
 msgid "Select all"
-msgstr ""
+msgstr "Alle auswählen"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:95
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:113
 msgid "Deselect all"
-msgstr ""
+msgstr "Alle abwählen"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:130
 msgid "Back to Push"
-msgstr ""
+msgstr "Zurück zum Push"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:146
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:164
 msgid "Welcome to the ListManager !"
-msgstr ""
+msgstr "Herzlich Willkommen bei der Liste Manager !"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:155
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:173
 msgid "Start by creating one by using the \"add\" button on the left !"
-msgstr ""
+msgstr "Beginnen Sie mit der Erstellung: Klicken sie auf \"Hinzufügen\" links !"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:164
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:182
 msgid "Select a list on the left and edit it !"
-msgstr ""
+msgstr "Wählen Sie eine Liste links aus und bearbeiten Sie sie!"
+
+#: tmp/cache_twig/a5/4a/3c031045d47e838eac5252dfd6a9.php:380
+msgid "Do you want to send your report ?"
+msgstr "Möchten Sie, Ihren Bericht zu senden ?"
 
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:30
 msgid "Contributor"
-msgstr ""
+msgstr "Benutzer"
 
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:39
 msgid "See others"
-msgstr ""
+msgstr "Andere sehen"
 
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:63
 msgid "Push::une validation est une demande d'appreciation a d'autres personnes"
@@ -5651,7 +5056,7 @@ msgstr "\"Validieren\" erlaubt, eine Meinungsanfrage auf Dokumente an Empfänger
 
 #: tmp/cache_twig/a5/73/a67f96718e9f4458bf56259dc8d9.php:148
 msgid "Back to Feedback"
-msgstr ""
+msgstr "Zurück zum Feedback"
 
 #: tmp/cache_twig/a6/5e/67e9cbdd50463a8dcc5670c1b8f2.php:157
 msgid "report:: Volumetrie des questions posees sur %home_title%"
@@ -5707,7 +5112,7 @@ msgstr "Mosaicansicht"
 
 #: tmp/cache_twig/aa/c6/3fb5af89a8aa5b7f0ac544042860.php:82
 msgid "None of the selected records can be printed "
-msgstr ""
+msgstr "Keine ausgewählte Datensätze können gedruckt werden "
 
 #: tmp/cache_twig/aa/c6/3fb5af89a8aa5b7f0ac544042860.php:88
 msgid "export:: erreur : aucun document selectionne"
@@ -5719,7 +5124,7 @@ msgstr "drucken"
 
 #: tmp/cache_twig/aa/d4/6f94fb6eb3c2fe609a4d228ab7c7.php:71
 msgid "Le bridge Youtube ne prend en charge que les videos"
-msgstr ""
+msgstr "YouTube Bridge unterstützt nur Videos"
 
 #: tmp/cache_twig/aa/d4/6f94fb6eb3c2fe609a4d228ab7c7.php:75
 msgid "Vous ne pouvez uploader des elements sur Youtube qu'un par un"
@@ -5734,6 +5139,7 @@ msgid "2000 caracteres maximum"
 msgstr "2000 Zeichen max."
 
 #: tmp/cache_twig/aa/d4/6f94fb6eb3c2fe609a4d228ab7c7.php:170
+#: tmp/cache_twig/bd/a8/2c59a65e6a28629b0d4eecf283e3.php:139
 msgid "Categorie"
 msgstr "Kategorie"
 
@@ -5747,7 +5153,7 @@ msgstr "durch Leerzeichen getrennt"
 
 #: tmp/cache_twig/aa/d4/6f94fb6eb3c2fe609a4d228ab7c7.php:289
 msgid "En cliquant sur \"ajouter\" vous certifiez que vous possedez les droits pour le contenu ou que vous etes autorisé par le proprietaire à rendre le contenu accessible au public sur YouTube, et qu'il est autrement conforme aux Conditions d'utilisation de YouTubesitue a %lien_term_youtube%"
-msgstr ""
+msgstr "Wenn Sie auf \"Hinzufügen\" klicken, erklären Sie sich damit einverstanden, dass Sie die Rechte auf diesen Inhalt besitzen oder dass Sie von dem Besitzer vom Inhalt berechtigt sind, diesen Inhalt auf YouTube zu veröffentlichen. Stellen Sie auch sicher, dass dieses Inhalt die YouTube Nutzungsbedingungen entspricht: %lien_term_youtube%."
 
 #: tmp/cache_twig/aa/d4/6f94fb6eb3c2fe609a4d228ab7c7.php:309
 msgid "Retour"
@@ -5797,11 +5203,11 @@ msgstr "Struktur Einstellung"
 
 #: tmp/cache_twig/ac/01/00841d1486d772d1b3f284de6137.php:266
 msgid "CHAMPS"
-msgstr ""
+msgstr "Felder"
 
 #: tmp/cache_twig/ac/01/00841d1486d772d1b3f284de6137.php:278
 msgid "SUBDEFS"
-msgstr ""
+msgstr "Unterauflösungen"
 
 #: tmp/cache_twig/ac/01/00841d1486d772d1b3f284de6137.php:290
 msgid "admin::status: reglage des status"
@@ -5886,6 +5292,10 @@ msgstr "suchen / ersetzen"
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:309
 msgid "prod::editing: modeles de fiches"
 msgstr "Vorlage"
+
+#: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:335
+msgid "phraseanet::chargement"
+msgstr "ladend"
 
 #: tmp/cache_twig/c0/d0/888dd899d0fc0f18fd750774ab0f.php:357
 msgid "prod::editing::replace: remplacer dans le champ"
@@ -6053,7 +5463,7 @@ msgstr "OAuth Einstellungen"
 
 #: tmp/cache_twig/c4/c2/a7e934389fd1846d5c1e45590c0c.php:58
 msgid "Les parametres oauth de votre application."
-msgstr ""
+msgstr "Die oauth Parameter Ihrer Applikation"
 
 #: tmp/cache_twig/c4/c2/a7e934389fd1846d5c1e45590c0c.php:105
 msgid "Votre token d'access"
@@ -6210,15 +5620,15 @@ msgstr "Sie müssen einen Typ von Unterauflösungen auswählen"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:948
 msgid "You can not directly download more than 120Mo ; time to package all documents is too long"
-msgstr ""
+msgstr "Sie dürfen nicht direkt mehr als 120Mo hochladen; Zeit zu lange, um alle Dokumente zu verpacken."
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:952
 msgid "You can alternatively receive an email when the download is ready."
-msgstr ""
+msgstr "Sie können auch eine Email bekommen, wenn Ihr Download fertig ist."
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:956
 msgid "Would you like to receive an e-mail when your download is ready ?"
-msgstr ""
+msgstr "Möchten Sie eine Email bekommen, wenn Ihr Download fertig ist ?"
 
 #: tmp/cache_twig/ca/6b/bfdc9ede9e32c797756b9d3d1771.php:1119
 msgid "phraseanet:: utiliser SSL"
@@ -6362,23 +5772,23 @@ msgstr "speichern"
 
 #: tmp/cache_twig/d3/33/d589cd112d18d232c0d7c4edb6d5.php:36
 msgid "Login"
-msgstr ""
+msgstr "Benutzername"
 
 #: tmp/cache_twig/d3/33/d589cd112d18d232c0d7c4edb6d5.php:54
 msgid "First/Last Name"
-msgstr ""
+msgstr "Vorname / Nachname"
 
 #: tmp/cache_twig/d3/33/d589cd112d18d232c0d7c4edb6d5.php:90
 msgid "E-Mail"
-msgstr ""
+msgstr "Email"
 
 #: tmp/cache_twig/d3/33/d589cd112d18d232c0d7c4edb6d5.php:126
 msgid "Last Template"
-msgstr ""
+msgstr "Letzte Schablone"
 
 #: tmp/cache_twig/d3/33/d589cd112d18d232c0d7c4edb6d5.php:144
 msgid "Creation date"
-msgstr ""
+msgstr "Erstellungsdatum"
 
 #: tmp/cache_twig/df/4e/a6eeff08e70837a644553d58cd76.php:200
 msgid "Create new subdef"
@@ -6571,43 +5981,43 @@ msgstr "Möchten Sie auch die Dokumente, die mit diesen Berichten verknüpft sin
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:18
 msgid "Search baskets"
-msgstr ""
+msgstr "Sammelkörbe suchen"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:23
 msgid "See"
-msgstr ""
+msgstr "Sehen"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:43
 msgid "My baskets"
-msgstr ""
+msgstr "Meine Sammelkörbe"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:55
 msgid "Received baskets"
-msgstr ""
+msgstr "Bekommene Sammelkörbe"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:67
 msgid "Validations sent"
-msgstr ""
+msgstr "Gesendete Bestätigungen"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:79
 msgid "Validations received"
-msgstr ""
+msgstr "Bekommene Bestätigungen"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:86
 msgid "When"
-msgstr ""
+msgstr "Wann"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:94
 msgid "Any time"
-msgstr ""
+msgstr "Jederzeit"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:106
 msgid "This year"
-msgstr ""
+msgstr "In diesem Jahr"
 
 #: tmp/cache_twig/f4/9c/1593aef71f486ed368d85e63253d.php:122
 msgid "Past year"
-msgstr ""
+msgstr "Letztes Jahr"
 
 #: tmp/cache_twig/f6/6b/0f79bfdfd04259ceea6613007599.php:77
 msgid "Retour a l'accueil"
@@ -6643,19 +6053,19 @@ msgstr "Tags"
 
 #: tmp/cache_twig/ff/14/6daa45f5cad9ca10b28151554390.php:20
 msgid "Back to basket list"
-msgstr ""
+msgstr "Zurück zur Sammelkörbe Liste"
 
 #: tmp/cache_twig/ff/14/6daa45f5cad9ca10b28151554390.php:149
 msgid "No records"
-msgstr ""
+msgstr "Keine Datensätze"
 
 #: tmp/cache_twig/ff/14/6daa45f5cad9ca10b28151554390.php:155
 msgid "1 record"
-msgstr ""
+msgstr "1 Datensatz"
 
 #: tmp/cache_twig/ff/14/6daa45f5cad9ca10b28151554390.php:161
 msgid "%ElementsCount% records"
-msgstr ""
+msgstr "%ElementsCount% Datensätze"
 
 #: tmp/cache_twig/ff/9e/613cc7c700753d50364241f6f99b.php:26
 msgid "Page %current_page%"
@@ -6678,10 +6088,12 @@ msgid "Aucune"
 msgstr "Kein"
 
 #: www/admin/adminFeedback.php:297
+#: www/admin/database.php:212
 msgid "admin::base: aucun alias"
 msgstr "Kein Alias"
 
 #: www/admin/adminFeedback.php:387
+#: www/admin/database.php:255
 msgid "admin::base: vider la base avant de la supprimer"
 msgstr "Datenbank leeren, bevor sie gelöscht wird"
 
@@ -6717,6 +6129,8 @@ msgstr "Gesendete Datei ist zu Gross"
 #: www/admin/collection.php:152
 #: www/admin/collection.php:189
 #: www/admin/collection.php:226
+#: www/admin/database.php:57
+#: www/admin/database.php:62
 msgid "forms::erreur lors de l'envoi du fichier"
 msgstr "Ein Fehler erschien, als Ihr Datei gesendet wurde"
 
@@ -6737,6 +6151,7 @@ msgid "admin::base:collection: etes vous sur darreter la publication de cette co
 msgstr "Ende der Kollektionveröffentlichung bestätigen"
 
 #: www/admin/collection.php:391
+#: www/admin/database.php:430
 msgid "phraseanet:: collection"
 msgstr "Kollektion"
 
@@ -6759,23 +6174,29 @@ msgid "admin::base:collection: descativer la collection"
 msgstr "Kollektion deaktivieren"
 
 #: www/admin/collection.php:413
+#: www/admin/database.php:398
 msgid "phraseanet:: details"
 msgstr "Einzelheiten"
 
 #: www/admin/collection.php:423
+#: www/admin/database.php:420
 msgid "admin::base: masquer les details"
 msgstr "Einzelheiten verstecken"
 
 #: www/admin/collection.php:439
+#: www/admin/database.php:435
 msgid "admin::base: objet"
 msgstr "Objekt"
 
 #: www/admin/collection.php:443
+#: www/admin/database.php:437
 msgid "admin::base: nombre"
 msgstr "Anzahl"
 
 #: www/admin/collection.php:446
 #: www/admin/collection.php:449
+#: www/admin/database.php:438
+#: www/admin/database.php:439
 msgid "admin::base: poids"
 msgstr "Gewicht"
 
@@ -6825,6 +6246,7 @@ msgstr "aktuelles Mini Logo"
 
 #: www/admin/collection.php:712
 #: www/admin/collection.php:742
+#: www/admin/database.php:724
 msgid "admin::base:collection: aucun fichier (minilogo, watermark ...)"
 msgstr "Keine Datei"
 
@@ -6924,7 +6346,6 @@ msgid "base:: re-indexer"
 msgstr "Jetzt die Datenbank neu indexieren (es könnte Stunden dauern, wenn Sie viele Dokumente haben)"
 
 #: www/admin/database.php:588
-#: www/admin/newcoll.php:119
 msgid "admin::base:collection: Creer une collection"
 msgstr "eine Kollektion erstellen"
 
@@ -6933,7 +6354,6 @@ msgid "admin::base:collection: Monter une collection"
 msgstr "eine Kollektion erstellen"
 
 #: www/admin/database.php:621
-#: www/admin/newcoll.php:149
 msgid "admin::base:collection: Vous pouvez choisir une collection de reference pour donenr des acces "
 msgstr "Benutzer und Rechte von der Kollektion anwenden : "
 
@@ -6989,7 +6409,7 @@ msgstr "Task Manager beenden, bevor Sie die Update starten"
 #: www/admin/databases.php:145
 #: www/admin/databases.php:172
 msgid "Database name can not contains special characters"
-msgstr ""
+msgstr "Datenbank kann nicht Sonderzeichen beinhalten"
 
 #: www/admin/databases.php:134
 msgid "Database does not exists or can not be accessed"
@@ -7149,7 +6569,7 @@ msgstr "die Rechte von Administratoren zurücksetzen"
 
 #: www/admin/sitestruct.php:211
 msgid "boutton::reinitialiser"
-msgstr "zurücksetzen"
+msgstr "Zurücksetzen"
 
 #: www/admin/sitestruct.php:214
 msgid "setup:: Reglages generaux"
@@ -7182,27 +6602,32 @@ msgstr "Phrasea Modul"
 #: www/admin/statbits.php:110
 #: www/admin/statbits.php:147
 msgid "You do not enough rights to update status"
-msgstr ""
+msgstr "Sie haben nicht die genügende Rechte, um die Status zu aktualisieren"
 
 #: www/admin/statbits.php:114
 #: www/admin/statbits.php:151
 msgid "Something wrong happend"
-msgstr ""
+msgstr "Etwas schlecht ist geschehen !"
 
 #: www/admin/statbits.php:118
 #: www/admin/statbits.php:155
 msgid "File is too big : 64k max"
-msgstr ""
+msgstr "Datei ist gross: 64k max."
 
 #: www/admin/statbits.php:122
 #: www/admin/statbits.php:159
 msgid "Status icon upload failed : upload error"
-msgstr ""
+msgstr "Status Ikone Upload ist fehlgeschlagen: Upload Fehler"
 
 #: www/admin/statbits.php:126
 #: www/admin/statbits.php:163
 msgid "Status icon upload failed : can not write on disk"
-msgstr ""
+msgstr "Status Ikone Upload ist fehlgeschlagen: kann nicht auf die Platte beschreiben"
+
+#: www/admin/statbits.php:130
+#: www/admin/statbits.php:167
+msgid "An error occured"
+msgstr "Ein Fehler ist aufgetreten"
 
 #: www/admin/statbits.php:184
 #: www/admin/statbits.php:247
@@ -7301,7 +6726,7 @@ msgstr "Vorsicht, Umstellung auf grafischen Ansicht beinhaltet XML Veränderunge
 
 #: www/admin/sugval.php:966
 msgid "Suggested values"
-msgstr ""
+msgstr "Vorschlagswerte"
 
 #: www/admin/sugval.php:983
 msgid "admin::sugval: Valeurs suggerees/Preferences de la collection"
@@ -7336,7 +6761,7 @@ msgstr "Aufgaben-Scheduler"
 #: www/admin/taskmanager.php:478
 #, php-format
 msgid "Last update at %s."
-msgstr ""
+msgstr "Letzte Aktualisierung am %s"
 
 #: www/admin/taskmanager.php:479
 msgid "admin::tasks: Nouvelle tache"
@@ -7632,6 +7057,12 @@ msgstr "Wir haben Ihre Anfragen gespeichert"
 
 #: www/login/account.php:455
 #: www/login/forgotpwd.php:98
+#: www/login/reset-email.php:44
+#: www/login/reset-email.php:55
+#: www/login/reset-email.php:78
+#: www/login/reset-email.php:89
+#: www/login/reset-email.php:158
+#: www/login/reset-email.php:207
 msgid "admin::compte-utilisateur changer mon mot de passe"
 msgstr "mein Passwort ändern"
 
@@ -7660,6 +7091,7 @@ msgid "phraseanet:: imagette"
 msgstr "Miniaturansicht"
 
 #: www/login/forgotpwd.php:71
+#: www/login/register.php:102
 msgid "forms::la valeur donnee contient des caracteres invalides"
 msgstr "beinhaltet ungültige Zeichen"
 
@@ -7778,13 +7210,11 @@ msgid "login invalide (8 caracteres sans accents ni espaces)"
 msgstr "ungültiges Login (8 Zeichen ohne Akzente oder Zwischenräume)"
 
 #: www/login/register.php:298
-#: www/login/reset-password.php:90
 msgid "forms::le mot de passe est simple"
 msgstr "Passwort ist einfach"
 
 #: www/login/register.php:375
 #: www/login/register.php:392
-#: www/login/reset-password.php:170
 msgid "8 caracteres minimum"
 msgstr "8 Zeichen minimum"
 
@@ -7818,7 +7248,6 @@ msgid "forms::les emails ne correspondent pas"
 msgstr "Die E-Mail sind nicht paarig"
 
 #: www/login/reset-email.php:152
-#: www/login/reset-password.php:66
 msgid "admin::compte-utilisateur:ftp: Le mot de passe est errone"
 msgstr "falsches Passwort"
 
@@ -7831,7 +7260,6 @@ msgid "admin::compte-utilisateur retour a mon compte"
 msgstr "Zurück nach Benutzerkonto"
 
 #: www/login/reset-email.php:230
-#: www/login/reset-password.php:148
 msgid "phraseanet::erreur : oups ! une erreur est survenue pendant l'operation !"
 msgstr "Hoppla! Leider ist ein Fehler aufgetreten!"
 
@@ -7995,6 +7423,18 @@ msgstr "90° entgegen dem Uhrzeigersinn drehen"
 #: www/prod/imgfunction.php:219
 msgid "prod::tools:substitution : mettre a jour le nom original de fichier apres substitution"
 msgstr "ursprüngliche Dateiname nach Ersetzung aktualisieren"
+
+#: www/prod/prodFeedBack.php:82
+msgid "publication::Voici votre fil RSS personnel. Il vous permettra d'etre tenu au courrant des publications."
+msgstr "Hier finden Sie bitte Ihr eigenes RSS Feed, Sie werden dann dank dem RSS über die Veröffentlichungen gut unterrichtet sein"
+
+#: www/prod/prodFeedBack.php:83
+msgid "publications::Ne le partagez pas, il est strictement confidentiel"
+msgstr "Bitte tauchen Sie es nicht, es ist streng vertraulich"
+
+#: www/prod/prodFeedBack.php:85
+msgid "publications::votre rss personnel"
+msgstr "Ihr eigenes RSS"
 
 #: www/prod/prodFeedBack.php:271
 msgid "les enregistrements ont ete correctement commandes"
@@ -8310,7 +7750,7 @@ msgstr "Suche"
 
 #: www/thesaurus2/export_topics_dlg.php:148
 msgid "thesaurus:: recherche thesaurus *:\"query\""
-msgstr "Thesaurus:*\"Suche\""
+msgstr "Thesaurus:*\"Anfrage\""
 
 #: www/thesaurus2/export_topics_dlg.php:152
 msgid "thesaurus:: recherche fulltext"
@@ -8816,4 +8256,538 @@ msgstr "hochgeladene Datei, anhängig..."
 #: www/upload/upload.php:187
 msgid "Fichier uploade !"
 msgstr "hochgeladene Datei !"
+
+#: lib/Alchemy/Phrasea/Application/Lightbox.php:367
+msgid "Erreur lors de l'enregistrement des donnees"
+msgstr "Fehler bei Speicherung der Daten"
+
+#: lib/Alchemy/Phrasea/Application/Lightbox.php:432
+msgid "Erreur lors de la mise a jour des donnes "
+msgstr "Fehler während Datenaktualisierung "
+
+#: lib/Alchemy/Phrasea/Application/Lightbox.php:501
+msgid "Envoie avec succes"
+msgstr "erfolgreich versendet"
+
+#: lib/Alchemy/Phrasea/Controller/Admin/Publications.php:92
+msgid "You are not the owner of this feed, you can not edit it"
+msgstr "Sie sind nicht der Besitzer von diesem Feed: Sie dürfen also ihn nicht bearbeiten."
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:104
+msgid "Basket created"
+msgstr "Sammelkorb wurde erstellt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:138
+msgid "Basket has been deleted"
+msgstr "Sammelkorb wurde gelöscht"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:180
+msgid "Record removed from basket"
+msgstr "Datensatz wurde aus dem Sammelkorb gelöscht"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:217
+msgid "Basket has been updated"
+msgstr "Sammelkorb wurde aktualisiert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:304
+msgid "Basket has been archived"
+msgstr "Sammelkorb wurde archiviert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:308
+msgid "Basket has been unarchived"
+msgstr "Sammelkorb wurde nicht mehr archiviert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:382
+#, php-format
+msgid "%d records added"
+msgstr "%d Datensätze hinzugefügt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Basket.php:445
+#, php-format
+msgid "%d records moved"
+msgstr "%d Datensätze verschoben"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:237
+#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:308
+msgid "Vous ne pouvez pas editer plusieurs elements simultanement"
+msgstr "Sie dürfen nicht, mehrere Elemente gleichzeitig zu bearbeiten"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:262
+msgid "Vous essayez de faire une action que je ne connais pas !"
+msgstr "Sie versuchen eine Handlung, die ich nicht kenne !"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:328
+#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:468
+msgid "Request contains invalid datas"
+msgstr "Die Anfrage  enthält ungültige Daten"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Bridge.php:488
+#, php-format
+msgid "%d elements en attente"
+msgstr "%d schwebende Elemente"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Edit.php:64
+msgid "Vocabulary not found"
+msgstr "Vokabeln nicht gefunden"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:164
+#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:207
+msgid "Feed entry not found"
+msgstr "Eintritt für Eingabe nicht gefunden"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Feed.php:196
+msgid "Action Forbidden : You are not the publisher"
+msgstr "Handlung verboten: Sie sind nicht der Veröffentlicher"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:41
+msgid "prod::recherche: Attention : la liste des bases selectionnees pour la recherche a ete changee."
+msgstr "Vorsicht : die ausgewählte Datenbanken Liste für die Suche wurde verändert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:47
+msgid "phraseanet::Ne plus afficher ce message"
+msgstr "Diese Meldung nicht mehr anzeigen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:48
+msgid "Supprimer egalement les documents rattaches a ces regroupements"
+msgstr "Auch die Dokumente, die mit diesen Berichten verknüpft sind, löschen?"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:49
+msgid "reponses:: Ces enregistrements vont etre definitivement supprimes et ne pourront etre recuperes. Etes vous sur ?"
+msgstr "Diese Datensätze werden endgültig gelöscht sein und es wird unmöglich sein, sie abzurufen. Bestätigen?"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:52
+msgid "prod::editing valeurs heterogenes, choisir 'remplacer', 'ajouter' ou 'annuler'"
+msgstr "heterogene Werte, bitte wählen Sie \"ersetzen\", \"hinzufügen\" oder \"abbrechen\""
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:53
+msgid "prod::editing::annulation: abandonner les modification ?"
+msgstr "Abbrechung: Änderungen verzichten?"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:60
+msgid "Vous n'avez pas les droits pour supprimer certains documents"
+msgstr "Sie haben keinen Zugriff, einige Dokumente zu löschen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:61
+msgid "Vous n'avez pas les droits pour supprimer ces documents"
+msgstr "Sie haben keinen Zugriff, diese Dokumente zu löschen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:62
+msgid "Vous devez donner un titre"
+msgstr "Sie müssen einen Titel geben"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:63
+msgid "Nouveau modele"
+msgstr "Neue Vorlage"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:65
+msgid "Vous n'avez pas rempli tous les champ requis"
+msgstr "Sie haben alle erforderliche Felder nicht ausgefüllt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:66
+msgid "Vous n'avez pas selectionne de fil de publication"
+msgstr "Sie haben den Veröffentlichung Thread nicht ausgewählt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:67
+msgid "panier::Supression d'un element d'un reportage"
+msgstr "Löschen von einem Element einer Reportage"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:68
+msgid "panier::Attention, vous etes sur le point de supprimer un element du reportage. Merci de confirmer votre action."
+msgstr "Vorsicht : Sie sind dabei, ein Element des Berichtes zu löschen. Bitte bestätigen Sie Ihre Handlung."
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:69
+msgid "phraseanet::recherche avancee"
+msgstr "erweiterte Suche"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:70
+msgid "panier:: renommer le panier"
+msgstr "umbenennen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:71
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:80
+msgid "panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre"
+msgstr "Ein Bericht darf nur Elemente bekommen, die aus der selben Datenbank kommen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:72
+msgid "phraseanet:: Erreur"
+msgstr "Fehler"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:73
+msgid "cgus :: Attention, si vous refuser les CGUs de cette base, vous n'y aures plus acces"
+msgstr "Vorsicht: Wenn Sie die ANB ablehnen, werden Sie nicht erlaubt, auf diese Datenbank einzuloggen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:74
+msgid "cgus :: Vous devez vous reauthentifier pour que vos parametres soient pris en compte."
+msgstr "Änderungen werden wirken beim nächsten Anmeldung"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:75
+#, php-format
+msgid "edit:: Supprimer %s du champ dans les records selectionnes"
+msgstr "%s von allen ausgewählten Dokumente löschen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:76
+#, php-format
+msgid "edit:: Ajouter %s au champ courrant pour les records selectionnes"
+msgstr "%s an allen ausgewählte Dokumente hinzufügen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:77
+#, php-format
+msgid "edit:: Supprimer %s du champ courrant"
+msgstr "%s von ausgewähltem Dokument löschen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:78
+#, php-format
+msgid "edit:: Ajouter %s au champ courrant"
+msgstr "%s zum ausgewählten Dokument hinzufügen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:79
+msgid "panier:: vous ne pouvez pas supprimer un panier public"
+msgstr "Sie dürfen nicht, einen leeren öffentlichen Sammelkorb löschen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:81
+msgid "Vous ne pouvez pas selectionner plus de 400 enregistrements"
+msgstr "Sie dürfen nicht mehr als 400 Datensätze auswählen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:83
+msgid "Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas"
+msgstr "Falsche Parameter oder entfernter Server antwortet nicht"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:84
+msgid "Les parametres sont corrects, le serveur distant est operationnel"
+msgstr "die Parameter sind korrekt, entfernter Server ist betriebsfähig"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:85
+msgid "Certaines publications n'ont pu etre effectuees, verifiez vos parametres"
+msgstr "einige Veröffentlichung wurden nicht ausgeführt, überprüfen Sie Ihre Parameter"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:86
+msgid "Aucune publication effectuee, verifiez vos parametres"
+msgstr "keine Veröffentlichung ausgeführt, überprüfen Sie Ihre Parameter"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:87
+msgid "Attention, en supprimant ce preregalge, vous ne pourrez plus modifier ou supprimer de publications prealablement effectues avec celui-ci"
+msgstr "Vorsicht, wenn Sie diese Voreinstellung löschen, werden Sie nicht mehr Veröffentlichungen (die mit dieser Voreinstellung ausgeführt wurde) verändern oder löschen können"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:88
+msgid "edit::certains documents possedent des champs requis non remplis. Merci de les remplir pour valider votre editing"
+msgstr "einige Dokumente haben fehlend erforderliche Felder. Bitte ausfüllen vor der Validierung."
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:89
+msgid "Aucun document selectionne"
+msgstr "kein ausgewähltes Dokument"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:90
+msgid "Are you sure you want to delete this list ?"
+msgstr "Sind Sie sicher, diese Liste zu löschen?"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:91
+msgid "New list name ?"
+msgstr "Neuer Name der Liste?"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:92
+msgid "List name can not be empty"
+msgstr "Name der Liste muss nicht leer sein"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:94
+msgid "Message"
+msgstr "Nachricht"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Language.php:95
+msgid "No users selected"
+msgstr "Kein Benutzer ausgewählt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:129
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:238
+msgid "Unable to send the documents"
+msgstr "Unmöglich, Dokumente zu senden"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:144
+#, php-format
+msgid "Push from %s"
+msgstr "Push von %s"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:153
+msgid "No receivers specified"
+msgstr "Kein Empfänger ausgewählt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:158
+msgid "No elements to push"
+msgstr "Keine Dokumente für den Push"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:169
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:327
+#, php-format
+msgid "Unknown user %d"
+msgstr "Unbekannte Benutzer %d"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:211
+#, php-format
+msgid "%1$d records have been sent to %2$d users"
+msgstr "%1$d Datensätze wurden zu %2$d Benutzer gesendet"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:252
+#, php-format
+msgid "Validation from %s"
+msgstr "Bestätigung von %s"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:261
+msgid "No participants specified"
+msgstr "Keine Teilnehmer ausgewählt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:266
+msgid "No elements to validate"
+msgstr "Keine Dokumente zu bestätigen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:318
+#, php-format
+msgid "Missing mandatory participant parameter %s"
+msgstr ""
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:388
+#, php-format
+msgid "%1$d records have been sent for validation to %2$d users"
+msgstr "%1$d Datensätze wurden für Bestätigung zu %2$d Benutzer gesendet"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:476
+msgid "First name is required"
+msgstr "Vorname wird erfordert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:479
+msgid "Last name is required"
+msgstr "Nachname wird erfordert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:482
+msgid "Email is required"
+msgstr "Email Adresse wird erfordert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:485
+msgid "Email is invalid"
+msgstr "Ungültige Email Adresse"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:504
+msgid "User already exists"
+msgstr "Benutzer existiert schon"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:531
+msgid "User successfully created"
+msgstr "Benutzer wurde erfolgreich erstellt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Push.php:537
+msgid "Error while creating user"
+msgstr "Fehler bei Benutzer Erstellung"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Story.php:101
+msgid "Story created"
+msgstr "Bericht erfolgreich erstellt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/Story.php:210
+msgid "Record removed from story"
+msgstr "Datensatz wurde von Bericht entfernt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:144
+#, php-format
+msgid "Unable to create list %s"
+msgstr "Unmöglich, Liste %s zu erstellen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:152
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:272
+msgid "List name is required"
+msgstr "Name der Liste wird erfordert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:173
+#, php-format
+msgid "List %s has been created"
+msgstr "Liste %s wurde erstellt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:263
+msgid "Unable to update list"
+msgstr "Unmöglich, die Liste zu aktualisieren"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:289
+msgid "List has been updated"
+msgstr "Liste wurde aktualisiert"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:330
+#, php-format
+msgid "List has been deleted"
+msgstr "Liste wurde gelöscht"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:345
+#, php-format
+msgid "Unable to delete list"
+msgstr "Unmöglich, die Liste zu löschen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:381
+msgid "Entry removed from list"
+msgstr "Eingabe wurde von der Liste entfernt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:396
+msgid "Unable to remove entry from list "
+msgstr "Unmöglich, die Eingabe von der Liste zu entfernen "
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:453
+#, php-format
+msgid "%d Users added to list"
+msgstr "%d hinzugefügte Benutzer zu der Liste"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:461
+#, php-format
+msgid "%d User added to list"
+msgstr "%d hinzugefügter Benutzer zu der Liste"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:478
+msgid "Unable to add usr to list"
+msgstr "Unmöglich, Benutzer zur Liste hinzufügen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:546
+msgid "List shared to user"
+msgstr "Liste mit Benuzer geteilt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:561
+msgid "Unable to share the list with the usr"
+msgstr "Unmöglich, die Liste mit dem Benutzer zu teilen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:599
+msgid "Owner removed from list"
+msgstr "Besitzer wurde von der Liste entfernt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/UsrLists.php:613
+msgid "Unable to remove usr from list"
+msgstr "Unmöglich , den Benutzer von der Liste zu entfernen"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:175
+#, php-format
+msgid "%d Story attached to the WorkZone"
+msgstr "%d Bericht zum Arbeitsbereich angehängt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:182
+#, php-format
+msgid "%d Stories attached to the WorkZone"
+msgstr "%d Berichte zum Arbeitsbereich angehängt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:192
+#, php-format
+msgid "%1$d Story attached to the WorkZone, %2$d already attached"
+msgstr "%1$d Bericht zum Arbeitsbereich, %2$d schon angehängt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:200
+#, php-format
+msgid "%1$d Stories attached to the WorkZone, %2$d already attached"
+msgstr "%1$d Berichte zum Arbeitsbereich, %2$d schon angehängt"
+
+#: lib/Alchemy/Phrasea/Controller/Prod/WorkZone.php:251
+msgid "Story detached from the WorkZone"
+msgstr "Bericht wurde zum Arbeitsbereich gelöst"
+
+#: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:109
+msgid "It is not recommended to install Phraseanet without HTTPS support"
+msgstr "Es wird nicht empfohlen, Phraseanet ohne HTTPS Unterstützung zu installieren."
+
+#: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:157
+msgid "Appbox is unreachable"
+msgstr "Appbox ist unerreichbar"
+
+#: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:169
+msgid "Databox is unreachable"
+msgstr "Databox ist unerreichbar"
+
+#: lib/Alchemy/Phrasea/Controller/Setup/Installer.php:327
+#, php-format
+msgid "an error occured : %s"
+msgstr "Ein Fehler ist aufgetreten: %s"
+
+#: lib/Alchemy/Phrasea/Core/Configuration.php:323
+#, php-format
+msgid "Impossible d'ecrire dans le dossier %s"
+msgstr "Unmöglich, im Ordner %s zu schreiben"
+
+#: lib/Alchemy/Phrasea/Core/Configuration.php:353
+#, php-format
+msgid "Impossible d'effacer le fichier %s"
+msgstr "Unmöglich, Datei %s zu löschen"
+
+#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:418
+msgid "phraseanet::technique::datetime-edit-format"
+msgstr "YYYY/MM/DD HH:NN:SS"
+
+#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:422
+msgid "phraseanet::technique::date-edit-format"
+msgstr "YYYY/MM/DD"
+
+#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:423
+msgid "phraseanet::technique::date-edit-explain"
+msgstr "yyyy/mm/dd"
+
+#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:426
+msgid "phraseanet::technique::time-edit-format"
+msgstr "HH:NN:SS"
+
+#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:427
+msgid "phraseanet::technique::time-edit-explain"
+msgstr "hh:mm:ss"
+
+#: lib/Alchemy/Phrasea/Helper/User/Edit.php:575
+msgid "Email addess is not valid"
+msgstr "Email Adresse ist nicht gültig"
+
+#: lib/Alchemy/Phrasea/Helper/User/Manage.php:165
+msgid "Invalid mail address"
+msgstr "ungültige Mail Adresse"
+
+#: lib/Alchemy/Phrasea/Helper/User/Manage.php:197
+msgid "Invalid template name"
+msgstr "ungültiger Vorlagenname"
+
+#: lib/Doctrine/Entities/ValidationSession.php:356
+#, php-format
+msgid "Vous aviez envoye cette demande a %d utilisateurs"
+msgstr "Sie haben diese Anfrage zu %d Benutzer versendet"
+
+#: lib/Doctrine/Entities/ValidationSession.php:363
+#, php-format
+msgid "Vous avez envoye cette demande a %d utilisateurs"
+msgstr "Sie haben diese Anfrage zu %d Benutzer gesendet"
+
+#: lib/Doctrine/Entities/ValidationSession.php:373
+#, php-format
+msgid "Processus de validation recu de %s et concernant %d utilisateurs"
+msgstr "Validierungsprozess von %s für %d Benutzer bekommen"
+
+#: lib/Doctrine/Entities/ValidationSession.php:380
+#, php-format
+msgid "Processus de validation recu de %s"
+msgstr "Validierungsprozess von %s bekommen"
+
+#: lib/Doctrine/Repositories/BasketElementRepository.php:108
+msgid "Element is not found"
+msgstr "Element nicht gefunden"
+
+#: lib/Doctrine/Repositories/BasketElementRepository.php:113
+msgid "You have not access to this basket element"
+msgstr "Sie haben keinen Zugriff auf dieses Element von dem Sammelkorb"
+
+#: lib/Doctrine/Repositories/BasketRepository.php:103
+msgid "Basket is not found"
+msgstr "Sammelkorb nicht gefunden"
+
+#: lib/Doctrine/Repositories/BasketRepository.php:108
+msgid "You have not access to this basket"
+msgstr "Sie haben keinen Zugriff auf diesen Sammelkorb"
+
+#: lib/Doctrine/Repositories/UsrListOwnerRepository.php:30
+#: lib/Doctrine/Repositories/UsrListOwnerRepository.php:67
+msgid "Owner is not found"
+msgstr "Besitzer nicht gefunden"
+
+#: lib/Doctrine/Repositories/UsrListOwnerRepository.php:35
+msgid "Owner and list mismatch"
+msgstr "Besitzer und Liste übereinstimmen nicht miteinander"
+
+#: lib/Doctrine/Repositories/UsrListRepository.php:51
+msgid "List is not found"
+msgstr "Liste nicht gefunden"
+
+#: lib/Doctrine/Repositories/UsrListRepository.php:56
+msgid "You have not access to this list"
+msgstr "Sie haben keinen Zugriff auf diese Liste"
 

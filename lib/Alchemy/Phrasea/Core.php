@@ -365,7 +365,7 @@ class Core extends \Pimple
   {
 //    require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
     require_once __DIR__ . '/Loader/Autoloader.php';
-    
+
     $loader = new Loader\Autoloader();
 
     $loader->registerPrefixes(array('Twig' => realpath(__DIR__ . '/../../vendor/Twig/lib')));
@@ -384,7 +384,7 @@ class Core extends \Pimple
         'Doctrine\\Logger' => realpath(__DIR__ . '/../../'),
         'Monolog' => realpath(__DIR__ . '/../../vendor/Silex/vendor/monolog/src'),
     ));
-    
+
     $loader->register();
 
     require_once __DIR__ . '/../../vendor/Silex/autoload.php';
