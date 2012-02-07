@@ -330,16 +330,8 @@ class ACL implements cache_cacheableInterface
       // apply sb : unchecked boxes on template will be unchecked on user
       //            checked boxes on template does nothing (left unchanged on user)
       // get masks from 64 bits int AS DECIMAL STRING to BINARY STRING
-      
-      $mask_and = $template_user->ACL()->get_mask_and($base_id);
-      $mask_xor = $template_user->ACL()->get_mask_xor($base_id);
-      
-      $mask_and = ctype_digit($mask_and) ? $mask_and : '0';
-      $mask_xor = ctype_digit($mask_xor) ? $mask_xor : '0';
-      
-      $mand = substr(str_repeat('0', 64) . databox_status::dec2bin($mask_and), -64);
-      $mxor = substr(str_repeat('0', 64) . databox_status::dec2bin($mask_xor), -64);
-      
+      $mand = substr(str_repeat('0', 64) . databox_status::dec2bin($template_user->ACL()->get_mask_and($base_id)), -64);
+      $mxor = substr(str_repeat('0', 64) . databox_status::dec2bin($template_user->ACL()->get_mask_xor($base_id)), -64);
       $m    = array('aa' => '', 'ao' => '', 'xa' => '', 'xo' => '');
       for ($i   = 0; $i < 64; $i++)
       {
