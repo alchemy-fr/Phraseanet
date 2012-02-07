@@ -45,13 +45,15 @@ var p4 = p4 || {};
       title : '',
       closeOnEscape : true,
       confirmExit:false,
+      closeCallback:false,
       closeButton:false,
       cancelButton:false
     },
     options = typeof options === 'object' ? options : {},
     width,
     height,
-    $dialog;
+    $dialog,
+    $this = this;
 
     this.options = $.extend(defaults, options);
       
@@ -94,6 +96,14 @@ var p4 = p4 || {};
     this.$dialog = createDialog(this.level),
     zIndex = Math.min(this.level * 5000 + 5000, 32767);
 
+    var CloseCallback = function() {
+      if(typeof $this.options.closeCallback === 'function')
+      {
+        $this.options.closeCallback($this.$dialog);
+      }
+      $this.Close();
+    };
+
     this.$dialog.dialog('destroy').attr('title', this.options.title)
     .empty()
     .dialog({
@@ -104,7 +114,7 @@ var p4 = p4 || {};
       modal:true,
       width:width,
       height:height,
-      close:this.Close,
+      close:CloseCallback,
       zIndex:zIndex
     })
     .dialog('open').addClass('dialog-' + this.options.size);
