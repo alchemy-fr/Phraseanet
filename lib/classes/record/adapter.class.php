@@ -1934,8 +1934,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function get_data_from_cache($option = null)
   {
-    \cache_databox::refresh($this->get_sbas_id());
-
     $databox = $this->get_databox();
 
     return $databox->get_data_from_cache($this->get_cache_key($option));

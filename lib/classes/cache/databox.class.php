@@ -27,19 +27,17 @@ class cache_databox
   {
     $databox = \databox::get_instance((int) $sbas_id);
 
-    $date = new \DateTime('-30 seconds');
+    $date = new \DateTime('-3 seconds');
 
     $appbox = \appbox::get_instance();
 
     $registry = \registry::get_instance();
 
-    $cache_appbox = $appbox->get_cache();
-
     $last_update = null;
 
     try
     {
-      $last_update = $cache_appbox->get('memcached_update');
+      $last_update = $appbox->get_data_from_cache('memcached_update_' . $sbas_id);
     }
     catch (\Exception $e)
     {
@@ -51,7 +49,7 @@ class cache_databox
     else
       $last_update = new \DateTime('-10 years');
 
-    if ($date <= $last_update || !$cache_appbox->ping())
+    if ($date <= $last_update || !$appbox->get_cache()->ping())
     {
       return;
     }
@@ -97,10 +95,19 @@ class cache_databox
           $stmt = $connsbas->prepare($sql);
           $stmt->execute($params);
           $stmt->closeCursor();
+
+          $record = new \record_adapter($sbas_id, $row['value']);
+          $record->get_caption()->delete_data_from_cache();
+
+          foreach ($record->get_caption()->get_fields() as $field)
+          {
+            $field->delete_data_from_cache();
+          }
+
           break;
         case 'structure':
-          $cache_appbox->delete(\appbox::CACHE_LIST_BASES);
-          $cache_appbox->delete(\appbox::CACHE_SBAS_IDS);
+          $appbox->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
+          $appbox->delete_data_from_cache(\appbox::CACHE_SBAS_IDS);
 
           $sql = 'DELETE FROM memcached
               WHERE site_id = :site_id AND type="structure" AND value = :value';
@@ -120,7 +127,7 @@ class cache_databox
     $date = new \DateTime();
     $now  = $date->format(DATE_ISO8601);
 
-    $cache_appbox->set('memcached_update', $now);
+    $appbox->set_data_to_cache($now, 'memcached_update_' . $sbas_id);
 
     $conn = \connection::getPDOConnection();
 
