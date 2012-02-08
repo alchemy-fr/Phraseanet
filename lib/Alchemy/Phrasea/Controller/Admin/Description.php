@@ -150,7 +150,7 @@ class Description implements ControllerProviderInterface
               else
                 $databox->get_connection()->commit();
 
-              return new RedirectResponse('/admin/databox/' . $sbas_id . '/description/');
+              return new RedirectResponse('/admin/description/' . $sbas_id . '/');
             })->assert('sbas_id', '\d+');
 
     $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id)
