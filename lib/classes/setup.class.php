@@ -591,7 +591,7 @@ class setup
 
     public static function check_cache_server()
     {
-      $availables_caches = array('memcache', 'memcached', 'redis');
+      $availables_caches = array('memcache', 'redis');
 
       $constraints = array();
       foreach ($availables_caches as $ext)
@@ -614,15 +614,15 @@ class setup
       echo '<ul class="setup">';
 
       $registry = registry::get_instance();
-
+     
       if ($registry->get('GV_cache_server_type') !== 'nocache')
       {
         $cache = cache_adapter::get_instance(registry::get_instance());
-
+        
         if ($cache->ping())
         {
           $stats = $cache->getStats();
-
+          
           foreach ($stats as $name => $stat)
           {
             echo '<li>Statistics given by `' . $name . '`</li>';
