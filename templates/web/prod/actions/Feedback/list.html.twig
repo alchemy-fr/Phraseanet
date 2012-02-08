@@ -129,12 +129,7 @@
           {% endtrans %}
         </p>
       </div>
-      <div class="PNB list-editor-results" style="overflow-y:scroll;overflow-x:hidden;top:25px;bottom:25px;">
-        {{ ListsMacros.ResultTable(results, list, sort, ord) }}
-      </div>
-      <div class="PNB" style="top:auto;height:25px;">
-        {{ query.get_page() }} / {{ query.get_total_page() }}
-      </div>
+      {{ ListsMacros.ResultTable(query, results, list, sort, ord) }}
     </div>
   </div>
 </div>

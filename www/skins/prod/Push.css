@@ -74,6 +74,10 @@
 }
 
 
+.PushBox .all-lists .lists{
+  overflow:auto;
+}
+
 .PushBox .lists .list.selected{
   background-color: #515151;
 }
@@ -96,37 +100,37 @@
 
 }
 
-#list-editor-search-results td{
+#list-editor-search-results table td{
   padding:1px 0;
   overflow:hidden;
 }
-#list-editor-search-results tr{
+#list-editor-search-results table tr{
   line-height: 24px;
   vertical-align: middle;
   cursor:pointer;
 }
-#list-editor-search-results tr.odd{
+#list-editor-search-results table tr.odd{
   background-color: #515151;
 }
-#list-editor-search-results tr.selected{
+#list-editor-search-results table tr.selected{
   background-color:#D18827;
 }
 
 
-#list-editor-search-results th.sortable span{
+#list-editor-search-results table th.sortable span{
   margin:0 5px;
 }
-#list-editor-search-results th.sortable{
+#list-editor-search-results table th.sortable{
   cursor:pointer;
 }
-#list-editor-search-results th.sortable.hover,
-#list-editor-search-results th.sortable.sorted{
+#list-editor-search-results table th.sortable.hover,
+#list-editor-search-results table th.sortable.sorted{
   background-color:#F0AD30;
 }
-#list-editor-search-results th.sortable span.ord_notifier{
+#list-editor-search-results table th.sortable span.ord_notifier{
   display:none;
 }
-#list-editor-search-results th.sortable.sorted span.ord_notifier{
+#list-editor-search-results table th.sortable.sorted span.ord_notifier{
   display:inline;
 }
 

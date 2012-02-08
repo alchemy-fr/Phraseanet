@@ -310,7 +310,7 @@ class Push implements ControllerProviderInterface
 
           $appbox = \appbox::get_instance();
 
-          foreach ($participants as $key=>$participant)
+          foreach ($participants as $key => $participant)
           {
             foreach (array('see_others', 'usr_id', 'agree', 'HD') as $mandatoryparam)
             {
@@ -639,13 +639,16 @@ class Push implements ControllerProviderInterface
           $query->havePositions($request->get('Position'));
         }
 
-        $sort  = $request->get('srt', 'usr_creationdate');
+        $sort = $request->get('srt', 'usr_creationdate');
         $ord  = $request->get('ord', 'desc');
+
+        $perPage      = 10;
+        $offset_start = Max(((int) $request->get('page') - 1) * $perPage, 0);
 
         $query->sort_by($sort, $ord);
 
         $results = $query->include_phantoms()
-            ->limit(0, 10)
+            ->limit($offset_start, $perPage)
             ->execute()->get_results();
 
         $params = array(
@@ -653,10 +656,10 @@ class Push implements ControllerProviderInterface
           , 'results' => $results
           , 'list'    => $list
           , 'sort'    => $sort
-          , 'ord'    => $ord
+          , 'ord'     => $ord
         );
 
-        if($request->get('type') === 'fragment')
+        if ($request->get('type') === 'fragment')
         {
           return new Response(
               $app['Core']->getTwig()->render('prod/actions/Feedback/ResultTable.html.twig', $params)

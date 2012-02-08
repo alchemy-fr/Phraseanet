@@ -587,7 +587,7 @@ class User_Query implements User_QueryInterface
   {
     $this->get_total();
 
-    return $this->page;
+    return $this->total_page;
   }
 
   /**

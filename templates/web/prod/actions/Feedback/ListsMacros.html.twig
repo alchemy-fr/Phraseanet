@@ -1,99 +1,123 @@
-{% macro ResultTable(results, list, sort, ord) %}
-  <table id="list-editor-search-results" style="width:100%;table-layout:fixed;">
-      <thead>
-        <tr>
-          <th style="text-align: center;" class="sortable {{ sort == 'usr_login' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-            {% trans 'Login' %}
-            <span class="ord_notifier">
-              {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-            </span>
-            <input type="hidden" name="srt" value="usr_login" />
-          </th>
-          <th style="text-align: center;" class="sortable {{ sort == 'usr_nom' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-            {% trans 'First/Last Name' %}
-            <span class="ord_notifier">
-              {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-            </span>
-            <input type="hidden" name="srt" value="usr_nom" />
-          </th>
-          <th style="text-align: center;" class="sortable {{ sort == 'societe' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-            {% trans 'Company' %}
-            <span class="ord_notifier">
-              {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-            </span>
-            <input type="hidden" name="srt" value="societe" />
-          </th>
-          <th style="text-align: center;" class="sortable {{ sort == 'usr_mail' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-            {% trans 'E-Mail' %}
-            <span class="ord_notifier">
-              {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-            </span>
-            <input type="hidden" name="srt" value="usr_mail" />
-          </th>
-          <th style="text-align: center;" class="sortable {{ sort == 'pays' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-            {% trans 'Country' %}
-            <span class="ord_notifier">
-              {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-            </span>
-            <input type="hidden" name="srt" value="pays" />
-          </th>
-          <th style="text-align: center;" class="sortable {{ sort == 'lastModel' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-            {% trans 'Last Template' %}
-            <span class="ord_notifier">
-              {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-            </span>
-            <input type="hidden" name="srt" value="lastModel" />
-          </th>
-          <th style="text-align: center;" class="sortable {{ sort == 'usr_creationdate' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-            {% trans 'Creation date' %}
-            <span class="ord_notifier">
-              {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-            </span>
-            <input type="hidden" name="srt" value="usr_creationdate" />
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for user in results %}
-        <tr class="{% if list.has(user) %} selected {% endif %}{% if loop.index is odd %} odd {% endif %}">
-          <td>
-            {{ user.get_login() }}
-            <input name="usr_id" value="{{ user.get_id() }}" type="hidden" />
-          </td>
-          <td>
-            {{ user.get_firstname() }} / {{ user.get_lastname() }}
-          </td>
-          <td>
-            {{ user.get_company() }}
-          </td>
-          <td>
-            {{ user.get_email() }}
-          </td>
-          <td>
-            {{ user.get_country() }}
-          </td>
-          <td>
-            {{ user.get_login() }}
-          </td>
-          <td>
-            {{ user.get_creation_date()|getDate }}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-  </table>
+{% macro ResultTable(query, results, list, sort, ord) %}
+<div id="list-editor-search-results" class="list-editor-results PNB">
+  <div class="PNB" style="overflow-y:scroll;overflow-x:hidden;top:25px;bottom:25px;">
+    <table style="width:100%;table-layout:fixed;">
+        <thead>
+          <tr>
+            <th style="text-align: center;" class="sortable {{ sort == 'usr_login' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {% trans 'Login' %}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="usr_login" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'usr_nom' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {% trans 'First/Last Name' %}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="usr_nom" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'societe' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {% trans 'Company' %}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="societe" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'usr_mail' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {% trans 'E-Mail' %}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="usr_mail" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'pays' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {% trans 'Country' %}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="pays" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'lastModel' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {% trans 'Last Template' %}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="lastModel" />
+            </th>
+            <th style="text-align: center;" class="sortable {{ sort == 'usr_creationdate' ? 'sorted' :  '' }} {{ ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+              {% trans 'Creation date' %}
+              <span class="ord_notifier">
+                {{ ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+              </span>
+              <input type="hidden" name="srt" value="usr_creationdate" />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in results %}
+          <tr class="{% if list.has(user) %} selected {% endif %}{% if loop.index is odd %} odd {% endif %}">
+            <td>
+              {{ user.get_login() }}
+              <input name="usr_id" value="{{ user.get_id() }}" type="hidden" />
+            </td>
+            <td>
+              {{ user.get_firstname() }} / {{ user.get_lastname() }}
+            </td>
+            <td>
+              {{ user.get_company() }}
+            </td>
+            <td>
+              {{ user.get_email() }}
+            </td>
+            <td>
+              {{ user.get_country() }}
+            </td>
+            <td>
+              {{ user.get_login() }}
+            </td>
+            <td>
+              {{ user.get_creation_date()|getDate }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  <div class="PNB" style="top:auto;height:25px;text-align:right;">
+    {% if query.get_page() > 1 %}
+      <a class="prev" value="{{ query.get_page() - 1 }}" href="#">< {% trans 'Previous' %}</a>
+    {% endif %}
+    {{ query.get_page() }} / {{ query.get_total_page() }}
+    {% if query.get_page() < query.get_total_page() %}
+      <a class="next" value="{{ query.get_page() + 1 }}" href="#">{% trans 'Next' %} ></a>
+    {% endif %}
+  </div>
+</div>
   <script>
 
   $(document).ready(function(){
     var $editor = $('#list-editor-search-results');
+
+    $('a.next, a.prev', $editor).bind('click', function(){
+      var page = $(this).attr('value');
+
+      $('input[name="page"]', $form).val(page);
+      $form.trigger('submit');
+
+      return false;
+    });
+
+    var $form = $('#ListManager .editor').find('form[name="list-editor-search"]');
+
+    $('input[name="page"]', $form).val('');
 
     $('th.sortable', $editor).bind('click', function(){
 
       var $this = $(this);
 
       var sort = $('input', $this).val();
-
-      var $form = $this.closest('.editor').find('form[name="list-editor-search"]');
 
       if((sort == $('input[name="srt"]', $form).val())
         && ($('input[name="ord"]', $form).val() == 'asc'))
