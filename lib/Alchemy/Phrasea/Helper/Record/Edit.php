@@ -264,9 +264,19 @@ class Edit extends RecordHelper
         $values = array();
         foreach ($field->get_values() as $value)
         {
+          $type = $id   = null;
+
+          if ($value->getVocabularyType())
+          {
+            $type = $value->getVocabularyType()->getType();
+            $id   = $value->getVocabularyId();
+          }
+
           $values[$value->getId()] = array(
-            'meta_id' => $value->getId(),
-            'value'   => $value->getValue()
+            'meta_id'        => $value->getId(),
+            'value'          => $value->getValue(),
+            'vocabularyId'   => $id,
+            'vocabularyType' => $type
           );
         }
 
@@ -498,9 +508,10 @@ class Edit extends RecordHelper
     }
 
     if (!is_array($request->get('mds')))
-
+    {
       return $this;
-
+    }
+    
     $sbas_id       = (int) $request->get('sbid');
     $databox       = \databox::get_instance($sbas_id);
     $meta_struct   = $databox->get_meta_structure();
