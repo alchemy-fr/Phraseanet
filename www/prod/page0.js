@@ -178,6 +178,7 @@ function checkFilters(save)
 {
   var danger = false;
   var search = {};
+  var adv_box = $('form.phrasea_query .adv_options');
   search.bases = {};
   search.fields = {};
   search.dates = {};
@@ -189,10 +190,12 @@ function checkFilters(save)
   switches.filter('option').hide().filter('option[selected]').removeAttr('selected').addClass('was');
   switches.filter(':checkbox').parent().hide().find(':checkbox[checked]').removeAttr('checked').addClass('was');
 
-  $('form[name="phrasea_query"] .field_filter,form[name="phrasea_query"] .status_filter,form[name="phrasea_query"] .date_filter').removeClass('danger');
 
-  $.each($('form[name="phrasea_query"] .sbascont'),
-    function(){
+  $('.field_filter, .status_filter, .date_filter', adv_box).removeClass('danger');
+
+  var adv_box = $('form.phrasea_query .adv_options');
+console.log('loopin on , ', $('.sbascont', adv_box));
+  $.each($('.sbascont', adv_box), function(){
 
       var id = $(this).parent().find('input[name=reference]').val();
       search.bases[id] = [];
@@ -205,6 +208,7 @@ function checkFilters(save)
       }
 
       var cbck = chuckbass.filter(':checked');
+      console.log(cbck.length);
       if(cbck.length>0)
       {
         var zfield = $('#sbasfiltercont .field_'+id).show();
@@ -230,7 +234,7 @@ function checkFilters(save)
   if(!reset_field && search.fields.length>0)
   {
     danger = true;
-    $('form[name="phrasea_query"] .field_filter').addClass('danger');
+    $('.field_filter', adv_box).addClass('danger');
   }
 
   $('.status_filter :checkbox[checked]').each(function(){
@@ -238,17 +242,17 @@ function checkFilters(save)
     var n = $(this).attr('n');
     search.status[n] = $(this).val().split('_');
     danger = true;
-    $('form[name="phrasea_query"] .status_filter') .addClass('danger');
+    $('.status_filter', adv_box) .addClass('danger');
   });
 
-  search.dates.minbound 	= $('.date_filter input[name=datemin]').val();
-  search.dates.maxbound 	= $('.date_filter input[name=datemax]').val();
-  search.dates.field 		= $('.date_filter select[name=datefield]').val();
+  search.dates.minbound 	= $('.date_filter input[name=datemin]', adv_box).val();
+  search.dates.maxbound 	= $('.date_filter input[name=datemax]', adv_box).val();
+  search.dates.field 		= $('.date_filter select[name=datefield]', adv_box).val();
 
   if($.trim(search.dates.minbound) || $.trim(search.dates.maxbound))
   {
     danger = true;
-    $('form[name="phrasea_query"] .date_filter').addClass('danger');
+    $(' .date_filter', adv_box).addClass('danger');
   }
 
   $('.field_filter select').scrollTop(scroll);
@@ -389,35 +393,6 @@ function newSearch()
 
 function newAdvSearch()
 {
-  var cont = $('form[name="phrasea_query"]');
-  var val_all 	= $.trim($('input[name=query_all]',cont).val()).split(' ').join(' AND ');
-  var val_or 		= $.trim($('input[name=query_or]',cont).val()).split(' ').join(' OR ');
-  var val_exact 	= $.trim($('input[name=query_exact]',cont).val());
-  var val_none 	= $.trim($('input[name=query_none]',cont).val()).split(' ').join(' EXCEPT ');
-
-  var val = val_all != '' ? '('+val_all+')' : '';
-
-  if(val_or!='')
-    val = val + (val != '' ? ' AND ' : '') + '('+val_or+')';
-  if(val_exact!='')
-    val = val + (val != '' ? ' AND ' : '') + '"'+val_exact+'"';
-  if(val_none!='')
-    val = val + (val != '' ? ' ' : 'all ') +'EXCEPT '+ val_none;
-
-
-  val = $.trim(val);
-  if(val == '')
-  {
-    var current = $('#EDIT_query').val();
-    if($.trim(current) == '')
-    {
-      val = 'all';
-    }
-    else
-      val = current;
-  }
-  $('#EDIT_query').val(val);
-
   newSearch();
 }
 
@@ -498,8 +473,8 @@ function afterSearch()
 }
 
 function initAnswerForm(){
-  $('form[name="phrasea_query"] button').button();
-  $('#searchForm').bind('submit',function(){
+  $('form.phrasea_query button').button();
+  $('#searchForm').unbind('submit').bind('submit',function(){
     answAjax = $.ajax({
       type: "POST",
       url: "/prod/answer.php",
@@ -848,7 +823,8 @@ $(document).ready(function(){
     
     var options = {
       closeCallback: function(dialog){
-        $('form[name=phrasea_query]').html(dialog.html());
+        dialog.find('form.phrasea_query button').button('destroy');
+        $('form[name=phrasea_query]').html(dialog.find('form.phrasea_query').html());
         $('form[name=phrasea_query]').find('.adv_options').hide();
         $('form[name=phrasea_query]').find('.adv_trigger').show();
         initAnswerForm();
@@ -857,12 +833,22 @@ $(document).ready(function(){
     
     $dialog = p4.Dialog.Create(options);
     
+    $('form[name=phrasea_query] button').button('destroy');
     var html = $('<form class="phrasea_query"></form>').append($('form[name=phrasea_query]').html());
     $('form[name=phrasea_query]').empty();
     
     $dialog.setContent(html);
     $dialog.getDomElement().find('.adv_options').show();
     $dialog.getDomElement().find('.adv_trigger').hide();
+    $dialog.getDomElement().find('button').button();
+    $dialog.getDomElement().find('form').bind('submit', function(){
+      console.log('before dialog close');
+      $dialog.Close();
+      console.log('after dialog close');
+      newSearch();
+      return false;
+    });
+    
     
     return false;
   });

@@ -55,6 +55,8 @@ var p4 = p4 || {};
     $dialog,
     $this = this;
 
+    this.closing = false;
+
     this.options = $.extend(defaults, options);
       
     this.level = getLevel(level);
@@ -101,7 +103,17 @@ var p4 = p4 || {};
       {
         $this.options.closeCallback($this.$dialog);
       }
-      $this.Close();
+      
+      if($this.closing === false)
+      {
+        console.log('not already closing');
+        $this.closing = true;
+        $this.Close();
+      }
+      else
+      {
+        console.log('already closing');
+      }
     };
 
     this.$dialog.dialog('destroy').attr('title', this.options.title)
@@ -141,7 +153,9 @@ var p4 = p4 || {};
   
   phraseaDialog.prototype = {
     Close : function() {
+      console.log('dialog close inside bef');
       p4.Dialog.Close(this.level);
+      console.log('dialog close inside aft');
     },
     setContent : function (content) {
       this.$dialog.removeClass('loading').empty().append(content);
@@ -194,7 +208,8 @@ var p4 = p4 || {};
       
       $(window).unbind('resize.DIALOG' + getLevel(level));
       
-      this.get(level).getDomElement().dialog('destroy').remove();
+      this.get(level).closing = true;
+      this.get(level).getDomElement().dialog('close').dialog('destroy').remove();
       
       var id = this.get(level).getId();
       
