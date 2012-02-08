@@ -106,13 +106,8 @@ var p4 = p4 || {};
       
       if($this.closing === false)
       {
-        console.log('not already closing');
         $this.closing = true;
         $this.Close();
-      }
-      else
-      {
-        console.log('already closing');
       }
     };
 
@@ -153,9 +148,7 @@ var p4 = p4 || {};
   
   phraseaDialog.prototype = {
     Close : function() {
-      console.log('dialog close inside bef');
       p4.Dialog.Close(this.level);
-      console.log('dialog close inside aft');
     },
     setContent : function (content) {
       this.$dialog.removeClass('loading').empty().append(content);
