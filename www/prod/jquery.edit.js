@@ -1832,8 +1832,9 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       {
         var meta_id = p4.edit.T_records[r].fields[f].values[v].meta_id;
         var value = p4.edit.T_records[r].fields[f].values[v].value;
-        
-        values.push(new p4.recordFieldValue(meta_id, value));
+        var vocabularyId = p4.edit.T_records[r].fields[f].values[v].vocabularyId;
+
+        values.push(new p4.recordFieldValue(meta_id, value, vocabularyId));
       }
       
       fields[f] = new p4.recordField(databoxField, values);
