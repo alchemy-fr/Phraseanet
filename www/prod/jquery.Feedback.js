@@ -2,8 +2,10 @@
 
 ;(function(window){
 
-  var Feedback = function($container){
+  var Feedback = function($container, context){
     this.container = $($container);
+
+    this.Context = context;
 
     this.selection = new Selectable(
       $('.user_content .badges', this.container),
@@ -276,7 +278,7 @@
         return;
       }
 
-      p4.Mustache.Render('Feedback-Badge', user, p4.Feedback.appendBadge);
+      p4.Mustache.Render(this.Context + '-Badge', user, p4.Feedback.appendBadge);
     },
     appendBadge : function(badge){
       $('.user_content .badges', this.container).append(badge);
