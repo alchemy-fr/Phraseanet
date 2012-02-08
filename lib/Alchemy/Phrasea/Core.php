@@ -59,7 +59,7 @@ class Core extends \Pimple
   {
     $appConf = new Core\Configuration\Application();
     $parser = new Core\Configuration\Parser\Yaml();
-    
+
     $handler = new Core\Configuration\Handler($appConf, $parser);
 
     $this->configuration = new Core\Configuration($handler, $environement);
@@ -378,7 +378,7 @@ class Core extends \Pimple
   {
     require_once __DIR__ . '/Loader/Autoloader.php';
 
-    if ($cacheAutoload === false)
+    if ($cacheAutoload === true)
     {
       try
       {
