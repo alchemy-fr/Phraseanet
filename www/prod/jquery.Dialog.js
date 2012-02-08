@@ -55,6 +55,8 @@ var p4 = p4 || {};
     $dialog,
     $this = this;
 
+    this.closing = false;
+
     this.options = $.extend(defaults, options);
       
     this.level = getLevel(level);
@@ -101,7 +103,12 @@ var p4 = p4 || {};
       {
         $this.options.closeCallback($this.$dialog);
       }
-      $this.Close();
+      
+      if($this.closing === false)
+      {
+        $this.closing = true;
+        $this.Close();
+      }
     };
 
     this.$dialog.dialog('destroy').attr('title', this.options.title)
@@ -194,7 +201,8 @@ var p4 = p4 || {};
       
       $(window).unbind('resize.DIALOG' + getLevel(level));
       
-      this.get(level).getDomElement().dialog('destroy').remove();
+      this.get(level).closing = true;
+      this.get(level).getDomElement().dialog('close').dialog('destroy').remove();
       
       var id = this.get(level).getId();
       

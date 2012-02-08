@@ -426,6 +426,32 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
       + "</div>";
   }
   $('#ZTextMultiValued_values', p4.edit.editBox).html(t);
+  
+  $('#ZTextMultiValued_values .add_all', p4.edit.editBox).unbind('click').bind('click', function(){
+    var container = $(this).closest('div');
+    
+    var span = $('span.value', container)
+    
+    var value = span.text();
+    var vocab_id = span.attr('vocabid');
+    
+    edit_addmval(value, vocab_id);
+    updateFieldDisplay();
+    return false;
+  });
+  $('#ZTextMultiValued_values .remove_all', p4.edit.editBox).unbind('click').bind('click', function(){
+    var container = $(this).closest('div');
+    
+    var span = $('span.value', container)
+    
+    var value = span.text();
+    var vocab_id = span.attr('vocabid');
+
+    edit_delmval(value, vocab_id);
+    updateFieldDisplay();
+    return false;
+  });
+  
   updateFieldDisplay();
 }
 
@@ -437,7 +463,7 @@ function edit_clkmval(mvaldiv, ival)
 {
   $(mvaldiv).parent().find('.hilighted').removeClass('hilighted');
   $(mvaldiv).addClass('hilighted');
-  reveal_mval(p4.edit.T_mval[ival].getValue(), p4.edit.T_mval[ival].getVocabularyId());		// on highlight la liste sur la valeur saisie
+  reveal_mval(p4.edit.T_mval[ival].getValue(), p4.edit.T_mval[ival].getVocabularyId());
 }
 
 
@@ -534,17 +560,16 @@ function edit_addmval(value, VocabularyId)
 // ---------------------------------------------------------------------------
 // on a clique sur le bouton 'supprimer' un mot dans le multi-val
 // ---------------------------------------------------------------------------
-function edit_delmval()
+function edit_delmval(value, VocabularyId)
 {
   var meta_struct_id = p4.edit.curField;		// le champ en cours d'editing
-  var v = $('#EditTextMultiValued', p4.edit.editBox).val();
-  // on ajoute le mot dans tous les records selectionnes
+
   for(var r=0; r<p4.edit.T_records.length; r++)
   {
     if(!p4.edit.T_records[r]._selected)
       continue;
 
-    p4.edit.T_records[r].fields[meta_struct_id].removeValue(v);
+    p4.edit.T_records[r].fields[meta_struct_id].removeValue(value, VocabularyId);
   }
 	
   updateEditSelectedRecords(null);
@@ -1095,47 +1120,16 @@ function edit_applyMultiDesc(evt)
     for(f in p4.edit.T_records[r].fields)
     {
       if(!p4.edit.T_records[r].fields[f].isDirty())
+      {
         continue;
-      var name    = p4.edit.T_fields[f].name;
-
-      var type    = p4.edit.T_fields[f].type;
-			
+      }
+      
       editDirty = true;
       record_datas.edit = 1;
       
-      if(p4.edit.T_records[r].fields[f].isMulti())
-      {
-        var values = p4.edit.T_records[r].fields[f].getValues();
-        
-        for(v in values)
-        {
-          var temp = {
-            meta_id : values[v].getMetaId() ? values[v].getMetaId() : '',
-            meta_struct_id : p4.edit.T_records[r].fields[f].getMetaStructId(),
-            vocabularyId : values[v].getVocabularyId() ? values[v].getVocabularyId() : '',
-            value  : cleanTags(values[v].getValue())
-          };
-          record_datas.metadatas.push(temp);
-        }
-      }
-      else
-      {
-        var value = p4.edit.T_records[r].fields[f].getValue();
-        
-        var temp = {
-          meta_id : value.getMetaId() ? value.getMetaId() : '',
-          meta_struct_id : p4.edit.T_records[r].fields[f].getMetaStructId(),
-          vocabularyId : value.getVocabularyId() ? value.getVocabularyId() : '',
-          value  : cleanTags(value.getValue())
-        };
-        record_datas.metadatas.push(temp);
-      }
-      
-    }
-    
-    if(window.console)
-    {
-      console.log(record_datas.metadatas);
+      record_datas.metadatas = record_datas.metadatas.concat(
+        p4.edit.T_records[r].fields[f].exportDatas()
+      );
     }
     
     // les statbits
@@ -1838,8 +1832,9 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       {
         var meta_id = p4.edit.T_records[r].fields[f].values[v].meta_id;
         var value = p4.edit.T_records[r].fields[f].values[v].value;
-        
-        values.push(new p4.recordFieldValue(meta_id, value));
+        var vocabularyId = p4.edit.T_records[r].fields[f].values[v].vocabularyId;
+
+        values.push(new p4.recordFieldValue(meta_id, value, vocabularyId));
       }
       
       fields[f] = new p4.recordField(databoxField, values);

@@ -16,7 +16,7 @@ require_once __DIR__ . '/Autoloader.php';
 /**
  * Loop throught op cache code adapter to cache autoloading
  * OpCache code available are apc et xcache
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -26,7 +26,7 @@ class CacheAutoloader extends Autoloader
 
   /**
    * Array of all cache adapters
-   * @var type 
+   * @var type
    */
   private $cacheAdapters = array(
       'Apc',
@@ -35,7 +35,7 @@ class CacheAutoloader extends Autoloader
 
   /**
    * The cache adapater
-   * @var type 
+   * @var type
    */
   private $cacheAdapter;
 
@@ -53,7 +53,7 @@ class CacheAutoloader extends Autoloader
   public function __construct($prefix, $namespace = null)
   {
     parent::__construct();
-    
+
     $this->prefix = $prefix;
 
     foreach ($this->cacheAdapters as $className)
@@ -100,7 +100,7 @@ class CacheAutoloader extends Autoloader
   public function findFile($class)
   {
     $file = $this->cacheAdapter->fetch($this->prefix . $class);
-   
+
     if (false === $file)
     {
       $this->cacheAdapter->save($this->prefix . $class, $file = parent::findFile($class));
@@ -119,7 +119,7 @@ class CacheAutoloader extends Autoloader
 
   /**
    * Get the current cache Adapter
-   * @return LoaderStrategy 
+   * @return LoaderStrategy
    */
   public function getAdapter()
   {

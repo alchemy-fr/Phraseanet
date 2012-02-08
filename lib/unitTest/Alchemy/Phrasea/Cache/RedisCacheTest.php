@@ -22,7 +22,7 @@ class RedisTest extends \PhraseanetPHPUnitAbstract
 
   public function testBasics()
   {
-    if (extension_loaded('memcached'))
+    if (extension_loaded('Redis'))
     {
       $redis = new Redis();
       $ok = @$redis->connect('127.0.0.1', 6379);
@@ -43,7 +43,7 @@ class RedisTest extends \PhraseanetPHPUnitAbstract
 
     // Test contains to test that save() worked
     $this->assertTrue($cache->contains('test_key'));
-    
+
     $cache->save('test_key1', 'testing this out', 20);
 
     // Test contains to test that save() worked
@@ -59,7 +59,7 @@ class RedisTest extends \PhraseanetPHPUnitAbstract
 
     $ids = $cache->getIds();
     $this->assertTrue(in_array('test_key', $ids));
-    
+
     $this->assertEquals($redis, $cache->getRedis());
   }
 
