@@ -96,7 +96,7 @@ class CacheAutoloader extends Autoloader
   {
     $file = $this->cacheAdapter->fetch($this->prefix . $class);
 
-    if (!$file)
+    if (false === $file)
     {
       $this->cacheAdapter->save($this->prefix . $class, $file = parent::findFile($class));
     }
