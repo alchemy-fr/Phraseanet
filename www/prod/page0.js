@@ -194,7 +194,7 @@ function checkFilters(save)
   $('.field_filter, .status_filter, .date_filter', adv_box).removeClass('danger');
 
   var adv_box = $('form.phrasea_query .adv_options');
-console.log('loopin on , ', $('.sbascont', adv_box));
+
   $.each($('.sbascont', adv_box), function(){
 
       var id = $(this).parent().find('input[name=reference]').val();
@@ -208,7 +208,7 @@ console.log('loopin on , ', $('.sbascont', adv_box));
       }
 
       var cbck = chuckbass.filter(':checked');
-      console.log(cbck.length);
+
       if(cbck.length>0)
       {
         var zfield = $('#sbasfiltercont .field_'+id).show();
@@ -842,9 +842,7 @@ $(document).ready(function(){
     $dialog.getDomElement().find('.adv_trigger').hide();
     $dialog.getDomElement().find('button').button();
     $dialog.getDomElement().find('form').bind('submit', function(){
-      console.log('before dialog close');
       $dialog.Close();
-      console.log('after dialog close');
       newSearch();
       return false;
     });
