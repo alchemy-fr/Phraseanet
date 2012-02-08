@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use \Alchemy\Phrasea\Vocabulary;
+
 /**
  *
  * @package
@@ -124,29 +126,29 @@ class databox_field implements cache_cacheableInterface
   protected $Vocabulary;
   protected $VocabularyRestriction = false;
 
-  const TYPE_TEXT = "text";
-  const TYPE_DATE = "date";
+  const TYPE_TEXT   = "text";
+  const TYPE_DATE   = "date";
   const TYPE_STRING = "string";
   const TYPE_NUMBER = "number";
 
   /**
    * http://dublincore.org/documents/dces/
    */
-  const DCES_TITLE = 'Title';
-  const DCES_CREATOR = 'Creator';
-  const DCES_SUBJECT = 'Subject';
+  const DCES_TITLE       = 'Title';
+  const DCES_CREATOR     = 'Creator';
+  const DCES_SUBJECT     = 'Subject';
   const DCES_DESCRIPTION = 'Description';
-  const DCES_PUBLISHER = 'Publisher';
+  const DCES_PUBLISHER   = 'Publisher';
   const DCES_CONTRIBUTOR = 'Contributor';
-  const DCES_DATE = 'Date';
-  const DCES_TYPE = 'Type';
-  const DCES_FORMAT = 'Format';
-  const DCES_IDENTIFIER = 'Identifier';
-  const DCES_SOURCE = 'Source';
-  const DCES_LANGUAGE = 'Language';
-  const DCES_RELATION = 'Relation';
-  const DCES_COVERAGE = 'Coverage';
-  const DCES_RIGHTS = 'Rights';
+  const DCES_DATE        = 'Date';
+  const DCES_TYPE        = 'Type';
+  const DCES_FORMAT      = 'Format';
+  const DCES_IDENTIFIER  = 'Identifier';
+  const DCES_SOURCE      = 'Source';
+  const DCES_LANGUAGE    = 'Language';
+  const DCES_RELATION    = 'Relation';
+  const DCES_COVERAGE    = 'Coverage';
+  const DCES_RIGHTS      = 'Rights';
 
   /**
    *
@@ -169,7 +171,7 @@ class databox_field implements cache_cacheableInterface
 
     $stmt = $connbas->prepare($sql);
     $stmt->execute(array(':id' => $id));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row  = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $this->id = (int) $id;
@@ -185,12 +187,12 @@ class databox_field implements cache_cacheableInterface
 
     try
     {
-      $this->Vocabulary = \Alchemy\Phrasea\Vocabulary\Controller::get($row['VocabularyControlType']);
+      $this->Vocabulary = Vocabulary\Controller::get($row['VocabularyControlType']);
       $this->VocabularyRestriction = !!$row['RestrictToVocabularyControl'];
     }
     catch (Exception $e)
     {
-
+      
     }
 
     if ($row['dces_element'])
@@ -221,11 +223,19 @@ class databox_field implements cache_cacheableInterface
     return $this;
   }
 
+  /**
+   *
+   * @return type \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
+   */
   public function getVocabularyControl()
   {
     return $this->Vocabulary;
   }
 
+  /**
+   *
+   * @return boolean 
+   */
   public function isVocabularyRestricted()
   {
     return $this->VocabularyRestriction;
@@ -239,7 +249,7 @@ class databox_field implements cache_cacheableInterface
    */
   public static function get_instance(databox &$databox, $id)
   {
-    $cache_key = 'field_' . $id;
+    $cache_key   = 'field_' . $id;
     $instance_id = $databox->get_sbas_id() . '_' . $id;
     if (!isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false)
     {
@@ -289,16 +299,16 @@ class databox_field implements cache_cacheableInterface
     caption_field::delete_all_metadatas($this);
 
     $connbas = $this->get_connection();
-    $sql = 'DELETE FROM metadatas_structure WHERE id = :id';
-    $stmt = $connbas->prepare($sql);
+    $sql     = 'DELETE FROM metadatas_structure WHERE id = :id';
+    $stmt    = $connbas->prepare($sql);
     $stmt->execute(array(':id' => $this->get_id()));
     $stmt->closeCursor();
 
     $dom_struct = $this->databox->get_dom_structure();
-    $xp_struct = $this->databox->get_xpath_structure();
+    $xp_struct  = $this->databox->get_xpath_structure();
 
     $nodes = $xp_struct->query(
-            '/record/description/*[@meta_id=' . $this->id . ']'
+      '/record/description/*[@meta_id=' . $this->id . ']'
     );
 
     foreach ($nodes as $node)
@@ -338,35 +348,35 @@ class databox_field implements cache_cacheableInterface
           WHERE id = :id';
 
     $params = array(
-        ':name' => $this->name,
-        ':source' => $this->source->get_source(),
-        ':indexable' => $this->indexable ? '1' : '0',
-        ':readonly' => $this->readonly ? '1' : '0',
-        ':required' => $this->required ? '1' : '0',
-        ':separator' => $this->separator,
-        ':multi' => $this->multi ? '1' : '0',
-        ':report' => $this->report ? '1' : '0',
-        ':type' => $this->type,
-        ':tbranch' => $this->tbranch,
-        ':thumbtitle' => $this->thumbtitle,
-        ':VocabularyControlType' => $this->Vocabulary ? $this->Vocabulary->getType() : null,
-        ':RestrictVocab' => $this->Vocabulary ? ($this->VocabularyRestriction ? '1' : '0') : '0',
-        ':id' => $this->id
+      ':name'                  => $this->name,
+      ':source'                => $this->source->get_source(),
+      ':indexable'             => $this->indexable ? '1' : '0',
+      ':readonly'              => $this->readonly ? '1' : '0',
+      ':required'              => $this->required ? '1' : '0',
+      ':separator'             => $this->separator,
+      ':multi'                 => $this->multi ? '1' : '0',
+      ':report'                => $this->report ? '1' : '0',
+      ':type'                  => $this->type,
+      ':tbranch'               => $this->tbranch,
+      ':thumbtitle'            => $this->thumbtitle,
+      ':VocabularyControlType' => $this->Vocabulary ? $this->Vocabulary->getType() : null,
+      ':RestrictVocab'         => $this->Vocabulary ? ($this->VocabularyRestriction ? '1' : '0') : '0',
+      ':id'                    => $this->id
     );
 
     $stmt = $connbas->prepare($sql);
     $stmt->execute($params);
 
     $dom_struct = $this->databox->get_dom_structure();
-    $xp_struct = $this->databox->get_xpath_structure();
+    $xp_struct  = $this->databox->get_xpath_structure();
 
     $nodes = $xp_struct->query(
-            '/record/description/*[@meta_id=' . $this->id . ']'
+      '/record/description/*[@meta_id=' . $this->id . ']'
     );
 
     if ($nodes->length == 0)
     {
-      $meta = $dom_struct->createElement($this->name);
+      $meta         = $dom_struct->createElement($this->name);
       $nodes_parent = $xp_struct->query('/record/description');
       $nodes_parent->item(0)->appendChild($meta);
     }
@@ -377,8 +387,8 @@ class databox_field implements cache_cacheableInterface
       $current_name = $meta->nodeName;
       if ($this->name != $meta->nodeName)
       {
-        $old_meta = $meta;
-        $meta = $dom_struct->createElement($this->name);
+        $old_meta     = $meta;
+        $meta         = $dom_struct->createElement($this->name);
         $nodes_parent = $xp_struct->query('/record/description');
         $nodes_parent->item(0)->replaceChild($meta, $old_meta);
       }
@@ -427,7 +437,7 @@ class databox_field implements cache_cacheableInterface
       $classname = 'metadata_description_nosource';
     else
       $classname = 'metadata_description_' . str_replace(
-                      array('/rdf:RDF/rdf:Description/', ':', '-'), array('', '_', ''), $xpath
+          array('/rdf:RDF/rdf:Description/', ':', '-'), array('', '_', ''), $xpath
       );
 
     if (!class_exists($classname))
@@ -475,8 +485,8 @@ class databox_field implements cache_cacheableInterface
 
     $stmt = $connbas->prepare($sql);
     $stmt->execute(array(
-        ':dces_element' => $DCES_element ? $DCES_element->get_label() : null
-        , ':id' => $this->id
+      ':dces_element' => $DCES_element ? $DCES_element->get_label() : null
+      , ':id'           => $this->id
     ));
     $stmt->closeCursor();
     $this->dces_element = $DCES_element;
@@ -498,7 +508,7 @@ class databox_field implements cache_cacheableInterface
     return $this;
   }
 
-  public function setVocabularyControl(\Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null)
+  public function setVocabularyControl(Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null)
   {
     $this->Vocabulary = $vocabulary;
 
@@ -667,7 +677,7 @@ class databox_field implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return $this;
@@ -849,10 +859,10 @@ class databox_field implements cache_cacheableInterface
   {
     $sorter = 0;
 
-    $sql = 'SELECT (MAX(sorter) + 1) as sorter FROM metadatas_structure';
+    $sql  = 'SELECT (MAX(sorter) + 1) as sorter FROM metadatas_structure';
     $stmt = $databox->get_connection()->prepare($sql);
     $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row  = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     if ($row)
@@ -867,8 +877,8 @@ class databox_field implements cache_cacheableInterface
           1, :sorter)";
 
     $stmt = $databox->get_connection()->prepare($sql);
-    $stmt->execute(array(':name' => self::generateName($name), ':sorter' => $sorter));
-    $id = $databox->get_connection()->lastInsertId();
+    $stmt->execute(array(':name'   => self::generateName($name), ':sorter' => $sorter));
+    $id       = $databox->get_connection()->lastInsertId();
     $stmt->closeCursor();
 
     $databox->delete_data_from_cache(databox::CACHE_META_STRUCT);

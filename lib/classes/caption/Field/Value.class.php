@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use \Alchemy\Phrasea\Vocabulary;
+
 /**
  *
  * @package
@@ -23,16 +25,31 @@ class caption_Field_Value
    * @var int
    */
   protected $id;
+
   /**
    *
    * @var string
    */
   protected $value;
+
+  /**
+   *
+   * @var type \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface
+   */
+  protected $VocabularyType;
+
+  /**
+   *
+   * @var int 
+   */
+  protected $VocabularyId;
+
   /**
    *
    * @var databox_field
    */
   protected $databox_field;
+
   /**
    *
    * @var record_adapter
@@ -54,56 +71,114 @@ class caption_Field_Value
 
     $connbas = $databox_field->get_databox()->get_connection();
 
-    $sql = 'SELECT record_id, value FROM metadatas WHERE id = :id';
+    $sql = 'SELECT record_id, value, VocabularyType, VocabularyId 
+            FROM metadatas WHERE id = :id';
 
     $stmt = $connbas->prepare($sql);
     $stmt->execute(array(':id' => $id));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row  = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $this->value = $row ? $row['value'] : null;
 
+    try
+    {
+      $this->VocabularyType = $row['VocabularyType'] ? Vocabulary\Controller::get($row['VocabularyType']) : null;
+      $this->VocabularyId = $row['VocabularyId'];
+    }
+    catch (\Exception $e)
+    {
+      
+    }
+
+
+    if ($this->VocabularyType)
+    {
+      /**
+       * Vocabulary Control has been deactivated 
+       */
+      if (!$this->databox_field->getVocabularyControl())
+      {
+        $this->removeVocabulary();
+      }
+      /**
+       * Vocabulary Control has changed 
+       */
+      elseif ($this->databox_field->getVocabularyControl()->getType() !== $this->VocabularyType->getType())
+      {
+        $this->removeVocabulary();
+      }
+      /**
+       * Current Id is not available anymore
+       */
+      elseif (!$this->VocabularyType->validate($this->VocabularyId))
+      {
+        $this->removeVocabulary();
+      }
+      /**
+       * String equivalence has changed 
+       */
+      elseif ($this->VocabularyType->getValue($this->VocabularyId) !== $this->value)
+      {
+        $this->set_value($this->VocabularyType->getValue($this->VocabularyId));
+      }
+    }
+
     return $this;
   }
-  public function getId() {
-      return $this->id;
+
+  public function getVocabularyType()
+  {
+    return $this->VocabularyType;
   }
 
-  public function getValue() {
-      return $this->value;
+  public function getVocabularyId()
+  {
+    return $this->VocabularyId;
   }
 
-  public function getDatabox_field() {
-      return $this->databox_field;
+  public function getId()
+  {
+    return $this->id;
   }
 
-  public function getRecord() {
-      return $this->record;
+  public function getValue()
+  {
+    return $this->value;
   }
 
-    public function delete()
+  public function getDatabox_field()
+  {
+    return $this->databox_field;
+  }
+
+  public function getRecord()
+  {
+    return $this->record;
+  }
+
+  public function delete()
   {
     $connbas = $this->databox_field->get_connection();
 
-    $sql = 'DELETE FROM metadatas WHERE id = :id';
+    $sql  = 'DELETE FROM metadatas WHERE id = :id';
     $stmt = $connbas->prepare($sql);
     $stmt->execute(array(':id' => $this->id));
     $stmt->closeCursor();
-    $this->delete_data_from_cache();
 
     $sbas_id = $this->record->get_sbas_id();
     $this->record->get_caption()->delete_data_from_cache();
 
     try
     {
-      $registry = registry::get_instance();
+      $registry  = registry::get_instance();
       $sphinx_rt = sphinxrt::get_instance($registry);
 
       $sbas_params = phrasea::sbas_params();
 
       if (isset($sbas_params[$sbas_id]))
       {
-        $params = $sbas_params[$sbas_id];
+        $params   = $sbas_params[$sbas_id];
         $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
         $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_fr", "metadatas" . $sbas_crc . "_stemmed_en"), "metas_realtime" . $sbas_crc, $this->id);
         $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->record->get_record_id());
@@ -117,15 +192,37 @@ class caption_Field_Value
     return $this;
   }
 
-  public function setVocab(\Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface $vocabulary, $vocab_id)
+  public function removeVocabulary()
   {
+    $connbas = $this->databox_field->get_connection();
 
     $params = array(
-        ':VocabType' => $vocabulary->getType()
-        , ':VocabularyId' => $vocab_id
+      ':VocabType'    => null
+      , ':VocabularyId' => null
+      , ':meta_id'      => $this->getId()
     );
 
-    $sql_up = 'UPDATE metadatas
+    $sql_up  = 'UPDATE metadatas
+              SET VocabularyType = :VocabType, VocabularyId = :VocabularyId
+              WHERE id = :meta_id';
+    $stmt_up = $connbas->prepare($sql_up);
+    $stmt_up->execute($params);
+    $stmt_up->closeCursor();
+
+    return $this;
+  }
+
+  public function setVocab(Vocabulary\ControlProvider\ControlProviderInterface $vocabulary, $vocab_id)
+  {
+    $connbas = $this->databox_field->get_connection();
+
+    $params = array(
+      ':VocabType'    => $vocabulary->getType()
+      , ':VocabularyId' => $vocab_id
+      , ':meta_id'      => $this->getId()
+    );
+
+    $sql_up  = 'UPDATE metadatas
               SET VocabularyType = :VocabType, VocabularyId = :VocabularyId
               WHERE id = :meta_id';
     $stmt_up = $connbas->prepare($sql_up);
@@ -137,32 +234,33 @@ class caption_Field_Value
     return $this;
   }
 
-
   public function set_value($value)
   {
+    $this->value = $value;
+
     $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
     $connbas = $this->databox_field->get_connection();
 
     $params = array(
-        ':meta_id' => $this->id
-        , ':value' => $value
+      ':meta_id' => $this->id
+      , ':value'   => $value
     );
 
-    $sql_up = 'UPDATE metadatas SET value = :value WHERE id = :meta_id';
+    $sql_up  = 'UPDATE metadatas SET value = :value WHERE id = :meta_id';
     $stmt_up = $connbas->prepare($sql_up);
     $stmt_up->execute($params);
     $stmt_up->closeCursor();
 
     try
     {
-      $registry = registry::get_instance();
+      $registry  = registry::get_instance();
       $sphinx_rt = sphinxrt::get_instance($registry);
 
       $sbas_params = phrasea::sbas_params();
 
       if (isset($sbas_params[$sbas_id]))
       {
-        $params = $sbas_params[$sbas_id];
+        $params   = $sbas_params[$sbas_id];
         $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
         $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_fr", "metadatas" . $sbas_crc . "_stemmed_en"), "", $this->id);
         $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "", $this->record->get_record_id());
@@ -170,7 +268,7 @@ class caption_Field_Value
     }
     catch (Exception $e)
     {
-
+      
     }
 
     $this->update_cache_value($value);
@@ -185,7 +283,6 @@ class caption_Field_Value
    */
   public function update_cache_value($value)
   {
-//    $this->delete_data_from_cache();
     $this->record->get_caption()->delete_data_from_cache();
     $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
     try
@@ -196,12 +293,12 @@ class caption_Field_Value
 
       if (isset($sbas_params[$sbas_id]))
       {
-        $params = $sbas_params[$sbas_id];
+        $params   = $sbas_params[$sbas_id];
         $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
 
         $sphinx_rt = sphinxrt::get_instance($registry);
         $sphinx_rt->replace_in_metas(
-                "metas_realtime" . $sbas_crc, $this->id, $this->databox_field->get_id(), $this->record->get_record_id(), $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $value, $this->record->get_creation_date()
+          "metas_realtime" . $sbas_crc, $this->id, $this->databox_field->get_id(), $this->record->get_record_id(), $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $value, $this->record->get_creation_date()
         );
 
         $all_datas = array();
@@ -211,11 +308,11 @@ class caption_Field_Value
             continue;
           $all_datas[] = $field->get_serialized_values();
         }
-        $all_datas = implode(' ', $all_datas);
+        $all_datas   = implode(' ', $all_datas);
 
         $sphinx_rt->replace_in_documents(
-                "docs_realtime" . $sbas_crc, //$this->id,
-                $this->record->get_record_id(), $all_datas, $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $this->record->get_creation_date()
+          "docs_realtime" . $sbas_crc, //$this->id,
+          $this->record->get_record_id(), $all_datas, $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $this->record->get_creation_date()
         );
       }
     }
@@ -227,34 +324,35 @@ class caption_Field_Value
     return $this;
   }
 
-  public static function create(databox_field &$databox_field, record_Interface $record, $value, \Alchemy\Phrasea\Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
+  public static function create(databox_field &$databox_field, record_Interface $record, $value, Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
   {
-
-    $sbas_id = $databox_field->get_databox()->get_sbas_id();
     $connbas = $databox_field->get_connection();
 
     $sql_ins = 'INSERT INTO metadatas
-              (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)
-              VALUES
-              (null, :record_id, :field, :value, :VocabType, :VocabId)';
-    $stmt_ins = $connbas->prepare($sql_ins);
-    $stmt_ins->execute(
-            array(
-                ':record_id' => $record->get_record_id(),
-                ':field' => $databox_field->get_id(),
-                ':value' => $value,
-                ':VocabType' => $vocabulary ? $vocabulary->getType() : null,
-                ':VocabId' => $vocabulary ? $vocabularyId : null,
-            )
+      (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)
+      VALUES
+      (null, :record_id, :field, :value, :VocabType, :VocabId)';
+
+    $params = array(
+      ':record_id' => $record->get_record_id(),
+      ':field'     => $databox_field->get_id(),
+      ':value'     => $value,
+      ':VocabType' => $vocabulary ? $vocabulary->getType() : null,
+      ':VocabId'   => $vocabulary ? $vocabularyId : null,
     );
+
+    $stmt_ins = $connbas->prepare($sql_ins);
+    $stmt_ins->execute($params);
+
     $stmt_ins->closeCursor();
     $meta_id = $connbas->lastInsertId();
 
     $caption_field_value = new self($databox_field, $record, $meta_id);
     $caption_field_value->update_cache_value($value);
 
-//    $record->get_caption()->delete_data_from_cache();
+    $record->get_caption()->delete_data_from_cache();
 
     return $caption_field_value;
   }
+
 }
