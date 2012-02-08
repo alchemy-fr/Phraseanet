@@ -502,7 +502,7 @@ function initAnswerForm(){
         $('#tool_navigate').empty().append(datas.navigation);
 
         $('#proposals').empty().append(datas.phrasea_props);
-          
+
         if($.trim(datas.phrasea_props) !== '')
         {
           $('.activeproposals').show()
@@ -820,7 +820,7 @@ function HueToRgb(m1, m2, hue) {
 $(document).ready(function(){
 
   $('a.adv_search_button').live('click', function(){
-    
+
     var options = {
       closeCallback: function(dialog){
         dialog.find('form.phrasea_query button').button('destroy');
@@ -830,13 +830,13 @@ $(document).ready(function(){
         initAnswerForm();
       }
     };
-    
+
     $dialog = p4.Dialog.Create(options);
-    
+
     $('form[name=phrasea_query] button').button('destroy');
     var html = $('<form class="phrasea_query"></form>').append($('form[name=phrasea_query]').html());
     $('form[name=phrasea_query]').empty();
-    
+
     $dialog.setContent(html);
     $dialog.getDomElement().find('.adv_options').show();
     $dialog.getDomElement().find('.adv_trigger').hide();
@@ -846,8 +846,8 @@ $(document).ready(function(){
       newSearch();
       return false;
     });
-    
-    
+
+
     return false;
   });
 
@@ -953,7 +953,7 @@ $(document).ready(function(){
     $see_more = $(this).closest('.see_more');
     $see_more.addClass('loading');
   })
-  
+
   $('#answers .feed .entry').live('mouseover', function(){
     $(this).addClass('hover');
   });
@@ -964,17 +964,17 @@ $(document).ready(function(){
   $('a.ajax_answers').live('click', function(event){
     event.stopPropagation();
     var $this = $(this);
-    
+
     var append = $this.hasClass('append');
     var no_scroll = $this.hasClass('no_scroll');
-    
+
     $.ajax({
       type:"GET",
       url : $this.attr('href'),
       dataType: 'html',
       success : function(data){
         var $answers = $('#answers');
-    
+
         if(!append)
         {
           $answers.empty();
@@ -988,7 +988,7 @@ $(document).ready(function(){
         {
           $('.see_more.loading', $answers).remove();
           $answers.append(data);
-          
+
           if(!no_scroll)
           {
             $answers.animate({
@@ -999,11 +999,11 @@ $(document).ready(function(){
         callback_answerselectable();
       }
     });
-    
+
     return false;
   });
-  
-  
+
+
 
   $('a.subscribe_rss').live('click',function(event){
 
@@ -1024,12 +1024,12 @@ $(document).ready(function(){
     buttons[language.fermer] = function() {
       $('#DIALOG').empty().dialog('destroy');
     };
-    
+
     event.stopPropagation();
     var $this = $(this);
-    
+
     var append = $this.hasClass('append');
-    
+
     $.ajax({
       type:"GET",
       url : $this.attr('href')+(event.renew === true ? '?renew=true' : ''),
@@ -1060,7 +1060,7 @@ $(document).ready(function(){
         }
       }
     });
-    
+
     return false;
   });
 
@@ -1179,7 +1179,7 @@ $(document).ready(function(){
       });
     }
   });
-  
+
   $('button.answer_selector').bind('click',function(){
     selector($(this));
   }).bind('mouseover',function(event){
@@ -1207,88 +1207,88 @@ $(document).ready(function(){
   setTimeout("sessionactive();", 30000);
 
 
-  $(function() {
-    function split( val ) {
-      return val.split( /\s+/ );
-    }
-    function extractLast( term ) {
-      return split( term ).pop();
-    }
-
-    $( "#EDIT_query" )
-    // don't navigate away from the field on tab when selecting an item
-    .bind( "keydown", function( event ) {
-      if ( event.keyCode === $.ui.keyCode.TAB &&
-        $( this ).data( "autocomplete" ).menu.active ) {
-      event.preventDefault();
-      }
-      })
-    .autocomplete({
-      source: function( request, response ) {
-
-      var bases = $('form[name="phrasea_query"] input[name="bas[]"]:checked').map(function(){
-        return $(this).val()
-        });
-
-      var datas = {
-      action:"search",
-      term: request.term,
-      "bas[]" : bases.toArray(),
-      stemme : ($('#sbasfiltercont input[name="stemme"]').attr('checked') ? '1':'0'),
-      search_type : ($('form[name="phrasea_query"] input[name=search_type]:checked')> 0 ? $('form[name="phrasea_query"] input[name=search_type]:checked').val() : '0'),
-      recordtype : $('#recordtype_sel').val(),
-      status : [],
-      fields : $('form[name="phrasea_query"] select[name="fields[]"] option:selected').map(function(){
-        return $(this).val();
-        }).toArray(),
-      datemin : $('form[name="phrasea_query"] input[name=datemin]').val(),
-      datemax : $('form[name="phrasea_query"] input[name=datemax]').val(),
-      datefield : $('form[name="phrasea_query"] select[name=datefield]').val()
-      };
-
-      var ajax_sugg = $( "#EDIT_query" ).data('ajax_sugg');
-      if(ajax_sugg && typeof ajax_sugg.abort == 'function')
-      {
-      ajax_sugg.abort();
-      }
-
-      ajax_sugg = $.ajax({
-        url: "/prod/prodFeedBack.php",
-        type:"post",
-        dataType: 'json',
-        data: datas,
-        success: response,
-        error:function(){},
-        timeout:function(){}
-        });
-      $( "#EDIT_query" ).data('ajax_sugg', ajax_sugg);
-      },
-      search: function() {
-      // custom minLength
-      var term = extractLast( this.value );
-      if ( term.length < 3 ) {
-      return false;
-      }
-      },
-      focus: function() {
-      // prevent value inserted on focus
-      return false;
-      },
-      select: function( event, ui ) {
-      this.value = ui.item.value;
-      newSearch();
-      return false;
-      }
-      })
-    .data( "autocomplete" )._renderItem = function( ul, item ) {
-//      alternateSearch(false);
-      if(item.hits > 0)
-        return $( "<li></li>" )
-        .data( "item.autocomplete", item )
-        .append( "<a>"+item.value+" ("+item.hits+")</a>" )
-        .appendTo( ul );
-    };
-  });
+//  $(function() {
+//    function split( val ) {
+//      return val.split( /\s+/ );
+//    }
+//    function extractLast( term ) {
+//      return split( term ).pop();
+//    }
+//
+//    $( "#EDIT_query" )
+//    // don't navigate away from the field on tab when selecting an item
+//    .bind( "keydown", function( event ) {
+//      if ( event.keyCode === $.ui.keyCode.TAB &&
+//        $( this ).data( "autocomplete" ).menu.active ) {
+//      event.preventDefault();
+//      }
+//      })
+//    .autocomplete({
+//      source: function( request, response ) {
+//
+//      var bases = $('form[name="phrasea_query"] input[name="bas[]"]:checked').map(function(){
+//        return $(this).val()
+//        });
+//
+//      var datas = {
+//      action:"search",
+//      term: request.term,
+//      "bas[]" : bases.toArray(),
+//      stemme : ($('#sbasfiltercont input[name="stemme"]').attr('checked') ? '1':'0'),
+//      search_type : ($('form[name="phrasea_query"] input[name=search_type]:checked')> 0 ? $('form[name="phrasea_query"] input[name=search_type]:checked').val() : '0'),
+//      recordtype : $('#recordtype_sel').val(),
+//      status : [],
+//      fields : $('form[name="phrasea_query"] select[name="fields[]"] option:selected').map(function(){
+//        return $(this).val();
+//        }).toArray(),
+//      datemin : $('form[name="phrasea_query"] input[name=datemin]').val(),
+//      datemax : $('form[name="phrasea_query"] input[name=datemax]').val(),
+//      datefield : $('form[name="phrasea_query"] select[name=datefield]').val()
+//      };
+//
+//      var ajax_sugg = $( "#EDIT_query" ).data('ajax_sugg');
+//      if(ajax_sugg && typeof ajax_sugg.abort == 'function')
+//      {
+//      ajax_sugg.abort();
+//      }
+//
+//      ajax_sugg = $.ajax({
+//        url: "/prod/prodFeedBack.php",
+//        type:"post",
+//        dataType: 'json',
+//        data: datas,
+//        success: response,
+//        error:function(){},
+//        timeout:function(){}
+//        });
+//      $( "#EDIT_query" ).data('ajax_sugg', ajax_sugg);
+//      },
+//      search: function() {
+//      // custom minLength
+//      var term = extractLast( this.value );
+//      if ( term.length < 3 ) {
+//      return false;
+//      }
+//      },
+//      focus: function() {
+//      // prevent value inserted on focus
+//      return false;
+//      },
+//      select: function( event, ui ) {
+//      this.value = ui.item.value;
+//      newSearch();
+//      return false;
+//      }
+//      })
+//    .data( "autocomplete" )._renderItem = function( ul, item ) {
+////      alternateSearch(false);
+//      if(item.hits > 0)
+//        return $( "<li></li>" )
+//        .data( "item.autocomplete", item )
+//        .append( "<a>"+item.value+" ("+item.hits+")</a>" )
+//        .appendTo( ul );
+//    };
+//  });
 
   //  $('#adv_search').dialog({
   //    autoOpen : false,
@@ -1377,7 +1377,7 @@ $(document).ready(function(){
 
           if($('.overlay').is(':visible'))
             return true;
-          
+
           if($('.ui-widget-overlay').is(':visible'))
             return true;
 
@@ -1567,7 +1567,7 @@ $(document).ready(function(){
       resizePreview();
     }
   });
-  
+
   $('input.input_select_copy').live('focus', function(){
     $(this).select();
   });
@@ -1577,7 +1577,7 @@ $(document).ready(function(){
   $('input.input_select_copy').live('click', function(){
     $(this).select();
   });
-  
+
   $('#answers .feed .entry a.options').live('click', function(){
     var $this = $(this);
     $.ajax({
@@ -1628,7 +1628,7 @@ $(document).ready(function(){
 
 });
 
-      
+
 
 
 
@@ -1788,12 +1788,12 @@ function deleteThis(lst)
         texte += '</p>';
 
         var buttons = {};
-        
+
         buttons[language.deleteTitle+' ('+data.lst.length+')'] = function() {
           $("#DIALOG").dialog('close').dialog('destroy');
           doDelete(data.lst);
         };
-        
+
         buttons[language.annuler] = function() {
           $("#DIALOG").dialog('close').dialog('destroy');
         };
@@ -1935,9 +1935,9 @@ function activeIcons()
 {
   $('.TOOL_print_btn').live('click', function(){
     var value="";
-    
-    
-    
+
+
+
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -1960,7 +1960,7 @@ function activeIcons()
         }
       }
     }
-    
+
     if(value !== '')
     {
       printThis(value);
@@ -1972,9 +1972,9 @@ function activeIcons()
   });
 
   $('.TOOL_bridge_btn').live('click', function(){
-    
+
     var datas = {};
-    
+
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -1997,7 +1997,7 @@ function activeIcons()
         }
       }
     }
-    
+
     if(datas.ssel || datas.lst)
     {
       init_publicator(datas);
@@ -2007,7 +2007,7 @@ function activeIcons()
       alert(language.nodocselected);
     }
   });
-  
+
 
 
   $('.TOOL_trash_btn').live('click', function(){
@@ -2041,7 +2041,7 @@ function activeIcons()
   $('.TOOL_ppen_btn').live('click', function(){
     var value="";
     var type = "";
-    
+
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -2084,11 +2084,11 @@ function activeIcons()
       alert(language.nodocselected);
     }
   });
-  
+
   $('.TOOL_publish_btn').live('click', function(){
     var value="";
     var type = "";
-    
+
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -2121,7 +2121,7 @@ function activeIcons()
         }
       }
     }
-    
+
     if(value !== '')
     {
       feedThis(type,value);
@@ -2131,7 +2131,7 @@ function activeIcons()
       alert(language.nodocselected);
     }
   });
-  
+
   function feedThis(type,value)
   {
     var $feed_box = $('#modal_feed');
@@ -2140,7 +2140,7 @@ function activeIcons()
       ssel:'',
       act:''
     };
-  
+
     switch(type){
       case "IMGT":
       case "CHIM":
@@ -2155,7 +2155,7 @@ function activeIcons()
     $.post("/prod/feeds/requestavailable/"
       , options
       , function(data){
-        
+
         return set_up_feed_box(data);
       });
 
@@ -2164,7 +2164,7 @@ function activeIcons()
 
   $('.TOOL_chgcoll_btn').live('click', function(){
     var value = {};
-    
+
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -2203,8 +2203,8 @@ function activeIcons()
 
   $('.TOOL_chgstatus_btn').live('click', function(){
     var value="";
-    
-    
+
+
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -2227,7 +2227,7 @@ function activeIcons()
         }
       }
     }
-    
+
     if(value !== '')
     {
       chgStatusThis(value);
@@ -2309,8 +2309,8 @@ function activeIcons()
 
   $('.TOOL_imgtools_btn').live('click', function(){
     var value="";
-    
-    
+
+
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -2333,7 +2333,7 @@ function activeIcons()
         }
       }
     }
-    
+
     if(value !== '')
     {
       toolThis(value);
@@ -2347,7 +2347,7 @@ function activeIcons()
 
   $('.TOOL_disktt_btn').live('click', function(){
     var datas = {};
-    
+
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -2376,7 +2376,7 @@ function activeIcons()
         }
       }
     }
-  
+
     if(datas.lst || datas.SSTTID)
       downloadThis(datas);
 
@@ -2477,8 +2477,8 @@ function shareThis(bas,rec)
 
 function printThis(value)
 {
-  
-  
+
+
       $('#DIALOG').dialog('destroy').attr('title', 'Print')
                   .empty().addClass('loading')
                   .dialog({
@@ -2503,7 +2503,7 @@ function printThis(value)
           return;
         }
       });
-      
+
 }
 
 
@@ -3240,7 +3240,7 @@ function reverse_order()
 function set_up_feed_box(data)
 {
   var $feed_box = $('#modal_feed');
-    
+
   $feed_box.empty().append(data).dialog({
     modal:true,
     width:800,
@@ -3248,10 +3248,10 @@ function set_up_feed_box(data)
     resizable:false,
     draggable:false
   });
-        
+
   var $feeds_item = $('.feeds .feed', $feed_box);
   var $form = $('form.main_form', $feed_box);
-        
+
   $feeds_item.bind('click', function(){
     $feeds_item.removeClass('selected');
     $(this).addClass('selected');
@@ -3261,14 +3261,14 @@ function set_up_feed_box(data)
   },function(){
     $(this).removeClass('hover')
   });
-        
+
   $form.bind('submit', function(){
     return false;
   });
-          
+
   $('button.valid_form').bind('click', function(){
     var error = false;
-          
+
     $('.required_text', $form).each(function(i, el){
       if($.trim($(el).val()) === '')
       {
@@ -3276,24 +3276,24 @@ function set_up_feed_box(data)
         error = true;
       }
     });
-          
+
     if(error)
     {
       alert(language.feed_require_fields)
     }
-          
+
     if($('input[name="feed_id"]', $form).val() === '')
     {
       alert(language.feed_require_feed)
       error = true;
     }
-          
+
     if(error)
     {
       return false;
     }
-          
-          
+
+
     $.ajax({
       type: 'POST',
       url: $form.attr('action'),
@@ -3305,7 +3305,7 @@ function set_up_feed_box(data)
           alert(data.message);
           return;
         }
-        
+
         if($('form.main_form', $feed_box).hasClass('entry_update'))
         {
           var id = $('form input[name="entry_id"]', $feed_box).val();
@@ -3323,4 +3323,4 @@ function set_up_feed_box(data)
   });
   return;
 }
-  
+
