@@ -44,17 +44,17 @@ class Controller_RSSFeeds implements ControllerProviderInterface
               {
                 $content = new Feed_XML_RSS();
               }
-              
+
               if ($format == Feed_Adapter::FORMAT_ATOM)
               {
                 $content = new Feed_XML_Atom();
               }
-              
+
               if($format == Feed_Adapter::FORMAT_COOLIRIS)
               {
                 $content = new Feed_XML_Cooliris();
               }
-              
+
               if ($user instanceof User_Adapter)
                 $link = $feed->get_user_link($registry, $user, $format, $page);
               else
@@ -82,7 +82,7 @@ class Controller_RSSFeeds implements ControllerProviderInterface
               }
               foreach ($entries->get_entries() as $entry)
                 $content->set_item($entry);
-              
+
               $render = $content->render();
               $response = new Response($render, 200, array('Content-Type' => $content->get_mimetype()));
               $response->setCharset('UTF-8');
@@ -176,7 +176,7 @@ class Controller_RSSFeeds implements ControllerProviderInterface
 
               return $display_feed($feed, Feed_Adapter::FORMAT_COOLIRIS , $page);
     });
-    
+
     return $controllers;
   }
 

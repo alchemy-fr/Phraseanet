@@ -75,7 +75,7 @@ class module_prod
           else
             $dates[$name] = array('sbas' => array($sbas_id), 'fieldname' => $name);
         }
-        
+
         if (isset($fields[$name]))
         {
           $fields[$name]['sbas'][] = $sbas_id;

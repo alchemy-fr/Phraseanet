@@ -36,8 +36,8 @@ class set_export extends set_abstract
    */
   public function __construct($lst, $sstid)
   {
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
+    $appbox   = appbox::get_instance();
+    $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
 
@@ -53,7 +53,7 @@ class set_export extends set_abstract
 
       foreach ($basket->get_elements() as $basket_element)
       {
-        $base_id = $basket_element->get_record()->get_base_id();
+        $base_id   = $basket_element->get_record()->get_base_id();
         $record_id = $basket_element->get_record()->get_record_id();
 
         if (!isset($remain_hd[$base_id]))
@@ -69,11 +69,11 @@ class set_export extends set_abstract
         }
 
         $current_element = $download_list[] =
-                new record_exportElement(
-                        $basket_element->get_record()->get_sbas_id(),
-                        $record_id,
-                        $basket->get_name() . '/',
-                        $remain_hd[$base_id]
+          new record_exportElement(
+            $basket_element->get_record()->get_sbas_id(),
+            $record_id,
+            $basket->get_name() . '/',
+            $remain_hd[$base_id]
         );
 
         $remain_hd[$base_id] = $current_element->get_remain_hd();
@@ -82,7 +82,7 @@ class set_export extends set_abstract
     else
     {
       $tmp_lst = explode(';', $lst);
-      $n = 1;
+      $n       = 1;
       foreach ($tmp_lst as $basrec)
       {
         $basrec = explode('_', $basrec);
@@ -104,7 +104,7 @@ class set_export extends set_abstract
 
           foreach ($record->get_children() as $child_basrec)
           {
-            $base_id = $child_basrec->get_base_id();
+            $base_id   = $child_basrec->get_base_id();
             $record_id = $child_basrec->get_record_id();
 
             if (!isset($remain_hd[$base_id]))
@@ -112,7 +112,7 @@ class set_export extends set_abstract
               if ($user->ACL()->is_restricted_download($base_id))
               {
                 $remain_hd[$base_id] =
-                        $user->ACL()->remaining_download($base_id);
+                  $user->ACL()->remaining_download($base_id);
               }
               else
               {
@@ -121,11 +121,11 @@ class set_export extends set_abstract
             }
 
             $current_element = $download_list[] =
-                    new record_exportElement(
-                            $child_basrec->get_sbas_id(),
-                            $record_id,
-                            $regfield['regname'] . '_' . $n . '/',
-                            $remain_hd[$base_id]
+              new record_exportElement(
+                $child_basrec->get_sbas_id(),
+                $record_id,
+                $regfield['regname'] . '_' . $n . '/',
+                $remain_hd[$base_id]
             );
 
             $remain_hd[$base_id] = $current_element->get_remain_hd();
@@ -133,7 +133,7 @@ class set_export extends set_abstract
         }
         else
         {
-          $base_id = $record->get_base_id();
+          $base_id   = $record->get_base_id();
           $record_id = $record->get_record_id();
 
           if (!isset($remain_hd[$base_id]))
@@ -141,7 +141,7 @@ class set_export extends set_abstract
             if ($user->ACL()->is_restricted_download($base_id))
             {
               $remain_hd[$base_id] =
-                      $user->ACL()->remaining_download($base_id);
+                $user->ACL()->remaining_download($base_id);
             }
             else
             {
@@ -149,13 +149,13 @@ class set_export extends set_abstract
             }
           }
 
-          $current_element =
-                  $download_list[$basrec[0] . '_' . $basrec[1]] =
-                  new record_exportElement(
-                          $record->get_sbas_id(),
-                          $record_id,
-                          '',
-                          $remain_hd[$base_id]
+          $current_element                              =
+            $download_list[$basrec[0] . '_' . $basrec[1]] =
+            new record_exportElement(
+              $record->get_sbas_id(),
+              $record_id,
+              '',
+              $remain_hd[$base_id]
           );
 
           $remain_hd[$base_id] = $current_element->get_remain_hd();
@@ -180,10 +180,10 @@ class set_export extends set_abstract
         if (!isset($display_download[$name]))
         {
           $display_download[$name] = array(
-              'size' => 0,
-              'total' => 0,
-              'available' => 0,
-              'refused' => array()
+            'size'      => 0,
+            'total'     => 0,
+            'available' => 0,
+            'refused'   => array()
           );
         }
 
@@ -195,12 +195,12 @@ class set_export extends set_abstract
           $display_download[$name]['label'] = $properties['label'];
           $this->total_download++;
           $display_download[$name]['size'] +=
-                  $download_element->get_size($name);
+            $download_element->get_size($name);
         }
         else
         {
           $display_download[$name]['refused'][] =
-                  $download_element->get_thumbnail();
+            $download_element->get_thumbnail();
         }
       }
       foreach ($download_element->get_orderable() as $name => $properties)
@@ -208,9 +208,9 @@ class set_export extends set_abstract
         if (!isset($display_orderable[$name]))
         {
           $display_orderable[$name] = array(
-              'total' => 0,
-              'available' => 0,
-              'refused' => array()
+            'total'     => 0,
+            'available' => 0,
+            'refused'   => array()
           );
         }
 
@@ -224,7 +224,7 @@ class set_export extends set_abstract
         else
         {
           $display_orderable[$name]['refused'][] =
-                  $download_element->get_thumbnail();
+            $download_element->get_thumbnail();
         }
       }
     }
@@ -237,10 +237,10 @@ class set_export extends set_abstract
     $display_ftp = array();
 
     $hasadminright = $user->ACL()->has_right('addrecord')
-            || $user->ACL()->has_right('deleterecord')
-            || $user->ACL()->has_right('modifyrecord')
-            || $user->ACL()->has_right('coll_manage')
-            || $user->ACL()->has_right('coll_modify_struct');
+      || $user->ACL()->has_right('deleterecord')
+      || $user->ACL()->has_right('modifyrecord')
+      || $user->ACL()->has_right('coll_manage')
+      || $user->ACL()->has_right('coll_modify_struct');
 
     $this->ftp_datas = array();
 
@@ -253,7 +253,7 @@ class set_export extends set_abstract
 
       if ($hasadminright)
       {
-        $sql = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
+        $sql    = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
                   usr.pwdFTP,usr.destFTP,prefixFTPfolder,usr.passifFTP,
                   usr.retryFTP,usr.usr_mail
                   FROM (usr INNER JOIN basusr
@@ -269,7 +269,7 @@ class set_export extends set_abstract
       }
       elseif ($registry->get('GV_ftp_for_user'))
       {
-        $sql = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
+        $sql    = "SELECT usr.usr_id,usr_login,usr.addrFTP,usr.loginFTP,usr.sslFTP,
                 usr.pwdFTP,usr.destFTP,prefixFTPfolder,
                 usr.passifFTP,usr.retryFTP,usr.usr_mail
                 FROM (usr INNER JOIN basusr
@@ -285,43 +285,43 @@ class set_export extends set_abstract
       }
 
       $datas[] = array(
-          'name' => _('export::ftp: reglages manuels'),
-          'usr_id' => '0',
-          'addrFTP' => '',
-          'loginFTP' => '',
-          'pwdFTP' => '',
-          'ssl' => '0',
-          'destFTP' => '',
-          'prefixFTPfolder' => 'Export_' . date("Y-m-d_H.i.s"),
-          'passifFTP' => false,
-          'retryFTP' => 5,
-          'mailFTP' => '',
-          'sendermail' => $user->get_email()
+        'name'            => _('export::ftp: reglages manuels'),
+        'usr_id'          => '0',
+        'addrFTP'         => '',
+        'loginFTP'        => '',
+        'pwdFTP'          => '',
+        'ssl'             => '0',
+        'destFTP'         => '',
+        'prefixFTPfolder' => 'Export_' . date("Y-m-d_H.i.s"),
+        'passifFTP'       => false,
+        'retryFTP'        => 5,
+        'mailFTP'         => '',
+        'sendermail'      => $user->get_email()
       );
 
       $stmt = $appbox->get_connection()->prepare($sql);
       $stmt->execute($params);
-      $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $stmt->closeCursor();
 
       foreach ($rs as $row)
       {
         $datas[] = array(
-            'name' => $row["usr_login"],
-            'usr_id' => $row['usr_id'],
-            'addrFTP' => $row['addrFTP'],
-            'loginFTP' => $row['loginFTP'],
-            'pwdFTP' => $row['pwdFTP'],
-            'ssl' => $row['sslFTP'],
-            'destFTP' => $row['destFTP'],
-            'prefixFTPfolder' =>
-            (strlen(trim($row['prefixFTPfolder'])) > 0 ?
-                    trim($row['prefixFTPfolder']) :
-                    'Export_' . date("Y-m-d_H.i.s")),
-            'passifFTP' => ($row['passifFTP'] > 0),
-            'retryFTP' => $row['retryFTP'],
-            'mailFTP' => $row['usr_mail'],
-            'sendermail' => $user->get_email()
+          'name'            => $row["usr_login"],
+          'usr_id'          => $row['usr_id'],
+          'addrFTP'         => $row['addrFTP'],
+          'loginFTP'        => $row['loginFTP'],
+          'pwdFTP'          => $row['pwdFTP'],
+          'ssl'             => $row['sslFTP'],
+          'destFTP'         => $row['destFTP'],
+          'prefixFTPfolder' =>
+          (strlen(trim($row['prefixFTPfolder'])) > 0 ?
+            trim($row['prefixFTPfolder']) :
+            'Export_' . date("Y-m-d_H.i.s")),
+          'passifFTP'       => ($row['passifFTP'] > 0),
+          'retryFTP'        => $row['retryFTP'],
+          'mailFTP'         => $row['usr_mail'],
+          'sendermail'      => $user->get_email()
         );
       }
 
@@ -411,8 +411,8 @@ class set_export extends set_abstract
     {
       throw new Exception('No subdefs given');
     }
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
+    $appbox   = appbox::get_instance();
+    $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
     $unicode = new unicode();
@@ -431,11 +431,11 @@ class set_export extends set_abstract
       $id = count($files);
 
       $files[$id] = array(
-          'base_id' => $download_element->get_base_id(),
-          'record_id' => $download_element->get_record_id(),
-          'original_name' => '',
-          'export_name' => '',
-          'subdefs' => array()
+        'base_id'       => $download_element->get_base_id(),
+        'record_id'     => $download_element->get_record_id(),
+        'original_name' => '',
+        'export_name'   => '',
+        'subdefs'       => array()
       );
 
       $sbas_id = phrasea::sbasFromBas($download_element->get_base_id());
@@ -445,12 +445,12 @@ class set_export extends set_abstract
       $desc = $download_element->get_xml();
 
       $files[$id]['original_name'] =
-              $files[$id]['export_name'] =
-              $download_element->get_original_name();
+        $files[$id]['export_name']   =
+        $download_element->get_original_name();
 
       $files[$id]['original_name'] =
-              trim($files[$id]['original_name']) != '' ?
-              $files[$id]['original_name'] : $id;
+        trim($files[$id]['original_name']) != '' ?
+        $files[$id]['original_name'] : $id;
 
       $infos = pathinfo($files[$id]['original_name']);
 
@@ -462,7 +462,7 @@ class set_export extends set_abstract
         $title = strip_tags($download_element->get_title());
 
         $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true);
-        $rename_done = true;
+        $rename_done               = true;
       }
       else
       {
@@ -470,12 +470,12 @@ class set_export extends set_abstract
       }
 
       $sizeMaxAjout = 0;
-      $sizeMaxExt = 0;
+      $sizeMaxExt   = 0;
 
       $sd = $download_element->get_subdefs();
 
       foreach ($download_element->get_downloadable() as $name => $properties)
-      {        
+      {
         if ($properties === false || !in_array($name, $subdefs))
         {
           continue;
@@ -486,7 +486,7 @@ class set_export extends set_abstract
         }
 
         set_time_limit(100);
-        $subdef_export = $subdef_alive = false;
+        $subdef_export = $subdef_alive  = false;
 
         $n_files++;
 
@@ -497,32 +497,32 @@ class set_export extends set_abstract
           case 'caption':
           case 'caption-yaml':
             $subdef_export = true;
-            $subdef_alive = true;
+            $subdef_alive  = true;
             break;
           case 'thumbnail':
-            $tmp_pathfile = array(
-                'path' => $sd[$name]->get_path()
-                , 'file' => $sd[$name]->get_file()
+            $tmp_pathfile  = array(
+              'path'         => $sd[$name]->get_path()
+              , 'file'         => $sd[$name]->get_file()
             );
             $subdef_export = true;
-            $subdef_alive = true;
+            $subdef_alive  = true;
             break;
           case 'document':
             $subdef_export = true;
-            $path = recordutils_image::stamp(
-                            $download_element->get_base_id()
-                            , $download_element->get_record_id()
-                            , true
+            $path          = recordutils_image::stamp(
+                $download_element->get_base_id()
+                , $download_element->get_record_id()
+                , true
             );
-            $tmp_pathfile = array(
-                'path' => $sd[$name]->get_path()
-                , 'file' => $sd[$name]->get_file()
+            $tmp_pathfile  = array(
+              'path' => $sd[$name]->get_path()
+              , 'file' => $sd[$name]->get_file()
             );
             if (file_exists($path))
             {
               $tmp_pathfile = array(
-                  'path' => dirname($path)
-                  , 'file' => basename($path)
+                'path'        => dirname($path)
+                , 'file'        => basename($path)
               );
               $subdef_alive = true;
             }
@@ -532,24 +532,24 @@ class set_export extends set_abstract
             $subdef_export = true;
 
             $tmp_pathfile = array(
-                'path' => $sd[$name]->get_path()
-                , 'file' => $sd[$name]->get_file()
+              'path' => $sd[$name]->get_path()
+              , 'file' => $sd[$name]->get_file()
             );
             if (!$user->ACL()->has_right_on_base(
-                            $download_element->get_base_id()
-                            , "nowatermark"
-                    )
-                    && $sd[$name]->get_type() == media_subdef::TYPE_IMAGE)
+                $download_element->get_base_id()
+                , "nowatermark"
+              )
+              && $sd[$name]->get_type() == media_subdef::TYPE_IMAGE)
             {
               $path = recordutils_image::watermark(
-                              $download_element->get_base_id()
-                              , $download_element->get_record_id()
+                  $download_element->get_base_id()
+                  , $download_element->get_record_id()
               );
               if (file_exists($path))
               {
                 $tmp_pathfile = array(
-                    'path' => dirname($path)
-                    , 'file' => basename($path)
+                  'path'        => dirname($path)
+                  , 'file'        => basename($path)
                 );
                 $subdef_alive = true;
               }
@@ -568,44 +568,44 @@ class set_export extends set_abstract
             case 'caption':
               if ($name == 'caption-yaml')
               {
-                $suffix = '_captionyaml';
+                $suffix    = '_captionyaml';
                 $extension = 'yml';
-                $mime = 'text/x-yaml';
+                $mime      = 'text/x-yaml';
               }
               else
               {
-                $suffix = '_caption';
+                $suffix    = '_caption';
                 $extension = 'xml';
-                $mime = 'text/xml';
+                $mime      = 'text/xml';
               }
 
-              $files[$id]["subdefs"][$name]["ajout"] = $suffix;
+              $files[$id]["subdefs"][$name]["ajout"]     = $suffix;
               $files[$id]["subdefs"][$name]["exportExt"] = $extension;
-              $files[$id]["subdefs"][$name]["label"] = $properties['label'];
-              $files[$id]["subdefs"][$name]["path"] = null;
-              $files[$id]["subdefs"][$name]["file"] = null;
-              $files[$id]["subdefs"][$name]["size"] = 0;
-              $files[$id]["subdefs"][$name]["folder"] = $download_element->get_directory();
-              $files[$id]["subdefs"][$name]["mime"] = $mime;
+              $files[$id]["subdefs"][$name]["label"]     = $properties['label'];
+              $files[$id]["subdefs"][$name]["path"]      = null;
+              $files[$id]["subdefs"][$name]["file"]      = null;
+              $files[$id]["subdefs"][$name]["size"]      = 0;
+              $files[$id]["subdefs"][$name]["folder"]    = $download_element->get_directory();
+              $files[$id]["subdefs"][$name]["mime"]      = $mime;
 
               break;
             case 'document':
             case 'preview':
             case 'thumbnail':
               $infos = pathinfo(p4string::addEndSlash($tmp_pathfile["path"]) .
-                      $tmp_pathfile["file"]);
+                $tmp_pathfile["file"]);
 
-              $files[$id]["subdefs"][$name]["ajout"] =
-                      $properties['class'] == 'document' ? '' : "_" . $name;
-              $files[$id]["subdefs"][$name]["path"] = $tmp_pathfile["path"];
-              $files[$id]["subdefs"][$name]["file"] = $tmp_pathfile["file"];
-              $files[$id]["subdefs"][$name]["label"] = $properties['label'];
-              $files[$id]["subdefs"][$name]["size"] = $sd[$name]->get_size();
-              $files[$id]["subdefs"][$name]["mime"] = $sd[$name]->get_mime();
-              $files[$id]["subdefs"][$name]["folder"] =
-                      $download_element->get_directory();
+              $files[$id]["subdefs"][$name]["ajout"]     =
+                $properties['class'] == 'document' ? '' : "_" . $name;
+              $files[$id]["subdefs"][$name]["path"]      = $tmp_pathfile["path"];
+              $files[$id]["subdefs"][$name]["file"]      = $tmp_pathfile["file"];
+              $files[$id]["subdefs"][$name]["label"]     = $properties['label'];
+              $files[$id]["subdefs"][$name]["size"]      = $sd[$name]->get_size();
+              $files[$id]["subdefs"][$name]["mime"]      = $sd[$name]->get_mime();
+              $files[$id]["subdefs"][$name]["folder"]    =
+                $download_element->get_directory();
               $files[$id]["subdefs"][$name]["exportExt"] =
-                      isset($infos['extension']) ? $infos['extension'] : '';
+                isset($infos['extension']) ? $infos['extension'] : '';
 
               $size += $sd[$name]->get_size();
 
@@ -613,12 +613,12 @@ class set_export extends set_abstract
           }
 
           $longueurAjoutCourant =
-                  mb_strlen($files[$id]["subdefs"][$name]["ajout"]);
-          $sizeMaxAjout = max($longueurAjoutCourant, $sizeMaxAjout);
+            mb_strlen($files[$id]["subdefs"][$name]["ajout"]);
+          $sizeMaxAjout         = max($longueurAjoutCourant, $sizeMaxAjout);
 
           $longueurExtCourant =
-                  mb_strlen($files[$id]["subdefs"][$name]["exportExt"]);
-          $sizeMaxExt = max($longueurExtCourant, $sizeMaxExt);
+            mb_strlen($files[$id]["subdefs"][$name]["exportExt"]);
+          $sizeMaxExt         = max($longueurExtCourant, $sizeMaxExt);
         }
       }
 
@@ -628,34 +628,34 @@ class set_export extends set_abstract
 
       $start_length = mb_strlen($name);
       if ($start_length > $max_length)
-        $name = mb_substr($name, 0, $max_length);
+        $name         = mb_substr($name, 0, $max_length);
 
       $n = 1;
 
       while (in_array(mb_strtolower($name), $file_names))
       {
         $n++;
-        $suffix = "-" . $n; // pour diese si besoin
-        $max_length = 31 - $sizeMaxExt - $sizeMaxAjout - mb_strlen($suffix);
-        $name = mb_strtolower($files[$id]["export_name"]);
+        $suffix                    = "-" . $n; // pour diese si besoin
+        $max_length                = 31 - $sizeMaxExt - $sizeMaxAjout - mb_strlen($suffix);
+        $name                      = mb_strtolower($files[$id]["export_name"]);
         if ($start_length > $max_length)
-          $name = mb_substr($name, 0, $max_length) . $suffix;
+          $name                      = mb_substr($name, 0, $max_length) . $suffix;
         else
-          $name = $name . $suffix;
+          $name                      = $name . $suffix;
       }
-      $file_names[] = mb_strtolower($name);
+      $file_names[]              = mb_strtolower($name);
       $files[$id]["export_name"] = $name;
 
-      $files[$id]["export_name"] = $unicode->remove_nonazAZ09($files[$id]["export_name"]);
+      $files[$id]["export_name"]   = $unicode->remove_nonazAZ09($files[$id]["export_name"]);
       $files[$id]["original_name"] = $unicode->remove_nonazAZ09($files[$id]["original_name"]);
 
-      $i = 0;
-      $name = utf8_decode($files[$id]["export_name"]);
-      $tmp_name = "";
+      $i         = 0;
+      $name      = utf8_decode($files[$id]["export_name"]);
+      $tmp_name  = "";
       $good_keys = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-          'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-          'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
-          '4', '5', '6', '7', '8', '9', '-', '_', '.', '#');
+        'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+        'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+        '4', '5', '6', '7', '8', '9', '-', '_', '.', '#');
 
       while (isset($name[$i]))
       {
@@ -673,19 +673,19 @@ class set_export extends set_abstract
       if (in_array('caption', $subdefs))
       {
         $caption_dir = $registry->get('GV_RootPath') . 'tmp/desc_tmp/'
-                . time() . $session->get_usr_id()
-                . $session->get_ses_id() . '/';
+          . time() . $session->get_usr_id()
+          . $session->get_ses_id() . '/';
 
         system_file::mkdir($caption_dir);
 
         $desc = self::get_caption(
-                        $download_element->get_base_id()
-                        , $download_element->get_record_id()
+            $download_element->get_base_id()
+            , $download_element->get_record_id()
         );
 
         $file = $files[$id]["export_name"]
-                . $files[$id]["subdefs"]['caption']["ajout"] . '.'
-                . $files[$id]["subdefs"]['caption']["exportExt"];
+          . $files[$id]["subdefs"]['caption']["ajout"] . '.'
+          . $files[$id]["subdefs"]['caption']["exportExt"];
 
         $path = $caption_dir;
 
@@ -701,22 +701,22 @@ class set_export extends set_abstract
       if (in_array('caption-yaml', $subdefs))
       {
         $caption_dir = $registry->get('GV_RootPath') . 'tmp/desc_tmp/'
-                . time() . $session->get_usr_id()
-                . $session->get_ses_id() . '/';
+          . time() . $session->get_usr_id()
+          . $session->get_ses_id() . '/';
         system_file::mkdir($caption_dir);
 
 
 
         $desc = self::get_caption(
-                        $download_element->get_base_id()
-                        , $download_element->get_record_id()
-                        , true
-                        , 'yaml'
+            $download_element->get_base_id()
+            , $download_element->get_record_id()
+            , true
+            , 'yaml'
         );
 
         $file = $files[$id]["export_name"]
-                . $files[$id]["subdefs"]['caption-yaml']["ajout"] . '.'
-                . $files[$id]["subdefs"]['caption-yaml']["exportExt"];
+          . $files[$id]["subdefs"]['caption-yaml']["ajout"] . '.'
+          . $files[$id]["subdefs"]['caption-yaml']["exportExt"];
 
         $path = $caption_dir;
 
@@ -732,10 +732,10 @@ class set_export extends set_abstract
     }
 
     $this->list = array(
-        'files' => $files,
-        'names' => $file_names,
-        'size' => $size,
-        'count' => $n_files
+      'files' => $files,
+      'names' => $file_names,
+      'size'  => $size,
+      'count' => $n_files
     );
 
 
@@ -769,13 +769,13 @@ class set_export extends set_abstract
     random::updateToken($token, serialize($list));
 
     $str_in = array("à", "á", "â", "ã", "ä", "å", "ç", "è", "é", "ê",
-        "ë", "ì", "í", "î", "ï", "ð", "ñ", "ò", "ó", "ô",
-        "õ", "ö", "ù", "ú", "û", "ü", "ý", "ÿ");
+      "ë", "ì", "í", "î", "ï", "ð", "ñ", "ò", "ó", "ô",
+      "õ", "ö", "ù", "ú", "û", "ü", "ý", "ÿ");
     $str_out = array("a", "a", "a", "a", "a", "a", "c", "e", "e", "e",
-        "e", "i", "i", "i", "i", "o", "n", "o", "o", "o",
-        "o", "o", "u", "u", "u", "u", "y", "y");
+      "e", "i", "i", "i", "i", "o", "n", "o", "o", "o",
+      "o", "o", "u", "u", "u", "u", "y", "y");
 
-    $caption_dirs = $unlinks = array();
+    $caption_dirs = $unlinks      = array();
 
     foreach ($files as $record)
     {
@@ -787,9 +787,9 @@ class set_export extends set_abstract
           if (is_file($path))
           {
             $name = $obj["folder"]
-                    . $record["export_name"]
-                    . $obj["ajout"]
-                    . '.' . $obj["exportExt"];
+              . $record["export_name"]
+              . $obj["ajout"]
+              . '.' . $obj["exportExt"];
 
             $name = str_replace($str_in, $str_out, $name);
 
@@ -799,7 +799,7 @@ class set_export extends set_abstract
             {
               if (!in_array(dirname($path), $caption_dirs))
                 $caption_dirs[] = dirname($path);
-              $unlinks[] = $path;
+              $unlinks[]      = $path;
             }
           }
         }
@@ -842,7 +842,7 @@ class set_export extends set_abstract
     $dom->encoding = 'UTF-8';
 
     $dom_record = $dom->createElement('record');
-    $dom_desc = $dom->createElement('description');
+    $dom_desc   = $dom->createElement('description');
 
     $dom_record->appendChild($dom_desc);
     $dom->appendChild($dom_record);
@@ -850,19 +850,19 @@ class set_export extends set_abstract
     $restrict = array();
 
     $sbas_id = phrasea::sbasFromBas($bas);
-    $record = new record_adapter($sbas_id, $rec);
-    $desc = $record->get_xml();
-    $appbox = appbox::get_instance();
+    $record  = new record_adapter($sbas_id, $rec);
+    $desc    = $record->get_xml();
+    $appbox  = appbox::get_instance();
     $session = $appbox->get_session();
 
     $databox = databox::get_instance($sbas_id);
-    $struct = $databox->get_structure();
+    $struct  = $databox->get_structure();
 
     $rights = true;
 
     if ($check_rights && $session->is_authenticated())
     {
-      $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+      $user   = User_Adapter::getInstance($session->get_usr_id(), $appbox);
       $rights = $user->ACL()->has_right_on_base($bas, 'canmodifrecord');
 
       if ($rights == false)
@@ -875,7 +875,7 @@ class set_export extends set_abstract
             foreach ($z[0] as $ki => $vi)
             {
               if (isset($vi["export"])
-                      && ($vi["export"] == "0" || $vi["export"] == "off"))
+                && ($vi["export"] == "0" || $vi["export"] == "off"))
                 $restrict[$ki] = true;
             }
           }
@@ -885,36 +885,27 @@ class set_export extends set_abstract
 
     $buffer = array();
 
-    if ($sxe = simplexml_load_string($desc))
+    foreach ($record->get_caption()->get_fields() as $field)
     {
-      $z = $sxe->xpath('/record/description');
-      if ($z && is_array($z))
+      if (($rights || !isset($restrict[$field->get_name()])))
       {
-        foreach ($z[0] as $ki => $vi)
+        switch ($format)
         {
-          if (($rights || !isset($restrict[$ki])))
-          {
+          case 'yaml':
+          case 'yml':
 
+            $vi = $field->get_value();
+            if (ctype_digit($vi))
+              $vi = (int) $vi;
 
-            switch ($format)
-            {
-              case 'yaml':
-              case 'yml':
-
-                $vi = trim($vi);
-                if (ctype_digit($vi))
-                  $vi = (int) $vi;
-
-                $buffer[trim($ki)] = $vi;
-                break;
-              case 'xml':
-              default:
-                $dom_el = $dom->createElement($ki);
-                $dom_el->appendChild($dom->createTextNode(trim($vi)));
-                $dom_desc->appendChild($dom_el);
-                break;
-            }
-          }
+            $buffer[$field->get_name()] = $vi;
+            break;
+          case 'xml':
+          default:
+            $dom_el                     = $dom->createElement($field->get_name());
+            $dom_el->appendChild($dom->createTextNode($field->get_value(true)));
+            $dom_desc->appendChild($dom_el);
+            break;
         }
       }
     }
@@ -954,7 +945,7 @@ class set_export extends set_abstract
     $registry = registry::get_instance();
 
     $disposition = in_array($disposition, array('inline', 'attachment')) ?
-            $disposition : 'attachment';
+      $disposition : 'attachment';
 
     $response = new Symfony\Component\HttpFoundation\Response();
 
@@ -964,17 +955,17 @@ class set_export extends set_abstract
       if ($registry->get('GV_modxsendfile') && strpos($file, $registry->get('GV_X_Accel_Redirect')) !== false)
       {
         $file_xaccel = str_replace(
-                array(
-            $registry->get('GV_X_Accel_Redirect'),
-            $registry->get('GV_RootPath') . 'tmp/download/',
-            $registry->get('GV_RootPath') . 'tmp/lazaret/'
-                )
-                , array(
-            '/' . $registry->get('GV_X_Accel_Redirect_mount_point') . '/',
-            '/download/',
-            '/lazaret/'
-                )
-                , $file
+          array(
+          $registry->get('GV_X_Accel_Redirect'),
+          $registry->get('GV_RootPath') . 'tmp/download/',
+          $registry->get('GV_RootPath') . 'tmp/lazaret/'
+          )
+          , array(
+          '/' . $registry->get('GV_X_Accel_Redirect_mount_point') . '/',
+          '/download/',
+          '/lazaret/'
+          )
+          , $file
         );
         $response->headers->set('X-Sendfile', $file);
         $response->headers->set('X-Accel-Redirect', $file_xaccel);
@@ -989,13 +980,13 @@ class set_export extends set_abstract
       else
       {
         /**
-         * 
+         *
          * Header "Pragma: public" SHOULD be present.
          * In case it is not present, download on IE 8 and previous over HTTPS
          * will fail.
-         * 
+         *
          * @todo : merge this shitty fix with Response object.
-         * 
+         *
          */
         if (!headers_sent())
         {
@@ -1007,6 +998,7 @@ class set_export extends set_abstract
         $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
         $response->headers->set('Content-Length', filesize($file));
         $response->setContent(file_get_contents($file));
+
         return $response;
       }
     }
@@ -1034,7 +1026,7 @@ class set_export extends set_abstract
     header("Content-Length: " . strlen($data));
     header("Cache-Control: max-age=3600, must-revalidate ");
     header("Content-Disposition: " . $disposition
-            . "; filename=" . $exportname . ";");
+      . "; filename=" . $exportname . ";");
 
     echo $data;
 
@@ -1052,9 +1044,9 @@ class set_export extends set_abstract
   public static function log_download(Array $list, $type, $anonymous = false, $comment = '')
   {
     //download
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance();
     $session = $appbox->get_session();
-    $user = false;
+    $user    = false;
     if ($anonymous)
     {
       
@@ -1068,8 +1060,8 @@ class set_export extends set_abstract
     $files = $list['files'];
 
     $event_names = array(
-        'mail-export' => Session_Logger::EVENT_EXPORTMAIL,
-        'download' => Session_Logger::EVENT_EXPORTDOWNLOAD
+      'mail-export' => Session_Logger::EVENT_EXPORTMAIL,
+      'download'    => Session_Logger::EVENT_EXPORTDOWNLOAD
     );
 
     $event_name = isset($event_names[$type]) ? $event_names[$type] : Session_Logger::EVENT_EXPORTDOWNLOAD;
@@ -1078,18 +1070,18 @@ class set_export extends set_abstract
     {
       foreach ($record["subdefs"] as $o => $obj)
       {
-        $sbas_id = phrasea::sbasFromBas($record['base_id']);
+        $sbas_id       = phrasea::sbasFromBas($record['base_id']);
         $record_object = new record_adapter($sbas_id, $record['record_id']);
 
         $session->get_logger($record_object->get_databox())
-                ->log($record_object, $event_name, $o, $comment);
+          ->log($record_object, $event_name, $o, $comment);
 
         if ($o != "caption")
         {
-          $log["rid"] = $record_object->get_record_id();
-          $log["subdef"] = $o;
-          $log["poids"] = $obj["size"];
-          $log["shortXml"] = $record_object->get_xml();
+          $log["rid"]                              = $record_object->get_record_id();
+          $log["subdef"]                           = $o;
+          $log["poids"]                            = $obj["size"];
+          $log["shortXml"]                         = $record_object->get_xml();
           $tmplog[$record_object->get_base_id()][] = $log;
           if (!$anonymous && $o == 'document')
             $user->ACL()->remove_remaining($record_object->get_base_id());
@@ -1100,9 +1092,9 @@ class set_export extends set_abstract
     }
 
     $export_types = array(
-        'download' => 0,
-        'mail-export' => 2,
-        'ftp' => 4
+      'download'    => 0,
+      'mail-export' => 2,
+      'ftp'         => 4
     );
 
     $list_base = array_unique(array_keys($tmplog));
@@ -1120,9 +1112,9 @@ class set_export extends set_abstract
         if ($user->ACL()->is_restricted_download($base_id))
         {
           $params = array(
-              ':remain_dl' => $user->ACL()->remaining_download($base_id)
-              , ':base_id' => $base_id
-              , ':usr_id' => $user->get_id()
+            ':remain_dl' => $user->ACL()->remaining_download($base_id)
+            , ':base_id'   => $base_id
+            , ':usr_id'    => $user->get_id()
           );
 
           $stmt->execute($params);

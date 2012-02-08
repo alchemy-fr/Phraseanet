@@ -124,7 +124,7 @@
           <tr>
             <td>
               {% if main_user is not empty %}
-                
+
                 {% if main_user.is_special is not empty %}
                   {% if main_user.get_login() == 'invite' %}
                     {% trans 'Reglages:: reglages d acces guest' %}
@@ -199,7 +199,7 @@
                   <td></td>
                 </tr>
               {% endif %}
-                
+
               <tr>
                 <td style="width:122px;overflow:hidden;white-space:nowrap;">
                   {{rights['sbas_id']|sbas_name}}
@@ -556,7 +556,7 @@
     {% endif %}
   </div>
   <div class="PNB10" style="top:auto;height:20px;">
-    <button class="users_rights_valid">{% trans 'boutton::valider' %}</button> 
+    <button class="users_rights_valid">{% trans 'boutton::valider' %}</button>
     <a href="/admin/users/search/" class="users_rights_cancel">{% trans 'boutton::retour' %}</a>
   </div>
 </div>

@@ -17,49 +17,49 @@
  */
 require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance();
+$appbox  = appbox::get_instance();
 $request = http_request::getInstance();
-$parm = $request->get_parms('code');
+$parm    = $request->get_parms('code');
 
 try
 {
   $datas = random::helloToken($parm['code']);
 }
-catch(Exception_NotFound $e)
+catch (Exception_NotFound $e)
 {
   return phrasea::redirect('/login/?redirect=/prod&error=TokenNotFound');
 }
 
-  $usr_id = $datas['usr_id'];
+$usr_id = $datas['usr_id'];
 
-  $user = User_Adapter::getInstance($usr_id, $appbox);
+$user = User_Adapter::getInstance($usr_id, $appbox);
 
-  if (!$user->get_mail_locked())
+if (!$user->get_mail_locked())
+{
+  return phrasea::redirect('/login?redirect=prod&confirm=already');
+}
+$user->set_mail_locked(false);
+random::removeToken($parm['code']);
+
+require_once(dirname(__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+if (PHPMailer::ValidateAddress($user->get_email()))
+{
+  if (count($user->ACL()->get_granted_base()) > 0)
   {
-    return phrasea::redirect('/login?redirect=prod&confirm=already');
+    mail::mail_confirm_registered($user->get_email());
   }
-  $user->set_mail_locked(false);
-  random::removeToken($parm['code']);
-
-  require_once(dirname (__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
-  if (PHPMailer::ValidateAddress($user->get_email()))
+  else
   {
-    if (count($user->ACL()->get_granted_base()) > 0)
+    $appbox_register = new appbox_register($appbox);
+    $list            = $appbox_register->get_collection_awaiting_for_user($user);
+    $others          = '';
+    foreach ($list as $collection)
     {
-      mail::mail_confirm_registered($row['usr_mail']);
+      $others .= '<li>' . $collection->get_name() . "</li>\n";
     }
-    else
-    {
-      $appbox_register = new appbox_register($appbox);
-      $list = $appbox_register->get_collection_awaiting_for_user($user);
-      $others = '';
-      foreach($list as $collection)
-      {
-        $others .= '<li>' . $collection->get_name() . "</li>\n";
-      }
 
-      mail::mail_confirm_unregistered($row['usr_mail'], $others);
-    }
+    mail::mail_confirm_unregistered($user->get_email(), $others);
   }
+}
 
-  return phrasea::redirect('/login?redirect=/prod&confirm=ok');
+return phrasea::redirect('/login?redirect=/prod&confirm=ok');

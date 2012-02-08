@@ -50,7 +50,7 @@ class Controller_Utils_ConnectionTest implements ControllerProviderInterface
               }
               catch (Exception $e)
               {
-                
+
               }
 
               if ($dbname && $connection_ok === true)
@@ -83,7 +83,7 @@ class Controller_Utils_ConnectionTest implements ControllerProviderInterface
                 }
                 catch (Exception $e)
                 {
-                  
+
                 }
               }
 

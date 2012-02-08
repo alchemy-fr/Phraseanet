@@ -337,7 +337,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
     document.body.oncontextmenu = function(){
       return false;
     }
-              
+
     tFlags = <?php echo $jsFlags ?> ;
 
     myGUI = new GUI("myGUI", "desktop", "FR");
@@ -705,7 +705,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
           {
             case "RMOUSEDOWN":
               if(o = eventObj.Src0)
-              { 
+              {
                 // alert(o.id.substr(0, 4));
                 switch(o.id.substr(0, 4))
                 {

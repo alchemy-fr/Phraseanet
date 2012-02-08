@@ -42,7 +42,7 @@ class module_admin_route_users
 
     return $this;
   }
-  
+
   public function export(Symfony\Component\HttpFoundation\Request $request)
   {
     $appbox = appbox::get_instance();
@@ -143,8 +143,8 @@ class module_admin_route_users
       if (is_null($v))
         $this->query_parms[$k] = false;
     }
-    
-    
+
+
     $query = new User_Query($appbox);
     $templates = $query
             ->only_templates(true)

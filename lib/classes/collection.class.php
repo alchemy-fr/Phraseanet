@@ -200,9 +200,9 @@ class collection implements cache_cacheableInterface
       $stmt = $this->get_connection()->prepare($sql);
       $stmt->execute(array(':pub_wm' => $publi, ':coll_id' => $this->get_coll_id()));
       $stmt->closeCursor();
-      
+
       $this->pub_wm = $publi;
-      
+
       $this->delete_data_from_cache();
     }
 
@@ -223,9 +223,9 @@ class collection implements cache_cacheableInterface
     $stmt->closeCursor();
 
     $this->name = $name;
-    
+
     $this->delete_data_from_cache();
-    
+
     phrasea::reset_baseDatas();
 
     return $this;
@@ -404,7 +404,7 @@ class collection implements cache_cacheableInterface
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute(array(':prefs' => $this->prefs, ':coll_id' => $this->get_coll_id()));
     $stmt->closeCursor();
-    
+
     $this->delete_data_from_cache();
 
     return $this->prefs;

@@ -215,7 +215,7 @@ class appbox extends base
     $stmt = $this->get_connection()->prepare($sqlupd);
     $stmt->execute(array(':ordre' => $ordre, ':base_id' => $collection->get_base_id()));
     $stmt->closeCursor();
-    
+
     $collection->get_databox()->delete_data_from_cache(\databox::CACHE_COLLECTIONS);
 
     return $this;

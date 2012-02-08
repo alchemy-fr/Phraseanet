@@ -29,7 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception;
 
 return call_user_func(function(){
- 
+
 
 $app = new Silex\Application();
 
@@ -42,7 +42,7 @@ $app["appbox"] = appbox::get_instance();
 $app['p4user'] = null;
 
 /**
- * @var API_OAuth2_Token 
+ * @var API_OAuth2_Token
  */
 $app['token'] = null;
 
@@ -121,6 +121,7 @@ $parseRoute = function ($route, Response $response)
               }
             }
           }
+
           return array('ressource' => $ressource, 'general' => $general, 'aspect' => $aspect, 'action' => $action);
         };
 
@@ -139,6 +140,7 @@ $app->before(function($request) use ($app)
           $app['token'] = API_OAuth2_Token::load_by_oauth_token($app["appbox"], $oauth2_adapter->getToken());
 
           if ($session->is_authenticated())
+
             return;
           if ($oauth2_adapter->has_ses_id())
           {
@@ -150,7 +152,7 @@ $app->before(function($request) use ($app)
             }
             catch (\Exception $e)
             {
-            
+
             }
           }
           $auth = new Session_Authentication_None($app['p4user']);
@@ -171,7 +173,7 @@ $app->after(function (Request $request, Response $response) use ($app, $parseRou
           $route = $parseRoute($pathInfo, $response);
           $log = API_V1_Log::create(
                   $app["appbox"],
-                  $account, 
+                  $account,
                   $request->getMethod() . " " . $pathInfo,
                   $response->getStatusCode(),
                   $response->headers->get('content-type'),
@@ -659,7 +661,7 @@ $app->get('/feeds/{wrong_feed_id}/content/', $bad_request_exception);
  */
 $app->error(function (\Exception $e) use ($app)
         {
-  
+
           if ($e instanceof API_V1_exception_methodnotallowed)
             $code = API_V1_result::ERROR_METHODNOTALLOWED;
           elseif ($e instanceof Exception\MethodNotAllowedHttpException)

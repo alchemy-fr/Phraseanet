@@ -180,6 +180,12 @@ abstract class base implements cache_cacheableInterface
    */
   public function get_data_from_cache($option = null)
   {
+    
+    if($this->get_base_type() == self::DATA_BOX)
+    {
+      \cache_databox::refresh($this->id);
+    }
+    
     return $this->get_cache()->get($this->get_cache_key($option));
   }
 

@@ -151,7 +151,7 @@ class basketCollection
     $appbox = appbox::get_instance();
     $conn = $appbox->get_connection();
     $session = $appbox->get_session();
-    $sql = 'SELECT n.ssel_id FROM sselnew n 
+    $sql = 'SELECT n.ssel_id FROM sselnew n
             WHERE n.usr_id = :usr_id ';
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':usr_id' => $session->get_usr_id()));
@@ -164,12 +164,12 @@ class basketCollection
       try
       {
         $basket = basket_adapter::getInstance($appbox, $row['ssel_id'], $session->get_usr_id());
-        
+
         if ($basket->is_valid() && !$basket->is_my_valid() && $basket->is_validation_finished())
           throw new Exception('Finished');
-        
+
         $baskets[] = $basket;
-        
+
       }
       catch(Exception $e)
       {

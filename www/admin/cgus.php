@@ -83,7 +83,7 @@ $TOU = $databox->get_cgus();
   </head>
   <body>
     <h1><?php echo _('Terms Of Use'); ?></h1>
-      
+
     <form target="_self" method="post" action="cgus.php">
       <div style="text-align:center;margin:10px 0;">
         <input type="submit" value="<?php echo _('Mettre a jour'); ?>" id="valid"/><input type="checkbox" value="1" name="valid"/><label for="valid"><?php echo _('admin::CGU Les utilisateurs doivent imperativement revalider ces conditions'); ?></label>

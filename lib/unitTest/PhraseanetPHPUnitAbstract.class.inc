@@ -10,7 +10,7 @@
  */
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -29,7 +29,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   const USER_AGENT_IPHONE = 'Mozilla/5.0 (iPod; U; CPU iPhone OS 2_1 like Mac OS X; fr-fr) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5F137 Safari/525.20';
   /**
    *
-   * @var Symfony\Component\HttpKernel\Client 
+   * @var Symfony\Component\HttpKernel\Client
    */
   protected $client;
 
@@ -330,7 +330,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
   /**
    *
-   * @var collection 
+   * @var collection
    */
   protected static $collection;
   protected static $time_start;
@@ -340,7 +340,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     if (!self::$time_start)
       self::$time_start = microtime(true);
-    
+
     if(!setup::is_installed())
       exit("Phraseanet is not set up\n");
 
@@ -431,12 +431,12 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
     $basket_coll = new basketCollection($appbox, self::$user->get_id());
     $baskets = $basket_coll->get_baskets();
-    
+
     foreach($baskets['baskets'] as $basket)
     {
       $basket->delete();
     }
-    
+
     basket_adapter::create($appbox, 'TEST', self::$user);
 
     $appbox->get_session()->authenticate(new Session_Authentication_None(self::$user));
@@ -919,7 +919,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     return $this->assertRegExp('/\d{4}[-]\d{2}[-]\d{2}[T]\d{2}[:]\d{2}[:]\d{2}[+]\d{2}[:]\d{2}/', $date);
   }
-  
+
   protected function set_user_agent($user_agent)
   {
     $browser = Browser::getInstance();

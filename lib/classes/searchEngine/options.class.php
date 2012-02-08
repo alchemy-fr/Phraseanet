@@ -353,7 +353,7 @@ class searchEngine_options implements Serializable
   {
     if (!is_null($min_date) && trim($min_date) !== '')
     {
-      $this->date_min = DateTime::createFromFormat('d/m/Y h:i:s', $min_date.' 00:00:00');
+      $this->date_min = DateTime::createFromFormat('d/m/Y H:i:s', $min_date.' 00:00:00');
     }
 
     return $this;
@@ -377,7 +377,7 @@ class searchEngine_options implements Serializable
   {
     if (!is_null($max_date) && trim($max_date) !== '')
     {
-      $this->date_max = DateTime::createFromFormat('d/m/Y h:i:s', $max_date.' 23:59:59');
+      $this->date_max = DateTime::createFromFormat('d/m/Y H:i:s', $max_date.' 23:59:59');
     }
 
     return $this;
@@ -454,13 +454,13 @@ class searchEngine_options implements Serializable
       {
         $tmpvalue = (array) $value;
         $value = array();
-        
+
         foreach($tmpvalue as $k=>$data)
         {
           $k = ctype_digit($k) ? (int) $k : $k;
           $value[$k] = $data;
         }
-        
+
       }
 
       $this->$key = $value;

@@ -551,7 +551,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     return $account;
   }
-  
+
   /**
    *
    * @param int $usr_id
