@@ -92,6 +92,7 @@ class Language implements ControllerProviderInterface
               $out['listNameCannotBeEmpty'] = _('List name can not be empty');
               $out['FeedBackName'] = _('Name');
               $out['FeedBackMessage'] = _('Message');
+              $out['send'] = _('Send');
               $out['FeedBackNoUsersSelected'] = _('No users selected');
 
               $Serializer = $app['Core']['Serializer'];

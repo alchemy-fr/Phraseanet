@@ -3,7 +3,7 @@ var p4 = p4 || {};
 
 ;
 (function(p4, $){
-  
+
   function getLevel (level) {
 
     level = parseInt(level);
@@ -13,14 +13,14 @@ var p4 = p4 || {};
       return 1;
     }
 
-    return level; 
+    return level;
   };
-  
+
   function getId (level)
   {
-    return 'DIALOG' + getLevel(level); 
+    return 'DIALOG' + getLevel(level);
   };
-  
+
   var phraseaDialog = function (options, level) {
 
     var createDialog = function(level) {
@@ -38,7 +38,7 @@ var p4 = p4 || {};
       return $dialog;
     }
 
-    var defaults = { 
+    var defaults = {
       size : 'Medium',
       buttons : {},
       loading : true,
@@ -58,16 +58,16 @@ var p4 = p4 || {};
     this.closing = false;
 
     this.options = $.extend(defaults, options);
-      
+
     this.level = getLevel(level);
 
     if(this.options.closeButton === true)
     {
-      this.options.buttons[language.fermer] = this.Close;
+      this.options.buttons[language.fermer] = function() { $this.Close(); };
     }
     if(this.options.cancelButton === true)
     {
-      this.options.buttons[language.annuler] = this.Close;
+      this.options.buttons[language.annuler] = function() { $this.Close(); };
     }
 
     switch(this.options.size)
@@ -89,11 +89,11 @@ var p4 = p4 || {};
 
     /*
         * 3 avaailable dimensions :
-        * 
+        *
         *  - Full   | Full size ()
         *  - Medium | 420 x 450
         *  - Small  | 730 x 480
-        *  
+        *
         **/
     this.$dialog = createDialog(this.level),
     zIndex = Math.min(this.level * 5000 + 5000, 32767);
@@ -103,7 +103,7 @@ var p4 = p4 || {};
       {
         $this.options.closeCallback($this.$dialog);
       }
-      
+
       if($this.closing === false)
       {
         $this.closing = true;
@@ -137,7 +137,7 @@ var p4 = p4 || {};
       $(window).unbind('resize.DIALOG' + getLevel(level))
       .bind('resize.DIALOG' + getLevel(level), function(){
         $this.$dialog.dialog('option', {
-          width : bodySize.x - 30, 
+          width : bodySize.x - 30,
           height : bodySize.y - 30
         });
       });
@@ -145,7 +145,7 @@ var p4 = p4 || {};
 
     return this;
   };
-  
+
   phraseaDialog.prototype = {
     Close : function() {
       p4.Dialog.Close(this.level);
@@ -166,12 +166,12 @@ var p4 = p4 || {};
       this.$dialog.dialog('option', optionName, optionValue);
     }
   };
-  
+
   var Dialog = function () {
     this.currentStack = {};
 
   };
-  
+
   Dialog.prototype = {
     Create : function(options, level) {
 
@@ -179,40 +179,40 @@ var p4 = p4 || {};
       {
         this.get(level).Close();
       }
-      
+
       $dialog = new phraseaDialog(options, level);
-      
+
       this.currentStack[$dialog.getId()] = $dialog;
-      
+
       return $dialog;
     },
     get : function (level) {
-      
+
       var id = getId(level);
-      
+
       if(id in this.currentStack)
       {
         return this.currentStack[id];
       }
-      
+
       return null;
     },
     Close : function (level) {
-      
+
       $(window).unbind('resize.DIALOG' + getLevel(level));
-      
+
       this.get(level).closing = true;
       this.get(level).getDomElement().dialog('close').dialog('destroy').remove();
-      
+
       var id = this.get(level).getId();
-      
+
       if(id in this.currentStack)
       {
         delete this.currentStack.id;
       }
     }
   };
-  
+
   p4.Dialog = new Dialog();
-  
+
 }(p4, jQuery));
