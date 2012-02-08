@@ -377,13 +377,17 @@ class Core extends \Pimple
   public static function initAutoloads($cacheAutoload = false)
   {
     require_once __DIR__ . '/Loader/Autoloader.php';
-
+    
     if ($cacheAutoload === true)
     {
       try
       {
         require_once __DIR__ . '/Loader/CacheAutoloader.php';
-        $loader = new Loader\CacheAutoloader('class_');
+        
+        $prefix = 'class_';
+        $namespace = md5(__DIR__);
+        
+        $loader = new Loader\CacheAutoloader($prefix, $namespace);
       }
       catch (\Exception $e)
       {

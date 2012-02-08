@@ -44,7 +44,18 @@ class CacheAutoloaderTest extends \PhraseanetPHPUnitAbstract
 
   public function testConstruct()
   {
-    
+    if (!$this->apc && !$this->xcache)
+    {
+      try
+      {
+        $autoloader = new Alchemy\Phrasea\Loader\CacheAutoloader('test_prefix_');
+        $this->fail("should raise an exception");
+      }
+      catch(\Exception $e)
+      {
+        
+      }
+    }
   }
 
   public function testFindFileApc()
@@ -68,8 +79,11 @@ class CacheAutoloaderTest extends \PhraseanetPHPUnitAbstract
 
   public function testGetPrefix()
   {
-    $autoloader = new Alchemy\Phrasea\Loader\CacheAutoloader('test_prefix_');
-    $this->assertEquals('test_prefix_', $autoloader->getPrefix());
+    if ($this->apc)
+    {
+      $autoloader = new Alchemy\Phrasea\Loader\CacheAutoloader('test_prefix_');
+      $this->assertEquals('test_prefix_', $autoloader->getPrefix());
+    }
   }
 
   public function testRegister()
@@ -90,8 +104,7 @@ class CacheAutoloaderTest extends \PhraseanetPHPUnitAbstract
       $this->assertTrue(class_exists("Test_test"));
     }
   }
-  
-  
+
   public function testFindFileXcache()
   {
     if ($this->xcache)
