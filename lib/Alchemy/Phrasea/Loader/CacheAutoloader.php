@@ -50,7 +50,7 @@ class CacheAutoloader extends Autoloader
    * @param string $prefix
    * @throws \Exceptionwhen none of the op cache code are available
    */
-  public function __construct($prefix)
+  public function __construct($prefix, $namespace = null)
   {
     parent::__construct();
     
@@ -75,7 +75,12 @@ class CacheAutoloader extends Autoloader
       }
 
       $method = new $className();
-
+      
+      if($namespace)
+      {
+        $method->setNamespace($namespace);
+      }
+      
       if ($method instanceof LoaderStrategy && $method->isAvailable())
       {
         $this->cacheAdapter = $method;
