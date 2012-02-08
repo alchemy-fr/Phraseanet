@@ -1,12 +1,20 @@
 
 (function( window ) {
   
+  function checkVocabId(VocabularyId)
+  {
+    if(typeof VocabularyId === 'undefined')
+      VocabularyId = null;
+
+    if(VocabularyId === '')
+      VocabularyId = null;
+      
+    return VocabularyId;
+  }
+  
   var recordFieldValue = function(meta_id, value, VocabularyId) {
     
-    if(typeof VocabularyId === 'undefined')
-    {
-      VocabularyId = null;
-    }
+    VocabularyId = checkVocabId(VocabularyId);
     
     this.datas = {
       meta_id:meta_id, 
@@ -28,11 +36,9 @@
       return this.datas.VocabularyId;
     },
     setValue : function(value, VocabularyId) {
-      if(typeof VocabularyId === 'undefined')
-        VocabularyId = null;
       
       this.datas.value = value;
-      this.datas.VocabularyId = VocabularyId;
+      this.datas.VocabularyId = checkVocabId(VocabularyId);
       return this;
     },
     remove : function() {
@@ -179,8 +185,7 @@
     },
     addValue : function(value, merge, VocabularyId) {
       
-      if(typeof VocabularyId === 'undefined')
-        VocabularyId = null;
+      VocabularyId = checkVocabId(VocabularyId);
       
       merge = !!merge;
       
@@ -279,8 +284,7 @@
         }
       }
       
-      if(typeof VocabularyId === 'undefined')
-        VocabularyId = null;
+      VocabularyId = checkVocabId(VocabularyId);
       
       for(d in this.datas)
       {
@@ -318,8 +322,7 @@
         return;
       }
       
-      if(typeof VocabularyId === 'undefined')
-        VocabularyId = null;
+      vocabularyId = checkVocabId(vocabularyId);
       
       if(window.console)
       {
@@ -475,6 +478,27 @@
        */
       
       return this;
+    },
+    exportDatas : function() {
+      
+      var returnValue = new Array();
+      
+      for(d in this.datas)
+      {
+        var temp = {
+          meta_id : this.datas[d].getMetaId() ? this.datas[d].getMetaId() : '',
+          meta_struct_id : this.getMetaStructId(),
+          value  : this.datas[d].getValue()
+        };
+        
+        if(this.datas[d].getVocabularyId())
+        {
+          temp.vocabularyId = this.datas[d].getVocabularyId();
+        }
+        returnValue.push(temp);
+      }
+        
+      return returnValue;
     }
   };
 
