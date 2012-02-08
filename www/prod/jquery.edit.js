@@ -31,7 +31,7 @@ function setSizeLimits()
 }
 
 function edit_kdwn(evt, src)
-{  
+{
   cancelKey = false;
 
   switch(evt.keyCode)
@@ -56,15 +56,15 @@ function edit_kdwn(evt, src)
 // des events sur le textarea pour tracker la selection (chercher dans le thesaurus...)
 // ----------------------------------------------------------------------------------------------
 function edit_mdwn_ta(evt)
-{ 
+{
   evt.cancelBubble = true;
   return(true);
 }
 
 // mouse up textarea
 function edit_mup_ta(evt, obj)
-{ 
-	
+{
+
   if(p4.edit.T_fields[p4.edit.curField].tbranch)
   {
     if(obj.value != "")
@@ -76,7 +76,7 @@ function edit_mup_ta(evt, obj)
 // key up textarea
 function edit_kup_ta(evt, obj)
 {
-	
+
   var cancelKey = false;
   var o;
   switch(evt.keyCode)
@@ -88,7 +88,7 @@ function edit_kup_ta(evt, obj)
       cancelKey = true;
       break;
   }
-	
+
   if(cancelKey)
   {
     evt.cancelBubble = true;
@@ -124,7 +124,7 @@ function edit_mdwn_status(evt)
 }
 
 // ---------------------------------------------------------------------------
-// on a clique sur un champ 
+// on a clique sur un champ
 // ---------------------------------------------------------------------------
 function edit_mdwn_fld(evt, meta_struct_id, fieldname)
 {
@@ -165,16 +165,16 @@ function editStatus(evt)
 
   document.getElementById('idEditZTextArea').blur();
   document.getElementById('EditTextMultiValued').blur();
-	
+
   $("#idFieldNameEdit", p4.edit.editBox).html("[STATUS]") ;
   $("#idExplain", p4.edit.editBox).html("&nbsp;");
 
   $("#ZTextMultiValued", p4.edit.editBox).hide();
   $("#ZTextMonoValued", p4.edit.editBox).hide();
   $("#ZTextStatus", p4.edit.editBox).show();
-	
+
   $("#idEditZone", p4.edit.editBox).show();
-	
+
   document.getElementById("editFakefocus").focus();
   p4.edit.curField = -1;
   activeField();
@@ -185,7 +185,7 @@ function activeField()
   var meta_struct_id = parseInt(p4.edit.curField);
 
   meta_struct_id = (isNaN(meta_struct_id) || meta_struct_id <0)?'status':meta_struct_id;
-	
+
   $('#divS div.active, #divS div.hover').removeClass('active hover');
   $('#EditFieldBox_'+meta_struct_id).addClass('active');
 
@@ -207,9 +207,9 @@ function editField(evt, meta_struct_id)
   document.getElementById('idEditZTextArea').blur();
   document.getElementById('EditTextMultiValued').blur();
   $(".editDiaButtons", p4.edit.editBox).hide();
-  
+
   $('#idEditZTextArea, #EditTextMultiValued').unbind('keyup.maxLength');
-	
+
   p4.edit.curField = meta_struct_id;
   if(meta_struct_id >= 0)
   {
@@ -241,18 +241,18 @@ function editField(evt, meta_struct_id)
         }
       });
 
-    
+
     if(p4.edit.T_fields[meta_struct_id].explain ||
       p4.edit.T_fields[meta_struct_id].maxLength > 0)
       {
       var idexplain = $("#idExplain");
       idexplain.html('');
-      
+
       $('#idEditZTextArea, #EditTextMultiValued').bind('keyup.maxLength', function(){
         var remaining = Math.max((p4.edit.T_fields[meta_struct_id].maxLength - $(this).val().length), 0);
         idexplain.html("<span class='metadatas_restrictionsTips' tooltipsrc='/prod/tooltip/metas/restrictionsInfos/"+p4.edit.sbas_id+"/"+meta_struct_id+"/'><img src='/skins/icons/help32.png' /><!--<img src='/skins/icons/alert.png' />--> Caracteres restants : "+(remaining)+"</span>");
         $('.metadatas_restrictionsTips', idexplain).tooltip();
-      }).trigger('keyup.maxLength');      
+      }).trigger('keyup.maxLength');
     }
     else
     {
@@ -263,7 +263,7 @@ function editField(evt, meta_struct_id)
     {
       // champ monovalue : textarea
       $(".editDiaButtons", p4.edit.editBox).hide();
-			
+
       if(p4.edit.T_fields[meta_struct_id].type == "date")
       {
         $("#idEditZTextArea", p4.edit.editBox).css("height", "16px");
@@ -274,11 +274,11 @@ function editField(evt, meta_struct_id)
         $("#idEditDateZone", p4.edit.editBox).hide();
         $("#idEditZTextArea", p4.edit.editBox).css("height", "100%");
       }
-			
+
       $("#ZTextStatus", p4.edit.editBox).hide();
       $("#ZTextMultiValued", p4.edit.editBox).hide();
       $("#ZTextMonoValued", p4.edit.editBox).show();
-			
+
       if(p4.edit.T_fields[meta_struct_id]._status == 2)
       {
         // heterogene
@@ -291,7 +291,7 @@ function editField(evt, meta_struct_id)
         // homogene
         $("#idEditZTextArea", p4.edit.editBox).val(p4.edit.fieldLastValue = p4.edit.T_fields[meta_struct_id]._value);
         $("#idEditZTextArea", p4.edit.editBox).removeClass("hetero");
-				
+
         $("#idDivButtons", p4.edit.editBox).hide();	// valeurs homog�nes
         if(p4.edit.T_fields[meta_struct_id].type == "date")
         {
@@ -308,11 +308,11 @@ function editField(evt, meta_struct_id)
         }
       }
       p4.edit.textareaIsDirty = false;
-	
+
       $("#idEditZone", p4.edit.editBox).show();
-      
+
       $('#idEditZTextArea').trigger('keyup.maxLength');
-      
+
       self.setTimeout("document.getElementById('idEditZTextArea').focus();", 50);
     }
     else
@@ -321,16 +321,16 @@ function editField(evt, meta_struct_id)
       $("#ZTextStatus", p4.edit.editBox).hide();
       $("#ZTextMonoValued", p4.edit.editBox).hide();
       $("#ZTextMultiValued", p4.edit.editBox).show();
-			
+
       $("#idDivButtons", p4.edit.editBox).hide();	// valeurs homogenes
-      
+
       updateCurrentMval(meta_struct_id);
-      
+
       $('#EditTextMultiValued', p4.edit.editBox).val("");
       $('#idEditZone', p4.edit.editBox).show();
-      
+
       $('#EditTextMultiValued').trigger('keyup.maxLength');
-      
+
       self.setTimeout("document.getElementById('EditTextMultiValued').focus();", 50);
 
 //      reveal_mval();
@@ -348,7 +348,7 @@ function editField(evt, meta_struct_id)
 
 function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
 {
-  
+
   // on compare toutes les valeurs de chaque fiche selectionnee
   p4.edit.T_mval = [];			// tab des mots, pour trier
   var a = [];		// key : mot ; val : nbr d'occurences distinctes
@@ -360,7 +360,7 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
       continue;
 
     p4.edit.T_records[r].fields[meta_struct_id].sort(SortCompareMetas);
-    
+
     var values = p4.edit.T_records[r].fields[meta_struct_id].getValues();
 
     for(v in values)
@@ -385,7 +385,7 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
 
     n++;
   }
-  
+
   p4.edit.T_mval.sort(SortCompareMetas);
 
   var t = "";
@@ -395,7 +395,7 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
     var word = value.getValue();
     var key = value.getVocabularyId() + '%' + word;
 
-    var extra = value.getVocabularyId() ? '(V) ' : '';
+    var extra = value.getVocabularyId() ? '<img src="/skins/icons/ressource16.png" /> ' : '';
 
     if(i>0)
     {
@@ -412,38 +412,38 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
       }
     }
 
-    t += "<div onclick=\"edit_clkmval(this, "+i+")\" class='" 
-        + (((value.getVocabularyId() === null || value.getVocabularyId() == vocabularyId) && HighlightValue == word) ? ' hilighted ' : '') 
-        + (a[key].n != n ? " hetero " : "") + "'>" 
+    t += "<div onclick=\"edit_clkmval(this, "+i+")\" class='"
+        + (((value.getVocabularyId() === null || value.getVocabularyId() == vocabularyId) && HighlightValue == word) ? ' hilighted ' : '')
+        + (a[key].n != n ? " hetero " : "") + "'>"
       + '<table><tr><td>'
-      + extra 
-      + '<span class="value" vocabId="' + value.getVocabularyId() + '">' 
-      + word 
-      + "</span></td><td class='options'>" 
-      + '<a href="#" class="add_all"><img src="/skins/icons/tri_plus.gif"/></a>'
-      + '<a href="#" class="remove_all"><img src="/skins/icons/tri_minus.gif"/></a>' 
-      + "</td></tr></table>" 
+      + extra
+      + '<span class="value" vocabId="' + value.getVocabularyId() + '">'
+      + word
+      + "</span></td><td class='options'>"
+      + '<a href="#" class="add_all"><img src="/skins/icons/plus11.png"/></a> '
+      + '<a href="#" class="remove_all"><img src="/skins/icons/minus11.png"/></a>'
+      + "</td></tr></table>"
       + "</div>";
   }
   $('#ZTextMultiValued_values', p4.edit.editBox).html(t);
-  
+
   $('#ZTextMultiValued_values .add_all', p4.edit.editBox).unbind('click').bind('click', function(){
     var container = $(this).closest('div');
-    
+
     var span = $('span.value', container)
-    
+
     var value = span.text();
     var vocab_id = span.attr('vocabid');
-    
+
     edit_addmval(value, vocab_id);
     updateFieldDisplay();
     return false;
   });
   $('#ZTextMultiValued_values .remove_all', p4.edit.editBox).unbind('click').bind('click', function(){
     var container = $(this).closest('div');
-    
+
     var span = $('span.value', container)
-    
+
     var value = span.text();
     var vocab_id = span.attr('vocabid');
 
@@ -451,7 +451,7 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
     updateFieldDisplay();
     return false;
   });
-  
+
   updateFieldDisplay();
 }
 
@@ -544,7 +544,7 @@ function edit_diabutton(record_indice, act, value, vocabularyId)
 function edit_addmval(value, VocabularyId)
 {
   var meta_struct_id = p4.edit.curField;		// le champ en cours d'editing
-  
+
   // on ajoute le mot dans tous les records selectionnes
   for(var r=0; r<p4.edit.T_records.length; r++)
   {
@@ -553,7 +553,7 @@ function edit_addmval(value, VocabularyId)
 
     p4.edit.T_records[r].fields[meta_struct_id].addValue(value, false, VocabularyId);
   }
-	
+
   updateEditSelectedRecords(null);
 }
 
@@ -571,7 +571,7 @@ function edit_delmval(value, VocabularyId)
 
     p4.edit.T_records[r].fields[meta_struct_id].removeValue(value, VocabularyId);
   }
-	
+
   updateEditSelectedRecords(null);
 }
 
@@ -603,7 +603,7 @@ function edit_validField(evt, action)
   if(o = document.getElementById("idEditField_"+p4.edit.curField))
   {
     t = $("#idEditZTextArea", p4.edit.editBox).val();
-		
+
     status = 0;
     firstvalue = "";
     for(i=0; i<p4.edit.T_records.length; i++)
@@ -619,16 +619,16 @@ function edit_validField(evt, action)
       {
         p4.edit.T_records[i].fields[p4.edit.curField].addValue(t, true, null);
       }
-      
+
       check_required(i, p4.edit.curField);
     }
   }
-  
+
   updateFieldDisplay();
 
   p4.edit.textareaIsDirty = false;
-	
-	
+
+
   editField(evt, p4.edit.curField);
   return(true);
 }
@@ -641,7 +641,7 @@ function skipImage(evt, step)
   var sel = $('.diapo.selected', cache);
 
   sel.removeClass('selected');
-	
+
   var i = step==1 ? (parseInt(last.attr('pos'))+1) : (parseInt(first.attr('pos'))-1);
 
   if(i < 0)
@@ -656,12 +656,12 @@ function skipImage(evt, step)
 function edit_select_all()
 {
   $('#EDIT_FILM2 .diapo', p4.edit.editBox).addClass('selected');
-	
+
   for(i in p4.edit.T_records)
     p4.edit.T_records[i]._selected = true;
 
   p4.edit.lastClickId = 1 ;
-	
+
   updateEditSelectedRecords(null);		// null : no evt available
 }
 
@@ -727,9 +727,9 @@ function edit_clk_editimg(evt, i)
         $("#idEditDiapo_"+i, p4.edit.editBox).removeClass('selected');
     }
   }
-	
+
   $('#TH_Opreview .PNB10').empty();
-	
+
   var selected = $('#EDIT_FILM2 .diapo.selected');
   if(selected.length == 1)
   {
@@ -767,7 +767,7 @@ function edit_clkstatus(evt, bit, val)
     {
       if($('#idEditDiapo_'+id).hasClass('nostatus'))
         continue;
-			
+
       p4.edit.T_records[id].statbits[bit].value = val;
       p4.edit.T_records[id].statbits[bit].dirty = true;
     }
@@ -777,7 +777,7 @@ function edit_clkstatus(evt, bit, val)
 function updateEditSelectedRecords(evt)
 {
   $(".editDiaButtons", p4.edit.editBox).hide();
-    
+
   for(n in p4.edit.T_statbits)	// tous les statusbits de la base
   {
     p4.edit.T_statbits[n]._value = "-1";			// val unknown
@@ -820,7 +820,7 @@ function updateEditSelectedRecords(evt)
   var nostatus = $('.diapo.selected.nostatus', p4.edit.editBox).length;
   var status_box = $('#ZTextStatus');
   $('.nostatus, .somestatus, .displaystatus', status_box).hide();
-	
+
   if(nostatus == 0)
   {
     $('.displaystatus', status_box).show();
@@ -837,7 +837,7 @@ function updateEditSelectedRecords(evt)
       $('.somestatus, .displaystatus', status_box).show();
     }
   }
-	
+
   // calcul des valeurs suggerees COMMUNES aux records (collections) selectionnes //
   for(f in p4.edit.T_fields)	// tous les champs de la base
     p4.edit.T_fields[f]._sgval = [];
@@ -850,11 +850,11 @@ function updateEditSelectedRecords(evt)
     if(!p4.edit.T_records[i]._selected)
       continue;
     nrecsel++;
-			
+
     var bid = "b"+p4.edit.T_records[i].bid;
     if(t_selcol[bid])
       continue;
-			
+
     t_selcol[bid] = 1;
     ncolsel++;
     for(f in p4.edit.T_sgval[bid])
@@ -938,7 +938,7 @@ function updateEditSelectedRecords(evt)
       $("#editSGtri_"+f, p4.edit.editBox).css("visibility", "hidden");
     }
   }
-	
+
   $('#idFrameE .ww_status', p4.edit.editBox).html( nrecsel + " record(s) selected for editing");
 
   updateFieldDisplay();
@@ -958,8 +958,8 @@ function updateFieldDisplay()
     {
       if(!p4.edit.T_records[i]._selected)
         continue;
-			
-      
+
+
       if(p4.edit.T_records[i].fields[f].isEmpty())
       {
         var v = "";
@@ -977,7 +977,7 @@ function updateFieldDisplay()
           var v = p4.edit.T_records[i].fields[f].getValue().getValue();
         }
       }
-			
+
       if(p4.edit.T_fields[f]._status == 0)
       {
         p4.edit.T_fields[f]._value  = v;
@@ -1041,26 +1041,26 @@ function check_required(id_r, id_f)
     id_r = false;
   if(typeof id_f == 'undefined')
     id_f = false;
-	
+
   for(f in p4.edit.T_fields)
   {
     if(id_f !== false && f != id_f)
       continue;
-		
+
     var name = p4.edit.T_fields[f].name;
-		
+
     if(!p4.edit.T_fields[f].required)
       continue;
-		
+
     for(r in p4.edit.T_records)
     {
       if(id_r !== false && r != id_r)
         continue;
-			
+
       var elem = $('#idEditDiapo_'+r+' .require_alert');
-			
+
       elem.hide();
-			
+
       if(!p4.edit.T_records[r].fields[f])
       {
         elem.show();
@@ -1076,7 +1076,7 @@ function check_required(id_r, id_f)
         }
       }
     }
-		
+
   }
   return required_fields;
 }
@@ -1088,12 +1088,12 @@ function edit_applyMultiDesc(evt)
 {
   var sendorder = "";
   var sendChuOrder = "";
-  	
+
   var t = [];
 
   if(p4.edit.textareaIsDirty && edit_validField(evt, "ask_ok")==false)
     return(false);
-  	
+
   var required_fields = check_required();
 
   if(required_fields)
@@ -1105,7 +1105,7 @@ function edit_applyMultiDesc(evt)
   $("#EDIT_ALL", p4.edit.editBox).hide();
 
   $("#EDIT_WORKING", p4.edit.editBox).show();
-	
+
   for(r in p4.edit.T_records)
   {
     var record_datas = {
@@ -1123,15 +1123,15 @@ function edit_applyMultiDesc(evt)
       {
         continue;
       }
-      
+
       editDirty = true;
       record_datas.edit = 1;
-      
+
       record_datas.metadatas = record_datas.metadatas.concat(
         p4.edit.T_records[r].fields[f].exportDatas()
       );
     }
-    
+
     // les statbits
     var tsb  = [];
     for(var n=0; n<64; n++)
@@ -1154,7 +1154,7 @@ function edit_applyMultiDesc(evt)
       t.push(record_datas);
     }
   }
-  
+
   var options = {
     mds:t,
     sbid : p4.edit.sbas_id,
@@ -1167,10 +1167,10 @@ function edit_applyMultiDesc(evt)
   };
   if(p4.edit.newrepresent != false)
     options.newrepresent = p4.edit.newrepresent;
-	
+
   //  options.mds = t;
-	
-	
+
+
   $.ajax({
     url :"/prod/records/edit/apply/"
     ,
@@ -1190,25 +1190,25 @@ function edit_applyMultiDesc(evt)
       return;
     }
   });
-	
+
 }
 
 function edit_cancelMultiDesc(evt)
 {
-  
-  
+
+
   var dirty = false;
-  
+
   evt.cancelBubble = true;
   if(evt.stopPropagation)
     evt.stopPropagation();
-	
+
   if(p4.edit.curField >= 0)
   {
     if(p4.edit.textareaIsDirty && edit_validField(evt, "ask_ok")==false)
       return;
   }
-	
+
   for(r in p4.edit.T_records)
   {
     for(f in p4.edit.T_records[r].fields)
@@ -1236,7 +1236,7 @@ function edit_cancelMultiDesc(evt)
         e.style.display = "";
     }
     self.setTimeout("$('#EDITWINDOW').fadeOut();hideOverlay(2);", 100);
-		
+
   }
 }
 
@@ -1308,7 +1308,7 @@ function edit_thesaurus_ow(id)	// on ouvre ou ferme une branche de thesaurus
     // on ouvre
     o.className = "o";
     document.getElementById("TH_P."+id).innerHTML = "-";
-		
+
     var t_id = id.split(".");
     var sbas_id = t_id[0];
     t_id.shift();
@@ -1328,14 +1328,14 @@ function edit_thesaurus_ow(id)	// on ouvre ou ferme une branche de thesaurus
 function EditThesaurusSeeker(sbas_id)
 {
   this.jq = null;
-	
+
   this.sbas_id = sbas_id;
-	
+
   var zid = (""+sbas_id).replace(new RegExp("\\.", "g"), "\\.") + "\\.T";
-	
+
   this.TH_P_node = $("#TH_P\\." + zid, p4.edit.editBox);
   this.TH_K_node = $("#TH_K\\." + zid, p4.edit.editBox);
-	
+
   this._ctimer = null;
 
   this.search = function(txt) {
@@ -1344,7 +1344,7 @@ function EditThesaurusSeeker(sbas_id)
     var js = "ETHSeeker.search_delayed('"+txt.replace("'", "\\'")+"');" ;
     this._ctimer = setTimeout(js, 125);
   };
-	
+
   this.search_delayed = function(txt) {
     if(this.jq && typeof this.jq.abort == "function")
     {
@@ -1362,7 +1362,7 @@ function EditThesaurusSeeker(sbas_id)
     };
 
     var me = this;
-		
+
     this.jq = $.ajax({
       url: url,
       data: parms,
@@ -1425,11 +1425,11 @@ function replace()
   var field   = $("#EditSRField", p4.edit.editBox).val();
   var search  = $("#EditSearch",  p4.edit.editBox).val();
   var replace = $("#EditReplace", p4.edit.editBox).val();
-	
+
   var where  = $("[name=EditSR_Where]:checked", p4.edit.editBox).val();
   var commut  = "";
   var rgxp    = $("#EditSROptionRX", p4.edit.editBox).attr('checked') ? true : false;
-	
+
   var r_search;
   if(rgxp)
   {
@@ -1451,9 +1451,9 @@ function replace()
     if(where == "exact")
       r_search = "^" + r_search + "$";
   }
-	
+
   search = new RegExp(r_search, commut);
-	
+
   var r, f;
   for(r in p4.edit.T_records)
   {
@@ -1472,8 +1472,8 @@ function replace()
 
 function changeReplaceMode(ckRegExp)
 {
-	
-	
+
+
   if(ckRegExp.checked)
   {
     $("#EditSR_TX", p4.edit.editBox).hide();
@@ -1513,7 +1513,7 @@ function preset_paint(data)
       return false;
     }
     );
-	
+
   $(".EDIT_presets_list A.title").dblclick(
     function()
     {
@@ -1523,7 +1523,7 @@ function preset_paint(data)
       return false;
     }
     );
-	
+
   $(".EDIT_presets_list A.delete").click(
     function()
     {
@@ -1562,14 +1562,14 @@ function preset_load(preset_id)
     "act":"LOAD",
     "presetid":preset_id
   };
-  
+
   $.getJSON(
     "/xmlhttp/editing_presets.j.php",
     p,
     function(data, textStatus)
     {
       $("#Edit_copyPreset_dlg").dialog("close");
-      
+
       for(i in p4.edit.T_fields)
       {
         p4.edit.T_fields[i].preset = null;
@@ -1624,7 +1624,7 @@ function hsplit1()
 function vsplit1()
 {
   $('#divS_wrapper').height('auto');
-	
+
   var el = $('#divS_wrapper');
   if(el.length == 0)
     return;
@@ -1649,27 +1649,27 @@ function setPreviewEdit()
 {
   if(!$('#TH_Opreview').is(':visible'))
     return false;
-	
+
   var selected = $('#EDIT_FILM2 .diapo.selected');
-	
+
   if(selected.length != 1)
   {
     return;
   }
 
   var id = selected.attr('id').split('_').pop();
-	
+
   var container = $('#TH_Opreview');
   var zoomable = $('img.record.zoomable', container);
-	
+
   if(zoomable.length > 0 && zoomable.hasClass('zoomed'))
     return;
-	
+
   //  var datas = p4.edit.T_records[id].preview;
-	
+
   var h = parseInt($('input[name=height]', container).val());
   var w = parseInt($('input[name=width]', container).val());
-	
+
   //  if(datas.doctype == 'video')
   //  {
   //    var h = parseInt(datas.height);
@@ -1680,7 +1680,7 @@ function setPreviewEdit()
 
   var margX = 0;
   var margY = 0;
-	
+
   if($('img.record.record_audio', container).length > 0)
   {
     var margY = 100;
@@ -1690,13 +1690,13 @@ function setPreviewEdit()
   var display_box = $('#TH_Opreview .PNB10');
   var dwidth = display_box.width();
   var dheight = display_box.height();
-	
-	
+
+
   //  if(datas.doctype != 'flash')
   //  {
   var ratioP = w / h;
   var ratioD = dwidth / dheight;
-		
+
   if (ratioD > ratioP) {
     //je regle la hauteur d'abord
     if ((parseInt(h) + margY) > dheight) {
@@ -1725,14 +1725,14 @@ function setPreviewEdit()
     top: t,
     left: l
   }).attr('width',w).attr('height',h);
-	
+
 }
 
 function previewEdit(r)
 {
-	
+
   $('#TH_Opreview .PNB10').empty().append(p4.edit.T_records[r].preview);
-	
+
   //  var data = p4.edit.T_records[r].preview;
 
   //  if ((data.doctype == 'video' || data.doctype == 'audio' || data.doctype == 'flash')) {
@@ -1776,7 +1776,7 @@ function previewEdit(r)
   //      });
   //    }
   //  }
-	
+
   if($('img.PREVIEW_PIC.zoomable').length > 0)
   {
     $('img.PREVIEW_PIC.zoomable').draggable();
@@ -1791,11 +1791,11 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   p4.edit.what = what;
   p4.edit.regbasprid = regbasprid;
   p4.edit.ssel = ssel;
-  
+
   for(r in p4.edit.T_records)
   {
     var fields = {};
-    
+
     for(f in p4.edit.T_records[r].fields)
     {
       var meta_struct_id = p4.edit.T_records[r].fields[f].meta_struct_id;
@@ -1813,21 +1813,21 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       var vocabularyRestricted = p4.edit.T_fields[meta_struct_id].vocabularyRestricted;
 
       var fieldOptions = {
-        multi:multi, 
-        required:required, 
-        readonly:readonly, 
-        maxLength:maxLength, 
-        minLength:minLength, 
-        type:type, 
-        separator:separator, 
-        vocabularyControl:vocabularyControl, 
+        multi:multi,
+        required:required,
+        readonly:readonly,
+        maxLength:maxLength,
+        minLength:minLength,
+        type:type,
+        separator:separator,
+        vocabularyControl:vocabularyControl,
         vocabularyRestricted:vocabularyRestricted
       };
 
       var databoxField = new p4.databoxField(name, meta_struct_id, fieldOptions);
-      
+
       var values = [];
-      
+
       for(v in p4.edit.T_records[r].fields[f].values)
       {
         var meta_id = p4.edit.T_records[r].fields[f].values[v].meta_id;
@@ -1836,21 +1836,21 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
 
         values.push(new p4.recordFieldValue(meta_id, value, vocabularyId));
       }
-      
+
       fields[f] = new p4.recordField(databoxField, values);
     }
-    
+
     p4.edit.T_records[r].fields = fields;
     p4.edit.fields = fields;
-    
+
   }
-  
+
   $('#EditTextMultiValued').bind('keyup', function(){
     reveal_mval($(this).val());
   });
-  
+
   $('#EDIT_MID_R .tabs').tabs();
-	
+
   $('#divS div.edit_field:odd').addClass('odd');
   $('#divS div').bind('mouseover',function(){
     $(this).addClass('hover');
@@ -1859,22 +1859,22 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   });
 
   $('#editcontextwrap').remove();
-	
+
   if($('#editcontextwrap').length == 0)
     $('body').append('<div id="editcontextwrap"></div>');
-	
+
   self.setTimeout("edit_select_all();", 100);
 
   $('.previewTips, .DCESTips, .fieldTips', p4.edit.editBox).tooltip({
-    fixable:true, 
+    fixable:true,
     fixableIndex:1200
   });
   $('.infoTips', p4.edit.editBox).tooltip();
-	
+
   if(p4.edit.what == 'GRP')
   {
     $('#EDIT_FILM2 .reg_opts').show();
-		
+
     $.each($('#EDIT_FILM2 .contextMenuTrigger'),function(){
 
       var id = $(this).attr('id').split('_').slice(1,3).join('_');
@@ -1890,7 +1890,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       });
     });
   }
-	
+
   $('#EDIT_TOP', p4.edit.editBox).resizable({
     handles : 's',
     minHeight:100,
@@ -1904,7 +1904,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       setSizeLimits();
     }
   });
-	
+
   $('#divS_wrapper', p4.edit.editBox).resizable({
     handles : 'e',
     minWidth:200,
@@ -1918,7 +1918,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       setSizeLimits();
     }
   });
-	
+
   $('#EDIT_MID_R', p4.edit.editBox).resizable({
     handles : 'w',
     minWidth:200,
@@ -1932,7 +1932,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       setSizeLimits();
     }
   });
-	
+
   $('#EDIT_ZOOMSLIDER', p4.edit.editBox).slider({
     min:60,
     max:300,
@@ -1948,7 +1948,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       setPref("editing_images_size", p4.edit.diapoSize);
     }
   });
-	
+
   var buttons = {};
   buttons[language.valider] = function(e)
   {
@@ -1969,7 +1969,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     modal:true,
     buttons: buttons
   });
-	
+
   var buttons = {};
   buttons[language.valider] = function()
   {
@@ -1981,7 +1981,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       jtitle[0].focus();
       return;
     }
-			
+
     var p = {
       "act":"SAVE",
       "sbas":p4.edit.sbas_id,
@@ -2029,9 +2029,9 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   buttons[language.annuler] = function()
   {
     $(this).dialog("close");
-		
+
   };
-	
+
   $("#Edit_copyPreset_dlg", p4.edit.editBox).dialog( {
     zIndex:5000,
     stack:true,
@@ -2048,15 +2048,15 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     },
     buttons:buttons
   });
-	
+
   $('#idEditDateZone', p4.edit.editBox).datepicker({
     changeYear: true,
     changeMonth:true,
     dateFormat: 'yy/mm/dd',
     onSelect: function(dateText, inst)
     {
-				
-				
+
+
       var lval = $('#idEditZTextArea', p4.edit.editBox).val();
       if(lval != dateText)
       {
@@ -2068,7 +2068,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       }
     }
   });
-	
+
   $('input.input-button').hover(
     function(){
       $(this).addClass('hover');
@@ -2077,7 +2077,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       $(this).removeClass('hover');
     }
     );
-		
+
   ETHSeeker = new EditThesaurusSeeker(p4.edit.sbas_id);
 
   hsplit1();
@@ -2104,7 +2104,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   $('#TH_Opresets button.adder').button().bind('click', function(){
     preset_copy();
   });
- 
+
   try{
     $('#divS .edit_field:first').trigger('mousedown');
   }
@@ -2122,7 +2122,7 @@ function setRegDefault(n,record_id)
 
   var src = $('#idEditDiapo_'+n).find('img.edit_IMGT').attr('src');
   var style = $('#idEditDiapo_'+n).find('img.edit_IMGT').attr('style');
-	
+
   $('#EDIT_GRPDIAPO .edit_IMGT').attr('src',src).attr('style',style);
 }
 
