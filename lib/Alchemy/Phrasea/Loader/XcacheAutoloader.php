@@ -29,7 +29,7 @@ Class XcacheAutoloader extends Autoloader implements CacheStrategy
    */
   public function isAvailable()
   {
-    return extension_loaded('xcache');
+    return extension_loaded('xcache') && PHP_SAPI !== 'cli';
   }
 
   /**
