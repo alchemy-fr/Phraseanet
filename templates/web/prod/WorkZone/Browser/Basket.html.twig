@@ -37,7 +37,7 @@
     <div class="PNB" style="top:40px;bottom:auto;height:40px;background-color:#404040;">
       <div class="PNB10">
         <p>
-          {% set user_name = '<a href="/prod/tooltip/user/' ~ Basket.getPusher().get_id() ~ '/" class="userTips">' ~ Basket.getPusher().get_display_name() ~ '</a>' %}
+          {% set user_name = '<a tooltipsrc="/prod/tooltip/user/' ~ Basket.getPusher().get_id() ~ '/" href="/user/' ~ Basket.getPusher().get_id() ~ '/" class="UserTips">' ~ Basket.getPusher().get_display_name() ~ '</a>' %}
           {% trans %}
             Received from {{ user_name }}
           {% endtrans %}
@@ -53,9 +53,17 @@
         <p>
           {% set list_participants = '' %}
           {% for Participant in Basket.getValidation().getParticipants() %}
-            {% set list_participants = list_participants ~ '<a href="/user/{{ Participant.getUser().get_id() }}/">
-              {{ Participant.getUser().get_display_name }}
-            </a>' %}
+
+            {% if list_participants != '' %}
+              {% set list_participants = list_participants ~ ', ' %}
+            {% endif %}
+
+            {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="/prod/tooltip/user/'
+                                        ~ Participant.getUser().get_id()
+                                        ~ '/" href="/user/'
+                                        ~ Participant.getUser().get_id() ~ '/">'
+                                        ~ Participant.getUser().get_display_name
+                                        ~ '</a>' %}
           {% endfor %}
           {% trans %}
             Sent for validation to {{ list_participants }}

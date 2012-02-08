@@ -180,7 +180,10 @@
 
     function active_archiver($scope)
     {
-      $('.userTips', $scope).tooltip();
+      $('a.UserTips', $scope).bind('click', function(){
+
+        return false;
+      }).tooltip();
 
       $('a.archive_toggler', $scope).bind('click', function(){
           var $this = $(this), parent = $this.parent();
