@@ -1,13 +1,16 @@
 var p4 = p4 || {};
 
 (function(p4){
-  
-  
-  
-  
 
-  function refreshBaskets(baskId, sort, scrolltobottom)
+
+
+
+
+  function refreshBaskets(baskId, sort, scrolltobottom, type)
   {
+
+    type = typeof type == 'undefined' ? 'basket' : type;
+
     var active = $('#baskets .SSTT.ui-state-active');
     if(baskId == 'current' && active.length>0)
       baskId = active.attr('id').split('_').slice(1,2).pop();
@@ -21,7 +24,8 @@ var p4 = p4 || {};
       data: {
         type:'basket',
         id:baskId,
-        sort:sort
+        sort:sort,
+        type:type
       },
       beforeSend:function(){
         $('#basketcontextwrap').remove();
@@ -79,8 +83,8 @@ var p4 = p4 || {};
 
     getContent(active);
   });
-  
-  
+
+
 
   function WorkZoneElementRemover(el, confirm)
   {
@@ -150,12 +154,12 @@ var p4 = p4 || {};
     });
     return false;
   }
-  
-  
+
+
   function activeBaskets()
   {
     var cache = $("#idFrameC #baskets");
-    
+
     cache.accordion({
       active:'active',
       autoHeight: false,
@@ -181,10 +185,10 @@ var p4 = p4 || {};
           });
         }
 
-        
+
         var uiactive = $(this).find('.ui-state-active');
         b_active.not('.ui-state-active').removeClass('active');
-        
+
         if(uiactive.length === 0)
         {
           return; /* everything is closed */
@@ -196,7 +200,7 @@ var p4 = p4 || {};
         uiactive.addClass('ui-state-focus active');
 
         p4.WorkZone.Selection.empty();
-        
+
         getContent(uiactive);
 
       },
@@ -271,15 +275,15 @@ var p4 = p4 || {};
 
   }
 
-  
-  
+
+
   function getContent(header)
   {
     if(window.console)
     {
       console.log('Reload content for ', header);
     }
-    
+
     $.ajax({
       type: "GET",
       url: $('a', header).attr('href'),
@@ -290,19 +294,19 @@ var p4 = p4 || {};
       },
       success: function(data){
         header.removeClass('unread');
-        
+
         var dest = header.next();
-        
+
         dest.droppable('destroy').empty().removeClass('loading');
-        
+
         dest.append(data)
 
         $('a.WorkZoneElementRemover', dest)
           .bind('mousedown', function(event){return false;})
           .bind('click', function(event){
             return WorkZoneElementRemover($(this), false);
-          });          
-        
+          });
+
         dest.droppable({
           accept:function(elem){
             if($(elem).hasClass('CHIM'))
@@ -323,9 +327,9 @@ var p4 = p4 || {};
           },
           tolerance:'pointer'
         });
-        
+
         $('.noteTips, .captionRolloverTips', dest).tooltip();
-        
+
         dest.find('.CHIM').draggable({
           helper : function(){
             $('body').append('<div id="dragDropCursor" '+
@@ -374,15 +378,15 @@ var p4 = p4 || {};
   }
 
 
-  
-  
-  
-  
-  
+
+
+
+
+
   function dropOnBask(event,from,destKey)
   {
     var action = "",
-    from = $(from), dest_uri = '', lstbr = [], 
+    from = $(from), dest_uri = '', lstbr = [],
         sselcont = [], act = "ADD";
 
     if(from.hasClass("CHIM"))
@@ -395,9 +399,9 @@ var p4 = p4 || {};
       /* Element(s) come from result */
       action = 'IMGT2';
     }
-    
+
     action += destKey.hasClass('grouping') ? 'REG' : 'CHU';
-    
+
     if(destKey.hasClass('content'))
     {
       /* I dropped on content */
@@ -525,8 +529,8 @@ var p4 = p4 || {};
     });
   }
 
-  
-  
+
+
   function fix()
   {
     $.ajax({
@@ -540,7 +544,7 @@ var p4 = p4 || {};
       }
     });
   }
-  
+
   function unfix(link)
   {
     $.ajax({
@@ -553,16 +557,16 @@ var p4 = p4 || {};
       }
     });
   }
-  
+
   $(document).ready(function(){
     activeBaskets();
-    
+
     $('a.story_unfix').live('click', function(){
       unfix($(this).attr('href'));
-      
+
       return false;
     });
-    
+
     p4.WorkZone = {
       'Selection':new Selectable($('#baskets'), {selector : '.CHIM'}),
       'refresh':refreshBaskets,
@@ -574,6 +578,6 @@ var p4 = p4 || {};
       }
     };
   });
-  
+
   return;
 }(p4))

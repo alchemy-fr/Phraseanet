@@ -41,7 +41,7 @@
           },
           success: function(data){
 
-            p4.WorkZone.refresh(data.basket.id);
+            p4.WorkZone.refresh(data.WorkZone, '', true, 'story');
             p4.Dialog.Close(1);
 
             return;
