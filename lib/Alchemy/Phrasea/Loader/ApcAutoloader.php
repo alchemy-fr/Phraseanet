@@ -11,6 +11,8 @@
 
 namespace Alchemy\Phrasea\Loader;
 
+require_once __DIR__ . '/LoaderStrategy.php';
+
 use Alchemy\Phrasea\Loader\LoaderStrategy as CacheStrategy;
 
 /**
@@ -19,52 +21,31 @@ use Alchemy\Phrasea\Loader\LoaderStrategy as CacheStrategy;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-Class ApcAutoloader extends Autoloader implements CacheStrategy
+Class ApcAutoloader implements CacheStrategy
 {
 
-  private $prefix;
-
   /**
-   * Constructor.
-   *
-   * @param string $prefix A prefix to create a namespace in APC
-   *
-   * @api
+   * {@inheritdoc}
    */
-  public function __construct($prefix)
+  public function fetch($key)
   {
-    if (!$this->isAvailable())
-    {
-      throw new \Exception("Apc cache is not enable");
-    }
-
-    $this->prefix = $prefix;
+    return apc_fetch($key);
   }
-
-  /**
-   * Finds a file by class name while caching lookups to APC.
-   *
-   * @param string $class A class name to resolve to file
+  
+   /**
+   * {@inheritdoc}
    */
-  public function findFile($class)
+  public function save($key, $file)
   {
-    var_dump(__CLASS__ . " find : " . $class);
-    if (false === $file = apc_fetch($this->prefix . $class))
-    {
-      apc_store($this->prefix . $class, $file = parent::findFile($class));
-    }
-
-    return $file;
+    return apc_store($key, $file);
   }
-
+  
+   /**
+   * {@inheritdoc}
+   */
   public function isAvailable()
   {
     return extension_loaded('apc');
-  }
-
-  public function register($prepend = false)
-  {
-    spl_autoload_register(array($this, 'loadClass'), true, $prepend);
   }
 
 }

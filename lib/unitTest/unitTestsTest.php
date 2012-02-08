@@ -19,6 +19,8 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
         continue;
       if (substr($file->getFilename(), -4) !== '.php')
         continue;
+      if (substr($file->getFilename(), -9) === 'class.php')
+        continue;
       if($file->getFilename() === "BoilerPlate.php")
         continue;
 

@@ -17,6 +17,20 @@ use Alchemy\Phrasea\Core\Configuration;
 
 require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
 
+require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/Yaml/Yaml.php';
+require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/Yaml/Parser.php';
+require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/Yaml/Inline.php';
+require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/Yaml/Unescaper.php';
+require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/DependencyInjection/ParameterBag/ParameterBagInterface.php';
+require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/DependencyInjection/ParameterBag/ParameterBag.php';
+
+require_once __DIR__ . '/Core/Configuration/Specification.php';
+require_once __DIR__ . '/Core/Configuration.php';
+require_once __DIR__ . '/Core/Configuration/Application.php';
+require_once __DIR__ . '/Core/Configuration/Handler.php';
+require_once __DIR__ . '/Core/Configuration/Parser.php';
+require_once __DIR__ . '/Core/Configuration/Parser/Yaml.php';
+
 /**
  *
  * Phraseanet Core Container
@@ -43,18 +57,17 @@ class Core extends \Pimple
 
   public function __construct($environement = null)
   {
-
-    /**
-     * Autoload
-     */
-    static::initAutoloads();
-
-    $handler = new Core\Configuration\Handler(
-                    new Core\Configuration\Application(),
-                    new Core\Configuration\Parser\Yaml()
-    );
+    $appConf = new Core\Configuration\Application();
+    $parser = new Core\Configuration\Parser\Yaml();
+    
+    $handler = new Core\Configuration\Handler($appConf, $parser);
 
     $this->configuration = new Core\Configuration($handler, $environement);
+
+    /**
+     * Cache Autoload if it's not debug mode
+     */
+    static::initAutoloads(!$this->configuration->isDebug());
 
     $this->init();
 
@@ -154,9 +167,9 @@ class Core extends \Pimple
    */
   private function init()
   {
-    if ($this->getConfiguration()->isInstalled())
+    if ($this->configuration->isInstalled())
     {
-      if ($this->getConfiguration()->isDisplayingErrors())
+      if ($this->configuration->isDisplayingErrors())
       {
         ini_set('display_errors', 'on');
         error_reporting(E_ALL);
@@ -361,16 +374,37 @@ class Core extends \Pimple
    * Register directory and namespaces for autoloading app classes
    *
    */
-  public static function initAutoloads($debug = false)
+  public static function initAutoloads($cacheAutoload = false)
   {
-//    require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
     require_once __DIR__ . '/Loader/Autoloader.php';
 
-    $loader = new Loader\Autoloader();
+    if ($cacheAutoload === false)
+    {
+      try
+      {
+        require_once __DIR__ . '/Loader/CacheAutoloader.php';
+        $loader = new Loader\CacheAutoloader('class_');
+      }
+      catch (\Exception $e)
+      {
+        //no op code cache available
+        $loader = new Loader\Autoloader();
+      }
+    }
+    else
+    {
+      $loader = new Loader\Autoloader();
+    }
 
-    $loader->registerPrefixes(array('Twig' => realpath(__DIR__ . '/../../vendor/Twig/lib')));
-    $loader->registerPrefixes(array('Twig_Extensions' => realpath(__DIR__ . '/../../vendor/Twig-extensions/lib')));
+    //Register prefixes
+    $loader->registerPrefixes(array(
+        'Twig' => realpath(__DIR__ . '/../../vendor/Twig/lib'))
+    );
 
+    $loader->registerPrefixes(array(
+        'Twig_Extensions' => realpath(__DIR__ . '/../../vendor/Twig-extensions/lib'))
+    );
+    //Register namespaces
     $loader->registerNamespaces(array(
         'Alchemy' => realpath(__DIR__ . '/../..'),
         'Symfony' => realpath(__DIR__ . '/../../vendor/symfony/src'),
@@ -400,7 +434,9 @@ class Core extends \Pimple
   {
     ini_set('output_buffering', '4096');
     if ((int) ini_get('memory_limit') < 2048)
+    {
       ini_set('memory_limit', '2048M');
+    }
     ini_set('error_reporting', '6143');
     ini_set('default_charset', 'UTF-8');
     ini_set('session.use_cookies', '1');
