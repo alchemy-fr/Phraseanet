@@ -567,7 +567,7 @@
     <div id="headBlock" class="PNB" style="height:60px;bottom:auto;">
         <form name="phrasea_query" class="phrasea_query" style="margin:15px 20px 0 0;padding:0;" onsubmit="newSearch();return false;">
           <input autocomplete="off" class="search query" id="EDIT_query" name="query" type="text" name="qry" value="{{user.getPrefs('start_page_query')}}">
-          
+
           <a href="#" class="adv_trigger adv_search_button">
             <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
           </a>
@@ -586,18 +586,19 @@
             <option value="document">{% trans 'Document' %}</option>
             <option value="flash">{% trans 'Flash' %}</option>
           </select>
-          
-          
-          
-          
-          
-          
-          
-          
-          
+          <a href="#" onclick="lookBox(this,event);return false;">{% trans 'Preferences' %} </a>
+
+
+
+
+
+
+
+
+
           <div class="adv_options" style="display:none;">
-          
-          
+
+
             <div>
               <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
             </div>
