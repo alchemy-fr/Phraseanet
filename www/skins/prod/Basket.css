@@ -1,6 +1,6 @@
 
 #BasketBrowser{
-  
+
 }
 #BasketBrowser .Browser{
   background-color: #111111;
@@ -9,6 +9,10 @@
   background-color: #111111;
   display:none;
 }
+#BasketBrowser .Basket .thumb_wrapper {
+  margin:5px;
+}
+
 #BasketBrowser .result{
   position:relative;
   height:100px;
