@@ -455,9 +455,9 @@
             </td>
             <td>
               <select name="gender">
-                <option {% if main_user.get_gender() == 0 %}"selected"{% endif %} value="0" >{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
-                <option {% if main_user.get_gender() == 1 %}"selected"{% endif %} value="1" >{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
-                <option {% if main_user.get_gender() == 2 %}"selected"{% endif %} value="2" >{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
+                <option {% if main_user.get_gender() == 0 %}selected="selected"{% endif %} value="0" >{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
+                <option {% if main_user.get_gender() == 1 %}selected="selected"{% endif %} value="1" >{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
+                <option {% if main_user.get_gender() == 2 %}selected="selected"{% endif %} value="2" >{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
               </select>
             </td>
           </tr>
