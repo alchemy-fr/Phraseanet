@@ -41,14 +41,16 @@ $error = false;
 if (trim($parm["cnm"]) == '' && $parm["act"] == "NEWCOLL")
   $error = _('admin:: La collection n\'a pas ete creee : vous devez donner un nom a votre collection');
 
+$new_collection = null;
+
 if ($parm["act"] == "NEWCOLL" && !$error)
 {
 
   try
   {
     $databox = $appbox->get_databox((int) $parm['p0']);
-    $collection = collection::create($databox, $appbox, $parm['cnm'], $user);
-    if ($collection && $parm["ccusrothercoll"] == "on" && $parm["othcollsel"] != null)
+    $new_collection = collection::create($databox, $appbox, $parm['cnm'], $user);
+    if ($new_collection && $parm["ccusrothercoll"] == "on" && $parm["othcollsel"] != null)
     {
       $query = new User_Query($appbox);
       $total = $query->on_base_ids(array($parm["othcollsel"]))->get_total();
@@ -58,7 +60,7 @@ if ($parm["act"] == "NEWCOLL" && !$error)
         $results = $query->limit($n, 20)->execute()->get_results();
         foreach($results as $user)
         {
-          $user->ACL()->duplicate_right_from_bas($parm["othcollsel"], $collection->get_base_id());
+          $user->ACL()->duplicate_right_from_bas($parm["othcollsel"], $new_collection->get_base_id());
         }
         $n+=20;
       }
@@ -66,7 +68,7 @@ if ($parm["act"] == "NEWCOLL" && !$error)
   }
   catch (Exception $e)
   {
-    $collection = false;
+    $new_collection = null;
   }
 }
 ?>
@@ -166,9 +168,10 @@ if ($parm["act"] == "NEWCOLL" && !$error)
     ?>
     <script type="text/javascript">
 <?php
-    if ($parm["act"] == "NEWCOLL")
+    if ($parm["act"] == "NEWCOLL" && $new_collection instanceof \collection)
     {
       print("parent.reloadTree('base:" . $parm['p0'] . "');");
+      print("alert('"._('Collection successfully created')."');");
     }
 ?>
     </script>
