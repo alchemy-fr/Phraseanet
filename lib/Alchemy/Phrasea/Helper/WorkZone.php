@@ -41,7 +41,7 @@ class WorkZone extends Helper
    *
    * @return \Doctrine\Common\Collections\ArrayCollection
    */
-  public function getContent()
+  public function getContent($sort)
   {
     $em = $this->getCore()->getEntityManager();
     $current_user = $this->getCore()->getAuthenticatedUser();
@@ -49,22 +49,32 @@ class WorkZone extends Helper
     /* @var $repo_baskets \Doctrine\Repositories\BasketRepository */
     $repo_baskets = $em->getRepository('Entities\Basket');
 
+    $sort = in_array($sort, array('date', 'name')) ? $sort : 'name';
 
     $ret = new \Doctrine\Common\Collections\ArrayCollection();
 
-    $baskets = $repo_baskets->findActiveByUser($current_user);
-    $validations = $repo_baskets->findActiveValidationByUser($current_user);
+    $baskets = $repo_baskets->findActiveByUser($current_user, $sort);
+    $validations = $repo_baskets->findActiveValidationByUser($current_user, $sort);
 
     /* @var $repo_stories \Doctrine\Repositories\StoryWZRepository */
     $repo_stories = $em->getRepository('Entities\StoryWZ');
 
-    $stories = $repo_stories->findByUser($current_user);
+    $stories = $repo_stories->findByUser($current_user, $sort);
 
     $ret->set(self::BASKETS, $baskets);
     $ret->set(self::VALIDATIONS, $validations);
     $ret->set(self::STORIES, $stories);
 
     return $ret;
+  }
+
+  protected function sortBaskets(array $baskets)
+  {
+    $tmp_baskets = array();
+
+
+
+
   }
 
 }

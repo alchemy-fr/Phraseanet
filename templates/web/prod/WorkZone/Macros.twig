@@ -2,7 +2,7 @@
   <div class="alert_datas_changed ui-corner-all">{% trans 'Vous avez recu un nouveau panier' %} <a class="basket_refresher" href="#">{% trans 'rafraichir' %}</a></div>
   <div class="bloc">
   <div class="insidebloc">
-    {% set content = WorkZone.getContent() %}
+    {% set content = WorkZone.getContent(srt) %}
 
     {% for basket in content.get(constant('\\Alchemy\\Phrasea\\Helper\\WorkZone::BASKETS')) %}
 

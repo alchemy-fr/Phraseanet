@@ -13,27 +13,50 @@ use Doctrine\ORM\EntityRepository;
 class StoryWZRepository extends EntityRepository
 {
 
-  public function findByUser(\User_Adapter $user)
+  public function findByUser(\User_Adapter $user, $sort)
   {
-    $stories = $this->findBy(array('usr_id' => $user->get_id()));
+    $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.usr_id = :usr_id ';
+
+    if ($sort == 'date')
+    {
+      $dql .= ' ORDER BY s.created DESC';
+    }
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters(array('usr_id' => $user->get_id()));
+
+    $stories = $query->getResult();
 
     foreach ($stories as $key => $story)
     {
       try
       {
-        $record = $story->getRecord();
+        $story->getRecord()->get_title();
       }
       catch (\Exception_Record_AdapterNotFound $e)
       {
         $this->getEntityManager()->remove($story);
+        unset($stories[$key]);
       }
-
-      unset($stories[$key]);
     }
 
     $this->getEntityManager()->flush();
 
+    if ($sort == 'name')
+    {
+      uasort($stories, array('\\Repositories\\StoryWZRepository', 'title_compare'));
+    }
+
     return $stories;
+  }
+
+  protected static function title_compare(\Entities\StoryWZ $a, \Entities\StoryWZ $b)
+  {
+    if ($a->getRecord()->get_title() == $b->getRecord()->get_title())
+    {
+      return 0;
+    }
+    return ($a->getRecord()->get_title() < $b->getRecord()->get_title()) ? -1 : 1;
   }
 
   public function findUserStory(\User_Adapter $user, \record_adapter $Story)

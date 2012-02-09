@@ -34,10 +34,19 @@ class BasketRepository extends EntityRepository
    * @param \User_Adapter $user
    * @return \Doctrine\Common\Collections\ArrayCollection
    */
-  public function findActiveByUser(\User_Adapter $user)
+  public function findActiveByUser(\User_Adapter $user, $sort = null)
   {
     $dql = 'SELECT b FROM Entities\Basket b
             WHERE b.usr_id = :usr_id AND b.archived = false';
+
+    if($sort == 'date')
+    {
+      $dql .= ' ORDER BY b.created DESC';
+    }
+    elseif($sort == 'name')
+    {
+      $dql .= ' ORDER BY b.name ASC';
+    }
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
@@ -70,13 +79,23 @@ class BasketRepository extends EntityRepository
    * @param \User_Adapter $user
    * @return \Doctrine\Common\Collections\ArrayCollection
    */
-  public function findActiveValidationByUser(\User_Adapter $user)
+  public function findActiveValidationByUser(\User_Adapter $user, $sort = null)
   {
     $dql = 'SELECT b FROM Entities\Basket b
               JOIN b.validation s
               JOIN s.participants p
             WHERE b.usr_id != ?1 AND p.usr_id = ?2
                   AND s.expires > CURRENT_TIMESTAMP()';
+
+
+    if($sort == 'date')
+    {
+      $dql .= ' ORDER BY b.created DESC';
+    }
+    elseif($sort == 'name')
+    {
+      $dql .= ' ORDER BY b.name ASC';
+    }
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array(1 => $user->get_id(), 2 => $user->get_id()));
