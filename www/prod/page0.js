@@ -538,6 +538,10 @@ function initAnswerForm(){
     });
     return false;
   });
+  if($('form[name="phrasea_query"]').hasClass('triggerAfterInit'))
+  {
+    $('form[name="phrasea_query"]').removeClass('triggerAfterInit').trigger('submit');
+  }
 }
 function answerSizer()
 {

@@ -948,14 +948,18 @@
         </span>
         {% endif %}
       </div>
-      {% set bool = 0 %}
-      {% if user.getPrefs('start_page') == 'QUERY' or user.getPrefs('start_page') == 'LAST_QUERY' %}
-      {% set bool = 1 %}
-      {% endif %}
-      <div id="answers" class="{% if bool == 1 %}loading{% endif %} PNB10" style="top:48px;bottom:30px;">
-        {% if bool == 0 %}
-        {{start_page_content}}
+      <div id="answers" class=" PNB10" style="top:48px;bottom:30px;">
+        <script>
+          $(document).ready(function(){
+        {% if user.getPrefs('start_page') == 'QUERY' %}
+          $('form[name="phrasea_query"]').addClass('triggerAfterInit')
+        {% elseif user.getPrefs('start_page') == 'LAST_QUERY' %}
+          $('form[name="phrasea_query"]').addClass('triggerAfterInit')
+        {% elseif user.getPrefs('start_page') == 'PUBLI' %}
+          getHome('PUBLI');
         {% endif %}
+          });
+        </script>
       </div>
       <div id="answers_status" class="PNB">
         <table>
@@ -1309,16 +1313,6 @@
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
-
-  {% if user.getPrefs('start_page') == 'QUERY' or user.getPrefs('start_page') == 'LAST_QUERY' %}
-
-  $(document).ready(function(){
-    newSearch();
-  });
-  {% endif %}
-
-
-
 
   $(document).ready(function(){
     p4.reg_delete="{% if user.getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
