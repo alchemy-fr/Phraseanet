@@ -25,11 +25,15 @@ var p4 = p4 || {};
   {
     if(dialog.options.closeButton === true)
     {
-      buttons[language.fermer] = function() { dialog.Close(); };
+      buttons[language.fermer] = function() {
+        dialog.Close();
+      };
     }
     if(dialog.options.cancelButton === true)
     {
-      buttons[language.annuler] = function() { dialog.Close(); };
+      buttons[language.annuler] = function() {
+        dialog.Close();
+      };
     }
 
     return buttons;
@@ -91,6 +95,10 @@ var p4 = p4 || {};
       case 'Small':
         width = 420;
         height = 300;
+        break;
+      case 'Alert':
+        width = 300;
+        height = 150;
         break;
     }
 
@@ -162,6 +170,40 @@ var p4 = p4 || {};
     },
     getId : function () {
       return this.$dialog.attr('id');
+    },
+    load : function(url, method, params) {
+      var $this = this;
+      this.loader = {
+        url : url,
+        method : typeof method === 'undefined' ? 'GET' : method,
+        params : typeof params === 'undefined' ? {} : params
+      };
+
+      $.ajax({
+        type: this.loader.method,
+        url: this.loader.url,
+        dataType: 'html',
+        data : this.loader.params,
+        beforeSend:function(){
+        },
+        success: function(data){
+          $this.setContent(data);
+          return;
+        },
+        error: function(){
+          return;
+        },
+        timeout: function(){
+          return;
+        }
+      });
+    },
+    refresh : function() {
+      if(typeof this.loader === 'undefined')
+      {
+        throw 'Nothing to refresh';
+      }
+      this.load(this.loader.url, this.loader.method, this.loader.params);
     },
     getDomElement : function () {
       return this.$dialog;
