@@ -485,6 +485,36 @@ class UsrLists implements ControllerProviderInterface
       }
     )->assert('list_id', '\d+')->assert('usr_id', '\d+');
 
+    $controllers->get('/list/{list_id}/share/', function(Application $app, Request $request, $list_id)
+      {
+
+        $em   = $app['Core']->getEntityManager();
+        $user = $app['Core']->getAuthenticatedUser();
+
+        $list = null;
+
+        try
+        {
+          $repository = $em->getRepository('\Entities\UsrList');
+
+          $list = $repository->findUserListByUserAndId($user, $list_id);
+          /* @var $list \Entities\UsrList */
+
+          if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
+          {
+            $list = null;
+            throw new \Exception('You are not authorized to do this');
+          }
+
+        }
+        catch (\Exception $e)
+        {
+
+        }
+
+        return new Response($app['Core']->getTwig()->render('prod/actions/Feedback/List-Share.html.twig', array('list' => $list)));
+      })->assert('list_id', '\d+');
+
     /**
      * Share a list to a user with an optionnal role
      */
@@ -566,7 +596,7 @@ class UsrLists implements ControllerProviderInterface
 
         return new Response($Json, 200, array('Content-Type' => 'application/json'));
       }
-    );
+    )->assert('list_id', '\d+')->assert('usr_id', '\d+');
     /**
      * UnShare a list to a user
      */
@@ -618,7 +648,7 @@ class UsrLists implements ControllerProviderInterface
 
         return new Response($Json, 200, array('Content-Type' => 'application/json'));
       }
-    );
+    )->assert('list_id', '\d+')->assert('usr_id', '\d+');
 
 
     return $controllers;
