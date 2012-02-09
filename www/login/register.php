@@ -243,7 +243,7 @@ if ($request->has_post_datas())
       }
       catch (Exception $e)
       {
-        
+
       }
     }
   }
@@ -288,7 +288,7 @@ foreach ($arrayVerif as $ar => $ver)
     if ($ar == 'form_email')
       $msg .= ',email:"' . (str_replace('"', '\"', _('forms::l\'email semble invalide'))) . '"';
 
-    $msg .= ',login:"' . (str_replace('"', '\"', _('login invalide (8 caracteres sans accents ni espaces)'))) . '"';
+    $msg .= ',login:"' . (str_replace('"', '\"', _('login invalide (5 caracteres sans accents ni espaces)'))) . '"';
     $msg .= '}';
   }
 }
@@ -321,11 +321,9 @@ foreach ($arrayVerif as $ar => $ver)
 
   $('#form_email').rules("add",{email:true});
 
-  //            $('#form_login').rules("add",{
-  //              minlength: 5
-  //            });
-
-  $('#form_login').rules("add",{login : true});
+              $('#form_login').rules("add",{
+                minlength: 5
+              });
 
   $('#form_password').rules("add",{password: "#form_login"});
   $('#form_password_confirm').rules("add",{equalTo: "#form_password"});
@@ -377,7 +375,7 @@ if ($register_enabled)
               <tr>
                 <td class="form_label">
                   <label for="form_login">
-<?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login'] === true) ? '<span class="requiredField">*</span>' : '' ?> <?php echo _('admin::compte-utilisateur identifiant') ?> <br/><span style="font-size:9px;"><?php echo _('8 caracteres minimum') ?></span> :
+<?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login'] === true) ? '<span class="requiredField">*</span>' : '' ?> <?php echo _('admin::compte-utilisateur identifiant') ?> <br/><span style="font-size:9px;"><?php echo _('5 caracteres minimum') ?></span> :
                   </label>
                 </td>
                 <td class="form_input">
