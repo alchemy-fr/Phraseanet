@@ -328,6 +328,20 @@
       return false;
     });
 
+    $('a.list_sharer', this.container).die('click').live('click', function(){
+
+      var $this = $(this),
+      options = {
+        size : 'Small',
+        closeButton : true,
+        title : $this.attr('title')
+      },
+      $dialog = p4.Dialog.Create(options, 2);
+
+      $dialog.load($this.attr('href'), 'GET')
+
+      return false;
+    });
 
 
     $('a.user_adder', this.container).bind('click', function(){
@@ -416,7 +430,7 @@
 
           var buttons = {};
 
-          buttons[language.create] = function() {
+          buttons[language.valider] = function() {
 
             var callbackOK = function () {
               $('a.list_refresh', $container).trigger('click');
@@ -427,14 +441,13 @@
             List.remove(callbackOK);
           };
 
-          box.dialog({
-            buttons:buttons,
-            modal:true,
-            closeOnEscape:true,
-            resizable:false,
-            width:300,
-            height:150
-          });
+          var options = {
+            cancelButton : true,
+            buttons : buttons,
+            size:'Alert'
+          };
+
+          p4.Dialog.Create(options, 2).setContent(box);
         };
 
         ListDeleterDialogBox(makeDialog);
