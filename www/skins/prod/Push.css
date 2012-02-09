@@ -179,3 +179,16 @@
     border-top-right-radius: 0;
 		padding-right: 20px;
 }
+
+
+#ListShare table{
+  width:100%;
+  margin:5px;
+  background-color:#505050;
+}
+
+#ListManager .content.readonly .badge{
+  width:250px;
+  display:inline-block;
+  margin:5px;
+}
