@@ -71,30 +71,6 @@ switch ($action)
     $parm = $request->get_parms('color');
     $output = $user->setPrefs('css', $color);
     break;
-  case 'MYRSS':
-    require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
-    $parm = $request->get_parms('renew');
-
-    $url = $user->get_protected_rss_url(($parm['renew'] === 'true'))->get_url();
-
-    $output = p4string::jsonencode(
-                    array(
-                        'texte' => '<p>' . _('publication::Voici votre fil RSS personnel. Il vous permettra d\'etre tenu au courrant des publications.')
-                        . '</p><p>' . _('publications::Ne le partagez pas, il est strictement confidentiel') . '</p>
-                <div><input type="text" style="width:100%" value="' . $url . '"/></div>',
-                        'titre' => _('publications::votre rss personnel')
-                    )
-    );
-    break;
-
-  case 'SAVEPREF':
-    $parm = $request->get_parms('prop', 'value');
-    $ret = $user->setPrefs($parm['prop'], $parm['value']);
-    if (isset($ret[$parm['prop']]) && $ret[$parm['prop']] = $parm['value'])
-      $output = "1";
-    else
-      $output = "0";
-    break;
 
   case 'SAVETEMPPREF':
     $parm = $request->get_parms('prop', 'value');
@@ -111,11 +87,6 @@ switch ($action)
     require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
     $parm = $request->get_parms('lst', 'del_children');
     $output = deleteRecord($parm['lst'], $parm['del_children']);
-    break;
-
-  case 'MAIL_REQ':
-    $parm = $request->get_parms('user', 'contrib', 'message', 'query');
-    $output = query_phrasea::mail_request($parm['user'], $parm['contrib'], $parm['message'], $parm['query']);
     break;
 
   case 'DENY_CGU':

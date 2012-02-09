@@ -20,6 +20,7 @@
 
   RewriteRule ^prod/records/edit/.*$  /prod/router.php [L]
   RewriteRule ^prod/records/movecollection/.*$    /prod/router.php [L]
+  RewriteRule ^prod/UserPreferences/.*$    /prod/router.php [L]
   RewriteRule ^prod/bridge/.*$        /prod/router.php [L]
   RewriteRule ^prod/MustacheLoader/.*$            /prod/router.php [L]
   RewriteRule ^prod/feeds/.*$         /prod/router.php [L]
@@ -64,7 +65,7 @@
 	<IfModule mod_h264_streaming.c>
 		RewriteRule ^admin/test-h264$ admin/adminFeedback.php?action=APACHE&test=success [L]
 	</IfModule>
-	
+
 	RewriteRule ^admin/test-rewrite$ admin/adminFeedback.php?action=APACHE&test=fail [L]
 	RewriteRule ^admin/test-xsendfile$ admin/adminFeedback.php?action=APACHE&test=fail [L]
 	RewriteRule ^admin/test-authtoken$ admin/adminFeedback.php?action=APACHE&test=fail [L]

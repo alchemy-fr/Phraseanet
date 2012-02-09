@@ -39,6 +39,7 @@ return call_user_func(function()
           );
         });
 
+      $app->mount('/UserPreferences/', new Controller\UserPreferences());
       $app->mount('/baskets', new Controller\Basket());
       $app->mount('/story', new Controller\Story());
       $app->mount('/WorkZone', new Controller\WorkZone());

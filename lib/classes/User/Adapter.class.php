@@ -1487,9 +1487,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     $this->load_preferences();
     if (isset($this->_prefs[$prop]) && $this->_prefs[$prop] === $value)
-
-      return $value;
-
+    {
+      return $this->_prefs[$prop];
+    }
+    
     $ok = true;
 
     if (isset(self::$available_values[$prop]))
