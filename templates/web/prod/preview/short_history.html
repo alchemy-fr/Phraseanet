@@ -23,7 +23,8 @@
           {% trans 'report::Edition des meta-donnees' %}
         {% elseif action == 'collection' %}
           {% set dest = done['final']|implode(', ') %}
-          {% trans %}report::Changement de collection vers : {{dest}}{% endtrans %}
+          {% set coll_name = dest|bas_name %}
+          {% trans %}report::Changement de collection vers : {{coll_name}}{% endtrans %}
         {% elseif action == 'status' %}
           {% trans 'report::Edition des status' %}
         {% elseif action == 'print' %}
