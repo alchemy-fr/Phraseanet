@@ -26,18 +26,4 @@ interface LoaderStrategy
    */
   public function isAvailable();
 
-  /**
-   *  Get value identified by key from cache
-   * @param int $key
-   *  @Return boolean
-   */
-  public function fetch($key);
-
-  /**
-   *  Save value identified by key in cache
-   * @param int $key
-   * @param string $file
-   *  @Return boolean
-   */
-  public function save($key, $file);
 }
