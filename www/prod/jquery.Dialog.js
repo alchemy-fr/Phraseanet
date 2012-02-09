@@ -21,6 +21,20 @@ var p4 = p4 || {};
     return 'DIALOG' + getLevel(level);
   };
 
+  function addButtons(buttons, dialog)
+  {
+    if(dialog.options.closeButton === true)
+    {
+      buttons[language.fermer] = function() { dialog.Close(); };
+    }
+    if(dialog.options.cancelButton === true)
+    {
+      buttons[language.annuler] = function() { dialog.Close(); };
+    }
+
+    return buttons;
+  }
+
   var phraseaDialog = function (options, level) {
 
     var createDialog = function(level) {
@@ -61,14 +75,7 @@ var p4 = p4 || {};
 
     this.level = getLevel(level);
 
-    if(this.options.closeButton === true)
-    {
-      this.options.buttons[language.fermer] = function() { $this.Close(); };
-    }
-    if(this.options.cancelButton === true)
-    {
-      this.options.buttons[language.annuler] = function() { $this.Close(); };
-    }
+    this.options.buttons = addButtons(this.options.buttons, this);
 
     switch(this.options.size)
     {
@@ -163,6 +170,12 @@ var p4 = p4 || {};
       return this.$dialog.dialog('option', optionName);
     },
     setOption : function (optionName, optionValue) {
+
+      if(optionName === 'buttons')
+      {
+        optionValue = addButtons(optionValue, this);
+      }
+
       this.$dialog.dialog('option', optionName, optionValue);
     }
   };
