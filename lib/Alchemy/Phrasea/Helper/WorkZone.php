@@ -60,20 +60,6 @@ class WorkZone extends Helper
 
     $stories = $repo_stories->findByUser($current_user);
 
-    foreach($stories as $key=>$story)
-    {
-      try
-      {
-        $record = $story->getRecord();
-      }
-      catch(\Exception_Record_AdapterNotFound $e)
-      {
-        $em->remove($story);
-      }
-    }
-
-    $em->flush();
-
     $ret->set(self::BASKETS, $baskets);
     $ret->set(self::VALIDATIONS, $validations);
     $ret->set(self::STORIES, $stories);

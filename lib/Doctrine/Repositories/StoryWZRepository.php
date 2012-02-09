@@ -15,18 +15,49 @@ class StoryWZRepository extends EntityRepository
 
   public function findByUser(\User_Adapter $user)
   {
-    return $this->findBy(array('usr_id' => $user->get_id()));
+    $stories = $this->findBy(array('usr_id' => $user->get_id()));
+
+    foreach ($stories as $key => $story)
+    {
+      try
+      {
+        $record = $story->getRecord();
+      }
+      catch (\Exception_Record_AdapterNotFound $e)
+      {
+        $this->getEntityManager()->remove($story);
+      }
+
+      unset($stories[$key]);
+    }
+
+    $this->getEntityManager()->flush();
+
+    return $stories;
   }
 
   public function findUserStory(\User_Adapter $user, \record_adapter $Story)
   {
-    return $this->findOneBy(
-                    array(
-                        'usr_id' => $user->get_id(),
-                        'sbas_id' => $Story->get_sbas_id(),
-                        'record_id' => $Story->get_record_id(),
-                    )
+    $story = $this->findOneBy(
+      array(
+        'usr_id'    => $user->get_id(),
+        'sbas_id'   => $Story->get_sbas_id(),
+        'record_id' => $Story->get_record_id(),
+      )
     );
+
+    try
+    {
+      $record = $story->getRecord();
+    }
+    catch (\Exception_Record_AdapterNotFound $e)
+    {
+      $this->getEntityManager()->remove($story);
+      $this->getEntityManager()->flush();
+      $story = null;
+    }
+
+    return $story;
   }
 
 }
