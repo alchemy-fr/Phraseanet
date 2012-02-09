@@ -1828,20 +1828,17 @@ function deleteThis(lst)
 
 function chgCollThis(datas)
 {
+  $dialog = p4.Dialog.Create({
+    size:'Small',
+    title:'Move',
+    closeButton:true
+  });
   $.ajax({
     type: "POST",
     url: "/prod/records/movecollection/",
     data: datas,
     success: function(data){
-      if($('#record_move_coll').length == 0)
-        $('body').append('<div id="record_move_coll"></div>');
-      $('#record_move_coll').empty().append(data)
-      .dialog({
-        modal:true,
-        resizable:false,
-        width:550,
-        height:300
-      });
+      $dialog.setContent(data);
     }
   });
 }
@@ -1873,7 +1870,6 @@ function chgStatusThis(url)
 
 function pushThis(sstt_id, lst)
 {
-    /* disable push closeonescape as an over dialog may exist (add user) */
   $dialog = p4.Dialog.Create({
     size:'Full',
     title:'Push'
