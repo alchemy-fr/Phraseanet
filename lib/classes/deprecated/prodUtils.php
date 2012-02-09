@@ -81,7 +81,6 @@ function deleteRecord($lst, $del_children)
       foreach ($base["rids"] as $rid)
       {
         $record = new record_adapter($rid[0], $rid[1]);
-        $rid[2] = $record->get_base_id();
         if (!$ACL->has_right_on_base($record->get_base_id(), 'candeleterecord'))
           continue;
         if ($del_children == "1")
@@ -92,10 +91,10 @@ function deleteRecord($lst, $del_children)
               continue;
 
             $oneson->delete();
-            $ret[] = implode('_', array($oneson->get_sbas_id(), $oneson->get_record_id(), $oneson->get_base_id()));
+            $ret[] = $oneson->get_serialize_key();
           }
         }
-        $ret[] = implode('_', $rid);
+        $ret[] = $record->get_serialize_key();
 
         $basket_elements = $BE_repository->findElementsByRecord($record);
 

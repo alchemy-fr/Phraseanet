@@ -2744,7 +2744,8 @@ function doDelete(lst)
     success: function(data){
 
       $.each(data,function(i,n){
-        var imgt = $('#IMGT_'+n);
+        var imgt = $('#IMGT_'+n),
+        chim = $('.CHIM_'+n);
         $('.doc_infos', imgt).remove();
         imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
         imgt.find(".thumb img").attr("src","/skins/icons/deleted.png").css({
