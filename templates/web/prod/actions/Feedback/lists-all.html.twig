@@ -12,17 +12,23 @@
             {% set length = '<span class="counter">' ~ list.getEntries().count() ~ '</span>' %}
             <li class="list">
               <a href="/prod/push/edit-list/{{ list.getId() }}/" class="link">
-                <img src="/skins/prod/Push/list-icon.png" />
+                {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+                  <img src="/skins/prod/Push/list-icon.png" />
+                {% else %}
+                  <img src="/skins/icons/SHARE16.png" />
+                {% endif %}
                 "{{ list.getName() }}"
                 {% trans %}
                   {{ length }} peoples
                 {% endtrans %}
               </a>
 
+              {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
               <a href="/prod/lists/list/{{ list.getId() }}/delete/" class="deleter">
                 {% trans 'Delete' %}
                 <input type="hidden" name="list_id" value="{{ list.getId() }}"/>
               </a>
+              {% endif %}
             </li>
           {% endfor %}
         </ul>

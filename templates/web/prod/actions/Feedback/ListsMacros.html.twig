@@ -170,3 +170,20 @@
   </script>
 
 {% endmacro %}
+
+
+{% macro badgeReadonly(entry) %}
+  <div class="badge">
+    <table>
+      <tr>
+        <td class="icon">
+          <img src="/skins/icons/user.png"/>
+        </td>
+        <td class="infos">
+          <span class="name">{{ entry.getUser().get_display_name() }}</span>
+          <span class="subtite"></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+{% endmacro %}
