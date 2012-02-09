@@ -58,9 +58,25 @@ class WorkZone extends Helper
     /* @var $repo_stories \Doctrine\Repositories\StoryWZRepository */
     $repo_stories = $em->getRepository('Entities\StoryWZ');
 
+    $stories = $repo_stories->findByUser($current_user);
+
+    foreach($stories as $key=>$story)
+    {
+      try
+      {
+        $record = $story->getRecord();
+      }
+      catch(\Exception_Record_AdapterNotFound $e)
+      {
+        $em->remove($story);
+      }
+    }
+
+    $em->flush();
+
     $ret->set(self::BASKETS, $baskets);
     $ret->set(self::VALIDATIONS, $validations);
-    $ret->set(self::STORIES, $repo_stories->findByUser($current_user));
+    $ret->set(self::STORIES, $stories);
 
     return $ret;
   }
