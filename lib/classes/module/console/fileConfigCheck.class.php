@@ -25,10 +25,10 @@ use Alchemy\Phrasea\Core;
  */
 class module_console_fileConfigCheck extends Command
 {
+
   const PROD = 'prod';
   const DEV = 'dev';
   const TEST = 'test';
-
   const ALERT = 1;
   const ERROR = 0;
 
@@ -50,26 +50,28 @@ class module_console_fileConfigCheck extends Command
   {
     parent::__construct($name);
 
-    $this
-            ->setDescription('check configuration file')
-            ->addArgument(
-                    'environment'
-                    , InputArgument::REQUIRED
-                    , 'check an environment configuration from configuration file'
-    );
+    $this->setDescription('check configuration file');
 
     return $this;
   }
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    $this->env = $input->getArgument('environment');
 
-    $this->initTests();
+    foreach (array(self::DEV, self::PROD, self::TEST) as $env)
+    {
+      $output->writeln("");
+      $output->writeln(sprintf("Checking for %s configuration settings", $env));
+      $output->writeln("=========================================");
+      $output->writeln("");
+      $this->env = $env;
 
-    $this->prepareTests($output);
+      $this->initTests();
 
-    $this->runTests($output);
+      $this->prepareTests($output);
+
+      $this->runTests($output);
+    }
 
     exit(1);
   }
@@ -99,7 +101,7 @@ class module_console_fileConfigCheck extends Command
     catch (\Exception $e)
     {
       $previous = $e->getPrevious();
-
+      
       $output->writeln(sprintf(
                       "<error>%s FATAL error : %s</error>"
                       , $e->getMessage()
@@ -318,7 +320,7 @@ class module_console_fileConfigCheck extends Command
       catch (\Exception $e)
       {
         $message = sprintf(
-                "%s called from %s in %s:template_engine scope"
+                "%s called from %s in %s:%s:template_engine scope"
                 , $e->getMessage()
                 , $this->configuration->getFile()->getFilename()
                 , $this->env
@@ -427,7 +429,7 @@ class module_console_fileConfigCheck extends Command
       $serviceBuilder = new Core\ServiceBuilder\Orm(
                       $ormName
                       , $configuration
-                      , array('registry'=> $registry)
+                      , array('registry' => $registry)
       );
 
       $service = $serviceBuilder->buildService();
@@ -498,7 +500,7 @@ class module_console_fileConfigCheck extends Command
           $e = new \Exception(sprintf(
                                   "Missing parameter %s for %s service declared in %s scope."
                                   , $e->getKey()
-                                  , $templateEngineName
+                                  , $service->getName()
                                   , $this->env
                           )
           );
