@@ -628,7 +628,7 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
       $record = $databox->get_record($record_id);
       $caption = $record->get_caption();
 
-      $this->assertEquals(count($caption->get_fields()), count($content->response->metadatas));
+      $this->assertEquals(count($caption->get_fields()), count(get_object_vars($content->response->metadatas)), 'Retrived metadatas are the same');
 
       foreach ($caption->get_fields() as $field)
       {
@@ -660,6 +660,9 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
       $databox = databox::get_instance($databox_id);
       $collection = array_shift($databox->get_collections());
       $system_file = new system_file(dirname(__FILE__) . '/../../testfiles/cestlafete.jpg');
+
+      if(!$collection instanceof \collection)
+        $this->fail('unable to find a collection');
 
       $record = record_adapter::create($collection, $system_file);
 
@@ -724,6 +727,9 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
       $databox = databox::get_instance($databox_id);
       $collection = array_shift($databox->get_collections());
       $system_file = new system_file(dirname(__FILE__) . '/../../testfiles/cestlafete.jpg');
+
+      if(!$collection instanceof \collection)
+        $this->fail('unable to find a collection');
 
       $record = record_adapter::create($collection, $system_file);
 
@@ -1194,7 +1200,7 @@ class API_V1_test_adapter extends PhraseanetWebTestCaseAbstract
     $this->assertObjectHasAttribute("metadatas", $content->response);
     foreach ($content->response->metadatas as $meta)
     {
-      $this->assertTrue(is_object($meta->metadatas), 'Un bloc meta est un objet');
+      $this->assertTrue(is_object($meta), 'Un bloc meta est un objet');
       $this->assertObjectHasAttribute('meta_id', $meta);
       $this->assertTrue(is_int($meta->meta_id));
       $this->assertObjectHasAttribute('meta_structure_id', $meta);
