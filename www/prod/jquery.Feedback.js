@@ -434,7 +434,7 @@
 
             var callbackOK = function () {
               $('a.list_refresh', $container).trigger('click');
-              box.dialog('close');
+              p4.Dialog.get(2).Close();
             };
 
             var List = new document.List(list_id);
