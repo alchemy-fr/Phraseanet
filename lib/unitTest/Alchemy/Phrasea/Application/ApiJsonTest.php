@@ -604,24 +604,26 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
       $old_datas = array();
       $toupdate = array();
 
-      /**
-       * @todo enhance the test, if there's no field, there's no update
-       */
-      foreach ($caption->get_fields() as $field)
+      foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field)
       {
-        foreach($field->get_values() as $value)
+        try
         {
-          $old_datas[$value->getId()] = $value->getValue();
-          if ($field->is_readonly() === false && $field->is_multi() === false)
-          {
-            $toupdate[$value->getId()] = array(
-                'meta_struct_id' => $field->get_meta_struct_id(),
-                'meta_id' => $value->getId(),
-                'value' => array($value->getValue() . ' test')
-            );
-          }
+          $values  = $record->get_caption()->get_field($field->get_name())->get_values();
+          $value   = array_pop($values);
+          $meta_id = $value->getId();
         }
+        catch (\Exception $e)
+        {
+          $meta_id = null;
+        }
+
+        $toupdate[$field->get_id()] = array(
+          'meta_id'        => $meta_id
+          , 'meta_struct_id' => $field->get_id()
+          , 'value'          => 'podom pom pom ' . $field->get_id()
+        );
       }
+
       $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
       $crawler = $this->client->request('POST', $route, array('metadatas' => $toupdate));
@@ -641,7 +643,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         {
           if ($field->is_readonly() === false && $field->is_multi() === false)
           {
-            $saved_value = $toupdate[$value->getId()]['value'][0];
+            $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
             $this->assertEquals($value->getValue(), $saved_value);
           }
         }

@@ -629,6 +629,28 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
           }
         }
       }
+
+
+      foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field)
+      {
+        try
+        {
+          $values  = $record->get_caption()->get_field($field->get_name())->get_values();
+          $value   = array_pop($values);
+          $meta_id = $value->getId();
+        }
+        catch (\Exception $e)
+        {
+          $meta_id = null;
+        }
+
+        $toupdate[$field->get_id()] = array(
+          'meta_id'        => $meta_id
+          , 'meta_struct_id' => $field->get_id()
+          , 'value'          => 'podom pom pom ' . $field->get_id()
+        );
+      }
+
       $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
       $crawler = $this->client->request('POST', $route, array('metadatas' => $toupdate), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -648,7 +670,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         {
           if ($field->is_readonly() === false && $field->is_multi() === false)
           {
-            $saved_value = $toupdate[$value->getId()]['value'][0];
+            $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
             $this->assertEquals($value->getValue(), $saved_value);
           }
         }
