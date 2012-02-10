@@ -46,8 +46,8 @@ class module_console_systemClearCache extends Command
             ->in(array(
                 __DIR__ . '/../../../../tmp/cache_minify/'
                 , __DIR__ . '/../../../../tmp/cache_twig/'
-            ))
-    ;
+            ));
+    
     $count = 1;
     foreach ($finder as $file)
     {
@@ -63,8 +63,8 @@ class module_console_systemClearCache extends Command
                 , __DIR__ . '/../../../../tmp/cache_twig'
             ))
             ->exclude('.git')
-            ->exclude('.svn')
-    ;
+            ->exclude('.svn');
+    
     foreach ($finder as $file)
     {
       $dirs[$file->getPathname()] = $file->getPathname();
@@ -93,7 +93,7 @@ class module_console_systemClearCache extends Command
 
     $output->write('Finished !', true);
 
-    return;
+    return 0;
   }
 
 }

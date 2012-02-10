@@ -24,6 +24,7 @@ use Symfony\Component\Console\Command\Command;
 
 class module_console_schedulerState extends Command
 {
+
   public function __construct($name = null)
   {
     parent::__construct($name);
@@ -35,26 +36,37 @@ class module_console_schedulerState extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    if(!setup::is_installed())
+    if (!setup::is_installed())
     {
-      throw new RuntimeException('Phraseanet is not set up');
+      $output->writeln('Phraseanet is not set up');
+      return 1;
     }
 
     require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
-    $appbox = appbox::get_instance();
-    $task_manager = new task_manager($appbox);
-
-    $state = $task_manager->get_scheduler_state();
-
-    if ($state['schedstatus'] == 'started')
-      $output->writeln(sprintf(
-                      'Scheduler is %s on pid %d'
-                      , $state['schedstatus']
-                      , $state['schedpid']
-              ));
-    else
-      $output->writeln(sprintf('Scheduler is %s', $state['schedstatus']));
+    try
+    {
+      $appbox = appbox::get_instance();
+      $task_manager = new task_manager($appbox);
+      $state = $task_manager->get_scheduler_state();
+      if ($state['schedstatus'] == 'started')
+      {
+        $output->writeln(sprintf(
+                        'Scheduler is %s on pid %d'
+                        , $state['schedstatus']
+                        , $state['schedpid']
+                ));
+      }
+      else
+      {
+        $output->writeln(sprintf('Scheduler is %s', $state['schedstatus']));
+      }
+      return 0;
+    }
+    catch(\Exception $e)
+    {
+      return 1;
+    }
 
     return;
   }

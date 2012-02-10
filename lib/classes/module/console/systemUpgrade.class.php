@@ -40,7 +40,7 @@ class module_console_systemUpgrade extends Command
     if (!setup::is_installed())
     {
 
-      $output->writeln('This version of Phraseanet requires a config/config.inc');
+      $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
       $output->writeln('Would you like it to be created based on your settings ?');
 
       $dialog = $this->getHelperSet()->get('dialog');

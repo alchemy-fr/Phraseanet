@@ -66,17 +66,17 @@ class module_console_fileConfigCheck extends Command
       $output->writeln("");
       $this->env = $env;
 
-      $this->initTests();
+      $this->initTests($output);
 
       $this->prepareTests($output);
 
       $this->runTests($output);
     }
 
-    exit(1);
+    return 0;
   }
 
-  private function initTests()
+  private function initTests(OutputInterface $output)
   {
     $spec = new Core\Configuration\Application();
     $parser = new Core\Configuration\Parser\Yaml();
@@ -86,7 +86,8 @@ class module_console_fileConfigCheck extends Command
 
     if (!$this->configuration->isInstalled())
     {
-      exit(sprintf("\nPhraseanet is not installed\n"));
+      $output->writeln(sprintf("\nPhraseanet is not installed\n"));
+      return 1;
     }
   }
 
@@ -109,12 +110,14 @@ class module_console_fileConfigCheck extends Command
                               $previous->getMessage() : 'Unknown.'
               )
       );
-      exit(sprintf("\nConfig check test suite can not continue please correct FATAL error and relaunch.\n"));
+      $output->writeln(sprintf("\nConfig check test suite can not continue please correct FATAL error and relaunch.\n"));
+      return 1;
     }
   }
 
   private function runTests(OutputInterface $output)
   {
+    $nbErrors = 0;
     foreach ($this->testSuite as $test)
     {
       try
@@ -123,6 +126,7 @@ class module_console_fileConfigCheck extends Command
       }
       catch (\Exception $e)
       {
+        $nbErrors++;
         $previous = $e->getPrevious();
 
         $output->writeln(sprintf(
@@ -134,6 +138,7 @@ class module_console_fileConfigCheck extends Command
         );
       }
     }
+    return (int) ($nbErrors > 0);
   }
 
   private function checkParse(OutputInterface $output)

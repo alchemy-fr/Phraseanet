@@ -122,7 +122,7 @@ class module_console_systemTemplateGenerator extends Command
 
     $output->writeln("");
 
-    return;
+    return $n_error;
   }
 
 }

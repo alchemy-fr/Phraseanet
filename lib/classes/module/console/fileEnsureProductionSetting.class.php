@@ -25,7 +25,6 @@ use Alchemy\Phrasea\Core;
  */
 class module_console_fileEnsureProductionSetting extends Command
 {
-  protected $hasErrors = false;
   
   const ALERT = 1;
   const ERROR = 0;
@@ -61,16 +60,16 @@ class module_console_fileEnsureProductionSetting extends Command
     $output->writeln("=============================");
     $output->writeln("");
 
-    $this->initTests();
+    $this->initTests($output);
 
     $this->prepareTests($output);
 
     $this->runTests($output);
 
-    exit(1);
+    return 0;
   }
 
-  private function initTests()
+  private function initTests(OutputInterface $output)
   {
     $spec = new Core\Configuration\Application();
     $parser = new Core\Configuration\Parser\Yaml();
@@ -80,7 +79,8 @@ class module_console_fileEnsureProductionSetting extends Command
 
     if (!$this->configuration->isInstalled())
     {
-      exit(sprintf("\nPhraseanet is not installed\n"));
+      $output->writeln(sprintf("\nPhraseanet is not installed\n"));
+      return 1;
     }
   }
 
@@ -103,7 +103,8 @@ class module_console_fileEnsureProductionSetting extends Command
                               $previous->getMessage() : 'Unknown.'
               )
       );
-      exit(sprintf("\nCheck test suite can not continue please correct FATAL error and relaunch.\n"));
+       $output->writeln(sprintf("\nCheck test suite can not continue please correct FATAL error and relaunch.\n"));
+       return 1;
     }
   }
 
@@ -136,6 +137,8 @@ class module_console_fileEnsureProductionSetting extends Command
        $output->writeln("<info>Your production settings are setted correctly !</info>");
        $output->writeln("");
     }
+
+    return (int) ($nbErrors > 0);
   }
 
   private function checkParse(OutputInterface $output)
