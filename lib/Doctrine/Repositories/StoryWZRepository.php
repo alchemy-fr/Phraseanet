@@ -62,22 +62,25 @@ class StoryWZRepository extends EntityRepository
   public function findUserStory(\User_Adapter $user, \record_adapter $Story)
   {
     $story = $this->findOneBy(
-      array(
-        'usr_id'    => $user->get_id(),
-        'sbas_id'   => $Story->get_sbas_id(),
-        'record_id' => $Story->get_record_id(),
-      )
+            array(
+                'usr_id' => $user->get_id(),
+                'sbas_id' => $Story->get_sbas_id(),
+                'record_id' => $Story->get_record_id(),
+            )
     );
 
-    try
+    if ($story)
     {
-      $record = $story->getRecord();
-    }
-    catch (\Exception_Record_AdapterNotFound $e)
-    {
-      $this->getEntityManager()->remove($story);
-      $this->getEntityManager()->flush();
-      $story = null;
+      try
+      {
+        $record = $story->getRecord();
+      }
+      catch (\Exception_Record_AdapterNotFound $e)
+      {
+        $this->getEntityManager()->remove($story);
+        $this->getEntityManager()->flush();
+        $story = null;
+      }
     }
 
     return $story;
