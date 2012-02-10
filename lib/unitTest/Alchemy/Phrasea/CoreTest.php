@@ -102,8 +102,6 @@ class CoreTest extends PhraseanetPHPUnitAbstract
   {
     $core = new \Alchemy\Phrasea\Core("test");
     $this->assertEquals("test", $core->getEnv());
-    $core = new \Alchemy\Phrasea\Core("prod");
-    $this->assertEquals("prod", $core->getEnv());
   }
 
   public function testNotInstalled()
