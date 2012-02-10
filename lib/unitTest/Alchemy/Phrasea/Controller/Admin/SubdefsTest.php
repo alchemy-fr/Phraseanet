@@ -55,14 +55,14 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $appbox = appbox::get_instance();
     $databox = array_shift($appbox->get_databoxes());
     $this->client->request("POST", "/subdefs/" . $databox->get_sbas_id() . "/", array('add_subdef' => array(
-            'class' => 'a_class',
-            'name' => 'a_name',
+            'class' => 'thumbnail',
+            'name' => 'aname',
             'group' => 'image'
             )));
     $this->assertTrue($this->client->getResponse()->isRedirect());
     $subdefs = $databox->get_subdef_structure();
-    $subdefs->get_subdef("image", "a_name");
-    $subdefs->delete_subdef('image', 'a_name');
+    $subdefs->get_subdef("image", "aname");
+    $subdefs->delete_subdef('image', 'aname');
   }
 
   public function testPostRouteDeleteSubdef()

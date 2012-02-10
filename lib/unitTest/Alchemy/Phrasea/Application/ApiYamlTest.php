@@ -629,6 +629,28 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
           }
         }
       }
+
+
+      foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field)
+      {
+        try
+        {
+          $values  = $record->get_caption()->get_field($field->get_name())->get_values();
+          $value   = array_pop($values);
+          $meta_id = $value->getId();
+        }
+        catch (\Exception $e)
+        {
+          $meta_id = null;
+        }
+
+        $toupdate[$field->get_id()] = array(
+          'meta_id'        => $meta_id
+          , 'meta_struct_id' => $field->get_id()
+          , 'value'          => 'podom pom pom ' . $field->get_id()
+        );
+      }
+
       $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
       $crawler = $this->client->request('POST', $route, array('metadatas' => $toupdate), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -648,7 +670,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         {
           if ($field->is_readonly() === false && $field->is_multi() === false)
           {
-            $saved_value = $toupdate[$value->getId()]['value'][0];
+            $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
             $this->assertEquals($value->getValue(), $saved_value);
           }
         }
@@ -1010,7 +1032,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     $this->assertArrayHasKey('response', $content);
     $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["meta"], 'La response est un array');
     $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["response"], 'La response est un objet');
-    $this->assertEquals('1.0', $content["meta"]["api_version"]);
+    $this->assertEquals('1.1', $content["meta"]["api_version"]);
     $this->assertNotNull($content["meta"]["response_time"]);
     $this->assertEquals('UTF-8', $content["meta"]["charset"]);
   }
@@ -1022,7 +1044,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     $this->assertArrayHasKey('response', $content);
     $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["meta"], 'La response est un array');
     $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["response"], 'La response est un array');
-    $this->assertEquals('1.0', $content["meta"]["api_version"]);
+    $this->assertEquals('1.1', $content["meta"]["api_version"]);
     $this->assertNotNull($content["meta"]["response_time"]);
     $this->assertEquals('UTF-8', $content["meta"]["charset"]);
   }

@@ -279,6 +279,11 @@ class UsrLists implements ControllerProviderInterface
 
           $list = $repository->findUserListByUserAndId($user, $list_id);
 
+          if($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
+          {
+            throw new ControllerException(_('You are not authorized to do this'));
+          }
+
           $list->setName($list_name);
 
           $em->merge($list);
@@ -321,6 +326,11 @@ class UsrLists implements ControllerProviderInterface
           $user = $app['Core']->getAuthenticatedUser();
 
           $list = $repository->findUserListByUserAndId($user, $list_id);
+
+          if($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_ADMIN)
+          {
+            throw new ControllerException(_('You are not authorized to do this'));
+          }
 
           $em->remove($list);
           $em->flush();
@@ -369,6 +379,11 @@ class UsrLists implements ControllerProviderInterface
           $list = $repository->findUserListByUserAndId($user, $list_id);
           /* @var $list \Entities\UsrList */
 
+          if($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
+          {
+            throw new ControllerException(_('You are not authorized to do this'));
+          }
+
           $entry_repository = $em->getRepository('\Entities\UsrListEntry');
 
           $user_entry = $entry_repository->findEntryByListAndUsrId($list, $usr_id);
@@ -411,8 +426,6 @@ class UsrLists implements ControllerProviderInterface
         $em   = $app['Core']->getEntityManager();
         $user = $app['Core']->getAuthenticatedUser();
 
-
-
         try
         {
           if (!is_array($request->get('usr_ids')))
@@ -425,7 +438,13 @@ class UsrLists implements ControllerProviderInterface
           $list = $repository->findUserListByUserAndId($user, $list_id);
           /* @var $list \Entities\UsrList */
 
+          if($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
+          {
+            throw new ControllerException(_('You are not authorized to do this'));
+          }
+
           $inserted_usr_ids = array();
+
           foreach ($request->get('usr_ids') as $usr_id)
           {
             $user_entry = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
@@ -500,10 +519,10 @@ class UsrLists implements ControllerProviderInterface
           $list = $repository->findUserListByUserAndId($user, $list_id);
           /* @var $list \Entities\UsrList */
 
-          if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
+          if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_ADMIN)
           {
             $list = null;
-            throw new \Exception('You are not authorized to do this');
+            throw new \Exception(_('You are not authorized to do this'));
           }
 
         }
@@ -543,13 +562,18 @@ class UsrLists implements ControllerProviderInterface
 
           if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
           {
-            throw new \Exception('You are not authorized to do this');
+            throw new ControllerException(_('You are not authorized to do this'));
           }
 
           $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
 
           if ($list->hasAccess($new_owner))
           {
+            if($new_owner->get_id() == $user->get_id())
+            {
+              throw new ControllerException('You can not downgrade your Admin right');
+            }
+
             $owner = $list->getOwner($new_owner);
           }
           else
@@ -614,7 +638,7 @@ class UsrLists implements ControllerProviderInterface
 
           if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_ADMIN)
           {
-            throw new \Exception('You are not authorized to do this');
+            throw new \Exception(_('You are not authorized to do this'));
           }
 
           $owners_repository = $em->getRepository('\Entities\UsrListOwner');

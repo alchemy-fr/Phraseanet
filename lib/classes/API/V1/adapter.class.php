@@ -25,7 +25,7 @@ class API_V1_adapter extends API_V1_Abstract
    *
    * @var string
    */
-  protected $version = '1.0';
+  protected $version = '1.1';
 
   /**
    * Appbox where the API works
@@ -123,11 +123,11 @@ class API_V1_adapter extends API_V1_Abstract
     $result = new API_V1_result($request, $this);
 
     $result->set_datas(
-            array(
-                "collections" => $this->list_databox_collections(
-                        $this->appbox->get_databox($databox_id)
-                )
-            )
+      array(
+        "collections" => $this->list_databox_collections(
+          $this->appbox->get_databox($databox_id)
+        )
+      )
     );
 
     return $result;
@@ -146,12 +146,12 @@ class API_V1_adapter extends API_V1_Abstract
     $result = new API_V1_result($request, $this);
 
     $result->set_datas(
-            array(
-                "status" =>
-                $this->list_databox_status(
-                        $this->appbox->get_databox($databox_id)->get_statusbits()
-                )
-            )
+      array(
+        "status" =>
+        $this->list_databox_status(
+          $this->appbox->get_databox($databox_id)->get_statusbits()
+        )
+      )
     );
 
     return $result;
@@ -170,13 +170,13 @@ class API_V1_adapter extends API_V1_Abstract
     $result = new API_V1_result($request, $this);
 
     $result->set_datas(
-            array(
-                "metadatas" =>
-                $this->list_databox_metadatas_fields(
-                        $this->appbox->get_databox($databox_id)
-                                ->get_meta_structure()
-                )
-            )
+      array(
+        "metadatas" =>
+        $this->list_databox_metadatas_fields(
+          $this->appbox->get_databox($databox_id)
+            ->get_meta_structure()
+        )
+      )
     );
 
     return $result;
@@ -195,10 +195,10 @@ class API_V1_adapter extends API_V1_Abstract
     $result = new API_V1_result($request, $this);
 
     $result->set_datas(
-            array(
-                "termsOfUse" =>
-                $this->list_databox_terms($this->appbox->get_databox($databox_id))
-            )
+      array(
+        "termsOfUse" =>
+        $this->list_databox_terms($this->appbox->get_databox($databox_id))
+      )
     );
 
     return $result;
@@ -214,37 +214,37 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function search_records(Request $request)
   {
-    $session = $this->appbox->get_session();
-    $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);
+    $session  = $this->appbox->get_session();
+    $user     = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);
     $registry = $this->appbox->get_registry();
-    $result = new API_V1_result($request, $this);
+    $result   = new API_V1_result($request, $this);
 
     $search_type = ($request->get('search_type')
-            && in_array($request->get('search_type'), array(0, 1))) ?
-            $request->get('search_type') : 0;
+      && in_array($request->get('search_type'), array(0, 1))) ?
+      $request->get('search_type') : 0;
 
     $record_type = ($request->get('record_type')
-            && in_array(
-                    $request->get('record_type')
-                    , array('audio', 'video', 'image', 'document', 'flash'))
-            ) ?
-            $request->get('record_type') : '';
+      && in_array(
+        $request->get('record_type')
+        , array('audio', 'video', 'image', 'document', 'flash'))
+      ) ?
+      $request->get('record_type') : '';
 
     $params = array(
-        'fields' => is_array($request->get('fields')) ? $request->get('fields') : array()
-        , 'status' => is_array($request->get('status')) ? $request->get('status') : array()
-        , 'bases' => is_array($request->get('bases')) ? $request->get('bases') : array()
-        , 'search_type' => $search_type
-        , 'recordtype' => $record_type
-        , 'datemin' => $request->get('datemin') ? : ''
-        , 'datemax' => $request->get('datemax') ? : ''
-        , 'datefield' => $request->get('datefield') ? : ''
-        , 'sort' => $request->get('sort') ? : ''
-        , 'ord' => $request->get('ord') ? : ''
-        , 'stemme' => $request->get('stemme') ? : ''
-        , 'per_page' => $request->get('per_page') ? : 10
-        , 'query' => $request->get('query') ? : ''
-        , 'page' => (int) ($request->get('page') ? : 0)
+      'fields' => is_array($request->get('fields')) ? $request->get('fields') : array()
+      , 'status' => is_array($request->get('status')) ? $request->get('status') : array()
+      , 'bases' => is_array($request->get('bases')) ? $request->get('bases') : array()
+      , 'search_type' => $search_type
+      , 'recordtype'  => $record_type
+      , 'datemin'     => $request->get('datemin') ? : ''
+      , 'datemax'     => $request->get('datemax') ? : ''
+      , 'datefield'   => $request->get('datefield') ? : ''
+      , 'sort'        => $request->get('sort') ? : ''
+      , 'ord'         => $request->get('ord') ? : ''
+      , 'stemme'      => $request->get('stemme') ? : ''
+      , 'per_page'    => $request->get('per_page') ? : 10
+      , 'query'       => $request->get('query') ? : ''
+      , 'page'        => (int) ($request->get('page') ? : 0)
     );
 
     if (is_array($request->get('bases')) === false)
@@ -274,7 +274,7 @@ class API_V1_adapter extends API_V1_Abstract
     $options->set_sort($params['sort'], $params['ord']);
     $options->set_use_stemming($params['stemme']);
 
-    $perPage = $params['per_page'];
+    $perPage       = $params['per_page'];
     $search_engine = new searchEngine_adapter($registry);
     $search_engine->set_options($options);
 
@@ -293,17 +293,17 @@ class API_V1_adapter extends API_V1_Abstract
     $search_result = $search_engine->query_per_page($params['query'], $params["page"], $perPage);
 
     $ret = array(
-        'total_pages' => $search_result->get_total_pages()
-        , 'current_page' => $search_result->get_current_page()
-        , 'available_results' => $search_result->get_count_available_results()
-        , 'total_results' => $search_result->get_count_total_results()
-        , 'error' => $search_result->get_error()
-        , 'warning' => $search_result->get_warning()
-        , 'query_time' => $search_result->get_query_time()
-        , 'search_indexes' => $search_result->get_search_indexes()
-        , 'suggestions' => $search_result->get_suggestions()
-        , 'results' => array()
-        , 'query' => $search_engine->get_query()
+      'total_pages'       => $search_result->get_total_pages()
+      , 'current_page'      => $search_result->get_current_page()
+      , 'available_results' => $search_result->get_count_available_results()
+      , 'total_results'     => $search_result->get_count_total_results()
+      , 'error'             => $search_result->get_error()
+      , 'warning'           => $search_result->get_warning()
+      , 'query_time'        => $search_result->get_query_time()
+      , 'search_indexes'    => $search_result->get_search_indexes()
+      , 'suggestions'       => $search_result->get_suggestions()
+      , 'results'           => array()
+      , 'query' => $search_engine->get_query()
     );
 
     foreach ($search_result->get_datas()->get_elements() as $record)
@@ -333,9 +333,9 @@ class API_V1_adapter extends API_V1_Abstract
     $result = new API_V1_result($request, $this);
 
     $containers = $this->appbox
-            ->get_databox($databox_id)
-            ->get_record($record_id)
-            ->get_container_baskets();
+      ->get_databox($databox_id)
+      ->get_record($record_id)
+      ->get_container_baskets();
 
     $ret = array();
     foreach ($containers as $basket)
@@ -364,9 +364,9 @@ class API_V1_adapter extends API_V1_Abstract
     $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
 
     $result->set_datas(
-            array(
-                "metadatas" => $this->list_record_caption($record->get_caption())
-            )
+      array(
+        "metadatas" => $this->list_record_caption($record->get_caption())
+      )
     );
 
     return $result;
@@ -386,17 +386,17 @@ class API_V1_adapter extends API_V1_Abstract
     $result = new API_V1_result($request, $this);
 
     $record = $this->appbox
-            ->get_databox($databox_id)
-            ->get_record($record_id);
+      ->get_databox($databox_id)
+      ->get_record($record_id);
 
     $result->set_datas(
-            array(
-                "status" =>
-                $this->list_record_status(
-                        $this->appbox->get_databox($databox_id)
-                        , $record->get_status()
-                )
-            )
+      array(
+        "status" =>
+        $this->list_record_status(
+          $this->appbox->get_databox($databox_id)
+          , $record->get_status()
+        )
+      )
     );
 
     return $result;
@@ -437,8 +437,19 @@ class API_V1_adapter extends API_V1_Abstract
     try
     {
       $metadatas = $request->get('metadatas');
+
       if (!is_array($metadatas))
-        throw new Exception();
+      {
+        throw new Exception('Metadatas should be an array');
+      }
+
+      foreach ($metadatas as $metadata)
+      {
+        if (!is_array($metadata))
+        {
+          throw new Exception('Each Metadata value should be an array');
+        }
+      }
 
       $record->set_metadatas($metadatas);
       $result->set_datas(array("metadatas" => $this->list_record_caption($record->get_caption())));
@@ -453,9 +464,9 @@ class API_V1_adapter extends API_V1_Abstract
 
   public function set_record_status(Request $request, $databox_id, $record_id)
   {
-    $result = new API_V1_result($request, $this);
-    $databox = $this->appbox->get_databox($databox_id);
-    $record = $databox->get_record($record_id);
+    $result      = new API_V1_result($request, $this);
+    $databox     = $this->appbox->get_databox($databox_id);
+    $record      = $databox->get_record($record_id);
     $status_bits = $databox->get_statusbits();
 
     try
@@ -481,9 +492,9 @@ class API_V1_adapter extends API_V1_Abstract
 
       $record->set_binary_status($datas);
       $result->set_datas(array(
-          "status" =>
-          $this->list_record_status($databox, $record->get_status())
-              )
+        "status" =>
+        $this->list_record_status($databox, $record->get_status())
+        )
       );
     }
     catch (Exception $e)
@@ -504,9 +515,9 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function set_record_collection(Request $request, $databox_id, $record_id)
   {
-    $result = new API_V1_result($request, $this);
+    $result  = new API_V1_result($request, $this);
     $databox = $this->appbox->get_databox($databox_id);
-    $record = $databox->get_record($record_id);
+    $record  = $databox->get_record($record_id);
 
     try
     {
@@ -533,7 +544,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   public function get_record(Request $request, $databox_id, $record_id)
   {
-    $result = new API_V1_result($request, $this);
+    $result  = new API_V1_result($request, $this);
     $databox = $this->appbox->get_databox($databox_id);
     try
     {
@@ -570,7 +581,7 @@ class API_V1_adapter extends API_V1_Abstract
   {
     $result = new API_V1_result($request, $this);
 
-    $usr_id = $session = $this->appbox->get_session()->get_usr_id();
+    $usr_id  = $session = $this->appbox->get_session()->get_usr_id();
 
     $result->set_datas(array('baskets' => $this->list_baskets($usr_id)));
 
@@ -585,7 +596,7 @@ class API_V1_adapter extends API_V1_Abstract
    */
   protected function list_baskets($usr_id)
   {
-    $em = $this->core->getEntityManager();
+    $em   = $this->core->getEntityManager();
     $repo = $em->getRepository('\Entities\Basket');
     /* @var $repo \Repositories\BasketRepository */
 
@@ -643,7 +654,7 @@ class API_V1_adapter extends API_V1_Abstract
   {
     $result = new API_V1_result($request, $this);
 
-    $em = $this->core->getEntityManager();
+    $em         = $this->core->getEntityManager();
     $repository = $em->getRepository('\Entities\Basket');
 
 
@@ -667,7 +678,7 @@ class API_V1_adapter extends API_V1_Abstract
   {
     $result = new API_V1_result($request, $this);
 
-    $em = $this->core->getEntityManager();
+    $em         = $this->core->getEntityManager();
     $repository = $em->getRepository('\Entities\Basket');
 
     /* @var $repository \Repositories\BasketRepository */
@@ -675,11 +686,11 @@ class API_V1_adapter extends API_V1_Abstract
     $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
 
     $result->set_datas(
-            array("basket_elements" =>
-                array(
-                    $Basket->getId() => $this->list_basket_content($Basket)
-                )
-            )
+      array("basket_elements" =>
+        array(
+          $Basket->getId() => $this->list_basket_content($Basket)
+        )
+      )
     );
 
     return $result;
@@ -714,40 +725,40 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_basket_element(\Entities\BasketElement $basket_element)
   {
     $ret = array(
-        'basket_element_id' => $basket_element->getId()
-        , 'order' => $basket_element->getOrd()
-        , 'record' => $this->list_record($basket_element->getRecord())
-        , 'validation_item' => !!$basket_element->getValidationDatas()
+      'basket_element_id' => $basket_element->getId()
+      , 'order'             => $basket_element->getOrd()
+      , 'record'            => $this->list_record($basket_element->getRecord())
+      , 'validation_item'   => !!$basket_element->getValidationDatas()
     );
 
     if ($basket_element->getValidationDatas())
     {
       $choices = array();
-      $agreement = $note = null;
+      $agreement = $note      = null;
 
       foreach ($basket_element->getValidationDatas() as $validation_datas)
       {
-        $user = $validation_datas->getParticipant()->getUser();
+        $user                     = $validation_datas->getParticipant()->getUser();
         /* @var $validation_datas Entities\ValidationData */
         $choices[$user->get_id()] = array(
-            'usr_id' => $user->get_id(),
-            'usr_name' => $user->get_display_name(),
-            'is_mine' => $user->get_id() == $this->core->getAuthenticatedUser()->get_id(),
-            'agreement' => $validation_datas->getAgreement(),
-            'updated_on' => $validation_datas->getUpdated()->format(DATE_ATOM),
-            'note' => $validation_datas->getNote()
+          'usr_id'     => $user->get_id(),
+          'usr_name'   => $user->get_display_name(),
+          'is_mine'    => $user->get_id() == $this->core->getAuthenticatedUser()->get_id(),
+          'agreement'  => $validation_datas->getAgreement(),
+          'updated_on' => $validation_datas->getUpdated()->format(DATE_ATOM),
+          'note'       => $validation_datas->getNote()
         );
 
         if ($user->get_id() == $this->core->getAuthenticatedUser()->get_id())
         {
           $agreement = $validation_datas->getAgreement();
-          $note = $validation_datas->getNote();
+          $note      = $validation_datas->getNote();
         }
       }
 
-      $ret['choices'] = $choices();
+      $ret['choices']   = $choices();
       $ret['agreement'] = $agreement();
-      $ret['note'] = $note();
+      $ret['note']      = $note();
     }
 
     return $ret;
@@ -766,7 +777,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     $name = $request->get('name');
 
-    $em = $this->core->getEntityManager();
+    $em         = $this->core->getEntityManager();
     $repository = $em->getRepository('\Entities\Basket');
 
 
@@ -779,11 +790,11 @@ class API_V1_adapter extends API_V1_Abstract
     $em->flush();
 
     $result->set_datas(
-            array(
-                "basket" =>
-                array($Basket->getId() => $this->list_basket_content($Basket)
-                )
-            )
+      array(
+        "basket" =>
+        array($Basket->getId() => $this->list_basket_content($Basket)
+        )
+      )
     );
 
     return $result;
@@ -802,7 +813,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     $desc = $request->get('description');
 
-    $em = $this->core->getEntityManager();
+    $em         = $this->core->getEntityManager();
     $repository = $em->getRepository('\Entities\Basket');
 
 
@@ -815,11 +826,11 @@ class API_V1_adapter extends API_V1_Abstract
     $em->flush();
 
     $result->set_datas(
-            array(
-                "basket" =>
-                array($Basket->getId() => $this->list_basket_content($Basket)
-                )
-            )
+      array(
+        "basket" =>
+        array($Basket->getId() => $this->list_basket_content($Basket)
+        )
+      )
     );
 
     return $result;
@@ -875,15 +886,15 @@ class API_V1_adapter extends API_V1_Abstract
     $feed = Feed_Adapter::load_with_user($this->appbox, $user, $publication_id);
 
     $offset_start = (int) ($request->get('offset_start') ? : 0);
-    $per_page = (int) ($request->get('per_page') ? : 5);
+    $per_page     = (int) ($request->get('per_page') ? : 5);
 
     $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
 
     $datas = array(
-        'feed' => $this->list_publication($feed, $user)
-        , 'offset_start' => $offset_start
-        , 'per_page' => $per_page
-        , 'entries' => $this->list_publications_entries($feed, $offset_start, $per_page)
+      'feed'         => $this->list_publication($feed, $user)
+      , 'offset_start' => $offset_start
+      , 'per_page'     => $per_page
+      , 'entries'      => $this->list_publications_entries($feed, $offset_start, $per_page)
     );
 
     $result->set_datas($datas);
@@ -901,15 +912,15 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_publication(Feed_Adapter $feed, $user)
   {
     return array(
-        'id' => $feed->get_id()
-        , 'title' => $feed->get_title()
-        , 'subtitle' => $feed->get_subtitle()
-        , 'total_entries' => $feed->get_count_total_entries()
-        , 'icon' => $feed->get_icon_url()
-        , 'public' => $feed->is_public()
-        , 'is_mine' => $feed->is_owner($user)
-        , 'created_on' => $feed->get_created_on()->format(DATE_ATOM)
-        , 'updated_on' => $feed->get_updated_on()->format(DATE_ATOM)
+      'id'            => $feed->get_id()
+      , 'title'         => $feed->get_title()
+      , 'subtitle'      => $feed->get_subtitle()
+      , 'total_entries' => $feed->get_count_total_entries()
+      , 'icon'          => $feed->get_icon_url()
+      , 'public'        => $feed->is_public()
+      , 'is_mine'       => $feed->is_owner($user)
+      , 'created_on'    => $feed->get_created_on()->format(DATE_ATOM)
+      , 'updated_on'    => $feed->get_updated_on()->format(DATE_ATOM)
     );
   }
 
@@ -933,8 +944,8 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     return array(
-        'offset_start' => $offset_start
-        , 'entries' => $out
+      'offset_start' => $offset_start
+      , 'entries'      => $out
     );
   }
 
@@ -953,13 +964,13 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     return array(
-        'author_email' => $entry->get_author_email()
-        , 'author_name' => $entry->get_author_name()
-        , 'created_on' => $entry->get_created_on()->format(DATE_ATOM)
-        , 'updated_on' => $entry->get_updated_on()->format(DATE_ATOM)
-        , 'title' => $entry->get_title()
-        , 'subtitle' => $entry->get_subtitle()
-        , 'items' => $items
+      'author_email' => $entry->get_author_email()
+      , 'author_name'  => $entry->get_author_name()
+      , 'created_on'   => $entry->get_created_on()->format(DATE_ATOM)
+      , 'updated_on'   => $entry->get_updated_on()->format(DATE_ATOM)
+      , 'title'        => $entry->get_title()
+      , 'subtitle'     => $entry->get_subtitle()
+      , 'items'        => $items
     );
   }
 
@@ -972,8 +983,8 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_publication_entry_item(Feed_Entry_Item $item)
   {
     $datas = array(
-        'item_id' => $item->get_id()
-        , 'record' => $this->list_record($item->get_record())
+      'item_id' => $item->get_id()
+      , 'record'  => $this->list_record($item->get_record())
     );
 
     return $datas;
@@ -1021,12 +1032,12 @@ class API_V1_adapter extends API_V1_Abstract
       $permalink = null;
 
     return array(
-        'permalink' => $permalink
-        , 'height' => $media->get_height()
-        , 'width' => $media->get_width()
-        , 'filesize' => $media->get_size()
-        , 'player_type' => $media->get_type()
-        , 'mime_type' => $media->get_mime()
+      'permalink'   => $permalink
+      , 'height'      => $media->get_height()
+      , 'width'       => $media->get_width()
+      , 'filesize'    => $media->get_size()
+      , 'player_type' => $media->get_type()
+      , 'mime_type'   => $media->get_mime()
     );
   }
 
@@ -1040,13 +1051,13 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_permalink(media_Permalink_Adapter &$permalink, registryInterface &$registry)
   {
     return array(
-        'created_on' => $permalink->get_created_on()->format(DATE_ATOM)
-        , 'id' => $permalink->get_id()
-        , 'is_activated' => $permalink->get_is_activated()
-        , 'label' => $permalink->get_label()
-        , 'last_modified' => $permalink->get_last_modified()->format(DATE_ATOM)
-        , 'page_url' => $permalink->get_page($registry)
-        , 'url' => $permalink->get_url($registry)
+      'created_on'    => $permalink->get_created_on()->format(DATE_ATOM)
+      , 'id'            => $permalink->get_id()
+      , 'is_activated'  => $permalink->get_is_activated()
+      , 'label'         => $permalink->get_label()
+      , 'last_modified' => $permalink->get_last_modified()->format(DATE_ATOM)
+      , 'page_url'      => $permalink->get_page($registry)
+      , 'url'           => $permalink->get_url($registry)
     );
   }
 
@@ -1060,10 +1071,10 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_record_status(databox $databox, $status)
   {
     $status = strrev($status);
-    $ret = array();
+    $ret    = array();
     foreach ($databox->get_statusbits() as $bit => $status_datas)
     {
-      $ret[$bit] = array('bit' => $bit, 'state' => !!substr($status, ($bit - 1), 1));
+      $ret[$bit] = array('bit'   => $bit, 'state' => !!substr($status, ($bit - 1), 1));
     }
 
     return $ret;
@@ -1101,12 +1112,11 @@ class API_V1_adapter extends API_V1_Abstract
      * @todo  ajouter une option pour avoir les values serialisées
      *        dans un cas multi
      */
-
     return array(
-        'meta_id' => $value->getId()
-        , 'meta_structure_id' => $field->get_meta_struct_id()
-        , 'name' => $field->get_name()
-        , 'value' => $value->getValue()
+      'meta_id'           => $value->getId()
+      , 'meta_structure_id' => $field->get_meta_struct_id()
+      , 'name'              => $field->get_name()
+      , 'value'             => $value->getValue()
     );
   }
 
@@ -1119,13 +1129,13 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_basket(\Entities\Basket $basket)
   {
     $ret = array(
-        'created_on' => $basket->getCreated()->format(DATE_ATOM)
-        , 'description' => (string) $basket->getDescription()
-        , 'name' => $basket->getName()
-        , 'pusher_usr_id' => $basket->getPusherId()
-        , 'ssel_id' => $basket->getId()
-        , 'updated_on' => $basket->getUpdated()->format(DATE_ATOM)
-        , 'unread' => !$basket->getIsRead()
+      'created_on'    => $basket->getCreated()->format(DATE_ATOM)
+      , 'description'   => (string) $basket->getDescription()
+      , 'name'          => $basket->getName()
+      , 'pusher_usr_id' => $basket->getPusherId()
+      , 'ssel_id'       => $basket->getId()
+      , 'updated_on'    => $basket->getUpdated()->format(DATE_ATOM)
+      , 'unread'        => !$basket->getIsRead()
     );
 
     if ($basket->getValidation())
@@ -1138,11 +1148,11 @@ class API_V1_adapter extends API_V1_Abstract
         $user = $participant->getUser();
 
         $users[$user->get_id()] = array(
-            'usr_id' => $user->get_id(),
-            'usr_name' => $user->get_display_name(),
-            'confirmed' => $participant->getIsConfirmed(),
-            'can_agree' => $participant->getCanAgree(),
-            'can_see_others' => $participant->getCanSeeOthers()
+          'usr_id'         => $user->get_id(),
+          'usr_name'       => $user->get_display_name(),
+          'confirmed'      => $participant->getIsConfirmed(),
+          'can_agree'      => $participant->getCanAgree(),
+          'can_see_others' => $participant->getCanSeeOthers()
         );
       }
 
@@ -1154,14 +1164,14 @@ class API_V1_adapter extends API_V1_Abstract
       $user = \User_Adapter::getInstance($this->appbox->get_session()->get_usr_id(), $this->appbox);
 
       $ret = array_merge(
-              array(
-          'validation_users' => $users
-          , 'validation_end_date' => $expires_on_atom
-          , 'validation_infos' => $basket->getValidation()->getValidationString($user)
-          , 'validation_confirmed' => $basket->getValidation()->getParticipant($user)->getIsConfirmed()
-          , 'mine' => $basket->getValidation()->isInitiator($user)
-              )
-              , $ret
+        array(
+        'validation_users'     => $users
+        , 'validation_end_date'  => $expires_on_atom
+        , 'validation_infos'     => $basket->getValidation()->getValidationString($user)
+        , 'validation_confirmed' => $basket->getValidation()->getParticipant($user)->getIsConfirmed()
+        , 'mine'                 => $basket->getValidation()->isInitiator($user)
+        )
+        , $ret
       );
     }
 
@@ -1177,21 +1187,21 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_record(record_adapter $record)
   {
     return array(
-        'databox_id' => $record->get_sbas_id()
-        , 'record_id' => $record->get_record_id()
-        , 'mime_type' => $record->get_mime()
-        , 'title' => $record->get_title()
-        , 'original_name' => $record->get_original_name()
-        , 'last_modification' => $record->get_modification_date()->format(DATE_ATOM)
-        , 'created_on' => $record->get_creation_date()->format(DATE_ATOM)
-        , 'collection_id' => phrasea::collFromBas($record->get_base_id())
-        , 'sha256' => $record->get_sha256()
-        , 'thumbnail' => $this->list_embedable_media(
-                $record->get_thumbnail(), registry::get_instance()
-        )
-        , 'technical_informations' => $record->get_technical_infos()
-        , 'phrasea_type' => $record->get_type()
-        , 'uuid' => $record->get_uuid()
+      'databox_id'             => $record->get_sbas_id()
+      , 'record_id'              => $record->get_record_id()
+      , 'mime_type'              => $record->get_mime()
+      , 'title'                  => $record->get_title()
+      , 'original_name'          => $record->get_original_name()
+      , 'last_modification'      => $record->get_modification_date()->format(DATE_ATOM)
+      , 'created_on'             => $record->get_creation_date()->format(DATE_ATOM)
+      , 'collection_id'          => phrasea::collFromBas($record->get_base_id())
+      , 'sha256'                 => $record->get_sha256()
+      , 'thumbnail'              => $this->list_embedable_media(
+        $record->get_thumbnail(), registry::get_instance()
+      )
+      , 'technical_informations' => $record->get_technical_infos()
+      , 'phrasea_type'           => $record->get_type()
+      , 'uuid'                   => $record->get_uuid()
     );
   }
 
@@ -1222,7 +1232,7 @@ class API_V1_adapter extends API_V1_Abstract
     $ret = array();
     foreach ($databox->get_cgus() as $locale => $array_terms)
     {
-      $ret[$locale] = array('locale' => $locale, 'terms' => $array_terms['value']);
+      $ret[$locale] = array('locale' => $locale, 'terms'  => $array_terms['value']);
     }
 
     return $ret;
@@ -1238,8 +1248,8 @@ class API_V1_adapter extends API_V1_Abstract
     $ret = array();
 
     $ret['databox_id'] = $databox->get_sbas_id();
-    $ret['name'] = $databox->get_viewname();
-    $ret['version'] = $databox->get_version();
+    $ret['name']       = $databox->get_viewname();
+    $ret['version']    = $databox->get_version();
 
     return $ret;
   }
@@ -1271,10 +1281,10 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_collection(collection $collection)
   {
     $ret = array(
-        'base_id' => $collection->get_base_id()
-        , 'coll_id' => $collection->get_coll_id()
-        , 'name' => $collection->get_name()
-        , 'record_amount' => $collection->get_record_amount()
+      'base_id'       => $collection->get_base_id()
+      , 'coll_id'       => $collection->get_coll_id()
+      , 'name'          => $collection->get_name()
+      , 'record_amount' => $collection->get_record_amount()
     );
 
     return $ret;
@@ -1292,13 +1302,13 @@ class API_V1_adapter extends API_V1_Abstract
     foreach ($status as $n => $datas)
     {
       $ret[$n] = array(
-          'bit' => $n
-          , 'label_on' => $datas['labelon']
-          , 'label_off' => $datas['labeloff']
-          , 'img_on' => $datas['img_on']
-          , 'img_off' => $datas['img_off']
-          , 'searchable' => $datas['searchable']
-          , 'printable' => $datas['printable']
+        'bit'        => $n
+        , 'label_on'   => $datas['labelon']
+        , 'label_off'  => $datas['labeloff']
+        , 'img_on'     => $datas['img_on']
+        , 'img_off'    => $datas['img_off']
+        , 'searchable' => $datas['searchable']
+        , 'printable'  => $datas['printable']
       );
     }
 
@@ -1331,18 +1341,18 @@ class API_V1_adapter extends API_V1_Abstract
   protected function list_databox_metadata_field_properties(databox_field $databox_field)
   {
     $ret = array(
-        'id' => $databox_field->get_id()
-        , 'namespace' => $databox_field->get_metadata_namespace()
-        , 'source' => $databox_field->get_metadata_source()
-        , 'tagname' => $databox_field->get_metadata_tagname()
-        , 'name' => $databox_field->get_name()
-        , 'separator' => $databox_field->get_separator()
-        , 'thesaurus_branch' => $databox_field->get_tbranch()
-        , 'type' => $databox_field->get_type()
-        , 'indexable' => $databox_field->is_indexable()
-        , 'multivalue' => $databox_field->is_multi()
-        , 'readonly' => $databox_field->is_readonly()
-        , 'required' => $databox_field->is_required()
+      'id'               => $databox_field->get_id()
+      , 'namespace'        => $databox_field->get_metadata_namespace()
+      , 'source'           => $databox_field->get_metadata_source()
+      , 'tagname'          => $databox_field->get_metadata_tagname()
+      , 'name'             => $databox_field->get_name()
+      , 'separator'        => $databox_field->get_separator()
+      , 'thesaurus_branch' => $databox_field->get_tbranch()
+      , 'type'             => $databox_field->get_type()
+      , 'indexable'        => $databox_field->is_indexable()
+      , 'multivalue'       => $databox_field->is_multi()
+      , 'readonly'         => $databox_field->is_readonly()
+      , 'required'         => $databox_field->is_required()
     );
 
     return $ret;
