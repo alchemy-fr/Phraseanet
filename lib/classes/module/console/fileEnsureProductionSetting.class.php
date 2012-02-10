@@ -76,7 +76,7 @@ class module_console_fileEnsureProductionSetting extends Command
     $parser = new Core\Configuration\Parser\Yaml();
     $handler = new Core\Configuration\Handler($spec, $parser);
 
-    $this->configuration = new Core\Configuration($handler, 'prod');
+    $this->configuration = new Core\Configuration($handler);
 
     if (!$this->configuration->isInstalled())
     {
