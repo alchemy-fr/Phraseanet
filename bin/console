@@ -25,6 +25,8 @@ use Symfony\Component\Console\Application;
 
 require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
 
+$result_code = 1;
+
 try
 {
   \bootstrap::register_autoloads();
@@ -63,9 +65,11 @@ try
   $app->add(new module_console_fileConfigCheck('check:config'));
   $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
   $app->add(new module_console_systemConfigCheck('check:system'));
-  $app->run();
+  $result_code = $app->run();
 }
 catch (Exception $e)
 {
   echo "an error occured";
 }
+
+exit($result_code);
