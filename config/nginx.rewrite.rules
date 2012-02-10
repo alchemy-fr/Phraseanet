@@ -18,6 +18,8 @@ rewrite ^/admin/typeahead/.*$     /admin/router.php last;
 
 rewrite ^/prod/records/edit/.*$   /prod/router.php last;
 rewrite ^/prod/records/movecollection/.*$ /prod/router.php last;
+rewrite ^/prod/records/delete/.*$ /prod/router.php last;
+rewrite ^/prod/order/.*$          /prod/router.php last;
 rewrite ^/prod/bridge/.*$         /prod/router.php last;
 rewrite ^/prod/lists/.*$          /prod/router.php last;
 rewrite ^/prod/MustacheLoader/.*$ /prod/router.php last;
@@ -29,8 +31,14 @@ rewrite ^/prod/baskets/.*$        /prod/router.php last;
 rewrite ^/prod/story/.*$          /prod/router.php last;
 rewrite ^/prod/WorkZone/.*$       /prod/router.php last;
 rewrite ^/prod/language/.*$       /prod/router.php last;
+rewrite ^/prod/TOU/.*$            /prod/router.php last;
 rewrite ^/prod/UserPreferences/.*$  /prod/router.php last;
 rewrite ^/prod/$                  /prod/router.php last;
+
+rewrite ^/prod/query/.*$          /prod/router.php last;
+rewrite ^/prod/export/.*$         /prod/router.php last;
+rewrite ^/prod/record/preview/.*$ /prod/router.php last;
+rewrite ^/prod/notifications/.*$  /prod/router.php last;
 
 rewrite ^/robots.txt$             /index.php last;
 rewrite ^/feeds/.*$               /index.php last;

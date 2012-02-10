@@ -629,16 +629,17 @@ function cancelCgus(id)
 
   $.ajax({
     type: "POST",
-    url: "/prod/prodFeedBack.php",
-    data: {
-      sbas_id:id,
-      action:'DENY_CGU'
-    },
+    url: "/prod/TOU/deny/" + id + "/",
+    dataType:'json',
     success: function(data){
-      if(data == '1')
+      if(data.success)
       {
         alert(language.cgusRelog);
         self.location.replace(self.location.href);
+      }
+      alert
+      {
+        humane.error(data.message);
       }
     }
   });

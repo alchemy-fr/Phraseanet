@@ -749,11 +749,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if ($data)
     {
       if (isset($this->technical_datas[$data]))
-
+      {
         return $this->technical_datas[$data];
+      }
       else
-
+      {
         return false;
+      }
     }
 
     return $this->technical_datas;
@@ -839,34 +841,39 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $this->original_name = $original_name;
 
-    foreach ($this->get_caption()->get_fields() as $field)
+    foreach ($this->get_databox()->get_meta_structure()->get_elements() as $data_field)
     {
-      if ($field->get_databox_field()->get_source() != metadata_description_PHRASEANET_tffilename::get_source())
+      if ($data_field->get_metadata_source() != metadata_description_PHRASEANET_tffilename::get_source())
       {
         continue;
       }
 
-      /* @var $field caption_field */
       /**
        * Replacing original name in multi values is non sense
        */
-      if (!$field->is_multi())
+      if (!$data_field->is_multi())
       {
         continue;
       }
-      else
-      {
-        $value = array_pop($field->get_values());
 
-        $this->set_metadatas(
-          array(
-            'meta_struct_id' => $field->get_meta_struct_id()
-            , 'meta_id'        => $value->getId()
-            , 'value'          => $original_name
-          )
-          , true
-        );
+      try
+      {
+        $field   = $this->get_caption()->get_field($data_field->get_name())->get_meta_id();
+        $value   = array_pop($field->get_values());
+        $meta_id = $value->getId();
       }
+      catch (\Exception $e)
+      {
+        $meta_id = null;
+      }
+
+      $metas = array(
+        'meta_struct_id' => $field->get_meta_struct_id()
+        , 'meta_id'        => $meta_id
+        , 'value'          => $original_name
+      );
+
+      $this->set_metadatas($metas, true);
     }
 
     $sql = 'UPDATE record
@@ -1299,19 +1306,19 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     $caption_field = new caption_field($databox_field, $this);
 
-    $vocab = $vocab_id   = null;
+    $vocab    = $vocab_id = null;
 
     if (isset($params['vocabularyId']) && $databox_field->getVocabularyControl())
     {
       try
       {
-        $vocab = $databox_field->getVocabularyControl();
-        $vocab_id   = $params['vocabularyId'];
+        $vocab    = $databox_field->getVocabularyControl();
+        $vocab_id = $params['vocabularyId'];
         $vocab->validate($vocab_id);
       }
       catch (\Exception $e)
       {
-        $vocab = $vocab_id   = null;
+        $vocab    = $vocab_id = null;
       }
     }
 
@@ -1330,7 +1337,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       else
       {
         $caption_field_value->set_value($params['value']);
-        if($vocab && $vocab_id)
+        if ($vocab && $vocab_id)
         {
           $caption_field_value->setVocab($vocab, $vocab_id);
         }
@@ -1357,7 +1364,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     foreach ($metadatas as $param)
     {
       if (!is_array($param))
-        throw new Exception_InvalidArgument();
+      {
+        throw new Exception_InvalidArgument('Invalid metadatas argument');
+      }
 
       $db_field = \databox_field::get_instance($this->get_databox(), $param['meta_struct_id']);
 
@@ -1489,8 +1498,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_reg_name()
   {
     if (!$this->is_grouping())
-
+    {
       return false;
+    }
 
     $balisename = '';
 
@@ -1633,7 +1643,47 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         , ':value'     => $value
       ));
     }
+
     $stmt->closeCursor();
+
+    foreach ($record->get_databox()->get_meta_structure()->get_elements() as $data_field)
+    {
+      if ($data_field->get_metadata_source() != metadata_description_PHRASEANET_tfrecordid::get_source())
+      {
+
+        continue;
+      }
+
+      /**
+       * Replacing record_id in multi values is non sense
+       */
+      if (!$data_field->is_multi())
+      {
+        continue;
+      }
+
+      try
+      {
+        $field   = $record->get_caption()->get_field($data_field->get_name())->get_meta_id();
+        $value   = array_pop($field->get_values());
+        $meta_id = $value->getId();
+      }
+      catch (\Exception $e)
+      {
+        $meta_id = null;
+      }
+
+      $metas = array(
+        array(
+          'meta_struct_id' => $data_field->get_id()
+          , 'meta_id'        => $meta_id
+          , 'value'          => array($record->get_record_id())
+        )
+      );
+
+      $record->set_metadatas($metas, true);
+    }
+
 
     return $record;
   }
@@ -1686,7 +1736,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $hd = $this->get_subdef('document');
     if ($hd->is_physically_present())
-
       return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
     return null;
   }
