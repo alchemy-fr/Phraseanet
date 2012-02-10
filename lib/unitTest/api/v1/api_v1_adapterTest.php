@@ -95,7 +95,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_version()
   {
-    $this->assertEquals('1.0', $this->object->get_version());
+    $this->assertEquals('1.1', $this->object->get_version());
   }
 
   public function testGet_databoxes()
@@ -264,18 +264,17 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
       $metadatas[] = array(
         'meta_id'        => $meta_id
         , 'meta_struct_id' => $field->get_id()
-        , 'value'          => 'podom pom pom ' . $field->get_id()
+        , 'value'          => 'poOM POOM TCHOK ' . $field->get_id()
       );
     }
 
-    $metadatas          = array_shift($metadatas);
-    $metadatas["value"] = "new_value";
-
-    $request = new Request(array("metadatas" => array($metadatas)), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
+    $request = new Request(array("metadatas" => $metadatas), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
 
     $result = $this->object->set_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
 
     $response = json_decode($result->format());
+
+    $this->assertEquals($response->meta->http_code, 200);
 
     $this->checkResponseField($result, "metadatas", PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT);
   }

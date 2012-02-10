@@ -1011,7 +1011,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     $this->assertObjectHasAttribute('response', $content);
     $this->assertTrue(is_object($content->meta), 'Le bloc meta est un objet json');
     $this->assertTrue(is_object($content->response), 'Le bloc reponse est un objet json');
-    $this->assertEquals('1.0', $content->meta->api_version);
+    $this->assertEquals('1.1', $content->meta->api_version);
     $this->assertNotNull($content->meta->response_time);
     $this->assertEquals('UTF-8', $content->meta->charset);
   }

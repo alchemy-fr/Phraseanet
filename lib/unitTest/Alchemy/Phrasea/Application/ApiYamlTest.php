@@ -1032,7 +1032,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     $this->assertArrayHasKey('response', $content);
     $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["meta"], 'La response est un array');
     $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["response"], 'La response est un objet');
-    $this->assertEquals('1.0', $content["meta"]["api_version"]);
+    $this->assertEquals('1.1', $content["meta"]["api_version"]);
     $this->assertNotNull($content["meta"]["response_time"]);
     $this->assertEquals('UTF-8', $content["meta"]["charset"]);
   }
@@ -1044,7 +1044,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     $this->assertArrayHasKey('response', $content);
     $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["meta"], 'La response est un array');
     $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["response"], 'La response est un array');
-    $this->assertEquals('1.0', $content["meta"]["api_version"]);
+    $this->assertEquals('1.1', $content["meta"]["api_version"]);
     $this->assertNotNull($content["meta"]["response_time"]);
     $this->assertEquals('UTF-8', $content["meta"]["charset"]);
   }
