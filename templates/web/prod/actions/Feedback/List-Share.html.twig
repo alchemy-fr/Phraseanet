@@ -3,6 +3,18 @@
 {% else %}
   <div id="ListShare">
     <div>
+      <h2>{% trans 'About Roles : ' %}</h2>
+      <p>
+        {% trans 'Admin can edit shares, modify content' %}
+      </p>
+      <p>
+        {% trans 'Editor can modify content' %}
+      </p>
+      <p>
+        {% trans 'Access user have readonly access' %}
+      </p>
+    </div>
+    <div>
       <form name="list_share_user">
         <input type="text" class="search" name="user" value="" style="width:120px" />
       </form>
@@ -20,6 +32,11 @@
               <input type="hidden" name="usr_id" value="{{ owner.getUser().get_id() }}" />
             </td>
             <td>
+              {% if user.get_id() == owner.getUser(user).get_id() %}
+                {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                  {% trans 'You are Admin' %}
+                {% endif %}
+              {% else %}
               <label>{% trans 'Role' %}</label>
               <select name="role">
                 <option {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_USER') %}selected {% endif %} value="{{ constant('\\Entities\\UsrListOwner::ROLE_USER') }}">
@@ -32,6 +49,7 @@
                   {% trans 'Admin' %}
                 </option>
               </select>
+              {% endif %}
             </td>
             <td>
               <a href="#" class="deleter">

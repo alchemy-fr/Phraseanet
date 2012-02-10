@@ -519,7 +519,7 @@ class UsrLists implements ControllerProviderInterface
           $list = $repository->findUserListByUserAndId($user, $list_id);
           /* @var $list \Entities\UsrList */
 
-          if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
+          if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_ADMIN)
           {
             $list = null;
             throw new \Exception(_('You are not authorized to do this'));
