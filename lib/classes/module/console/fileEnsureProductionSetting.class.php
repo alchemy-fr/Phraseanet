@@ -23,12 +23,10 @@ use Alchemy\Phrasea\Core;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_console_fileConfigCheck extends Command
+class module_console_fileEnsureProductionSetting extends Command
 {
-
-  const PROD = 'prod';
-  const DEV = 'dev';
-  const TEST = 'test';
+  protected $hasErrors = false;
+  
   const ALERT = 1;
   const ERROR = 0;
 
@@ -50,7 +48,7 @@ class module_console_fileConfigCheck extends Command
   {
     parent::__construct($name);
 
-    $this->setDescription('check configuration file');
+    $this->setDescription('Ensure production settings');
 
     return $this;
   }
@@ -58,20 +56,16 @@ class module_console_fileConfigCheck extends Command
   public function execute(InputInterface $input, OutputInterface $output)
   {
 
-    foreach (array(self::DEV, self::PROD, self::TEST) as $env)
-    {
-      $output->writeln("");
-      $output->writeln(sprintf("Checking for %s configuration settings", $env));
-      $output->writeln("=========================================");
-      $output->writeln("");
-      $this->env = $env;
+    $output->writeln("");
+    $output->writeln(sprintf("Checking for PROD settings"));
+    $output->writeln("=============================");
+    $output->writeln("");
 
-      $this->initTests();
+    $this->initTests();
 
-      $this->prepareTests($output);
+    $this->prepareTests($output);
 
-      $this->runTests($output);
-    }
+    $this->runTests($output);
 
     exit(1);
   }
@@ -82,7 +76,7 @@ class module_console_fileConfigCheck extends Command
     $parser = new Core\Configuration\Parser\Yaml();
     $handler = new Core\Configuration\Handler($spec, $parser);
 
-    $this->configuration = new Core\Configuration($handler, $this->env);
+    $this->configuration = new Core\Configuration($handler, 'prod');
 
     if (!$this->configuration->isInstalled())
     {
@@ -101,7 +95,7 @@ class module_console_fileConfigCheck extends Command
     catch (\Exception $e)
     {
       $previous = $e->getPrevious();
-      
+
       $output->writeln(sprintf(
                       "<error>%s FATAL error : %s</error>"
                       , $e->getMessage()
@@ -109,12 +103,13 @@ class module_console_fileConfigCheck extends Command
                               $previous->getMessage() : 'Unknown.'
               )
       );
-      exit(sprintf("\nConfig check test suite can not continue please correct FATAL error and relaunch.\n"));
+      exit(sprintf("\nCheck test suite can not continue please correct FATAL error and relaunch.\n"));
     }
   }
 
   private function runTests(OutputInterface $output)
   {
+    $nbErrors = 0;
     foreach ($this->testSuite as $test)
     {
       try
@@ -123,6 +118,7 @@ class module_console_fileConfigCheck extends Command
       }
       catch (\Exception $e)
       {
+        $nbErrors++;
         $previous = $e->getPrevious();
 
         $output->writeln(sprintf(
@@ -132,7 +128,13 @@ class module_console_fileConfigCheck extends Command
                                 $previous->getMessage() : 'Unknow'
                 )
         );
+        $output->writeln("");
       }
+    }
+    if(!$nbErrors)
+    {
+       $output->writeln("<info>Your production settings are setted correctly !</info>");
+       $output->writeln("");
     }
   }
 
@@ -170,7 +172,6 @@ class module_console_fileConfigCheck extends Command
       $e = new \Exception($message);
       throw new \Exception(sprintf("Check parsing file\n"), null, $e);
     }
-    $output->writeln("<info>Parsing File OK</info>");
 
     return;
   }
@@ -185,7 +186,6 @@ class module_console_fileConfigCheck extends Command
     {
       throw new \Exception(sprintf("Check get selected environment\n"), null, $e);
     }
-    $output->writeln("<info>Get Selected Environment OK</info>");
 
     return;
   }
@@ -206,7 +206,6 @@ class module_console_fileConfigCheck extends Command
     {
       throw new \Exception(sprintf("Check get selected environment from file\n"), null, $e);
     }
-    $output->writeln("<info>Get Selected Environment from file OK</info>");
 
     return;
   }
@@ -219,54 +218,26 @@ class module_console_fileConfigCheck extends Command
 
       $url = $phraseanet->get("servername");
 
-      if ($this->env === self::TEST)
+      if ($phraseanet->get("debug") !== false)
       {
-        if ($phraseanet->get("debug") !== true)
-        {
-          $output->writeln(sprintf(
-                          "<comment>%s:phraseanet:debug must be initialized to true<:comment>"
-                          , $this->env
-                  )
-          );
-        }
-
-        if ($phraseanet->get("display_errors") !== true)
-        {
-          throw new \Exception(sprintf(
-                          "%s:phraseanet:debug must be initialized to true"
-                          , $this->env
-                  )
-          );
-        }
+        throw new \Exception("phraseanet:debug must be initialized to false");
       }
 
-      if ($this->env === self::PROD)
+      if ($phraseanet->get("display_errors") !== false)
       {
-        if ($phraseanet->get("debug") !== false)
-        {
-          throw new \Exception(sprintf(
-                          "%s:phraseanet:debug must be initialized to false"
-                          , $this->env
-                  )
-          );
-        }
+        throw new \Exception("phraseanet:debug must be initialized to false");
+      }
 
-        if ($phraseanet->get("display_errors") !== false)
-        {
-          throw new \Exception(sprintf(
-                          "%s:phraseanet:debug must be initialized to false"
-                          , $this->env
-                  )
-          );
-        }
+
+      if ($phraseanet->get("maintenance") === true)
+      {
+        throw new \Exception("phraseanet:warning maintenance is set to false");
       }
     }
     catch (\Exception $e)
     {
       throw new \Exception(sprintf("Check Phraseanet Scope\n"), null, $e);
     }
-
-    $output->writeln("<info>Phraseanet Scope OK</info>");
 
     return;
   }
@@ -277,6 +248,11 @@ class module_console_fileConfigCheck extends Command
     {
       $connexionName = $this->configuration->getPhraseanet()->get('database');
       $connexion = $this->configuration->getConnexion($connexionName);
+
+      if ($connexion->get("driver") === "pdo_sqlite")
+      {
+        throw new \Exception("A sqlite database is not recommanded for production environment");
+      }
 
       try
       {
@@ -302,7 +278,6 @@ class module_console_fileConfigCheck extends Command
     {
       throw new \Exception(sprintf("Check Database Scope\n"), null, $e);
     }
-    $output->writeln("<info>Database Scope OK</info>");
 
     return;
   }
@@ -320,10 +295,10 @@ class module_console_fileConfigCheck extends Command
       catch (\Exception $e)
       {
         $message = sprintf(
-                "%s called from %s in %s:%s:template_engine scope"
+                "%s called from %s in %s:template_engine scope"
                 , $e->getMessage()
                 , $this->configuration->getFile()->getFilename()
-                , $this->env
+                , "PROD"
                 , $templateEngineName
         );
         $e = new \Exception($message);
@@ -342,22 +317,14 @@ class module_console_fileConfigCheck extends Command
       {
         $twig = $service->getService();
 
-        if (self::PROD === $this->env && $twig->isDebug())
+        if ($twig->isDebug())
         {
-          $output->writeln(sprintf("<comment>%s service should not be in debug mode for %s environment</comment>", $service->getName(), $this->env));
-        }
-        elseif ((self::TEST === $this->env || self::DEV === $this->env) && !$twig->isDebug())
-        {
-          $output->writeln(sprintf("<comment>%s service should be in debug mode for %s environment</comment>", $service->getName(), $this->env));
+          throw new \Exception(sprintf("%s service should not be in debug mode", $service->getName()));
         }
 
-        if ($twig->isStrictVariables() && self::PROD === $this->env)
+        if ($twig->isStrictVariables())
         {
-          $output->writeln(sprintf("<comment>%s service should not be set in strict variables mode for %s environment</comment>", $service->getName(), $this->env));
-        }
-        elseif ((self::TEST === $this->env || self::DEV === $this->env) && !$twig->isStrictVariables())
-        {
-          $output->writeln(sprintf("<comment>%s service should be set in strict variables mode for %s environment</comment>", $service->getName(), $this->env));
+          throw new \Exception(sprintf("%s service should not be set in strict variables mode", $service->getName()));
         }
       }
     }
@@ -368,19 +335,17 @@ class module_console_fileConfigCheck extends Command
         if ($e->getKey() === 'template_engine')
         {
           $e = new \Exception(sprintf(
-                                  "Missing parameter %s for %s environment scope"
+                                  "Missing parameter %s "
                                   , $e->getKey()
-                                  , $this->env
                           )
           );
         }
         else
         {
           $e = new \Exception(sprintf(
-                                  "Missing parameter %s for %s service declared in %s scope."
+                                  "Missing parameter %s for %s service"
                                   , $e->getKey()
                                   , $templateEngineName
-                                  , $this->env
                           )
           );
         }
@@ -388,8 +353,6 @@ class module_console_fileConfigCheck extends Command
 
       throw new \Exception(sprintf("Check Template Service\n"), null, $e);
     }
-
-    $output->writeln("<info>Template engine service OK</info>");
 
     return;
   }
@@ -414,10 +377,9 @@ class module_console_fileConfigCheck extends Command
       catch (\Exception $e)
       {
         $message = sprintf(
-                "%s called from %s in %s:orm scope"
+                "%s called from %s in %s scope"
                 , $e->getMessage()
                 , $this->configuration->getFile()->getFilename()
-                , $this->env
                 , $ormName
         );
         $e = new \Exception($message);
@@ -438,18 +400,10 @@ class module_console_fileConfigCheck extends Command
       {
         $caches = $service->getCacheServices();
 
-        if ($service->isDebug() && self::PROD === $this->env)
+        if ($service->isDebug())
         {
-          $output->writeln(sprintf(
-                          "<comment>%s service should not be in debug mode </comment>"
-                          , $service->getName()
-                  )
-          );
-        }
-        elseif ((self::TEST === $this->env || self::DEV === $this->env) && !$service->isDebug())
-        {
-          $output->writeln(sprintf(
-                          "<comment>%s service should be in debug mode</comment>"
+          throw new \Exception(sprintf(
+                          "%s service should not be in debug mode"
                           , $service->getName()
                   )
           );
@@ -457,25 +411,13 @@ class module_console_fileConfigCheck extends Command
 
         foreach ($caches->all() as $key => $cache)
         {
-          if ($cache->getType() === 'array' && self::PROD === $this->env)
+          if ($cache->getType() === 'array')
           {
-            $output->writeln(sprintf(
-                            "<comment>%s:doctrine:orm:%s %s service should not be an array cache type for %s environment</comment>"
+            throw new \Exception(sprintf(
+                            "%s:doctrine:orm:%s %s service should not be an array cache type"
                             , $service->getName()
                             , $key
                             , $cache->getName()
-                            , $this->env
-                    )
-            );
-          }
-          elseif ($cache->getType() !== 'array' && (self::TEST === $this->env || self::DEV === $this->env))
-          {
-            $output->writeln(sprintf(
-                            "<comment>%s:doctrine:orm:%s %s service should be an array cache type for %s environment</comment>"
-                            , $service->getName()
-                            , $key
-                            , $cache->getName()
-                            , $this->env
                     )
             );
           }
@@ -489,19 +431,18 @@ class module_console_fileConfigCheck extends Command
         if ($e->getKey() === 'orm')
         {
           $e = new \Exception(sprintf(
-                                  "Missing parameter %s for %s environment scope"
+                                  "Missing parameter %s for service %s"
                                   , $e->getKey()
-                                  , $this->env
+                                  , $service->getName()
                           )
           );
         }
         else
         {
           $e = new \Exception(sprintf(
-                                  "Missing parameter %s for %s service declared in %s scope."
+                                  "Missing parameter %s for %s service declared"
                                   , $e->getKey()
                                   , $service->getName()
-                                  , $this->env
                           )
           );
         }
@@ -509,8 +450,6 @@ class module_console_fileConfigCheck extends Command
 
       throw new \Exception(sprintf("Check ORM Service\n"), null, $e);
     }
-
-    $output->writeln("<info>ORM service OK</info>");
 
     return;
   }

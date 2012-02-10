@@ -29,8 +29,6 @@ try
 {
   \bootstrap::register_autoloads();
   
-  $Core = \bootstrap::getCore();
-
   $app = new Application("
   _____  _    _ _____            _____ ______          _   _ ______ _______ 
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
@@ -63,6 +61,7 @@ try
   $app->add(new module_console_schedulerStop('scheduler:stop'));
   $app->add(new module_console_schedulerStart('scheduler:start'));
   $app->add(new module_console_fileConfigCheck('check:config'));
+  $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
   $app->add(new module_console_systemConfigCheck('check:system'));
   $app->run();
 }
