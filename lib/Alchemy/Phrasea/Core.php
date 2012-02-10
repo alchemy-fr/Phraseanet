@@ -421,6 +421,11 @@ class Core extends \Pimple
         'Proxies' => realpath(__DIR__ . '/../../Doctrine/'),
         'Doctrine\\Logger' => realpath(__DIR__ . '/../../'),
         'Monolog' => realpath(__DIR__ . '/../../vendor/Silex/vendor/monolog/src'),
+        'Gedmo' => realpath(__DIR__ . '/../../vendor/doctrine2-gedmo/lib'),
+        'Events' => realpath(__DIR__ . '/../../Doctrine'),
+        'DoctrineExtensions' => realpath(__DIR__ . "/../../vendor/doctrine2-beberlei/lib"),
+        'Types' => realpath(__DIR__ . "/../../Doctrine"),
+        'PhraseaFixture' => realpath(__DIR__ . "/../../conf.d"),
     ));
 
     $loader->register();

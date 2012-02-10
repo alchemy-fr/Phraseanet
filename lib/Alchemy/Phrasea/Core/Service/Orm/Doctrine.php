@@ -15,8 +15,7 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
-use Doctrine\DBAL\Types\Type,
-    Doctrine\Common\Cache\AbstractCache;
+use Doctrine\DBAL\Types\Type;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
@@ -51,8 +50,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   public function __construct($name, Array $options, Array $dependencies)
   {
     parent::__construct($name, $options, $dependencies);
-
-    static::loadClasses();
 
     if (empty($options))
     {
@@ -242,6 +239,12 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Proxies'
+                    , realpath(__DIR__ . '/../../../../../Doctrine')
+    );
+    $classLoader->register();
+    
+    $classLoader = new \Doctrine\Common\ClassLoader(
+                    'Events'
                     , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
