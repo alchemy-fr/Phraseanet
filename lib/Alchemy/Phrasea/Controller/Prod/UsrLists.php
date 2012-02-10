@@ -562,13 +562,18 @@ class UsrLists implements ControllerProviderInterface
 
           if ($list->getOwner($user)->getRole() < \Entities\UsrListOwner::ROLE_EDITOR)
           {
-            throw new \Exception(_('You are not authorized to do this'));
+            throw new ControllerException(_('You are not authorized to do this'));
           }
 
           $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
 
           if ($list->hasAccess($new_owner))
           {
+            if($new_owner->get_id() == $user->get_id())
+            {
+              throw new ControllerException('You can not downgrade your Admin right');
+            }
+
             $owner = $list->getOwner($new_owner);
           }
           else

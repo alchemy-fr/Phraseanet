@@ -411,8 +411,26 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertArrayHasKey('success', $datas);
     $this->assertArrayHasKey('message', $datas);
 
-    $this->assertTrue($datas['success']);
+    $this->assertFalse($datas['success']);
 
+
+
+    $route = '/lists/list/' . $list->getId() . '/share/' . self::$user_alt1->get_id() . '/';
+
+    $this->client->request('POST', $route, array('role' => \Entities\UsrListOwner::ROLE_USER));
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertEquals('UTF-8', $response->getCharset());
+
+
+    $datas = (array) json_decode($response->getContent());
+
+    $this->assertArrayHasKey('success', $datas);
+    $this->assertArrayHasKey('message', $datas);
+
+    $this->assertTrue($datas['success']);
 
 
 
@@ -435,7 +453,7 @@ class ControllerUsrListsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $datas = (array) json_decode($response->getContent());
 
-    $this->assertFalse($datas['success']);
+    $this->assertTrue($datas['success']);
   }
 
   protected function checkOwner($owner)
