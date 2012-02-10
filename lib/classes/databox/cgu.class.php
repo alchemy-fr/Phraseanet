@@ -31,8 +31,9 @@ class databox_cgu
     foreach ($terms as $name => $term)
     {
       if (trim($term['terms']) == '')
+      {
         continue;
-
+      }
       $out .= '<div style="display:none;" class="cgu-dialog" title="' . str_replace('"', '&quot;', sprintf(_('cgus:: CGUs de la base %s'), $name)) . '">';
 
       $out .= '<blockquote>' . $term['terms'] . '</blockquote>';
@@ -44,49 +45,6 @@ class databox_cgu
     }
 
     return $out;
-  }
-
-  public static function denyCgus($sbas_id)
-  {
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
-    if (!$session->is_authenticated())
-
-      return '2';
-
-    $ret = '1';
-
-    try
-    {
-      $sql = 'DELETE FROM sbasusr WHERE sbas_id = :sbas_id AND usr_id = :usr_id';
-
-      $stmt = $appbox->get_connection()->prepare($sql);
-      $stmt->execute(array(':sbas_id' => $sbas_id, ':usr_id' => $session->get_usr_id()));
-      $stmt->closeCursor();
-    }
-    catch (Exception $e)
-    {
-      $ret = '0';
-    }
-
-    try
-    {
-      $sql = 'DELETE FROM basusr
-        WHERE base_id IN (SELECT base_id FROM bas WHERE sbas_id = :sbas_id)
-          AND usr_id = :usr_id';
-
-      $stmt = $appbox->get_connection()->prepare($sql);
-      $stmt->execute(array(':sbas_id' => $sbas_id, ':usr_id' => $session->get_usr_id()));
-      $stmt->closeCursor();
-    }
-    catch (Exception $e)
-    {
-      $ret = '0';
-    }
-
-    $session->logout();
-
-    return $ret;
   }
 
   private static function getUnvalidated($home=false)
@@ -116,7 +74,7 @@ class databox_cgu
 
         if (!$home)
         {
-          if(!$user->ACL()->has_access_to_sbas($databox->get_sbas_id()));
+          if(!$user->ACL()->has_access_to_sbas($databox->get_sbas_id()))
           {
             continue;
           }

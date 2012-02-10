@@ -30,6 +30,7 @@
   RewriteRule ^prod/push/.*$          /prod/router.php [L]
   RewriteRule ^prod/printer/.*$       /prod/router.php [L]
   RewriteRule ^prod/story/.*$         /prod/router.php [L]
+  RewriteRule ^prod/TOU/.*$         /prod/router.php [L]
   RewriteRule ^prod/WorkZone/.*$      /prod/router.php [L]
   RewriteRule ^prod/language/.*$      /prod/router.php [L]
   RewriteRule ^prod/$                 /prod/router.php [L]

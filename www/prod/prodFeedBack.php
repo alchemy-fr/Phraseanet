@@ -89,10 +89,6 @@ switch ($action)
     $output = deleteRecord($parm['lst'], $parm['del_children']);
     break;
 
-  case 'DENY_CGU':
-    $parm = $request->get_parms('sbas_id');
-    $output = databox_cgu::denyCgus($parm['sbas_id']);
-    break;
   case 'READ_NOTIFICATIONS':
     try
     {

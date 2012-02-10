@@ -50,6 +50,7 @@ return call_user_func(function()
       $app->mount('/bridge/', new Controller\Bridge());
       $app->mount('/push/', new Controller\Push());
       $app->mount('/printer/', new Controller\Printer());
+      $app->mount('/TOU/', new Controller\TOU());
       $app->mount('/feeds', new Controller\Feed());
       $app->mount('/tooltip', new Controller\Tooltip());
       $app->mount('/language', new Controller\Language());
