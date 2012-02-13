@@ -47,6 +47,12 @@ interface ControlProviderInterface
   public function getValue($id);
 
   /**
+   * @return mixed returns the actual ressource corresponding to an id
+   * @throws \Exception if the $id is invalid
+   */
+  public function getRessource($id);
+
+  /**
    * Find matching Term in the vocabulary repository
    *
    * @param string $query A scalar quaery

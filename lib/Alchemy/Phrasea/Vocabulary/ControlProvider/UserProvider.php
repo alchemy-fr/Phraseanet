@@ -106,4 +106,14 @@ class UserProvider implements ControlProviderInterface
     return $user->get_display_name();
   }
 
+  /**
+   *
+   * @param mixed $id
+   * @return string
+   */
+  public function getRessource($id)
+  {
+    return \User_Adapter::getInstance($id, \appbox::get_instance());
+  }
+
 }
