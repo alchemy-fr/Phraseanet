@@ -8,6 +8,13 @@
 printf('Retrieve vendors ...' . PHP_EOL);
 
 system('./vendors.php');
+/**
+ *
+ * Vendors has to be called two times.
+ * We should fix that
+ * 
+ */
+system('./vendors.php');
 
 require_once __DIR__ . '/lib/classes/bootstrap.class.php';
 
