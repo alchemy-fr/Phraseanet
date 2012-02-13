@@ -23,26 +23,43 @@ $finder
   ->name('*.jpg')
   ->name('*.png')
   ->notName('ui-*.png')
-  ->exclude(array('substitution', 'client/959595/images', 'client/000000/images', 'client/FFFFFF/images'))
+  ->exclude(
+    array(
+      'substitution'
+      , 'client/959595/images'
+      , 'client/000000/images'
+      , 'client/FFFFFF/images'
+      , 'skins/lng'
+  )
+  )
   ->in(__DIR__ . '/www/skins');
 
 $files = array();
 
 foreach ($finder as $file)
 {
-  $cmd = "grep -IR -m 1 --exclude='*\.git*' '".str_replace(array(), array(), $file->getFilename())."' ".__DIR__;
+  $result = '';
 
-  $result = system($cmd);
+  foreach (array('templates', 'lib/Alchemy', 'lib/Doctrine', 'lib/classes', 'www') as $dir)
+  {
+    $cmd = "grep -IR -m 1 --exclude='(*\.git*)' '" . str_replace(array(), array(), $file->getFilename()) . "' " . __DIR__.'/'.$dir;
+    $result .= @exec($cmd);
 
-  if(trim($result) === '')
+    if (trim($result) !== '')
+    {
+      break;
+    }
+  }
+
+  if (trim($result) === '')
   {
     $files[] = $file->getPathname();
   }
-  echo ". ";
 }
 
-foreach($files as $file)
+foreach ($files as $file)
 {
+  echo "rm $file\n";
   unlink($file);
 }
 
