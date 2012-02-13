@@ -65,7 +65,7 @@ class module_console_systemMailCheck extends Command
 
     $output->write('Finished !', true);
 
-    return;
+    return 0;
   }
 
   protected function manage_group($email, $users, $output, $appbox)

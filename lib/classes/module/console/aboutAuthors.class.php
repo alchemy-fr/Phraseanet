@@ -39,7 +39,7 @@ class module_console_aboutAuthors extends Command
   {
     $output->writeln(file_get_contents(__DIR__ . '/../../../../AUTHORS'));
 
-    return;
+    return 0;
   }
 
 }

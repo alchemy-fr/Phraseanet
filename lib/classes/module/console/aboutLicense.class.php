@@ -39,7 +39,7 @@ class module_console_aboutLicense extends Command
   {
     $output->writeln(file_get_contents(__DIR__ . '/../../../../LICENSE'));
 
-    return;
+    return 0;
   }
 
 }
