@@ -143,7 +143,7 @@
             $dialog.setContent(rendered);
           };
 
-          p4.Mustache.Render('Feedback-SendForm', { language:language }, callback);
+          p4.Mustache.Render('Feedback-SendForm', {language:language}, callback);
     }).button();
 
     $('.user_content .badges', this.container).disableSelection();
@@ -326,7 +326,7 @@
       $('#PushBox').show();
       $('#ListManager').hide();
       return false;
-    });
+    }).button();
 
     $('a.list_sharer', this.container).die('click').live('click', function(){
 
@@ -403,28 +403,7 @@
         return false;
       });
 
-      var ListDeleterDialogBox = function(callbackDeleter) {
-        if($('#ListDeleterDialogBox').length > 0)
-        {
-          $('#ListDeleterDialogBox').remove();
-        }
-
-        $('body').append('<div id="ListDeleterDialogBox"></div>');
-
-        var callbackMustache = function(datas){
-          $('#ListDeleterDialogBox').append(datas);
-          callbackDeleter($('#ListDeleterDialogBox'));
-        };
-
-        p4.Mustache.Render('ListEditor-DialogDelete', language, callbackMustache);
-
-        return false;
-      };
-
-
-      $('a.deleter', $container).bind('click', function(event){
-
-        var list_id = $(this).find('input[name=list_id]').val();
+      $('a.list_adder', $container).bind('click', function(event){
 
         var makeDialog = function (box) {
 
@@ -437,8 +416,15 @@
               p4.Dialog.get(2).Close();
             };
 
-            var List = new document.List(list_id);
-            List.remove(callbackOK);
+            var name = $('input[name="name"]', p4.Dialog.get(2).getDomElement()).val();
+
+            if($.trim(name) === '')
+            {
+              alert(language.listNameCannotBeEmpty);
+              return;
+            }
+
+            p4.Lists.create(name, callbackOK);
           };
 
           var options = {
@@ -450,69 +436,12 @@
           p4.Dialog.Create(options, 2).setContent(box);
         };
 
-        ListDeleterDialogBox(makeDialog);
+        p4.Mustache.Render('ListEditor-DialogAdd', language, makeDialog);
 
         return false;
       });
 
-      var ListAdderDialogBox = function(callbackAdder) {
-        if($('#ListAdderDialogBox').length > 0)
-        {
-          $('#ListAdderDialogBox').remove();
-        }
-
-        $('body').append('<div id="ListAdderDialogBox"></div>');
-
-        var callbackMustache = function(datas){
-          $('#ListAdderDialogBox').append(datas);
-          callbackAdder($('#ListAdderDialogBox'));
-        };
-
-        p4.Mustache.Render('ListEditor-DialogAdd', language, callbackMustache);
-
-        return false;
-      };
-
-      $('a.list_adder', $container).bind('click', function(event){
-
-        var makeDialog = function (box) {
-
-          var buttons = {};
-
-          buttons[language.valider] = function() {
-
-            var callbackOK = function () {
-              $('a.list_refresh', $container).trigger('click');
-              box.dialog('close');
-            };
-
-            var name = $('#ListAdderDialogBox input[name="name"]').val();
-
-            if($.trim(name) === '')
-            {
-              alert(language.listNameCannotBeEmpty);
-              return;
-            }
-
-            p4.Lists.create(name, callbackOK);
-          };
-
-          box.dialog({
-            buttons:buttons,
-            modal:true,
-            closeOnEscape:true,
-            resizable:false,
-            width:300,
-            height:150
-          });
-        };
-
-        ListAdderDialogBox(makeDialog);
-
-        return false;
-      });
-
-      $('li.list a.link', $container).bind('click', function(event){
+      $('li.list a.list_link', $container).bind('click', function(event){
 
         var $this = $(this);
 
@@ -534,7 +463,6 @@
 
         return false;
       });
-
     };
 
     var initRight = function(){
@@ -566,7 +494,45 @@
         $(this).closest('form').trigger('submit');
       });
 
+      $('button', this.container).button();
 
+      $('.EditToggle', $('#ListManager')).bind('click', function(){
+        $('.content.readonly, .content.readwrite', $('#ListManager')).toggle();
+        return false;
+      });
+
+      $('button.deleter', this.container).bind('click', function(event){
+
+        var list_id = $(this).find('input[name=list_id]').val();
+
+        var makeDialog = function (box) {
+
+          var buttons = {};
+
+          buttons[language.valider] = function() {
+
+            var callbackOK = function () {
+              $('a.list_refresh', $container).trigger('click');
+              p4.Dialog.get(2).Close();
+            };
+
+            var List = new document.List(list_id);
+            List.remove(callbackOK);
+          };
+
+          var options = {
+            cancelButton : true,
+            buttons : buttons,
+            size:'Alert'
+          };
+
+          p4.Dialog.Create(options, 2).setContent(box);
+        };
+
+        p4.Mustache.Render('ListEditor-DialogDelete', language, makeDialog);
+
+        return false;
+      });
 
 //
 //      $('.editor input[name="list-add-user"]', this.container).autocomplete({
