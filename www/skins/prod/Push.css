@@ -1,11 +1,33 @@
 .PushBox .content{
   background-color: #404040;
 }
+
+.PushBox a.link {
+  color:#1983cb;
+}
+
+.PushBox .LeftColumn h1{
+  width:100%;
+  text-align: center;
+  margin:5px 0;
+  font-weight:bold;
+}
+
+.PushBox .LeftColumn ul{
+  margin:10px 0;
+}
+
+.PushBox .LeftColumn ul li img{
+  margin-right:5px;
+  vertical-align: middle;
+}
+
 .PushBox button{
   margin:0;padding:0;
   background-color:transparent;
   border:none;
-  vertical-align:top;
+  vertical-align:middle;
+  cursor:pointer;
 }
 .PushBox table{
   width:100%;
@@ -191,4 +213,10 @@
   width:250px;
   display:inline-block;
   margin:5px;
+}
+#ListManager h1 span.title{
+  font-size:24px;
+  line-height:24px;
+  font-weight:bold;
+  vertical-align:middle;
 }
