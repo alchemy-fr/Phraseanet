@@ -70,6 +70,36 @@ class Push implements ControllerProviderInterface
       };
   }
 
+  protected function getUsersInSelectionExtractor()
+  {
+    return function(array $selection)
+      {
+        $Users = new \Doctrine\Common\Collections\ArrayCollection();
+
+        foreach ($selection as $record)
+        {
+          /* @var $record record_adapter */
+          foreach ($record->get_caption()->get_fields() as $caption_field)
+          {
+            foreach ($caption_field->get_values() as $value)
+            {
+              if (!$value->getVocabularyType())
+                continue;
+
+              if ($value->getVocabularyType()->getType() !== 'User')
+                continue;
+
+              $user = $value->getRessource();
+
+              $Users->set($user->get_id(), $user);
+            }
+          }
+        }
+
+        return $Users;
+      };
+  }
+
   public function connect(Application $app)
   {
     $controllers = new ControllerCollection();
@@ -78,17 +108,23 @@ class Push implements ControllerProviderInterface
 
     $listFormatter = $this->getListFormatter();
 
-    $controllers->post('/sendform/', function(Application $app)
+    $userSelection = $this->getUsersInSelectionExtractor();
+
+    $controllers->post('/sendform/', function(Application $app) use ($userSelection)
       {
         $push = new RecordHelper\Push($app['Core'], $app['request']);
 
         $em         = $app['Core']->getEntityManager();
         $repository = $em->getRepository('\Entities\UsrList');
 
+        $RecommendedUsers = $userSelection($push->get_elements());
+
         $params = array(
-          'push'    => $push,
-          'message' => '',
-          'lists'   => $repository->findUserLists($app['Core']->getAuthenticatedUser())
+          'push'             => $push,
+          'message'          => '',
+          'lists'            => $repository->findUserLists($app['Core']->getAuthenticatedUser()),
+          'context'          => 'Push',
+          'RecommendedUsers' => $RecommendedUsers
         );
 
         $template = 'prod/actions/Push.html.twig';
@@ -106,13 +142,17 @@ class Push implements ControllerProviderInterface
         $em         = $app['Core']->getEntityManager();
         $repository = $em->getRepository('\Entities\UsrList');
 
+        $RecommendedUsers = $userSelection($push->get_elements());
+
         $params = array(
           'push'    => $push,
           'message' => '',
-          'lists'   => $repository->findUserLists($app['Core']->getAuthenticatedUser())
+          'lists'   => $repository->findUserLists($app['Core']->getAuthenticatedUser()),
+          'context' => 'Feedback',
+          'RecommendedUsers' => $RecommendedUsers
         );
 
-        $template = 'prod/actions/Feedback.html.twig';
+        $template = 'prod/actions/Push.html.twig';
 
         /* @var $twig \Twig_Environment */
         $twig = $app['Core']->getTwig();
