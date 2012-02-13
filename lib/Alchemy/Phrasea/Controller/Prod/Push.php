@@ -180,7 +180,7 @@ class Push implements ControllerProviderInterface
           $appbox = \appbox::get_instance();
 
           $push_name = $request->get(
-            'push_name'
+            'name'
             , sprintf(_('Push from %s'), $user->get_display_name())
           );
 
@@ -293,7 +293,7 @@ class Push implements ControllerProviderInterface
           $repository = $em->getRepository('\Entities\Basket');
 
           $validation_name = $request->get(
-            'validation_name'
+            'name'
             , sprintf(_('Validation from %s'), $user->get_display_name())
           );
 

@@ -116,10 +116,10 @@
           buttons[language.send] = function(){
             $dialog.Close();
 
-            $('#PushBox form[name="FeedBackForm"]').trigger('submit');
+            $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
+            $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
 
-            $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog).val());
-            $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog).val());
+            $FeedBackForm.trigger('submit');
           };
 
           var options = {
