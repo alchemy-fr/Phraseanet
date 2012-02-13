@@ -1,6 +1,6 @@
 {% macro ResultTable(query, results, list, sort, ord) %}
 <div id="list-editor-search-results" class="list-editor-results PNB">
-  <div class="PNB" style="overflow-y:scroll;overflow-x:hidden;top:25px;bottom:25px;">
+  <div class="PNB" style="overflow-y:scroll;overflow-x:hidden;bottom:20px;">
     <table style="width:100%;table-layout:fixed;">
         <thead>
           <tr>
@@ -85,7 +85,11 @@
         </tbody>
     </table>
   </div>
-  <div class="PNB" style="top:auto;height:25px;text-align:right;">
+  <div class="PNB" style="top:auto;height:20px;text-align:right;line-height:20px;">
+    {% set length = '<span class="counter current">' ~ list.getEntries().count() ~ '</span>' %}
+    {% trans %}
+      {{ length }} peoples
+    {% endtrans %}
     {% if query.get_page() > 1 %}
       <a class="prev" value="{{ query.get_page() - 1 }}" href="#">< {% trans 'Previous' %}</a>
     {% endif %}
