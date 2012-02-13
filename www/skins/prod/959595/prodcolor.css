@@ -279,7 +279,7 @@ span.ww_winTitle{
   background-image: url("/include/jslibs/jquery-ui-1.8.17/css/ui-lightness/images/ui-icons_ffffff_256x240.png");
 }
 #baskets .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
-  color:#FFFFFF; 
+  color:#FFFFFF;
   font-size:1em;
 }
 .ui-accordion .ui-accordion-content.loading
@@ -500,7 +500,7 @@ div.diapo
 
 #idFrameT
 {
-	background-color:#B1B1B1;	
+	background-color:#B1B1B1;
 }
 
 .submenu.ui-buttonset{
@@ -531,7 +531,7 @@ div.diapo
 
 
 #idFrameT .tools .verticalbuttonset .submenu{
-  position: absolute; 
+  position: absolute;
   top:1.5em;
   left:0;
   z-index:30;
@@ -931,7 +931,7 @@ form.phrasea_query input.query{
 
 .history-validate, .history-push
 {
-	background-image:url(images/pushdoc_history.gif);
+	background-image:url(icons/push16.png);
 	background-repeat:no-repeat;
 	background-position:center left;
 	padding-left:30px;
@@ -1208,7 +1208,7 @@ input.input-button.hover
 {
 	color:#FEFEFE;
 }
-	
+
 input.search{
   padding-left: 25px;
   background-image: url(/skins/icons/search.png);
@@ -2166,11 +2166,11 @@ EDITING
 {
 	background-color:#FFFFFF;
 	border:1px solid #999999;
-  position:absolute; 
-  top:22px; 
-  left:4px; 
-  right:4px; 
-  bottom:4px; 
+  position:absolute;
+  top:22px;
+  left:4px;
+  right:4px;
+  bottom:4px;
   overflow:auto;
 }
 #idFrameE #ZTextMultiValued_values div
