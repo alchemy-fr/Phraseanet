@@ -8,6 +8,12 @@
 printf('Retrieve vendors ...' . PHP_EOL);
 
 system('./vendors.php');
+/**
+ *
+ * Temporary fix for builder
+ *
+ */
+system('./vendors.php');
 
 require_once __DIR__ . '/lib/classes/bootstrap.class.php';
 
