@@ -25,7 +25,7 @@ use Alchemy\Phrasea\Core;
  */
 class module_console_fileEnsureProductionSetting extends Command
 {
-  
+
   const ALERT = 1;
   const ERROR = 0;
 
@@ -80,6 +80,7 @@ class module_console_fileEnsureProductionSetting extends Command
     if (!$this->configuration->isInstalled())
     {
       $output->writeln(sprintf("\nPhraseanet is not installed\n"));
+
       return 1;
     }
   }
@@ -104,6 +105,7 @@ class module_console_fileEnsureProductionSetting extends Command
               )
       );
        $output->writeln(sprintf("\nCheck test suite can not continue please correct FATAL error and relaunch.\n"));
+
        return 1;
     }
   }

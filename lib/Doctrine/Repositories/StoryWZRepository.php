@@ -56,6 +56,7 @@ class StoryWZRepository extends EntityRepository
     {
       return 0;
     }
+
     return ($a->getRecord()->get_title() < $b->getRecord()->get_title()) ? -1 : 1;
   }
 

@@ -46,7 +46,7 @@ class module_console_systemConfigCheck extends Command
     }
 
      $ok = true;
-     
+
     if (setup::is_installed())
     {
       $registry = registry::get_instance();
@@ -60,7 +60,7 @@ class module_console_systemConfigCheck extends Command
       $registry = new Setup_Registry();
     }
 
-   
+
 
     $output->writeln(_('*** FILESYSTEM CONFIGURATION ***'));
     $ok = $this->processConstraints(setup::check_writability($registry), $output) && $ok;
@@ -99,6 +99,7 @@ class module_console_systemConfigCheck extends Command
         $hasError = true;
       }
     }
+
     return !$hasError;
   }
 
@@ -118,6 +119,7 @@ class module_console_systemConfigCheck extends Command
     {
       $output->writeln("\t/!\\\t<comment>" . $constraint->get_message() . '</comment>');
     }
+
     return $ok;
   }
 

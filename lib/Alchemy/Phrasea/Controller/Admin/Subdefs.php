@@ -76,7 +76,7 @@ class Subdefs implements ControllerProviderInterface
               {
                 $subdefs = $databox->get_subdef_structure();
                 $UnicodeProcessor = new \unicode();
-                
+
                 $group = $add_subdef['group'];
                 $name = $UnicodeProcessor->remove_nonazAZ09($add_subdef['name'], false);
                 $class = $add_subdef['class'];

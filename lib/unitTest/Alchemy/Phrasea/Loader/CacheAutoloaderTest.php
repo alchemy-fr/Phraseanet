@@ -53,7 +53,7 @@ class CacheAutoloaderTest extends \PhraseanetPHPUnitAbstract
       }
       catch(\Exception $e)
       {
-        
+
       }
     }
   }

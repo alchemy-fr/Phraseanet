@@ -46,6 +46,7 @@ class module_console_systemBackupDB extends Command
     if (!setup::is_installed())
     {
       $output->writeln('Argument must be an Id.');
+
       return 1;
     }
 
@@ -56,7 +57,7 @@ class module_console_systemBackupDB extends Command
     $appbox = appbox::get_instance();
 
     $ok = true;
-    
+
     $ok = $this->dump_base($appbox, $input, $output) && $ok;
 
     foreach ($appbox->get_databoxes() as $databox)
@@ -96,15 +97,17 @@ class module_console_systemBackupDB extends Command
     if (file_exists($filename) && filesize($filename) > 0)
     {
       $output->writeln('OK');
+
       return true;
     }
     else
     {
       $output->writeln('<error>Failed</error>');
+
       return false;
     }
 
-    
+
   }
 
 }

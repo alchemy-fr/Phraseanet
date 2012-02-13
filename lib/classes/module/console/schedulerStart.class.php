@@ -44,12 +44,13 @@ class module_console_schedulerStart extends Command
     if (!setup::is_installed())
     {
       $output->writeln('Phraseanet is not set up');
+
       return 1;
     }
 
     require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
-    
+
     try
     {
       $scheduler = new task_Scheduler();

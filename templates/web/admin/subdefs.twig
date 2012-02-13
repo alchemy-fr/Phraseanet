@@ -36,7 +36,7 @@
       var name = $( "#name" ), accessclass = $( "#accessclass" ),
       allFields = $( [] ).add( name ).add(accessclass),
       tips = $( ".validateTips" );
-      
+
       function updateTips( t ) {
         tips
         .text( t )
@@ -75,7 +75,7 @@
           return true;
         }
       }
-    
+
       function checkSpecialChar( o )
       {
         var ok = true;
@@ -87,9 +87,10 @@
             o.addClass( "ui-state-error" );
             updateTips( "Special characters (except minus) or espaces are not authorized" );
          }
+
          return ok;
       }
-      
+
 
       $( "#dialog-form" ).dialog({
         autoOpen: false,
@@ -99,14 +100,14 @@
         buttons: {
           "Create a Subdef": function() {
             var bValid = true;
-            
+
             allFields.removeClass( "ui-state-error" );
 
             bValid = bValid && checkLength( name, "subdef name", 3, 16 );
             bValid = bValid && checkSpecialChar( name );
             bValid = bValid && checkPresence( name );
 
-           
+
 
             if ( bValid ) {
               $('input[name="add_subdef[group]"]').val(get_current_group());

@@ -336,11 +336,11 @@ class ACL implements cache_cacheableInterface
 
       $mask_and = $template_user->ACL()->get_mask_and($base_id);
       $mask_xor = $template_user->ACL()->get_mask_xor($base_id);
-      
+
       $mask_and = ctype_digit($mask_and) ? $mask_and : '0';
       $mask_xor = ctype_digit($mask_xor) ? $mask_xor : '0';
-      
-      
+
+
       /**
        * apply sb is substractive
        */

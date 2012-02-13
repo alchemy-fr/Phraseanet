@@ -25,13 +25,13 @@ class Autoloader extends UniversalClassLoader
 {
   /**
    * An array of path to check
-   * @var type 
+   * @var type
    */
   private $paths = array();
-  
+
   /**
    * Construct a new phrasea Autoloader
-   * Because some custom classes from library folder might be 
+   * Because some custom classes from library folder might be
    * overwritten in config folder
    * Phraseanet Loader look classes in configuration folders first
    * then check library folder if no classes where matched
@@ -41,7 +41,7 @@ class Autoloader extends UniversalClassLoader
     $this->paths['config'] = __DIR__ . '/../../../../config/classes/';
     $this->paths['library'] = __DIR__ . '/../../../classes/';
   }
-  
+
   /**
    * {@inheritdoc}
    */
@@ -58,35 +58,35 @@ class Autoloader extends UniversalClassLoader
   /**
    * Add a path to look for autoloading phraseanet classes
    * @param string $name
-   * @param string $path 
+   * @param string $path
    */
   public function addPath($name, $path)
   {
     $this->paths[$name] = \p4string::addEndSlash($path);
   }
-  
+
   /**
    * Check whether a class with $class name exists
    * foreach declared paths
    * @param string $class
-   * @return mixed string|null 
+   * @return mixed string|null
    */
   private function checkFile($class)
   {
     foreach($this->paths as $path)
     {
       $file = $path. str_replace('_', '/', $class) . '.class.php';
-      
+
       if(file_exists($file))
       {
         return $file;
       }
     }
   }
-  
+
   /**
    * Get Paths where classes are checked for autoloading
-   * @return Array 
+   * @return Array
    */
   public function getPaths()
   {

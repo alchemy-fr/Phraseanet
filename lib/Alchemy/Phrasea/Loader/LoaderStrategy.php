@@ -22,7 +22,7 @@ interface LoaderStrategy
 
   /**
    * Check wether the cacheAdapter is available
-   * @Return boolean 
+   * @Return boolean
    */
   public function isAvailable();
 

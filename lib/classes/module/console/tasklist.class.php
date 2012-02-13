@@ -40,6 +40,7 @@ class module_console_tasklist extends Command
     if (!setup::is_installed())
     {
       $output->writeln('Phraseanet is not set up');
+
       return 1;
     }
 
@@ -60,6 +61,7 @@ class module_console_tasklist extends Command
       {
         $this->print_task($task, $output);
       }
+
       return 0;
     }
     catch (\Exception $e)

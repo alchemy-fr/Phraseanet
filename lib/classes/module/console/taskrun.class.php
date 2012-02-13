@@ -48,6 +48,7 @@ class module_console_taskrun extends Command
     if (!setup::is_installed())
     {
       $output->writeln('Phraseanet is not set up');
+
       return 1;
     }
 
@@ -58,6 +59,7 @@ class module_console_taskrun extends Command
     if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id')))
     {
       $output->writeln('Argument must be an Id.');
+
       return 1;
     }
 
@@ -73,9 +75,9 @@ class module_console_taskrun extends Command
       {
         $runner = task_abstract::RUNNER_MANUAL;
       }
-      
+
       $task->run($runner);
-      
+
       return 0;
     }
     catch (\exception $e)

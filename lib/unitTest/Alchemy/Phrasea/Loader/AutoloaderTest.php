@@ -32,7 +32,7 @@ class AutoloaderTest extends \PhraseanetPHPUnitAbstract
     $autoloader->loadClass($testClassName);
     $this->assertTrue(class_exists($testClassName));
   }
-  
+
   public function testAddPath()
   {
     $autoloader = new Alchemy\Phrasea\Loader\Autoloader();
@@ -41,7 +41,7 @@ class AutoloaderTest extends \PhraseanetPHPUnitAbstract
     $this->assertGreaterThan($pathNb, count($autoloader->getPaths()));
     $this->assertArrayHasKey('fixture', $autoloader->getPaths());
   }
-  
+
   public function testGetPath()
   {
     $autoloader = new Alchemy\Phrasea\Loader\Autoloader();

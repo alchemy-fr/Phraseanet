@@ -39,6 +39,7 @@ class module_console_schedulerState extends Command
     if (!setup::is_installed())
     {
       $output->writeln('Phraseanet is not set up');
+
       return 1;
     }
 
@@ -61,6 +62,7 @@ class module_console_schedulerState extends Command
       {
         $output->writeln(sprintf('Scheduler is %s', $state['schedstatus']));
       }
+
       return 0;
     }
     catch(\Exception $e)

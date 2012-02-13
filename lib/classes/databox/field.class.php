@@ -192,7 +192,7 @@ class databox_field implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     if ($row['dces_element'])
@@ -234,7 +234,7 @@ class databox_field implements cache_cacheableInterface
 
   /**
    *
-   * @return boolean 
+   * @return boolean
    */
   public function isVocabularyRestricted()
   {
@@ -677,7 +677,7 @@ class databox_field implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $this;

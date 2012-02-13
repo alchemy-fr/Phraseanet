@@ -39,6 +39,7 @@ class module_console_schedulerStop extends Command
     if (!setup::is_installed())
     {
       $output->writeln('Phraseanet is not set up');
+
       return 1;
     }
 
@@ -49,6 +50,7 @@ class module_console_schedulerStop extends Command
       $appbox = appbox::get_instance();
       $task_manager = new task_manager($appbox);
       $task_manager->set_sched_status(task_manager::STATUS_SCHED_TOSTOP);
+
       return 0;
     }
     catch (\Exception $e)

@@ -762,6 +762,7 @@ class set_export extends set_abstract
       return false;
     }
     if (isset($list['complete']) && $list['complete'] === true)
+
       return;
 
 
@@ -1053,7 +1054,7 @@ class set_export extends set_abstract
     $user    = false;
     if ($anonymous)
     {
-      
+
     }
     else
     {

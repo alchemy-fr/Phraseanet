@@ -87,6 +87,7 @@ class module_console_fileConfigCheck extends Command
     if (!$this->configuration->isInstalled())
     {
       $output->writeln(sprintf("\nPhraseanet is not installed\n"));
+
       return 1;
     }
   }
@@ -102,7 +103,7 @@ class module_console_fileConfigCheck extends Command
     catch (\Exception $e)
     {
       $previous = $e->getPrevious();
-      
+
       $output->writeln(sprintf(
                       "<error>%s FATAL error : %s</error>"
                       , $e->getMessage()
@@ -111,6 +112,7 @@ class module_console_fileConfigCheck extends Command
               )
       );
       $output->writeln(sprintf("\nConfig check test suite can not continue please correct FATAL error and relaunch.\n"));
+
       return 1;
     }
   }
@@ -138,6 +140,7 @@ class module_console_fileConfigCheck extends Command
         );
       }
     }
+
     return (int) ($nbErrors > 0);
   }
 

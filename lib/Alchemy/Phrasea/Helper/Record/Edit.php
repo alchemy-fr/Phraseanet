@@ -511,7 +511,7 @@ class Edit extends RecordHelper
     {
       return $this;
     }
-    
+
     $sbas_id       = (int) $request->get('sbid');
     $databox       = \databox::get_instance($sbas_id);
     $meta_struct   = $databox->get_meta_structure();

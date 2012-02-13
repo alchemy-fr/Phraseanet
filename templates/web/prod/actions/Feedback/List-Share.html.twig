@@ -82,6 +82,7 @@
         role = $(this).val();
 
         shareWith(usr_id, role);
+
         return false;
       });
 
@@ -107,6 +108,7 @@
               humane.error(data.message);
             }
             $dialog.refresh();
+
             return;
           },
           error: function(){
@@ -137,6 +139,7 @@
               {
                 shareWith(ui.item.usr_id);
               }
+
               return false;
             }
           })

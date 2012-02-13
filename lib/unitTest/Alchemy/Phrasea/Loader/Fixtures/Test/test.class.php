@@ -18,5 +18,5 @@
 
 class Test_test
 {
-  
+
 }

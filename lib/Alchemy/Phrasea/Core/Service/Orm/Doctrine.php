@@ -242,7 +242,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
                     , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
-    
+
     $classLoader = new \Doctrine\Common\ClassLoader(
                     'Events'
                     , realpath(__DIR__ . '/../../../../../Doctrine')

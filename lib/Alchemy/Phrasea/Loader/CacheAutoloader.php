@@ -75,12 +75,12 @@ class CacheAutoloader extends Autoloader
       }
 
       $method = new $className();
-      
+
       if($namespace)
       {
         $method->setNamespace($namespace);
       }
-      
+
       if ($method instanceof LoaderStrategy && $method->isAvailable())
       {
         $this->cacheAdapter = $method;

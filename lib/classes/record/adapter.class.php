@@ -1736,6 +1736,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $hd = $this->get_subdef('document');
     if ($hd->is_physically_present())
+
       return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
     return null;
   }
