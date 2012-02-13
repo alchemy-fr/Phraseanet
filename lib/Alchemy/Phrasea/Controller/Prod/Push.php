@@ -278,12 +278,17 @@ class Push implements ControllerProviderInterface
           'message' => _('Unable to send the documents')
         );
 
+        $em = $app['Core']->getEntityManager();
+
+        /* @var $em \Doctrine\ORM\EntityManager */
+        $em->beginTransaction();
+
         try
         {
           $pusher = new RecordHelper\Push($app['Core'], $app['request']);
           $user   = $app['Core']->getAuthenticatedUser();
 
-          $em = $app['Core']->getEntityManager();
+
 
           $repository = $em->getRepository('\Entities\Basket');
 
@@ -327,11 +332,10 @@ class Push implements ControllerProviderInterface
 
               $em->persist($BasketElement);
             }
-//
-//            $em->flush();
+            $em->flush();
           }
 
-//          $em->refresh($Basket);
+          $em->refresh($Basket);
 
           if (!$Basket->getValidation())
           {
@@ -434,10 +438,13 @@ class Push implements ControllerProviderInterface
             'success' => true,
             'message' => $message
           );
+
+          $em->commit();
         }
         catch (ControllerException $e)
         {
           $ret['message'] = $e->getMessage();
+          $em->rollback();
         }
 
         $Json = $app['Core']['Serializer']->serialize($ret, 'json');
