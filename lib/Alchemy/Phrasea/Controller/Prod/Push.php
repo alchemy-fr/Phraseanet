@@ -135,7 +135,7 @@ class Push implements ControllerProviderInterface
         return new Response($twig->render($template, $params));
       }
     );
-    $controllers->post('/validateform/', function(Application $app)
+    $controllers->post('/validateform/', function(Application $app) use ($userSelection)
       {
         $push = new RecordHelper\Push($app['Core'], $app['request']);
 
