@@ -42,7 +42,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
    */
   public function icon_url()
   {
-    return '/skins/icons/push.png';
+    return '/skins/icons/push16.png';
   }
 
   /**
