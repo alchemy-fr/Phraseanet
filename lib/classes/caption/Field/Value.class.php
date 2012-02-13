@@ -40,7 +40,7 @@ class caption_Field_Value
 
   /**
    *
-   * @var int 
+   * @var int
    */
   protected $VocabularyId;
 
@@ -71,7 +71,7 @@ class caption_Field_Value
 
     $connbas = $databox_field->get_databox()->get_connection();
 
-    $sql = 'SELECT record_id, value, VocabularyType, VocabularyId 
+    $sql = 'SELECT record_id, value, VocabularyType, VocabularyId
             FROM metadatas WHERE id = :id';
 
     $stmt = $connbas->prepare($sql);
@@ -88,21 +88,21 @@ class caption_Field_Value
     }
     catch (\Exception $e)
     {
-      
+
     }
 
 
     if ($this->VocabularyType)
     {
       /**
-       * Vocabulary Control has been deactivated 
+       * Vocabulary Control has been deactivated
        */
       if (!$this->databox_field->getVocabularyControl())
       {
         $this->removeVocabulary();
       }
       /**
-       * Vocabulary Control has changed 
+       * Vocabulary Control has changed
        */
       elseif ($this->databox_field->getVocabularyControl()->getType() !== $this->VocabularyType->getType())
       {
@@ -116,7 +116,7 @@ class caption_Field_Value
         $this->removeVocabulary();
       }
       /**
-       * String equivalence has changed 
+       * String equivalence has changed
        */
       elseif ($this->VocabularyType->getValue($this->VocabularyId) !== $this->value)
       {
@@ -145,6 +145,11 @@ class caption_Field_Value
   public function getValue()
   {
     return $this->value;
+  }
+
+  public function getRessource()
+  {
+    return $this->VocabularyType ? $this->VocabularyType->getRessource($this->VocabularyId) : null;
   }
 
   public function getDatabox_field()
@@ -209,6 +214,8 @@ class caption_Field_Value
     $stmt_up->execute($params);
     $stmt_up->closeCursor();
 
+    $this->VocabularyId = $this->VocabularyType = null;
+
     return $this;
   }
 
@@ -268,7 +275,7 @@ class caption_Field_Value
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $this->update_cache_value($value);
