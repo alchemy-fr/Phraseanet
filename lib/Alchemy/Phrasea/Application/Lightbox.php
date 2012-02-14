@@ -448,7 +448,7 @@ return call_user_func(
           );
           /* @var $basket_element \Entities\BasketElement */
           $validationDatas = $basket_element->getUserValidationDatas($user);
-          
+
           $validationDatas->setAgreement($agreement);
 
           $participant = $basket_element->getBasket()
