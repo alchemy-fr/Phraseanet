@@ -19,10 +19,12 @@
     $('.content .options .select-all', this.container).bind('click', function(){
       $this.selection.selectAll();
     });
+
     $('.content .options .unselect-all', this.container).bind('click', function(){
       $this.selection.empty();
     });
 
+    $('.UserTips', this.container).tooltip();
 
     $('a.user_adder', this.container).bind('click', function(){
 
@@ -62,6 +64,15 @@
           return;
         }
       });
+
+      return false;
+    });
+
+    $('.recommended_users', this.container).bind('click', function(){
+
+      var usr_id = $('input[name="usr_id"]', $(this)).val();
+
+      $this.loadUser(usr_id, $this.selectUser);
 
       return false;
     });
@@ -148,9 +159,12 @@
 
     $('.user_content .badges', this.container).disableSelection();
 
-    $('.user_content .badges .badge .toggle', this.container).live('click', function(event){
+    $('.user_content .badges .badge .toggle', this.container).die('click').live('click', function(event){
+
       var $this = $(this);
+
       $this.toggleClass('status_off status_on');
+
       $this.find('input').val($this.hasClass('status_on') ? '1' : '0');
 
       return false;
@@ -171,6 +185,7 @@
       {
         humane.info('No user selected');
       }
+
       toggles.trigger('click');
       return false;
     });
@@ -278,7 +293,28 @@
         return;
       }
 
+      if(window.console)
+      {
+        console.log('Selecting', user);
+      }
+
       p4.Mustache.Render(this.Context + '-Badge', user, p4.Feedback.appendBadge);
+    },
+    loadUser : function(usr_id, callback) {
+      var $this = this;
+
+      $.ajax({
+        type: 'GET',
+        url: '/prod/push/load-user/',
+        dataType: 'json',
+        data: {usr_id : usr_id},
+        success: function(data){
+          if(typeof callback === 'function')
+          {
+            callback.call($this, data);
+          }
+        }
+      });
     },
     appendBadge : function(badge){
       $('.user_content .badges', this.container).append(badge);
