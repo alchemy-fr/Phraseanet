@@ -38,6 +38,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
       $this->twig = new \Twig_Environment($loader, $this->options);
       $this->loadGlobals();
       $this->loadExtensions();
+      $this->loadTests();
       $this->loadFilters();
     }
     catch (\Exception $e)
@@ -109,6 +110,11 @@ class Twig extends ServiceAbstract implements ServiceInterface
     $this->twig->addExtension(new \Twig_Extensions_Extension_Text());
   }
 
+  private function loadTests()
+  {
+    $this->twig->addTest('null', new \Twig_Test_Function('is_null'));
+  }
+
   /**
    * Load twig filters
    * return void
@@ -139,6 +145,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
     $this->twig->addFilter('key_exists', new \Twig_Filter_Function('array_key_exists'));
     $this->twig->addFilter('array_keys', new \Twig_Filter_Function('array_keys'));
     $this->twig->addFilter('round', new \Twig_Filter_Function('round'));
+    $this->twig->addFilter('dump', new \Twig_Filter_Function('var_dump'));
     $this->twig->addFilter('formatdate', new \Twig_Filter_Function('phraseadate::getDate'));
     $this->twig->addFilter('getPrettyDate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
     $this->twig->addFilter('prettyDate', new \Twig_Filter_Function('phraseadate::getPrettyString'));
