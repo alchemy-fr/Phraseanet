@@ -536,6 +536,10 @@
         $('.content.readonly, .content.readwrite', $('#ListManager')).toggle();
         return false;
       });
+      $('.Refresher', $('#ListManager')).bind('click', function(){
+        $('#ListManager ul.lists .list.selected a').trigger('click');
+        return false;
+      });
 
       $('button.deleter', this.container).bind('click', function(event){
 
