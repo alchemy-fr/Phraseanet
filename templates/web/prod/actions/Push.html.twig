@@ -101,7 +101,7 @@
                     {% endtrans %}
                   {% endset %}
                   {% set recommendation = recommendation
-                              ~ '<a href="#">'
+                              ~ '<a href="#" class="recommended_users_list">'
                               ~ and_many_more ~ '</a>' %}
                 {% endif %}
 
@@ -112,6 +112,27 @@
                   {% endtrans %}
                 {% endif %}
               </p>
+
+              <div style="display:none;" id="push_user_recommendations" title="{% trans 'Users suggestion' %}" >
+                <table class="users" style="width:100%;">
+                  {% for user in RecommendedUsers %}
+                  <tr>
+                    <td>
+                      <img src="/skins/icons/user.png"/>
+                    </td>
+                    <td>
+                      {{ user.get_display_name() }}
+                      <input type="hidden" name="usr_id" value="{{ user.get_id() }}" />
+                    </td>
+                    <td>
+                      <a href="#" class="adder">
+                        {% trans 'Add' %}
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </div>
             </td>
             <td style="width:600px;">
               <p>

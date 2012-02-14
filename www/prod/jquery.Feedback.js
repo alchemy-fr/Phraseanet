@@ -77,6 +77,46 @@
       return false;
     });
 
+    $('.recommended_users_list', this.container).bind('click', function(){
+
+      var content = $('#push_user_recommendations').html();
+
+      var options = {
+        size : 'Small',
+        title : $(this).attr('title')
+      };
+
+      $dialog = p4.Dialog.Create(options, 2);
+      $dialog.setContent(content);
+
+      $dialog.getDomElement().find('a.adder').bind('click', function(){
+
+        $(this).addClass('added');
+
+        var usr_id = $(this).closest('tr').find('input[name="usr_id"]').val();
+
+        $this.loadUser(usr_id, $this.selectUser);
+
+        return false;
+      });
+
+      $dialog.getDomElement().find('a.adder').each(function(i, el){
+
+        var usr_id = $(this).closest('tr').find('input[name="usr_id"]').val();
+
+        if($('.badge_' + usr_id, $this.container).length > 0)
+        {
+          $(this).addClass('added');
+        }
+
+      });
+
+
+
+
+      return false;
+    });
+
     $('#PushBox form[name="FeedBackForm"]').bind('submit', function(){
 
       var $this = $(this);
