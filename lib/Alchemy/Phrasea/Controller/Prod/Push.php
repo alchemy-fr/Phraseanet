@@ -135,6 +135,7 @@ class Push implements ControllerProviderInterface
         return new Response($twig->render($template, $params));
       }
     );
+
     $controllers->post('/validateform/', function(Application $app) use ($userSelection)
       {
         $push = new RecordHelper\Push($app['Core'], $app['request']);
@@ -160,6 +161,7 @@ class Push implements ControllerProviderInterface
         return new Response($twig->render($template, $params));
       }
     );
+
     $controllers->post('/send/', function(Application $app)
       {
         $request = $app['request'];
@@ -510,6 +512,44 @@ class Push implements ControllerProviderInterface
         return new Response($Json, 200, array('Content-Type' => 'application/json'));
       }
     );
+
+    $controllers->get('/load-user/', function(Application $app){
+
+        $datas = null;
+
+        $request = $app['request'];
+        $em      = $app['Core']->getEntityManager();
+        $user    = $app['Core']->getAuthenticatedUser();
+
+        $query = new \User_Query(\appbox::get_instance());
+
+        $query->on_bases_where_i_am($user->ACL(), array('canpush'));
+
+        $query->in(array($request->get('usr_id')));
+
+        $result = $query->include_phantoms()
+            ->limit(0, 1)
+            ->execute()->get_results();
+
+        if ($result)
+        {
+          foreach ($result as $user)
+          {
+            $datas = array(
+              'type'         => 'USER'
+              , 'usr_id'       => $user->get_id()
+              , 'firstname'    => $user->get_firstname()
+              , 'lastname'     => $user->get_lastname()
+              , 'email'        => $user->get_email()
+              , 'display_name' => $user->get_display_name()
+            );
+          }
+        }
+
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+    });
 
     $controllers->post('/add-user/', function(Application $app, Request $request) use ($userFormatter)
       {
