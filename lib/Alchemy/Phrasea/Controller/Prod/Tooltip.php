@@ -162,7 +162,7 @@ class Tooltip implements ControllerProviderInterface
             })->assert('sbas_id', '\d+')->assert('field_id', '\d+');
 
 
-    $controllers->post('/metas/DCESInfos/{sbas_id}/{field_id}/'
+    $controllers->post('/DCESInfos/{sbas_id}/{field_id}/'
             , function(Application $app, $sbas_id, $field_id)
             {
               $databox = \databox::get_instance((int) $sbas_id);
