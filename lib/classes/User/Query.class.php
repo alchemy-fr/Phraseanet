@@ -147,6 +147,7 @@ class User_Query implements User_QueryInterface
   protected $companies;
   protected $countries;
   protected $positions;
+  protected $in_ids;
 
   const ORD_ASC           = 'asc';
   const ORD_DESC          = 'desc';
@@ -320,6 +321,10 @@ class User_Query implements User_QueryInterface
       }
     }
 
+    if ($this->in_ids)
+    {
+      $sql .= 'AND (usr.usr_id = ' . implode(' OR usr.usr_id = ', $this->in_ids) . ')';
+    }
 
     if ($this->have_rights)
     {
@@ -382,6 +387,20 @@ class User_Query implements User_QueryInterface
     $this->sql_params = array_merge($this->sql_params, $constraints);
 
     return $sql;
+  }
+
+  public function in(array $usr_ids)
+  {
+    $tmp_usr_ids = array();
+
+    foreach ($usr_ids as $usr_id)
+    {
+      $tmp_usr_ids[] = (int) $usr_id;
+    }
+
+    $this->in_ids = array_unique($tmp_usr_ids);
+
+    return $this;
   }
 
   public function include_phantoms($boolean = true)
@@ -542,7 +561,6 @@ class User_Query implements User_QueryInterface
   public function get_total()
   {
     if ($this->total)
-
       return $this->total;
 
     $conn = $this->appbox->get_connection();
@@ -703,7 +721,6 @@ class User_Query implements User_QueryInterface
   public function on_base_ids(Array $base_ids = null)
   {
     if (!$base_ids)
-
       return $this;
 
     $this->bases_restrictions = true;
@@ -728,7 +745,6 @@ class User_Query implements User_QueryInterface
   public function on_sbas_ids(Array $sbas_ids = null)
   {
     if (!$sbas_ids)
-
       return $this;
 
     $this->sbas_restrictions = true;
