@@ -8,10 +8,10 @@
                 <div class="display_id">{{element.getRecord().get_number()}}</div>
                 {% if basket.getValidation() %}
                     <div class="agreement">
-                        <img src="/skins/lightbox/agreeie6.gif"
-                            class="agree_button {% if element.getUserValidationDatas(user).getAgreement() != true %}not_decided{%endif%} agree_{{element.getId()}}" />
-                        <img src="/skins/lightbox/disagreeie6.gif"
-                            class="disagree_button {% if element.getUserValidationDatas(user).getAgreement() != false %}not_decided{%endif%} disagree_{{element.getId()}}" />
+              <img src="/skins/lightbox/agree.png"
+                class="agree_button {%if element.getUserValidationDatas(user).getAgreement() == false or element.getUserValidationDatas(user).getAgreement() is null %}not_decided{%endif%} agree_{{element.getId()}}" />
+              <img src="/skins/lightbox/disagree.png"
+                class="disagree_button {%if element.getUserValidationDatas(user).getAgreement() == true or element.getUserValidationDatas(user).getAgreement() is null %}not_decided{%endif%} disagree_{{element.getId()}}" />
                     </div>
                 {% endif %}
                 {{thumbnail.format(element.getRecord().get_thumbnail,114,85, '', session, true)}}

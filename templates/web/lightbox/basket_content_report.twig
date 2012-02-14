@@ -26,12 +26,12 @@
                                         {% if validationDatas.getAgreement() == true %}
                                             {% set imguser = '<img src="/skins/lightbox/agree.png" />' %}
                                             {% set styleuser = '' %}
-                                        {% elseif validationDatas.getAgreement() == false %}
-                                            {% set imguser = '<img src="/skins/lightbox/disagree.png" />' %}
-                                            {% set styleuser = '' %}
-                                        {% else %}
+                                        {% elseif validationDatas.getAgreement() is null %}
                                             {% set imguser = '' %}
                                             {% set styleuser = 'margin-left:18px;' %}
+                                        {% else %}
+                                            {% set imguser = '<img src="/skins/lightbox/disagree.png" />' %}
+                                            {% set styleuser = '' %}
                                         {% endif %}
                                         <b style="{{styleuser}}">{{imguser|raw}} {{validationDatas.getParticipant().getUser().get_display_name()}}</b>
                                         {% if validationDatas.getNote() != '' %}
