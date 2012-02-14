@@ -139,7 +139,9 @@ class WorkZone implements ControllerProviderInterface
 
         $alreadyFixed = $done         = 0;
 
-        foreach (explode(';', $request->get('stories')) as $element)
+        $stories = $request->get('stories', array());
+
+        foreach ($stories as $element)
         {
           $element = explode('_', $element);
           $Story   = new \record_adapter($element[0], $element[1]);
