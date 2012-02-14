@@ -146,10 +146,10 @@ class Push implements ControllerProviderInterface
         $RecommendedUsers = $userSelection($push->get_elements());
 
         $params = array(
-          'push'    => $push,
-          'message' => '',
-          'lists'   => $repository->findUserLists($app['Core']->getAuthenticatedUser()),
-          'context' => 'Feedback',
+          'push'             => $push,
+          'message'          => '',
+          'lists'            => $repository->findUserLists($app['Core']->getAuthenticatedUser()),
+          'context'          => 'Feedback',
           'RecommendedUsers' => $RecommendedUsers
         );
 
@@ -455,65 +455,8 @@ class Push implements ControllerProviderInterface
       }
     );
 
-    $controllers->get('/search-user/', function(Application $app)
+    $controllers->get('/user/{usr_id}/', function(Application $app, $usr_id) use ($userFormatter)
       {
-        $request = $app['request'];
-        $em      = $app['Core']->getEntityManager();
-        $user    = $app['Core']->getAuthenticatedUser();
-
-        $query = new \User_Query(\appbox::get_instance());
-
-        $query->on_bases_where_i_am($user->ACL(), array('canpush'));
-
-        $query->like(\User_Query::LIKE_FIRSTNAME, $request->get('query'))
-          ->like(\User_Query::LIKE_LASTNAME, $request->get('query'))
-          ->like(\User_Query::LIKE_LOGIN, $request->get('query'))
-          ->like_match(\User_Query::LIKE_MATCH_OR);
-
-        $result = $query->include_phantoms()
-            ->limit(0, 50)
-            ->execute()->get_results();
-
-        $repository = $em->getRepository('\Entities\UsrList');
-
-        $lists = $repository->findUserListLike($user, $request->get('query'));
-
-        $datas = array();
-
-        if ($lists)
-        {
-          foreach ($lists as $list)
-          {
-            $datas[] = array(
-              'type'     => 'LIST'
-              , 'name'     => $list->getName()
-              , 'quantity' => $list->getUsers()->count()
-            );
-          }
-        }
-
-        if ($result)
-        {
-          foreach ($result as $user)
-          {
-            $datas[] = array(
-              'type'         => 'USER'
-              , 'usr_id'       => $user->get_id()
-              , 'firstname'    => $user->get_firstname()
-              , 'lastname'     => $user->get_lastname()
-              , 'email'        => $user->get_email()
-              , 'display_name' => $user->get_display_name()
-            );
-          }
-        }
-
-        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
-
-        return new Response($Json, 200, array('Content-Type' => 'application/json'));
-      }
-    );
-
-    $controllers->get('/load-user/', function(Application $app){
 
         $datas = null;
 
@@ -525,7 +468,7 @@ class Push implements ControllerProviderInterface
 
         $query->on_bases_where_i_am($user->ACL(), array('canpush'));
 
-        $query->in(array($request->get('usr_id')));
+        $query->in(array($usr_id));
 
         $result = $query->include_phantoms()
             ->limit(0, 1)
@@ -535,21 +478,35 @@ class Push implements ControllerProviderInterface
         {
           foreach ($result as $user)
           {
-            $datas = array(
-              'type'         => 'USER'
-              , 'usr_id'       => $user->get_id()
-              , 'firstname'    => $user->get_firstname()
-              , 'lastname'     => $user->get_lastname()
-              , 'email'        => $user->get_email()
-              , 'display_name' => $user->get_display_name()
-            );
+            $datas = $userFormatter($user);
           }
         }
 
         $Json = $app['Core']['Serializer']->serialize($datas, 'json');
 
         return new Response($Json, 200, array('Content-Type' => 'application/json'));
-    });
+      })->assert('usr_id', '\d+');
+
+    $controllers->get('/list/{list_id}/', function(Application $app, $list_id) use ($listFormatter)
+      {
+        $datas = null;
+
+        $em   = $app['Core']->getEntityManager();
+        $user = $app['Core']->getAuthenticatedUser();
+
+        $repository = $em->getRepository('\Entities\UsrList');
+
+        $list = $repository->findUserListByUserAndId($user, $list_id);
+
+        if ($list)
+        {
+          $datas = $listFormatter($list);
+        }
+
+        $Json = $app['Core']['Serializer']->serialize($datas, 'json');
+
+        return new Response($Json, 200, array('Content-Type' => 'application/json'));
+      })->assert('list_id', '\d+');
 
     $controllers->post('/add-user/', function(Application $app, Request $request) use ($userFormatter)
       {

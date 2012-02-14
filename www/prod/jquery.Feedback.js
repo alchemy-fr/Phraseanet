@@ -242,6 +242,21 @@
       return false;
     });
 
+    $('a.list_loader', this.container).bind('click', function(){
+      var url = $(this).attr('href');
+
+      var callbackList = function(list){
+        for(i in list.entries)
+        {
+          this.selectUser(list.entries[i].User);
+        }
+      }
+
+      $this.loadList(url, callbackList)
+
+      return false;
+    });
+
     $('.options button', this.container).button();
 
     $('form.list_saver', this.container).bind('submit', function(){
@@ -345,9 +360,24 @@
 
       $.ajax({
         type: 'GET',
-        url: '/prod/push/load-user/',
+        url: '/prod/push/user/' + usr_id + '/',
         dataType: 'json',
         data: {usr_id : usr_id},
+        success: function(data){
+          if(typeof callback === 'function')
+          {
+            callback.call($this, data);
+          }
+        }
+      });
+    },
+    loadList : function(url, callback) {
+      var $this = this;
+
+      $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: 'json',
         success: function(data){
           if(typeof callback === 'function')
           {
