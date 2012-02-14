@@ -175,6 +175,8 @@ class Push implements ControllerProviderInterface
         {
           $em = $app['Core']->getEntityManager();
 
+          $registry = $app['Core']->getRegistry();
+
           $pusher = new RecordHelper\Push($app['Core'], $app['request']);
 
           $user = $app['Core']->getAuthenticatedUser();
@@ -199,6 +201,9 @@ class Push implements ControllerProviderInterface
           {
             throw new ControllerException(_('No elements to push'));
           }
+
+
+          $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance(), $app['Core']);
 
           foreach ($receivers as $receiver)
           {
@@ -245,6 +250,26 @@ class Push implements ControllerProviderInterface
 
               $em->persist($BasketElement);
             }
+
+            $em->flush();
+
+            $url = $registry->get('GV_ServerName')
+              . 'lightbox/index.php?LOG='
+              . \random::getUrlToken('view', $user_receiver->get_id(), null, $Basket->getId());
+
+            $params = array(
+              'from'       => $user->get_id()
+              , 'from_email' => $user->get_email()
+              , 'to'         => $user_receiver->get_id()
+              , 'to_email'   => $user_receiver->get_email()
+              , 'to_name'    => $user_receiver->get_display_name()
+              , 'url'        => $url
+              , 'accuse'     => !!$request->get('recept')
+              , 'message'    => $request->get('message')
+              , 'ssel_id'    => $Basket->getId()
+            );
+
+            $events_manager->trigger('__PUSH_DATAS__', $params);
           }
 
           $em->flush();
@@ -262,7 +287,7 @@ class Push implements ControllerProviderInterface
         }
         catch (ControllerException $e)
         {
-          $ret['message'] = $e->getMessage();
+          $ret['message'] = $e->getMessage() . $e->getFile() . $e->getLine();
         }
 
         $Json = $app['Core']['Serializer']->serialize($ret, 'json');
@@ -282,6 +307,8 @@ class Push implements ControllerProviderInterface
 
         $em = $app['Core']->getEntityManager();
 
+        $registry = $app['Core']->getRegistry();
+
         /* @var $em \Doctrine\ORM\EntityManager */
         $em->beginTransaction();
 
@@ -290,7 +317,7 @@ class Push implements ControllerProviderInterface
           $pusher = new RecordHelper\Push($app['Core'], $app['request']);
           $user   = $app['Core']->getAuthenticatedUser();
 
-
+          $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance(), $app['Core']);
 
           $repository = $em->getRepository('\Entities\Basket');
 
@@ -422,11 +449,31 @@ class Push implements ControllerProviderInterface
               $Participant->addValidationData($ValidationData);
             }
 
-            $em->merge($Participant);
+            $Participant = $em->merge($Participant);
+
+            $em->flush();
+
+            $url = $registry->get('GV_ServerName')
+              . 'lightbox/index.php?LOG='
+              . \random::getUrlToken('view', $participant_user->get_id(), null, $Basket->getId());
+
+            $params = array(
+              'from'       => $user->get_id()
+              , 'from_email' => $user->get_email()
+              , 'to'         => $participant_user->get_id()
+              , 'to_email'   => $participant_user->get_email()
+              , 'to_name'    => $participant_user->get_display_name()
+              , 'url'        => $url
+              , 'accuse'     => !!$request->get('recept')
+              , 'message'    => $request->get('message')
+              , 'ssel_id'    => $Basket->getId()
+            );
+
+            $events_manager->trigger('__PUSH_VALIDATION__', $params);
           }
 
-          $em->merge($Basket);
-          $em->merge($Validation);
+          $Basket = $em->merge($Basket);
+          $Validation = $em->merge($Validation);
 
           $em->flush();
 
