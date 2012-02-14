@@ -1,14 +1,14 @@
 <div class="PNB PushBox" id="PushBox" >
   <div class="PNB" style="width:205px;">
     <div class="PNB10 LeftColumn">
-      <div class="PNB" style="height:80px;bottom:auto;text-align:center;">
+      <div class="PNB" style="height:130px;bottom:auto;text-align:center;">
         {% if context == 'Push' %}
-        <img style="margin:10px;" src="/skins/icons/push64.png"/>
+        <img style="margin:30px 0;" src="/skins/icons/push64.png"/>
         {% else %}
-        <img style="margin:10px;" src="/skins/prod/Push/Feedback60.png"/>
+        <img style="margin:30px 0;" src="/skins/icons/Feedback60.png"/>
         {% endif %}
       </div>
-      <div class="PNB content" style="top:100px;">
+      <div class="PNB content" style="top:150px;">
         <div class="PNB10" style="bottom:0;height:90px;">
           <h1>{% trans 'Grant rights' %}</h1>
           <ul class="general_togglers">
@@ -61,7 +61,7 @@
     </div>
   </div>
   <div class="PNB" style="left:205px;">
-    <div class="PNB" style="height:100px;bottom:auto;">
+    <div class="PNB" style="height:150px;bottom:auto;">
       <div class="PNB10">
         <table>
           <tr>
@@ -75,16 +75,37 @@
 
                 {% set recommendation = '' %}
 
+                {% set total = RecommendedUsers|length %}
+
                 {% for user in RecommendedUsers %}
 
-                  {% if recommendation != '' %}
-                    {% set recommendation = recommendation ~ ', ' %}
+                  {% if total <= 4 or loop.index <= 4 %}
+                    {% if recommendation != '' %}
+                      {% set recommendation = recommendation ~ ', ' %}
+                    {% endif %}
+                    {% set recommendation = recommendation
+                    ~ ' <a href="#" class="recommended_users" tooltipsrc="/prod/tooltip/user/'
+                    ~ user.get_id() ~ '/" class="UserTips"/">'
+                    ~ '<input type="hidden" name="usr_id" value="' ~ user.get_id() ~ '" />'
+                    ~ user.get_display_name()
+                    ~ '</a>' %}
                   {% endif %}
-                  {% set recommendation = recommendation
-                                          ~ '<a href="#">'
-                                          ~ user.get_display_name
-                                          ~ '</a>' %}
+
                 {% endfor %}
+
+                {% if total > 4 %}
+                  {% set n = total - 4%}
+                  {% set and_many_more %}
+                    {% trans %}
+                      and {{ n }} more peoples
+                    {% endtrans %}
+                  {% endset %}
+                  {% set recommendation = recommendation
+                              ~ '<a href="#">'
+                              ~ and_many_more ~ '</a>' %}
+                {% endif %}
+
+
                 {% if recommendation != '' %}
                   {% trans %}
                     Please consider send this validation to the following users : {{ recommendation }}
@@ -105,7 +126,7 @@
         </table>
       </div>
     </div>
-    <div class="PNB" style="top:100px;">
+    <div class="PNB" style="top:150px;">
       <div class="PNB10 content user_content">
         <div class="PNB10 header">
           <table>
