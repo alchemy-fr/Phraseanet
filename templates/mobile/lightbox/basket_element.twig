@@ -25,7 +25,7 @@
         <input {% if basket_element.getUserValidationDatas(user).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
           <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{% trans 'validation:: OUI' %}</label>
 
-        <input {% if basket_element.getUserValidationDatas(user).getAgreement() == false%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
+        <input {% if basket_element.getUserValidationDatas(user).getAgreement() == false and basket_element.getUserValidationDatas(user).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
           <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{% trans 'validation:: NON' %}</label>
       </fieldset>
       <div style="text-align:center;margin:0 0 1em 0">
