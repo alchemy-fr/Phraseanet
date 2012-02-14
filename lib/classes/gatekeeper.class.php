@@ -71,7 +71,7 @@ class gatekeeper
    */
   function check_directory()
   {
-    $request = http_request::getInstance();
+    $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
 
@@ -116,7 +116,14 @@ class gatekeeper
         case 'prod':
         case 'client':
           $this->give_guest_access();
-          phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          if($request->isXmlHttpRequest())
+          {
+            phrasea::headers(404);
+          }
+          else
+          {
+            phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          }
           break;
         case 'thesaurus2':
           if ($this->_PHP_SELF == '/thesaurus2/xmlhttp/getterm.x.php'

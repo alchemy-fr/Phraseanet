@@ -500,7 +500,9 @@ class phrasea
         $request = http_request::getInstance();
         if ($request->is_ajax())
         {
-          exit(sprintf('error %d : Content unavailable', (int) $code));
+          $Response = new \Symfony\Component\HttpFoundation\Response(sprintf('error %d : Content unavailable', (int) $code), $code);
+          $Response->send();
+          exit();
         }
         else
         {
