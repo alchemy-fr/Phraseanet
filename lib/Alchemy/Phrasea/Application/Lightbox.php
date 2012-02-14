@@ -381,9 +381,14 @@ return call_user_func(
 
           $basket_element = $repository->findUserElement($sselcont_id, $app['Core']->getAuthenticatedUser());
 
+          $validationDatas = $basket_element->getUserValidationDatas($app['Core']->getAuthenticatedUser());
 
-          $basket_element->getUserValidationDatas($app['Core']->getAuthenticatedUser())
-            ->setNote($note);
+          $validationDatas->setNote($note);
+
+          $em->merge($validationDatas);
+
+          $em->flush();
+
           /* @var $twig \Twig_Environment */
           $twig = $app['Core']->getTwig();
 
@@ -442,18 +447,20 @@ return call_user_func(
             , $user
           );
           /* @var $basket_element \Entities\BasketElement */
-          $basket_element->getUserValidationDatas($user)
-            ->setAgreement($agreement);
+          $validationDatas = $basket_element->getUserValidationDatas($user);
+          
+          $validationDatas->setAgreement($agreement);
 
           $participant = $basket_element->getBasket()
             ->getValidation()
             ->getParticipant($user);
 
-          if ($participant->getIsConfirmed() === true)
-          {
-            $releasable = false;
-          }
-          else
+          $em->merge($basket_element);
+
+          $em->flush();
+
+          $releasable = false;
+          if($participant->isReleasable() === true)
           {
             $releasable = _('Do you want to send your report ?');
           }
@@ -497,6 +504,10 @@ return call_user_func(
           /* @var $basket \Entities\Basket */
           $participant = $basket->getValidation()->getParticipant($user);
           $participant->setIsConfirmed(true);
+
+          $em->merge($participant);
+
+          $em->flush();
 
           $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
 
