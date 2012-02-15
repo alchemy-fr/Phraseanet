@@ -264,7 +264,7 @@ class Push implements ControllerProviderInterface
               , 'to_email'   => $user_receiver->get_email()
               , 'to_name'    => $user_receiver->get_display_name()
               , 'url'        => $url
-              , 'accuse'     => !!$request->get('recept')
+              , 'accuse'     => !!$request->get('recept', false)
               , 'message'    => $request->get('message')
               , 'ssel_id'    => $Basket->getId()
             );
@@ -464,7 +464,7 @@ class Push implements ControllerProviderInterface
               , 'to_email'   => $participant_user->get_email()
               , 'to_name'    => $participant_user->get_display_name()
               , 'url'        => $url
-              , 'accuse'     => !!$request->get('recept')
+              , 'accuse'     => !!$request->get('recept', false)
               , 'message'    => $request->get('message')
               , 'ssel_id'    => $Basket->getId()
             );
