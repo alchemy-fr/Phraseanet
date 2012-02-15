@@ -240,11 +240,6 @@
               <span id="basket_menu_trigger" style="cursor:pointer;padding:3px;font-size:12px;">&#9660;</span>
             </a>
           </li>
-          <!--<li>
-            <a href="#adv_search" class="adv_search">
-              {% trans 'recherche' %}
-            </a>
-          </li>-->
           {% if GV_thesaurus %}
           <li>
             <a href="#proposals">
@@ -262,186 +257,6 @@
           {% import 'prod/WorkZone/Macros.twig'  as  WorkZoneMacros %}
           {{WorkZoneMacros.make_bloc(WorkZone)}}
         </div>
-        <!--<div id="adv_search">
-          <div>
-            <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
-          </div>
-          <div>
-            <form class="adv_search_bind">
-              <table>
-                <tr>
-                  <td>
-                    <label>
-                      {% trans 'Chercher tous les mots' %}
-                    </label>
-                  </td>
-                  <td>
-                    <input style="width:150px;" name="query_all" type="text" value="" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label>
-                      {% trans 'Cette expression exacte' %}
-                    </label>
-                  </td>
-                  <td>
-                    <input style="width:150px;" name="query_exact" type="text" value="" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label>
-                      {% trans 'Au moins un des mots suivants' %}
-                    </label>
-                  </td>
-                  <td>
-                    <input style="width:150px;" name="query_or" type="text" value="" />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <label>
-                      {% trans 'Aucun des mots suivants' %}
-                    </label>
-                  </td>
-                  <td>
-                    <input style="width:150px;" name="query_none" type="text" value="" />
-                  </td>
-                </tr>
-              </table>
-            </form>
-          </div>
-          <div>
-            <div class="sbasglob ui-corner-all">
-              <div style="text-align:center;margin:0 10px;">
-                <input class="input-button" type="button"
-                      value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
-                <input class="input-button" type="button"
-                      value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);"/>
-              </div>
-              {{_self.bas_list(module_prod, search_datas)}}
-            </div>
-            <div id="sbasfiltercont" class="ui-corner-all">
-              <div>
-                {% if registry.get('GV_sphinx') %}
-                {% trans 'Trier par ' %}
-                  <select name="sort">
-                    <option value="relevance">{% trans 'pertinence'%}</option>
-                    <option value="created_on">{% trans 'date dajout'%}</option>
-                    <option value="random">{% trans 'aleatoire'%}</option>
-                  </select>
-                  <select name="ord">
-                    <option value="desc">{% trans 'descendant'%}</option>
-                    <option value="asc">{% trans 'ascendant'%}</option>
-                  </select>
-                  <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
-                {% else %}
-                  {% trans 'Trier par ' %}
-                  <select name="sort">
-                    <option value=""></option>
-                    {% for field_id, field in search_datas['fields'] %}
-                      {% if field['type'] == 'date' %}
-                      <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                      {% endif %}
-                    {% endfor %}
-                  </select>
-                  <select name="ord">
-                    <option value="desc">{% trans 'descendant'%}</option>
-                    <option value="asc">{% trans 'ascendant'%}</option>
-                  </select>
-                  <input type="hidden" name="ord" id="searchOrd" value="PHRASEA_ORDER_DESC" />
-                {% endif %}
-                <div class="field_filter">
-                  <div>
-                    {% trans 'Les termes apparaissent dans le(s) champs' %}
-                  </div>
-                  <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle;width:100%;">
-                    <option value="phraseanet--all--fields">{% trans 'rechercher dans tous les champs' %}</option>
-                    {% for field_id, field in search_datas['fields'] %}
-                      {% if field['type'] != 'date' %}
-                        <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                      {% endif %}
-                    {% endfor %}
-                  </select>
-                </div>
-
-                {% set status_length = search_status|length %}
-                {% if status_length > 0 %}
-
-                <div style="margin:5px 0;">
-                  <hr/>
-                </div>
-                <div class="status_filter">
-
-                  <div>
-                    {% trans 'Status des documents a rechercher' %}
-                  </div>
-                  <table>
-                    {% for n, stat in search_status %}
-                    {% for s in stat %}
-                    <tr>
-                      <td>
-                        {% if s['imgoff'] %}
-                        <img src="{{s['imgoff']}}" title="{{s['labeloff']}}" />
-                        {% endif %}
-                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
-                              type="checkbox" value="{{s['sbas']|implode(' field_')}}"
-                              n="{{n}}" name="status[{{n}}][off][]"/><label>{{s['labeloff']}}</label>
-                      </td>
-                      <td>
-                        {% if s['imgoff'] %}
-                        <img src="{{s['imgon']}}" title="{{s['labelon']}}" />
-                        {% endif %}
-                        <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
-                              type="checkbox" value="{{s['sbas']|implode(' field_')}}"
-                              n="{{n}}" name="status[{{n}}][on][]"/><label>{{s['labelon']}}</label>
-                      </td>
-                    </tr>
-                    {% endfor %}
-                    {% endfor %}
-                  </table>
-                </div>
-                {% endif %}
-
-                {% set dates_length = search_datas['dates']|length %}
-                {% if dates_length > 0 %}
-                <div style="margin:5px 0;">
-                  <hr/>
-                </div>
-                <div class="date_filter">
-                  <div>{% trans 'Rechercher dans un champ date' %}</div>
-                  <table>
-                    <tr>
-                      <td colspan="2">
-                        <select name="datefield">
-                          {% for field_id, field in search_datas['dates'] %}
-                          <option onchange="checkFilters(true);"
-                                  class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
-                          {% endfor %}
-                          <option value="{{search_datas['dates']|array_keys|implode('|')}}" selected="selected">
-                            {% trans 'rechercher dans tous les champs' %}
-                          </option>
-                        </select>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        {% trans 'phraseanet::time:: de' %}
-                        <input onchange="checkFilters(true);" class="datepicker" type="text" name="datemin">
-                      </td>
-                      <td>
-                        {% trans 'phraseanet::time:: a' %}
-                        <input onchange="checkFilters(true);" class="datepicker" type="text" name="datemax">
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </div>-->
         {% if GV_thesaurus %}
         <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;"
             ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
@@ -564,15 +379,18 @@
   </div>
   <div class="PNB" id="rightFrame" style="left:auto;width:{{w2}}%;">
 
-    <div id="headBlock" class="PNB" style="height:70px;bottom:auto;">
-      <div style="margin:15px auto;width:550px;">
-          <form name="phrasea_query" class="phrasea_query" onsubmit="newSearch();return false;">
-            <input autocomplete="off" class="search query" id="EDIT_query" name="query" type="text" name="qry" value="{{user.getPrefs('start_page_query')}}">
+    <div id="headBlock" class="PNB" style="height:90px;bottom:auto;">
+      <div style="margin:15px auto;width:580px;">
+
+
+
+          <form id="searchForm" action="/prod/query/" name="phrasea_query" class="phrasea_query">
+            <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{user.getPrefs('start_page_query')}}">
 
             <a href="#" class="adv_trigger adv_search_button">
               <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
             </a>
-            <button>{% trans 'boutton::rechercher' %}</button>
+            <button type="submit">{% trans 'boutton::rechercher' %}</button>
 
             <div style="margin:5px 0">
             {% if GV_multiAndReport %}
@@ -594,6 +412,8 @@
 
 
 
+            <input type="hidden" name="pag" id="formAnswerPage" value="">
+            <input type="hidden" name="sel" value="">
 
 
 
@@ -641,7 +461,7 @@
                               <option value=""></option>
                               {% for field_id, field in search_datas['fields'] %}
                                 {% if field['type'] == 'date' %}
-                                <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{ field['fieldname'] }}</option>
                                 {% endif %}
                               {% endfor %}
                             </select>
@@ -748,28 +568,6 @@
         </div>
 
         <!--
-        <div id="alternateSearch" class="PNB" style="z-index:510;">
-          <ul class="PNB" style="height:30px;">
-            <li><a href="#bases-queries">{% trans 'recherche :: Bases' %}</a></li>
-            <li><a href="#history-queries">{% trans 'recherche :: Historique' %}</a></li>
-            {% if queries_topics %}
-            <li><a href="#choosen-topics">{% trans 'recherche :: Themes' %}</a></li>
-            {% endif %}
-          </ul>
-          <div id="bases-queries" class="PNB" style="top:30px;overflow:hidden;">
-            <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
-
-
-              <div class="sbasglob ui-corner-all">
-                <div style="text-align:center;margin:0 10px;">
-                  <input class="input-button" type="button" value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
-                  <input class="input-button" type="button" value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);"/>
-                </div>
-
-                {{_self.bas_list(module_prod, search_datas)}}
-              </div>
-            </div>
-          </div>
           <div id="history-queries" class="PNB" style="top:30px;overflow:hidden;">
             <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
               {{queries_history|raw}}
@@ -786,7 +584,7 @@
       </div>-->
 
     </div>
-    <div id="idFrameT" class="PNB ui-corner-top" style="top:90px;">
+    <div id="idFrameT" class="PNB ui-corner-top" style="top:110px;">
       <div class="tools PNB10" style="font-size:10px;z-index:200;height:28px;">
 
 
@@ -1296,25 +1094,6 @@
     <input type="button" onclick="reverse_order();return false;" value="{% trans 'Inverser' %}" style="float:right;"/></div>
   <div style="top:30px;overflow:auto;" id="reorder_box" class="PNB loading"></div>
 </div>
-
-<form id="searchForm" name="search" action="answer.php" method="post" style="display:none;">
-  <input type="hidden" name="nba" value="">
-  <input type="hidden" name="pag" id="formAnswerPage" value="">
-  <input type="hidden" name="sel" value="">
-  <input type="hidden" name="qry" value="" />
-  <input type="hidden" name="datemin" value="" />
-  <input type="hidden" name="datemax" value="" />
-  <input type="hidden" name="ord" value="" />
-  <input type="hidden" name="sort" value="" />
-  <input type="hidden" name="stemme" value="1" />
-  <input type="hidden" name="datefield" value="" />
-  <input type="hidden" name="search_type" value="" />
-  <input type="hidden" name="recordtype" value="" />
-  <div class="status"></div>
-  <div class="bases"></div>
-  <div class="fields"></div>
-</form>
-
 <script type="text/javascript">
   {% include "prod/thesaurus.js" %}
 </script>

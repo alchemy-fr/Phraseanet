@@ -4,9 +4,11 @@ html{
 height:100%;
 margin:0;
 padding:0;
+z-index:1;
 }
 html, body{
   font-size:12px;
+z-index:1;
 }
 
 *::-moz-selection, *::selection{
@@ -910,13 +912,14 @@ form.phrasea_query input.query{
 /* QRY */
 
 
-#alternateTrigger.danger input,
-#adv_search .date_filter.danger,
-#adv_search .field_filter.danger,
-#adv_search .status_filter.danger
+.phrasea_query input.danger,
+.phrasea_query .date_filter.danger,
+.phrasea_query .field_filter.danger,
+.phrasea_query .status_filter.danger
 {
 	border-color:#c9c900;
-	background-color:#707000;
+	background-color:#FFFDDA;
+  color:#000000;
 }
 
 #adv_search table.colllist
