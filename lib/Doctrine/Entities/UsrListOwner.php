@@ -25,32 +25,32 @@ class UsrListOwner
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var integer $usr_id
    */
-  private $usr_id;
+  protected $usr_id;
 
   /**
    * @var string $role
    */
-  private $role;
+  protected $role;
 
   /**
    * @var datetime $created
    */
-  private $created;
+  protected $created;
 
   /**
    * @var datetime $updated
    */
-  private $updated;
+  protected $updated;
 
   /**
    * @var Entities\UsrList
    */
-  private $list;
+  protected $list;
 
   /**
    * Get id

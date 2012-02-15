@@ -22,32 +22,32 @@ class UsrList
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var string $name
    */
-  private $name;
+  protected $name;
 
   /**
    * @var datetime $created
    */
-  private $created;
+  protected $created;
 
   /**
    * @var datetime $updated
    */
-  private $updated;
+  protected $updated;
 
   /**
    * @var Entities\UsrListOwner
    */
-  private $owners;
+  protected $owners;
 
   /**
    * @var \Doctrine\Common\Collections\Collection
    */
-  private $entries;
+  protected $entries;
 
   public function __construct()
   {

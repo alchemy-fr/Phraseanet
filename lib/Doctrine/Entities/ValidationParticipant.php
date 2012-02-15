@@ -23,47 +23,47 @@ class ValidationParticipant
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var integer $usr_id
    */
-  private $usr_id;
+  protected $usr_id;
 
   /**
    * @var Entities\ValidationSession
    */
-  private $session;
+  protected $session;
 
   /**
    * @var datetime $reminded
    */
-  private $reminded = null;
+  protected $reminded = null;
 
   /**
    * @var Entities\ValidationData
    */
-  private $datas;
+  protected $datas;
 
   /**
    * @var boolean $is_confirmed
    */
-  private $is_confirmed = false;
+  protected $is_confirmed = false;
 
   /**
    * @var boolean $can_agree
    */
-  private $can_agree = false;
+  protected $can_agree = false;
 
   /**
    * @var boolean $can_see_others
    */
-  private $can_see_others = false;
+  protected $can_see_others = false;
 
   /**
    * @var boolean $is_aware
    */
-  private $is_aware = false;
+  protected $is_aware = false;
 
   public function __construct()
   {

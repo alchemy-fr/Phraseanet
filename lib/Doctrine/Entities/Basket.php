@@ -23,50 +23,51 @@ require_once __DIR__ . '/../../classes/User/Adapter.class.php';
 class Basket
 {
 
+  const CACHE_SUFFIX = '_basket';
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var string $name
    */
-  private $name;
+  protected $name;
 
   /**
    * @var text $description
    */
-  private $description;
+  protected $description;
 
   /**
    * @var integer $usr_id
    */
-  private $usr_id;
+  protected $usr_id;
 
   /**
    * @var integer $pusher_id
    */
-  private $pusher_id;
+  protected $pusher_id;
 
   /**
    * @var boolean $archived
    */
-  private $archived = false;
+  protected $archived = false;
 
   /**
    * @var datetime $created
    */
-  private $created;
+  protected $created;
 
   /**
    * @var datetime $updated
    */
-  private $updated;
+  protected $updated;
 
   /**
    * @var Entities\BasketElement
    */
-  private $elements;
+  protected $elements;
 
   public function __construct()
   {
@@ -272,7 +273,7 @@ class Basket
   /**
    * @var Entities\ValidationSession
    */
-  private $validation;
+  protected $validation;
 
   /**
    * Set validation
@@ -297,7 +298,7 @@ class Basket
   /**
    * @var boolean $is_read
    */
-  private $is_read = true;
+  protected $is_read = true;
 
   /**
    * Set is_read

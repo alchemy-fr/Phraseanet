@@ -22,41 +22,42 @@ require_once __DIR__ . '/../../classes/record/adapter.class.php';
  */
 class BasketElement
 {
-
+  
+  const CACHE_SUFFIX = "_basketElement";
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var integer $record_id
    */
-  private $record_id;
+  protected $record_id;
 
   /**
    * @var integer $sbas_id
    */
-  private $sbas_id;
+  protected $sbas_id;
 
   /**
    * @var integer $ord
    */
-  private $ord;
+  protected $ord;
 
   /**
    * @var datetime $created
    */
-  private $created;
+  protected $created;
 
   /**
    * @var datetime $updated
    */
-  private $updated;
+  protected $updated;
 
   /**
    * @var Entities\Basket
    */
-  private $basket;
+  protected $basket;
 
   /**
    * Get id
@@ -207,7 +208,7 @@ class BasketElement
   /**
    * @var Entities\ValidationData
    */
-  private $validation_datas;
+  protected $validation_datas;
 
   public function __construct()
   {
@@ -243,14 +244,13 @@ class BasketElement
   {
     foreach ($this->validation_datas as $validationData)
     {
-      /* @var $validationData \Entities\ValidationData */
       if ($validationData->getParticipant()->getUser()->get_id() == $user->get_id())
       {
         return $validationData;
       }
     }
 
-    throw new \Exception('There is no such participant');
+    throw new \Exception('There is no such participant '. $user->get_email());
   }
 
 }

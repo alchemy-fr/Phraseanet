@@ -23,52 +23,52 @@ class ValidationSession
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var string $name
    */
-  private $name;
+  protected $name;
 
   /**
    * @var text $description
    */
-  private $description;
+  protected $description;
 
   /**
    * @var boolean $archived
    */
-  private $archived;
+  protected $archived;
 
   /**
    * @var datetime $created
    */
-  private $created;
+  protected $created;
 
   /**
    * @var datetime $updated
    */
-  private $updated;
+  protected $updated;
 
   /**
    * @var datetime $expires
    */
-  private $expires;
+  protected $expires;
 
   /**
    * @var datetime $reminded
    */
-  private $reminded;
+  protected $reminded;
 
   /**
    * @var Entities\Basket
    */
-  private $basket;
+  protected $basket;
 
   /**
    * @var Entities\ValidationParticipant
    */
-  private $participants;
+  protected $participants;
 
   public function __construct()
   {
@@ -280,18 +280,18 @@ class ValidationSession
       }
     }
 
-    throw new \Exception_NotFound('Particpant not found');
+    throw new \Exception_NotFound('Particpant not found' . $user->get_email());
   }
 
   /**
    * @var integer $initiator
    */
-  private $initiator;
+  protected $initiator;
 
   /**
    * @var integer $initiator_id
    */
-  private $initiator_id;
+  protected $initiator_id;
 
   /**
    * Set initiator_id
