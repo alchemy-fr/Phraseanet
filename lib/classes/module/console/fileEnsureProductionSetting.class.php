@@ -104,9 +104,9 @@ class module_console_fileEnsureProductionSetting extends Command
                               $previous->getMessage() : 'Unknown.'
               )
       );
-       $output->writeln(sprintf("\nCheck test suite can not continue please correct FATAL error and relaunch.\n"));
+      $output->writeln(sprintf("\nCheck test suite can not continue please correct FATAL error and relaunch.\n"));
 
-       return 1;
+      return 1;
     }
   }
 
@@ -134,10 +134,10 @@ class module_console_fileEnsureProductionSetting extends Command
         $output->writeln("");
       }
     }
-    if(!$nbErrors)
+    if (!$nbErrors)
     {
-       $output->writeln("<info>Your production settings are setted correctly !</info>");
-       $output->writeln("");
+      $output->writeln("<info>Your production settings are setted correctly !</info>");
+      $output->writeln("");
     }
 
     return (int) ($nbErrors > 0);
@@ -222,6 +222,24 @@ class module_console_fileEnsureProductionSetting extends Command
       $phraseanet = $this->configuration->getPhraseanet();
 
       $url = $phraseanet->get("servername");
+      
+      if(empty($url))
+      {
+        throw new \Exception("phraseanet:servername connot be empty");
+      }
+
+      if(!filter_var($url, FILTER_VALIDATE_URL))
+      {
+        throw new \Exception(sprintf("%s url is not valid", $url));
+      }
+      
+      $parseUrl = parse_url($url);
+
+      if($parseUrl["scheme"] !== "https")
+      {
+        $output->writeln(sprintf("<comment> /!\ %s url scheme should be https</comment>", $url));
+        $output->writeln("");
+      }
 
       if ($phraseanet->get("debug") !== false)
       {
