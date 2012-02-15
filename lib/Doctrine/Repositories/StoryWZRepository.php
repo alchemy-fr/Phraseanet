@@ -50,6 +50,35 @@ class StoryWZRepository extends EntityRepository
     return $stories;
   }
 
+  public function findByUserAndId(\User_Adapter $user, $id)
+  {
+    $story = $this->find($id);
+
+    if($story)
+    {
+      try
+      {
+        $story->getRecord()->get_title();
+      }
+      catch (\Exception_Record_AdapterNotFound $e)
+      {
+        $this->getEntityManager()->remove($story);
+        throw new \Exception_NotFound('Story not found');
+      }
+
+      if($story->getUser()->get_id() !== $user->get_id())
+      {
+        throw new \Exception_Forbidden('You have not access to ths story');
+      }
+    }
+    else
+    {
+      throw new \Exception_NotFound('Story not found');
+    }
+
+    return $story;
+  }
+
   protected static function title_compare(\Entities\StoryWZ $a, \Entities\StoryWZ $b)
   {
     if ($a->getRecord()->get_title() == $b->getRecord()->get_title())
