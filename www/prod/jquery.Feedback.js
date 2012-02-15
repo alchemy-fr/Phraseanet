@@ -169,6 +169,7 @@
 
             $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
             $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+            $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
 
             $FeedBackForm.trigger('submit');
           };
