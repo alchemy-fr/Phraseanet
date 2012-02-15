@@ -34,12 +34,12 @@ class set_export extends set_abstract
    * @param int $sstid
    * @return set_export
    */
-  public function __construct($lst, $sstid)
+  public function __construct($lst, $sstid, $storyWZid = null)
   {
     $Core = bootstrap::getCore();
 
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
+    $appbox   = appbox::get_instance();
+    $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
     $user = $Core->getAuthenticatedUser();
@@ -48,9 +48,18 @@ class set_export extends set_abstract
 
     $remain_hd = array();
 
+    if ($storyWZid)
+    {
+      $repository = $Core->getEntityManager()->getRepository('\\Entities\\StoryWZ');
+
+      $storyWZ = $repository->findByUserAndId($user, $storyWZid);
+
+      $lst = $storyWZ->getRecord()->get_serialize_key();
+    }
+
     if ($sstid != "")
     {
-      $em = $Core->getEntityManager();
+      $em         = $Core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
 
       /* @var $repository \Repositories\BasketRepository */
@@ -59,7 +68,7 @@ class set_export extends set_abstract
       foreach ($Basket->getElements() as $basket_element)
       {
         /* @var $basket_element \Entities\BasketElement */
-        $base_id = $basket_element->getRecord()->get_base_id();
+        $base_id   = $basket_element->getRecord()->get_base_id();
         $record_id = $basket_element->getRecord()->get_record_id();
 
         if (!isset($remain_hd[$base_id]))
@@ -75,11 +84,11 @@ class set_export extends set_abstract
         }
 
         $current_element = $download_list[] =
-                new record_exportElement(
-                        $basket_element->getRecord()->get_sbas_id(),
-                        $record_id,
-                        $basket->getName() . '/',
-                        $remain_hd[$base_id]
+          new record_exportElement(
+            $basket_element->getRecord()->get_sbas_id(),
+            $record_id,
+            $basket->getName() . '/',
+            $remain_hd[$base_id]
         );
 
         $remain_hd[$base_id] = $current_element->get_remain_hd();
@@ -125,11 +134,11 @@ class set_export extends set_abstract
             }
 
             $current_element = $download_list[] =
-                    new record_exportElement(
-                            $child_basrec->get_sbas_id(),
-                            $record_id,
-                            $record->get_title() . '_' . $n . '/',
-                            $remain_hd[$base_id]
+              new record_exportElement(
+                $child_basrec->get_sbas_id(),
+                $record_id,
+                $record->get_title() . '_' . $n . '/',
+                $remain_hd[$base_id]
             );
 
             $remain_hd[$base_id] = $current_element->get_remain_hd();
@@ -762,9 +771,9 @@ class set_export extends set_abstract
       return false;
     }
     if (isset($list['complete']) && $list['complete'] === true)
-
+    {
       return;
-
+    }
 
     $files = $list['files'];
 
@@ -899,16 +908,28 @@ class set_export extends set_abstract
           case 'yaml':
           case 'yml':
 
-            $vi = $field->get_value();
-            if (ctype_digit($vi))
-              $vi = (int) $vi;
+            $vi = $field->get_values();
 
-            $buffer[$field->get_name()] = $vi;
+            if ($field->is_multi())
+            {
+              $buffer[$field->get_name()] = array();
+              foreach ($vi as $value)
+              {
+                $val                          = $value->getValue();
+                $buffer[$field->get_name()][] = ctype_digit($val) ? (int) $val : $val;
+              }
+            }
+            else
+            {
+              $value                      = array_pop($vi);
+              $val                        = $value->getValue();
+              $buffer[$field->get_name()] = ctype_digit($val) ? (int) $val : $val;
+            }
             break;
           case 'xml':
           default:
             $dom_el                     = $dom->createElement($field->get_name());
-            $dom_el->appendChild($dom->createTextNode($field->get_value(true)));
+            $dom_el->appendChild($dom->createTextNode($field->get_serialized_values()));
             $dom_desc->appendChild($dom_el);
             break;
         }
@@ -961,9 +982,9 @@ class set_export extends set_abstract
       {
         $file_xaccel = str_replace(
           array(
-          $registry->get('GV_X_Accel_Redirect'),
-          $registry->get('GV_RootPath') . 'tmp/download/',
-          $registry->get('GV_RootPath') . 'tmp/lazaret/'
+            $registry->get('GV_X_Accel_Redirect'),
+            $registry->get('GV_RootPath') . 'tmp/download/',
+            $registry->get('GV_RootPath') . 'tmp/lazaret/'
           )
           , array(
           '/' . $registry->get('GV_X_Accel_Redirect_mount_point') . '/',
