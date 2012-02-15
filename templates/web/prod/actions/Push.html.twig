@@ -173,11 +173,12 @@
           {% else %}
           action="/prod/push/validate/"
           {% endif %}
-          >
+           >
           <input name="lst" type="hidden" value="{{ push.get_serialize_list() }}" />
           <input name="ssel" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getId() }}{% endif %}" />
           <input name="name" type="hidden" value="{% if push.get_original_basket() %}{{ push.get_original_basket().getName() }}{% endif %}" />
           <textarea name="message" style="display:none;"></textarea>
+          <input type="checkbox" value="1" name="recept" style="display:none;"/>
           <div class="PNB badges">
           </div>
         </form>

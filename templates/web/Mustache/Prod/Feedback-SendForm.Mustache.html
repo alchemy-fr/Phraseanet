@@ -1,11 +1,15 @@
 <form>
   <div>
-    <label>{{ language.FeedBackName }}</label>
-    <input type="text" name="name"/>
+    <label for="PushSendFormRecept">{{ language.FeedBackName }}</label>
+    <input id="PushSendFormName" type="text" name="name"/>
   </div>
   <div>
-    <label>{{ language.FeedBackMessage }}</label>
-    <textarea name="message"></textarea>
+    <label for="PushSendFormMessage">{{ language.FeedBackMessage }}</label>
+    <textarea id="PushSendFormMessage" name="message"></textarea>
   </div>
-  
+  <div>
+    <input id="PushSendFormRecept" type="checkbox" name="recept" value="1"/>
+    <label for="PushSendFormRecept">{{ language.Recept }}</label>
+  </div>
+
 </form>
