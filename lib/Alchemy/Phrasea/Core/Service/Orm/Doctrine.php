@@ -17,6 +17,8 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use Events\Listener\Cache\Action\Clear as ClearCacheListener;
+use Doctrine\ORM\Events as DoctrineEvents;
 
 /**
  *
@@ -29,13 +31,12 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
   const ARRAYCACHE = 'array';
   const MEMCACHE = 'memcache';
-  const MEMCACHED = 'memcached';
   const XCACHE = 'xcache';
   const REDIS = 'redis';
   const APC = 'apc';
 
   protected $caches = array(
-      self::MEMCACHE, self::APC, self::ARRAYCACHE, self::XCACHE, self::MEMCACHED, self::REDIS
+      self::MEMCACHE, self::APC, self::ARRAYCACHE, self::XCACHE, self::REDIS
   );
   protected $outputs = array(
       'json', 'yaml', 'vdump'
@@ -167,7 +168,12 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $evm = new \Doctrine\Common\EventManager();
 
     $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
-
+    
+    $evm->addEventListener(DoctrineEvents::postUpdate, new ClearCacheListener());
+    $evm->addEventListener(DoctrineEvents::postRemove, new ClearCacheListener());
+    $evm->addEventListener(DoctrineEvents::postPersist, new ClearCacheListener());
+    
+    
     try
     {
       $this->entityManager = \Doctrine\ORM\EntityManager::create($dbalConf, $config, $evm);
