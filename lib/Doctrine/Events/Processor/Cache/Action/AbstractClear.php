@@ -54,9 +54,4 @@ abstract class AbstractClear implements Processor
     return $entity->getConstant("CACHE_SUFFIX");
   }
 
-  /**
-   * The executed process for clearing cache
-   * @return void
-   */
-  abstract public function process(EventArgs $args);
 }
