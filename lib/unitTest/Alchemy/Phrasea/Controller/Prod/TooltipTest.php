@@ -139,7 +139,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
       $dces_element = array_shift($dces);
       $field->set_dces_element($dces_element);
 
-      $route = '/tooltip/metas/DCESInfos/' . $databox->get_sbas_id()
+      $route = '/tooltip/DCESInfos/' . $databox->get_sbas_id()
               . '/' . $field->get_id() . '/';
 
       if ($field->get_dces_element() !== null)
