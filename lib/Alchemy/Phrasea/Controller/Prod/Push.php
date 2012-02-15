@@ -371,7 +371,7 @@ class Push implements ControllerProviderInterface
             $Validation = new \Entities\ValidationSession();
             $Validation->setInitiator($app['Core']->getAuthenticatedUser());
             $Validation->setBasket($Basket);
-            
+
             $Basket->setValidation($Validation);
             $em->persist($Validation);
           }
@@ -382,12 +382,12 @@ class Push implements ControllerProviderInterface
 
 
           $appbox = \appbox::get_instance();
-          
+
           // add current user as participant
           $participants[$user->get_id()] = array(
               'see_others'=> 1, 'usr_id'=> $user->get_id(), 'agree'=> 0, 'HD'=> 0
           );
-          
+
           foreach ($participants as $key => $participant)
           {
             foreach (array('see_others', 'usr_id', 'agree', 'HD') as $mandatoryparam)

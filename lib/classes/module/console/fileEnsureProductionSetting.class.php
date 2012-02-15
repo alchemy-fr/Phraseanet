@@ -222,7 +222,7 @@ class module_console_fileEnsureProductionSetting extends Command
       $phraseanet = $this->configuration->getPhraseanet();
 
       $url = $phraseanet->get("servername");
-      
+
       if(empty($url))
       {
         throw new \Exception("phraseanet:servername connot be empty");
@@ -232,7 +232,7 @@ class module_console_fileEnsureProductionSetting extends Command
       {
         throw new \Exception(sprintf("%s url is not valid", $url));
       }
-      
+
       $parseUrl = parse_url($url);
 
       if($parseUrl["scheme"] !== "https")

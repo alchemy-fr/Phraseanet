@@ -17,5 +17,5 @@ namespace Events\Processor\Factory;
  */
 class Exception extends \Exception
 {
-  
+
 }

@@ -17,7 +17,7 @@ use Events\Processor\Factory, Events\Processor\Factory\Exception as ProcessorNot
 
 /**
  * Clear event used to delete entries in cache
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -50,7 +50,7 @@ class Clear
     }
     catch (ProcessorNotFound $e)
     {
-      
+
     }
   }
 

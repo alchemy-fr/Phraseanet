@@ -27,7 +27,7 @@ abstract class AbstractClear implements Processor
   /**
    * Return the current used result cache adapter
    * @param EventArgs $args
-   * @return \Doctrine\Common\Cache 
+   * @return \Doctrine\Common\Cache
    */
   protected function getCacheAdapter(EventArgs $args)
   {
@@ -40,7 +40,7 @@ abstract class AbstractClear implements Processor
    * Return the processed entity cache suffix
    * @param EventArgs $args
    * @return string
-   * @throws \Exception 
+   * @throws \Exception
    */
   protected function getEntityCacheSuffix(EventArgs $args)
   {
@@ -56,7 +56,7 @@ abstract class AbstractClear implements Processor
 
   /**
    * The executed process for clearing cache
-   * @return void 
+   * @return void
    */
   abstract public function process(EventArgs $args);
 }

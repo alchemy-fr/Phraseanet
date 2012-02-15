@@ -21,7 +21,7 @@ abstract class FactoryAbstract
 {
 
   /**
-   * @var Events\Processor\Processor  
+   * @var Events\Processor\Processor
    */
   private $processor;
 
@@ -31,7 +31,7 @@ abstract class FactoryAbstract
   }
 
   /**
-   * @return Events\Processor\Processor 
+   * @return Events\Processor\Processor
    */
   public function getProcessor()
   {
@@ -41,7 +41,7 @@ abstract class FactoryAbstract
   /**
    * Static function which create the proper processor
    * @param type $element
-   * @throws \Exception 
+   * @throws \Exception
    */
   abstract public static function create($processor);
 

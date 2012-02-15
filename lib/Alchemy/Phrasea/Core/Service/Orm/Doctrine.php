@@ -168,12 +168,12 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $evm = new \Doctrine\Common\EventManager();
 
     $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
-    
+
     $evm->addEventListener(DoctrineEvents::postUpdate, new ClearCacheListener());
     $evm->addEventListener(DoctrineEvents::postRemove, new ClearCacheListener());
     $evm->addEventListener(DoctrineEvents::postPersist, new ClearCacheListener());
-    
-    
+
+
     try
     {
       $this->entityManager = \Doctrine\ORM\EntityManager::create($dbalConf, $config, $evm);

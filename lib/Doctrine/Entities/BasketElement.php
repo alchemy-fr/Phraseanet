@@ -22,7 +22,7 @@ require_once __DIR__ . '/../../classes/record/adapter.class.php';
  */
 class BasketElement
 {
-  
+
   const CACHE_SUFFIX = "_basketElement";
   /**
    * @var integer $id

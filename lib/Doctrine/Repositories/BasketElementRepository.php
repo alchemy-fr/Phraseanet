@@ -48,7 +48,7 @@ class BasketElementRepository extends EntityRepository
             JOIN e.basket b
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE e.record_id = :record_id 
+            WHERE e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
     $params = array(
@@ -60,7 +60,7 @@ class BasketElementRepository extends EntityRepository
     $query->setParameters($params);
     $cacheId = "_basket_element_by_record_" . $record->get_serialize_key() . Entities\BasketElement::CACHE_SUFFIX;
     $query->useResultCache(true, 1800, $cacheId);
-    
+
     return $query->getResult();
   }
 
@@ -77,9 +77,9 @@ class BasketElementRepository extends EntityRepository
             JOIN e.basket b
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE b.usr_id = :usr_id 
+            WHERE b.usr_id = :usr_id
             AND b.pusher_id IS NOT NULL
-            AND e.record_id = :record_id 
+            AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
     $params = array(
@@ -92,7 +92,7 @@ class BasketElementRepository extends EntityRepository
     $query->setParameters($params);
     $cacheId = "_receveid_element_by_record_" . $record->get_serialize_key() . "_" . $user->getId() . Entities\BasketElement::CACHE_SUFFIX;
     $query->useResultCache(true, 1800, $cacheId);
-    
+
     return $query->getResult();
   }
 
@@ -104,7 +104,7 @@ class BasketElementRepository extends EntityRepository
             JOIN b.validation v
             JOIN v.participants p
             WHERE p.usr_id = :usr_id
-            AND e.record_id = :record_id 
+            AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
     $params = array(
@@ -117,7 +117,7 @@ class BasketElementRepository extends EntityRepository
     $query->setParameters($params);
     $cacheId = "_receveid_validation_element_by_record" . $record->get_serialize_key() . "_" . $user->getId() . Entities\BasketElement::CACHE_SUFFIX;
     $query->useResultCache(true, 1800, $cacheId);
-    
+
     return $query->getResult();
   }
 
@@ -132,7 +132,7 @@ class BasketElementRepository extends EntityRepository
     $dql = 'SELECT e, b, s, p
             FROM Entities\BasketElement e
             JOIN e.basket b
-            LEFT JOIN b.validation s 
+            LEFT JOIN b.validation s
             LEFT JOIN s.participants p
             WHERE e.id = :element_id';
 

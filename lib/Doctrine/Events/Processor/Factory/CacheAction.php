@@ -31,7 +31,7 @@ class CacheAction extends FactoryAbstract
     {
       throw new Exception(sprintf("Unknow processor %s", $processor));
     }
-    
+
     return new $className();
   }
 }
