@@ -19,15 +19,7 @@ $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $em = $Core->getEntityManager();
 
-$appbox = appbox::get_instance();
-$session = $appbox->get_session();
-
-$usr_id = $session->get_usr_id();
-
-$request = http_request::getInstance();
-$parm = $request->get_parms("bas", "courChuId", "act", "p0", "first");
-
-$parm['p0'] = utf8_decode($parm['p0']);
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
 $nbNoview = 0;
 
@@ -36,23 +28,23 @@ $ACL = $user->ACL();
 
 $out = null;
 
-if ($parm["act"] == "DELIMG" && $parm["p0"] != "")
+if ($Request->get("act") == "DELIMG" && $Request->get("p0") != "")
 {
   $repository = $em->getRepository('\Entities\BasketElement');
   /* @var $repository \Repositories\BasketElementRepository */
-  $basket_element = $repository->findUserElement($Core->getRequest('p0'), $user);
+  $basket_element = $repository->findUserElement($Request->get('p0'), $user);
   $em->remove($basket_element);
   $em->flush();
 }
 
-if ($parm["act"] == "ADDIMG" && ($parm["p0"] != "" && $parm["p0"] != null))
+if ($Request->get('act') == "ADDIMG" && ($Request->get("p0") != "" && $Request->get("p0") != null))
 {
   $repository = $em->getRepository('\Entities\Basket');
   /* @var $repository \Repositories\BasketRepository */
-  $basket = $repository->findUserBasket($Core->getRequest('courChuId'), $user);
+  $basket = $repository->findUserBasket($Request->get('courChuId'), $user);
 
-  $sbas_id = phrasea::sbasFromBas($Core->getRequest('bas'));
-  $record = new record_adapter($sbas_id, $Core->getRequest('p0'));
+  $sbas_id = phrasea::sbasFromBas($Request->get('bas'));
+  $record = new record_adapter($sbas_id, $Request->get('p0'));
 
   $BasketElement = new \Entities\BasketElement();
   $BasketElement->setRecord($record);
@@ -65,11 +57,11 @@ if ($parm["act"] == "ADDIMG" && ($parm["p0"] != "" && $parm["p0"] != null))
   $em->flush();
 }
 
-if ($parm["act"] == "DELCHU" && ($parm["p0"] != "" && $parm["p0"] != null))
+if ($Request->get('act') == "DELCHU" && ($Request->get("p0") != "" && $Request->get("p0") != null))
 {
   $repository = $em->getRepository('\Entities\Basket');
   /* @var $repository \Repositories\BasketRepository */
-  $basket = $repository->findUserBasket($Core->getRequest('courChuId'), $user);
+  $basket = $repository->findUserBasket($Request->get('courChuId'), $user);
 
   $em->remove($basket);
   $em->flush();
@@ -77,16 +69,18 @@ if ($parm["act"] == "DELCHU" && ($parm["p0"] != "" && $parm["p0"] != null))
 }
 
 
-if ($parm["act"] == "NEWCHU" && ($parm["p0"] != "" && $parm["p0"] != null))
+$courChuId = $Request->get('courChuId');
+
+if ($Request->get('act') == "NEWCHU" && ($Request->get("p0") != "" && $Request->get("p0") != null))
 {
   $basket = new \Entities\Basket();
-  $basket->setName($Core->getRequest('p0'));
+  $basket->setName($Request->get('p0'));
   $basket->setOwner($user);
 
   $em->persist($basket);
   $em->flush();
 
-  $parm['courChuId'] = $basket->getId();
+  $courChuId = $basket->getId();
 }
 
 $repository = $em->getRepository('\Entities\Basket');
@@ -104,9 +98,9 @@ foreach ($baskets as $typeBask => $basket)
   {
     $baskId = $basket->getId();
     $sltd = '';
-    if (is_null($parm['courChuId']) || trim($parm['courChuId']) == '')
-      $parm['courChuId'] = $baskId;
-    if ($parm['courChuId'] == $baskId)
+    if (trim($courChuId) == '')
+      $courChuId = $baskId;
+    if ($courChuId == $baskId)
       $sltd = 'selected';
     $baskets_opt .= '<option class="chut_choice" ' . $sltd . ' value="' . $baskId . '">'
             . $basket->getName() . '</option>';
@@ -116,9 +110,9 @@ foreach ($baskets as $typeBask => $basket)
   {
     $baskId = $basket->getId();
     $sltd = '';
-    if (is_null($parm['courChuId']) || trim($parm['courChuId']) == '')
-      $parm['courChuId'] = $baskId;
-    if ($parm['courChuId'] == $baskId)
+    if (trim($courChuId) == '')
+      $Request->get('courChuId') = $baskId;
+    if ($courChuId == $baskId)
       $sltd = 'selected';
     $recepts_opt .= '<option class="chut_choice" ' . $sltd . ' value="' . $baskId . '">'
             . $basket->getName() . '</option>';
@@ -148,7 +142,7 @@ $out .= '</td><td style="width:40%">';
 $em = $Core->getEntityManager();
 $repository = $em->getRepository('\Entities\Basket');
 /* @var $repository \Repositories\BasketRepository */
-$basket = $repository->findUserBasket($Core->getRequest('courChuId'), $user);
+$basket = $repository->findUserBasket($courChuId, $user);
 
 $jscriptnochu = $basket->getName() . " :  " . sprintf(_('paniers:: %d documents dans le panier'), $basket->getElements()->count());
 
@@ -172,9 +166,9 @@ if ($nbElems > 0)
   ?><div class="baskPrint" title="<?php echo _('action : print') ?>" onclick="evt_print();"></div><?php
 }
 $jsclick = '';
-if ($parm['courChuId'] != null && $parm['courChuId'] != '' && is_numeric($parm['courChuId']))
+if (trim($courChuId) != '')
 {
-  $jsclick = ' onclick=openCompare(\'' . $parm['courChuId'] . '\') ';
+  $jsclick = ' onclick=openCompare(\'' . $courChuId . '\') ';
 }
 ?><div class="baskComparator" <?php echo $jsclick ?> title="<?php echo _('action : ouvrir dans le comparateur') ?>"></div><?php
 ?></td><?php
@@ -238,7 +232,7 @@ if ($basket->getPusher() instanceof user)
     }
   ?><div class="diapochu"><?php
   ?><div class="image"><?php
-  ?><img onclick="openPreview('BASK',<?php echo $basket_element->getRecord()->get_number() ?>,<?php echo $parm["courChuId"] ?>); return(false);"
+  ?><img onclick="openPreview('BASK',<?php echo $basket_element->getRecord()->get_number() ?>,<?php echo $courChuId ?>); return(false);"
              <?php echo $tooltip ?> style="position:relative; top:<?php echo $top ?>px; <?php echo $dim ?>"
              class="<?php echo $classSize ?> baskTips" src="<?php echo $thumbnail->get_url() ?>"><?php
              ?></div><?php ?><div class="tools"><?php ?><div class="baskOneDel" onclick="evt_del_in_chutier('<?php echo $basket_element->getId() ?>');"
