@@ -34,7 +34,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
 
     try
     {
-      if(!$this->options['debug'])
+      if(!isset($this->options['debug']) || !$this->options['debug'])
       {
         $this->options['cache'] = realpath( __DIR__ . '/../../../../../../tmp/cache_twig/');
       }

@@ -72,7 +72,7 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
     }
     else
     {
-      $service = new CacheService\ArrayCache();
+      throw new \Exception(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
     }
 
     $registry = $this->getRegistry();

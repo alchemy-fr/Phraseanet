@@ -338,14 +338,17 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
    */
   private function getCache($cacheDoctrine, $serviceName = null)
   {
+    $defaultServiceName = 'default_cache';
+    $defaultConfiguration = new ParameterBag(array(
+                'type' => self::ARRAYCACHE
+                , 'options' => array()
+                    )
+    );
+
     if (null === $serviceName)
     {
-      $serviceName = 'default_cache';
-      $configuration = new ParameterBag(array(
-                  'type' => self::ARRAYCACHE
-                  , 'options' => array()
-                      )
-      );
+      $serviceName = $defaultServiceName;
+      $configuration = $defaultConfiguration;
     }
     else
     {
@@ -382,17 +385,34 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
     $registry = $this->getDependency("registry");
 
-    $serviceBuilder = new Core\ServiceBuilder\Cache(
-                    $serviceName,
-                    $configuration,
-                    array("registry" => $registry)
-    );
+    try
+    {
+      $serviceBuilder = new Core\ServiceBuilder\Cache(
+                      $serviceName,
+                      $configuration,
+                      array("registry" => $registry)
+      );
 
-    $service = $serviceBuilder->buildService();
+      $service = $serviceBuilder->buildService();
+
+      $cacheService = $service->getService();
+    }
+    catch (\Exception $e)
+    {
+      $serviceBuilder = new Core\ServiceBuilder\Cache(
+                      $defaultServiceName,
+                      $defaultConfiguration,
+                      array("registry" => $registry)
+      );
+
+      $service = $serviceBuilder->buildService();
+
+      $cacheService = $service->getService();
+    }
 
     $this->cacheServices[$cacheDoctrine] = $service;
-
-    return $service->getService();
+    
+    return $cacheService;
   }
 
   private function getLog($serviceName)
