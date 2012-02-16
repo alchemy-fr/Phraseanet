@@ -951,8 +951,11 @@ class set_export extends set_abstract
 
     if (is_file($file))
     {
+      $testPath = strpos($file, $registry->get('GV_RootPath').'tmp/download/') !== false
+            || strpos($file, $registry->get('GV_RootPath').'tmp/lazaret/') !== false
+            || strpos($file, $registry->get('GV_X_Accel_Redirect')) !== false;
 
-      if ($registry->get('GV_modxsendfile') && strpos($file, $registry->get('GV_X_Accel_Redirect')) !== false)
+      if ($registry->get('GV_modxsendfile') && $testPath)
       {
         $file_xaccel = str_replace(
           array(
@@ -1049,7 +1052,7 @@ class set_export extends set_abstract
     $user    = false;
     if ($anonymous)
     {
-      
+
     }
     else
     {
