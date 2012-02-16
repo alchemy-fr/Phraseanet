@@ -111,7 +111,7 @@ foreach ($baskets as $typeBask => $basket)
     $baskId = $basket->getId();
     $sltd = '';
     if (trim($courChuId) == '')
-      $Request->get('courChuId') = $baskId;
+      $courChuId = $baskId;
     if ($courChuId == $baskId)
       $sltd = 'selected';
     $recepts_opt .= '<option class="chut_choice" ' . $sltd . ' value="' . $baskId . '">'
