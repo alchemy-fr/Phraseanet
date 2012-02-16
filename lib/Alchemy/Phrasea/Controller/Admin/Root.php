@@ -38,7 +38,7 @@ class Root implements ControllerProviderInterface
 
     $controllers = new ControllerCollection();
 
-    $controllers->get('/', function(Application $app)
+    $controllers->get('/', function(Application $app, Request $request)
             {
 
               $Core = $app['Core'];
@@ -47,7 +47,7 @@ class Root implements ControllerProviderInterface
 
               \User_Adapter::updateClientInfos(3);
 
-              $section = $app['request']->get('section', false);
+              $section = $request->get('section', false);
 
               $available = array(
                   'connected'
@@ -98,6 +98,7 @@ class Root implements ControllerProviderInterface
                                   'module' => 'admin'
                                   , 'events' => \eventsmanager_broker::getInstance($appbox, $Core)
                                   , 'module_name' => 'Admin'
+                                  , 'notice' => $request->get("notice")
                                   , 'feature' => $feature
                                   , 'featured' => $featured
                                   , 'databoxes' => $databoxes

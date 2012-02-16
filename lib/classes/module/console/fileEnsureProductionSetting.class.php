@@ -113,11 +113,35 @@ class module_console_fileEnsureProductionSetting extends Command
   private function runTests(OutputInterface $output)
   {
     $nbErrors = 0;
+
     foreach ($this->testSuite as $test)
     {
+      $display = "";
+      switch ($test)
+      {
+        case 'checkPhraseanetScope' :
+          $display = "Phraseanet Scope Configuration";
+          break;
+        case 'checkDatabaseScope' :
+          $display = "Database configuration & connexion";
+          break;
+        case 'checkTeamplateEngineService' :
+          $display = "Template Engine Service";
+          break;
+        case 'checkOrmService' :
+          $display = "ORM Service";
+          break;
+      }
+
+      $output->writeln(sprintf("=== CHECKING %s ===", $display));
+      $output->writeln("");
+      
       try
       {
         call_user_func(array($this, $test), $output);
+        $output->writeln("");
+        $output->writeln("<info>Test successfull</info>");
+        $output->writeln("");
       }
       catch (\Exception $e)
       {
@@ -136,10 +160,13 @@ class module_console_fileEnsureProductionSetting extends Command
     }
     if (!$nbErrors)
     {
-      $output->writeln("<info>Your production settings are setted correctly !</info>");
-      $output->writeln("");
+      $output->writeln("<info>Your production settings are setted correctly ! Enjoy</info>");
     }
-
+    else
+    {
+      $output->writeln("<error>Please correct errors and relaunch</error>");
+    }
+    $output->writeln("");
     return (int) ($nbErrors > 0);
   }
 
@@ -175,7 +202,7 @@ class module_console_fileEnsureProductionSetting extends Command
     {
       $message = str_replace("\\", "", $e->getMessage());
       $e = new \Exception($message);
-      throw new \Exception(sprintf("Check parsing file\n"), null, $e);
+      throw new \Exception(sprintf("CHECK parsing file\n"), null, $e);
     }
 
     return;
@@ -189,7 +216,7 @@ class module_console_fileEnsureProductionSetting extends Command
     }
     catch (\Exception $e)
     {
-      throw new \Exception(sprintf("Check get selected environment\n"), null, $e);
+      throw new \Exception(sprintf("CHECK get selected environment\n"), null, $e);
     }
 
     return;
@@ -209,7 +236,7 @@ class module_console_fileEnsureProductionSetting extends Command
     }
     catch (\Exception $e)
     {
-      throw new \Exception(sprintf("Check get selected environment from file\n"), null, $e);
+      throw new \Exception(sprintf("CHECK get selected environment from file\n"), null, $e);
     }
 
     return;
@@ -223,23 +250,24 @@ class module_console_fileEnsureProductionSetting extends Command
 
       $url = $phraseanet->get("servername");
 
-      if(empty($url))
+      if (empty($url))
       {
         throw new \Exception("phraseanet:servername connot be empty");
       }
 
-      if(!filter_var($url, FILTER_VALIDATE_URL))
+      if (!filter_var($url, FILTER_VALIDATE_URL))
       {
         throw new \Exception(sprintf("%s url is not valid", $url));
       }
 
       $parseUrl = parse_url($url);
 
-      if($parseUrl["scheme"] !== "https")
+      if ($parseUrl["scheme"] !== "https")
       {
         $output->writeln(sprintf("<comment> /!\ %s url scheme should be https</comment>", $url));
-        $output->writeln("");
       }
+
+      $output->writeln("CHECK servername OK");
 
       if ($phraseanet->get("debug") !== false)
       {
@@ -256,6 +284,8 @@ class module_console_fileEnsureProductionSetting extends Command
       {
         throw new \Exception("phraseanet:warning maintenance is set to false");
       }
+
+      $output->writeln("CHECK Phraseanet modes OK");
     }
     catch (\Exception $e)
     {
@@ -277,6 +307,8 @@ class module_console_fileEnsureProductionSetting extends Command
         throw new \Exception("A sqlite database is not recommanded for production environment");
       }
 
+      $output->writeln("CHECK database driver OK");
+
       try
       {
         $config = new \Doctrine\DBAL\Configuration();
@@ -296,10 +328,12 @@ class module_console_fileEnsureProductionSetting extends Command
                 )
         );
       }
+
+      $output->writeln("CHECK database connexion OK");
     }
     catch (\Exception $e)
     {
-      throw new \Exception(sprintf("Check Database Scope\n"), null, $e);
+      throw new \Exception(sprintf("CHECK Database Scope\n"), null, $e);
     }
 
     return;
@@ -328,13 +362,14 @@ class module_console_fileEnsureProductionSetting extends Command
         throw $e;
       }
 
-
       $serviceBuilder = new Core\ServiceBuilder\TemplateEngine(
                       $templateEngineName
                       , $configuration
       );
 
       $service = $serviceBuilder->buildService();
+
+      $output->writeln("CHECK build service OK");
 
       if ($service->getType() === 'twig')
       {
@@ -349,6 +384,8 @@ class module_console_fileEnsureProductionSetting extends Command
         {
           throw new \Exception(sprintf("%s service should not be set in strict variables mode", $service->getName()));
         }
+
+        $output->writeln("CHECK service configuration OK");
       }
     }
     catch (\Exception $e)
@@ -419,6 +456,8 @@ class module_console_fileEnsureProductionSetting extends Command
 
       $service = $serviceBuilder->buildService();
 
+      $output->writeln("CHECK build service OK");
+
       if ($service->getType() === 'doctrine')
       {
         $caches = $service->getCacheServices();
@@ -432,7 +471,55 @@ class module_console_fileEnsureProductionSetting extends Command
           );
         }
 
-        foreach ($caches->all() as $key => $cache)
+        $caches = $caches->all();
+
+        if (empty($caches))
+        {
+          $cache = $install = "";
+
+          $services = $this->configuration->getServices()->all();
+
+          if (extension_loaded("memcache"))
+          {
+            $cache = 'memcache';
+          }
+          elseif (extension_loaded("apc"))
+          {
+            $cache = 'apc';
+          }
+          elseif (extension_loaded("xcache"))
+          {
+            $cache = 'xcache';
+          }
+          else
+          {
+            $install = "cache extension such as APC or memcache or xcache";
+          }
+
+          $selected = null;
+
+          if (!empty($cache))
+          {
+            foreach ($services as $name => $service)
+            {
+              if ($service["type"] == $cache)
+              {
+                $selected = $name;
+              }
+            }
+          }
+
+          throw new \Exception(sprintf(
+                          "%s:doctrine:orm:cache must not be empty as in production environment the cache is highly recommanded.
+                              We suggest you to %s %s"
+                          , $service->getName()
+                          , (empty($cache) ? "install " . $install : "use " . $cache)
+                          , ($selected ? "you can use " . $selected . " service which is already defined as a " . $cache . " one" : "")
+                  )
+          );
+        }
+
+        foreach ($caches as $key => $cache)
         {
           if ($cache->getType() === 'array')
           {
@@ -444,8 +531,20 @@ class module_console_fileEnsureProductionSetting extends Command
                     )
             );
           }
+          elseif ($cache->getType() === 'memcache')
+          {
+            if (!memcache_connect($cache->getHost(), $cache->getPort()))
+            {
+              throw new \Exception(sprintf("Unable to connect to memcache service %s with host '%s' and port '%s'", $cache->getName(), $cache->getHost(), $cache->getPort()));
+            }
+            $output->writeln("CHECK connexion memcache OK");
+          }
         }
+
+        $output->writeln("CHECK service cache configuration OK");
       }
+
+      $output->writeln("CHECK service configuration OK");
     }
     catch (\Exception $e)
     {

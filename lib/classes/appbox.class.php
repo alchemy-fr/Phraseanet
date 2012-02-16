@@ -138,12 +138,10 @@ class appbox extends base
     $custom_path.= $collection->get_base_id();
 
     if (is_null($pathfile))
-
       return $this;
 
     $datas = file_get_contents($pathfile->getPathname());
     if (is_null($datas))
-
       return $this;
 
     file_put_contents($file, $datas);
@@ -195,12 +193,10 @@ class appbox extends base
     $custom_path.= $pic_type . '_' . $databox->get_sbas_id();
 
     if (is_null($pathfile))
-
       return $this;
 
     $datas = file_get_contents($pathfile->getPathname());
     if (is_null($datas))
-
       return $this;
 
     file_put_contents($file, $datas);
@@ -492,7 +488,7 @@ class appbox extends base
           'main_connexion' => $connexionINI,
           'test_connexion' => array(
               'driver' => 'pdo_sqlite',
-              'path' => realpath($root . 'lib/unitTest/tests.sqlite'),
+              'path' => realpath($root . 'lib/unitTest') . '/tests.sqlite',
               'charset' => 'UTF8'
               ));
 
@@ -575,7 +571,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-
+      
     }
 
     try
@@ -612,7 +608,6 @@ class appbox extends base
   public function get_databoxes()
   {
     if ($this->databoxes)
-
       return $this->databoxes;
 
     $ret = array();
@@ -624,7 +619,7 @@ class appbox extends base
       }
       catch (Exception $e)
       {
-
+        
       }
     }
 
@@ -641,7 +636,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-
+      
     }
     $sql = 'SELECT sbas_id FROM sbas';
 

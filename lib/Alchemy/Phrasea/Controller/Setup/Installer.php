@@ -80,7 +80,7 @@ class Installer implements ControllerProviderInterface
               $html = $twig->render(
                       '/setup/index.html.twig'
                       , array_merge($constraints_coll, array(
-                          'locale' => Session_Handler::get_locale()
+                          'locale' => \Session_Handler::get_locale()
                           , 'available_locales' => $app['Core']::getAvailableLanguages()
                           , 'version_number' => $app['Core']['Version']->getNumber()
                           , 'version_name' => $app['Core']['Version']->getName()
@@ -315,7 +315,7 @@ class Installer implements ControllerProviderInterface
 
                 $appbox->get_session()->authenticate($auth);
 
-                $redirection = '/admin/index.php?section=taskmanager&notice=install_success';
+                $redirection = '/admin/?section=taskmanager&notice=install_success';
 
                 return $app->redirect($redirection);
               }
