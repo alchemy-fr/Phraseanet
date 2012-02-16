@@ -372,6 +372,14 @@ class Push implements ControllerProviderInterface
             $Validation->setInitiator($app['Core']->getAuthenticatedUser());
             $Validation->setBasket($Basket);
 
+            $duration = (int) $request->get('duration');
+            
+            if ($duration > 0)
+            {
+              $date = new \DateTime('+' . $duration . ' day' . ($duration > 1 ? 's' : ''));
+              $Validation->setExpires($date);
+            }
+
             $Basket->setValidation($Validation);
             $em->persist($Validation);
           }
@@ -385,7 +393,7 @@ class Push implements ControllerProviderInterface
 
           // add current user as participant
           $participants[$user->get_id()] = array(
-              'see_others'=> 1, 'usr_id'=> $user->get_id(), 'agree'=> 0, 'HD'=> 0
+            'see_others' => 1, 'usr_id'     => $user->get_id(), 'agree'      => 0, 'HD'         => 0
           );
 
           foreach ($participants as $key => $participant)
@@ -477,7 +485,7 @@ class Push implements ControllerProviderInterface
             $events_manager->trigger('__PUSH_VALIDATION__', $params);
           }
 
-          $Basket = $em->merge($Basket);
+          $Basket     = $em->merge($Basket);
           $Validation = $em->merge($Validation);
 
           $em->flush();
