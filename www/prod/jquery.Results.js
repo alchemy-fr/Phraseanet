@@ -1,10 +1,11 @@
 var p4 = p4 || {};
 
 (function(p4, window){
-  
+
       p4.Results = {
         'Selection':new Selectable($('#answers'), {
-          selector : '.IMGT', 
+          selector : '.IMGT',
+          limit:800,
           selectStart:function(event, selection){
             $('#answercontextwrap table:visible').hide();
           },
@@ -16,6 +17,6 @@ var p4 = p4 || {};
           }
         })
       };
-  
+
   return;
 }(p4, window))
