@@ -112,7 +112,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
     if (trim($Request->get('ssel')) !== '')
     {
-      $em = $this->getCore()->getEntityManager();
+      $em         = $this->getCore()->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
 
       /* @var $$repository \Repositories\BasketRepository */
@@ -123,6 +123,18 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
       $this->is_basket = true;
       $this->original_basket = $Basket;
     }
+    elseif (trim($Request->get('story')) !== '')
+    {
+      $em         = $this->getCore()->getEntityManager();
+      $repository = $em->getRepository('\Entities\StoryWZ');
+
+      $storyWZ = $repository->findByUserAndId(
+        $this->getCore()->getAuthenticatedUser()
+        , $Request->get('story')
+      );
+
+      $this->selection->load_list(array($storyWZ->getRecord()->get_serialize_key()), $this->flatten_groupings);
+    }
     else
     {
       $this->selection->load_list(explode(";", $Request->get('lst')), $this->flatten_groupings);
@@ -130,7 +142,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     $this->elements_received = $this->selection->get_count();
 
     $this->single_grouping = ($this->get_count_actionable() == 1 &&
-            $this->get_count_actionable_groupings() == 1);
+      $this->get_count_actionable_groupings() == 1);
 
     $this->examinate_selection();
 
@@ -195,8 +207,9 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
     if (!$this->is_single_grouping())
       throw new Exception('Cannot use ' . __METHOD__ . ' here');
     foreach ($this->get_elements() as $record)
-
+    {
       return $record;
+    }
   }
 
   /**
@@ -288,11 +301,13 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
   public function get_serialize_list()
   {
     if ($this->is_single_grouping())
-
+    {
       return $this->get_grouping_head()->get_serialize_key();
+    }
     else
-
+    {
       return $this->selection->serialize_list();
+    }
   }
 
   public function grep_records(\Closure $closure)
