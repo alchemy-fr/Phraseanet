@@ -1496,6 +1496,10 @@ function editThis(type,value)
     case "SSTT":
       options.ssel = value;
       break;
+
+    case "STORY":
+      options.story = value;
+      break;
   }
 
   $.post("/prod/records/edit/"
@@ -1689,7 +1693,7 @@ function chgStatusThis(url)
 }
 
 
-function pushThis(sstt_id, lst)
+function pushThis(sstt_id, lst, story)
 {
   $dialog = p4.Dialog.Create({
     size:'Full',
@@ -1697,7 +1701,7 @@ function pushThis(sstt_id, lst)
   });
 
   $.post("/prod/push/sendform/"
-    , { lst : lst, ssel : sstt_id }
+    , { lst : lst, ssel : sstt_id, story : story }
     , function(data){
       $dialog.setContent(data);
       return;
@@ -1707,7 +1711,7 @@ function pushThis(sstt_id, lst)
 }
 
 
-function feedbackThis(sstt_id, lst)
+function feedbackThis(sstt_id, lst, story)
 {
     /* disable push closeonescape as an over dialog may exist (add user) */
   $dialog = p4.Dialog.Create({
@@ -1716,7 +1720,7 @@ function feedbackThis(sstt_id, lst)
   });
 
   $.post("/prod/push/validateform/"
-    , { lst : lst, ssel : sstt_id }
+    , { lst : lst, ssel : sstt_id, story : story }
     , function(data){
       $dialog.setContent(data);
       return;
@@ -1753,8 +1757,6 @@ function activeIcons()
   $('.TOOL_print_btn').live('click', function(){
     var value="";
 
-
-
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -1774,6 +1776,20 @@ function activeIcons()
         if($(this).hasClass('basket_element'))
         {
           value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              value = "lst=" + p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              value = "story=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
         }
       }
     }
@@ -1812,10 +1828,24 @@ function activeIcons()
         {
           datas.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
         }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              datas.lst = p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              datas.story = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
+        }
       }
     }
 
-    if(datas.ssel || datas.lst)
+    if(datas.ssel || datas.lst || datas.story)
     {
       init_publicator(datas);
     }
@@ -1842,6 +1872,20 @@ function activeIcons()
       {
         if(p4.WorkZone.Selection.length() > 0)
           type = 'CHIM';
+      }
+      else
+      {
+        if($(this).hasClass('story_window'))
+        {
+          if(p4.WorkZone.Selection.length() > 0)
+          {
+            value = 'lst=' + p4.WorkZone.Selection.serialize();
+          }
+          else
+          {
+            value = 'story=' + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+          }
+        }
       }
     }
 
@@ -1888,6 +1932,22 @@ function activeIcons()
         {
           type = 'SSTT';
           value = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              type = 'IMGT';
+              value = p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              type = 'STORY';
+              value = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
         }
       }
     }
@@ -1936,6 +1996,22 @@ function activeIcons()
           type = 'SSTT';
           value = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
         }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              type = 'IMGT';
+              value = p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              type = 'STORY';
+              value = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
+        }
       }
     }
 
@@ -1964,6 +2040,9 @@ function activeIcons()
         options.lst = value;
         break;
 
+      case "STORY":
+        options.story = value;
+        break;
       case "SSTT":
         options.ssel = value;
         break;
@@ -2002,17 +2081,32 @@ function activeIcons()
         {
           value.ssel = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
         }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              value.lst = p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              value.story = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
+        }
       }
     }
 
-    if((typeof value.ssel !== 'undefined') || (typeof value.lst !== 'undefined'))
+    /**
+     * if works, then the object is not empty
+     */
+    for(i in value)
     {
-      chgCollThis(value);
+      return chgCollThis(value);
     }
-    else
-    {
-      alert(language.nodocselected);
-    }
+
+    alert(language.nodocselected);
   });
 
   $('#idFrameT .tools .buttonset').buttonset();
@@ -2042,6 +2136,20 @@ function activeIcons()
         {
           value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
         }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              value = "lst=" + p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              value = "story=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
+        }
       }
     }
 
@@ -2056,7 +2164,7 @@ function activeIcons()
   });
 
   $('.TOOL_pushdoc_btn').live('click', function(){
-    var value="",type="",sstt_id="";
+    var value="",type="",sstt_id="", story ="";
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -2077,11 +2185,25 @@ function activeIcons()
         {
           sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
         }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              value = p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              story = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
+        }
       }
     }
-    if(value !== '' || sstt_id !== '')
+    if(value !== '' || sstt_id !== '' || story !== '')
     {
-      pushThis(sstt_id, value);
+      pushThis(sstt_id, value, story);
     }
     else
     {
@@ -2091,7 +2213,7 @@ function activeIcons()
 
 
   $('.TOOL_feedback_btn').live('click', function(){
-    var value="",type="",sstt_id="";
+    var value="",type="",sstt_id="", story='';
     if($(this).hasClass('results_window'))
     {
       if(p4.Results.Selection.length() > 0)
@@ -2111,6 +2233,20 @@ function activeIcons()
         if($(this).hasClass('basket_element'))
         {
           sstt_id = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              value = p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              story = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
         }
       }
     }
@@ -2147,6 +2283,20 @@ function activeIcons()
         if($(this).hasClass('basket_element'))
         {
           value = "SSTTID=" + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+        }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              value = 'lst=' + p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              value = 'story=' + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
         }
       }
     }
@@ -2191,16 +2341,29 @@ function activeIcons()
         {
           datas.SSTTID = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
         }
+        else
+        {
+          if($(this).hasClass('story_window'))
+          {
+            if(p4.WorkZone.Selection.length() > 0)
+            {
+              datas.lst = p4.WorkZone.Selection.serialize();
+            }
+            else
+            {
+              datas.story = $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            }
+          }
+        }
       }
     }
 
-    if(datas.lst || datas.SSTTID)
-      downloadThis(datas);
-
-    else
+    for(i in datas)
     {
-      alert(language.nodocselected);
+      return downloadThis(datas);
     }
+
+    alert(language.nodocselected);
   });
 
 
@@ -2231,28 +2394,12 @@ function checkDeleteThis(type, el)
 
     case "SSTT":
 
-      if(el.hasClass('grouping'))
-      {
-        unFix(el);
-        return;
-      }
-
-      if(el.attr('public')=='1')
-      {
-        alert(language.cantDeletePublicOne);
-        return;
-      }
       var buttons = {};
       buttons[language.valider]= function(e)
       {
 
         deleteBasket(el);
 
-      };
-      buttons[language.annuler]= function(e)
-      {
-        $(this).dialog("close");
-        return;
       };
 
       $('#DIALOG').empty().append(language.confirmDel).attr('title','Attention !').dialog({

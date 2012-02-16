@@ -22,7 +22,7 @@ $registry = $appbox->get_registry();
 $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
 $request = http_request::getInstance();
-$parm = $request->get_parms("lst", "SSTTID");
+$parm = $request->get_parms("lst", "SSTTID", "story");
 
 $gatekeeper = gatekeeper::getInstance();
 $gatekeeper->require_session();
@@ -39,7 +39,7 @@ if ($registry->get('GV_needAuth2DL') && $user->is_guest())
 }
 
 
-$download = new set_export($parm['lst'], $parm['SSTTID']);
+$download = new set_export($parm['lst'], $parm['SSTTID'], $parm['story']);
 $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
 $core = \bootstrap::getCore();
@@ -48,7 +48,7 @@ $twig = $core->getTwig();
 echo $twig->render('common/dialog_export.twig', array(
     'download' => $download,
     'ssttid' => $parm['SSTTID'],
-    'lst' => $parm['lst'],
+    'lst' => $download->serialize_list(),
     'user' => $user,
     'default_export_title' => $registry->get('GV_default_export_title'),
     'choose_export_title' => $registry->get('GV_choose_export_title')

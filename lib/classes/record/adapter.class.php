@@ -796,10 +796,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       foreach ($caption->get_fields() as $field)
       {
         $values = $field->get_values();
-//        if ($field->is_multi())
-//          $values = $field->get_value();
-//        else
-//          $values = array($field->get_value());
 
         foreach ($values as $value)
         {

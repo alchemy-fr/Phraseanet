@@ -325,14 +325,13 @@ class task_period_writemeta extends task_databoxAbstract
 
       $multi = $meta->is_multi();
       $type = $meta->get_type();
-      $datas = $field->get_value();
+      $datas = $field->get_values();
 
       if ($multi)
       {
-        $datas = $field->get_value();
         foreach ($datas as $value)
         {
-          $value = $this->format_value($type, $value);
+          $value = $this->format_value($type, $value->getValue());
 
           $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
           $subCMD .= escapeshellarg($value).' ';
@@ -340,7 +339,8 @@ class task_period_writemeta extends task_databoxAbstract
       }
       else
       {
-        $datas = $this->format_value($type, $datas);
+        $value = array_pop($datas);
+        $datas = $this->format_value($type, $value->getValue());
 
         $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
         $subCMD .= escapeshellarg($datas).' ';

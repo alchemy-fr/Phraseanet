@@ -2,51 +2,51 @@
 {% set story_length = Story.get_children().get_elements()|length %}
     <div class="tools">
 
-      <button class="ui-corner-all TOOL_disktt_btn basket_window" title="{% trans 'action : exporter' %}">
+      <button class="ui-corner-all TOOL_disktt_btn story_window" title="{% trans 'action : exporter' %}">
         <img src="/skins/prod/000000/images/disktt_history.gif"/>
       </button>
-      <button class="ui-corner-all TOOL_print_btn basket_window" title="{% trans 'action : print' %}">
+      <button class="ui-corner-all TOOL_print_btn story_window" title="{% trans 'action : print' %}">
         <img src="/skins/prod/000000/images/print_history.gif"/>
       </button>
 
       {% if user.ACL().has_right('modifyrecord') %}
-      <button class="ui-corner-all TOOL_ppen_btn basket_window" title="{% trans 'action : editer' %}">
+      <button class="ui-corner-all TOOL_ppen_btn story_window" title="{% trans 'action : editer' %}">
         <img src="/skins/prod/000000/images/ppen_history.gif"/>
       </button>
       {% endif %}
 
       {% if user.ACL().has_right('changestatus') %}
-      <button class="ui-corner-all TOOL_chgstatus_btn basket_window" title="{% trans 'action : status' %}">
+      <button class="ui-corner-all TOOL_chgstatus_btn story_window" title="{% trans 'action : status' %}">
         <img src="/skins/prod/000000/images/chgstatus_history.gif"/>
       </button>
       {% endif %}
 
       {% if user.ACL().has_right('deleterecord') and user.ACL().has_right('addrecord') %}
-      <button class="ui-corner-all TOOL_chgcoll_btn basket_window" title="{% trans 'action : collection' %}">
+      <button class="ui-corner-all TOOL_chgcoll_btn story_window" title="{% trans 'action : collection' %}">
         <img src="/skins/prod/000000/images/chgcoll_history.gif"/>
       </button>
       {% endif %}
 
       {% if user.ACL().has_right('push') %}
-      <button class="ui-corner-all TOOL_pushdoc_btn basket_window" title="{% trans 'action : push' %}">
+      <button class="ui-corner-all TOOL_pushdoc_btn story_window" title="{% trans 'action : push' %}">
         <img src="/skins/icons/push16.png"/>
       </button>
       {% endif %}
       {% if user.ACL().has_right('bas_chupub') %}
-      <button class="ui-corner-all TOOL_bridge_btn basket_window" title="{% trans 'action : bridge' %}">
+      <button class="ui-corner-all TOOL_bridge_btn story_window" title="{% trans 'action : bridge' %}">
         <img src="/skins/icons/door.png"/>
       </button>
-      <button class="ui-corner-all TOOL_publish_btn basket_window" title="{% trans 'action : publier' %}">
+      <button class="ui-corner-all TOOL_publish_btn story_window" title="{% trans 'action : publier' %}">
         <img src="/skins/icons/rss16.png"/>
       </button>
       {% endif %}
 
       {% if user.ACL().has_right('doctools') %}
-      <button class="ui-corner-all TOOL_imgtools_btn basket_window" title="{% trans 'action : outils' %}">
+      <button class="ui-corner-all TOOL_imgtools_btn story_window" title="{% trans 'action : outils' %}">
         <img src="/skins/prod/000000/images/imgtools_history.gif"/>
       </button>
       {% endif %}
-      <button class="ui-corner-all TOOL_trash_btn basket_window" title="{% trans 'action : supprimer' %}">
+      <button class="ui-corner-all TOOL_trash_btn story_window" title="{% trans 'action : supprimer' %}">
         <img src="/skins/icons/delete.png"/>
       </button>
 
