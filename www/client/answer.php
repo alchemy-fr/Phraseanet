@@ -143,7 +143,7 @@ if ($parm['pag'] < 1)
   $parm['pag'] = 1;
 }
 
-$result = $search_engine->query_per_page($parm['qry'], $parm["pag"], $perPage);
+$result = $search_engine->query_per_page($parm['qry'], (int) $parm["pag"], $perPage);
 
 
 
@@ -204,20 +204,20 @@ $npages = $result->get_total_pages();
 
   if ($npages > $max)
   {
-    for ($p = 0; $p < $npages; $p++)
+    for ($p = 1; $p < $npages; $p++)
     {
       if ($p == $page)
-        $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
+        $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
       elseif (( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '</span>';
       elseif (($page < ($ecart + 2)) && ($p < ($max - $ecart + 2) ))          // si je suis dans les premieres pages ...
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '</span>';
       elseif (($page >= ($npages - $ecart - 2)) && ($p >= ($npages - (2 * $ecart) - 2) ))  // si je suis dans les dernieres pages ...
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '</span>';
       elseif ($p == ($npages - 1)) // c"est la derniere
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">...' . ($p + 1) . '</span>';
-      elseif ($p == 0)    // c"est la premiere
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '...</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">...' . ($p) . '</span>';
+      elseif ($p == 1)    // c"est la premiere
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '...</span>';
 
       if (($p == $page)
               || ( ( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
@@ -230,12 +230,12 @@ $npages = $result->get_total_pages();
   }
   else
   {
-    for ($p = 0; $p < $npages; $p++)
+    for ($p = 1; $p < $npages; $p++)
     {
       if ($p == $page)
-        $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
+        $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
       else
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '</span>';
       if ($p + 1 < $npages)
         $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
     }
