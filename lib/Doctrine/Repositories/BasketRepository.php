@@ -24,8 +24,8 @@ use Entities;
 class BasketRepository extends EntityRepository
 {
 
-  const MYBASKETS = 'my baskets';
-  const RECEIVED = 'received';
+  const MYBASKETS       = 'my baskets';
+  const RECEIVED        = 'received';
   const VALIDATION_SENT = 'validation_sent';
   const VALIDATION_DONE = 'validation_done';
 
@@ -56,8 +56,8 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
-    $idCache = "_active_by_user_" . ($sort === null ? "" : $sort ) . "_" . $user->get_id(). Entities\Basket::CACHE_SUFFIX;
-    
+    $idCache = "_active_by_user_" . ($sort === null ? "" : $sort ) . "_" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+
     $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
@@ -81,9 +81,9 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
-    
+
     $idCache = "findUnreadActiveByUser" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
-    
+
     $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
@@ -105,7 +105,7 @@ class BasketRepository extends EntityRepository
             JOIN s.participants p
             WHERE b.usr_id != ?1 AND p.usr_id = ?2
              AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()) ';
-    
+
     if ($sort == 'date')
     {
       $dql .= ' ORDER BY b.created DESC';
@@ -116,7 +116,7 @@ class BasketRepository extends EntityRepository
     }
 
     $query = $this->_em->createQuery($dql);
-    $query->setParameters(array(1 => $user->get_id(), 2 => $user->get_id()));
+    $query->setParameters(array(1        => $user->get_id(), 2        => $user->get_id()));
     $idCache = "_active_validation_by_user_" . $user->get_id() . "_" . $sort . Entities\Basket::CACHE_SUFFIX;
     $query->useResultCache(true, 1800, $idCache);
 
@@ -143,7 +143,7 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('basket_id' => $basket_id));
-    $cacheId = "_find_user_" . $basket_id . Entities\Basket::CACHE_SUFFIX;
+    $cacheId    = "_find_user_" . $basket_id . Entities\Basket::CACHE_SUFFIX;
     $query->useResultCache(true, 1800, $cacheId);
 
     $basket = $query->getOneOrNullResult();
@@ -156,7 +156,24 @@ class BasketRepository extends EntityRepository
 
     if ($basket->getOwner()->get_id() != $user->get_id())
     {
-      throw new \Exception_Forbidden(_('You have not access to this basket'));
+      $participant = false;
+
+      if ($basket->getValidation())
+      {
+        try
+        {
+          $basket->getValidation()->getParticipant($user);
+          $participant = true;
+        }
+        catch (\Exception $e)
+        {
+
+        }
+      }
+      if (!$participant)
+      {
+        throw new \Exception_Forbidden(_('You have not access to this basket'));
+      }
     }
 
     return $basket;
@@ -171,10 +188,10 @@ class BasketRepository extends EntityRepository
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id';
 
     $params = array(
-        'record_id' => $record->get_record_id()
+      'record_id' => $record->get_record_id()
     );
 
-    $query = $this->_em->createQuery($dql);
+    $query   = $this->_em->createQuery($dql);
     $query->setParameters($params);
     $idCache = "_containing_record_" . $record->get_serialize_key() . Entities\Basket::CACHE_SUFFIX;
     $query->useResultCache(true, 1800, $idCache);
@@ -189,47 +206,47 @@ class BasketRepository extends EntityRepository
     switch ($type)
     {
       case self::RECEIVED:
-        $dql = 'SELECT b, e
+        $dql    = 'SELECT b, e
                 FROM Entities\Basket b
                 JOIN b.elements e
                 WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
         $params = array(
-            'usr_id' => $user->get_id()
+          'usr_id' => $user->get_id()
         );
         break;
       case self::VALIDATION_DONE:
-        $dql = 'SELECT b, e, s
+        $dql     = 'SELECT b, e, s
                 FROM Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation s
                 JOIN s.participants p
                 WHERE b.usr_id != ?1 AND p.usr_id = ?2';
-        $params = array(
-            1 => $user->get_id()
-            , 2 => $user->get_id()
+        $params  = array(
+          1       => $user->get_id()
+          , 2       => $user->get_id()
         );
         break;
       case self::VALIDATION_SENT:
-        $dql = 'SELECT b, v, e
+        $dql    = 'SELECT b, v, e
                 FROM Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation v
                 WHERE b.usr_id = :usr_id';
         $params = array(
-            'usr_id' => $user->get_id()
+          'usr_id' => $user->get_id()
         );
         break;
       default:
-        $type = 'default';
-        $dql = 'SELECT b, e, s, p
+        $type    = 'default';
+        $dql     = 'SELECT b, e, s, p
                 FROM Entities\Basket b
                 JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id OR p.usr_id = :validating_usr_id)';
-        $params = array(
-            'usr_id' => $user->get_id(),
-            'validating_usr_id' => $user->get_id()
+        $params  = array(
+          'usr_id'            => $user->get_id(),
+          'validating_usr_id' => $user->get_id()
         );
         break;
     }
@@ -246,22 +263,22 @@ class BasketRepository extends EntityRepository
     {
       $dql .= ' AND (b.name LIKE :name OR b.description LIKE :description) ';
 
-      $params['name'] = '%' . $query . '%';
+      $params['name']        = '%' . $query . '%';
       $params['description'] = '%' . $query . '%';
     }
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-    $count = Paginate::getTotalQueryResults($query);
+    $count         = Paginate::getTotalQueryResults($query);
     $paginateQuery = Paginate::getPaginateQuery($query, $offset, $perPage);
-    
+
     $idCache = "_" . $type . "_workzone_basket_" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
-    
+
     $paginateQuery->useResultCache(true, 1800, $idCache);
     $result = $paginateQuery->getResult();
 
-    return array('count' => $count, 'result' => $result);
+    return array('count'  => $count, 'result' => $result);
   }
 
 }
