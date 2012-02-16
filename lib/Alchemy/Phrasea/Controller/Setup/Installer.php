@@ -315,7 +315,7 @@ class Installer implements ControllerProviderInterface
 
                 $appbox->get_session()->authenticate($auth);
 
-                $redirection = '/admin/index.php?section=taskmanager&notice=install_success';
+                $redirection = '/admin/?section=taskmanager&notice=install_success';
 
                 return $app->redirect($redirection);
               }
