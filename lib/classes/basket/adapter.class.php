@@ -179,7 +179,11 @@ class basket_adapter implements cache_cacheableInterface
    */
   public function get_base_id()
   {
-    return $this->base_id;
+    if(($record = $this->get_record()) instanceof record_adapter)
+    {
+      return $record->get_base_id();
+    }
+    return null;
   }
 
   /**
@@ -216,6 +220,22 @@ class basket_adapter implements cache_cacheableInterface
   public function get_record_id()
   {
     return $this->record_id;
+  }
+
+  public function get_record()
+  {
+    if($this->is_grouping())
+    {
+      try
+      {
+        return new \record_adapter($this->sbas_id, $this->record_id);
+      }
+      catch(\Exception $e)
+      {
+
+      }
+    }
+    return null;
   }
 
   /**
