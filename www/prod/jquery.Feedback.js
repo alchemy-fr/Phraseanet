@@ -168,6 +168,7 @@
             $dialog.Close();
 
             $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
+            $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
             $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
             $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
 
@@ -189,10 +190,11 @@
 
           var callback = function(rendered){
 
-            $('input[name="name"]', rendered).val($('input[name="name"]', $FeedBackForm).val());
-            $('textarea[name="message"]', rendered).val($('textarea[name="message"]', $FeedBackForm).val());
-
             $dialog.setContent(rendered);
+
+            $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
+            $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
+            $('.' + $this.Context, $dialog.getDomElement()).show();
           };
 
           p4.Mustache.Render('Feedback-SendForm', {language:language}, callback);
