@@ -95,6 +95,7 @@ class Language implements ControllerProviderInterface
               $out['FeedBackDuration'] = _('Time for feedback (days)');
               $out['send'] = _('Send');
               $out['Recept'] = _('Accuse de reception');
+              $out['nFieldsChanged'] = _('%d fields have been updated');
               $out['FeedBackNoUsersSelected'] = _('No users selected');
 
               $Serializer = $app['Core']['Serializer'];
