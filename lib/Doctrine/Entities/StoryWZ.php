@@ -28,27 +28,27 @@ class StoryWZ
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var integer $sbas_id
    */
-  private $sbas_id;
+  protected $sbas_id;
 
   /**
    * @var integer $record_id
    */
-  private $record_id;
+  protected $record_id;
 
   /**
    * @var integer $usr_id
    */
-  private $usr_id;
+  protected $usr_id;
 
   /**
    * @var datetime $created
    */
-  private $created;
+  protected $created;
 
   /**
    * Get id

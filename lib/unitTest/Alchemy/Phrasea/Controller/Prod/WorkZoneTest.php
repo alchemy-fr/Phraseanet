@@ -67,7 +67,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(400, $response->getStatusCode());
     $this->assertFalse($response->isOk());
 
-    $this->client->request('POST', $route, array('stories' => $story->get_serialize_key()));
+    $this->client->request('POST', $route, array('stories' => array($story->get_serialize_key())));
     $response = $this->client->getResponse();
 
     $this->assertEquals(302, $response->getStatusCode());
@@ -84,7 +84,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     $story2 = self::$story_2;
 
-    $stories = implode(';', array($story->get_serialize_key(), $story2->get_serialize_key()));
+    $stories = array($story->get_serialize_key(), $story2->get_serialize_key());
 
     $this->client->request('POST', $route, array('stories' => $stories));
     $response = $this->client->getResponse();
@@ -147,7 +147,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     //attach
     $attachRoute = sprintf("/WorkZone/attachStories/");
-    $this->client->request('POST', $attachRoute, array('stories' => $story->get_serialize_key()));
+    $this->client->request('POST', $attachRoute, array('stories' => array($story->get_serialize_key())));
 
     $query = self::$core->getEntityManager()->createQuery(
             'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
@@ -172,7 +172,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(0, $count);
 
     //attach
-    $this->client->request('POST', $attachRoute, array('stories' => $story->get_serialize_key()));
+    $this->client->request('POST', $attachRoute, array('stories' => array($story->get_serialize_key())));
 
     //detach JSON
     $this->client->request('POST', $route, array(), array(), array(

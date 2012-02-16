@@ -20,32 +20,32 @@ class ValidationData
     /**
      * @var integer $id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var boolean $agreement
      */
-    private $agreement;
+    protected $agreement;
 
     /**
      * @var text $note
      */
-    private $note;
+    protected $note;
 
     /**
      * @var datetime $updated
      */
-    private $updated;
+    protected $updated;
 
     /**
      * @var Entities\ValidationParticipant
      */
-    private $participant;
+    protected $participant;
 
     /**
      * @var Entities\BasketElement
      */
-    private $basket_element;
+    protected $basket_element;
 
 
     /**

@@ -67,7 +67,7 @@ class Core extends \Pimple
     /**
      * Cache Autoload if it's not debug mode
      */
-    static::initAutoloads(!$this->configuration->isDebug());
+    static::initAutoloads($this->configuration->isInstalled() && !$this->configuration->isDebug());
 
     $this->init();
 
