@@ -130,7 +130,7 @@ else
 
 $form = serialize($options);
 
-$perPage = (int) $user->getPrefs('images_per_page');
+$perPage = $mod_xy;
 
 $search_engine = new searchEngine_adapter($registry);
 $search_engine->set_options($options);
@@ -230,13 +230,13 @@ if ($npages > $max)
 }
 else
 {
-  for ($p = 0; $p < $npages; $p++)
+  for ($p = 1; $p < $npages; $p++)
   {
     if ($p == $page)
-      $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
+      $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
     else
-      $pages .= '<span onclick="gotopage(' . ($p + 1) . ');" class="naviButton">' . ($p + 1) . '</span>';
-    if ($p + 1 < $npages)
+      $pages .= '<span onclick="gotopage(' . ($p) . ');" class="naviButton">' . ($p) . '</span>';
+    if ($p  < $npages)
       $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
   }
 }
