@@ -56,6 +56,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
     </style>
     <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
     <script type="text/javascript" src="/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+    <link rel="stylesheet" type="text/css" href="/include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css" />
     <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,skins/common/main.css" />
 <?php
 //listage des css
@@ -544,7 +545,7 @@ if ($cssfile)
                   <div id="PREVIEWRIGHT" class="preview_col" style="width:49%;position:relative;float:right;overflow:hidden;">
                     <div style="margin-right:10px;">
                       <div id="PREVIEWIMGDESC" class="preview_col_cont" style="overflow-x:hidden;overflow-y:auto;">
-                        <ul style="height:30px;">
+                        <ul style="height:30px;overflow:hidden;">
                           <li><a href="#PREVIEWIMGDESCINNER-BOX"><?php echo _('preview:: Description'); ?></a></li>
                           <li><a href="#HISTORICOPS-BOX"><?php echo _('preview:: Historique'); ?></a></li>
                           <li><a href="#popularity-BOX"><?php echo _('preview:: Popularite'); ?></a></li>
