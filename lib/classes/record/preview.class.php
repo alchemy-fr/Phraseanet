@@ -303,7 +303,7 @@ class record_preview extends record_adapter
         else
         {
           $this->title .= sprintf(
-                  '%s %d/%d ', $title, $this->get_number() . '/' . $this->total
+                  '%s %s', $title, $this->get_number() . '/' . $this->total
           );
         }
         break;
