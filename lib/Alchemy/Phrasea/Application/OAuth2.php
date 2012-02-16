@@ -282,7 +282,15 @@ return call_user_func(function()
                   $app->post($route, function() use ($app)
                           {
                             $submit = false;
-                            $post = new \API_OAuth2_Form_DevApp($app['request']);
+                            if ($app['request']->get("type") == "desktop")
+                            {
+                              $post = new \API_OAuth2_Form_DevAppDesktop($app['request']);
+                            }
+                            else
+                            {
+                              $post = new \API_OAuth2_Form_DevAppInternet($app['request']);
+                            }
+                            
                             $violations = $app['validator']->validate($post);
 
                             if ($violations->count() == 0)
@@ -303,7 +311,8 @@ return call_user_func(function()
 
                             $var = array(
                                 "violations" => $violations,
-                                "form" => $post
+                                "form" => $post,
+                                "request" => $request
                             );
 
                             return $app['response']('api/auth/application_dev_new.twig', $var);
@@ -339,7 +348,7 @@ return call_user_func(function()
                             }
                             catch (Exception $e)
                             {
-
+                              
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -374,7 +383,7 @@ return call_user_func(function()
                             }
                             catch (Exception $e)
                             {
-
+                              
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -400,7 +409,7 @@ return call_user_func(function()
                             }
                             catch (Exception $e)
                             {
-
+                              
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -424,7 +433,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-
+                              
                             }
 
                             $Serializer = $app['Core']['Serializer'];
