@@ -65,15 +65,14 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
 
     $stats = @$memcache->getExtendedStats();
 
-    if ($stats[$key])
+    if (isset($stats[$key]) && @$memcache->connect($this->host, $this->port))
     {
-      $memcache->connect($this->host, $this->port);
       $service = new CacheService\MemcacheCache();
       $service->setMemcache($memcache);
     }
     else
     {
-      $service = new CacheService\ArrayCache();
+      throw new \Exception(sprintf("Memcache instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
     }
 
     $registry = $this->getRegistry();

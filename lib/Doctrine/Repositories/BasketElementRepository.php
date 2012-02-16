@@ -155,8 +155,6 @@ class BasketElementRepository extends EntityRepository
       throw new \Exception_Forbidden(_('You have not access to this basket element'));
     }
 
-    $element = $this->_em->merge($element);
-
     return $element;
   }
 

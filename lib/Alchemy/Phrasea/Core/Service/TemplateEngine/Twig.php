@@ -34,6 +34,11 @@ class Twig extends ServiceAbstract implements ServiceInterface
 
     try
     {
+      if(!isset($this->options['debug']) || !$this->options['debug'])
+      {
+        $this->options['cache'] = realpath( __DIR__ . '/../../../../../../tmp/cache_twig/');
+      }
+      
       $loader = new \Twig_Loader_Filesystem($this->templatesPath);
       $this->twig = new \Twig_Environment($loader, $this->options);
       $this->loadGlobals();

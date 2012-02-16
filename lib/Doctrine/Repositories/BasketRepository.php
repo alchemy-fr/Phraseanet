@@ -56,7 +56,8 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
-    $idCache = "_active_by_user_" . ($sort === null ? "nosort" : $sort) . "_" . $user->get_id(). Entities\Basket::CACHE_SUFFIX;
+    $idCache = "_active_by_user_" . ($sort === null ? "" : $sort ) . "_" . $user->get_id(). Entities\Basket::CACHE_SUFFIX;
+    
     $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
@@ -80,7 +81,9 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
-    $idCache = "_unread_active_by_user_" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+    
+    $idCache = "findUnreadActiveByUser" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+    
     $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
@@ -100,9 +103,9 @@ class BasketRepository extends EntityRepository
             JOIN b.elements e
             JOIN b.validation s
             JOIN s.participants p
-            WHERE b.usr_id != ?1 AND p.usr_id = ?2';
-//@todo implements expires session  AND s.expires > CURRENT_TIMESTAMP()';
-
+            WHERE b.usr_id != ?1 AND p.usr_id = ?2
+             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()) ';
+    
     if ($sort == 'date')
     {
       $dql .= ' ORDER BY b.created DESC';
@@ -155,8 +158,6 @@ class BasketRepository extends EntityRepository
     {
       throw new \Exception_Forbidden(_('You have not access to this basket'));
     }
-
-    $basket = $this->_em->merge($basket);
 
     return $basket;
   }
@@ -254,7 +255,9 @@ class BasketRepository extends EntityRepository
 
     $count = Paginate::getTotalQueryResults($query);
     $paginateQuery = Paginate::getPaginateQuery($query, $offset, $perPage);
+    
     $idCache = "_" . $type . "_workzone_basket_" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+    
     $paginateQuery->useResultCache(true, 1800, $idCache);
     $result = $paginateQuery->getResult();
 
