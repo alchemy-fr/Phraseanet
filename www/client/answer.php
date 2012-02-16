@@ -92,7 +92,6 @@ else
   $mod_col = (int) ($mod[1]);
 }
 $mod_xy = $mod_col * $mod_row;
-
 $tbases = array();
 
 
@@ -130,7 +129,7 @@ else
 
 $form = serialize($options);
 
-$perPage = (int) $user->getPrefs('images_per_page');
+$perPage = $mod_xy;
 
 $search_engine = new searchEngine_adapter($registry);
 $search_engine->set_options($options);

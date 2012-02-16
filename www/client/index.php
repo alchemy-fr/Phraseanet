@@ -101,6 +101,14 @@ if ($cssfile)
 <?php
   }
 ?>
+    <style>
+      #PREVIEWCURRENTCONT{
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+      }
+    </style>
   </head>
   <body class="PNB" style="overflow:hidden;">
     <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
