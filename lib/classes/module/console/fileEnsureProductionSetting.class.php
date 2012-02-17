@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument,
     Symfony\Component\Console\Output\OutputInterface,
     Symfony\Component\Console\Command\Command;
 use Alchemy\Phrasea\Core;
+use Symfony\Component\Yaml;
 
 /**
  * @todo write tests
@@ -54,11 +55,6 @@ class module_console_fileEnsureProductionSetting extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-
-    $output->writeln("");
-    $output->writeln(sprintf("Checking for PROD settings"));
-    $output->writeln("=============================");
-    $output->writeln("");
 
     $this->initTests($output);
 
@@ -135,13 +131,10 @@ class module_console_fileEnsureProductionSetting extends Command
 
       $output->writeln(sprintf("=== CHECKING %s ===", $display));
       $output->writeln("");
-      
+
       try
       {
         call_user_func(array($this, $test), $output);
-        $output->writeln("");
-        $output->writeln("<info>Test successfull</info>");
-        $output->writeln("");
       }
       catch (\Exception $e)
       {
@@ -239,6 +232,11 @@ class module_console_fileEnsureProductionSetting extends Command
       throw new \Exception(sprintf("CHECK get selected environment from file\n"), null, $e);
     }
 
+
+    $output->writeln("=== ENVIRONMENT ===");
+    $output->writeln("");
+    $output->writeln(sprintf("Current is '%s'", $configuration->getEnvironnement()));
+    $output->writeln("");
     return;
   }
 
@@ -247,6 +245,8 @@ class module_console_fileEnsureProductionSetting extends Command
     try
     {
       $phraseanet = $this->configuration->getPhraseanet();
+
+      $this->printConf($output, 'phraseanet', $phraseanet->all());
 
       $url = $phraseanet->get("servername");
 
@@ -267,8 +267,6 @@ class module_console_fileEnsureProductionSetting extends Command
         $output->writeln(sprintf("<comment> /!\ %s url scheme should be https</comment>", $url));
       }
 
-      $output->writeln("CHECK servername OK");
-
       if ($phraseanet->get("debug") !== false)
       {
         throw new \Exception("phraseanet:debug must be initialized to false");
@@ -279,19 +277,18 @@ class module_console_fileEnsureProductionSetting extends Command
         throw new \Exception("phraseanet:debug must be initialized to false");
       }
 
-
       if ($phraseanet->get("maintenance") === true)
       {
         throw new \Exception("phraseanet:warning maintenance is set to false");
       }
-
-      $output->writeln("CHECK Phraseanet modes OK");
     }
     catch (\Exception $e)
     {
       throw new \Exception(sprintf("Check Phraseanet Scope\n"), null, $e);
     }
-
+    $output->writeln("");
+    $output->writeln("<info>Phraseanet scope is correctly setted</info>");
+    $output->writeln("");
     return;
   }
 
@@ -302,12 +299,17 @@ class module_console_fileEnsureProductionSetting extends Command
       $connexionName = $this->configuration->getPhraseanet()->get('database');
       $connexion = $this->configuration->getConnexion($connexionName);
 
+      $output->writeln(sprintf("Current connexion is '%s'", $connexionName));
+      $output->writeln("");
+      foreach ($connexion->all() as $key => $element)
+      {
+        $output->writeln(sprintf("%s: %s", $key, $element));
+      }
+
       if ($connexion->get("driver") === "pdo_sqlite")
       {
         throw new \Exception("A sqlite database is not recommanded for production environment");
       }
-
-      $output->writeln("CHECK database driver OK");
 
       try
       {
@@ -329,7 +331,9 @@ class module_console_fileEnsureProductionSetting extends Command
         );
       }
 
-      $output->writeln("CHECK database connexion OK");
+      $output->writeln("");
+      $output->writeln(sprintf("<info>'%s' successfully connect to database</info>", $connexionName));
+      $output->writeln("");
     }
     catch (\Exception $e)
     {
@@ -344,10 +348,12 @@ class module_console_fileEnsureProductionSetting extends Command
     try
     {
       $templateEngineName = $this->configuration->getTemplating();
-
+      $output->writeln(sprintf("Current template engine service is '%s' ", $templateEngineName));
+      $output->writeln("");
       try
       {
         $configuration = $this->configuration->getService($templateEngineName);
+        $this->printConf($output, $templateEngineName, $configuration->all());
       }
       catch (\Exception $e)
       {
@@ -369,8 +375,6 @@ class module_console_fileEnsureProductionSetting extends Command
 
       $service = $serviceBuilder->buildService();
 
-      $output->writeln("CHECK build service OK");
-
       if ($service->getType() === 'twig')
       {
         $twig = $service->getService();
@@ -384,8 +388,6 @@ class module_console_fileEnsureProductionSetting extends Command
         {
           throw new \Exception(sprintf("%s service should not be set in strict variables mode", $service->getName()));
         }
-
-        $output->writeln("CHECK service configuration OK");
       }
     }
     catch (\Exception $e)
@@ -413,7 +415,9 @@ class module_console_fileEnsureProductionSetting extends Command
 
       throw new \Exception(sprintf("Check Template Service\n"), null, $e);
     }
-
+    $output->writeln("");
+    $output->writeln(sprintf("<info>'%s' template engine service is correctly setted </info>", $templateEngineName));
+    $output->writeln("");
     return;
   }
 
@@ -430,9 +434,12 @@ class module_console_fileEnsureProductionSetting extends Command
     {
       $ormName = $this->configuration->getOrm();
 
+      $output->writeln(sprintf("Current ORM service is '%s'", $ormName));
+      $output->writeln("");
       try
       {
         $configuration = $this->configuration->getService($ormName);
+        $this->printConf($output, $ormName, $configuration->all());
       }
       catch (\Exception $e)
       {
@@ -445,7 +452,6 @@ class module_console_fileEnsureProductionSetting extends Command
         $e = new \Exception($message);
         throw $e;
       }
-
       $registry = \registry::get_instance();
 
       $serviceBuilder = new Core\ServiceBuilder\Orm(
@@ -456,11 +462,11 @@ class module_console_fileEnsureProductionSetting extends Command
 
       $service = $serviceBuilder->buildService();
 
-      $output->writeln("CHECK build service OK");
-
       if ($service->getType() === 'doctrine')
       {
-        $caches = $service->getCacheServices();
+        $output->writeln("");
+
+        $caches = $service->getCacheServices()->all();
 
         if ($service->isDebug())
         {
@@ -471,57 +477,48 @@ class module_console_fileEnsureProductionSetting extends Command
           );
         }
 
-        $caches = $caches->all();
+        $output->writeln("");
 
-        if (empty($caches))
+        $options = $configuration->get("options");
+
+        if (!isset($options['orm']['cache']))
         {
-          $cache = $install = "";
-
-          $services = $this->configuration->getServices()->all();
-
-          if (extension_loaded("memcache"))
-          {
-            $cache = 'memcache';
-          }
-          elseif (extension_loaded("apc"))
-          {
-            $cache = 'apc';
-          }
-          elseif (extension_loaded("xcache"))
-          {
-            $cache = 'xcache';
-          }
-          else
-          {
-            $install = "cache extension such as APC or memcache or xcache";
-          }
-
-          $selected = null;
-
-          if (!empty($cache))
-          {
-            foreach ($services as $name => $service)
-            {
-              if ($service["type"] == $cache)
-              {
-                $selected = $name;
-              }
-            }
-          }
 
           throw new \Exception(sprintf(
-                          "%s:doctrine:orm:cache must not be empty as in production environment the cache is highly recommanded.
-                              We suggest you to %s %s"
+                          "%s:doctrine:orm:cache must not be empty. In production environment the cache is highly recommanded."
                           , $service->getName()
-                          , (empty($cache) ? "install " . $install : "use " . $cache)
-                          , ($selected ? "you can use " . $selected . " service which is already defined as a " . $cache . " one" : "")
                   )
           );
         }
 
         foreach ($caches as $key => $cache)
         {
-          if ($cache->getType() === 'array')
+          $originalServiceName = $options['orm']['cache'][$key];
+          $originalConfiguration = $this->configuration->getService($originalServiceName);
+
+          $cacheOptions = $originalConfiguration->all();
+
+          if (!empty($cacheOptions["options"]))
+          {
+            $output->writeln(sprintf(" %s cache service", $originalServiceName));
+            $this->printConf($output, $key . ":" . $originalServiceName, $cacheOptions["options"]);
+          }
+
+          $serviceBuilder = new Core\ServiceBuilder\Cache(
+                          $originalServiceName,
+                          $originalConfiguration,
+                          array("registry" => $registry)
+          );
+          $originalService = $serviceBuilder->buildService();
+
+          if ($originalService->getType() === 'memcache')
+          {
+            if (!memcache_connect($originalService->getHost(), $originalService->getPort()))
+            {
+              throw new \Exception(sprintf("Unable to connect to memcache service %s with host '%s' and port '%s'", $originalService->getName(), $originalService->getHost(), $originalService->getPort()));
+            }
+          }
+          if ($originalService->getType() === 'array')
           {
             throw new \Exception(sprintf(
                             "%s:doctrine:orm:%s %s service should not be an array cache type"
@@ -531,20 +528,35 @@ class module_console_fileEnsureProductionSetting extends Command
                     )
             );
           }
-          elseif ($cache->getType() === 'memcache')
-          {
-            if (!memcache_connect($cache->getHost(), $cache->getPort()))
-            {
-              throw new \Exception(sprintf("Unable to connect to memcache service %s with host '%s' and port '%s'", $cache->getName(), $cache->getHost(), $cache->getPort()));
-            }
-            $output->writeln("CHECK connexion memcache OK");
-          }
         }
 
-        $output->writeln("CHECK service cache configuration OK");
-      }
+        try
+        {
+          $logServiceName = $options['log'];
+          $configuration = $this->configuration->getService($logServiceName);
+          $serviceBuilder = new Core\ServiceBuilder\Log(
+                          $logServiceName
+                          , $configuration
+          );
 
-      $output->writeln("CHECK service configuration OK");
+          $serviceLog = $serviceBuilder->buildService();
+          
+          $exists = true;
+        }
+        catch (\Exception $e)
+        {
+          $exists = false;
+        }
+        
+        if($exists)
+        {
+          throw new \Exception(sprintf(
+                            "doctrine:orm:log %s service should not be enable"
+                            , $serviceLog->getName()
+                    )
+            );
+        }
+      }
     }
     catch (\Exception $e)
     {
@@ -573,7 +585,40 @@ class module_console_fileEnsureProductionSetting extends Command
       throw new \Exception(sprintf("Check ORM Service\n"), null, $e);
     }
 
+    $output->writeln("");
+    $output->writeln(sprintf("<info>'%s' ORM service is correctly setted </info>", $ormName));
+    $output->writeln("");
+
     return;
+  }
+
+  private function printConf($output, $scope, $value, $scopage = false)
+  {
+    if (is_array($value))
+    {
+      foreach ($value as $key => $val)
+      {
+        if ($scopage)
+          $key = $scope . ":" . $key;
+        $this->printConf($output, $key, $val, $scopage);
+      }
+    }
+    elseif (is_bool($value))
+    {
+      if ($value === false)
+      {
+        $value = '0';
+      }
+      elseif ($value === true)
+      {
+        $value = '1';
+      }
+      $output->writeln(sprintf("%s: %s", $scope, $value));
+    }
+    elseif (!empty($value))
+    {
+      $output->writeln(sprintf("%s: %s", $scope, $value));
+    }
   }
 
 }
