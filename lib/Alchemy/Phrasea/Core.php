@@ -99,22 +99,27 @@ class Core extends \Pimple
               });
     }
 
+
     $core = $this;
+    $cacheManager = $this->getCacheManager();
     /**
      * Set Entity Manager using configuration
      */
-    $this['EM'] = $this->share(function() use ($core)
+    $this['EM'] = $this->share(function() use ($core, $cacheManager)
             {
               $serviceName = $core->getConfiguration()->getOrm();
               $configuration = $core->getConfiguration()->getService($serviceName);
 
-              $serviceBuilder = new Core\ServiceBuilder\Orm(
-                              $serviceName
-                              , $configuration
-                              , array("registry" => $core["Registry"])
-              );
+              $serviceBuilder = new Core\ServiceBuilder\Orm($serviceName, $configuration);
 
-              return $serviceBuilder->buildService()->getService();
+              $service = $serviceBuilder->buildService();
+
+              foreach ($service->getCacheServices()->all() as $cacheKey => $cacheService)
+              {
+                $cacheManager($cacheKey, $cacheService);
+              }
+
+              return $service->getService();
             });
 
 
@@ -179,6 +184,26 @@ class Core extends \Pimple
         ini_set('display_errors', 'off');
       }
     }
+  }
+
+  private function getCacheManager()
+  {
+    return function($cacheKey, $service)
+            {
+              $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
+              $parser = new Core\Configuration\Parser\Yaml();
+
+              $cacheManager = new \Alchemy\Phrasea\Cache\Manager($file, $parser);
+
+              $driverType = $service->getType();
+              $driver = $service->getService();
+
+              if (!$cacheManager->hasChange($cacheKey, $driverType))
+              {
+                $driver->deleteAll();
+                $cacheManager->save($cacheKey, $driverType);
+              }
+            };
   }
 
   /**
