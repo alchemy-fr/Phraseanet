@@ -383,14 +383,12 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       }
     }
 
-    $registry = $this->getDependency("registry");
 
     try
     {
       $serviceBuilder = new Core\ServiceBuilder\Cache(
                       $serviceName,
-                      $configuration,
-                      array("registry" => $registry)
+                      $configuration                     
       );
 
       $service = $serviceBuilder->buildService();
@@ -401,8 +399,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     {
       $serviceBuilder = new Core\ServiceBuilder\Cache(
                       $defaultServiceName,
-                      $defaultConfiguration,
-                      array("registry" => $registry)
+                      $defaultConfiguration
       );
 
       $service = $serviceBuilder->buildService();
