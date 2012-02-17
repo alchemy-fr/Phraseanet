@@ -486,6 +486,13 @@ class Basket implements ControllerProviderInterface
                 $em->flush();
               }
 
+              if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->getIsAware() === false)
+              {
+                $basket = $em->merge($basket);
+                $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->setIsAware(true);
+                $em->flush();
+              }
+
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
 

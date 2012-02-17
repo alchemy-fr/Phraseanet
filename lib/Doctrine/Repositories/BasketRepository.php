@@ -76,11 +76,21 @@ class BasketRepository extends EntityRepository
             JOIN b.elements e
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE b.usr_id = :usr_id
-            AND b.archived = false AND b.is_read = false';
+            WHERE b.archived = false
+            AND (
+              (b.usr_id = :usr_id_owner AND b.is_read = false)
+              OR (b.usr_id != :usr_id_ownertwo AND p.usr_id = :usr_id_participant
+                    AND p.is_aware = false)
+              )';
+
+    $params = array(
+      'usr_id_owner' => $user->get_id(),
+      'usr_id_ownertwo' => $user->get_id(),
+      'usr_id_participant' => $user->get_id()
+      );
 
     $query = $this->_em->createQuery($dql);
-    $query->setParameters(array('usr_id' => $user->get_id()));
+    $query->setParameters($params);
 
     $idCache = "findUnreadActiveByUser" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
 
