@@ -564,6 +564,8 @@ return call_user_func(
 
       $app->error(function($e) use($app)
         {
+        
+        var_dump($e->getMessage());
           /* @var $twig \Twig_Environment */
           $twig     = $app['Core']->getTwig();
           $registry = \registry::get_instance();

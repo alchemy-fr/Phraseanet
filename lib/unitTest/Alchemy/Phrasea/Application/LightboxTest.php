@@ -307,8 +307,12 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $basket = $this->insertOneBasket();
 
     $crawler = $this->client->request('POST', '/ajax/SET_RELEASE/' . $basket->getId() . '/');
-    $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
-
+    $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
+    $datas = json_decode($this->client->getResponse()->getContent());
+    $this->assertTrue(is_object($datas), 'asserting good json datas');
+    $this->assertTrue($datas->error);
+    
     $validationBasket = $this->insertOneValidationBasket();
 
     $crawler = $this->client->request('POST', '/ajax/SET_RELEASE/' . $validationBasket->getId() . '/');

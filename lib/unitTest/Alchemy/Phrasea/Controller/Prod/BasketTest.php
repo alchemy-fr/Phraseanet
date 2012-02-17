@@ -505,16 +505,18 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $route = sprintf('/baskets/%s/stealElements/', $Basket_2->getId());
 
-    $crawler = $this->client->request(
+    $this->client->request(
             'POST', $route, array(
         'elements' => array($BasketElement->getId(), 'ufdsd')
-            ), array()
+            ), array(), array(
+        "HTTP_ACCEPT" => "application/json"
+            )
     );
 
     $response = $this->client->getResponse();
 
 
-    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertEquals(200, $response->getStatusCode());
 
     $em = self::$core->getEntityManager();
     /* @var $em \Doctrine\ORM\EntityManager */
