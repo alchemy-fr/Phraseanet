@@ -190,15 +190,21 @@ class Core extends \Pimple
   {
     return function($cacheKey, $service)
             {
+              $driverType = $service->getType();
+              $driver = $service->getService();
+
+              if(!file_exists(__DIR__ . '/../../../tmp/cache_registry.yml'))
+              {
+                touch(__DIR__ . '/../../../tmp/cache_registry.yml');
+              }
+              
               $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
+
               $parser = new Core\Configuration\Parser\Yaml();
 
               $cacheManager = new \Alchemy\Phrasea\Cache\Manager($file, $parser);
 
-              $driverType = $service->getType();
-              $driver = $service->getService();
-
-              if (!$cacheManager->hasChange($cacheKey, $driverType))
+              if ($cacheManager->hasChange($cacheKey, $driverType))
               {
                 $driver->deleteAll();
                 $cacheManager->save($cacheKey, $driverType);

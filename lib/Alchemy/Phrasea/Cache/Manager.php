@@ -62,7 +62,7 @@ class Manager
   public function hasChange($name, $driver)
   {
     return $this->exists($name) ?
-            $this->registry[$name] === $driver : false;
+            $this->registry[$name] !== $driver : true;
   }
 
   public function save($name, $driver)
