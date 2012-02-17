@@ -20,54 +20,54 @@ require_once __DIR__ . '/../../classes/User/Adapter.class.php';
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 class Basket
 {
 
+  const CACHE_SUFFIX = '_basket';
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var string $name
    */
-  private $name;
+  protected $name;
 
   /**
    * @var text $description
    */
-  private $description;
+  protected $description;
 
   /**
    * @var integer $usr_id
    */
-  private $usr_id;
+  protected $usr_id;
 
   /**
    * @var integer $pusher_id
    */
-  private $pusher_id;
+  protected $pusher_id;
 
   /**
    * @var boolean $archived
    */
-  private $archived = false;
+  protected $archived = false;
 
   /**
    * @var datetime $created
    */
-  private $created;
+  protected $created;
 
   /**
    * @var datetime $updated
    */
-  private $updated;
+  protected $updated;
 
   /**
    * @var Entities\BasketElement
    */
-  private $elements;
+  protected $elements;
 
   public function __construct()
   {
@@ -77,7 +77,7 @@ class Basket
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -97,7 +97,7 @@ class Basket
   /**
    * Get name
    *
-   * @return string 
+   * @return string
    */
   public function getName()
   {
@@ -117,7 +117,7 @@ class Basket
   /**
    * Get description
    *
-   * @return text 
+   * @return text
    */
   public function getDescription()
   {
@@ -137,7 +137,7 @@ class Basket
   /**
    * Get usr_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getUsrId()
   {
@@ -157,7 +157,7 @@ class Basket
   /**
    * Get pusher_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getPusherId()
   {
@@ -177,7 +177,7 @@ class Basket
   /**
    * Get archived
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getArchived()
   {
@@ -197,7 +197,7 @@ class Basket
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {
@@ -217,7 +217,7 @@ class Basket
   /**
    * Get updated
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getUpdated()
   {
@@ -237,7 +237,7 @@ class Basket
   /**
    * Get elements
    *
-   * @return Doctrine\Common\Collections\Collection 
+   * @return Doctrine\Common\Collections\Collection
    */
   public function getElements()
   {
@@ -273,7 +273,7 @@ class Basket
   /**
    * @var Entities\ValidationSession
    */
-  private $validation;
+  protected $validation;
 
   /**
    * Set validation
@@ -288,7 +288,7 @@ class Basket
   /**
    * Get validation
    *
-   * @return Entities\ValidationSession 
+   * @return Entities\ValidationSession
    */
   public function getValidation()
   {
@@ -298,7 +298,7 @@ class Basket
   /**
    * @var boolean $is_read
    */
-  private $is_read = true;
+  protected $is_read = true;
 
   /**
    * Set is_read
@@ -313,7 +313,7 @@ class Basket
   /**
    * Get is_read
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getIsRead()
   {
@@ -325,7 +325,7 @@ class Basket
     foreach ($this->getElements() as $basket_element)
     {
       $bask_record = $basket_element->getRecord();
-      
+
       if ($bask_record->get_record_id() == $record->get_record_id()
               && $bask_record->get_sbas_id() == $record->get_sbas_id())
       {
@@ -334,6 +334,29 @@ class Basket
     }
 
     return false;
+  }
+
+  public function getSize()
+  {
+    $totSize = 0;
+
+    foreach ($this->getElements() as $basket_element)
+    {
+      try
+      {
+        $totSize += $basket_element->getRecord()
+                ->get_subdef('document')
+                ->get_size();
+      }
+      catch (Exception $e)
+      {
+
+      }
+    }
+
+    $totSize = round($totSize / (1024 * 1024), 2);
+
+    return $totSize;
   }
 
 }

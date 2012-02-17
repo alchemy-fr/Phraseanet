@@ -1,5 +1,13 @@
 
-{% macro format_diapo(record, user) %}
+{% macro format_diapo(record, user, resizable) %}
+
+  {% if resizable == false %}
+    {% set cont_width = 130 %}
+    {% set cont_height = 140 %}
+  {% else %}
+    {% set cont_width = user.getPrefs('editing_images_size') %}
+    {% set cont_height = user.getPrefs('editing_images_size') %}
+  {% endif %}
 
   {% set i = record.get_number() %}
   {% set thumbnail = record.get_thumbnail().get_url() %}
@@ -24,7 +32,7 @@
     {% set class_status = '' %}
   {% endif %}
 
-  <div pos="{{i}}" id="idEditDiapo_{{i}}" class="diapo {{class_status}}" style="width:{{user.getPrefs('editing_images_size')}}px; height:{{user.getPrefs('editing_images_size')}}px;">
+  <div pos="{{i}}" id="idEditDiapo_{{i}}" class="diapo {{class_status}}" style="width:{{ cont_width }}px; height:{{ cont_height }}px;">
     <div class='titre'>
     {{record.get_original_name()}}
     </div>
@@ -53,8 +61,8 @@
       </table>
     </div>
     <div class="editDiaButtons" style="position:absolute; bottom:0px; right:0px; width:30px; height:12px; display:none">
-      <img id="idEditDiaButtonsP_{{i}}" onclick="edit_diabutton({{i}}, 'add');" style="cursor:pointer" src="/skins/icons/tri_plus.gif"/>
-      <img id="idEditDiaButtonsM_{{i}}" onclick="edit_diabutton({{i}}, 'del');" style="cursor:pointer" src="/skins/icons/tri_minus.gif"/>
+      <img id="idEditDiaButtonsP_{{i}}" style="cursor:pointer" src="/skins/icons/plus11.png"/>
+      <img id="idEditDiaButtonsM_{{i}}" style="cursor:pointer" src="/skins/icons/minus11.png"/>
     </div>
   </div>
 {% endmacro %}
@@ -69,29 +77,33 @@
   {% endif %}
   {% for field in editing.get_fields() %}
     {% set i = field.get_id() %}
-    <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
-      <img id="editSGtri_{{i}}" style="visibility:hidden;" src="/skins/prod/{{cssfile}}/images/suggested.gif" />
-      <img src="/skins/icons/info.gif" tooltipsrc="/prod/tooltip/metas/FieldInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" class="fieldTips" alt=""/>
-      {% if field.get_dces_element %}
-      <img src="/skins/icons/dublincore.png" tooltipsrc="/prod/tooltip/DCESInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" alt="{% trans 'Ce champ est decrit comme un element DublinCore' %}" class="DCESTips" alt=""/>
-      {% endif %}
-      <span id="spanidEditFieldBox_{{i}}">
-        {{field.get_name()}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
-      </span>
-      <span class="fieldvalue" id="idEditField_{{i}}" >???</span>
-    </div>
+    {% if field.is_readonly() is empty %}
+      <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
+        <img id="editSGtri_{{i}}" style="visibility:hidden;" src="/skins/prod/{{cssfile}}/images/suggested.gif" />
+        <img src="/skins/icons/info.gif" tooltipsrc="/prod/tooltip/metas/FieldInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" class="fieldTips" alt=""/>
+        {% if field.get_dces_element %}
+        <img src="/skins/icons/dublincore.png" tooltipsrc="/prod/tooltip/DCESInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" alt="{% trans 'Ce champ est decrit comme un element DublinCore' %}" class="DCESTips" alt=""/>
+        {% endif %}
+        <span id="spanidEditFieldBox_{{i}}">
+          {{field.get_name()}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
+        </span>
+        <span class="fieldvalue" id="idEditField_{{i}}" >???</span>
+      </div>
+    {% endif %}
   {% endfor %}
 {% endmacro %}
 
 {% macro HTML_Train(editing, user, is_reg) %}
   {% for record in editing.get_elements %}
     {% if loop.index != 1 or is_reg != '1' %}
-      {{_self.format_diapo(record, user)}}
+      {{_self.format_diapo(record, user, true)}}
     {% endif %}
   {% endfor %}
 {% endmacro %}
 
 
+{% set actionable = edit.get_count_actionable() %}
+{% set not_actionable = edit.get_count_not_actionable() %}
 
 <script type="text/javascript">
 
@@ -126,7 +138,7 @@
 
     <div class='GRP_IMAGE_REP' style='padding:5px;margin:5px;position:absolute; top:0px; left:0px; width:146px; height:156px'>
       <div id="EDIT_GRPDIAPO" style='position:absolute;'>
-        {{_self.format_diapo(edit.get_grouping_head, user)}}
+        {{_self.format_diapo(edit.get_grouping_head, user, false)}}
       </div>
     </div>
     <div id="EDIT_FILM2" style="left:170px;">
@@ -153,7 +165,7 @@
       <div id="divS_wrapper" style="width:{{user.getPrefs('editing_right_box')}}">
         <div id="divS">
           {{_self.HTML_fieldlist(edit, user)}}
-      </div>
+        </div>
       </div>
 
 
@@ -180,17 +192,15 @@
               </div>
             </div>
             <div id="ZTextMultiValued" style="position:absolute; top:0px; left:0px; width:100%; height:100%; display:none;">
-              <form onsubmit="edit_addmval();return(false);" style="position:absolute; height:30px; left:2px; right:2px;">
+              <form onsubmit="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);return(false);" style="position:absolute; height:30px; left:2px; right:2px;">
                 <div style="position:absolute; top:0px; left:0px; right:70px; height:17px;">
-                  <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" onkeyup="reveal_mval();" value="" />
+                  <input type='text' style="font-size:15px; position:absolute; top:0px; left:0px; width:100%; height:100%;" id="EditTextMultiValued" value="" />
                 </div>
                 <div style="position:absolute; top:6px; width:60px; right:0px; height:11px;">
-                  <img id="EditButAddMultiValued" style="cursor:pointer" src="/skins/icons/tri_plus.gif"  onclick="edit_addmval();" />
-
-                  <img id="EditButDelMultiValued" style="cursor:pointer" src="/skins/icons/tri_minus.gif" onclick="edit_delmval();" />
+                  <img id="EditButAddMultiValued" style="cursor:pointer" src="/skins/icons/plus16.png"  onclick="edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);" />
                 </div>
               </form>
-              <div id="ZTextMultiValued_values" style="position:absolute; top:22px; left:4px; right:4px; bottom:4px; overflow:scroll;">
+              <div id="ZTextMultiValued_values">
               </div>
             </div>
             <div id="ZTextStatus" style="position:absolute; top:0px; left:0px; width:100%; height:100%; display:none;">
@@ -360,7 +370,7 @@
     <br/>
     <br>
     <b>
-      <h4>{% trans 'prod::editing:indexation en cours' %}<f/h4>
+      <h4>{% trans 'prod::editing:indexation en cours' %}</h4>
     </b>
     <span id='saveeditPbarI'></span> / <span id='saveeditPbarN'></span>
     <br/><br/><br/>
@@ -392,8 +402,6 @@
     </p>
 </div>
 <script type="text/javascript">
-  {% set actionable = edit.get_count_actionable() %}
-  {% set not_actionable = edit.get_count_not_actionable() %}
   {% if edit.has_many_sbas or actionable == 0 %}
     $('#EDITWINDOW').hide();
     hideOverlay(2);

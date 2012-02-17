@@ -1,21 +1,27 @@
 <form method="POST" action="/prod/baskets/">
 
-  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
-  <input type="checkbox" id="bask_create_sel" name="lst" value=""/>
-  
   <label>{% trans 'Nom du nouveau panier' %}</label>
   <input name="name" value="" type="text"/>
-  
+
   <label>{% trans 'paniers::description du nouveau panier' %}</label>
   <textarea name="description"></textarea>
-  
-  <button>{% trans 'boutton::valider' %}</button>
-  
+
+  <input type="checkbox" name="lst" value=""/>
+  <label for="add_sel">{% trans 'Ajouter ma selection courrante' %}</label>
+
   <script type="text/javascript">
     $(document).ready(function(){
-      $('#bask_create_sel').val(p4.sel.join(';'));
-      
-      $('#DIALOG form').bind('submit', function(event){
+
+      var $dialog = p4.Dialog.get(1);
+      var $dialogBox = $dialog.getDomElement();
+
+      $('input[name="lst"]', $dialogBox).val(p4.Results.Selection.serialize());
+
+      var buttons = $dialog.getOption('buttons');
+      buttons[language.create] = function(){$('form', $dialogBox).trigger('submit')};
+      $dialog.setOption('buttons', buttons);
+
+      $('form', $dialogBox).bind('submit', function(event){
 
         //$this.SetLoader(true);
 
@@ -24,14 +30,15 @@
         $.ajax({
           type: $form.attr('method'),
           url: $form.attr('action'),
+          data: $form.serializeArray(),
           dataType: 'json',
           beforeSend:function(){
 
           },
           success: function(data){
 
-            refreshBaskets(data.basket.id);
-            $('#DIALOG').dialog('close').empty();
+            p4.WorkZone.refresh(data.basket.id);
+            p4.Dialog.Close(1);
 
             return;
           },

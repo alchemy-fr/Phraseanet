@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -88,7 +88,7 @@ if ((!is_null($parm['login']) && !is_null($parm['pwd'])) || $is_guest)
   }
   catch (Exception_Session_MailLocked $e)
   {
-    return phrasea::redirect("/login/?redirect=" . $parm['redirect'] . "&error=mailNotConfirm&usr=" . $logged['usr_id']);
+    return phrasea::redirect("/login/?redirect=" . $parm['redirect'] . "&error=mailNotConfirm&usr=" . $e->get_usr_id());
   }
   catch (Exception_Session_WrongToken $e)
   {
@@ -112,7 +112,7 @@ if ((!is_null($parm['login']) && !is_null($parm['pwd'])) || $is_guest)
 
     return phrasea::redirect($url);
   }
-  catch (Exception $e)
+  catch (\Exception $e)
   {
     return phrasea::redirect("/login/?redirect=" . $parm['redirect'] . "&error=".$e->getMessage().$e->getFile().$e->getLine() );
   }
@@ -140,4 +140,3 @@ else
 {
   return phrasea::redirect("/login/");
 }
-?>

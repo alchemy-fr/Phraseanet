@@ -31,7 +31,7 @@ class module_console_systemBackupDB extends Command
 
     $dir = sprintf(
             '%s/config/'
-            , dirname(dirname(dirname(dirname(dirname(__FILE__)))))
+            , dirname(dirname(dirname(dirname(__DIR__))))
     );
 
     $this->setDescription('Backup Phraseanet Databases');
@@ -45,23 +45,27 @@ class module_console_systemBackupDB extends Command
   {
     if (!setup::is_installed())
     {
-      throw new RuntimeException('Phraseanet is not set up');
+      $output->writeln('Argument must be an Id.');
+
+      return 1;
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $output->write('Phraseanet is going to be backup...', true);
 
     $appbox = appbox::get_instance();
 
-    $this->dump_base($appbox, $input, $output);
+    $ok = true;
+
+    $ok = $this->dump_base($appbox, $input, $output) && $ok;
 
     foreach ($appbox->get_databoxes() as $databox)
     {
-      $this->dump_base($databox, $input, $output);
+      $ok = $this->dump_base($databox, $input, $output) && $ok;
     }
 
-    return;
+    return (int) !$ok;
   }
 
   protected function dump_base(base $base, InputInterface $input, OutputInterface $output)
@@ -91,11 +95,19 @@ class module_console_systemBackupDB extends Command
     system($command);
 
     if (file_exists($filename) && filesize($filename) > 0)
+    {
       $output->writeln('OK');
+
+      return true;
+    }
     else
+    {
       $output->writeln('<error>Failed</error>');
 
-    return;
+      return false;
+    }
+
+
   }
 
 }

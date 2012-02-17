@@ -277,6 +277,7 @@ class databox extends base
                         SUM(1) AS n, SUM(size) AS siz FROM (record, subdef)
                     LEFT JOIN coll ON record.coll_id=coll.coll_id
                     WHERE record.record_id = subdef.record_id
+                    GROUP BY record.coll_id, name
           UNION
           SELECT coll.coll_id, 0, asciiname, '_' AS name, 0 AS n, 0 AS siz
             FROM coll LEFT JOIN record ON record.coll_id=coll.coll_id
@@ -725,7 +726,7 @@ class databox extends base
   public static function get_available_metadatas()
   {
     $available_fields = array();
-    $dir = dirname(__FILE__) . '/metadata/description/';
+    $dir = __DIR__ . '/metadata/description/';
     $registry = registry::get_instance();
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
     {
@@ -960,15 +961,24 @@ class databox extends base
       $this->saveStructure($dom_struct);
 
       $type = isset($field['type']) ? $field['type'] : 'string';
-      $type = in_array($type, array(databox_field::TYPE_DATE, databox_field::TYPE_NUMBER, databox_field::TYPE_TEXT)) ? $type : databox_field::TYPE_TEXT;
+      $type = in_array($type
+                      , array(
+                  databox_field::TYPE_DATE
+                  , databox_field::TYPE_NUMBER
+                  , databox_field::TYPE_STRING
+                  , databox_field::TYPE_TEXT
+                      )
+              ) ? $type : databox_field::TYPE_STRING;
 
       $meta_struct_field = databox_field::create($this, $fname);
       $meta_struct_field
               ->set_readonly(isset($field['readonly']) ? $field['readonly'] : 0)
               ->set_indexable(isset($field['index']) ? $field['index'] : '1')
+              ->set_separator(isset($field['separator']) ? $field['separator'] : '')
+              ->set_required((isset($field['required']) && $field['required'] == 1))
               ->set_type($type)
               ->set_tbranch(isset($field['tbranch']) ? $field['tbranch'] : '')
-              ->set_thumbtitle(isset($field['thumbtitle']) ? $field['thumbtitle'] : '0')
+              ->set_thumbtitle(isset($field['thumbtitle']) ? $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
               ->set_multi(isset($field['multi']) ? $field['multi'] : 0)
               ->set_report(isset($field['report']) ? $field['report'] : '1')
               ->save();

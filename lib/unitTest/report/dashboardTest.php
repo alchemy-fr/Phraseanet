@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class dashboardTest extends PhraseanetPHPUnitAbstract
 {
@@ -100,7 +100,7 @@ class dashboardTest extends PhraseanetPHPUnitAbstract
         {
           if ($key == 'activity_added')
           {
-            
+
           }
           $this->assertLessThanOrEqual($nbDay, count($dash));
         }
@@ -119,7 +119,7 @@ class dashboardTest extends PhraseanetPHPUnitAbstract
     }
     catch (Exception $e)
     {
-      
+
     }
   }
 

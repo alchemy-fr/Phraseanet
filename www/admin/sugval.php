@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 
@@ -51,7 +51,7 @@ $curPrefs = $collection->get_prefs();
   <head>
   </head>
 
-<link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/admin/admincolor.css,login/geonames.css,include/jslibs/jquery.contextmenu.css" />
+<link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/admin/admincolor.css,login/geonames.css,include/jslibs/jquery.contextmenu.css" />
 
   <style type="text/css">
     BODY

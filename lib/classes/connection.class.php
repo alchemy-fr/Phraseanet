@@ -23,11 +23,13 @@ class connection
    * @var Array
    */
   private static $_PDO_instance = array();
+
   /**
    *
    * @var boolean
    */
   private static $_selfinstance;
+
   /**
    *
    * @var Array
@@ -134,10 +136,25 @@ class connection
       }
       else
       {
-        if (!is_file(dirname(__FILE__) . '/../../config/connexion.inc'))
-          throw new Exception('Unable to load config file');
-        require (dirname(__FILE__) . '/../../config/connexion.inc');
+
+
+        $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                        new \Alchemy\Phrasea\Core\Configuration\Application(),
+                        new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+        );
+        $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+        $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+        $connexion = $configuration->getConnexion($choosenConnexion);
+
+        $hostname = $connexion->get('host');
+        $port = $connexion->get('port');
+        $user = $connexion->get('user');
+        $password = $connexion->get('password');
+        $dbname = $connexion->get('dbname');
       }
+
       if (isset($connection_params[$name]))
       {
         $hostname = $connection_params[$name]['host'];
@@ -171,7 +188,10 @@ class connection
   public static function close_PDO_connection($name)
   {
     if (isset(self::$_PDO_instance[$name]))
+    {
+      self::$_PDO_instance[$name] = null;
       unset(self::$_PDO_instance[$name]);
+    }
 
     return;
   }

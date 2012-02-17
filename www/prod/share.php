@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers();
 $appbox = appbox::get_instance();
 $registry = $appbox->get_registry();
@@ -32,9 +32,9 @@ $right = false;
 
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
 
     <script language="javascript">
 
@@ -67,7 +67,6 @@ if (!$right)
 
 $sha256 = $record->get_sha256();
 $type = $record->get_type();
-$bitly = $record->get_bitly_link();
 
 $url = '';
 
@@ -114,7 +113,7 @@ if ($url != '')
 ?>
         <div class="boxCloser" onclick="parent.hideDwnl();"><?php echo _('boutton::fermer') ?></div>
         <div id="tweet">
-          <div style="margin-left:20px;padding:10px 0 5px;"><a href="http://www.twitter.com/home/?status=<?php echo $bitly ?>" target="_blank"><img src="/skins/icons/twitter.ico" title="share this on twitter" style="vertical-align:middle;padding:0 5px;"/> Send to Twitter</a></div>
+          <div style="margin-left:20px;padding:10px 0 5px;"><a href="http://www.twitter.com/home/?status=<?php echo $url . 'view/' ?>" target="_blank"><img src="/skins/icons/twitter.ico" title="share this on twitter" style="vertical-align:middle;padding:0 5px;"/> Send to Twitter</a></div>
           <div style="margin-left:20px;padding:5px 0 10px;"><a href="http://www.facebook.com/sharer.php?u=<?php echo $url . 'view/' ?>" target="_blank"><img src="/skins/icons/facebook.ico" title="share on facebook" style="vertical-align:middle;padding:0 5px;"/> Send to Facebook</a></div>
         </div>
         <div id="embed" style="text-align:center;padding:10px 0;">

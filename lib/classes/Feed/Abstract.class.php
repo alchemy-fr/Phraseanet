@@ -25,6 +25,10 @@ abstract class Feed_Abstract
    *
    */
   const FORMAT_ATOM = 'atom';
+  /**
+   *
+   */
+  const FORMAT_COOLIRIS = 'cooliris';
 
   /**
    *

@@ -4,13 +4,13 @@
   <groupId>phraseanet</groupId>
   <artifactId>phraseanettest</artifactId>
   <name>Phraseanet</name>
-  <version>3.5.0.0</version>
+  <version>3.6.0.0</version>
   <build>
+    <directory>/home/sites_web/codecoverage-dev.ci.alchemyasp.com</directory>
     <sourceDirectory>lib/classes</sourceDirectory>
     <testSourceDirectory>lib/unitTest</testSourceDirectory>
   </build>
   <properties>
     <sonar.language>php</sonar.language>
-    <sonar.host.url>http://localhost:9009/sonar</sonar.host.url>
   </properties>
 </project>

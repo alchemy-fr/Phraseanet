@@ -11,28 +11,30 @@
 {% endblock %}
 
 {% block content %}
-  {% set record = basket_element.get_record() %}
+  {% set record = basket_element.getRecord() %}
 <div data-role="page">
   <div data-role="header">
-    <a href="/lightbox/validate/{{basket_element.get_ssel_id()}}/" data-rel="back" data-icon="arrow-l">Back</a>
-    <h1>{{basket_element.get_order()}} - {{record.get_title()}}</h1>
+    <a href="/lightbox/validate/{{basket_element.getId()}}/" data-rel="back" data-icon="arrow-l">Back</a>
+    <h1>{{basket_element.getOrd()}} - {{record.get_title()}}</h1>
     <a rel="external" href="/lightbox/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
   </div>
   <div data-role="content">
     {{ thumbnail.format100percent(record.get_preview(),'',session, record.get_thumbnail()) }}
-    {% if basket_element.is_validation_item() %}
+    {% if basket_element.getBasket().getValidation() %}
       <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
-        <input {% if basket_element.get_my_agreement() == '1'%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.get_sselcont_id()}}" value="yes"  />
-          <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.get_sselcont_id()}}">{% trans 'validation:: OUI' %}</label>
+        <input {% if basket_element.getUserValidationDatas(user).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
+          <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{% trans 'validation:: OUI' %}</label>
 
-        <input {% if basket_element.get_my_agreement() == '-1'%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.get_sselcont_id()}}" value="no"  />
-          <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.get_sselcont_id()}}">{% trans 'validation:: NON' %}</label>
+        <input {% if basket_element.getUserValidationDatas(user).getAgreement() == false and basket_element.getUserValidationDatas(user).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
+          <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{% trans 'validation:: NON' %}</label>
       </fieldset>
       <div style="text-align:center;margin:0 0 1em 0">
-        <a href="/lightbox/ajax/NOTE_FORM/{{basket_element.get_sselcont_id()}}/" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">{% trans 'validation:: editer ma note' %}</a>
+        <a href="/lightbox/ajax/NOTE_FORM/{{basket_element.getId()}}/" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
+          {% trans 'validation:: editer ma note' %}
+        </a>
       </div>
       <div>
-        <ul data-role="listview" id="notes_{{basket_element.get_sselcont_id()}}">
+        <ul data-role="listview" id="notes_{{basket_element.getId()}}">
           {% include 'lightbox/sc_note.twig' %}
         </ul>
       </div>

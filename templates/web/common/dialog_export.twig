@@ -236,9 +236,9 @@
               </td>
               <td>
                 <select name="sexe" id="sexe">
-                  <option {% if user.gender == 0 %}selected="selected"{% endif %} value="0">{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
-                  <option {% if user.gender == 1 %}selected="selected"{% endif %} value="1">{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
-                  <option {% if user.gender == 2 %}selected="selected"{% endif %} value="2">{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
+                  <option {% if user.get_gender == 0 %}selected="selected"{% endif %} value="0">{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
+                  <option {% if user.get_gender == 1 %}selected="selected"{% endif %} value="1">{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
+                  <option {% if user.get_gender == 2 %}selected="selected"{% endif %} value="2">{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
                 </select>
               </td>
             </tr>
@@ -247,7 +247,7 @@
                                 {% trans 'admin::compte-utilisateur nom' %} *
               </td>
               <td>
-                <input style="width:250px;" type="text" name="usr_nom" class="required" value="{{user.lastname}}">
+                <input style="width:250px;" type="text" name="usr_nom" class="required" value="{{ user.get_lastname() }}">
               </td>
             </tr>
             <tr>
@@ -255,7 +255,7 @@
                                 {% trans 'admin::compte-utilisateur prenom' %} *
               </td>
               <td>
-                <input style="width:250px;" type="text" name="usr_prenom" class="required" id="prenom" value="{{user.firstname}}">
+                <input style="width:250px;" type="text" name="usr_prenom" class="required" id="prenom" value="{{ user.get_firstname() }}">
               </td>
             </tr>
             <tr>
@@ -263,7 +263,7 @@
                                 {% trans 'admin::compte-utilisateur email' %} *
               </td>
               <td>
-                <input style="width:250px;" class="required" type="text" name="usr_mail" id="usr_mail" value="{{user.get_email()}}">
+                <input style="width:250px;" class="required" type="text" name="usr_mail" id="usr_mail" value="{{ user.get_email() }}">
               </td>
             </tr>
             <tr>
@@ -271,7 +271,7 @@
                                 {% trans 'admin::compte-utilisateur telephone' %}
               </td>
               <td>
-                <input style="width:250px;" type="text" name="tel" id="tel" value="{{user.tel}}">
+                <input style="width:250px;" type="text" name="tel" id="tel" value="{{ user.get_tel() }}">
               </td>
             </tr>
             <tr>
@@ -279,7 +279,7 @@
                                 {% trans 'admin::compte-utilisateur societe' %}
               </td>
               <td>
-                <input style="width:250px;" type="text" name="societe" id="societe" value="{{user.company}}">
+                <input style="width:250px;" type="text" name="societe" id="societe" value="{{ user.get_company() }}">
               </td>
             </tr>
             <tr>
@@ -287,7 +287,7 @@
                                 {% trans 'admin::compte-utilisateur poste' %}
               </td>
               <td>
-                <input style="width:250px;" type="text" name="fonction" id="fonction" value="{{user.job}}">
+                <input style="width:250px;" type="text" name="fonction" id="fonction" value="{{ user.get_job() }}">
               </td>
             </tr>
             <tr>
@@ -295,7 +295,7 @@
                                 {% trans 'admin::compte-utilisateur adresse' %} *
               </td>
               <td>
-                <input style="width:250px;" class="required" type="text" name="adresse" id="adresse" value="{{user.address}}">
+                <input style="width:250px;" class="required" type="text" name="adresse" id="adresse" value="{{ user.get_address() }}">
               </td>
             </tr>
             <tr>
@@ -303,7 +303,7 @@
                                 {% trans 'admin::compte-utilisateur code postal' %} *
               </td>
               <td>
-                <input style="width:250px;" type="text" name="cpostal" name="cpostal" class="required" value="{{user.zip}}">
+                <input style="width:250px;" type="text" name="cpostal" name="cpostal" class="required" value="{{ user.get_zipcode() }}">
               </td>
             </tr>
             <tr>
@@ -311,7 +311,7 @@
                                 {% trans 'admin::compte-utilisateur ville' %} *
               </td>
               <td>
-                <input style="width:250px;" class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{user.geonameid}}" value="{{user.geonameid|geoname_display}}">
+                <input style="width:250px;" class="required geoname_field" type="text" name="geonameid" id="command_geoname_field" geonameid="{{ user.get_geonameid() }}" value="{{ user.get_geonameid()|geoname_display }}">
               </td>
             </tr>
             <tr>
@@ -319,7 +319,7 @@
                                 {% trans 'admin::compte-utilisateur fax' %}
               </td>
               <td>
-                <input style="width:250px;" type="text" name="fax" name="fax" value="{{user.fax}}">
+                <input style="width:250px;" type="text" name="fax" name="fax" value="{{ user.get_fax() }}">
               </td>
             </tr>
           </table>
@@ -376,7 +376,7 @@
           </div>
                     <div id="ftp_form">
                                             <div id="ftp_form_stock">
-                                            {% for datas in download.ftp_datas %}
+                                            {% for datas in download.get_ftp_datas() %}
                                                     {{ _self.print_ftp_form(datas) }}
                                             {% endfor %}
                                             </div>

@@ -11,7 +11,7 @@
 $groups = array(
     'client' => array(
         '//include/jslibs/swfobject/swfobject.js'
-        , '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//login/geonames.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
@@ -26,7 +26,7 @@ $groups = array(
     'admin' => array(
          '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery-treeview/jquery.treeview.js'
-        , '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jquery.kb-event.js'
         , '//admin/users.js'
         , '//admin/editusers.js'
@@ -35,13 +35,8 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
     ),
-    'push' => array(
-        '//include/jslibs/json2.js'
-        , '//prod/push.js'
-        , '//include/jquery.p4.modal.js'
-    ),
     'report' => array(
-         '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jquery.tooltip.js'
@@ -54,7 +49,7 @@ $groups = array(
         , '//report/report.js'
     ),
     'reportmobile' => array(
-         '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jquery.tooltip.js'
@@ -65,21 +60,32 @@ $groups = array(
         , '//report/report_mobile.js'
     ),
     'modalBox' => array(
-         '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
     ),
     'prod' => array(
         '//include/jslibs/swfobject/swfobject.js'
         , '//include/jslibs/json2.js'
         , '//include/jslibs/colorpicker/js/colorpicker.js'
         , '//include/jslibs/jquery.mousewheel.js'
-        , '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/vendor/humane-js/humane.js'
+        , '//include/vendor/mustache-js/mustache.js'
         , '//login/geonames.js'
         , '//include/jslibs/jquery.form.2.49.js'
         , '//include/jslibs/jquery.vertical.buttonset.js'
+        , '//include/js/jquery.Selection.js'
+        , '//include/js/jquery.Edit.js'
+        , '//include/js/jquery.lists.js'
+        , '//prod/jquery.Phraseanet.js'
+        , '//prod/jquery.Prod.js'
+        , '//prod/jquery.Dialog.js'
+        , '//prod/jquery.Feedback.js'
+        , '//prod/jquery.Results.js'
         , '//prod/page0.js'
+        , '//prod/jquery.WorkZone.js'
+        , '//prod/jquery.Alerts.js'
         , '//prod/publicator.js'
         , '//prod/jquery.order.js'
         , '//include/jslibs/jquery.sprintf.1.0.3.js'
@@ -101,7 +107,7 @@ $groups = array(
         , '//thesaurus2/thesaurus.js'
     ),
     'upload' => array(
-         '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+         '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jquery.common.js'
         , '//include/jslibs/jquery.sprintf.1.0.3.js'
@@ -117,7 +123,7 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
         , '//login/geonames.js'
-        , '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'
@@ -129,7 +135,7 @@ $groups = array(
         , '//include/jquery.tooltip.js'
         , '//include/jslibs/swfobject/swfobject.js'
         , '//login/geonames.js'
-        , '//include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js'
+        , '//include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js'
         , '//include/jslibs/jquery.cookie.js'
         , '//include/jslibs/jquery.contextmenu_scroll.js'
         , '//include/jquery.common.js'

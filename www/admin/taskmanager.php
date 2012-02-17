@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 
@@ -33,35 +33,6 @@ $registry = $appbox->get_registry();
 $task_manager = new task_manager($appbox);
 
 
-$tasks = array();
-$path = $registry->get('GV_RootPath') . "lib/classes/task/period/";
-if ($hdir = opendir($path))
-{
-  $tskin = array();
-  $max = 9999;
-  while (($max-- > 0) && (($file = readdir($hdir)) !== false))
-  {
-    if (!is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php")
-      continue;
-
-    $classname = 'task_period_' . substr($file, 0, strlen($file) - 10);
-
-    try
-    {
-//      $testclass = new $classname(null);
-      if ($classname::interfaceAvailable())
-      {
-        $tasks[] = array("class" => $classname, "name" => $classname::getName(), "err" => null);
-      }
-    }
-    catch (Exception $e)
-    {
-
-    }
-  }
-  closedir($hdir);
-}
-
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
@@ -79,9 +50,9 @@ if ($hdir = opendir($path))
       }
 
     </style>
-    <link rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css" type="text/css" media="screen" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js,include/jslibs/jquery.contextmenu.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js,include/jslibs/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript">
       var newTaskMenu = null;
 
@@ -346,6 +317,7 @@ if ($hdir = opendir($path))
               var menuNewTask = [
 <?php
 // fill the 'new task' menu
+$tasks = task_manager::getAvailableTasks();
 $ntasks = count($tasks);
 foreach ($tasks as $t)
 {
@@ -379,9 +351,10 @@ foreach ($tasks as $t)
               {
                 if(window.console)
                   console.log('No task like this');
+
                 return(false);
               }
-              
+
               switch(T_task[tid])
               {
                 case "stopped_0":  // normal

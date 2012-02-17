@@ -24,9 +24,16 @@
     <php>
       <ini name="display_errors" value="on"/>
     </php>
+
     <testsuites>
         <testsuite name="PhraseanetTest Suite">
             <directory>../lib/unitTest/</directory>
         </testsuite>
     </testsuites>
+
+  <listeners>
+    <listener class="SimpleTestListener" file="unitTest/PHPUNITListener.inc"></listener>
+  </listeners>
+
 </phpunit>
+

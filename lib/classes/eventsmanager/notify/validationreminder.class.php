@@ -28,10 +28,10 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
    *
    * @return notify_validationreminder
    */
-  function __construct(appbox &$appbox, registryInterface &$registry, eventsmanager_broker &$broker)
+  function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
   {
     $this->group = _('Validation');
-    parent::__construct($appbox, $registry, $broker);
+    parent::__construct($appbox, $core, $broker);
 
     return $this;
   }
@@ -42,7 +42,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
    */
   public function icon_url()
   {
-    return '/skins/prod/000000/images/pushdoc_history.gif';
+    return '/skins/icons/push16.png';
   }
 
   /**
@@ -156,9 +156,12 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
 
     try
     {
-      $basket = basket_adapter::getInstance($this->appbox, $ssel_id, $this->appbox->get_session()->get_usr_id());
-      $basket_name = (trim($basket->get_name()) != '' ?
-                      $basket->get_name() : _('Une selection'));
+      $em = $this->core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
+
+      $basket_name = trim($basket->getName()) ? : _('Une selection');
     }
     catch (Exception $e)
     {

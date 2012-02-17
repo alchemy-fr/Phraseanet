@@ -24,16 +24,36 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 use Alchemy\Phrasea;
 
-require_once dirname(__FILE__) . '/../lib/Alchemy/Phrasea/Core/Service/Doctrine.php';
+require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
+bootstrap::register_autoloads();
 
 try
 {
-  $doctrine = new Phrasea\Core\Service\Doctrine();
+  $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                  new \Alchemy\Phrasea\Core\Configuration\Application(),
+                  new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+  );
+  $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
 
-  $app = new Application("Phraseanet Doctrine Console", $doctrine->getVersion());
+  $serviceName = $configuration->getOrm();
+  $confService = $configuration->getService($serviceName);
 
+  if($confService->get("type") !== 'doctrine')
+  {
+    exit(sprintf("Doctrine is not declared as your ORM but %s is", $confService->get("type")));
+  }
+  
+  $ormServiceBuilder = new \Alchemy\Phrasea\Core\ServiceBuilder\Orm(
+                  $serviceName
+                  , $confService
+                  , array('registry' => \registry::get_instance())
+  );
 
-  $em = $doctrine->getEntityManager();
+  $ormService = $ormServiceBuilder->buildService();
+  $em = $ormService->getService();
+  /* @var $em \Doctrine\ORM\EntityManager */
+
+  $app = new Application("Phraseanet Doctrine Console", $ormService->getVersion());
 
   $helpers = array(
       'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($em->getConnection()),
@@ -71,5 +91,5 @@ try
 }
 catch (Exception $e)
 {
-  echo "an error occured ";
+  echo "an error occured : " . $e->getMessage();
 }

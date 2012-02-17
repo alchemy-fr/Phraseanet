@@ -8,205 +8,214 @@
 {% endblock %}
 
 {% block stylesheet %}
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/admin/admincolor.css,login/geonames.css,include/jslibs/jquery.contextmenu.css" />
+<link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/admin/admincolor.css,login/geonames.css,include/jslibs/jquery.contextmenu.css" />
 
-    <style>
+<style>
 
-      li.selected, div.selected{
-        background-color:#f0ad30;
-        color:white;
-      }
-      li.selected a, div.selected a{
-        background-color:#f0ad30;
-        color:white;
-      }
-      #right-ajax.loading{
-        background-image: url(/skins/icons/loaderFFF.gif);
-        background-position: center center;
-        background-repeat: no-repeat;
-      }
-    </style>
+    li.selected, div.selected{
+      background-color:#f0ad30;
+      color:white;
+    }
+    li.selected a, div.selected a{
+      background-color:#f0ad30;
+      color:white;
+    }
+    #right-ajax.loading{
+      background-image: url(/skins/icons/loaderFFF.gif);
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+  </style>
 {% endblock %}
 
 
 {% block javascript %}
 
 
-    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
-    <script type="text/javascript" src="/include/minify/g=admin"></script>
-    <script type="text/javascript">
+  <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+  <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+  <script type="text/javascript" src="/include/minify/g=admin"></script>
+  <script type="text/javascript">
 
-      var p4 = {users:{sel:[]}};
-      var bodySize = {x:0,y:0};
+    var p4 = {users:{sel:[]}};
+    var bodySize = {x:0,y:0};
 
-      var language = {
-          serverName: '{{ registry.get('GV_ServerName') }}',
-          serverError: '{% trans 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' %}',
-          serverTimeout:  '{% trans 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' %}',
-          serverDisconnected: '{% trans 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' %}',
-          check_all : '{% trans 'Cocher toute la colonne' %}',
-          uncheck_all :  '{% trans 'Decocher toute la colonne' %}',
-          create_template :  '{% trans 'Creer un model' %}',
-          create_user :  '{% trans 'Creer un utilisateur' %}',
-          annuler :  '{% trans 'boutton::annuler' %}'
-      };
+    var language = {
+        serverName: '{{ registry.get('GV_ServerName') }}',
+        serverError: '{% trans 'phraseanet::erreur: Une erreur est survenue, si ce probleme persiste, contactez le support technique' %}',
+        serverTimeout:  '{% trans 'phraseanet::erreur: La connection au serveur Phraseanet semble etre indisponible' %}',
+        serverDisconnected: '{% trans 'phraseanet::erreur: Votre session est fermee, veuillez vous re-authentifier' %}',
+        check_all : '{% trans 'Cocher toute la colonne' %}',
+        uncheck_all :  '{% trans 'Decocher toute la colonne' %}',
+        create_template :  '{% trans 'Creer un model' %}',
+        create_user :  '{% trans 'Creer un utilisateur' %}',
+        annuler :  '{% trans 'boutton::annuler' %}'
+    };
 
-      window.onbeforeunload = function()
-      {
-        var xhr_object = null;
-        if(window.XMLHttpRequest) // Firefox
-          xhr_object = new XMLHttpRequest();
-        else if(window.ActiveXObject) // Internet Explorer
-          xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-        else  // XMLHttpRequest non supporte par le navigateur
-
-          return;
-        url= "/include/delses.php?app=3&t="+Math.random();
-        xhr_object.open("GET", url, false);
-        xhr_object.send(null);
-      };
-
-      function sessionactive(){
-        $.ajax({
-          type: "POST",
-          url: "/include/updses.php",
-          dataType: 'json',
-          data: {
-            app : 3,
-            usr : {{ session.get_usr_id() }}
-          },
-          error: function(){
-            window.setTimeout("sessionactive();", 10000);
-          },
-          timeout: function(){
-            window.setTimeout("sessionactive();", 10000);
-          },
-          success: function(data){
-            if(data)
-              manageSession(data);
-            var t = 120000;
-            if(data.apps && parseInt(data.apps)>1)
-              t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
-            window.setTimeout("sessionactive();", t);
-
-            return;
-          }
-        })
-      };
-      
-      function activeTree(click)
-      {
-        $('#FNDR').treeview({
-          collapsed: true,
-          animated: "medium"
-        });
-
-        $.each($('#tree a[target=right]'),function(){
-          var dest = $(this).attr('href');
-
-          $(this).bind('click',function(){
-            if($(this).hasClass('ajax'))
-            {
-              $('#right-ajax').empty().addClass('loading').parent().show();
-              $('#right').hide();
-              $.get(dest, function(data) {
-                $('#right-ajax').removeClass('loading').html(data);
-              });
-            }
-            else
-            {
-              $('#right-ajax').empty().parent().hide();
-              $('#right').show().addClass('loading').attr('src',dest);
-            }
-            $('#tree .selected').removeClass('selected');
-            $(this).parent().addClass('selected');
-
-            return false;
-          });
-
-          $(this).attr('href','#').removeAttr('target');
-        });
-        if(click === true)
-        {
-          if($('#tree li.selected').length > 0)
-            $('#tree li.selected a').trigger('click');
-          else
-            $('.zone_online_users').trigger('click');
-        }
-      }
-      $(document).ready(
-      function(){
-        resize();
-        setTimeout('sessionactive();',15000);
-        activeTree(true);
-      }
-    );
-      
-    function refreshBaskets()
+    window.onbeforeunload = function()
     {
-      return;
-    }
-    function resize()
-    {
-      $('#right').height($(this).height()-$('#mainMenu').height()-20);
-      $('#right').width($('#mainContent').width()-$('#left').width()-20);
-      bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
-      bodySize.x = $(window).width();
-    }
+      var xhr_object = null;
+      if(window.XMLHttpRequest) // Firefox
+        xhr_object = new XMLHttpRequest();
+      else if(window.ActiveXObject) // Internet Explorer
+        xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+      else  // XMLHttpRequest non supporte par le navigateur
 
-    $(window).bind('resize',function(){resize();});
+        return;
+      url= "/include/delses.php?app=3&t="+Math.random();
+      xhr_object.open("GET", url, false);
+      xhr_object.send(null);
+    };
 
-    function reloadTree(position, click){
+    function sessionactive(){
       $.ajax({
         type: "POST",
-        url: "adminFeedback.php",
+        url: "/include/updses.php",
+        dataType: 'json',
         data: {
-          action : 'TREE',
-          position : position
+          app : 3,
+          usr : {{ session.get_usr_id() }}
         },
-        success: function(datas){
-          $('#FNDR').empty().append(datas);
-          activeTree(click);
+        error: function(){
+          window.setTimeout("sessionactive();", 10000);
+        },
+        timeout: function(){
+          window.setTimeout("sessionactive();", 10000);
+        },
+        success: function(data){
+          if(data)
+            manageSession(data);
+          var t = 120000;
+          if(data.apps && parseInt(data.apps)>1)
+            t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
+          window.setTimeout("sessionactive();", t);
 
           return;
         }
       })
+    };
+
+    function activeTree(click)
+    {
+      $('#FNDR').treeview({
+        collapsed: true,
+        animated: "medium"
+      });
+
+      $.each($('#tree a[target=right]'),function(){
+        var dest = $(this).attr('href');
+
+        $(this).bind('click',function(){
+          if($(this).hasClass('ajax'))
+          {
+            $('#right-ajax').empty().addClass('loading').parent().show();
+            $('#right').hide();
+            $.get(dest, function(data) {
+              $('#right-ajax').removeClass('loading').html(data);
+            });
+          }
+          else
+          {
+            $('#right-ajax').empty().parent().hide();
+            $('#right').show().addClass('loading').attr('src',dest);
+          }
+          $('#tree .selected').removeClass('selected');
+          $(this).parent().addClass('selected');
+
+          return false;
+        });
+
+        $(this).removeAttr('target');
+      });
+      if(click === true)
+      {
+        if($('#tree li.selected').length > 0)
+          $('#tree li.selected a').trigger('click');
+        else
+          $('.zone_online_users').trigger('click');
+      }
     }
+    $(document).ready(
+    function(){
+      resize();
+      setTimeout('sessionactive();',15000);
+      activeTree(true);
+    }
+  );
+
+  function refreshBaskets()
+  {
+    return;
+  }
+  function resize()
+  {
+    $('#right').height($(this).height()-$('#mainMenu').height()-20);
+    $('#right').width($('#mainContent').width()-$('#left').width()-20);
+    bodySize.y = $(window).height() - $('#mainMenu').outerHeight();
+    bodySize.x = $(window).width();
+  }
+
+  $(window).bind('resize',function(){resize();});
+
+  function reloadTree(position, click){
+    $.ajax({
+      type: "POST",
+      url: "adminFeedback.php",
+      data: {
+        action : 'TREE',
+        position : position
+      },
+      success: function(datas){
+        $('#FNDR').empty().append(datas);
+        activeTree(click);
+
+        return;
+      }
+    })
+  }
 
     </script>
 {% endblock %}
 
 
 {% block content %}
-  <div id="left" class="PNB" style="width:250px;right:auto;">
-    <div class="PNB10" style="right:0">
-      <div id="FNDR">
+    <div id="left" class="PNB" style="width:250px;right:auto;">
+      <div class="PNB10" style="right:0">
+        <div id="FNDR">
         {% include 'admin/tree.html.twig' %}
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <iframe class="right PNB10" src="about:blank;" name="right" id="right" frameborder="1" border="0" framespacing="0" style="left:260px;border:none;right:0;"></iframe>
-  <div class="right PNB" style="left:250px;overflow:auto;">
-    <div id="right-ajax" class="PNB10"></div>
-  </div>
 
-  <div id="quotas_dialog"></div>
-  <div id="masks_dialog"></div>
-  <div id="time_dialog"></div>
-  <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
-    <form>
-      <label>{% trans 'Adresse email du nouvel utilisateur' %}</label>
-      <input type="text" name="value" />
-      <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
-    </form>
-  </div>
-  <div id="template_add_dialog" title="{% trans 'Creer un modele' %}">
-    <form>
-      <label>{% trans 'Nom du nouveau modele' %}</label>
-      <input type="text" name="value" />
-      <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
-    </form>
-  </div>
-  <div id="DIALOG" style="color:white;"></div>
+      {% if notice %}
+        <div class="right PNB10 notice" style="left:260px;">
+            {% if notice == "install_success" %}
+              {% trans %}Successful install{% endtrans %}
+            {% endif %}
+        </div>
+      {% endif %}
+
+        <iframe class="right PNB10" src="about:blank;" name="right" id="right" frameborder="1" border="0" framespacing="0" style="left:260px;border:none;right:0;{{ notice ? "top:30px" : "top:0" }}"></iframe>
+        <div class="right PNB" style="left:250px;overflow:auto;">
+          <div id="right-ajax" class="PNB10"></div>
+        </div>
+
+        <div id="quotas_dialog"></div>
+        <div id="masks_dialog"></div>
+        <div id="time_dialog"></div>
+        <div id="user_add_dialog" title="{% trans 'Ajouter un nouvel utilisateur' %}">
+          <form>
+            <label>{% trans 'Adresse email du nouvel utilisateur' %}</label>
+            <input type="text" name="value" />
+            <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
+          </form>
+        </div>
+        <div id="template_add_dialog" title="{% trans 'Creer un modele' %}">
+          <form>
+            <label>{% trans 'Nom du nouveau modele' %}</label>
+            <input type="text" name="value" />
+            <img src="/skins/icons/loaderFFF.gif" class="new_user_loader" style="display:none;"/>
+          </form>
+        </div>
+        <div id="DIALOG" style="color:white;"></div>
 {% endblock %}

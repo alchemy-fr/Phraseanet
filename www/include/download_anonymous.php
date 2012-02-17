@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 
@@ -107,7 +107,7 @@ phrasea::headers();
         background-repeat:no-repeat;
       }
     </style>
-    <script type="text/javascript" src="/include/minify/?f=include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/minify/?f=include/jslibs/jquery-1.7.1.js"></script>
   </head>
   <body>
     <div id="page">

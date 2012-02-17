@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -109,7 +109,7 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage'))
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
 
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
 
     <script type="text/javascript">
 <?php

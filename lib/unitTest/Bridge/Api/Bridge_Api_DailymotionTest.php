@@ -1,7 +1,7 @@
 <?php
-require_once dirname(__FILE__) . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
-require_once dirname(__FILE__) . '/../Bridge_datas.inc';
-require_once dirname(__FILE__) . '/../../../classes/Bridge/Api/Dailymotion.class.php';
+require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../Bridge_datas.inc';
+require_once __DIR__ . '/../../../classes/Bridge/Api/Dailymotion.class.php';
 
 /**
  * Test class for Bridge_Api_Dailymotion.

@@ -23,52 +23,52 @@ class ValidationSession
   /**
    * @var integer $id
    */
-  private $id;
+  protected $id;
 
   /**
    * @var string $name
    */
-  private $name;
+  protected $name;
 
   /**
    * @var text $description
    */
-  private $description;
+  protected $description;
 
   /**
    * @var boolean $archived
    */
-  private $archived;
+  protected $archived;
 
   /**
    * @var datetime $created
    */
-  private $created;
+  protected $created;
 
   /**
    * @var datetime $updated
    */
-  private $updated;
+  protected $updated;
 
   /**
    * @var datetime $expires
    */
-  private $expires;
+  protected $expires;
 
   /**
    * @var datetime $reminded
    */
-  private $reminded;
+  protected $reminded;
 
   /**
    * @var Entities\Basket
    */
-  private $basket;
+  protected $basket;
 
   /**
    * @var Entities\ValidationParticipant
    */
-  private $participants;
+  protected $participants;
 
   public function __construct()
   {
@@ -78,7 +78,7 @@ class ValidationSession
   /**
    * Get id
    *
-   * @return integer 
+   * @return integer
    */
   public function getId()
   {
@@ -98,7 +98,7 @@ class ValidationSession
   /**
    * Get name
    *
-   * @return string 
+   * @return string
    */
   public function getName()
   {
@@ -118,7 +118,7 @@ class ValidationSession
   /**
    * Get description
    *
-   * @return text 
+   * @return text
    */
   public function getDescription()
   {
@@ -138,7 +138,7 @@ class ValidationSession
   /**
    * Get archived
    *
-   * @return boolean 
+   * @return boolean
    */
   public function getArchived()
   {
@@ -158,7 +158,7 @@ class ValidationSession
   /**
    * Get created
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getCreated()
   {
@@ -178,7 +178,7 @@ class ValidationSession
   /**
    * Get updated
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getUpdated()
   {
@@ -198,7 +198,7 @@ class ValidationSession
   /**
    * Get expires
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getExpires()
   {
@@ -218,7 +218,7 @@ class ValidationSession
   /**
    * Get reminded
    *
-   * @return datetime 
+   * @return datetime
    */
   public function getReminded()
   {
@@ -238,7 +238,7 @@ class ValidationSession
   /**
    * Get basket
    *
-   * @return Entities\Basket 
+   * @return Entities\Basket
    */
   public function getBasket()
   {
@@ -258,7 +258,7 @@ class ValidationSession
   /**
    * Get participants
    *
-   * @return Doctrine\Common\Collections\Collection 
+   * @return Doctrine\Common\Collections\Collection
    */
   public function getParticipants()
   {
@@ -266,14 +266,32 @@ class ValidationSession
   }
 
   /**
+   * Get a participant
+   *
+   * @return Entities\ValidationParticipant
+   */
+  public function getParticipant(\User_Adapter $user)
+  {
+    foreach ($this->getParticipants() as $participant)
+    {
+      if ($participant->getUser()->get_id() == $user->get_id())
+      {
+        return $participant;
+      }
+    }
+
+    throw new \Exception_NotFound('Particpant not found' . $user->get_email());
+  }
+
+  /**
    * @var integer $initiator
    */
-  private $initiator;
+  protected $initiator;
 
   /**
    * @var integer $initiator_id
    */
-  private $initiator_id;
+  protected $initiator_id;
 
   /**
    * Set initiator_id
@@ -288,16 +306,22 @@ class ValidationSession
   /**
    * Get initiator_id
    *
-   * @return integer 
+   * @return integer
    */
   public function getInitiatorId()
   {
     return $this->initiator_id;
   }
 
+  public function isInitiator(\User_Adapter $user)
+  {
+    return $this->getInitiatorId() == $user->get_id();
+  }
+
   public function setInitiator(\User_Adapter $user)
   {
     $this->initiator_id = $user->get_id();
+
     return;
   }
 
@@ -306,6 +330,57 @@ class ValidationSession
     if ($this->initiator_id)
     {
       return \User_Adapter::getInstance($this->initiator_id, \appbox::get_instance());
+    }
+  }
+
+  public function isFinished()
+  {
+    if (is_null($this->getExpires()))
+    {
+      return null;
+    }
+
+    $date_obj = new DateTime();
+
+    return $date_obj > $this->getExpires();
+  }
+
+  public function getValidationString(\User_Adapter $user)
+  {
+
+    if ($this->isInitiator($user))
+    {
+      if ($this->isFinished())
+      {
+        return sprintf(
+                        _('Vous aviez envoye cette demande a %d utilisateurs')
+                        , (count($this->getParticipants()) - 1)
+        );
+      }
+      else
+      {
+        return sprintf(
+                        _('Vous avez envoye cette demande a %d utilisateurs')
+                        , (count($this->getParticipants()) - 1)
+        );
+      }
+    }
+    else
+    {
+      if ($this->getParticipant($user)->getCanSeeOthers())
+      {
+        return sprintf(
+                        _('Processus de validation recu de %s et concernant %d utilisateurs')
+                        , $this->getInitiator()->get_display_name()
+                        , (count($this->getParticipants()) - 1));
+      }
+      else
+      {
+        return sprintf(
+                        _('Processus de validation recu de %s')
+                        , $this->getInitiator()->get_display_name()
+        );
+      }
     }
   }
 

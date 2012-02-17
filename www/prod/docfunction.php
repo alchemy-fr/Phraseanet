@@ -14,22 +14,26 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
-$session = $appbox->get_session();
+require_once __DIR__ . "/../../lib/bootstrap.php";
+$Core    = bootstrap::getCore();
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+$em      = $Core->getEntityManager();
+
+$appbox   = appbox::get_instance();
+$session  = $appbox->get_session();
 phrasea::headers();
 $registry = $appbox->get_registry();
 
 $request = http_request::getInstance();
-$parm = $request->get_parms("act", "lst", "SSTTID");
+$parm    = $request->get_parms("act", "lst", "SSTTID", "story");
 
-$usr_id = $session->get_usr_id();
-$user = User_Adapter::getInstance($usr_id, $appbox);
+$usr_id     = $session->get_usr_id();
+$user       = User_Adapter::getInstance($usr_id, $appbox);
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
     <base target="_self">
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
 
     <script type="text/javascript">
 
@@ -79,156 +83,156 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
           }
 
         }
-      document.getElementById('typelst').value = out;
-      document.forms.formtypedoc.submit();
-    }
-
-
-
-    function doChgStat(do_it)
-    {
-      if(do_it)
-      {
-        var sbases = document.getElementsByName('presa');
-        var A = sbases.length;
-
-        for(var h=0;h!=A;h++)
-        {
-          calcHex(sbases[h].id.substring(4));
-        }
-
-        if(document.getElementById("cc_chg_stat_son"))
-          document.forms.formstatus.chg_status_son.value = document.getElementById("cc_chg_stat_son").getAttribute('status');
-
-        var sbOr = document.getElementsByName('preso');
-        var sbAnd = document.getElementsByName('presa');
-
-        var X = sbOr.length;
-        var Y = sbAnd.length;
-
-        var outOr='';
-        var outAnd='';
-
-        for(var i=0;i!=X;i++)
-        {
-          outOr += outOr!=''?';':'';
-          outOr += sbOr[i].id.substring(4)+'_'+sbOr[i].value;
-        }
-        for(var j=0;j!=Y;j++)
-        {
-          outAnd += outAnd!=''?';':'';
-          outAnd += sbAnd[j].id.substring(4)+'_'+sbAnd[j].value;
-        }
-        document.getElementById('MSKA').value = outAnd;
-        document.getElementById('MSKO').value = outOr;
-        document.formstatus.submit();
+        document.getElementById('typelst').value = out;
+        document.forms.formtypedoc.submit();
       }
-      else
-        parent.hideDwnl();
-    }
 
-    var majImg=new Array();
 
-    function calcHex(sbas)
-    {
-      var t_and = new Array();
-      var t_or = new Array();
-      for(bit=0; bit<64; bit++)
+
+      function doChgStat(do_it)
       {
-        t_and[bit] = bit<4 ? 1 : 0;  // on peut clear tous les bits non nommes, sauf les 4 premiers reserves
-        t_or[bit] = 0;
-      }
-      var c = document.getElementsByName("cca"+sbas);
-      var bit;
-      var status;
+        if(do_it)
+        {
+          var sbases = document.getElementsByName('presa');
+          var A = sbases.length;
 
-      for(i=0; i<c.length; i++)
-      {
-        bit    = c[i].getAttribute('bit');
-        status = c[i].getAttribute('status');
-        t_and[bit] = 1;
-        if(status=="0")
-          t_and[bit] = 0;
+          for(var h=0;h!=A;h++)
+          {
+            calcHex(sbases[h].id.substring(4));
+          }
+
+          if(document.getElementById("cc_chg_stat_son"))
+            document.forms.formstatus.chg_status_son.value = document.getElementById("cc_chg_stat_son").getAttribute('status');
+
+          var sbOr = document.getElementsByName('preso');
+          var sbAnd = document.getElementsByName('presa');
+
+          var X = sbOr.length;
+          var Y = sbAnd.length;
+
+          var outOr='';
+          var outAnd='';
+
+          for(var i=0;i!=X;i++)
+          {
+            outOr += outOr!=''?';':'';
+            outOr += sbOr[i].id.substring(4)+'_'+sbOr[i].value;
+          }
+          for(var j=0;j!=Y;j++)
+          {
+            outAnd += outAnd!=''?';':'';
+            outAnd += sbAnd[j].id.substring(4)+'_'+sbAnd[j].value;
+          }
+          document.getElementById('MSKA').value = outAnd;
+          document.getElementById('MSKO').value = outOr;
+          document.formstatus.submit();
+        }
         else
-          if(status=="1")
-            t_or[bit] = 1;
+          parent.hideDwnl();
       }
 
-      t_hex = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f");
-      bit = 0;
-      s_a = s_o = "";
-      for(q=0; q<16; q++)
+      var majImg=new Array();
+
+      function calcHex(sbas)
       {
-        v_a = v_o = 0;
-        for(b=0; b<4; b++)
+        var t_and = new Array();
+        var t_or = new Array();
+        for(bit=0; bit<64; bit++)
         {
-          v_a |= t_and[bit]<<b;
-          v_o |= t_or[bit]<<b;
-          bit++;
+          t_and[bit] = bit<4 ? 1 : 0;  // on peut clear tous les bits non nommes, sauf les 4 premiers reserves
+          t_or[bit] = 0;
         }
-        s_a = t_hex[v_a] + s_a;
-        s_o = t_hex[v_o] + s_o;
-      }
+        var c = document.getElementsByName("cca"+sbas);
+        var bit;
+        var status;
 
-      document.getElementById('mska'+sbas).value = "0x" + s_a;
-      document.getElementById('msko'+sbas).value = "0x" + s_o;
-    }
-    function evt_clk_stat(ccoch)
-    {
-      var bit = ccoch.getAttribute('bit');
-      var sbas = ccoch.getAttribute('sbas');
-      switch(ccoch.getAttribute('status'))
+        for(i=0; i<c.length; i++)
+        {
+          bit    = c[i].getAttribute('bit');
+          status = c[i].getAttribute('status');
+          t_and[bit] = 1;
+          if(status=="0")
+            t_and[bit] = 0;
+          else
+            if(status=="1")
+              t_or[bit] = 1;
+        }
+
+        t_hex = new Array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f");
+        bit = 0;
+        s_a = s_o = "";
+        for(q=0; q<16; q++)
+        {
+          v_a = v_o = 0;
+          for(b=0; b<4; b++)
+          {
+            v_a |= t_and[bit]<<b;
+            v_o |= t_or[bit]<<b;
+            bit++;
+          }
+          s_a = t_hex[v_a] + s_a;
+          s_o = t_hex[v_o] + s_o;
+        }
+
+        document.getElementById('mska'+sbas).value = "0x" + s_a;
+        document.getElementById('msko'+sbas).value = "0x" + s_o;
+      }
+      function evt_clk_stat(ccoch)
       {
-        case "0":    // decoche -> coche
-          ccoch.setAttribute('status', "1");
-          document.getElementById("linkoff_"+sbas+'_'+bit).setAttribute('status', "0");
-          self.setTimeout("document.getElementById('cc_on_"+sbas+"_"+bit+"').src = '/skins/icons/ccoch1.gif'", 10);
-          self.setTimeout("document.getElementById('cc_off_"+sbas+"_"+bit+"').src = '/skins/icons/ccoch0.gif'", 10);
-          break;
-        case "1":    // coche -> decoche
-        case "2":    // grise -> decoche
-          ccoch.setAttribute('status', "0");
-          document.getElementById("linkoff_"+sbas+'_'+bit).setAttribute('status', "1");
-          self.setTimeout("document.getElementById('cc_on_"+sbas+"_"+bit+"').src = '/skins/icons/ccoch0.gif'", 10);
-          self.setTimeout("document.getElementById('cc_off_"+sbas+"_"+bit+"').src = '/skins/icons/ccoch1.gif'", 10);
-          break;
+        var bit = ccoch.getAttribute('bit');
+        var sbas = ccoch.getAttribute('sbas');
+        switch(ccoch.getAttribute('status'))
+        {
+          case "0":    // decoche -> coche
+            ccoch.setAttribute('status', "1");
+            document.getElementById("linkoff_"+sbas+'_'+bit).setAttribute('status', "0");
+            self.setTimeout("document.getElementById('cc_on_"+sbas+"_"+bit+"').src = '/skins/icons/ccoch1.gif'", 10);
+            self.setTimeout("document.getElementById('cc_off_"+sbas+"_"+bit+"').src = '/skins/icons/ccoch0.gif'", 10);
+            break;
+          case "1":    // coche -> decoche
+          case "2":    // grise -> decoche
+            ccoch.setAttribute('status', "0");
+            document.getElementById("linkoff_"+sbas+'_'+bit).setAttribute('status', "1");
+            self.setTimeout("document.getElementById('cc_on_"+sbas+"_"+bit+"').src = '/skins/icons/ccoch0.gif'", 10);
+            self.setTimeout("document.getElementById('cc_off_"+sbas+"_"+bit+"').src = '/skins/icons/ccoch1.gif'", 10);
+            break;
+        }
+        calcHex(sbas);
       }
-      calcHex(sbas);
-    }
-    function evt_clk_stat_inv(ccoch)
-    {
-      evt_clk_stat(document.getElementById("linkon_"+ccoch.getAttribute('sbas')+'_'+ ccoch.getAttribute('bit') ) );
-    }
-
-
-    function chksonstatus(obj)
-    {
-      if(obj.getAttribute('status')=="1")
+      function evt_clk_stat_inv(ccoch)
       {
-        obj.setAttribute('status', "0");
-        obj.src = "/skins/icons/ccoch0.gif";
-      }
-      else
-      {
-        obj.setAttribute('status', "1");
-        obj.src = "/skins/icons/ccoch1.gif";
+        evt_clk_stat(document.getElementById("linkon_"+ccoch.getAttribute('sbas')+'_'+ ccoch.getAttribute('bit') ) );
       }
 
-      return false;
-    }
+
+      function chksonstatus(obj)
+      {
+        if(obj.getAttribute('status')=="1")
+        {
+          obj.setAttribute('status', "0");
+          obj.src = "/skins/icons/ccoch0.gif";
+        }
+        else
+        {
+          obj.setAttribute('status', "1");
+          obj.src = "/skins/icons/ccoch1.gif";
+        }
+
+        return false;
+      }
 
     </script>
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jquery.p4.modal.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jquery.p4.modal.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
   </head>
   <?php
-  $ndocs = null;
-  $tbits = null;
-  $nrecs = null;
-  $nsb = null;
-  $ndefined = null;
+  $ndocs      = null;
+  $tbits      = null;
+  $nrecs      = null;
+  $nsb        = null;
+  $ndefined   = null;
   $nbgrouping = null;
-  $sbasSet = null;
+  $sbasSet    = null;
 
   $tmp_lst = null;
 
@@ -236,14 +240,29 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
   {
     $parm['lst'] = array();
 
-    $basket = basket_adapter::getInstance($appbox, $parm['SSTTID'], $usr_id);
+    $repository = $em->getRepository('\Entities\Basket');
+    /* @var $repository \Repositories\BasketRepository */
 
-    foreach ($basket->get_elements() as $basket_element)
+    $Basket = $repository->findUserBasket($Request->get('SSTTID'), $Core->getAuthenticatedUser());
+
+    foreach ($Basket->getElements() as $basket_element)
     {
-      $record = $basket_element->get_record();
-      $parm['lst'][] = $record->get_sbas_id() . '_' . $record->get_record_id();
+      /* @var $basket_element \Entities\BasketElement */
+      $record        = $basket_element->getRecord();
+      $parm['lst'][] = $record->get_serialize_key();
     }
-    $parm['lst'] = implode(';', $parm['lst']);
+    $parm['lst']   = implode(';', $parm['lst']);
+  }
+
+  if ($parm['story'])
+  {
+    $repository = $em->getRepository('\Entities\StoryWZ');
+
+    $Story = $repository->findByUserAndId($Core->getAuthenticatedUser(), $parm['story']);
+
+    $parm['lst']   = explode(';', $parm['lst']);
+    $parm['lst'][] = $Story->getRecord()->get_serialize_key();
+    $parm['lst']   = implode(';', $parm['lst']);
   }
 
   $lst = liste::filter(explode(';', $parm['lst']));
@@ -252,7 +271,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
   {
     if ($basrec && count($basrec) == 2)
     {
-      $sbasid = $basrec[0];
+      $sbasid         = $basrec[0];
       if (!isset($ndocs[$sbasid]))
         $ndocs[$sbasid] = 0;
       $ndocs[$sbasid]++;
@@ -279,14 +298,14 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
 
       if (!isset($sbasSet[$sbasid]))
       {
-        $types[$sbasid] = null;
+        $types[$sbasid]   = null;
         $tmp_lst[$sbasid] = '';
 
         $sbasSet[$sbasid] = true;
-        $tbits[$sbasid] = isset($dstatus[$sbasid]) ? $dstatus[$sbasid] : array();
+        $tbits[$sbasid]   = isset($dstatus[$sbasid]) ? $dstatus[$sbasid] : array();
         foreach ($tbits[$sbasid] as $bit => $values)
           $tbits[$sbasid][$bit]['nset'] = 0;
-        $nrecs[$sbasid] = 0;
+        $nrecs[$sbasid]               = 0;
 
         $nbgrouping[$sbasid] = 0;
       }
@@ -324,9 +343,9 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
         <form name="formstatus" id="formstatus" action="chgstatus.php" method="post">
           <?php
           //nbre total de doc modifiables
-          $nrecsum = 0;
+          $nrecsum          = 0;
           //nbr total de doc
-          $ndocsum = 0;
+          $ndocsum          = 0;
 
           if ($sbasSet !== null)
           {
@@ -368,7 +387,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                 if (!isset($ndefined[$sbasid]))
                   $ndefined[$sbasid] = 0;
                 $ndefined[$sbasid]++;
-                $inverse = ($values["status"] == "2" ? "2" : ($values["status"] == "0" ? "1" : "0"));
+                $inverse           = ($values["status"] == "2" ? "2" : ($values["status"] == "0" ? "1" : "0"));
                 echo "<tr>" .
                 "<td style='text-align:left;width:150px'>" .
                 "<a id='linkoff_" . $sbasid . "_" . $bit . "' href='#' style='color:#404040' onclick='evt_clk_stat_inv(this)' sbas='" . $sbasid . "' bit='" . $bit . "' status='" . $inverse . "'>" .
@@ -387,14 +406,14 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                 "</tr>";
 //                }
               }
-          ?>
+              ?>
               <input type="hidden" style="width:200px" name="presa" id="mska<?php echo $sbasid ?>" value="???">
               <input type="hidden" style="width:200px" name="preso" id="msko<?php echo $sbasid ?>" value="???">
 
               </table>
               </center>
-          <?php
-              $lib = $ndefined[$sbasid] > 0 ? _('prod::status: remettre a zero les status non nommes') : _('prod::status: remetter a zero tous les status');
+              <?php
+              $lib               = $ndefined[$sbasid] > 0 ? _('prod::status: remettre a zero les status non nommes') : _('prod::status: remetter a zero tous les status');
 
               if ($ndefined[$sbasid] == 0)
                 echo _('prod::status: aucun status n\'est defini sur cette base') . "<br/>\n";
@@ -405,7 +424,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
 
               if ($nbgrouping[$sbasid] > 0)
               {
-          ?>
+                ?>
                 <br>
                 <table style="border:#ff0000 1px solid;">
                   <tr>
@@ -413,11 +432,11 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                       <img onclick="chksonstatus(this);" status="1" id="cc_chg_stat_son" src="/skins/icons/ccoch1.gif">
                     </td>
                     <td style="width:250px; text-align:left">
-                <?php echo _('prod::status: changer egalement le status des document rattaches aux regroupements') ?>
-              </td>
-            </tr>
-          </table>
-          <?php
+                      <?php echo _('prod::status: changer egalement le status des document rattaches aux regroupements') ?>
+                    </td>
+                  </tr>
+                </table>
+                <?php
               }
             }
 //          }
@@ -436,27 +455,27 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
           <script language="javascript" type="text/javascript">
 
 
-          function loaded()
-          {
-            w = window.dialogArguments ? window.dialogArguments : self.opener;
-            self.focus();
+            function loaded()
+            {
+              w = window.dialogArguments ? window.dialogArguments : self.opener;
+              self.focus();
 <?php
-          if ($nrecsum > 0 && $nrecsum < $ndocsum)
-          {
-            $mess = sprintf(_('prod::status: %d documents ne peuvent avoir une edition des status'), ($ndocsum - $nrecsum));
-?>
-    alert("<?php echo $mess ?>");
-<?php
-          }
-          elseif ($nrecsum == 0)
-          {
-            $mess = _('prod::status:Vous n\'avez pas les droits suffisants pour changer le status des documents selectionnes');
-?>
-    alert("<?php echo $mess ?>");
-    parent.hideDwnl();
+if ($nrecsum > 0 && $nrecsum < $ndocsum)
+{
+  $mess = sprintf(_('prod::status: %d documents ne peuvent avoir une edition des status'), ($ndocsum - $nrecsum));
+  ?>
+      alert("<?php echo $mess ?>");
+  <?php
+}
+elseif ($nrecsum == 0)
+{
+  $mess  = _('prod::status:Vous n\'avez pas les droits suffisants pour changer le status des documents selectionnes');
+  ?>
+      alert("<?php echo $mess ?>");
+      parent.hideDwnl();
 <?php } ?>
 
-}
+  }
 
           </script>
           <input type="hidden" style="width:200px" name="mska" id="MSKA" value="???">
@@ -505,14 +524,14 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                   if (sizeof($rec2) == 2)
                   {
                     $sbas_id = $rec2[0];
-                    $record = new record_adapter($sbas_id, $rec2[1]);
+                    $record  = new record_adapter($sbas_id, $rec2[1]);
 
-                    $dis = '';
+                    $dis   = '';
                     $class = 'select' . $sbas_id;
 
                     if ($record->is_grouping())
                     {
-                      $dis = 'disabled="disabled"';
+                      $dis   = 'disabled="disabled"';
                       $class = 'selectREG' . $sbas_id;
                     }
 

@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers(200, true);
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -66,7 +66,7 @@ else
 
     <script type="text/javascript" src="./win.js"></script>
     <script type="text/javascript" src="./xmlhttp.js"></script>
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.sprintf.1.0.3.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.sprintf.1.0.3.js"></script>
     <script type="text/javascript" src="./xmlhttp.js"></script>
 
     <script type="text/javascript">

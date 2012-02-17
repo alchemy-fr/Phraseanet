@@ -19,7 +19,7 @@
                 {% if not loop.last %} - {% endif %}
               {% endfor %}
                   | 
-              <a class="{% if adapter_action == 'load-records' %} selected {% endif %} action_type_{{type}} bridge_action bridge_title" href="/prod/bridge/adapter/{{ account.get_id() }}/load-records/">
+              <a class="{% if adapter_action == 'load-records' %} selected {% endif %} bridge_action bridge_title" href="/prod/bridge/adapter/{{ account.get_id() }}/load-records/">
                 {% trans 'Fichiers envoyes' %}
               </a>
             </td>

@@ -14,15 +14,15 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('act'  // NEWTASK or SAVETASK
-                , "tid"
-                , 'tcl' // task class
-                , 'view' // XML ou GRAPHIC
+        , "tid"
+        , 'tcl' // task class
+        , 'view' // XML ou GRAPHIC
 );
 
 $lng = Session_Handler::get_locale();
@@ -72,8 +72,20 @@ else
 
 function stripdoublequotes($value)
 {
-  return str_replace(array("\r\n","\r","\n","\""),array('','','','\"'),$value);
+  return str_replace(array("\r\n", "\r", "\n", "\""), array('', '', '', '\"'), $value);
 }
-$twig = new supertwig();
-$twig->addFilter(array('stripdoublequotes'=>'stripdoublequotes'));
-$twig->display('admin/task.html', array('task'=>$task, 'view'=>$parm['view']));
+
+if (!$task->getGraphicForm())
+{
+  $parm['view'] = 'XML';
+}
+
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
+if (!$task->getGraphicForm())
+{
+  $parm['view'] = 'XML';
+}
+
+echo $twig->render('admin/task.html', array('task' => $task, 'view' => $parm['view']));

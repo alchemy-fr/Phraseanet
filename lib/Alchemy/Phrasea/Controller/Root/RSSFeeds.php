@@ -44,13 +44,19 @@ class RSSFeeds implements ControllerProviderInterface
 
               $registry = \registry::get_instance();
 
-              if ($format == 'rss')
+              if ($format == \Feed_Adapter::FORMAT_RSS)
               {
                 $content = new \Feed_XML_RSS();
               }
-              if ($format == 'atom')
+
+              if ($format == \Feed_Adapter::FORMAT_ATOM)
               {
                 $content = new \Feed_XML_Atom();
+              }
+
+              if($format == \Feed_Adapter::FORMAT_COOLIRIS)
+              {
+                $content = new \Feed_XML_Cooliris();
               }
 
               if ($user instanceof \User_Adapter)
@@ -148,7 +154,7 @@ class RSSFeeds implements ControllerProviderInterface
               $page = $page < 1 ? 1 : $page;
 
               return $display_feed($feed, $format, $page, $token->get_user());
-            })->assert('id', '\d+')->assert('format', '(rss|atom)');
+            })->assert('format', '(rss|atom)');
 
 
 
@@ -163,6 +169,17 @@ class RSSFeeds implements ControllerProviderInterface
 
               return $display_feed($feed, $format, $page);
             })->assert('format', '(rss|atom)');
+
+    $controllers->get('/cooliris/', function() use ($app, $appbox, $display_feed) {
+      $feeds = \Feed_Collection::load_public_feeds($appbox);
+              $feed = $feeds->get_aggregate();
+
+              $request = $app['request'];
+              $page = (int) $request->get('page');
+              $page = $page < 1 ? 1 : $page;
+
+              return $display_feed($feed, \Feed_Adapter::FORMAT_COOLIRIS , $page);
+    });
 
     return $controllers;
   }

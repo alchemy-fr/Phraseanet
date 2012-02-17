@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -82,7 +82,7 @@ switch ($parm['act'])
     break;
   case 'UMOUNTCOLL':
     $collection->unmount_collection($appbox);
-    $msg['ACTDONE'] = phrasea::bas_names($base_id) . ' ' . _('forms::operation effectuee OK');
+    $msg['ACTDONE'] = $collection->get_name() . ' ' . _('forms::operation effectuee OK');
     $refreshFinder = true;
     break;
   case 'DODELETECOLL':
@@ -264,9 +264,9 @@ phrasea::headers();
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript">
       var ntask = 0 ;
 
@@ -388,7 +388,7 @@ if ($refreshFinder)
   </head>
   <body>
     <h1>
-      <?php echo _('phraseanet:: collection'); ?> <b><?php echo phrasea::bas_names($base_id); ?></b>
+      <?php echo _('phraseanet:: collection'); ?> <b><?php echo $collection->get_name(); ?></b>
     </h1>
     <div style='margin:3px 0 3px 10px;'>
       <?php echo _('phraseanet:: adresse'); ?> : <?php echo $addr; ?>&nbsp;
@@ -638,7 +638,7 @@ if ($refreshFinder)
 ?>
             <div style='margin:13px 0 3px 10px;'>
 <?php echo _('admin::base:collection: Nom de la nouvelle collection : ') ?>
-              <input type="text"   name="p2" id="p2" value="<?php echo phrasea::bas_names($base_id); ?>" />
+              <input type="text"   name="p2" id="p2" value="<?php echo $collection->get_name(); ?>" />
             <input type="button" value="<?php echo _('boutton::envoyer') ?>" onclick="sendForm('APPLYNEWNAMECOLL');"/>
             <input type="button" value="<?php echo _('boutton::annuler') ?>" onclick="sendForm('');"/>
           </div>
@@ -660,7 +660,7 @@ if ($refreshFinder)
           </a>
         </div>
         <div style='margin:3px 0 3px 10px;'>
-          <a href="javascript:void();return(false);" onclick="emptyColl('<?php p4string::MakeString(phrasea::bas_names($base_id), "js") ?>');return(false);">
+          <a href="javascript:void();return(false);" onclick="emptyColl('<?php p4string::MakeString($collection->get_name(), "js") ?>');return(false);">
           <img src='/skins/icons/trash.png' style='vertical-align:middle'/>
 <?php echo _('admin::base:collection: vider la collection') ?>
         </a>

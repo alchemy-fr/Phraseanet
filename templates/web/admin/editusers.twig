@@ -106,35 +106,55 @@
 </script>
 <div>
 
-  <div class="tabs PNB10" style="bottom:40px;">
+  <div class="tabs PNB" style="bottom:40px;">
     <ul>
       <li>
-        <a href="#rights_tab">Droits</a>
+        <a href="#rights_tab">{% trans 'Rights' %}</a>
       </li>
-      {% if main_user is not empty %}
+      {% if main_user is not empty and main_user.is_template is empty and main_user.is_special is empty %}
       <li>
-        <a href="#user_infos_tab">Fiche</a>
+        <a href="#user_infos_tab">{% trans 'Infos' %}</a>
       </li>
       {% endif %}
     </ul>
     <div id="rights_tab" class="PNB" style="top:40px;">
-      <div class="PNB10" style="height:30px;bottom:auto;">
-        <h1>
-          {% if main_user is not empty %}
-            {% set display_name = main_user.get_display_name() %}
-            {% trans %}
-              Edition des droits de {{ display_name }}
-            {% endtrans %}
-          {% else %}
-            {% set number = users|length %}
-            {% trans %}
-              Edition des droits de {{ number }} utilisateurs
-            {% endtrans %}
-          {% endif %}
-        </h1>
-      </div>
       <form id="users_rights_form" method="post" action="/admin/users/rights/apply/">
         <input type="hidden" name="users" value="{{users_serial}}"/>
+        <table style="width:100%;" cellspacing="0" cellpadding="0" border="0">
+          <tr>
+            <td>
+              {% if main_user is not empty %}
+
+                {% if main_user.is_special is not empty %}
+                  {% if main_user.get_login() == 'invite' %}
+                    {% trans 'Reglages:: reglages d acces guest' %}
+                  {% elseif main_user.get_login() == 'autoregister' %}
+                    {% trans 'Reglages:: reglages d inscitpition automatisee' %}
+                  {% endif %}
+                {% else %}
+                  {% set display_name = main_user.get_display_name() %}
+                  {% trans %}
+                    Edition des droits de {{ display_name }}
+                  {% endtrans %}
+                {% endif %}
+              {% else %}
+                {% set number = users|length %}
+                {% trans %}
+                  Edition des droits de {{ number }} utilisateurs
+                {% endtrans %}
+              {% endif %}
+            </td>
+            <td style="text-align:right;">
+              {% trans 'Apply a template' %}
+              <select name="template">
+                <option value="">{% trans 'boutton::choisir' %}</option>
+                {% for template in templates %}
+                <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
+                {% endfor %}
+              </select>
+            </td>
+          </tr>
+        </table>
         <table cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;height:67px;bottom:auto;top:50px;" class="PNB10">
           <thead>
             <tr>
@@ -142,7 +162,7 @@
 
               </th>
               <th colspan="26">
-                <img src="/skins/lng/inclin-{{session.get_I18n()}}.gif" >
+                <img src="/skins/lng/inclin-{{session.get_I18n()}}.png" style="width:698px"/>
               </th>
             </tr>
           </thead>
@@ -158,7 +178,7 @@
           </tbody>
         </table>
         <div class="PNB10" style="bottom:40px;top:127px;overflow-y:auto;overflow-x:hidden;width:850px;">
-          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: auto;width:820px;">
+          <table class="hoverable" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;width:820px;">
       <!--      <thead>
               <tr>
                 <th style="width:122px;">
@@ -174,8 +194,14 @@
               {% for rights in datas %}
               {% if rights['sbas_id'] != sbas %}
               {% set sbas = rights['sbas_id'] %}
+              {% if loop.index != 1 %}
+                <tr style="height:15px;">
+                  <td></td>
+                </tr>
+              {% endif %}
+
               <tr>
-                <td style="width:122px;">
+                <td style="width:122px;overflow:hidden;white-space:nowrap;">
                   {{rights['sbas_id']|sbas_name}}
                 </td>
                 <td class="users_col options">
@@ -227,7 +253,16 @@
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
-                <td colspan="4">
+                <td class="users_col">
+
+                </td>
+                <td class="users_col">
+
+                </td>
+                <td class="users_col">
+
+                </td>
+                <td>
 
                 </td>
                 <td class="users_col options">
@@ -316,7 +351,7 @@
               </tr>
               {% endif %}
               <tr>
-                <td>
+                <td style="overflow:hidden;white-space:nowrap;">
                   {{rights['base_id']|bas_name}}
                 </td>
                 <td class="users_col case_right_access">
@@ -402,8 +437,8 @@
       </form>
     </div>
 
-    {% if main_user is not empty %}
-    <div id="user_infos_tab" class="PNB" style="top:40px;">
+    {% if main_user is not empty and main_user.is_template is empty and main_user.is_special is empty %}
+    <div id="user_infos_tab" class="PNB" style="top:40px;overflow:auto;">
       <form id="user_infos_form">
         <table>
           <tr>
@@ -420,9 +455,9 @@
             </td>
             <td>
               <select name="gender">
-                <option {% if main_user.get_gender() == 0 %}"selected"{% endif %} value="0" >{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
-                <option {% if main_user.get_gender() == 1 %}"selected"{% endif %} value="1" >{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
-                <option {% if main_user.get_gender() == 2 %}"selected"{% endif %} value="2" >{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
+                <option {% if main_user.get_gender() == 0 %}selected="selected"{% endif %} value="0" >{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
+                <option {% if main_user.get_gender() == 1 %}selected="selected"{% endif %} value="1" >{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
+                <option {% if main_user.get_gender() == 2 %}selected="selected"{% endif %} value="2" >{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
               </select>
             </td>
           </tr>
@@ -522,5 +557,6 @@
   </div>
   <div class="PNB10" style="top:auto;height:20px;">
     <button class="users_rights_valid">{% trans 'boutton::valider' %}</button>
+    <a href="/admin/users/search/" class="users_rights_cancel">{% trans 'boutton::retour' %}</a>
   </div>
 </div>

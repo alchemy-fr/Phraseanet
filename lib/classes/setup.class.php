@@ -43,6 +43,8 @@ class setup
       , "xml"
       , "zip"
       , "zlib"
+      , "intl"
+      , "twig"
   );
   protected static $PHP_CONF = array(
       'output_buffering' => '4096'  //INI_ALL
@@ -68,13 +70,32 @@ class setup
 
   public static function is_installed()
   {
-    return file_exists(dirname(__FILE__) . "/../../config/connexion.inc")
-            && file_exists(dirname(__FILE__) . "/../../config/config.inc");
+    $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+    $installed = false;
+    try
+    {
+      $appConf->getConfigurationFile();
+      $appConf->getConnexionFile();
+      $appConf->getServiceFile();
+      $installed = true;
+    }
+    catch (\Exception $e)
+    {
+
+    }
+
+    return $installed;
   }
 
-  function create_global_values(registryInterface &$registry, $datas=array())
+  public static function needUpgradeConfigurationFile()
   {
-    require(dirname(__FILE__) . "/../../lib/conf.d/_GV_template.inc");
+    return (is_file(__DIR__ . "/../../config/connexion.inc")
+            && is_file(__DIR__ . "/../../config/config.inc"));
+  }
+
+  function create_global_values(registryInterface &$registry, $datas = array())
+  {
+    require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
 
     if ($registry->is_set('GV_timezone'))
@@ -257,12 +278,12 @@ class setup
   {
     if (system_server::get_platform() == 'WINDOWS')
     {
-      $exiftool = dirname(dirname(__FILE__)) . '/vendor/exiftool/exiftool.exe';
-      $indexer = dirname(dirname(dirname(__FILE__))) . '/bin/phraseanet_indexer.exe';
+      $exiftool = dirname(__DIR__) . '/vendor/exiftool/exiftool.exe';
+      $indexer = dirname(dirname(__DIR__)) . '/bin/phraseanet_indexer.exe';
     }
     else
     {
-      $exiftool = dirname(dirname(__FILE__)) . '/vendor/exiftool/exiftool';
+      $exiftool = dirname(__DIR__) . '/vendor/exiftool/exiftool';
       $indexer = null;
     }
 
@@ -418,7 +439,7 @@ class setup
     public static function check_phrasea()
     {
       $constraints = array();
-      if(function_exists('phrasea_info'))
+      if (function_exists('phrasea_info'))
       {
         foreach (phrasea_info() as $name => $value)
         {
@@ -426,7 +447,7 @@ class setup
           {
             default:
               $result = true;
-              $message = $name.' = '.$value;
+              $message = $name . ' = ' . $value;
               break;
             case 'temp_writable':
               $result = $value == '1';
@@ -438,7 +459,7 @@ class setup
             case 'version':
               $result = version_compare($value, '1.18.0.3', '>=');
               if ($result)
-                $message = sprintf ('Phrasea version %s is ok', $value);
+                $message = sprintf('Phrasea version %s is ok', $value);
               else
                 $message = sprintf('Phrasea version %s is NOT ok', $value);
               break;
@@ -453,7 +474,7 @@ class setup
 
     public static function check_writability(registryInterface $registry)
     {
-      $root = p4string::addEndSlash(realpath(dirname(__FILE__) . '/../../'));
+      $root = p4string::addEndSlash(realpath(__DIR__ . '/../../'));
 
       $pathes = array(
           $root . 'config',
@@ -551,10 +572,18 @@ class setup
       {
         if (extension_loaded($ext) !== true)
         {
-          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), true);
+          $blocker = true;
+          if("twig" === $ext)
+          {
+            $blocker = false;
+          }
+
+          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), false, sprintf('%s missing', $ext), $blocker);
         }
         else
-          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext), true);
+        {
+          $constraints[] = new Setup_Constraint(sprintf('Extension %s', $ext), true, sprintf('%s loaded', $ext));
+        }
       }
 
       return new Setup_ConstraintsIterator($constraints);
@@ -562,7 +591,7 @@ class setup
 
     public static function check_cache_server()
     {
-      $availables_caches = array('memcache', 'memcached', 'redis');
+      $availables_caches = array('memcache', 'redis');
 
       $constraints = array();
       foreach ($availables_caches as $ext)
@@ -752,33 +781,14 @@ class setup
         return $current;
     }
 
-    public static function write_config($servername)
+    public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)
     {
-      $datas = "<?php\n\$servername = \""
-              . str_replace('"', '\"', $servername)
-              . "\";\n\$maintenance=false;\n\$debug=false;\n";
-
-      file_put_contents(self::get_config_filepath(), $datas);
-
-      return;
-    }
-
-    public static function get_config_filepath()
-    {
-      return dirname(__FILE__) . '/../../config/config.inc';
-    }
-
-    public static function get_connexion_filepath()
-    {
-      return dirname(__FILE__) . '/../../config/connexion.inc';
-    }
-
-    public static function rollback(connection_pdo $conn, connection_pdo $connbas =null)
-    {
-      $structure = simplexml_load_file(dirname(__FILE__) . "/../../lib/conf.d/bases_structure.xml");
+      $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
 
       if (!$structure)
+      {
         throw new Exception('Unable to load schema');
+      }
 
       $appbox = $structure->appbox;
       $databox = $structure->databox;
@@ -814,12 +824,41 @@ class setup
           }
         }
       }
-      $connexion = dirname(__FILE__) . "/../../config/connexion.inc";
 
-      if (file_exists($connexion))
-        unlink($connexion);
+      $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+
+      try
+      {
+        $configFile = $appConf->getConfigurationFile();
+        unlink($configFile->getPathname());
+      }
+      catch (\Exception $e)
+      {
+
+      }
+
+      try
+      {
+        $serviceFile = $appConf->getServiceFile();
+        unlink($serviceFile->getPathname());
+      }
+      catch (\Exception $e)
+      {
+
+      }
+
+      try
+      {
+        $connexionfFile = $appConf->getConnexionFile();
+        unlink($connexionfFile->getPathname());
+      }
+      catch (\Exception $e)
+      {
+
+      }
 
       return;
     }
 
   }
+

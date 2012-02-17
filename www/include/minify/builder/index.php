@@ -8,7 +8,7 @@ if (phpversion() < 5) {
 $encodeOutput = (function_exists('gzdeflate')
                  && !ini_get('zlib.output_compression'));
 
-require dirname(__FILE__) . '/../config.php';
+require __DIR__ . '/../config.php';
 
 if (! $min_enableBuilder) {
     header('Location: /');
@@ -162,14 +162,14 @@ $serveOpts = array(
     ,'lastModifiedTime' => max(
         // regenerate cache if either of these change
         filemtime(__FILE__)
-        ,filemtime(dirname(__FILE__) . '/../config.php')
+        ,filemtime(__DIR__ . '/../config.php')
     )
     ,'minifyAll' => true
     ,'encodeOutput' => $encodeOutput
 );
 ob_end_clean();
 
-set_include_path(dirname(__FILE__) . '/../lib' . PATH_SEPARATOR . get_include_path());
+set_include_path(__DIR__ . '/../lib' . PATH_SEPARATOR . get_include_path());
 
 require 'Minify.php';
 

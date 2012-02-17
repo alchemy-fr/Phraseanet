@@ -88,8 +88,7 @@ class Session_Handler
     if (!$this->is_authenticated())
 
       return;
-    $user = User_Adapter::getInstance($this->get_usr_id(), $this->appbox);
-    $user->ACL()->delete_injected_rights();
+
     $this->storage()->reset();
     $this->close_phrasea_session();
 
@@ -323,6 +322,9 @@ class Session_Handler
    */
   public function open_phrasea_session()
   {
+    if (!$this->phrasea_session instanceof Session_Phrasea)
+      throw new \Exception('No phrasea session available');
+
     $this->phrasea_session->open();
 
     return $this;
@@ -393,6 +395,7 @@ class Session_Handler
     foreach ($user->ACL()->get_granted_sbas() as $databox)
     {
       Session_Logger::create($databox, $browser, $this, $user);
+      \cache_databox::insertClient($databox);
     }
 
     $this->set_usr_lastconn($conn, $user->get_id());
@@ -568,10 +571,12 @@ class Session_Handler
       return $this;
     }
 
-    $registry = $this->appbox->get_registry();
+    $Core = bootstrap::getCore();
+
+    $registry = $Core->getRegistry();
     $date_two_day = new DateTime('+' . (int) $registry->get('GV_validation_reminder') . ' days');
 
-    $events_mngr = eventsmanager_broker::getInstance($this->appbox);
+    $events_mngr = eventsmanager_broker::getInstance($this->appbox, $Core);
 
     $sql = 'SELECT v.id as validate_id, v.usr_id, v.ssel_id
               , s.usr_id as owner, t.value
@@ -594,7 +599,7 @@ class Session_Handler
           'ssel_id' => $row['ssel_id'],
           'from' => $row['owner'],
           'validate_id' => $row['validate_id'],
-          'url' => $registry->get('GV_ServerName') 
+          'url' => $registry->get('GV_ServerName')
               . 'lightbox/validate/'.$row['ssel_id'].'/?LOG=' . $row['value']
       );
 

@@ -16,10 +16,10 @@
 <ul>
   <li class="title">{% trans 'Apparait aussi dans ces paniers' %}</li>
 {% for basket in baskets %}
-  <li onclick="openPreview('BASK',0,'{{basket.get_ssel_id()}}',true); return(false);"
-                   class="otherBaskToolTip" title="{{basket.get_description()}}">
+  <li onclick="openPreview('BASK',0,'{{basket.getId()}}',true); return(false);"
+                   class="otherBaskToolTip" title="{{basket.getDescription()}}">
     <img style="vertical-align:middle;" title="" src="/skins/icons/basket.gif"/>
-    <span class="title">{{basket.get_name()|raw}}</span>
+    <span class="title">{{basket.getName()}}</span>
   </li>
 {% endfor %}
 </ul>

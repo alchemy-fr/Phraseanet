@@ -93,13 +93,34 @@ class binaryAdapter_image_resize_gd extends binaryAdapter_processorAbstract
 
     $size = $this->options['size'];
 
-    if (!is_null($size) && !$origine->is_raw_image()
-            && $tech_datas[system_file::TC_DATAS_WIDTH] < $size && $tech_datas[system_file::TC_DATAS_HEIGHT] < $size)
+    if (
+            !is_null($size)
+            && isset($tech_datas[system_file::TC_DATAS_WIDTH])
+            && isset($tech_datas[system_file::TC_DATAS_HEIGHT])
+            && !$origine->is_raw_image()
+            && $tech_datas[system_file::TC_DATAS_WIDTH] < $size
+            && $tech_datas[system_file::TC_DATAS_HEIGHT] < $size
+    )
     {
       $size = max($tech_datas[system_file::TC_DATAS_WIDTH], $tech_datas[system_file::TC_DATAS_HEIGHT]);
     }
 
-    $imag_original = imagecreatefromjpeg($origine->getPathname());
+    switch ($origine->get_mime())
+    {
+      case "image/jpeg" :
+        $imag_original = imagecreatefromjpeg($origine->getPathname());
+        break;
+      case "image/gif" :
+        $imag_original = imagecreatefromgif($origine->getPathname());
+        break;
+      case "image/png" :
+        $imag_original = imagecreatefrompng($origine->getPathname());
+        break;
+      default:
+        return $this;
+        break;
+    }
+
 
     if ($imag_original)
     {
@@ -119,8 +140,7 @@ class binaryAdapter_image_resize_gd extends binaryAdapter_processorAbstract
           $w_sub = (int) (($w_doc / $h_doc) * ($h_sub = $size));
         $img_mini = imagecreatetruecolor($w_sub, $h_sub);
 
-        imagecopyresampled($img_mini, $imag_original, 0, 0, 0, 0,
-                $w_sub, $h_sub, $w_doc, $h_doc);
+        imagecopyresampled($img_mini, $imag_original, 0, 0, 0, 0, $w_sub, $h_sub, $w_doc, $h_doc);
       }
 
       if ($this->options['autorotate'])

@@ -35,7 +35,7 @@
           },
           success: function(data){
 
-            refreshBaskets(data.basket.id);
+            return p4.WorkZone.refresh(data.basket.id);
             $('#DIALOG').dialog('close').empty();
 
             return;
@@ -47,7 +47,7 @@
 
           }
         });
-        
+
         return false;
       });
 

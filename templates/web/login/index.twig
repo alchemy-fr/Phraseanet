@@ -46,8 +46,8 @@
         {% endif %}
         {% if display_chrome_frame and session.get_cookie('gfc_box') == false %}
         <!--[if IE]>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
-        <link href="http://www.google.com/css/modules/buttons/g-button.css" type="text/css" rel="stylesheet">
+        <script type="text/javascript" src="http{{ request.is_secure() ? 's' : '' }}://ajax.googleapis.com/ajax/libs/chrome-frame/1.0.2/CFInstall.min.js"></script>
+        <link href="http{{ request.is_secure() ? 's' : '' }}://www.google.com/css/modules/buttons/g-button.css" type="text/css" rel="stylesheet">
         <style type="text/css">
             #gfc_prompt{
                 width: 950px;
@@ -59,7 +59,7 @@
                 <div>
                     <span>
                         <span>
-                            <a target="_blank" href="http://www.google.com/chromeframe/eula.html">Get Google Chrome Frame (Beta)</a>
+                            <a target="_blank" href="http{{ request.is_secure() ? 's' : '' }}://www.google.com/chromeframe/eula.html">Get Google Chrome Frame (Beta)</a>
                         </span>
                     </span>
                 </div>
@@ -158,7 +158,18 @@
                 <div style="position:relative;margin:18px 10px 0 10px;font-size:10px;font-weight:normal;">
                     <table style="border:none;width:100%" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td style="text-align:left;">{% trans 'phraseanet:: language' %} {{login.get_language_selector(registry)}}</td>
+                            <td style="text-align:left;">
+                              {% trans 'phraseanet:: language' %}
+
+                              <select name="lng" id="lng-select" onchange="setLanguage();">
+                              {% for code, language in core.getAvailableLanguages() %}
+                                <option value="{{ code }}" {% if code == session.get_locale() %}selected="selected"{% endif %}>
+                                  {{ language }}
+                                </option>
+                              {% endfor %}
+                              </select>
+
+                            </td>
                             <td style="text-align:right;"><span> &copy; Copyright Alchemy 2005-2010</span></td>
                         </tr>
                     </table>

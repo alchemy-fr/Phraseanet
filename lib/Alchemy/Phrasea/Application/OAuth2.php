@@ -9,10 +9,12 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Application;
+
 require_once __DIR__ . "/../../../../lib/bootstrap.php";
 require_once __DIR__ . "/../../../../lib/classes/API/OAuth2/Autoloader.class.php";
-bootstrap::register_autoloads();
-API_OAuth2_Autoloader::register();
+
+\API_OAuth2_Autoloader::register();
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -29,32 +31,26 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 return call_user_func(function()
                 {
-                  $app = new Silex\Application();
+                  $app = new \Silex\Application();
 
-                  $app->register(new Silex\Provider\ValidatorServiceProvider(), array(
+                  $app['Core'] = \bootstrap::getCore();
+
+                  $app->register(new \Silex\Provider\ValidatorServiceProvider(), array(
                       'validator.class_path' => __DIR__ . '/../../../../lib/vendor/symfony/src',
                   ));
 
 
                   $app['appbox'] = function()
                           {
-                            return appbox::get_instance();
+                            return \appbox::get_instance();
                           };
 
-                  $app['supertwig'] = $app->share(function()
-                          {
-                            $twig = new supertwig();
-                            $twig->addFilter(array('prettyDate' => 'phraseadate::getPrettyString'));
-
-                            return $twig;
-                          });
 
                   $app['oauth'] = function($app)
                           {
-                            return new API_OAuth2_Adapter($app['appbox']);
+                            return new \API_OAuth2_Adapter($app['appbox']);
                           };
 
 
@@ -62,7 +58,7 @@ return call_user_func(function()
                           {
                             if ($app['appbox']->get_session()->is_authenticated())
                             {
-                              $user = user_adapter::getInstance(
+                              $user = \user_adapter::getInstance(
                                               $app['appbox']->get_session()->get_usr_id()
                                               , $app['appbox']
                               );
@@ -83,8 +79,11 @@ return call_user_func(function()
                    */
                   $app['response'] = $app->protect(function ($template, $variable) use ($app)
                           {
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
+
                             $response = new Response(
-                                            $app['supertwig']->render($template, $variable)
+                                            $twig->render($template, $variable)
                                             , 200
                                             , array('Content-Type' => 'text/html')
                             );
@@ -109,7 +108,8 @@ return call_user_func(function()
                           {
                             $request = $app['request'];
                             $oauth2_adapter = $app['oauth'];
-                            $twig = $app['supertwig'];
+                            /* @var $twig \Twig_Environment */
+                            $twig = $app['Core']->getTwig();
                             $session = $app['appbox']->get_session();
 
                             //Check for auth params, send error or redirect if not valid
@@ -119,7 +119,7 @@ return call_user_func(function()
                             $app_authorized = false;
                             $errorMessage = false;
 
-                            $client = API_OAuth2_Application::load_from_client_id($app['appbox'], $params['client_id']);
+                            $client = \API_OAuth2_Application::load_from_client_id($app['appbox'], $params['client_id']);
 
                             $oauth2_adapter->setClient($client);
 
@@ -142,7 +142,7 @@ return call_user_func(function()
                                 {
                                   $login = $request->get("login");
                                   $password = $request->get("password");
-                                  $auth = new Session_Authentication_Native($app['appbox'], $login, $password);
+                                  $auth = new \Session_Authentication_Native($app['appbox'], $login, $password);
                                   $session->authenticate($auth);
                                 }
                                 catch (Exception $e)
@@ -173,7 +173,7 @@ return call_user_func(function()
                             }
 
                             //check if current client is alreadu authorized by current user
-                            $user_auth_clients = API_OAuth2_Application::load_authorized_app_by_user($app['appbox'], $app['user']);
+                            $user_auth_clients = \API_OAuth2_Application::load_authorized_app_by_user($app['appbox'], $app['user']);
 
                             foreach ($user_auth_clients as $auth_client)
                             {
@@ -249,7 +249,7 @@ return call_user_func(function()
                   $route = '/applications';
                   $app->get($route, function() use ($app)
                           {
-                            $apps = API_OAuth2_Application::load_app_by_user($app['appbox'], $app['user']);
+                            $apps = \API_OAuth2_Application::load_app_by_user($app['appbox'], $app['user']);
 
                             return $app['response']('api/auth/applications.twig', array("apps" => $apps, 'user' => $app['user']));
                           });
@@ -260,7 +260,7 @@ return call_user_func(function()
                   $route = "/applications/dev";
                   $app->get($route, function() use ($app)
                           {
-                            $rs = API_OAuth2_Application::load_dev_app_by_user($app['appbox'], $app['user']);
+                            $rs = \API_OAuth2_Application::load_dev_app_by_user($app['appbox'], $app['user']);
 
                             return $app['response']('api/auth/application_dev.twig', array("apps" => $rs));
                           });
@@ -271,7 +271,7 @@ return call_user_func(function()
                   $route = "/applications/dev/new";
                   $app->get($route, function() use ($app)
                           {
-                            $var = array("violations" => null);
+                            $var = array("violations" => null, 'form' => null);
 
                             return $app['response']('api/auth/application_dev_new.twig', $var);
                           });
@@ -282,7 +282,15 @@ return call_user_func(function()
                   $app->post($route, function() use ($app)
                           {
                             $submit = false;
-                            $post = new API_OAuth2_Form_DevApp($app['request']);
+                            if ($app['request']->get("type") == "desktop")
+                            {
+                              $post = new \API_OAuth2_Form_DevAppDesktop($app['request']);
+                            }
+                            else
+                            {
+                              $post = new \API_OAuth2_Form_DevAppInternet($app['request']);
+                            }
+                            
                             $violations = $app['validator']->validate($post);
 
                             if ($violations->count() == 0)
@@ -292,7 +300,7 @@ return call_user_func(function()
 
                             if ($submit)
                             {
-                              $application = API_OAuth2_Application::create($app['appbox'], $app['user'], $request->get('name'));
+                              $application = \API_OAuth2_Application::create($app['appbox'], $app['user'], $request->get('name'));
                               $application->set_description($request->get('description'))
                                       ->set_redirect_uri($request->get('callback'))
                                       ->set_type($request->get('type'))
@@ -303,7 +311,8 @@ return call_user_func(function()
 
                             $var = array(
                                 "violations" => $violations,
-                                "form" => $post
+                                "form" => $post,
+                                "request" => $request
                             );
 
                             return $app['response']('api/auth/application_dev_new.twig', $var);
@@ -316,12 +325,12 @@ return call_user_func(function()
                   $route = "/applications/dev/{id}/show";
                   $app->get($route, function($id) use ($app)
                           {
-                            $client = new API_OAuth2_Application($app['appbox'], $id);
+                            $client = new \API_OAuth2_Application($app['appbox'], $id);
                             $token = $client->get_user_account($app['user'])->get_token()->get_value();
                             $var = array("app" => $client, "user" => $app['user'], "token" => $token);
 
                             return $app['response']('api/auth/application_dev_show.twig', $var);
-                          });
+                          })->assert('id', '\d+');
 
                   /**
                    * revoke access from a user to the app
@@ -333,7 +342,7 @@ return call_user_func(function()
                             $result = array("ok" => false);
                             try
                             {
-                              $account = new API_OAuth2_Account($app['appbox'], $app['request']->get('account_id'));
+                              $account = new \API_OAuth2_Account($app['appbox'], $app['request']->get('account_id'));
                               $account->set_revoked((bool) $app['request']->get('revoke'));
                               $result['ok'] = true;
                             }
@@ -342,7 +351,13 @@ return call_user_func(function()
                               
                             }
 
-                            return new Response(json_encode($result), 200, array("content-type" => "application/json"));
+                            $Serializer = $app['Core']['Serializer'];
+
+                            return new Response(
+                                            $Serializer->serialize($result, 'json')
+                                            , 200
+                                            , array("content-type" => "application/json")
+                            );
                           });
 
                   $route = "/applications/{id}/generate_access_token/";
@@ -351,7 +366,7 @@ return call_user_func(function()
                             $result = array("ok" => false);
                             try
                             {
-                              $client = new API_OAuth2_Application($app['appbox'], $id);
+                              $client = new \API_OAuth2_Application($app['appbox'], $id);
                               $account = $client->get_user_account($app['user']);
 
                               $token = $account->get_token();
@@ -359,7 +374,7 @@ return call_user_func(function()
                               if ($token instanceof API_OAuth2_Token)
                                 $token->renew();
                               else
-                                $token = API_OAuth2_Token::create($app['appbox'], $account);
+                                $token = \API_OAuth2_Token::create($app['appbox'], $account);
 
                               $result = array(
                                   "ok" => true
@@ -371,8 +386,14 @@ return call_user_func(function()
                               
                             }
 
-                            return new response(json_encode($result), 200, array("content-type" => "application/json"));
-                          });
+                            $Serializer = $app['Core']['Serializer'];
+
+                            return new Response(
+                                            $Serializer->serialize($result, 'json')
+                                            , 200
+                                            , array("content-type" => "application/json")
+                            );
+                          })->assert('id', '\d+');
 
                   $route = "/applications/oauth_callback";
                   $app->post($route, function() use ($app)
@@ -382,7 +403,7 @@ return call_user_func(function()
                             $result = array("success" => false);
                             try
                             {
-                              $client = new API_OAuth2_Application($app['appbox'], $app_id);
+                              $client = new \API_OAuth2_Application($app['appbox'], $app_id);
                               $client->set_redirect_uri($app_callback);
                               $result['success'] = true;
                             }
@@ -391,7 +412,13 @@ return call_user_func(function()
                               
                             }
 
-                            return new Response(json_encode($result), 200, array("content-type" => "application/json"));
+                            $Serializer = $app['Core']['Serializer'];
+
+                            return new Response(
+                                            $Serializer->serialize($result, 'json')
+                                            , 200
+                                            , array("content-type" => "application/json")
+                            );
                           });
 
                   $route = "/applications/{id}";
@@ -400,26 +427,32 @@ return call_user_func(function()
                             $result = array("success" => false);
                             try
                             {
-                              $client = new API_OAuth2_Application($app['appbox'], $id);
+                              $client = new \API_OAuth2_Application($app['appbox'], $id);
                               $client->delete();
                               $result['success'] = true;
                             }
-                            catch (Exception $e)
+                            catch (\Exception $e)
                             {
                               
                             }
 
-                            return new Response(json_encode($result), 200, array("content-type" => "application/json"));
-                          });
+                            $Serializer = $app['Core']['Serializer'];
+
+                            return new Response(
+                                            $Serializer->serialize($result, 'json')
+                                            , 200
+                                            , array("content-type" => "application/json")
+                            );
+                          })->assert('id', '\d+');
                   /**
                    * *******************************************************************
                    *
                    * Route Errors
                    *
                    */
-                  $app->error(function (Exception $e) use ($app)
+                  $app->error(function (\Exception $e) use ($app)
                           {
-                            if ($e instanceof NotFoundHttpException || $e instanceof Exception_NotFound)
+                            if ($e instanceof NotFoundHttpException || $e instanceof \Exception_NotFound)
                             {
                               return new Response('The requested page could not be found.', 404);
                             }

@@ -39,56 +39,67 @@ class searchEngine_options implements Serializable
    * @var string
    */
   protected $record_type;
+
   /**
    *
    * @var string
    */
   protected $search_type = 0;
+
   /**
    *
    * @var array
    */
   protected $bases = array();
+
   /**
    *
    * @var array
    */
   protected $fields = array();
+
   /**
    *
    * @var array
    */
   protected $status = array();
+
   /**
    *
    * @var DateTime
    */
   protected $date_min;
+
   /**
    *
    * @var DateTime
    */
   protected $date_max;
+
   /**
    *
    * @var array
    */
   protected $date_fields = array();
+
   /**
    *
    * @var string
    */
   protected $i18n;
+
   /**
    *
    * @var boolean
    */
   protected $stemming = true;
+
   /**
    *
    * @var string
    */
   protected $sort_by = self::SORT_CREATED_ON;
+
   /**
    *
    * @var string
@@ -267,12 +278,12 @@ class searchEngine_options implements Serializable
         continue;
       if (isset($options['on']))
       {
-        foreach($options['on'] as $sbas_id)
+        foreach ($options['on'] as $sbas_id)
           $tmp[$n][$sbas_id] = 1;
       }
       if (isset($options['off']))
       {
-        foreach($options['off'] as $sbas_id)
+        foreach ($options['off'] as $sbas_id)
           $tmp[$n][$sbas_id] = 0;
       }
     }
@@ -342,7 +353,7 @@ class searchEngine_options implements Serializable
   {
     if (!is_null($min_date) && trim($min_date) !== '')
     {
-      $this->date_min = new DateTime($min_date);
+      $this->date_min = DateTime::createFromFormat('d/m/Y H:i:s', $min_date.' 00:00:00');
     }
 
     return $this;
@@ -366,7 +377,7 @@ class searchEngine_options implements Serializable
   {
     if (!is_null($max_date) && trim($max_date) !== '')
     {
-      $this->date_max = new DateTime($max_date);
+      $this->date_max = DateTime::createFromFormat('d/m/Y H:i:s', $max_date.' 23:59:59');
     }
 
     return $this;
@@ -431,10 +442,26 @@ class searchEngine_options implements Serializable
 
     foreach ($serialized as $key => $value)
     {
-      if (in_array($key, array('date_min', 'date_max')))
+      if(is_null($value))
+      {
+        $value = null;
+      }
+      elseif (in_array($key, array('date_min', 'date_max')))
+      {
         $value = new DateTime($value);
-      elseif($value instanceof stdClass)
-        $value = (array) $value;
+      }
+      elseif ($value instanceof stdClass)
+      {
+        $tmpvalue = (array) $value;
+        $value = array();
+
+        foreach($tmpvalue as $k=>$data)
+        {
+          $k = ctype_digit($k) ? (int) $k : $k;
+          $value[$k] = $data;
+        }
+
+      }
 
       $this->$key = $value;
     }

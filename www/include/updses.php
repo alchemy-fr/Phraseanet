@@ -15,7 +15,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+$em = $Core->getEntityManager();
+
+$user = $Core->getAuthenticatedUser();
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -56,20 +60,26 @@ $session->set_event_module($parm['app'], true);
 $ret['status'] = 'ok';
 $ret['notifications'] = false;
 
-$evt_mngr = eventsmanager_broker::getInstance($appbox);
+$evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
 $notif = $evt_mngr->get_notifications();
 
 $browser = Browser::getInstance();
 
-$twig = new supertwig();
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
 $ret['notifications'] = $twig->render('prod/notifications.twig', array('notifications' => $notif));
 
 $ret['changed'] = array();
 
-$baskets = basketCollection::get_updated_baskets();
+$repository = $em->getRepository('\Entities\Basket');
+
+/* @var $repository \Repositories\BasketRepository */
+$baskets = $repository->findUnreadActiveByUser($user);
+
 foreach ($baskets as $basket)
 {
-  $ret['changed'][] = $basket->get_ssel_id();
+  $ret['changed'][] = $basket->getId();
 }
 
 

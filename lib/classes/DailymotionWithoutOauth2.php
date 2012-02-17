@@ -14,8 +14,8 @@ require_once __DIR__ . '/../vendor/dailymotion-sdk-php/Dailymotion.php';
 
 class DailymotionWithoutOauth2 extends Dailymotion
 {
-  
-  
+
+
 /**
      * Call a remote method.
      *
@@ -37,7 +37,7 @@ class DailymotionWithoutOauth2 extends Dailymotion
             'call' => $method,
             'args' => $args,
         ));
-        
+
         $status_code = null;
         try
         {
@@ -45,7 +45,7 @@ class DailymotionWithoutOauth2 extends Dailymotion
         }
         catch (DailymotionAuthException $e)
         {
-          
+
             if ($e->error === 'invalid_token')
             {
               throw new Bridge_Exception_ActionAuthNeedReconnect();
@@ -84,8 +84,8 @@ class DailymotionWithoutOauth2 extends Dailymotion
 
         return $result['result'];
     }
-    
-    
+
+
         /**
      * Upload a file on the Dailymotion servers and generate an URL to be used with API methods.
      *
@@ -100,6 +100,7 @@ class DailymotionWithoutOauth2 extends Dailymotion
         $this->timeout = null;
         $result = json_decode($this->httpRequest($result['upload_url'], array('file' => '@' . $filePath)), true);
         $this->timeout = $timeout;
+
         return $result['url'];
     }
 }

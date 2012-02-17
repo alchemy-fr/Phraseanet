@@ -36,23 +36,41 @@ class PathFileTest implements ControllerProviderInterface
             {
               $path = $app['request']->get('path');
 
-              return new Response(\p4string::jsonencode(array(
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize(
+                                      array(
                                   'exists' => file_exists($path)
                                   , 'file' => is_file($path)
                                   , 'dir' => is_dir($path)
                                   , 'readable' => is_readable($path)
                                   , 'writeable' => is_writable($path)
                                   , 'executable' => is_executable($path)
-                              )), 200, array('application/json'));
+                                      )
+                                      , 'json'
+                              )
+                              , 200
+                              , array('content-type' => 'application/json')
+              );
             });
 
     $controllers->get('/url/', function() use ($app)
             {
               $url = $app['request']->get('url');
 
-              return new Response(\p4string::jsonencode(array(
+              $Serializer = $app['Core']['Serializer'];
+
+              return new Response(
+                              $Serializer->serialize(
+                                      array(
                                   'code' => \http_query::getHttpCodeFromUrl($url)
-                              )), 200, array('application/json'));
+                                      )
+                                      , 'json'
+                              )
+                              , 200
+                              , array('content-type' => 'application/json')
+              );
             });
 
 

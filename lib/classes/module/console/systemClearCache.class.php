@@ -44,10 +44,10 @@ class module_console_systemClearCache extends Command
             ->exclude('.git')
             ->exclude('.svn')
             ->in(array(
-                dirname(__FILE__) . '/../../../../tmp/cache_minify/'
-                , dirname(__FILE__) . '/../../../../tmp/cache_twig/'
-            ))
-    ;
+                __DIR__ . '/../../../../tmp/cache_minify/'
+                , __DIR__ . '/../../../../tmp/cache_twig/'
+            ));
+
     $count = 1;
     foreach ($finder as $file)
     {
@@ -59,12 +59,12 @@ class module_console_systemClearCache extends Command
     $finder
             ->directories()
             ->in(array(
-                dirname(__FILE__) . '/../../../../tmp/cache_minify'
-                , dirname(__FILE__) . '/../../../../tmp/cache_twig'
+                __DIR__ . '/../../../../tmp/cache_minify'
+                , __DIR__ . '/../../../../tmp/cache_twig'
             ))
             ->exclude('.git')
-            ->exclude('.svn')
-    ;
+            ->exclude('.svn');
+
     foreach ($finder as $file)
     {
       $dirs[$file->getPathname()] = $file->getPathname();
@@ -93,7 +93,7 @@ class module_console_systemClearCache extends Command
 
     $output->write('Finished !', true);
 
-    return;
+    return 0;
   }
 
 }

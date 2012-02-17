@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $usr_id = $session->get_usr_id();
@@ -25,13 +25,15 @@ $user_obj = User_Adapter::getInstance($usr_id, $appbox);
 $createBase = $mountBase = false;
 $error = array();
 
+$Core = bootstrap::getCore();
+
 phrasea::headers();
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
     <style type="text/css">
       blockquote{
         margin:0 15px;
@@ -90,12 +92,28 @@ phrasea::headers();
           {
             $error[] = _('Database name can not contains special characters');
           }
-          
+
           if (count($error) === 0)
           {
             try
             {
-              require dirname(__FILE__) . '/../../config/connexion.inc';
+
+
+              $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                              new \Alchemy\Phrasea\Core\Configuration\Application(),
+                              new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+              );
+              $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+              $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+              $connexion = $configuration->getConnexion($choosenConnexion);
+
+              $hostname = $connexion->get('host');
+              $port = $connexion->get('port');
+              $user = $connexion->get('user');
+              $password = $connexion->get('password');
+
               $data_template = new system_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
 
               $connbas = new connection_pdo('databox_creation', $hostname, $port, $user, $password, $parm['new_dbname']);
@@ -117,7 +135,7 @@ phrasea::headers();
             }
           }
         }
-        elseif ($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port'] 
+        elseif ($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port']
                 && $parm['new_user'] && $parm['new_password']
                 && $parm['new_dbname'] && $parm['new_data_template'])
         {
@@ -126,7 +144,7 @@ phrasea::headers();
           {
             $error[] = _('Database name can not contains special characters');
           }
-          
+
           if (count($error) === 0)
           {
 
@@ -157,7 +175,21 @@ phrasea::headers();
           {
             try
             {
-              require dirname(__FILE__) . '/../../config/connexion.inc';
+
+
+              $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                              new \Alchemy\Phrasea\Core\Configuration\Application(),
+                              new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+              );
+              $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+              $connexion = $configuration->getConnexion();
+
+              $hostname = $connexion->get('host');
+              $port = $connexion->get('port');
+              $user = $connexion->get('user');
+              $password = $connexion->get('password');
+
               $appbox->get_connection()->beginTransaction();
               $base = databox::mount($appbox, $hostname, $port, $user, $password, $parm['new_dbname'], $registry);
               $base->registerAdmin($user_obj);
@@ -226,7 +258,7 @@ phrasea::headers();
       }
       catch (Exception $e)
       {
-        
+
       }
     }
     ?>
@@ -250,15 +282,14 @@ if ($createBase || $mountBase)
     phrasea::redirect('/admin/databases.php');
   }
 }
-
 ?>
 
     </script>
-    <?php 
-    foreach($error as $e)
+    <?php
+    foreach ($error as $e)
     {
       ?>
-    <span style="background-color:red;color:white;padding:3px"><?php echo $e; ?></span>
+      <span style="background-color:red;color:white;padding:3px"><?php echo $e; ?></span>
       <?php
     }
     ?>
@@ -300,13 +331,13 @@ if ($createBase || $mountBase)
         if ($upgrade_available)
         {
           ?>
-          <div><?php echo _('update::Votre application necessite une mise a jour vers : '), ' ', GV_version ?></div>
+          <div><?php echo _('update::Votre application necessite une mise a jour vers : '), ' ', $Core->getVersion()->getNumber() ?></div>
           <?php
         }
         else
         {
           ?>
-          <div><?php echo _('update::Votre version est a jour : '), ' ', GV_version ?></div>
+          <div><?php echo _('update::Votre version est a jour : '), ' ', $Core->getVersion()->getNumber() ?></div>
           <?php
         }
         ?>

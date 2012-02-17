@@ -27,8 +27,7 @@ class cache_adapter implements cache_interface
           'cache_nocache'
       ),
       'memcached' => array(
-          'cache_memcached'
-          , 'cache_memcache'
+          'cache_memcache'
       ),
       'redis' => array(
           'cache_redis'

@@ -23,6 +23,7 @@ class registry implements registryInterface
    * @var cache_opcode_adapter
    */
   protected $cache;
+
   /**
    *
    * @var registry
@@ -41,7 +42,7 @@ class registry implements registryInterface
    */
   public static function get_instance()
   {
-    $prefix = crc32(dirname(__FILE__));
+    $prefix = crc32(__DIR__);
     if (!self::$_instance instanceof self)
       self::$_instance = new self(new cache_opcode_adapter($prefix));
 
@@ -57,11 +58,19 @@ class registry implements registryInterface
   {
     $this->cache = $cache;
 
-    require dirname(__FILE__) . '/../../config/config.inc';
-    $this->cache->set('GV_RootPath', dirname(dirname(dirname(__FILE__))) . '/');
-    $this->cache->set('GV_ServerName', p4string::addEndSlash($servername));
-    $this->cache->set('GV_debug', !!$debug);
-    $this->cache->set('GV_maintenance', !!$maintenance);
+    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                    new \Alchemy\Phrasea\Core\Configuration\Application(),
+                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+    );
+    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+    $this->cache->set('GV_RootPath', dirname(dirname(__DIR__)) . '/');
+    if ($configuration->isInstalled())
+    {
+      $this->cache->set('GV_ServerName', $configuration->getPhraseanet()->get('servername'));
+      $this->cache->set('GV_debug', $configuration->isDebug());
+      $this->cache->set('GV_maintenance', $configuration->isMaintained());
+    }
 
     return $this;
   }
@@ -130,9 +139,11 @@ class registry implements registryInterface
     if (!$this->cache->is_set($key))
       $this->load();
 
-    if(!$this->cache->is_set($key) && !is_null($defaultvalue))
+    if (!$this->cache->is_set($key) && !is_null($defaultvalue))
+
       return $defaultvalue;
     else
+
       return $this->cache->get($key);
   }
 
@@ -142,7 +153,7 @@ class registry implements registryInterface
    * @param mixed $value
    * @return registry
    */
-  public function set($key, $value, $type = 'string')
+  public function set($key, $value, $type)
   {
     $this->load();
     $delete_cache = false;

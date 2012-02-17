@@ -129,6 +129,7 @@ iframe{
 	padding: 0 auto;
 	clear:both;
 	margin-bottom:10px;
+  overflow:auto;
 }
 
 .report-table table {
@@ -417,15 +418,11 @@ table.tablesorter tr th.SortDown {
 }
 
 .onload{
-	background-image:url(ajax-loader.gif);
-	background-position:center center;
-	background-repeat:no-repeat;
-}
-.onloadd{
 	background-image:url(ajax-loader2.gif);
 	background-position:center center;
 	background-repeat:no-repeat;
 }
+
 .ui-tabs, .ui-tabs .ui-tabs-panel{
 	padding:0;
 }

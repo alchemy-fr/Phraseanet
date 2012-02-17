@@ -21,9 +21,7 @@ Entities\ValidationSession:
           on: update
     expires:
       type: datetime
-    reminded:
-      type: datetime
-      nullable: true;
+      nullable: true
   oneToOne:
     basket:
       targetEntity: Basket
@@ -36,7 +34,7 @@ Entities\ValidationSession:
     participants:
       targetEntity: ValidationParticipant
       mappedBy: session
-
+      cascade: ["ALL"]
 
 
 

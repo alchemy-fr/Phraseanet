@@ -28,10 +28,10 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
    *
    * @return notify_validationdone
    */
-  function __construct(appbox &$appbox, registryInterface &$registry, eventsmanager_broker &$broker)
+  function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
   {
     $this->group = _('Validation');
-    parent::__construct($appbox, $registry, $broker);
+    parent::__construct($appbox, $core, $broker);
 
     return $this;
   }
@@ -42,7 +42,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
    */
   public function icon_url()
   {
-    return '/skins/prod/000000/images/pushdoc_history.gif';
+    return '/skins/icons/push16.png';
   }
 
   /**
@@ -110,7 +110,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
           'name' => $user_from->get_display_name()
       );
 
-      if (self::mail($to, $from, $params['ssel_id']))
+      if (self::mail($to, $from, $params['ssel_id'], $params['url']))
         $mailed = true;
     }
 
@@ -143,7 +143,10 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
     try
     {
-      $basket = basket_adapter::getInstance($this->appbox, $ssel_id,$this->appbox->get_session()->get_usr_id());
+      $em = $this->core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
     }
     catch (Exception $e)
     {
@@ -156,7 +159,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
                 $sender,
                 '<a href="/lightbox/validate/'
                 . (string) $sx->ssel_id . '/" target="_blank">'
-                . $basket->get_name() . '</a>'
+                . $basket->getName() . '</a>'
         )
         , 'class' => ''
     );
@@ -189,11 +192,14 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
    * @param int $ssel_id
    * @return boolean
    */
-  function mail($to, $from, $ssel_id)
+  function mail($to, $from, $ssel_id, $url)
   {
     try
     {
-      $basket = basket_adapter::getInstance($this->appbox, $ssel_id,$this->appbox->get_session()->get_usr_id());
+      $em = $this->core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
     }
     catch (Exception $e)
     {
@@ -202,8 +208,8 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
 
     $subject = sprintf(
                     _('push::mail:: Rapport de validation de %1$s pour %2$s'),
-                    $to['name'],
-                    $basket->get_name()
+                    $from['name'],
+                    $basket->getName()
     );
 
     $body = "<div>" . sprintf(
@@ -211,7 +217,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
                     $from['name']
             ) . "</div>\n";
 
-    $body .= "<br/>\n" . $this->registry->get('GV_ServerName') . 'lightbox/validate/' . $ssel_id;
+    $body .= "<br/>\n" . $url;
 
     return mail::send_mail($subject, $body, $to, $from, array());
   }

@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(dirname(dirname(__FILE__))) . "/lib/bootstrap.php";
+require_once dirname(dirname(__DIR__)) . "/lib/bootstrap.php";
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('cls', 'taskid');
@@ -24,7 +24,7 @@ $cls = 'task_period_' . $parm['cls'];
 $registry = registry::get_instance();
 $tskfile = $registry->get('GV_RootPath') . 'lib/classes/task/period/' . $parm['cls'] . '.class.php';
 
-require_once $tskfile;
+// require_once $tskfile;
 
 $ztask = new $cls($parm['taskid']);
 

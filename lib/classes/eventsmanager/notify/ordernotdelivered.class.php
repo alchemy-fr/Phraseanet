@@ -24,10 +24,10 @@ class eventsmanager_notify_ordernotdelivered extends eventsmanager_notifyAbstrac
    */
   public $events = array('__ORDER_NOT_DELIVERED__');
 
-  function __construct(appbox &$appbox, registryInterface &$registry, eventsmanager_broker &$broker)
+  function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
   {
     $this->group = _('Commande');
-    parent::__construct($appbox, $registry, $broker);
+    parent::__construct($appbox, $core, $broker);
 
     return $this;
   }

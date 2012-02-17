@@ -1,15 +1,21 @@
+var p4 = p4 || {};
+
 $(document).ready(function(){
-	
 	$('input.input-button').hover(
 			function(){$(this).addClass('hover');},
 			function(){$(this).removeClass('hover');}
 	);
 	var locale = $.cookie('locale');
-	
-	p4.lng = locale !== null ? locale.split('_').reverse().pop() : 'en';
-	
+
+	var jq_date = p4.lng = locale !== null ? locale.split('_').reverse().pop() : 'en';
+
+  if(jq_date == 'en')
+  {
+    jq_date = 'en-GB';
+  }
+
 	$.datepicker.setDefaults({showMonthAfterYear: false});
-	$.datepicker.setDefaults($.datepicker.regional[p4.lng]);
+	$.datepicker.setDefaults($.datepicker.regional[jq_date]);
 
 	$('a.infoDialog,div.infoDialog').live('click',function(event){
 		infoDialog($(this));
@@ -17,7 +23,7 @@ $(document).ready(function(){
 
 	var cache = $('#mainMenu .helpcontextmenu');
 	$('.context-menu-item',cache).hover(function(){$(this).addClass('context-menu-item-hover');},function(){$(this).removeClass('context-menu-item-hover');});
-	
+
 	$('#help-trigger').contextMenu('#mainMenu .helpcontextmenu',{openEvt:'click',dropDown:true,theme:'vista', dropDown:true,
 		showTransition:'slideDown',
 		hideTransition:'hide',
@@ -36,14 +42,14 @@ $(document).ready(function(){
 		else
 		{
 			box.show();
-			
+
 			fix_notification_height();
-			
+
 			$(this).addClass('open');
 			read_notifications();
 		}
 	});
-	
+
 	$(this).bind('mousedown',function(){
 		var not_trigger = $('#notification_trigger');
 		if(not_trigger.hasClass('open'))
@@ -52,12 +58,12 @@ $(document).ready(function(){
 	$('#notification_box').bind('mousedown',function(event){
 			event.stopPropagation();
 	});
-	
+
 	$('#notification_box div.notification').live('mouseover',function(){$(this).addClass('hover');});
 	$('#notification_box div.notification').live('mouseout',function(){$(this).removeClass('hover');});
-	
 
-	
+
+
 	$(this).bind('mousedown',function(){
 			var box = $('#notification_box');
 			if($('#notification_trigger').hasClass('open'))
@@ -67,10 +73,10 @@ $(document).ready(function(){
 				clear_notifications();
 			}
 	});
-	
+
 	set_notif_position();
-	
-	
+
+
 });
 
 
@@ -110,11 +116,11 @@ function fix_notification_height()
 	var n = not.length;
 	var not_t = $('.notification_title',box);
 	var n_t = not_t.length;
-	
+
 	h = not.outerHeight() * n + not_t.outerHeight() * n_t;
 	h = h > 350 ? 350 : h;
-	
-	box.stop().animate({height:h});	
+
+	box.stop().animate({height:h});
 }
 
 function set_notif_position()
@@ -143,7 +149,7 @@ function print_notifications(page)
 
 	if($('#notifications-dialog').length === 0)
 		$('body').append('<div id="notifications-dialog" class="loading"></div>');
-	
+
 	$('#notifications-dialog')
 		.dialog({
 			title:language.notifications,
@@ -164,7 +170,7 @@ function print_notifications(page)
 			}
 		}).dialog('option','buttons',buttons)
 		.dialog('open');
-	
+
 
 	$.ajax({
 		type: "POST",
@@ -188,7 +194,7 @@ function print_notifications(page)
 				cont.empty();
 			else
 				$('.notification_next',cont).remove();
-			
+
 			for (i in data.notifications)
 			{
 				var id = 'notif_date_'+i;
@@ -213,14 +219,14 @@ function print_notifications(page)
 					date_cont.append(html);
 				}
 			}
-			
+
 			var next_ln = $.trim(data.next);
-			
+
 			if(next_ln !== '')
 			{
 				cont.append('<div class="notification_next">'+next_ln+'</div>');
 			}
-			
+
 //			'<div style="position:relative;" id="notification_'.$row['id'].'" class="notification '.($row['unread'] == '1' ? 'unread':'').'">'.
 //			'<table style="width:100%;" cellspacing="0" cellpadding="0" border="0"><tr><td style="width:25px;">'.
 //			'<img src="'.$this->pool_classes[$row['type']]->icon_url().'" style="vertical-align:middle;width:16px;margin:2px;" />'.
@@ -229,21 +235,21 @@ function print_notifications(page)
 //				$data['text'].' <span class="time"></span></div>'.
 //			'</td></tr></table>'.
 //			'</div>'
-			
-			
+
+
 		}
 	});
-	
+
 }
 
 function read_notifications()
 {
 	var notifications = [];
-	
+
 	$('#notification_box .unread').each(function(){
 		notifications.push($(this).attr('id').split('_').pop());
 	});
-	
+
 	$.ajax({
 		type: "POST",
 		url: "/prod/prodFeedBack.php",
@@ -260,10 +266,10 @@ function read_notifications()
 function clear_notifications()
 {
 	var unread = $('#notification_box .unread');
-	
+
 	if(unread.length === 0)
 		return;
-	
+
 	unread.removeClass('unread');
 	$('#notification_trigger .counter').css('visibility','hidden').empty();
 }
@@ -276,7 +282,7 @@ function clear_notifications()
 
 function getMyRss(renew)
 {
-	
+
 	$.ajax({
 		type: "POST",
 		url: "/prod/prodFeedBack.php",
@@ -285,7 +291,7 @@ function getMyRss(renew)
 		success: function(data){
 		}
 	});
-	
+
 }
 
 function setPref(name,value)
@@ -298,12 +304,13 @@ function setPref(name,value)
 
 	jQuery.data['pref_'+name] = $.ajax({
 		type: "POST",
-		url: "/prod/prodFeedBack.php",
+		url: "/prod/UserPreferences/save/",
 		data: {
 			action: "SAVEPREF",
 			prop:name,
 			value:value
 		},
+    dataType:'json',
 		timeout: function(){
 			jQuery.data['pref_'+name] = false;
 		},
@@ -311,6 +318,14 @@ function setPref(name,value)
 			jQuery.data['pref_'+name] = false;
 		},
 		success: function(data){
+      if(data.success)
+      {
+        humane.info(data.message);
+      }
+      else
+      {
+        humane.error(data.message);
+      }
 			jQuery.data['pref_'+name] = false;
 			return;
 		}
@@ -343,7 +358,7 @@ function manageSession(data, showMessages)
 {
 	if(typeof(showMessages) == "undefined")
 		showMessages = false;
-		
+
 	if(data.status == 'disconnected' || data.status == 'session')
 	{
 			disconnected();
@@ -353,18 +368,18 @@ function manageSession(data, showMessages)
 	{
 		var box = $('#notification_box');
 		box.empty().append(data.notifications);
-		
+
 		if(box.is(':visible'))
 			fix_notification_height();
-		
+
 		if($('.notification.unread',box).length > 0)
 		{
 			var trigger = $('#notification_trigger') ;
-			$('.counter div',trigger)
+			$('.counter',trigger)
 			.empty()
 			.append($('.notification.unread',box).length);
 			$('.counter',trigger).css('visibility','visible');
-			
+
 		}
 		else
 			$('#notification_trigger .counter').css('visibility','hidden').empty();
@@ -431,8 +446,9 @@ function disconnected()
 }
 
 function showModal(cas, options){
-	
+
 	var content = '';
+  var callback = null;
 	var button = {
 			"OK": function(e)
 			{
@@ -442,7 +458,7 @@ function showModal(cas, options){
 			}};
 	var escape = true;
 	var onClose = function(){};
-	
+
 	switch (cas) {
 		case 'timeout':
 			content = language.serverTimeout;
@@ -453,45 +469,15 @@ function showModal(cas, options){
 		case 'disconnected':
 			content = language.serverDisconnected;
 			escape=false;
-			button = {"OK":function(e){
-				self.location.replace(self.location.href);
-			}};
-			onClose = function(){
-				self.location.replace(self.location.href);
-			};
-			break;
-		case 'prompt':
-			content = "<input type='text' value='' id='" + options.id + "' />";
-			escape=false;
-			button = {
-				"OK":function(e){
-					(options.callback)();
-					hideOverlay(3);
-					$(this).dialog("close");
-				},
-				"Cancel":function(e){
-					hideOverlay(3);
-					$(this).dialog("close");
-				}
-			};
+      callback  = function(e){ self.location.replace(self.location.href)};
 			break;
     default:
       break;
 	}
-	
-	var buttons = {"OK": function(e){$(this).dialog('close');}};
-	
-	$('#DIALOG').empty().append(content).attr('title',options.title).dialog({
-		autoOpen:false,
-		buttons: button,
-		closeOnEscape :escape,
-		resizable:false,
-		draggable:false,
-		modal:true,
-		close:onClose
-	}).dialog('open').dialog('option','buttons',buttons);
+
+  p4.Alerts(options.title, content, callback);
+
 	return;
-	
 }
 
 function showOverlay(n,appendto,callback, zIndex){
@@ -505,7 +491,7 @@ function showOverlay(n,appendto,callback, zIndex){
 			appendto = 'body';
 		$(appendto).append('<div id="'+div+'" style="display:none;">&nbsp;</div>');
 	}
-  
+
   var css = {
 		display: 'block',
 		opacity: 0,
@@ -516,10 +502,10 @@ function showOverlay(n,appendto,callback, zIndex){
     zIndex:zIndex,
 		left:0
 	};
-  
+
   if(parseInt(zIndex) > 0)
     css['zIndex'] = parseInt(zIndex);
-  
+
 	if(typeof(callback) != 'function')
 		callback = function(){};
 	$('#'+div).css(css).addClass('overlay').fadeTo(500, 0.7).bind('click',function(){(callback)();});

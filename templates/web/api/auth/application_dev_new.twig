@@ -59,14 +59,16 @@
     <tr>
     <td><label for="type">{% trans 'Type d\'application' %}</label></td>
     <td>{% trans 'Application web' %}
-    <input type="radio" name="type" value="web" checked="checked"/>
+    <input type="radio" name="type" value="web" {{ request.get("type") == "web" ? "checked='checked'" : "" }}/>
     {% trans 'Application desktop' %}
-    <input type="radio" name="type" value="desktop"/></td>
+    <input type="radio" name="type" value="desktop" {{ request.get("type") == "desktop" ? "checked='checked'" : "" }}/></td>
     </tr>
-    <tr class="callback" style="height:25px;">
-      <td><label for="callback">{% trans 'URL de callback' %} <br/></label></td>
-    <td>{{ _self.input("callback", callback|default("http://"), violations) }}</td>
-    </tr>
+    {% if request.get("type") == "web" %}
+      <tr class="callback" style="height:25px;">
+        <td><label for="callback">{% trans 'URL de callback' %} <br/></label></td>
+        <td>{{ _self.input("callback", callback|default("http://"), violations) }}</td>
+      </tr>
+    {% endif %}
     <tr>
     <td></td>
     <td><button class="app_submit" type="button">{% trans 'boutton::valider' %}</button</td>

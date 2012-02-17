@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $request = http_request::getInstance();
@@ -32,16 +32,10 @@ $var = array(
     'ajax_chart' => true
 );
 
-$twig = new supertwig();
 
-$twig->addFilter(
-        array(
-            'serialize' => 'serialize'
-            , 'sbas_names' => 'phrasea::sbas_names'
-            , 'unite' => 'p4string::format_octets'
-            , 'stristr' => 'stristr'
-        )
-);
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
 $html = $twig->render('report/chart.twig', $var);
 $t = array("rs" => $html);
 echo json_encode($t);

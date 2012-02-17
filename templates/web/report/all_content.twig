@@ -10,7 +10,6 @@
 {% endblock  icon%}
 
 {% block javascript %}
-    {#<script type="text/javascript"  src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script>#}
     <script type="text/javascript" >
 
             var usrId = '{{ dashboard.usr.get_id() }}' ;
@@ -38,9 +37,9 @@
             }
 
     </script>
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-  <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
-  <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="http{{ request.is_secure() ? 's' : '' }}://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+  <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/minify/g=report"></script>
     <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.gvChart-0.1.js"></script>
     <script type="text/javascript">

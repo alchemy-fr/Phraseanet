@@ -1350,16 +1350,6 @@
             <comment></comment>
           </field>
           <field>
-            <name>bas_manage</name>
-            <type>int(1) unsigned</type>
-            <null></null>
-            <extra></extra>
-
-
-            <default>0</default>
-            <comment></comment>
-          </field>
-          <field>
             <name>bas_modify_struct</name>
             <type>int(1) unsigned</type>
             <null></null>
@@ -2110,7 +2100,7 @@
             <name>sendermail</name>
             <type>char(255)</type>
 
-            <null></null>
+            <null>YES</null>
             <extra></extra>
 
             <default></default>
@@ -5218,6 +5208,22 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>VocabularyControlType</name>
+            <type>CHAR(16)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>RestrictToVocabularyControl</name>
+            <type>TINYINT(1)</type>
+            <null></null>
+            <extra></extra>
+            <default>0</default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -5321,6 +5327,24 @@
             <comment></comment>
             <collation>utf8_unicode_ci</collation>
           </field>
+          <field>
+            <name>VocabularyType</name>
+            <type>char(16)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+            <collation>utf8_unicode_ci</collation>
+          </field>
+          <field>
+            <name>VocabularyId</name>
+            <type>int(11)</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+            <collation></collation>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -5345,8 +5369,8 @@
             </fields>
           </index>
           <index>
-            <name>unique</name>
-            <type>UNIQUE</type>
+            <name>index_meta</name>
+            <type>INDEX</type>
             <fields>
               <field>record_id</field>
               <field>meta_struct_id</field>

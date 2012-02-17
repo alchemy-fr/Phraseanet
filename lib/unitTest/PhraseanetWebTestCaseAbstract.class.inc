@@ -10,29 +10,18 @@
  */
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAbstract.class.inc';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-abstract class PhraseanetWebTestCaseAbstract extends PhraseanetPHPUnitAbstract
+abstract class PhraseanetWebTestCaseAbstract extends \PhraseanetPHPUnitAbstract
 {
-
-  public function createClient(array $options = array(), array $server = array())
-  {
-    return new Client($this->app);
-  }
-
-  public function setUp()
-  {
-    parent::setUp();
-    $this->app = $this->createApplication();
-  }
 
 }

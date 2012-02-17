@@ -438,7 +438,7 @@ function T_search(menuItem, menu, cmenu, e, label)
     }
   }
 
-  $("#EDIT_query").val(v);
+  $('form[name="phrasea_query"] input[name="query"]').val(v);
   checkFilters();
   newSearch();
 }
@@ -711,7 +711,7 @@ function doThesSearch(type, sbid, term, field)
     v = '*:"' + term.replace("(", "[").replace(")", "]") + '"';
   else
     v = '"' + term + '" IN ' + field;
-  $("#EDIT_query").val(v);
+  $('form[name="phrasea_query"] input[name="query"]').val(v);
   checkFilters();
   newSearch();
 }

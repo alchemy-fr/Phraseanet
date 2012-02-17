@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of Phraseanet
  *
@@ -36,12 +37,57 @@ class module_console_systemUpgrade extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    if(!setup::is_installed())
+    if (!setup::is_installed())
     {
-      throw new RuntimeException('Phraseanet is not set up');
+
+      $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
+      $output->writeln('Would you like it to be created based on your settings ?');
+
+      $dialog = $this->getHelperSet()->get('dialog');
+      do
+      {
+        $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
+      }
+      while (!in_array($continue, array('y', 'n')));
+
+      if ($continue == 'y')
+      {
+
+        $file = __DIR__ . "/../../config/config.sample.yml";
+        $file1 = __DIR__ . "/../../config/config.yml";
+
+        if (!copy($file, $file1))
+        {
+          throw new \Exception(sprintf("Unable to copy %s", $file1));
+        }
+
+        $conn = \connection::getPDOConnection();
+
+        $credentials = $conn->get_credentials();
+
+        $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                        new \Alchemy\Phrasea\Core\Configuration\Application(),
+                        new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+        );
+        $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+        $connexionINI = array();
+
+        foreach ($credentials as $key => $value)
+        {
+          $key = $key == 'hostname' ? 'host' : $key;
+          $connexionINI[$key] = (string) $value;
+        }
+
+        $configuration->setAllDatabaseConnexion($connexionINI);
+      }
+      else
+      {
+        throw new RuntimeException('Phraseanet is not set up');
+      }
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $output->write('Phraseanet is going to be upgraded', true);
     $dialog = $this->getHelperSet()->get('dialog');
@@ -59,12 +105,12 @@ class module_console_systemUpgrade extends Command
       {
         $output->write('<info>Upgrading...</info>', true);
         $appbox = appbox::get_instance();
-        
-        if(count(User_Adapter::get_wrong_email_users($appbox)) > 0)
+
+        if (count(User_Adapter::get_wrong_email_users($appbox)) > 0)
         {
           return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
         }
-        
+
         $upgrader = new Setup_Upgrade($appbox);
         $advices = $appbox->forceUpgrade($upgrader);
       }

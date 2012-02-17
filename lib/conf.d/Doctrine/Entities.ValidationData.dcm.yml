@@ -7,10 +7,12 @@ Entities\ValidationData:
       generator:
         strategy: AUTO
   fields:
-    agreement: 
+    agreement:
       type: boolean
-    note: 
+      nullable: true
+    note:
       type: text
+      nullable: true
     updated:
       type: datetime
       gedmo:
@@ -19,13 +21,15 @@ Entities\ValidationData:
   manyToOne:
     participant:
       targetEntity: ValidationParticipant
-      inversedBy: datases
+      inversedBy: datas
       joinColumn:
         name: participant_id
         referencedColumnName: id
+      cascade: ["persist"]
     basket_element:
       targetEntity: BasketElement
       inversedBy: validation_datas
       joinColumn:
         name: basket_element_id
         referencedColumnName: id
+      cascade: ["persist"]

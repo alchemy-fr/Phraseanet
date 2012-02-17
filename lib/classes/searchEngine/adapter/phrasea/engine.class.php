@@ -143,7 +143,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
   public function set_options(searchEngine_options $options)
   {
     $this->options = $options;
-    
+
     $this->opt_search_type = (int) $options->get_search_type();
     $this->opt_bases = $options->get_bases();
     $this->opt_fields = $options->get_fields();
@@ -397,7 +397,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     $total_time = 0;
 
     $sort = '';
-    
+
     if($this->options->get_sortby())
     {
       switch($this->options->get_sortord())
@@ -412,7 +412,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       }
       $sort .= '0' . $this->options->get_sortby();
     }
-    
+
     foreach ($this->queries as $sbas_id => $qry)
     {
       $this->results[$sbas_id] = phrasea_query2(
@@ -639,9 +639,20 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     foreach ($fields as $name => $field)
     {
       if ($sxe->description->$name)
-        $ret[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $sxe->description->$name);
+      {
+        $val = array();
+        foreach($sxe->description->$name as $value)
+        {
+          $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
+        }
+        $val = implode(' '.$field['separator'].' ', $val);
+      }
       else
-        $ret[] = $field;
+      {
+        $val = $field['value'];
+      }
+
+      $ret[] = $val;
     }
 
     return $ret;

@@ -1,11 +1,13 @@
 <div style="height:180px;position:relative;">
         <div style="height:95px;width:220px;float:right;margin:25px 10px 0;">
                 <div style="margin-top:0px;height:20px;">
-                    {{login.get_register_link}}
-                    {{login.get_guest_link}}
+                    {{login.get_register_link|raw}}
+                    {{login.get_guest_link|raw}}
                 </div>
                 <div style="margin-top:10px;height:20px;">
-                    {{login.get_password_link}}
+                  <a target="_self" class="link" rel="external" href="/login/forgotpwd.php">
+                    {% trans 'login:: Forgot your password' %}
+                  </a>
                 </div>
                 <div style="margin-top:10px;height:25px;">
                     <div style="float:left;text-align:left;">
@@ -25,7 +27,7 @@
             {% trans 'Vous etes maintenant deconnecte. A bientot.' %}
           </div>
           {% endif %}
-                    {{errorWarning}}{{confirmWarning}}
+                    {{errorWarning|raw}}{{confirmWarning|raw}}
                 </div>
                 <div style="margin-top:10px;">
                     <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur identifiant' %}</div>
@@ -51,8 +53,8 @@
     <param name="movie" value="/include/player_scroll.swf" />
     <param name="quality" value="high" />
     <param name="wmode" value="transparent" />
-    <param name="flashvars" value="space=20&speed=2&media=content&zoom=0.4&rss=/feeds/aggregated/rss/" />
-    <embed flashvars="space=20&speed=2&media=content&zoom=0.4&rss=/feeds/aggregated/rss/" src="/include/player_scroll.swf"
+    <param name="flashvars" value="space=20&speed=2&media=content&zoom=0.4&rss=/feeds/cooliris/" />
+    <embed flashvars="space=20&speed=2&media=content&zoom=0.4&rss=/feeds/cooliris/" src="/include/player_scroll.swf"
         quality="high" bgcolor="#000000" width="930" height="260" name="slideshow_as2" align="top"
         allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
     </object>

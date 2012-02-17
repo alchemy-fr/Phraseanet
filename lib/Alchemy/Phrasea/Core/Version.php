@@ -12,7 +12,7 @@
 namespace Alchemy\Phrasea\Core;
 
 /**
- * 
+ *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
@@ -20,7 +20,7 @@ namespace Alchemy\Phrasea\Core;
 class Version
 {
 
-  protected static $number = '3.6.0';
+  protected static $number = '3.6.0.0a2';
   protected static $name = 'Brachiosaure';
 
   public static function getNumber()

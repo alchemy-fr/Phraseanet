@@ -1,5 +1,6 @@
 Entities\BasketElement:
   type: entity
+  repositoryClass: Repositories\BasketElementRepository
   table: BasketElements
   uniqueConstraints:
     unique_recordcle:
@@ -9,7 +10,7 @@ Entities\BasketElement:
       type: integer
       generator:
         strategy: AUTO
-    
+
   fields:
     record_id:
       type: integer
@@ -34,9 +35,11 @@ Entities\BasketElement:
       joinColumn:
         name: basket_id
         referencedColumnName: id
+      cascade: ["persist"]
   oneToMany:
     validation_datas:
       targetEntity: ValidationData
       mappedBy: basket_element
+      cascade: ["ALL"]
   lifecycleCallbacks:
     prePersist: [ setLastInBasket ]

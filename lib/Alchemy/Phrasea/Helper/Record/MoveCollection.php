@@ -11,8 +11,8 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-
-use Alchemy\Phrasea\Helper\RecordsAbstract as RecordHelper;
+use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,33 +23,37 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class MoveCollection extends RecordHelper
 {
+
   /**
    *
    * @var Array
    */
   protected $required_rights = array('candeleterecord');
+
   /**
    *
    * @var Array
    */
   protected $available_destinations;
+
   /**
    *
    */
   protected $works_on_unique_sbas = true;
 
   /**
-   * Constructor
    *
-   * @return action_move
+   * @param \Alchemy\Phrasea\Core $core
+   * @return MoveCollection
    */
-  public function __construct(Request $request)
+  public function __construct(Core $core, Request $Request)
   {
-    parent::__construct($request);
+    parent::__construct($core, $Request);
     $this->evaluate_destinations();
 
     return $this;
   }
+
   /**
    * Check which collections can receive the documents
    *
@@ -63,11 +67,11 @@ class MoveCollection extends RecordHelper
 
       return $this;
 
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
-    $this->available_destinations = array_keys($user->ACL()->get_granted_base(array('canaddrecord'), array($this->sbas_id)));
+    $this->available_destinations = array_keys(
+            $this->getCore()->getAuthenticatedUser()->ACL()->get_granted_base(
+                    array('canaddrecord'), array($this->sbas_id)
+            )
+    );
 
     return $this;
   }
@@ -95,12 +99,19 @@ class MoveCollection extends RecordHelper
   public function execute(Request $request)
   {
     $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user = $this->getCore()->getAuthenticatedUser();
+
+    $baseId = $request->get('base_id');
 
     $base_dest =
-            $user->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord') ?
+            $user->ACL()->has_right_on_base($baseId, 'canaddrecord') ?
             $request->get('base_id') : false;
+
+    if(!$user->ACL()->has_right_on_base($baseId, 'canaddrecord'))
+    {
+      throw new \Exception_Unauthorized(sprintf("%s do not have the permission to move records to %s", $user->get_login()));
+    }
+
 
     if (!$this->is_possible())
       throw new Exception('This action is not possible');
@@ -121,6 +132,7 @@ class MoveCollection extends RecordHelper
       }
     }
 
+
     $collection = \collection::get_from_base_id($base_dest);
 
     foreach ($this->selection as $record)
@@ -130,4 +142,5 @@ class MoveCollection extends RecordHelper
 
     return $this;
   }
+
 }

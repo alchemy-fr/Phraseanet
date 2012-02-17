@@ -25,7 +25,6 @@ use Silex\ControllerCollection;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 class ConnectionTest implements ControllerProviderInterface
 {
 
@@ -53,7 +52,7 @@ class ConnectionTest implements ControllerProviderInterface
               }
               catch (\Exception $e)
               {
-                
+
               }
 
               if ($dbname && $connection_ok === true)
@@ -86,17 +85,25 @@ class ConnectionTest implements ControllerProviderInterface
                 }
                 catch (\Exception $e)
                 {
-                  
+
                 }
               }
 
-              return new Response(\p4string::jsonencode(array(
-                                  'connection' => $connection_ok
-                                  , 'database' => $db_ok
-                                  , 'is_empty' => $empty
-                                  , 'is_appbox' => $is_appbox
-                                  , 'is_databox' => $is_databox
-                              )), 200, array('application/json'));
+              $Serializer = $app['Core']['Serializer'];
+
+              $datas = array(
+                  'connection' => $connection_ok
+                  , 'database' => $db_ok
+                  , 'is_empty' => $empty
+                  , 'is_appbox' => $is_appbox
+                  , 'is_databox' => $is_databox
+              );
+
+              return new Response(
+                              $Serializer->serialize($datas, 'json')
+                              , 200
+                              , array('content-type' => 'application/json')
+              );
             });
 
     return $controllers;

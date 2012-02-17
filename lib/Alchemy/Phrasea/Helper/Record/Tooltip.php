@@ -12,7 +12,9 @@
 namespace Alchemy\Phrasea\Helper\Record;
 
 
-use Alchemy\Phrasea\Helper\RecordsAbstract as RecordHelper;
+use Alchemy\Phrasea\Core;
+use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
 
 /**
  *

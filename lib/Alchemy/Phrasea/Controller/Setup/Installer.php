@@ -19,17 +19,6 @@ use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 
-date_default_timezone_set('Europe/Berlin');
-require_once dirname(__FILE__) . '/../../../../version.inc';
-require_once dirname(__FILE__) . '/../../../../classes/phrasea.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/bootstrap.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/cache/cacheableInterface.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/cache/interface.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/cache/nocache.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/cache/adapter.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/User/Interface.class.php';
-require_once dirname(__FILE__) . '/../../../../classes/User/Adapter.class.php';
-
 /**
  *
  * @package
@@ -43,15 +32,10 @@ class Installer implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $app['available_languages'] = \User_Adapter::detectLanguage(new \Setup_Registry());
-
     $controllers->get('/', function() use ($app)
             {
               $request = $app['request'];
-              $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
-              \setup::write_config($servername);
-              
-              
+
               $php_constraint = \setup::check_php_version();
               $writability_constraints = \setup::check_writability(new \Setup_Registry());
               $extension_constraints = \setup::check_php_extension();
@@ -88,18 +72,18 @@ class Installer implements ControllerProviderInterface
                 return $app->redirect('/setup/installer/step2/');
               }
 
-              
-              $ld_path = array(dirname(__FILE__) . '/../../../../templates/web');
-              $loader = new Twig_Loader_Filesystem($ld_path);
-              $twig = new Twig_Environment($loader);
-              
+
+              $ld_path = array(__DIR__ . '/../../../../../templates/web');
+              $loader = new \Twig_Loader_Filesystem($ld_path);
+              $twig = new \Twig_Environment($loader);
+
               $html = $twig->render(
-                      '/setup/index.twig'
+                      '/setup/index.html.twig'
                       , array_merge($constraints_coll, array(
-                          'locale' => Session_Handler::get_locale()
-                          , 'available_locales' => $app['available_languages']
-                          , 'version_number' => GV_version
-                          , 'version_name' => GV_version_name
+                          'locale' => \Session_Handler::get_locale()
+                          , 'available_locales' => $app['Core']::getAvailableLanguages()
+                          , 'version_number' => $app['Core']['Version']->getNumber()
+                          , 'version_name' => $app['Core']['Version']->getName()
                           , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
                       ))
               );
@@ -110,13 +94,12 @@ class Installer implements ControllerProviderInterface
     $controllers->get('/step2/', function() use ($app)
             {
               \phrasea::use_i18n(\Session_Handler::get_locale());
-              
-              $ld_path = array(dirname(__FILE__) . '/../../../../templates/web');
-              
-              $loader = new Twig_Loader_Filesystem($ld_path);
-              $twig = new Twig_Environment($loader);
-              
-              $twig->addExtension(new Twig_Extensions_Extension_I18n());
+
+              $ld_path = array(__DIR__ . '/../../../../../templates/web');
+              $loader = new \Twig_Loader_Filesystem($ld_path);
+
+              $twig = new \Twig_Environment($loader);
+              $twig->addExtension(new \Twig_Extensions_Extension_I18n());
 
               $request = $app['request'];
 
@@ -125,18 +108,19 @@ class Installer implements ControllerProviderInterface
               {
                 $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
               }
+
               $html = $twig->render(
-                      '/setup/step2.twig'
+                      '/setup/step2.html.twig'
                       , array(
                   'locale' => \Session_Handler::get_locale()
-                  , 'available_locales' => $app['available_languages']
+                  , 'available_locales' => $app['Core']::getAvailableLanguages()
                   , 'available_templates' => \appbox::list_databox_templates()
-                  , 'version_number' => GV_version
-                  , 'version_name' => GV_version_name
+                  , 'version_number' => $app['Core']['Version']->getNumber()
+                  , 'version_name' => $app['Core']['Version']->getName()
                   , 'warnings' => $warnings
                   , 'current_servername' => $request->getScheme() . '://' . $request->getHttpHost() . '/'
                   , 'discovered_binaries' => \setup::discover_binaries()
-                  , 'rootpath' => dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '/'
+                  , 'rootpath' => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
                       )
               );
 
@@ -148,6 +132,11 @@ class Installer implements ControllerProviderInterface
               set_time_limit(360);
               \phrasea::use_i18n(\Session_Handler::get_locale());
               $request = $app['request'];
+
+              $servername = $request->getScheme() . '://' . $request->getHttpHost() . '/';
+
+              $setupRegistry = new \Setup_Registry();
+              $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
 
               $conn = $connbas = null;
 
@@ -161,7 +150,7 @@ class Installer implements ControllerProviderInterface
 
               try
               {
-                $conn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $password, $appbox_name);
+                $conn = new \connection_pdo('appbox', $hostname, $port, $user_ab, $password, $appbox_name, array(), $setupRegistry);
               }
               catch (\Exception $e)
               {
@@ -172,41 +161,82 @@ class Installer implements ControllerProviderInterface
               {
                 if ($databox_name)
                 {
-                  $connbas = new \connection_pdo('databox', $hostname, $port, $user_ab, $password, $databox_name);
+                  $connbas = new \connection_pdo('databox', $hostname, $port, $user_ab, $password, $databox_name, array(), $setupRegistry);
                 }
               }
               catch (\Exception $e)
               {
                 return $app->redirect('/setup/installer/step2/?error=' . _('Databox is unreachable'));
               }
+
               \setup::rollback($conn, $connbas);
 
               try
               {
-                $appbox = \appbox::create(new \Setup_Registry(), $conn, $appbox_name, true);
+                $setupRegistry = new \Setup_Registry();
+                $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
 
+                $appbox = \appbox::create($setupRegistry, $conn, $appbox_name, true);
+
+                $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
+                                new \Alchemy\Phrasea\Core\Configuration\Application(),
+                                new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
+                );
+                $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+
+                if ($configuration->isInstalled())
+                {
+                  $serviceName = $configuration->getOrm();
+                  $confService = $configuration->getService($serviceName);
+
+                  $ormServiceBuilder = new \Alchemy\Phrasea\Core\ServiceBuilder\Orm(
+                                  $serviceName
+                                  , $confService
+                                  , array('registry' => $setupRegistry)
+                  );
+
+                  $ormService = $ormServiceBuilder->buildService();
+
+                  if ($ormService->getType() === 'doctrine')
+                  {
+                    /* @var $em \Doctrine\ORM\EntityManager */
+
+                    $em = $ormService->getService();
+
+                    $metadatas = $em->getMetadataFactory()->getAllMetadata();
+
+                    if (!empty($metadatas))
+                    {
+                      // Create SchemaTool
+                      $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+                      // Create schema
+                      $tool->dropSchema($metadatas);
+                      $tool->createSchema($metadatas);
+                    }
+                  }
+                }
 
                 $registry = \registry::get_instance();
                 \setup::create_global_values($registry);
 
                 $appbox->set_registry($registry);
 
-                $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')));
-                $registry->set('GV_base_datapath_web', \p4string::addEndSlash($request->get('datapath_web')));
-                $registry->set('GV_base_dataurl', \p4string::addEndSlash($request->get('mount_point_web')));
-
-                $registry->set('GV_cli', $request->get('binary_php'));
-                $registry->set('GV_imagick', $request->get('binary_convert'));
-                $registry->set('GV_pathcomposite', $request->get('binary_composite'));
-                $registry->set('GV_exiftool', $request->get('binary_exiftool'));
-                $registry->set('GV_swf_extract', $request->get('binary_swfextract'));
-                $registry->set('GV_pdf2swf', $request->get('binary_pdf2swf'));
-                $registry->set('GV_swf_render', $request->get('binary_swfrender'));
-                $registry->set('GV_unoconv', $request->get('binary_unoconv'));
-                $registry->set('GV_ffmpeg', $request->get('binary_ffmpeg'));
-                $registry->set('GV_mp4box', $request->get('binary_MP4Box'));
-                $registry->set('GV_mplayer', $request->get('binary_mplayer'));
-                $registry->set('GV_pdftotext', $request->get('binary_xpdf'));
+                $registry->set('GV_base_datapath_noweb', \p4string::addEndSlash($request->get('datapath_noweb')), \registry::TYPE_STRING);
+                $registry->set('GV_base_datapath_web', \p4string::addEndSlash($request->get('datapath_web')), \registry::TYPE_STRING);
+                $registry->set('GV_base_dataurl', \p4string::addEndSlash($request->get('mount_point_web')), \registry::TYPE_STRING);
+                $registry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
+                $registry->set('GV_cli', $request->get('binary_php'), \registry::TYPE_STRING);
+                $registry->set('GV_imagick', $request->get('binary_convert'), \registry::TYPE_STRING);
+                $registry->set('GV_pathcomposite', $request->get('binary_composite'), \registry::TYPE_STRING);
+                $registry->set('GV_exiftool', $request->get('binary_exiftool'), \registry::TYPE_STRING);
+                $registry->set('GV_swf_extract', $request->get('binary_swfextract'), \registry::TYPE_STRING);
+                $registry->set('GV_pdf2swf', $request->get('binary_pdf2swf'), \registry::TYPE_STRING);
+                $registry->set('GV_swf_render', $request->get('binary_swfrender'), \registry::TYPE_STRING);
+                $registry->set('GV_unoconv', $request->get('binary_unoconv'), \registry::TYPE_STRING);
+                $registry->set('GV_ffmpeg', $request->get('binary_ffmpeg'), \registry::TYPE_STRING);
+                $registry->set('GV_mp4box', $request->get('binary_MP4Box'), \registry::TYPE_STRING);
+                $registry->set('GV_mplayer', $request->get('binary_mplayer'), \registry::TYPE_STRING);
+                $registry->set('GV_pdftotext', $request->get('binary_xpdf'), \registry::TYPE_STRING);
 
                 $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);
 
@@ -214,8 +244,7 @@ class Installer implements ControllerProviderInterface
                 {
                   if ($databox_name)
                   {
-
-                    $template = new \system_file(dirname(__FILE__) . '/../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
+                    $template = new \system_file(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
                     $databox = \databox::create($appbox, $connbas, $template, $registry);
                     $user->ACL()
                             ->give_access_to_sbas(array($databox->get_sbas_id()))
@@ -293,7 +322,6 @@ class Installer implements ControllerProviderInterface
               catch (\Exception $e)
               {
                 \setup::rollback($conn, $connbas);
-                exit($e->getMessage() . ' ' . $e->getFile() . ' ' . $e->getLine());
               }
 
               return $app->redirect('/setup/installer/step2/?error=' . sprintf(_('an error occured : %s'), $e->getMessage()));

@@ -85,7 +85,7 @@ interface record_Interface
 
   public function substitute_subdef($name, system_file $pathfile);
 
-  public function set_metadatas(Array $metadatas);
+  public function set_metadatas(Array $metadatas, $force_readonly = false);
 
   public function reindex();
 
@@ -96,8 +96,6 @@ interface record_Interface
   public function set_binary_status($status);
 
   public function get_reg_name();
-
-  public function get_bitly_link();
 
   public function get_hd_file();
 

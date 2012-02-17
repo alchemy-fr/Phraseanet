@@ -37,9 +37,9 @@ class module_console_aboutLicense extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    $output->writeln(file_get_contents(dirname(__FILE__) . '/../../../../LICENSE'));
+    $output->writeln(file_get_contents(__DIR__ . '/../../../../LICENSE'));
 
-    return;
+    return 0;
   }
 
 }

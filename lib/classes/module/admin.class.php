@@ -76,7 +76,10 @@ class module_admin
         , 'off_databoxes' => $off_databoxes
     );
 
-    $twig = new supertwig();
+
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
+
     return $twig->render('admin/tree.html.twig', $params);
 
   }

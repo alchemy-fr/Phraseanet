@@ -38,8 +38,9 @@ abstract class task_appboxAbstract extends task_abstract
         $this->log(("Warning : abox connection lost, restarting in 10 min."));
         sleep(60 * 10);
         $this->running = false;
+        $this->return_value = self::RETURNSTATUS_TORESTART;
 
-        return('');
+        return;
       }
 
       $this->set_last_exec_time();
@@ -85,7 +86,7 @@ abstract class task_appboxAbstract extends task_abstract
       $this->pause($duration);
     }
 
-    return($this->return_value);
+    return;
   }
 
   /**
@@ -151,12 +152,6 @@ abstract class task_appboxAbstract extends task_abstract
     $this->check_memory_usage()
             ->check_records_done()
             ->check_task_status();
-
-    if ($conn instanceof PDO)
-    {
-      $conn->close();
-      unset($conn);
-    }
 
     if ($rowstodo > 0)
       $this->setProgress(0, 0);

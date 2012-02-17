@@ -18,6 +18,29 @@ $(document).ready(function(){
     $(n).addClass('selected');
     return true;
   }
+  
+  $('#users th.sortable').live('click', function(){
+    
+    var $this = $(this);
+    
+    var sort = $('input', $this).val();
+    
+    if((sort == $('#users_page_form input[name="srt"]').val()) 
+      && ($('#users_page_form input[name="ord"]').val() == 'asc'))
+    {
+      var ord = 'desc';
+    }
+    else
+    {
+      var ord = 'asc';
+    }
+    
+    $('#users_page_form input[name="srt"]').val(sort);
+    $('#users_page_form input[name="ord"]').val(ord);
+    
+    $('#users_page_form').trigger('submit');
+  }).live('mouseover', function(){$(this).addClass('hover');})
+    .live('mouseout', function(){$(this).removeClass('hover');});
 
   var buttons = {};
   buttons[language.create_user] = function(){
@@ -168,8 +191,9 @@ $(document).ready(function(){
     }
     if($(this).hasClass('last'))
     {
-      offset_start = Math.floor(parseInt($('input[name=total_results]').val()) / perPage);
+      offset_start = (Math.floor(parseInt($('input[name=total_results]').val()) / perPage))* perPage;
     }
+    
     $('input[name="offset_start"]', form).val(offset_start);
   });
   
@@ -261,6 +285,39 @@ $(document).ready(function(){
     evt.cancelBubble = true;
     evt.preventDefault();
   });
+  
+  $('#users_apply_template').live('submit', function(){
+    var users = p4.users.sel.join(';');
+    if(users === '')
+    {
+      return false;
+    }
+    
+    var $this = $(this);
+    var template = $('select[name="template_chooser"]', $this).val();
+    
+    if(template === '')
+    {
+      return false;
+    }
+    
+    $('#right-ajax').empty().addClass('loading');
+    p4.users.sel = [];
+    
+    $.ajax({
+      type: $this.attr('method'),
+      url: $this.attr('action'),
+      data: {
+        users : users,
+        template : template
+      },
+      success: function(data){
+        $('#right-ajax').removeClass('loading').html(data);
+      }
+    });
+    return false;
+  });
+  
   $('#users_page_form .user_modifier').live('click', function(){
     var users = p4.users.sel.join(';');
     if(users === '')
@@ -305,7 +362,7 @@ $(document).ready(function(){
     });
     return false;
   });
-  $('#users_page .invite_modifier').live('click', function(){
+  $('#users_page .invite_modifier, #users_page .autoregister_modifier').live('click', function(){
     var users = $(this).next('input').val();
 
     if($.trim(users) === '')

@@ -14,12 +14,10 @@ namespace Alchemy\Phrasea\Controller\Prod;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 use Alchemy\Phrasea\Helper\Record as RecordHelper;
 
 /**
@@ -35,7 +33,8 @@ class Bridge implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
     $appbox = \appbox::get_instance();
-    $twig = new \supertwig();
+    /* @var $twig \Twig_Environment */
+    $twig = $app['Core']->getTwig();
 
     $app['require_connection'] = $app->protect(function(\Bridge_Account $account) use ($app)
             {
@@ -45,17 +44,17 @@ class Bridge implements ControllerProviderInterface
                       };
 
               if (!$account->get_api()->get_connector()->is_configured())
-                throw new \Bridge_Exception_ApiConnectorNotConfigured();
+                throw new \Bridge_Exception_ApiConnectorNotConfigured("Bridge API Connector is not configured");
               if (!$account->get_api()->get_connector()->is_connected())
-                throw new \Bridge_Exception_ApiConnectorNotConnected ();
+                throw new \Bridge_Exception_ApiConnectorNotConnected("Bridge API Connector is not connected");
 
               return;
             });
 
     $controllers->post('/manager/'
-            , function() use ($app, $twig)
+            , function(Application $app) use ($twig)
             {
-              $route = new RecordHelper\Bridge($app['request']);
+              $route = new RecordHelper\Bridge($app['Core'], $app['request']);
               $appbox = \appbox::get_instance();
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
@@ -63,6 +62,7 @@ class Bridge implements ControllerProviderInterface
                   'user_accounts' => \Bridge_Account::get_accounts_by_user($appbox, $user)
                   , 'available_apis' => \Bridge_Api::get_availables($appbox)
                   , 'route' => $route
+                  , 'current_account_id' => ''
               );
 
               return new Response($twig->render('prod/actions/Bridge/index.twig', $params)
@@ -130,7 +130,7 @@ class Bridge implements ControllerProviderInterface
               $account->get_api()->get_connector()->disconnect();
 
               return $app->redirect('/prod/bridge/adapter/' . $account_id . '/load-elements/' . $account->get_api()->get_connector()->get_default_element_type() . '/');
-            });
+            })->assert('account_id', '\d+');
 
 
     $controllers->get('/adapter/{account_id}/load-records/'
@@ -152,8 +152,6 @@ class Bridge implements ControllerProviderInterface
                           , 'error_message' => $app['request']->get('error')
                           , 'notice_message' => $app['request']->get('notice')
                       );
-
-                      $twig->addFilter(array('prettyDate' => 'phraseadate::getPrettyString'));
 
                       return new Response($twig->render('prod/actions/Bridge/records_list.twig', $params));
                     })
@@ -181,8 +179,6 @@ class Bridge implements ControllerProviderInterface
                           , 'notice_message' => $app['request']->get('notice')
                       );
 
-                      $twig->addFilter(array('prettyDate' => 'phraseadate::getPrettyString'));
-
                       return new Response($twig->render('prod/actions/Bridge/element_list.twig', $params));
                     })
             ->assert('account_id', '\d+');
@@ -208,8 +204,6 @@ class Bridge implements ControllerProviderInterface
                           , 'error_message' => $app['request']->get('error')
                           , 'notice_message' => $app['request']->get('notice')
                       );
-
-                      $twig->addFilter(array('prettyDate' => 'phraseadate::getPrettyString'));
 
                       return new Response($twig->render('prod/actions/Bridge/element_list.twig', $params));
                     })
@@ -274,6 +268,8 @@ class Bridge implements ControllerProviderInterface
                   , 'destination' => $destination
                   , 'element_type' => $element_type
                   , 'action' => $action
+                  , 'constraint_errors' => null
+                  , 'adapter_action' => $action
                   , 'elements' => $elements
                   , 'error_message' => $app['request']->get('error')
                   , 'notice_message' => $app['request']->get('notice')
@@ -328,6 +324,7 @@ class Bridge implements ControllerProviderInterface
                           , 'element_type' => $element_type
                           , 'action' => $action
                           , 'elements' => $elements
+                          , 'adapter_action' => $action
                           , 'error_message' => _('Request contains invalid datas')
                           , 'constraint_errors' => $errors
                           , 'notice_message' => $app['request']->get('notice')
@@ -354,9 +351,9 @@ class Bridge implements ControllerProviderInterface
 
                   break;
                 case 'createcontainer':
-
                   try
                   {
+
                     $container_type = $request->get('f_container_type');
 
                     $account->get_api()->create_container($container_type, $app['request']);
@@ -413,14 +410,15 @@ class Bridge implements ControllerProviderInterface
             })->assert('account_id', '\d+');
 
 
-    $controllers->get('/upload/', function() use ($app, $twig)
+    $controllers->get('/upload/', function(Application $app) use ($twig)
             {
               $request = $app['request'];
               $appbox = \appbox::get_instance();
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
-              $route = new RecordHelper\Bridge($request);
+              $route = new RecordHelper\Bridge($app['Core'], $app['request']);
+
               $route->grep_records($account->get_api()->acceptable_records());
 
               $params = array(
@@ -428,6 +426,7 @@ class Bridge implements ControllerProviderInterface
                   , 'account' => $account
                   , 'error_message' => $app['request']->get('error')
                   , 'notice_message' => $app['request']->get('notice')
+                  , 'adapter_action' => 'upload'
               );
 
               $html = $twig->render(
@@ -439,7 +438,7 @@ class Bridge implements ControllerProviderInterface
 
 
     $controllers->post('/upload/'
-            , function() use ($app, $twig)
+            , function(Application $app) use ($twig)
             {
               $errors = array();
               $request = $app['request'];
@@ -447,20 +446,18 @@ class Bridge implements ControllerProviderInterface
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
-              $route = new RecordHelper\Bridge($request);
+              $route = new RecordHelper\Bridge($app['Core'], $app['request']);
               $route->grep_records($account->get_api()->acceptable_records());
               $connector = $account->get_api()->get_connector();
 
               /**
                * check constraints
                */
-              $errors = array();
               foreach ($route->get_elements() as $record)
               {
                 $datas = $connector->get_upload_datas($request, $record);
                 $errors = array_merge($errors, $connector->check_upload_constraints($datas, $record));
               }
-
 
               if (count($errors) > 0)
               {
@@ -471,6 +468,7 @@ class Bridge implements ControllerProviderInterface
                     , 'error_message' => _('Request contains invalid datas')
                     , 'constraint_errors' => $errors
                     , 'notice_message' => $app['request']->get('notice')
+                    , 'adapter_action' => 'upload'
                 );
 
                 $html = $twig->render('prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params);

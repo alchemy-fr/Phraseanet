@@ -15,10 +15,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . '/../../lib/bootstrap.php';
+$Core = require_once __DIR__ . '/../../lib/bootstrap.php';
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
-$registry = $appbox->get_registry();
+$registry = $Core->getRegistry();
 
 ob_start(null, 0);
 
@@ -44,8 +45,14 @@ $exportname = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
 
 if ($parm["ssttid"] != "")
 {
-  $basket = basket_adapter::getInstance($appbox, $parm['ssttid'], $session->get_usr_id());
-  $exportname = str_replace(' ', '_', $basket->get_name()) . "_" . date("Y-n-d");
+  $em = $Core->getEntityManager();
+  $repository = $em->getRepository('\Entities\Basket');
+
+  /* @var $repository \Repositories\BasketRepository */
+
+  $Basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser());
+
+  $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
 }
 
 $download = new set_export($parm['lst'], $parm['ssttid']);

@@ -3,7 +3,7 @@
 {% for hour, sites in record.get_short_history() %}
   {% for site, actions in sites %}
     {% for action, users in actions %}
-      {% for current_user, done in users %}
+      {% for done in users %}
 
       <div style="margin:3px 0">
 
@@ -23,7 +23,8 @@
           {% trans 'report::Edition des meta-donnees' %}
         {% elseif action == 'collection' %}
           {% set dest = done['final']|implode(', ') %}
-          {% trans %}report::Changement de collection vers : {{dest}}{% endtrans %}
+          {% set coll_name = dest|bas_name %}
+          {% trans %}report::Changement de collection vers : {{coll_name}}{% endtrans %}
         {% elseif action == 'status' %}
           {% trans 'report::Edition des status' %}
         {% elseif action == 'print' %}
@@ -55,9 +56,9 @@
         {% endif %}
           <span class="actor">
           {% if user.ACL().has_right_on_base(record.get_base_id(), 'canreport') %}
-            {% set user_infos = user.getInfos(current_user) %}
-            {% if current_user != session.get_usr_id() and user_infos %}
-              {% trans %}report:: par {{user_infos}}{% endtrans %}
+            {% if done['user'] and done['user'].get_id() != session.get_usr_id() %}
+              {% set user_infos = done['user'].get_display_name() %}
+              {% trans %}report:: par {{ user_infos }}{% endtrans %}
             {% endif %}
           {% endif %}
 

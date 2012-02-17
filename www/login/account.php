@@ -14,9 +14,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-require_once dirname(__FILE__) . "/../../lib/classes/API/OAuth2/Autoloader.class.php";
+require_once __DIR__ . "/../../lib/classes/API/OAuth2/Autoloader.class.php";
 
 API_OAuth2_Autoloader::register();
 
@@ -141,7 +141,7 @@ if ($request->has_post_datas())
 }
 if ($request->has_post_datas())
 {
-  $evt_mngr = eventsmanager_broker::getInstance($appbox);
+  $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
   $notifications = $evt_mngr->list_notifications_available($appbox->get_session()->get_usr_id());
 
   $datas = array();
@@ -171,8 +171,8 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
   <head>
     <title><?php echo $appbox->get_registry()->get('GV_homeTitle') ?> <?php echo _('login:: Mon compte') ?></title>
     <link REL="stylesheet" TYPE="text/css" HREF="/include/minify/f=login/home.css,login/geonames.css"/>
-    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" language="javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" language="javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/login/geonames.js"></script>
     <script type="text/javascript">
       $(document).ready(function(){
@@ -504,7 +504,7 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                           <td colspan="3">Notification par email</td>
                         </tr>
                         <?php
-                        $evt_mngr = eventsmanager_broker::getInstance($appbox);
+                        $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
                         $notifications = $evt_mngr->list_notifications_available($appbox->get_session()->get_usr_id());
 
                         foreach ($notifications as $notification_group => $nots)

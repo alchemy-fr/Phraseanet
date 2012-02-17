@@ -1,0 +1,75 @@
+environment: dev
+dev:
+    phraseanet:
+        servername: 'http://dev.phrasea.net/'
+        maintenance: false
+        debug: true
+        display_errors: true
+        database: main_connexion
+    template_engine: twig_debug
+    orm: doctrine_dev
+    cache: array_cache
+prod:
+    phraseanet:
+        servername: 'http://dev.phrasea.net/'
+        maintenance: false
+        debug: false
+        display_errors: false
+        database: main_connexion
+    template_engine: twig
+    orm: doctrine_prod
+    cache: apc_cache
+test:
+    phraseanet:
+        servername: 'http://dev.phrasea.net/'
+        maintenance: false
+        debug: true
+        display_errors: true
+        database: main_connexion
+    template_engine: twig_debug
+    orm: doctrine_test
+    cache: array_cache
+
+no_debug:
+    phraseanet:
+        servername: 'http://dev.phrasea.net/'
+        maintenance: false
+        ##debug: true
+        display_errors: true
+        database: main_connexion
+    template_engine: twig_debug
+    orm: doctrine_test
+    cache: array_cache
+
+no_maintenance:
+    phraseanet:
+        servername: 'http://dev.phrasea.net/'
+        ##maintenance: false
+        debug: true
+        display_errors: true
+        database: main_connexion
+    template_engine: twig_debug
+    orm: doctrine_test
+    cache: array_cache
+
+no_display_errors:
+    phraseanet:
+        servername: 'http://dev.phrasea.net/'
+        maintenance: false
+        debug: true
+        ##display_errors: true
+        database: main_connexion
+    template_engine: twig_debug
+    orm: doctrine_test
+    cache: array_cache
+
+missing_phraseanet:
+    ##phraseanet:
+        ##servername: 'http://dev.phrasea.net/'
+        ##maintenance: false
+        ##debug: true
+        ##display_errors: true
+        ##database: main_connexion
+    template_engine: twig_debug
+    orm: doctrine_test
+    cache: array_cache

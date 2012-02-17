@@ -61,14 +61,15 @@ class task_period_upgradetov32 extends task_abstract
     printf("taskid %s starting." . PHP_EOL, $this->get_task_id());
 
     $registry = registry::get_instance();
-    $registry->set('GV_cache_server_type', 'nocache');
-    $registry->set('GV_sphinx', false);
+    $registry->set('GV_cache_server_type', 'nocache', \registry::TYPE_STRING);
+    $registry->set('GV_sphinx', false, \registry::TYPE_BOOLEAN);
 
     if (!$this->sbas_id)
     {
       printf("sbas_id '" . $this->sbas_id . "' invalide\n");
+      $this->return_value = self::RETURNSTATUS_STOPPED;
 
-      return 'stopped';
+      return;
     }
 
     try
@@ -78,6 +79,8 @@ class task_period_upgradetov32 extends task_abstract
     }
     catch (Exception $e)
     {
+      $this->return_value = self::RETURNSTATUS_STOPPED;
+
       return;
     }
 
@@ -94,6 +97,7 @@ class task_period_upgradetov32 extends task_abstract
     catch (Exception $e)
     {
       printf("Please verify all your databox meta fields before migrating, It seems somes are wrong\n");
+      $this->return_value = self::RETURNSTATUS_STOPPED;
 
       return 'stopped';
     }
@@ -194,7 +198,7 @@ class task_period_upgradetov32 extends task_abstract
 
         $sql = 'select record_id, coll_id, xml, BIN(status) as status
           FROM record
-          WHERE record_id NOT IN (select distinct record_id from technical_datas)
+          WHERE migrated="0" AND record_id NOT IN (select distinct record_id from technical_datas)
           LIMIT 0, 500';
 
         $stmt = $connbas->prepare($sql);
@@ -280,9 +284,6 @@ class task_period_upgradetov32 extends task_abstract
           {
             $record = new record_adapter($this->sbas_id, $row['record_id']);
 
-
-//            $sbas_id = $this->sbas_id;
-
             $metas = $databox->get_meta_structure();
 
             $metadatas = array();
@@ -338,7 +339,7 @@ class task_period_upgradetov32 extends task_abstract
                 }
               }
             }
-            $record->set_metadatas($metadatas);
+            $record->set_metadatas($metadatas, true);
             unset($record);
           }
           catch (Exception $e)
@@ -367,12 +368,18 @@ class task_period_upgradetov32 extends task_abstract
         $memory = memory_get_usage() >> 20;
 
         if ($n_done >= 5000)
+        {
+          $this->return_value = task_abstract::RETURNSTATUS_TORESTART;
 
-          return task_abstract::RETURNSTATUS_TORESTART;
+          return;
+        }
         if ($memory > 100)
+        {
+          $this->return_value = task_abstract::RETURNSTATUS_TORESTART;
 
-          return task_abstract::RETURNSTATUS_TORESTART;
-      }
+          return;
+        }
+     }
       catch (Exception $e)
       {
 
@@ -393,8 +400,6 @@ class task_period_upgradetov32 extends task_abstract
 
     $conn = connection::getPDOConnection();
 
-    $ret = 'stopped';
-
     printf("taskid %s ending." . PHP_EOL, $this->get_task_id());
     sleep(1);
     printf("good bye world I was task upgrade to version 3.2" . PHP_EOL);
@@ -406,11 +411,12 @@ class task_period_upgradetov32 extends task_abstract
     $stmt->closeCursor();
 
     $this->setProgress(0, 0);
-    $ret = 'todelete';
+
+    $this->return_value = self::RETURNSTATUS_TODELETE;
 
     flush();
 
-    return $ret;
+    return;
   }
 
 }

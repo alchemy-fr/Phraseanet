@@ -55,14 +55,14 @@ class Setup_Upgrade
     {
       throw new Exception_Setup_UpgradeAlreadyStarted('The upgrade is already started');
     }
-    
+
     $this->appbox = $appbox;
-    
+
     if(count(User_Adapter::get_wrong_email_users($appbox)) > 0)
     {
       throw new Exception_Setup_FixBadEmailAddresses('Please fix the database before starting');
     }
-        
+
     $this->write_lock();
 
     return $this;
@@ -179,7 +179,7 @@ class Setup_Upgrade
    */
   public static function get_lock_file()
   {
-    return dirname(__FILE__) . '/../../../tmp/upgrade.lock';
+    return __DIR__ . '/../../../tmp/upgrade.lock';
   }
 
   /**

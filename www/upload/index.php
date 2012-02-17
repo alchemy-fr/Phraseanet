@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -25,7 +25,6 @@ function filize($x)
 {
   return '*.' . $x;
 }
-
 
 User_Adapter::updateClientInfos(8);
 
@@ -41,7 +40,7 @@ if (count($avBases) == 0)
 {
 
   header("Content-Type: text/html; charset=UTF-8");
-?>
+  ?>
 
   <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php echo $session->get_I18n(); ?>">
     <head>
@@ -61,264 +60,263 @@ if (count($avBases) == 0)
           color:white;
         }
       </style>
-    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+      <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+      <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
       <script type="text/javascript" src="/include/minify/g=upload"></script>
     </head>
     <body>
-    <?php
-    $twig = new supertwig();
-    $twig->display('common/menubar.twig', array('module' => 'upload'));
-    ?>
+      <?php
+      $core = \bootstrap::getCore();
+      $twig = $core->getTwig();
+      echo $twig->render('common/menubar.twig', array('module' => 'upload'));
+      ?>
 
-    <div id="content">
-      <?php echo _('upload:You do not have right to upload datas'); ?>
-    </div>
-  </body>
-</html>
+      <div id="content">
+        <?php echo _('upload:You do not have right to upload datas'); ?>
+      </div>
+    </body>
+  </html>
 
-<?php
-      die();
+  <?php
+  die();
+}
+
+$colls = '';
+$datasSB = array();
+$dstatus = databox_status::getDisplayStatus();
+
+foreach ($appbox->get_databoxes() as $databox)
+{
+  $groupopen = false;
+  $sbas_id = $databox->get_sbas_id();
+
+  foreach ($databox->get_collections() as $collection)
+  {
+    if (in_array($collection->get_base_id(), $avBases))
+    {
+      if (!$groupopen)
+      {
+        $colls .= '<optgroup label="' . phrasea::sbas_names($sbas_id) . '">';
+        $groupopen = true;
+      }
+      $colls .= '<option value="' . $collection->get_base_id() . '">' . $collection->get_name() . '</option>';
     }
 
-    $colls = '';
-    $datasSB = array();
-    $dstatus = databox_status::getDisplayStatus();
-
-    foreach ($appbox->get_databoxes() as $databox)
+    if (in_array($collection->get_base_id(), $avStatus))
     {
-      $groupopen = false;
-      $sbas_id = $databox->get_sbas_id();
-
-      foreach ($databox->get_collections() as $collection)
+      $status = '0000000000000000000000000000000000000000000000000000000000000000';
+      if ($sxe = simplexml_load_string($collection->get_prefs()))
       {
-        if (in_array($collection->get_base_id(), $avBases))
+        if ($sxe->status)
         {
-          if (!$groupopen)
-          {
-            $colls .= '<optgroup label="' . phrasea::sbas_names($sbas_id) . '">';
-            $groupopen = true;
-          }
-          $colls .= '<option value="' . $collection->get_base_id() . '">' . $collection->get_name() . '</option>';
-        }
+          $status = databox_status::hex2bin((string) ($sxe->status));
 
-        if (in_array($collection->get_base_id(), $avStatus))
-        {
-          $status = '0000000000000000000000000000000000000000000000000000000000000000';
-          if ($sxe = simplexml_load_string($collection->get_prefs()))
-          {
-            if ($sxe->status)
-            {
-              $status = databox_status::hex2bin((string) ($sxe->status));
-
-              while (strlen($status) < 64)
-                $status = '0' . $status;
-            }
-          }
-
-          $datasSB[$collection->get_base_id()] = '<div style="display:none;" class="status_box" id="status_' . $collection->get_base_id() . '"><table>';
-
-          $currentdatasSB = '';
-
-          if (isset($dstatus[$sbas_id]))
-          {
-            foreach ($dstatus[$sbas_id] as $n => $statbit)
-            {
-
-              $imgoff = '';
-              $imgon = '';
-
-              if ($statbit['img_off'])
-                $imgoff = '<img src="' . $statbit['img_off'] . '" title="' . $statbit['labeloff'] . '" style="width:16px;height:16px;vertical-align:bottom" />';
-              if ($statbit['img_on'])
-                $imgon = '<img src="' . $statbit['img_on'] . '" title="' . $statbit['labelon'] . '" style="width:16px;height:16px;vertical-align:bottom" />';
-
-              $datasSB[$collection->get_base_id()] .= '
-                        <tr style="height: 24px;">
-                            <td id="status_off_' . $collection->get_base_id() . '_' . $n . '" class="status_off ' . (($status[63 - (int) $n] == '0') ? 'active' : '') . '">' .
-                      $imgoff . ' ' . $statbit['labeloff'] .
-                      '</td>
-                            <td> <div style="width:50px;margin:0 20px;" class="slider_status"></div></td>
-                            <td class="status_on ' . (($status[63 - (int) $n] == '1') ? 'active' : '') . '" id="status_on_' . $collection->get_base_id() . '_' . $n . '">' .
-                      $imgon . ' ' . $statbit['labelon'] . '</td>
-                        </tr>';
-            }
-          }
-
-          $datasSB[$collection->get_base_id()] .= '</table></div>';
+          while (strlen($status) < 64)
+            $status = '0' . $status;
         }
       }
-      if ($groupopen)
-        $colls .= '</optgroup>';
+
+      $datasSB[$collection->get_base_id()] = '<div style="display:none;" class="status_box" id="status_' . $collection->get_base_id() . '"><table>';
+
+      $currentdatasSB = '';
+
+      if (isset($dstatus[$sbas_id]))
+      {
+        foreach ($dstatus[$sbas_id] as $n => $statbit)
+        {
+
+          $imgoff = '';
+          $imgon = '';
+
+          if ($statbit['img_off'])
+            $imgoff = '<img src="' . $statbit['img_off'] . '" title="' . $statbit['labeloff'] . '" style="width:16px;height:16px;vertical-align:bottom" />';
+          if ($statbit['img_on'])
+            $imgon = '<img src="' . $statbit['img_on'] . '" title="' . $statbit['labelon'] . '" style="width:16px;height:16px;vertical-align:bottom" />';
+
+          $datasSB[$collection->get_base_id()] .= '
+                        <tr style="height: 24px;">
+                            <td id="status_off_' . $collection->get_base_id() . '_' . $n . '" class="status_off ' . (($status[63 - (int) $n] == '0') ? 'active' : '') . '">' .
+                  $imgoff . ' ' . $statbit['labeloff'] .
+                  '</td>
+                            <td> <div style="width:50px;margin:0 20px;" class="slider_status"></div></td>
+                            <td class="status_on ' . (($status[63 - (int) $n] == '1') ? 'active' : '') . '" id="status_on_' . $collection->get_base_id() . '_' . $n . '">' .
+                  $imgon . ' ' . $statbit['labelon'] . '</td>
+                        </tr>';
+        }
+      }
+
+      $datasSB[$collection->get_base_id()] .= '</table></div>';
+    }
+  }
+  if ($groupopen)
+    $colls .= '</optgroup>';
+}
+
+
+$maxVolume = min((int) get_cfg_var('upload_max_filesize'), (int) get_cfg_var('post_max_size'));
+
+
+header("Content-Type: text/html; charset=UTF-8");
+?>
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+  <head>
+    <title><?php echo $registry->get('GV_homeTitle'), ' ', _('admin::monitor: module upload'); ?></title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery.contextmenu.css" />
+    <link href="css/jquery-ui-1.8.5.custom.css" rel="stylesheet" type="text/css" />
+    <link href="css/default.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+<?php
+$theFont = '.theFont {font-weight:bold;color:#73B304;font-size: 14px;font-family:Arial }';
+echo $theFont;
+?>
+    </style>
+    <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+    <script type="text/javascript" src="/include/minify/g=upload"></script>
+    <script type="text/javascript">
+
+      var p4 = {};
+
+      var language = {
+        'ok':'<?php echo str_replace("'", "\'", _('boutton::valider')) ?>',
+        'annuler':'<?php echo str_replace("'", "\'", _('boutton::annuler')) ?>',
+        'pleaseselect':'<?php echo str_replace("'", "\'", _('Selectionner une action')) ?>',
+        'norecordselected':'<?php echo str_replace("'", "\'", _('Aucune enregistrement selectionne')) ?>',
+        'transfert_active':'<?php echo str_replace("'", "\'", _('Transfert en court, vous devez attendre la fin du transfert')) ?>',
+        'queue_not_empty' : '<?php echo str_replace("'", "\'", _('File d\'attente n\'est pas vide, souhaitez vous supprimer ces elements ?')) ?>'
+      };
+
+      function sessionactive(){
+        $.ajax({
+          type: "POST",
+          url: "/include/updses.php",
+          dataType: 'json',
+          data: {
+            app : 8,
+            usr : <?php echo $usr_id ?>
+          },
+          error: function(){
+            window.setTimeout("sessionactive();", 10000);
+          },
+          timeout: function(){
+            window.setTimeout("sessionactive();", 10000);
+          },
+          success: function(data){
+            if(data)
+              manageSession(data);
+            var t = 120000;
+            if(data.apps && parseInt(data.apps)>1)
+              t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
+            window.setTimeout("sessionactive();", t);
+
+            return;
+          }
+        })
+      };
+      sessionactive();
+
+      window.onbeforeunload = function()
+      {
+        var xhr_object = null;
+        if(window.XMLHttpRequest) // Firefox
+          xhr_object = new XMLHttpRequest();
+        else if(window.ActiveXObject) // Internet Explorer
+          xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
+        else  // XMLHttpRequest non supporte par le navigateur
+
+        return;
+      url= "../include/delses.php?app=8&t="+Math.random();
+      xhr_object.open("GET", url, false);
+      xhr_object.send(null);
+
+    };
+
+    //This event comes from the Queue Plugin
+    function queueComplete(numFilesUploaded) {
+      var status = document.getElementById("divStatus");
+      if(numFilesUploaded>1)
+        status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichiers uploades')); ?>",numFilesUploaded);
+      else
+        status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichier uploade')); ?>",numFilesUploaded);
+
+      var n_quarantine = $('#QUEUE li.progressWrapper.done .progressContainer.orange.quarantine').size();
+      if(n_quarantine > 0)
+        alert('<?php echo str_replace("'", "\'", _('Certains elements uploades sont passes en quarantaine')); ?>');
+
+      $('#QUEUE li.done .quarantine').removeClass('quarantine');
+      checkQuarantineSize();
     }
 
+    $(document).ready(function() {
+      var settings = {
+        flash_url : "swfupload/swfupload.swf",
+        upload_url: "upload.php",
+        post_params: {"session" : "<?php echo session_id(); ?>"},
+        file_size_limit : "<?php echo $maxVolume . ' MB'; ?>",
+        file_types : "<?php echo implode(';', array_map("filize", explode(',', $registry->get('GV_appletAllowedFileExt')))) ?>",
+        file_types_description : "These Files",
+        file_upload_limit : 0,
+        requeue_on_error : true,
+        file_post_name : "Filedata",
+        file_queue_limit : 0,
+        custom_settings : {
+          progressTarget : "fsUploadProgress",
+          cancelButtonId : "btnCancel"
+        },
+        debug:false,
 
-    $maxVolume = min((int) get_cfg_var('upload_max_filesize'), (int) get_cfg_var('post_max_size'));
-
-
-    header("Content-Type: text/html; charset=UTF-8");
-?>
-
-    <html xmlns="http://www.w3.org/1999/xhtml" >
-      <head>
-        <title><?php echo $registry->get('GV_homeTitle'), ' ', _('admin::monitor: module upload'); ?></title>
-        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery.contextmenu.css" />
-        <link href="css/jquery-ui-1.8.5.custom.css" rel="stylesheet" type="text/css" />
-        <link href="css/default.css" rel="stylesheet" type="text/css" />
-
-        <style type="text/css">
-<?php
-    $theFont = '.theFont {font-weight:bold;color:#73B304;font-size: 14px;font-family:Arial }';
-    echo $theFont;
-?>
-        </style>
-    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
-        <script type="text/javascript" src="/include/minify/g=upload"></script>
-        <script type="text/javascript">
-
-          var p4 = {};
-
-          var language = {
-            'ok':'<?php echo str_replace("'", "\'", _('boutton::valider')) ?>',
-            'annuler':'<?php echo str_replace("'", "\'", _('boutton::annuler')) ?>',
-            'pleaseselect':'<?php echo str_replace("'", "\'",
-            _('Selectionner une action')) ?>',
-                'norecordselected':'<?php echo str_replace("'", "\'",
-            _('Aucune enregistrement selectionne')) ?>',
-                'transfert_active':'<?php echo str_replace("'", "\'", _('Transfert en court, vous devez attendre la fin du transfert')) ?>',
-                'queue_not_empty' : '<?php echo str_replace("'", "\'", _('File d\'attente n\'est pas vide, souhaitez vous supprimer ces elements ?')) ?>'
-              };
-
-              function sessionactive(){
-                $.ajax({
-                  type: "POST",
-                  url: "/include/updses.php",
-                  dataType: 'json',
-                  data: {
-                    app : 8,
-                    usr : <?php echo $usr_id ?>
-                  },
-                  error: function(){
-                    window.setTimeout("sessionactive();", 10000);
-                  },
-                  timeout: function(){
-                    window.setTimeout("sessionactive();", 10000);
-                  },
-                  success: function(data){
-                    if(data)
-                      manageSession(data);
-                    var t = 120000;
-                    if(data.apps && parseInt(data.apps)>1)
-                      t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 120000));
-                    window.setTimeout("sessionactive();", t);
-
-                    return;
-                  }
-                })
-              };
-              sessionactive();
-
-              window.onbeforeunload = function()
-              {
-                var xhr_object = null;
-                if(window.XMLHttpRequest) // Firefox
-                  xhr_object = new XMLHttpRequest();
-                else if(window.ActiveXObject) // Internet Explorer
-                  xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-                else  // XMLHttpRequest non supporte par le navigateur
-
-                  return;
-                url= "../include/delses.php?app=8&t="+Math.random();
-                xhr_object.open("GET", url, false);
-                xhr_object.send(null);
-
-              };
-
-              //This event comes from the Queue Plugin
-              function queueComplete(numFilesUploaded) {
-                var status = document.getElementById("divStatus");
-                if(numFilesUploaded>1)
-                  status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichiers uploades')); ?>",numFilesUploaded);
-                else
-                  status.innerHTML = $.sprintf("<?php echo str_replace('"', '&quot;', _('upload:: %d fichier uploade')); ?>",numFilesUploaded);
-
-                var n_quarantine = $('#QUEUE li.progressWrapper.done .progressContainer.orange.quarantine').size();
-                if(n_quarantine > 0)
-                  alert('<?php echo str_replace("'", "\'", _('Certains elements uploades sont passes en quarantaine')); ?>');
-
-                $('#QUEUE li.done .quarantine').removeClass('quarantine');
-                checkQuarantineSize();
-              }
-
-              $(document).ready(function() {
-                var settings = {
-                  flash_url : "swfupload/swfupload.swf",
-                  upload_url: "upload.php",
-                  post_params: {"session" : "<?php echo session_id(); ?>"},
-                  file_size_limit : "<?php echo $maxVolume . ' MB'; ?>",
-                  file_types : "<?php echo implode(';', array_map("filize", explode(',', $registry->get('GV_appletAllowedFileExt')))) ?>",
-                  file_types_description : "These Files",
-                  file_upload_limit : 0,
-                  requeue_on_error : true,
-                  file_post_name : "Filedata",
-                  file_queue_limit : 0,
-                  custom_settings : {
-                    progressTarget : "fsUploadProgress",
-                    cancelButtonId : "btnCancel"
-                  },
-                  debug:false,
-
-                  // Button settings
-                  button_image_url: "images/fond400.gif",
-                  button_width: "400",
-                  button_height: "30",
-                  button_placeholder_id: "spanButtonPlaceHolder",
-                  button_text: '<span class="theFont"><?php echo str_replace("'", "\'", sprintf(_('upload :: choisir les fichiers  a uploader (max : %d MB)'), $maxVolume)); ?></span>',
-                  button_text_style: "<?php echo $theFont ?>",
-                  button_text_left_padding: 12,
-                  button_text_top_padding: 3,
-                  button_window_mode:'transparent',
-                  button_cursor : SWFUpload.CURSOR.HAND,
+        // Button settings
+        button_image_url: "images/fond400.gif",
+        button_width: "400",
+        button_height: "30",
+        button_placeholder_id: "spanButtonPlaceHolder",
+        button_text: '<span class="theFont"><?php echo str_replace("'", "\'", sprintf(_('upload :: choisir les fichiers  a uploader (max : %d MB)'), $maxVolume)); ?></span>',
+        button_text_style: "<?php echo $theFont ?>",
+        button_text_left_padding: 12,
+        button_text_top_padding: 3,
+        button_window_mode:'transparent',
+        button_cursor : SWFUpload.CURSOR.HAND,
 
 
-                  // The event handler functions are defined in handlers.js
-                  file_queued_handler : fileQueued,
-                  file_queue_error_handler : fileQueueError,
-                  file_dialog_complete_handler : fileDialogComplete,
-                  upload_start_handler : uploadStart,
-                  upload_progress_handler : uploadProgress,
-                  upload_error_handler : uploadError,
-                  upload_success_handler : uploadSuccess,
-                  upload_complete_handler : uploadComplete,
-                  queue_complete_handler : queueComplete  // Queue plugin event
-                };
+        // The event handler functions are defined in handlers.js
+        file_queued_handler : fileQueued,
+        file_queue_error_handler : fileQueueError,
+        file_dialog_complete_handler : fileDialogComplete,
+        upload_start_handler : uploadStart,
+        upload_progress_handler : uploadProgress,
+        upload_error_handler : uploadError,
+        upload_success_handler : uploadSuccess,
+        upload_complete_handler : uploadComplete,
+        queue_complete_handler : queueComplete  // Queue plugin event
+      };
 
-                swfu = new SWFUpload(settings);
+      swfu = new SWFUpload(settings);
 
-                $('#step1 .classic_switch, #flash_return .classic_switch').bind('click', function(event){
-                  classic_switch();
+      $('#step1 .classic_switch, #flash_return .classic_switch').bind('click', function(event){
+        classic_switch();
 
-                  return false;
-                });
-              });
+        return false;
+      });
+    });
 
-              function reverseOrder()
-              {
-                var elems = $('#fsUploadProgress li');
-                var arr = $.makeArray(elems);
-                arr.reverse();
-                $(arr).appendTo($('#fsUploadProgress'));
-              }
-              function classic_switch()
-              {
-                $('#step1, #step2, #step2classic, #step4, #flash_return').toggle();
-              }
+    function reverseOrder()
+    {
+      var elems = $('#fsUploadProgress li');
+      var arr = $.makeArray(elems);
+      arr.reverse();
+      $(arr).appendTo($('#fsUploadProgress'));
+    }
+    function classic_switch()
+    {
+      $('#step1, #step2, #step2classic, #step4, #flash_return').toggle();
+    }
 
-        </script>
-      </head>
-      <body>
+    </script>
+  </head>
+  <body>
     <?php
     $count = 0;
     try
@@ -331,8 +329,13 @@ if (count($avBases) == 0)
 
     }
 
-    $twig = new supertwig();
-    $twig->display('common/menubar.twig', array('module' => 'upload'));
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
+    echo $twig->render('common/menubar.twig'
+            , array(
+        'module' => 'upload'
+        , 'events' => eventsmanager_broker::getInstance($appbox, $Core)
+    ));
     ?>
     <div id="content">
       <div class="tabs">
@@ -388,7 +391,7 @@ if (count($avBases) == 0)
                       <div id="coll_selector">
                         <label for="collselect"><?php echo _('upload:: Destination (collection) :') ?></label><select id="collselect" onchange="showStatus();"><?php echo $colls ?></select>
                         <?php echo _('upload:: Status :') ?>
-                          <div id="status_wrapper">
+                        <div id="status_wrapper">
                           <?php
                           foreach ($datasSB as $base_id => $dat)
                           {
@@ -429,25 +432,25 @@ if (count($avBases) == 0)
         <select name="action">
           <option value="">
             <?php echo _('Action'); ?>
-                        </option>
-                        <option value="add">
+          </option>
+          <option value="add">
             <?php echo _('Ajouter les documents bloques'); ?>
-                        </option>
-                        <option value="substitute">
+          </option>
+          <option value="substitute">
             <?php echo _('Substituer quand possible ou Ajouter les documents bloques'); ?>
-                        </option>
-                        <option value="delete">
+          </option>
+          <option value="delete">
             <?php echo _('Supprimer les documents bloques'); ?>
-                        </option>
-                      </select>
-                    </div>
-                    <div>
-                      <input type="checkbox" class="delete_previous" id="delete_previous_global" />
-                      <label for="delete_previous_global">
+          </option>
+        </select>
+      </div>
+      <div>
+        <input type="checkbox" class="delete_previous" id="delete_previous_global" />
+        <label for="delete_previous_global">
           <?php echo _('Supprimer precedentes propositions a la substitution'); ?>
         </label>
       </div>
     </div>
-  <div id="DIALOG" style="color:white;"></div>
+    <div id="DIALOG" style="color:white;"></div>
   </body>
 </html>

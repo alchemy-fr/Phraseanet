@@ -21,7 +21,7 @@ $session = $appbox->get_session();
   <body>
     <div style='background-color:#e0e0e0'>
 <?php
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 //SPECIAL ZINO
 ini_set('display_errors', 'off');

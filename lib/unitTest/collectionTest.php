@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 /**
  * Test class for collection.
@@ -89,7 +89,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testEmpty_collection()
   {
-    $record = record_adapter::create(self::$object, new system_file(dirname(__FILE__) . '/testfiles/cestlafete.jpg'));
+    $record = record_adapter::create(self::$object, new system_file(__DIR__ . '/testfiles/cestlafete.jpg'));
     $this->assertTrue(self::$object->get_record_amount() > 0);
     self::$object->empty_collection();
     $this->assertTrue(self::$object->get_record_amount() === 0);
@@ -136,7 +136,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testGet_record_amount()
   {
     self::$object->empty_collection();
-    $record = record_adapter::create(self::$object, new system_file(dirname(__FILE__) . '/testfiles/cestlafete.jpg'));
+    $record = record_adapter::create(self::$object, new system_file(__DIR__ . '/testfiles/cestlafete.jpg'));
     $this->assertTrue(self::$object->get_record_amount() === 1);
     self::$object->empty_collection();
     $this->assertTrue(self::$object->get_record_amount() === 0);
@@ -144,7 +144,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_record_details()
   {
-    $record = record_adapter::create(self::$object, new system_file(dirname(__FILE__) . '/testfiles/cestlafete.jpg'));
+    $record = record_adapter::create(self::$object, new system_file(__DIR__ . '/testfiles/cestlafete.jpg'));
     $details = self::$object->get_record_details();
 
     $this->assertTrue(is_array($details));
@@ -164,7 +164,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testUpdate_logo()
   {
-    $pathfile = new system_file(dirname(__FILE__) . '/testfiles/logocoll.gif');
+    $pathfile = new system_file(__DIR__ . '/testfiles/logocoll.gif');
     self::$object->update_logo($pathfile);
     $this->assertEquals(file_get_contents($pathfile->getPathname()), self::$object->get_binary_minilogos());
   }

@@ -1,440 +1,449 @@
 <html lang="{{session.get_I18n()}}">
-  <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/admin/admincolor.css" />
-    <style type="text/css">
-      BODY
-      {
-        margin:10px;
-      }
-
-      *
-      {
-        margin:0;
-        padding:0;
-      }
-
-      .divTab
-      {
-        position:absolute;
-        left:30px;
-        top:-17px;
-      }
-
-      .tabFront
-      {
-        z-index:30;
-        font-size:9px;
-        position:relative;
-        top:0px;
-        background-color:#aaaaaa;
-        border-top:#ffffff 1px solid;
-        border-left:#ffffff 1px solid;
-        border-bottom:#aaaaaa 1px solid;
-        border-right:#000000 1px solid;
-        padding-top:1px;
-        padding-bottom:0px;
-        padding-left:15px;
-        padding-right:15px;
-        float:left;
-        height:14px;
-        cursor:pointer;
-        color:#000000;
-        text-decoration:none;
-        text-align:center;
-      }
-
-      .tabBack
-      {
-        z-index:30;
-        font-size:9px;
-        position:relative;
-        top:0px;
-        background-color:#888888;
-        border-top:#555555 1px solid;
-        border-left:#555555 1px solid;
-        border-bottom:#ffffff 1px solid;
-        border-right:#bbbbbb 1px solid;
-        padding-top:1px;
-        padding-bottom:0px;
-        padding-left:15px;
-        padding-right:15px;
-        float:left;
-        height:14px;
-        cursor:pointer;
-        color:#000000;
-        text-decoration:none;
-        text-align:center;
-      }
-
-      DIV.menu
-      {
-        font-size: 12px;
-        border-left: 1px solid #ffffff;
-        border-top: 1px solid #ffffff;
-        border-right: 2px solid #000000;
-        border-bottom: 2px solid #000000;
-        padding:0px;
-        margin:0px;
-        visibility:hidden;
-        position:absolute;
-        top:0px;
-        left:0px;
-        background-color:#d4d0c8;
-      }
-      DIV.menu IMG
-      {
-        padding:0px;
-        margin:0px;
-        position:relative;
-        left:-10px;
-        top:2px;
-      }
-      DIV.menu A
-      {
-        font-size: 12px;
-        display:block;
-        position:relative;
-        text-decoration: none;
-        color:#000000;
-        padding-top:1px;
-        padding-bottom:1px;
-        padding-left:13px;
-        padding-right:3px;
-        overflow:hidden;
-        border:none 0px #FFFFFF;
-      }
-      DIV.menu A:hover
-      {
-        font-size: 12px;
-        display:block;
-        position:relative;
-        text-decoration: none;
-        color:#ffffff;
-        background-color:#000080;
-      }
-      DIV.menu A.disabled
-      {
-        font-size: 12px;
-        display:block;
-        position:relative;
-        text-decoration: none;
-        color:#A0A0A0;
-        padding-top:1px;
-        padding-bottom:1px;
-        padding-left:13px;
-        padding-right:3px;
-        overflow:hidden;
-      }
-      DIV.menu A.disabled:hover
-      {
-        font-size: 12px;
-        display:block;
-        position:relative;
-        text-decoration: none;
-        color:#A0A0A0;
-        background-color:#d4d0c8;
-      }
-      DIV.menu .line
-      {
-        display:block;
-        position:relative;
-        height:0px;
-        overflow:hidden;
-        margin-top:5px;
-        margin-bottom:4px;
-        padding:0px;
-        border-top: 1px solid #555555;
-        border-bottom: 1px solid #ffffff;
-      }
-    </style>
-    <!-- _____________  head added part of graphic interface of '{{task.getName()}}'   _____________ -->
-    {{task.printInterfaceHEAD()}}
-    <!-- ______________ end of head part of graphic interface of '{{task.getName()}}' ______________ -->
-    <script type="text/javascript">
-
-      jsTaskObj = {
-        SettingsIsDirty:false,
-
-        currentView : null,
-
-        oldXML:"{{task.get_settings()|stripdoublequotes}}",
-
-        view:function(type)
-        {
-          var o;
-          var f;
-          switch(type)
-          {
-            case 'PRE_XML':
-              {% if task.getGraphicForm() %}
-                document.getElementById('divGraph').style.display = "none";
-                document.getElementById('divXml').style.display = "";
-                document.getElementById('linkviewxml').className = "tabFront";
-                document.getElementById('linkviewgraph').className = "tabBack";
-              {% endif %}
-              this.currentView = "XML";
-              break;
-            case 'XML':
-              if( (f = document.forms['graphicForm']) )
-              {
-                document.getElementById("__gxml").value = document.forms['fxml'].txtareaxml.value;
-                document.getElementById("__gact").value = "FORM2XML";
-                f.target = "hiddenFrame";
-                f.action = "/admin/task2utils.php";
-                f.submit();
-              }
-              break;
-
-            case 'PRE_GRAPHIC':
-            case 'GRAPHIC':
-              document.forms['fxml'].target = "hiddenFrame";
-              document.forms['fxml'].__act.value = "XML2FORM";
-              document.forms['fxml'].submit();
-              this.currentView = "GRAPHIC";
-              break;
-            }
-          },
-
-      saveTask:function(save)
-      {
-        if(save)
-        {
-          if(this.currentView == "GRAPHIC")
-          {
-            if( (f = document.forms['graphicForm']) )
+    <head>
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/admin/admincolor.css" />
+        <style type="text/css">
+            BODY
             {
-              document.getElementById("__gxml").value = document.forms['fxml'].txtareaxml.value;
-              document.getElementById("__gtname").value = document.forms['__ftask'].__tname.value;
-              document.getElementById("__gtactive").value = document.forms['__ftask'].__tactive.checked ? "1" : "0" ;
-              document.getElementById("__gact").value = "SAVE_GRAPHIC";
-              f.target = "hiddenFrame";
-              f.action = "task2utils.php";
-              f.submit();
+                margin:10px;
             }
-          }
-          else
-          {
-            document.forms['fxml'].target = "hiddenFrame";
-            document.forms['fxml'].__tname.value = document.forms['__ftask'].__tname.value;
-            document.forms['fxml'].__tactive.value = document.forms['__ftask'].__tactive.checked ? "1" : "0" ;
-            document.forms['fxml'].__act.value = "SAVE_XML";
-            document.forms['fxml'].submit();
-          }
-        }
-        else
-        {
-          if(document.forms["fxml"].__tid.value != "")
-          {
-            document.forms["__freturn"].submit();
-          }
-          else
-          {
-            document.forms["__freturn"].submit();
-          }
-        }
-      },
 
-      getHTTPObject:function()
-      {
-        var ret = null ;
-        try
-        {
-          ret = new XMLHttpRequest();
-        }
-        catch (e)
-        {
-          try
-          {
-            ret = new ActiveXObject("Msxml2.XMLHTTP");
-          }
-          catch (e)
-          {
-            try
+            *
             {
-              ret = new ActiveXObject("Microsoft.XMLHTTP");
+                margin:0;
+                padding:0;
             }
-            catch (e)
-            {
-              ret = null;
-            }
-          }
-        }
-        return ret;
-      },
 
-      resetCrashCounter:function()
-      {
-        if(typeof(this.resetCrashCounter.x) == 'undefined')	// simulate static : only 1 instance of getHTTPObject !
-        {
-          this.resetCrashCounter.x = {
-            "xmlhttp":new this.getHTTPObject,	// une seule instance
-            "cb":function ()
+            .divTab
             {
-              var ret;
-              if (this.readyState == 4)
-              {
-                try
+                position:absolute;
+                left:30px;
+                top:-17px;
+            }
+
+            .tabFront
+            {
+                z-index:30;
+                font-size:9px;
+                position:relative;
+                top:0px;
+                background-color:#aaaaaa;
+                border-top:#ffffff 1px solid;
+                border-left:#ffffff 1px solid;
+                border-bottom:#aaaaaa 1px solid;
+                border-right:#000000 1px solid;
+                padding-top:1px;
+                padding-bottom:0px;
+                padding-left:15px;
+                padding-right:15px;
+                float:left;
+                height:14px;
+                cursor:pointer;
+                color:#000000;
+                text-decoration:none;
+                text-align:center;
+            }
+
+            .tabBack
+            {
+                z-index:30;
+                font-size:9px;
+                position:relative;
+                top:0px;
+                background-color:#888888;
+                border-top:#555555 1px solid;
+                border-left:#555555 1px solid;
+                border-bottom:#ffffff 1px solid;
+                border-right:#bbbbbb 1px solid;
+                padding-top:1px;
+                padding-bottom:0px;
+                padding-left:15px;
+                padding-right:15px;
+                float:left;
+                height:14px;
+                cursor:pointer;
+                color:#000000;
+                text-decoration:none;
+                text-align:center;
+            }
+
+            DIV.menu
+            {
+                font-size: 12px;
+                border-left: 1px solid #ffffff;
+                border-top: 1px solid #ffffff;
+                border-right: 2px solid #000000;
+                border-bottom: 2px solid #000000;
+                padding:0px;
+                margin:0px;
+                visibility:hidden;
+                position:absolute;
+                top:0px;
+                left:0px;
+                background-color:#d4d0c8;
+            }
+            DIV.menu IMG
+            {
+                padding:0px;
+                margin:0px;
+                position:relative;
+                left:-10px;
+                top:2px;
+            }
+            DIV.menu A
+            {
+                font-size: 12px;
+                display:block;
+                position:relative;
+                text-decoration: none;
+                color:#000000;
+                padding-top:1px;
+                padding-bottom:1px;
+                padding-left:13px;
+                padding-right:3px;
+                overflow:hidden;
+                border:none 0px #FFFFFF;
+            }
+            DIV.menu A:hover
+            {
+                font-size: 12px;
+                display:block;
+                position:relative;
+                text-decoration: none;
+                color:#ffffff;
+                background-color:#000080;
+            }
+            DIV.menu A.disabled
+            {
+                font-size: 12px;
+                display:block;
+                position:relative;
+                text-decoration: none;
+                color:#A0A0A0;
+                padding-top:1px;
+                padding-bottom:1px;
+                padding-left:13px;
+                padding-right:3px;
+                overflow:hidden;
+            }
+            DIV.menu A.disabled:hover
+            {
+                font-size: 12px;
+                display:block;
+                position:relative;
+                text-decoration: none;
+                color:#A0A0A0;
+                background-color:#d4d0c8;
+            }
+            DIV.menu .line
+            {
+                display:block;
+                position:relative;
+                height:0px;
+                overflow:hidden;
+                margin-top:5px;
+                margin-bottom:4px;
+                padding:0px;
+                border-top: 1px solid #555555;
+                border-bottom: 1px solid #ffffff;
+            }
+        </style>
+        <!-- _____________  head added part of graphic interface of '{{task.getName()}}'   _____________ -->
+        {{task.printInterfaceHEAD()}}
+        <!-- ______________ end of head part of graphic interface of '{{task.getName()}}' ______________ -->
+        <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+        <script type="text/javascript" src="/include/minify/g=admin"></script>
+        <script type="text/javascript">
+
+            var p4 = {users:{sel:[]}};
+            var bodySize = {x:0,y:0};
+
+            var language = {
+            };
+
+            jsTaskObj = {
+                SettingsIsDirty:false,
+
+                currentView : null,
+
+                oldXML:"{{task.get_settings()|stripdoublequotes}}",
+
+                view:function(type)
                 {
-                  document.getElementById("idCrashLine").style.visibility = "hidden";
-                  ret = this.responseXML;
-                }
-                catch(e)
+                    var o;
+                    var f;
+                    switch(type)
+                    {
+                        case 'PRE_XML':
+                            {% if task.getGraphicForm() %}
+                            document.getElementById('divGraph').style.display = "none";
+                            document.getElementById('divXml').style.display = "";
+                            document.getElementById('linkviewxml').className = "tabFront";
+                            document.getElementById('linkviewgraph').className = "tabBack";
+                            {% endif %}
+                            this.currentView = "XML";
+                            break;
+                        case 'XML':
+                            if( (f = document.forms['graphicForm']) )
+                            {
+                                document.getElementById("__gxml").value = document.forms['fxml'].txtareaxml.value;
+                                document.getElementById("__gact").value = "FORM2XML";
+                                f.target = "hiddenFrame";
+                                f.action = "/admin/task2utils.php";
+                                f.submit();
+                            }
+                            break;
+
+                        case 'PRE_GRAPHIC':
+                        case 'GRAPHIC':
+                            document.forms['fxml'].target = "hiddenFrame";
+                            document.forms['fxml'].__act.value = "XML2FORM";
+                            document.forms['fxml'].submit();
+                            this.currentView = "GRAPHIC";
+                            break;
+                    }
+                },
+
+                saveTask:function(save)
                 {
+                    if(save)
+                    {
+                        if(this.currentView == "GRAPHIC")
+                        {
+                            if( (f = document.forms['graphicForm']) )
+                            {
+                                document.getElementById("__gxml").value = document.forms['fxml'].txtareaxml.value;
+                                document.getElementById("__gtname").value = document.forms['__ftask'].__tname.value;
+                                document.getElementById("__gtactive").value = document.forms['__ftask'].__tactive.checked ? "1" : "0" ;
+                                document.getElementById("__gact").value = "SAVE_GRAPHIC";
+                                f.target = "hiddenFrame";
+                                f.action = "task2utils.php";
+                                f.submit();
+                            }
+                        }
+                        else
+                        {
+                            document.forms['fxml'].target = "hiddenFrame";
+                            document.forms['fxml'].__tname.value = document.forms['__ftask'].__tname.value;
+                            document.forms['fxml'].__tactive.value = document.forms['__ftask'].__tactive.checked ? "1" : "0" ;
+                            document.forms['fxml'].__act.value = "SAVE_XML";
+                            document.forms['fxml'].submit();
+                        }
+                    }
+                    else
+                    {
+                        if(document.forms["fxml"].__tid.value != "")
+                        {
+                            document.forms["__freturn"].submit();
+                        }
+                        else
+                        {
+                            document.forms["__freturn"].submit();
+                        }
+                    }
+                },
+
+                getHTTPObject:function()
+                {
+                    var ret = null ;
+                    try
+                    {
+                        ret = new XMLHttpRequest();
+                    }
+                    catch (e)
+                    {
+                        try
+                        {
+                            ret = new ActiveXObject("Msxml2.XMLHTTP");
+                        }
+                        catch (e)
+                        {
+                            try
+                            {
+                                ret = new ActiveXObject("Microsoft.XMLHTTP");
+                            }
+                            catch (e)
+                            {
+                                ret = null;
+                            }
+                        }
+                    }
+                    return ret;
+                },
+
+                resetCrashCounter:function()
+                {
+                    if(typeof(this.resetCrashCounter.x) == 'undefined')	// simulate static : only 1 instance of getHTTPObject !
+                    {
+                        this.resetCrashCounter.x = {
+                            "xmlhttp":new this.getHTTPObject,	// une seule instance
+                            "cb":function ()
+                            {
+                                var ret;
+                                if (this.readyState == 4)
+                                {
+                                    try
+                                    {
+                                        document.getElementById("idCrashLine").style.visibility = "hidden";
+                                        ret = this.responseXML;
+                                    }
+                                    catch(e)
+                                    {
+                                    }
+                                    delete this.responseText;
+                                    delete this.responseXML;
+                                    delete this.onreadystatechange;
+
+                                    this.abort();
+                                }
+                            }
+                        };
+                    }
+
+                    var url  = "/admin/adminFeedback.php?action=RESETTASKCRASHCOUNTER&task_id={{task.get_task_id()}}";
+                    this.resetCrashCounter.x.xmlhttp.onreadystatechange = this.resetCrashCounter.x.cb; // ping_stateChange;
+                    this.resetCrashCounter.x.xmlhttp.open("POST", url, true);
+                    this.resetCrashCounter.x.xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    this.resetCrashCounter.x.xmlhttp.send(null);
                 }
-                delete this.responseText;
-                delete this.responseXML;
-                delete this.onreadystatechange;
+            };
 
-                this.abort();
-              }
+            function redrawme()
+            {
+                hauteur =  document.body.clientHeight;
             }
-          };
-        }
 
-        var url  = "/admin/adminFeedback.php?action=RESETTASKCRASHCOUNTER&task_id={{task.get_task_id()}}";
-        this.resetCrashCounter.x.xmlhttp.onreadystatechange = this.resetCrashCounter.x.cb; // ping_stateChange;
-        this.resetCrashCounter.x.xmlhttp.open("POST", url, true);
-        this.resetCrashCounter.x.xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        this.resetCrashCounter.x.xmlhttp.send(null);
-      }
-    };
+            function loaded()
+            {
+                var o;
+                if( (f = document.forms['graphicForm']) )
+                {
+                    o = document.createElement('input');
+                    o.setAttribute("name", "__class");
+                    o.setAttribute("type", "hidden");
+                    o.setAttribute("value", "{{ task|get_class }}");
+                    f.appendChild(o);
 
-    function redrawme()
-    {
-      hauteur =  document.body.clientHeight;
-    }
+                    o = document.createElement('input');
+                    o.setAttribute("id", "__gact");
+                    o.setAttribute("name", "__act");
+                    o.setAttribute("type", "hidden");
+                    o.setAttribute("value", "");
+                    f.appendChild(o);
 
-    function loaded()
-    {
-      var o;
-      if( (f = document.forms['graphicForm']) )
-      {
-        o = document.createElement('input');
-        o.setAttribute("name", "__class");
-        o.setAttribute("type", "hidden");
-        o.setAttribute("value", "{{task.get_class_name()}}");
-        f.appendChild(o);
+                    o = document.createElement('input');
+                    o.setAttribute("id", "__gtname");
+                    o.setAttribute("name", "__tname");
+                    o.setAttribute("type", "hidden");
+                    o.setAttribute("value", "");
+                    f.appendChild(o);
 
-        o = document.createElement('input');
-        o.setAttribute("id", "__gact");
-        o.setAttribute("name", "__act");
-        o.setAttribute("type", "hidden");
-        o.setAttribute("value", "");
-        f.appendChild(o);
+                    o = document.createElement('input');
+                    o.setAttribute("id", "__gtactive");
+                    o.setAttribute("name", "__tactive");
+                    o.setAttribute("type", "hidden");
+                    o.setAttribute("value", "");
+                    f.appendChild(o);
 
-        o = document.createElement('input');
-        o.setAttribute("id", "__gtname");
-        o.setAttribute("name", "__tname");
-        o.setAttribute("type", "hidden");
-        o.setAttribute("value", "");
-        f.appendChild(o);
+                    o = document.createElement('input');
+                    o.setAttribute("id", "__gxml");
+                    o.setAttribute("name", "__xml");
+                    o.setAttribute("type", "hidden");
+                    o.setAttribute("value", "");
+                    f.appendChild(o);
 
-        o = document.createElement('input');
-        o.setAttribute("id", "__gtactive");
-        o.setAttribute("name", "__tactive");
-        o.setAttribute("type", "hidden");
-        o.setAttribute("value", "");
-        f.appendChild(o);
+                    o = document.createElement('input');
+                    o.setAttribute("id", "__gtid");
+                    o.setAttribute("name", "__tid");
+                    o.setAttribute("type", "hidden");
+                    o.setAttribute("value", "{{task.get_task_id()}}");
+                    f.appendChild(o);
+                }
+                redrawme();
+                jsTaskObj.view("PRE_{{view}}");
+                if( (o = document.getElementById("iddivloading")) )
+                    o.style.visibility = "hidden";
+            }
 
-        o = document.createElement('input');
-        o.setAttribute("id", "__gxml");
-        o.setAttribute("name", "__xml");
-        o.setAttribute("type", "hidden");
-        o.setAttribute("value", "");
-        f.appendChild(o);
-
-        o = document.createElement('input');
-        o.setAttribute("id", "__gtid");
-        o.setAttribute("name", "__tid");
-        o.setAttribute("type", "hidden");
-        o.setAttribute("value", "{{task.get_task_id()}}");
-        f.appendChild(o);
-      }
-      redrawme();
-      jsTaskObj.view("PRE_{{view}}");
-      if( (o = document.getElementById("iddivloading")) )
-        o.style.visibility = "hidden";
-    }
-
-    function setDirty()
-    {
-      jsTaskObj.SettingsIsDirty = true;
-    }
+            function setDirty()
+            {
+                jsTaskObj.SettingsIsDirty = true;
+            }
 
 
-    </script>
-      <!-- _____________  javascript of graphic interface of '{{task.getName()}}'   _____________ -->
-      {{task.printInterfaceJS()}}
-      <!-- _____________ end javascript of graphic interface of '{{task.getName()}}' _____________ -->
+        </script>
+        <!-- _____________  javascript of graphic interface of '{{task.getName()}}'   _____________ -->
+        {{task.printInterfaceJS()}}
+        <!-- _____________ end javascript of graphic interface of '{{task.getName()}}' _____________ -->
 
-  </head>
+    </head>
 
-  <body id="idBody"  onResize="redrawme();"  onLoad="loaded();" style="background-color:#AAAAAA; overflow:hidden" scroll="no" >
-    <div style="position:absolute; top:0px; left:5px; right:5px; height:45px; " nowrap>
-      <h4 style="padding:2px; text-align:center">{{task.getName()}} <span id="taskid">id : {{task.get_task_id()}}</span></h4>
-      <form name="__ftask" onsubmit="return(false);" method="post" method="post">
-        <label>{% trans 'admin::tasks: nom de la tache' %}</label>
-        <input type="text" name="__tname" style="width:200px" value="{{task.get_title()}}" onchange="setDirty();" />
-        <input type="checkbox" name="__tactive" {% if task.is_active() %}checked="checked"{% endif %} onchange="setDirty();" />
-        <label>{% trans 'admin::tasks: lancer au demarrage du scheduler' %}</label>
-      </form>
-      <div id="idCrashLine" style="visibility:{% if task.get_crash_counter() == 0 %}hidden{% endif %}">
-        {% trans 'admin::tasks: Nombre de crashes : ' %} {{task.get_crash_counter()}}
-        
-        <a href="javascript:void();" onclick="jsTaskObj.resetCrashCounter();return(false);">
-        {% trans 'admin::tasks: reinitialiser el compteur de crashes' %}</a>
-      </div>
-    </div>
-
-    <div style="position:absolute; top:65px; bottom:30px; left:0px; width:100%;">
-      <div id="idBox2" style="position:absolute; top:20px; left:5px; bottom:5px; right:5px; z-index:2; border-top:#ffffff 1px solid; border-left:#ffffff 1px solid; border-bottom:#000000 1px solid; border-right:#000000 1px solid;">
-        <div class="divTab">
-          {% if task.printInterfaceHTML %}
-          <div id="linkviewgraph" class="tabFront" onClick="jsTaskObj.view('GRAPHIC');" style="width:100px;">
-            {% trans 'boutton::vue graphique' %}
-          </div>
-          {% endif %}
-          <div id="linkviewxml" class="{% if task.printInterfaceHTML %}tabBack{% else %}tabFront{% endif %}" onClick="jsTaskObj.view('XML');" style="width:100px;">
-            {% trans 'boutton::vue xml' %}
-          </div>
-        </div>
-          {% if task.getGraphicForm %}
-            <div id="divGraph" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; display:auto; overflow:scroll;" >
-            {% if task.printInterfaceHTML %}
-              {{task.printInterfaceHTML()|raw}}
-            {% else %}
-              <form name="graphicForm" onsubmit="return false;"></form>
-            {% endif %}
-          </div>
-          <!-- _____________  end graphic interface '{{task.getName()}}'   _________________ -->
-          {% endif %}
-          <!-- _____________      xml interface    _____________ -->
-          <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.printInterfaceHTML() %}display:none;{% endif %}">
-            <form style="position:absolute; top:0px; left:0px; right:4px; bottom:20px;" action="./task2utils.php" onsubmit="return(false);" name="fxml" method="post">
-              <input type="hidden" name="__act" value="???" />
-              <input type="hidden" name="__class" value="{{task.get_class_name()}}" />
-              <input type="hidden" name="__tid" value="{{task.get_task_id()}}" />
-              <input type="hidden" name="__tname" value="" />
-              <input type="hidden" name="__tactive" value="" />
-              <textarea nowrap id="txtareaxml" style="position:absolute; top:0px; left:0px; width:100%; height:100%; white-space:pre;" onchange="setDirty();" name="txtareaxml" >{{task.get_settings()}}</textarea>
+    <body id="idBody"  onResize="redrawme();"  onLoad="loaded();" style="background-color:#AAAAAA; overflow:hidden" scroll="no" >
+        <div style="position:absolute; top:0px; left:5px; right:5px; height:45px; " nowrap>
+            <h4 style="padding:2px; text-align:center">{{task.getName()}} <span id="taskid">id : {{task.get_task_id()}}</span></h4>
+            <form name="__ftask" onsubmit="return(false);" method="post" method="post">
+                <label>{% trans 'admin::tasks: nom de la tache' %}</label>
+                <input type="text" name="__tname" style="width:200px" value="{{task.get_title()}}" onchange="setDirty();" />
+                <input type="checkbox" name="__tactive" {% if task.is_active() %}checked="checked"{% endif %} onchange="setDirty();" />
+                       <label>{% trans 'admin::tasks: lancer au demarrage du scheduler' %}</label>
             </form>
-          </div>
-          <!-- _____________     xml interface    _____________ -->
+            <div id="idCrashLine" style="visibility:{% if task.get_crash_counter() == 0 %}hidden{% endif %}">
+                {% trans 'admin::tasks: Nombre de crashes : ' %} {{task.get_crash_counter()}}
+
+                <a href="javascript:void();" onclick="jsTaskObj.resetCrashCounter();return(false);">
+                    {% trans 'admin::tasks: reinitialiser el compteur de crashes' %}</a>
+            </div>
         </div>
 
-      </div>
+        <div style="position:absolute; top:65px; bottom:30px; left:0px; width:100%;">
+            <div id="idBox2" style="position:absolute; top:20px; left:5px; bottom:5px; right:5px; z-index:2; border-top:#ffffff 1px solid; border-left:#ffffff 1px solid; border-bottom:#000000 1px solid; border-right:#000000 1px solid;">
+                <div class="divTab">
+                    {% if task.printInterfaceHTML %}
+                    <div id="linkviewgraph" class="tabFront" onClick="jsTaskObj.view('GRAPHIC');" style="width:100px;">
+                        {% trans 'boutton::vue graphique' %}
+                    </div>
+                    {% endif %}
+                    <div id="linkviewxml" class="{% if task.printInterfaceHTML %}tabBack{% else %}tabFront{% endif %}" onClick="jsTaskObj.view('XML');" style="width:100px;">
+                        {% trans 'boutton::vue xml' %}
+                    </div>
+                </div>
+                {% if task.getGraphicForm %}
+                <div id="divGraph" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; display:auto; overflow:scroll;" >
+                    {% if task.printInterfaceHTML %}
+                    {{task.printInterfaceHTML()|raw}}
+                    {% else %}
+                    <form name="graphicForm" onsubmit="return false;"></form>
+                    {% endif %}
+                </div>
+                <!-- _____________  end graphic interface '{{task.getName()}}'   _________________ -->
+                {% endif %}
+                <!-- _____________      xml interface    _____________ -->
+                <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.printInterfaceHTML() %}display:none;{% endif %}">
+                    <form style="position:absolute; top:0px; left:0px; right:4px; bottom:20px;" action="./task2utils.php" onsubmit="return(false);" name="fxml" method="post">
+                        <input type="hidden" name="__act" value="???" />
+                        <input type="hidden" name="__class" value="{{ task|get_class }}" />
+                        <input type="hidden" name="__tid" value="{{task.get_task_id()}}" />
+                        <input type="hidden" name="__tname" value="" />
+                        <input type="hidden" name="__tactive" value="" />
+                        <textarea nowrap id="txtareaxml" style="position:absolute; top:0px; left:0px; width:100%; height:100%; white-space:pre;" onchange="setDirty();" name="txtareaxml" >{{task.get_settings()}}</textarea>
+                    </form>
+                </div>
+                <!-- _____________     xml interface    _____________ -->
+            </div>
 
-      <div style="position:absolute; bottom:0px; height:30px; right:5px">
-        <div style="text-align:right; xdisplay:none;" id="saveButtons">
-          <form onsubmit="return(false)">
-            <input type="button" onclick="jsTaskObj.saveTask(false);" style="width:180px;" id="cancel_button" value="{% trans 'boutton::annuler' %}">
-            <input type="button" onclick="jsTaskObj.saveTask(true);" style="width:180px;" id="submit_button" value="{% trans 'boutton::valider' %}">
-          </form>
         </div>
-        <form action="./taskmanager.php" method="post" name="__freturn" method="post">
-        </form>
-      </div>
 
-      <iframe id="hiddenFrame" name="hiddenFrame" src="about:blank" style="position:absolute; bottom:0px; left:0px; width:100px; height:100px; visibility:hidden" ></iframe>
-  </body>
+        <div style="position:absolute; bottom:0px; height:30px; right:5px">
+            <div style="text-align:right; xdisplay:none;" id="saveButtons">
+                <form onsubmit="return(false)">
+                    <input type="button" onclick="jsTaskObj.saveTask(false);" style="width:180px;" id="cancel_button" value="{% trans 'boutton::annuler' %}">
+                    <input type="button" onclick="jsTaskObj.saveTask(true);" style="width:180px;" id="submit_button" value="{% trans 'boutton::valider' %}">
+                </form>
+            </div>
+            <form action="./taskmanager.php" method="post" name="__freturn" method="post">
+            </form>
+        </div>
+
+        <iframe id="hiddenFrame" name="hiddenFrame" src="about:blank" style="position:absolute; bottom:0px; left:0px; width:100px; height:100px; visibility:hidden" ></iframe>
+    </body>
 </html>

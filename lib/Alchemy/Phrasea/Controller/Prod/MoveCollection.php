@@ -31,30 +31,30 @@ class MoveCollection implements ControllerProviderInterface
   {
     $controllers = new ControllerCollection();
 
-    $controllers->post('/', function() use ($app)
+    $controllers->post('/', function(Application $app, Request $request)
             {
               $request = $app['request'];
-              $move = new RecordHelper\MoveCollection($request);
+              $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
               $move->propose();
 
               $template = 'prod/actions/collection_default.twig';
-              $twig = new \supertwig();
-              $twig->addFilter(array('bas_names' => 'phrasea::bas_names'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('action' => $move, 'message' => ''));
             }
     );
 
 
-    $controllers->post('/apply/', function() use ($app)
+    $controllers->post('/apply/', function(Application $app)
             {
               $request = $app['request'];
-              $move = new RecordHelper\MoveCollection($request);
+              $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
               $move->execute($request);
               $template = 'prod/actions/collection_submit.twig';
 
-              $twig = new \supertwig();
-              $twig->addFilter(array('bas_names' => 'phrasea::bas_names'));
+              /* @var $twig \Twig_Environment */
+              $twig = $app['Core']->getTwig();
 
               return $twig->render($template, array('action' => $move, 'message' => ''));
             });

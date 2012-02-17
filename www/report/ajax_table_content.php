@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 /* get all the post parameters from report.php's form */
 
@@ -49,14 +49,9 @@ $parm = $request->get_parms("dmin", // date minimal of the reporting
                             "from"
 );
 
-$twig = new supertwig();
 
-$twig->addFilter(array(
-    'sbas_names' => 'phrasea::sbas_names',
-    'str_replace' => 'str_replace',
-    'serialize' => 'serialize',
-    'strval' => 'strval'
-));
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
 
 $conf_info_usr = array(
     'config' => array(
@@ -301,8 +296,8 @@ function displayListColumn($conf, $param, $twig)
   if ($param['conf'] == "on")
   {
     $html = $twig->render('report/listColumn.twig', array(
-                'conf' => $conf,
-                'param' => $param,
+        'conf' => $conf,
+        'param' => $param,
             ));
     $t = array('liste' => $html, "title" => _("configuration"));
     echo json_encode($t);
@@ -328,8 +323,8 @@ function groupBy($obj, $param, $twig, $on = false)
 function displayColValue($tab, $column, $twig, $on = false)
 {
   $test = $twig->render('report/colFilter.twig', array(
-              'result' => $tab,
-              'field' => $column
+      'result' => $tab,
+      'field' => $column
           ));
   $t = array('diag' => $test, "title" => sprintf(_("filtrer les resultats sur la colonne %s"), $column));
   echo json_encode($t);

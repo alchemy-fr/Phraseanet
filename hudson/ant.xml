@@ -8,10 +8,10 @@
 				<exclude name="config/**" />
 			</fileset>
     </delete>
-		<copy todir="${dir.dest}" verbose="true" overwrite="false" >
+		<copy todir="${dir.dest}" verbose="false" overwrite="false" >
 			<fileset dir="${dir.src}" >
 				<exclude name="**/test/**" />
-				<exclude name="**/tests/**" />
+<!--				<exclude name="**/tests/**" /> -->
 				<exclude name="**/example/**" />
 
 				<exclude name="**/examples/**" />

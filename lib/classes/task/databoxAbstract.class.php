@@ -46,8 +46,9 @@ abstract class task_databoxAbstract extends task_abstract
         $this->log(("Warning : abox connection lost, restarting in 10 min."));
         sleep(60 * 10);
         $this->running = false;
+        $this->return_value = self::RETURNSTATUS_TORESTART;
 
-        return('');
+        return;
       }
 
       $this->set_last_exec_time();
@@ -104,7 +105,7 @@ abstract class task_databoxAbstract extends task_abstract
       $this->pause($duration);
     }
 
-    return($this->return_value);
+    return;
   }
 
   /**
@@ -173,12 +174,6 @@ abstract class task_databoxAbstract extends task_abstract
     $this->check_memory_usage()
             ->check_records_done()
             ->check_task_status();
-
-    if ($connbas instanceof PDO)
-    {
-      $connbas->close();
-      unset($connbas);
-    }
 
     if ($rowstodo > 0)
       $this->setProgress(0, 0);

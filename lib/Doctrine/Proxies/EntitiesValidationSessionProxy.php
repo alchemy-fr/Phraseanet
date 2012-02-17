@@ -150,6 +150,12 @@ class EntitiesValidationSessionProxy extends \Entities\ValidationSession impleme
         return parent::getParticipants();
     }
 
+    public function getParticipant(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::getParticipant($user);
+    }
+
     public function setInitiatorId($initiatorId)
     {
         $this->__load();
@@ -160,6 +166,12 @@ class EntitiesValidationSessionProxy extends \Entities\ValidationSession impleme
     {
         $this->__load();
         return parent::getInitiatorId();
+    }
+
+    public function isInitiator(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::isInitiator($user);
     }
 
     public function setInitiator(\User_Adapter $user)
@@ -174,10 +186,22 @@ class EntitiesValidationSessionProxy extends \Entities\ValidationSession impleme
         return parent::getInitiator();
     }
 
+    public function isFinished()
+    {
+        $this->__load();
+        return parent::isFinished();
+    }
+
+    public function getValidationString(\User_Adapter $user)
+    {
+        $this->__load();
+        return parent::getValidationString($user);
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'initiator_id', 'created', 'updated', 'expires', 'reminded', 'basket', 'participants');
+        return array('__isInitialized__', 'id', 'initiator_id', 'created', 'updated', 'expires', 'basket', 'participants');
     }
 
     public function __clone()

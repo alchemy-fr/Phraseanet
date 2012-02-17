@@ -34,83 +34,96 @@ class EntitiesStoryWZProxy extends \Entities\StoryWZ implements \Doctrine\ORM\Pr
             unset($this->_entityPersister, $this->_identifier);
         }
     }
-    
-    
+
+
     public function getId()
     {
         $this->__load();
+
         return parent::getId();
     }
 
     public function setSbasId($sbasId)
     {
         $this->__load();
+
         return parent::setSbasId($sbasId);
     }
 
     public function getSbasId()
     {
         $this->__load();
+
         return parent::getSbasId();
     }
 
     public function setRecordId($recordId)
     {
         $this->__load();
+
         return parent::setRecordId($recordId);
     }
 
     public function getRecordId()
     {
         $this->__load();
+
         return parent::getRecordId();
     }
 
     public function setUsrId($usrId)
     {
         $this->__load();
+
         return parent::setUsrId($usrId);
     }
 
     public function getUsrId()
     {
         $this->__load();
+
         return parent::getUsrId();
     }
 
     public function setCreated($created)
     {
         $this->__load();
+
         return parent::setCreated($created);
     }
 
     public function getCreated()
     {
         $this->__load();
+
         return parent::getCreated();
     }
 
     public function setUser(\User_Adapter $user)
     {
         $this->__load();
+
         return parent::setUser($user);
     }
 
     public function getUser()
     {
         $this->__load();
+
         return parent::getUser();
     }
 
     public function getRecord()
     {
         $this->__load();
+
         return parent::getRecord();
     }
 
     public function setRecord(\record_adapter $record)
     {
         $this->__load();
+
         return parent::setRecord($record);
     }
 
@@ -134,6 +147,6 @@ class EntitiesStoryWZProxy extends \Entities\StoryWZ implements \Doctrine\ORM\Pr
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-        
+
     }
 }

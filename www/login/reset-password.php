@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -79,7 +79,7 @@ phrasea::headers();
   <title></title>
   <link REL="stylesheet" TYPE="text/css" HREF="/login/home.css" />
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-  <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js"></script>
+  <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
 

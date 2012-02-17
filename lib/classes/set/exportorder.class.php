@@ -27,6 +27,8 @@ class set_exportorder extends set_export
    */
   public function order_available_elements($from_usr_id, $usage, $deadline)
   {
+    $Core = bootstrap::getCore();
+
     $lst = $this->get_orderable_lst();
 
     $conn = connection::getPDOConnection();
@@ -89,7 +91,7 @@ class set_exportorder extends set_export
       return false;
     }
 
-    $evt_mngr = eventsmanager_broker::getInstance(appbox::get_instance());
+    $evt_mngr = eventsmanager_broker::getInstance(appbox::get_instance(), $Core);
 
     $params = array(
         'order_id' => $order_id,

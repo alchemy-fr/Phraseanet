@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Helper\User;
 
+use Alchemy\Phrasea\Core;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -19,10 +20,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Edit
+class Edit extends \Alchemy\Phrasea\Helper\Helper
 {
-
-  protected $request;
 
   /**
    *
@@ -42,18 +41,11 @@ class Edit
    */
   protected $base_id;
 
-  /**
-   *
-   * @param Symfony\Component\HttpFoundation\Request $request
-   * @return module_admin_route_users_edit
-   */
-  public function __construct(Request $request)
+  public function __construct(Core $core, Request $Request)
   {
-    $this->users = explode(';', $request->get('users'));
+    parent::__construct($core, $Request);
 
-    $this->request = $request;
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
+    $this->users = explode(';', $Request->get('users'));
 
     $users = array();
     foreach ($this->users as $usr_id)
@@ -83,23 +75,26 @@ class Edit
 
   protected function delete_user(\User_Adapter $user)
   {
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
+    $master = $this->getCore()->getAuthenticatedUser();
 
-    $list = array_keys(\User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL()->get_granted_base(array('canadmin')));
+    $list = array_keys($master->ACL()->get_granted_base(array('canadmin')));
 
     $user->ACL()->revoke_access_from_bases($list);
+
     if ($user->ACL()->is_phantom())
+    {
       $user->delete();
+    }
 
     return $this;
   }
 
   public function get_users_rights()
   {
+    $user = $this->getCore()->getAuthenticatedUser();
     $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $list = array_keys(\User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL()->get_granted_base(array('canadmin')));
+
+    $list = array_keys($user->ACL()->get_granted_base(array('canadmin')));
 
     $sql = "SELECT
             b.sbas_id,
@@ -183,13 +178,19 @@ class Edit
       }
     }
 
+    $query = new \User_Query($appbox);
+    $templates = $query
+                    ->only_templates(true)
+                    ->execute()->get_results();
+
     $this->users_datas = $rs;
     $out = array(
         'datas' => $this->users_datas,
         'users' => $this->users,
         'users_serial' => implode(';', $this->users),
         'base_id' => $this->base_id,
-        'main_user' => null
+        'main_user' => null,
+        'templates' => $templates
     );
 
     if (count($this->users) == 1)
@@ -540,6 +541,15 @@ class Edit
       return $this;
     }
 
+    $users = $this->users;
+
+    $user = \User_adapter::getInstance(array_pop($users), \appbox::get_instance());
+
+    if ($user->is_template() || $user->is_special())
+    {
+      return $this;
+    }
+
     $appbox = \appbox::get_instance();
     $session = $appbox->get_session();
     $request = \http_request::getInstance();
@@ -561,24 +571,51 @@ class Edit
 
     $parm = $request->get_parms_from_serialized_datas($infos, 'user_infos');
 
+    if ($parm['email'] && !\mail::validateEmail($parm['email']))
+      throw new \Exception_InvalidArgument(_('Email addess is not valid'));
+
+    $user->set_firstname($parm['first_name'])
+            ->set_lastname($parm['last_name'])
+            ->set_gender($parm['gender'])
+            ->set_email($parm['email'])
+            ->set_address($parm['address'])
+            ->set_zip($parm['zip'])
+            ->set_geonameid($parm['geonameid'])
+            ->set_position($parm['function'])
+            ->set_job($parm['activite'])
+            ->set_company($parm['company'])
+            ->set_tel($parm['telephone'])
+            ->set_fax($parm['fax']);
+
+    return $this;
+  }
+
+  public function apply_template()
+  {
+    $appbox = \appbox::get_instance();
+    $session = $appbox->get_session();
+
+    $template = \User_adapter::getInstance($this->request->get('template'), $appbox);
+
+    if ($template->get_template_owner()->get_id() != $session->get_usr_id())
+    {
+      throw new \Exception_Forbidden('You are not the owner of the template');
+    }
+
+    $current_user = \User_adapter::getInstance($session->get_usr_id(), $appbox);
+
+    $base_ids = array_keys($current_user->ACL()->get_granted_base(array('canadmin')));
+
     foreach ($this->users as $usr_id)
     {
+      $user = \User_adapter::getInstance($usr_id, $appbox);
 
-      if (!\mail::validateEmail($parm['email']))
-        throw new \Exception_InvalidArgument(_('Email addess is not valid'));
+      if ($user->is_template())
+      {
+        continue;
+      }
 
-      $user = User_Adapter::getInstance($usr_id, $appbox);
-      $user->set_firstname($parm['first_name'])
-              ->set_lastname($parm['last_name'])
-              ->set_email($parm['email'])
-              ->set_address($parm['address'])
-              ->set_zip($parm['zip'])
-              ->set_geonameid($parm['geonameid'])
-              ->set_position($parm['function'])
-              ->set_job($parm['activite'])
-              ->set_company($parm['company'])
-              ->set_tel($parm['telephone'])
-              ->set_fax($parm['fax']);
+      $user->ACL()->apply_model($template, $base_ids);
     }
 
     return $this;
@@ -624,13 +661,12 @@ class Edit
 
   public function apply_time()
   {
-
     $this->base_id = (int) $this->request->get('base_id');
 
     $dmin = $this->request->get('dmin') ? new \DateTime($this->request->get('dmin')) : null;
     $dmax = $this->request->get('dmax') ? new \DateTime($this->request->get('dmax')) : null;
 
-    $activate = $this->request->get('limit');
+    $activate = !!$this->request->get('limit');
 
     foreach ($this->users as $usr_id)
     {

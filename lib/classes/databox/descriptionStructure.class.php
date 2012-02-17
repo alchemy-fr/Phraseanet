@@ -75,7 +75,7 @@ class databox_descriptionStructure implements IteratorAggregate
 
   /**
    *
-   * @param <type> $name
+   * @param int $id
    * @return databox_field
    */
   public function get_element($id)
@@ -93,6 +93,8 @@ class databox_descriptionStructure implements IteratorAggregate
    */
   public function get_element_by_name($name)
   {
+    $name = databox_field::generateName($name);
+
     if (isset($this->cache_name_id[$name]))
 
       return $this->elements[$this->cache_name_id[$name]];

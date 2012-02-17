@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -72,7 +72,7 @@ if ($parm['error'] !== null)
       break;
     case 'mailNotConfirm' :
       $errorWarning = '<div class="notice">' . _('login::erreur: Vous n\'avez pas confirme votre email') . '</div>';
-      if (is_numeric((int) $parm['usr']))
+      if (ctype_digit($parm['usr']))
         $errorWarning .= '<div class="notice"><a href="/login/sendmail-confirm.php?usr_id=' . $parm['usr'] . '" target ="_self" style="color:black;text-decoration:none;">' . _('login:: Envoyer a nouveau le mail de confirmation') . '</a></div>';
       break;
     case 'no-base' :
@@ -125,27 +125,25 @@ if (!$registry->get('GV_maintenance')
                                                         <div style="text-align:center;float: left;width:300px;margin:0 15px 0px;">
                                                             <span class="recaptcha_only_if_image">' . _('login::captcha: recopier les mots ci dessous') . ' : </span>
                                                             <input name="recaptcha_response_field" id="recaptcha_response_field" value="" type="text" style="width:180px;"/>
-                                                        </div>' . recaptcha_get_html(GV_captcha_public_key) . '</div>';
+                                                        </div>' . recaptcha_get_html($registry->get('GV_captcha_public_key')) . '</div>';
 }
 
 $public_feeds = Feed_Collection::load_public_feeds($appbox);
 $feeds = array_merge(array($public_feeds->get_aggregate()), $public_feeds->get_feeds());
 
+//$twig = new supertwig(array('Escaper' => false));
+  $core = \bootstrap::getCore();
+  $twig = $core->getTwig();
 
-$twig = new supertwig(array('Escaper' => false));
-
-
-$twig->display('login/index.twig', array(
-    'module_name' => _('Accueil'),
-    'confirmWarning' => $confirmWarning,
-    'errorWarning' => $errorWarning,
-    'redirect' => $parm['redirect'],
-    'logged_out' => $parm['logged_out'],
-    'captcha_system' => $captchaSys,
-    'login' => new login(),
-    'feeds'=>$feeds,
-    'sso' => new sso(),
-    'display_layout' => $registry->get('GV_home_publi')
-        )
-);
-?>
+  echo $twig->render('login/index.twig', array(
+      'module_name' => _('Accueil'),
+      'confirmWarning' => $confirmWarning,
+      'errorWarning' => $errorWarning,
+      'redirect' => $parm['redirect'],
+      'logged_out' => $parm['logged_out'],
+      'captcha_system' => $captchaSys,
+      'login' => new login(),
+      'feeds' => $feeds,
+      'sso' => new sso(),
+      'display_layout' => $registry->get('GV_home_publi')
+  ));

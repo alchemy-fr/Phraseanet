@@ -9,20 +9,38 @@
 
   RewriteRule ^register-confirm=([a-zA-Z0-9]+)$   /login/register-confirm.php?code=$1 [L]
 
+  RewriteRule ^admin/$                /admin/router.php [L]
+  RewriteRule ^admin/description/.*$        /admin/router.php [L]
   RewriteRule ^admin/users/.*$        /admin/router.php [L]
   RewriteRule ^admin/tests/.*$        /admin/router.php [L]
   RewriteRule ^admin/fields/.*$       /admin/router.php [L]
   RewriteRule ^admin/publications/.*$ /admin/router.php [L]
   RewriteRule ^admin/typeahead/.*$    /admin/router.php [L]
+  RewriteRule ^admin/subdefs/.*$      /admin/router.php [L]
 
   RewriteRule ^prod/records/edit/.*$  /prod/router.php [L]
   RewriteRule ^prod/records/movecollection/.*$    /prod/router.php [L]
+  RewriteRule ^prod/records/delete/.*$    /prod/router.php [L]
+  RewriteRule ^prod/order/.*$         /prod/router.php [L]
+  RewriteRule ^prod/UserPreferences/.*$   /prod/router.php [L]
   RewriteRule ^prod/bridge/.*$        /prod/router.php [L]
+  RewriteRule ^prod/MustacheLoader/.*$    /prod/router.php [L]
   RewriteRule ^prod/feeds/.*$         /prod/router.php [L]
   RewriteRule ^prod/tooltip/.*$       /prod/router.php [L]
+  RewriteRule ^prod/lists/.*$         /prod/router.php [L]
   RewriteRule ^prod/baskets/.*$       /prod/router.php [L]
-  RewriteRule ^prod/WorkZone/.*$       /prod/router.php [L]
+  RewriteRule ^prod/push/.*$          /prod/router.php [L]
+  RewriteRule ^prod/printer/.*$       /prod/router.php [L]
+  RewriteRule ^prod/story/.*$         /prod/router.php [L]
+  RewriteRule ^prod/TOU/.*$           /prod/router.php [L]
+  RewriteRule ^prod/WorkZone/.*$      /prod/router.php [L]
+  RewriteRule ^prod/language/.*$      /prod/router.php [L]
   RewriteRule ^prod/$                 /prod/router.php [L]
+
+  RewriteRule ^prod/query/.*$         /prod/router.php [L]
+  RewriteRule ^prod/export/.*$        /prod/router.php [L]
+  RewriteRule ^prod/record/preview/.*$ /prod/router.php [L]
+  RewriteRule ^prod/notifications/.*$ /prod/router.php [L]
 
   RewriteRule ^robots.txt$            /index.php [L]
   RewriteRule ^feeds/.*$              /index.php [L]
@@ -55,7 +73,7 @@
 	<IfModule mod_h264_streaming.c>
 		RewriteRule ^admin/test-h264$ admin/adminFeedback.php?action=APACHE&test=success [L]
 	</IfModule>
-	
+
 	RewriteRule ^admin/test-rewrite$ admin/adminFeedback.php?action=APACHE&test=fail [L]
 	RewriteRule ^admin/test-xsendfile$ admin/adminFeedback.php?action=APACHE&test=fail [L]
 	RewriteRule ^admin/test-authtoken$ admin/adminFeedback.php?action=APACHE&test=fail [L]

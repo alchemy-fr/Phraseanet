@@ -22,7 +22,7 @@ abstract class databox_subdefAbstract
    *
    * @var boolean
    */
-  protected $debug = true;
+  protected $debug = false;
   /**
    *
    * @var string

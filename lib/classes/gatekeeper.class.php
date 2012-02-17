@@ -71,7 +71,7 @@ class gatekeeper
    */
   function check_directory()
   {
-    $request = http_request::getInstance();
+    $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
 
@@ -116,7 +116,14 @@ class gatekeeper
         case 'prod':
         case 'client':
           $this->give_guest_access();
-          phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          if($request->isXmlHttpRequest())
+          {
+            phrasea::headers(404);
+          }
+          else
+          {
+            phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          }
           break;
         case 'thesaurus2':
           if ($this->_PHP_SELF == '/thesaurus2/xmlhttp/getterm.x.php'
@@ -161,7 +168,10 @@ class gatekeeper
           break;
         case 'lightbox':
           $this->token_access();
-//          phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          if (!$session->is_authenticated())
+          {
+            phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          }
           break;
       }
     }
@@ -246,7 +256,7 @@ class gatekeeper
                 . '&error=' . urlencode($e->getMessage());
         phrasea::redirect($url);
       }
-      phrasea::redirect('/' . $this->_directory . '/index.php');
+      phrasea::redirect('/' . $this->_directory . '/');
     }
 
     return $this;
@@ -270,8 +280,8 @@ class gatekeeper
 
     try
     {
-      if($session->is_authenticated())
-        $session->logout ();
+      if ($session->is_authenticated())
+        $session->logout();
       $auth = new Session_Authentication_Token($appbox, $parm['LOG']);
       $session->authenticate($auth);
     }
@@ -283,6 +293,8 @@ class gatekeeper
     try
     {
       $datas = random::helloToken($parm['LOG']);
+
+      return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
     }
     catch (Exception_NotFound $e)
     {

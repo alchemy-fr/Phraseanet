@@ -19,8 +19,8 @@ foreach ($lngs as $lng => $locales)
     $avLanguages[$loc] = $locname['name'];
   }
 }
-  $eventsmanager = eventsmanager_broker::getInstance(appbox::get_instance());
 
+$eventsmanager = eventsmanager_broker::getInstance(appbox::get_instance(), bootstrap::getCore());
 
 $PHP_CONF = array(
     'output_buffering' => '4096'  //INI_ALL
@@ -894,12 +894,6 @@ $GV = array(
     ), array(
         'section' => _('GV::section:: Parametrage de l\'inscription'),
         'vars' => array(
-            array(
-                'type' => 'boolean',
-                'name' => 'GV_needMail',
-                'comment' => _('reglages:: Une addresse email valide est necessaire pour l\'inscription online'),
-                'default' => false
-            ),
             array(
                 'type' => 'boolean',
                 'name' => 'GV_autoselectDB',

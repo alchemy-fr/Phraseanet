@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -117,7 +117,8 @@ if (!is_null($templates) || !is_null($parm['deny']) || !is_null($parm['accept'])
         $done[$usr][$base_id] = true;
     }
 
-    $sql = "DELETE FROM demand WHERE usr_id = :usr_id";
+    $sql = "DELETE FROM demand
+            WHERE usr_id = :usr_id AND (base_id = ".implode(' OR base_id = ', $base_ids).")";
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':usr_id' => $usr));
     $stmt->closeCursor();
@@ -194,7 +195,7 @@ if (!is_null($templates) || !is_null($parm['deny']) || !is_null($parm['accept'])
     if ($row)
     {
 
-      require_once(dirname (__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+      require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
       if (PHPMailer::ValidateAddress($row['usr_mail']))
       {
         foreach ($bases as $bas => $isok)
@@ -217,7 +218,7 @@ if (!is_null($templates) || !is_null($parm['deny']) || !is_null($parm['accept'])
   <head>
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css" />
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js">
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js">
     </script>
     <script type="text/javascript" src="/include/minify/f=include/jquery.tooltip.js">
     </script>

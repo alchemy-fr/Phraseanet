@@ -19,73 +19,75 @@ class searchEngine_adapter_phrasea_queryParser
 {
 
   var $ops = array(
-      "et" => array("NODETYPE" => PHRASEA_OP_AND, "CANNUM" => false),
-      "and" => array("NODETYPE" => PHRASEA_OP_AND, "CANNUM" => false),
-      "ou" => array("NODETYPE" => PHRASEA_OP_OR, "CANNUM" => false),
-      "or" => array("NODETYPE" => PHRASEA_OP_OR, "CANNUM" => false),
-      "sauf" => array("NODETYPE" => PHRASEA_OP_EXCEPT, "CANNUM" => false),
-      "except" => array("NODETYPE" => PHRASEA_OP_EXCEPT, "CANNUM" => false),
-      "pres" => array("NODETYPE" => PHRASEA_OP_NEAR, "CANNUM" => true),
-      "near" => array("NODETYPE" => PHRASEA_OP_NEAR, "CANNUM" => true),
-      "avant" => array("NODETYPE" => PHRASEA_OP_BEFORE, "CANNUM" => true),
-      "before" => array("NODETYPE" => PHRASEA_OP_BEFORE, "CANNUM" => true),
-      "apres" => array("NODETYPE" => PHRASEA_OP_AFTER, "CANNUM" => true),
-      "after" => array("NODETYPE" => PHRASEA_OP_AFTER, "CANNUM" => true),
-      "dans" => array("NODETYPE" => PHRASEA_OP_IN, "CANNUM" => false),
-      "in" => array("NODETYPE" => PHRASEA_OP_IN, "CANNUM" => false)
+    "et" => array("NODETYPE" => PHRASEA_OP_AND, "CANNUM"   => false),
+    "and"      => array("NODETYPE" => PHRASEA_OP_AND, "CANNUM"   => false),
+    "ou"       => array("NODETYPE" => PHRASEA_OP_OR, "CANNUM"   => false),
+    "or"       => array("NODETYPE" => PHRASEA_OP_OR, "CANNUM"   => false),
+    "sauf"     => array("NODETYPE" => PHRASEA_OP_EXCEPT, "CANNUM"   => false),
+    "except"   => array("NODETYPE" => PHRASEA_OP_EXCEPT, "CANNUM"   => false),
+    "pres"     => array("NODETYPE" => PHRASEA_OP_NEAR, "CANNUM"   => true),
+    "near"     => array("NODETYPE" => PHRASEA_OP_NEAR, "CANNUM"   => true),
+    "avant"    => array("NODETYPE" => PHRASEA_OP_BEFORE, "CANNUM"   => true),
+    "before"   => array("NODETYPE" => PHRASEA_OP_BEFORE, "CANNUM"   => true),
+    "apres"    => array("NODETYPE" => PHRASEA_OP_AFTER, "CANNUM"   => true),
+    "after"    => array("NODETYPE" => PHRASEA_OP_AFTER, "CANNUM"   => true),
+    "dans"     => array("NODETYPE" => PHRASEA_OP_IN, "CANNUM"   => false),
+    "in"       => array("NODETYPE" => PHRASEA_OP_IN, "CANNUM"   => false)
   );
-  var $opk = array(
-      "<" => array("NODETYPE" => PHRASEA_OP_LT, "CANNUM" => false),
-      ">" => array("NODETYPE" => PHRASEA_OP_GT, "CANNUM" => false),
-      "<=" => array("NODETYPE" => PHRASEA_OP_LEQT, "CANNUM" => false),
-      ">=" => array("NODETYPE" => PHRASEA_OP_GEQT, "CANNUM" => false),
-      "<>" => array("NODETYPE" => PHRASEA_OP_NOTEQU, "CANNUM" => false),
-      "=" => array("NODETYPE" => PHRASEA_OP_EQUAL, "CANNUM" => false),
-      ":" => array("NODETYPE" => PHRASEA_OP_COLON, "CANNUM" => false)
+  var $opk       = array(
+    "<" => array("NODETYPE" => PHRASEA_OP_LT, "CANNUM"   => false),
+    ">"        => array("NODETYPE" => PHRASEA_OP_GT, "CANNUM"   => false),
+    "<="       => array("NODETYPE" => PHRASEA_OP_LEQT, "CANNUM"   => false),
+    ">="       => array("NODETYPE" => PHRASEA_OP_GEQT, "CANNUM"   => false),
+    "<>"       => array("NODETYPE" => PHRASEA_OP_NOTEQU, "CANNUM"   => false),
+    "="        => array("NODETYPE" => PHRASEA_OP_EQUAL, "CANNUM"   => false),
+    ":"        => array("NODETYPE" => PHRASEA_OP_COLON, "CANNUM"   => false)
   );
-  var $spw = array(
-      "all" => array(
-          "CLASS" => "PHRASEA_KW_ALL", "NODETYPE" => PHRASEA_KW_ALL, "CANNUM" => false
-      ),
-      "last" => array(
-          "CLASS" => "PHRASEA_KW_LAST", "NODETYPE" => PHRASEA_KW_LAST, "CANNUM" => true
-      ),
-      //  "first"    => array("CLASS"=>PHRASEA_KW_FIRST, "CANNUM"=>true),
-      //  "premiers" => array("CLASS"=>PHRASEA_KW_FIRST, "CANNUM"=>true),
-      "tout" => array(
-          "CLASS" => "PHRASEA_KW_ALL", "NODETYPE" => PHRASEA_KW_ALL, "CANNUM" => false
-      ),
-      "derniers" => array(
-          "CLASS" => "PHRASEA_KW_LAST", "NODETYPE" => PHRASEA_KW_LAST, "CANNUM" => true
-      )
+  var $spw       = array(
+    "all" => array(
+      "CLASS"    => "PHRASEA_KW_ALL", "NODETYPE" => PHRASEA_KW_ALL, "CANNUM"   => false
+    ),
+    "last"     => array(
+      "CLASS"    => "PHRASEA_KW_LAST", "NODETYPE" => PHRASEA_KW_LAST, "CANNUM"   => true
+    ),
+    //  "first"    => array("CLASS"=>PHRASEA_KW_FIRST, "CANNUM"=>true),
+    //  "premiers" => array("CLASS"=>PHRASEA_KW_FIRST, "CANNUM"=>true),
+    "tout"     => array(
+      "CLASS"    => "PHRASEA_KW_ALL", "NODETYPE" => PHRASEA_KW_ALL, "CANNUM"   => false
+    ),
+    "derniers" => array(
+      "CLASS"           => "PHRASEA_KW_LAST", "NODETYPE"        => PHRASEA_KW_LAST, "CANNUM"          => true
+    )
   );
   var $quoted_defaultop = array(
-      "VALUE" => "default_avant", "NODETYPE" => PHRASEA_OP_BEFORE, "PNUM" => 0
+    "VALUE"    => "default_avant", "NODETYPE" => PHRASEA_OP_BEFORE, "PNUM"     => 0
   );
   var $defaultop = array(
-      "VALUE" => "and", "NODETYPE" => PHRASEA_OP_AND, "PNUM" => NULL
+    "VALUE"      => "and", "NODETYPE"   => PHRASEA_OP_AND, "PNUM"       => NULL
   );
   var $defaultlast = 12;
   var $phq;
-  var $errmsg = "";
+  var $errmsg      = "";
+
   /**
    *
    * @var boolean
    */
-  var $debug = false;
+  var $debug       = false;
+
   /**
    * un tableau qui contiendra des propositions de thesaurus
    * pour les termes de l'arbre simple
    *
    * @var array
    */
-  var $proposals = Array("QRY" => "", "BASES" => array());
+  var $proposals   = Array("QRY"   => "", "BASES" => array());
+
   /**
    * Current language for thesaurus
    * @var <type>
    */
   var $lng = null;
-
   protected $unicode;
 
   function __construct($lng = "???")
@@ -117,7 +119,7 @@ class searchEngine_adapter_phrasea_queryParser
       }
     }
 
-    $this->proposals = Array("QRY" => "", "BASES" => array());
+    $this->proposals = Array("QRY"   => "", "BASES" => array());
     $this->phq = $this->mb_trim($phq, 'UTF-8');
     if ($this->phq != "")
 
@@ -178,7 +180,6 @@ class searchEngine_adapter_phrasea_queryParser
   function astable(&$tree)
   {
     $this->calc_complexity($tree);
-    // var_dump($tree);
     $txt = "";
     $this->astable2($txt, $tree);
     $txt = "<table border=\"1\">\n<tr>\n" . $txt . "</tr>\n</table>\n";
@@ -199,7 +200,7 @@ class searchEngine_adapter_phrasea_queryParser
     }
   }
 
-  function astable2(&$out, &$tree, $depth=0)
+  function astable2(&$out, &$tree, $depth = 0)
   {
     switch ($tree["CLASS"])
     {
@@ -228,7 +229,7 @@ class searchEngine_adapter_phrasea_queryParser
         break;
       case "OPS":
       case "OPK":
-        $op = $tree["VALUE"];
+        $op  = $tree["VALUE"];
         if (isset($tree["PNUM"]))
           $op .= "[" . $tree["PNUM"] . "]";
         $out .= "\t<td colspan=\"" . $tree["COMPLEXITY"] . "\">$op</td>\n";
@@ -246,7 +247,7 @@ class searchEngine_adapter_phrasea_queryParser
     print("</div>\n");
   }
 
-  function dumpDiv2(&$tree, $depth=0)
+  function dumpDiv2(&$tree, $depth = 0)
   {
     switch ($tree["CLASS"])
     {
@@ -355,7 +356,7 @@ class searchEngine_adapter_phrasea_queryParser
     }
   }
 
-  function priority_opk(&$tree, $depth=0)
+  function priority_opk(&$tree, $depth = 0)
   {
     if (!$tree)
 
@@ -363,10 +364,10 @@ class searchEngine_adapter_phrasea_queryParser
     if ($tree["CLASS"] == "OPK" && ($tree["LB"]["CLASS"] == "OPS" || $tree["LB"]["CLASS"] == "OPK"))
     {
       // on a un truc du genre ((a ou b) < 5), on le transforme en (a ou (b < 5))
-      $t = $tree["LB"];
+      $t          = $tree["LB"];
       $tree["LB"] = $t["RB"];
-      $t["RB"] = $tree;
-      $tree = $t;
+      $t["RB"]    = $tree;
+      $tree       = $t;
     }
     if (isset($tree["LB"]))
       $this->priority_opk($tree["LB"], $depth + 1);
@@ -374,7 +375,7 @@ class searchEngine_adapter_phrasea_queryParser
       $this->priority_opk($tree["RB"], $depth + 1);
   }
 
-  function distrib_opk(&$tree, $depth=0)
+  function distrib_opk(&$tree, $depth = 0)
   {
     if (!$tree)
 
@@ -382,18 +383,18 @@ class searchEngine_adapter_phrasea_queryParser
     if ($tree["CLASS"] == "OPK" && ($tree["RB"]["CLASS"] == "OPS"))
     {
       // on a un truc du genre (a = (5 ou 6)), on le transforme en ((a = 5) ou (a = 6))
-      $tmp = array("CLASS" => $tree["CLASS"],
-          "NODETYPE" => $tree["NODETYPE"],
-          "VALUE" => $tree["VALUE"],
-          "PNUM" => $tree["PNUM"],
-          "LB" => $tree["LB"],
-          "RB" => $tree["RB"]["RB"],
-          "DEPTH" => $tree["LB"]["DEPTH"]);
-      $t = $tree["RB"];
+      $tmp = array("CLASS"     => $tree["CLASS"],
+        "NODETYPE"  => $tree["NODETYPE"],
+        "VALUE"     => $tree["VALUE"],
+        "PNUM"      => $tree["PNUM"],
+        "LB"        => $tree["LB"],
+        "RB"        => $tree["RB"]["RB"],
+        "DEPTH"     => $tree["LB"]["DEPTH"]);
+      $t          = $tree["RB"];
       $tree["RB"] = $t["LB"];
-      $t["LB"] = $tree;
-      $t["RB"] = $tmp;
-      $tree = $t;
+      $t["LB"]    = $tree;
+      $t["RB"]    = $tmp;
+      $tree       = $t;
     }
     if (isset($tree["LB"]))
       $this->distrib_opk($tree["LB"], $depth + 1);
@@ -461,7 +462,6 @@ class searchEngine_adapter_phrasea_queryParser
     $copy = $tree;
     $this->_extendThesaurusOnTerms($tree, $copy, $useFullText, $useThesaurus, $keepfuzzy, 0, "");
 
-    // var_dump($tree);
     $this->proposals["QRY"] = "<span id=\"thprop_q\">" . $this->_queryAsHTML($tree) . "</span>";
 
     return($copy);
@@ -474,7 +474,7 @@ class searchEngine_adapter_phrasea_queryParser
     if (!$useThesaurus)
 
       return;  // full-text only : inchangé
- if (($tree["CLASS"] == "SIMPLE" || $tree["CLASS"] == "QSIMPLE"))
+    if (($tree["CLASS"] == "SIMPLE" || $tree["CLASS"] == "QSIMPLE"))
     {
       if (isset($tree["CONTEXT"]))
         $copy = $this->_extendToThesaurus_Simple($tree, false, $keepfuzzy, $path);
@@ -488,10 +488,10 @@ class searchEngine_adapter_phrasea_queryParser
         // on a 'field:value'  , on traite 'value'
         $tree["RB"]["PATH"] = $copy["RB"]["PATH"] = $path . "R";
         if (isset($tree["RB"]["CONTEXT"]))
-          $copy["CONTEXT"] = $tree["CONTEXT"] = $tree["RB"]["CONTEXT"];
+          $copy["CONTEXT"]    = $tree["CONTEXT"]    = $tree["RB"]["CONTEXT"];
         else
         if (!$keepfuzzy)
-          $copy["CONTEXT"] = $tree["CONTEXT"] = "*";
+          $copy["CONTEXT"]    = $tree["CONTEXT"]    = "*";
 
         $copy["RB"]["SREF"] = &$tree["RB"];
       }
@@ -522,7 +522,7 @@ class searchEngine_adapter_phrasea_queryParser
   function _extendToThesaurus_Simple(&$simple, $keepFullText, $keepfuzzy, $path)
   {
     $simple["PATH"] = $path;
-    $context = null;
+    $context        = null;
     if (isset($simple["CONTEXT"]))
     {
       $context = $simple["CONTEXT"];
@@ -531,34 +531,34 @@ class searchEngine_adapter_phrasea_queryParser
     if ($keepFullText)
     {
       // on fait un OU entre la recherche ft et une recherche th
-      $tmp = array("CLASS" => "OPS",
-          "NODETYPE" => PHRASEA_OP_OR,
-          "VALUE" => "OR",
-          "PNUM" => null,
-          "DEPTH" => $simple["DEPTH"],
-          "LB" => $simple,
-          "RB" => array("CLASS" => "OPK",
-              "NODETYPE" => PHRASEA_OP_COLON,
-              "VALUE" => ":",
-              // "CONTEXT"=>$context,
-              "PNUM" => null,
-              "DEPTH" => $simple["DEPTH"] + 1,
-              "LB" => array("CLASS" => "SIMPLE",
-                  "NODETYPE" => PHRASEA_KEYLIST,
-                  "VALUE" => array("*"),
-                  "DEPTH" => $simple["DEPTH"] + 2
-              ),
-              "RB" => $simple
-          )
+      $tmp = array("CLASS"    => "OPS",
+        "NODETYPE" => PHRASEA_OP_OR,
+        "VALUE"    => "OR",
+        "PNUM"     => null,
+        "DEPTH"    => $simple["DEPTH"],
+        "LB"       => $simple,
+        "RB"       => array("CLASS"    => "OPK",
+          "NODETYPE" => PHRASEA_OP_COLON,
+          "VALUE"    => ":",
+          // "CONTEXT"=>$context,
+          "PNUM"     => null,
+          "DEPTH"    => $simple["DEPTH"] + 1,
+          "LB"       => array("CLASS"    => "SIMPLE",
+            "NODETYPE" => PHRASEA_KEYLIST,
+            "VALUE"    => array("*"),
+            "DEPTH"                  => $simple["DEPTH"] + 2
+          ),
+          "RB"                     => $simple
+        )
       );
       // on vire le contexte  du coté fulltext
       unset($tmp["LB"]["CONTEXT"]);
       // ajoute le contexte si nécéssaire
       if ($context !== null)
-        $tmp["RB"]["CONTEXT"] = $context;
+        $tmp["RB"]["CONTEXT"]    = $context;
       else
       if (!$keepfuzzy)
-        $tmp["RB"]["CONTEXT"] = "*";
+        $tmp["RB"]["CONTEXT"]    = "*";
       // corrige les profondeurs des 2 copies du 'simple' d'origine
       $tmp["LB"]["DEPTH"] += 1;
       $tmp["RB"]["RB"]["DEPTH"] += 2;
@@ -569,25 +569,25 @@ class searchEngine_adapter_phrasea_queryParser
     else
     {
       // on remplace le ft par du th
-      $tmp = array("CLASS" => "OPK",
-          "NODETYPE" => PHRASEA_OP_COLON,
-          "VALUE" => ":",
-          // "CONTEXT"=>$context,
-          "PNUM" => null,
-          "DEPTH" => $simple["DEPTH"] + 1,
-          "LB" => array("CLASS" => "SIMPLE",
-              "NODETYPE" => PHRASEA_KEYLIST,
-              "VALUE" => array("*"),
-              "DEPTH" => $simple["DEPTH"] + 1
-          ),
-          "RB" => $simple
+      $tmp = array("CLASS"    => "OPK",
+        "NODETYPE" => PHRASEA_OP_COLON,
+        "VALUE"    => ":",
+        // "CONTEXT"=>$context,
+        "PNUM"     => null,
+        "DEPTH"    => $simple["DEPTH"] + 1,
+        "LB"       => array("CLASS"    => "SIMPLE",
+          "NODETYPE" => PHRASEA_KEYLIST,
+          "VALUE"    => array("*"),
+          "DEPTH"            => $simple["DEPTH"] + 1
+        ),
+        "RB"               => $simple
       );
       // ajoute le contexte si nécéssaire
       if ($context !== null)
-        $tmp["CONTEXT"] = $context;
+        $tmp["CONTEXT"]    = $context;
       else
       if (!$keepfuzzy)
-        $tmp["CONTEXT"] = "*";
+        $tmp["CONTEXT"]    = "*";
       // corrige la profondeur de la copie du 'simple' d'origine
       $tmp["RB"]["DEPTH"] += 1;
       // note une référence vers le terme d'origine
@@ -598,13 +598,13 @@ class searchEngine_adapter_phrasea_queryParser
     return($tmp);
   }
 
-  function thesaurus2(&$tree, $bid, $name, &$domthe, $searchsynonyms=true, $depth=0)
+  function thesaurus2(&$tree, $bid, $name, &$domthe, $searchsynonyms = true, $depth = 0)
   {
     if ($this->debug)
       print("thesaurus2:\n\$tree=" . var_export($tree, true) . "\n");
 
     if ($depth == 0)
-      $this->proposals["BASES"]["b$bid"] = array("BID" => $bid, "NAME" => $name, "TERMS" => array());
+      $this->proposals["BASES"]["b$bid"] = array("BID"   => $bid, "NAME"  => $name, "TERMS" => array());
 
     if (!$tree)
 
@@ -625,18 +625,18 @@ class searchEngine_adapter_phrasea_queryParser
     return($ambigus);
   }
 
-  function propAsHTML(&$node, &$html, $path, $depth=0)
+  function propAsHTML(&$node, &$html, $path, $depth = 0)
   {
     global $parm;
     if ($depth > 0)
     {
       $tsy = array();
       $lngfound = "?";
-      for ($n = $node->firstChild; $n; $n = $n->nextSibling)
+      for ($n        = $node->firstChild; $n; $n        = $n->nextSibling)
       {
         if ($n->nodeName == "sy")
         {
-          $lng = $n->getAttribute("lng");
+          $lng       = $n->getAttribute("lng");
           if (!array_key_exists($lng, $tsy))
             $tsy[$lng] = array();
           $zsy = array("v" => $n->getAttribute("v"), "w" => $n->getAttribute("w"), "k" => $n->getAttribute("k"));
@@ -644,7 +644,7 @@ class searchEngine_adapter_phrasea_queryParser
           if ($lngfound == "?" || ($lng == $this->lng && $lngfound != $lng))
           {
             $lngfound = $lng;
-            $syfound = $zsy;
+            $syfound  = $zsy;
           }
           else
           {
@@ -653,7 +653,7 @@ class searchEngine_adapter_phrasea_queryParser
           $tsy[$lng][] = $zsy;
         }
       }
-      $alt = "";
+      $alt         = "";
       foreach ($tsy as $lng => $tsy2)
       {
         foreach ($tsy2 as $sy)
@@ -664,8 +664,8 @@ class searchEngine_adapter_phrasea_queryParser
       }
 
       $thtml = $syfound["v"];
-      $kjs = $syfound["k"] ? ("'" . p4string::MakeString($syfound["k"], "js") . "'") : "null";
-      $wjs = "'" . p4string::MakeString($syfound["w"], "js") . "'";
+      $kjs   = $syfound["k"] ? ("'" . p4string::MakeString($syfound["k"], "js") . "'") : "null";
+      $wjs   = "'" . p4string::MakeString($syfound["w"], "js") . "'";
 
       if ($node->getAttribute("term"))
       {
@@ -684,28 +684,26 @@ class searchEngine_adapter_phrasea_queryParser
       if ($n->nodeType == XML_ELEMENT_NODE && $n->getAttribute("marked"))  // only 'te' marked
       {
         $lngfound = '?';
-        $syfound = '?';
-        for ($n2 = $n->firstChild; $n2; $n2 = $n2->nextSibling)
+        $syfound  = '?';
+        for ($n2       = $n->firstChild; $n2; $n2       = $n2->nextSibling)
         {
           if ($n2->nodeName == 'sy')
           {
             $lng = $n2->getAttribute('lng');
             if ($lngfound == "?" || ($lng == $this->lng && $lngfound != $lng))
             {
-              $lngfound = $lng;
-              $syfound = $n2->getAttribute('w');
+              $lngfound             = $lng;
+              $syfound              = $n2->getAttribute('w');
             }
           }
         }
         $n->removeAttribute("marked");
-        for ($i = 0; array_key_exists($syfound . $i, $tsort) && $i < 9999; $i++)
+        for ($i                    = 0; array_key_exists($syfound . $i, $tsort) && $i < 9999; $i++)
           ;
         $tsort[$syfound . $i] = $n;
       }
     }
     ksort($tsort);
-
-//    var_dump($tsort);
 
     foreach ($tsort as $n)
     {
@@ -716,13 +714,11 @@ class searchEngine_adapter_phrasea_queryParser
       $html .= $tab . "</div>\n";
   }
 
-  function _queryAsHTML($tree, $depth=0)
+  function _queryAsHTML($tree, $depth = 0)
   {
-    // printf("astext : ");
-    // var_dump($tree);
     if ($depth == 0)
     {
-      $ambiguites = array("n" => 0, "refs" => array());
+      $ambiguites = array("n"    => 0, "refs" => array());
     }
     switch ($tree["CLASS"])
     {
@@ -734,7 +730,7 @@ class searchEngine_adapter_phrasea_queryParser
           $path = $tree["PATH"];
           if (isset($tree["CONTEXT"]))
             $w .= ' [' . $tree["CONTEXT"] . ']';
-          $txt = '<span id="thprop_a_' . $path . '">"' . $w . '"</span>';
+          $txt  = '<span id="thprop_a_' . $path . '">"' . $w . '"</span>';
         }
         else
         {
@@ -771,68 +767,6 @@ class searchEngine_adapter_phrasea_queryParser
     }
   }
 
-  /*
-    function _queryAsHTML($tree, $mouseCallback="void", $depth=0)
-    {
-    // printf("astext : ");
-    // var_dump($tree);
-    if($depth==0)
-    {
-    $ambiguites = array("n"=>0, "refs"=>array());
-    }
-    switch($tree["CLASS"])
-    {
-    case "SIMPLE":
-    case "QSIMPLE":
-    $w = is_array($tree["VALUE"]) ? implode(" ", $tree["VALUE"]) : $tree["VALUE"];
-    $tab = "\n" . str_repeat("\t", $depth);
-    if(isset($tree["PATH"]))
-    {
-    $path = $tree["PATH"];
-    if(isset($tree["CONTEXT"]))
-    $w .= " [" . $tree["CONTEXT"] . "]";
-    $txt  = $tab . "<b><span onmouseover=\"return(".$mouseCallback."(event, '$path'));\" onmouseout=\"return(".$mouseCallback."(event, '$path'));\" id=\"thprop_a_".$path."\">";
-    $txt .= $tab . "\t\"" . $w . "";
-    //  $txt .= $tab . "\t<span id='thprop_w_".$path."'></span>\"";
-    $txt .= "\"";
-    $txt .= $tab . "</span></b>\n";
-    }
-    else
-    {
-    if(isset($tree["CONTEXT"]))
-    $w .= "[" . $tree["CONTEXT"] . "]";
-    if($tree["CLASS"] == "QSIMPLE")
-    $txt = $tab . "\"" . $w . "\"\n";
-    else
-    $txt = $tab . "" . $w . "\n";
-    }
-
-    return($txt);
-    break;
-    case "PHRASEA_KW_ALL":
-    return($tree["VALUE"][0]);
-    break;
-    case "PHRASEA_KW_LAST":
-    if($tree["PNUM"]!==null)
-
-    return("" . $tree["VALUE"][0] . "[" . $tree["PNUM"] . "]");
-    else
-
-    return($tree["VALUE"][0]);
-    break;
-    case "OPS":
-    case "OPK":
-    if(isset($tree["PNUM"]))
-
-    return("(" . $this->_queryAsHTML($tree["LB"], $mouseCallback, $depth+1) . "&nbsp;" .  $tree["VALUE"] . "[" . $tree["PNUM"] . "]&nbsp;" . $this->_queryAsHTML($tree["RB"], $mouseCallback, $depth+1) . ")");
-    else
-
-    return("(" . $this->_queryAsHTML($tree["LB"], $mouseCallback, $depth+1) . "&nbsp;" .  $tree["VALUE"] . "&nbsp;" . $this->_queryAsHTML($tree["RB"], $mouseCallback, $depth+1) . ")");
-    break;
-    }
-    }
-   */
-
   function setTids(&$tree, $bid, &$domthe, $searchsynonyms)
   {
     if ($this->debug)
@@ -841,8 +775,8 @@ class searchEngine_adapter_phrasea_queryParser
     // $this->proposals["BASES"]["b$bid"] = array("BID"=>$bid, "TERMS"=>array());
 
     $ambigus = 0;
-    if (is_array($w = $tree["RB"]["VALUE"]))
-      $t = $w = implode(" ", $w);
+    if (is_array($w       = $tree["RB"]["VALUE"]))
+      $t       = $w       = implode(" ", $w);
 
     if (isset($tree["CONTEXT"]))
     {
@@ -873,7 +807,7 @@ class searchEngine_adapter_phrasea_queryParser
     if ($this->debug)
       printf("searching thesaurus with xpath='%s'<br/>\n", $x);
 
-    $dxp = new DOMXPath($domthe);
+    $dxp   = new DOMXPath($domthe);
     $nodes = $dxp->query($x);
 
     if (!isset($tree["RB"]["SREF"]["TIDS"]))
@@ -897,7 +831,7 @@ class searchEngine_adapter_phrasea_queryParser
           $this->addtoTIDS($tree["RB"], $bid, $node);
         }
       }
-      $path = $tree["RB"]["SREF"]["PATH"];
+      $path     = $tree["RB"]["SREF"]["PATH"];
       $prophtml = "";
       $this->propAsHTML($domthe->documentElement, $prophtml, $path);
       $this->proposals["BASES"]["b$bid"]["TERMS"][$path]["HTML"] = $prophtml;
@@ -1007,12 +941,12 @@ class searchEngine_adapter_phrasea_queryParser
 
   function addtoTIDS(&$extendednode, $bid, $DOMnode) // ajoute un tid en évitant les doublons
   {
-    $id = $DOMnode->getAttribute("id");
+    $id  = $DOMnode->getAttribute("id");
     $pid = $DOMnode->parentNode->getAttribute("id");
     $lng = $DOMnode->getAttribute("lng");
-    $w = $DOMnode->getAttribute("w");
-    $k = $DOMnode->getAttribute("k");
-    $p = $DOMnode->parentNode->getAttribute("v"); // le terme général (pére) du terme recherché : utile pour la levée d'ambiguité
+    $w   = $DOMnode->getAttribute("w");
+    $k   = $DOMnode->getAttribute("k");
+    $p   = $DOMnode->parentNode->getAttribute("v"); // le terme général (pére) du terme recherché : utile pour la levée d'ambiguité
 
     $path = $extendednode["SREF"]["PATH"];
     if ($this->debug)
@@ -1042,7 +976,7 @@ class searchEngine_adapter_phrasea_queryParser
       }
     }
     if (!$found)
-      $extendednode["SREF"]["TIDS"][] = array("bid" => $bid, "pid" => $pid, "id" => $id, "w" => $w, "k" => $k, "lng" => $lng, "p" => $p);
+      $extendednode["SREF"]["TIDS"][] = array("bid" => $bid, "pid" => $pid, "id"  => $id, "w"   => $w, "k"   => $k, "lng" => $lng, "p"   => $p);
 
     // on liste les propositions de thésaurus pour ce node (dans l'arbre simple)
     if (!isset($this->proposals["BASES"]["b$bid"]["TERMS"][$path]))
@@ -1060,7 +994,7 @@ class searchEngine_adapter_phrasea_queryParser
     // on marque le terme principal
     $DOMnode->parentNode->setAttribute("term", "1");
     // on commence par marquer les fils directs. rappel:$DOMnode pointe sur un sy
-    for ($node = $DOMnode->parentNode->firstChild; $node; $node = $node->nextSibling)
+    for ($node  = $DOMnode->parentNode->firstChild; $node; $node  = $node->nextSibling)
     {
       if ($node->nodeName == "te")
       {
@@ -1073,30 +1007,27 @@ class searchEngine_adapter_phrasea_queryParser
       $id = $node->getAttribute("id");
       if (!$id)
         break; // on a dépassé la racine du thésaurus
- $node->setAttribute("marked", "1");
-// printf("&lt;%s id='%s'<br/>\n", $node->nodeName, $node->getAttribute("id"));
+      $node->setAttribute("marked", "1");
     }
   }
 
-  function astext_ambigu($tree, &$ambiguites, $mouseCallback="void", $depth=0)
+  function astext_ambigu($tree, &$ambiguites, $mouseCallback = "void", $depth = 0)
   {
-    // printf("astext : ");
-    // var_dump($tree);
     if ($depth == 0)
     {
-      $ambiguites = array("n" => 0, "refs" => array());
+      $ambiguites = array("n"    => 0, "refs" => array());
     }
     switch ($tree["CLASS"])
     {
       case "SIMPLE":
       case "QSIMPLE":
-        $prelink = $postlink = "";
-        $w = is_array($tree["VALUE"]) ? implode(" ", $tree["VALUE"]) : $tree["VALUE"];
-        $tab = "\n" . str_repeat("\t", $depth);
+        $prelink  = $postlink = "";
+        $w        = is_array($tree["VALUE"]) ? implode(" ", $tree["VALUE"]) : $tree["VALUE"];
+        $tab      = "\n" . str_repeat("\t", $depth);
         if (isset($tree["TIDS"]) && count($tree["TIDS"]) > 1)
         {
-          $ambiguites["refs"][$n = $ambiguites["n"]] = &$tree;
-          $txt = $tab . "<b><span onmouseover=\"return(" . $mouseCallback . "(event, $n));\" onmouseout=\"return(" . $mouseCallback . "(event, $n));\" id=\"thamb_a_" . $ambiguites["n"] . "\">";
+          $ambiguites["refs"][$n                                         = $ambiguites["n"]] = &$tree;
+          $txt                                       = $tab . "<b><span onmouseover=\"return(" . $mouseCallback . "(event, $n));\" onmouseout=\"return(" . $mouseCallback . "(event, $n));\" id=\"thamb_a_" . $ambiguites["n"] . "\">";
           $txt .= $tab . "\t\"" . $w . "";
           $txt .= $tab . "\t<span id='thamb_w_" . $ambiguites["n"] . "'></span>\"";
           $txt .= $tab . "</span></b>\n";
@@ -1137,7 +1068,7 @@ class searchEngine_adapter_phrasea_queryParser
     }
   }
 
-  function get_ambigu(&$tree, $mouseCallback="void", $depth=0)
+  function get_ambigu(&$tree, $mouseCallback = "void", $depth = 0)
   {
     if (!$tree)
 
@@ -1155,14 +1086,14 @@ class searchEngine_adapter_phrasea_queryParser
     if ($depth == 0)
     {
       $t_ambiguites = array();
-      $r = ($this->astext_ambigu($tree, $t_ambiguites, $mouseCallback));
+      $r                     = ($this->astext_ambigu($tree, $t_ambiguites, $mouseCallback));
       $t_ambiguites["query"] = $r;
 
       return($t_ambiguites);
     }
   }
 
-  function set_default(&$tree, &$emptyw, $depth=0)
+  function set_default(&$tree, &$emptyw, $depth = 0)
   {
     if (!$tree)
 
@@ -1202,7 +1133,7 @@ class searchEngine_adapter_phrasea_queryParser
         }
         if (is_array($tree["RB"]["VALUE"]))
         {
-          $lw = "";
+          $lw                  = "";
           foreach ($tree["RB"]["VALUE"] as $w)
             $lw .= ( $lw == "" ? "" : " ") . $w;
           $tree["RB"]["VALUE"] = $lw;
@@ -1225,8 +1156,8 @@ class searchEngine_adapter_phrasea_queryParser
         if (is_array($tree["VALUE"]))
         {
           $treetmp = null;
-          $pnum = 0;
-          for ($i = 0; $i < count($tree["VALUE"]); $i++)
+          $pnum    = 0;
+          for ($i       = 0; $i < count($tree["VALUE"]); $i++)
           {
             // gestion mot vide
             if (isset($emptyw[$tree["VALUE"][$i]]) || $tree["VALUE"][$i] == "?" || $tree["VALUE"][$i] == "*")
@@ -1238,35 +1169,35 @@ class searchEngine_adapter_phrasea_queryParser
             {
               if ($treetmp == null)
               {
-                $treetmp = array("CLASS" => $tree["CLASS"],
-                    "NODETYPE" => $tree["NODETYPE"],
-                    "VALUE" => $tree["VALUE"][$i],
-                    "PNUM" => $tree["PNUM"],
-                    "DEPTH" => $tree["DEPTH"]);
-                $pnum = 0;
+                $treetmp = array("CLASS"    => $tree["CLASS"],
+                  "NODETYPE" => $tree["NODETYPE"],
+                  "VALUE"    => $tree["VALUE"][$i],
+                  "PNUM"     => $tree["PNUM"],
+                  "DEPTH"    => $tree["DEPTH"]);
+                $pnum      = 0;
               }
               else
               {
-                $dop = $tree["CLASS"] == "QSIMPLE" ? $this->quoted_defaultop : $this->defaultop;
-                $treetmp = array("CLASS" => "OPS",
-                    "VALUE" => $dop["VALUE"],
-                    "NODETYPE" => $dop["NODETYPE"],
-                    "PNUM" => $pnum, // peut-être écrasé par defaultop
-                    "DEPTH" => $depth,
-                    "LB" => $treetmp,
-                    "RB" => array("CLASS" => $tree["CLASS"],
-                        "NODETYPE" => $tree["NODETYPE"],
-                        "VALUE" => $tree["VALUE"][$i],
-                        "PNUM" => $tree["PNUM"],
-                        "DEPTH" => $tree["DEPTH"])
+                $dop     = $tree["CLASS"] == "QSIMPLE" ? $this->quoted_defaultop : $this->defaultop;
+                $treetmp = array("CLASS"    => "OPS",
+                  "VALUE"    => $dop["VALUE"],
+                  "NODETYPE" => $dop["NODETYPE"],
+                  "PNUM"     => $pnum, // peut-être écrasé par defaultop
+                  "DEPTH"    => $depth,
+                  "LB"       => $treetmp,
+                  "RB"       => array("CLASS"          => $tree["CLASS"],
+                    "NODETYPE"       => $tree["NODETYPE"],
+                    "VALUE"          => $tree["VALUE"][$i],
+                    "PNUM"           => $tree["PNUM"],
+                    "DEPTH"          => $tree["DEPTH"])
                 );
                 if (array_key_exists("PNUM", $dop))
                   $treetmp["PNUM"] = $dop["PNUM"];
-                $pnum = 0;
+                $pnum            = 0;
               }
             }
           }
-          $tree = $treetmp;
+          $tree            = $treetmp;
         }
       }
     }
@@ -1281,18 +1212,16 @@ class searchEngine_adapter_phrasea_queryParser
     while ($n > 0);
   }
 
-  function factor_or2(&$tree, $depth=0)
+  function factor_or2(&$tree, $depth = 0)
   {
-    // printf("<hr><b>factor_or depth=%s sur</b><br>", $depth);
-    // var_dump($tree);
     $nmodif = 0;
     if ($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK")
     {
       if ($tree["NODETYPE"] == PHRASEA_OP_OR && ($tree["LB"]["CLASS"] == "SIMPLE" || $tree["LB"]["CLASS"] == "QSIMPLE") && ($tree["RB"]["CLASS"] == "SIMPLE" || $tree["RB"]["CLASS"] == "QSIMPLE"))
       {
-        $tree["CLASS"] = "SIMPLE";
+        $tree["CLASS"]    = "SIMPLE";
         $tree["NODETYPE"] = PHRASEA_KEYLIST;
-        $tree["VALUE"] = is_array($tree["LB"]["VALUE"]) ? $tree["LB"]["VALUE"] : array($tree["LB"]["VALUE"]);
+        $tree["VALUE"]    = is_array($tree["LB"]["VALUE"]) ? $tree["LB"]["VALUE"] : array($tree["LB"]["VALUE"]);
         if (is_array($tree["RB"]["VALUE"]))
         {
           foreach ($tree["RB"]["VALUE"] as $v)
@@ -1302,11 +1231,8 @@ class searchEngine_adapter_phrasea_queryParser
           $tree["VALUE"][] = $tree["RB"]["VALUE"];
         unset($tree["LB"]);
         unset($tree["RB"]);
-        // unset($tree["NODETYPE"]);
         unset($tree["PNUM"]);
         $nmodif++;
-        // printf("<hr><b>donne</b><br>");
-        // var_dump($tree);
       }
       else
       {
@@ -1314,13 +1240,12 @@ class searchEngine_adapter_phrasea_queryParser
         $nmodif += $this->factor_or2($tree["RB"], $depth + 1);
       }
     }
-    // printf("<br>return %s<br>", $nmodif);
+
     return($nmodif);
   }
 
-  function setNumValue(&$tree, SimpleXMLElement $sxml_struct, $depth=0)
+  function setNumValue(&$tree, SimpleXMLElement $sxml_struct, $depth = 0)
   {
-    // var_dump($tree);
     if ($tree["CLASS"] == "OPK")
     {
       if (isset($tree["RB"]) && ($tree["RB"]["CLASS"] == "SIMPLE" || $tree["RB"]["CLASS"] == "QSIMPLE") && ($tree["LB"]["CLASS"] == "SIMPLE" || $tree["LB"]["CLASS"] == "QSIMPLE"))
@@ -1371,50 +1296,43 @@ class searchEngine_adapter_phrasea_queryParser
     ## creation branche gauche avec ">="
 // print("changeNodeEquals2\n");
 // print("creation branche gauche ( '>=' ) \n");
-    $newTreeLB = array("CLASS" => "OPK",
-        "VALUE" => ">=",
-        "NODETYPE" => PHRASEA_OP_GEQT,
-        "PNUM" => NULL,
-        "DEPTH" => 0,
-        "LB" => $oneBranch["LB"],
-        "RB" => array("CLASS" => "SIMPLE",
-            "VALUE" => $this->isoDate($oneBranch["RB"]["VALUE"], false),
-            "NODETYPE" => PHRASEA_KEYLIST,
-            "PNUM" => NULL,
-            "DEPTH" => 0)
+    $newTreeLB = array("CLASS"    => "OPK",
+      "VALUE"    => ">=",
+      "NODETYPE" => PHRASEA_OP_GEQT,
+      "PNUM"     => NULL,
+      "DEPTH"    => 0,
+      "LB"       => $oneBranch["LB"],
+      "RB"       => array("CLASS"    => "SIMPLE",
+        "VALUE"    => $this->isoDate($oneBranch["RB"]["VALUE"], false),
+        "NODETYPE" => PHRASEA_KEYLIST,
+        "PNUM"     => NULL,
+        "DEPTH"    => 0)
     );
-// var_dump($newTreeLB);
-// print("fin creation branche gauche ( '>=' ) \n");
-    ## fin creation branche gauche ( ">=" )
-    ## creation branche droite avec "<="
-// print("creation branche droite avec '<=' \n");
-    $newTreeRB = array("CLASS" => "OPK",
-        "VALUE" => "<=",
-        "NODETYPE" => PHRASEA_OP_LEQT,
-        "PNUM" => NULL,
-        "DEPTH" => 0,
-        "LB" => $oneBranch["LB"],
-        "RB" => array("CLASS" => "SIMPLE",
-            "VALUE" => $this->isoDate($oneBranch["RB"]["VALUE"], true),
-            "NODETYPE" => PHRASEA_KEYLIST,
-            "PNUM" => NULL,
-            "DEPTH" => 0)
+
+    $newTreeRB = array("CLASS"    => "OPK",
+      "VALUE"    => "<=",
+      "NODETYPE" => PHRASEA_OP_LEQT,
+      "PNUM"     => NULL,
+      "DEPTH"    => 0,
+      "LB"       => $oneBranch["LB"],
+      "RB"       => array("CLASS"    => "SIMPLE",
+        "VALUE"    => $this->isoDate($oneBranch["RB"]["VALUE"], true),
+        "NODETYPE" => PHRASEA_KEYLIST,
+        "PNUM"     => NULL,
+        "DEPTH"    => 0)
     );
-// var_dump($newTreeRB);
 // print("fin creation branche droite avec '<=' \n");
     ## fin creation branche droite ( "<=" )
 
-    $tree = array("CLASS" => "OPS",
-        "VALUE" => "et",
-        "NODETYPE" => PHRASEA_OP_AND,
-        "PNUM" => NULL,
-        "DEPTH" => 0,
-        "LB" => $newTreeLB,
-        "RB" => $newTreeRB);
+    $tree = array("CLASS"    => "OPS",
+      "VALUE"    => "et",
+      "NODETYPE" => PHRASEA_OP_AND,
+      "PNUM"     => NULL,
+      "DEPTH"    => 0,
+      "LB"       => $newTreeLB,
+      "RB"       => $newTreeRB);
 
 
-    // et  on le retourne
-// var_dump($tree);
     return $tree;
   }
 
@@ -1422,23 +1340,23 @@ class searchEngine_adapter_phrasea_queryParser
   {
     if (strtoupper($type) == strtoupper("Date"))
     {
-      $dateEnIso = $this->isoDate($branch["VALUE"]);
+      $dateEnIso       = $this->isoDate($branch["VALUE"]);
       $branch["VALUE"] = $dateEnIso;
     }
   }
 
-  function isoDate($onedate, $max=false)
+  function isoDate($onedate, $max = false)
   {
     $v_y = "1900";
     $v_m = "01";
     $v_d = "01";
 
-    $v_h = $v_minutes = $v_s = "00";
+    $v_h       = $v_minutes = $v_s       = "00";
     if ($max)
     {
-      $v_h = $v_minutes = $v_s = "99";
+      $v_h       = $v_minutes = $v_s       = "99";
     }
-    $tmp = $onedate;
+    $tmp       = $onedate;
 
     if (!is_array($tmp))
       $tmp = explode(" ", $tmp);
@@ -1519,31 +1437,31 @@ class searchEngine_adapter_phrasea_queryParser
         {
           case 14 :
             // date iso YYYYMMDDHHMMSS
-            $v_y = substr($tmp[0], 0, 4);
-            $v_m = substr($tmp[0], 4, 2);
-            $v_d = substr($tmp[0], 6, 2);
-            $v_h = substr($tmp[0], 8, 2);
+            $v_y       = substr($tmp[0], 0, 4);
+            $v_m       = substr($tmp[0], 4, 2);
+            $v_d       = substr($tmp[0], 6, 2);
+            $v_h       = substr($tmp[0], 8, 2);
             $v_minutes = substr($tmp[0], 10, 2);
-            $v_s = substr($tmp[0], 12, 2);
+            $v_s       = substr($tmp[0], 12, 2);
             break;
           case 8 :
             // date iso YYYYMMDD
-            $v_y = substr($tmp[0], 0, 4);
-            $v_m = substr($tmp[0], 4, 2);
-            $v_d = substr($tmp[0], 6, 2);
+            $v_y       = substr($tmp[0], 0, 4);
+            $v_m       = substr($tmp[0], 4, 2);
+            $v_d       = substr($tmp[0], 6, 2);
             break;
           case 6 :
             // date iso YYYYMM
-            $v_y = substr($tmp[0], 0, 4);
-            $v_m = substr($tmp[0], 4, 2);
+            $v_y       = substr($tmp[0], 0, 4);
+            $v_m       = substr($tmp[0], 4, 2);
             if ($max)
-              $v_d = "99";
+              $v_d       = "99";
             else
-              $v_d = "00";
+              $v_d       = "00";
             break;
           case 4 :
             // date iso YYYY
-            $v_y = $tmp[0];
+            $v_y       = $tmp[0];
 
             if ($max)
               $v_m = "99";
@@ -1582,11 +1500,9 @@ class searchEngine_adapter_phrasea_queryParser
     return("" . $v_y . $v_m . $v_d . $v_h . $v_minutes . $v_s);
   }
 
-  function distrib_in(&$tree, $depth=0)
+  function distrib_in(&$tree, $depth = 0)
   {
     $opdistrib = array(PHRASEA_OP_AND, PHRASEA_OP_OR, PHRASEA_OP_EXCEPT, PHRASEA_OP_NEAR, PHRASEA_OP_BEFORE, PHRASEA_OP_AFTER); // ces opérateurs sont 'distribuables' autour d'un 'IN'
-    // printf("<hr><b>distrib_in depth=%s sur</b><br>", $depth);
-    // var_dump($tree);
 
     if ($tree["CLASS"] == "OPS" || $tree["CLASS"] == "OPK")
     {
@@ -1606,25 +1522,24 @@ class searchEngine_adapter_phrasea_queryParser
           $m_o = $tree["NODETYPE"];
           $m_n = $tree["PNUM"];
 
-          $tree["CLASS"] = $tree["LB"]["CLASS"];
+          $tree["CLASS"]    = $tree["LB"]["CLASS"];
           $tree["NODETYPE"] = $tree["LB"]["NODETYPE"];
-          $tree["VALUE"] = $tree["LB"]["VALUE"];
-          $tree["PNUM"] = $tree["LB"]["PNUM"];
+          $tree["VALUE"]    = $tree["LB"]["VALUE"];
+          $tree["PNUM"]     = $tree["LB"]["PNUM"];
 
-          $tree["LB"]["CLASS"] = $m_t;
+          $tree["LB"]["CLASS"]    = $m_t;
           $tree["LB"]["NODETYPE"] = $m_o;
-          $tree["LB"]["VALUE"] = $m_v;
-          $tree["LB"]["PNUM"] = $m_n;
+          $tree["LB"]["VALUE"]    = $m_v;
+          $tree["LB"]["PNUM"]     = $m_n;
 
-          $tree["RB"] = array("CLASS" => $m_t,
-              "NODETYPE" => $m_o,
-              "VALUE" => $m_v,
-              "PNUM" => $m_n,
-              "LB" => $tree["LB"]["RB"],
-              "RB" => $tree["RB"]);
+          $tree["RB"] = array("CLASS"    => $m_t,
+            "NODETYPE" => $m_o,
+            "VALUE"    => $m_v,
+            "PNUM"     => $m_n,
+            "LB"       => $tree["LB"]["RB"],
+            "RB"       => $tree["RB"]);
 
           $tree["LB"]["RB"] = $tree["RB"]["RB"];
-          // var_dump($tree);
           // return;
         }
 
@@ -1639,22 +1554,22 @@ class searchEngine_adapter_phrasea_queryParser
           $m_o = $tree["NODETYPE"];
           $m_n = $tree["PNUM"];
 
-          $tree["CLASS"] = $tree["RB"]["CLASS"];
+          $tree["CLASS"]    = $tree["RB"]["CLASS"];
           $tree["NODETYPE"] = $tree["RB"]["NODETYPE"];
-          $tree["VALUE"] = $tree["RB"]["VALUE"];
-          $tree["PNUM"] = $tree["RB"]["PNUM"];
+          $tree["VALUE"]    = $tree["RB"]["VALUE"];
+          $tree["PNUM"]     = $tree["RB"]["PNUM"];
 
-          $tree["RB"]["CLASS"] = $m_t;
+          $tree["RB"]["CLASS"]    = $m_t;
           $tree["RB"]["NODETYPE"] = $m_o;
-          $tree["RB"]["VALUE"] = $m_v;
-          $tree["RB"]["PNUM"] = $m_n;
+          $tree["RB"]["VALUE"]    = $m_v;
+          $tree["RB"]["PNUM"]     = $m_n;
 
-          $tree["LB"] = array("CLASS" => $m_t,
-              "NODETYPE" => $m_o,
-              "VALUE" => $m_v,
-              "PNUM" => $m_n,
-              "LB" => $tree["LB"],
-              "RB" => $tree["RB"]["LB"]);
+          $tree["LB"] = array("CLASS"    => $m_t,
+            "NODETYPE" => $m_o,
+            "VALUE"    => $m_v,
+            "PNUM"     => $m_n,
+            "LB"       => $tree["LB"],
+            "RB"       => $tree["RB"]["LB"]);
 
           $tree["RB"]["LB"] = $tree["LB"]["LB"];
         }
@@ -1711,7 +1626,7 @@ class searchEngine_adapter_phrasea_queryParser
   {
 //    printf("<!-- PARSING $depth  -->\n\n");
     $tree = null;
-    while ($t = $this->nexttoken($inquote))
+    while ($t    = $this->nexttoken($inquote))
     {
       if ($this->debug)
         printf("got token %s of class %s\n", $t["VALUE"], $t["CLASS"]);
@@ -1759,18 +1674,18 @@ class searchEngine_adapter_phrasea_queryParser
               {
                 $tree["RB"] = $this->maketree($depth + 1);
                 if (!$tree["RB"])
-                  $tree = null;
+                  $tree       = null;
               }
               else
               {
                 // ici on applique l'opérateur par défaut
-                $tree = array("CLASS" => "OPS",
-                    "VALUE" => $this->defaultop["VALUE"],
-                    "NODETYPE" => $this->defaultop["NODETYPE"],
-                    "PNUM" => $this->defaultop["PNUM"],
-                    "DEPTH" => $depth,
-                    "LB" => $tree,
-                    "RB" => $this->maketree($depth + 1));
+                $tree = array("CLASS"    => "OPS",
+                  "VALUE"    => $this->defaultop["VALUE"],
+                  "NODETYPE" => $this->defaultop["NODETYPE"],
+                  "PNUM"     => $this->defaultop["PNUM"],
+                  "DEPTH"    => $depth,
+                  "LB"       => $tree,
+                  "RB"       => $this->maketree($depth + 1));
               }
             }
             if (!$tree)
@@ -1816,18 +1731,18 @@ class searchEngine_adapter_phrasea_queryParser
               {
                 $tree["RB"] = $this->maketree($depth + 1, true);
                 if (!$tree["RB"])
-                  $tree = null;
+                  $tree       = null;
               }
               else
               {
                 // ici on applique l'opérateur par défaut
-                $tree = array("CLASS" => "OPS",
-                    "VALUE" => $this->defaultop["VALUE"],
-                    "NODETYPE" => $this->defaultop["NODETYPE"],
-                    "PNUM" => $this->defaultop["PNUM"],
-                    "DEPTH" => $depth,
-                    "LB" => $tree,
-                    "RB" => $this->maketree($depth + 1, true));
+                $tree = array("CLASS"    => "OPS",
+                  "VALUE"    => $this->defaultop["VALUE"],
+                  "NODETYPE" => $this->defaultop["NODETYPE"],
+                  "PNUM"     => $this->defaultop["PNUM"],
+                  "DEPTH"    => $depth,
+                  "LB"       => $tree,
+                  "RB"       => $this->maketree($depth + 1, true));
               }
             }
             if (!$tree)
@@ -1879,7 +1794,6 @@ class searchEngine_adapter_phrasea_queryParser
 //        if($this->debug)
 //        {
 //          printf("addtotree({tree}, \$t='%s', \$depth=%d, inquote=%s)\n", $t["VALUE"], $depth, $inquote?"true":"false");
-//          var_dump($tree);
 //        }
         if ($tree["CLASS"] == "SIMPLE" || $tree["CLASS"] == "QSIMPLE")
         {
@@ -1940,7 +1854,7 @@ class searchEngine_adapter_phrasea_queryParser
           return(null);
         }
 
-        return(array("CLASS" => "OPK", "VALUE" => $t["VALUE"], "NODETYPE" => $this->opk[$t["VALUE"]]["NODETYPE"], "PNUM" => null, "DEPTH" => $depth, "LB" => $tree, "RB" => null));
+        return(array("CLASS"    => "OPK", "VALUE"    => $t["VALUE"], "NODETYPE" => $this->opk[$t["VALUE"]]["NODETYPE"], "PNUM"     => null, "DEPTH"    => $depth, "LB"       => $tree, "RB"       => null));
         break;
       case "TOK_WORD":
         if ($t["CLASS"] == "TOK_WORD" && isset($this->ops[$t["VALUE"]]) && !$inquote)
@@ -1978,17 +1892,17 @@ class searchEngine_adapter_phrasea_queryParser
             }
           }
 
-          return(array("CLASS" => "OPS", "VALUE" => $t["VALUE"], "NODETYPE" => $this->ops[$t["VALUE"]]["NODETYPE"], "PNUM" => $pnum, "DEPTH" => $depth, "LB" => $tree, "RB" => null));
+          return(array("CLASS"    => "OPS", "VALUE"    => $t["VALUE"], "NODETYPE" => $this->ops[$t["VALUE"]]["NODETYPE"], "PNUM"     => $pnum, "DEPTH"    => $depth, "LB"       => $tree, "RB"       => null));
         }
         else
         {
           // ce mot n'est pas un opérateur
-          $pnum = null;
+          $pnum     = null;
           $nodetype = PHRASEA_KEYLIST;
           if ($t["CLASS"] == "TOK_WORD" && isset($this->spw[$t["VALUE"]]) && !$inquote)
           {
             // mais c'est un mot 'spécial' de phrasea ('last', 'all')
-            $type = $this->spw[$t["VALUE"]]["CLASS"];
+            $type     = $this->spw[$t["VALUE"]]["CLASS"];
             $nodetype = $this->spw[$t["VALUE"]]["NODETYPE"];
             if ($this->spw[$t["VALUE"]]["CANNUM"])
             {
@@ -2016,9 +1930,9 @@ class searchEngine_adapter_phrasea_queryParser
 
   function addsimple($t, $type, $nodetype, $pnum, $tree, $depth)
   {
-    $nok = 0;
+    $nok      = 0;
     $registry = registry::get_instance();
-    $w = $t["VALUE"];
+    $w        = $t["VALUE"];
     if ($w != "?" && $w != "*")  // on laisse passer les 'isolés' pour les traiter plus tard comme des mots vides
     {
       for ($i = 0; $i < strlen($w); $i++)
@@ -2042,7 +1956,7 @@ class searchEngine_adapter_phrasea_queryParser
     }
     if (!$tree)
     {
-      return(array("CLASS" => $type, "NODETYPE" => $nodetype, "VALUE" => array($t["VALUE"]), "PNUM" => $pnum, "DEPTH" => $depth));
+      return(array("CLASS"    => $type, "NODETYPE" => $nodetype, "VALUE"    => array($t["VALUE"]), "PNUM"  => $pnum, "DEPTH" => $depth));
     }
     switch ($tree["CLASS"])
     {
@@ -2052,17 +1966,17 @@ class searchEngine_adapter_phrasea_queryParser
           $tree["VALUE"][] = $t["VALUE"];
         else
         {
-          $tree = array("CLASS" => "OPS",
-              "VALUE" => "et",
-              "NODETYPE" => PHRASEA_OP_AND,
-              "PNUM" => null,
-              "DEPTH" => $depth,
-              "LB" => $tree,
-              "RB" => array("CLASS" => $type,
-                  "NODETYPE" => $nodetype,
-                  "VALUE" => array($t["VALUE"]),
-                  "PNUM" => $pnum,
-                  "DEPTH" => $depth));
+          $tree = array("CLASS"    => "OPS",
+            "VALUE"    => "et",
+            "NODETYPE" => PHRASEA_OP_AND,
+            "PNUM"     => null,
+            "DEPTH"    => $depth,
+            "LB"       => $tree,
+            "RB"       => array("CLASS"    => $type,
+              "NODETYPE" => $nodetype,
+              "VALUE"    => array($t["VALUE"]),
+              "PNUM"  => $pnum,
+              "DEPTH" => $depth));
         }
 
         return($tree);
@@ -2070,7 +1984,7 @@ class searchEngine_adapter_phrasea_queryParser
       case "OPK":
         if ($tree["RB"] == null)
         {
-          $tree["RB"] = array("CLASS" => $type, "NODETYPE" => $nodetype, "VALUE" => array($t["VALUE"]), "PNUM" => $pnum, "DEPTH" => $depth);
+          $tree["RB"] = array("CLASS"    => $type, "NODETYPE" => $nodetype, "VALUE"    => array($t["VALUE"]), "PNUM"  => $pnum, "DEPTH" => $depth);
 
           return($tree);
         }
@@ -2084,43 +1998,43 @@ class searchEngine_adapter_phrasea_queryParser
           }
           if (($tree["RB"]["CLASS"] == "PHRASEA_KW_LAST" || $tree["RB"]["CLASS"] == "PHRASEA_KW_ALL") && $tree["RB"]["DEPTH"] == $depth)
           {
-            $tree["RB"] = array("CLASS" => "OPS",
-                "VALUE" => "et",
-                "NODETYPE" => PHRASEA_OP_AND,
-                "PNUM" => null,
-                "DEPTH" => $depth,
-                "LB" => $tree["RB"],
-                "RB" => array("CLASS" => $type,
-                    "NODETYPE" => $nodetype,
-                    "VALUE" => array($t["VALUE"]),
-                    "PNUM" => $pnum,
-                    "DEPTH" => $depth));
+            $tree["RB"] = array("CLASS"    => "OPS",
+              "VALUE"    => "et",
+              "NODETYPE" => PHRASEA_OP_AND,
+              "PNUM"     => null,
+              "DEPTH"    => $depth,
+              "LB"       => $tree["RB"],
+              "RB"       => array("CLASS"    => $type,
+                "NODETYPE" => $nodetype,
+                "VALUE"    => array($t["VALUE"]),
+                "PNUM"  => $pnum,
+                "DEPTH" => $depth));
 
             return($tree);
           }
 
-          return(array("CLASS" => "OPS",
-      "VALUE" => $this->defaultop["VALUE"],
-      "NODETYPE" => $this->defaultop["NODETYPE"],
-      "PNUM" => $this->defaultop["PNUM"],
-      "DEPTH" => $depth,
-      "LB" => $tree,
-      "RB" => array("CLASS" => $type, "NODETYPE" => $nodetype, "VALUE" => array($t["VALUE"]), "PNUM" => $pnum, "DEPTH" => $depth)
-          ));
+          return(array("CLASS"    => "OPS",
+            "VALUE"    => $this->defaultop["VALUE"],
+            "NODETYPE" => $this->defaultop["NODETYPE"],
+            "PNUM"     => $this->defaultop["PNUM"],
+            "DEPTH"    => $depth,
+            "LB"       => $tree,
+            "RB"       => array("CLASS"    => $type, "NODETYPE" => $nodetype, "VALUE"    => array($t["VALUE"]), "PNUM"  => $pnum, "DEPTH" => $depth)
+            ));
         }
       case "PHRASEA_KW_LAST":
       case "PHRASEA_KW_ALL":
-        return(array("CLASS" => "OPS",
-    "VALUE" => "et",
-    "NODETYPE" => PHRASEA_OP_AND,
-    "PNUM" => null,
-    "DEPTH" => $depth,
-    "LB" => $tree,
-    "RB" => array("CLASS" => $type,
-        "NODETYPE" => $nodetype,
-        "VALUE" => array($t["VALUE"]),
-        "PNUM" => $pnum,
-        "DEPTH" => $depth)));
+        return(array("CLASS"    => "OPS",
+          "VALUE"    => "et",
+          "NODETYPE" => PHRASEA_OP_AND,
+          "PNUM"     => null,
+          "DEPTH"    => $depth,
+          "LB"       => $tree,
+          "RB"       => array("CLASS"    => $type,
+            "NODETYPE" => $nodetype,
+            "VALUE"    => array($t["VALUE"]),
+            "PNUM"  => $pnum,
+            "DEPTH" => $depth)));
     }
   }
 
@@ -2129,7 +2043,7 @@ class searchEngine_adapter_phrasea_queryParser
     $this->phq = $s . " " . $this->phq;
   }
 
-  function nexttoken($inquote=false)
+  function nexttoken($inquote = false)
   {
     if ($this->phq == "")
 
@@ -2144,7 +2058,7 @@ class searchEngine_adapter_phrasea_queryParser
 
           return(array("CLASS" => "TOK_VOID", "VALUE" => $c));
         }
-        $c2 = $c . substr($this->phq, 1, 1);
+        $c2     = $c . substr($this->phq, 1, 1);
         if ($c2 == "<=" || $c2 == ">=" || $c2 == "<>")
         {
           $this->phq = $this->mb_ltrim(mb_substr($this->phq, 2, 99999, 'UTF-8'), 'UTF-8');
@@ -2241,10 +2155,10 @@ class searchEngine_adapter_phrasea_queryParser
         return(array("CLASS" => "TOK_QUOTE", "VALUE" => "\""));
         break;
       default:
-        $l = mb_strlen($this->phq, 'UTF-8');
-        $t = "";
+        $l      = mb_strlen($this->phq, 'UTF-8');
+        $t      = "";
         $c_utf8 = "";
-        for ($i = 0; $i < $l; $i++)
+        for ($i      = 0; $i < $l; $i++)
         {
           if (!$this->unicode->has_indexer_bad_char(($c_utf8 = mb_substr($this->phq, $i, 1, 'UTF-8'))))
           {

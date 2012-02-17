@@ -11,8 +11,9 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-
-use Alchemy\Phrasea\Helper\RecordsAbstract as RecordHelper;
+use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
+    Alchemy\Phrasea\Core;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -22,5 +23,7 @@ use Alchemy\Phrasea\Helper\RecordsAbstract as RecordHelper;
  */
 class Bridge extends RecordHelper
 {
+
+  protected $flatten_groupings = true;
 
 }

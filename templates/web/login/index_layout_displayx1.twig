@@ -9,7 +9,7 @@
             <param name="quality" value="high" />
             <param name="wmode" value="transparent" />
             <param name="flashvars" value="xmls=/feeds/aggregated/rss/?zh=470&amp;zw=525" />
-            <embed flashvars="xmls=/feeds/aggregated/rss/?zh=470&amp;zw=525" src="/include/player_homelink.swf"
+            <embed flashvars="xmls=/feeds/cooliris/?zh=470&amp;zw=525" src="/include/player_homelink.swf"
                 quality="high" bgcolor="#000000" width="525" height="470" name="slideshow_as2" align="top"
                 allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
             </object>
@@ -27,7 +27,7 @@
           {% trans 'Vous etes maintenant deconnecte. A bientot.' %}
         </div>
         {% endif %}
-                {{errorWarning}}{{confirmWarning}}
+                {{errorWarning|raw}}{{confirmWarning|raw}}
             </div>
             <div style="margin-top:20px;">
                 <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur identifiant' %}</div>
@@ -38,7 +38,11 @@
                 <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur mot de passe' %}</div>
                 <div style="margin-top:3px;"><input {% if maintenance == true %}disabled{% endif %} tabindex="2" name="pwd"
                     id="pwd" value="" type="password" style="width:100%" /></div>
-                <div style="text-align:right;margin-top:3px;">{{login.get_password_link}}</div>
+                <div style="text-align:right;margin-top:3px;">
+                  <a target="_self" class="link" rel="external" href="/login/forgotpwd.php">
+                    {% trans 'login:: Forgot your password' %}
+                  </a>
+                </div>
             </div>
             {{captcha_system}}
             <div style="margin-top:10px;">
@@ -50,10 +54,10 @@
                     tabindex="5" type="submit" value="{% trans 'login:: connexion' %}"/></div>
             </div>
             <div style="margin-top:20px;">
-                {{login.get_register_link}}
+               {{login.get_register_link|raw}}
             </div>
             <div style="margin-top:10px;">
-                {{login.get_guest_link}}
+                {{login.get_guest_link|raw}}
             </div>
         </div>
 </div>

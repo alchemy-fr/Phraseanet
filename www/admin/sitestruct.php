@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -50,9 +50,9 @@ if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache'
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <style type="text/css">
       body
       {
@@ -213,33 +213,6 @@ if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache'
     </div>
     <h1><?php echo _('setup:: Reglages generaux') ?></h1>
     <br>
-<?php
-          try
-          {
-            $invite = new User_Adapter('invite', $appbox);
-          }
-          catch (Exception $e)
-          {
-            $invite = User_Adapter::create($appbox, 'invite', 'invite', '', false);
-          }
-?>
-          <div><a href="editusr.php?ord=asc&p2=<?php echo $invite->get_id() ?>"><?php echo _('Reglages:: reglages d acces guest'); ?></a></div>
-    <?php
-          try
-          {
-            $autoregister = new User_Adapter('autoregister', $appbox);
-          }
-          catch (Exception $e)
-          {
-            $invite = User_Adapter::create($appbox, 'autoregister', 'autoregister', '', false);
-          }
-          if ($autoregister !== false)
-          {
-    ?>
-            <div><a href="editusr.php?ord=asc&p2=<?php echo $autoregister->get_id() ?>"><?php echo _('Reglages:: reglages d inscitpition automatisee'); ?></a></div>
-    <?php
-          }
-    ?>
           <h2><?php echo _('setup::Votre configuration') ?></h2>
           <div>
             <div style="position:relative;float:left;width:400px;">

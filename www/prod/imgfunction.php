@@ -14,7 +14,8 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
@@ -35,10 +36,10 @@ if ($parm['ACT'] === null)
   <html lang="<?php echo $session->get_I18n(); ?>">
     <head>
       <base target="_self">
-      <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css" />
+      <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css" />
       <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
-      <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jquery.p4.modal.js"></script>
-      <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+      <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jquery.p4.modal.js"></script>
+      <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     </head>
     <?php
     $nb_HD_Substit = 0;
@@ -46,11 +47,20 @@ if ($parm['ACT'] === null)
 
     if ($parm['SSTTID'] != '' && ($parm['lst'] == null || $parm['lst'] == ''))
     {
-      $basket = basket_adapter::getInstance($appbox, $parm['SSTTID'], $usr_id);
-      foreach ($basket->get_elements() as $basket_element)
+      $em = $Core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
+
+      /* @var $repository \Repositories\BasketRepository */
+
+      $Basket = $repository->findUserBasket(
+              $Request->get('SSTTID')
+              , $Core->getAuthenticatedUser()
+      );
+
+      foreach ($Basket->getElements() as $basket_element)
       {
 
-        $parm['lst'] .= $basket_element->get_record()->get_serialize_key() . ';';
+        $parm['lst'] .= $basket_element->getRecord()->get_serialize_key() . ';';
       }
     }
 

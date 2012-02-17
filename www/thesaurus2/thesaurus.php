@@ -14,7 +14,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers();
 $appbox = appbox::get_instance();
 $session = $appbox->get_session();
@@ -51,8 +51,8 @@ User_Adapter::updateClientInfos(5);
     </script>
 
     <link rel="shortcut icon" type="image/x-icon" href="/thesaurus2/favicon.ico">
-    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/minify/g=thesaurus"></script>
     <script type="text/javascript">
 
@@ -337,7 +337,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
     document.body.oncontextmenu = function(){
       return false;
     }
-              
+
     tFlags = <?php echo $jsFlags ?> ;
 
     myGUI = new GUI("myGUI", "desktop", "FR");
@@ -705,7 +705,7 @@ $jsFlags = '{ ' . $jsFlags . ' }';
           {
             case "RMOUSEDOWN":
               if(o = eventObj.Src0)
-              { 
+              {
                 // alert(o.id.substr(0, 4));
                 switch(o.id.substr(0, 4))
                 {

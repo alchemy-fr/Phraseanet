@@ -8,13 +8,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Alchemy\Phrasea\Helper\Record;
 
-
-use Alchemy\Phrasea\Helper\RecordsAbstract as RecordHelper;
-use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Core,
+    Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
+    Symfony\Component\HttpFoundation\Request;
 
 /**
+ * Edit Record Helper
+ * This object handles /edit/ request and filters records that user can edit
+ *
+ * It prepares metadatas, databases structures.
  *
  * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -51,7 +56,7 @@ class Edit extends RecordHelper
    *
    * @var Array
    */
-  protected $javascript_elements;
+  protected $javascript_elements = array();
 
   /**
    *
@@ -64,20 +69,25 @@ class Edit extends RecordHelper
    * @var boolean
    */
   protected $works_on_unique_sbas = true;
+
+  /**
+   *
+   * @var type
+   */
   protected $has_thesaurus = false;
 
-
-
-  public function __construct(Request $request)
+  /**
+   *
+   * @param \Alchemy\Phrasea\Core $core
+   * @return Edit
+   */
+  public function __construct(Core $core, Request $Request)
   {
-    $appbox = \appbox::get_instance();
-
-    parent::__construct($request);
-
+    parent::__construct($core, $Request);
 
     if ($this->is_single_grouping())
     {
-      $record = array_pop($this->selection->get_elements());
+      $record   = array_pop($this->selection->get_elements());
       $children = $record->get_children();
       foreach ($children as $child)
       {
@@ -90,9 +100,9 @@ class Edit extends RecordHelper
     if ($this->is_possible())
     {
       $this->generate_javascript_fields()
-              ->generate_javascript_sugg_values()
-              ->generate_javascript_status()
-              ->generate_javascript_elements();
+        ->generate_javascript_sugg_values()
+        ->generate_javascript_status()
+        ->generate_javascript_elements();
     }
 
     return $this;
@@ -115,7 +125,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_elements_ids()
   {
-    return \p4string::jsonencode(array_keys($this->javascript_elements));
+    return $this->core['Serializer']->serialize(
+        array_keys($this->javascript_elements)
+        , 'json'
+    );
   }
 
   /**
@@ -125,7 +138,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_elements()
   {
-    return \p4string::jsonencode($this->javascript_elements);
+    return $this->core['Serializer']->serialize(
+        $this->javascript_elements
+        , 'json'
+    );
   }
 
   /**
@@ -135,7 +151,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_sugg_values()
   {
-    return \p4string::jsonencode($this->javascript_sugg_values);
+    return $this->core['Serializer']->serialize(
+        $this->javascript_sugg_values
+        , 'json'
+    );
   }
 
   /**
@@ -145,7 +164,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_status()
   {
-    return \p4string::jsonencode($this->javascript_status);
+    return $this->core['Serializer']->serialize(
+        $this->javascript_status
+        , 'json'
+    );
   }
 
   /**
@@ -155,7 +177,10 @@ class Edit extends RecordHelper
    */
   public function get_javascript_fields()
   {
-    return \p4string::jsonencode(($this->javascript_fields));
+    return $this->core['Serializer']->serialize(
+        $this->javascript_fields
+        , 'json'
+    );
   }
 
   /**
@@ -186,19 +211,32 @@ class Edit extends RecordHelper
   protected function generate_javascript_elements()
   {
     $_lst = array();
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
-    $twig = new \supertwig();
+    $user = $this->getCore()->getAuthenticatedUser();
+
+    $twig = $this->getCore()->getTwig();
+
+
+    $databox = \databox::get_instance($this->get_sbas_id());
+
+    $databox_fields = array();
+    foreach ($databox->get_meta_structure() as $field)
+    {
+      $databox_fields[$field->get_id()] = array(
+        'dirty'          => false,
+        'meta_struct_id' => $field->get_id(),
+        'values'         => array()
+      );
+    }
 
     foreach ($this->selection as $record)
     {
-      $indice = $record->get_number();
+      $indice        = $record->get_number();
       $_lst[$indice] = array(
-          'bid' => $record->get_base_id(),
-          'rid' => $record->get_record_id(),
-          'sselcont_id' => null,
-          '_selected' => false
+        'bid'         => $record->get_base_id(),
+        'rid'         => $record->get_record_id(),
+        'sselcont_id' => null,
+        '_selected'   => false,
+        'fields'      => $databox_fields
       );
 
       $_lst[$indice]['statbits'] = array();
@@ -206,13 +244,12 @@ class Edit extends RecordHelper
       {
         foreach ($this->javascript_status as $n => $s)
         {
-          $tmp_val = substr(strrev($record->get_status()), $n, 1);
+          $tmp_val                                = substr(strrev($record->get_status()), $n, 1);
           $_lst[$indice]['statbits'][$n]['value'] = ($tmp_val == '1') ? '1' : '0';
           $_lst[$indice]['statbits'][$n]['dirty'] = false;
         }
       }
-      $_lst[$indice]['fields'] = array();
-      $_lst[$indice]['originalname'] = '';
+      $_lst[$indice]['originalname']          = '';
 
       $_lst[$indice]['originalname'] = $record->get_original_name();
 
@@ -224,35 +261,44 @@ class Edit extends RecordHelper
           continue;
         }
 
+        $values = array();
+        foreach ($field->get_values() as $value)
+        {
+          $type = $id   = null;
+
+          if ($value->getVocabularyType())
+          {
+            $type = $value->getVocabularyType()->getType();
+            $id   = $value->getVocabularyId();
+          }
+
+          $values[$value->getId()] = array(
+            'meta_id'        => $value->getId(),
+            'value'          => $value->getValue(),
+            'vocabularyId'   => $id,
+            'vocabularyType' => $type
+          );
+        }
+
         $_lst[$indice]['fields'][$meta_struct_id] = array(
-            'dirty' => false,
-            'meta_id' => $field->get_meta_id(),
-            'meta_struct_id' => $meta_struct_id,
-            'value' => $field->get_value()
+          'dirty'          => false,
+          'meta_struct_id' => $meta_struct_id,
+          'values'         => $values
         );
       }
 
-      $_lst[$indice]['subdefs'] = array('thumbnail' => null, 'preview' => null);
+      $_lst[$indice]['subdefs'] = array();
 
       $thumbnail = $record->get_thumbnail();
 
-
       $_lst[$indice]['subdefs']['thumbnail'] = array(
-          'url' => $thumbnail->get_url()
-          , 'w' => $thumbnail->get_width()
-          , 'h' => $thumbnail->get_height()
+        'url' => $thumbnail->get_url()
+        , 'w'   => $thumbnail->get_width()
+        , 'h'   => $thumbnail->get_height()
       );
 
       $_lst[$indice]['preview'] = $twig->render('common/preview.html', array('record' => $record));
 
-      try
-      {
-        $_lst[$indice]['subdefs']['preview'] = $record->get_subdef('preview');
-      }
-      catch (Exception $e)
-      {
-
-      }
       $_lst[$indice]['type'] = $record->get_type();
     }
 
@@ -273,16 +319,16 @@ class Edit extends RecordHelper
     foreach ($this->selection as $record)
     {
       /* @var $record record_adapter */
-      $base_id = $record->get_base_id();
+      $base_id   = $record->get_base_id();
       $record_id = $record->get_record_id();
-      $databox = $record->get_databox();
+      $databox   = $record->get_databox();
 
       if (isset($done[$base_id]))
         continue;
 
       $T_sgval['b' . $base_id] = array();
       $collection = \collection::get_from_base_id($base_id);
-      
+
       if ($sxe = simplexml_load_string($collection->get_prefs()))
       {
         $z = $sxe->xpath('/baseprefs/sugestedValues');
@@ -292,7 +338,7 @@ class Edit extends RecordHelper
 
         foreach ($z[0] as $ki => $vi) // les champs
         {
-        
+
           $field = $databox->get_meta_structure()->get_element_by_name($ki);
           if (!$field)
             continue; // champ inconnu dans la structure ?
@@ -303,12 +349,12 @@ class Edit extends RecordHelper
           foreach ($vi->value as $oneValue) // les valeurs sug
           {
             $T_sgval['b' . $base_id][$field->get_id()][] =
-                    (string) $oneValue;
+              (string) $oneValue;
           }
         }
       }
       unset($collection);
-      $done[$base_id] = true;
+      $done[$base_id]                              = true;
     }
     $this->javascript_sugg_values = $T_sgval;
 
@@ -323,9 +369,7 @@ class Edit extends RecordHelper
   protected function generate_javascript_status()
   {
     $_tstatbits = array();
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user = $this->getCore()->getAuthenticatedUser();
 
     if ($user->ACL()->has_right('changestatus'))
     {
@@ -335,11 +379,11 @@ class Edit extends RecordHelper
         foreach ($status[$this->get_sbas_id()] as $n => $statbit)
         {
           $_tstatbits[$n] = array();
-          $_tstatbits[$n]['label0'] = $statbit['labeloff'];
-          $_tstatbits[$n]['label1'] = $statbit['labelon'];
+          $_tstatbits[$n]['label0']  = $statbit['labeloff'];
+          $_tstatbits[$n]['label1']  = $statbit['labelon'];
           $_tstatbits[$n]['img_off'] = $statbit['img_off'];
-          $_tstatbits[$n]['img_on'] = $statbit['img_on'];
-          $_tstatbits[$n]['_value'] = 0;
+          $_tstatbits[$n]['img_on']  = $statbit['img_on'];
+          $_tstatbits[$n]['_value']  = 0;
         }
       }
     }
@@ -356,11 +400,11 @@ class Edit extends RecordHelper
    */
   protected function generate_javascript_fields()
   {
-    $_tfields = $fields = array();
+    $_tfields = $fields   = array();
 
     $this->has_thesaurus = false;
 
-    $databox = \databox::get_instance($this->get_sbas_id());
+    $databox     = \databox::get_instance($this->get_sbas_id());
     $meta_struct = $databox->get_meta_structure();
 
     foreach ($meta_struct as $meta)
@@ -381,44 +425,46 @@ class Edit extends RecordHelper
     switch ($meta->get_type())
     {
       case 'datetime':
-        $format = _('phraseanet::technique::datetime-edit-format');
+        $format  = _('phraseanet::technique::datetime-edit-format');
         $explain = _('phraseanet::technique::datetime-edit-explain');
         break;
       case 'date':
-        $format = _('phraseanet::technique::date-edit-format');
+        $format  = _('phraseanet::technique::date-edit-format');
         $explain = _('phraseanet::technique::date-edit-explain');
         break;
       case 'time':
-        $format = _('phraseanet::technique::time-edit-format');
+        $format  = _('phraseanet::technique::time-edit-format');
         $explain = _('phraseanet::technique::time-edit-explain');
         break;
       default:
-        $format = $explain = "";
+        $format  = $explain = "";
         break;
     }
 
     $regfield = ($meta->is_regname() || $meta->is_regdesc() || $meta->is_regdate());
 
-
+    $source    = $meta->get_source();
     $separator = $meta->get_separator();
 
     $datas = array(
-        'meta_struct_id' => $meta->get_id()
-        , 'name' => $meta->get_name()
-        , '_status' => 0
-        , '_value' => ''
-        , '_sgval' => array()
-        , 'required' => $meta->is_required()
-        , 'readonly' => $meta->is_readonly()
-        , 'type' => $meta->get_type()
-        , 'format' => $format
-        , 'explain' => $explain
-        , 'tbranch' => $meta->get_tbranch()
-        , 'maxLength' => $meta->get_source()->maxlength()
-        , 'minLength' => $meta->get_source()->minLength()
-        , 'regfield' => $regfield
-        , 'multi' => $meta->is_multi()
-        , 'separator' => $separator
+      'meta_struct_id' => $meta->get_id()
+      , 'name'           => $meta->get_name()
+      , '_status'        => 0
+      , '_value'         => ''
+      , '_sgval'         => array()
+      , 'required'             => $meta->is_required()
+      , 'readonly'             => $meta->is_readonly()
+      , 'type'                 => $meta->get_type()
+      , 'format'               => $format
+      , 'explain'              => $explain
+      , 'tbranch'              => $meta->get_tbranch()
+      , 'maxLength'            => $source ? $source->maxlength() : 0
+      , 'minLength'            => $source ? $source->minLength() : 0
+      , 'regfield'             => $regfield
+      , 'multi'                => $meta->is_multi()
+      , 'separator'            => $separator
+      , 'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null
+      , 'vocabularyRestricted' => $meta->getVocabularyControl() ? $meta->isVocabularyRestricted() : false
     );
 
     if (trim($meta->get_tbranch()) !== '')
@@ -433,15 +479,15 @@ class Edit extends RecordHelper
    * @param http_request $request
    * @return action_edit
    */
-  public function execute(Symfony\Component\HttpFoundation\Request $request)
+  public function execute(Request $request)
   {
     $appbox = \appbox::get_instance();
     if ($request->get('act_option') == 'SAVEGRP' && $request->get('newrepresent'))
     {
       try
       {
-        $reg_record = $this->get_grouping_head();
-        $reg_sbas_id = $reg_record->get_base_id();
+        $reg_record  = $this->get_grouping_head();
+        $reg_sbas_id = $reg_record->get_sbas_id();
 
         $newsubdef_reg = new record_adapter($reg_sbas_id, $request->get('newrepresent'));
 
@@ -450,7 +496,7 @@ class Edit extends RecordHelper
 
         foreach ($newsubdef_reg->get_subdefs() as $name => $value)
         {
-          $pathfile = $value->get_pathfile();
+          $pathfile    = $value->get_pathfile();
           $system_file = new system_file($pathfile);
           $reg_record->substitute_subdef($name, $system_file);
         }
@@ -462,14 +508,15 @@ class Edit extends RecordHelper
     }
 
     if (!is_array($request->get('mds')))
-
+    {
       return $this;
+    }
 
-    $sbas_id = (int) $request->get('sbid');
-    $databox = \databox::get_instance($sbas_id);
-    $meta_struct = $databox->get_meta_structure();
+    $sbas_id       = (int) $request->get('sbid');
+    $databox       = \databox::get_instance($sbas_id);
+    $meta_struct   = $databox->get_meta_structure();
     $write_edit_el = false;
-    $date_obj = new DateTime();
+    $date_obj      = new \DateTime();
     foreach ($meta_struct->get_elements() as $meta_struct_el)
     {
       if ($meta_struct_el->get_metadata_namespace() == "PHRASEANET" && $meta_struct_el->get_metadata_tagname() == 'tf-editdate')
@@ -495,7 +542,7 @@ class Edit extends RecordHelper
       if (!array_key_exists($key, $elements))
         continue;
 
-      $statbits = $rec['status'];
+      $statbits  = $rec['status'];
       $editDirty = $rec['edit'];
 
       if ($editDirty == '0')
@@ -508,28 +555,38 @@ class Edit extends RecordHelper
         $record->set_metadatas($rec['metadatas']);
       }
 
-      if ($write_edit_el instanceof \Acmedatabox_field)
+      /**
+       * todo : this should not work
+       */
+      if ($write_edit_el instanceof \databox_field)
       {
         $fields = $record->get_caption()->get_fields(array($write_edit_el->get_name()));
         $field = array_pop($fields);
 
+        $meta_id = null;
+
+        if ($field && !$field->is_multi())
+        {
+          $meta_id = array_pop($field->get_values())->getId();
+        }
+
         $metas = array(
-            array(
-                'meta_struct_id' => $write_edit_el->get_id()
-                , 'meta_id' => ($field ? $field->get_meta_id() : null)
-                , 'value' => array($date_obj->format('Y-m-d h:i:s'))
-            )
+          array(
+            'meta_struct_id' => $write_edit_el->get_id()
+            , 'meta_id'        => $meta_id
+            , 'value'          => $date_obj->format('Y-m-d h:i:s')
+          )
         );
 
-        $record->set_metadatas($metas);
+        $record->set_metadatas($metas, true);
       }
 
-      $newstat = $record->get_status();
+      $newstat  = $record->get_status();
       $statbits = ltrim($statbits, 'x');
       if (!in_array($statbits, array('', 'null')))
       {
         $mask_and = ltrim(str_replace(
-                        array('x', '0', '1', 'z'), array('1', 'z', '0', '1'), $statbits), '0');
+            array('x', '0', '1', 'z'), array('1', 'z', '0', '1'), $statbits), '0');
         if ($mask_and != '')
           $newstat = \databox_status::operation_and_not($newstat, $mask_and);
 
@@ -546,14 +603,14 @@ class Edit extends RecordHelper
       if ($statbits != '')
       {
         $appbox->get_session()
-                ->get_logger($record->get_databox())
-                ->log($record, Session_Logger::EVENT_STATUS, '', '');
+          ->get_logger($record->get_databox())
+          ->log($record, \Session_Logger::EVENT_STATUS, '', '');
       }
       if ($editDirty)
       {
         $appbox->get_session()
-                ->get_logger($record->get_databox())
-                ->log($record, Session_Logger::EVENT_EDIT, '', '');
+          ->get_logger($record->get_databox())
+          ->log($record, \Session_Logger::EVENT_EDIT, '', '');
       }
     }
 

@@ -22,7 +22,7 @@ require($registry->get('GV_RootPath') . "lib/classes/deprecated/countries.php");
 
 $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
-require(dirname(__FILE__) . "/../../lib/conf.d/_GV_template.inc");
+require(__DIR__ . "/../../lib/conf.d/_GV_template.inc");
 
 $request = http_request::getInstance();
 
@@ -68,8 +68,8 @@ phrasea::start();
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
     <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
     <link href="/skins/common/main.css" type="text/css" rel="stylesheet"/>

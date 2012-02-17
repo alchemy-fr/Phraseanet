@@ -180,6 +180,12 @@ abstract class base implements cache_cacheableInterface
    */
   public function get_data_from_cache($option = null)
   {
+
+    if($this->get_base_type() == self::DATA_BOX)
+    {
+      \cache_databox::refresh($this->id);
+    }
+
     return $this->get_cache()->get($this->get_cache_key($option));
   }
 
@@ -259,7 +265,7 @@ abstract class base implements cache_cacheableInterface
   {
     if ($this->get_version())
 
-      return version_compare(GV_version, $this->get_version(), '>');
+      return version_compare(\Alchemy\Phrasea\Core\Version::getNumber(), $this->get_version(), '>');
     else
 
       return true;
@@ -267,8 +273,6 @@ abstract class base implements cache_cacheableInterface
 
   protected function upgradeDb($apply_patches, Setup_Upgrade &$upgrader)
   {
-    require_once dirname(__FILE__) . '/../version.inc';
-
     $recommends = array();
 
     $allTables = array();
@@ -338,10 +342,12 @@ abstract class base implements cache_cacheableInterface
     }
     $current_version = $this->get_version();
 
+    $Core = bootstrap::getCore();
+
     $upgrader->set_current_message(sprintf(_('Applying patches on %s'), $this->get_dbname()));
     if ($apply_patches)
     {
-      $this->apply_patches($current_version, GV_version, false, $upgrader);
+      $this->apply_patches($current_version, $Core->getVersion()->getNumber(), false, $upgrader);
     }
     $upgrader->add_steps_complete(1);
 
@@ -390,7 +396,7 @@ abstract class base implements cache_cacheableInterface
 
       return $this;
 
-    $structure = simplexml_load_file(dirname(__FILE__) . "/../../lib/conf.d/bases_structure.xml");
+    $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
 
     if (!$structure)
       throw new Exception('Unable to load schema');
@@ -418,8 +424,8 @@ abstract class base implements cache_cacheableInterface
       $this->createTable($table);
     }
 
-    if (defined('GV_version'))
-      $this->setVersion(GV_version);
+    $Core = bootstrap::getCore();
+    $this->setVersion($Core->getVersion()->getNumber());
 
     return $this;
   }
