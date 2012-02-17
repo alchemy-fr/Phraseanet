@@ -711,11 +711,20 @@
           </div>
         </span>
         {% elseif user.ACL().has_right('push') %}
-        <span class="buttonset">
-          <button class="TOOL_pushdoc_btn results_window">
-            <img src="/skins/icons/push16.png"/>
-            {% trans 'action : push' %}
-          </button>
+        <span class="verticalbuttonset">
+          <span>
+            <button class="TOOL_pushdoc_btn default_action results_window">
+              <img src="/skins/icons/push16.png"/>
+              {% trans 'action : push' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_pushdoc_btn results_window">
+              <img src="/skins/icons/push16.png"/>
+              {% trans 'action : push' %}
+            </button>
+          </div>
         </span>
         {% elseif user.ACL().has_right('bas_chupub') %}
         <span class="verticalbuttonset">
