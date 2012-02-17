@@ -25,7 +25,14 @@ class RedisTest extends \PhraseanetPHPUnitAbstract
     if (extension_loaded('Redis'))
     {
       $redis = new Redis();
-      $ok = @$redis->connect('127.0.0.1', 6379);
+      try
+      {
+        $ok = @$redis->connect('127.0.0.1', 6379);
+      }
+      catch(\Exception $e)
+      {
+        $ok = false;
+      }
       if (!$ok)
       {
         $this->markTestSkipped('The ' . __CLASS__ . ' requires the use of redis');
