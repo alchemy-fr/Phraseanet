@@ -221,6 +221,7 @@ class Push implements ControllerProviderInterface
             $Basket->setDescription($push_description);
             $Basket->setOwner($user_receiver);
             $Basket->setPusher($user);
+            $Basket->setIsRead(false);
 
             $em->persist($Basket);
 
@@ -350,6 +351,7 @@ class Push implements ControllerProviderInterface
             $Basket->setName($validation_name);
             $Basket->setDescription($validation_description);
             $Basket->setOwner($user);
+            $Basket->setIsRead(false);
 
             $em->persist($Basket);
 

@@ -78,8 +78,9 @@ return call_user_func(
           $browser = \Browser::getInstance();
 
           if (!$browser->isMobile())
-
+          {
             return new Response('');
+          }
 
 
           $em = $app['Core']->getEntityManager();
@@ -241,6 +242,21 @@ return call_user_func(
             , false
           );
 
+
+          if ($basket->getIsRead() === false)
+          {
+            $basket = $em->merge($basket);
+            $basket->setIsRead(true);
+            $em->flush();
+          }
+
+          if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->getIsAware() === false)
+          {
+            $basket = $em->merge($basket);
+            $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->setIsAware(true);
+            $em->flush();
+          }
+
           /* @var $twig \Twig_Environment */
           $twig = $app['Core']->getTwig();
 
@@ -283,6 +299,21 @@ return call_user_func(
             , $app['Core']->getAuthenticatedUser()
             , false
           );
+
+
+          if ($basket->getIsRead() === false)
+          {
+            $basket = $em->merge($basket);
+            $basket->setIsRead(true);
+            $em->flush();
+          }
+
+          if ($basket->getValidation() && $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->getIsAware() === false)
+          {
+            $basket = $em->merge($basket);
+            $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->setIsAware(true);
+            $em->flush();
+          }
 
           /* @var $twig \Twig_Environment */
           $twig = $app['Core']->getTwig();
@@ -449,16 +480,16 @@ return call_user_func(
             $repository = $em->getRepository('\Entities\BasketElement');
 
             /* @var $repository \Repositories\BasketElementRepository */
-            $basket_element = $repository->findUserElement(
+            $basket_element  = $repository->findUserElement(
               $sselcont_id
               , $user
             );
             /* @var $basket_element \Entities\BasketElement */
             $validationDatas = $basket_element->getUserValidationDatas($user);
 
-            if(!$basket_element->getBasket()
-              ->getValidation()
-              ->getParticipant($user)->getCanAgree())
+            if (!$basket_element->getBasket()
+                ->getValidation()
+                ->getParticipant($user)->getCanAgree())
             {
               throw new ControllerException('You can not agree on this');
             }
@@ -474,7 +505,7 @@ return call_user_func(
             $em->flush();
 
             $releasable = false;
-            if($participant->isReleasable() === true)
+            if ($participant->isReleasable() === true)
             {
               $releasable = _('Do you want to send your report ?');
             }
@@ -484,13 +515,12 @@ return call_user_func(
               , 'datas'      => ''
               , 'releasable' => $releasable
             );
-
           }
-          catch(ControllerException $e)
+          catch (ControllerException $e)
           {
             $ret['datas'] = $e->getMessage();
           }
-          $Serializer = $app['Core']['Serializer'];
+          $Serializer   = $app['Core']['Serializer'];
 
           return new Response(
               $Serializer->serialize($ret, 'json')
@@ -541,7 +571,7 @@ return call_user_func(
 
             $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
           }
-          catch(ControllerException $e)
+          catch (ControllerException $e)
           {
             $datas = array('error' => true, 'datas' => $e->getMessage());
           }
