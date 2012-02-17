@@ -65,7 +65,7 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
 
     $stats = @$memcache->getExtendedStats();
 
-    if (isset($stats[$key]) && @$memcache->connect($this->host, $this->port))
+    if (isset($stats[$key]))
     {
       $service = new CacheDriver\MemcacheCache();
       $service->setMemcache($memcache);
