@@ -19,9 +19,9 @@ use Doctrine\Common\Cache\AbstractCache;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class RedisCache extends AbstractCache
+class RedisCache extends AbstractCache implements Cache
 {
-
+ 
   /**
    * @var Memcache
    */
@@ -92,6 +92,11 @@ class RedisCache extends AbstractCache
   protected function _doDelete($id)
   {
     return $this->_redis->delete($id);
+  }
+  
+  public function flushAll()
+  {
+    return $this->_redis->flushAll();
   }
 
 }
