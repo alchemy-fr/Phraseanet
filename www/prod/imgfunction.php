@@ -55,6 +55,7 @@ if ($parm['ACT'] === null)
       $Basket = $repository->findUserBasket(
               $Request->get('SSTTID')
               , $Core->getAuthenticatedUser()
+              , false
       );
 
       foreach ($Basket->getElements() as $basket_element)
