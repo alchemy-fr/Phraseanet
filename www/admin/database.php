@@ -194,6 +194,7 @@ if ($parm['act'])
         dataType: 'json',
         data: { sbas_id:<?php echo $sbas_id ?>  },
         success: function(data){
+          alert(data.message);
         }
       });
     }

@@ -57,8 +57,7 @@ switch ($parm['action'])
     if ($record->is_from_reg())
     {
       $train = $twig->render('prod/preview/reg_train.html', array(
-          'record' => $record,
-          'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')
+          'record' => $record
               )
       );
     }
@@ -66,8 +65,7 @@ switch ($parm['action'])
     if ($record->is_from_basket() && $parm['roll'])
     {
       $train = $twig->render('prod/preview/basket_train.html', array(
-          'record' => $record,
-          'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')
+          'record' => $record
               )
       );
     }
@@ -93,8 +91,7 @@ switch ($parm['action'])
                         )
                         , "others" => $twig->render('prod/preview/appears_in.html', array(
                             'parents' => $record->get_grouping_parents(),
-                            'baskets' => $record->get_container_baskets(),
-                            'show_tooltips' => $registry->get('GV_rollover_reg_preview')
+                            'baskets' => $record->get_container_baskets()
                                 )
                         )
                         , "current" => $train

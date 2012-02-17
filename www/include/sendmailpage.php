@@ -50,7 +50,7 @@ if ($parm["ssttid"] != "")
 
   /* @var $repository \Repositories\BasketRepository */
 
-  $Basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser());
+  $Basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser(), false);
 
   $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
 }

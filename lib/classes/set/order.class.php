@@ -225,7 +225,7 @@ class set_order extends set_abstract
     $repository = $em->getRepository('\Entities\Basket');
 
     /* @var $repository \Repositories\BasketRepository */
-    $Basket = $repository->findUserBasket($this->ssel_id, $core->getAuthenticatedUser());
+    $Basket = $repository->findUserBasket($this->ssel_id, $core->getAuthenticatedUser(), false);
 
     if(!$Basket)
     {

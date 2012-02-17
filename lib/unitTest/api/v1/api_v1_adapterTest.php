@@ -390,7 +390,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $repo = $em->getRepository('\Entities\Basket');
 
     /* @var $repo \Repositories\BasketRepository */
-    $basket = $repo->findUserBasket($ssel_id, self::$core->getAuthenticatedUser());
+    $basket = $repo->findUserBasket($ssel_id, self::$core->getAuthenticatedUser(), true);
 
     $this->assertTrue($basket instanceof \Entities\Basket);
     $em->remove($basket);
@@ -424,7 +424,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     try
     {
-      $repo->findUserBasket($ssel_id, $user);
+      $repo->findUserBasket($ssel_id, $user, true);
       $this->fail('An exception should have been raised');
     }
     catch (Exception_NotFound $e)

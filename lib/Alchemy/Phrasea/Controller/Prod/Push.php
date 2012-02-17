@@ -226,7 +226,7 @@ class Push implements ControllerProviderInterface
 
             foreach ($pusher->get_elements() as $element)
             {
-              $BasketElement = new \Entities\BasketELement();
+              $BasketElement = new \Entities\BasketElement();
               $BasketElement->setRecord($element);
               $BasketElement->setBasket($Basket);
 
@@ -373,7 +373,7 @@ class Push implements ControllerProviderInterface
             $Validation->setBasket($Basket);
 
             $duration = (int) $request->get('duration');
-            
+
             if ($duration > 0)
             {
               $date = new \DateTime('+' . $duration . ' day' . ($duration > 1 ? 's' : ''));

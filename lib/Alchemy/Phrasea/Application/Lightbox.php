@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Alchemy\Phrasea\Controller\Exception as ControllerException;
 
 /**
  *
@@ -237,6 +238,7 @@ return call_user_func(
           $basket = $repository->findUserBasket(
             $ssel_id
             , $app['Core']->getAuthenticatedUser()
+            , false
           );
 
           /* @var $twig \Twig_Environment */
@@ -279,6 +281,7 @@ return call_user_func(
           $basket = $repository->findUserBasket(
             $ssel_id
             , $app['Core']->getAuthenticatedUser()
+            , false
           );
 
           /* @var $twig \Twig_Environment */
@@ -353,6 +356,7 @@ return call_user_func(
           $basket = $repository->findUserBasket(
             $ssel_id
             , $app['Core']->getAuthenticatedUser()
+            , false
           );
 
           $response = new Response($twig->render($template, array('basket' => $basket)));
@@ -431,46 +435,61 @@ return call_user_func(
 
           $agreement = $agreement > 0;
 
-          $ret = array(
-            'error'      => true,
-            'releasable' => false,
-            'datas'      => _('Erreur lors de la mise a jour des donnes ')
-          );
-
-          $user       = $app['Core']->getAuthenticatedUser();
-          $em         = $app['Core']->getEntityManager();
-          $repository = $em->getRepository('\Entities\BasketElement');
-
-          /* @var $repository \Repositories\BasketElementRepository */
-          $basket_element = $repository->findUserElement(
-            $sselcont_id
-            , $user
-          );
-          /* @var $basket_element \Entities\BasketElement */
-          $validationDatas = $basket_element->getUserValidationDatas($user);
-
-          $validationDatas->setAgreement($agreement);
-
-          $participant = $basket_element->getBasket()
-            ->getValidation()
-            ->getParticipant($user);
-
-          $em->merge($basket_element);
-
-          $em->flush();
-
           $releasable = false;
-          if($participant->isReleasable() === true)
+          try
           {
-            $releasable = _('Do you want to send your report ?');
+            $ret = array(
+              'error'      => true,
+              'releasable' => false,
+              'datas'      => _('Erreur lors de la mise a jour des donnes ')
+            );
+
+            $user       = $app['Core']->getAuthenticatedUser();
+            $em         = $app['Core']->getEntityManager();
+            $repository = $em->getRepository('\Entities\BasketElement');
+
+            /* @var $repository \Repositories\BasketElementRepository */
+            $basket_element = $repository->findUserElement(
+              $sselcont_id
+              , $user
+            );
+            /* @var $basket_element \Entities\BasketElement */
+            $validationDatas = $basket_element->getUserValidationDatas($user);
+
+            if(!$basket_element->getBasket()
+              ->getValidation()
+              ->getParticipant($user)->getCanAgree())
+            {
+              throw new ControllerException('You can not agree on this');
+            }
+
+            $validationDatas->setAgreement($agreement);
+
+            $participant = $basket_element->getBasket()
+              ->getValidation()
+              ->getParticipant($user);
+
+            $em->merge($basket_element);
+
+            $em->flush();
+
+            $releasable = false;
+            if($participant->isReleasable() === true)
+            {
+              $releasable = _('Do you want to send your report ?');
+            }
+
+            $ret = array(
+              'error'      => false
+              , 'datas'      => ''
+              , 'releasable' => $releasable
+            );
+
           }
-
-          $ret = array(
-            'error'      => false
-            , 'datas'      => ''
-            , 'releasable' => $releasable
-          );
-
+          catch(ControllerException $e)
+          {
+            $ret['datas'] = $e->getMessage();
+          }
           $Serializer = $app['Core']['Serializer'];
 
           return new Response(
@@ -491,25 +510,41 @@ return call_user_func(
 
           $repository = $em->getRepository('\Entities\Basket');
 
-          /* @var $repository \Repositories\BasketRepository */
-          $basket = $repository->findUserBasket(
-            $ssel_id
-            , $user
-          );
+          $datas = array('error' => true, 'datas' => '');
 
-          if (!$basket->getValidation())
+          try
           {
-            Return new Response('There is no validation session attached to this basket', 400);
+            /* @var $repository \Repositories\BasketRepository */
+            $basket = $repository->findUserBasket(
+              $ssel_id
+              , $user
+              , false
+            );
+
+            if (!$basket->getValidation())
+            {
+              throw new ControllerException('There is no validation session attached to this basket');
+            }
+
+            if (!$basket->getValidation()->getParticipant($user)->getCanAgree())
+            {
+              throw new ControllerException('You have not right to agree');
+            }
+
+            /* @var $basket \Entities\Basket */
+            $participant = $basket->getValidation()->getParticipant($user);
+            $participant->setIsConfirmed(true);
+
+            $em->merge($participant);
+
+            $em->flush();
+
+            $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
           }
-          /* @var $basket \Entities\Basket */
-          $participant = $basket->getValidation()->getParticipant($user);
-          $participant->setIsConfirmed(true);
-
-          $em->merge($participant);
-
-          $em->flush();
-
-          $datas = array('error' => false, 'datas' => _('Envoie avec succes'));
+          catch(ControllerException $e)
+          {
+            $datas = array('error' => true, 'datas' => $e->getMessage());
+          }
 
           $Serializer = $app['Core']['Serializer'];
 

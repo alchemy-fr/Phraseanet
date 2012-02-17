@@ -24,15 +24,22 @@ $(document).ready(function(){
         $.mobile.pageLoading(true);
       },
       success: function(datas){
-        if(agreement == '1')
-          $('.valid_choice_'+sselcont_id).removeClass('disagree').addClass('agree');
+        if(!datas.error)
+        {
+          if(agreement == '1')
+            $('.valid_choice_'+sselcont_id).removeClass('disagree').addClass('agree');
+          else
+            $('.valid_choice_'+sselcont_id).removeClass('agree').addClass('disagree');
+          $.mobile.pageLoading(true);
+          if(datas.error)
+          {
+            alert(datas.datas);
+            return;
+          }
+        }
         else
-          $('.valid_choice_'+sselcont_id).removeClass('agree').addClass('disagree');
-        $.mobile.pageLoading(true);
-        if(datas.error)
         {
           alert(datas.datas);
-          return;
         }
         return;
       }

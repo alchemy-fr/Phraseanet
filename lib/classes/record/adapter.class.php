@@ -2073,7 +2073,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /* @var $$repo \Repositories\BasketRepository */
 
-    return $repo->findContainingRecord($this);
+    return $repo->findContainingRecordForUser($this, $Core->getAuthenticatedUser());
   }
 
   /**

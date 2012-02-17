@@ -61,7 +61,7 @@
 
 {% import 'prod/WorkZone/Macros.twig' as Macros %}
 
-{% if basket.getValidation() and basket.getValidation().getInitiator() == core.getAuthenticatedUser() %}
+{% if basket.getValidation() %}
     {{ Macros.display_validation(basket, ordre, user, session) }}
 {% else %}
     {{ Macros.display_basket(basket, user, session) }}

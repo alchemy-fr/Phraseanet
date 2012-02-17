@@ -3,13 +3,13 @@
   <div class="PNB10 Browser">
     <div class="PNB10" style="width:190px;right:auto;">
       <form name="BasketBrowser" method="GET" action="/prod/WorkZone/Browse/Search/">
-        <input name="Query" class="Query" placeholder="{% trans 'Search baskets' %}" type="text"/>
+        <input name="Query" class="Query search" placeholder="{% trans 'Search baskets' %}" type="text"/>
 
         <h1>{% trans 'See' %}</h1>
         <ul>
           <li class="first">
             <input id="basket_browse_all" type="radio" name="Type" value="" checked="checked" />
-            <label for="basket_browse_all">
+            <label class="selected" for="basket_browse_all">
               {% trans 'All' %}
             </label>
           </li>
@@ -242,7 +242,14 @@
       loadResults($this.serializeArray(), $this.attr('action'));
 
       return false;
-    }).trigger('submit').find('input').bind('change', function(){
+    }).trigger('submit').find('label').bind('click', function(){
+      var input = $(this).prev('input'),
+      name = input.attr('name');
+
+      var inputs = $('input[name="' + $(this).prev('input').attr('name') + '"]', $container);
+      inputs.removeAttr('checked').next('label').removeClass('selected');
+
+      input.attr('checked', 'checked').next('label').addClass('selected');
       $('form[name="BasketBrowser"]', $container).trigger('submit')
     });
 

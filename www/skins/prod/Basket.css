@@ -88,7 +88,8 @@
 #BasketBrowser input {
     display:none;
 }
-#BasketBrowser input:checked + label {
+#BasketBrowser input:checked + label,
+#BasketBrowser label.selected {
     color: #d18827;
 }
 
@@ -96,7 +97,8 @@
   padding:3px;
   display:block;
   border-radius:4px;
-  width:180px;
+  width:155px;
+  padding-left:25px;
 }
 
 #BasketBrowser form h1{

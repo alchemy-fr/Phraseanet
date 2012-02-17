@@ -116,7 +116,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
       $repository = $em->getRepository('\Entities\Basket');
 
       /* @var $$repository \Repositories\BasketRepository */
-      $Basket = $repository->findUserBasket($Request->get('ssel'), $this->getCore()->getAuthenticatedUser());
+      $Basket = $repository->findUserBasket($Request->get('ssel'), $this->getCore()->getAuthenticatedUser(), false);
 
       $this->selection->load_basket($Basket);
 

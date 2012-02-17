@@ -340,7 +340,7 @@ class ValidationSession
       return null;
     }
 
-    $date_obj = new DateTime();
+    $date_obj = new \DateTime();
 
     return $date_obj > $this->getExpires();
   }

@@ -63,7 +63,7 @@ class set_export extends set_abstract
       $repository = $em->getRepository('\Entities\Basket');
 
       /* @var $repository \Repositories\BasketRepository */
-      $Basket = $repository->findUserBasket($sstid, $user);
+      $Basket = $repository->findUserBasket($sstid, $user, false);
 
       foreach ($Basket->getElements() as $basket_element)
       {
@@ -977,11 +977,13 @@ class set_export extends set_abstract
 
     if (is_file($file))
     {
-      $testPath = strpos($file, $registry->get('GV_RootPath').'tmp/download/') !== false
+      $testPath = function($file, $registry){
+        return strpos($file, $registry->get('GV_RootPath').'tmp/download/') !== false
             || strpos($file, $registry->get('GV_RootPath').'tmp/lazaret/') !== false
             || strpos($file, $registry->get('GV_X_Accel_Redirect')) !== false;
+      };
 
-      if ($registry->get('GV_modxsendfile') && $testPath)
+      if ($registry->get('GV_modxsendfile') && $testPath($file, $registry))
       {
         $file_xaccel = str_replace(
           array(

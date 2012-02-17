@@ -40,7 +40,7 @@ class Tooltip implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
@@ -103,10 +103,13 @@ class Tooltip implements ControllerProviderInterface
 
               $search_engine = null;
 
-              if (($search_engine_options = unserialize($app['request']->get('options_serial'))) !== false)
+              if($view == 'answer')
               {
-                $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
-                $search_engine->set_options($search_engine_options);
+                if (($search_engine_options = unserialize($app['request']->get('options_serial'))) !== false)
+                {
+                  $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
+                  $search_engine->set_options($search_engine_options);
+                }
               }
 
                 /* @var $twig \Twig_Environment */

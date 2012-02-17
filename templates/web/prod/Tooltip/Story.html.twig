@@ -1,5 +1,5 @@
 {% import 'common/thumbnail.html' as thumbnail %}
-<div style="margin:5px;width:280px;height:300px;position:relative;">
+<div class="noToolTipResize" style="margin:5px;width:280px;height:300px;position:relative;">
   <div>
     <span style="font-weight:bold;font-size:14px;">
       {{ Story.get_title() }}
@@ -15,13 +15,15 @@
       {{ nb_records }} records
     {% endtrans %}
      - {{ date }}
-  <hr/>
-  <div style="position:relative;float:left;width:270px;">
-    {% for element in Story.get_children().get_elements() %}
-      {% if loop.index <= 9 %}
-        <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
-          {{ thumbnail.format(element.get_thumbnail(), 80, 80 , '', session) }}
-        </div>
-      {% endif %}
-    {% endfor %}
+    <hr/>
+    <div style="position:relative;float:left;width:270px;">
+      {% for element in Story.get_children().get_elements() %}
+        {% if loop.index <= 9 %}
+          <div style="margin:5px;position:relative;float:left;width:80px;height:80px;overflow:hidden;">
+            {{ thumbnail.format(element.get_thumbnail(), 80, 80 , '', session) }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
+</div>

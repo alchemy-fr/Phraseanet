@@ -32,7 +32,7 @@
       {% endif %}
 
       {% set tooltip = '' %}
-      {% if GV_rollover_reg_preview %}
+      {% if registry.get('GV_rollover_reg_preview') %}
         {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/'~ contained.get_sbas_id() ~'/'~ contained.get_record_id() ~ '/preview/?number=' ~ contained.get_number() ~ '"' %}
       {% endif %}
 

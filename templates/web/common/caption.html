@@ -15,4 +15,6 @@
   {{cap_bas.format_caption(record, highlight|default(''), searchEngine|default(null))}}
 {% elseif view == 'overview' %}
   {{cap_ovr.format_caption(record, highlight|default(''), searchEngine|default(null))}}
+{% elseif view == 'publi' %}
+  {{cap_pub.format_caption(record, '', null)}}
 {% endif %}

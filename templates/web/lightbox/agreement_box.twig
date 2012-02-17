@@ -4,7 +4,11 @@
         <tbody>
             <tr>
                 <td class="title title15">{% trans 'VALIDATION' %}</td>
-                <td class="report_wrapper;"><a class="report" href="#">{% trans 'lightbox::recaptitulatif' %}</a></td>
+                <td class="report_wrapper">
+                  <a class="report" href="#">
+                    {% trans 'lightbox::recaptitulatif' %}
+                  </a>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -12,6 +16,7 @@
         <div>{{ basket.getValidation().getValidationString(user) }}</div>
         <ul>
             {% for choice in basket_element.getValidationDatas() %}
+              {% if basket.getValidation().getParticipant(user).getCanSeeOthers() or choice.getParticipant().getUser() == core.getAuthenticatedUser() %}
                 {% if choice.getAgreement() == true %}
                     {% set classuser = 'agree' %}
                 {% elseif choice.getAgreement() is null %}
@@ -21,12 +26,13 @@
                 {% endif %}
                 {% set participant = choice.getParticipant().getUser() %}
                 <li class="{% if participant.get_id() == user.get_id() %}me{% endif %} {{classuser}} userchoice">{{participant.get_display_name()}}</li>
+              {% endif %}
             {% endfor %}
         </ul>
     {% endif %}
 </div>
 <div class="PNB user_infos">
-{% if basket_element and basket_element.getBasket().getValidation() %}
+{% if basket_element and basket_element.getBasket().getValidation() and basket.getValidation().getParticipant(user).getCanAgree() %}
     <div class="PNB choices">
         <div style="height:60px;">
           {% set agreement = basket_element.getUserValidationDatas(user).getAgreement() %}
