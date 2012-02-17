@@ -98,9 +98,10 @@ class BasketRepository extends EntityRepository
    */
   public function findActiveValidationByUser(\User_Adapter $user, $sort = null)
   {
-    $dql = 'SELECT b, e, s, p
+    $dql = 'SELECT b, e, s, p, v
             FROM Entities\Basket b
             JOIN b.elements e
+            JOIN e.validation_datas v
             JOIN b.validation s
             JOIN s.participants p
             WHERE b.usr_id != ?1 AND p.usr_id = ?2
@@ -134,9 +135,10 @@ class BasketRepository extends EntityRepository
    */
   public function findUserBasket($basket_id, \User_Adapter $user)
   {
-    $dql = 'SELECT b, e, s, p
+    $dql = 'SELECT b, e, s, p, v
             FROM Entities\Basket b
             LEFT JOIN b.elements e
+            LEFT JOIN e.validation_datas v
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
             WHERE b.id = :basket_id';

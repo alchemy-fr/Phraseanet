@@ -33,7 +33,7 @@ class BasketElementRepository extends EntityRepository
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-    $cacheId = "_user_basket_element_" . $element_id . Entities\BasketElement::CACHE_SUFFIX;
+    $cacheId = "_user_basket_element_" . $element_id . "_" . $user->get_id() . Entities\BasketElement::CACHE_SUFFIX;
     $query->useResultCache(true, 1800, $cacheId);
 
     $element = $query->getOneOrNullResult();
