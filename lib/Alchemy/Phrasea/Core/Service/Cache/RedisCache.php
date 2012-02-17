@@ -15,8 +15,7 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface,
-    Alchemy\Phrasea\Cache as PhraseaCache;
-use Doctrine\Common\Cache as CacheService;
+    Alchemy\Phrasea\Cache as CacheDriver;
 
 /**
  *
@@ -67,7 +66,7 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
 
     if ($redis->connect($this->host, $this->port))
     {
-      $service = new PhraseaCache\RedisCache();
+      $service = new CacheDriver\RedisCache();
       $service->setRedis($redis);
     }
     else
@@ -75,10 +74,8 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
       throw new \Exception(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
     }
 
-    $registry = $this->getRegistry();
-
-    $service->setNamespace($registry->get("GV_sit", ""));
-
+    $service->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
+    
     return $service;
   }
 
@@ -95,18 +92,6 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
   public function getPort()
   {
     return $this->port;
-  }
-
-  private function getRegistry()
-  {
-    $registry = $this->getDependency("registry");
-
-    if (!$registry instanceof \registryInterface)
-    {
-      throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
-    }
-
-    return $registry;
   }
 
 }

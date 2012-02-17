@@ -14,8 +14,8 @@ namespace Alchemy\Phrasea\Core\Service\Cache;
 use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface;
-use Doctrine\Common\Cache as CacheService;
+    Alchemy\Phrasea\Core\Service\ServiceInterface,
+    Alchemy\Phrasea\Cache as CacheDriver;
 
 /**
  *
@@ -42,11 +42,9 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
       throw new \Exception('The XCache cache requires the XCache extension.');
     }
 
-    $registry = $this->getRegistry();
+    $service = new CacheDriver\XcacheCache();
 
-    $service = new CacheService\XcacheCache();
-
-    $service->setNamespace($registry->get("GV_sit", ""));
+    $service->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
 
     return $service;
   }
@@ -56,16 +54,5 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
     return 'xcache';
   }
 
-  private function getRegistry()
-  {
-    $registry = $this->getDependency("registry");
-
-    if (!$registry instanceof \registryInterface)
-    {
-      throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
-    }
-
-    return $registry;
-  }
 
 }

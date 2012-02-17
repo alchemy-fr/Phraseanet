@@ -14,8 +14,8 @@ namespace Alchemy\Phrasea\Core\Service\Cache;
 use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface;
-use Doctrine\Common\Cache as CacheService;
+    Alchemy\Phrasea\Core\Service\ServiceInterface,
+    Alchemy\Phrasea\Cache as CacheDriver;
 
 /**
  *
@@ -67,7 +67,7 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
 
     if (isset($stats[$key]) && @$memcache->connect($this->host, $this->port))
     {
-      $service = new CacheService\MemcacheCache();
+      $service = new CacheDriver\MemcacheCache();
       $service->setMemcache($memcache);
     }
     else
@@ -75,9 +75,7 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
       throw new \Exception(sprintf("Memcache instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
     }
 
-    $registry = $this->getRegistry();
-
-    $service->setNamespace($registry->get("GV_sit", ""));
+    $service->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
 
     return $service;
   }
@@ -95,18 +93,6 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
   public function getPort()
   {
     return $this->port;
-  }
-
-  private function getRegistry()
-  {
-    $registry = $this->getDependency("registry");
-
-    if (!$registry instanceof \registryInterface)
-    {
-      throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
-    }
-
-    return $registry;
   }
 
 }
