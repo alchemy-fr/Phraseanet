@@ -888,18 +888,18 @@ $(document).ready(function(){
       var sim_rgb = hsl2rgb(hsb.h, hsb.s, sim_b);
       var sim_hex = RGBtoHex(sim_rgb.r,sim_rgb.g,sim_rgb.b);
 
-      $('style[title=color_selection]').empty().append(
-        '.diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo' +
-        '{'+
-        '    COLOR: #'+back_hex+';'+
-        '    BACKGROUND-COLOR: #'+hex+';'+
-        '}');
-
       setPref('background-selection', hex);
       setPref('background-selection-disabled', sim_hex);
       setPref('fontcolor-selection', back_hex);
 
+      $('style[title=color_selection]').empty()
 
+      var datas = '.diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo' +
+        '{'+
+        '    COLOR: #'+back_hex+';'+
+        '    BACKGROUND-COLOR: #'+hex+';'+
+        '}';
+      $('style[title=color_selection]').empty().text(datas);
     }
   });
   $('#backcolorpickerHolder').find('.colorpicker_submit').append($('#backcolorpickerHolder .submiter')).bind('click',function(){
