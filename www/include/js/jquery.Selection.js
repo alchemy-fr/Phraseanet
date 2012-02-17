@@ -263,6 +263,12 @@
         }
       });
 
+
+      if(typeof $this.options.selectStop === 'function')
+      {
+        $this.options.selectStop(jQuery.Event('selectStop'), $this);
+      }
+
       return this;
     }
   };
