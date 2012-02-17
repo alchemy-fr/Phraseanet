@@ -86,6 +86,50 @@
         <label lang="en">Thumbnail</label>
       </subdef>
     </subdefgroup>
+    <subdefgroup name="document">
+      <subdef class="preview" name="preview" downloadable="false">
+        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+        <mediatype>flexpaper</mediatype>
+        <writeDatas>no</writeDatas>
+        <baseurl></baseurl>
+        <label lang="fr">Prévisualisation</label>
+        <label lang="en">Preview</label>
+      </subdef>
+      <subdef class="thumbnail" name="thumbnail" downloadable="false">
+        <path>{{datapathweb}}{{basename}}/subdefs</path>
+        <mediatype>image</mediatype>
+        <method>resample</method>
+        <dpi>72</dpi>
+        <size>200</size>
+        <writeDatas>no</writeDatas>
+        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+        <label lang="fr">Imagette</label>
+        <label lang="en">Thumbnail</label>
+      </subdef>
+    </subdefgroup>
+    <subdefgroup name="flash">
+      <subdef class="preview" name="preview" downloadable="false">
+        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+        <mediatype>image</mediatype>
+        <size>200</size>
+        <writeDatas>no</writeDatas>
+        <method>resample</method>
+        <dpi>72</dpi>
+        <baseurl></baseurl>
+        <label lang="fr">Prévisualisation</label>
+        <label lang="en">Preview</label>
+      </subdef>
+      <subdef class="thumbnail" name="thumbnail" downloadable="false">
+        <path>{{datapathweb}}{{basename}}/subdefs</path>
+        <mediatype>image</mediatype>
+        <writeDatas>no</writeDatas>
+        <method>resample</method>
+        <dpi>72</dpi>
+        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+        <label lang="fr">Imagette</label>
+        <label lang="en">Thumbnail</label>
+      </subdef>
+    </subdefgroup>
   </subdefs>
 
   <description>
