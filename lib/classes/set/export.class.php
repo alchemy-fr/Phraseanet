@@ -977,11 +977,13 @@ class set_export extends set_abstract
 
     if (is_file($file))
     {
-      $testPath = strpos($file, $registry->get('GV_RootPath').'tmp/download/') !== false
+      $testPath = function(){ 
+        return strpos($file, $registry->get('GV_RootPath').'tmp/download/') !== false
             || strpos($file, $registry->get('GV_RootPath').'tmp/lazaret/') !== false
             || strpos($file, $registry->get('GV_X_Accel_Redirect')) !== false;
-
-      if ($registry->get('GV_modxsendfile') && $testPath)
+      };
+      
+      if ($registry->get('GV_modxsendfile') && $testPath())
       {
         $file_xaccel = str_replace(
           array(
