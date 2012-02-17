@@ -104,7 +104,7 @@ class BasketRepository extends EntityRepository
             JOIN b.validation s
             JOIN s.participants p
             WHERE b.usr_id != ?1 AND p.usr_id = ?2
-             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()) ';
+             AND (s.expires IS NULL OR s.expires > NOW()) ';
 
     if ($sort == 'date')
     {
