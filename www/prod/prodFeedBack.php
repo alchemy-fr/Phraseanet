@@ -152,7 +152,7 @@ switch ($action)
     $parm = $request->get_parms('cont', 'pos');
     $record = new record_preview('REG', $parm['pos'], $parm['cont']);
     $output = $twig->render('prod/preview/reg_train.html', array('container_records' => $record->get_container()->get_children(),
-        'record' => $record, 'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')));
+        'record' => $record));
     break;
 
   case 'GET_ORDERMANAGER':

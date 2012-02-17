@@ -13,7 +13,7 @@
       {% endif %}
 
       {% set tooltip = '' %}
-      {% if GV_rollover_reg_preview %}
+      {% if registry.get('GV_rollover_reg_preview') %}
         {% set tooltip = 'tooltipsrc="/prod/tooltip/caption/' ~ child.getRecord().get_sbas_id() ~ '/' ~ child.getRecord().get_record_id() ~ '/basket/"' %}
       {% endif %}
 
