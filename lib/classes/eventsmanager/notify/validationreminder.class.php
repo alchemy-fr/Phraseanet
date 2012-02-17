@@ -159,7 +159,7 @@ class eventsmanager_notify_validationreminder extends eventsmanager_notifyAbstra
       $em = $this->core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
 
-      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
 
       $basket_name = trim($basket->getName()) ? : _('Une selection');
     }

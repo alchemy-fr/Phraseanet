@@ -63,7 +63,7 @@ class set_export extends set_abstract
       $repository = $em->getRepository('\Entities\Basket');
 
       /* @var $repository \Repositories\BasketRepository */
-      $Basket = $repository->findUserBasket($sstid, $user);
+      $Basket = $repository->findUserBasket($sstid, $user, false);
 
       foreach ($Basket->getElements() as $basket_element)
       {

@@ -40,7 +40,7 @@ class Tooltip implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();

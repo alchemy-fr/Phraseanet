@@ -150,7 +150,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
       $em = $this->core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
 
-      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
     }
     catch (Exception $e)
     {
@@ -202,7 +202,7 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
       $em = $this->core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
 
-      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
     }
     catch (Exception $e)
     {

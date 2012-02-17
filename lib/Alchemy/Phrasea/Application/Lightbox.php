@@ -237,6 +237,7 @@ return call_user_func(
           $basket = $repository->findUserBasket(
             $ssel_id
             , $app['Core']->getAuthenticatedUser()
+            , false
           );
 
           /* @var $twig \Twig_Environment */
@@ -279,6 +280,7 @@ return call_user_func(
           $basket = $repository->findUserBasket(
             $ssel_id
             , $app['Core']->getAuthenticatedUser()
+            , false
           );
 
           /* @var $twig \Twig_Environment */
@@ -353,6 +355,7 @@ return call_user_func(
           $basket = $repository->findUserBasket(
             $ssel_id
             , $app['Core']->getAuthenticatedUser()
+            , false
           );
 
           $response = new Response($twig->render($template, array('basket' => $basket)));
@@ -495,6 +498,7 @@ return call_user_func(
           $basket = $repository->findUserBasket(
             $ssel_id
             , $user
+            , false
           );
 
           if (!$basket->getValidation())

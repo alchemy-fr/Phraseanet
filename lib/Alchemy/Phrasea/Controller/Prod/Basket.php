@@ -128,7 +128,7 @@ class Basket implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
               $em->remove($basket);
               $em->flush();
@@ -162,7 +162,7 @@ class Basket implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
               foreach ($basket->getElements() as $basket_element)
               {
@@ -204,7 +204,7 @@ class Basket implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
               $basket->setName($request->get('name', ''));
               $basket->setDescription($request->get('description'));
@@ -240,7 +240,7 @@ class Basket implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
@@ -265,7 +265,7 @@ class Basket implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
@@ -290,7 +290,7 @@ class Basket implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
               $archive_status = !!$request->get('archive');
 
@@ -337,7 +337,7 @@ class Basket implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
               $user = $app['Core']->getAuthenticatedUser();
               /* @var $user \User_Adapter */
@@ -413,7 +413,7 @@ class Basket implements ControllerProviderInterface
 
               /* @var $em \Doctrine\ORM\EntityManager */
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
 
               $user = $app['Core']->getAuthenticatedUser();
               /* @var $user \User_Adapter */
@@ -475,9 +475,9 @@ class Basket implements ControllerProviderInterface
     $controllers->get('/{basket_id}/', function(Application $app, Request $request, $basket_id)
             {
         $em = $app['Core']->getEntityManager();
-              
+
               $basket = $em->getRepository('\Entities\Basket')
-          ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+          ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
 
               if ($basket->getIsRead() === false)
               {
@@ -495,7 +495,7 @@ class Basket implements ControllerProviderInterface
               );
 
               $html = $twig->render('prod/WorkZone/Basket.html.twig', $params);
-              
+
               return new Response($html);
             })->assert('basket_id', '\d+');
 

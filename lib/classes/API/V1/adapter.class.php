@@ -660,7 +660,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     /* @var $repository \Repositories\BasketRepository */
 
-    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
+    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser(), true);
     $em->remove($Basket);
     $em->flush();
 
@@ -683,7 +683,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     /* @var $repository \Repositories\BasketRepository */
 
-    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
+    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser(), false);
 
     $result->set_datas(
       array("basket_elements" =>
@@ -783,7 +783,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     /* @var $repository \Repositories\BasketRepository */
 
-    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
+    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser(), true);
     $Basket->setName($name);
 
     $em->merge($Basket);
@@ -819,7 +819,7 @@ class API_V1_adapter extends API_V1_Abstract
 
     /* @var $repository \Repositories\BasketRepository */
 
-    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser());
+    $Basket = $repository->findUserBasket($basket_id, $this->core->getAuthenticatedUser(), true);
     $Basket->setDescription($desc);
 
     $em->merge($Basket);

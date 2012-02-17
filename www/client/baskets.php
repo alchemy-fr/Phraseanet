@@ -41,7 +41,7 @@ if ($Request->get('act') == "ADDIMG" && ($Request->get("p0") != "" && $Request->
 {
   $repository = $em->getRepository('\Entities\Basket');
   /* @var $repository \Repositories\BasketRepository */
-  $basket = $repository->findUserBasket($Request->get('courChuId'), $user);
+  $basket = $repository->findUserBasket($Request->get('courChuId'), $user, true);
 
   $sbas_id = phrasea::sbasFromBas($Request->get('bas'));
   $record = new record_adapter($sbas_id, $Request->get('p0'));
@@ -61,7 +61,7 @@ if ($Request->get('act') == "DELCHU" && ($Request->get("p0") != "" && $Request->
 {
   $repository = $em->getRepository('\Entities\Basket');
   /* @var $repository \Repositories\BasketRepository */
-  $basket = $repository->findUserBasket($Request->get('courChuId'), $user);
+  $basket = $repository->findUserBasket($Request->get('courChuId'), $user, true);
 
   $em->remove($basket);
   $em->flush();
@@ -142,7 +142,7 @@ $out .= '</td><td style="width:40%">';
 $em = $Core->getEntityManager();
 $repository = $em->getRepository('\Entities\Basket');
 /* @var $repository \Repositories\BasketRepository */
-$basket = $repository->findUserBasket($courChuId, $user);
+$basket = $repository->findUserBasket($courChuId, $user, true);
 
 $jscriptnochu = $basket->getName() . " :  " . sprintf(_('paniers:: %d documents dans le panier'), $basket->getElements()->count());
 

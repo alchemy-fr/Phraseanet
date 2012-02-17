@@ -132,7 +132,7 @@ class BasketRepository extends EntityRepository
    * @param \User_Adapter $user
    * @return \Entities\Basket
    */
-  public function findUserBasket($basket_id, \User_Adapter $user)
+  public function findUserBasket($basket_id, \User_Adapter $user, $requireOwner)
   {
     $dql = 'SELECT b, e, s, p
             FROM Entities\Basket b
@@ -158,7 +158,7 @@ class BasketRepository extends EntityRepository
     {
       $participant = false;
 
-      if ($basket->getValidation())
+      if ($basket->getValidation() && !$requireOwner)
       {
         try
         {

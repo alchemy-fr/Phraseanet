@@ -143,7 +143,7 @@ class record_preview extends record_adapter
         $repository = $em->getRepository('\Entities\Basket');
 
         /* @var $repository \Repositories\BasketRepository */
-        $Basket = $repository->findUserBasket($contId, $Core->getAuthenticatedUser());
+        $Basket = $repository->findUserBasket($contId, $Core->getAuthenticatedUser(), false);
 
         /* @var $Basket \Entities\Basket */
         $this->container = $Basket;
