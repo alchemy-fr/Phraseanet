@@ -179,16 +179,18 @@ class BasketRepository extends EntityRepository
     return $basket;
   }
 
-  public function findContainingRecord(\record_adapter $record)
+  public function findContainingRecordForUser(\record_adapter $record, \User_Adapter $user)
   {
 
     $dql = 'SELECT b, e
             FROM Entities\Basket b
             JOIN b.elements e
-            WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id';
+            WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
+              AND b.usr_id = :usr_id';
 
     $params = array(
-      'record_id' => $record->get_record_id()
+      'record_id' => $record->get_record_id(),
+      'usr_id' => $user->get_id()
     );
 
     $query   = $this->_em->createQuery($dql);
