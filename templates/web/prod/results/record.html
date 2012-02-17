@@ -39,7 +39,7 @@
         {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/answer/?number=' ~record.get_number() %}
       {% elseif user_rollover_thumbnail == 'caption' && searchEngine is null %}
         {% set extraclass = extraclass ~ ' captionTips' %}
-        {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/publi/ %}
+        {% set tooltipsrc = '/prod/tooltip/caption/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/publi/' %}
       {% elseif user_rollover_thumbnail == 'preview' %}
         {% set extraclass = extraclass ~ ' captionTips' %}
         {% set tooltipsrc = '/prod/tooltip/preview/' ~ record.get_sbas_id() ~ '/' ~ record.get_record_id() ~ '/' %}
