@@ -335,6 +335,7 @@
                   <td style="width:100%;">
                       <table style=width:100%>
                           {% for choice in basket_element.getValidationDatas() %}
+                              {% if choice.getParticipant().getCanSeeOthers() or choice.getParticipant().getUser() == core.getAuthenticatedUser() %}
                               <tr>
                                   <td> {{ choice.getParticipant().getUser().get_display_name() }} </td>
                                   <td>
@@ -352,6 +353,7 @@
                                   {% endif %}
                                   </td>
                               </tr>
+                              {% endif %}
                           {% endfor %}
                       </table>
                   </td>
