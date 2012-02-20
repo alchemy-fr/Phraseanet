@@ -170,6 +170,7 @@ class BasketRepository extends EntityRepository
     {
       $participant = false;
 
+      $basket = $this->_em->merge($basket);
       if ($basket->getValidation() && !$requireOwner)
       {
         try
