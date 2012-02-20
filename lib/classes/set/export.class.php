@@ -87,7 +87,7 @@ class set_export extends set_abstract
           new record_exportElement(
             $basket_element->getRecord()->get_sbas_id(),
             $record_id,
-            $basket->getName() . '/',
+            $Basket->getName() . '/',
             $remain_hd[$base_id]
         );
 
