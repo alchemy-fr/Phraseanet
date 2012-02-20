@@ -45,10 +45,7 @@ abstract class AbstractBuilder
     return $this->service;
   }
 
-  public static function create($name, ParameterBag $configuration, Array $dependencies = array(), $namespace = null)
-  {
-    throw new \Exception("Abstract factory does not create any concrete Service");
-  }
+  abstract public static function create($name, ParameterBag $configuration, Array $dependencies = array(), $namespace = null);
 
   protected static function getServiceOptions($type, ParameterBag $configuration)
   {
