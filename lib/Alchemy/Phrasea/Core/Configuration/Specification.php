@@ -26,7 +26,7 @@ interface Specification
    *
    * @return string
    */
-    public function getConfigurationPathName();
+  public function getConfigurationPathName();
 
   /**
    * Return the path to the configuration file
@@ -48,6 +48,5 @@ interface Specification
    * @return string
    */
   public function getConfigurationFileName();
-
 
 }

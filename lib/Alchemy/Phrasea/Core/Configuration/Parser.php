@@ -20,6 +20,7 @@ namespace Alchemy\Phrasea\Core\Configuration;
  */
 interface Parser
 {
+
   /**
    * Parse the configuration file $file  to an array
    *
@@ -35,4 +36,5 @@ interface Parser
    * @return string
    */
   public function dump(Array $conf, $level);
+
 }
