@@ -24,19 +24,19 @@ class Manager
 
   /**
    *
-   * @var \SplFileObject 
+   * @var \SplFileObject
    */
   protected $cacheFile;
 
   /**
    *
-   * @var \Alchemy\Phrasea\Core\Configuration\Parser 
+   * @var \Alchemy\Phrasea\Core\Configuration\Parser
    */
   protected $parser;
 
   /**
    *
-   * @var array 
+   * @var array
    */
   protected $registry = array();
 
@@ -56,20 +56,23 @@ class Manager
   public function get($name)
   {
     return $this->exists($name) ?
-            $this->registry[$name] : null;
+      $this->registry[$name] : null;
   }
 
   public function hasChange($name, $driver)
   {
     return $this->exists($name) ?
-            $this->registry[$name] !== $driver : true;
+      $this->registry[$name] !== $driver : true;
   }
 
   public function save($name, $driver)
   {
+    $date = new \DateTime();
+
     $this->registry[$name] = $driver;
 
-    $datas = $this->parser->dump($this->registry);
+    $datas = sprintf("#LastUpdate: %s\n", $date->format(DATE_ISO8601))
+      . $this->parser->dump($this->registry);
 
     file_put_contents($this->cacheFile->getPathname(), $datas);
   }
