@@ -75,7 +75,6 @@ doctrine_prod:
         query: apc_cache
         result: apc_cache
         metadata: apc_cache
-    log: query_logger
 
 
 # Define a Log service
