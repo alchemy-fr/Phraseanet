@@ -380,7 +380,7 @@ class Configuration
    * @param type $name
    * @return ParameterBag
    */
-  public function getService($name = 'twig')
+  public function getService($name)
   {
     $services = $this->getServices();
 
