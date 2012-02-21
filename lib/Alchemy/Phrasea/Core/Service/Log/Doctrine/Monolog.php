@@ -34,7 +34,7 @@ class Monolog extends ParentLog implements ServiceInterface
       self::JSON_OUTPUT, self::YAML_OUTPUT, self::VAR_DUMP_OUTPUT
   );
 
-  public function getService()
+  public function getDriver()
   {
     $output = isset($this->options["output"]) ? $this->options["output"] : self::JSON_OUTPUT;
 
@@ -57,6 +57,11 @@ class Monolog extends ParentLog implements ServiceInterface
   public function getType()
   {
     return 'doctrine_monolog';
+  }
+
+  public static function getMandatoryOptions()
+  {
+    return array('output', 'channel', 'handler', 'max_day', 'filename');
   }
 
 }

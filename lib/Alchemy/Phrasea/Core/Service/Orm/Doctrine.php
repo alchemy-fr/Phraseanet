@@ -30,98 +30,73 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 {
 
   const ARRAYCACHE = 'array';
-  const MEMCACHE = 'memcache';
-  const XCACHE = 'xcache';
-  const REDIS = 'redis';
-  const APC = 'apc';
+  const MEMCACHE   = 'memcache';
+  const XCACHE     = 'xcache';
+  const REDIS      = 'redis';
+  const APC        = 'apc';
 
   protected $caches = array(
-      self::MEMCACHE, self::APC, self::ARRAYCACHE, self::XCACHE, self::REDIS
+    self::MEMCACHE, self::APC, self::ARRAYCACHE, self::XCACHE, self::REDIS
   );
   protected $outputs = array(
-      'json', 'yaml', 'vdump'
+    'json', 'yaml', 'vdump'
   );
   protected $loggers = array(
-      'monolog', 'phpecho'
+    'Log\\Doctrine\Monolog', 'Log\\Doctrine\\Phpecho'
   );
   protected $entityManager;
   protected $cacheServices = array();
   protected $debug;
 
-  public function __construct($name, Array $options, Array $dependencies)
+  public function __construct(Core $core, $name, Array $options)
   {
-    parent::__construct($name, $options, $dependencies);
-
-    if (empty($options))
-    {
-      throw new \Exception(sprintf(
-                      "'%s' service options can not be empty"
-                      , $this->name
-              )
-      );
-    }
+    parent::__construct( $core, $name, $options);
 
     $config = new \Doctrine\ORM\Configuration();
 
-    //get debug mod : default to false
-    $debug = $this->debug = isset($options["debug"]) ? !!$options["debug"] : false;
+    $this->debug = !!$options["debug"];
 
-    //get logger
-    $logServiceName = isset($options["log"]) ? $options["log"] : false;
+    $logServiceName = isset($options["log"]['service']) ? $options["log"]['service'] : false;
 
     if ($logServiceName)
     {
-      //set logger
       $config->setSQLLogger($this->getLog($logServiceName));
     }
 
     //get cache
     $cache = isset($options["orm"]["cache"]) ? $options["orm"]["cache"] : false;
 
-    if (!$cache)
+    if (!$cache || $this->debug)
     {
-      $metaCache = $this->getCache('metadata');
-      $queryCache = $this->getCache('query');
-      $resultCache = $this->getCache('result');
+      $metaCache   = $this->core['CacheService']->get('ORMmetadata', 'Cache\\ArrayCache');
+      $queryCache  = $this->core['CacheService']->get('ORMquery', 'Cache\\ArrayCache');
+      $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
     }
     else
     {
-      //define query cache set to array cache if no defined or if service in on debug mode
-      $queryCache = isset($cache["query"]) && !$debug ?
-              $this->getCache('query', (string) $cache["query"]) :
-              isset($cache["query"]) ?
-                      $this->getCache('query', $cache["query"]) :
-                      $this->getCache('query');
+      $query   = isset($cache["query"]['service']) ? $cache["query"]['service'] : 'Cache\\ArrayCache';
+      $meta    = isset($cache["metadata"]['service']) ? $cache["metadata"]['service'] : 'Cache\\ArrayCache';
+      $results = isset($cache["result"]['service']) ? $cache["result"]['service'] : 'Cache\\ArrayCache';
 
-      //define metadatas cache set to array cache if no defined or if service in on debug mode
-      $metaCache = isset($cache["metadata"]) && !$debug ?
-              $this->getCache('metadata', (string) $cache["metadata"]) :
-              isset($cache["metadata"]) ?
-                      $this->getCache('metadata', $cache["metadata"]) :
-                      $this->getCache('metadata');
-
-      //define metadatas cache set to array cache if no defined or if service in on debug mode
-      $resultCache = isset($cache["result"]) && !$debug ?
-              $this->getCache('result', (string) $cache["result"]) :
-              isset($cache["result"]) ?
-                      $this->getCache('result', $cache["result"]) :
-                      $this->getCache('result');
+      $queryCache  = $this->core['CacheService']->get('ORMquery', $query);
+      $metaCache   = $this->core['CacheService']->get('ORMmetadata', $meta);
+      $resultCache = $this->core['CacheService']->get('ORMresult', $results);
     }
 
-    //set caches
-    $config->setMetadataCacheImpl($metaCache);
+    $config->setMetadataCacheImpl($metaCache->getDriver());
 
-    $config->setQueryCacheImpl($queryCache);
+    $config->setQueryCacheImpl($queryCache->getDriver());
 
-    $config->setResultCacheImpl($resultCache);
+    $config->setResultCacheImpl($resultCache->getDriver());
+
 
     //define autoregeneration of proxies base on debug mode
-    $config->setAutoGenerateProxyClasses($debug);
+    $config->setAutoGenerateProxyClasses($this->debug);
 
     $chainDriverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
 
     $driverYaml = new \Doctrine\ORM\Mapping\Driver\YamlDriver(
-                    array(__DIR__ . '/../../../../../conf.d/Doctrine')
+        array(__DIR__ . '/../../../../../conf.d/Doctrine')
     );
 
     $chainDriverImpl->addDriver($driverYaml, 'Entities');
@@ -139,29 +114,29 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     if (!$connexion)
     {
       throw new \Exception(sprintf(
-                      "Missing dbal configuration for '%s' service"
-                      , $this->name
-              )
+          "Missing dbal configuration for '%s' service"
+          , $this->name
+        )
       );
     }
 
     try
     {
-      $dbalConf = $this->configuration->getConnexion($connexion)->all();
+      $dbalConf = $this->core->getConfiguration()->getConnexion($connexion)->all();
     }
     catch (\Exception $e)
     {
       $connexionFile = $this
-              ->configuration
-              ->getConfigurationHandler()
-              ->getSpecification()
-              ->getConnexionFile();
+        ->core->getConfiguration()
+        ->getConfigurationHandler()
+        ->getSpecification()
+        ->getConnexionFile();
 
       throw new \Exception(sprintf(
-                      "Connexion '%s' is not declared in %s"
-                      , $connexion
-                      , $connexionFile->getFileName()
-              )
+          "Connexion '%s' is not declared in %s"
+          , $connexion
+          , $connexionFile->getFileName()
+        )
       );
     }
 
@@ -169,9 +144,9 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
     $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
 
-    $evm->addEventListener(DoctrineEvents::postUpdate, new ClearCacheListener());
-    $evm->addEventListener(DoctrineEvents::postRemove, new ClearCacheListener());
-    $evm->addEventListener(DoctrineEvents::postPersist, new ClearCacheListener());
+//    $evm->addEventListener(DoctrineEvents::postUpdate, new ClearCacheListener());
+//    $evm->addEventListener(DoctrineEvents::postRemove, new ClearCacheListener());
+//    $evm->addEventListener(DoctrineEvents::postPersist, new ClearCacheListener());
 
 
     try
@@ -181,9 +156,9 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     catch (\Exception $e)
     {
       throw new \Exception(sprintf(
-                      "Failed to create doctrine service for the following reason '%s'"
-                      , $e->getMessage()
-              )
+          "Failed to create doctrine service for the following reason '%s'"
+          , $e->getMessage()
+        )
       );
     }
 
@@ -192,106 +167,101 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     return $this;
   }
 
-  public function getVersion()
-  {
-    return \Doctrine\Common\Version::VERSION;
-  }
-
   protected static function loadClasses()
   {
     require_once __DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Doctrine\ORM'
-                    , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib')
+        'Doctrine\ORM'
+        , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Doctrine\DBAL'
-                    , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib')
+        'Doctrine\DBAL'
+        , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Doctrine\Common'
-                    , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib')
+        'Doctrine\Common'
+        , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Doctrine\Common\DataFixtures'
-                    , realpath(__DIR__ . '/../../../../../vendor/data-fixtures/lib')
+        'Doctrine\Common\DataFixtures'
+        , realpath(__DIR__ . '/../../../../../vendor/data-fixtures/lib')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'PhraseaFixture'
-                    , realpath(__DIR__ . '/../../../../../conf.d/')
+        'PhraseaFixture'
+        , realpath(__DIR__ . '/../../../../../conf.d/')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Entities'
-                    , realpath(__DIR__ . '/../../../../../Doctrine')
+        'Entities'
+        , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Repositories'
-                    , realpath(__DIR__ . '/../../../../../Doctrine')
+        'Repositories'
+        , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Proxies'
-                    , realpath(__DIR__ . '/../../../../../Doctrine')
+        'Proxies'
+        , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Events'
-                    , realpath(__DIR__ . '/../../../../../Doctrine')
+        'Events'
+        , realpath(__DIR__ . '/../../../../../Doctrine')
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Symfony'
-                    , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor')
-    );
-
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Doctrine\Logger'
-                    , realpath(__DIR__ . '/../../../../../../../')
+        'Symfony'
+        , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor')
     );
 
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Monolog'
-                    , realpath(__DIR__ . '/../../../../../vendor/Silex/vendor/monolog/src')
+        'Doctrine\Logger'
+        , realpath(__DIR__ . '/../../../../../../../')
     );
 
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Types'
-                    , realpath(__DIR__ . '/../../../../../Doctrine')
+        'Monolog'
+        , realpath(__DIR__ . '/../../../../../vendor/Silex/vendor/monolog/src')
     );
 
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'Gedmo'
-                    , __DIR__ . "/../../../../../vendor/doctrine2-gedmo/lib"
+        'Types'
+        , realpath(__DIR__ . '/../../../../../Doctrine')
+    );
+
+    $classLoader->register();
+
+    $classLoader = new \Doctrine\Common\ClassLoader(
+        'Gedmo'
+        , __DIR__ . "/../../../../../vendor/doctrine2-gedmo/lib"
     );
     $classLoader->register();
 
     $classLoader = new \Doctrine\Common\ClassLoader(
-                    'DoctrineExtensions'
-                    , __DIR__ . "/../../../../../vendor/doctrine2-beberlei/lib"
+        'DoctrineExtensions'
+        , __DIR__ . "/../../../../../vendor/doctrine2-beberlei/lib"
     );
     $classLoader->register();
 
@@ -331,101 +301,20 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     return;
   }
 
-  /**
-   *
-   *
-   * @param type $cacheName
-   */
-  private function getCache($cacheDoctrine, $serviceName = null)
-  {
-    $defaultServiceName = 'default_cache';
-    $defaultConfiguration = new ParameterBag(array(
-                'type' => self::ARRAYCACHE
-                , 'options' => array()
-                    )
-    );
-
-    if (null === $serviceName)
-    {
-      $serviceName = $defaultServiceName;
-      $configuration = $defaultConfiguration;
-    }
-    else
-    {
-      try
-      {
-        $configuration = $this->configuration->getService($serviceName);
-      }
-      catch (\Exception $e)
-      {
-        $message = sprintf(
-                "%s from %s service in orm:cache scope"
-                , $e->getMessage()
-                , $this->name
-        );
-
-        $e = new \Exception($message);
-        throw $e;
-      }
-      $type = $configuration->get("type");
-
-      if (!in_array($type, $this->caches))
-      {
-        throw new \Exception(sprintf(
-                        "The cache type '%s' declared in %s  %s service is not valid.
-          Available types are %s."
-                        , $type
-                        , $this->name
-                        , $this->getScope()
-                        , implode(", ", $this->caches)
-                )
-        );
-      }
-    }
-
-
-    try
-    {
-      $serviceBuilder = new Core\ServiceBuilder\Cache(
-                      $serviceName,
-                      $configuration                     
-      );
-
-      $service = $serviceBuilder->buildService();
-
-      $cacheService = $service->getService();
-    }
-    catch (\Exception $e)
-    {
-      $serviceBuilder = new Core\ServiceBuilder\Cache(
-                      $defaultServiceName,
-                      $defaultConfiguration
-      );
-
-      $service = $serviceBuilder->buildService();
-
-      $cacheService = $service->getService();
-    }
-
-    $this->cacheServices[$cacheDoctrine] = $service;
-    
-    return $cacheService;
-  }
-
   private function getLog($serviceName)
   {
     try
     {
-      $configuration = $this->configuration->getService($serviceName);
+      $configuration = $this->core->getConfiguration()->getService($serviceName);
     }
     catch (\Exception $e)
     {
       $message = sprintf(
-              "%s from %s service in orm:log scope"
-              , $e->getMessage()
-              , $this->name
+        "%s from %s service in orm:log scope"
+        , $e->getMessage()
+        , $this->name
       );
-      $e = new \Exception($message);
+      $e       = new \Exception($message);
       throw $e;
     }
 
@@ -434,27 +323,22 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     if (!in_array($type, $this->loggers))
     {
       throw new \Exception(sprintf(
-                      "The logger type '%s' declared in %s %s service is not valid.
+          "The logger type '%s' declared in %s %s service is not valid.
           Available types are %s."
-                      , $type
-                      , $this->name
-                      , $this->getScope()
-                      , implode(", ", $this->loggers)
-              )
+          , $type
+          , $this->name
+          , $this->getScope()
+          , implode(", ", $this->loggers)
+        )
       );
     }
 
-    $serviceBuilder = new Core\ServiceBuilder\Log(
-                    $serviceName,
-                    $configuration,
-                    array(),
-                    "Doctrine"
-    );
+    $service = Core\Service\Builder::create($this->core, $serviceName, $configuration);
 
-    return $serviceBuilder->buildService()->getService();
+    return $service->getDriver();
   }
 
-  public function getService()
+  public function getDriver()
   {
     return $this->entityManager;
   }
@@ -477,6 +361,11 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   public function isDebug()
   {
     return $this->debug;
+  }
+
+  public static function getMandatoryOptions()
+  {
+    return array('debug', 'dbal');
   }
 
 }

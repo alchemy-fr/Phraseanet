@@ -26,19 +26,19 @@ class Twig extends ServiceAbstract implements ServiceInterface
   protected $twig;
   protected $templatesPath = array();
 
-  public function __construct($name, Array $options, Array $dependencies)
+  public function __construct(Core $core, $name, Array $options)
   {
-    parent::__construct($name, $options, $dependencies);
+    parent::__construct( $core, $name, $options);
 
     $this->templatesPath = $this->resolvePaths();
 
     try
     {
-      if(!isset($this->options['debug']) || !$this->options['debug'])
+      if (!isset($this->options['debug']) || !$this->options['debug'])
       {
-        $this->options['cache'] = realpath( __DIR__ . '/../../../../../../tmp/cache_twig/');
+        $this->options['cache'] = realpath(__DIR__ . '/../../../../../../tmp/cache_twig/');
       }
-      
+
       $loader = new \Twig_Loader_Filesystem($this->templatesPath);
       $this->twig = new \Twig_Environment($loader, $this->options);
       $this->loadGlobals();
@@ -49,10 +49,10 @@ class Twig extends ServiceAbstract implements ServiceInterface
     catch (\Exception $e)
     {
       throw new \Exception(sprintf(
-                      "Unable to create '%s' service for the following reason %s"
-                      , $this->name
-                      , $e->getMessage()
-              )
+          "Unable to create '%s' service for the following reason %s"
+          , $this->name
+          , $e->getMessage()
+        )
       );
     }
   }
@@ -65,11 +65,11 @@ class Twig extends ServiceAbstract implements ServiceInterface
    */
   private function loadGlobals()
   {
-    $appbox = \appbox::get_instance();
-    $session = $appbox->get_session();
-    $browser = \Browser::getInstance();
+    $appbox   = \appbox::get_instance($this->core);
+    $session  = $appbox->get_session();
+    $browser  = \Browser::getInstance();
     $registry = $appbox->get_registry();
-    $request = new \http_request();
+    $request  = new \http_request();
 
     $user = false;
     if ($session->is_authenticated())
@@ -77,7 +77,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
       $user = \User_Adapter::getInstance($session->get_usr_id(), $appbox);
     }
 
-    $core = \bootstrap::execute();
+    $core          = \bootstrap::execute();
     $eventsmanager = \eventsmanager_broker::getInstance($appbox, $core);
 
     $this->twig->addGlobal('session', $session);
@@ -163,14 +163,14 @@ class Twig extends ServiceAbstract implements ServiceInterface
   private function getDefaultTemplatePath()
   {
     return array(
-        'mobile' => array(
-            __DIR__ . '/../../../../../../config/templates/mobile',
-            __DIR__ . '/../../../../../../templates/mobile'
-        ),
-        'web' => array(
-            __DIR__ . '/../../../../../../config/templates/web',
-            __DIR__ . '/../../../../../../templates/web'
-        )
+      'mobile' => array(
+        __DIR__ . '/../../../../../../config/templates/mobile',
+        __DIR__ . '/../../../../../../templates/mobile'
+      ),
+      'web' => array(
+        __DIR__ . '/../../../../../../config/templates/web',
+        __DIR__ . '/../../../../../../templates/web'
+      )
     );
   }
 
@@ -197,7 +197,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
     return $paths;
   }
 
-  public function getService()
+  public function getDriver()
   {
     return $this->twig;
   }
@@ -210,6 +210,11 @@ class Twig extends ServiceAbstract implements ServiceInterface
   public function getScope()
   {
     return 'template_engine';
+  }
+
+  public static function getMandatoryOptions()
+  {
+    return array('debug', 'charset', 'strict_variables', 'autoescape', 'optimizer');
   }
 
 }
