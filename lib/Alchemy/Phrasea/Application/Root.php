@@ -27,6 +27,8 @@ return call_user_func(function()
     {
       $app = new \Silex\Application();
 
+      $app['Core'] = \bootstrap::getCore();
+
       if (!\setup::is_installed())
       {
         $response = new \Symfony\Component\HttpFoundation\RedirectResponse('/setup/');
