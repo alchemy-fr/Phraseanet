@@ -37,7 +37,7 @@ $lng = Session_Handler::get_locale();
 
 $user = $Core->getAuthenticatedUser();
 $usr_id = $user->get_id();
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 if ($user->is_guest())

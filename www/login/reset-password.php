@@ -27,7 +27,7 @@ $request = http_request::getInstance();
 $parm = $request->get_parms('form_old_password', 'form_password', 'form_password_confirm');
 
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 

@@ -108,7 +108,7 @@ if (!is_null($parm['token']))
 }
 
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 $usr_id = $session->get_usr_id();
