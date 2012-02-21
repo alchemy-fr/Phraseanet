@@ -311,10 +311,9 @@ class appbox extends base
      * Step 1
      */
     $upgrader->set_current_message(_('Flushing cache'));
-    if ($this->get_cache()->ping())
-    {
-      $this->get_cache()->flush();
-    }
+
+    $this->Core['CacheService']->flushAll();
+
     $upgrader->add_steps_complete(1);
 
 
@@ -386,10 +385,9 @@ class appbox extends base
      * Step 9
      */
     $upgrader->set_current_message(_('Flushing cache'));
-    if ($this->get_cache()->ping())
-    {
-      $this->get_cache()->flush();
-    }
+
+    $this->Core['CacheService']->flushAll();
+    
     $upgrader->add_steps_complete(1);
 
     return $advices;
