@@ -57,7 +57,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteDelete()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
 
     $username = uniqid('user_');
     $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
@@ -80,7 +80,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteRightsApply()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
 
     $username = uniqid('user_');
     $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
@@ -107,7 +107,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     $this->markTestIncomplete();
     $_GET = array();
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
     $username = uniqid('user_');
     $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
     $base_id = self::$collection->get_base_id();
@@ -158,7 +158,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteRightTimeApply()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
     $username = uniqid('user_');
     $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
     $base_id = self::$collection->get_base_id();
@@ -221,7 +221,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteApplyTp()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
 
     $templateName = uniqid('template_');
     $template = User_Adapter::create($appbox, $templateName, "test", $templateName . "@email.com", false);
@@ -266,7 +266,7 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteCreateUser()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
 
     $username = uniqid('user_');
     $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);

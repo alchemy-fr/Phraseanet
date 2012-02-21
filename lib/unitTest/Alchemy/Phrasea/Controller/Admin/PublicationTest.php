@@ -38,7 +38,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
     $crawler = $this->client->request('GET', '/publications/list/');
     $pageContent = $this->client->getResponse()->getContent();
     $this->assertTrue($this->client->getResponse()->isOk());
-    $feeds = Feed_Collection::load_all(appbox::get_instance(), self::$user);
+    $feeds = Feed_Collection::load_all(appbox::get_instance(\bootstrap::getCore()), self::$user);
 
     foreach ($feeds->get_feeds() as $feed)
     {
@@ -52,7 +52,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testCreate()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -69,7 +69,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
     $this->assertTrue($this->client->getResponse()->isRedirect('/admin/publications/list/'));
 
-    $feeds = Feed_Collection::load_all(appbox::get_instance(), self::$user);
+    $feeds = Feed_Collection::load_all(appbox::get_instance(\bootstrap::getCore()), self::$user);
     $count_after = sizeof($feeds->get_feeds());
     $this->assertGreaterThan($count, $count_after);
 
@@ -80,7 +80,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testGetFeed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
     $crawler = $this->client->request('GET', '/publications/feed/' . $feed->get_id() . '/');
     $this->assertTrue($this->client->getResponse()->isOk());
@@ -93,7 +93,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testUpdateFeedNotOwner()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     //is not owner
     $stub = $this->getMock("user_adapter", array(), array(), "", false);
     //return a different userid
@@ -112,7 +112,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testUpdatedFeedException()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -140,7 +140,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testUpdatedFeedOwner()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -178,7 +178,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testIconUploadErrorOwner()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     //is not owner
     $stub = $this->getMock("user_adapter", array(), array(), "", false);
@@ -199,7 +199,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testIconUploadErrorFileData()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -218,7 +218,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testIconUploadErrorFileType()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -237,7 +237,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testIconUploadErrorTooLarge()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -256,7 +256,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testIconUploadErrorNotSquareA()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -275,7 +275,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testIconUploadErrorNotSquareB()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -294,7 +294,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testIconUpload()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -326,7 +326,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testAddPublisher()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -352,7 +352,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testAddPublisherException()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -372,7 +372,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testRemovePublisher()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -398,7 +398,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testRemovePublisherException()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 
@@ -420,7 +420,7 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
 
   public function testDeleteFeed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
 

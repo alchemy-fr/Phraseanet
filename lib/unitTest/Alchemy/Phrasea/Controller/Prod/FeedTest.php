@@ -57,7 +57,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
   {
     parent::setUp();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $this->client = $this->createClient();
 
@@ -107,7 +107,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRequestAvailable()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $crawler = $this->client->request('POST', '/feeds/requestavailable/');
     $this->assertTrue($this->client->getResponse()->isOk());
     $feeds = Feed_Collection::load_all($appbox, self::$user);
@@ -161,7 +161,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testEntryEdit()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $crawler = $this->client->request('GET', '/feeds/entry/' . $this->entry->get_id() . '/edit/');
     $pageContent = $this->client->getResponse()->getContent();
@@ -180,7 +180,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testEntryEditUnauthorized()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feed = Feed_Adapter::create(
                     $appbox, self::$user_alt1, $this->feed_title, $this->feed_subtitle
@@ -212,7 +212,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testEntryUpdate()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $params = array(
         "feed_id" => $this->feed->get_id()
@@ -236,7 +236,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testEntryUpdateNotFound()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $params = array(
         "feed_id" => 9999999
@@ -262,7 +262,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testEntryUpdateFailed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $params = array(
         "feed_id" => 9999999
@@ -288,7 +288,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testEntryUpdateUnauthorized()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     /**
      * I CREATE A FEED THAT IS NOT MINE
      * */
@@ -323,7 +323,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testDelete()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $crawler = $this->client->request('POST', '/feeds/entry/' . $this->entry->get_id() . '/delete/');
 
@@ -349,7 +349,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testDeleteNotFound()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $crawler = $this->client->request('POST', '/feeds/entry/9999999/delete/');
 
@@ -366,7 +366,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testDeleteUnauthorized()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     /**
      * I CREATE A FEED
      * */
@@ -393,7 +393,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRoot()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $crawler = $this->client->request('GET', '/feeds/');
 
@@ -422,7 +422,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testGetFeed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $feeds = Feed_Collection::load_all($appbox, self::$user);
 
@@ -448,7 +448,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testSuscribeAggregate()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $feeds = Feed_Collection::load_all($appbox, self::$user);
     $crawler = $this->client->request('GET', '/feeds/subscribe/aggregated/');
     $this->assertTrue($this->client->getResponse()->isOk());

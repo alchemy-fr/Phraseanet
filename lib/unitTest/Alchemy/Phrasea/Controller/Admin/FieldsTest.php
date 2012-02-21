@@ -44,7 +44,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    */
   public function testCheckMulti()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
 
     $field = \databox_field::create($databox, "test" . time());
@@ -64,7 +64,7 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testCheckReadOnly()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
 
     $field = \databox_field::create($databox, "test" . time());

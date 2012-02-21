@@ -518,6 +518,10 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertEquals(200, $response->getStatusCode());
 
+    $datas = json_decode($response->getContent());
+
+    $this->assertTrue($datas->success);
+
     $em = self::$core->getEntityManager();
     /* @var $em \Doctrine\ORM\EntityManager */
 
