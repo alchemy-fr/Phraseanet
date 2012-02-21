@@ -20,7 +20,7 @@ foreach ($lngs as $lng => $locales)
   }
 }
 
-$eventsmanager = eventsmanager_broker::getInstance(appbox::get_instance(), bootstrap::getCore());
+$eventsmanager = eventsmanager_broker::getInstance(appbox::get_instance(\bootstrap::getCore()), bootstrap::getCore());
 
 $PHP_CONF = array(
     'output_buffering' => '4096'  //INI_ALL
@@ -295,9 +295,10 @@ $GV = array(
                 'required' => true
             )
         )
-    ), array(
-        'section' => _('GV::section:: Serveurs de cache'),
-        'vars' => array(
+    )
+//  , array(
+//        'section' => _('GV::section:: Serveurs de cache'),
+//        'vars' => array(
 //            array(
 //                'type' => 'boolean',
 //                'name' => 'GV_use_cache',
@@ -305,28 +306,29 @@ $GV = array(
 //                'default' => false,
 //                'required' => true
 //            ),
-            array(
-                'type' => 'enum',
-                'name' => 'GV_cache_server_type',
-                'comment' => _('reglages:: Utiliser un serveur de cache'),
-                'default' => '',
-                'available' => array(''=>_('Aucun'),'redis' => 'Redis', 'memcached' => 'Memcached')
-            ),
-            array(
-                'type' => 'string',
-                'name' => 'GV_cache_server_host',
-                'comment' => _('setup:: Hote du Serveur de cache'),
-                'default' => '127.0.0.1',
-                'required' => false
-            ),
-            array(
-                'type' => 'integer',
-                'name' => 'GV_cache_server_port',
-                'comment' => _('reglages:: port du serveur de cache'),
-                'default' => 11211
-            )
-        )
-    ),array(
+//            array(
+//                'type' => 'enum',
+//                'name' => 'GV_cache_server_type',
+//                'comment' => _('reglages:: Utiliser un serveur de cache'),
+//                'default' => '',
+//                'available' => array(''=>_('Aucun'),'redis' => 'Redis', 'memcached' => 'Memcached')
+//            ),
+//            array(
+//                'type' => 'string',
+//                'name' => 'GV_cache_server_host',
+//                'comment' => _('setup:: Hote du Serveur de cache'),
+//                'default' => '127.0.0.1',
+//                'required' => false
+//            ),
+//            array(
+//                'type' => 'integer',
+//                'name' => 'GV_cache_server_port',
+//                'comment' => _('reglages:: port du serveur de cache'),
+//                'default' => 11211
+//            )
+//        )
+//    )
+  ,array(
         'section' => _('GV::section:: Serveur Sphinx'),
         'vars' => array(
             array(
