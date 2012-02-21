@@ -147,7 +147,7 @@ class lazaretFile
   public static function move_uploaded_to_lazaret(
   system_file $system_file, $base_id, $filename, $errors='', $status=false)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
     $conn = $appbox->get_connection();

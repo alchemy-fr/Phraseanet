@@ -609,35 +609,27 @@ class setup
 
     function check_cache_memcache()
     {
+      $Core = \bootstrap::getCore();
 
       echo '<h1>' . _('setup:: Serveur Memcached') . '</h1>';
       echo '<ul class="setup">';
 
       $registry = registry::get_instance();
 
-      if ($registry->get('GV_cache_server_type') !== 'nocache')
+      if ($Core->getCache()->isServer())
       {
-        $cache = cache_adapter::get_instance(registry::get_instance());
+        $stats = $Core->getCache()->getStats();
 
-        if ($cache->ping())
+        foreach ($stats as $name => $stat)
         {
-          $stats = $cache->getStats();
-
-          foreach ($stats as $name => $stat)
+          echo '<li>Statistics given by `' . $name . '`</li>';
+          echo '<li>' . sprintf(_('setup::Serveur actif sur %s'), $registry->get('GV_cache_server_host') . ':' . $registry->get('GV_cache_server_port')) . '</li>';
+          echo "<table>";
+          foreach ($stat as $key => $value)
           {
-            echo '<li>Statistics given by `' . $name . '`</li>';
-            echo '<li>' . sprintf(_('setup::Serveur actif sur %s'), $registry->get('GV_cache_server_host') . ':' . $registry->get('GV_cache_server_port')) . '</li>';
-            echo "<table>";
-            foreach ($stat as $key => $value)
-            {
-              echo "<tr class='even'><td>" . $key . "</td><td> " . $value . "</td></tr>";
-            }
-            echo "</table>";
+            echo "<tr class='even'><td>" . $key . "</td><td> " . $value . "</td></tr>";
           }
-        }
-        else
-        {
-          echo '<li class="non-blocker">' . sprintf(_('Le serveur memcached ne repond pas, vous devriez desactiver le cache')) . '</li>';
+          echo "</table>";
         }
       }
       else
