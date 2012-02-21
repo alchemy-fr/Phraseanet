@@ -347,7 +347,7 @@ class module_console_fileConfigCheck extends Command
 
       if ($service->getType() === 'twig')
       {
-        $twig = $service->getService();
+        $twig = $service->getDriver();
 
         if (self::PROD === $this->env && $twig->isDebug())
         {

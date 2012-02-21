@@ -376,7 +376,7 @@ class module_console_fileEnsureProductionSetting extends Command
 
       if ($service->getType() === 'twig')
       {
-        $twig = $service->getService();
+        $twig = $service->getDriver();
 
         if ($twig->isDebug())
         {
