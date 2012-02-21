@@ -20,7 +20,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
    */
   public function setUp()
   {
-    $this->object = new \Alchemy\Phrasea\Cache\Manager;
+//    $this->object = new \Alchemy\Phrasea\Cache\Manager(self::);
   }
 
   /**
