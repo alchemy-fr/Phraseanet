@@ -21,7 +21,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function setUp()
   {
     parent::setUp();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->object = new API_V1_adapter(FALSE, $appbox, self::$core);
   }
 
@@ -109,7 +109,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_databox_collections()
   {
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $request = new Request();
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -122,7 +122,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_record()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     $result       = $this->object->get_record($request, self::$record_1->get_sbas_id(), "-40");
@@ -137,7 +137,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_databox_status()
   {
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -150,7 +150,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_databox_metadatas()
   {
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -163,7 +163,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_databox_terms()
   {
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -185,7 +185,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_record_related()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     $result       = $this->object->get_record_related($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
@@ -196,7 +196,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_record_metadatas()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     $result       = $this->object->get_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
@@ -207,7 +207,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_record_status()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $request = new Request();
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
@@ -219,7 +219,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_record_embed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     $result       = $this->object->get_record_embed($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
@@ -230,7 +230,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testSet_record_metadatas()
   {
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $databox = self::$record_1->get_databox();
     $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     $result       = $this->object->set_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
@@ -284,9 +284,9 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
    */
   public function testSet_record_status()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $stub   = $this->getMock("API_V1_adapter", array("list_record_status"), array(false, &$appbox, bootstrap::getCore()));
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $databox = self::$record_1->get_databox();
 
     $statusbit = null;
@@ -321,7 +321,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
    */
   public function testSet_record_collection()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $stub   = $this->getMock("API_V1_adapter", array("list_record"), array(false, &$appbox, bootstrap::getCore()));
     $databox = self::$record_1->get_databox();
 
@@ -382,7 +382,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     }
 
     $this->assertEquals(1, $n);
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $usr_id  = $session->get_usr_id();
 
@@ -399,7 +399,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testDelete_basket()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $usr_id = $appbox->get_session()->get_usr_id();
     $user   = User_Adapter::getInstance($usr_id, $appbox);
 
@@ -435,7 +435,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_basket()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $usr_id = $appbox->get_session()->get_usr_id();
 
     $basket = $this->insertOneBasket();
@@ -449,7 +449,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testSet_basket_title()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $usr_id = $appbox->get_session()->get_usr_id();
 
     $basket = $this->insertOneBasket();
@@ -469,7 +469,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testSet_basket_description()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $usr_id = $appbox->get_session()->get_usr_id();
 
     $basket = $this->insertOneBasket();
@@ -489,7 +489,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testSearch_publications()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $stub   = $this->getMock("API_V1_adapter", array("list_publication"), array(false, &$appbox, bootstrap::getCore()));
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
     $feed         = Feed_Adapter::create($appbox, self::$user, "hello", "salut");
@@ -508,7 +508,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_publication()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $date    = new DateTime();
     $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept'    => 'application/json'));

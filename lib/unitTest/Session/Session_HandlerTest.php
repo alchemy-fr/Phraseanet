@@ -20,7 +20,7 @@ class Session_HandlerTest extends PhraseanetPHPUnitAbstract
    */
   public function setUp()
   {
-    $this->object = Session_Handler::getInstance(appbox::get_instance());
+    $this->object = Session_Handler::getInstance(appbox::get_instance(\bootstrap::getCore()));
   }
 
   /**

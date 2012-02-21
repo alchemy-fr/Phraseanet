@@ -20,7 +20,7 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
     self::$object = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
@@ -34,7 +34,7 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testLoad_all()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $coll = Feed_Collection::load_all($appbox, self::$user);
 
     foreach ($coll->get_feeds() as $feed)
@@ -45,7 +45,7 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_feeds()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $coll = Feed_Collection::load_public_feeds($appbox);
 
     foreach ($coll->get_feeds() as $feed)
@@ -56,7 +56,7 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_aggregate()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $coll = Feed_Collection::load_public_feeds($appbox);
 
     $this->assertInstanceOf('Feed_Aggregate', $coll->get_aggregate());
@@ -64,7 +64,7 @@ class Feed_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testLoad_public_feeds()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $coll = Feed_Collection::load_public_feeds($appbox);
 
     foreach ($coll->get_feeds() as $feed)
