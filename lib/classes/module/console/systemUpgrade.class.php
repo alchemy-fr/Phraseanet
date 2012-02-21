@@ -53,8 +53,8 @@ class module_console_systemUpgrade extends Command
       if ($continue == 'y')
       {
 
-        $file = __DIR__ . "/../../config/config.sample.yml";
-        $file1 = __DIR__ . "/../../config/config.yml";
+        $file = __DIR__ . "/../../../../config/config.sample.yml";
+        $file1 = __DIR__ . "/../../../../config/config.yml";
 
         if (!copy($file, $file1))
         {
