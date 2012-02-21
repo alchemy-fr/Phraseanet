@@ -226,7 +226,7 @@ class task_period_archive extends task_abstract
    */
   public function printInterfaceHTML()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     ob_start();
     ?>

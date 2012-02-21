@@ -61,7 +61,7 @@ class task_period_upgradetov32 extends task_abstract
     printf("taskid %s starting." . PHP_EOL, $this->get_task_id());
 
     $registry = registry::get_instance();
-    $registry->set('GV_cache_server_type', 'nocache', \registry::TYPE_STRING);
+//    $registry->set('GV_cache_server_type', 'nocache', \registry::TYPE_STRING);
     $registry->set('GV_sphinx', false, \registry::TYPE_BOOLEAN);
 
     if (!$this->sbas_id)

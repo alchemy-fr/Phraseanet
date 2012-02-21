@@ -43,7 +43,7 @@ class task_period_upgradetov31 extends task_abstract
   {
     printf("taskid %s starting." . PHP_EOL, $this->get_task_id());
     // task can't be stopped here
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $conn = $appbox->get_connection();
     $registry = $appbox->get_registry();
     $running = true;
@@ -58,7 +58,7 @@ class task_period_upgradetov31 extends task_abstract
     $todo = $this->how_many_left();
     $done = 0;
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $ret = 'stopped';
 
     $this->setProgress($done, $todo);
@@ -156,7 +156,7 @@ class task_period_upgradetov31 extends task_abstract
   private function how_many_left()
   {
     $todo = 0;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     foreach ($appbox->get_databoxes() as $databox)
     {

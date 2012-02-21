@@ -54,7 +54,7 @@ class task_period_batchupload extends task_appboxAbstract
 
   protected function process_one_content(appbox $appbox, Array $row)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $registry = $appbox->get_registry();
     $conn = $appbox->get_connection();
     $session = $appbox->get_session();
