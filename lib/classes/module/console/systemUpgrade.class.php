@@ -104,7 +104,7 @@ class module_console_systemUpgrade extends Command
       try
       {
         $output->write('<info>Upgrading...</info>', true);
-        $appbox = appbox::get_instance();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
 
         if (count(User_Adapter::get_wrong_email_users($appbox)) > 0)
         {

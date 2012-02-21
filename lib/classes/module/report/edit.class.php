@@ -76,7 +76,7 @@ class module_report_edit extends module_report
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $ret = array();
     foreach ($rs as $row)
