@@ -42,11 +42,11 @@ class Core extends \Pimple
 {
 
   protected static $availableLanguages = array(
-      'ar_SA' => 'العربية'
-      , 'de_DE' => 'Deutsch'
-      , 'en_GB' => 'English'
-      , 'es_ES' => 'Español'
-      , 'fr_FR' => 'Français'
+    'ar_SA' => 'العربية'
+    , 'de_DE' => 'Deutsch'
+    , 'en_GB' => 'English'
+    , 'es_ES' => 'Español'
+    , 'fr_FR' => 'Français'
   );
 
   /**
@@ -58,11 +58,13 @@ class Core extends \Pimple
   public function __construct($environement = null)
   {
     $appConf = new Core\Configuration\Application();
-    $parser = new Core\Configuration\Parser\Yaml();
+    $parser  = new Core\Configuration\Parser\Yaml();
 
     $handler = new Core\Configuration\Handler($appConf, $parser);
 
     $this->configuration = new Core\Configuration($handler, $environement);
+
+    $core = $this;
 
     /**
      * Cache Autoload if it's not debug mode
@@ -75,16 +77,16 @@ class Core extends \Pimple
      * Set version
      */
     $this['Version'] = $this->share(function()
-            {
-              return new Core\Version();
-            });
+      {
+        return new Core\Version();
+      });
 
     if ($this->configuration->isInstalled())
     {
-      $this['Registry'] = $this->share(function()
-              {
-                return \registry::get_instance();
-              });
+      $this['Registry'] = $this->share(function() use ($core)
+        {
+          return \registry::get_instance($core);
+        });
 
       \phrasea::start();
 
@@ -94,58 +96,75 @@ class Core extends \Pimple
     {
 
       $this['Registry'] = $this->share(function()
-              {
-                return new \Setup_Registry();
-              });
+        {
+          return new \Setup_Registry();
+        });
     }
 
 
-    $core = $this;
-    $cacheManager = $this->getCacheManager();
+    $this['CacheService'] = $this->share(function() use ($core)
+      {
+
+        if (!file_exists(__DIR__ . '/../../../tmp/cache_registry.yml'))
+        {
+          touch(__DIR__ . '/../../../tmp/cache_registry.yml');
+        }
+
+        $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
+
+        $parser = new Core\Configuration\Parser\Yaml();
+
+        return new \Alchemy\Phrasea\Cache\Manager($core, $file, $parser);
+      });
     /**
      * Set Entity Manager using configuration
      */
-    $this['EM'] = $this->share(function() use ($core, $cacheManager)
-            {
-              $serviceName = $core->getConfiguration()->getOrm();
-              $configuration = $core->getConfiguration()->getService($serviceName);
+    $this['EM'] = $this->share(function() use ($core)
+      {
+        $serviceName   = $core->getConfiguration()->getOrm();
+        $configuration = $core->getConfiguration()->getService($serviceName);
 
-              $serviceBuilder = new Core\ServiceBuilder\Orm($serviceName, $configuration);
+        $Service = Core\Service\Builder::create($core, $serviceName, $configuration);
 
-              $service = $serviceBuilder->buildService();
+        return $Service->getDriver();
+      });
 
-              foreach ($service->getCacheServices()->all() as $cacheKey => $cacheService)
-              {
-                $cacheManager($cacheKey, $cacheService);
-              }
 
-              return $service->getService();
-            });
+    $this['Cache'] = $this->share(function() use ($core)
+        {
+        $serviceName   = $core->getConfiguration()->getCache();
+
+        return $core['CacheService']->get('MainCache', $serviceName)->getDriver();
+        });
+
+    $this['OpcodeCache'] = $this->share(function() use ($core)
+        {
+        $serviceName   = $core->getConfiguration()->getOpcodeCache();
+
+        return $core['CacheService']->get('OpcodeCache', $serviceName)->getDriver();
+        });
 
 
 
     $this["Twig"] = $this->share(function() use ($core)
-            {
-              $serviceName = $core->getConfiguration()->getTemplating();
+      {
+        $serviceName   = $core->getConfiguration()->getTemplating();
+        $configuration = $core->getConfiguration()->getService($serviceName);
 
-              $configuration = $core->getConfiguration()->getService($serviceName);
+        $Service = Core\Service\Builder::create($core, $serviceName, $configuration);
 
-              $serviceBuilder = new Core\ServiceBuilder\TemplateEngine(
-                              $serviceName, $configuration
-              );
-
-              return $serviceBuilder->buildService()->getService();
-            });
+        return $Service->getDriver();
+      });
 
 
     $this['Serializer'] = $this->share(function()
-            {
-              $encoders = array(
-                  'json' => new Serializer\Encoder\JsonEncoder()
-              );
+      {
+        $encoders = array(
+          'json' => new Serializer\Encoder\JsonEncoder()
+        );
 
-              return new Serializer\Serializer(array(), $encoders);
-            });
+        return new Serializer\Serializer(array(), $encoders);
+      });
 
     self::initPHPConf();
 
@@ -186,32 +205,6 @@ class Core extends \Pimple
     }
   }
 
-  private function getCacheManager()
-  {
-    return function($cacheKey, $service)
-            {
-              $driverType = $service->getType();
-              $driver = $service->getService();
-
-              if(!file_exists(__DIR__ . '/../../../tmp/cache_registry.yml'))
-              {
-                touch(__DIR__ . '/../../../tmp/cache_registry.yml');
-              }
-
-              $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
-
-              $parser = new Core\Configuration\Parser\Yaml();
-
-              $cacheManager = new \Alchemy\Phrasea\Cache\Manager($file, $parser);
-
-              if ($cacheManager->hasChange($cacheKey, $driverType))
-              {
-                $driver->flushAll();
-                $cacheManager->save($cacheKey, $driverType);
-              }
-            };
-  }
-
   /**
    * Getter
    *
@@ -222,14 +215,14 @@ class Core extends \Pimple
     return $this['Registry'];
   }
 
-  /**
-   * Getter
-   *
-   * @return \Registry
-   */
   public function getCache()
   {
     return $this['Cache'];
+  }
+
+  public function getOpcodeCache()
+  {
+    return $this['OpcodeCache'];
   }
 
   /**
@@ -279,7 +272,7 @@ class Core extends \Pimple
    */
   public function isAuthenticated()
   {
-    $session = \Session_Handler::getInstance(\appbox::get_instance());
+    $session = \Session_Handler::getInstance(\appbox::get_instance($this));
 
     return $session->is_authenticated();
   }
@@ -291,7 +284,7 @@ class Core extends \Pimple
    */
   public function getAuthenticatedUser()
   {
-    $appbox = \appbox::get_instance();
+    $appbox  = \appbox::get_instance($this);
     $session = \Session_Handler::getInstance($appbox);
 
     return \User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -338,9 +331,14 @@ class Core extends \Pimple
     return;
   }
 
+  public function getLocale()
+  {
+    return $this->getRequest()->getLocale();
+  }
+
   protected function enableEvents()
   {
-    $events = \eventsmanager_broker::getInstance(\appbox::get_instance(), $this);
+    $events = \eventsmanager_broker::getInstance(\appbox::get_instance($this), $this);
     $events->start();
 
     return;
@@ -386,7 +384,7 @@ class Core extends \Pimple
   protected function detectLanguage()
   {
     $this->getRequest()->setDefaultLocale(
-            $this->getRegistry()->get('GV_default_lng', 'en_GB')
+      $this->getRegistry()->get('GV_default_lng', 'en_GB')
     );
 
     $cookies = $this->getRequest()->cookies;
@@ -415,7 +413,7 @@ class Core extends \Pimple
       {
         require_once __DIR__ . '/Loader/CacheAutoloader.php';
 
-        $prefix = 'class_';
+        $prefix    = 'class_';
         $namespace = md5(__DIR__);
 
         $loader = new Loader\CacheAutoloader($prefix, $namespace);
@@ -433,30 +431,30 @@ class Core extends \Pimple
 
     //Register prefixes
     $loader->registerPrefixes(array(
-        'Twig' => realpath(__DIR__ . '/../../vendor/Twig/lib'))
+      'Twig' => realpath(__DIR__ . '/../../vendor/Twig/lib'))
     );
 
     $loader->registerPrefixes(array(
-        'Twig_Extensions' => realpath(__DIR__ . '/../../vendor/Twig-extensions/lib'))
+      'Twig_Extensions' => realpath(__DIR__ . '/../../vendor/Twig-extensions/lib'))
     );
     //Register namespaces
     $loader->registerNamespaces(array(
-        'Alchemy' => realpath(__DIR__ . '/../..'),
-        'Symfony' => realpath(__DIR__ . '/../../vendor/symfony/src'),
-        'Doctrine\\ORM' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib'),
-        'Doctrine\\DBAL' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib'),
-        'Doctrine\\Common' => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib'),
-        'Doctrine\\Common\\DataFixtures' => realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
-        'Entities' => realpath(__DIR__ . '/../../Doctrine/'),
-        'Repositories' => realpath(__DIR__ . '/../../Doctrine/'),
-        'Proxies' => realpath(__DIR__ . '/../../Doctrine/'),
-        'Doctrine\\Logger' => realpath(__DIR__ . '/../../'),
-        'Monolog' => realpath(__DIR__ . '/../../vendor/Silex/vendor/monolog/src'),
-        'Gedmo' => realpath(__DIR__ . '/../../vendor/doctrine2-gedmo/lib'),
-        'Events' => realpath(__DIR__ . '/../../Doctrine'),
-        'DoctrineExtensions' => realpath(__DIR__ . "/../../vendor/doctrine2-beberlei/lib"),
-        'Types' => realpath(__DIR__ . "/../../Doctrine"),
-        'PhraseaFixture' => realpath(__DIR__ . "/../../conf.d"),
+      'Alchemy'                        => realpath(__DIR__ . '/../..'),
+      'Symfony'                        => realpath(__DIR__ . '/../../vendor/symfony/src'),
+      'Doctrine\\ORM'                  => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib'),
+      'Doctrine\\DBAL'                 => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib'),
+      'Doctrine\\Common'               => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib'),
+      'Doctrine\\Common\\DataFixtures' => realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
+      'Entities'                       => realpath(__DIR__ . '/../../Doctrine/'),
+      'Repositories'                   => realpath(__DIR__ . '/../../Doctrine/'),
+      'Proxies'                        => realpath(__DIR__ . '/../../Doctrine/'),
+      'Doctrine\\Logger'               => realpath(__DIR__ . '/../../'),
+      'Monolog'                        => realpath(__DIR__ . '/../../vendor/Silex/vendor/monolog/src'),
+      'Gedmo'                          => realpath(__DIR__ . '/../../vendor/doctrine2-gedmo/lib'),
+      'Events'                         => realpath(__DIR__ . '/../../Doctrine'),
+      'DoctrineExtensions'             => realpath(__DIR__ . "/../../vendor/doctrine2-beberlei/lib"),
+      'Types'                          => realpath(__DIR__ . "/../../Doctrine"),
+      'PhraseaFixture'                 => realpath(__DIR__ . "/../../conf.d"),
     ));
 
     $loader->register();
