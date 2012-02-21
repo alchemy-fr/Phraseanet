@@ -14,8 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+/* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
+
+$appbox = appbox::get_instance(\bootstrap::getCore());
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 
@@ -66,8 +68,7 @@ if (count($avBases) == 0)
     </head>
     <body>
       <?php
-      $core = \bootstrap::getCore();
-      $twig = $core->getTwig();
+      $twig = $Core->getTwig();
       echo $twig->render('common/menubar.twig', array('module' => 'upload'));
       ?>
 
@@ -329,8 +330,7 @@ echo $theFont;
 
     }
 
-    $core = \bootstrap::getCore();
-    $twig = $core->getTwig();
+    $twig = $Core->getTwig();
     echo $twig->render('common/menubar.twig'
             , array(
         'module' => 'upload'

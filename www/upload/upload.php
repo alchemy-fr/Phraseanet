@@ -15,7 +15,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . '/../../lib/classes/http/request.class.php';
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . '/../../lib/classes/http/request.class.php';
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('session', 'coll', 'status');
@@ -27,7 +29,7 @@ if ($parm["session"])
 
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance(\bootstrap::getCore());
 $session = $appbox->get_session();
 define("DEFAULT_MIMETYPE", "application/octet-stream");
 
@@ -35,8 +37,6 @@ if ($request->comes_from_flash())
   define("UPLOADER", "FLASH");
 else
   define("UPLOADER", "HTML");
-
-$registry = $appbox->get_registry();
 
 if (!isset($_FILES['Filedata']))
 {
@@ -57,7 +57,7 @@ if ($_FILES['Filedata']['error'] > 0)
 }
 
 $sbas_id = false;
-$usr_id = $session->get_usr_id();
+$usr_id = $Core->getAuthenticatedUser()->get_id();
 
 $sbas_id = phrasea::sbasFromBas($parm['coll']);
 
