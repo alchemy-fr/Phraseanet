@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
+use \Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
 
 /**
  *
@@ -22,9 +22,34 @@ use Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
 class MemcacheCache extends DoctrineMemcache implements Cache
 {
 
-  public function flushAll()
+  public function isServer()
   {
-    return $this->getMemcache()->flush();
+    return true;
+  }
+
+  public function getStats()
+  {
+    return $this->getMemcache()->getstats();
+  }
+
+  public function get($key)
+  {
+    if (!$this->contains($key))
+    {
+      throw new Exception('Unable to retrieve the value');
+    }
+
+    return $this->fetch($key);
+  }
+
+  public function deleteMulti(array $array_keys)
+  {
+    foreach ($array_keys as $id)
+    {
+      $this->delete($id);
+    }
+
+    return $this;
   }
 
 }

@@ -11,7 +11,9 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Alchemy\Phrasea\Core\Configuration\Parser as FileParser;
+use Alchemy\Phrasea\Core\Configuration\Parser as FileParser,
+    \Alchemy\Phrasea\Core\Service\Builder,
+    \Alchemy\Phrasea\Core;
 
 /**
  *
@@ -27,6 +29,7 @@ class Manager
    * @var \SplFileObject
    */
   protected $cacheFile;
+  protected $core;
 
   /**
    *
@@ -40,32 +43,67 @@ class Manager
    */
   protected $registry = array();
 
-  public function __construct(\SplFileObject $file, FileParser $parser)
+  public function __construct(Core $core, \SplFileObject $file, FileParser $parser)
   {
     $this->cacheFile = $file;
     $this->parser = $parser;
+    $this->core = $core;
 
     $this->registry = $parser->parse($file);
   }
 
-  public function exists($name)
+  protected function exists($name)
   {
     return isset($this->registry[$name]);
   }
 
-  public function get($name)
+  public function flushAll()
   {
-    return $this->exists($name) ?
-      $this->registry[$name] : null;
+    foreach ($this->registry as $cacheKey => $service_name)
+    {
+      $this->get($cacheKey, $service_name)->getDriver()->deleteAll();
+    }
+
+    return $this;
   }
 
-  public function hasChange($name, $driver)
+  public function get($cacheKey, $service_name)
+  {
+    if (!$this->exists($cacheKey))
+    {
+      $this->registry[$cacheKey] = $service_name;
+    }
+
+
+    try
+    {
+      $configuration = $this->core->getConfiguration()->getService($service_name);
+    }
+    catch (\Exception $e)
+    {
+      $configuration = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+          array('type' => 'Cache\\ArrayCache')
+      );
+    }
+
+    $driver = Builder::create($this->core, $service_name, $configuration);
+
+    if ($this->hasChange($cacheKey, $service_name))
+    {
+      $driver->getDriver()->deleteAll();
+      $this->save($cacheKey, $service_name);
+    }
+
+    return $driver;
+  }
+
+  protected function hasChange($name, $driver)
   {
     return $this->exists($name) ?
       $this->registry[$name] !== $driver : true;
   }
 
-  public function save($name, $driver)
+  protected function save($name, $driver)
   {
     $date = new \DateTime();
 

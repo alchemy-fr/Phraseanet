@@ -22,9 +22,34 @@ use Doctrine\Common\Cache\ApcCache as DoctrineApc;
 class ApcCache extends DoctrineApc implements Cache
 {
 
-  public function flushAll()
+  public function isServer()
   {
-    return apc_clear_cache() && apc_clear_cache('user');
+    return false;
+  }
+
+  public function getStats()
+  {
+    return null;
+  }
+
+  public function get($key)
+  {
+    if (!$this->contains($key))
+    {
+      throw new Exception('Unable to retrieve the value');
+    }
+
+    return $this->fetch($key);
+  }
+
+  public function deleteMulti(array $array_keys)
+  {
+    foreach ($array_keys as $id)
+    {
+      $this->delete($id);
+    }
+
+    return $this;
   }
 
 }

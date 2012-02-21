@@ -22,13 +22,34 @@ use Doctrine\Common\Cache\XcacheCache as DoctrineXcache;
 class XcacheCache extends DoctrineXcache implements Cache
 {
 
-  public function flushAll()
+  public function isServer()
   {
-    $this->_checkAuth();
+    return false;
+  }
 
-    xcache_clear_cache(XC_TYPE_VAR, 0);
+  public function getStats()
+  {
+    return null;
+  }
 
-    return true;
+  public function get($key)
+  {
+    if (!$this->contains($key))
+    {
+      throw new Exception('Unable to retrieve the value');
+    }
+
+    return $this->fetch($key);
+  }
+
+  public function deleteMulti(array $array_keys)
+  {
+    foreach ($array_keys as $id)
+    {
+      $this->delete($id);
+    }
+
+    return $this;
   }
 
 }

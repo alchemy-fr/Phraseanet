@@ -21,7 +21,7 @@ use Doctrine\Common\Cache\AbstractCache;
  */
 class RedisCache extends AbstractCache implements Cache
 {
- 
+
   /**
    * @var Memcache
    */
@@ -93,10 +93,35 @@ class RedisCache extends AbstractCache implements Cache
   {
     return $this->_redis->delete($id);
   }
-  
-  public function flushAll()
+
+  public function isServer()
   {
-    return $this->_redis->flushAll();
+    return true;
+  }
+
+  public function getStats()
+  {
+    return null;
+  }
+
+  public function get($key)
+  {
+    if (!$this->contains($key))
+    {
+      throw new Exception('Unable to retrieve the value');
+    }
+
+    return $this->fetch($key);
+  }
+
+  public function deleteMulti(array $array_keys)
+  {
+    foreach ($array_keys as $id)
+    {
+      $this->delete($id);
+    }
+
+    return $this;
   }
 
 }
