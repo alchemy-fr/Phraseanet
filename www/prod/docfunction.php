@@ -14,21 +14,20 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
-$Core    = bootstrap::getCore();
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $em      = $Core->getEntityManager();
 
-$appbox   = appbox::get_instance();
+$appbox   = appbox::get_instance($Core);
 $session  = $appbox->get_session();
 phrasea::headers();
-$registry = $appbox->get_registry();
 
 $request = http_request::getInstance();
 $parm    = $request->get_parms("act", "lst", "SSTTID", "story");
 
-$usr_id     = $session->get_usr_id();
-$user       = User_Adapter::getInstance($usr_id, $appbox);
+$user       = $Core->getAuthenticatedUser();
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
