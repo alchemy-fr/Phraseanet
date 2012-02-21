@@ -21,7 +21,7 @@ function deleteRecord($lst, $del_children)
   $em = $Core->getEntityManager();
   $BE_repository = $em->getRepository('\Entities\BasketElement');
 
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
   $session = $appbox->get_session();
   $registry = $Core->getRegistry();
 
@@ -121,7 +121,7 @@ function deleteRecord($lst, $del_children)
 function whatCanIDelete($lst)
 {
 
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
   $session = $appbox->get_session();
 
   $usr_id = $session->get_usr_id();

@@ -254,8 +254,7 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
   function is_available()
   {
     $bool = false;
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
+    $session = $this->appbox->get_session();
     if (!$session->is_authenticated())
 
       return false;

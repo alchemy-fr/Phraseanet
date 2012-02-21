@@ -38,7 +38,7 @@ class set_export extends set_abstract
   {
     $Core = bootstrap::getCore();
 
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance($Core);
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -424,7 +424,7 @@ class set_export extends set_abstract
     {
       throw new Exception('No subdefs given');
     }
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -866,7 +866,7 @@ class set_export extends set_abstract
     $sbas_id = phrasea::sbasFromBas($bas);
     $record  = new record_adapter($sbas_id, $rec);
     $desc    = $record->get_xml();
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $databox = databox::get_instance($sbas_id);
@@ -1075,7 +1075,7 @@ class set_export extends set_abstract
   public static function log_download(Array $list, $type, $anonymous = false, $comment = '')
   {
     //download
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user    = false;
     if ($anonymous)
@@ -1084,7 +1084,7 @@ class set_export extends set_abstract
     }
     else
     {
-      $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance());
+      $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance(\bootstrap::getCore()));
     }
 
     $tmplog = array();

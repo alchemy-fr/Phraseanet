@@ -88,7 +88,7 @@ class record_preview extends record_adapter
    */
   public function __construct($env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine = null, $query = '')
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $Core = bootstrap::getCore();
     $number = null;
     $this->env = $env;
@@ -331,12 +331,13 @@ class record_preview extends record_adapter
   public function get_short_history()
   {
     if (!is_null($this->short_history))
-
+    {
       return $this->short_history;
+    }
 
     $tab = array();
 
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
     $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -424,9 +425,11 @@ class record_preview extends record_adapter
   public function get_view_popularity()
   {
     if (!is_null($this->view_popularity))
-
+    {
       return $this->view_popularity;
-    $appbox  = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -522,9 +525,11 @@ class record_preview extends record_adapter
   public function get_refferer_popularity()
   {
     if (!is_null($this->refferer_popularity))
-
+    {
       return $this->refferer_popularity;
-    $appbox  = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -609,9 +614,11 @@ class record_preview extends record_adapter
   {
 
     if (!is_null($this->download_popularity))
-
+    {
       return $this->download_popularity;
-    $appbox  = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);

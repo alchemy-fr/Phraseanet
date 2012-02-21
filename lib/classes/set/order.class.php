@@ -66,7 +66,7 @@ class set_order extends set_abstract
    */
   public function __construct($id)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
 
@@ -202,7 +202,7 @@ class set_order extends set_abstract
    */
   public function send_elements(Array $elements_ids, $force)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
     $pusher = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -322,7 +322,7 @@ class set_order extends set_abstract
   public function deny_elements(Array $elements_ids)
   {
     $Core = bootstrap::getCore();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
 

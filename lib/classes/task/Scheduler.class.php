@@ -54,7 +54,7 @@ class task_Scheduler
   {
     require_once __DIR__ . '/../../bootstrap.php';
     $this->output = $output;
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $registry = $appbox->get_registry();
 
     $system = system_server::get_platform();

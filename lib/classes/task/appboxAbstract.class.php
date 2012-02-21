@@ -66,7 +66,7 @@ abstract class task_appboxAbstract extends task_abstract
         if (!$this->running)
           break;
 
-        $appbox = appbox::get_instance();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
         try
         {
           $this->load_settings(simplexml_load_string($row['settings']));
