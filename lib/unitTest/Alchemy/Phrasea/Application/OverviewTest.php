@@ -81,7 +81,7 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   function testDatafilesRouteNotAuthenticated()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->get_session()->logout();
     $crawler = $this->client->request('GET', '/datafiles/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/preview/');
     $response = $this->client->getResponse();
@@ -94,14 +94,14 @@ class ApplicationOverviewTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   function testPermalinkAuthenticated()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->assertTrue($appbox->get_session()->is_authenticated());
     $this->get_a_permalink();
   }
 
   function testPermalinkNotAuthenticated()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->get_session()->logout();
     $this->assertFalse($appbox->get_session()->is_authenticated());
     $this->get_a_permalink();

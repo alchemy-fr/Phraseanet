@@ -34,7 +34,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
   {
     parent::setUpBeforeClass();
     self::$yaml = new Symfony\Component\Yaml\Parser();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     self::$application = API_OAuth2_Application::create($appbox, self::$user, 'test API v1');
     $account = API_OAuth2_Account::load_with_user($appbox, self::$application, self::$user);
     self::$token = $account->get_token()->get_value();
@@ -825,7 +825,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     $this->evaluateMetaYaml200($content);
 
     $this->assertEquals(1, count((array) $content["response"]));
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->assertArrayHasKey("basket", $content["response"]);
 
     foreach ($content["response"]["basket"] as $basket)
