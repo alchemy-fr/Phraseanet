@@ -414,7 +414,7 @@ class Basket implements ControllerProviderInterface
               /* @var $em \Doctrine\ORM\EntityManager */
               $basket = $em->getRepository('\Entities\Basket')
                       ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), true);
-
+              
               $user = $app['Core']->getAuthenticatedUser();
               /* @var $user \User_Adapter */
 
@@ -422,24 +422,23 @@ class Basket implements ControllerProviderInterface
 
               foreach ($request->get('elements') as $bask_element_id)
               {
+                try
+                {
                 $basket_element = $em->getRepository('\Entities\BasketElement')
                         ->findUserElement($bask_element_id, $user);
-
-                if (!$basket_element)
+                }
+                catch(\Exception $e)
                 {
                   continue;
                 }
-
+                
                 $basket_element->setBasket($basket);
-
-                $em->merge($basket_element);
-
+                $basket->addBasketElement($basket_element);
                 $n++;
               }
 
-              $em->merge($basket);
               $em->flush();
-
+              
               $data = array(
                   'success' => true
                   , 'message' => sprintf(_('%d records moved'), $n)
@@ -474,10 +473,10 @@ class Basket implements ControllerProviderInterface
      */
     $controllers->get('/{basket_id}/', function(Application $app, Request $request, $basket_id)
             {
-        $em = $app['Core']->getEntityManager();
+              $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-          ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
 
               if ($basket->getIsRead() === false)
               {

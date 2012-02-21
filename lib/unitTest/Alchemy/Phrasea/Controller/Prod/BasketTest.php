@@ -508,15 +508,12 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->client->request(
             'POST', $route, array(
         'elements' => array($BasketElement->getId(), 'ufdsd')
-            ), array(), array(
-        "HTTP_ACCEPT" => "application/json"
-            )
+            ), array()
     );
 
     $response = $this->client->getResponse();
 
-
-    $this->assertEquals(200, $response->getStatusCode());
+    $this->assertTrue($response->isRedirect());
 
     $datas = json_decode($response->getContent());
 
@@ -547,7 +544,7 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $route = sprintf('/baskets/%s/stealElements/', $Basket_2->getId());
 
-    $crawler = $this->client->request(
+    $this->client->request(
             'POST', $route, array(
         'elements' => array($BasketElement->getId())
             ), array()
@@ -565,7 +562,8 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertArrayHasKey('message', $datas);
     $this->assertArrayHasKey('success', $datas);
-
+    $this->assertTrue($datas['success']);
+    
     $basket = $em->getRepository('Entities\Basket')->find($Basket_1->getId());
     $this->assertInstanceOf('\Entities\Basket', $basket);
     $this->assertEquals(0, $basket->getElements()->count());
