@@ -15,9 +15,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 $request = http_request::getInstance();

@@ -26,7 +26,7 @@ $user = $Core->getAuthenticatedUser();
 $request = http_request::getInstance();
 $parm = $request->get_parms("lst", "SSTTID", "story");
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 if ($registry->get('GV_needAuth2DL') && $user->is_guest())

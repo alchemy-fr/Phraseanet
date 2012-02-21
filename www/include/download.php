@@ -22,7 +22,7 @@ $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 

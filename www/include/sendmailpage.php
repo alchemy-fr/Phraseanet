@@ -28,7 +28,7 @@ $request = http_request::getInstance();
 $parm = $request->get_parms("lst", "obj", "destmail", "subjectmail", "reading_confirm", "textmail", "ssttid", "type");
 
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 phrasea::headers();

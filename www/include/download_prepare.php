@@ -52,7 +52,7 @@ catch (Exception $e)
   phrasea::headers(204);
 }
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 $unique_file = false;
