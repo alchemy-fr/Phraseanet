@@ -23,7 +23,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     try
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
 
       $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
       $stmt = $appbox->get_connection()->prepare($sql);
@@ -46,7 +46,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function tearDown()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->object->delete();
 
     try
@@ -123,7 +123,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_accounts_by_api()
   {
-    $accounts = Bridge_Account::get_accounts_by_api(appbox::get_instance(), $this->api);
+    $accounts = Bridge_Account::get_accounts_by_api(appbox::get_instance(\bootstrap::getCore()), $this->api);
     $this->assertTrue(is_array($accounts));
 
     $this->assertGreaterThan(0, count($accounts));
@@ -141,7 +141,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_accounts_by_user()
   {
-    $accounts = Bridge_Account::get_accounts_by_user(appbox::get_instance(), self::$user);
+    $accounts = Bridge_Account::get_accounts_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
 
     $this->assertTrue(is_array($accounts));
     $this->assertTrue(count($accounts) > 0);
@@ -154,7 +154,7 @@ class Bridge_AccountTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testLoad_account()
   {
-    $account = Bridge_Account::load_account(appbox::get_instance(), $this->object->get_id());
+    $account = Bridge_Account::load_account(appbox::get_instance(\bootstrap::getCore()), $this->object->get_id());
     $this->assertEquals($this->object->get_id(), $account->get_id());
   }
 

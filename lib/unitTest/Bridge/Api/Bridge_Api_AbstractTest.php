@@ -41,20 +41,20 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     parent::setUpBeforeClass();
     try
     {
-      self::$api = Bridge_Api::get_by_api_name(appbox::get_instance(), 'apitest');
+      self::$api = Bridge_Api::get_by_api_name(appbox::get_instance(\bootstrap::getCore()), 'apitest');
     }
     catch (Bridge_Exception_ApiNotFound $e)
     {
-      self::$api = Bridge_Api::create(appbox::get_instance(), 'apitest');
+      self::$api = Bridge_Api::create(appbox::get_instance(\bootstrap::getCore()), 'apitest');
     }
 
     try
     {
-      self::$account = Bridge_Account::load_account_from_distant_id(appbox::get_instance(), self::$api, self::$user, 'kirikoo');
+      self::$account = Bridge_Account::load_account_from_distant_id(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'kirikoo');
     }
     catch (Bridge_Exception_AccountNotFound $e)
     {
-      self::$account = Bridge_Account::create(appbox::get_instance(), self::$api, self::$user, 'kirikoo', 'coucou');
+      self::$account = Bridge_Account::create(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'kirikoo', 'coucou');
     }
   }
 
