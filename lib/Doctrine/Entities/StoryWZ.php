@@ -149,7 +149,7 @@ class StoryWZ
   {
     if ($this->getUsrId())
     {
-      return new \User_Adapter($this->getUsrId(), \appbox::get_instance());
+      return new \User_Adapter($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
     }
   }
 

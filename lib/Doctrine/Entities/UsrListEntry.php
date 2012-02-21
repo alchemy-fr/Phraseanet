@@ -136,7 +136,7 @@ class UsrListEntry
 
   public function getUser()
   {
-    return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance());
+    return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
   }
   public function setUser(\User_Adapter $user)
   {
