@@ -27,7 +27,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $auth = new Session_Authentication_None(self::$user);
     $session->authenticate($auth);
@@ -36,7 +36,7 @@ abstract class PhraseanetWebTestCaseAuthenticatedAbstract extends PhraseanetPHPU
   public static function tearDownAfterClass()
   {
     parent::tearDownAfterClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $session->logout();
   }

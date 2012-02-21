@@ -177,7 +177,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_mime()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $found  = $coll   = false;
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -525,7 +525,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
    */
   public function testGet_container_baskets()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $usr_id = $appbox->get_session()->get_usr_id();
 
     $em = self::$core->getEntityManager();

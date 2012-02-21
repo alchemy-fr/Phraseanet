@@ -17,7 +17,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
 
@@ -46,7 +46,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testEnable()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $base_id = self::$object->get_base_id();
     $coll_id = self::$object->get_coll_id();
     self::$object->disable($appbox);
