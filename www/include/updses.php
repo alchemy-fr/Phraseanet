@@ -15,13 +15,12 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+/* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $em = $Core->getEntityManager();
 
-$user = $Core->getAuthenticatedUser();
-
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $session->close_storage();
 $ret = array('status' => 'unknown', 'message' => false);
@@ -43,6 +42,8 @@ else
   $ret['status'] = 'disconnected';
   die(p4string::jsonencode($ret));
 }
+
+$user = $Core->getAuthenticatedUser();
 
 try
 {
