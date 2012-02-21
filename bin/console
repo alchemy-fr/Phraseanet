@@ -10,7 +10,7 @@
  */
 
 /**
- * 
+ *
  * @package
  * @package     KonsoleKomander
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -23,31 +23,31 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 
-require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
+$Core = require_once dirname(__FILE__) . '/../lib/bootstrap.php';
 
 $result_code = 1;
 
 try
 {
   \bootstrap::register_autoloads();
-  
+
   $app = new Application("
-  _____  _    _ _____            _____ ______          _   _ ______ _______ 
+  _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
- | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |   
- |  ___/|  __  |  _  /  / /\ \  \___ \|  __|   / /\ \ | . ` |  __|    | |   
- | |    | |  | | | \ \ / ____ \ ____) | |____ / ____ \| |\  | |____   | |   
- |_|    |_|  |_|_|  \_|_/    \_\_____/|______/_/    \_\_| \_|______|  |_|   
-  _  __                 _       _  __                             _         
- | |/ /___ _ _  ___ ___| |___  | |/ /___ _ __  _ __  __ _ _ _  __| |___ _ _ 
+ | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
+ |  ___/|  __  |  _  /  / /\ \  \___ \|  __|   / /\ \ | . ` |  __|    | |
+ | |    | |  | | | \ \ / ____ \ ____) | |____ / ____ \| |\  | |____   | |
+ |_|    |_|  |_|_|  \_|_/    \_\_____/|______/_/    \_\_| \_|______|  |_|
+  _  __                 _       _  __                             _
+ | |/ /___ _ _  ___ ___| |___  | |/ /___ _ __  _ __  __ _ _ _  __| |___ _ _
  | ' </ _ \ ' \(_-</ _ \ / -_) | ' </ _ \ '  \| '  \/ _` | ' \/ _` / -_) '_|
- |_|\_\___/_||_/__/\___/_\___| |_|\_\___/_|_|_|_|_|_\__,_|_||_\__,_\___|_|  
-                                                                            
+ |_|\_\___/_||_/__/\___/_\___| |_|\_\___/_|_|_|_|_|_\__,_|_||_\__,_\___|_|
+
  Phraseanet Copyright (C) 2004 Alchemy
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-                  . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName() 
+                  . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName()
                   . ' ' . \Alchemy\Phrasea\Core\Version::getNumber());
 
   $app->add(new module_console_aboutAuthors('about:authors'));

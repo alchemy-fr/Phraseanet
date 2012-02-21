@@ -453,7 +453,7 @@ class module_console_fileEnsureProductionSetting extends Command
       }
       $registry = \registry::get_instance();
 
-      $service = new Core\Service\Builder(
+      $service = Core\Service\Builder::create(
           \bootstrap::getCore()
           , $ormName
           , $configuration

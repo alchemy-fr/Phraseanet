@@ -823,13 +823,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $serviceName = $configuration->getTemplating();
     $confService = $configuration->getService($serviceName);
 
-    $templateServiceBuilder = \Alchemy\Phrasea\Core\Service\Builder::create(
+    $templateService = \Alchemy\Phrasea\Core\Service\Builder::create(
                     self::$core,
                     $serviceName
                     , $confService
     );
 
-    $this->app['Core']["Twig"] = $templateServiceBuilder->getDriver();
+    $this->app['Core']["Twig"] = $templateService->getDriver();
   }
 
   /**
