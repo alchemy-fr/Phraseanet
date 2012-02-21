@@ -30,9 +30,8 @@ class TwigTest extends PhraseanetPHPUnitAbstract
 
   public function testScope()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\TemplateEngine\Twig(
-                    'hello', $this->options, array()
+                   self::$core, 'hello', $this->options
     );
 
     $this->assertEquals("template_engine", $doctrine->getScope());
@@ -40,29 +39,26 @@ class TwigTest extends PhraseanetPHPUnitAbstract
 
   public function testService()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\TemplateEngine\Twig(
-                    'hello', $this->options, array()
+                   self::$core, 'hello', $this->options
     );
 
-    $this->assertInstanceOf("\Twig_Environment", $doctrine->getService());
+    $this->assertInstanceOf("\Twig_Environment", $doctrine->getDriver());
   }
 
   public function testServiceExcpetion()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\TemplateEngine\Twig(
-                    'hello', $this->options, array()
+                   self::$core, 'hello', $this->options
     );
 
-    $this->assertInstanceOf("\Twig_Environment", $doctrine->getService());
+    $this->assertInstanceOf("\Twig_Environment", $doctrine->getDriver());
   }
 
   public function testType()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\TemplateEngine\Twig(
-                    'hello', $this->options, array()
+                   self::$core, 'hello', $this->options
     );
 
     $this->assertEquals("twig", $doctrine->getType());

@@ -23,12 +23,12 @@ class TemplateBuilderTest extends PhraseanetPHPUnitAbstract
   public function testCreateException()
   {
     $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
-                    array("type" => "unknow", "options" => array())
+        array("type"    => "unknow", "options" => array())
     );
 
     try
     {
-      $service = Alchemy\Phrasea\Core\ServiceBuilder\TemplateEngine::create("test", $configuration);
+      $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, "test", $configuration);
       $this->fail("An exception should be raised");
     }
     catch (\Exception $e)
@@ -40,10 +40,18 @@ class TemplateBuilderTest extends PhraseanetPHPUnitAbstract
   public function testCreate()
   {
     $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
-                    array("type" => "twig", "options" => array())
+        array(
+          "type"    => "TemplateEngine\\Twig"
+          , "options" => array(
+            'debug'            => 'true'
+            , 'charset'          => 'UTF-8'
+            , 'strict_variables' => 'true'
+            , 'autoescape'       => 'true'
+            , 'optimizer'        => 'true'
+        ))
     );
 
-    $service = Alchemy\Phrasea\Core\ServiceBuilder\TemplateEngine::create("test", $configuration);
+    $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, "test", $configuration);
     $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
   }
 

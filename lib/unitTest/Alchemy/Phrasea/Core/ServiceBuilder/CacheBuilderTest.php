@@ -28,7 +28,7 @@ class CacheBuilderTest extends PhraseanetPHPUnitAbstract
 
     try
     {
-      $service = Alchemy\Phrasea\Core\ServiceBuilder\Cache::create("test", $configuration);
+      $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, "test", $configuration);
       $this->fail("An exception should be raised");
     }
     catch (\Exception $e)
@@ -40,10 +40,10 @@ class CacheBuilderTest extends PhraseanetPHPUnitAbstract
   public function testCreate()
   {
     $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
-                    array("type" => "array")
+                    array("type" => "Cache\\ArrayCache")
     );
 
-    $service = Alchemy\Phrasea\Core\ServiceBuilder\Cache::create("test", $configuration);
+    $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, "test", $configuration);
     $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
   }
 

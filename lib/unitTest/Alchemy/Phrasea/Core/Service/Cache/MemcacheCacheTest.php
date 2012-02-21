@@ -22,10 +22,8 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
 
   public function testScope()
   {
-    $registry = $this->getMock('RegistryInterface');
-
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    'hello', array(), array('registry' => $registry)
+                    self::$core, 'hello', array()
     );
 
     $this->assertEquals("cache", $cache->getScope());
@@ -33,22 +31,20 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
 
   public function testService()
   {
-    $registry = $this->getMock('RegistryInterface');
-
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    'hello', array(), array('registry' => $registry)
+                    self::$core, 'hello', array()
     );
 
     if (extension_loaded('memcache'))
     {
-      $service = $cache->getService();
+      $service = $cache->getDriver();
       $this->assertTrue($service instanceof \Doctrine\Common\Cache\AbstractCache);
     }
     else
     {
       try
       {
-        $cache->getService();
+        $cache->getDriver();
         $this->fail("should raise an exception");
       }
       catch (\Exception $e)
@@ -61,12 +57,12 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
   public function testServiceException()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    'hello', array(), array('registry' => null)
+                    self::$core, 'hello', array()
     );
 
     try
     {
-      $cache->getService();
+      $cache->getDriver();
       $this->fail("should raise an exception");
     }
     catch (\Exception $e)
@@ -77,10 +73,8 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
 
   public function testType()
   {
-    $registry = $this->getMock('RegistryInterface');
-
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    'hello', array(), array('registry' => $registry)
+                    self::$core, 'hello', array()
     );
 
     $this->assertEquals("memcache", $cache->getType());
@@ -88,10 +82,8 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
 
   public function testHost()
   {
-    $registry = $this->getMock('RegistryInterface');
-
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    'hello', array(), array('registry' => $registry)
+                    self::$core, 'hello', array()
     );
 
     $this->assertEquals(\Alchemy\Phrasea\Core\Service\Cache\MemcacheCache::DEFAULT_HOST, $cache->getHost());
@@ -99,10 +91,8 @@ class MemcacheCacheTest extends PhraseanetPHPUnitAbstract
 
   public function testPort()
   {
-    $registry = $this->getMock('RegistryInterface');
-
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    'hello', array(), array('registry' => $registry)
+                    self::$core, 'hello', array()
     );
 
     $this->assertEquals(\Alchemy\Phrasea\Core\Service\Cache\MemcacheCache::DEFAULT_PORT, $cache->getPort());

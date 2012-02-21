@@ -21,17 +21,17 @@ class DoctrineMonologTest extends PhraseanetPHPUnitAbstract
 {
 
   protected $options = array(
-      "handler" => "rotate"
-      , "filename" => "test"
+    "handler"  => "rotate"
+    , "filename" => "test"
   );
 
   public function setUp()
   {
     parent::setUp();
     $this->options = array(
-        "handler" => "rotate"
-        , "filename" => "test"
-        , 'output' => 'json'
+      "handler"  => "rotate"
+      , "filename" => "test"
+      , 'output'   => 'json'
     );
   }
 
@@ -39,16 +39,16 @@ class DoctrineMonologTest extends PhraseanetPHPUnitAbstract
   {
 
     $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Monolog(
-                    'hello', $this->options, array()
+        self::$core, 'hello', $this->options
     );
 
-    $this->assertInstanceOf("\Doctrine\Logger\MonologSQLLogger", $log->getService());
+    $this->assertInstanceOf("\Doctrine\Logger\MonologSQLLogger", $log->getDriver());
   }
 
   public function testType()
   {
     $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Monolog(
-                    'hello', $this->options, array()
+        self::$core, 'hello', $this->options
     );
 
     $this->assertEquals("doctrine_monolog", $log->getType());
@@ -60,9 +60,9 @@ class DoctrineMonologTest extends PhraseanetPHPUnitAbstract
     {
       $this->options["output"] = "unknowOutput";
       $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Monolog(
-                      'hello', $this->options, array()
+          self::$core, 'hello', $this->options
       );
-      $log->getService();
+      $log->getDriver();
       $this->fail("should raise an exception");
     }
     catch (\Exception $e)

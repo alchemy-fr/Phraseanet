@@ -22,10 +22,8 @@ class XcacheCacheTest extends PhraseanetPHPUnitAbstract
 
   public function testScope()
   {
-    $registry = $this->getMock('RegistryInterface');
-
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\XcacheCache(
-                    'hello', array(), array('registry' => $registry)
+                    self::$core, 'hello', array()
     );
 
     $this->assertEquals("cache", $cache->getScope());
@@ -33,22 +31,20 @@ class XcacheCacheTest extends PhraseanetPHPUnitAbstract
 
   public function testService()
   {
-    $registry = $this->getMock('RegistryInterface');
-
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\XcacheCache(
-                    'hello', array(), array('registry' => $registry)
+                    self::$core, 'hello', array()
     );
 
     if (extension_loaded('xcache'))
     {
-      $service = $cache->getService();
+      $service = $cache->getDriver();
       $this->assertTrue($service instanceof \Doctrine\Common\Cache\AbstractCache);
     }
     else
     {
       try
       {
-        $cache->getService();
+        $cache->getDriver();
         $this->fail("should raise an exception");
       }
       catch(\Exception $e)
@@ -61,12 +57,12 @@ class XcacheCacheTest extends PhraseanetPHPUnitAbstract
   public function testServiceException()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\XcacheCache(
-                    'hello', array(), array('registry' => null)
+                    self::$core, 'hello', array()
     );
 
     try
     {
-      $cache->getService();
+      $cache->getDriver();
       $this->fail("should raise an exception");
     }
     catch (\Exception $e)
@@ -78,7 +74,7 @@ class XcacheCacheTest extends PhraseanetPHPUnitAbstract
   public function testType()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\XcacheCache(
-                    'hello', array(), array('registry' => null)
+                    self::$core, 'hello', array()
     );
 
     $this->assertEquals("xcache", $cache->getType());

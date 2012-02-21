@@ -26,24 +26,23 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   {
     parent::setUp();
     $this->options = array(
-        "debug" => false
-        , "log" => "sql_logger"
-        , "dbal" => "main_connexion"
-        , "orm" => array(
-            "cache" => array(
-                "metadata" => "array_cache"
-                , "query" => "array_cache"
-                , "result" => "array_cache"
-            )
+      "debug" => false
+      , "log"   => array('service'=>"Log\\sql_logger")
+      , "dbal"  => "main_connexion"
+      , "orm"   => array(
+        "cache" => array(
+          "metadata" => array('service'=>"Cache\\array_cache")
+          , "query"    => array('service'=>"Cache\\array_cache")
+          , "result"   => array('service'=>"Cache\\array_cache")
         )
+      )
     );
   }
 
   public function testScope()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                    'hello', $this->options, array('registry' => $registry)
+        self::$core, 'hello', $this->options
     );
 
     $this->assertEquals("orm", $doctrine->getScope());
@@ -51,19 +50,17 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 
   public function testService()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                    'hello', $this->options, array('registry' => $registry)
+        self::$core, 'hello', $this->options
     );
 
-    $this->assertInstanceOf("\Doctrine\ORM\EntityManager", $doctrine->getService());
+    $this->assertInstanceOf("\Doctrine\ORM\EntityManager", $doctrine->getDriver());
   }
 
   public function testType()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                    'hello', $this->options, array('registry' => $registry)
+        self::$core, 'hello', $this->options
     );
 
     $this->assertEquals("doctrine", $doctrine->getType());
@@ -73,9 +70,8 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   {
     try
     {
-      $registry = $this->getMock('RegistryInterface');
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                      'hello', array(), array('registry' => $registry)
+          self::$core, 'hello', $this->options
       );
       $this->fail("should raise an exception");
     }
@@ -87,10 +83,9 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 
   public function testNoCacheInOptions()
   {
-    $registry = $this->getMock('RegistryInterface');
     unset($this->options["orm"]["cache"]);
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                    'hello', $this->options, array('registry' => $registry)
+        self::$core, 'hello', $this->options
     );
 
     foreach ($doctrine->getCacheServices()->all() as $service)
@@ -101,17 +96,16 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 
   public function testUnknowCache()
   {
-    $registry = $this->getMock('RegistryInterface');
     $this->options["orm"]["cache"]["result"] = "unknowCache";
 
     try
     {
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                      'hello', $this->options, array('registry' => $registry)
+          self::$core, 'hello', $this->options
       );
       $this->fail("An exception should be raised");
     }
-    catch(\Exception $e)
+    catch (\Exception $e)
     {
 
     }
@@ -119,16 +113,15 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 
   public function testIsDebug()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                    'hello', $this->options, array('registry' => $registry)
+        self::$core, 'hello', $this->options
     );
 
     $this->assertFalse($doctrine->isDebug());
 
     $this->options['debug'] = true;
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                    'hello', $this->options, array('registry' => $registry)
+        self::$core, 'hello', $this->options
     );
 
     $this->assertTrue($doctrine->isDebug());
@@ -136,12 +129,11 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 
   public function testGetCacheServices()
   {
-    $registry = $this->getMock('RegistryInterface');
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                    'hello', $this->options, array('registry' => $registry)
+        self::$core, 'hello', $this->options
     );
     $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag"
-            , $doctrine->getCacheServices());
+      , $doctrine->getCacheServices());
 
     foreach ($doctrine->getCacheServices()->all() as $service)
     {
@@ -149,18 +141,18 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     }
 
     $this->options['orm']["cache"] = array(
-        "metadata" => "array_cache"
-        , "query" => "apc_cache"
-        , "result" => "xcache_cache"
+      "metadata" => "array_cache"
+      , "query"    => "apc_cache"
+      , "result"   => "xcache_cache"
     );
 
     if (extension_loaded("apc") && extension_loaded("xcache"))
     {
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                      'hello', $this->options, array('registry' => $registry)
+          self::$core, 'hello', $this->options
       );
       $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag"
-              , $doctrine->getCacheServices());
+        , $doctrine->getCacheServices());
 
       foreach ($doctrine->getCacheServices()->all() as $key => $service)
       {
@@ -177,7 +169,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
       try
       {
         $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                        'hello', $this->options, array('registry' => $registry)
+            self::$core, 'hello', $this->options
         );
         $this->fail("An exception should be raised");
       }
@@ -192,10 +184,9 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   {
     try
     {
-      $registry = $this->getMock('RegistryInterface');
       $this->options["log"] = "unknowLogger";
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                      'hello', $this->options, array('registry' => $registry)
+          self::$core, 'hello', $this->options
       );
       $this->fail("should raise an exception");
     }
@@ -209,10 +200,9 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   {
     try
     {
-      $registry = $this->getMock('RegistryInterface');
       unset($this->options["dbal"]);
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                      'hello', $this->options, array('registry' => $registry)
+          self::$core, 'hello', $this->options
       );
       $this->fail("should raise an exception");
     }
@@ -226,10 +216,9 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   {
     try
     {
-      $registry = $this->getMock('RegistryInterface');
       $this->options["dbal"] = "unknowDbal";
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                      'hello', $this->options, array('registry' => $registry)
+          self::$core, 'hello', $this->options
       );
       $this->fail("should raise an exception");
     }
@@ -237,16 +226,6 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     {
 
     }
-  }
-
-  public function testGetVersion()
-  {
-    $registry = $this->getMock('RegistryInterface');
-    $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-                    'hello', $this->options, array('registry' => $registry)
-    );
-
-    $this->assertEquals(\Doctrine\Common\Version::VERSION, $doctrine->getVersion());
   }
 
 //  public function testBadDbal()
@@ -304,4 +283,5 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 //        break;
 //    }
 //  }
+
 }
