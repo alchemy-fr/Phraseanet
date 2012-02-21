@@ -17,7 +17,7 @@ require_once __DIR__ . '/../../../../../PhraseanetPHPUnitAbstract.class.inc';
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class XcacheCacheTest extends PhraseanetPHPUnitAbstract
+class ServiceXcacheCacheTest extends PhraseanetPHPUnitAbstract
 {
 
   public function testScope()
