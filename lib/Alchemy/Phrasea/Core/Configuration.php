@@ -212,7 +212,7 @@ class Configuration
       $this->environment = $this->configurationHandler->getSelectedEnvironnment();
       $this->configuration = new ParameterBag($configuration);
     }
-    elseif(!$this->installed)
+    elseif (!$this->installed)
     {
       $configuration = array();
       $this->configuration = new ParameterBag($configuration);
@@ -237,12 +237,12 @@ class Configuration
     catch (\Exception $e)
     {
       throw new \Exception(sprintf('Unknow connexion name %s declared in %s'
-                      , $name
-                      , $this->configurationHandler
-                              ->getSpecification()
-                              ->getConnexionFile()
-                              ->getFileName()
-              )
+          , $name
+          , $this->configurationHandler
+            ->getSpecification()
+            ->getConnexionFile()
+            ->getFileName()
+        )
       );
     }
 
@@ -256,8 +256,8 @@ class Configuration
   public function getConnexions()
   {
     return new ParameterBag($this->configurationHandler->getParser()->parse(
-                            $this->configurationHandler->getSpecification()->getConnexionFile()
-                    )
+          $this->configurationHandler->getSpecification()->getConnexionFile()
+        )
     );
   }
 
@@ -290,8 +290,8 @@ class Configuration
   public function getServices()
   {
     return new ParameterBag($this->configurationHandler->getParser()->parse(
-                            $this->getServiceFile()
-                    )
+          $this->getServiceFile()
+        )
     );
   }
 
@@ -312,14 +312,14 @@ class Configuration
     $yaml = $this->configurationHandler->getParser()->dump($data, 5);
 
     $filePathName = $this->configurationHandler
-            ->getSpecification()
-            ->getConfigurationPathName();
+      ->getSpecification()
+      ->getConfigurationPathName();
 
     if (false === file_put_contents($filePathName, $yaml, $flag))
     {
       $filePath = $this->configurationHandler
-              ->getSpecification()
-              ->getConfigurationFilePath();
+        ->getSpecification()
+        ->getConfigurationFilePath();
       throw new \Exception(sprintf(_('Impossible d\'ecrire dans le dossier %s'), $filePath));
     }
 
@@ -337,9 +337,9 @@ class Configuration
     try
     {
       $filePathName = $this
-              ->configurationHandler
-              ->getSpecification()
-              ->getConfigurationPathName();
+        ->configurationHandler
+        ->getSpecification()
+        ->getConfigurationPathName();
 
       $deleted = unlink($filePathName);
     }
@@ -362,7 +362,17 @@ class Configuration
    */
   public function getTemplating()
   {
-    return $this->getConfiguration()->get('template_engine');
+    return 'TemplateEngine\\' . $this->getConfiguration()->get('template_engine');
+  }
+
+  public function getCache()
+  {
+    return 'Cache\\' . $this->getConfiguration()->get('cache');
+  }
+
+  public function getOpcodeCache()
+  {
+    return 'Cache\\' . $this->getConfiguration()->get('opcodecache');
   }
 
   /**
@@ -371,7 +381,7 @@ class Configuration
    */
   public function getOrm()
   {
-    return $this->getConfiguration()->get('orm');
+    return 'Orm\\' . $this->getConfiguration()->get('orm');
   }
 
   /**
@@ -382,25 +392,33 @@ class Configuration
    */
   public function getService($name)
   {
+    $scopes   = explode('\\', $name);
     $services = $this->getServices();
+    $service  = null;
 
-    try
+    while ($scopes)
     {
-      $template = $services->get($name);
-    }
-    catch (\Exception $e)
-    {
-      throw new \Exception(sprintf('Unknow service name %s declared in %s'
-                      , $name
-                      , $this->configurationHandler
-                              ->getSpecification()
-                              ->getServiceFile()
-                              ->getFileName()
-              )
-      );
+      $scope = array_shift($scopes);
+
+      try
+      {
+        $service  = new ParameterBag($services->get($scope));
+        $services = $service;
+      }
+      catch (\Exception $e)
+      {
+        throw new \Exception(sprintf('Unknow service name %s declared in %s'
+            , $scope
+            , $this->configurationHandler
+              ->getSpecification()
+              ->getServiceFile()
+              ->getFileName()
+          )
+        );
+      }
     }
 
-    return new ParameterBag($template);
+    return $service;
   }
 
   /**
