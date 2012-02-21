@@ -197,7 +197,7 @@ class Core extends \Pimple
               {
                 touch(__DIR__ . '/../../../tmp/cache_registry.yml');
               }
-              
+
               $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
 
               $parser = new Core\Configuration\Parser\Yaml();
@@ -206,7 +206,7 @@ class Core extends \Pimple
 
               if ($cacheManager->hasChange($cacheKey, $driverType))
               {
-                $driver->deleteAll();
+                $driver->flushAll();
                 $cacheManager->save($cacheKey, $driverType);
               }
             };
