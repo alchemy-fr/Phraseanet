@@ -25,12 +25,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 return call_user_func(
     function()
     {
-      $appbox  = \appbox::get_instance();
-      $session = $appbox->get_session();
 
       $app = new \Silex\Application();
 
       $app['Core'] = \bootstrap::getCore();
+
+      $appbox  = \appbox::get_instance($app['Core']);
+      $session = $appbox->get_session();
 
       $app["debug"] = $app["Core"]->getConfiguration()->isDebug();
 
@@ -88,7 +89,7 @@ return call_user_func(
           if (!$session->is_authenticated())
             throw new \Exception_Session_NotAuthenticated();
 
-          $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance());
+          $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
 
           if (!$user->ACL()->has_access_to_subdef($record, $subdef))
             throw new \Exception_UnauthorizedAction();
@@ -166,7 +167,7 @@ return call_user_func(
 
             if ($session->is_authenticated())
             {
-              $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance());
+              $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
 
               $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 

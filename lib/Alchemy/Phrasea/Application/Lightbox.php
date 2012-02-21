@@ -26,13 +26,13 @@ use Alchemy\Phrasea\Controller\Exception as ControllerException;
 return call_user_func(
     function()
     {
-      $appbox = \appbox::get_instance();
-
-      $session = $appbox->get_session();
-
       $app = new \Silex\Application();
 
       $app['Core'] = \bootstrap::getCore();
+
+      $appbox = \appbox::get_instance($app['Core']);
+
+      $session = $appbox->get_session();
 
       $app["debug"] = $app["Core"]->getConfiguration()->isDebug();
 
@@ -135,7 +135,7 @@ return call_user_func(
               $template_options   = 'lightbox/IE6/sc_options_box.twig';
               $template_agreement = 'lightbox/IE6/agreement_box.twig';
             }
-            $appbox             = \appbox::get_instance();
+            $appbox             = \appbox::get_instance($app['Core']);
             $usr_id             = $appbox->get_session()->get_usr_id();
 
 
@@ -171,7 +171,7 @@ return call_user_func(
           /* @var $twig \Twig_Environment */
           $twig = $app['Core']->getTwig();
 
-          $appbox = \appbox::get_instance();
+          $appbox = \appbox::get_instance($app['Core']);
           $entry  = \Feed_Entry_Adapter::load_from_id($appbox, $entry_id);
           $item   = new \Feed_Entry_Item($appbox, $entry, $item_id);
 
@@ -594,8 +594,7 @@ return call_user_func(
 
       $app->error(function($e) use($app)
         {
-        
-        var_dump($e->getMessage());
+
           /* @var $twig \Twig_Environment */
           $twig     = $app['Core']->getTwig();
           $registry = \registry::get_instance();

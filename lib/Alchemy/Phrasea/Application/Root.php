@@ -50,7 +50,7 @@ return call_user_func(function()
 
       $app->get('/robots.txt', function() use ($app)
         {
-          $appbox = \appbox::get_instance();
+          $appbox = \appbox::get_instance($app['Core']);
 
           $registry = $appbox->get_registry();
 
