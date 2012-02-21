@@ -15,25 +15,14 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
-$session = $appbox->get_session();
-$request = http_request::getInstance();
-$parm = $request->get_parms('id');
 
-if (isset($session->usr_id) && isset($session->ses_id))
-{
-  $usr_id = $session->get_usr_id();
-  $user = User_Adapter::getInstance($usr_id, $appbox);
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-  if (!$user->ACL()->has_right('report'))
-    phrasea::headers(403);
-}
-else
-{
-  header("Location: /login/?redirect=/report");
-  exit();
-}
+$user = $Core->getAuthenticatedUser();
+
+if (!$user->ACL()->has_right('report'))
+  phrasea::headers(403);
 
 
 $sbasid = isset($_POST['sbasid']) ? $_POST['sbasid'] : null;
@@ -57,8 +46,7 @@ catch (Exception $e)
 }
 
 
-$core = \bootstrap::getCore();
-$twig = $core->getTwig();
+$twig = $Core->getTwig();
 
 $html = $twig->render(
         "report/ajax_dashboard_content_child.twig", array(
