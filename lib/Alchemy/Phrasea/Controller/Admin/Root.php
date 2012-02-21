@@ -42,7 +42,7 @@ class Root implements ControllerProviderInterface
             {
 
               $Core = $app['Core'];
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $user = $Core->getAuthenticatedUser();
 
               \User_Adapter::updateClientInfos(3);

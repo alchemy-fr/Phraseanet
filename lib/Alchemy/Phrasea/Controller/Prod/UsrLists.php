@@ -447,7 +447,7 @@ class UsrLists implements ControllerProviderInterface
 
           foreach ($request->get('usr_ids') as $usr_id)
           {
-            $user_entry = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+            $user_entry = \User_Adapter::getInstance($usr_id, \appbox::get_instance($app['Core']));
 
             if ($list->has($user_entry))
               continue;
@@ -565,7 +565,7 @@ class UsrLists implements ControllerProviderInterface
             throw new ControllerException(_('You are not authorized to do this'));
           }
 
-          $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+          $new_owner = \User_Adapter::getInstance($usr_id, \appbox::get_instance($app['Core']));
 
           if ($list->hasAccess($new_owner))
           {

@@ -40,7 +40,7 @@ class TOU implements ControllerProviderInterface
         try
         {
           $user    = $app['Core']->getAuthenticatedUser();
-          $session = \Session_Handler::getInstance(\appbox::get_instance());
+          $session = \Session_Handler::getInstance(\appbox::get_instance($app['Core']));
 
           $databox = \databox::get_instance((int) $sbas_id);
 
