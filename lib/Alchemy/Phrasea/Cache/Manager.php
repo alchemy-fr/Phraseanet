@@ -69,38 +69,37 @@ class Manager
 
   public function get($cacheKey, $service_name)
   {
-    if (!$this->exists($cacheKey))
-    {
-      $this->registry[$cacheKey] = $service_name;
-    }
-
-
     try
     {
       $configuration = $this->core->getConfiguration()->getService($service_name);
+      $write = true;
     }
     catch (\Exception $e)
     {
       $configuration = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
           array('type' => 'Cache\\ArrayCache')
       );
+      $write = false;
     }
 
-    $driver = Builder::create($this->core, $service_name, $configuration);
+    $service = Builder::create($this->core, $service_name, $configuration);
 
     if ($this->hasChange($cacheKey, $service_name))
     {
-      $driver->getDriver()->deleteAll();
-      $this->save($cacheKey, $service_name);
+      $service->getDriver()->deleteAll();
+      if($write)
+      {
+        $this->registry[$cacheKey] = $service_name;
+        $this->save($cacheKey, $service_name);
+      }
     }
 
-    return $driver;
+    return $service;
   }
 
   protected function hasChange($name, $driver)
   {
-    return $this->exists($name) ?
-      $this->registry[$name] !== $driver : true;
+    return $this->exists($name) ? $this->registry[$name] !== $driver : true;
   }
 
   protected function save($name, $driver)
