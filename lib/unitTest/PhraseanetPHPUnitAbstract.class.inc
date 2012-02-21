@@ -829,7 +829,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     , $confService
     );
 
-    $this->app['Core']["Twig"] = $templateServiceBuilder->getService();
+    $this->app['Core']["Twig"] = $templateServiceBuilder->getDriver();
   }
 
   /**
