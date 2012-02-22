@@ -332,13 +332,22 @@
             width:100%;
           }
           
-          #app-dev-create td input[type=text], #app-dev-create td textarea{
-            width:100%;
+          #app-dev-create td input[type=text], #app-dev-create td textarea, #app-dev-create td select{
+            display:inline-block;
+            width:95%;
             border: 1px solid #CCCCCC;
             border-radius: 4px 4px 4px 4px;
             box-shadow: 0 1px 1px #EEEEEE;
             margin: 0;
             padding: 6px;
+          }
+          
+          #app-dev-create td input[name=callback], #app-dev-create td input[name=website]{
+            width:85%;
+          }
+          
+          #app-dev-create .url-td select{
+            width:12%;
           }
           
           #app-dev-create td{
