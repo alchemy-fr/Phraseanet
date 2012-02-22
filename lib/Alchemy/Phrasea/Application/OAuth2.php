@@ -145,7 +145,7 @@ return call_user_func(function()
                                   $auth = new \Session_Authentication_Native($app['appbox'], $login, $password);
                                   $session->authenticate($auth);
                                 }
-                                catch (Exception $e)
+                                catch (\Exception $e)
                                 {
                                   $params = array(
                                       "auth" => $oauth2_adapter
@@ -346,7 +346,7 @@ return call_user_func(function()
                               $account->set_revoked((bool) $app['request']->get('revoke'));
                               $result['ok'] = true;
                             }
-                            catch (Exception $e)
+                            catch (\Exception $e)
                             {
                               
                             }
@@ -381,7 +381,7 @@ return call_user_func(function()
                                   , 'token' => $token->get_value()
                               );
                             }
-                            catch (Exception $e)
+                            catch (\Exception $e)
                             {
                               
                             }
@@ -407,7 +407,7 @@ return call_user_func(function()
                               $client->set_redirect_uri($app_callback);
                               $result['success'] = true;
                             }
-                            catch (Exception $e)
+                            catch (\Exception $e)
                             {
                               
                             }
