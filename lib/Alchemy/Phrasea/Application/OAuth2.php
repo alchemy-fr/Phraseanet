@@ -145,7 +145,7 @@ return call_user_func(function()
                                   $auth = new \Session_Authentication_Native($app['appbox'], $login, $password);
                                   $session->authenticate($auth);
                                 }
-                                catch (Exception $e)
+                                catch (\Exception $e)
                                 {
                                   $params = array(
                                       "auth" => $oauth2_adapter
@@ -270,8 +270,8 @@ return call_user_func(function()
                    */
                   $route = "/applications/dev/new";
                   $app->get($route, function() use ($app)
-                          {
-                            $var = array("violations" => null, 'form' => null);
+                          {           
+                            $var = array("violations" => null, 'form' => null, 'request' => $app['request']);
 
                             return $app['response']('api/auth/application_dev_new.twig', $var);
                           });
@@ -346,7 +346,7 @@ return call_user_func(function()
                               $account->set_revoked((bool) $app['request']->get('revoke'));
                               $result['ok'] = true;
                             }
-                            catch (Exception $e)
+                            catch (\Exception $e)
                             {
                               
                             }
@@ -381,7 +381,7 @@ return call_user_func(function()
                                   , 'token' => $token->get_value()
                               );
                             }
-                            catch (Exception $e)
+                            catch (\Exception $e)
                             {
                               
                             }
@@ -407,7 +407,7 @@ return call_user_func(function()
                               $client->set_redirect_uri($app_callback);
                               $result['success'] = true;
                             }
-                            catch (Exception $e)
+                            catch (\Exception $e)
                             {
                               
                             }
@@ -459,7 +459,7 @@ return call_user_func(function()
 
                             $code = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
 
-                            return new Response('We are sorry, but something went terribly wrong.<br />' . $e->getMessage(), $code);
+                            return new Response('We are sorry, but something went wrong.<br />' . $e->getMessage(), $code);
                           });
 
 
