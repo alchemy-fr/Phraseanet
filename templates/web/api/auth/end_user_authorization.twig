@@ -58,11 +58,13 @@
                 {% else %}				
                     {% if user is not none %}
                         {% set username = '<b>' ~ user.get_display_name() ~ '</b>' %}
-                        <p class="login_hello">
-                            {% trans %}
-                            Hello {{username}}.
-                            {% endtrans %}
-                        </p>                    
+                        <div id="hello-box" class="span6 offset3">
+                            <p class="login_hello">
+                                {% trans %}
+                                Hello {{username}} !
+                                {% endtrans %}
+                            </p>
+                        </div>                    
                     {% endif %}
                     {% if auth.getClient() is not none %}
                     <div id="text-box" class="span6 offset3">

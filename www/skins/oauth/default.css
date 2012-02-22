@@ -28,16 +28,21 @@ html, body {
 
 /*************** Content-box ***************/
 
+#hello-box {
+    padding: 10px;
+    text-align: center;
+}
+
 #content-box {
     padding: 10px;
     text-align: center;
 }
 
-#content-box p.login_error {
+p.login_error {
     color: #FF0000;
 }
 
-#content-box p.login_hello {
+p.login_hello {
     color: #FFFFFF;
 }
 
@@ -66,18 +71,6 @@ html, body {
 #button_login {
     margin-top: 20px; 
 }
-
-/* @media screen and (max-width: 480px) {
-    #button_login {
-        margin-top: 20px;
-    }
-}
-
-@media screen and (min-width: 480px) {
-    #button_login {
-        margin: 20px 10px;
-    }
-} */
 
 #text-box {
     background: #FFFFFF;
