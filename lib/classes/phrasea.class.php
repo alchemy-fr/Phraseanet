@@ -105,11 +105,7 @@ class phrasea
 
   public static function start()
   {
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
-    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
     $choosenConnexion = $configuration->getPhraseanet()->get('database');
 

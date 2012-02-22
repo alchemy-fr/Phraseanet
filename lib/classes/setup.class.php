@@ -70,21 +70,9 @@ class setup
 
   public static function is_installed()
   {
-    $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
-    $installed = false;
-    try
-    {
-      $appConf->getConfigurationFile();
-      $appConf->getConnexionFile();
-      $appConf->getServiceFile();
-      $installed = true;
-    }
-    catch (\Exception $e)
-    {
+    $appConf = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
 
-    }
-
-    return $installed;
+    return $appConf->isSetup();
   }
 
   public static function needUpgradeConfigurationFile()
@@ -817,38 +805,10 @@ class setup
         }
       }
 
-      $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
+      $appConf = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
 
-      try
-      {
-        $configFile = $appConf->getConfigurationFile();
-        unlink($configFile->getPathname());
-      }
-      catch (\Exception $e)
-      {
-
-      }
-
-      try
-      {
-        $serviceFile = $appConf->getServiceFile();
-        unlink($serviceFile->getPathname());
-      }
-      catch (\Exception $e)
-      {
-
-      }
-
-      try
-      {
-        $connexionfFile = $appConf->getConnexionFile();
-        unlink($connexionfFile->getPathname());
-      }
-      catch (\Exception $e)
-      {
-
-      }
-
+      $appConf->delete();
+      
       return;
     }
 

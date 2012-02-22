@@ -114,14 +114,12 @@ class CoreTest extends PhraseanetPHPUnitAbstract
 
     set_new_overload(array($this, 'newCallback'));
 
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application()
-                    , new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
+    $specification = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
+
     $class = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration'
             , array('isInstalled')
-            , array($handler)
+            , array($specification)
             , 'ConfMock'
     );
 

@@ -48,7 +48,7 @@ class appbox extends base
   protected $Core;
 
   const CACHE_LIST_BASES = 'list_bases';
-  const CACHE_SBAS_IDS = 'sbas_ids';
+  const CACHE_SBAS_IDS   = 'sbas_ids';
 
   /**
    * Singleton pattern
@@ -79,11 +79,7 @@ class appbox extends base
     $this->registry = $registry;
     $this->session = Session_Handler::getInstance($this);
 
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
-    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
     $choosenConnexion = $configuration->getPhraseanet()->get('database');
 
@@ -123,7 +119,7 @@ class appbox extends base
       $collection->update_logo($pathfile);
 
     $registry = registry::get_instance();
-    $file = $registry->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
+    $file     = $registry->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
     if (is_file($file))
     {
       unlink($file);
@@ -178,7 +174,7 @@ class appbox extends base
     if (!in_array($pic_type, array(databox::PIC_PDF)))
       throw new Exception('unknown pic_type');
     $registry = $databox->get_registry();
-    $file = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id();
+    $file     = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id();
     if (is_file($file))
     {
       unlink($file);
@@ -221,8 +217,8 @@ class appbox extends base
   public function set_collection_order(collection $collection, $ordre)
   {
     $sqlupd = "UPDATE bas SET ord = :ordre WHERE base_id = :base_id";
-    $stmt = $this->get_connection()->prepare($sqlupd);
-    $stmt->execute(array(':ordre' => $ordre, ':base_id' => $collection->get_base_id()));
+    $stmt   = $this->get_connection()->prepare($sqlupd);
+    $stmt->execute(array(':ordre'   => $ordre, ':base_id' => $collection->get_base_id()));
     $stmt->closeCursor();
 
     $collection->get_databox()->delete_data_from_cache(\databox::CACHE_COLLECTIONS);
@@ -239,12 +235,12 @@ class appbox extends base
   public function set_databox_indexable(databox $databox, $boolean)
   {
     $boolean = !!$boolean;
-    $sql = 'UPDATE sbas SET indexable = :indexable WHERE sbas_id = :sbas_id';
+    $sql     = 'UPDATE sbas SET indexable = :indexable WHERE sbas_id = :sbas_id';
 
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute(array(
-        ':indexable' => ($boolean ? '1' : '0'),
-        ':sbas_id' => $databox->get_sbas_id()
+      ':indexable' => ($boolean ? '1' : '0'),
+      ':sbas_id'   => $databox->get_sbas_id()
     ));
     $stmt->closeCursor();
 
@@ -262,7 +258,7 @@ class appbox extends base
 
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute(array(':sbas_id' => $databox->get_sbas_id()));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row       = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $indexable = $row ? $row['indexable'] : null;
@@ -279,10 +275,10 @@ class appbox extends base
   public function set_databox_viewname(databox $databox, $viewname)
   {
     $viewname = strip_tags($viewname);
-    $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
+    $sql      = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
 
     $stmt = $this->get_connection()->prepare($sql);
-    $stmt->execute(array(':viewname' => $viewname, ':sbas_id' => $databox->get_sbas_id()));
+    $stmt->execute(array(':viewname' => $viewname, ':sbas_id'  => $databox->get_sbas_id()));
     $stmt->closeCursor();
 
     $appbox = appbox::get_instance(\bootstrap::getCore());
@@ -319,12 +315,12 @@ class appbox extends base
 
     $upgrader->set_current_message(_('Creating new tables'));
     $core = bootstrap::getCore();
-    $em = $core->getEntityManager();
+    $em   = $core->getEntityManager();
     //create schema
 
     if ($em->getConnection()->getDatabasePlatform()->supportsAlterTable())
     {
-      $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+      $tool  = new \Doctrine\ORM\Tools\SchemaTool($em);
       $metas = $em->getMetadataFactory()->getAllMetadata();
       $tool->updateSchema($metas, true);
     }
@@ -387,7 +383,7 @@ class appbox extends base
     $upgrader->set_current_message(_('Flushing cache'));
 
     $this->Core['CacheService']->flushAll();
-    
+
     $upgrader->add_steps_complete(1);
 
     return $advices;
@@ -420,7 +416,7 @@ class appbox extends base
    * @param type $write_file
    * @return type
    */
-  public static function create(registryInterface &$registry, connection_interface $conn, $dbname, $write_file = false)
+  public static function create(\Alchemy\Phrasea\Core $Core, registryInterface &$registry, connection_interface $conn, $dbname, $write_file = false)
   {
     $credentials = $conn->get_credentials();
 
@@ -438,59 +434,25 @@ class appbox extends base
 
       foreach ($credentials as $key => $value)
       {
-        $key = $key == 'hostname' ? 'host' : $key;
+        $key                = $key == 'hostname' ? 'host' : $key;
         $connexionINI[$key] = (string) $value;
       }
-      $connexionINI['driver'] = 'pdo_mysql';
+
+      $Core->getConfiguration()->initialize();
+      $connexionINI['driver']  = 'pdo_mysql';
       $connexionINI['charset'] = 'UTF8';
 
       $serverName = $registry->get('GV_ServerName');
 
       $root = __DIR__ . '/../../';
 
-      //copy config sample
-      $configSampleFile = $root . "config/config.sample.yml";
-      $configFile = $root . "config/config.yml";
-
-      if (!copy($configSampleFile, $configFile))
-      {
-        throw new \Exception(sprintf("Unable to copy %s", $configSampleFile));
-      }
-
-      //copy service sample
-      $serviceSampleFile = $root . "config/services.sample.yml";
-      $serviceFile = $root . "config/services.yml";
-
-      if (!copy($serviceSampleFile, $serviceFile))
-      {
-        throw new \Exception(sprintf("Unable to copy %s", $serviceSampleFile));
-      }
-
-      //copy connexion sample
-      $connexionSampleFile = $root . "config/connexions.sample.yml";
-      $connexionFile = $root . "config/connexions.yml";
-
-      if (!copy($connexionSampleFile, $connexionFile))
-      {
-        throw new \Exception(sprintf("Unable to copy %s", $serviceSampleFile));
-      }
-
-      //get configuration object
-      $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
-      $parser = new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml();
-      $handler = new \Alchemy\Phrasea\Core\Configuration\Handler($appConf, $parser);
-      $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
-
-      //write credentials to config file
-      $connexionFile = $appConf->getConnexionFile();
-
       $connexion = array(
-          'main_connexion' => $connexionINI,
-          'test_connexion' => array(
-              'driver' => 'pdo_sqlite',
-              'path' => realpath($root . 'lib/unitTest') . '/tests.sqlite',
-              'charset' => 'UTF8'
-              ));
+        'main_connexion' => $connexionINI,
+        'test_connexion' => array(
+          'driver'  => 'pdo_sqlite',
+          'path'    => realpath($root . 'lib/unitTest') . '/tests.sqlite',
+          'charset' => 'UTF8'
+        ));
 
       $cacheService = "array_cache";
 
@@ -503,16 +465,9 @@ class appbox extends base
         $cacheService = "xcache_cache";
       }
 
-      $yaml = $configuration->getConfigurationHandler()->getParser()->dump($connexion, 2);
+      $Core->getConfiguration()->setConnexions($connexion);
 
-      if (!file_put_contents($connexionFile->getPathname(), $yaml) !== false)
-      {
-        throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $connexionFile->getPathname()));
-      }
-
-      //rewrite service file
-      $serviceFile = $appConf->getServiceFile();
-      $services = $configuration->getConfigurationHandler()->getParser()->parse($serviceFile);
+      $services = $Core->getConfiguration()->getConfigurations();
 
       foreach ($services as $serviceName => $service)
       {
@@ -520,22 +475,15 @@ class appbox extends base
         {
 
           $services["doctrine_prod"]["options"]["orm"]["cache"] = array(
-              "query" => $cacheService,
-              "result" => $cacheService,
-              "metadata" => $cacheService
+            "query"    => $cacheService,
+            "result"   => $cacheService,
+            "metadata" => $cacheService
           );
         }
       }
+      $Core->getConfiguration()->setConfigurations($services);
 
-      $yaml = $configuration->getConfigurationHandler()->getParser()->dump($services, 5);
-
-      if (!file_put_contents($serviceFile->getPathname(), $yaml) !== false)
-      {
-        throw new \Exception(sprintf(_('Impossible d\'ecrire dans le fichier %s'), $serviceFile->getPathname()));
-      }
-
-      //rewrite servername in main config file
-      $arrayConf = $configuration->all();
+      $arrayConf = $Core->getConfiguration()->getConfigurations();
 
       foreach ($arrayConf as $key => $value)
       {
@@ -550,16 +498,7 @@ class appbox extends base
         }
       }
 
-      $configuration->write($arrayConf);
-
-
-
-      if (function_exists('chmod'))
-      {
-        chmod($configuration->getFile()->getPathname(), 0700);
-        chmod($serviceFile->getPathname(), 0700);
-        chmod($connexionFile->getPathname(), 0700);
-      }
+      $Core->getConfiguration()->setConfigurations($arrayConf);
     }
     try
     {
@@ -588,7 +527,7 @@ class appbox extends base
 
     try
     {
-      $appbox = self::get_instance($registry);
+      $appbox = self::get_instance($Core, $registry);
       $appbox->insert_datas();
     }
     catch (Exception $e)
@@ -644,7 +583,7 @@ class appbox extends base
 
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute();
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)

@@ -59,7 +59,6 @@ class module_console_fileEnsureProductionSetting extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-
     $this->initTests($output);
 
     $this->prepareTests($output);
@@ -72,11 +71,7 @@ class module_console_fileEnsureProductionSetting extends Command
 
   private function initTests(OutputInterface $output)
   {
-    $spec    = new Core\Configuration\Application();
-    $parser  = new Core\Configuration\Parser\Yaml();
-    $handler = new Core\Configuration\Handler($spec, $parser);
-
-    $this->configuration = new Core\Configuration($handler);
+    $this->configuration = Core\Configuration::build();
 
     if (!$this->configuration->isInstalled())
     {
@@ -175,35 +170,18 @@ class module_console_fileEnsureProductionSetting extends Command
 
   private function checkParse(OutputInterface $output)
   {
-    $parser        = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getParser();
-    $fileConfig    = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getConfigurationFile();
-    $fileService   = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getServiceFile();
-    $fileConnexion = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getConnexionFile();
 
-    try
+    if (!$this->configuration->getConfigurations())
     {
-      $parser->parse($fileConfig);
-      $parser->parse($fileService);
-      $parser->parse($fileConnexion);
+      throw new \Exception("Unable to load configurations\n");
     }
-    catch (\Exception $e)
+    if (!$this->configuration->getConnexions())
     {
-      throw new \Exception("Error parsing file\n", null, $e);
+      throw new \Exception("Unable to load connexions\n");
+    }
+    if (!$this->configuration->getServices())
+    {
+      throw new \Exception("Unable to load services\n");
     }
 
     return;
@@ -237,11 +215,7 @@ class module_console_fileEnsureProductionSetting extends Command
 
   private function checkGetSelectedEnvironementFromFile(OutputInterface $output)
   {
-    $spec    = new Core\Configuration\Application();
-    $parser  = new Core\Configuration\Parser\Yaml();
-    $handler = new Core\Configuration\Handler($spec, $parser);
-
-    $configuration = new Core\Configuration($handler);
+    $configuration = Core\Configuration::build();
 
     try
     {
@@ -262,26 +236,48 @@ class module_console_fileEnsureProductionSetting extends Command
     {
       $phraseanet = $this->configuration->getPhraseanet();
 
-      $this->printConf($output, 'phraseanet', $phraseanet->all());
-
-      $url = $phraseanet->get("servername");
-
-      if (empty($url))
+      foreach($phraseanet->all() as $conf=>$value)
       {
-        throw new \Exception("phraseanet:servername connot be empty");
-      }
+        switch($conf)
+        {
+          default:
+            $this->printConf($output, $conf, $value);
+            break;
+          case 'servername':
+            $url = $value;
 
-      if (!filter_var($url, FILTER_VALIDATE_URL))
-      {
-        throw new \Exception(sprintf("%s url is not valid", $url));
-      }
+            $parseUrl = parse_url($url);
 
-      $parseUrl = parse_url($url);
-
-      if ($parseUrl["scheme"] !== "https")
-      {
-        $output->writeln(sprintf("<comment>/!\ %s url scheme should be https</comment>", $url));
+            if (empty($url))
+            {
+              $message = "<error>should not be empty</error>";
+            }
+            elseif (!filter_var($url, FILTER_VALIDATE_URL))
+            {
+              $message = "<error>not valid</error>";
+            }
+            elseif ($parseUrl["scheme"] !== "https")
+            {
+              $message = "<comment>should be https</comment>";
+            }
+            else
+            {
+              $message = "<info>OK</info>";
+            }
+            $this->printConf($output, $conf, $value, false, $message);
+            break;
+          case 'maintenance':
+          case 'debug':
+          case 'display_errors':
+            $message = $value ? '<error>Should be false</error>' : '<info>OK</info>';
+            $this->printConf($output, $conf, $value, false, $message);
+            break;
+        }
       }
+//      $this->printConf($output, 'phraseanet', $phraseanet->all());
+
+//      $url = $phraseanet->get("servername");
+
 
 
       if (!$phraseanet->has("debug"))
@@ -624,7 +620,7 @@ class module_console_fileEnsureProductionSetting extends Command
     }
   }
 
-  private function printConf($output, $scope, $value, $scopage = false)
+  private function printConf($output, $scope, $value, $scopage = false, $message = '')
   {
     if (is_array($value))
     {
@@ -632,24 +628,24 @@ class module_console_fileEnsureProductionSetting extends Command
       {
         if ($scopage)
           $key = $scope . ":" . $key;
-        $this->printConf($output, $key, $val, $scopage);
+        $this->printConf($output, $key, $val, $scopage, '');
       }
     }
     elseif (is_bool($value))
     {
       if ($value === false)
       {
-        $value = '0';
+        $value = 'false';
       }
       elseif ($value === true)
       {
-        $value = '1';
+        $value = 'true';
       }
-      $output->writeln(sprintf("\t%s: %s", $scope, $value));
+      $output->writeln(sprintf("\t%s: %s %s", $scope, $value, $message));
     }
     elseif (!empty($value))
     {
-      $output->writeln(sprintf("\t%s: %s", $scope, $value));
+      $output->writeln(sprintf("\t%s: %s %s", $scope, $value, $message));
     }
   }
 
