@@ -44,11 +44,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
    */
   public function testRouteMysql()
   {
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
-    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
     $chooseConnexion = $configuration->getPhraseanet()->get('database');
 
@@ -69,11 +65,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
   public function testRouteMysqlFailed()
   {
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
-    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
     $chooseConnexion = $configuration->getPhraseanet()->get('database');
 
@@ -103,11 +95,7 @@ class ControllerConnectionTestTest extends \PhraseanetWebTestCaseAbstract
 
     public function testRouteMysqlDbFailed()
   {
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
-    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
     $chooseConnexion = $configuration->getPhraseanet()->get('database');
 
