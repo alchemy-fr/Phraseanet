@@ -548,10 +548,8 @@ class set_export extends set_abstract
               'path' => $sd[$name]->get_path()
               , 'file' => $sd[$name]->get_file()
             );
-            if (!$user->ACL()->has_right_on_base(
-                $download_element->get_base_id()
-                , "nowatermark"
-              )
+            if (!$user->ACL()->has_right_on_base($download_element->get_base_id(), "nowatermark")
+              && !$user->ACL()->has_preview_grant($download_element)
               && $sd[$name]->get_type() == media_subdef::TYPE_IMAGE)
             {
               $path = recordutils_image::watermark(
@@ -977,11 +975,12 @@ class set_export extends set_abstract
 
     if (is_file($file))
     {
-      $testPath = function($file, $registry){
-        return strpos($file, $registry->get('GV_RootPath').'tmp/download/') !== false
-            || strpos($file, $registry->get('GV_RootPath').'tmp/lazaret/') !== false
+      $testPath = function($file, $registry)
+        {
+          return strpos($file, $registry->get('GV_RootPath') . 'tmp/download/') !== false
+            || strpos($file, $registry->get('GV_RootPath') . 'tmp/lazaret/') !== false
             || strpos($file, $registry->get('GV_X_Accel_Redirect')) !== false;
-      };
+        };
 
       if ($registry->get('GV_modxsendfile') && $testPath($file, $registry))
       {
