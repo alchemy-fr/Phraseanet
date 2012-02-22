@@ -50,8 +50,15 @@ class Configuration
   {
     $this->specifications = $specifications;
 
-    $configurations = $this->specifications->getConfigurations();
-    $environment    = $environment ? : $configurations[self::KEYWORD_ENV];
+    if ($specifications->isSetup())
+    {
+      $configurations = $this->specifications->getConfigurations();
+      $environment    = $environment ? : $configurations[self::KEYWORD_ENV];
+    }
+    else
+    {
+      $environment = null;
+    }
 
     $this->setEnvironnement($environment);
 

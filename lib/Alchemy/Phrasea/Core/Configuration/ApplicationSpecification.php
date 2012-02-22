@@ -102,18 +102,21 @@ class ApplicationSpecification implements Specification
 
   public function initialize()
   {
-    touch($this->getConnexionsPathFile());
-    touch($this->getConfigurationsPathFile());
-    touch($this->getServicesPathFile());
+    $this->delete();
 
     copy(
-      $this->getRealRootPath() . "/config/config.sample.yml"
-      , $this->getRealRootPath() . "/config/config.yml"
+      $this->getRealRootPath() . "/config/connexions.sample.yml"
+      , $this->getConnexionsPathFile()
     );
 
     copy(
       $this->getRealRootPath() . "/config/services.sample.yml"
-      , $this->getRealRootPath() . "/config/services.yml"
+      , $this->getServicesPathFile()
+    );
+
+    copy(
+      $this->getRealRootPath() . "/config/config.sample.yml"
+      , $this->getConfigurationsPathFile()
     );
 
     if (function_exists('chmod'))

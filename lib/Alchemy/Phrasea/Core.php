@@ -283,7 +283,7 @@ class Core extends \Pimple
   /**
    * Getter
    *
-   * @return Core\Configuration
+   * @return \Alchemy\Phrasea\Core\Configuration
    */
   public function getConfiguration()
   {

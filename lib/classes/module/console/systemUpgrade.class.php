@@ -37,6 +37,7 @@ class module_console_systemUpgrade extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
+    $Core = \bootstrap::getCore();
     if (!setup::is_installed())
     {
 
@@ -53,29 +54,40 @@ class module_console_systemUpgrade extends Command
       if ($continue == 'y')
       {
 
-        $file = __DIR__ . "/../../../../config/config.sample.yml";
-        $file1 = __DIR__ . "/../../../../config/config.yml";
-
-        if (!copy($file, $file1))
+        try
         {
-          throw new \Exception(sprintf("Unable to copy %s", $file1));
+          $Core->getConfiguration()->initialize();
+
+          $retrieve_old_credentials = function()
+            {
+              require __DIR__ . '/../../../../config/connexion.inc';
+
+              return array(
+                'hostname' => $hostname,
+                'port'     => $port,
+                'user'     => $user,
+                'password' => $password,
+                'dbname'   => $dbname,
+              );
+            };
+
+          $credentials = $retrieve_old_credentials();
+
+          $connexions = $Core->getConfiguration()->getConnexions();
+
+          foreach ($credentials as $key => $value)
+          {
+            $key                          = $key == 'hostname' ? 'host' : $key;
+            $connexions['main_connexion'][$key]           = (string) $value;
+          }
+
+          $Core->getConfiguration()->setConnexions($connexions);
+          $Core->getConfiguration()->setEnvironnement('prod');
         }
-
-        $conn = \connection::getPDOConnection();
-
-        $credentials = $conn->get_credentials();
-
-        $configuration = \Alchemy\Phrasea\Core\Configuration::build();
-
-        $connexionINI = array();
-
-        foreach ($credentials as $key => $value)
+        catch (\Exception $e)
         {
-          $key = $key == 'hostname' ? 'host' : $key;
-          $connexionINI[$key] = (string) $value;
-        }
 
-        $configuration->setAllDatabaseConnexion($connexionINI);
+        }
       }
       else
       {
@@ -99,8 +111,9 @@ class module_console_systemUpgrade extends Command
     {
       try
       {
+        $Core = \bootstrap::getCore();
         $output->write('<info>Upgrading...</info>', true);
-        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $appbox = appbox::get_instance($Core);
 
         if (count(User_Adapter::get_wrong_email_users($appbox)) > 0)
         {
@@ -108,10 +121,11 @@ class module_console_systemUpgrade extends Command
         }
 
         $upgrader = new Setup_Upgrade($appbox);
-        $advices = $appbox->forceUpgrade($upgrader);
+        $advices  = $appbox->forceUpgrade($upgrader);
       }
-      catch (Exception $e)
+      catch (\Exception $e)
       {
+
         $output->writeln(sprintf('<error>An error occured while upgrading : %s </error>', $e->getMessage()));
       }
     }
