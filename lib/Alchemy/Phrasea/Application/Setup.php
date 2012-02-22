@@ -74,11 +74,7 @@ return call_user_func(function()
                                 throw new \Exception(sprintf("Unable to copy %s", $connexionFile));
                               }
 
-                              //get configuration object
-                              $appConf = new \Alchemy\Phrasea\Core\Configuration\Application();
-                              $parser = new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml();
-                              $handler = new \Alchemy\Phrasea\Core\Configuration\Handler($appConf, $parser);
-                              $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+                              $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
                               //refactor credentials
                               $connexionINI = array();
@@ -127,7 +123,7 @@ return call_user_func(function()
                               }
 
                               //rewrite service file
-                              $serviceFile = $appConf->getServiceFile();
+                              $serviceFile = $appConf->getServicesFile();
                               $services = $configuration->getConfigurationHandler()->getParser()->parse($serviceFile);
 
                               foreach ($services as $serviceName => $service)
@@ -164,10 +160,7 @@ return call_user_func(function()
                                 }
                               }
 
-                              $configuration->write($arrayConf);
-
                               $app['install'] = true;
-//                              $app->redirect("/setup/installer/");
                             }
                             else
                             {
