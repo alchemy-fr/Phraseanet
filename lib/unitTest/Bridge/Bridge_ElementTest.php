@@ -25,7 +25,7 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function setUp()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
     $stmt = $appbox->get_connection()->prepare($sql);
@@ -48,7 +48,7 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function tearDown()
   {
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->object->delete();
 
     try
@@ -150,7 +150,7 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_elements_by_account()
   {
-    $elements = Bridge_Element::get_elements_by_account(appbox::get_instance(), $this->account);
+    $elements = Bridge_Element::get_elements_by_account(appbox::get_instance(\bootstrap::getCore()), $this->account);
     $this->assertTrue(is_array($elements));
     $this->assertGreaterThan(0, count($elements));
 

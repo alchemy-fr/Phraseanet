@@ -701,7 +701,7 @@ function triggerShortcuts()
 
 function activeZoning()
 {
-  $('#idFrameC, #idFrameT').bind('mousedown',function(event){
+  $('#idFrameC, #rightFrame').bind('mousedown',function(event){
     var old_zone = p4.active_zone;
     p4.active_zone = $(this).attr('id');
     if(p4.active_zone != old_zone && p4.active_zone != 'headBlock')
@@ -888,18 +888,18 @@ $(document).ready(function(){
       var sim_rgb = hsl2rgb(hsb.h, hsb.s, sim_b);
       var sim_hex = RGBtoHex(sim_rgb.r,sim_rgb.g,sim_rgb.b);
 
-      $('style[title=color_selection]').empty().append(
-        '.diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo' +
-        '{'+
-        '    COLOR: #'+back_hex+';'+
-        '    BACKGROUND-COLOR: #'+hex+';'+
-        '}');
-
       setPref('background-selection', hex);
       setPref('background-selection-disabled', sim_hex);
       setPref('fontcolor-selection', back_hex);
 
+      $('style[title=color_selection]').empty()
 
+      var datas = '.diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo' +
+        '{'+
+        '    COLOR: #'+back_hex+';'+
+        '    BACKGROUND-COLOR: #'+hex+';'+
+        '}';
+      $('style[title=color_selection]').empty().text(datas);
     }
   });
   $('#backcolorpickerHolder').find('.colorpicker_submit').append($('#backcolorpickerHolder .submiter')).bind('click',function(){
@@ -2520,21 +2520,13 @@ function selector(el)
 {
   if(el.hasClass('all_selector'))
   {
-    $.each($("#answers .IMGT:not(.selected)"),function(i,n){
-      var k = $(n).attr('id').split('_').slice(1,3).join('_');
-      if($.inArray(k,p4.sel) <0)
-      {
-        if(!select_this(n,k))
-          return false;
-      }
-    });
+    p4.Results.Selection.selectAll();
   }
   else
   {
     if(el.hasClass('none_selector'))
     {
-      p4.sel=[];
-      $('#answers .IMGT.selected').removeClass('selected');
+      p4.Results.Selection.empty();
     }
     else
     {
@@ -2546,94 +2538,36 @@ function selector(el)
       {
         if(el.hasClass('video_selector'))
         {
-          if(!el.hasClass('add_selector'))
-          {
-            p4.sel=[];
-            $('#answers .IMGT.selected').removeClass('selected');
-          }
-          $.each($("#answers .IMGT.type-video:not(.selected)"),function(i,n){
-            var k = $(n).attr('id').split('_').slice(1,3).join('_');
-            if($.inArray(k,p4.sel) <0)
-            {
-              if(!select_this(n,k))
-                return false;
-            }
-          });
+          p4.Results.Selection.empty();
+          p4.Results.Selection.select('.type-video');
         }
         else
         {
           if(el.hasClass('image_selector'))
           {
-            if(!el.hasClass('add_selector'))
-            {
-              p4.sel=[];
-              $('#answers .IMGT.selected').removeClass('selected');
-            }
-            $.each($("#answers .IMGT.type-image:not(.selected)"),function(i,n){
-              var k = $(n).attr('id').split('_').slice(1,3).join('_');
-              if($.inArray(k,p4.sel) <0)
-              {
-                if(!select_this(n,k))
-                  return false;
-              }
-            });
-          }else
+            p4.Results.Selection.empty();
+            p4.Results.Selection.select('.type-image');
+          }
+          else
           {
             if(el.hasClass('document_selector'))
             {
-              if(!el.hasClass('add_selector'))
-              {
-                p4.sel=[];
-                $('#answers .IMGT.selected').removeClass('selected');
-              }
-              $.each($("#answers .IMGT.type-document:not(.selected)"),function(i,n){
-                var k = $(n).attr('id').split('_').slice(1,3).join('_');
-                if($.inArray(k,p4.sel) <0)
-                {
-                  if(!select_this(n,k))
-                    return false;
-                }
-              });
-            }else
+              p4.Results.Selection.empty();
+              p4.Results.Selection.select('.type-document');
+            }
+            else
             {
               if(el.hasClass('audio_selector'))
               {
-                if(!el.hasClass('add_selector'))
-                {
-                  p4.sel=[];
-                  $('#answers .IMGT.selected').removeClass('selected');
-                }
-                $.each($("#answers .IMGT.type-audio:not(.selected)"),function(i,n){
-                  var k = $(n).attr('id').split('_').slice(1,3).join('_');
-                  if($.inArray(k,p4.sel) <0)
-                  {
-                    if(!select_this(n,k))
-                      return false;
-                  }
-                });
-              }else
-              {
-
-            }
+                p4.Results.Selection.empty();
+                p4.Results.Selection.select('.type-audio');
+              }
             }
           }
         }
       }
     }
   }
-  viewNbSelect();
-}
-
-function select_this(n,k)
-{
-  if(p4.Results.Selection.length() >= 800)
-  {
-    alert(language.max_record_selected);
-    return false;
-  }
-  p4.Results.Selection.push(k);
-  $(n).addClass('selected');
-  return true;
 }
 
 function evt_dwnl(value)

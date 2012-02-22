@@ -109,7 +109,7 @@ class connection
    * @param string $name
    * @return connection_pdo
    */
-  public static function getPDOConnection($name = null)
+  public static function getPDOConnection($name = null, registryInterface $registry = null)
   {
     self::instantiate();
     if (trim($name) == '')
@@ -166,7 +166,7 @@ class connection
 
       try
       {
-        self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname);
+        self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $registry);
         self::$_PDO_instance[$name]->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
       }
       catch (Exception $e)

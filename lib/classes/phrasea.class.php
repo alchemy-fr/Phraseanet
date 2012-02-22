@@ -131,7 +131,7 @@ class phrasea
 
   function getHome($type='PUBLI', $context='prod')
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -229,7 +229,7 @@ class phrasea
   public static function clear_sbas_params()
   {
     self::$_sbas_params = null;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->delete_data_from_cache(self::CACHE_SBAS_PARAMS);
 
     return true;
@@ -241,7 +241,7 @@ class phrasea
 
       return self::$_sbas_params;
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     try
     {
       self::$_sbas_params = $appbox->get_data_from_cache(self::CACHE_SBAS_PARAMS);
@@ -277,7 +277,7 @@ class phrasea
     if (!$usr_id)
 
       return false;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $user = User_Adapter::getInstance($usr_id, $appbox);
 
     return count($user->ACL()->get_granted_base()) > 0;
@@ -329,7 +329,7 @@ class phrasea
   {
     if (!self::$_bas2sbas)
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
       try
       {
         self::$_bas2sbas = $appbox->get_data_from_cache(self::CACHE_SBAS_FROM_BAS);
@@ -379,7 +379,7 @@ class phrasea
   public static function reset_baseDatas()
   {
     self::$_coll2bas = self::$_bas2coll = self::$_bas_names = self::$_bas2sbas = null;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->delete_data_from_cache(
             array(
                 self::CACHE_BAS_2_COLL
@@ -395,7 +395,7 @@ class phrasea
   public static function reset_sbasDatas()
   {
     self::$_sbas_names = self::$_sbas_params = self::$_bas2sbas = null;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->delete_data_from_cache(
             array(
                 self::CACHE_SBAS_NAMES
@@ -431,7 +431,7 @@ class phrasea
   {
     if (!self::$_sbas_names)
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
       try
       {
         self::$_sbas_names = $appbox->get_data_from_cache(self::CACHE_SBAS_NAMES);
@@ -460,7 +460,7 @@ class phrasea
   {
     if (!self::$_bas_names)
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
       try
       {
         self::$_bas_names = $appbox->get_data_from_cache(self::CACHE_BAS_NAMES);

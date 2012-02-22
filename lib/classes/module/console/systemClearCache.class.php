@@ -83,12 +83,8 @@ class module_console_systemClearCache extends Command
 
     if(setup::is_installed())
     {
-      $registry = registry::get_instance();
-      $cache = cache_adapter::get_instance($registry);
-      if($cache->ping())
-      {
-        $cache->flush();
-      }
+      $Core = \bootstrap::getCore();
+      $Core['CacheService']->flushAll();
     }
 
     $output->write('Finished !', true);

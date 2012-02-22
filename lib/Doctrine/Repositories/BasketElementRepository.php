@@ -23,20 +23,28 @@ class BasketElementRepository extends EntityRepository
             LEFT JOIN e.validation_datas vd
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE b.usr_id = :usr_id AND e.id = :element_id';
+            WHERE (b.usr_id = :usr_id OR p.usr_id = :same_usr_id)
+              AND e.id = :element_id';
 
     $params = array(
         'usr_id' => $user->get_id(),
+        'same_usr_id' => $user->get_id(),
         'element_id' => $element_id
     );
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-    $cacheId = "_user_basket_element_" . $element_id . Entities\BasketElement::CACHE_SUFFIX;
+    $cacheId = "_user_basket_element_" . $element_id . "_" . $user->get_id() . Entities\BasketElement::CACHE_SUFFIX;
     $query->useResultCache(true, 1800, $cacheId);
 
     $element = $query->getOneOrNullResult();
+
+    /* @var $element \Entities\BasketElement */
+    if (null === $element)
+    {
+      throw new \Exception_NotFound(_('Element is not found'));
+    }
 
     return $element;
   }
@@ -119,45 +127,6 @@ class BasketElementRepository extends EntityRepository
     $query->useResultCache(true, 1800, $cacheId);
 
     return $query->getResult();
-  }
-
-  /**
-   *
-   * @param type $element_id
-   * @param \User_Adapter $user
-   * @return \Entities\BasketELement
-   */
-  public function findElement($element_id, \User_Adapter $user)
-  {
-    $dql = 'SELECT e, b, s, p
-            FROM Entities\BasketElement e
-            JOIN e.basket b
-            LEFT JOIN b.validation s
-            LEFT JOIN s.participants p
-            WHERE e.id = :element_id';
-
-    $query = $this->_em->createQuery($dql);
-
-    $query->setParameters(array('element_id' => $element_id));
-    $cacheId = "_validation_element" . $element_id . Entities\BasketElement::CACHE_SUFFIX;
-    $query->useResultCache(true, 1800, $cacheId);
-
-    $element = $query->getOneOrNullResult();
-
-    /* @var $element \Entities\BasketElement */
-    if (null === $element)
-    {
-      throw new \Exception_NotFound(_('Element is not found'));
-    }
-
-    if ($element->getBasket()->getowner()->get_id() != $user->get_id())
-    {
-      throw new \Exception_Forbidden(_('You have not access to this basket element'));
-    }
-
-    $element = $this->_em->merge($element);
-
-    return $element;
   }
 
 }

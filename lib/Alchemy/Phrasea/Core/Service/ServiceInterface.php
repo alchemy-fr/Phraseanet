@@ -17,16 +17,17 @@ namespace Alchemy\Phrasea\Core\Service;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 interface ServiceInterface
 {
+
   public function getName();
 
   public function getType();
 
-  public function getService();
+  public function getDriver();
 
   public function getOptions();
 
   public function getScope();
+
 }

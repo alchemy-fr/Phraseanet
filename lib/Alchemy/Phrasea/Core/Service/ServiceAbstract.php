@@ -24,44 +24,16 @@ abstract class ServiceAbstract
 {
 
   protected $name;
+  protected $core;
   protected $options;
   protected $configuration;
 
-  private $dependencies;
-
-  public function __construct($name, Array $options, Array $dependencies)
+  public function __construct(Core $core, $name, Array $options)
   {
+    $this->core = $core;
     $this->name = $name;
     $this->options = $options;
-    $this->dependencies = $dependencies;
-
-    $spec = new Core\Configuration\Application();
-    $parser = new Core\Configuration\Parser\Yaml();
-    $handler = new Core\Configuration\Handler($spec, $parser);
-
-    $this->configuration = new Core\Configuration($handler);
   }
-
-  public function getDependency($name)
-  {
-    if(!array_key_exists($name, $this->dependencies))
-    {
-      throw new \Exception(sprintf("Unknow dependency %s for %s service ", $name, $this->name));
-    }
-
-    return $this->dependencies[$name];
-  }
-
-
-  /**
-   *
-   * @return Array
-   */
-  public function getDependencies()
-  {
-    return $this->dependencies;
-  }
-
 
   /**
    *
@@ -81,13 +53,6 @@ abstract class ServiceAbstract
     return $this->options;
   }
 
-  /**
-   *
-   * @return string
-   */
-  public function getVersion()
-  {
-    return '';
-  }
+  abstract public static function getMandatoryOptions();
 
 }

@@ -170,7 +170,7 @@ class eventsmanager_broker
 
   function get_json_notifications($page=0)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $unread = 0;
@@ -248,7 +248,7 @@ class eventsmanager_broker
 
   function get_unread_notifications_number()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $total = 0;
@@ -271,7 +271,7 @@ class eventsmanager_broker
 
   function get_notifications()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $unread = 0;

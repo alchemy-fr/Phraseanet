@@ -15,14 +15,13 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-$appbox = appbox::get_instance();
+$Core = \bootstrap::getCore();
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
-$registry = $appbox->get_registry();
 
 $th_size = $user->getPrefs('images_size');
 
-$user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-$ACL = $user->ACL();
+$user = $Core->getAuthenticatedUser();
 
 $RN = array("\r\n", "\n", "\r");
 

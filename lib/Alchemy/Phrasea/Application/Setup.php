@@ -36,7 +36,7 @@ return call_user_func(function()
                           {
                             if (\setup::is_installed())
                             {
-                              $appbox = \appbox::get_instance();
+                              $appbox = \appbox::get_instance($app['Core']);
 
                               if (!$appbox->need_major_upgrade())
                               {

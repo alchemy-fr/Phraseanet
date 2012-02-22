@@ -43,7 +43,7 @@ class module_console_systemMailCheck extends Command
   public function execute(InputInterface $input, OutputInterface $output)
   {
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $output->writeln("Processing...");
 

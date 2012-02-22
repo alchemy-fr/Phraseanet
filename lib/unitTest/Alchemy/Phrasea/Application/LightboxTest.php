@@ -23,7 +23,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
   {
     parent::setUp();
     $this->client = $this->createClient();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
     $publisher = array_shift($this->feed->get_publishers());
     $this->entry = Feed_Entry_Adapter::create($appbox, $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");
@@ -307,8 +307,12 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $basket = $this->insertOneBasket();
 
     $crawler = $this->client->request('POST', '/ajax/SET_RELEASE/' . $basket->getId() . '/');
-    $this->assertEquals(400, $this->client->getResponse()->getStatusCode());
-
+    $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+    $this->assertEquals('application/json', $this->client->getResponse()->headers->get('Content-type'));
+    $datas = json_decode($this->client->getResponse()->getContent());
+    $this->assertTrue(is_object($datas), 'asserting good json datas');
+    $this->assertTrue($datas->error);
+    
     $validationBasket = $this->insertOneValidationBasket();
 
     $crawler = $this->client->request('POST', '/ajax/SET_RELEASE/' . $validationBasket->getId() . '/');

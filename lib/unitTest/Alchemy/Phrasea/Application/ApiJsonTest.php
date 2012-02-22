@@ -27,7 +27,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     self::$application = API_OAuth2_Application::create($appbox, self::$user, 'test API v1');
     $account = API_OAuth2_Account::load_with_user($appbox, self::$application, self::$user);
     self::$token = $account->get_token()->get_value();
@@ -803,7 +803,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     $this->evaluateMetaJson200($content);
 
     $this->assertEquals(1, count((array) $content->response));
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->assertObjectHasAttribute("basket", $content->response);
 
     foreach ($content->response->basket as $basket)
@@ -815,7 +815,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
   public function testBasketContent()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $usr_id = $appbox->get_session()->get_usr_id();
 
     $basket = $this->insertOneBasket();

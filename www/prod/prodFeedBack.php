@@ -15,13 +15,14 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
+/* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 
-$usr_id = $session->get_usr_id();
-$user = User_Adapter::getInstance($usr_id, $appbox);
+$user = $Core->getAuthenticatedUser();
 
 $output = '';
 
@@ -33,8 +34,6 @@ $action = $parm['action'];
 switch ($action)
 {
   case 'search':
-    $session->close_storage();
-    $session->close_storage();
     $engine = new searchEngine_adapter_sphinx_engine();
 
     $parm = $request->get_parms("bas", "term"
@@ -152,7 +151,7 @@ switch ($action)
     $parm = $request->get_parms('cont', 'pos');
     $record = new record_preview('REG', $parm['pos'], $parm['cont']);
     $output = $twig->render('prod/preview/reg_train.html', array('container_records' => $record->get_container()->get_children(),
-        'record' => $record, 'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')));
+        'record' => $record));
     break;
 
   case 'GET_ORDERMANAGER':

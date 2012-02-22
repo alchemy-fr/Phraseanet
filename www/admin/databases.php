@@ -14,8 +14,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $usr_id = $session->get_usr_id();
 $registry = $appbox->get_registry();
@@ -53,7 +54,7 @@ phrasea::headers();
         $checks = phrasea::is_scheduler_started();
         if ($checks !== true)
         {
-          $appbox = appbox::get_instance();
+          $appbox = appbox::get_instance(\bootstrap::getCore());
           $upgrader = new Setup_Upgrade($appbox);
           $advices = $appbox->forceUpgrade($upgrader);
 
@@ -116,7 +117,7 @@ phrasea::headers();
 
               $data_template = new system_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
 
-              $connbas = new connection_pdo('databox_creation', $hostname, $port, $user, $password, $parm['new_dbname']);
+              $connbas = new connection_pdo('databox_creation', $hostname, $port, $user, $password, $parm['new_dbname'], array(), $appbox->get_registry());
 
               try
               {
@@ -151,7 +152,7 @@ phrasea::headers();
             try
             {
               $data_template = new system_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
-              $connbas = new connection_pdo('databox_creation', $parm['new_hostname'], $parm['new_port'], $parm['new_user'], $parm['new_password'], $parm['new_dbname']);
+              $connbas = new connection_pdo('databox_creation', $parm['new_hostname'], $parm['new_port'], $parm['new_user'], $parm['new_password'], $parm['new_dbname'], array(), $appbox->get_registry());
               $base = databox::create($appbox, $connbas, $data_template, $registry);
               $base->registerAdmin($user_obj);
               $createBase = $sbas_id = $base->get_sbas_id();

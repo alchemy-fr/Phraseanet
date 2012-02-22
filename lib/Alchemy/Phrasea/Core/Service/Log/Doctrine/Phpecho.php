@@ -27,7 +27,7 @@ class Phpecho extends ServiceAbstract implements ServiceInterface
 {
 
 
-  public function getService()
+  public function getDriver()
   {
     return new EchoSQLLogger();
   }
@@ -40,6 +40,11 @@ class Phpecho extends ServiceAbstract implements ServiceInterface
   public function getScope()
   {
     return 'log';
+  }
+
+  public static function getMandatoryOptions()
+  {
+    return array();
   }
 
 }

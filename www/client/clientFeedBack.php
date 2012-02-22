@@ -15,18 +15,16 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+/* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $em = $Core->getEntityManager();
 
-$appbox = appbox::get_instance();
-$session = $appbox->get_session();
+$appbox = appbox::get_instance($Core);
 $registry = $appbox->get_registry();
-$user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+$user = $Core->getAuthenticatedUser();
 
 $lng = Session_Handler::get_locale();
-
-$usr_id = $session->get_usr_id();
 
 $output = '';
 
@@ -57,8 +55,7 @@ switch ($parm['action'])
     if ($record->is_from_reg())
     {
       $train = $twig->render('prod/preview/reg_train.html', array(
-          'record' => $record,
-          'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')
+          'record' => $record
               )
       );
     }
@@ -66,8 +63,7 @@ switch ($parm['action'])
     if ($record->is_from_basket() && $parm['roll'])
     {
       $train = $twig->render('prod/preview/basket_train.html', array(
-          'record' => $record,
-          'GV_rollover_reg_preview' => $registry->get('GV_rollover_reg_preview')
+          'record' => $record
               )
       );
     }
@@ -93,8 +89,7 @@ switch ($parm['action'])
                         )
                         , "others" => $twig->render('prod/preview/appears_in.html', array(
                             'parents' => $record->get_grouping_parents(),
-                            'baskets' => $record->get_container_baskets(),
-                            'show_tooltips' => $registry->get('GV_rollover_reg_preview')
+                            'baskets' => $record->get_container_baskets()
                                 )
                         )
                         , "current" => $train

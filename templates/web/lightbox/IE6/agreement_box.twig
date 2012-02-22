@@ -18,6 +18,7 @@
         </div>
         <ul style="margin:10px 0 0 20px;width:200px;">
             {% for validation_data in basket_element.getValidationDatas() %}
+              {% if basket.getValidation().getParticipant(user).getCanSeeOthers() or validation_data.getParticipant().getUser() == core.getAuthenticatedUser() %}
                 {% if validation_data.getAgreement() == true %}
                     {% set classuser = 'agree' %}
                 {% elseif validation_data.getAgreement() is null %}
@@ -25,11 +26,14 @@
                 {% else %}
                     {% set classuser = 'disagree' %}
                 {% endif %}
+                {% set participant = validation_data.getParticipant().getUser() %}
+                <li class="{% if participant.get_id() == user.get_id() %}me{% endif %} {{classuser}} userchoice">{{participant.get_display_name()}}</li>
+              {% endif %}
             {% endfor %}
         </ul>
     {% endif %}
 
-    {% if basket_element and basket_element.getBasket().getValidation() %}
+    {% if basket_element and basket_element.getBasket().getValidation() and basket.getValidation().getParticipant(user).getCanAgree() %}
         <div class="left choices">
             <div style="height:60px;margin-top:15px;">
                 <table cellspacing="0" cellpadding="0" style="width:230px;">

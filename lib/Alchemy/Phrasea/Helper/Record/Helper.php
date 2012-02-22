@@ -107,7 +107,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
 
     $this->selection = new \set_selection();
 
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($core);
     $usr_id = $appbox->get_session()->get_usr_id();
 
     if (trim($Request->get('ssel')) !== '')
@@ -116,7 +116,7 @@ class Helper extends \Alchemy\Phrasea\Helper\Helper
       $repository = $em->getRepository('\Entities\Basket');
 
       /* @var $$repository \Repositories\BasketRepository */
-      $Basket = $repository->findUserBasket($Request->get('ssel'), $this->getCore()->getAuthenticatedUser());
+      $Basket = $repository->findUserBasket($Request->get('ssel'), $this->getCore()->getAuthenticatedUser(), false);
 
       $this->selection->load_basket($Basket);
 

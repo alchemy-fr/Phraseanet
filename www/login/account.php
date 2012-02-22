@@ -14,13 +14,14 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+/* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 require_once __DIR__ . "/../../lib/classes/API/OAuth2/Autoloader.class.php";
 
 API_OAuth2_Autoloader::register();
 
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 
 require_once($appbox->get_registry()->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
 
@@ -34,9 +35,9 @@ $lng = Session_Handler::get_locale();
 
 
 
-$usr_id = $appbox->get_session()->get_usr_id();
-$user = User_Adapter::getInstance($usr_id, $appbox);
-$gatekeeper = gatekeeper::getInstance();
+$user = $Core->getAuthenticatedUser();
+$usr_id = $user->get_id();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 if ($user->is_guest())

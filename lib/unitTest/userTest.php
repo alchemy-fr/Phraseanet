@@ -30,7 +30,7 @@ class userTest extends PhraseanetPHPUnitAbstract
     $this->assertFalse(User_Adapter::get_usr_id_from_email(null));
     try
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
 
       self::$user->set_email(null);
 

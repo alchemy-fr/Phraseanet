@@ -37,7 +37,7 @@ class set_ordermanager extends set_abstract
    */
   public function __construct($sort = false, $page = 1)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
 

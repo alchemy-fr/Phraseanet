@@ -19,7 +19,7 @@ use Doctrine\Common\Cache\AbstractCache;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class RedisCache extends AbstractCache
+class RedisCache extends AbstractCache implements Cache
 {
 
   /**
@@ -92,6 +92,36 @@ class RedisCache extends AbstractCache
   protected function _doDelete($id)
   {
     return $this->_redis->delete($id);
+  }
+
+  public function isServer()
+  {
+    return true;
+  }
+
+  public function getStats()
+  {
+    return null;
+  }
+
+  public function get($key)
+  {
+    if (!$this->contains($key))
+    {
+      throw new Exception('Unable to retrieve the value');
+    }
+
+    return $this->fetch($key);
+  }
+
+  public function deleteMulti(array $array_keys)
+  {
+    foreach ($array_keys as $id)
+    {
+      $this->delete($id);
+    }
+
+    return $this;
   }
 
 }

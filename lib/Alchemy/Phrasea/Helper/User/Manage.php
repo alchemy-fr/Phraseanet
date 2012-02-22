@@ -42,7 +42,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
   public function export()
   {
     $request = $this->request;
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     $session = $appbox->get_session();
 
     $offset_start = (int) $request->get('offset_start');
@@ -80,7 +80,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
   public function search()
   {
     $request = $this->request;
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
 
     $offset_start = (int) $this->request->get('offset_start');
     $offset_start = $offset_start < 0 ? 0 : $offset_start;
@@ -165,7 +165,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
       throw new \Exception_InvalidArgument(_('Invalid mail address'));
     }
 
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
 
     $conn = $appbox->get_connection();
     $sql = 'SELECT usr_id FROM usr WHERE usr_mail = :email';
@@ -197,7 +197,7 @@ class Manage extends \Alchemy\Phrasea\Helper\Helper
       throw new \Exception_InvalidArgument(_('Invalid template name'));
     }
 
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     $user = $this->getCore()->getAuthenticatedUser();
 
     $created_user = \User_Adapter::create($appbox, $name, \random::generatePassword(16), null, false, false);

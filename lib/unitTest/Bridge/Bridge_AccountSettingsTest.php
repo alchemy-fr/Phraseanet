@@ -23,7 +23,7 @@ class Bridge_AccountSettingsTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
     try
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
 
       $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
       $stmt = $appbox->get_connection()->prepare($sql);

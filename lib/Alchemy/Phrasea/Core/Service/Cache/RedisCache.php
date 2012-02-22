@@ -15,8 +15,7 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface,
-    Alchemy\Phrasea\Cache as PhraseaCache;
-use Doctrine\Common\Cache as CacheService;
+    Alchemy\Phrasea\Cache as CacheDriver;
 
 /**
  *
@@ -33,9 +32,9 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
   protected $host;
   protected $port;
 
-  public function __construct($name, Array $options, Array $dependencies)
+  public function __construct(Core $core, $name, Array $options)
   {
-    parent::__construct($name, $options, $dependencies);
+    parent::__construct( $core, $name, $options);
 
     $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
 
@@ -51,7 +50,7 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
    *
    * @return Cache\ApcCache
    */
-  public function getService()
+  public function getDriver()
   {
     if (!extension_loaded('redis'))
     {
@@ -67,17 +66,15 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
 
     if ($redis->connect($this->host, $this->port))
     {
-      $service = new PhraseaCache\RedisCache();
+      $service = new CacheDriver\RedisCache();
       $service->setRedis($redis);
     }
     else
     {
-      $service = new CacheService\ArrayCache();
+      throw new \Exception(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
     }
 
-    $registry = $this->getRegistry();
-
-    $service->setNamespace($registry->get("GV_sit", ""));
+    $service->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
 
     return $service;
   }
@@ -97,16 +94,9 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
     return $this->port;
   }
 
-  private function getRegistry()
+  public static function getMandatoryOptions()
   {
-    $registry = $this->getDependency("registry");
-
-    if (!$registry instanceof \registryInterface)
-    {
-      throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
-    }
-
-    return $registry;
+    return array('host', 'port');
   }
 
 }

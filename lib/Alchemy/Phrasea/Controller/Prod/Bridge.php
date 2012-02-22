@@ -32,7 +32,7 @@ class Bridge implements ControllerProviderInterface
   public function connect(Application $app)
   {
     $controllers = new ControllerCollection();
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($app['Core']);
     /* @var $twig \Twig_Environment */
     $twig = $app['Core']->getTwig();
 
@@ -55,7 +55,7 @@ class Bridge implements ControllerProviderInterface
             , function(Application $app) use ($twig)
             {
               $route = new RecordHelper\Bridge($app['Core'], $app['request']);
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
               $params = array(
@@ -71,7 +71,7 @@ class Bridge implements ControllerProviderInterface
 
     $controllers->get('/login/{api_name}/', function($api_name) use ($app, $twig)
             {
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $connector = \Bridge_Api::get_connector_by_name($appbox->get_registry(), $api_name);
 
               return $app->redirect($connector->get_auth_url());
@@ -82,7 +82,7 @@ class Bridge implements ControllerProviderInterface
               $error_message = '';
               try
               {
-                $appbox = \appbox::get_instance();
+                $appbox = \appbox::get_instance($app['Core']);
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
                 $api = \Bridge_Api::get_by_api_name($appbox, $api_name);
                 $connector = $api->get_connector();
@@ -124,7 +124,7 @@ class Bridge implements ControllerProviderInterface
     $controllers->get('/adapter/{account_id}/logout/'
             , function($account_id) use ($app, $twig)
             {
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $account = \Bridge_Account::load_account($appbox, $account_id);
               $app['require_connection']($account);
               $account->get_api()->get_connector()->disconnect();
@@ -139,7 +139,7 @@ class Bridge implements ControllerProviderInterface
                       $page = max((int) $app['request']->get('page'), 0);
                       $quantity = 10;
                       $offset_start = max(($page - 1) * $quantity, 0);
-                      $appbox = \appbox::get_instance();
+                      $appbox = \appbox::get_instance($app['Core']);
                       $account = \Bridge_Account::load_account($appbox, $account_id);
                       $elements = \Bridge_Element::get_elements_by_account($appbox, $account, $offset_start, $quantity);
 
@@ -163,7 +163,7 @@ class Bridge implements ControllerProviderInterface
                       $page = max((int) $app['request']->get('page'), 0);
                       $quantity = 5;
                       $offset_start = max(($page - 1) * $quantity, 0);
-                      $appbox = \appbox::get_instance();
+                      $appbox = \appbox::get_instance($app['Core']);
                       $account = \Bridge_Account::load_account($appbox, $account_id);
 
                       $app['require_connection']($account);
@@ -190,7 +190,7 @@ class Bridge implements ControllerProviderInterface
                       $page = max((int) $app['request']->get('page'), 0);
                       $quantity = 5;
                       $offset_start = max(($page - 1) * $quantity, 0);
-                      $appbox = \appbox::get_instance();
+                      $appbox = \appbox::get_instance($app['Core']);
                       $account = \Bridge_Account::load_account($appbox, $account_id);
 
                       $app['require_connection']($account);
@@ -214,7 +214,7 @@ class Bridge implements ControllerProviderInterface
             , function($account_id, $action, $element_type) use ($app, $twig)
             {
 
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $account = \Bridge_Account::load_account($appbox, $account_id);
 
               $app['require_connection']($account);
@@ -287,7 +287,7 @@ class Bridge implements ControllerProviderInterface
     $controllers->post('/action/{account_id}/{action}/{element_type}/'
             , function($account_id, $action, $element_type) use ($app, $twig)
             {
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $account = \Bridge_Account::load_account($appbox, $account_id);
 
               $app['require_connection']($account);
@@ -413,7 +413,7 @@ class Bridge implements ControllerProviderInterface
     $controllers->get('/upload/', function(Application $app) use ($twig)
             {
               $request = $app['request'];
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 
@@ -442,7 +442,7 @@ class Bridge implements ControllerProviderInterface
             {
               $errors = array();
               $request = $app['request'];
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $account = \Bridge_Account::load_account($appbox, $request->get('account_id'));
               $app['require_connection']($account);
 

@@ -65,7 +65,7 @@ class p4file
 
   public static function archiveFile(system_file &$system_file, $base_id, $delete=true, $name=false)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
 

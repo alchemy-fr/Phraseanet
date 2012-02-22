@@ -19,10 +19,10 @@
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 
@@ -48,7 +48,7 @@ if ($parm["ssttid"] != "")
 
   /* @var $repository \Repositories\BasketRepository */
 
-  $Basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser());
+  $Basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser(), false);
   $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
 }
 

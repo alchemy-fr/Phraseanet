@@ -146,7 +146,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
       $em = $this->core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
 
-      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
     }
     catch (Exception $e)
     {
@@ -199,7 +199,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
       $em = $this->core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
 
-      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser());
+      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
     }
     catch (Exception $e)
     {
@@ -230,8 +230,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
   {
     $bool = false;
 
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
+    $session = $this->appbox->get_session();
     if (!$session->is_authenticated())
 
       return false;

@@ -42,9 +42,9 @@ return call_user_func(function()
                   ));
 
 
-                  $app['appbox'] = function()
+                  $app['appbox'] = function() use ($app)
                           {
-                            return \appbox::get_instance();
+                            return \appbox::get_instance($app['Core']);
                           };
 
 
@@ -290,7 +290,7 @@ return call_user_func(function()
                             {
                               $post = new \API_OAuth2_Form_DevAppInternet($app['request']);
                             }
-                            
+
                             $violations = $app['validator']->validate($post);
 
                             if ($violations->count() == 0)
@@ -348,7 +348,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -383,7 +383,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -409,7 +409,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -433,7 +433,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];

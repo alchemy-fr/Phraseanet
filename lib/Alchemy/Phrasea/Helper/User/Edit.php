@@ -63,7 +63,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function delete_users()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     foreach ($this->users as $usr_id)
     {
       $user = \User_Adapter::getInstance($usr_id, $appbox);
@@ -92,7 +92,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
   public function get_users_rights()
   {
     $user = $this->getCore()->getAuthenticatedUser();
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
 
     $list = array_keys($user->ACL()->get_granted_base(array('canadmin')));
 
@@ -393,7 +393,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function apply_rights()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     $session = $appbox->get_session();
     $request = \http_request::getInstance();
     $ACL = \User_Adapter::getInstance($session->get_usr_id(), $appbox)->ACL();
@@ -543,14 +543,14 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     $users = $this->users;
 
-    $user = \User_adapter::getInstance(array_pop($users), \appbox::get_instance());
+    $user = \User_adapter::getInstance(array_pop($users), \appbox::get_instance($this->core));
 
     if ($user->is_template() || $user->is_special())
     {
       return $this;
     }
 
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     $session = $appbox->get_session();
     $request = \http_request::getInstance();
 
@@ -592,7 +592,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
   public function apply_template()
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     $session = $appbox->get_session();
 
     $template = \User_adapter::getInstance($this->request->get('template'), $appbox);
@@ -627,7 +627,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     foreach ($this->users as $usr_id)
     {
-      $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+      $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance($this->core));
       if ($this->request->get('quota'))
         $user->ACL()->set_quotas_on_base($this->base_id, $this->request->get('droits'), $this->request->get('restes'));
       else
@@ -650,7 +650,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     {
       foreach ($this->users as $usr_id)
       {
-        $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+        $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance($this->core));
 
         $user->ACL()->set_masks_on_base($this->base_id, $vand_and, $vand_or, $vxor_and, $vxor_or);
       }
@@ -670,7 +670,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
 
     foreach ($this->users as $usr_id)
     {
-      $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+      $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance($this->core));
 
       $user->ACL()->set_limits($this->base_id, $activate, $dmin, $dmax);
     }

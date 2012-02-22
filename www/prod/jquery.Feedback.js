@@ -168,6 +168,7 @@
             $dialog.Close();
 
             $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
+            $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
             $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
             $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
 
@@ -189,10 +190,11 @@
 
           var callback = function(rendered){
 
-            $('input[name="name"]', rendered).val($('input[name="name"]', $FeedBackForm).val());
-            $('textarea[name="message"]', rendered).val($('textarea[name="message"]', $FeedBackForm).val());
-
             $dialog.setContent(rendered);
+
+            $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
+            $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
+            $('.' + $this.Context, $dialog.getDomElement()).show();
           };
 
           p4.Mustache.Render('Feedback-SendForm', {language:language}, callback);
@@ -574,7 +576,7 @@
 
     var initRight = function(){
 
-      var $container = this.container;
+      var $container = this.container = $('#ListManager .editor');
 
       $('form[name="list-editor-search"]', this.container).bind('submit', function(){
 
@@ -603,11 +605,11 @@
 
       $('button', this.container).button();
 
-      $('.EditToggle', $('#ListManager')).bind('click', function(){
+      $('.EditToggle', $container).bind('click', function(){
         $('.content.readonly, .content.readwrite', $('#ListManager')).toggle();
         return false;
       });
-      $('.Refresher', $('#ListManager')).bind('click', function(){
+      $('.Refresher', $container).bind('click', function(){
         $('#ListManager ul.lists .list.selected a').trigger('click');
         return false;
       });
@@ -644,60 +646,6 @@
 
         return false;
       });
-
-//
-//      $('.editor input[name="list-add-user"]', this.container).autocomplete({
-//          minLength: 2,
-//          source: function( request, response ) {
-//            $.ajax({
-//              url: '/prod/push/search-user/',
-//              dataType: "json",
-//              data: {
-//                query: request.term
-//              },
-//              success: function( data ) {
-//                response( data );
-//              }
-//            });
-//          },
-//          select: function( event, ui ) {
-//            if(ui.item.type == 'USER')
-//            {
-//              var callback = function(list, datas) {
-//                if($.inArray(ui.item.usr_id, datas.result) >= 0)
-//                {
-//                  p4.Mustache.Render('List-Badge', ui.item, p4.ListManager.appendBadge);
-//                }
-//                $('.counter.current, .list.selected .counter', $('#ListManager')).each(function(){
-//                  $(this).text(parseInt($(this).text()) + datas.result.length);
-//                });
-//                console.log('increment counter');
-//              }
-//              p4.ListManager.getList().addUser(ui.item.usr_id, callback);
-//            }
-//            return false;
-//          }
-//        })
-//        .data( "autocomplete" )._renderItem = function( ul, item ) {
-//
-//          var autocompleter = $('.editor input[name="list-add-user"]', this.container);
-//
-//          autocompleter.addClass('loading');
-//
-//          var callback = function(datas){
-//            $(datas).data( "item.autocomplete", item ).appendTo( ul );
-//            autocompleter.data( "autocomplete" ).menu.refresh();
-//            autocompleter.data('autocomplete')._resizeMenu();
-//            autocompleter.removeClass('loading');
-//          };
-//
-//          if(item.type == 'USER')
-//          {
-//            var datas = p4.Mustache.Render('List-User-Item', item, callback);
-//          }
-//
-//          return;
-//        };
     };
 
 

@@ -329,7 +329,7 @@ class ValidationSession
   {
     if ($this->initiator_id)
     {
-      return \User_Adapter::getInstance($this->initiator_id, \appbox::get_instance());
+      return \User_Adapter::getInstance($this->initiator_id, \appbox::get_instance(\bootstrap::getCore()));
     }
   }
 
@@ -340,7 +340,7 @@ class ValidationSession
       return null;
     }
 
-    $date_obj = new DateTime();
+    $date_obj = new \DateTime();
 
     return $date_obj > $this->getExpires();
   }

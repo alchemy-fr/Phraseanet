@@ -32,7 +32,7 @@ class RSSFeeds implements ControllerProviderInterface
 
   public function connect(Application $app)
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($app['Core']);
 
     $controllers = new ControllerCollection();
 

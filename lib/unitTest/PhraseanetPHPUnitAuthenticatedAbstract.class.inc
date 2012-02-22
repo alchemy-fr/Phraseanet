@@ -27,7 +27,7 @@ abstract class PhraseanetPHPUnitAuthenticatedAbstract extends PhraseanetPHPUnitA
   public function setUp()
   {
     parent::setUp();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $auth = new Session_Authentication_None(self::$user);
     $session->authenticate($auth);
@@ -35,7 +35,7 @@ abstract class PhraseanetPHPUnitAuthenticatedAbstract extends PhraseanetPHPUnitA
 
   public function tearDown()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $session->logout();
     parent::tearDown();

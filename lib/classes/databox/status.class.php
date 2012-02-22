@@ -125,7 +125,7 @@ class databox_status
 
       return self::$_statuses;
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -152,7 +152,7 @@ class databox_status
 
   public static function getSearchStatus()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -263,7 +263,7 @@ class databox_status
 
   public static function deleteStatus($sbas_id, $bit)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -323,7 +323,7 @@ class databox_status
 
   public static function updateStatus($sbas_id, $bit, $properties)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -414,7 +414,7 @@ class databox_status
 
   public static function deleteIcon($sbas_id, $bit, $switch)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -444,7 +444,7 @@ class databox_status
 
   public static function updateIcon($sbas_id, $bit, $switch, $file)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);

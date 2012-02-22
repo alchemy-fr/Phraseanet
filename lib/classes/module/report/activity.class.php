@@ -341,7 +341,7 @@ class module_report_activity extends module_report
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    $login = User_Adapter::getInstance($usr, appbox::get_instance())->get_display_name();
+    $login = User_Adapter::getInstance($usr, appbox::get_instance(\bootstrap::getCore()))->get_display_name();
 
     $this->setChamp($rs);
     ($config) ? $this->setConfigColumn($config) :
@@ -739,7 +739,7 @@ class module_report_activity extends module_report
     $this->setChamp($rs);
     $this->initDefaultConfigColumn($this->champ);
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $i = 0;
     foreach ($rs as $row)

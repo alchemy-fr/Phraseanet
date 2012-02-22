@@ -134,7 +134,8 @@ class PDF
 
   protected function print_thumbnailGrid($links=false)
   {
-    $appbox = \appbox::get_instance();
+    $core = \bootstrap::getCore();
+    $appbox = \appbox::get_instance($core);
     $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
     $NDiapoW = 3;
@@ -331,7 +332,8 @@ class PDF
 
   protected function print_preview($withtdm)
   {
-    $appbox = \appbox::get_instance();
+    $core = \bootstrap::getCore();
+    $appbox = \appbox::get_instance($core);
     $registry = \registry::get_instance();
     $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 

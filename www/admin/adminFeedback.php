@@ -15,11 +15,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
-phrasea::headers(200, false, 'text/html', 'UTF-8', false);
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance($Core);
 
 $request = http_request::getInstance();
-$appbox = appbox::get_instance();
 $registry = $appbox->get_registry();
 $parm = $request->get_parms('action', 'position', 'test', 'renew', 'path', 'tests');
 
@@ -66,6 +66,7 @@ switch ($parm['action'])
 
   case 'EMPTYBASE':
     $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
+    $message = _('Base empty successful');
     try
     {
       $sbas_id = (int) $parm['sbas_id'];
@@ -73,17 +74,26 @@ switch ($parm['action'])
       $class_name = 'task_period_emptyColl';
       foreach ($databox->get_collections() as $collection)
       {
-        $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
-
-        task_abstract::create($appbox, $class_name, $settings);
+        if($collection->get_record_amount() <= 500)
+        {
+          $collection->empty_collection(500);
+        }
+        else
+        {
+          $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><tasksettings><base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
+          task_abstract::create($appbox, $class_name, $settings);
+          $message = _('A task has been creted, please run it to complete empty collection');
+        }
       }
     }
     catch (Exception $e)
     {
-
+      $message = _('An error occurred');
     }
+    $output = p4string::jsonencode(array('message'=>$message));
     break;
   case 'EMPTYCOLL':
+    $message = _('Collection empty successful');
     $parm = $request->get_parms(
                     array(
                         "sbas_id" => http_request::SANITIZE_NUMBER_INT
@@ -95,15 +105,24 @@ switch ($parm['action'])
       $databox = databox::get_instance($parm['sbas_id']);
       $collection = collection::get_from_coll_id($databox, $parm['coll_id']);
 
-      $class_name = 'task_period_emptyColl';
-      $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
+      if($collection->get_record_amount() <= 500)
+      {
+        $collection->empty_collection(500);
+      }
+      else
+      {
+        $class_name = 'task_period_emptyColl';
+        $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<base_id>" . $collection->get_base_id() . "</base_id></tasksettings>";
 
-      task_abstract::create($appbox, $class_name, $settings);
+        task_abstract::create($appbox, $class_name, $settings);
+        $message = _('A task has been creted, please run it to complete empty collection');
+      }
     }
     catch (Exception $e)
     {
-
+      $message = _('An error occurred');
     }
+    $output = p4string::jsonencode(array('message'=>$message));
     break;
 
   case 'SETTASKSTATUS':

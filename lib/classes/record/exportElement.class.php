@@ -73,7 +73,7 @@ class record_exportElement extends record_adapter
     $this->downloadable = $downloadable = array();
     $this->orderable = $orderable = array();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $sd = $this->get_subdefs();

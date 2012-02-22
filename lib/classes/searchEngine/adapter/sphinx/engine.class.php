@@ -262,7 +262,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     assert(is_int($offset));
     assert($offset >= 0);
     assert(is_int($perPage));
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $page = ceil($offset / $perPage) + 1;
@@ -511,7 +511,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     if (!$this->current_index)
       $this->current_index = '*';
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $supposed_qry = mb_strtolower($this->query);
     $pieces = explode(" ", str_replace(array("all", "last", "et", "ou", "sauf", "and", "or", "except", "in", "dans", "'", '"', "(", ")", "_", "-"), ' ', $supposed_qry));
 
@@ -689,7 +689,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
    */
   public function build_excerpt($query, array $fields, record_adapter $record)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $selected_sbas_id = $record->get_sbas_id();
 

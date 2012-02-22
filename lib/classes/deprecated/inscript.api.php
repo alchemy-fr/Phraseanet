@@ -17,7 +17,7 @@
  */
 function giveMeBases($usr=null)
 {
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
   $conn = $appbox->get_connection();
 
   $inscriptions = null;
@@ -197,7 +197,7 @@ function giveMeBaseUsr($usr, $lng)
 {
 
   $noDemand = true;
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
 
   $out = '<table border="0" style="table-layout:fixed;font-size:11px;" cellspacing=0 width="100%">' .
           '<tr>' .
@@ -344,7 +344,7 @@ function giveMeBaseUsr($usr, $lng)
 
 function giveModInscript($usr, $lng)
 {
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
   $session = $appbox->get_session();
   $out = '<html lang="' . $session->get_I18n() . '">' .
           '<head>' .
@@ -383,7 +383,7 @@ function giveModInscript($usr, $lng)
 
 function giveInscript($lng, $demandes=null)
 {
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
 
   $out = '<table  border="0" style="table-layout:fixed" cellspacing=0 width="590">' .
           '<tr>' .

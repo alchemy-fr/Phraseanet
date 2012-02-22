@@ -50,7 +50,7 @@ class databox_cgu
   private static function getUnvalidated($home=false)
   {
     $terms = array();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     if(!$home)

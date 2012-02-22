@@ -27,7 +27,7 @@
         </td>
         {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
         <td style="text-align:right;width:150px;">
-          <button>
+          <button class="deleter">
             {% trans 'Delete' %}
             <input type="hidden" name="list_id" value="{{ list.getId() }}"/>
           </button>
@@ -61,7 +61,7 @@
     <form name="list-editor-search" method="POST" action="/prod/push/edit-list/{{ list.getId() }}/">
       <div class="PNB10" style="height:160px;">
         <div class="PNB" style="height:40px;bottom:auto;">
-          <button class="Refresher">&lt;{% trans 'View' %}</button>
+          <button class="Refresher" type="button">&lt;{% trans 'View' %}</button>
           <select name="like_field">
             <option value="usr_login">
               {% trans 'Push::filter on login' %}

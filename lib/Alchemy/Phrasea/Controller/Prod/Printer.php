@@ -52,7 +52,7 @@ class Printer implements ControllerProviderInterface
 
               $request = $app['request'];
 
-              $session = \Session_Handler::getInstance(\appbox::get_instance());
+              $session = \Session_Handler::getInstance(\appbox::get_instance($app['Core']));
 
               $layout = $request->get('lay');
 

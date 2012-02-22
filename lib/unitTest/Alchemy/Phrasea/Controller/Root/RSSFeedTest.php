@@ -80,11 +80,11 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
   {
     parent::setUp();
     $this->client = $this->createClient();
-    self::$feed = Feed_Adapter::create(appbox::get_instance(), self::$user, 'title', 'subtitle');
-    self::$publisher = Feed_Publisher_Adapter::getPublisher(appbox::get_instance(), self::$feed, self::$user);
-    self::$entry = Feed_Entry_Adapter::create(appbox::get_instance(), self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
-    Feed_Entry_Item::create(appbox::get_instance(), self::$entry, self::$record_1);
-    Feed_Entry_Item::create(appbox::get_instance(), self::$entry, self::$record_2);
+    self::$feed = Feed_Adapter::create(appbox::get_instance(\bootstrap::getCore()), self::$user, 'title', 'subtitle');
+    self::$publisher = Feed_Publisher_Adapter::getPublisher(appbox::get_instance(\bootstrap::getCore()), self::$feed, self::$user);
+    self::$entry = Feed_Entry_Adapter::create(appbox::get_instance(\bootstrap::getCore()), self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
+    Feed_Entry_Item::create(appbox::get_instance(\bootstrap::getCore()), self::$entry, self::$record_1);
+    Feed_Entry_Item::create(appbox::get_instance(\bootstrap::getCore()), self::$entry, self::$record_2);
     self::$feed->set_public(true);
   }
 
@@ -109,7 +109,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
   {
     parent::setUpBeforeClass();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
 
@@ -244,7 +244,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 //$app->get('/feeds/feed/{id}/{format}/', function($id, $format) use ($app, $appbox, $display_feed)
   public function testPublicFeed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
 
@@ -265,7 +265,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 //$app->get('/feeds/userfeed/aggregated/{token}/{format}/', function($token, $format) use ($app, $appbox, $display_feed)
   public function testUserFeedAggregated()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
 
@@ -286,7 +286,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 //$app->get('/feeds/userfeed/{token}/{id}/{format}/', function($token, $id, $format) use ($app, $appbox, $display_feed)
   public function testUserFeed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
 
@@ -306,7 +306,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   public function testGetFeedFormat()
   {
-    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance());
+    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance(\bootstrap::getCore()));
     $feed = array_shift($feeds->get_feeds());
 
     $crawler = $this->client->request("GET", "/feeds/feed/" . $feed->get_id() . "/rss/");
@@ -334,7 +334,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   public function testAggregatedRss()
   {
-    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance());
+    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance(\bootstrap::getCore()));
     $all_feeds = $feeds->get_feeds();
     foreach ($all_feeds as $feed)
     {
@@ -349,7 +349,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   public function testAggregatedAtom()
   {
-    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance());
+    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance(\bootstrap::getCore()));
     $all_feeds = $feeds->get_feeds();
     foreach ($all_feeds as $feed)
     {
@@ -374,7 +374,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   public function testGetFeedId()
   {
-    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance());
+    $feeds = Feed_Collection::load_public_feeds(appbox::get_instance(\bootstrap::getCore()));
     $all_feeds = $feeds->get_feeds();
     $feed = array_shift($all_feeds);
 
@@ -392,7 +392,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
   public function testPrivateFeedAccess()
   {
-    $private_feed = Feed_Adapter::create(appbox::get_instance(), self::$user, 'title', 'subtitle');
+    $private_feed = Feed_Adapter::create(appbox::get_instance(\bootstrap::getCore()), self::$user, 'title', 'subtitle');
     $private_feed->set_public(false);
     $this->client->request("GET", "/feeds/feed/" . $private_feed->get_id() . "/rss/");
     $this->assertFalse($this->client->getResponse()->isOk());

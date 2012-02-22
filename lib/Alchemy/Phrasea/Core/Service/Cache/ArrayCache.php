@@ -14,8 +14,8 @@ namespace Alchemy\Phrasea\Core\Service\Cache;
 use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
-    Alchemy\Phrasea\Core\Service\ServiceInterface;
-use Doctrine\Common\Cache as CacheService;
+    Alchemy\Phrasea\Core\Service\ServiceInterface,
+    Alchemy\Phrasea\Cache as CacheDriver;
 
 /**
  * Array cache
@@ -32,16 +32,11 @@ class ArrayCache extends ServiceAbstract implements ServiceInterface
     return 'cache';
   }
 
-  /**
-   *
-   * @return Cache\ApcCache
-   */
-  public function getService()
+  public function getDriver()
   {
-    $registry = $this->getRegistry();
+    $service = new CacheDriver\ArrayCache();
 
-    $service = new CacheService\ArrayCache();
-    $service->setNamespace($registry->get("GV_sit", ""));
+    $service->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
 
     return $service;
   }
@@ -51,16 +46,9 @@ class ArrayCache extends ServiceAbstract implements ServiceInterface
     return 'array';
   }
 
-  private function getRegistry()
+  public static function getMandatoryOptions()
   {
-    $registry = $this->getDependency("registry");
-
-    if (!$registry instanceof \registryInterface)
-    {
-      throw new \Exception(sprintf('Registry dependency does not implement registryInterface for %s service', $this->name));
-    }
-
-    return $registry;
+    return array();
   }
 
 }

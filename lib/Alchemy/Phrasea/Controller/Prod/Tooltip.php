@@ -32,7 +32,7 @@ class Tooltip implements ControllerProviderInterface
   public function connect(Application $app)
   {
     $controllers = new ControllerCollection();
-    $app['appbox'] = \appbox::get_instance();
+    $app['appbox'] = \appbox::get_instance($app['Core']);
 
     $controllers->post('/basket/{basket_id}/'
             , function(Application $app, $basket_id)
@@ -40,7 +40,7 @@ class Tooltip implements ControllerProviderInterface
               $em = $app['Core']->getEntityManager();
 
               $basket = $em->getRepository('\Entities\Basket')
-                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser());
+                      ->findUserBasket($basket_id, $app['Core']->getAuthenticatedUser(), false);
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
@@ -63,7 +63,7 @@ class Tooltip implements ControllerProviderInterface
     $controllers->post('/user/{usr_id}/'
             , function(Application $app, $usr_id)
             {
-              $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+              $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance($app['Core']));
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();
@@ -103,10 +103,13 @@ class Tooltip implements ControllerProviderInterface
 
               $search_engine = null;
 
-              if (($search_engine_options = unserialize($app['request']->get('options_serial'))) !== false)
+              if($view == 'answer')
               {
-                $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
-                $search_engine->set_options($search_engine_options);
+                if (($search_engine_options = unserialize($app['request']->get('options_serial'))) !== false)
+                {
+                  $search_engine = new \searchEngine_adapter($app['appbox']->get_registry());
+                  $search_engine->set_options($search_engine_options);
+                }
               }
 
                 /* @var $twig \Twig_Environment */

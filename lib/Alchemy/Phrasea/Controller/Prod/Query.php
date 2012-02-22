@@ -34,7 +34,7 @@ class Query implements ControllerProviderInterface
     $controllers->match('/', function(Application $app, Request $request)
       {
 
-        $appbox   = \appbox::get_instance();
+        $appbox   = \appbox::get_instance($app['Core']);
         $registry = $appbox->get_registry();
 
         $user = $app['Core']->getAuthenticatedUser();

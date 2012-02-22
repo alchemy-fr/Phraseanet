@@ -247,7 +247,7 @@ class caption_field
    */
   public function highlight_thesaurus()
   {
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
     $unicode  = new unicode();

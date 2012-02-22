@@ -1454,7 +1454,7 @@ function replace()
 
   search = new RegExp(r_search, commut);
 
-  var r, f;
+  var r, f, n = 0;
   for(r in p4.edit.T_records)
   {
     if(!p4.edit.T_records[r]._selected)
@@ -1463,10 +1463,13 @@ function replace()
     {
       if(field == '' || field==f)
       {
-        p4.edit.T_records[r].fields[f].replaceValue(search, replace);
+        n += p4.edit.T_records[r].fields[f].replaceValue(search, replace);
       }
     }
   }
+
+  humane.info($.sprintf(language.nFieldsChanged, n));
+
   updateEditSelectedRecords(null);
 }
 

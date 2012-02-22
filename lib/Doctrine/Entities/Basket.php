@@ -253,7 +253,7 @@ class Basket
   {
     if ($this->getPusherId())
     {
-      return new \User_Adapter($this->getPusherId(), \appbox::get_instance());
+      return new \User_Adapter($this->getPusherId(), \appbox::get_instance(\bootstrap::getCore()));
     }
   }
 
@@ -266,7 +266,7 @@ class Basket
   {
     if ($this->getUsrId())
     {
-      return new \User_Adapter($this->getUsrId(), \appbox::get_instance());
+      return new \User_Adapter($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
     }
   }
 

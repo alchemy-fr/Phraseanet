@@ -161,15 +161,12 @@ abstract class base implements cache_cacheableInterface
     return $this->connection;
   }
 
-  /**
-   *
-   * @return cache_adapter
-   */
   public function get_cache()
   {
     if (!$this->cache)
-      $this->cache = cache_adapter::get_instance($this->get_registry());
-
+    {
+      $this->cache = $this->Core->getCache();
+    }
     return $this->cache;
   }
 
@@ -191,7 +188,7 @@ abstract class base implements cache_cacheableInterface
 
   public function set_data_to_cache($value, $option = null, $duration = 0)
   {
-    return $this->get_cache()->set($this->get_cache_key($option), $value, $duration);
+    return $this->get_cache()->save($this->get_cache_key($option), $value, $duration);
   }
 
   public function delete_data_from_cache($option = null)

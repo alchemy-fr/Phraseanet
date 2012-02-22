@@ -482,7 +482,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     try
     {
-      $appbox  = appbox::get_instance();
+      $appbox  = appbox::get_instance(\bootstrap::getCore());
       $session = $appbox->get_session();
       $user    = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -1523,7 +1523,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
   public static function updateClientInfos($app_id)
   {
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     if (!$session->is_authenticated())
 
@@ -1632,7 +1632,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     try
     {
-      $appbox  = appbox::get_instance();
+      $appbox  = appbox::get_instance(\bootstrap::getCore());
       $session = $appbox->get_session();
 
       $sql  = "UPDATE usr SET create_db='0' WHERE create_db='1' AND usr_id != :usr_id";
@@ -1659,7 +1659,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
   {
     $users = self::get_sys_admins();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $conn   = $appbox->get_connection();
 
     foreach ($appbox->get_databoxes() as $databox)
@@ -1717,7 +1717,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     $locale = 'en_GB';
     try
     {
-      $appbox   = appbox::get_instance();
+      $appbox   = appbox::get_instance(\bootstrap::getCore());
       $session  = $appbox->get_session();
       $registry = $appbox->get_registry();
       $locale   = $registry->get('GV_default_lng');

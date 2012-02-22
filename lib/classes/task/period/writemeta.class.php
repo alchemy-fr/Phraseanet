@@ -183,7 +183,7 @@ class task_period_writemeta extends task_databoxAbstract
 
   public function printInterfaceHTML()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $sbas_ids = User_Adapter::getInstance($session->get_usr_id(), $appbox)
                     ->ACL()->get_granted_sbas(array('bas_manage'));

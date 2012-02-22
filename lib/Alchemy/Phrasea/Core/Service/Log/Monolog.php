@@ -37,9 +37,9 @@ class Monolog extends ServiceAbstract implements ServiceInterface
    */
   protected $monolog;
 
-  public function __construct($name, Array $options,Array $dependencies)
+  public function __construct(Core $core, $name, Array $options)
   {
-    parent::__construct($name, $options, $dependencies);
+    parent::__construct( $core, $name, $options);
 
     if (empty($options))
     {
@@ -119,7 +119,7 @@ class Monolog extends ServiceAbstract implements ServiceInterface
     $this->monolog = $monologLogger;
   }
 
-  public function getService()
+  public function getDriver()
   {
     return $this->monolog;
   }
@@ -134,5 +134,9 @@ class Monolog extends ServiceAbstract implements ServiceInterface
     return 'log';
   }
 
+  public static function getMandatoryOptions()
+  {
+    return array('output', 'channel', 'handler', 'max_day', 'filename');
+  }
 }
 

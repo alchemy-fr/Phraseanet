@@ -44,7 +44,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    */
   public function testRouteDescription()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
     $name = "testtest" . uniqid();
     $field = \databox_field::create($databox, $name);
@@ -70,7 +70,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostDelete()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
     $name = "test" . uniqid();
     $field = \databox_field::create($databox, $name);
@@ -96,7 +96,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostCreate()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
 
     $name = 'test' . uniqid();
@@ -127,7 +127,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostDescriptionException()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
 
     $this->client->request("POST", "/description/" . $databox->get_sbas_id() . "/", array(
@@ -231,7 +231,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostDescriptionRights()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $session = $appbox->get_session();
     $auth = new Session_Authentication_None(self::$user_alt1);
@@ -262,7 +262,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testGetDescriptionException()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $session = $appbox->get_session();
     $auth = new Session_Authentication_None(self::$user_alt1);
@@ -277,7 +277,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testGetDescription()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
 
     $this->client->request("GET", "/description/" . $databox->get_sbas_id() . "/");

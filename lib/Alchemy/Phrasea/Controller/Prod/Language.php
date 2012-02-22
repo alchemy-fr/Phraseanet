@@ -78,7 +78,7 @@ class Language implements ControllerProviderInterface
               $out['editAddSimple'] = _('edit:: Ajouter %s au champ courrant');
               $out['cantDeletePublicOne'] = _('panier:: vous ne pouvez pas supprimer un panier public');
               $out['wrongsbas'] = _('panier:: Un reportage ne peux recevoir que des elements provenants de la base ou il est enregistre');
-              $out['max_record_selected'] = _('Vous ne pouvez pas selectionner plus de 400 enregistrements');
+              $out['max_record_selected'] = _('Vous ne pouvez pas selectionner plus de 800 enregistrements');
               $out['confirmRedirectAuth'] = _('invite:: Redirection vers la zone d\'authentification, cliquez sur OK pour continuer ou annulez');
               $out['error_test_publi'] = _('Erreur : soit les parametres sont incorrects, soit le serveur distant ne repond pas');
               $out['test_publi_ok'] = _('Les parametres sont corrects, le serveur distant est operationnel');
@@ -92,8 +92,10 @@ class Language implements ControllerProviderInterface
               $out['listNameCannotBeEmpty'] = _('List name can not be empty');
               $out['FeedBackName'] = _('Name');
               $out['FeedBackMessage'] = _('Message');
+              $out['FeedBackDuration'] = _('Time for feedback (days)');
               $out['send'] = _('Send');
               $out['Recept'] = _('Accuse de reception');
+              $out['nFieldsChanged'] = _('%d fields have been updated');
               $out['FeedBackNoUsersSelected'] = _('No users selected');
 
               $Serializer = $app['Core']['Serializer'];

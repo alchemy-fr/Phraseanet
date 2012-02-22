@@ -9,27 +9,25 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Cache;
+
+use Doctrine\Common\Cache\Cache as DoctrineCache;
+
 /**
  *
- * @package     cache
+ * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-interface cache_interface
+interface Cache extends DoctrineCache
 {
-  public function set($key, $value, $expiration);
 
-  public function get($key);
-
-  public function delete($key);
-
-  public function deleteMulti(Array $array_keys);
+  public function isServer();
 
   public function getStats();
 
-  public function flush();
+  public function get($key);
 
-  public function get_version();
+  public function deleteMulti(array $array_keys);
 
-  public function ping();
 }

@@ -380,7 +380,7 @@
   <div class="PNB" id="rightFrame" style="left:auto;width:{{w2}}%;">
 
     <div id="headBlock" class="PNB" style="height:90px;bottom:auto;">
-      <div style="margin:15px auto;width:580px;">
+      <div style="margin:15px auto;line-height:30px;width:580px;">
 
 
 
@@ -427,7 +427,7 @@
                 <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
               </div>
               <div>
-                <table style="widtg:100%;table-layout:fixed;">
+                <table style="width:100%;table-layout:fixed;">
                   <tr>
                     <td style="width:50%;vertical-align:top;">
                       <div class="sbasglob ui-corner-all">
@@ -711,11 +711,20 @@
           </div>
         </span>
         {% elseif user.ACL().has_right('push') %}
-        <span class="buttonset">
-          <button class="TOOL_pushdoc_btn results_window">
-            <img src="/skins/icons/push16.png"/>
-            {% trans 'action : push' %}
-          </button>
+        <span class="verticalbuttonset">
+          <span>
+            <button class="TOOL_pushdoc_btn default_action results_window">
+              <img src="/skins/icons/push16.png"/>
+              {% trans 'action : push' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_feedback_btn results_window">
+              <img src="/skins/icons/feedback16.png"/>
+              {% trans 'Feedback' %}
+            </button>
+          </div>
         </span>
         {% elseif user.ACL().has_right('bas_chupub') %}
         <span class="verticalbuttonset">

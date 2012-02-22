@@ -289,8 +289,7 @@ class eventsmanager_notify_register extends eventsmanager_notifyAbstract
   {
     $bool = false;
 
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
+    $session = $this->appbox->get_session();
     if (!$session->is_authenticated() || !login::register_enabled())
 
       return false;
