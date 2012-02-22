@@ -47,8 +47,6 @@ return call_user_func(function()
                             }
                             elseif (\setup::needUpgradeConfigurationFile())
                             {
-                              $registry = \registry::get_instance();
-
                               //copy config sample
                               $configSampleFile = __DIR__ . "/../../../../config/config.sample.yml";
                               $configFile = __DIR__ . "/../../../../config/config.yml";
