@@ -56,7 +56,7 @@ class record_orderElement extends record_adapter
   {
     if ($this->order_master_id)
     {
-      $user = User_Adapter::getInstance($this->order_master_id, appbox::get_instance());
+      $user = User_Adapter::getInstance($this->order_master_id, appbox::get_instance(\bootstrap::getCore()));
 
       return $user->get_display_name();
     }

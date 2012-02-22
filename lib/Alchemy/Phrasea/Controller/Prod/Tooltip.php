@@ -32,7 +32,7 @@ class Tooltip implements ControllerProviderInterface
   public function connect(Application $app)
   {
     $controllers = new ControllerCollection();
-    $app['appbox'] = \appbox::get_instance();
+    $app['appbox'] = \appbox::get_instance($app['Core']);
 
     $controllers->post('/basket/{basket_id}/'
             , function(Application $app, $basket_id)
@@ -63,7 +63,7 @@ class Tooltip implements ControllerProviderInterface
     $controllers->post('/user/{usr_id}/'
             , function(Application $app, $usr_id)
             {
-              $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance());
+              $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance($app['Core']));
 
               /* @var $twig \Twig_Environment */
               $twig = $app['Core']->getTwig();

@@ -45,6 +45,7 @@ class appbox extends base
   protected $cache;
   protected $connection;
   protected $registry;
+  protected $Core;
 
   const CACHE_LIST_BASES = 'list_bases';
   const CACHE_SBAS_IDS = 'sbas_ids';
@@ -54,11 +55,11 @@ class appbox extends base
    *
    * @return appbox
    */
-  public static function get_instance(registryInterface &$registry = null)
+  public static function get_instance(\Alchemy\Phrasea\Core $Core, registryInterface &$registry = null)
   {
     if (!self::$_instance instanceof self)
     {
-      self::$_instance = new self($registry);
+      self::$_instance = new self($Core, $registry);
     }
 
     return self::$_instance;
@@ -69,11 +70,12 @@ class appbox extends base
    *
    * @return appbox
    */
-  protected function __construct(registryInterface $registry = null)
+  protected function __construct(\Alchemy\Phrasea\Core $Core, registryInterface $registry = null)
   {
-    $this->connection = connection::getPDOConnection();
+    $this->Core = $Core;
     if (!$registry)
-      $registry = registry::get_instance();
+      $registry = registry::get_instance($Core);
+    $this->connection = connection::getPDOConnection(null, $registry);
     $this->registry = $registry;
     $this->session = Session_Handler::getInstance($this);
 
@@ -283,7 +285,7 @@ class appbox extends base
     $stmt->execute(array(':viewname' => $viewname, ':sbas_id' => $databox->get_sbas_id()));
     $stmt->closeCursor();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
     cache_databox::update($databox->get_sbas_id(), 'structure');
 
@@ -309,10 +311,9 @@ class appbox extends base
      * Step 1
      */
     $upgrader->set_current_message(_('Flushing cache'));
-    if ($this->get_cache()->ping())
-    {
-      $this->get_cache()->flush();
-    }
+
+    $this->Core['CacheService']->flushAll();
+
     $upgrader->add_steps_complete(1);
 
 
@@ -384,10 +385,9 @@ class appbox extends base
      * Step 9
      */
     $upgrader->set_current_message(_('Flushing cache'));
-    if ($this->get_cache()->ping())
-    {
-      $this->get_cache()->flush();
-    }
+
+    $this->Core['CacheService']->flushAll();
+    
     $upgrader->add_steps_complete(1);
 
     return $advices;
@@ -571,7 +571,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
 
     try
@@ -619,7 +619,7 @@ class appbox extends base
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -636,7 +636,7 @@ class appbox extends base
     }
     catch (Exception $e)
     {
-      
+
     }
     $sql = 'SELECT sbas_id FROM sbas';
 

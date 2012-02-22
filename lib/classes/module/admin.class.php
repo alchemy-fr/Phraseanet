@@ -20,7 +20,7 @@ class module_admin
 
   function getTree($position=false)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $usr_id = $session->get_usr_id();

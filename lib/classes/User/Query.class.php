@@ -209,7 +209,7 @@ class User_Query implements User_QueryInterface
   {
     $this->sql_params = array();
 
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $sql = '

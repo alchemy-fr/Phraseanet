@@ -481,7 +481,7 @@ class Edit extends RecordHelper
    */
   public function execute(Request $request)
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     if ($request->get('act_option') == 'SAVEGRP' && $request->get('newrepresent'))
     {
       try

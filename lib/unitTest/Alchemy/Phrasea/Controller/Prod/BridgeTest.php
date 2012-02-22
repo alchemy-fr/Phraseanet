@@ -30,20 +30,20 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->client = $this->createClient();
     try
     {
-      self::$api = Bridge_Api::get_by_api_name(appbox::get_instance(), 'apitest');
+      self::$api = Bridge_Api::get_by_api_name(appbox::get_instance(\bootstrap::getCore()), 'apitest');
     }
     catch (Bridge_Exception_ApiNotFound $e)
     {
-      self::$api = Bridge_Api::create(appbox::get_instance(), 'apitest');
+      self::$api = Bridge_Api::create(appbox::get_instance(\bootstrap::getCore()), 'apitest');
     }
 
     try
     {
-      self::$account = Bridge_Account::load_account_from_distant_id(appbox::get_instance(), self::$api, self::$user, 'kirikoo');
+      self::$account = Bridge_Account::load_account_from_distant_id(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'kirikoo');
     }
     catch (Bridge_Exception_AccountNotFound $e)
     {
-      self::$account = Bridge_Account::create(appbox::get_instance(), self::$api, self::$user, 'kirikoo', 'coucou');
+      self::$account = Bridge_Account::create(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'kirikoo', 'coucou');
     }
   }
 
@@ -66,7 +66,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
    */
   public function testManager()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $accounts = Bridge_Account::get_accounts_by_user($appbox, self::$user);
     $usr_id = self::$user->get_id();
 
@@ -87,7 +87,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testCallBackFailed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $crawler = $this->client->request('GET', '/bridge/callback/unknow_api/');
     $this->assertTrue($this->client->getResponse()->isOk());
@@ -95,7 +95,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testCallBackAccountAlreadyDefined()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $crawler = $this->client->request('GET', '/bridge/callback/apitest/');
     $this->assertTrue($this->client->getResponse()->isOk());
     $pageContent = $this->client->getResponse()->getContent();
@@ -145,7 +145,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
                     });
     try
     {
-      self::$account = Bridge_Account::load_account_from_distant_id(appbox::get_instance(), self::$api, self::$user, 'kirikoo');
+      self::$account = Bridge_Account::load_account_from_distant_id(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'kirikoo');
       $settings = self::$account->get_settings();
       $this->assertEquals("kikoo", $settings->get("auth_token"));
       $this->assertEquals("kooki", $settings->get("refresh_token"));
@@ -160,7 +160,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     }
 
     if (!self::$account instanceof Bridge_Account)
-      self::$account = Bridge_Account::create(appbox::get_instance(), self::$api, self::$user, 'kirikoo', 'coucou');
+      self::$account = Bridge_Account::create(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$user, 'kirikoo', 'coucou');
   }
 
   public function testLogoutDeconnected()
@@ -186,7 +186,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
   {
     self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
     $url = sprintf("/bridge/adapter/%s/load-elements/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
-    $account = new Bridge_Account(appbox::get_instance(), self::$api, self::$account->get_id());
+    $account = new Bridge_Account(appbox::get_instance(\bootstrap::getCore()), self::$api, self::$account->get_id());
     $crawler = $this->client->request('GET', $url, array("page" => 1));
     $this->assertTrue($this->client->getResponse()->isOk());
     $this->assertNotContains(self::$account->get_api()->generate_login_url(registry::get_instance(), self::$account->get_api()->get_connector()->get_name()), $this->client->getResponse()->getContent());
@@ -207,7 +207,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
     $url = sprintf("/bridge/adapter/%s/load-records/", self::$account->get_id());
     $crawler = $this->client->request('GET', $url, array("page" => 1));
-    $elements = Bridge_Element::get_elements_by_account(appbox::get_instance(), self::$account);
+    $elements = Bridge_Element::get_elements_by_account(appbox::get_instance(\bootstrap::getCore()), self::$account);
     $this->assertTrue($this->client->getResponse()->isOk());
     $this->assertEquals(sizeof($elements), $crawler->filterXPath("//table/tr")->count());
     $this->assertNotContains(self::$account->get_api()->generate_login_url(registry::get_instance(), self::$account->get_api()->get_connector()->get_name()), $this->client->getResponse()->getContent());
@@ -228,7 +228,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     self::$account->get_settings()->set("auth_token", "somethingNotNull"); //connected
     $url = sprintf("/bridge/adapter/%s/load-containers/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_container_type());
     $crawler = $this->client->request('GET', $url, array("page" => 1));
-    $elements = Bridge_Element::get_elements_by_account(appbox::get_instance(), self::$account);
+    $elements = Bridge_Element::get_elements_by_account(appbox::get_instance(\bootstrap::getCore()), self::$account);
     $this->assertTrue($this->client->getResponse()->isOk());
     $this->assertNotContains(self::$account->get_api()->generate_login_url(registry::get_instance(), self::$account->get_api()->get_connector()->get_name()), $this->client->getResponse()->getContent());
   }

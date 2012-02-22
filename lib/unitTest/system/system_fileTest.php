@@ -238,7 +238,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
   public function testExtract_metadatas()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = null;
     foreach ($appbox->get_databoxes() as $d)
     {

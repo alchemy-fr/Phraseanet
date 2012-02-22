@@ -91,7 +91,7 @@ class set_exportorder extends set_export
       return false;
     }
 
-    $evt_mngr = eventsmanager_broker::getInstance(appbox::get_instance(), $Core);
+    $evt_mngr = eventsmanager_broker::getInstance(appbox::get_instance($Core), $Core);
 
     $params = array(
         'order_id' => $order_id,
@@ -132,7 +132,7 @@ class set_exportorder extends set_export
    */
   public static function set_order_admins($admins, $base_id)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $conn = $appbox->get_connection();
     $conn->beginTransaction();
     try

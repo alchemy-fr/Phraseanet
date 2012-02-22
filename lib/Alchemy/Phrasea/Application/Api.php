@@ -34,7 +34,7 @@ return call_user_func(function()
 
       $app["Core"] = \bootstrap::getCore();
 
-      $app["appbox"] = \appbox::get_instance();
+      $app["appbox"] = \appbox::get_instance($app['Core']);
 
       /**
        * Associated user to related token

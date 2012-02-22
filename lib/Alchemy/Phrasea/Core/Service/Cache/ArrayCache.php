@@ -32,11 +32,7 @@ class ArrayCache extends ServiceAbstract implements ServiceInterface
     return 'cache';
   }
 
-  /**
-   *
-   * @return Cache\ApcCache
-   */
-  public function getService()
+  public function getDriver()
   {
     $service = new CacheDriver\ArrayCache();
 
@@ -48,6 +44,11 @@ class ArrayCache extends ServiceAbstract implements ServiceInterface
   public function getType()
   {
     return 'array';
+  }
+
+  public static function getMandatoryOptions()
+  {
+    return array();
   }
 
 }

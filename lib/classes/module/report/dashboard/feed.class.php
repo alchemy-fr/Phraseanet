@@ -66,7 +66,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
    */
   public static function getInstance($sbasid, $sbas_coll, $dmin, $dmax)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $cache_id = 'feed_' . md5($sbasid . '_' . $sbas_coll . '_' . $dmin . '_' . $dmax);
 
     try

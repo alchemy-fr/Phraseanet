@@ -245,7 +245,7 @@ class module_report
    */
   public function __construct($d1, $d2, $sbas_id, $collist)
   {
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $this->dmin = $d1;
     $this->dmax = $d2;

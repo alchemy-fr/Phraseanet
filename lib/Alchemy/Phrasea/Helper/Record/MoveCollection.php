@@ -98,7 +98,7 @@ class MoveCollection extends RecordHelper
    */
   public function execute(Request $request)
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     $user = $this->getCore()->getAuthenticatedUser();
 
     $baseId = $request->get('base_id');

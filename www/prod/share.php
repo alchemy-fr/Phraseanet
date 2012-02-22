@@ -14,9 +14,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers();
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 $registry = $appbox->get_registry();
 require($registry->get('GV_RootPath') . "lib/vendor/PHPShortener/phpshortener.class.php");
 $session = Session_Handler::getInstance($appbox);
@@ -24,8 +26,7 @@ $session = Session_Handler::getInstance($appbox);
 $request = http_request::getInstance();
 $parm = $request->get_parms("bas", "rec");
 
-$usr_id = $session->get_usr_id();
-$user = User_Adapter::getInstance($usr_id, $appbox);
+$user = $Core->getAuthenticatedUser();
 
 $right = false;
 ?>

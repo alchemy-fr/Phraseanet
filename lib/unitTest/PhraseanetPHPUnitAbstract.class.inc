@@ -823,12 +823,13 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $serviceName = $configuration->getTemplating();
     $confService = $configuration->getService($serviceName);
 
-    $templateServiceBuilder = new \Alchemy\Phrasea\Core\ServiceBuilder\TemplateEngine(
+    $templateService = \Alchemy\Phrasea\Core\Service\Builder::create(
+                    self::$core,
                     $serviceName
                     , $confService
     );
 
-    $this->app['Core']["Twig"] = $templateServiceBuilder->buildService()->getService();
+    $this->app['Core']["Twig"] = $templateService->getDriver();
   }
 
   /**
@@ -837,7 +838,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    */
   private static function updateTablesSchema()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     if (!self::$updated)
     {
@@ -889,7 +890,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    */
   private static function createSetOfUserTests()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $usr_id = User_Adapter::get_usr_id_from_login('test_phpunit');
     $usr_alt1_id = User_Adapter::get_usr_id_from_login('test_phpunit_alt1');
@@ -925,7 +926,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    */
   private static function giveRightsToUser(\User_Adapter $user)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $user->ACL()->give_access_to_sbas(array_keys($appbox->get_databoxes()));
 
@@ -979,7 +980,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    */
   private static function setCollection()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $coll = $collection_no_acces = null;
 
     foreach ($appbox->get_databoxes() as $databox)

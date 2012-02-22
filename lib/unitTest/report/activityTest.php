@@ -35,7 +35,7 @@ class activityTest extends PhraseanetPHPUnitAbstract
     $this->dmax = $date->format("Y-m-d H:i:s");
     $date->modify('-6 month');
     $this->dmin = $date->format("Y-m-d H:i:s");
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databoxes = $appbox->get_databoxes();
     $this->ret = array();
     foreach ($databoxes as $databox)

@@ -113,7 +113,7 @@ class databox extends base
   {
     $this->registry = registry::get_instance();
     $this->connection = connection::getPDOConnection($sbas_id);
-    $this->cache = cache_adapter::get_instance($this->registry);
+    $this->Core = \bootstrap::getCore();
     $this->id = $sbas_id;
 
     $connection_params = phrasea::sbas_params();
@@ -518,7 +518,7 @@ class databox extends base
   public static function mount(appbox $appbox, $host, $port, $user, $password, $dbname, registry $registry)
   {
     $name = 'test';
-    $connection = new connection_pdo($name, $host, $port, $user, $password, $dbname);
+    $connection = new connection_pdo($name, $host, $port, $user, $password, $dbname, array(), $registry);
 
     $conn = $appbox->get_connection();
     $sql = 'SELECT MAX(ord) as ord FROM sbas';
@@ -668,7 +668,7 @@ class databox extends base
 
   public function delete()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $sql = 'DROP DATABASE `' . $this->get_dbname() . '`';
     $stmt = $this->get_connection()->prepare($sql);
@@ -859,7 +859,7 @@ class databox extends base
 
     $this->meta_struct = null;
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
     $this->delete_data_from_cache(self::CACHE_STRUCTURE);
     $this->delete_data_from_cache(self::CACHE_META_STRUCT);

@@ -15,9 +15,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
-
-$appbox = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 
@@ -37,15 +37,11 @@ if (!$user->is_admin())
 
 
 $cache_flushed = false;
-if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache')
+if ($parm['flush_cache'])
 {
-  $cache = $appbox->get_cache()->flush();
-
-  if ($cache->ping())
-  {
-    if ($cache->flush() === true)
-      $cache_flushed = true;
-  }
+  $Core = \bootstrap::getCore();
+  $Core['CacheService']->flushAll();
+  $cache_flushed = true;
 }
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
@@ -318,19 +314,14 @@ if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache'
           setup::check_cache_opcode();
           setup::check_cache_memcache();
 
-          if ($registry->get('GV_cache_server_type') !== 'nocache')
+          if ($Core->getCache()->isServer())
           {
-            $cache = cache_adapter::get_instance($registry);
-
-            if ($cache->ping())
-            {
         ?>
               <form method="post" action="sitestruct.php">
                 <input type="hidden" name="flush_cache" value="1"/>
                 <input type="submit" value="Flush Memcached"/>
               </form>
 <?php
-            }
           }
 ?>
         <?php

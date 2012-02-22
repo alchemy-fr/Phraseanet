@@ -371,7 +371,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $dstatus = databox_status::getDisplayStatus();
     $sbas_id = $this->get_sbas_id();
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user    = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -906,7 +906,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     $title   = '';
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $fields = $this->get_databox()->get_meta_structure();
@@ -1001,7 +1001,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   protected static function load_regfields()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     self::$_regfields = array();
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -1175,7 +1175,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     try
     {
-      $appbox  = \appbox::get_instance();
+      $appbox  = \appbox::get_instance(\bootstrap::getCore());
       $session = $appbox->get_session();
 
       $connbas = connection::getPDOConnection($this->get_sbas_id());
@@ -1584,7 +1584,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     try
     {
-      $appbox  = appbox::get_instance();
+      $appbox  = appbox::get_instance(\bootstrap::getCore());
       $session = $appbox->get_session();
       $log_id  = $session->get_logger($databox)->get_id();
 
@@ -1745,7 +1745,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $connbas  = $this->get_databox()->get_connection();
     $sbas_id  = $this->get_databox()->get_sbas_id();
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $registry = $appbox->get_registry();
     $conn     = $appbox->get_connection();
 
@@ -2115,7 +2115,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if (!$this->is_grouping())
       throw new Exception('This record is not a grouping');
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $sql = 'SELECT record_id
               FROM regroup g
@@ -2158,7 +2158,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function get_grouping_parents()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $sql = 'SELECT r.record_id
             FROM regroup g

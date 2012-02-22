@@ -15,9 +15,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+/* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . '/../../lib/bootstrap.php';
 $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $Core->getRegistry();
 
@@ -27,7 +28,7 @@ $request = http_request::getInstance();
 $parm = $request->get_parms("lst", "obj", "destmail", "subjectmail", "reading_confirm", "textmail", "ssttid", "type");
 
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 phrasea::headers();

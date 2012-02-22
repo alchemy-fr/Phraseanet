@@ -15,18 +15,16 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+/* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $em = $Core->getEntityManager();
 
-$appbox = appbox::get_instance();
-$session = $appbox->get_session();
+$appbox = appbox::get_instance($Core);
 $registry = $appbox->get_registry();
-$user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+$user = $Core->getAuthenticatedUser();
 
 $lng = Session_Handler::get_locale();
-
-$usr_id = $session->get_usr_id();
 
 $output = '';
 

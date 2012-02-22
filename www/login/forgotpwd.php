@@ -14,9 +14,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 

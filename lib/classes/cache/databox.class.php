@@ -17,7 +17,7 @@
  */
 class cache_databox
 {
-
+  protected static $refreshing = false;
   /**
    *
    * @param int $sbas_id
@@ -25,11 +25,18 @@ class cache_databox
    */
   public static function refresh($sbas_id)
   {
+    if(self::$refreshing)
+    {
+      return;
+    }
+
+    self::$refreshing = true;
+
     $databox = \databox::get_instance((int) $sbas_id);
 
     $date = new \DateTime('-3 seconds');
 
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
 
     $registry = \registry::get_instance();
 
@@ -49,8 +56,9 @@ class cache_databox
     else
       $last_update = new \DateTime('-10 years');
 
-    if ($date <= $last_update || !$appbox->get_cache()->ping())
+    if ($date <= $last_update)
     {
+      self::$refreshing = false;
       return;
     }
 
@@ -104,6 +112,11 @@ class cache_databox
             $field->delete_data_from_cache();
           }
 
+          foreach($record->get_subdefs() as $subdef)
+          {
+            $subdef->delete_data_from_cache();
+          }
+
           break;
         case 'structure':
           $appbox->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
@@ -135,6 +148,8 @@ class cache_databox
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':date' => $now));
     $stmt->closeCursor();
+
+    self::$refreshing = false;
 
     return;
   }

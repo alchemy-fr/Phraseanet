@@ -28,7 +28,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteBasket()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $basket = $this->insertOneBasket();
 

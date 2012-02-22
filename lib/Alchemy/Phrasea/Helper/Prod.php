@@ -32,7 +32,7 @@ class Prod extends Helper
     );
 
     $bases = $fields = $dates = array();
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($this->core);
     $session = $appbox->get_session();
     $user = $this->getCore()->getAuthenticatedUser();
 

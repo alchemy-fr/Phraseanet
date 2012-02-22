@@ -23,7 +23,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
   {
     parent::setUp();
     $this->client = $this->createClient();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
     $publisher = array_shift($this->feed->get_publishers());
     $this->entry = Feed_Entry_Adapter::create($appbox, $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");

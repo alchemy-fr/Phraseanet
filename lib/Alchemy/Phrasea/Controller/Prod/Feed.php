@@ -34,7 +34,7 @@ class Feed implements ControllerProviderInterface
     $controllers = new ControllerCollection();
     /* @var $twig \Twig_Environment */
     $twig = $app['Core']->getTwig();
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($app['Core']);
 
     /**
      * I got a selection of docs, which publications are available forthese docs ?

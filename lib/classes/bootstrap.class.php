@@ -44,7 +44,7 @@ class bootstrap
 
     if (\setup::is_installed())
     {
-      $gatekeeper = \gatekeeper::getInstance();
+      $gatekeeper = \gatekeeper::getInstance(static::$core);
       $gatekeeper->check_directory();
     }
 

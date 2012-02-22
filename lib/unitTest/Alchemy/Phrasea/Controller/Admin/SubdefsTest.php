@@ -44,7 +44,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    */
   public function testRouteGetSubdef()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
     $this->client->request("GET", "/subdefs/" . $databox->get_sbas_id() . "/");
     $this->assertTrue($this->client->getResponse()->isOk());
@@ -52,7 +52,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostRouteAddSubdef()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
     $this->client->request("POST", "/subdefs/" . $databox->get_sbas_id() . "/", array('add_subdef' => array(
             'class' => 'thumbnail',
@@ -67,7 +67,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostRouteDeleteSubdef()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
     $subdefs = $databox->get_subdef_structure();
     $subdefs->add_subdef("image", "name", "class");
@@ -86,7 +86,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testPostRouteAddSubdefWithNoParams()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databox = array_shift($appbox->get_databoxes());
     $subdefs = $databox->get_subdef_structure();
     $subdefs->add_subdef("image", "name", "class");

@@ -47,7 +47,7 @@ class module_console_schedulerState extends Command
 
     try
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
       $task_manager = new task_manager($appbox);
       $state = $task_manager->get_scheduler_state();
       if ($state['schedstatus'] == 'started')

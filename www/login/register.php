@@ -14,9 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+/* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox   = appbox::get_instance();
+$appbox   = appbox::get_instance($Core);
 $session  = $appbox->get_session();
 $registry = $appbox->get_registry();
 
@@ -182,7 +183,7 @@ if ($request->has_post_datas())
         {
           $template_user_id = User_Adapter::get_usr_id_from_login('autoregister');
 
-          $template_user = User_Adapter::getInstance($template_user_id, appbox::get_instance());
+          $template_user = User_Adapter::getInstance($template_user_id, appbox::get_instance($Core));
 
           $base_ids = array();
 

@@ -38,7 +38,7 @@ class set_export extends set_abstract
   {
     $Core = bootstrap::getCore();
 
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance($Core);
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -424,7 +424,7 @@ class set_export extends set_abstract
     {
       throw new Exception('No subdefs given');
     }
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -548,10 +548,8 @@ class set_export extends set_abstract
               'path' => $sd[$name]->get_path()
               , 'file' => $sd[$name]->get_file()
             );
-            if (!$user->ACL()->has_right_on_base(
-                $download_element->get_base_id()
-                , "nowatermark"
-              )
+            if (!$user->ACL()->has_right_on_base($download_element->get_base_id(), "nowatermark")
+              && !$user->ACL()->has_preview_grant($download_element)
               && $sd[$name]->get_type() == media_subdef::TYPE_IMAGE)
             {
               $path = recordutils_image::watermark(
@@ -866,7 +864,7 @@ class set_export extends set_abstract
     $sbas_id = phrasea::sbasFromBas($bas);
     $record  = new record_adapter($sbas_id, $rec);
     $desc    = $record->get_xml();
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $databox = databox::get_instance($sbas_id);
@@ -977,11 +975,12 @@ class set_export extends set_abstract
 
     if (is_file($file))
     {
-      $testPath = function($file, $registry){
-        return strpos($file, $registry->get('GV_RootPath').'tmp/download/') !== false
-            || strpos($file, $registry->get('GV_RootPath').'tmp/lazaret/') !== false
+      $testPath = function($file, $registry)
+        {
+          return strpos($file, $registry->get('GV_RootPath') . 'tmp/download/') !== false
+            || strpos($file, $registry->get('GV_RootPath') . 'tmp/lazaret/') !== false
             || strpos($file, $registry->get('GV_X_Accel_Redirect')) !== false;
-      };
+        };
 
       if ($registry->get('GV_modxsendfile') && $testPath($file, $registry))
       {
@@ -1075,7 +1074,7 @@ class set_export extends set_abstract
   public static function log_download(Array $list, $type, $anonymous = false, $comment = '')
   {
     //download
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user    = false;
     if ($anonymous)
@@ -1084,7 +1083,7 @@ class set_export extends set_abstract
     }
     else
     {
-      $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance());
+      $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance(\bootstrap::getCore()));
     }
 
     $tmplog = array();

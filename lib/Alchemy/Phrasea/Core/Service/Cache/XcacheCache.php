@@ -31,11 +31,7 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
     return 'cache';
   }
 
-  /**
-   *
-   * @return Cache\ApcCache
-   */
-  public function getService()
+  public function getDriver()
   {
     if (!extension_loaded('xcache'))
     {
@@ -52,6 +48,11 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
   public function getType()
   {
     return 'xcache';
+  }
+
+  public static function getMandatoryOptions()
+  {
+    return array();
   }
 
 

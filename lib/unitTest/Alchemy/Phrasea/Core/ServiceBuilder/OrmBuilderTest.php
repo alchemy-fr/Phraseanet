@@ -23,12 +23,12 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
   public function testCreateException()
   {
     $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
-                    array("type" => "unknow", "options" => array())
+        array("type"    => "unknow", "options" => array())
     );
 
     try
     {
-      $service = Alchemy\Phrasea\Core\ServiceBuilder\Orm::create("test", $configuration);
+      $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, "test", $configuration);
       $this->fail("An exception should be raised");
     }
     catch (\Exception $e)
@@ -42,22 +42,20 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
     $registry = $this->getMock("\RegistryInterface");
 
     $configuration = new Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
-                    array("type" => "doctrine", "options" => array(
-                            "debug" => false
-                            , "log" => "sql_logger"
-                            , "dbal" => "main_connexion"
-                            , "orm" => array(
-                                "cache" => array(
-                                    "metadata" => "array_cache"
-                                    , "query" => "array_cache"
-                                    , "result" => "array_cache"
-                                )
-                            )
-                        )
-                    )
+        array("type"    => "Orm\\Doctrine", "options" => array(
+            "debug" => false
+            , "log"   => array('service'=>"Log\\query_logger")
+            , "dbal"  => "main_connexion"
+            , "cache" => array(
+              "metadata" => "Cache\\array_cache"
+              , "query"    => "Cache\\array_cache"
+              , "result"   => "Cache\\array_cache"
+            )
+          )
+        )
     );
 
-    $service = Alchemy\Phrasea\Core\ServiceBuilder\Orm::create("test", $configuration, array("registry" => $registry));
+    $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, "test", $configuration);
     $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
   }
 

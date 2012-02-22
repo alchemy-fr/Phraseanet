@@ -24,14 +24,13 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
   {
     try
     {
-      $stub = $this->getMockForAbstractClass(
-              "\Alchemy\Phrasea\Core\ServiceBuilder\AbstractBuilder"
-              , array(
-          ''
-          , new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag()
-          , array('dependency' => 'one_dependency')
-          , null
-              )
+      $stub = $this->getMock(
+        "\Alchemy\Phrasea\Core\Service\Builder"
+        , array(
+        self::$core
+        , ''
+        , new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag()
+        )
       );
       $this->fail("should raise an exception");
     }
@@ -45,14 +44,13 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
   {
     try
     {
-      $stub = $this->getMockForAbstractClass(
-              "\Alchemy\Phrasea\Core\ServiceBuilder\AbstractBuilder"
-              , array(
-          'test'
-          , new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag()
-          , array('dependency' => 'one_dependency')
-          , null
-              )
+      $stub = $this->getMock(
+        "\\Alchemy\\Phrasea\\Core\\Service\\Builder"
+        , array(
+        self::$core,
+        'test',
+        new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(),
+        )
       );
       $this->fail("should raise an exception");
     }
@@ -61,4 +59,5 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
 
     }
   }
+
 }

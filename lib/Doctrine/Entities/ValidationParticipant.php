@@ -164,7 +164,7 @@ class ValidationParticipant
 
   public function getUser()
   {
-    return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance());
+    return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
   }
 
   /**

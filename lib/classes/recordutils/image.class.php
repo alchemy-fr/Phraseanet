@@ -392,7 +392,7 @@ class recordutils_image extends recordutils
    */
   public static function watermark($bas, $rec, $hd=false)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $registry = $appbox->get_registry();
 
     $sbas_id = phrasea::sbasFromBas($bas);

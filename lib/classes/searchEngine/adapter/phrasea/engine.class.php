@@ -247,7 +247,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       $query .= ' AND recordtype=' . $this->opt_record_type;
     }
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $sql = 'SELECT query, query_time FROM cache WHERE session_id = :ses_id';
@@ -325,7 +325,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
    */
   public function reset_cache()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     phrasea_clear_cache($session->get_ses_id());
     $this->reseted = true;
@@ -375,7 +375,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
    */
   protected function query()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -472,7 +472,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
    */
   protected function singleParse($sbas)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $this->qp[$sbas] = new searchEngine_adapter_phrasea_queryParser(Session_Handler::get_locale());
     $this->qp[$sbas]->debug = false;
@@ -504,7 +504,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       $qry .= trim($query);
     }
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -620,7 +620,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
   {
     $ret = array();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $res = phrasea_fetch_results(
             $session->get_ses_id(), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"

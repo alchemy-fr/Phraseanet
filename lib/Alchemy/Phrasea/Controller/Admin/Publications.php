@@ -30,7 +30,7 @@ class Publications implements ControllerProviderInterface
 
   public function connect(Application $app)
   {
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance($app['Core']);
     $session = $appbox->get_session();
 
     $controllers = new ControllerCollection();

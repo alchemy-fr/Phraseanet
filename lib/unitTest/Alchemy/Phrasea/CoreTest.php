@@ -53,7 +53,7 @@ class CoreTest extends PhraseanetPHPUnitAbstract
   public function testIsAuthenticathed()
   {
     $this->assertFalse(self::$core->isAuthenticated());
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $auth = new Session_Authentication_None(self::$user);
     $session->authenticate($auth);
@@ -63,7 +63,7 @@ class CoreTest extends PhraseanetPHPUnitAbstract
 
   public function testGetAuthenticathed()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $auth = new Session_Authentication_None(self::$user);
     $session->authenticate($auth);

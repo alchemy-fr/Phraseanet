@@ -710,7 +710,7 @@ class Session_Handler
       $rs[$k]['created_on'] = new DateTime($row['created_on']);
       $rs[$k]['lastaccess'] = new DateTime($row['lastaccess']);
       $rs[$k]['token'] = !!$row['token'];
-      $rs[$k]['usr_id'] = User_Adapter::getInstance($row['usr_id'], appbox::get_instance());
+      $rs[$k]['usr_id'] = User_Adapter::getInstance($row['usr_id'], appbox::get_instance(\bootstrap::getCore()));
 
       $datas = $geonames->find_geoname_from_ip($row['ip']);
 

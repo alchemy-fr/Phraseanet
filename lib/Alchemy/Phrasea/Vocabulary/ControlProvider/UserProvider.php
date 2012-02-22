@@ -49,7 +49,9 @@ class UserProvider implements ControlProviderInterface
    */
   public function find($query, \User_Adapter $for_user, \databox $on_databox = null)
   {
-    $user_query = new \User_Query(\appbox::get_instance());
+    $Core = \bootstrap::getCore();
+
+    $user_query = new \User_Query(\appbox::get_instance($Core));
 
     $users = $user_query
         ->like(\User_Query::LIKE_EMAIL, $query)
@@ -81,9 +83,11 @@ class UserProvider implements ControlProviderInterface
    */
   public function validate($id)
   {
+    $Core = \bootstrap::getCore();
+
     try
     {
-      \User_Adapter::getInstance($id, \appbox::get_instance());
+      \User_Adapter::getInstance($id, \appbox::get_instance($Core));
 
       return true;
     }
@@ -102,7 +106,9 @@ class UserProvider implements ControlProviderInterface
    */
   public function getValue($id)
   {
-    $user = \User_Adapter::getInstance($id, \appbox::get_instance());
+    $Core = \bootstrap::getCore();
+
+    $user = \User_Adapter::getInstance($id, \appbox::get_instance($Core));
 
     return $user->get_display_name();
   }
@@ -114,7 +120,9 @@ class UserProvider implements ControlProviderInterface
    */
   public function getRessource($id)
   {
-    return \User_Adapter::getInstance($id, \appbox::get_instance());
+    $Core = \bootstrap::getCore();
+    
+    return \User_Adapter::getInstance($id, \appbox::get_instance($Core));
   }
 
 }

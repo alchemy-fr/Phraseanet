@@ -32,9 +32,9 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
   protected $host;
   protected $port;
 
-  public function __construct($name, Array $options, Array $dependencies)
+  public function __construct(Core $core, $name, Array $options)
   {
-    parent::__construct($name, $options, $dependencies);
+    parent::__construct( $core, $name, $options);
 
     $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
 
@@ -50,7 +50,7 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
    *
    * @return Cache\ApcCache
    */
-  public function getService()
+  public function getDriver()
   {
     if (!extension_loaded('redis'))
     {
@@ -75,7 +75,7 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
     }
 
     $service->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
-    
+
     return $service;
   }
 
@@ -92,6 +92,11 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
   public function getPort()
   {
     return $this->port;
+  }
+
+  public static function getMandatoryOptions()
+  {
+    return array('host', 'port');
   }
 
 }

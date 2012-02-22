@@ -1,129 +1,143 @@
-#Define a template engine service
-#Only Twig is avalaible as a template engine service
-#see http://twig.sensiolabs.org/
 
-#Define the service name first
-twig:
-  #Template engine type
-  type: twig
-  options:
-    #When set to true, the generated templates have a __toString() method that you can use to display the generated nodes
-    debug: false
-    #The charset used by the templates
-    charset: utf-8
-    #Twig will silently ignore invalid variables (variables and or attributes/methods that do not exist)
-    #And replace them with a null value. When set to true, Twig throws an exception instead (default to false)
-    strict_variables: true
-    #Optimize the node tree before compilation
-    optimizer: true
-
-twig_debug:
-  type: twig
-  options:
-    debug: true
-    charset: utf-8
-    strict_variables: true
-    autoescape: true
-    optimizer: true
-
-#Doctrine developement service options
-#Service name
-doctrine_dev:
-  type: doctrine
-  options:
-    #Set automatically propers values for debug
-    #Query & result caches are setted to Array cache
-    #Auto-generating Proxy Classes is setted to false
-    debug: true
-    #Assign a connexion from connexions.yml to the DataBase Abstraction Layer
-    dbal: main_connexion
-    orm:
+Orm:
+  #Doctrine developement service options
+  #Service name
+  doctrine_dev:
+    type: Orm\Doctrine
+    options:
+      #Set automatically propers values for debug
+      #Query & result caches are setted to Array cache
+      #Auto-generating Proxy Classes is setted to false
+      debug: true
+      #Assign a connexion from connexions.yml to the DataBase Abstraction Layer
+      dbal: main_connexion
       #Available cache driver [memcached, apc, array]
       #Query cache : is used to cache the transformation of a DQL query to its SQL counterpart
       #Result cache : is used to cache the results of your queries
       #Metadata cache : is used to cache entity class metadatas
       #If No cache is provided all cache are setted to default_cache which is an array cache type
       cache:
-        query: array_cache
-        result: array_cache
-        metadata: array_cache
-    # Assign a service to log doctrine queries
-    log: query_logger
+        query:
+          service: Cache\array_cache
+        result:
+          service: Cache\array_cache
+        metadata:
+          service: Cache\array_cache
+      # Assign a service to log doctrine queries
+      log:
+        service: Log\query_logger
 
-# Doctrine test service options
-doctrine_test:
-  type: doctrine
-  options:
-    debug: true
-    #Doctrine use a different connection configuration base to run tests
-    dbal: test_connexion
-    orm:
+  # Doctrine test service options
+  doctrine_test:
+    type: Orm\Doctrine
+    options:
+      debug: true
+      #Doctrine use a different connection configuration base to run tests
+      dbal: test_connexion
       cache:
-        query: array_cache
-        result: array_cache
-        metadata: array_cache
-    log: query_logger
+        query:
+          service: Cache\array_cache
+        result:
+          service: Cache\array_cache
+        metadata:
+          service: Cache\array_cache
+      log:
+        service: Log\query_logger
 
-# Doctrine production service options
-doctrine_prod:
-  type: doctrine
-  options:
-    debug: false
-    dbal: main_connexion
-    orm:
+  # Doctrine production service options
+  doctrine_prod:
+    type: Orm\Doctrine
+    options:
+      debug: false
+      dbal: main_connexion
       cache:
-        query: apc_cache
-        result: apc_cache
-        metadata: apc_cache
+        query:
+          service: Cache\apc_cache
+        result:
+          service: Cache\memcache_cache
+        metadata:
+          service: Cache\apc_cache
+
+TemplateEngine:
+  #Define a template engine service
+  #Only Twig is avalaible as a template engine service
+  #see http://twig.sensiolabs.org/
+
+  #Define the service name first
+  twig:
+    #Template engine type
+    type: TemplateEngine\Twig
+    options:
+      #When set to true, the generated templates have a __toString() method that you can use to display the generated nodes
+      debug: false
+      #The charset used by the templates
+      charset: utf-8
+      #Twig will silently ignore invalid variables (variables and or attributes/methods that do not exist)
+      #And replace them with a null value. When set to true, Twig throws an exception instead (default to false)
+      strict_variables: false
+      autoescape: true
+      #Optimize the node tree before compilation
+      optimizer: true
+
+  twig_debug:
+    type: TemplateEngine\Twig
+    options:
+      debug: true
+      charset: utf-8
+      strict_variables: true
+      autoescape: true
+      optimizer: true
 
 
-# Define a Log service
-# This one is defined to handle the logs of doctrine queries
-# Only Monolog is available as a logger service
-# Please Notice that for doctrine ONLY a echo logger service is available, see below
-# Monolog logger use the PHP Monolog library to handle logs using differents handlers
-query_logger:
-  type: monolog
-  options:
-    #You can precise the output format
-    #This option is only available when log are used to log doctrine queries
-    #Available output [vdump, json, yaml]
-    # vdump : output logs in a var_dump formatted style
-    # json : output logs in json
-    # yml : output logs yml
-    output: json
-    #Name used for the Monolog channel
-    channel: query-logger
-    #Define how the logs will be handled
-    #Avalaibale Handler are [rotate, stream]
-    #Rotate handler is used to stores logs to files that are rotated every day
-    #And a limited number of files are kept by defining the max_day value
-    #Stream handler is used to stores logs in a single local file
-    handler: rotate
-    max_day: 2
-    #Name of the file where logs are written
-    filename: doctrine-query.log
+Log:
+  # Define a Log service
+  # This one is defined to handle the logs of doctrine queries
+  # Only Monolog is available as a logger service
+  # Please Notice that for doctrine ONLY a echo logger service is available, see below
+  # Monolog logger use the PHP Monolog library to handle logs using differents handlers
+  query_logger:
+    type: Log\Doctrine\Monolog
+    options:
+      #You can precise the output format
+      #This option is only available when log are used to log doctrine queries
+      #Available output [vdump, json, yaml]
+      # vdump : output logs in a var_dump formatted style
+      # json : output logs in json
+      # yml : output logs yml
+      output: json
+      #Name used for the Monolog channel
+      channel: query-logger
+      #Define how the logs will be handled
+      #Avalaibale Handler are [rotate, stream]
+      #Rotate handler is used to stores logs to files that are rotated every day
+      #And a limited number of files are kept by defining the max_day value
+      #Stream handler is used to stores logs in a single local file
+      handler: rotate
+      max_day: 2
+      #Name of the file where logs are written
+      filename: doctrine-query.log
 
-# Define a phpecho log service for Doctrine
-# phpecho logger logs doctrine queries to the standard output using echo/var_dump
-# Notice that phpecho logger do not have options
-sql_logger:
-  type: phpecho
+  # Define a phpecho log service for Doctrine
+  # phpecho logger logs doctrine queries to the standard output using echo/var_dump
+  # Notice that phpecho logger do not have options
+  sql_logger:
+    type: Log\Phpecho
 
-#Define cache services
-#There are Four deffirent cache type available [array, xcache, apc, memcache]
-#Only a memcache service can take option to define port & host for the memcache server
-array_cache:
-  type: array
+Cache:
+  #Define cache services
+  #There are Four deffirent cache type available [array, xcache, apc, memcache]
+  #Only a memcache service can take option to define port & host for the memcache server
+  array_cache:
+    type: Cache\ArrayCache
 
-memcache_cache:
-  type: memcache
-  options:
-    host: localhost
-    port: 11211
+  memcache_cache:
+    type: Cache\MemcacheCache
+    options:
+      host: localhost
+      port: 11211
 
-apc_cache:
-  type: apc
+  apc_cache:
+    type: Cache\ApcCache
 
-xcache_cache:
-  type: xcache
+  xcache_cache:
+    type: Cache\XcacheCache

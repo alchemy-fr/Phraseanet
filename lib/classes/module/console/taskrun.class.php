@@ -65,7 +65,7 @@ class module_console_taskrun extends Command
 
     try
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
       $task_manager = new task_manager($appbox);
       $task = $task_manager->get_task($task_id);
 

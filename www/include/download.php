@@ -19,10 +19,10 @@
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 

@@ -39,7 +39,7 @@ class Root implements ControllerProviderInterface
 
               \User_Adapter::updateClientInfos(1);
 
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $css = array();
               $cssfile = false;
               $registry = $app['Core']->getRegistry();

@@ -48,7 +48,7 @@ class module_console_tasklist extends Command
 
     try
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
       $task_manager = new task_manager($appbox);
       $tasks = $task_manager->get_tasks();
 

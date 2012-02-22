@@ -29,7 +29,7 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
 
@@ -148,7 +148,7 @@ class Feed_Entry_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testLoad_from_id()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $test_entry = Feed_Entry_Adapter::load_from_id($appbox, self::$object->get_id());
 
     $this->assertInstanceOf('Feed_Entry_Adapter', $test_entry);

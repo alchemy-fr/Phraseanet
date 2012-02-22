@@ -17,7 +17,7 @@ class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
 
   public function setUp()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
     $this->object = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
   }
@@ -75,7 +75,7 @@ class API_OAuth2_AccountTest extends PhraseanetPHPUnitAbstract
 
   public function testLoad_with_user()
   {
-    $loaded = API_OAuth2_Account::load_with_user(appbox::get_instance(), $this->application, self::$user);
+    $loaded = API_OAuth2_Account::load_with_user(appbox::get_instance(\bootstrap::getCore()), $this->application, self::$user);
     $this->assertInstanceOf('API_OAuth2_Account', $loaded);
     $this->assertEquals($this->object, $loaded);
   }

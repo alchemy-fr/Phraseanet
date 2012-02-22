@@ -20,7 +20,7 @@ class Feed_AggregateTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
     $objects[] = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);

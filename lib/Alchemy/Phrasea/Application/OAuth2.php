@@ -42,9 +42,9 @@ return call_user_func(function()
                   ));
 
 
-                  $app['appbox'] = function()
+                  $app['appbox'] = function() use ($app)
                           {
-                            return \appbox::get_instance();
+                            return \appbox::get_instance($app['Core']);
                           };
 
 
@@ -270,8 +270,8 @@ return call_user_func(function()
                    */
                   $route = "/applications/dev/new";
                   $app->get($route, function() use ($app)
-                          {
-                            $var = array("violations" => null, 'form' => null);
+                          {           
+                            $var = array("violations" => null, 'form' => null, 'request' => $app['request']);
 
                             return $app['response']('api/auth/application_dev_new.twig', $var);
                           });
@@ -290,7 +290,7 @@ return call_user_func(function()
                             {
                               $post = new \API_OAuth2_Form_DevAppInternet($app['request']);
                             }
-                            
+
                             $violations = $app['validator']->validate($post);
 
                             if ($violations->count() == 0)
@@ -347,7 +347,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -382,7 +382,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -408,7 +408,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -432,7 +432,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -458,7 +458,7 @@ return call_user_func(function()
 
                             $code = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
 
-                            return new Response('We are sorry, but something went terribly wrong.<br />' . $e->getMessage(), $code);
+                            return new Response('We are sorry, but something went wrong.<br />' . $e->getMessage(), $code);
                           });
 
 

@@ -42,7 +42,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
         , 'website' => 'http://website.com/'
     );
 
-    self::$appli = API_OAuth2_Application::create(appbox::get_instance(), self::$user, 'test');
+    self::$appli = API_OAuth2_Application::create(appbox::get_instance(\bootstrap::getCore()), self::$user, 'test');
     self::$appli->set_description('une description')
             ->set_redirect_uri('http://callback.com/callback/')
             ->set_website('http://website.com/')
@@ -55,7 +55,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
   {
     parent::tearDownAfterClass();
     if (self::$appli !== false)
-      self::deleteInsertedRow(appbox::get_instance(), self::$appli);
+      self::deleteInsertedRow(appbox::get_instance(\bootstrap::getCore()), self::$appli);
   }
 
   public function setUp()
@@ -96,7 +96,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
   {
     $sql = "SELECT * FROM api_applications WHERE application_id = :app_id";
     $t = array(":app_id" => $rowId);
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $conn = $appbox->get_connection();
     $stmt = $conn->prepare($sql);
     $stmt->execute($t);
@@ -109,13 +109,13 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
   {
     $sql = "SELECT api_account_id FROM api_accounts WHERE application_id = :app_id AND usr_id = :usr_id";
     $t = array(":app_id" => self::$appli->get_id(), ":usr_id" => self::$user->get_id());
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $conn = $appbox->get_connection();
     $stmt = $conn->prepare($sql);
     $stmt->execute($t);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    return new API_OAuth2_Account(appbox::get_instance(), $row["api_account_id"]);
+    return new API_OAuth2_Account(appbox::get_instance(\bootstrap::getCore()), $row["api_account_id"]);
   }
 
   public function setQueryParameters($parameter, $value)
@@ -137,7 +137,7 @@ class oauthv2_application_test extends \PhraseanetWebTestCaseAuthenticatedAbstra
   public function testAuthorizeRedirect()
   {
     //session off
-    $apps = API_OAuth2_Application::load_authorized_app_by_user(appbox::get_instance(), self::$user);
+    $apps = API_OAuth2_Application::load_authorized_app_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
     foreach($apps as $app)
     {
       if($app->get_client_id() == self::$appli->get_client_id())

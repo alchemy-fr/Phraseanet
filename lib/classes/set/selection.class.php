@@ -51,7 +51,7 @@ class set_selection extends set_abstract
    */
   public function grep_authorized(Array $rights = array(), Array $sbas_rights = array())
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);

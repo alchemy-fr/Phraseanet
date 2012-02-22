@@ -181,7 +181,7 @@ class Push implements ControllerProviderInterface
 
           $user = $app['Core']->getAuthenticatedUser();
 
-          $appbox = \appbox::get_instance();
+          $appbox = \appbox::get_instance($app['Core']);
 
           $push_name = $request->get(
             'name'
@@ -203,7 +203,7 @@ class Push implements ControllerProviderInterface
           }
 
 
-          $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance(), $app['Core']);
+          $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance($app['Core']), $app['Core']);
 
           foreach ($receivers as $receiver)
           {
@@ -318,7 +318,7 @@ class Push implements ControllerProviderInterface
           $pusher = new RecordHelper\Push($app['Core'], $app['request']);
           $user   = $app['Core']->getAuthenticatedUser();
 
-          $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance(), $app['Core']);
+          $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance($app['Core']), $app['Core']);
 
           $repository = $em->getRepository('\Entities\Basket');
 
@@ -391,7 +391,7 @@ class Push implements ControllerProviderInterface
           }
 
 
-          $appbox = \appbox::get_instance();
+          $appbox = \appbox::get_instance($app['Core']);
 
           // add current user as participant
           $participants[$user->get_id()] = array(
@@ -526,7 +526,7 @@ class Push implements ControllerProviderInterface
         $em      = $app['Core']->getEntityManager();
         $user    = $app['Core']->getAuthenticatedUser();
 
-        $query = new \User_Query(\appbox::get_instance());
+        $query = new \User_Query(\appbox::get_instance($app['Core']));
 
         $query->on_bases_where_i_am($user->ACL(), array('canpush'));
 
@@ -597,7 +597,7 @@ class Push implements ControllerProviderInterface
           return new Response($Serializer->serialize($result, 'json'), 200, array('Content-Type' => 'application/json'));
         }
 
-        $appbox = \appbox::get_instance();
+        $appbox = \appbox::get_instance($app['Core']);
 
         $user  = null;
         $email = $request->get('email');
@@ -661,7 +661,7 @@ class Push implements ControllerProviderInterface
         $em      = $app['Core']->getEntityManager();
         $user    = $app['Core']->getAuthenticatedUser();
 
-        $query = new \User_Query(\appbox::get_instance());
+        $query = new \User_Query(\appbox::get_instance($app['Core']));
 
         $query->on_bases_where_i_am($user->ACL(), array('canpush'));
 
@@ -715,7 +715,7 @@ class Push implements ControllerProviderInterface
 
         $list = $repository->findUserListByUserAndId($user, $list_id);
 
-        $query = new \User_Query(\appbox::get_instance());
+        $query = new \User_Query(\appbox::get_instance($app['Core']));
 
         $query->on_bases_where_i_am($user->ACL(), array('canpush'));
 

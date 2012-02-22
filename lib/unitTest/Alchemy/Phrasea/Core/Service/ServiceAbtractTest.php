@@ -32,19 +32,13 @@ class ServiceAbstractTest extends PhraseanetPHPUnitAbstract
     $stub = $this->getMockForAbstractClass(
             "\Alchemy\Phrasea\Core\Service\ServiceAbstract"
             , array(
+         self::$core,
         'abstract'
         , array('option' => 'my_options')
-        , array('dependency' => 'one_dependency')
             )
     );
 
     $this->object = $stub;
-  }
-
-  public function testGetDependencies()
-  {
-    $this->assertTrue(is_array($this->object->getDependencies()));
-    $this->assertEquals(array('dependency' => 'one_dependency'), $this->object->getDependencies());
   }
 
   public function testGetName()
@@ -58,28 +52,4 @@ class ServiceAbstractTest extends PhraseanetPHPUnitAbstract
     $this->assertEquals(array('option' => 'my_options'), $this->object->getOptions());
   }
 
-  public function testGetDependencyException()
-  {
-    try
-    {
-      $this->object->getDependency('unknow');
-      $this->fail("should raise an exception");
-    }
-    catch (\Exception $e)
-    {
-
-    }
-  }
-
-  public function testGetDependency()
-  {
-    $dep = $this->object->getDependency('dependency');
-
-    $this->assertEquals('one_dependency', $dep);
-  }
-
-  public function testGetVersion()
-  {
-    $this->assertEmpty($this->object->getVersion());
-  }
 }

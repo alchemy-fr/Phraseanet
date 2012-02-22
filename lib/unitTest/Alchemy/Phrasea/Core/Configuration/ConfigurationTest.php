@@ -254,7 +254,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 
   public function testGetService()
   {
-    $services = $this->object->getService('twig');
+    $services = $this->object->getService('TemplateEngine\Twig');
     $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $services);
     $this->assertGreaterThan(0, sizeof($services->all()));
   }

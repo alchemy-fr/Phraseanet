@@ -53,8 +53,8 @@ class module_console_systemUpgrade extends Command
       if ($continue == 'y')
       {
 
-        $file = __DIR__ . "/../../config/config.sample.yml";
-        $file1 = __DIR__ . "/../../config/config.yml";
+        $file = __DIR__ . "/../../../../config/config.sample.yml";
+        $file1 = __DIR__ . "/../../../../config/config.yml";
 
         if (!copy($file, $file1))
         {
@@ -104,7 +104,7 @@ class module_console_systemUpgrade extends Command
       try
       {
         $output->write('<info>Upgrading...</info>', true);
-        $appbox = appbox::get_instance();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
 
         if (count(User_Adapter::get_wrong_email_users($appbox)) > 0)
         {

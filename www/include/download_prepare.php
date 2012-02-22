@@ -14,8 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance($Core);
 $registry = $appbox->get_registry();
 $session = $appbox->get_session();
 
@@ -41,7 +43,7 @@ if (($list = @unserialize($datas['datas'])) == false)
 
 try
 {
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
   $auth = new Session_Authentication_Token($appbox, $parm['token']);
   $session->authenticate($auth);
 }
@@ -50,7 +52,7 @@ catch (Exception $e)
   phrasea::headers(204);
 }
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 $unique_file = false;

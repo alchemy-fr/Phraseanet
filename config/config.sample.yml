@@ -25,6 +25,8 @@ dev:
   #Services are defined in service.yml configuration file
   template_engine: twig_debug
   orm: doctrine_dev
+  cache: array_cache
+  opcodecache: array_cache
 
 ##############
 # PRODUCTION #
@@ -39,6 +41,8 @@ prod:
 
   template_engine: twig
   orm: doctrine_prod
+  cache: memcache_cache
+  opcodecache: apc_cache
 
 ##############
 #    TEST    #
@@ -53,4 +57,6 @@ test:
 
   template_engine: twig_debug
   orm: doctrine_test
+  cache: array_cache
+  opcodecache: array_cache
 

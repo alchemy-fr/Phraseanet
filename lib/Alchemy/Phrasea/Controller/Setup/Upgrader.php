@@ -46,7 +46,7 @@ class Upgrader implements ControllerProviderInterface
                   'locale' => \Session_Handler::get_locale()
                   , 'upgrade_status' => $upgrade_status
                   , 'available_locales' => $app['Core']::getAvailableLanguages()
-                  , 'bad_users' => \User_Adapter::get_wrong_email_users(\appbox::get_instance())
+                  , 'bad_users' => \User_Adapter::get_wrong_email_users(\appbox::get_instance($app['Core']))
                   , 'version_number' => $app['Core']['Version']->getNumber()
                   , 'version_name' => $app['Core']['Version']->getName()
                       )
@@ -78,7 +78,7 @@ class Upgrader implements ControllerProviderInterface
               session_write_close();
               ignore_user_abort(true);
 
-              $appbox = \appbox::get_instance();
+              $appbox = \appbox::get_instance($app['Core']);
               $upgrader = new \Setup_Upgrade($appbox);
               $appbox->forceUpgrade($upgrader);
 

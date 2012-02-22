@@ -31,11 +31,7 @@ class ApcCache extends ServiceAbstract implements ServiceInterface
     return 'cache';
   }
 
-  /**
-   *
-   * @return Cache\ApcCache
-   */
-  public function getService()
+  public function getDriver()
   {
     if (!extension_loaded('apc'))
     {
@@ -52,6 +48,11 @@ class ApcCache extends ServiceAbstract implements ServiceInterface
   public function getType()
   {
     return 'apc';
+  }
+
+  public static function getMandatoryOptions()
+  {
+    return array();
   }
 
 }
