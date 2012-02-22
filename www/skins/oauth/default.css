@@ -28,11 +28,6 @@ html, body {
 
 /*************** Content-box ***************/
 
-#hello-box {
-    padding: 10px;
-    text-align: center;
-}
-
 #content-box {
     padding: 10px;
     text-align: center;
@@ -70,6 +65,11 @@ p.login_hello {
 
 #button_login {
     margin-top: 20px; 
+}
+
+#hello-box {
+    padding: 10px;
+    text-align: center;
 }
 
 #text-box {
