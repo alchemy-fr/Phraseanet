@@ -310,9 +310,9 @@ class task_period_writemeta extends task_databoxAbstract
 
     if ($record->get_uuid())
     {
-      $subCMD .= '-XMP-exif:ImageUniqueID=';
+      $subCMD .= ' -XMP-exif:ImageUniqueID=';
       $subCMD .= escapeshellarg($record->get_uuid());
-      $subCMD .= '-IPTC:UniqueDocumentID=';
+      $subCMD .= ' -IPTC:UniqueDocumentID=';
       $subCMD .= escapeshellarg($record->get_uuid());
     }
 
@@ -334,7 +334,7 @@ class task_period_writemeta extends task_databoxAbstract
         {
           $value = $this->format_value($type, $value);
 
-          $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
+          $subCMD .= ' -'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
           $subCMD .= escapeshellarg($value).' ';
         }
       }
@@ -342,7 +342,7 @@ class task_period_writemeta extends task_databoxAbstract
       {
         $datas = $this->format_value($type, $datas);
 
-        $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
+        $subCMD .= ' -'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
         $subCMD .= escapeshellarg($datas).' ';
       }
     }
@@ -354,7 +354,7 @@ class task_period_writemeta extends task_databoxAbstract
         $cmd = 'start /B /LOW ';
       $cmd .= ( $registry->get('GV_exiftool') . ' -m -overwrite_original ');
       if ($name != 'document' || $this->clear_doc)
-        $cmd .= '-all:all= ';
+        $cmd .= ' -all:all= ';
 
       $cmd .= ' -codedcharacterset=utf8 ';
 
