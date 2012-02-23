@@ -101,6 +101,7 @@ p.login_hello {
 }
 
 form.access-deny {
-    margin-top: 18px;
-    margin-bottom: 18px;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
