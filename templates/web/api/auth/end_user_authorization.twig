@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>    
     <head>
         <meta charset="utf-8" />
@@ -23,10 +23,8 @@
 		<![endif]-->
 	</head>
 
-
-    <body>
-        <div id="page" class="container">
-                        
+    <body>   
+        <div id="page" class="container">            
             <div id="main" class="row">
                 
                 <div id="title-box" class="span6 offset3">
@@ -61,7 +59,7 @@
                         <div id="hello-box" class="span6 offset3">
                             <p class="login_hello">
                                 {% trans %}
-                                Hello {{username}} !
+                                Hello {{username}}
                                 {% endtrans %}
                             </p>
                         </div>                    
@@ -87,22 +85,21 @@
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
                             <input type="hidden" name="action_accept" value="1">
-                            <input id="button_access" class="btn btn-inverse btn-large span6" type="submit" value="{% trans 'Autoriser' %}" />
+                            <input id="button_access" class="btn btn-inverse btn-large span3" type="submit" value="{% trans 'Autoriser' %}" />
                         </form>
                         <form method="post" class="access-deny">
                             {% for key,value in auth.getParams %}
                                 <input type="hidden" name="{{key}}" value="{{value}}">
                             {% endfor %}
                             <input type="hidden" name="action_accept" value="0">
-                            <input id="button_deny" class="btn btn-inverse btn-large span6" type="submit" value="{% trans 'Ne pas autoriser' %}" />
+                            <input id="button_deny" class="btn btn-inverse btn-large span3" type="submit" value="{% trans 'Ne pas autoriser' %}" />
                         </form>
                     </div>
     		   	{% endif %}
                 
             </div>
-            
         </div>
-        
+
         <!-- JavaScript at the bottom for fast page loading -->
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-alert.js"></script>
@@ -117,6 +114,6 @@
         <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-tab.js"></script>
         <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-transition.js"></script>
         <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-typeahead.js"></script>
-        
+
     </body>    
 </html>
