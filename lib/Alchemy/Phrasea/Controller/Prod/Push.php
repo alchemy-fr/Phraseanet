@@ -393,10 +393,25 @@ class Push implements ControllerProviderInterface
 
           $appbox = \appbox::get_instance($app['Core']);
 
-          // add current user as participant
-          $participants[$user->get_id()] = array(
-            'see_others' => 1, 'usr_id'     => $user->get_id(), 'agree'      => 0, 'HD'         => 0
-          );
+          $found = false;
+          foreach ($participants as $key => $participant)
+          {
+            if ($participant['usr_id'] == $user->get_id())
+            {
+              $found = true;
+              break;
+            }
+          }
+
+          if (!$found)
+          {
+            $participants[$user->get_id()] = array(
+              'see_others' => 1,
+              'usr_id'     => $user->get_id(),
+              'agree'      => 0,
+              'HD'         => 0
+            );
+          }
 
           foreach ($participants as $key => $participant)
           {
