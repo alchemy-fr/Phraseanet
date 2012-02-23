@@ -95,11 +95,15 @@ class databox_cgu
     $appbox = appbox::get_instance();
     $session = $appbox->get_session();
 
+    if(!$home)
+    {
+      $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    }
+
     foreach ($appbox->get_databoxes() as $databox)
     {
       try
       {
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
         $cgus = $databox->get_cgus();
 
         if (!isset($cgus[Session_Handler::get_locale()]))
@@ -112,6 +116,10 @@ class databox_cgu
 
         if (!$home)
         {
+          if(!$user->ACL()->has_access_to_sbas($databox->get_sbas_id()));
+          {
+            continue;
+          }
           $userValidation = ($user->getPrefs('terms_of_use_' . $databox->get_sbas_id()) !== $update && trim($value) !== '');
         }
 

@@ -72,6 +72,7 @@ $qrySbas = array();
 if (is_null($parm['bas']))
 {
   echo 'vous devez selectionner des collections dans lesquelles chercher';
+
   return;
 }
 
@@ -91,7 +92,6 @@ else
   $mod_col = (int) ($mod[1]);
 }
 $mod_xy = $mod_col * $mod_row;
-
 $tbases = array();
 
 
@@ -103,6 +103,13 @@ $options = new searchEngine_options();
 $options->set_bases($parm['bas'], $user->ACL());
 if (!is_array($parm['infield']))
   $parm['infield'] = array();
+
+foreach($parm['infield'] as $offset=>$value)
+{
+  if(trim($value) === '')
+    unset($parm['infield'][$offset]);
+}
+
 $options->set_fields($parm['infield']);
 if (!is_array($parm['status']))
   $parm['status'] = array();
@@ -122,7 +129,7 @@ else
 
 $form = serialize($options);
 
-$perPage = (int) $user->getPrefs('images_per_page');
+$perPage = $mod_xy;
 
 $search_engine = new searchEngine_adapter($registry);
 $search_engine->set_options($options);
@@ -135,7 +142,7 @@ if ($parm['pag'] < 1)
   $parm['pag'] = 1;
 }
 
-$result = $search_engine->query_per_page($parm['qry'], $parm["pag"], $perPage);
+$result = $search_engine->query_per_page($parm['qry'], (int) $parm["pag"], $perPage);
 
 
 
@@ -171,7 +178,7 @@ $ACL = $user->ACL();
     $history = queries::history();
 
     echo '<script language="javascript" type="text/javascript">$("#history").empty().append("' . str_replace('"', '\"', $history) . '")</script>';
-    
+
     $nbanswers = $result->get_count_available_results();
   $longueur = strlen($parm['qry']);
 
@@ -196,20 +203,20 @@ $npages = $result->get_total_pages();
 
   if ($npages > $max)
   {
-    for ($p = 0; $p < $npages; $p++)
+    for ($p = 1; $p < $npages; $p++)
     {
       if ($p == $page)
-        $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
+        $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
       elseif (( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '</span>';
       elseif (($page < ($ecart + 2)) && ($p < ($max - $ecart + 2) ))          // si je suis dans les premieres pages ...
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '</span>';
       elseif (($page >= ($npages - $ecart - 2)) && ($p >= ($npages - (2 * $ecart) - 2) ))  // si je suis dans les dernieres pages ...
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '</span>';
       elseif ($p == ($npages - 1)) // c"est la derniere
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">...' . ($p + 1) . '</span>';
-      elseif ($p == 0)    // c"est la premiere
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '...</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">...' . ($p) . '</span>';
+      elseif ($p == 1)    // c"est la premiere
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '...</span>';
 
       if (($p == $page)
               || ( ( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
@@ -222,12 +229,12 @@ $npages = $result->get_total_pages();
   }
   else
   {
-    for ($p = 0; $p < $npages; $p++)
+    for ($p = 1; $p < $npages; $p++)
     {
       if ($p == $page)
-        $pages .= '<span class="naviButton sel">' . ($p + 1) . '</span>';
+        $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
       else
-        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p + 1) . '</span>';
+        $pages .= '<span onclick="gotopage(' . $p . ');" class="naviButton">' . ($p) . '</span>';
       if ($p + 1 < $npages)
         $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
     }
@@ -356,7 +363,7 @@ $npages = $result->get_total_pages();
 
 
           $sd = $record->get_subdefs();
-          
+
           $isImage = false;
           $isDocument = false;
           if (!$isVideo && !$isAudio)
@@ -463,7 +470,7 @@ $npages = $result->get_total_pages();
   </table>
 <script type="text/javascript">
   $(document).ready(function(){
-    
+
   p4.tot = <?php echo $result->get_count_available_results(); ?>;
   p4.tot_options = '<?php echo serialize($options) ?>';
   p4.tot_query = '<?php echo $parm['qry'] ?>';

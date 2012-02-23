@@ -801,7 +801,7 @@ function sqlFromFilters($usr, $filters)
           $params[':like1'] = $start . $filter->fieldsearch . $end;
           break;
         case "NAME" :
-          $precise.=" (usr_nom " . $like . " :like2 OR usr_prenom like like2bis)";
+          $precise.=" (usr_nom " . $like . " :like2 OR usr_prenom like :like2bis)";
           $params[':like2'] = $start . $filter->fieldsearch . $end;
           $params[':like2bis'] = $start . $filter->fieldsearch . $end;
           break;
@@ -843,9 +843,9 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->countries as $country)
       {
         $c['country' . $n] = $country;
+        $n++;
       }
-      $n++;
-      $precise.=" AND usr.pays IN (" . implode(", ", array_keys($c)) . ")";
+      $precise.=" AND usr.pays IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
     if (count($filters->activite) > 0 && trim($filters->activite[0]) != '')
@@ -855,9 +855,9 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->activite as $activite)
       {
         $c['activite' . $n] = $activite;
+        $n++;
       }
-      $n++;
-      $precise.=" AND usr.activite IN ('" . implode(", ", array_keys($c)) . "')";
+      $precise.=" AND usr.activite IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
     if (count($filters->fonction) > 0 && trim($filters->fonction[0]) != '')
@@ -867,9 +867,9 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->fonction as $fonction)
       {
         $c['fonction' . $n] = $fonction;
+        $n++;
       }
-      $n++;
-      $precise.=" AND usr.fonction IN ('" . implode(", ", array_keys($c)) . "')";
+      $precise.=" AND usr.fonction IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
     if (count($filters->societe) > 0 && trim($filters->societe[0]) != '')
@@ -879,9 +879,9 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->societe as $societe)
       {
         $c['societe' . $n] = $societe;
+        $n++;
       }
-      $n++;
-      $precise.=" AND usr.societe IN ('" . implode(", ", array_keys($c)) . "')";
+      $precise.=" AND usr.societe IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
     if (count($filters->template) > 0 && trim($filters->template[0]) != '')
@@ -891,9 +891,9 @@ function sqlFromFilters($usr, $filters)
       foreach ($filters->template as $template)
       {
         $c['template' . $n] = $template;
+        $n++;
       }
-      $n++;
-      $precise.=" AND usr.lastModel IN ('" . implode(", ", array_keys($c)) . "')";
+      $precise.=" AND usr.lastModel IN (:" . implode(", :", array_keys($c)) . ")";
       $params = array_merge($params, $c);
     }
   }

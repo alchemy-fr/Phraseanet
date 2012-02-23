@@ -57,7 +57,7 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
   const CACHE_ENTRY_NUMBER = 'entrynumber';
 
   const CACHE_USER_TOKEN = 'usr_token';
-  
+
   const MAX_ENTRIES = 20;
 
   /**

@@ -56,6 +56,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
     </style>
     <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
     <script type="text/javascript" src="/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+    <link rel="stylesheet" type="text/css" href="/include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css" />
     <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,skins/common/main.css" />
 <?php
 //listage des css
@@ -101,8 +102,16 @@ if ($cssfile)
 <?php
   }
 ?>
+    <style>
+      #PREVIEWCURRENTCONT{
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+      }
+    </style>
   </head>
-  <body style="overflow:hidden;">
+  <body class="PNB" style="overflow:hidden;">
     <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
 
 <?php
@@ -216,7 +225,7 @@ if ($cssfile)
 
 
 
-                      foreach ($appbox->get_databoxes() as $databox)
+                      foreach ($user->ACL()->get_granted_sbas() as $databox)
                       {
                         if ($showbases)
                         {
@@ -227,7 +236,7 @@ if ($cssfile)
                           {
                             $options .= '<option value="' . implode(';', $allbcol) . '">`' . $databox->get_viewname() . '`' . '</option>';
                           }
-                          foreach ($databox->get_collections() as $coll)
+                          foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
                           {
                             $allbcol[] = $coll->get_base_id();
                             $n_allbcol++;
@@ -345,7 +354,7 @@ if ($cssfile)
                             <div>
                               <div class="basesContainer">
 <?php
-                          foreach ($appbox->get_databoxes() as $databox)
+                          foreach ($user->ACL()->get_granted_sbas() as $databox)
                           {
                             if ($registry->get('GV_view_bas_and_coll'))
                             {
@@ -358,7 +367,7 @@ if ($cssfile)
                                     <img onclick="removeFilters(<?php echo $databox->get_sbas_id() ?>);" id="filter_danger<?php echo $databox->get_sbas_id() ?>" class="filter_danger" src="/skins/icons/alert.png" title="<?php echo _('client::recherche: cliquez ici pour desactiver tous les filtres de cette base') ?>" style="vertical-align:bottom;width:12px;height:12px;display:none;"/>
                                   </div>
 <?php
-                              $status = databox_status::getSearchStatus($databox->get_sbas_id());
+                              $status = $databox->get_statusbits();
 
                               $sbFilters = '';
                               $dateFilters = $fieldsFilters = '';
@@ -366,7 +375,8 @@ if ($cssfile)
                               {
                                 $imgoff = '';
                                 $imgon = '';
-
+                                if(!$datas['searchable'])
+                                  continue;
                                 if ($datas['img_off'])
                                   $imgoff = '<img src="' . $datas['img_off'] . '" title="' . $datas['labeloff'] . '" style="width:16px;height:16px;vertical-align:bottom" />';
 
@@ -395,49 +405,7 @@ if ($cssfile)
                               $sxe = $databox->get_sxml_structure();
                               if ($sxe)
                               {
-                                $sbFilters = '';
                                 $dateFilters = $fieldsFilters = '';
-                                if ($sxe->statbits->bit)
-                                {
-                                  foreach ($sxe->statbits->bit as $sb)
-                                  {
-                                    if ($sb['searchclient'] && $sb['searchclient'] == '1')
-                                    {
-
-
-                                      $sb_pathOff = '/status/' . $databox->get_host() . "-" . $databox->get_port() . "-" . $databox->get_dbname() . '-' . 'stat_' . $sb['n'] . '_0.gif';
-                                      $sb_pathOn = '/status/' . $databox->get_host() . "-" . $databox->get_port() . "-" . $databox->get_dbname() . '-' . 'stat_' . $sb['n'] . '_1.gif';
-
-                                      $imgoff = '';
-                                      $imgon = '';
-
-                                      if (is_file($registry->get('GV_RootPath') . 'config/' . $sb_pathOff))
-                                        $imgoff = '<img src="/custom/' . $sb_pathOff . '" title="' . $labeloff . '" style="width:16px;height:16px;vertical-align:bottom" />';
-
-
-                                      if (is_file($registry->get('GV_RootPath') . 'config/' . $sb_pathOn))
-                                        $imgon = '<img src="/custom/' . $sb_pathOn . '" title="' . $labelon . '" style="width:16px;height:16px;vertical-align:bottom" />';
-
-                                      $labeloff = $sb['labelOff'];
-                                      $labelon = $sb['labelOn'];
-
-                                      $sbFilters .= '<div style="text-align:center;overflow:hidden;">' .
-                                              '<table style="table-layout:fixed;width:90%;text-align:left;" cellspacing="0" cellpadding="0">' .
-                                              '<tr>' .
-                                              '<td style="width:50%" nowrap>' .
-                                              '<input class="checkbox" db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_' . $databox->get_sbas_id() . '_off' . $sb['n'] . '" value="' . $databox->get_sbas_id() . '_of' . $sb['n'] . '"/>' .
-                                              '<label title="' . $labeloff . '" for="statusfil_' . $databox->get_sbas_id() . '_off' . $sb['n'] . '">' . $imgoff . $labeloff . '</label>' .
-                                              '</td>' .
-                                              '<td style="width:50%" nowrap>' .
-                                              '<input class="checkbox" db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" type="checkbox" name="status[]" id="statusfil_' . $databox->get_sbas_id() . '_on' . $sb['n'] . '" value="' . $databox->get_sbas_id() . '_on' . $sb['n'] . '"/>' .
-                                              '<label title="' . $labelon . '" for="statusfil_' . $databox->get_sbas_id() . '_on' . $sb['n'] . '">' . $imgon . $labelon . '</label>' .
-                                              '</td>' .
-                                              '</tr>' .
-                                              '</table>' .
-                                              '</div>';
-                                    }
-                                  }
-                                }
                                 if ($sxe->description)
                                 {
                                   foreach ($sxe->description->children() as $f => $field)
@@ -483,7 +451,7 @@ if ($cssfile)
 <?php
                             }
 ?><div class="basGrp"><?php
-                            foreach ($databox->get_collections() as $coll)
+                            foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
                             {
                               $s = "checked";
                               echo '<div><input type="checkbox" class="checkbox basItem basItem' . $databox->get_sbas_id() . '" ' . $s . ' name="bas[]"  id="basChk' . $coll->get_base_id() . '" value="' . $coll->get_base_id() . '"><label for="basChk' . $coll->get_base_id() . '">' . $coll->get_name() . '</label></div>';
@@ -577,7 +545,7 @@ if ($cssfile)
                   <div id="PREVIEWRIGHT" class="preview_col" style="width:49%;position:relative;float:right;overflow:hidden;">
                     <div style="margin-right:10px;">
                       <div id="PREVIEWIMGDESC" class="preview_col_cont" style="overflow-x:hidden;overflow-y:auto;">
-                        <ul style="height:30px;">
+                        <ul style="height:30px;overflow:hidden;">
                           <li><a href="#PREVIEWIMGDESCINNER-BOX"><?php echo _('preview:: Description'); ?></a></li>
                           <li><a href="#HISTORICOPS-BOX"><?php echo _('preview:: Historique'); ?></a></li>
                           <li><a href="#popularity-BOX"><?php echo _('preview:: Popularite'); ?></a></li>
@@ -738,8 +706,10 @@ if ($cssfile)
 <?php
                         if (trim($registry->get('GV_bitly_user')) !== '' && trim($registry->get('GV_bitly_key')) !== '')
                         {
+                          $request = new http_request();
 ?>
-                          <script type="text/javascript" src="http://bit.ly/javascript-api.js?version=latest&login=<?php echo $registry->get('GV_bitly_user') ?>&apiKey=<?php echo $registry->get('GV_bitly_key') ?>"></script>
+
+                        <script type="text/javascript" src="http<?php echo $request->is_secure() ? 's' : '' ?>://bit.ly/javascript-api.js?version=latest&login=<?php echo $registry->get('GV_bitly_user') ?>&apiKey=<?php echo $registry->get('GV_bitly_key') ?>"></script>
 <?php
                         }
 ?>

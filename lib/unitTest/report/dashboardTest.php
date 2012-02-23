@@ -100,7 +100,7 @@ class dashboardTest extends PhraseanetPHPUnitAbstract
         {
           if ($key == 'activity_added')
           {
-            
+
           }
           $this->assertLessThanOrEqual($nbDay, count($dash));
         }
@@ -119,7 +119,7 @@ class dashboardTest extends PhraseanetPHPUnitAbstract
     }
     catch (Exception $e)
     {
-      
+
     }
   }
 

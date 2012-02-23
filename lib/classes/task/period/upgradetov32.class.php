@@ -68,6 +68,7 @@ class task_period_upgradetov32 extends task_abstract
     {
       printf("sbas_id '" . $this->sbas_id . "' invalide\n");
       $this->return_value = self::RETURNSTATUS_STOPPED;
+
       return;
     }
 
@@ -241,7 +242,7 @@ class task_period_upgradetov32 extends task_abstract
           }
           catch (Exception $e)
           {
-            
+
           }
         }
 
@@ -338,7 +339,7 @@ class task_period_upgradetov32 extends task_abstract
                 }
               }
             }
-            $record->set_metadatas($metadatas);
+            $record->set_metadatas($metadatas, true);
             unset($record);
           }
           catch (Exception $e)
@@ -369,11 +370,13 @@ class task_period_upgradetov32 extends task_abstract
         if ($n_done >= 5000)
         {
           $this->return_value = task_abstract::RETURNSTATUS_TORESTART;
+
           return;
-        }       
+        }
         if ($memory > 100)
         {
           $this->return_value = task_abstract::RETURNSTATUS_TORESTART;
+
           return;
         }
      }
@@ -408,9 +411,9 @@ class task_period_upgradetov32 extends task_abstract
     $stmt->closeCursor();
 
     $this->setProgress(0, 0);
-    
+
     $this->return_value = self::RETURNSTATUS_TODELETE;
-    
+
     flush();
 
     return;

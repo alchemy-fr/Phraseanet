@@ -1226,7 +1226,7 @@ class API_V1_test_adapterYaml extends PhraseanetWebTestCaseAbstract
     $this->assertArrayHasKey("metadatas", $content["response"]);
     foreach ($content["response"]["metadatas"] as $meta)
     {
-      $this->assertTrue(is_array($meta["metadatas"]), 'Un bloc meta est un array');
+      $this->assertTrue(is_array($meta), 'Un bloc meta est un array');
       $this->assertArrayHasKey('meta_id', $meta);
       $this->assertTrue(is_int($meta["meta_id"]));
       $this->assertArrayHasKey('meta_structure_id', $meta);

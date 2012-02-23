@@ -58,6 +58,7 @@ return call_user_func(
                           {
                             $browser = Browser::getInstance();
                             if (!$browser->isMobile())
+
                               return new Response('');
 
                             $twig = new supertwig();

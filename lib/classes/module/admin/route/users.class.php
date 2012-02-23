@@ -43,6 +43,43 @@ class module_admin_route_users
     return $this;
   }
 
+  public function export(Symfony\Component\HttpFoundation\Request $request)
+  {
+    $appbox = appbox::get_instance();
+    $session = $appbox->get_session();
+
+    $offset_start = (int) $request->get('offset_start');
+    $offset_start = $offset_start < 0 ? 0 : $offset_start;
+
+    $this->query_parms = array(
+        'inactives' => $request->get('inactives')
+        , 'like_field' => $request->get('like_field')
+        , 'like_value' => $request->get('like_value')
+        , 'sbas_id' => $request->get('sbas_id')
+        , 'base_id' => $request->get('base_id')
+        , 'srt' => $request->get("srt", User_Query::SORT_CREATIONDATE)
+        , 'ord' => $request->get("ord", User_Query::ORD_DESC)
+        , 'offset_start' => 0
+    );
+
+    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $query = new User_Query($appbox);
+
+    if (is_array($this->query_parms['base_id']))
+      $query->on_base_ids($this->query_parms['base_id']);
+    elseif (is_array($this->query_parms['sbas_id']))
+      $query->on_sbas_ids($this->query_parms['sbas_id']);
+
+    $this->results = $query->sort_by($this->query_parms["srt"], $this->query_parms["ord"])
+            ->like($this->query_parms['like_field'], $this->query_parms['like_value'])
+            ->get_inactives($this->query_parms['inactives'])
+            ->include_templates(false)
+            ->on_bases_where_i_am($user->ACL(), array('canadmin'))
+            ->execute();
+
+    return $this->results->get_results();
+  }
+
   public function search(Symfony\Component\HttpFoundation\Request $request)
   {
     $appbox = appbox::get_instance();
@@ -106,8 +143,8 @@ class module_admin_route_users
       if (is_null($v))
         $this->query_parms[$k] = false;
     }
-    
-    
+
+
     $query = new User_Query($appbox);
     $templates = $query
             ->only_templates(true)

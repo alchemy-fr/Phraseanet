@@ -179,7 +179,11 @@ class basket_adapter implements cache_cacheableInterface
    */
   public function get_base_id()
   {
-    return $this->base_id;
+    if(($record = $this->get_record()) instanceof record_adapter)
+    {
+      return $record->get_base_id();
+    }
+    return null;
   }
 
   /**
@@ -216,6 +220,22 @@ class basket_adapter implements cache_cacheableInterface
   public function get_record_id()
   {
     return $this->record_id;
+  }
+
+  public function get_record()
+  {
+    if($this->is_grouping())
+    {
+      try
+      {
+        return new \record_adapter($this->sbas_id, $this->record_id);
+      }
+      catch(\Exception $e)
+      {
+
+      }
+    }
+    return null;
   }
 
   /**
@@ -327,6 +347,7 @@ class basket_adapter implements cache_cacheableInterface
   public function get_first_element()
   {
     foreach ($this->get_elements() as $basket_element)
+
       return $basket_element;
     return null;
   }
@@ -338,6 +359,7 @@ class basket_adapter implements cache_cacheableInterface
   public function get_validation_end_date()
   {
     if (!$this->valid || !$this->validation_end_date)
+
       return null;
     return $this->validation_end_date;
   }
@@ -349,6 +371,7 @@ class basket_adapter implements cache_cacheableInterface
   public function is_validation_finished()
   {
     if (!$this->valid || !$this->validation_end_date)
+
       return null;
     $now = new DateTime();
 
@@ -362,6 +385,7 @@ class basket_adapter implements cache_cacheableInterface
   public function is_confirmed()
   {
     if (!$this->valid)
+
       return null;
 
     return $this->validation_is_confirmed;
@@ -370,14 +394,17 @@ class basket_adapter implements cache_cacheableInterface
   public function is_releasable()
   {
     if (!$this->valid)
+
       return false;
 
     if ($this->is_confirmed())
+
       return false;
 
     foreach ($this->get_elements() as $element)
     {
       if ($element->get_my_agreement() == '0')
+
         return false;
     }
 
@@ -477,7 +504,7 @@ class basket_adapter implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $sql = 'SELECT s.pushFrom, n.id as noview, s.usr_id as owner, s.rid
@@ -542,7 +569,7 @@ class basket_adapter implements cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -585,6 +612,7 @@ class basket_adapter implements cache_cacheableInterface
   public function sort($order)
   {
     if (!$this->valid || !in_array($order, array('asc', 'desc')))
+
       return;
 
     $this->load_elements();
@@ -630,7 +658,7 @@ class basket_adapter implements cache_cacheableInterface
       }
       catch (Exception_Record_AdapterNotFound $e)
       {
-        
+
       }
       catch (Exception $e)
       {
@@ -745,7 +773,7 @@ class basket_adapter implements cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -900,7 +928,7 @@ class basket_adapter implements cache_cacheableInterface
             }
             catch (Exception $e)
             {
-              
+
             }
           }
         }
@@ -1016,6 +1044,7 @@ class basket_adapter implements cache_cacheableInterface
   public function set_read()
   {
     if (!$this->noview)
+
       return true;
     $session = $this->appbox->get_session();
 
@@ -1075,6 +1104,11 @@ class basket_adapter implements cache_cacheableInterface
       foreach ($this->get_elements() as $basket_element)
       {
         $basket_element->validate($me, $user, $insert_id, $can_hd);
+
+        if ($can_hd && $me->ACL()->has_hd_grant($basket_element->get_record()))
+          $user->ACL()->grant_hd_on($basket_element->get_record(), $me, 'validate');
+        else
+          $user->ACL()->grant_preview_on($basket_element->get_record(), $me, 'validate');
       }
 
       $this->valid = 'myvalid';
@@ -1126,15 +1160,19 @@ class basket_adapter implements cache_cacheableInterface
     if ($this->is_mine)
     {
       if ($this->is_validation_finished())
+
         return sprintf(_('Vous aviez envoye cette demande a %d utilisateurs'), (count($this->validating_users) - 1));
       else
+
         return sprintf(_('Vous avez envoye cette demande a %d utilisateurs'), (count($this->validating_users) - 1));
     }
     else
     {
       if ($this->validation_see_others)
+
         return sprintf(_('Processus de validation recu de %s et concernant %d utilisateurs'), User_Adapter::getInstance($this->usr_id, $this->appbox)->get_display_name(), (count($this->validating_users) - 1));
       else
+
         return sprintf(_('Processus de validation recu de %s'), User_Adapter::getInstance($this->usr_id, $this->appbox)->get_display_name());
     }
   }
@@ -1178,7 +1216,7 @@ class basket_adapter implements cache_cacheableInterface
       $url = $this->appbox->get_registry()->get('GV_ServerName')
               . 'lightbox/index.php?LOG=' . random::getUrlToken(
                       'validate'
-                      , $session->get_usr_id()
+                      , $row['usr_id']
                       , $expires
                       , $this->get_ssel_id()
       );
@@ -1243,6 +1281,7 @@ class basket_adapter implements cache_cacheableInterface
   protected function load_elements()
   {
     if (!is_null($this->elements))
+
       return;
 
     $this->elements = array();
@@ -1269,7 +1308,7 @@ class basket_adapter implements cache_cacheableInterface
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -1367,7 +1406,7 @@ class basket_adapter implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return array('error' => true, 'status' => 0);
@@ -1407,7 +1446,7 @@ class basket_adapter implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $ret = array('error' => false, 'status' => 0);
@@ -1520,11 +1559,14 @@ class basket_adapter implements cache_cacheableInterface
   public function remove_from_ssel($sselcont_id)
   {
     if (!$this->is_mine)
+
       return array('error' => 'error', 'status' => 0);
 
     if ($this->is_grouping)
+
       return $this->remove_grouping_elements($sselcont_id);
     else
+
       return $this->remove_basket_elements($sselcont_id);
   }
 
@@ -1775,7 +1817,7 @@ class basket_adapter implements cache_cacheableInterface
           );
         }
 
-        $record->set_metadatas($metadatas)
+        $record->set_metadatas($metadatas, true)
                 ->rebuild_subdefs();
 
         $ret = true;
@@ -1864,7 +1906,7 @@ class basket_adapter implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $appbox->delete_data_from_cache($ssel_ids);
@@ -1892,7 +1934,7 @@ class basket_adapter implements cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      
+
     }
 
     $sql = 'SELECT id, usr_id, confirmed, can_agree, can_see_others

@@ -75,9 +75,9 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
     }
     catch (Exception $e)
     {
-      
+
     }
-    
+
     $tmp = new self($sbasid, $sbas_coll, $dmin, $dmax);
 
     $appbox->set_data_to_cache($tmp, $cache_id);
@@ -131,7 +131,7 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
    * @return <void>
    */
   public function process()
-  { 
+  {
     try
     {
     //Get number of DLs
@@ -250,8 +250,9 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
     }
     catch(PDOException $e)
     {
-      
+
     }
+
     return;
   }
 

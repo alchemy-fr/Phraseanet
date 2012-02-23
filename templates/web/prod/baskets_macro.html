@@ -6,7 +6,7 @@
     {% for bask_type, baskets in basket_collection.get_baskets() %}
 
       {% for basket in baskets %}
-      
+
         {% set sbas_id = '' %}
         {% set class = 'basket' %}
         {% if bask_type == 'regroup' %}
@@ -21,7 +21,7 @@
              onclick="loadBask('{{basket.get_ssel_id()}}',this)">
           <div class="PNB title">
             {% if bask_type == 'regroup' %}
-              {{basket.get_base_id|get_collection_logo|raw}}
+              {{basket.get_record().get_base_id|get_collection_logo|raw}}
             {% else %}
               <img src='/skins/icons/basket.gif' title=''/>
             {% endif %}

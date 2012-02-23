@@ -213,7 +213,7 @@
 
 <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-color:#1a1a1a;z-index:32766;">
   <div id="loader" style="top:200px;margin:0 auto;-moz-border-radius:5px;-webkit-border-radius:5px;background-color:#CCCCCC;position:relative;margin:0 auto;text-align:center;left:color:black;width:400px;height:100px;padding:20px;;z-index:32767;">
-    <div style="margin:0 10px 10px;font-family:Helvetica,Arial,sans-serif;font-size:18px;color:#1A1A1A;text-align:left;">{% trans 'phraseanet::Nom de l\'application' %}</div>
+    <div style="margin:0 10px 10px;font-family:Helvetica,Arial,sans-serif;font-size:18px;color:#1A1A1A;text-align:left;">Phraseanet</div>
     <div style="text-align:center;">{% trans 'Chargement' %}</div>
     <div style="width:220px;height:19px;margin:20px auto;">
       <div id="loader_bar" style="height:19px;width:10%;background-image:url(/skins/icons/main-loader.gif)"></div>
@@ -261,7 +261,7 @@
           </div>
         </td>
         <td style="width:auto;">
-          
+
         </td>
       </tr>
     </table>
@@ -608,9 +608,9 @@
             <td style="text-align:left;">
 
               <div class="tools" style="width:100%;xoverflow-x:auto;xoverflow-y:hidden;font-family:verdana;font-size:10px">
-                
-                
-                
+
+
+
                 <span class="verticalbuttonset">
                   <span>
                     <button class="default_action">
@@ -639,7 +639,7 @@
                     </button>
                   </div>
                 </span>
-                
+
                 <span class="verticalbuttonset">
                   <span>
                     <button class="default_action TOOL_disktt_btn results_window">
@@ -653,7 +653,7 @@
                     </button>
                   </div>
                 </span>
-                
+
                 {% set actions = {} %}
                 {% if user.ACL().has_right('modifyrecord') %}
                   {% set label %}
@@ -673,9 +673,9 @@
                   {% endset %}
                   {% set actions = actions|merge( { 'move' : {'icon': "/skins/prod/000000/images/chgcoll_history.gif", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
                 {% endif %}
-                
+
                 {% set n_actions = actions|length %}
-                
+
                 {% if n_actions > 1 %}
                 <span class="verticalbuttonset">
                   <span>
@@ -707,7 +707,7 @@
                     {% endfor %}
                   </span>
                 {% endif %}
-                
+
                 {% if user.ACL().has_right('push') and user.ACL().has_right('bas_chupub') %}
                 <span class="verticalbuttonset">
                   <span>
@@ -799,6 +799,9 @@
       </div>
     </div>
   </div>
+</div>
+</div>
+</div>
 </div>
 
 <div>
@@ -1151,6 +1154,11 @@
 
 <div id="modal_feed" title="{% trans 'action : publier' %}" style="display:none;">
 </div>
+<form id="push_form" style="display:none;" method="post" target="download" action="/prod/pushdoc.php">
+  <input name="lst" value=""/>
+  <input name="ACT" value="LOAD"/>
+  <input name="SSTTID" value="LOAD"/>
+</form>
 
 <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
 <div title="{% trans 'Re-ordonner' %}" id="reorder_dialog" style="position:relative;overflow:hidden;">
@@ -1191,7 +1199,7 @@
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
 <script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
-          
+
   {% if user.getPrefs('start_page') == 'QUERY' or user.getPrefs('start_page') == 'LAST_QUERY' %}
 
   $(document).ready(function(){
@@ -1249,7 +1257,7 @@ function setCss(color)
 
 {% if GV_bitly_user is not empty and GV_bitly_key is not empty %}
 $(document).ready(function(){
-$("#bitly_loader").attr("src","http://bit.ly/javascript-api.js?version=latest&login={{GV_bitly_user}}&apiKey={{GV_bitly_key}}");
+$("#bitly_loader").attr("src","http{{ request.is_secure() ? 's' : '' }}://bit.ly/javascript-api.js?version=latest&login={{GV_bitly_user}}&apiKey={{GV_bitly_key}}");
 });
 {% endif %}
 </script>

@@ -46,14 +46,14 @@ class module_console_systemUpgrade extends Command
 
         $output->writeln('This version of Phraseanet requires a config/config.inc');
         $output->writeln('Would you like it to be created based on your settings ?');
-        
+
         $dialog = $this->getHelperSet()->get('dialog');
         do
         {
           $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
         }
         while (!in_array($continue, array('y', 'n')));
-      
+
         if ($continue == 'y')
         {
           require __DIR__ . "/../../../../config/_GV.php";
@@ -64,16 +64,16 @@ class module_console_systemUpgrade extends Command
             .'$debug=false;'."\n"
             .'$debug=true;'."\n"
             .'';
-        
+
           file_put_contents(__DIR__ . "/../../../../config/config.inc", $datas);
         }
         else
-        {  
+        {
           throw new RuntimeException('Phraseanet is not set up');
         }
 
       }
-        
+
     }
 
     require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';

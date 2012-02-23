@@ -20,140 +20,128 @@ class cache_databox
 
   /**
    *
-   * @var cache_databox
-   */
-  private static $_instance = false;
-  /**
-   *
-   * @var cache
-   */
-  protected $_c_obj = false;
-
-  /**
-   *
-   * @return cache_databox
-   */
-  function __construct()
-  {
-    $this->_c_obj = cache_adapter::getInstance(registry::get_instance());
-
-    return $this;
-  }
-
-  /**
-   * @return cache_databox
-   */
-  public static function getInstance()
-  {
-    if (!(self::$_instance instanceof self))
-      self::$_instance = new self();
-
-    return self::$_instance;
-  }
-
-  /**
-   *
-   * @param string $type
-   * @param string $what
-   * @return boolean
-   */
-  public function get($type, $what)
-  {
-    return $this->_c_obj->get('_databox_' . $type . '_' . $what);
-  }
-
-  /**
-   *
-   * @param string $type
-   * @param string $what
-   * @param mixed content $bin
-   * @return boolean
-   */
-  public function set($type, $what, $bin)
-  {
-    return $this->_c_obj->set('_databox_' . $type . '_' . $what, $bin);
-  }
-
-  /**
-   *
-   * @param string $type
-   * @param string $what
-   * @return boolean
-   */
-  public function delete($type, $what)
-  {
-    return $this->_c_obj->delete('_databox_' . $type . '_' . $what);
-  }
-
-  /**
-   *
    * @param int $sbas_id
    * @return cache_databox
    */
-  function refresh($sbas_id)
+  public static function refresh($sbas_id)
   {
-    $date = new DateTime('-30 seconds');
+    $databox = \databox::get_instance((int) $sbas_id);
 
-    $registry = registry::get_instance();
+    $date = new \DateTime('-3 seconds');
 
-    $cache_appbox = cache_appbox::getInstance();
-    $last_update = $cache_appbox->get('memcached_update');
-    if ($last_update)
-      $last_update = new DateTime($last_update);
-    else
-      $last_update = new DateTime('-10 years');
+    $appbox = \appbox::get_instance();
 
-    if ($date <= $last_update || !$cache_appbox->is_ok())
+    $registry = \registry::get_instance();
 
-      return $this;
+    $last_update = null;
 
-    $connsbas = connection::getInstance($sbas_id);
-
-    if (!$connsbas)
-
-      return $this;
-
-    $sql = 'SELECT type, value FROM memcached
-      WHERE site_id="' . $connsbas->escape_string($registry->get('GV_ServerName')) . '"';
-
-    if ($rs = $connsbas->query($sql))
+    try
     {
-      $cache_thumbnail = cache_thumbnail::getInstance();
-      $cache_preview = cache_preview::getInstance();
-      while ($row = $connsbas->fetch_assoc($rs))
-      {
-        switch ($row['type'])
-        {
-          case 'record':
-            $cache_thumbnail->delete($sbas_id, $row['value'], false);
-            $cache_preview->delete($sbas_id, $row['value'], false);
-            $sql = 'DELETE FROM memcached
-              WHERE site_id="' . $connsbas->escape_string($registry->get('GV_ServerName')) . '"
-              AND type="record" AND value="' . $row['value'] . '"';
-            $connsbas->query($sql);
-            break;
-          case 'structure':
-            $cache_appbox->delete('list_bases');
-            $sql = 'DELETE FROM memcached
-              WHERE site_id="' . $connsbas->escape_string($registry->get('GV_ServerName')) . '"
-              AND type="structure" AND value="' . $row['value'] . '"';
-            $connsbas->query($sql);
-            break;
-        }
-      }
-      $connsbas->free_result($rs);
+      $last_update = $appbox->get_data_from_cache('memcached_update_' . $sbas_id);
+    }
+    catch (\Exception $e)
+    {
+
     }
 
-    $date = new DateTime();
-    $now = phraseadate::format_mysql($date);
-    $cache_appbox->set('memcached_update', $now);
+    if ($last_update)
+      $last_update = new \DateTime($last_update);
+    else
+      $last_update = new \DateTime('-10 years');
 
-    $conn = connection::getInstance();
-    $sql = 'UPDATE sitepreff
-            SET memcached_update="' . $conn->escape_string($now) . '"';
-    $conn->query($sql);
+    if ($date <= $last_update || !$appbox->get_cache()->ping())
+    {
+      return;
+    }
 
-    return $this;
+    $connsbas = \connection::getPDOConnection($sbas_id);
+
+    $sql  = 'SELECT type, value FROM memcached WHERE site_id = :site_id';
+    $stmt = $connsbas->prepare($sql);
+    $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+    $rs        = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    foreach ($rs as $row)
+    {
+      switch ($row['type'])
+      {
+        case 'record':
+          $key = 'record_' . $sbas_id . '_' . $row['value'];
+          $databox->delete_data_from_cache($key);
+          $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_SUBDEFS;
+          $databox->delete_data_from_cache($key);
+          $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_GROUPING;
+          $databox->delete_data_from_cache($key);
+          $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_MIME;
+          $databox->delete_data_from_cache($key);
+          $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_ORIGINAL_NAME;
+          $databox->delete_data_from_cache($key);
+          $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_SHA256;
+          $databox->delete_data_from_cache($key);
+          $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_STATUS;
+          $databox->delete_data_from_cache($key);
+          $key = 'record_' . $sbas_id . '_' . $row['value'] . '_' . \record_adapter::CACHE_TECHNICAL_DATAS;
+          $databox->delete_data_from_cache($key);
+
+          $sql = 'DELETE FROM memcached
+              WHERE site_id = :site_id AND type="record" AND value = :value';
+
+          $params = array(
+            ':site_id' => $registry->get('GV_ServerName')
+            , ':value'   => $row['value']
+          );
+
+          $stmt = $connsbas->prepare($sql);
+          $stmt->execute($params);
+          $stmt->closeCursor();
+
+          $record = new \record_adapter($sbas_id, $row['value']);
+          $record->get_caption()->delete_data_from_cache();
+
+          foreach ($record->get_caption()->get_fields() as $field)
+          {
+            $field->delete_data_from_cache();
+          }
+
+          foreach($record->get_subdefs() as $subdef)
+          {
+            $subdef->delete_data_from_cache();
+          }
+
+          break;
+        case 'structure':
+          $appbox->delete_data_from_cache(\appbox::CACHE_LIST_BASES);
+          $appbox->delete_data_from_cache(\appbox::CACHE_SBAS_IDS);
+
+          $sql = 'DELETE FROM memcached
+              WHERE site_id = :site_id AND type="structure" AND value = :value';
+
+          $params = array(
+            ':site_id' => $registry->get('GV_ServerName')
+            , ':value'   => $row['value']
+          );
+
+          $stmt = $connsbas->prepare($sql);
+          $stmt->execute($params);
+          $stmt->closeCursor();
+          break;
+      }
+    }
+
+    $date = new \DateTime();
+    $now  = $date->format(DATE_ISO8601);
+
+    $appbox->set_data_to_cache($now, 'memcached_update_' . $sbas_id);
+
+    $conn = \connection::getPDOConnection();
+
+    $sql  = 'UPDATE sitepreff SET memcached_update = :date';
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':date' => $now));
+    $stmt->closeCursor();
+
+    return;
   }
 
   /**
@@ -163,28 +151,57 @@ class cache_databox
    * @param mixed content $value
    * @return Void
    */
-  function update($sbas_id, $type, $value='')
+  public static function update($sbas_id, $type, $value = '')
   {
 
-    $connbas = connection::getPDOConnection($sbas_id);
+    $connbas = \connection::getPDOConnection($sbas_id);
 
-    $registry = registry::get_instance();
+    $registry = \registry::get_instance();
 
     $sql = 'SELECT distinct site_id as site_id
             FROM clients
             WHERE site_id != :site_id';
+
     $stmt = $connbas->prepare($sql);
     $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs        = $stmt->fetchAll(\PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $sql = 'REPLACE INTO memcached (site_id, type, value)
             VALUES (:site_id, :type, :value)';
+
     $stmt = $connbas->prepare($sql);
+
     foreach ($rs as $row)
     {
-      $stmt->execute(array(':site_id' => $row['site_id'], ':type' => $type, ':value' => $value));
+      $stmt->execute(array(':site_id' => $row['site_id'], ':type'    => $type, ':value'   => $value));
     }
+
+    $stmt->closeCursor();
+
+    return;
+  }
+
+  public static function insertClient(\databox $databox)
+  {
+    $connbas = $databox->get_connection();
+
+    $registry = \registry::get_instance();
+
+    $sql  = 'SELECT site_id FROM clients WHERE site_id = :site_id';
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
+    $rowCount  = $stmt->rowCount();
+    $stmt->closeCursor();
+
+    if ($rowCount > 0)
+    {
+      return;
+    }
+
+    $sql  = 'INSERT INTO clients (site_id) VALUES (:site_id)';
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute(array(':site_id' => $registry->get('GV_ServerName')));
     $stmt->closeCursor();
 
     return;

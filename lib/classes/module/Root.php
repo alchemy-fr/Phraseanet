@@ -34,10 +34,13 @@ return call_user_func(function()
                           {
                             $browser = Browser::getInstance();
                             if ($browser->isMobile())
+
                               return $app->redirect("/login/?redirect=/lightbox");
                             elseif ($browser->isNewGeneration())
+
                               return $app->redirect("/login/?redirect=/prod");
                             else
+
                               return $app->redirect("/login/?redirect=/client");
                           });
 
@@ -70,6 +73,7 @@ return call_user_func(function()
                   /**
                    * Mount all aps
                    */
+
                   return $app;
                 }
 );

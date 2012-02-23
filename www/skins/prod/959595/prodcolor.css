@@ -65,7 +65,7 @@ body
 
 #maincontainer{
 	min-width:970px;
-	min-height:500px;	
+	min-height:500px;
 }
 
 .PNB
@@ -74,7 +74,7 @@ body
 	top:0;
 	left:0;
 	right:0;
-	bottom:0;	
+	bottom:0;
 }
 .PNB10
 {
@@ -82,7 +82,7 @@ body
 	top:10px;
 	left:10px;
 	right:10px;
-	bottom:10px;	
+	bottom:10px;
 }
 
 .minilogo{
@@ -92,7 +92,7 @@ body
 .ww_window .ww_content
 {
     overflow-x:hidden;
-    overflow-y:auto;	
+    overflow-y:auto;
 }
 
 .boxCloser
@@ -148,7 +148,7 @@ span.ww_winTitle{
 
 .ui-tabs .ui-tabs-nav li a
 {
-	padding:3px 5px 0;	
+	padding:3px 5px 0;
 }
 
 
@@ -171,7 +171,7 @@ span.ww_winTitle{
 	background-color:#666666;
 	border-color:#666666;
 	height:10px;
-	
+
 	}
 #sizeAns_slider .ui-slider-handle,#nperpage_slider .ui-slider-handle,#EDIT_ZOOMSLIDER  .ui-slider-handle{
 	background-color:#1a1a1a;
@@ -213,7 +213,7 @@ span.ww_winTitle{
 }
 .ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a
 {
-	cursor: pointer; 
+	cursor: pointer;
 	color:black;
 }
 .ui-tabs .ui-tabs-panel
@@ -223,14 +223,14 @@ span.ww_winTitle{
 	display: block;
 	border-width:0;
 	padding:0px;
-	background-color:#B1B1B1;	
+	background-color:#B1B1B1;
 }
 .ui-tabs .ui-tabs-panel.tabBox{
 	height:310px;
 	overflow:auto;
-	position:relative;	
+	position:relative;
 	padding:10px;
-	
+
 }
 .ui-tabs .ui-tabs-hide
 {
@@ -238,9 +238,9 @@ span.ww_winTitle{
 }
 .ui-state-default, .ui-widget-content .ui-state-default
 {
-	background:none;	
+	background:none;
 }
-.ui-tabs li.ui-state-active a, .ui-state-active a:link, .ui-state-active a 
+.ui-tabs li.ui-state-active a, .ui-state-active a:link, .ui-state-active a
 {
 	color:#b2b2b2;
 	font-weight:bold;
@@ -248,23 +248,23 @@ span.ww_winTitle{
 }
 .ui-state-active, .ui-widget-content .ui-state-active
 {
-	background:none;	
+	background:none;
 }
 
 
 .ui-widget-content
 {
-	background-image:none;	
+	background-image:none;
 	background-color:transparent;
 }
 .ui-dialog.ui-widget-content
-{	
+{
 	background-color:#111111;
 }
 .ui-accordion .ui-accordion-content
 {
 	padding:0;
-	min-height:120px;	
+	min-height:120px;
 }
 .ui-accordion .ui-accordion-content.loading
 {
@@ -280,7 +280,7 @@ span.ww_winTitle{
 {
 	border:none;
 	background-image:url(../../icons/bask_back_light.png);
-	background-repeat:repeat-x;	
+	background-repeat:repeat-x;
 	margin-bottom:0;
 	height:20px;
 }
@@ -370,7 +370,7 @@ span.ww_winTitle{
 	margin:5px 0 20px 40px;
 }
 #keyboard-dialog ul li{
-	
+
 }
 
 .cgu-dialog blockquote p{
@@ -383,7 +383,7 @@ span.ww_winTitle{
   max-height: 400px;
 }
 
-		
+
 
 
 /*PRESENTATION DE MINIATURES*/
@@ -416,7 +416,7 @@ span.ww_winTitle{
 }
 
 #tool_navigate input{
-	text-align:center;	
+	text-align:center;
 }
 #tool_navigate a{
 	cursor:pointer;
@@ -429,7 +429,7 @@ span.ww_winTitle{
 }
 
 .diapo div.title{
-	overflow:hidden;	
+	overflow:hidden;
 }
 
 
@@ -445,7 +445,7 @@ div.diapo
 	-webkit-border-radius:4px;
 	text-align:center;
 	margin:8px 5px;
-		
+
 }
 
 
@@ -468,7 +468,7 @@ div.diapo
 	top:0;
 	right:10px;
 	bottom:0;
-	background-color:#B1B1B1;	
+	background-color:#B1B1B1;
 }
 
 .submenu.ui-buttonset{
@@ -476,7 +476,7 @@ div.diapo
 }
 
 #idFrameT .tools .verticalbuttonset {
- position:relative; 
+ position:relative;
 }
 #idFrameT .tools .verticalbuttonset .ui-button-text img,#idFrameT .buttonset img{
  vertical-align:top;
@@ -499,7 +499,7 @@ div.diapo
 
 
 #idFrameT .tools .verticalbuttonset .submenu{
-  position: absolute; 
+  position: absolute;
   top:2.0em;
   left:0;
   z-index:30;
@@ -597,12 +597,12 @@ div.diapo
 #choosen-topics LI A.opened
 {
 	display:inline-block;
-	background-image: url(../../icons/tri_minus.gif); 
+	background-image: url(../../icons/tri_minus.gif);
 }
 #choosen-topics LI A.closed
 {
 	display:inline-block;
-	background-image: url(../../icons/tri_plus.gif); 
+	background-image: url(../../icons/tri_plus.gif);
 }
 #choosen-topics LI SPAN
 {
@@ -614,12 +614,12 @@ div.diapo
 #choosen-topics LI SPAN.static
 {
 	display:inline-block;
-	background-image: url(../../icons/tri_static.gif); 
+	background-image: url(../../icons/tri_static.gif);
 }
 #choosen-topics LI SPAN.none
 {
 	display:inline-block;
-	background-image: none; 
+	background-image: none;
 }
 
 #choosen-topics div.searchZone
@@ -681,7 +681,7 @@ div.diapo
 	right: 1px;
 	bottom: 0px;
 	overflow-y: scroll;
-	overflow-x:hidden;	
+	overflow-x:hidden;
 	background-color:#B1B1B1;
 }
 #baskets .insidebloc{
@@ -707,7 +707,7 @@ div.diapo
 }
 #baskets .bottom-scroller
 {
-	top:auto;	
+	top:auto;
 }
 
 #idFrameC #baskets .bloc.groupDrop
@@ -736,7 +736,7 @@ div.diapo
 	top:31px;
 	left:0px;
 	bottom:0px;
-	right:0px;	
+	right:0px;
 }
 
 .CHIM.diapo
@@ -761,7 +761,7 @@ div.diapo
 }
 .CHIM.diapo .bottom span,.CHIM.diapo .bottom img
 {
-	cursor:pointer;	
+	cursor:pointer;
 	vertical-align:middle;
 	color:white;
 	font-size:10px;
@@ -769,7 +769,7 @@ div.diapo
 
 .CHIM.diapo img
 {
-	margin-top:9px;	
+	margin-top:9px;
 	z-index:14;
 	position:relative;
 }
@@ -788,12 +788,12 @@ div.diapo
 
 .diapo .thumb
 {
-	overflow:hidden;	
+	overflow:hidden;
   position:relative;
 }
 .diapo .thumb .record
 {
-	position:relative;	
+	position:relative;
         margin:0 auto;
 }
 .diapo.CHIM .thumb_wrapper
@@ -806,7 +806,7 @@ div.diapo
 }
 .diapo .bottom
 {
-	position: absolute; bottom: 0px;	
+	position: absolute; bottom: 0px;
 }
 
 #answers{
@@ -874,7 +874,7 @@ div.diapo
 	cursor:help;
 }
 #baskets .SSTT.grouping.active{
-	border:1px solid #2f4a6f;	
+	border:1px solid #2f4a6f;
 }
 #baskets .SSTT.grouping.active.ui-corner-top{
 	border-bottom:none;
@@ -898,12 +898,12 @@ div.diapo
 #adv_search .field_filter.danger,
 #adv_search .status_filter.danger
 {
-	border-color:#c9c900;	
+	border-color:#c9c900;
 	background-color:#707000;
 }
 
 #adv_search table.colllist
-{ 
+{
 	width:290px;
 }
 
@@ -1131,7 +1131,7 @@ div.diapo
 .context-menu-theme-vista .context-menu-item .context-menu-item-inner.published
 {
 	background-image:url(../../icons/ticktick.png);
-	background-repeat:no-repeat;	
+	background-repeat:no-repeat;
 	background-position:5px center;
 }
 
@@ -1143,7 +1143,7 @@ div.diapo
 
 
 
-	
+
 .pubchut, .pubchutmine,.regIndicator,.baskIndicator{
 	position:relative;
 	float:left;
@@ -1187,7 +1187,7 @@ input.input-button.hover
 {
 	color:#FEFEFE;
 }
-	
+
 input,select,textarea{
 	margin:2px;
 	border:1px solid #b1b1b1;
@@ -1328,12 +1328,12 @@ input:radio, input:checkbox, .checkbox{
     TOP: 300px;
     WIDTH: 220px;
     COLOR: #222222;
-    
+
 }
 .MenuSG DIV
 {
 	WIDTH: 220px;
-	overflow:scroll-y;		
+	overflow:scroll-y;
 	WHITE-SPACE: normal;
     COLOR: #222222;
     BORDER-bottom:#CCCCCC 1px solid;
@@ -1392,7 +1392,7 @@ EM
 {
 	position: absolute;
 	padding:3px;
-	z-index: 97;	
+	z-index: 97;
 }
 
 .prevTrainCurrent .doc_infos img,.diapo .doc_infos img
@@ -1493,9 +1493,9 @@ H4
 	FONT-SIZE: 10px;
  	POSITION: relative;
     PADDING: 3px;
-	MARGIN: 0px;	
-	MARGIN-TOP: 10px;	
-	MARGIN-BOTTOM: 5px;	
+	MARGIN: 0px;
+	MARGIN-TOP: 10px;
+	MARGIN-BOTTOM: 5px;
 }
 
 .proposals HR				/*** page proposals.php ***/
@@ -1503,9 +1503,9 @@ H4
 	POSITION: relative;
 	HEIGHT: 1px;
     PADDING: 0px;
-	MARGIN: 0px;	
+	MARGIN: 0px;
 	BACKGROUND-COLOR:#d0d0d0;
-	BORDER-TOP: #808080 1px solid;	
+	BORDER-TOP: #808080 1px solid;
 	TEXT-DECORATION: none;
 }
 
@@ -1527,7 +1527,7 @@ BOITES MODALES
 }
 .bodyprofile .ui-tabs .ui-tabs-panel
 {
-	background-color:#a3a3a3;		
+	background-color:#a3a3a3;
 	color:#B1B1B1;
 }
 .bodyprofile .ui-tabs .ui-tabs-nav li.ui-tabs-selected
@@ -1577,7 +1577,7 @@ BOITES MODALES
 {
 	padding:5px 0;
     -moz-border-radius:3px;
-	-webkit-border-radius:3px;	
+	-webkit-border-radius:3px;
 }
 #adv_search .sbasglob .sbas_list.selected
 {
@@ -1585,7 +1585,7 @@ BOITES MODALES
 	background-color:#404040;
 }
 .sbaslist{
-	
+
 	background-color:#404040;
     -moz-border-radius:3px;
 	-webkit-border-radius:3px;
@@ -1612,7 +1612,7 @@ BOITES MODALES
 
 
 
-	
+
 DIV.finder
 {
     WHITE-SPACE: nowrap
@@ -2016,7 +2016,7 @@ EDITING
 }
 #EDIT_MID_R .ui-tabs-panel
 {
-	background-color:#D9D9D9;	
+	background-color:#D9D9D9;
 }
 #divS_wrapper{
 	overflow-x:visible;
@@ -2055,7 +2055,7 @@ EDITING
 }
 #divS span.fieldvalue{
 	white-space:normal;
-	font-weight:normal;	
+	font-weight:normal;
 }
 #idEditZone{
 	position:absolute;
@@ -2068,7 +2068,7 @@ EDITING
 	background-color:#111111;
 	background-image:url(/skins/prod/000000/images/ui-bg_gloss-wave_20_111111_500x100.png);
 	background-repeat:repeat-x;
-	background-position:50% top;	
+	background-position:50% top;
 }
 
 #idExplain{
@@ -2097,8 +2097,8 @@ EDITING
 }
 
 #EDIT_EDIT{
-  top:35px; 
-  bottom:60px; 
+  top:35px;
+  bottom:60px;
   overflow-x:hidden;
   overflow-y:auto;
 }
@@ -2115,7 +2115,7 @@ EDITING
   z-index:10;
 }
 /*
-#EDIT_TOP .diapo		
+#EDIT_TOP .diapo
 {
     BORDER:  #B1B1B1 1px solid;
     BACKGROUND-COLOR: transparent;
@@ -2125,9 +2125,9 @@ EDITING
 	top: 0px;
 	left: 0px;
 	float: left;
-	text-align: center;	
+	text-align: center;
 }
-#EDIT_TOP .diapo.selected,#EDIT_TOP .diapo.ui-selected		
+#EDIT_TOP .diapo.selected,#EDIT_TOP .diapo.ui-selected
 {
     BORDER:  #666666 1px solid;
     BACKGROUND-COLOR: #666666;
@@ -2164,12 +2164,12 @@ EDITING
 {
 	padding-left:3px;
 	padding-right:6px;
-} 
+}
 #idFrameE .EDIT_presets_list LI
 {
 	margin:0px;
-} 
-#idFrameE .EDIT_presets_list DIV 
+}
+#idFrameE .EDIT_presets_list DIV
 {
 	display:none;
 	padding-left:15px;
@@ -2181,7 +2181,7 @@ EDITING
 	padding:0px;
 	margin:0px;
 }
-#idFrameE .EDIT_presets_list LI.opened DIV 
+#idFrameE .EDIT_presets_list LI.opened DIV
 {
 	display:block;
 }
@@ -2248,7 +2248,7 @@ EDITING
 	z-index:1200;
 	background-color:#B1B1B1;
 	display:none;
-	top:0px;
+	top:20px;
 	bottom:15px;
 	right:20px;
 	left:20px;
@@ -2263,7 +2263,7 @@ EDITING
 
 #PREVIEWBOX a.bounce
 {
-	BORDER-BOTTOM:#ffe000 1px dashed;	
+	BORDER-BOTTOM:#ffe000 1px dashed;
 	cursor:pointer;
 }
 .PREVIEW_PIC,.PREVIEW_HD{
@@ -2290,7 +2290,7 @@ EDITING
 {
 	top:30px;
 	overflow:auto;
-		
+
 }
 #PREVIEWIMGDESCINNER span.fieldName
 {
@@ -2364,11 +2364,11 @@ EDITING
 }
 #PREVIEWCURRENT
 {
-	background-color:#B1B1B1;	
+	background-color:#B1B1B1;
 }
 #PREVIEWCURRENTCONT.group_case
 {
-	left:106px;	
+	left:106px;
 }
 #PREVIEWCURRENTCONT
 {
@@ -2464,7 +2464,7 @@ EDITING
 
 
 /*
-Menu contextuel 
+Menu contextuel
 	valeurs suggerees dans l'editing : Classic Windows Theme (default) */
 /* =============================== */
 .context-menu-theme-default {
@@ -2517,7 +2517,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 {
 	background-color:#B1B1B1;
 	color:#ffffff;
-	
+
 	position:absolute;
 	top:60px;
 	left:0px;
@@ -2528,7 +2528,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #THPD_tabs{
-	right:0;	
+	right:0;
 }
 
 #THPD_tabs .ui-tabs-nav .ui-state-default A
@@ -2690,7 +2690,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 
 #modal_feed form .feeds .feed span{
-  margin:0 10px; 
+  margin:0 10px;
 }
 #modal_feed form input.error,
 #modal_feed form textarea.error{
@@ -3037,7 +3037,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
   top:0;
   left:0;
   font-size:11px;
-  
+
 }
 
 #dialog_publicator .ui-tabs-panel .PNB10.container

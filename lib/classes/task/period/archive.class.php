@@ -825,7 +825,20 @@ class task_period_archive extends task_abstract
 
       $xp = new DOMXPath($dom);
 
-      while (($file = $listFolder->read()) !== NULL)
+      if(($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')))
+      {
+        // on gere le magicfile
+        if(($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '')
+        {
+          $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
+          if($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+            return;
+          elseif($magicmethod == 'UNLOCK' && !file_exists($path . '/' . $magicfile))
+            return;
+        }
+      }
+      
+      while(($file = $listFolder->read()) !== NULL)
       {
         if ($this->isIgnoredFile($file))
           continue;
@@ -1538,7 +1551,7 @@ class task_period_archive extends task_abstract
         $collection = collection::get_from_coll_id($databox, $cid);
         $record = record_adapter::create($collection, $system_file, false, true);
 
-        $record->set_metadatas($meta['metadatas']);
+        $record->set_metadatas($meta['metadatas'], true);
         $record->set_binary_status(databox_status::operation_or($stat0, $stat1));
         $record->rebuild_subdefs();
         $record->reindex();
@@ -1879,7 +1892,7 @@ class task_period_archive extends task_abstract
       {
         $collection = collection::get_from_base_id($base_id);
         $record = record_adapter::create($collection, $system_file, false, false);
-        $record->set_metadatas($meta['metadatas']);
+        $record->set_metadatas($meta['metadatas'], true);
         $record->set_binary_status(databox_status::operation_or(databox_status::operation_or($stat0, $stat1), databox_status::hex2bin($hexstat)));
         $record->rebuild_subdefs();
         $record->reindex();
