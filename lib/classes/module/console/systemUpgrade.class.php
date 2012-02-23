@@ -53,60 +53,12 @@ class module_console_systemUpgrade extends Command
 
       if ($continue == 'y')
       {
-
         try
         {
-          $Core->getConfiguration()->initialize();
+          $connexionInc = new \SplFileObject(__DIR__ . '/../../../../config/connexion.inc');
+          $configInc    = new \SplFileObject(__DIR__ . '/../../../../config/config.inc');
 
-          $retrieve_old_credentials = function()
-            {
-              require __DIR__ . '/../../../../config/connexion.inc';
-
-              return array(
-                'hostname' => $hostname,
-                'port'     => $port,
-                'user'     => $user,
-                'password' => $password,
-                'dbname'   => $dbname,
-              );
-            };
-
-          $credentials = $retrieve_old_credentials();
-
-          $connexions = $Core->getConfiguration()->getConnexions();
-
-          foreach ($credentials as $key => $value)
-          {
-            $key                                = $key == 'hostname' ? 'host' : $key;
-            $connexions['main_connexion'][$key] = (string) $value;
-          }
-
-          $Core->getConfiguration()->setConnexions($connexions);
-
-
-          $configs = $Core->getConfiguration()->getConfigurations();
-
-          $retrieve_old_parameters = function()
-            {
-              require __DIR__ . '/../../../../config/config.inc';
-
-              return array(
-                'servername' => $servername
-              );
-            };
-
-          $old_parameters = $retrieve_old_parameters();
-
-          foreach ($configs as $env => $conf)
-          {
-            if (isset($configs[$env]['phraseanet']))
-            {
-              $configs[$env]['phraseanet']['servername'] = $old_parameters['servername'];
-            }
-          }
-          $Core->getConfiguration()->setConfigurations($configs);
-
-          $Core->getConfiguration()->setEnvironnement('prod');
+          $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
         }
         catch (\Exception $e)
         {
