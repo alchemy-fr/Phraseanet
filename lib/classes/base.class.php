@@ -835,8 +835,9 @@ abstract class base implements cache_cacheableInterface
   protected function apply_patches($from, $to, $post_process, Setup_Upgrade &$upgrader)
   {
     if (version_compare($from, $to, '='))
-
+    {
       return true;
+    }
 
     $list_patches = array();
 
@@ -889,15 +890,8 @@ abstract class base implements cache_cacheableInterface
 
     foreach ($list_patches as $patch)
     {
-      try
-      {
       if (!$patch->apply($this))
         $success = false;
-      }
-      catch(Exception $e)
-      {
-        $success = false;
-      }
       $upgrader->add_steps_complete(1);
     }
 
