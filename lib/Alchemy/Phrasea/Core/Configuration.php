@@ -133,10 +133,12 @@ class Configuration
 
     foreach ($configs as $env => $conf)
     {
-      if (isset($configs[$env]['phraseanet']))
+      if (!is_array($configs[$env]) || !array_key_exists('phraseanet', $configs[$env]))
       {
-        $configs[$env]['phraseanet']['servername'] = $old_parameters['servername'];
+        continue;
       }
+
+      $configs[$env]['phraseanet']['servername'] = $old_parameters['servername'];
 
       if ($env === 'prod' && isset($configs[$env]['cache']))
       {
