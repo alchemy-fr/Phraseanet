@@ -74,6 +74,7 @@ $finder
   ->name('hudson')
   ->name('.svn')
   ->name('.git')
+  ->name('flash')
   ->ignoreDotFiles(false)
   ->ignoreVCS(false)
   ->in(__DIR__);
