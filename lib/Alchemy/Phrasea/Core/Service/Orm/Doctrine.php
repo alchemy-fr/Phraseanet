@@ -273,10 +273,16 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       Type::addType('varbinary', 'Types\VarBinary');
     }
 
+    if (!Type::hasType('binary'))
+    {
+      Type::addType('binary', 'Types\Binary');
+    }
+
     $platform->registerDoctrineTypeMapping('enum', 'enum');
     $platform->registerDoctrineTypeMapping('blob', 'blob');
     $platform->registerDoctrineTypeMapping('longblob', 'longblob');
     $platform->registerDoctrineTypeMapping('varbinary', 'varbinary');
+    $platform->registerDoctrineTypeMapping('binary', 'binary');
 
     return;
   }
