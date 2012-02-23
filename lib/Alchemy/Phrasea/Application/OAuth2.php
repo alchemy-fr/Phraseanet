@@ -300,19 +300,18 @@ return call_user_func(function()
 
                             if ($submit)
                             {
-                              $application = \API_OAuth2_Application::create($app['appbox'], $app['user'], $request->get('name'));
-                              $application->set_description($request->get('description'))
-                                      ->set_redirect_uri($request->get('callback'))
-                                      ->set_type($request->get('type'))
-                                      ->set_website($request->get('website'));
+                              $application = \API_OAuth2_Application::create($app['appbox'], $app['user'], $post->getName());
+                              $application->set_description($post->getDescription())
+                                      ->set_redirect_uri($post->getSchemeCallback().$post->getCallback())
+                                      ->set_type($post->getType())
+                                      ->set_website($post->getSchemeWebsite().$post->getWebsite());
 
                               return $app->redirect("/api/oauthv2/applications/dev/" . $application->get_id() . "/show");
                             }
 
                             $var = array(
                                 "violations" => $violations,
-                                "form" => $post,
-                                "request" => $request
+                                "form" => $post
                             );
 
                             return $app['response']('api/auth/application_dev_new.twig', $var);

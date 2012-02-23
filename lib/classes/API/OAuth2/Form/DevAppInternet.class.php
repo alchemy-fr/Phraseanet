@@ -50,6 +50,12 @@ class API_OAuth2_Form_DevAppInternet
    * @var string
    */
   public $callback;
+  
+  public $scheme_website;
+  public $scheme_callback;
+  
+  public $urlwebsite;
+  public $urlcallback;
 
   /**
    *
@@ -58,11 +64,17 @@ class API_OAuth2_Form_DevAppInternet
    */
   public function __construct(Request $request)
   {
-    $this->name = $request->get('name', null);
-    $this->description = $request->get('description', null);
-    $this->website = $request->get('website', null);
-    $this->callback = $request->get('callback', null);
-
+    $this->name = $request->get('name', '');
+    $this->description = $request->get('description', '');
+    $this->website = $request->get('website', '');
+    $this->callback = $request->get('callback', '');
+    $this->scheme_website = $request->get('scheme-website', 'http://');
+    $this->scheme_callback = $request->get('scheme-callback', 'http://');
+    $this->type = API_OAuth2_Application::WEB_TYPE;
+    
+    $this->urlwebsite = $this->scheme_website.$this->website;
+    $this->urlcallback = $this->scheme_callback.$this->callback;
+    
     return $this;
   }
 
@@ -77,35 +89,11 @@ class API_OAuth2_Form_DevAppInternet
 
   /**
    *
-   * @param string $callback
-   * @return API_OAuth2_Form_DevApp
-   */
-  public function setName($name)
-  {
-    $this->name = $name;
-
-    return $this;
-  }
-
-  /**
-   *
    * @return string
    */
   public function getDescription()
   {
     return $this->description;
-  }
-
-  /**
-   *
-   * @param string $callback
-   * @return API_OAuth2_Form_DevApp
-   */
-  public function setDescription($description)
-  {
-    $this->description = $description;
-
-    return $this;
   }
 
   /**
@@ -119,18 +107,6 @@ class API_OAuth2_Form_DevAppInternet
 
   /**
    *
-   * @param string $callback
-   * @return API_OAuth2_Form_DevApp
-   */
-  public function setWebsite($website)
-  {
-    $this->website = $website;
-
-    return $this;
-  }
-
-  /**
-   *
    * @return string
    */
   public function getCallback()
@@ -140,17 +116,34 @@ class API_OAuth2_Form_DevAppInternet
 
   /**
    *
-   * @param string $callback
-   * @return API_OAuth2_Form_DevApp
+   * @return string 
    */
-  public function setCallback($callback)
+  public function getType()
   {
-    $this->callback = $callback;
-
-    return $this;
+    return $this->type;
   }
 
-  /**
+  public function getSchemeWebsite()
+  {
+    return $this->scheme_website;
+  }
+
+  public function getSchemeCallback()
+  {
+    return $this->scheme_callback;
+  }
+
+  public function getUrlwebsite()
+  {
+    return $this->urlwebsite;
+  }
+
+  public function getUrlcallback()
+  {
+    return $this->urlcallback;
+  }
+
+    /**
    *
    * @param ClassMetadata $metadata
    * @return API_OAuth2_Form_DevApp
@@ -162,8 +155,10 @@ class API_OAuth2_Form_DevAppInternet
 
     $metadata->addPropertyConstraint('name', new Constraints\NotBlank($blank));
     $metadata->addPropertyConstraint('description', new Constraints\NotBlank($blank));
-    $metadata->addPropertyConstraint('website', new Constraints\NotBlank($blank));
-    $metadata->addPropertyConstraint('website', new Constraints\Url($url));
+    $metadata->addPropertyConstraint('urlwebsite', new Constraints\NotBlank($blank));
+    $metadata->addPropertyConstraint('urlwebsite', new Constraints\Url($url));
+    $metadata->addPropertyConstraint('urlcallback', new Constraints\NotBlank($blank));
+    $metadata->addPropertyConstraint('urlcallback', new Constraints\Url($url));
     return;
   }
 
