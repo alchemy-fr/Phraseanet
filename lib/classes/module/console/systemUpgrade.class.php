@@ -77,11 +77,35 @@ class module_console_systemUpgrade extends Command
 
           foreach ($credentials as $key => $value)
           {
-            $key                          = $key == 'hostname' ? 'host' : $key;
-            $connexions['main_connexion'][$key]           = (string) $value;
+            $key                                = $key == 'hostname' ? 'host' : $key;
+            $connexions['main_connexion'][$key] = (string) $value;
           }
 
           $Core->getConfiguration()->setConnexions($connexions);
+
+
+          $configs = $Core->getConfiguration()->getConfigurations();
+
+          $retrieve_old_parameters = function()
+            {
+              require __DIR__ . '/../../../../config/config.inc';
+
+              return array(
+                'servername' => $servername
+              );
+            };
+
+          $old_parameters = $retrieve_old_parameters();
+
+          foreach ($configs as $env => $conf)
+          {
+            if (isset($configs[$env]['phraseanet']))
+            {
+              $configs[$env]['phraseanet']['servername'] = $old_parameters['servername'];
+            }
+          }
+          $Core->getConfiguration()->setConfigurations($configs);
+
           $Core->getConfiguration()->setEnvironnement('prod');
         }
         catch (\Exception $e)
@@ -111,7 +135,7 @@ class module_console_systemUpgrade extends Command
     {
       try
       {
-        $Core = \bootstrap::getCore();
+        $Core   = \bootstrap::getCore();
         $output->write('<info>Upgrading...</info>', true);
         $appbox = appbox::get_instance($Core);
 
