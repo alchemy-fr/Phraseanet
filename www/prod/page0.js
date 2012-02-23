@@ -3083,59 +3083,6 @@ function autoorder()
 
 }
 
-function arraySortByValue(datas, data_type) {
-
-  var tmp = new Array();
-  for (i in datas) {
-    tmp.push({
-      v: i,
-      c: datas[i].toUpperCase(),
-      o: datas[i]
-    });
-  }
-  switch(data_type)
-  {
-    case 'string':
-      tmp.sort(function (x, y) {
-        return y.c < x.c;
-      });
-      break;
-    case 'integer':
-      tmp.sort(function (x, y) {
-        return parseInt(y.c) < parseInt(x.c);
-      });
-      break;
-  }
-
-  var out = new Array();
-  for (i in tmp) {
-    out[tmp[i].v] = tmp[i].o;
-  }
-
-  return out;
-}
-
-
-function reverse_order()
-{
-  var elems = $('#reorder_box .diapo');
-
-  var last_moved = false;
-
-  elems.each(function(i,n){
-    var elem = $(n);
-    if(last_moved)
-    {
-      elem.insertBefore(last_moved);
-    }
-    else
-    {
-      $('#reorder_box').append(elem);
-    }
-    last_moved = elem;
-  });
-}
-
 function set_up_feed_box(data)
 {
   var $feed_box = $('#modal_feed');

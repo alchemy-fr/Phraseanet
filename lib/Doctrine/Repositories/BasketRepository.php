@@ -47,11 +47,11 @@ class BasketRepository extends EntityRepository
 
     if ($sort == 'date')
     {
-      $dql .= ' ORDER BY b.created DESC';
+      $dql .= ' ORDER BY b.created DESC, e.ord ASC';
     }
     elseif ($sort == 'name')
     {
-      $dql .= ' ORDER BY b.name ASC';
+      $dql .= ' ORDER BY b.name ASC, e.ord ASC';
     }
 
     $query = $this->_em->createQuery($dql);
@@ -81,7 +81,8 @@ class BasketRepository extends EntityRepository
               (b.usr_id = :usr_id_owner AND b.is_read = false)
               OR (b.usr_id != :usr_id_ownertwo AND p.usr_id = :usr_id_participant
                     AND p.is_aware = false)
-              )';
+              )
+            ORDER BY e.ord ASC';
 
     $params = array(
       'usr_id_owner' => $user->get_id(),
@@ -119,11 +120,11 @@ class BasketRepository extends EntityRepository
 
     if ($sort == 'date')
     {
-      $dql .= ' ORDER BY b.created DESC';
+      $dql .= ' ORDER BY b.created DESC, e.ord ASC';
     }
     elseif ($sort == 'name')
     {
-      $dql .= ' ORDER BY b.name ASC';
+      $dql .= ' ORDER BY b.name ASC, e.ord ASC';
     }
 
     $query = $this->_em->createQuery($dql);
@@ -151,7 +152,8 @@ class BasketRepository extends EntityRepository
             LEFT JOIN e.validation_datas v
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE b.id = :basket_id';
+            WHERE b.id = :basket_id
+            ORDER BY e.ord ASC';
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('basket_id' => $basket_id));
@@ -199,7 +201,8 @@ class BasketRepository extends EntityRepository
             FROM Entities\Basket b
             JOIN b.elements e
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
-              AND b.usr_id = :usr_id';
+              AND b.usr_id = :usr_id
+            ORDER BY e.ord ASC';
 
     $params = array(
       'record_id' => $record->get_record_id(),
@@ -281,6 +284,8 @@ class BasketRepository extends EntityRepository
       $params['name']        = '%' . $query . '%';
       $params['description'] = '%' . $query . '%';
     }
+
+    $dql .= ' ORDER BY e.ord ASC';
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
