@@ -499,6 +499,8 @@ class appbox extends base
       }
 
       $Core->getConfiguration()->setConfigurations($arrayConf);
+      
+      $Core->getConfiguration()->setEnvironnement('prod');
     }
     try
     {
