@@ -563,6 +563,33 @@ return call_user_func(
 
             /* @var $basket \Entities\Basket */
             $participant = $basket->getValidation()->getParticipant($user);
+
+            $appbox   = \appbox::get_instance($app['Core']);
+            $evt_mngr = \eventsmanager_broker::getInstance($appbox, $app['Core']);
+
+            $expires = new \DateTime('+10 days');
+            $url     = $appbox->get_registry()->get('GV_ServerName')
+              . 'lightbox/index.php?LOG=' . \random::getUrlToken(
+                'validate'
+                , $basket->getValidation()->getInitiator()->get_id()
+                , $expires
+                , $basket->getId()
+            );
+
+
+            $to     = $basket->getValidation()->getInitiator()->get_id();
+            $params = array(
+              'ssel_id' => $basket->getId(),
+              'from'    => $app['Core']->getAuthenticatedUser()->get_id(),
+              'url'     => $url,
+              'to'      => $to
+            );
+
+
+
+            $evt_mngr->trigger('__VALIDATION_DONE__', $params);
+
+
             $participant->setIsConfirmed(true);
 
             $em->merge($participant);

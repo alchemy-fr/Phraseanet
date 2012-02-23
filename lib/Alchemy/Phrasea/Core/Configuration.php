@@ -37,6 +37,12 @@ class Configuration
    */
   private $environment;
 
+  /**
+   *
+   * @param Configuration\ApplicationSpecification $specifications
+   * @param type $environment
+   * @return \Alchemy\Phrasea\Core\Configuration
+   */
   public static function build($specifications = null, $environment = null)
   {
     if (!$specifications)
@@ -46,6 +52,12 @@ class Configuration
     return new self($specifications, $environment);
   }
 
+  /**
+   *
+   * @param Configuration\Specification $specifications
+   * @param type $environment
+   * @return \Alchemy\Phrasea\Core\Configuration
+   */
   public function __construct(Configuration\Specification $specifications, $environment = null)
   {
     $this->specifications = $specifications;
@@ -61,6 +73,94 @@ class Configuration
     }
 
     $this->setEnvironnement($environment);
+
+    return $this;
+  }
+
+  public function upgradeFromOldConf(\SplFileObject $configInc, \SplFileObject $connexionInc)
+  {
+    $this->initialize();
+
+    $cacheService = "array_cache";
+
+    if (extension_loaded('apc'))
+    {
+      $cacheService = "apc_cache";
+    }
+    elseif (extension_loaded('xcache'))
+    {
+      $cacheService = "xcache_cache";
+    }
+
+    $retrieve_old_credentials = function(\SplFileObject $connexionInc)
+      {
+        require $connexionInc->getPathname();
+
+        return array(
+          'hostname' => $hostname,
+          'port'     => $port,
+          'user'     => $user,
+          'password' => $password,
+          'dbname'   => $dbname,
+        );
+      };
+
+    $credentials = $retrieve_old_credentials($connexionInc);
+
+    $connexions = $this->getConnexions();
+
+    foreach ($credentials as $key => $value)
+    {
+      $key                                = $key == 'hostname' ? 'host' : $key;
+      $connexions['main_connexion'][$key] = (string) $value;
+    }
+
+    $this->setConnexions($connexions);
+
+
+    $configs = $this->getConfigurations();
+
+    $retrieve_old_parameters = function(\SplFileObject $configInc)
+      {
+        require $configInc->getPathname();
+
+        return array(
+          'servername' => $servername
+        );
+      };
+
+    $old_parameters = $retrieve_old_parameters($configInc);
+
+    foreach ($configs as $env => $conf)
+    {
+      if (isset($configs[$env]['phraseanet']))
+      {
+        $configs[$env]['phraseanet']['servername'] = $old_parameters['servername'];
+      }
+
+      if ($env === 'prod' && isset($configs[$env]['cache']))
+      {
+        $configs[$env]["cache"] = $cacheService;
+      }
+      if ($env === 'prod' && isset($configs[$env]['opcodecache']))
+      {
+        $configs[$env]["opcodecache"] = $cacheService;
+      }
+    }
+    $this->setConfigurations($configs);
+
+    $services = $this->getServices();
+
+    if (isset($services['Orm']["doctrine_prod"]["options"]["cache"]))
+    {
+      $services['Orm']["doctrine_prod"]["options"]["cache"]['query']['service']    = $cacheService;
+      $services['Orm']["doctrine_prod"]["options"]["cache"]['result']['service']   = $cacheService;
+      $services['Orm']["doctrine_prod"]["options"]["cache"]['metadata']['service'] = $cacheService;
+    }
+
+    $this->setServices($services);
+
+    $this->setEnvironnement('prod');
 
     return $this;
   }
@@ -89,7 +189,7 @@ class Configuration
     {
       $configurations = $this->specifications->getConfigurations();
 
-      if(!isset($configurations[$this->environment]))
+      if (!isset($configurations[$this->environment]))
       {
         throw new \Exception('Requested environnment is not available');
       }
