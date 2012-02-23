@@ -9,25 +9,25 @@
     <button type="button" class="autoorder">{% trans 'Re-ordonner' %}</button>
     <button type="button" class="reverseorder">{% trans 'Inverser' %}</button>
 </div>
-  <div style="top:30px;overflow:auto;" id="reorder_box" class="PNB">
+<div style="top:30px;overflow:auto;" id="reorder_box" class="PNB">
     <div class="elements">
-    {% for element in basket.getElements() %}
-      <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
-        <div class="title" title="{{ element.getRecord().get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
-          <span>{{ element.getRecord().get_title() }}</span>
-          {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80, '', session) }}
+    {% for element in story.get_children() %}
+      <div id="ORDER_{{ element.get_record_id() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
+        <div class="title" title="{{ element.get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
+          <span>{{ element.get_title() }}</span>
+          {{ thumbnail.format(element.get_thumbnail(), 80, 80, '', session) }}
           <form style="display:none;">
-            <input type="hidden" name="id" value="{{ element.getId() }}"/>
-            <input type="hidden" name="title" value="{{ element.getRecord().get_title() }}"/>
-            <input type="hidden" name="default" value="{{ element.getOrd() }}"/>
+            <input type="hidden" name="id" value="{{ element.get_record_id() }}"/>
+            <input type="hidden" name="title" value="{{ element.get_title() }}"/>
+            <input type="hidden" name="default" value="{{ element.get_number() }}"/>
           </form>
         </div>
       </div>
     {% endfor %}
     </div>
-    <form name="reorder" method="POST" action="/prod/baskets/{{ basket.getId() }}/reorder/">
-      {% for element in basket.getElements() %}
-        <input type="hidden" name="element[{{ element.getId() }}]" value="{{ element.getOrd() }}"/>
+    <form name="reorder" method="POST" action="/prod/story/{{story.get_sbas_id() }}/{{story.get_record_id() }}/reorder/">
+      {% for element in story.get_children() %}
+        <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.get_number() }}"/>
       {% endfor %}
       <button>{% trans 'boutton::valider' %}</button>
     </form>
@@ -275,7 +275,7 @@
             {
               alert(data.message);
             }
-            p4.WorkZone.refresh('current');
+            p4.WorkZone.refresh('current', null, false, 'story');
             p4.Dialog.get(1).Close();
 
             return;
