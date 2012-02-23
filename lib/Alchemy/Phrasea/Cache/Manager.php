@@ -11,8 +11,7 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Alchemy\Phrasea\Core\Configuration\Parser as FileParser,
-    \Alchemy\Phrasea\Core\Service\Builder,
+use \Alchemy\Phrasea\Core\Service\Builder,
     \Alchemy\Phrasea\Core;
 
 /**
@@ -43,13 +42,13 @@ class Manager
    */
   protected $registry = array();
 
-  public function __construct(Core $core, \SplFileObject $file, FileParser $parser)
+  public function __construct(Core $core, \SplFileObject $file)
   {
     $this->cacheFile = $file;
-    $this->parser = $parser;
+    $this->parser = new \Symfony\Component\Yaml\Yaml();
     $this->core = $core;
 
-    $this->registry = $parser->parse($file);
+    $this->registry = $this->parser->parse($file);
   }
 
   protected function exists($name)

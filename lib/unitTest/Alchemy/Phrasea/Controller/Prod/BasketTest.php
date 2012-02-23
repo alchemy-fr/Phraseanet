@@ -515,10 +515,6 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     $this->assertTrue($response->isRedirect());
 
-    $datas = json_decode($response->getContent());
-
-    $this->assertTrue($datas->success);
-
     $em = self::$core->getEntityManager();
     /* @var $em \Doctrine\ORM\EntityManager */
 
@@ -563,7 +559,7 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertArrayHasKey('message', $datas);
     $this->assertArrayHasKey('success', $datas);
     $this->assertTrue($datas['success']);
-    
+
     $basket = $em->getRepository('Entities\Basket')->find($Basket_1->getId());
     $this->assertInstanceOf('\Entities\Basket', $basket);
     $this->assertEquals(0, $basket->getElements()->count());

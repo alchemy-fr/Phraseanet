@@ -103,13 +103,9 @@ class phrasea
     return $retval;
   }
 
-  public static function start()
+  public static function start(\Alchemy\Phrasea\Core $Core)
   {
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
-    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    $configuration = $Core->getConfiguration();
 
     $choosenConnexion = $configuration->getPhraseanet()->get('database');
 

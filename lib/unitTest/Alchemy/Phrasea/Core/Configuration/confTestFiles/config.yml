@@ -64,12 +64,6 @@ no_display_errors:
     cache: array_cache
 
 missing_phraseanet:
-    ##phraseanet:
-        ##servername: 'http://dev.phrasea.net/'
-        ##maintenance: false
-        ##debug: true
-        ##display_errors: true
-        ##database: main_connexion
     template_engine: twig_debug
     orm: doctrine_test
     cache: array_cache

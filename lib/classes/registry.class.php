@@ -59,11 +59,7 @@ class registry implements registryInterface
   {
     $this->cache = new Alchemy\Phrasea\Cache\ArrayCache();
 
-    $handler = new \Alchemy\Phrasea\Core\Configuration\Handler(
-                    new \Alchemy\Phrasea\Core\Configuration\Application(),
-                    new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-    );
-    $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
     $this->cache->save('GV_RootPath', dirname(dirname(__DIR__)) . '/');
     if ($configuration->isInstalled())

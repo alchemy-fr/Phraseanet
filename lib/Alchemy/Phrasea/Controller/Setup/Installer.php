@@ -176,13 +176,9 @@ class Installer implements ControllerProviderInterface
           $setupRegistry = new \Setup_Registry();
           $setupRegistry->set('GV_ServerName', $servername, \registry::TYPE_STRING);
 
-          $appbox = \appbox::create($setupRegistry, $conn, $appbox_name, true);
+          $appbox = \appbox::create($app['Core'], $setupRegistry, $conn, $appbox_name, true);
 
-          $handler       = new \Alchemy\Phrasea\Core\Configuration\Handler(
-              new \Alchemy\Phrasea\Core\Configuration\Application(),
-              new \Alchemy\Phrasea\Core\Configuration\Parser\Yaml()
-          );
-          $configuration = new \Alchemy\Phrasea\Core\Configuration($handler);
+          $configuration = \Alchemy\Phrasea\Core\Configuration::build();
 
           if ($configuration->isInstalled())
           {
@@ -307,7 +303,7 @@ class Installer implements ControllerProviderInterface
             }
           }
 
-          \phrasea::start();
+          \phrasea::start($app['Core']);
 
           $auth = new \Session_Authentication_None($user);
 

@@ -78,11 +78,7 @@ class module_console_fileConfigCheck extends Command
 
   private function initTests(OutputInterface $output)
   {
-    $spec    = new Core\Configuration\Application();
-    $parser  = new Core\Configuration\Parser\Yaml();
-    $handler = new Core\Configuration\Handler($spec, $parser);
-
-    $this->configuration = new Core\Configuration($handler, $this->env);
+    $this->configuration = Core\Configuration::build();
 
     if (!$this->configuration->isInstalled())
     {
@@ -146,39 +142,19 @@ class module_console_fileConfigCheck extends Command
 
   private function checkParse(OutputInterface $output)
   {
-    $parser        = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getParser();
-    $fileConfig    = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getConfigurationFile();
-    $fileService   = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getServiceFile();
-    $fileConnexion = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getConnexionFile();
 
-    try
+    if (!$this->configuration->getConfigurations())
     {
-      $parser->parse($fileConfig);
-      $parser->parse($fileService);
-      $parser->parse($fileConnexion);
+      throw new \Exception("Unable to load configurations\n");
     }
-    catch (\Exception $e)
+    if (!$this->configuration->getConnexions())
     {
-      $message = str_replace("\\", "", $e->getMessage());
-      $e       = new \Exception($message);
-      throw new \Exception(sprintf("Check parsing file\n"), null, $e);
+      throw new \Exception("Unable to load connexions\n");
     }
-    $output->writeln("<info>Parsing File OK</info>");
+    if (!$this->configuration->getServices())
+    {
+      throw new \Exception("Unable to load services\n");
+    }
 
     return;
   }
@@ -200,11 +176,7 @@ class module_console_fileConfigCheck extends Command
 
   private function checkGetSelectedEnvironementFromFile(OutputInterface $output)
   {
-    $spec    = new Core\Configuration\Application();
-    $parser  = new Core\Configuration\Parser\Yaml();
-    $handler = new Core\Configuration\Handler($spec, $parser);
-
-    $configuration = new Core\Configuration($handler);
+    $configuration = Core\Configuration::build();
 
     try
     {

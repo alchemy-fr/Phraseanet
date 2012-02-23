@@ -35,7 +35,6 @@ class module_console_fileEnsureProductionSetting extends Command
    * @var \Alchemy\Phrasea\Core\Configuration
    */
   protected $configuration;
-  protected $env;
   protected $testSuite = array(
     'checkPhraseanetScope'
     , 'checkDatabaseScope'
@@ -44,7 +43,7 @@ class module_console_fileEnsureProductionSetting extends Command
     , 'checkCacheService'
     , 'checkOpcodeCacheService'
   );
-  protected $connexionOk = false;
+  protected $errors = 0;
 
   public function __construct($name = null)
   {
@@ -52,17 +51,26 @@ class module_console_fileEnsureProductionSetting extends Command
 
     $this->setDescription('Ensure production settings');
 
-    //$this->addArgument('conf', InputArgument::OPTIONAL, 'The file to check');
+    $this->addArgument('conf', InputArgument::OPTIONAL, 'The file to check', null);
 
     return $this;
   }
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
+    $specifications = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
 
-    $this->initTests($output);
+    $environnement = $input->getArgument('conf');
 
-    $this->prepareTests($output);
+    $this->configuration = \Alchemy\Phrasea\Core\Configuration::build($specifications, $environnement);
+
+    if (!$this->configuration->isInstalled())
+    {
+      $output->writeln(sprintf("\nPhraseanet is not installed\n"));
+    }
+
+    $this->checkParse($output);
+    $output->writeln(sprintf("Will Ensure Production Settings on <info>%s</info>", $this->configuration->getEnvironnement()));
 
     $this->runTests($output);
 
@@ -70,72 +78,30 @@ class module_console_fileEnsureProductionSetting extends Command
     return 0;
   }
 
-  private function initTests(OutputInterface $output)
-  {
-    $spec    = new Core\Configuration\Application();
-    $parser  = new Core\Configuration\Parser\Yaml();
-    $handler = new Core\Configuration\Handler($spec, $parser);
-
-    $this->configuration = new Core\Configuration($handler);
-
-    if (!$this->configuration->isInstalled())
-    {
-      $output->writeln(sprintf("\nPhraseanet is not installed\n"));
-
-      return 1;
-    }
-  }
-
-  private function prepareTests(OutputInterface $output)
-  {
-    try
-    {
-      $this->checkParse($output);
-      $this->checkGetSelectedEnvironement($output);
-      $this->checkGetSelectedEnvironementFromFile($output);
-    }
-    catch (\Exception $e)
-    {
-      $previous        = $e->getPrevious();
-      $previousMessage = $previous instanceof \Exception ? $previous->getMessage() : 'Unknown.';
-
-      $output->writeln(sprintf(
-          "<error>Error while loading : %s (%s)</error>"
-          , $e->getMessage()
-          , $previousMessage
-        )
-      );
-
-      return 1;
-    }
-  }
-
   private function runTests(OutputInterface $output)
   {
-    $nbErrors = 0;
-
     foreach ($this->testSuite as $test)
     {
       $display = "";
       switch ($test)
       {
         case 'checkPhraseanetScope' :
-          $display = "Phraseanet Scope Configuration";
+          $display = "Phraseanet Configuration";
           break;
         case 'checkDatabaseScope' :
-          $display = "Database configuration & connexion";
+          $display = "Database";
           break;
         case 'checkTeamplateEngineService' :
-          $display = "Template Engine Service";
+          $display = "Template Engine";
           break;
         case 'checkOrmService' :
-          $display = "ORM Service";
+          $display = "ORM";
           break;
         case 'checkCacheService' :
-          $display = "Cache Service";
+          $display = "Cache";
           break;
         case 'checkOpcodeCacheService' :
-          $display = "Opcode Cache Service";
+          $display = "Opcode";
           break;
         default:
           throw new \Exception('Unknown test');
@@ -144,66 +110,33 @@ class module_console_fileEnsureProductionSetting extends Command
 
       $output->writeln(sprintf("\n||| %s", mb_strtoupper($display)));
 
-      try
-      {
-        call_user_func(array($this, $test), $output);
-      }
-      catch (\Exception $e)
-      {
-        $nbErrors++;
-        $previous = $e->getPrevious();
-
-        $output->writeln(sprintf(
-            "<error>%s FAILED : %s</error>"
-            , $e->getMessage()
-            , $previous instanceof \Exception ? $previous->getMessage() : 'Unknown'
-          )
-        );
-        $output->writeln("");
-      }
+      call_user_func(array($this, $test), $output);
     }
-    if (!$nbErrors)
-    {
-      $output->writeln("\n<info>Your production settings are setted correctly ! Enjoy</info>");
-    }
-    else
+    if ($this->errors)
     {
       $output->writeln("\n<error>Some errors found in your conf</error>");
     }
-    return (int) ($nbErrors > 0);
+    else
+    {
+      $output->writeln("\n<info>Your production settings are setted correctly ! Enjoy</info>");
+    }
+    return $this->errors;
   }
 
   private function checkParse(OutputInterface $output)
   {
-    $parser        = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getParser();
-    $fileConfig    = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getConfigurationFile();
-    $fileService   = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getServiceFile();
-    $fileConnexion = $this
-      ->configuration
-      ->getConfigurationHandler()
-      ->getSpecification()
-      ->getConnexionFile();
 
-    try
+    if (!$this->configuration->getConfigurations())
     {
-      $parser->parse($fileConfig);
-      $parser->parse($fileService);
-      $parser->parse($fileConnexion);
+      throw new \Exception("Unable to load configurations\n");
     }
-    catch (\Exception $e)
+    if (!$this->configuration->getConnexions())
     {
-      throw new \Exception("Error parsing file\n", null, $e);
+      throw new \Exception("Unable to load connexions\n");
+    }
+    if (!$this->configuration->getServices())
+    {
+      throw new \Exception("Unable to load services\n");
     }
 
     return;
@@ -212,419 +145,624 @@ class module_console_fileEnsureProductionSetting extends Command
   private function checkCacheService(OutputInterface $output)
   {
     $cache = $this->configuration->getCache();
-    $this->probeCacheService($output, 'MainCache', $cache);
+
+
+    if ($this->probeCacheService($output, $cache))
+    {
+      if ($this->recommendedCacheService($output, $cache, true))
+      {
+        $work_message = '<info>Works !</info>';
+      }
+      else
+      {
+        $work_message = '<comment>Cache server recommended</comment>';
+      }
+    }
+    else
+    {
+      $work_message = '<error>Failed - could not connect !</error>';
+      $this->errors++;
+    }
+
+    $verification = sprintf("\t--> Verify <info>%s</info> : %s", 'MainCache', $work_message);
+
+
+    $this->printConf($output, "\t" . 'service', $cache, false, $verification);
+    $this->verifyCacheOptions($output, $cache);
   }
 
   private function checkOpcodeCacheService(OutputInterface $output)
   {
     $cache = $this->configuration->getOpcodeCache();
-    $this->probeCacheService($output, 'MainOpcodeCache', $cache);
-  }
 
-  private function checkGetSelectedEnvironement(OutputInterface $output)
-  {
-    try
+
+    if ($this->probeCacheService($output, $cache))
     {
-      $this->configuration->getConfiguration();
+      if ($this->recommendedCacheService($output, $cache, false))
+      {
+        $work_message = '<info>Works !</info>';
+      }
+      else
+      {
+        $work_message = '<comment>Opcode recommended</comment>';
+      }
     }
-    catch (\Exception $e)
+    else
     {
-      throw new \Exception(sprintf("Error getting configuration\n"), null, $e);
-    }
-
-    return;
-  }
-
-  private function checkGetSelectedEnvironementFromFile(OutputInterface $output)
-  {
-    $spec    = new Core\Configuration\Application();
-    $parser  = new Core\Configuration\Parser\Yaml();
-    $handler = new Core\Configuration\Handler($spec, $parser);
-
-    $configuration = new Core\Configuration($handler);
-
-    try
-    {
-      $configuration->getConfiguration();
-    }
-    catch (\Exception $e)
-    {
-      throw new \Exception(sprintf("Error getting environment\n"), null, $e);
+      $work_message = '<error>Failed - could not connect !</error>';
+      $this->errors++;
     }
 
-    $output->writeln(sprintf("Will Ensure Production Settings on <info>%s</info>", $configuration->getEnvironnement()));
-    return;
+    $verification = sprintf("\t--> Verify <info>%s</info> : %s", 'OpcodeCache', $work_message);
+
+
+    $this->printConf($output, "\t" . 'service', $cache, false, $verification);
+    $this->verifyCacheOptions($output, $cache);
   }
 
   private function checkPhraseanetScope(OutputInterface $output)
   {
-    try
+    $required = array('servername', 'maintenance', 'debug', 'display_errors', 'database');
+
+    $phraseanet = $this->configuration->getPhraseanet();
+
+    foreach ($phraseanet->all() as $conf => $value)
     {
-      $phraseanet = $this->configuration->getPhraseanet();
-
-      $this->printConf($output, 'phraseanet', $phraseanet->all());
-
-      $url = $phraseanet->get("servername");
-
-      if (empty($url))
+      switch ($conf)
       {
-        throw new \Exception("phraseanet:servername connot be empty");
-      }
+        default:
+          $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
+          break;
+        case 'servername':
+          $url      = $value;
+          $required = array_diff($required, array($conf));
 
-      if (!filter_var($url, FILTER_VALIDATE_URL))
-      {
-        throw new \Exception(sprintf("%s url is not valid", $url));
-      }
+          $parseUrl = parse_url($url);
 
-      $parseUrl = parse_url($url);
-
-      if ($parseUrl["scheme"] !== "https")
-      {
-        $output->writeln(sprintf("<comment>/!\ %s url scheme should be https</comment>", $url));
-      }
-
-
-      if (!$phraseanet->has("debug"))
-      {
-        $output->writeln(sprintf("<comment>You should give debug a value</comment>", $url));
-      }
-      elseif ($phraseanet->get("debug") !== false)
-      {
-        throw new \Exception("phraseanet:debug must be initialized to false");
-      }
-
-      if ($phraseanet->get("display_errors") !== false)
-      {
-        throw new \Exception("Display errors should be false");
-      }
-
-      if ($phraseanet->get("maintenance") === true)
-      {
-        throw new \Exception("phraseanet:warning maintenance is set to false");
+          if (empty($url))
+          {
+            $message = "<error>should not be empty</error>";
+            $this->errors++;
+          }
+          elseif ($url == 'http://sub.domain.tld/')
+          {
+            $message = "<comment>may be wrong</comment>";
+          }
+          elseif (!filter_var($url, FILTER_VALIDATE_URL))
+          {
+            $message = "<error>not valid</error>";
+            $this->errors++;
+          }
+          elseif ($parseUrl["scheme"] !== "https")
+          {
+            $message = "<comment>should be https</comment>";
+          }
+          else
+          {
+            $message  = "<info>OK</info>";
+          }
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'maintenance':
+        case 'debug':
+        case 'display_errors':
+          $required = array_diff($required, array($conf));
+          $message  = $value ? '<error>Should be false</error>' : '<info>OK</info>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'database':
+          $required = array_diff($required, array($conf));
+          try
+          {
+            $service = $this->configuration->getConnexion($value);
+            if ($this->verifyDatabaseConnexion($service))
+            {
+              $message = '<info>OK</info>';
+            }
+            else
+            {
+              $message = '<error>Connection not available</error>';
+              $this->errors++;
+            }
+          }
+          catch (\Exception $e)
+          {
+            $message = '<error>Unknown connection</error>';
+            $this->errors++;
+          }
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
       }
     }
-    catch (\Exception $e)
+
+    if (count($required) > 0)
     {
-      throw new \Exception(sprintf("Check Phraseanet Scope\n"), null, $e);
+      $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
+      $this->errors++;
     }
-    $output->writeln("");
-    $output->writeln("<info>Phraseanet scope is correctly setted</info>");
-    $output->writeln("");
     return;
   }
 
   private function checkDatabaseScope(OutputInterface $output)
   {
+    $connexionName = $this->configuration->getPhraseanet()->get('database');
+    $connexion     = $this->configuration->getConnexion($connexionName);
+
     try
     {
-      $connexionName = $this->configuration->getPhraseanet()->get('database');
-      $connexion     = $this->configuration->getConnexion($connexionName);
-
-      $output->writeln(sprintf("Current connexion is '%s'", $connexionName));
-      $output->writeln("");
-      foreach ($connexion->all() as $key => $element)
+      if ($this->verifyDatabaseConnexion($connexion))
       {
-        $output->writeln(sprintf("%s: %s", $key, $element));
+        $work_message = '<info>Works !</info>';
       }
-
-      if ($connexion->get("driver") === "pdo_sqlite")
+      else
       {
-        throw new \Exception("A sqlite database is not recommanded for production environment");
+        $work_message = '<error>Failed - could not connect !</error>';
+        $this->errors++;
       }
-
-      try
-      {
-        $config = new \Doctrine\DBAL\Configuration();
-        $conn   = \Doctrine\DBAL\DriverManager::getConnection(
-            $connexion->all()
-            , $config
-        );
-        unset($conn);
-        $this->connexionOk = true;
-      }
-      catch (\Exception $e)
-      {
-        throw new \Exception(sprintf(
-            "Unable to connect to database declared in connexion '%s' for the following reason %s"
-            , $connexionName
-            , $e->getMessage()
-          )
-        );
-      }
-
-      $output->writeln("");
-      $output->writeln(sprintf("<info>'%s' successfully connect to database</info>", $connexionName));
-      $output->writeln("");
     }
     catch (\Exception $e)
     {
-      throw new \Exception(sprintf("CHECK Database Scope\n"), null, $e);
+
+      $work_message = '<error>Failed - could not connect !</error>';
+      $this->errors++;
+    }
+
+    $output->writeln(sprintf("\t--> Verify connection <info>%s</info> : %s", $connexionName, $work_message));
+
+    $required = array('driver');
+
+    if (!$connexion->has('driver'))
+    {
+      $output->writeln("\n<error>Connection has no driver</error>");
+      $this->errors++;
+    }
+    elseif ($connexion->get('driver') == 'pdo_mysql')
+    {
+      $required = array('driver', 'dbname', 'charset', 'password', 'user', 'port', 'host');
+    }
+    elseif ($connexion->get('driver') == 'pdo_sqlite')
+    {
+      $required = array('driver', 'path', 'charset');
+    }
+    else
+    {
+      $output->writeln("\n<error>Your driver is not managed</error>");
+      $this->errors++;
+    }
+
+    foreach ($connexion->all() as $conf => $value)
+    {
+      switch ($conf)
+      {
+        default:
+          $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
+          break;
+        case 'charset':
+          $required = array_diff($required, array($conf));
+          $message  = $value == 'UTF8' ? '<info>OK</info>' : '<comment>Not recognized</comment>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'path':
+          $required = array_diff($required, array($conf));
+          $message  = is_writable(dirname($value)) ? '<info>OK</info>' : '<error>Not writeable</error>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'dbname':
+        case 'user':
+        case 'host':
+          $required = array_diff($required, array($conf));
+          $message  = is_scalar($value) ? '<info>OK</info>' : '<error>Should be scalar</error>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'port':
+          $required = array_diff($required, array($conf));
+          $message  = ctype_digit($value) ? '<info>OK</info>' : '<error>Should be scalar</error>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'password':
+          $required = array_diff($required, array($conf));
+          $message  = is_scalar($value) ? '<info>OK</info>' : '<error>Should be scalar</error>';
+          $value    = '***********';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'driver':
+          $required = array_diff($required, array($conf));
+          $message = $value === 'pdo_mysql' ? '<info>OK</info>' : '<error>MySQL recommended</error>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+      }
+    }
+
+    if (count($required) > 0)
+    {
+      $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
+      $this->errors++;
     }
 
     return;
   }
 
-  private function checkTeamplateEngineService(OutputInterface $output)
+  protected function verifyDatabaseConnexion(\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag $connexion)
   {
     try
     {
-      $templateEngineName = $this->configuration->getTemplating();
-//      $output->writeln(sprintf("Current template engine service is '%s' ", $templateEngineName));
-//      $output->writeln("");
-      try
-      {
-        $configuration = $this->configuration->getService($templateEngineName);
-        $this->printConf($output, $templateEngineName, $configuration->all());
-      }
-      catch (\Exception $e)
-      {
-        $message = sprintf(
-          "%s called from %s in %s:template_engine scope"
-          , $e->getMessage()
-          , $this->configuration->getFile()->getFilename()
-          , "PROD"
-          , $templateEngineName
-        );
-        $e       = new \Exception($message);
-        throw $e;
-      }
-
-      $service = Core\Service\Builder::create(
-          \bootstrap::getCore()
-          , $templateEngineName
-          , $configuration
-      );
-
-      if ($service->getType() === 'twig')
-      {
-        $twig = $service->getDriver();
-
-        if ($twig->isDebug())
-        {
-          throw new \Exception(sprintf("%s service should not be in debug mode", $service->getName()));
-        }
-
-        if ($twig->isStrictVariables())
-        {
-          throw new \Exception(sprintf("%s service should not be set in strict variables mode", $service->getName()));
-        }
-      }
+      $config = new \Doctrine\DBAL\Configuration();
+      $conn   = \Doctrine\DBAL\DriverManager::getConnection($connexion->all(), $config);
+      return true;
     }
     catch (\Exception $e)
     {
-      if ($e instanceof \Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException)
-      {
-        if ($e->getKey() === 'template_engine')
-        {
-          $e = new \Exception(sprintf(
-                "Missing parameter %s "
-                , $e->getKey()
-              )
-          );
-        }
-        else
-        {
-          $e = new \Exception(sprintf(
-                "Missing parameter %s for %s service"
-                , $e->getKey()
-                , $templateEngineName
-              )
-          );
-        }
-      }
 
-      throw new \Exception(sprintf("Check Template Service\n"), null, $e);
     }
-    $output->writeln(sprintf("<info>'%s' template engine service is correctly setted </info>", $templateEngineName));
-    $output->writeln("");
+
+    return false;
+  }
+
+  private function checkTeamplateEngineService(OutputInterface $output)
+  {
+    $templateEngineName = $this->configuration->getTemplating();
+    $configuration      = $this->configuration->getService($templateEngineName);
+
+    try
+    {
+      Core\Service\Builder::create(\bootstrap::getCore(), $templateEngineName, $configuration);
+      $work_message = '<info>Works !</info>';
+    }
+    catch (\Exception $e)
+    {
+      $work_message = '<error>Failed - could not connect !</error>';
+      $this->errors++;
+    }
+
+    $output->writeln(sprintf("\t--> Verify Template engine <info>%s</info> : %s", $templateEngineName, $work_message));
+
+    if (!$configuration->has('type'))
+    {
+      $output->writeln("\n<error>Configuration has no type</error>");
+      $this->errors++;
+    }
+    elseif ($configuration->get('type') == 'TemplateEngine\\Twig')
+    {
+      $required = array('debug', 'charset', 'strict_variables', 'autoescape', 'optimizer');
+    }
+    else
+    {
+      $output->writeln("\n<error>Your type is not managed</error>");
+      $this->errors++;
+    }
+
+
+
+    foreach ($configuration->all() as $conf => $value)
+    {
+      switch ($conf)
+      {
+        case 'type':
+          $message = $value == 'TemplateEngine\\Twig' ? '<info>OK</info>' : '<error>Not recognized</error>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'options':
+          $message = is_array($value) ? '<info>OK</info>' : '<error>Should be array</error>';
+          $this->printConf($output, $conf, 'array()', false, $message);
+          break;
+        default:
+          $this->printConf($output, $conf, 'unknown', false, '<comment>Not recognized</comment>');
+          break;
+      }
+    }
+
+    foreach ($configuration->get('options') as $conf => $value)
+    {
+      switch ($conf)
+      {
+        case 'debug';
+        case 'strict_variables';
+          $required = array_diff($required, array($conf));
+          $message  = $value == false ? '<info>OK</info>' : '<error>Should be false</error>';
+          $this->printConf($output, "\t" . $conf, $value, false, $message);
+          break;
+        case 'autoescape';
+        case 'optimizer';
+          $required = array_diff($required, array($conf));
+          $message  = $value == true ? '<info>OK</info>' : '<error>Should be true</error>';
+          $this->printConf($output, "\t" . $conf, $value, false, $message);
+          break;
+        case 'charset';
+          $required = array_diff($required, array($conf));
+          $message = $value == 'utf-8' ? '<info>OK</info>' : '<comment>Not recognized</comment>';
+          $this->printConf($output, "\t" . $conf, $value, false, $message);
+          break;
+        default:
+          $this->printConf($output, "\t" . $conf, $value, false, '<comment>Not recognized</comment>');
+          break;
+      }
+    }
+
+    if (count($required) > 0)
+    {
+      $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
+      $this->errors++;
+    }
+
     return;
   }
 
   private function checkOrmService(OutputInterface $output)
   {
-    if (!$this->connexionOk)
-    {
-      $output->writeln("<comment>As ORM service test depends on database test success, it is not executed</comment>");
-
-      return;
-    }
+    $ormName       = $this->configuration->getOrm();
+    $configuration = $this->configuration->getService($ormName);
 
     try
     {
-      $ormName = $this->configuration->getOrm();
-
-      $output->writeln(sprintf("Current ORM service is '%s'", $ormName));
-      $output->writeln("");
-      try
-      {
-        $configuration = $this->configuration->getService($ormName);
-        $this->printConf($output, $ormName, $configuration->all());
-      }
-      catch (\Exception $e)
-      {
-        $message  = sprintf(
-          "%s called from %s in %s scope"
-          , $e->getMessage()
-          , $this->configuration->getFile()->getFilename()
-          , $ormName
-        );
-        $e        = new \Exception($message);
-        throw $e;
-      }
-      $registry = \registry::get_instance();
-
-      $service = Core\Service\Builder::create(
-          \bootstrap::getCore()
-          , $ormName
-          , $configuration
-      );
-
-      if ($service->getType() === 'doctrine')
-      {
-        $output->writeln("");
-
-        $caches = $service->getCacheServices()->all();
-
-        if ($service->isDebug())
-        {
-          throw new \Exception(sprintf(
-              "%s service should not be in debug mode"
-              , $service->getName()
-            )
-          );
-        }
-
-        $output->writeln("");
-
-        $options = $configuration->get("options");
-
-        if (!isset($options['orm']['cache']))
-        {
-
-          throw new \Exception(sprintf(
-              "%s:doctrine:orm:cache must not be empty. In production environment the cache is highly recommanded."
-              , $service->getName()
-            )
-          );
-        }
-
-        foreach ($caches as $key => $cache)
-        {
-          $ServiceName = $options['orm']['cache'][$key];
-
-          $this->probeCacheService($output, $key, $ServiceName);
-        }
-
-        try
-        {
-          $logServiceName = $options['log'];
-          $configuration  = $this->configuration->getService($logServiceName);
-          $serviceLog     = Core\Service\Builder::create(
-              \bootstrap::getCore()
-              , $logServiceName
-              , $configuration
-          );
-
-          $exists = true;
-        }
-        catch (\Exception $e)
-        {
-          $exists = false;
-        }
-
-        if ($exists)
-        {
-          throw new \Exception(sprintf(
-              "doctrine:orm:log %s service should not be enable"
-              , $serviceLog->getName()
-            )
-          );
-        }
-      }
+      $service      = Core\Service\Builder::create(\bootstrap::getCore(), $ormName, $configuration);
+      $work_message = '<info>Works !</info>';
     }
     catch (\Exception $e)
     {
-      if ($e instanceof \Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException)
-      {
-        if ($e->getKey() === 'orm')
-        {
-          $e = new \Exception(sprintf(
-                "Missing parameter %s for service %s"
-                , $e->getKey()
-                , $service->getName()
-              )
-          );
-        }
-        else
-        {
-          $e = new \Exception(sprintf(
-                "Missing parameter %s for %s service declared"
-                , $e->getKey()
-                , $service->getName()
-              )
-          );
-        }
-      }
-
-      throw new \Exception(sprintf("Check ORM Service : "), null, $e);
+      $work_message = '<error>Failed - could not connect !</error>';
+      $this->errors++;
     }
 
-    $output->writeln("");
-    $output->writeln(sprintf("<info>'%s' ORM service is correctly setted </info>", $ormName));
-    $output->writeln("");
+    $output->writeln(sprintf("\t--> Verify ORM engine <info>%s</info> : %s", $ormName, $work_message));
+
+
+
+    if (!$configuration->has('type'))
+    {
+      $output->writeln("\n<error>Configuration has no type</error>");
+      $this->errors++;
+    }
+    elseif ($configuration->get('type') == 'Orm\\Doctrine')
+    {
+      $required = array('debug', 'dbal', 'cache');
+    }
+    else
+    {
+      $output->writeln("\n<error>Your type is not managed</error>");
+      $this->errors++;
+    }
+
+
+
+    foreach ($configuration->all() as $conf => $value)
+    {
+      switch ($conf)
+      {
+        case 'type':
+          $message = $value == 'Orm\\Doctrine' ? '<info>OK</info>' : '<error>Not recognized</error>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'options':
+          $message = is_array($value) ? '<info>OK</info>' : '<error>Should be array</error>';
+          $this->printConf($output, $conf, 'array()', false, $message);
+          break;
+        default:
+          $this->printConf($output, $conf, 'unknown', false, '<comment>Not recognized</comment>');
+          break;
+      }
+    }
+
+
+    foreach ($configuration->get('options') as $conf => $value)
+    {
+      switch ($conf)
+      {
+        case 'log':
+          $message  = $value == false ? '<info>OK</info>' : '<error>Should be deactivated</error>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'cache':
+          $required = array_diff($required, array($conf));
+          $message = is_array($value) ? '<info>OK</info>' : '<error>Should be Array</error>';
+          $this->printConf($output, $conf, 'array()', false, $message);
+
+          $required_caches = array('query', 'result', 'metadata');
+          foreach ($value as $name => $cache_type)
+          {
+            $required_caches = array_diff($required_caches, array($name));
+
+            foreach ($cache_type as $key_cache => $value_cache)
+            {
+              switch ($key_cache)
+              {
+                case 'service':
+                  if ($this->probeCacheService($output, $value_cache))
+                  {
+                    $server = $name === 'result';
+                    if ($this->recommendedCacheService($output, $value_cache, $server))
+                    {
+                      $work_message = '<info>Works !</info>';
+                    }
+                    else
+                    {
+                      if ($server)
+                      {
+                        $work_message = '<comment>Cache server recommended</comment>';
+                      }
+                      else
+                      {
+                        $work_message = '<comment>Opcode cache recommended</comment>';
+                      }
+                    }
+                  }
+                  else
+                  {
+                    $work_message = '<error>Failed - could not connect !</error>';
+                    $this->errors++;
+                  }
+
+                  $verification = sprintf("\t--> Verify <info>%s</info> : %s", $name, $work_message);
+
+
+                  $this->printConf($output, "\t" . $key_cache, $value_cache, false, $verification);
+                  $this->verifyCacheOptions($output, $value_cache);
+                  break;
+                default:
+                  $this->printConf($output, "\t" . $key_cache, $value_cache, false, '<comment>Not recognized</comment>');
+                  break;
+              }
+              if (!isset($cache_type['service']))
+              {
+                $output->writeln('<error>Miss service for %s</error>', $cache_type);
+                $this->errors++;
+              }
+            }
+          }
+
+          if (count($required_caches) > 0)
+          {
+            $output->writeln(sprintf('<error>Miss required caches %s</error>', implode(', ', $required_caches)));
+            $this->errors++;
+          }
+          break;
+        case 'debug':
+          $required = array_diff($required, array($conf));
+          $message  = $value == false ? '<info>OK</info>' : '<error>Should be false</error>';
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'dbal':
+          $required = array_diff($required, array($conf));
+          try
+          {
+            $connexion = $this->configuration->getConnexion($value);
+            $this->verifyDatabaseConnexion($connexion);
+            $message   = '<info>OK</info>';
+          }
+          catch (\Exception $e)
+          {
+            $message = '<error>Failed</error>';
+            $this->errors++;
+          }
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        default:
+          $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
+          break;
+      }
+    }
+
+    if (count($required) > 0)
+    {
+      $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
+      $this->errors++;
+    }
 
     return;
   }
 
-  protected function probeCacheService(OutputInterface $output, $cacheName, $ServiceName)
+  protected function verifyCacheOptions(OutputInterface $output, $ServiceName)
   {
-    $originalConfiguration = $this->configuration->getService($ServiceName);
-    $options               = $originalConfiguration->all();
-
-    if (!empty($options))
+    try
     {
-      $output->writeln(sprintf("%s cache service", $ServiceName));
-      $this->printConf($output, $cacheName . ":" . $ServiceName, $options);
+      $conf = $this->configuration->getService($ServiceName);
+
+      $Service = Core\Service\Builder::create(
+          \bootstrap::getCore(), $ServiceName, $conf
+      );
+    }
+    catch (\Exception $e)
+    {
+      return false;
     }
 
-    $Service = Core\Service\Builder::create(
-        \bootstrap::getCore(), $ServiceName, $originalConfiguration
-    );
+    $required_options = array();
+
+    switch ($Service->getType())
+    {
+      default:
+        break;
+      case 'memcache':
+        $required_options = array('host', 'port');
+        break;
+    }
+
+    if ($required_options)
+    {
+      foreach ($conf->get('options') as $conf => $value)
+      {
+        switch ($conf)
+        {
+          case 'host';
+            $required_options = array_diff($required_options, array($conf));
+            $message          = is_scalar($value) ? '<info>OK</info>' : '<error>Should be scalar</error>';
+            $this->printConf($output, "\t\t" . $conf, $value, false, $message);
+            break;
+          case 'port';
+            $required_options = array_diff($required_options, array($conf));
+            $message = ctype_digit($value) ? '<info>OK</info>' : '<comment>Not recognized</comment>';
+            $this->printConf($output, "\t\t" . $conf, $value, false, $message);
+            break;
+          default:
+            $this->printConf($output, "\t\t" . $conf, $value, false, '<comment>Not recognized</comment>');
+            break;
+        }
+      }
+    }
+
+    if (count($required_options) > 0)
+    {
+      $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required_options)));
+      $this->errors++;
+    }
+  }
+
+  protected function probeCacheService(OutputInterface $output, $ServiceName)
+  {
+    try
+    {
+      $originalConfiguration = $this->configuration->getService($ServiceName);
+
+      $Service = Core\Service\Builder::create(
+          \bootstrap::getCore(), $ServiceName, $originalConfiguration
+      );
+    }
+    catch (\Exception $e)
+    {
+      return false;
+    }
+
     if ($Service->getDriver()->isServer())
     {
       switch ($Service->getType())
       {
         default:
-          $output->writeln(sprintf("<error>Unable to check %s</error>", $Service->getType()));
+          return false;
           break;
         case 'memcache':
           if (!memcache_connect($Service->getHost(), $Service->getPort()))
           {
-            $output->writeln(
-              sprintf(
-                "<error>Unable to connect to memcache service %s with host '%s' and port '%s'</error>"
-                , $Service->getName()
-                , $Service->getHost()
-                , $Service->getPort()
-              )
-            );
+            return false;
           }
           break;
       }
     }
-    if ($Service->getType() === 'array')
-    {
-      $output->writeln(
-        sprintf(
-          "<error>doctrine:orm:%s %s service should not be an array cache type</error>"
-          , $Service->getName()
-          , $cacheName
-        )
-      );
-    }
+
+    return true;
   }
 
-  private function printConf($output, $scope, $value, $scopage = false)
+  protected function recommendedCacheService(OutputInterface $output, $ServiceName, $server)
+  {
+    try
+    {
+      $originalConfiguration = $this->configuration->getService($ServiceName);
+
+      $Service = Core\Service\Builder::create(
+          \bootstrap::getCore(), $ServiceName, $originalConfiguration
+      );
+    }
+    catch (\Exception $e)
+    {
+      return false;
+    }
+
+    if ($Service->getType() === 'array')
+    {
+      return false;
+    }
+    return $server === $Service->getDriver()->isServer();
+  }
+
+  private function printConf($output, $scope, $value, $scopage = false, $message = '')
   {
     if (is_array($value))
     {
@@ -632,24 +770,24 @@ class module_console_fileEnsureProductionSetting extends Command
       {
         if ($scopage)
           $key = $scope . ":" . $key;
-        $this->printConf($output, $key, $val, $scopage);
+        $this->printConf($output, $key, $val, $scopage, '');
       }
     }
     elseif (is_bool($value))
     {
       if ($value === false)
       {
-        $value = '0';
+        $value = 'false';
       }
       elseif ($value === true)
       {
-        $value = '1';
+        $value = 'true';
       }
-      $output->writeln(sprintf("\t%s: %s", $scope, $value));
+      $output->writeln(sprintf("\t%s: %s %s", $scope, $value, $message));
     }
     elseif (!empty($value))
     {
-      $output->writeln(sprintf("\t%s: %s", $scope, $value));
+      $output->writeln(sprintf("\t%s: %s %s", $scope, $value, $message));
     }
   }
 

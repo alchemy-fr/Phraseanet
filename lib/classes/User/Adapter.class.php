@@ -1743,50 +1743,43 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
   public static function create(appbox &$appbox, $login, $password, $email, $admin, $invite = false)
   {
-    try
+    $conn = $appbox->get_connection();
+
+    if (trim($login) == '')
+      throw new Exception('Invalid username');
+    if (trim($password) == '')
+      throw new Exception('Invalid password');
+
+    $login = $invite ? 'invite' . random::generatePassword(16) : $login;
+
+    $nonce = random::generatePassword(16);
+
+    $sql = 'INSERT INTO usr
+      (usr_id, usr_login, usr_password, usr_creationdate, usr_mail, create_db, nonce, salted_password, invite)
+      VALUES (null, :login, :password, NOW(), :email, :admin, :nonce, 1, :invite)';
+
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(
+      ':login'    => $login,
+      ':nonce'    => $nonce,
+      ':password' => self::salt_password($password, $nonce),
+      ':email'    => ($email ? $email : null),
+      ':admin'    => ($admin ? '1' : '0'),
+      ':invite'   => ($invite ? '1' : '0')
+    ));
+    $stmt->closeCursor();
+
+    $usr_id = $conn->lastInsertId();
+
+    if ($invite)
     {
-      $conn = $appbox->get_connection();
-
-      if (trim($login) == '')
-        throw new Exception('Invalid username');
-      if (trim($password) == '')
-        throw new Exception('Invalid password');
-
-      $login = $invite ? 'invite' . random::generatePassword(16) : $login;
-
-      $nonce = random::generatePassword(16);
-
-      $sql = 'INSERT INTO usr
-        (usr_id, usr_login, usr_password, usr_creationdate, usr_mail, create_db, nonce, salted_password, invite)
-        VALUES (null, :login, :password, NOW(), :email, :admin, :nonce, 1, :invite)';
-
+      $sql  = 'UPDATE usr SET usr_login = "invite' . $usr_id . '" WHERE usr_id="' . $usr_id . '"';
       $stmt = $conn->prepare($sql);
-      $stmt->execute(array(
-        ':login'    => $login,
-        ':nonce'    => $nonce,
-        ':password' => self::salt_password($password, $nonce),
-        ':email'    => ($email ? $email : null),
-        ':admin'    => ($admin ? '1' : '0'),
-        ':invite'   => ($invite ? '1' : '0')
-      ));
+      $stmt->execute();
       $stmt->closeCursor();
-
-      $usr_id = $conn->lastInsertId();
-
-      if ($invite)
-      {
-        $sql  = 'UPDATE usr SET usr_login = "invite' . $usr_id . '" WHERE usr_id="' . $usr_id . '"';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $stmt->closeCursor();
-      }
-
-      return self::getInstance($usr_id, $appbox);
     }
-    catch (Exception $e)
-    {
-      throw new Exception('Unable to create user : ' . $e->getMessage());
-    }
+
+    return self::getInstance($usr_id, $appbox);
   }
 
   public static function salt_password($password, $nonce)

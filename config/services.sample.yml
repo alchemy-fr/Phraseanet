@@ -121,7 +121,7 @@ Log:
   # phpecho logger logs doctrine queries to the standard output using echo/var_dump
   # Notice that phpecho logger do not have options
   sql_logger:
-    type: Log\Phpecho
+    type: Log\Doctrine\Phpecho
 
 Cache:
   #Define cache services
