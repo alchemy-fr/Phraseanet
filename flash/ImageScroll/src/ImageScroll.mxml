@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" creationComplete="loadXML()" backgroundAlpha="0"  borderColor="#6587AE">
+	<mx:Script>
+
+		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			private var imagesXML:String = "";
+			private var nav:Navigator;
+
+			public function loadXML( ):void
+			{
+				if(Application.application.parameters.rss != null)
+				{
+					httpService.url = Application.application.parameters.rss;
+				}
+				
+				httpService.send();
+			}
+			private function onLoad( e:ResultEvent ):void
+			{
+				var xml:XML = new XML( e.result );
+				var component:UIComponent = new UIComponent();
+				
+				var speed:int = 1;
+				var space:int = 10;
+				var zoom:Number = 1;
+				var media:String = "thumbnail";
+
+				if(Application.application.parameters.speed != null)
+					speed = Application.application.parameters.speed;
+				if(Application.application.parameters.space != null)
+					space = Application.application.parameters.space;
+				if(Application.application.parameters.zoom != null)
+					zoom = Application.application.parameters.zoom;
+				if(Application.application.parameters.media != null)
+					media = Application.application.parameters.media;
+					
+				nav = new Navigator( xml, 10, canv.width/2, canv.width, zoom, speed, space, media );
+
+				nav.y = (canv.height - nav.height ) / 2;
+						
+				component.addChild( nav );
+				canv.addChild( component );
+
+				slideContainer.visible = true;
+				
+            	nav.startSlideshow();
+			}
+            private function httpService_fault(evt:FaultEvent):void 
+            {
+            	err.text = evt.fault.message;
+            	err.visible = true;
+            }
+		]]>
+	</mx:Script>
+    <mx:HTTPService id="httpService"
+            resultFormat="e4x"
+            fault="httpService_fault(event);"
+            result="onLoad(event)" />
+    <mx:VBox id="slideContainer" visible="false"  width="100%" height="100%" horizontalAlign="center" backgroundAlpha="0" verticalCenter="0">
+	    <mx:Canvas width="100%" height="100%">
+	        <mx:Canvas mask="{canv_mask}"  id="canv"  width="100%" height="100%" clipContent="true"/>
+	   		<mx:Canvas id="canv_mask" backgroundAlpha="1" x="{canv.x}" y="{canv.y}" backgroundColor="#FFFFFF" width="{canv.width}" height="{canv.height}"/>	
+	    </mx:Canvas>
+    </mx:VBox> 
+    <mx:Label id="err" x="0" y="0" text="Label" color="#FF0000" width="100%" height="100%" visible="false"/>
+</mx:Application>

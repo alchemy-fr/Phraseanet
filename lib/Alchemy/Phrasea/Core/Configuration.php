@@ -12,8 +12,7 @@
 namespace Alchemy\Phrasea\Core;
 
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Alchemy\Phrasea\Core\Configuration\Application;
-use Alchemy\Phrasea\Core\Configuration\Parser as ConfigurationParser;
+use Alchemy\Phrasea\Core\Configuration\ApplicationSpecification;
 
 /**
  * Handle configuration file mechanism of phraseanet
@@ -30,12 +29,7 @@ class Configuration
    * @var ParameterBag\ParameterBag
    */
   protected $configuration;
-
-  /**
-   * Class that take care of configuration process
-   * @var Configuration\Handler
-   */
-  private $configurationHandler;
+  protected $specifications;
 
   /**
    * Return the current environnement
@@ -45,46 +39,132 @@ class Configuration
 
   /**
    *
-   * @param type $envName the name of the loaded environnement
+   * @param Configuration\ApplicationSpecification $specifications
+   * @param type $environment
+   * @return \Alchemy\Phrasea\Core\Configuration
    */
-  public function __construct(Configuration\Handler $handler, $environment = null)
+  public static function build($specifications = null, $environment = null)
   {
-    $this->configurationHandler = $handler;
-    $this->installed = false;
-    $this->environment = $environment;
-
-    try
+    if (!$specifications)
     {
-
-      //if one of this files are missing consider phraseanet not installed
-      $handler->getSpecification()->getConfigurationFile();
-      $handler->getSpecification()->getServiceFile();
-      $handler->getSpecification()->getConnexionFile();
-
-      $this->installed = true;
+      $specifications = new Configuration\ApplicationSpecification();
     }
-    catch (\Exception $e)
-    {
-
-    }
+    return new self($specifications, $environment);
   }
 
   /**
-   * Getter
-   * @return Configuration\Handler
+   *
+   * @param Configuration\Specification $specifications
+   * @param type $environment
+   * @return \Alchemy\Phrasea\Core\Configuration
    */
-  public function getConfigurationHandler()
+  public function __construct(Configuration\Specification $specifications, $environment = null)
   {
-    return $this->configurationHandler;
+    $this->specifications = $specifications;
+
+    if ($specifications->isSetup())
+    {
+      $configurations = $this->specifications->getConfigurations();
+      $environment    = $environment ? : $configurations[self::KEYWORD_ENV];
+    }
+    else
+    {
+      $environment = null;
+    }
+
+    $this->setEnvironnement($environment);
+
+    return $this;
   }
 
-  /**
-   * Setter
-   * @param Configuration\Handler $configurationHandler
-   */
-  public function setConfigurationHandler(Configuration\Handler $configurationHandler)
+  public function upgradeFromOldConf(\SplFileObject $configInc, \SplFileObject $connexionInc)
   {
-    $this->configurationHandler = $configurationHandler;
+    $this->initialize();
+
+    $cacheService = "array_cache";
+
+    if (extension_loaded('apc'))
+    {
+      $cacheService = "apc_cache";
+    }
+    elseif (extension_loaded('xcache'))
+    {
+      $cacheService = "xcache_cache";
+    }
+
+    $retrieve_old_credentials = function(\SplFileObject $connexionInc)
+      {
+        require $connexionInc->getPathname();
+
+        return array(
+          'hostname' => $hostname,
+          'port'     => $port,
+          'user'     => $user,
+          'password' => $password,
+          'dbname'   => $dbname,
+        );
+      };
+
+    $credentials = $retrieve_old_credentials($connexionInc);
+
+    $connexions = $this->getConnexions();
+
+    foreach ($credentials as $key => $value)
+    {
+      $key                                = $key == 'hostname' ? 'host' : $key;
+      $connexions['main_connexion'][$key] = (string) $value;
+    }
+
+    $this->setConnexions($connexions);
+
+
+    $configs = $this->getConfigurations();
+
+    $retrieve_old_parameters = function(\SplFileObject $configInc)
+      {
+        require $configInc->getPathname();
+
+        return array(
+          'servername' => $servername
+        );
+      };
+
+    $old_parameters = $retrieve_old_parameters($configInc);
+
+    foreach ($configs as $env => $conf)
+    {
+      if (!is_array($configs[$env]) || !array_key_exists('phraseanet', $configs[$env]))
+      {
+        continue;
+      }
+
+      $configs[$env]['phraseanet']['servername'] = $old_parameters['servername'];
+
+      if ($env === 'prod' && isset($configs[$env]['cache']))
+      {
+        $configs[$env]["cache"] = $cacheService;
+      }
+      if ($env === 'prod' && isset($configs[$env]['opcodecache']))
+      {
+        $configs[$env]["opcodecache"] = $cacheService;
+      }
+    }
+    $this->setConfigurations($configs);
+
+    $services = $this->getServices();
+
+    if (isset($services['Orm']["doctrine_prod"]["options"]["cache"]))
+    {
+      $services['Orm']["doctrine_prod"]["options"]["cache"]['query']['service']    = $cacheService;
+      $services['Orm']["doctrine_prod"]["options"]["cache"]['result']['service']   = $cacheService;
+      $services['Orm']["doctrine_prod"]["options"]["cache"]['metadata']['service'] = $cacheService;
+    }
+
+    $this->setServices($services);
+
+    $this->setEnvironnement('prod');
+
+    return $this;
   }
 
   /**
@@ -94,10 +174,6 @@ class Configuration
    */
   public function getEnvironnement()
   {
-    if (null === $this->environment && $this->isInstalled())
-    {
-      $this->refresh();
-    }
 
     return $this->environment;
   }
@@ -107,10 +183,27 @@ class Configuration
    *
    * @return string
    */
-  public function setEnvironnement($environement = null)
+  public function setEnvironnement($environment)
   {
-    $this->environment = $environement;
-    $this->refresh();
+    $this->environment = $environment;
+
+    if ($this->specifications->isSetup())
+    {
+      $configurations = $this->specifications->getConfigurations();
+
+      if (!isset($configurations[$this->environment]))
+      {
+        throw new \Exception('Requested environnment is not available');
+      }
+
+      $this->configuration = new ParameterBag($configurations[$this->environment]);
+    }
+    else
+    {
+      $this->configuration = new ParameterBag(array());
+    }
+
+    return $this;
   }
 
   /**
@@ -183,7 +276,7 @@ class Configuration
    */
   public function getPhraseanet()
   {
-    $phraseanetConf = $this->getConfiguration()->get('phraseanet');
+    $phraseanetConf = $this->configuration->get('phraseanet');
 
     return new ParameterBag($phraseanetConf);
   }
@@ -195,30 +288,49 @@ class Configuration
    */
   public function isInstalled()
   {
-    return $this->installed;
+    return $this->specifications->isSetup();
   }
 
-  /**
-   * Return the configuration
-   *
-   * @return ParameterBag\ParameterBag
-   */
-  public function getConfiguration()
+  public function initialize()
   {
+    return $this->specifications->initialize();
+  }
 
-    if ($this->installed && null === $this->configuration)
-    {
-      $configuration = $this->configurationHandler->handle($this->environment);
-      $this->environment = $this->configurationHandler->getSelectedEnvironnment();
-      $this->configuration = new ParameterBag($configuration);
-    }
-    elseif (!$this->installed)
-    {
-      $configuration = array();
-      $this->configuration = new ParameterBag($configuration);
-    }
+  public function setConfigurations($configurations)
+  {
+    return $this->specifications->setConfigurations($configurations);
+  }
 
-    return $this->configuration;
+  public function setServices($services)
+  {
+    return $this->specifications->setServices($services);
+  }
+
+  public function setConnexions($connexions)
+  {
+    return $this->specifications->setConnexions($connexions);
+  }
+
+  public function getConfigurations()
+  {
+    return $this->specifications->getConfigurations();
+  }
+
+  public function getServices()
+  {
+    return $this->specifications->getServices();
+  }
+
+  public function getConnexions()
+  {
+    return $this->specifications->getConnexions();
+  }
+
+  const KEYWORD_ENV = 'environment';
+
+  public function getSelectedEnvironnment()
+  {
+    return $this->selectedEnvironnment;
   }
 
   /**
@@ -230,130 +342,12 @@ class Configuration
   {
     $connexions = $this->getConnexions();
 
-    try
+    if (!isset($connexions[$name]))
     {
-      $conn = $connexions->get($name);
-    }
-    catch (\Exception $e)
-    {
-      throw new \Exception(sprintf('Unknow connexion name %s declared in %s'
-          , $name
-          , $this->configurationHandler
-            ->getSpecification()
-            ->getConnexionFile()
-            ->getFileName()
-        )
-      );
+      throw new \Exception(sprintf('Unknown connexion name %s', $name));
     }
 
-    return new Parameterbag($conn);
-  }
-
-  /**
-   * Return all connexions defined in connexions.yml
-   * @return ParameterBag
-   */
-  public function getConnexions()
-  {
-    return new ParameterBag($this->configurationHandler->getParser()->parse(
-          $this->configurationHandler->getSpecification()->getConnexionFile()
-        )
-    );
-  }
-
-  /**
-   * Return a the configuration file as an SplFileObject
-   *
-   * @return \SplFileObject
-   */
-  public function getFile()
-  {
-    return $this->configurationHandler->getSpecification()->getConfigurationFile();
-  }
-
-  /**
-   * Return the full configuration file as an Array
-   *
-   * @return Array
-   */
-  public function all()
-  {
-    $allConf = $this->configurationHandler->getParser()->parse($this->getFile());
-
-    return $allConf;
-  }
-
-  /**
-   * Return all services defined in services.yml
-   * @return ParameterBag
-   */
-  public function getServices()
-  {
-    return new ParameterBag($this->configurationHandler->getParser()->parse(
-          $this->getServiceFile()
-        )
-    );
-  }
-
-  /**
-   * Write datas in config file
-   *
-   * @param array $data
-   * @param type $flag
-   * @return Configuration
-   */
-  public function write(Array $data, $flag = 0, $delete = false)
-  {
-    if ($delete)
-    {
-      $this->delete();
-    }
-
-    $yaml = $this->configurationHandler->getParser()->dump($data, 5);
-
-    $filePathName = $this->configurationHandler
-      ->getSpecification()
-      ->getConfigurationPathName();
-
-    if (false === file_put_contents($filePathName, $yaml, $flag))
-    {
-      $filePath = $this->configurationHandler
-        ->getSpecification()
-        ->getConfigurationFilePath();
-      throw new \Exception(sprintf(_('Impossible d\'ecrire dans le dossier %s'), $filePath));
-    }
-
-    return $this;
-  }
-
-  /**
-   * Delete configuration file
-   * @return Configuration
-   */
-  public function delete()
-  {
-    $deleted = false;
-
-    try
-    {
-      $filePathName = $this
-        ->configurationHandler
-        ->getSpecification()
-        ->getConfigurationPathName();
-
-      $deleted = unlink($filePathName);
-    }
-    catch (\Exception $e)
-    {
-
-    }
-
-    if (!$deleted)
-    {
-      throw new \Exception(sprintf(_('Impossible d\'effacer le fichier %s'), $filePathName));
-    }
-
-    return $this;
+    return new Parameterbag($connexions[$name]);
   }
 
   /**
@@ -362,17 +356,17 @@ class Configuration
    */
   public function getTemplating()
   {
-    return 'TemplateEngine\\' . $this->getConfiguration()->get('template_engine');
+    return 'TemplateEngine\\' . $this->configuration->get('template_engine');
   }
 
   public function getCache()
   {
-    return 'Cache\\' . $this->getConfiguration()->get('cache');
+    return 'Cache\\' . $this->configuration->get('cache');
   }
 
   public function getOpcodeCache()
   {
-    return 'Cache\\' . $this->getConfiguration()->get('opcodecache');
+    return 'Cache\\' . $this->configuration->get('opcodecache');
   }
 
   /**
@@ -381,7 +375,7 @@ class Configuration
    */
   public function getOrm()
   {
-    return 'Orm\\' . $this->getConfiguration()->get('orm');
+    return 'Orm\\' . $this->configuration->get('orm');
   }
 
   /**
@@ -393,7 +387,7 @@ class Configuration
   public function getService($name)
   {
     $scopes   = explode('\\', $name);
-    $services = $this->getServices();
+    $services = new ParameterBag($this->getServices());
     $service  = null;
 
     while ($scopes)
@@ -407,65 +401,11 @@ class Configuration
       }
       catch (\Exception $e)
       {
-        throw new \Exception(sprintf('Unknow service name %s declared in %s'
-            , $scope
-            , $this->configurationHandler
-              ->getSpecification()
-              ->getServiceFile()
-              ->getFileName()
-          )
-        );
+        throw new \Exception(sprintf('Unknow service name %s', $name));
       }
     }
 
     return $service;
-  }
-
-  /**
-   * return the service file
-   * @return \SplFileObject
-   */
-  public function getServiceFile()
-  {
-    return $this->configurationHandler->getSpecification()->getServiceFile();
-  }
-
-  /**
-   * Return the connexion file
-   * @return \SplFileObject
-   */
-  public function getConnexionFile()
-  {
-    return $this->configurationHandler->getSpecification()->getConnexionFile();
-  }
-
-  /**
-   * Refresh the configuration
-   * @return Configuration
-   */
-  public function refresh()
-  {
-    try
-    {
-      $this->configurationHandler->getSpecification()->getConfigurationFile();
-      $this->configurationHandler->getSpecification()->getServiceFile();
-      $this->configurationHandler->getSpecification()->getConnexionFile();
-
-      $this->installed = true;
-    }
-    catch (\Exception $e)
-    {
-      $this->installed = false;
-    }
-
-    if ($this->installed)
-    {
-      $configuration = $this->configurationHandler->handle($this->environment);
-      $this->environment = $this->configurationHandler->getSelectedEnvironnment();
-      $this->configuration = new ParameterBag($configuration);
-    }
-
-    return $this;
   }
 
 }

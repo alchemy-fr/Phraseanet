@@ -15,14 +15,14 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class patch_320g implements patchInterface
+class patch_3603 implements patchInterface
 {
 
   /**
    *
    * @var string
    */
-  private $release = '3.2.0.0.a8';
+  private $release = '3.6.0.0.a2';
   /**
    *
    * @var Array
@@ -54,7 +54,9 @@ class patch_320g implements patchInterface
 
   function apply(base &$appbox)
   {
-    $sql = 'INSERT INTO bridge_site (id, `type`) VALUES (null, "dailymotion")';
+
+    $sql = 'UPDATE usr SET usr_mail = NULL
+            WHERE usr_mail IS NOT NULL AND usr_login LIKE "(#deleted%"';
 
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute();

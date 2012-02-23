@@ -1091,18 +1091,6 @@
 </form>
 
 <div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
-<div title="{% trans 'Re-ordonner' %}" id="reorder_dialog" style="position:relative;overflow:hidden;">
-  <div id="reorder_options" class="PNB" style="height:30px;bottom:auto;">
-    <span>{% trans 'Reordonner automatiquement' %}</span>
-    <select id="auto_order">
-      <option value="">{% trans 'Choisir' %}</option>
-      <option value="default">{% trans 'Re-initialiser' %}</option>
-      <option value="title">{% trans 'Titre' %}</option>
-    </select>
-    <input type="button" onclick="autoorder();return false;" value="{% trans 'Re-ordonner' %}"/>
-    <input type="button" onclick="reverse_order();return false;" value="{% trans 'Inverser' %}" style="float:right;"/></div>
-  <div style="top:30px;overflow:auto;" id="reorder_box" class="PNB loading"></div>
-</div>
 <script type="text/javascript">
   {% include "prod/thesaurus.js" %}
 </script>

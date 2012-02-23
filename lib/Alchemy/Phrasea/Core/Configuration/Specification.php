@@ -21,32 +21,22 @@ namespace Alchemy\Phrasea\Core\Configuration;
 interface Specification
 {
 
-  /**
-   * Return the pathname of the configuration file
-   *
-   * @return string
-   */
-  public function getConfigurationPathName();
+  public function setConfigurations($configurations);
 
-  /**
-   * Return the path to the configuration file
-   *
-   * @return string
-   */
-  public function getConfigurationFilePath();
+  public function setConnexions($connexions);
 
-  /**
-   * Return the configurationFile extension
-   *
-   * @return string
-   */
-  public function getConfigurationFileExtension();
+  public function setServices($services);
 
-  /**
-   * Return the name of the configuration file
-   *
-   * @return string
-   */
-  public function getConfigurationFileName();
+  public function getConfigurations();
+
+  public function getConnexions();
+
+  public function getServices();
+
+  public function initialize();
+
+  public function delete();
+
+  public function isSetup();
 
 }

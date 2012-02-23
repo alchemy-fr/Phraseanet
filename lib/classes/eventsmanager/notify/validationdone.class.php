@@ -139,7 +139,7 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
       return array();
     }
 
-    $sender = User_Adapter::getInstance($from, $this->appbox)->get_display_name();
+    $sender = $registered_user->get_display_name();
 
     try
     {

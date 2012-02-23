@@ -29,15 +29,6 @@ use Doctrine\ORM\Events as DoctrineEvents;
 class Doctrine extends ServiceAbstract implements ServiceInterface
 {
 
-  const ARRAYCACHE = 'array';
-  const MEMCACHE   = 'memcache';
-  const XCACHE     = 'xcache';
-  const REDIS      = 'redis';
-  const APC        = 'apc';
-
-  protected $caches = array(
-    self::MEMCACHE, self::APC, self::ARRAYCACHE, self::XCACHE, self::REDIS
-  );
   protected $outputs = array(
     'json', 'yaml', 'vdump'
   );
@@ -50,7 +41,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
   public function __construct(Core $core, $name, Array $options)
   {
-    parent::__construct( $core, $name, $options);
+    parent::__construct($core, $name, $options);
 
     $config = new \Doctrine\ORM\Configuration();
 
@@ -126,27 +117,16 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     }
     catch (\Exception $e)
     {
-      $connexionFile = $this
-        ->core->getConfiguration()
-        ->getConfigurationHandler()
-        ->getSpecification()
-        ->getConnexionFile();
-
-      throw new \Exception(sprintf(
-          "Connexion '%s' is not declared in %s"
-          , $connexion
-          , $connexionFile->getFileName()
-        )
-      );
+      throw new \Exception("Connexion '%s' is not declared");
     }
 
     $evm = new \Doctrine\Common\EventManager();
 
     $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
 
-//    $evm->addEventListener(DoctrineEvents::postUpdate, new ClearCacheListener());
-//    $evm->addEventListener(DoctrineEvents::postRemove, new ClearCacheListener());
-//    $evm->addEventListener(DoctrineEvents::postPersist, new ClearCacheListener());
+    $evm->addEventListener(DoctrineEvents::postUpdate, new ClearCacheListener());
+    $evm->addEventListener(DoctrineEvents::postRemove, new ClearCacheListener());
+    $evm->addEventListener(DoctrineEvents::postPersist, new ClearCacheListener());
 
 
     try
@@ -293,10 +273,16 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       Type::addType('varbinary', 'Types\VarBinary');
     }
 
+    if (!Type::hasType('binary'))
+    {
+      Type::addType('binary', 'Types\Binary');
+    }
+
     $platform->registerDoctrineTypeMapping('enum', 'enum');
     $platform->registerDoctrineTypeMapping('blob', 'blob');
     $platform->registerDoctrineTypeMapping('longblob', 'longblob');
     $platform->registerDoctrineTypeMapping('varbinary', 'varbinary');
+    $platform->registerDoctrineTypeMapping('binary', 'binary');
 
     return;
   }

@@ -1,33 +1,159 @@
 {% import 'common/thumbnail.html' as thumbnail %}
-
-<div class="elements">
-{% for element in basket.getElements() %}
-  <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
-    <div class="title" title="{{ element.getRecord().get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
-      <span>{{ element.getRecord().get_title() }}</span>
-      {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80, '', session) }}
-      <form style="display:none;">
-        <input type="hidden" name="id" value="{{ element.getId() }}"/>
-        <input type="hidden" name="title" value="{{ element.getRecord().get_title() }}"/>
-        <input type="hidden" name="default" value="{{ element.getOrd() }}"/>
-      </form>
-    </div>
-  </div>
-{% endfor %}
+<div id="reorder_options" class="PNB" style="height:30px;bottom:auto;">
+    <span>{% trans 'Reordonner automatiquement' %}</span>
+    <select id="auto_order">
+      <option value="">{% trans 'Choisir' %}</option>
+      <option value="default">{% trans 'Re-initialiser' %}</option>
+      <option value="title">{% trans 'Titre' %}</option>
+    </select>
+    <button type="button" class="autoorder">{% trans 'Re-ordonner' %}</button>
+    <button type="button" class="reverseorder">{% trans 'Inverser' %}</button>
 </div>
-<form name="reorder" method="POST" action="/prod/baskets/{{ basket.getId() }}/reorder/">
-  {% for element in basket.getElements() %}
-    <input type="hidden" name="element[{{ element.getId() }}]" value="{{ element.getOrd() }}"/>
-  {% endfor %}
-  <button>{% trans 'boutton::valider' %}</button>
-</form>
-
-
+  <div style="top:30px;overflow:auto;" id="reorder_box" class="PNB">
+    <div class="elements">
+    {% for element in basket.getElements() %}
+      <div id="ORDER_{{ element.getId() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
+        <div class="title" title="{{ element.getRecord().get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
+          <span>{{ element.getRecord().get_title() }}</span>
+          {{ thumbnail.format(element.getRecord().get_thumbnail(), 80, 80, '', session) }}
+          <form style="display:none;">
+            <input type="hidden" name="id" value="{{ element.getId() }}"/>
+            <input type="hidden" name="title" value="{{ element.getRecord().get_title() }}"/>
+            <input type="hidden" name="default" value="{{ element.getOrd() }}"/>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+    <form name="reorder" method="POST" action="/prod/baskets/{{ basket.getId() }}/reorder/">
+      {% for element in basket.getElements() %}
+        <input type="hidden" name="element[{{ element.getId() }}]" value="{{ element.getOrd() }}"/>
+      {% endfor %}
+      <button>{% trans 'boutton::valider' %}</button>
+    </form>
+</div>
 
   <script type="text/javascript">
     $(document).ready(function(){
 
-      var container = $('#DIALOG');
+      var container = p4.Dialog.get(1).getDomElement();
+
+
+      $('button.autoorder', container).bind('click', function(){
+        autoorder();
+
+        return false;
+      });
+      $('button.reverseorder', container).bind('click', function(){
+        reverse_order();
+
+        return false;
+      });
+      function autoorder()
+      {
+        var val = $.trim($('#auto_order').val());
+        if(val == '')
+          return;
+
+        var sorter = {};
+
+        $('#reorder_box .diapo form').each(function(i,n){
+          var id = $('input[name=id]',n).val();
+
+          switch(val)
+          {
+            case 'title':
+            default:
+              var data = $('input[name=title]',n).val();
+              break;
+            case 'default':
+              var data = $('input[name=default]',n).val();
+              break;
+          }
+          sorter[id] = data;
+        });
+
+        var data_type = 'string';
+
+        switch(val)
+        {
+          case 'default':
+            var data_type = 'integer';
+            break;
+        }
+
+        sorter = arraySortByValue(sorter, data_type);
+
+        var last_moved = false;
+
+        for(i in sorter)
+        {
+          var elem = $('#ORDER_'+i);
+          if(last_moved)
+          {
+            elem.insertAfter(last_moved);
+          }
+          else
+          {
+            $('#reorder_box .elements').prepend(elem);
+          }
+          last_moved = elem;
+        }
+
+      }
+
+      function arraySortByValue(datas, data_type) {
+
+        var tmp = new Array();
+        for (i in datas) {
+          tmp.push({
+            v: i,
+            c: datas[i].toUpperCase(),
+            o: datas[i]
+          });
+        }
+        switch(data_type)
+        {
+          case 'string':
+            tmp.sort(function (x, y) {
+              return y.c < x.c;
+            });
+            break;
+          case 'integer':
+            tmp.sort(function (x, y) {
+              return parseInt(y.c) < parseInt(x.c);
+            });
+            break;
+        }
+
+        var out = {};
+        for (i in tmp) {
+          out[tmp[i].v] = tmp[i].o;
+        }
+
+        return out;
+      }
+
+
+      function reverse_order()
+      {
+        var elems = $('#reorder_box .diapo');
+
+        var last_moved = false;
+
+        elems.each(function(i,n){
+          var elem = $(n);
+          if(last_moved)
+          {
+            elem.insertBefore(last_moved);
+          }
+          else
+          {
+            $('#reorder_box .elements').append(elem);
+          }
+          last_moved = elem;
+        });
+      }
 
       $('.elements', container).sortable({
         appendTo : container,
@@ -118,16 +244,23 @@
 
       }).disableSelection();
 
-      var OrderSelection = new Selectable($('#DIALOG .elements'), {
+      var OrderSelection = new Selectable($('.elements', container), {
           selector : '.CHIM'
         });
 
 
-      $('#DIALOG form[name="reorder"]').bind('submit', function(event){
+      $('form[name="reorder"]', container).bind('submit', function(event){
 
         //$this.SetLoader(true);
 
+
         var $form = $(this);
+
+        $('.elements form', container).each(function(i, el){
+          var id = $('input[name="id"]', $(el)).val();
+
+          $('input[name="element[' + id + ']"]', $form).val(i+1);
+        });
 
         $.ajax({
           type: $form.attr('method'),
@@ -138,9 +271,12 @@
 
           },
           success: function(data){
-
+            if(!data.success)
+            {
+              alert(data.message);
+            }
             p4.WorkZone.refresh('current');
-            $('#DIALOG').dialog('close').empty();
+            p4.Dialog.get(1).Close();
 
             return;
           },

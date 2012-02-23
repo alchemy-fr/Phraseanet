@@ -112,6 +112,11 @@ class cache_databox
             $field->delete_data_from_cache();
           }
 
+          foreach($record->get_subdefs() as $subdef)
+          {
+            $subdef->delete_data_from_cache();
+          }
+
           break;
         case 'structure':
           $appbox->delete_data_from_cache(\appbox::CACHE_LIST_BASES);

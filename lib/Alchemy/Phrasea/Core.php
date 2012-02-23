@@ -26,10 +26,7 @@ require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/DependencyIn
 
 require_once __DIR__ . '/Core/Configuration/Specification.php';
 require_once __DIR__ . '/Core/Configuration.php';
-require_once __DIR__ . '/Core/Configuration/Application.php';
-require_once __DIR__ . '/Core/Configuration/Handler.php';
-require_once __DIR__ . '/Core/Configuration/Parser.php';
-require_once __DIR__ . '/Core/Configuration/Parser/Yaml.php';
+require_once __DIR__ . '/Core/Configuration/ApplicationSpecification.php';
 
 /**
  *
@@ -57,12 +54,7 @@ class Core extends \Pimple
 
   public function __construct($environement = null)
   {
-    $appConf = new Core\Configuration\Application();
-    $parser  = new Core\Configuration\Parser\Yaml();
-
-    $handler = new Core\Configuration\Handler($appConf, $parser);
-
-    $this->configuration = new Core\Configuration($handler, $environement);
+    $this->configuration = Core\Configuration::build(null, $environement);
 
     $core = $this;
 
@@ -88,7 +80,7 @@ class Core extends \Pimple
           return \registry::get_instance($core);
         });
 
-      \phrasea::start();
+      \phrasea::start($this);
 
       $this->enableEvents();
     }
@@ -112,9 +104,7 @@ class Core extends \Pimple
 
         $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
 
-        $parser = new Core\Configuration\Parser\Yaml();
-
-        return new \Alchemy\Phrasea\Cache\Manager($core, $file, $parser);
+        return new \Alchemy\Phrasea\Cache\Manager($core, $file);
       });
     /**
      * Set Entity Manager using configuration
@@ -293,7 +283,7 @@ class Core extends \Pimple
   /**
    * Getter
    *
-   * @return Core\Configuration
+   * @return \Alchemy\Phrasea\Core\Configuration
    */
   public function getConfiguration()
   {

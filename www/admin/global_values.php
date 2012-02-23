@@ -65,7 +65,7 @@ function getFormTimezone($props=array(), $selected=false)
   return $form;
 }
 
-phrasea::start();
+phrasea::start($Core);
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
