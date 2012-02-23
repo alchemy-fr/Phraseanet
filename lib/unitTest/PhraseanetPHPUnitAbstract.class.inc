@@ -814,7 +814,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    */
   protected function resetTwig()
   {
-    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+    $configuration = self::$core->getConfiguration();
 
     $serviceName = $configuration->getTemplating();
     $confService = $configuration->getService($serviceName);

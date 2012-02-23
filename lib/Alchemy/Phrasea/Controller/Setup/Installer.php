@@ -303,7 +303,7 @@ class Installer implements ControllerProviderInterface
             }
           }
 
-          \phrasea::start();
+          \phrasea::start($app['Core']);
 
           $auth = new \Session_Authentication_None($user);
 

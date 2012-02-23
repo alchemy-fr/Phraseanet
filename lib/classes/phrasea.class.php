@@ -103,9 +103,9 @@ class phrasea
     return $retval;
   }
 
-  public static function start()
+  public static function start(\Alchemy\Phrasea\Core $Core)
   {
-    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+    $configuration = $Core->getConfiguration();
 
     $choosenConnexion = $configuration->getPhraseanet()->get('database');
 

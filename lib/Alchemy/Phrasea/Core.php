@@ -80,7 +80,7 @@ class Core extends \Pimple
           return \registry::get_instance($core);
         });
 
-      \phrasea::start();
+      \phrasea::start($this);
 
       $this->enableEvents();
     }

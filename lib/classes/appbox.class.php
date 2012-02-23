@@ -79,7 +79,7 @@ class appbox extends base
     $this->registry = $registry;
     $this->session = Session_Handler::getInstance($this);
 
-    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+    $configuration = $Core->getConfiguration();
 
     $choosenConnexion = $configuration->getPhraseanet()->get('database');
 

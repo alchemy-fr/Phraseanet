@@ -88,6 +88,12 @@ class Configuration
     if ($this->specifications->isSetup())
     {
       $configurations = $this->specifications->getConfigurations();
+
+      if(!isset($configurations[$this->environment]))
+      {
+        throw new \Exception('Requested environnment is not available');
+      }
+
       $this->configuration = new ParameterBag($configurations[$this->environment]);
     }
     else
