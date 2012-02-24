@@ -1181,7 +1181,9 @@ function edit_applyMultiDesc(evt)
     ,
     success : function(data){
       if(p4.edit.what == 'GRP' || p4.edit.what == 'SSEL')
-        return p4.WorkZone.refresh('current');
+      {
+        p4.WorkZone.refresh('current');
+      }
       $("#Edit_copyPreset_dlg").remove();
       $('#EDITWINDOW').hide();
       hideOverlay(2);
