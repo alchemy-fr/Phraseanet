@@ -489,19 +489,19 @@ class Edit extends RecordHelper
         $reg_record  = $this->get_grouping_head();
         $reg_sbas_id = $reg_record->get_sbas_id();
 
-        $newsubdef_reg = new record_adapter($reg_sbas_id, $request->get('newrepresent'));
+        $newsubdef_reg = new \record_adapter($reg_sbas_id, $request->get('newrepresent'));
 
         if ($newsubdef_reg->get_type() !== 'image')
-          throw new Exception('A reg image must come from image data');
+          throw new \Exception('A reg image must come from image data');
 
         foreach ($newsubdef_reg->get_subdefs() as $name => $value)
         {
           $pathfile    = $value->get_pathfile();
-          $system_file = new system_file($pathfile);
+          $system_file = new \system_file($pathfile);
           $reg_record->substitute_subdef($name, $system_file);
         }
       }
-      catch (Exception $e)
+      catch (\Exception $e)
       {
 
       }
