@@ -26,5 +26,10 @@ return call_user_func(function()
       $app->mount('/test', new ControllerUtils\PathFileTest());
       $app->mount('/connection_test', new ControllerUtils\ConnectionTest());
 
+            
+      $app->error(function($e){
+      });
+      
+      
       return $app;
     });

@@ -525,9 +525,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
    */
   public function testGet_container_baskets()
   {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-    $usr_id = $appbox->get_session()->get_usr_id();
-
     $em = self::$core->getEntityManager();
 
     $basket = $this->insertOneBasket();
@@ -541,8 +538,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $em->persist($basket_element);
 
     $basket->addBasketElement($basket_element);
-
-    $em->merge($basket);
+    $basket = $em->merge($basket);
 
     $em->flush();
 

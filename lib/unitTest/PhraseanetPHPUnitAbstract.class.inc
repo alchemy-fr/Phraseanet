@@ -521,6 +521,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $purger = new Doctrine\Common\DataFixtures\Purger\ORMPurger();
     $executor = new Doctrine\Common\DataFixtures\Executor\ORMExecutor(self::$core->getEntityManager(), $purger);
     $executor->execute(array());
+    self::$core["CacheService"]->flushAll();
   }
 
   protected function assertDateAtom($date)
