@@ -17,7 +17,7 @@
 /* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$usr_id = $Core->getAuthenticatedUser()->getId();
+$usr_id = $Core->getAuthenticatedUser()->get_id();
 
 $appbox = appbox::get_instance($Core);
 
