@@ -16,8 +16,7 @@
  * @link        www.phraseanet.com
  */
 
-/* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . '/../../lib/classes/http/request.class.php';
+require_once __DIR__ . '/../../lib/classes/http/request.class.php';
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('session', 'coll', 'status');
@@ -26,8 +25,8 @@ if ($parm["session"])
 {
   session_id($parm["session"]);
 }
-
-require_once __DIR__ . "/../../lib/bootstrap.php";
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $appbox = appbox::get_instance(\bootstrap::getCore());
 $session = $appbox->get_session();
