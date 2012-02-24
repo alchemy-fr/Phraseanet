@@ -185,6 +185,8 @@
         return false;
       }).tooltip();
 
+      $('.infoTips, .previewTips', $scope).tooltip();
+
       $('a.archive_toggler', $scope).bind('click', function(){
           var $this = $(this), parent = $this.parent();
 
