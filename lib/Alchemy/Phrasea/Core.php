@@ -81,8 +81,6 @@ class Core extends \Pimple
         });
 
       \phrasea::start($this);
-
-      $this->enableEvents();
     }
     else
     {
@@ -326,7 +324,7 @@ class Core extends \Pimple
     return $this->getRequest()->getLocale();
   }
 
-  protected function enableEvents()
+  public function enableEvents()
   {
     $events = \eventsmanager_broker::getInstance(\appbox::get_instance($this), $this);
     $events->start();

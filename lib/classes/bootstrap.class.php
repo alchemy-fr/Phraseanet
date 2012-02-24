@@ -42,6 +42,11 @@ class bootstrap
 
     static::$core = new Core($env);
 
+    if (static::$core->getConfiguration()->isInstalled())
+    {
+      static::$core->enableEvents();
+    }
+
     if (\setup::is_installed())
     {
       $gatekeeper = \gatekeeper::getInstance(static::$core);
