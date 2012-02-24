@@ -55,8 +55,8 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     }
 
     //get cache
-    $cache = isset($options["orm"]["cache"]) ? $options["orm"]["cache"] : false;
-
+    $cache = isset($options["cache"]) ? $options["cache"] : false;
+    
     if (!$cache || $this->debug)
     {
       $metaCache   = $this->core['CacheService']->get('ORMmetadata', 'Cache\\ArrayCache');
