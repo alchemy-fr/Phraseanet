@@ -9,6 +9,7 @@
          stopOnFailure="false"
          syntaxCheck="true"
          verbose="false"
+         bootstrap="unitTest/bootstrap.inc"
 >
 <!--
     <logging>
