@@ -26,6 +26,8 @@ use Alchemy\Phrasea\Core,
 class RedisCache extends ServiceAbstract implements ServiceInterface
 {
 
+  protected $cache;
+
   const DEFAULT_HOST = "localhost";
   const DEFAULT_PORT = "6379";
 
@@ -34,7 +36,7 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
 
   public function __construct(Core $core, $name, Array $options)
   {
-    parent::__construct( $core, $name, $options);
+    parent::__construct($core, $name, $options);
 
     $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
 
@@ -57,26 +59,31 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
       throw new \Exception('The Redis cache requires the Redis extension.');
     }
 
-    $redis = new \Redis();
 
-    if (!$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY))
+    if (!$this->cache)
     {
-      $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
+      $redis = new \Redis();
+
+      if (!$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY))
+      {
+        $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
+      }
+
+      if ($redis->connect($this->host, $this->port))
+      {
+        $service = new CacheDriver\RedisCache();
+        $service->setRedis($redis);
+      }
+      else
+      {
+        throw new \Exception(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
+      }
+
+      $this->cache = $service;
+      $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
     }
 
-    if ($redis->connect($this->host, $this->port))
-    {
-      $service = new CacheDriver\RedisCache();
-      $service->setRedis($redis);
-    }
-    else
-    {
-      throw new \Exception(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
-    }
-
-    $service->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
-
-    return $service;
+    return $this->cache;
   }
 
   public function getType()

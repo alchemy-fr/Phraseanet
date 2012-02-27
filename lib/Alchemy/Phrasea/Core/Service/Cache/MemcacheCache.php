@@ -26,6 +26,8 @@ use Alchemy\Phrasea\Core,
 class MemcacheCache extends ServiceAbstract implements ServiceInterface
 {
 
+  protected $cache;
+
   const DEFAULT_HOST = "localhost";
   const DEFAULT_PORT = "11211";
 
@@ -53,27 +55,31 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
       throw new \Exception('The Memcache cache requires the Memcache extension.');
     }
 
-    $memcache = new \Memcache();
-
-    $memcache->addServer($this->host, $this->port);
-
-    $key = sprintf("%s:%s", $this->host, $this->port);
-
-    $stats = @$memcache->getExtendedStats();
-
-    if (isset($stats[$key]))
+    if(!$this->cache)
     {
-      $service = new CacheDriver\MemcacheCache();
-      $service->setMemcache($memcache);
-    }
-    else
-    {
-      throw new \Exception(sprintf("Memcache instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
+      $memcache = new \Memcache();
+
+      $memcache->addServer($this->host, $this->port);
+
+      $key = sprintf("%s:%s", $this->host, $this->port);
+
+      $stats = @$memcache->getExtendedStats();
+
+      if (isset($stats[$key]))
+      {
+        $service = new CacheDriver\MemcacheCache();
+        $service->setMemcache($memcache);
+      }
+      else
+      {
+        throw new \Exception(sprintf("Memcache instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
+      }
+
+      $this->cache = $service;
+      $this->cache->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
     }
 
-    $service->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
-
-    return $service;
+    return $this->cache;
   }
 
   public function getType()

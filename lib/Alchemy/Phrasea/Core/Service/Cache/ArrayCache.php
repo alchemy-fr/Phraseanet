@@ -27,6 +27,8 @@ use Alchemy\Phrasea\Core,
 class ArrayCache extends ServiceAbstract implements ServiceInterface
 {
 
+  protected $cache;
+
   public function getScope()
   {
     return 'cache';
@@ -34,11 +36,14 @@ class ArrayCache extends ServiceAbstract implements ServiceInterface
 
   public function getDriver()
   {
-    $service = new CacheDriver\ArrayCache();
+    if (!$this->cache)
+    {
+      $this->cache = new CacheDriver\ArrayCache();
 
-    $service->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+      $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+    }
 
-    return $service;
+    return $this->cache;
   }
 
   public function getType()

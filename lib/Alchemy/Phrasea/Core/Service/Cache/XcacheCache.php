@@ -26,6 +26,8 @@ use Alchemy\Phrasea\Core,
 class XcacheCache extends ServiceAbstract implements ServiceInterface
 {
 
+  protected $cache;
+
   public function getScope()
   {
     return 'cache';
@@ -38,11 +40,14 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
       throw new \Exception('The XCache cache requires the XCache extension.');
     }
 
-    $service = new CacheDriver\XcacheCache();
+    if (!$this->cache)
+    {
+      $service = new CacheDriver\XcacheCache();
 
-    $service->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
+      $service->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+    }
 
-    return $service;
+    return $this->cache;
   }
 
   public function getType()
@@ -54,6 +59,5 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
   {
     return array();
   }
-
 
 }
