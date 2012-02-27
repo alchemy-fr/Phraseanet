@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Alchemy\Phrasea\Controller\Setup as Controller;
 use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
 
-require_once __DIR__ . '/../../../../../bootstrap.php';
 
 return call_user_func(function()
     {
@@ -26,10 +25,10 @@ return call_user_func(function()
       $app->mount('/test', new ControllerUtils\PathFileTest());
       $app->mount('/connection_test', new ControllerUtils\ConnectionTest());
 
-            
+
       $app->error(function($e){
       });
-      
-      
+
+
       return $app;
     });
