@@ -56,7 +56,7 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
-    $idCache = "_active_by_user_" . ($sort === null ? "" : $sort ) . "_" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+    $idCache = "_active_by_user_" . ($sort === null ? "" : $sort. "_" )  . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
 
     $query->useResultCache(true, 1800, $idCache);
 
