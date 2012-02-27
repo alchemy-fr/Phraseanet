@@ -143,7 +143,7 @@ class module_console_fileConfigCheck extends Command
   private function checkParse(OutputInterface $output)
   {
 
-    if (!$this->configuration->getConfigurations())
+    if (!$this->configuration)
     {
       throw new \Exception("Unable to load configurations\n");
     }
@@ -163,7 +163,7 @@ class module_console_fileConfigCheck extends Command
   {
     try
     {
-      $this->configuration->getConfiguration();
+      $this->configuration;
     }
     catch (\Exception $e)
     {
@@ -178,15 +178,8 @@ class module_console_fileConfigCheck extends Command
   {
     $configuration = Core\Configuration::build();
 
-    try
-    {
-      $configuration->getConfiguration();
-    }
-    catch (\Exception $e)
-    {
-      throw new \Exception(sprintf("Check get selected environment from file\n"), null, $e);
-    }
-    $output->writeln("<info>Get Selected Environment from file OK</info>");
+    $env = $configuration->getEnvironnement();
+    $output->writeln("<info>Get Selected Environment from file : ".$env."</info>");
 
     return;
   }
