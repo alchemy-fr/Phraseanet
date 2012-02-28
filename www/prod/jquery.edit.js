@@ -1068,7 +1068,21 @@ function check_required(id_r, id_f)
       }
       else
       {
-        var check_required = $.trim(p4.edit.T_records[r].fields[f].getSerializedValues());
+
+        var check_required = '';
+
+        // le champ existe dans la fiche
+        if(p4.edit.T_fields[f].multi)
+        {
+          // champ multi : on compare la concat des valeurs
+          check_required = $.trim(p4.edit.T_records[r].fields[f].getSerializedValues())
+        }
+        else if(p4.edit.T_records[r].fields[f].getValue())
+        {
+          check_required = $.trim(p4.edit.T_records[r].fields[f].getValue().getValue());
+        }
+
+
         if(check_required == '')
         {
           elem.show();
