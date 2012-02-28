@@ -61,16 +61,20 @@
     </div>
   </div>
   <div class="PNB" style="left:205px;">
-    <div class="PNB" style="height:150px;bottom:auto;">
+    <div class="PNB" style="height:150px;bottom:auto;line-height:26px">
       <div class="PNB10">
         <table>
-          <tr>
+          <tr style="vertical-align:top;">
             <td>
-              <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" />
-
+              <div>
+                {% trans 'Find a user' %}
+              </div>
+              <div>
+                <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" />
+              </div>
+              {% trans 'Or' %}
               <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
 
-              <button class="FeedbackSend">{% trans "Send" %}</button>
               <p>
 
                 {% set recommendation = '' %}
@@ -142,6 +146,11 @@
                   {% trans 'Push::une validation est une demande d\'appreciation a d\'autres personnes' %}
                 {% endif %}
               </p>
+              <div style="text-align:right;">
+                <button class="FeedbackSend">
+                  {% trans "Send" %}
+                </button>
+              </div>
             </td>
           </tr>
         </table>
