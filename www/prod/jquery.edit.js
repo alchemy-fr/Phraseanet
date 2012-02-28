@@ -417,7 +417,7 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
         + (a[key].n != n ? " hetero " : "") + "'>"
       + '<table><tr><td>'
       + extra
-      + '<span class="value" vocabId="' + value.getVocabularyId() + '">'
+      + '<span class="value" vocabId="' + (value.getVocabularyId() ? value.getVocabularyId() : '') + '">'
       + word
       + "</span></td><td class='options'>"
       + '<a href="#" class="add_all"><img src="/skins/icons/plus11.png"/></a> '

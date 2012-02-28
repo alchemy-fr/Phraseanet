@@ -1149,7 +1149,6 @@ $(document).ready(function(){
   initAnswerForm();
 
   initLook();
-  afterSearch();
 
   setTimeout("sessionactive();", 30000);
 
