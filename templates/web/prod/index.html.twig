@@ -2,7 +2,7 @@
 {% set unique_id = module.getRandom() %}
 {% for base in search_datas['bases'] %}
 {% set sbas_id = base['sbas_id'] %}
-<div class="sbas_list sbas_{{sbas_id}}">
+<div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom:10px;">
   <input type="hidden" name="reference" value="{{sbas_id}}"/>
   <div class="clksbas" style="text-align:center;">
     <input type="checkbox" checked style="display:none" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}" />
