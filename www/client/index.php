@@ -102,6 +102,14 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
       <?php
     }
     ?>
+    <style>
+      #PREVIEWCURRENTCONT{
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+      }
+    </style>
   </head>
   <body class="PNB" style="overflow:hidden;">
     <div id="container" style="position:absolute;top:0;left:0;overflow:hidden;width:100%;height:100%;">
@@ -231,17 +239,6 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                           }
                           foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
                           {
-                            if ($showbases)
-                            {
-                              $options .= '<optgroup label="' . $databox->get_viewname() . '">';
-                              $allbcol = array();
-                              $n_allbcol = 0;
-                              if (count($databox->get_collections()) > 0)
-                              {
-                                $options .= '<option value="' . implode(';', $allbcol) . '">`' . $databox->get_viewname() . '`' . '</option>';
-                              }
-                              foreach ($databox->get_collections() as $coll)
-                              {
                                 $allbcol[] = $coll->get_base_id();
                                 $n_allbcol++;
 
@@ -262,8 +259,6 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                             }
                           }
                           echo '<select id="basSelector" onchange="beforeAnswer();" style="width:245px;"><option value="' . implode(';', $allbases) . '">' . _('client::recherche: rechercher dans toutes les bases') . '</option>' . $options . '</select>';
-                        }
-                      }
                           ?>
                         </div>
                         <?php
@@ -364,8 +359,6 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                           {
                             if ($registry->get('GV_view_bas_and_coll'))
                             {
-                              if ($registry->get('GV_view_bas_and_coll'))
-                              {
 ?>
                               <div class="basContainer">
                                 <div class="basContTitle">
@@ -434,28 +427,6 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                                               '</table>' .
                                               '</div>';
                                     }
-                                        }
-                                      }
-                                      if ($sxe->description)
-                                      {
-                                        foreach ($sxe->description->children() as $f => $field)
-                                        {
-                                          if ($field['type'] == 'date' && $field['searchclient'] == '1')
-                                          {
-                                            $dateFilters .= '<div><table style="width:98%;text-align:left;" cellspacing="0" cellpadding="0"><tr><td colspan="2">' .
-                                                    $f . '</td></tr>' .
-                                                    '<tr><td style="width:50%;">' . _('phraseanet::time:: de') .
-                                                    '</td><td style="width:50%;">' .
-                                                    _('phraseanet::time:: a') .
-                                                    '</td></tr>' .
-                                                    '<tr><td style="width:50%;">' .
-                                                    '<input type="hidden" name="dateminfield[]" value="' . $databox->get_sbas_id() . '_' . $f . '">' .
-                                                    ' <input db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" class="datepicker" type="text" name="datemin[]"></td><td style="width:50%;">' .
-                                                    '<input type="hidden" name="datemaxfield[]" value="' . $databox->get_sbas_id() . '_' . $f . '">' .
-                                                    ' <input db="' . $databox->get_sbas_id() . '" onchange="checkFilters();" class="datepicker" type="text" name="datemax[]"></td></tr>' .
-                                                    '</table>' .
-                                                    '</div>';
-                                          }
                                           elseif ($field['type'] != 'date')
                                           {
                                             $fieldsFilters .= '<option value="' . $databox->get_sbas_id() . '_' . $f . '">' . $f . '</option>';
@@ -481,7 +452,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
                                   <?php
                                 }
                                 ?><div class="basGrp"><?php
-                            foreach ($databox->get_collections() as $coll)
+                            foreach ($user->ACL()->get_granted_base(array(), array($databox->get_sbas_id())) as $coll)
                             {
                               $s = "checked";
                               echo '<div><input type="checkbox" class="checkbox basItem basItem' . $databox->get_sbas_id() . '" ' . $s . ' name="bas[]"  id="basChk' . $coll->get_base_id() . '" value="' . $coll->get_base_id() . '"><label for="basChk' . $coll->get_base_id() . '">' . $coll->get_name() . '</label></div>';
@@ -497,7 +468,6 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
 
                         <?php
                         }
-                      }
                       if ($registry->get('GV_thesaurus'))
                       {
                         ?>
@@ -576,7 +546,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
       <div id="PREVIEWRIGHT" class="preview_col" style="width:49%;position:relative;float:right;overflow:hidden;">
         <div style="margin-right:10px;">
           <div id="PREVIEWIMGDESC" class="preview_col_cont" style="overflow-x:hidden;overflow-y:auto;">
-            <ul style="height:30px;">
+                        <ul style="height:30px;overflow:hidden;">
               <li><a href="#PREVIEWIMGDESCINNER-BOX"><?php echo _('preview:: Description'); ?></a></li>
               <li><a href="#HISTORICOPS-BOX"><?php echo _('preview:: Historique'); ?></a></li>
               <li><a href="#popularity-BOX"><?php echo _('preview:: Popularite'); ?></a></li>
@@ -737,8 +707,10 @@ setBaskStatus();
     <?php
     if (trim($registry->get('GV_bitly_user')) !== '' && trim($registry->get('GV_bitly_key')) !== '')
     {
+                          $request = new http_request();
       ?>
-      <script type="text/javascript" src="http://bit.ly/javascript-api.js?version=latest&login=<?php echo $registry->get('GV_bitly_user') ?>&apiKey=<?php echo $registry->get('GV_bitly_key') ?>"></script>
+
+                        <script type="text/javascript" src="http<?php echo $request->is_secure() ? 's' : '' ?>://bit.ly/javascript-api.js?version=latest&login=<?php echo $registry->get('GV_bitly_user') ?>&apiKey=<?php echo $registry->get('GV_bitly_key') ?>"></script>
       <?php
     }
     ?>
