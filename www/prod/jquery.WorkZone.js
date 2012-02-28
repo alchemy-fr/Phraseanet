@@ -378,12 +378,7 @@ var p4 = p4 || {};
   }
 
 
-
-
-
-
-
-  function dropOnBask(event,from,destKey)
+  function dropOnBask(event,from,destKey, singleSelection)
   {
     var action = "",
     from = $(from), dest_uri = '', lstbr = [],
@@ -420,9 +415,13 @@ var p4 = p4 || {};
 
     if(action=="IMGT2CHU" || action=="IMGT2REG")
     {
-      if($(from).hasClass('.baskAdder'))
+      if($(from).hasClass('.baskAdder') )
       {
         lstbr = [$(from).attr('id').split('_').slice(2,4).join('_')];
+      }
+      else if(singleSelection)
+      {
+        lstbr = [$(from).attr('id').split('_').slice(1,3).join('_') ];
       }
       else
       {
@@ -570,6 +569,13 @@ var p4 = p4 || {};
     p4.WorkZone = {
       'Selection':new Selectable($('#baskets'), {selector : '.CHIM'}),
       'refresh':refreshBaskets,
+      'addElementToBasket': function(sbas_id, record_id, event , singleSelection) {
+        singleSelection = !!singleSelection || false;
+        if($('#baskets .SSTT.active').length == 1)
+        {
+          return dropOnBask(event,$('#IMGT_'+ sbas_id +'_'+ record_id), $('#baskets .SSTT.active'), singleSelection);
+        }
+      },
       'reloadCurrent':function(){
         var sstt = $('#baskets .content:visible');
         if(sstt.length === 0)

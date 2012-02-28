@@ -2582,10 +2582,10 @@ function evt_print(value)
   printThis("lst="+value);
 }
 
-function evt_add_in_chutier(a,b,event,el)
+function evt_add_in_chutier(sbas_id, record_id,event, singleSelection)
 {
-  if($('#baskets .SSTT.active').length == 1)
-    dropOnBask(event,$('#PREV_BASKADD_'+a+'_'+b),$('#baskets .SSTT.active'));
+  var singleSelection = singleSelection || false;
+  p4.WorkZone.addElementToBasket(sbas_id, record_id, event, singleSelection);
 }
 
 
