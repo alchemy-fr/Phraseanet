@@ -320,7 +320,6 @@ function resize(){
 
 function clearAnswers(){
   $('#formAnswerPage').val('');
-  $('#searchForm input[name="sel"]').val('');
   $('#searchForm input[name="nba"]').val('');
   $('#answers, #dyn_tool').empty();
 }
@@ -346,6 +345,7 @@ function newSearch()
   {
     console.log('Fresh new search, cache empty');
   }
+  p4.Results.Selection.empty()
 
   clearAnswers();
   var val = $('#searchForm input[name="qry"]').val();
@@ -475,10 +475,13 @@ function initAnswerForm(){
       success: function(datas){
 
 
-
         $('#answers').empty().append(datas.results).removeClass('loading');
         $('#tool_results').empty().append(datas.infos);
         $('#tool_navigate').empty().append(datas.navigation);
+
+        $.each(p4.Results.Selection.get(), function(i, el){
+          $('#IMGT_' + el).addClass('selected');
+        });
 
         $('#proposals').empty().append(datas.phrasea_props);
 
