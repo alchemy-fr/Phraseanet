@@ -780,8 +780,6 @@ function evt_dwnl(lst)
 {
 	var dialog_box = $('#dialog_dwnl');
 
-	dialog_box = $('#dialog_dwnl');
-
 	dialog_box.empty().addClass('loading').dialog({
 		width:800,
 		height:600,

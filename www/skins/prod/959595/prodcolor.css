@@ -2165,7 +2165,7 @@ EDITING
     BORDER:  #666666 1px solid;
     BACKGROUND-COLOR: #666666;
 }*/
-#idFrameE #ZTextMultiValued_values
+#ZTextMultiValued_values
 {
 	background-color:#FFFFFF;
 	border:1px solid #999999;
@@ -2174,13 +2174,14 @@ EDITING
   left:4px;
   right:4px;
   bottom:4px;
-  overflow:auto;
+  overflow-x:auto;
+  overflow-y:scroll;
 }
 #idFrameE #ZTextMultiValued_values div
 {
 	cursor:pointer;
   height:20px;
-	padding:2px;
+	padding:2px 14px 2px 2px;
 }
 #idFrameE #ZTextMultiValued_values div table
 {

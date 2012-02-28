@@ -587,7 +587,7 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
   <!--<iframe style="display:none;" id="download" name="download"></iframe>-->
     <form style="display:none;" action="./index.php" target="_self" id="mainForm">
     </form>
-    <div id="dialog_dwnl" title="<?php echo _('action : exporter') ?>" style="display:none;z-index:8000;"></div>
+    <div id="dialog_dwnl" title="<?php echo _('action : exporter') ?>" style="display:none;z-index:12000;"></div>
     <form name="formChu" id="formChu" action="./baskets.php" method="post" style="visibility:hidden; display:none" >
       <input type="hidden" name="bas" id="formChubas" value="">
       <input type="hidden" name="act" id="formChuact" value="">
