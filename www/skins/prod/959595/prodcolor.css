@@ -1596,8 +1596,7 @@ BOITES MODALES
 #sbasfiltercont
 {
 	color:#FFFFFF;
-	padding:10px;
-	margin:10px;
+  margin: 0 0 0 10px;
 }
 #adv_search .sbasglob div hr
 {
