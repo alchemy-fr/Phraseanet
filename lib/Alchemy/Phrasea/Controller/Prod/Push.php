@@ -183,10 +183,12 @@ class Push implements ControllerProviderInterface
 
           $appbox = \appbox::get_instance($app['Core']);
 
-          $push_name = $request->get(
-            'name'
-            , sprintf(_('Push from %s'), $user->get_display_name())
-          );
+          $push_name = $request->get('name');
+
+          if (trim($push_name) === '')
+          {
+            $push_name = sprintf(_('Push from %s'), $user->get_display_name());
+          }
 
           $push_description = $request->get('push_description');
 
@@ -322,10 +324,12 @@ class Push implements ControllerProviderInterface
 
           $repository = $em->getRepository('\Entities\Basket');
 
-          $validation_name = $request->get(
-            'name'
-            , sprintf(_('Validation from %s'), $user->get_display_name())
-          );
+          $validation_name = $request->get('name');
+
+          if (trim($validation_name) === '')
+          {
+            $validation_name = sprintf(_('Validation from %s'), $user->get_display_name());
+          }
 
           $validation_description = $request->get('validation_description');
 
