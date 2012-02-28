@@ -52,4 +52,9 @@ class MemcacheCache extends DoctrineMemcache implements Cache
     return $this;
   }
 
+  public function flush()
+  {
+    return $this->getMemcache()->flush();
+  }
+
 }

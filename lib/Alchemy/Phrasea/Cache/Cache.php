@@ -26,6 +26,8 @@ interface Cache extends DoctrineCache
 
   public function getStats();
 
+  public function flush();
+
   public function get($key);
 
   public function deleteMulti(array $array_keys);

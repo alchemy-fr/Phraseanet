@@ -23,7 +23,7 @@ class RedisCache extends AbstractCache implements Cache
 {
 
   /**
-   * @var Memcache
+   * @var \Redis
    */
   private $_redis;
 
@@ -122,6 +122,11 @@ class RedisCache extends AbstractCache implements Cache
     }
 
     return $this;
+  }
+
+  public function flush()
+  {
+    return $this->_redis->flushAll();
   }
 
 }

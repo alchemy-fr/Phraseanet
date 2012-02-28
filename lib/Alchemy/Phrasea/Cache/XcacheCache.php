@@ -52,4 +52,9 @@ class XcacheCache extends DoctrineXcache implements Cache
     return $this;
   }
 
+  public function flush()
+  {
+    return xcache_clear_cache(XC_TYPE_VAR, 0);
+  }
+
 }
