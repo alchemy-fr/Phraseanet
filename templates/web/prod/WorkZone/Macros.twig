@@ -174,7 +174,7 @@
 
         <div tooltipsrc="/prod/tooltip/Story/{{story.getRecord().get_sbas_id()}}/{{story.getRecord().get_record_id()}}/"
              id="SSWZ_{{story.getId()}}" sbas="{{story.getSbasId()}}"
-             class="basketTips ui-accordion-header ui-state-default
+             class="STORY_{{ story.getRecord().get_serialize_key() }} basketTips ui-accordion-header ui-state-default
                     ui-corner-all header SSTT grouping
                     {% if story.getId() == selected_id and selected_type == 'story' %}active{% endif %}">
           <a href="/prod/story/{{ story.getRecord().get_sbas_id }}/{{ story.getRecord().get_record_id() }}/">
