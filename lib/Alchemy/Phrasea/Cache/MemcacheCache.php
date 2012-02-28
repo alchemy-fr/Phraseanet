@@ -27,11 +27,6 @@ class MemcacheCache extends DoctrineMemcache implements Cache
     return true;
   }
 
-  public function getStats()
-  {
-    return $this->getMemcache()->getstats();
-  }
-
   public function get($key)
   {
     if (!$this->contains($key))
@@ -50,11 +45,6 @@ class MemcacheCache extends DoctrineMemcache implements Cache
     }
 
     return $this;
-  }
-
-  public function flush()
-  {
-    return $this->getMemcache()->flush();
   }
 
 }

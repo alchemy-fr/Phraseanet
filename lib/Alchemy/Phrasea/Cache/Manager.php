@@ -60,7 +60,7 @@ class Manager
   {
     foreach ($this->registry as $cacheKey => $service_name)
     {
-      $this->get($cacheKey, $service_name)->getDriver()->flush();
+      $this->get($cacheKey, $service_name)->getDriver()->flushAll();
     }
 
     return $this;
@@ -71,7 +71,7 @@ class Manager
     try
     {
       $configuration = $this->core->getConfiguration()->getService($service_name);
-      $write = true;
+      $write         = true;
     }
     catch (\Exception $e)
     {
@@ -85,8 +85,8 @@ class Manager
 
     if ($this->hasChange($cacheKey, $service_name))
     {
-      $service->getDriver()->flush();
-      if($write)
+      $service->getDriver()->flushAll();
+      if ($write)
       {
         $this->registry[$cacheKey] = $service_name;
         $this->save($cacheKey, $service_name);

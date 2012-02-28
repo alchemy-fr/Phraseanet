@@ -27,11 +27,6 @@ class ApcCache extends DoctrineApc implements Cache
     return false;
   }
 
-  public function getStats()
-  {
-    return null;
-  }
-
   public function get($key)
   {
     if (!$this->contains($key))
@@ -50,11 +45,6 @@ class ApcCache extends DoctrineApc implements Cache
     }
 
     return $this;
-  }
-
-  public function flush()
-  {
-    return apc_clear_cache() && apc_clear_cache('user');
   }
 
 }
