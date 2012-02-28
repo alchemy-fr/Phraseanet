@@ -13,7 +13,7 @@ namespace Alchemy\Phrasea\Loader;
 
 require_once __DIR__ . '/LoaderStrategy.php';
 require_once __DIR__ . '/../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/Cache/Cache.php';
-require_once __DIR__ . '/../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/Cache/AbstractCache.php';
+require_once __DIR__ . '/../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/Cache/CacheProvider.php';
 require_once __DIR__ . '/../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/Cache/XcacheCache.php';
 
 use Alchemy\Phrasea\Loader\LoaderStrategy as CacheStrategy;
