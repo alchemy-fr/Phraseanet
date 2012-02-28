@@ -16,7 +16,6 @@
  * @link        www.phraseanet.com
  */
 require_once __DIR__ . "/../../lib/bootstrap.php";
-bootstrap::register_autoloads();
 
 $app = require __DIR__ . "/../../lib/Alchemy/Phrasea/Application/Prod.php";
 
