@@ -576,9 +576,9 @@
 
     var initRight = function(){
 
-      var $container = this.container = $('#ListManager .editor');
+      var $container = $('#ListManager .editor');
 
-      $('form[name="list-editor-search"]', this.container).bind('submit', function(){
+      $('form[name="list-editor-search"]', $container).bind('submit', function(){
 
         var $this = $(this);
         var dest = $('.list-editor-results', $container);
@@ -599,11 +599,11 @@
         return false;
       });
 
-      $('form[name="list-editor-search"] select', this.container).bind('change', function(){
+      $('form[name="list-editor-search"] select', $container).bind('change', function(){
         $(this).closest('form').trigger('submit');
       });
 
-      $('button', this.container).button();
+      $('button', $container).button();
 
       $('.EditToggle', $container).bind('click', function(){
         $('.content.readonly, .content.readwrite', $('#ListManager')).toggle();
@@ -614,7 +614,7 @@
         return false;
       });
 
-      $('button.deleter', this.container).bind('click', function(event){
+      $('button.deleter', $container).bind('click', function(event){
 
         var list_id = $(this).find('input[name=list_id]').val();
 
