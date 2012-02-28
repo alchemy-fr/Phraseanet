@@ -17,8 +17,6 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Events\Listener\Cache\Action\Clear as ClearCacheListener;
-use Doctrine\ORM\Events as DoctrineEvents;
 
 /**
  *
@@ -56,7 +54,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
     //get cache
     $cache = isset($options["cache"]) ? $options["cache"] : false;
-    
+
     if (!$cache || $this->debug)
     {
       $metaCache   = $this->core['CacheService']->get('ORMmetadata', 'Cache\\ArrayCache');
@@ -123,11 +121,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $evm = new \Doctrine\Common\EventManager();
 
     $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
-
-    $evm->addEventListener(DoctrineEvents::postUpdate, new ClearCacheListener());
-    $evm->addEventListener(DoctrineEvents::postRemove, new ClearCacheListener());
-    $evm->addEventListener(DoctrineEvents::postPersist, new ClearCacheListener());
-
 
     try
     {

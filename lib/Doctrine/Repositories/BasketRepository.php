@@ -56,9 +56,9 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
-    $idCache = "_active_by_user_" . ($sort === null ? "" : $sort. "_" )  . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
 
-    $query->useResultCache(true, 1800, $idCache);
+//    $idCache = "_active_by_user_" . ($sort === null ? "" : $sort. "_" )  . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
   }
@@ -93,9 +93,8 @@ class BasketRepository extends EntityRepository
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-    $idCache = "findUnreadActiveByUser" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
-
-    $query->useResultCache(true, 1800, $idCache);
+//    $idCache = "findUnreadActiveByUser" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
   }
@@ -129,8 +128,9 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array(1        => $user->get_id(), 2        => $user->get_id()));
-    $idCache = "_active_validation_by_user_" . $user->get_id() . "_" . $sort . Entities\Basket::CACHE_SUFFIX;
-    $query->useResultCache(true, 1800, $idCache);
+
+//    $idCache = "_active_validation_by_user_" . $user->get_id() . "_" . $sort . Entities\Basket::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
   }
@@ -157,8 +157,9 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('basket_id' => $basket_id));
-    $cacheId    = "_find_user_" . $basket_id . Entities\Basket::CACHE_SUFFIX;
-    $query->useResultCache(true, 1800, $cacheId);
+
+//    $cacheId    = "_find_user_" . $basket_id . Entities\Basket::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $cacheId);
 
     $basket = $query->getOneOrNullResult();
 
@@ -211,8 +212,9 @@ class BasketRepository extends EntityRepository
 
     $query   = $this->_em->createQuery($dql);
     $query->setParameters($params);
-    $idCache = "_containing_record_" . $record->get_serialize_key() . Entities\Basket::CACHE_SUFFIX;
-    $query->useResultCache(true, 1800, $idCache);
+
+//    $idCache = "_containing_record_" . $record->get_serialize_key() . Entities\Basket::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
   }
@@ -255,7 +257,6 @@ class BasketRepository extends EntityRepository
         );
         break;
       default:
-        $type    = 'default';
         $dql     = 'SELECT b, e, s, p
                 FROM Entities\Basket b
                 JOIN b.elements e
@@ -293,9 +294,9 @@ class BasketRepository extends EntityRepository
     $count         = Paginate::getTotalQueryResults($query);
     $paginateQuery = Paginate::getPaginateQuery($query, $offset, $perPage);
 
-    $idCache = "_" . $type . "_workzone_basket_" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+//    $idCache = "_" . $type . "_workzone_basket_" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
+//    $paginateQuery->useResultCache(true, 1800, $idCache);
 
-    $paginateQuery->useResultCache(true, 1800, $idCache);
     $result = $paginateQuery->getResult();
 
     return array('count'  => $count, 'result' => $result);
