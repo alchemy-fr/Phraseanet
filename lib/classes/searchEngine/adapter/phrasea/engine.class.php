@@ -631,7 +631,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       return array();
     $rs = $res['results'];
     $res = array_shift($rs);
-    if (!$res['xml'])
+    if (! isset($res['xml']))
 
       return array();
     $sxe = simplexml_load_string($res['xml']);
