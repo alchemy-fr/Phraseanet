@@ -2649,7 +2649,8 @@ function doDelete(lst)
 
       $.each(data,function(i,n){
         var imgt = $('#IMGT_'+n),
-        chim = $('.CHIM_'+n);
+        chim = $('.CHIM_'+n),
+        stories = $('.STORY_'+n);
         $('.doc_infos', imgt).remove();
         imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
         imgt.find(".thumb img").attr("src","/skins/icons/deleted.png").css({
@@ -2660,7 +2661,14 @@ function doDelete(lst)
         imgt.find(".status,.title,.bottom").empty();
 
         p4.Results.Selection.remove(n);
-        p4.WorkZone.Selection.remove(n);
+        if(stories.length > 0)
+        {
+          p4.WorkZone.refresh();
+        }
+        else
+        {
+          p4.WorkZone.Selection.remove(n);
+        }
       });
       viewNbSelect();
     }

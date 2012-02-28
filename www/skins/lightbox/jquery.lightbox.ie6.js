@@ -187,7 +187,11 @@ function set_release(el)
   		{
       	alert(data.datas);
       }
-      
+      if(!data.error)
+      {
+        p4.releasable = false;
+      }
+
 			return;
 		}
 	});
