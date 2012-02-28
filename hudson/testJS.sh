@@ -60,8 +60,9 @@ do
 		echo "nok !";
 		cat /tmp/jsunitphantom;
 		testOK=1;
+	else
+		echo "ok !";
 	fi
-	echo "";
 	echo "";
 	echo "";
 done
