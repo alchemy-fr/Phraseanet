@@ -729,7 +729,7 @@ class module_console_fileEnsureProductionSetting extends Command
           return false;
           break;
         case 'memcache':
-          if (!memcache_connect($Service->getHost(), $Service->getPort()))
+          if (!@memcache_connect($Service->getHost(), $Service->getPort()))
           {
             return false;
           }

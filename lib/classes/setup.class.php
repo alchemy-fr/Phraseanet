@@ -607,18 +607,16 @@ class setup
       if ($Core->getCache()->isServer())
       {
         $stats = $Core->getCache()->getStats();
-
+        
+        echo '<li>' . sprintf(_('setup::Serveur actif sur %s'), $registry->get('GV_cache_server_host') . ':' . $registry->get('GV_cache_server_port')) . '</li>';
+        echo "<table>";
+        
         foreach ($stats as $name => $stat)
         {
-          echo '<li>Statistics given by `' . $name . '`</li>';
-          echo '<li>' . sprintf(_('setup::Serveur actif sur %s'), $registry->get('GV_cache_server_host') . ':' . $registry->get('GV_cache_server_port')) . '</li>';
-          echo "<table>";
-          foreach ($stat as $key => $value)
-          {
-            echo "<tr class='even'><td>" . $key . "</td><td> " . $value . "</td></tr>";
-          }
-          echo "</table>";
+            echo "<tr class='even'><td>" . $name . "</td><td> " . $stat . "</td></tr>";
         }
+        
+        echo "</table>";
       }
       else
       {
