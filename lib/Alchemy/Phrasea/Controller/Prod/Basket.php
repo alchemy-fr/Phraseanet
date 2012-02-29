@@ -412,11 +412,29 @@ class Basket implements ControllerProviderInterface
           $em->persist($basket_element);
 
           $basket->addBasketElement($basket_element);
+          
+          if(null !== $validationSession = $basket->getValidation())
+          {
+            if(false !== $validationSession->isFinished())
+            {
+              continue;
+            }
+            
+            $participants = $validationSession->getParticipants();
+            
+            foreach($participants as $participant)
+            {
+              $validationData = new \Entities\ValidationData();
+              $validationData->setParticipant($participant);
+              $validationData->setBasketElement($basket_element);
+              
+              $em->persist($validationData);
+            }
+          }
 
           $n++;
         }
 
-        $em->merge($basket);
         $em->flush();
 
         $data = array(
