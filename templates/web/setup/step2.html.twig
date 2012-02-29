@@ -299,6 +299,11 @@
                               <tr>
                                 <td>
                                   <p>
+                                     {% if error is not none %}
+                                      <p class='error'>
+                                        {{error}}
+                                      </p>
+                                    {% endif %}
                                     {% trans %}
                                       Bonjour, vous etes sur le point d'installer Phraseanet.
                                     {% endtrans %}
@@ -322,10 +327,10 @@
                                   {% endif %}
                                 </td>
                               </tr>
-                              {% for warning in warnings %}
-                                <tr>
-                                  <td>
-                                    <img src="/skins/icons/alert.png" /> {{ warning }}
+                             {% for warning in warnings %}
+                                <tr style='border-top:1px dotted grey;{{ loop.last ? " border-bottom:1px dotted grey;" : " " }}'>
+                                  <td class="warning">
+                                    {{ warning }}
                                   </td>
                                 </tr>
                               {% endfor %}
