@@ -16,7 +16,7 @@
  */
 include_once __DIR__ . '/../../lib/bootstrap.php';
 
-$appbox = appbox::get_instance(registry::get_instance());
+$appbox = appbox::get_instance(\bootstrap::getCore());
 $session = $appbox->get_session();
 phrasea::use_i18n(Session_Handler::get_locale());
 
