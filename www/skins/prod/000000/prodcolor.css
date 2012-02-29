@@ -452,9 +452,9 @@ span.ww_winTitle{
 div.diapo
 {
 	position:relative;
-	float:none;
+/*	float:none;*/
 	float:left;
-	display:inline-block;
+/*	display:inline-block;*/
 	display:block;
 	border:1px solid #404040;
 	-moz-border-radius:4px;
@@ -2806,6 +2806,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
   margin:0 0 30px;
   padding:10px;
   border:2px solid #212121;
+  float:left;
 }
 #answers .feed .entry.hover{
   border:2px solid #404040;
@@ -2836,11 +2837,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
   background-position: center bottom;
 }
 
-#answers .feed .contents .diapo
-{
-  float:none;
-  display:inline-block;
-}
 
 #answers .feed .contents
 {
