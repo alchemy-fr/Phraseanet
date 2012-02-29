@@ -298,6 +298,15 @@
                             <table class="main_content_table">
                               <tr>
                                 <td>
+                                    {% if error is not none %}
+                                      <p class='error'>
+                                        {% trans %}
+                                          Une erreur est survenue lors d l'installation.
+                                          <br>
+                                          <i>{{error}}</i>
+                                        {% endtrans %}
+                                      </p>
+                                    {% endif %}
                                   <p>
                                     {% trans %}
                                       Bonjour, vous etes sur le point d'installer Phraseanet.
@@ -323,9 +332,9 @@
                                 </td>
                               </tr>
                               {% for warning in warnings %}
-                                <tr>
-                                  <td>
-                                    <img src="/skins/icons/alert.png" /> {{ warning }}
+                                <tr style='border-top:1px dotted grey;{{ loop.last ? " border-bottom:1px dotted grey;" : " "  }}'>
+                                  <td class="warning">
+                                    {{ warning }}
                                   </td>
                                 </tr>
                               {% endfor %}

@@ -104,6 +104,34 @@ class Installer implements ControllerProviderInterface
         $request = $app['request'];
 
         $warnings = array();
+        
+        $php_constraint          = \setup::check_php_version();
+        $writability_constraints = \setup::check_writability(new \Setup_Registry());
+        $extension_constraints   = \setup::check_php_extension();
+        $opcode_constraints      = \setup::check_cache_opcode();
+        $php_conf_constraints    = \setup::check_php_configuration();
+        $locales_constraints     = \setup::check_system_locales();
+
+        $constraints_coll = array(
+          'php_constraint'          => $php_constraint
+          , 'writability_constraints' => $writability_constraints
+          , 'extension_constraints'   => $extension_constraints
+          , 'opcode_constraints'      => $opcode_constraints
+          , 'php_conf_constraints'    => $php_conf_constraints
+          , 'locales_constraints'     => $locales_constraints
+        );
+
+        foreach ($constraints_coll as $key => $constraints)
+        {
+          $unset = true;
+          foreach ($constraints as $constraint)
+          {
+            if (!$constraint->is_ok() && !$constraint->is_blocker())
+              $warnings[] = $constraint->get_message();
+          }
+        }
+        
+        
         if ($request->getScheme() == 'http')
         {
           $warnings[] = _('It is not recommended to install Phraseanet without HTTPS support');
@@ -118,6 +146,7 @@ class Installer implements ControllerProviderInterface
           , 'version_number'      => $app['Core']['Version']->getNumber()
           , 'version_name'        => $app['Core']['Version']->getName()
           , 'warnings'            => $warnings
+          , 'error'               => $request->get('error')
           , 'current_servername'  => $request->getScheme() . '://' . $request->getHttpHost() . '/'
           , 'discovered_binaries' => \setup::discover_binaries()
           , 'rootpath'            => dirname(dirname(dirname(dirname(__DIR__)))) . '/'
