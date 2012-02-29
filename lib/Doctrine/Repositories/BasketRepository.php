@@ -286,7 +286,7 @@ class BasketRepository extends EntityRepository
       $params['description'] = '%' . $query . '%';
     }
 
-    $dql .= ' ORDER BY e.ord ASC';
+    $dql .= ' ORDER BY b.id DESC, e.ord ASC';
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
