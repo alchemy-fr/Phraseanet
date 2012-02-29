@@ -9,7 +9,7 @@
     </div>
     {% for key, value in selection %}
         <div id="tab-{{ key }}-{{ param.tbl }}">
-            <div class="load" style="margin-top:40px;padding-top:10px;">
+            <div class="load">
             {% block ajax_data_content %}{% endblock %}
             </div>
             <form style="display:none;" onsubmit="return false;" class="report_form">
@@ -23,10 +23,10 @@
                 </fieldset>
                 <fieldset style="float:right;border:none;text-align:right;">
                     <div style="clear:right;">
+                         <label for="limit" style="font-size:10px"><i>nombre de ligne(s) par page</i></label>
                         <input type="text" name="limit" value="30" size="2" class="enterformsubmiter"/>
                         <input type="button" name="go" value ="ok" class="submiter" />
                     </div>
-                    <label for="limit" style="font-size:10px;float:right;"><i>nombre de ligne(s) par page</i></label>
                 </fieldset>
                 <input type="hidden" name="tbl" value ="{{ param['tbl'] }}"/>
                 <input type="hidden" name="dmin" value ="{{ param['dmin'] }}"/>
