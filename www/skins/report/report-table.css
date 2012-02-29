@@ -60,6 +60,11 @@ iframe{
 	font-weight:bolder;
 }
 
+.report_form fieldset{
+  margin:0;
+  padding:0;
+}
+
 .curfilter{
 	font-size:12px;
 	color:#333;
@@ -84,11 +89,17 @@ iframe{
 	margin-top:50px;
 }
 
+.horizontal-scroller{
+  position:relative;
+  top:0;
+  left:0;
+}
+
 #mainTabs{
 	border:none;
 }
 .answers{
-	background-color:#555555;
+	background-color:#F6F2F1;
 }
 .report-table tr.odd{
 	background-color:#CDCDCD;
@@ -165,6 +176,9 @@ iframe{
 	vertical-align: 4px;
 	text-align:center;
 	color: #202020;
+  min-width:50px;
+  width:auto;
+  white-space: nowrap;
 }
 .report-table thead th {
 	text-align: center;
@@ -173,6 +187,9 @@ iframe{
 	border-bottom: 3px solid #f6f2f1;
 	border-top:3px solid #f6f2f1;
 	background-color:#FF9000;
+  min-width:50px;
+  width:auto;
+  white-space: nowrap;
 }
 .report-table tfoot td {
 	background-color:#FF9000;
@@ -418,7 +435,7 @@ table.tablesorter tr th.SortDown {
 }
 
 .onload{
-	background-image:url(ajax-loader2.gif);
+	background-image:url(ajax-loader.gif);
 	background-position:center center;
 	background-repeat:no-repeat;
 }

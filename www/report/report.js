@@ -134,7 +134,7 @@ function dashboardDatePicker()
       numberOfMonths: 3,
       maxDate: "-0d",
       onSelect: function(selectedDate) {
-        id = $(".selected_em").attr('id').substr(3);
+        var id = $(".selected_em").attr('id').substr(3);
         changeDash(id);
         $('.btn-slide').trigger('click');
       }
@@ -147,8 +147,8 @@ function hideMenu()
   $('.hided').hide();
   $(".showed").show();
   $(".form").slideToggle("slow", function(){
-    bodySize.y = $('#mainContainer').height();
-    $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').position().top));
+    bodySize.y = $(document).height();
+    $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').position().top - 30));
   });
 }
 
@@ -158,8 +158,8 @@ function showMenu()
   $('.showed').hide();
   $(".hided").show();
   $(".form").slideToggle("slow", function(){
-    bodySize.y = $('#mainContainer').height();
-    $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').position().top));
+    bodySize.y = $(document).height();
+    $('.answers:visible').height(Math.round(bodySize.y - $('.answers:visible').position().top  - 30));
 		
   });
 }
