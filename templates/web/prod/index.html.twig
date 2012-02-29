@@ -2,7 +2,7 @@
 {% set unique_id = module.getRandom() %}
 {% for base in search_datas['bases'] %}
 {% set sbas_id = base['sbas_id'] %}
-<div class="sbas_list sbas_{{sbas_id}}">
+<div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom:10px;">
   <input type="hidden" name="reference" value="{{sbas_id}}"/>
   <div class="clksbas" style="text-align:center;">
     <input type="checkbox" checked style="display:none" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}" />
@@ -424,14 +424,11 @@
 
 
               <div>
-                <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
-              </div>
-              <div>
                 <table style="width:100%;table-layout:fixed;">
                   <tr>
                     <td style="width:50%;vertical-align:top;">
                       <div class="sbasglob ui-corner-all">
-                        <div style="text-align:center;margin:0 10px;">
+                        <div style="text-align:center;margin:10px;">
                           <input class="input-button" type="button"
                                 value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
                           <input class="input-button" type="button"
@@ -443,6 +440,9 @@
                     <td style="width:50%;vertical-align:top;">
                       <div id="sbasfiltercont" class="ui-corner-all">
                         <div>
+                          <div style="margin:10px 0;">
+                            <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
+                          </div>
                           {% if registry.get('GV_sphinx') %}
                           {% trans 'Trier par ' %}
                             <select name="sort">
