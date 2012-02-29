@@ -110,14 +110,6 @@ input,select{
   vertical-align:middle;
 }
 
-.main_content_wrapper td .warning{
-  vertical-align:middle;
-  padding-left:20px;
-  padding-top:5px;
-  padding-bottom:5px;
-  background: url('/skins/icons/alert.png') no-repeat left center;
-}
-
 .section_title{
   height:30px;
   bottom:auto;

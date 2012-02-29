@@ -71,8 +71,6 @@ class Manager
     try
     {
       $configuration = $this->core->getConfiguration()->getService($service_name);
-      $service = Builder::create($this->core, $service_name, $configuration);
-      $driver = $service->getDriver();
       $write = true;
     }
     catch (\Exception $e)
@@ -80,14 +78,14 @@ class Manager
       $configuration = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
           array('type' => 'Cache\\ArrayCache')
       );
-      $service = Builder::create($this->core, $service_name, $configuration);
-      $driver = $service->getDriver();
       $write = false;
     }
 
+    $service = Builder::create($this->core, $service_name, $configuration);
+
     if ($this->hasChange($cacheKey, $service_name))
     {
-      $driver->flush();
+      $service->getDriver()->flush();
       if($write)
       {
         $this->registry[$cacheKey] = $service_name;
