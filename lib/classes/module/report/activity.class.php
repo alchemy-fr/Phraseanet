@@ -453,7 +453,6 @@ class module_report_activity extends module_report
       $this->result[$i]['total'] += 1;
 
       $total['tot_dl'] += 1;
-
     }
 
     $nb_row = $i + 1;
@@ -638,8 +637,23 @@ class module_report_activity extends module_report
     foreach ($rs as $row)
     {
       $user = $row[$on];
-      if (($save_user != $user) && !is_null($user))
+      if (($save_user != $user) && !is_null($user) && !empty($user))
       {
+        if ($i >= 0)
+        {
+          if (($this->result[$i]['nbprev'] + $this->result[$i]['nbdoc']) == 0 || ($this->result[$i]['poiddoc'] + $this->result[$i]['poidprev']) == 0)
+          {
+            unset($this->result[$i]);
+          }
+          
+          if (isset($this->result[$i]['poiddoc']) && isset($this->result[$i]['poidprev']))
+          {
+            $this->result[$i]['poiddoc'] = p4string::format_octets($this->result[$i]['poiddoc']);
+            $this->result[$i]['poidprev'] = p4string::format_octets($this->result[$i]['poidprev']);
+          }
+        }
+
+        
         $i++;
 
         $this->result[$i]['nbprev'] = 0;
@@ -675,12 +689,11 @@ class module_report_activity extends module_report
         $total['poidprev'] += (!is_null($row['poid']) ? $row['poid'] : 0);
         $this->result[$i]['usrid'] = $row['usrid'];
       }
+
       $save_user = $user;
     }
-
-    $this->result[$i]['poiddoc'] = p4string::format_octets($this->result[$i]['poiddoc']);
-    $this->result[$i]['poidprev'] = p4string::format_octets($this->result[$i]['poidprev']);
-
+    
+    unset($this->result[$i]);
     $nb_row = $i + 1;
     $this->total = $nb_row;
 
