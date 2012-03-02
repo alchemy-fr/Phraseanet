@@ -1,6 +1,7 @@
 
 
-;(function(window){
+;
+(function(window){
 
   var Feedback = function($container, context){
     this.container = $($container);
@@ -12,7 +13,7 @@
       {
         selector:'.badge'
       }
-    );
+      );
 
     var $this = this;
 
@@ -40,13 +41,13 @@
             $('body').append('<div id="user_adder_dialog" style="display:none;"></div>');
           }
           $('#user_adder_dialog').addClass('loading').empty().dialog({
-              buttons:{},
-              draggable:false,
-              resizable:false,
-              closeOnEscape:true,
-              modal:true,
-              width:'400',
-              height:'400'
+            buttons:{},
+            draggable:false,
+            resizable:false,
+            closeOnEscape:true,
+            modal:true,
+            width:'400',
+            height:'400'
           }).dialog( "moveToTop" );
         },
         success: function(data){
@@ -156,48 +157,59 @@
     });
 
     $('.FeedbackSend', this.container).bind('click', function(){
-          if($('.badges .badge', $container).length === 0)
-          {
-            alert(language.FeedBackNoUsersSelected);
-            return;
+      if($('.badges .badge', $container).length === 0)
+      {
+        alert(language.FeedBackNoUsersSelected);
+        return;
+      }
+
+      var buttons = {};
+
+      buttons[language.send] = function(){
+        $dialog.Close();
+
+        $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
+        $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
+        $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+        $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
+
+        $FeedBackForm.trigger('submit');
+      };
+
+      var options = {
+        size : 'Small',
+        buttons : buttons,
+        loading : true,
+        title : language.send,
+        closeOnEscape : true,
+        cancelButton : true
+      };
+
+      var $dialog = p4.Dialog.Create(options, 2);
+      
+      $dialog.getDomElement().bind("keypress", function(event){
+        if(event.which){
+          if(event.which==13){
+            return false;
           }
+        }
+      });
+      
+      var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
-          var buttons = {};
+      var callback = function(rendered){
 
-          buttons[language.send] = function(){
-            $dialog.Close();
+        $dialog.setContent(rendered);
 
-            $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
-            $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
-            $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
-            $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
+        $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
+        $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
+        $('.' + $this.Context, $dialog.getDomElement()).show();
+            
+      };
 
-            $FeedBackForm.trigger('submit');
-          };
-
-          var options = {
-            size : 'Small',
-            buttons : buttons,
-            loading : true,
-            title : language.send,
-            closeOnEscape : true,
-            cancelButton : true
-          };
-
-          var $dialog = p4.Dialog.Create(options, 2);
-
-          var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
-
-          var callback = function(rendered){
-
-            $dialog.setContent(rendered);
-
-            $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
-            $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
-            $('.' + $this.Context, $dialog.getDomElement()).show();
-          };
-
-          p4.Mustache.Render('Feedback-SendForm', {language:language}, callback);
+      p4.Mustache.Render('Feedback-SendForm', {
+        language:language
+      }, callback);
     }).button();
 
     $('.user_content .badges', this.container).disableSelection();
@@ -235,7 +247,9 @@
 
     $('.user_content .badges .badge .deleter', this.container).live('click', function(event){
       var $elem = $(this).closest('.badge');
-      $elem.fadeOut(function(){$elem.remove();});
+      $elem.fadeOut(function(){
+        $elem.remove();
+      });
       return;
     });
 
@@ -274,64 +288,67 @@
         return false;
       }
 
-      p4.Lists.create($input.val(), function(list){$input.val('');list.addUsers(users);});
+      p4.Lists.create($input.val(), function(list){
+        $input.val('');
+        list.addUsers(users);
+      });
 
       return false;
     });
 
     $('input[name="users-search"]', this.container).autocomplete({
-        minLength: 2,
-        source: function( request, response ) {
-          $.ajax({
-            url: '/prod/push/search-user/',
-            dataType: "json",
-            data: {
-              query: request.term
-            },
-            success: function( data ) {
-              response( data );
-            }
-          });
+      minLength: 2,
+      source: function( request, response ) {
+      $.ajax({
+        url: '/prod/push/search-user/',
+        dataType: "json",
+        data: {
+        query: request.term
         },
-        select: function( event, ui ) {
-          if(ui.item.type == 'USER')
-          {
-            $this.selectUser(ui.item);
-          }
-          if(ui.item.type == 'LIST')
-          {
-            for(e in ui.item.entries)
-            {
-              $this.selectUser(ui.item.entries[e].User);
-            }
-          }
-          return false;
+        success: function( data ) {
+        response( data );
         }
+        });
+      },
+      select: function( event, ui ) {
+      if(ui.item.type == 'USER')
+      {
+      $this.selectUser(ui.item);
+      }
+      if(ui.item.type == 'LIST')
+      {
+      for(e in ui.item.entries)
+      {
+      $this.selectUser(ui.item.entries[e].User);
+      }
+      }
+      return false;
+      }
       })
-      .data( "autocomplete" )._renderItem = function( ul, item ) {
+    .data( "autocomplete" )._renderItem = function( ul, item ) {
 
-        var autocompleter = $('input[name="users-search"]', $this.container);
+      var autocompleter = $('input[name="users-search"]', $this.container);
 
-        autocompleter.addClass('loading');
+      autocompleter.addClass('loading');
 
-        var callback = function(datas){
-          $(datas).data( "item.autocomplete", item ).appendTo( ul );
-          autocompleter.data( "autocomplete" ).menu.refresh();
-          autocompleter.data('autocomplete')._resizeMenu();
-          autocompleter.removeClass('loading');
-        };
-
-        if(item.type == 'USER')
-        {
-          var datas = p4.Mustache.Render('List-User-Item', item, callback);
-        }
-        if(item.type == 'LIST')
-        {
-          var datas = p4.Mustache.Render('List-List-Item', item, callback);
-        }
-
-        return;
+      var callback = function(datas){
+        $(datas).data( "item.autocomplete", item ).appendTo( ul );
+        autocompleter.data( "autocomplete" ).menu.refresh();
+        autocompleter.data('autocomplete')._resizeMenu();
+        autocompleter.removeClass('loading');
       };
+
+      if(item.type == 'USER')
+      {
+        var datas = p4.Mustache.Render('List-User-Item', item, callback);
+      }
+      if(item.type == 'LIST')
+      {
+        var datas = p4.Mustache.Render('List-List-Item', item, callback);
+      }
+
+      return;
+    };
 
     return this;
   };
@@ -365,7 +382,9 @@
         type: 'GET',
         url: '/prod/push/user/' + usr_id + '/',
         dataType: 'json',
-        data: {usr_id : usr_id},
+        data: {
+          usr_id : usr_id
+        },
         success: function(data){
           if(typeof callback === 'function')
           {
@@ -467,13 +486,13 @@
             $('body').append('<div id="user_adder_dialog" style="display:none;"></div>');
           }
           $('#user_adder_dialog').addClass('loading').empty().dialog({
-              buttons:{},
-              draggable:false,
-              resizable:false,
-              closeOnEscape:true,
-              modal:true,
-              width:'400',
-              height:'400'
+            buttons:{},
+            draggable:false,
+            resizable:false,
+            closeOnEscape:true,
+            modal:true,
+            width:'400',
+            height:'400'
           }).dialog( "moveToTop" );
         },
         success: function(data){
