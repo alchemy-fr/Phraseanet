@@ -82,6 +82,10 @@ if ($parm['flush_cache'])
         margin:5px 0 5px 40px;
         border:1px solid #404040;
       }
+      ul.setup table{
+        width:100%;
+        table-layout: fixed;
+      }
       .setup li{
         margin:0px 0;
         padding:2px 5px 2px 30px;
