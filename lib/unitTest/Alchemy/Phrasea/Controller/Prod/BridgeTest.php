@@ -166,6 +166,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
   public function testLogoutDeconnected()
   {
     $this->client->followRedirects();
+     self::$account->get_settings()->set("auth_token", null);//deconnected
     $url = sprintf('/bridge/adapter/%d/logout/', self::$account->get_id());
     $crawler = $this->client->request('GET', $url);
     $pageContent = $this->client->getResponse()->getContent();
@@ -195,6 +196,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testLoadElementsDisconnected()
   {
+     self::$account->get_settings()->set("auth_token", null);//deconnected
     $url = sprintf("/bridge/adapter/%s/load-elements/%s/", self::$account->get_id(), self::$account->get_api()->get_connector()->get_default_element_type());
     $crawler = $this->client->request('GET', $url, array("page" => 1));
     $this->assertTrue($this->client->getResponse()->isOk());
