@@ -30,7 +30,7 @@
     $('a.user_adder', this.container).bind('click', function(){
 
       var $this = $(this);
-
+      console.log("yi");
       $.ajax({
         type: "GET",
         url: $this.attr('href'),
@@ -121,7 +121,7 @@
     $('#PushBox form[name="FeedBackForm"]').bind('submit', function(){
 
       var $this = $(this);
-
+      console.log("ya");
       $.ajax({
         type: $this.attr('method'),
         url: $this.attr('action'),
@@ -155,7 +155,7 @@
 
       return false;
     });
-
+    
     $('.FeedbackSend', this.container).bind('click', function(){
       if($('.badges .badge', $container).length === 0)
       {
@@ -299,6 +299,7 @@
     $('input[name="users-search"]', this.container).autocomplete({
       minLength: 2,
       source: function( request, response ) {
+      console.log("yo");
       $.ajax({
         url: '/prod/push/search-user/',
         dataType: "json",
@@ -377,7 +378,7 @@
     },
     loadUser : function(usr_id, callback) {
       var $this = this;
-
+      console.log("yu");
       $.ajax({
         type: 'GET',
         url: '/prod/push/user/' + usr_id + '/',
@@ -395,7 +396,7 @@
     },
     loadList : function(url, callback) {
       var $this = this;
-
+      console.log("yyuyu");
       $.ajax({
         type: 'GET',
         url: url,
@@ -414,6 +415,7 @@
     addUser : function($form, callback){
 
       var $this = this;
+      console.log("yyiyi");
       $.ajax({
         type: 'POST',
         url: '/prod/push/add-user/',
@@ -475,7 +477,7 @@
     $('a.user_adder', this.container).bind('click', function(){
 
       var $this = $(this);
-
+      console.log("yoyo");
       $.ajax({
         type: "GET",
         url: $this.attr('href'),
@@ -601,7 +603,7 @@
 
         var $this = $(this);
         var dest = $('.list-editor-results', $container);
-
+        console.log("zzzzz");
         $.ajax({
           url: $this.attr('action'),
           type: $this.attr('method'),
@@ -632,6 +634,43 @@
         $('#ListManager ul.lists .list.selected a').trigger('click');
         return false;
       });
+
+      $('form[name="SaveName"]', $container).bind('submit', function(){
+        var $this = $(this);
+        
+        $.ajax({
+          type: $this.attr('method'),
+          url: $this.attr('action'),
+          dataType: 'json',
+          data: $this.serializeArray(),
+          beforeSend:function(){
+
+          },
+          success: function(data){
+            if(data.success)
+            {
+              humane.info(data.message);
+              $('#ListManager .lists .list_refresh').trigger('click');
+            }
+            else
+            {
+              humane.error(data.message);
+            }
+            return;
+          },
+          error: function(){
+
+            return;
+          },
+          timeout: function(){
+
+            return;
+          }
+        });
+
+        return false;
+      });
+
 
       $('button.deleter', $container).bind('click', function(event){
 
@@ -666,8 +705,7 @@
         return false;
       });
     };
-
-
+         
     initLeft();
 
     $('.badges a.deleter', this.container).live('click', function(){

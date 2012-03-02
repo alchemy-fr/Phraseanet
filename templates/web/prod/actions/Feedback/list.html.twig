@@ -6,7 +6,7 @@
       <tr>
         <td>
           {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-          <form method="POST" action="/prod/lists/list/{{ list.getId() }}/update/">
+          <form method="POST" name="SaveName" action="/prod/lists/list/{{ list.getId() }}/update/">
             <label>{% trans 'List Name' %}</label>
             <input name="name" value="{{ list.getName() }}"/>
             <button>
