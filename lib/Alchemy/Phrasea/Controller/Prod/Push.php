@@ -763,6 +763,17 @@ class Push implements ControllerProviderInterface
         {
           $query->havePositions($request->get('Position'));
         }
+        
+        if($request->get('ListUser'))
+        {
+          $entries = $list->getEntries();
+          $ids = array();
+          foreach($entries as $usrEntries)
+          {
+            $ids[] = $usrEntries->getUsrId();
+          }
+          $query->in($ids);
+        }
 
         $sort = $request->get('srt', 'usr_creationdate');
         $ord  = $request->get('ord', 'desc');

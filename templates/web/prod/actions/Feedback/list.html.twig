@@ -89,7 +89,13 @@
             {% trans 'boutton::chercher' %}
           </button>
         </div>
-        <div class="PNB" style="top:40px;height:120px;bottom:auto;">
+        <div class="PNB" style="top:40px;height:20px;bottom:auto;">
+          <ul>
+            <li style="display:inline-block;"><span>{%trans%}all users{%endtrans%}</span><input type="radio" name="ListUser" value="0" checked="checked"/></li>
+            <li style="display:inline-block;"><span>{%trans%}users from list{%endtrans%}</span><input type="radio" name="ListUser" value="1" /></li>
+          </ul>
+        </div>
+        <div class="PNB" style="top:60px;height:120px;bottom:auto;">
           <table style="table-layout:fixed;">
             <tr>
               <td style="width:20%;">

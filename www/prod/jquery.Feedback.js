@@ -30,7 +30,7 @@
     $('a.user_adder', this.container).bind('click', function(){
 
       var $this = $(this);
-      console.log("yi");
+
       $.ajax({
         type: "GET",
         url: $this.attr('href'),
@@ -121,7 +121,7 @@
     $('#PushBox form[name="FeedBackForm"]').bind('submit', function(){
 
       var $this = $(this);
-      console.log("ya");
+
       $.ajax({
         type: $this.attr('method'),
         url: $this.attr('action'),
@@ -299,7 +299,7 @@
     $('input[name="users-search"]', this.container).autocomplete({
       minLength: 2,
       source: function( request, response ) {
-      console.log("yo");
+
       $.ajax({
         url: '/prod/push/search-user/',
         dataType: "json",
@@ -378,7 +378,7 @@
     },
     loadUser : function(usr_id, callback) {
       var $this = this;
-      console.log("yu");
+      
       $.ajax({
         type: 'GET',
         url: '/prod/push/user/' + usr_id + '/',
@@ -396,7 +396,7 @@
     },
     loadList : function(url, callback) {
       var $this = this;
-      console.log("yyuyu");
+      
       $.ajax({
         type: 'GET',
         url: url,
@@ -415,7 +415,7 @@
     addUser : function($form, callback){
 
       var $this = this;
-      console.log("yyiyi");
+      
       $.ajax({
         type: 'POST',
         url: '/prod/push/add-user/',
@@ -477,7 +477,7 @@
     $('a.user_adder', this.container).bind('click', function(){
 
       var $this = $(this);
-      console.log("yoyo");
+      
       $.ajax({
         type: "GET",
         url: $this.attr('href'),
@@ -603,7 +603,7 @@
 
         var $this = $(this);
         var dest = $('.list-editor-results', $container);
-        console.log("zzzzz");
+
         $.ajax({
           url: $this.attr('action'),
           type: $this.attr('method'),
@@ -620,7 +620,7 @@
         return false;
       });
 
-      $('form[name="list-editor-search"] select', $container).bind('change', function(){
+      $('form[name="list-editor-search"] select, form[name="list-editor-search"] input[name="ListUser"]', $container).bind('change', function(){
         $(this).closest('form').trigger('submit');
       });
 
