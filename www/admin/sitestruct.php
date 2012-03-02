@@ -98,6 +98,10 @@ if ($parm['flush_cache'])
       tr.even{
         background-color:#CCCCCC;
       }
+      #flush_button {
+        width:360px;
+        margin: 5px 0 5px 40px;
+      }
     </style>
 
   <style>
@@ -176,7 +180,7 @@ if ($parm['flush_cache'])
     {
     ?>
       <div>
-<?php echo _('admin::Le serveur memcached a ete flushe'); ?>
+<?php echo _('all caches services have been flushed'); ?>
       </div>
 <?php
     }
@@ -319,7 +323,7 @@ if ($parm['flush_cache'])
         ?>
               <form method="post" action="sitestruct.php">
                 <input type="hidden" name="flush_cache" value="1"/>
-                <input type="submit" value="Flush Memcached"/>
+                <input id="flush_button" type="submit" value="Flush All Caches" />
               </form>
 <?php
           }
