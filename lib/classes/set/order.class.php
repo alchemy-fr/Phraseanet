@@ -222,14 +222,26 @@ class set_order extends set_abstract
     $core = \bootstrap::getCore();
 
     $em = $core->getEntityManager();
-    $repository = $em->getRepository('\Entities\Basket');
-
+    
+    $Basket = null;
     /* @var $repository \Repositories\BasketRepository */
-    $Basket = $repository->findUserBasket($this->ssel_id, $core->getAuthenticatedUser(), false);
+    if($this->ssel_id)
+    {
+      $repository = $em->getRepository('\Entities\Basket');
+      
+      try
+      {
+        $Basket = $repository->findUserBasket($this->ssel_id, $core->getAuthenticatedUser(), false);
+      }
+      catch(\Exception $e)
+      {
+        $Basket = null;
+      }
+    }
 
     if(!$Basket)
     {
-      $Basket = new Basket();
+      $Basket = new \Entities\Basket();
       $Basket->setName(sprintf(_('Commande du %s'), $this->created_on->format('Y-m-d')));
       $Basket->setOwner($this->user);
       $Basket->setPusher($core->getAuthenticatedUser());
@@ -265,16 +277,15 @@ class set_order extends set_abstract
         $sbas_id = phrasea::sbasFromBas($basrec['base_id']);
         $record = new record_adapter($sbas_id, $basrec['record_id']);
 
-        $BasketElement = new BasketElement();
+        $BasketElement = new \Entities\BasketElement();
         $BasketElement->setRecord($record);
         $BasketElement->setBasket($Basket);
 
         $Basket->addBasketElement($BasketElement);
 
         $em->persist($BasketElement);
-
-        $em->merge($Basket);
-
+        
+        
         $params = array(
             ':usr_id' => $session->get_usr_id()
             , ':order_id' => $this->id
