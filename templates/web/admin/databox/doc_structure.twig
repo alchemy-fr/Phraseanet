@@ -282,15 +282,6 @@
                     {% trans 'Affiche dans report' %}
                   </th>
                   <th>
-                    Regdate
-                  </th>
-                  <th>
-                    Regname
-                  </th>
-                  <th>
-                    Regdesc
-                  </th>
-                  <th>
                     {% trans 'Afficher en titre' %}
                   </th>
                 </tr>
@@ -362,15 +353,6 @@
                                         </td>
                                         <td>
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="report_{{field.get_id()}}" type="checkbox" {% if field.is_report() %}checked="checked"{% endif %}/>
-                                        </td>
-                                        <td>
-                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regdate() %}checked="checked"{% endif %} name="regdate" value="{{field.get_id()}}"/>
-                                        </td>
-                                        <td>
-                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regname() %}checked="checked"{% endif %} name="regname" value="{{field.get_id()}}"/>
-                                        </td>
-                                        <td>
-                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regdesc() %}checked="checked"{% endif %} name="regdesc" value="{{field.get_id()}}"/>
                                         </td>
                                         <td>
                                           <select class="metafield_{{field.get_id()}}" {{disabled}} name="thumbtitle_{{field.get_id()}}">
