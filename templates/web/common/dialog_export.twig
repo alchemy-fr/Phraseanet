@@ -588,10 +588,12 @@
 
                   $('#sendmail .sendmail_button').bind('click',function(){
                           if(!check_subdefs($('#sendmail')))
-
-                                  return false;
-                          $('#sendmail .sendmail_button_loader').css('visibility','visible');
-                          $(this).attr('disabled','disabled');
+                          {
+                            return false;
+                          }
+                          $('#sendmail .close_button').trigger("click");
+                          //$('#sendmail .sendmail_button_loader').css('visibility','visible');
+                          //$(this).attr('disabled','disabled');
                           $('#sendmail form').submit();
                   });
                   $('#dialog_dwnl .datepicker').datepicker({
