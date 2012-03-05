@@ -33,7 +33,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
    *
    * @var \record_adapter
    */
-  protected static $need_story = true;
+  protected static $need_story   = true;
   protected static $need_records = 2;
 
   public function setUp()
@@ -53,16 +53,16 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $route = "/story/";
 
     $collections = self::$core->getAuthenticatedUser()
-            ->ACL()
-            ->get_granted_base(array('canaddrecord'));
+      ->ACL()
+      ->get_granted_base(array('canaddrecord'));
 
     $collection = array_shift($collections);
 
     $crawler = $this->client->request(
-            'POST', $route, array(
-        'base_id' => $collection->get_base_id(),
-        'name' => 'test story',
-        'description' => 'test_description')
+      'POST', $route, array(
+      'base_id' => $collection->get_base_id(),
+      'name'    => 'test story'
+      )
     );
 
     $response = $this->client->getResponse();
@@ -70,7 +70,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(302, $response->getStatusCode());
 
     $query = self::$core->getEntityManager()->createQuery(
-            'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
+      'SELECT COUNT(w.id) FROM \Entities\StoryWZ w'
     );
 
     $count = $query->getSingleScalarResult();
@@ -83,17 +83,16 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $route = "/story/";
 
     $collections = self::$core->getAuthenticatedUser()
-            ->ACL()
-            ->get_granted_base(array('canaddrecord'));
+      ->ACL()
+      ->get_granted_base(array('canaddrecord'));
 
     $collection = array_shift($collections);
 
     $crawler = $this->client->request(
-            'POST', $route, array(
-        'base_id' => $collection->get_base_id(),
-        'name' => 'test story',
-        'description' => 'test_description'), array(), array(
-        "HTTP_ACCEPT" => "application/json")
+      'POST', $route, array(
+      'base_id'     => $collection->get_base_id(),
+      'name'        => 'test story'), array(), array(
+      "HTTP_ACCEPT" => "application/json")
     );
 
     $response = $this->client->getResponse();
@@ -115,9 +114,6 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(1, $crawler->filter($filter)->count());
 
     $filter = "form[action='/prod/story/'] input[name='name']";
-    $this->assertEquals(1, $crawler->filter($filter)->count());
-
-    $filter = "form[action='/prod/story/'] textarea[name='description']";
     $this->assertEquals(1, $crawler->filter($filter)->count());
 
     $filter = "form[action='/prod/story/'] select[name='base_id']";
@@ -144,8 +140,8 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $route = sprintf("/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
     $records = array(
-        self::$record_1->get_serialize_key(),
-        self::$record_2->get_serialize_key()
+      self::$record_1->get_serialize_key(),
+      self::$record_2->get_serialize_key()
     );
 
     $lst = implode(';', $records);
@@ -166,15 +162,15 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $route = sprintf("/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
     $records = array(
-        self::$record_1->get_serialize_key(),
-        self::$record_2->get_serialize_key()
+      self::$record_1->get_serialize_key(),
+      self::$record_2->get_serialize_key()
     );
 
     $lst = implode(';', $records);
 
     $crawler = $this->client->request('POST', $route, array('lst' => $lst)
-            , array(), array(
-        "HTTP_ACCEPT" => "application/json"));
+      , array(), array(
+      "HTTP_ACCEPT" => "application/json"));
 
     $response = $this->client->getResponse();
 
@@ -188,21 +184,21 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $story = self::$story_1;
 
     $records = array(
-        self::$record_1,
-        self::$record_2
+      self::$record_1,
+      self::$record_2
     );
 
     $totalRecords = count($records);
-    $n = 0;
+    $n            = 0;
     foreach ($records as $record)
     {
       /* @var $record \record_adapter */
       $route = sprintf(
-              "/story/%s/%s/delete/%s/%s/"
-              , $story->get_sbas_id()
-              , $story->get_record_id()
-              , $record->get_sbas_id()
-              , $record->get_record_id()
+        "/story/%s/%s/delete/%s/%s/"
+        , $story->get_sbas_id()
+        , $story->get_record_id()
+        , $record->get_sbas_id()
+        , $record->get_record_id()
       );
 
       if (($n % 2) === 0)
@@ -216,10 +212,10 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
       else
       {
         $crawler = $this->client->request(
-                'POST', $route, array(), array(), array(
-            "HTTP_ACCEPT" => "application/json")
+          'POST', $route, array(), array(), array(
+          "HTTP_ACCEPT" => "application/json")
         );
-        $response = $this->client->getResponse();
+        $response     = $this->client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
       }
@@ -228,8 +224,5 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
       $this->assertEquals($totalRecords - $n, self::$story_1->get_children()->get_count());
     }
   }
-
-
-
 
 }
