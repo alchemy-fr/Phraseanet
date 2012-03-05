@@ -301,5 +301,37 @@ class BasketRepository extends EntityRepository
 
     return array('count'  => $count, 'result' => $result);
   }
+  
+  /**
+   * Return all actives validation where current user is involved and user basket 
+   * @param \User_Adapter $user
+   * @param type $sort
+   * @return Array 
+   */
+  public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
+  {
+    $dql = 'SELECT b, e, s, p
+            FROM Entities\Basket b
+            LEFT JOIN b.elements e
+            LEFT JOIN b.validation s
+            LEFT JOIN s.participants p
+            WHERE (b.usr_id = :usr_id
+            AND b.archived = false) OR (b.usr_id != :usr_id AND p.usr_id = :usr_id
+             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()))';
+
+    if ($sort == 'date')
+    {
+      $dql .= ' ORDER BY b.created DESC, e.ord ASC';
+    }
+    elseif ($sort == 'name')
+    {
+      $dql .= ' ORDER BY b.name ASC, e.ord ASC';
+    }
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters(array('usr_id' => $user->get_id()));
+
+    return $query->getResult();
+  }
 
 }

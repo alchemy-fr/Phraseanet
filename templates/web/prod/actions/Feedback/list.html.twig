@@ -96,12 +96,26 @@
           </ul>
         </div>
         <div class="PNB" style="top:60px;height:120px;bottom:auto;">
-          <table style="table-layout:fixed;">
+          <table style="table-layout:fixed;width:100%;">
             <tr>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Activite' %}
-                </label>
+              <td> 
+                <label>{% trans 'Activite' %}</label>
+              </td>
+              <td>
+                <label>{% trans 'Template' %}</label>
+              </td>
+              <td >
+                <label>{% trans 'Company' %}</label>
+              </td>
+              <td > 
+                <label>{% trans 'Country' %}</label>
+              </td>
+              <td >  
+                <label>{% trans 'Position' %}</label>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <select size="5" multiple="multiple" name="Activity[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Activity in query.getRelatedActivities() %}
@@ -109,10 +123,7 @@
                   {% endfor %}
                 </select>
               </td>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Template' %}
-                </label>
+              <td>
                 <select size="5" multiple="multiple" name="Template[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Template in query.getRelatedTemplates() %}
@@ -120,10 +131,7 @@
                   {% endfor %}
                 </select>
               </td>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Company' %}
-                </label>
+              <td>
                 <select size="5" multiple="multiple" name="Company[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Company in query.getRelatedCompanies() %}
@@ -131,10 +139,8 @@
                   {% endfor %}
                 </select>
               </td>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Country' %}
-                </label>
+              <td>
+               
                 <select size="5" multiple="multiple" name="Country[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Code, Country in query.getRelatedCountries() %}
@@ -142,10 +148,8 @@
                   {% endfor %}
                 </select>
               </td>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Position' %}
-                </label>
+              <td >
+               
                 <select size="5" multiple="multiple" name="Position[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Position in query.getRelatedPositions() %}

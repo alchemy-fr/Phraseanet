@@ -232,7 +232,7 @@ return call_user_func(
           $repository = $em->getRepository('\Entities\Basket');
 
           /* @var $repository \Repositories\BasketRepository */
-          $basket_collection = $repository->findActiveByUser(
+          $basket_collection = $repository->findActiveValidationAndBasketByUser(
             $app['Core']->getAuthenticatedUser()
           );
 
@@ -290,10 +290,10 @@ return call_user_func(
           $repository = $em->getRepository('\Entities\Basket');
 
           /* @var $repository \Repositories\BasketRepository */
-          $basket_collection = $repository->findActiveByUser(
+          $basket_collection = $repository->findActiveValidationAndBasketByUser(
             $app['Core']->getAuthenticatedUser()
           );
-
+          
           $basket = $repository->findUserBasket(
             $ssel_id
             , $app['Core']->getAuthenticatedUser()
