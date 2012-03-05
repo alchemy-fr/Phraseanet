@@ -131,10 +131,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
             sum(remain_dwnld) as remain_dwnld,
             sum(month_dwnld_max) as month_dwnld_max,
 
-            mask_xor as maskxordec,
-            bin(mask_xor) as maskxorbin,
-            mask_and as maskanddec,
-            bin(mask_and) as maskandbin
+            sum(mask_and + mask_xor) as masks
 
             FROM (usr u, bas b, sbas s)
               LEFT JOIN (basusr bu)
@@ -205,8 +202,6 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
   public function get_quotas()
   {
     $this->base_id = (int) $this->request->get('base_id');
-
-//    $this->base_id = (int) $parm['base_id'];
 
     $sql = "SELECT u.usr_id, restrict_dwnld, remain_dwnld, month_dwnld_max
       FROM (usr u INNER JOIN basusr bu ON u.usr_id = bu.usr_id)
