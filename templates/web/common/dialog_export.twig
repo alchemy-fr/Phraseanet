@@ -492,12 +492,14 @@
                                           count += parseInt($(count_el).val());
                                   }
                           });
+                          
+                          {% set max_download = registry.get('GV_download_max', 120) %}
                           {% set alert_too_big%}
-                                  "{% trans 'You can not directly download more than 120Mo ; time to package all documents is too long' %}\n"+
+                                  "{% trans %} You can not directly download more than {{max_download}} Mo ; time to package all documents is too long{% endtrans %}\n"+
                                   "{% trans 'You can alternatively receive an email when the download is ready.' %}\n\n"+
                                   "{% trans 'Would you like to receive an e-mail when your download is ready ?' %}"
                           {% endset %}
-                          if(count>1 && total/1024/1024 > 120)
+                          if(count>1 && total/1024/1024 > {{max_download}})
                           {
                                   if(confirm({{alert_too_big|escape("js")}}))
                                   {
