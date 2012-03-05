@@ -49,6 +49,7 @@
             <td class="content">
               <h1 class="title">
                 <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
+                {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(user) %}
                 <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=1" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
                   <span>
                     <img src="/skins/prod/Basket/Browser/archive.png"/>
@@ -59,6 +60,7 @@
                     <img src="/skins/prod/Basket/Browser/archived.png"/>
                   </span>
                 </a>
+                {% endif %}
                 <a class="basket_link" href="/prod/WorkZone/Browse/Basket/{{ Basket.getId() }}/">
                   {{ Basket.getName() }}
                 </a>
