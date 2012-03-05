@@ -40,7 +40,7 @@
   {% endif %}
 
 
-  
+
   {% if session.is_authenticated() == true %}
   {% set url = thumbnail.get_url() %}
   {% else %}
@@ -51,7 +51,7 @@
         {% endif %}
         {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
           {% set random = thumbnail.get_random() %}
-          <div class="record record_video imgTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
+          <div class="record record_video imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview{{random}}" class="PNB"></div>
               <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
               <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
@@ -141,7 +141,7 @@
   {% endif %}
 
 
-  
+
   {% if session.is_authenticated() == true %}
   {% set url = thumbnail.get_url() %}
   {% else %}
@@ -152,7 +152,7 @@
         {% endif %}
         {% if record_type == 'VIDEO_MP4' or record_type == 'VIDEO_FLV' %}
           {% set random = thumbnail.get_random() %}
-          <div class="record record_video imgTips" style="width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
+          <div class="record record_video imgTips" style="position:relative;width:{{d_width|round}}px;height:{{d_height|round}}px;top:{{top|round}}px;">
               <div id="preview{{random}}" class="PNB"></div>
               <input type="hidden" name="width" value="{{thumbnail.get_width()}}"/>
               <input type="hidden" name="height" value="{{thumbnail.get_height()}}"/>
