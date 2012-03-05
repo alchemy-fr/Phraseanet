@@ -79,9 +79,11 @@ class BasketRepository extends EntityRepository
             WHERE b.archived = false
             AND (
               (b.usr_id = :usr_id_owner AND b.is_read = false)
-              OR (b.usr_id != :usr_id_ownertwo AND p.usr_id = :usr_id_participant
-                    AND p.is_aware = false)
+              OR (b.usr_id != :usr_id_ownertwo
+                  AND p.usr_id = :usr_id_participant
+                  AND p.is_aware = false)
               )
+            AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())
             ORDER BY e.ord ASC';
 
     $params = array(
@@ -301,12 +303,12 @@ class BasketRepository extends EntityRepository
 
     return array('count'  => $count, 'result' => $result);
   }
-  
+
   /**
-   * Return all actives validation where current user is involved and user basket 
+   * Return all actives validation where current user is involved and user basket
    * @param \User_Adapter $user
    * @param type $sort
-   * @return Array 
+   * @return Array
    */
   public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
   {

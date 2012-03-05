@@ -441,8 +441,6 @@ class Edit extends RecordHelper
         break;
     }
 
-    $regfield = ($meta->is_regname() || $meta->is_regdesc() || $meta->is_regdate());
-
     $source    = $meta->get_source();
     $separator = $meta->get_separator();
 
@@ -460,7 +458,6 @@ class Edit extends RecordHelper
       , 'tbranch'              => $meta->get_tbranch()
       , 'maxLength'            => $source ? $source->maxlength() : 0
       , 'minLength'            => $source ? $source->minLength() : 0
-      , 'regfield'             => $regfield
       , 'multi'                => $meta->is_multi()
       , 'separator'            => $separator
       , 'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null
@@ -615,55 +612,6 @@ class Edit extends RecordHelper
     }
 
     return $this;
-
-//    foreach ($trecchanges as $fname => $fchange)
-//    {
-//      $bool = false;
-//      if ($regfields && $parm['act_option'] == 'SAVEGRP'
-//              && $fname == $regfields['regname'])
-//      {
-//        try
-//        {
-//          $basket = basket_adapter::getInstance($parm['ssel']);
-//          $basket->name = implode(' ', $fchange['values']);
-//          $basket->save();
-//          $bool = true;
-//        }
-//        catch (Exception $e)
-//        {
-//          echo $e->getMessage();
-//        }
-//      }
-//      if ($regfields && $parm['act_option'] == 'SAVEGRP'
-//              && $fname == $regfields['regdesc'])
-//      {
-//        try
-//        {
-//          $basket = basket_adapter::getInstance($parm['ssel']);
-//          $basket->desc = implode(' ', $fchange['values']);
-//          $basket->save();
-//          $bool = true;
-//        }
-//        catch (Exception $e)
-//        {
-//          echo $e->getMessage();
-//        }
-//      }
-//      if ($bool)
-//      {
-//        try
-//        {
-//          $basket = basket_adapter::getInstance($parm['ssel']);
-//          $basket->delete_cache();
-//        }
-//        catch (Exception $e)
-//        {
-//
-//        }
-//      }
-//    }
-//
-//    return $this;
   }
 
 }

@@ -461,7 +461,7 @@
                               <option value=""></option>
                               {% for field_id, field in search_datas['fields'] %}
                                 {% if field['type'] == 'date' %}
-                                <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{ field['fieldname'] }}</option>
+                                <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}" {% if registry.get('GV_phrasea_sort') == field['fieldname'] %}selected="selected"{% endif %}>{{ field['fieldname'] }}</option>
                                 {% endif %}
                               {% endfor %}
                             </select>

@@ -406,13 +406,7 @@ if (count($result->get_datas()) > 0)
             $pic_roll = '/prod/tooltip/caption/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/answer/';
 
           $pic_roll = str_replace(array('&', '"'), array('&amp;', '&quot;'), $pic_roll);
-    ?><img style="<?php if ($thumbnail->get_width() > $thumbnail->get_height())
-              {
-      ?>width:128px;<?php
-            }
-            else
-            {
-      ?>height:128px;<?php } ?>" onclick="<?php echo $onclick ?>" class=" captionTips"  id="IMG<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>"  src="<?php echo $thumbnail->get_url() ?>"  tooltipsrc="<?php echo ($pic_roll) ?>" />
+    ?><img onclick="<?php echo $onclick ?>" class="<?php echo ($thumbnail->get_width() > $thumbnail->get_height()) ? 'hthbimg' : 'vthbimg' ?> captionTips"  id="IMG<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>"  src="<?php echo $thumbnail->get_url() ?>"  tooltipsrc="<?php echo ($pic_roll) ?>" />
                   </td>
                 </tr>
               </table>

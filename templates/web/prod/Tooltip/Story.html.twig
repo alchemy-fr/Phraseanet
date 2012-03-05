@@ -6,7 +6,6 @@
     </span>
   </div>
   <div style="margin:5px 0">
-    {{ Story.get_description()|nl2br }}
   </div>
   <div style="margin:5px 0;text-align:right;font-style:italic;position:relative;">
     {% set nb_records = Story.get_children().get_elements()|length %}

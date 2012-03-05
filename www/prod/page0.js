@@ -2252,9 +2252,9 @@ function activeIcons()
         }
       }
     }
-    if(value !== '' || sstt_id !== '')
+    if(value !== '' || sstt_id !== '' || story !== '')
     {
-      feedbackThis(sstt_id, value);
+      feedbackThis(sstt_id, value, story);
     }
     else
     {

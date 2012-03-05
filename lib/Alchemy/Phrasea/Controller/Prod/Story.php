@@ -70,10 +70,8 @@ class Story implements ControllerProviderInterface
 
         foreach ($collection->get_databox()->get_meta_structure() as $meta)
         {
-          if ($meta->is_regname())
+          if ($meta->get_thumbtitle())
             $value = $request->get('name');
-          elseif ($meta->is_regdesc())
-            $value = $request->get('description');
           else
             continue;
 
