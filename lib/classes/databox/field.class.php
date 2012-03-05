@@ -791,7 +791,7 @@ class databox_field implements cache_cacheableInterface
           `thumbtitle`, `multi`,
           `report`, `sorter`)
         VALUES (null, :name, '', 0, 1, 'text', '',
-          null, 0, null, null, null,
+          null, 0,
           1, :sorter)";
 
     $stmt = $databox->get_connection()->prepare($sql);
