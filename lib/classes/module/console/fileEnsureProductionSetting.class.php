@@ -463,7 +463,7 @@ class module_console_fileEnsureProductionSetting extends Command
     }
     catch (\Exception $e)
     {
-      $work_message = '<error>Failed - could not connect !</error>';
+      $work_message = '<error>Failed - could not load template engine !</error>';
       $this->errors++;
     }
 
@@ -491,7 +491,14 @@ class module_console_fileEnsureProductionSetting extends Command
       switch ($conf)
       {
         case 'type':
-          $message = $value == 'TemplateEngine\\Twig' ? '<info>OK</info>' : '<error>Not recognized</error>';
+          $message = '<info>OK</info>';
+
+          if($value !== 'TemplateEngine\\Twig')
+          {
+            $message = '<error>Not recognized</error>';
+            $this->alerts++;
+          }
+
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'options':
