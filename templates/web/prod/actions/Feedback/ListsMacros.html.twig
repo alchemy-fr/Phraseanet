@@ -176,14 +176,20 @@
 {% endmacro %}
 
 
-{% macro badgeReadonly(entry) %}
+{% macro badgeReadonly(entry, role) %}
   <div class="badge">
+    <input type="hidden" value="{{ entry.getUser().get_id() }}" name="id">
+    {% if role >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
+      <a class="deleter" href="#">
+        <img src="/skins/prod/Push/close_badge.png">
+      </a>
+    {% endif %}
     <table>
       <tr>
-        <td class="icon">
+        <td>
           <img src="/skins/icons/user.png"/>
         </td>
-        <td class="infos">
+        <td class="infos" >
           <span class="name">{{ entry.getUser().get_display_name() }}</span>
           <span class="subtite"></span>
         </td>
