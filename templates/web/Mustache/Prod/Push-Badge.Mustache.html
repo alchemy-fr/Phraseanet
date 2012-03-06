@@ -1,4 +1,7 @@
 <div class="badge badge_{{ usr_id }}">
+   <a href="#" class="deleter">
+    <img src="/skins/prod/Push/close_badge.png"/>
+  </a>
   <input name="id" value="{{ usr_id }}" type="hidden" />
   <table>
     <tr>
@@ -6,15 +9,12 @@
         <img src="/skins/icons/user.png"/>
       </td>
       <td class="infos">
-        <div style="margin:5px 10px 5px;">
+        <div>
           <input type="hidden" name="participants[{{ usr_id }}][usr_id]" value="{{ usr_id }}" />
           <table>
             <tr>
               <td colspan="3">
                 <span class="name">{{ display_name }}</span>
-                <a href="#" class="deleter">
-                  <img src="/skins/prod/Push/close_badge.png"/>
-                </a>
               </td>
             </tr>
             <tr>

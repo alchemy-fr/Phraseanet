@@ -11,6 +11,7 @@
   text-align: center;
   margin:5px 0;
   font-weight:bold;
+  font-size:16px;
 }
 
 .PushBox .LeftColumn ul{
@@ -39,11 +40,24 @@
 .PushBox .user_content .header{
   height:35px;
   bottom:auto;
+  right:50px;
+}
+
+.PushBox .user_content .footer{
+  height:35px;
+  top:350px;
+  text-align:right;
+  left:10px;
+  right:50px;
 }
 
 .PushBox .user_content .badges{
-  top:35px;
+  top:50px;
   overflow:auto;
+  height:290px;
+  bottom:auto;
+  left:20px;
+  right:20px;
 }
 
 .PushBox .user_content .badges .badge .deleter{
@@ -58,6 +72,7 @@
   display:inline-block;
   background-color: #515150;
   border:3px solid #515150;
+  padding:3px;
 }
 .PushBox .user_content .badges .badge.selected{
   border:3px solid #EFEFEF;
@@ -74,10 +89,28 @@
   vertical-align: top;
 }
 
+.PushBox .user_content .badges .badge td.toggle{
+  vertical-align: bottom;
+}
+
 .PushBox .user_content .badges .badge .icon{
   width:80px;
   background-color:#404040;
 }
+
+.PushBox .user_content .badges .badge .infos{
+  padding-top:3px;
+  padding-left:5px;
+}
+
+.PushBox .user_content .badges .badge table{
+  width:95%;
+}
+
+.PushBox .user_content .badges .badge .infos table{
+  height:75px;
+}
+
 .PushBox .user_content .badges .badge .infos tr{
   height:20px;
 }
@@ -89,6 +122,18 @@
 
 .PushBox .user_content .badges .badge .icon img{
   margin:7px;
+}
+
+.PushBox .user_content .badges .badge .name{
+  font-weight:bold;
+  white-space:pre-line;
+  display:block;
+  font-size:12px;
+}
+
+.PushBox .user_content .badges .badge .subtite{
+  display:block;
+  font-size:10px;
 }
 
 .PushBox .user_content .header .options{
@@ -236,4 +281,86 @@
   line-height:24px;
   font-weight:bold;
   vertical-align:middle;
+}
+
+#PushBox .general_togglers li {
+  margin-top:5px;
+}
+
+#PushBox .general_togglers button{
+  width:100%;
+}
+
+
+#PushBox .general_togglers button .ui-button-text{
+  font-weight: lighter;
+}
+
+
+#PushBox .content .list_saver{
+  padding-top:20px;
+  padding-bottom:20px;
+  display:block;
+}
+
+#PushBox .content .list_saver table{
+  width:100%;
+  table-layout: auto;
+}
+
+#PushBox .content .list_saver table tr{
+  border:1px solid #ccc;
+}
+
+#PushBox .content .list_saver input{
+  padding:3px;
+  width:115px;
+  margin:0;
+}
+
+#PushBox .content .list_saver button{
+}
+
+#find-user{
+  line-height: 15px;
+}
+
+#ListManager .content .lists span.action{
+  display:block;
+  text-align:center;
+  font-weight: bold;
+  width:100%;
+}
+
+#recommanded-users{
+  margin-top:25px;
+  line-height:15px;
+}
+
+#recommanded-users a:last-child{
+  color: #1983CB;
+  text-decoration: none;
+}
+
+#QuickAddUser table{
+  width:100%;
+  table-layout:auto;
+}
+
+#QuickAddUser table tr{
+  padding-top: 5px;
+}
+
+#QuickAddUser table td:last-child{
+  text-align: center;
+}
+
+#QuickAddUser input{
+    border: 1px solid #CCCCCC;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 1px #EEEEEE;
+    display: inline-block;
+    margin: 0 5px 0 0;
+    padding: 4px;
+    width: 95%;
 }
