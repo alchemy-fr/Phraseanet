@@ -581,6 +581,44 @@ var p4 = p4 || {};
         if(sstt.length === 0)
           return;
         getContent(sstt.prev());
+      },
+      'close':function(){
+
+        var frame = $('#idFrameC'),
+        that = this;
+
+        if(!frame.hasClass('closed'))
+        {
+          frame.data('openwidth', frame.width());
+          frame.animate({width:100},
+            300,
+            'linear',
+            function(){
+              answerSizer();
+              linearize();
+            });
+          frame.addClass('closed');
+          $('.escamote', frame).hide();
+          $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');
+          frame.unbind('click.escamote').bind('click.escamote', function(){
+            that.open();
+          })
+        }
+      },
+      'open':function(){
+
+        var frame = $('#idFrameC');
+
+        if(frame.hasClass('closed'))
+        {
+          var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
+          frame.css({width:width});
+              answerSizer();
+              linearize();
+          frame.removeClass('closed');
+          $('.escamote', frame).show();
+          frame.unbind('click.escamote');
+        }
       }
     };
   });

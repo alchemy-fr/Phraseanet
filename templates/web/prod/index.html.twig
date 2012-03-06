@@ -233,35 +233,41 @@
   <div id="idFrameC" class="PNB" style="right:auto;width:{{w1}}%;">
     <div class="PNB wrapper">
       <div class="tabs ui-tabs">
-        <ul class="PNB ui-tabs-nav ui-helper-reset" style="bottom:auto;height:30px;">
+        <ul class="PNB ui-tabs-nav ui-helper-reset" style="bottom:auto;height:52px;">
           <li class="ui-tabs-selected ui-corner-top">
             <a href="#baskets">
-              {% trans 'phraseanet:: panier' %}
+              <img src="/skins/icons/workzone32.png" title="{% trans 'phraseanet:: panier' %}"/>
               <span id="basket_menu_trigger" style="cursor:pointer;padding:3px;font-size:12px;">&#9660;</span>
             </a>
           </li>
           {% if GV_thesaurus %}
-          <li>
+          <li class="proposals_WZ">
             <a href="#proposals">
-              <img class="activeproposals" src="/skins/icons/button-red.png"
-                  style="display:none;vertical-align:middle;margin:0 3px;" title="{% trans 'phraseanet:: propositions' %}" />
-              {% trans 'phraseanet:: propositions' %}
+              <img class="proposals_off" src="/skins/icons/proposition_off32.png" title="{% trans 'phraseanet:: propositions' %}"/>
+              <img class="proposals_on" src="/skins/icons/proposition_on32.png" title="{% trans 'phraseanet:: propositions' %}"/>
             </a>
           </li>
           <li>
-            <a href="#thesaurus_tab">{% trans 'phraseanet:: thesaurus' %}</a>
+            <a href="#thesaurus_tab">
+              <img src="/skins/icons/thesaurus_32.png" title="{% trans 'phraseanet:: thesaurus' %}"/>
+            </a>
+          </li>
+          <li style="float:right;">
+            <a href="#" class="escamote" style="margin:8px 0;">
+              <img src="/skins/icons/workzoneEscamote.png"/>
+            </a>
           </li>
           {% endif %}
         </ul>
-        <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:30px;">
+        <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:52px;">
           {% import 'prod/WorkZone/Macros.twig'  as  WorkZoneMacros %}
           {{WorkZoneMacros.make_bloc(WorkZone)}}
         </div>
         {% if GV_thesaurus %}
-        <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;"
+        <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;"
             ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
         </div>
-        <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;">
+        <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;">
           <div id="THPD_tabs">
             <ul>
               <li><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
