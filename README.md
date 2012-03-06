@@ -14,16 +14,7 @@ http://docs.phraseanet.com
 
 #Easy Installation
 
-**Fetch Sources**
-
-<pre>
-
-git clone git://github.com/alchemy-fr/Phraseanet.git Phraseanet
-cd Phraseanet
-./vendors.php
-
-</pre>
-
+Get the latests sources here https://github.com/alchemy-fr/Phraseanet/downloads
 
 **Setup your webserver**
 
