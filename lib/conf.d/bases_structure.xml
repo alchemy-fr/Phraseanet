@@ -5781,7 +5781,7 @@
           <field>
             <name>results</name>
             <type>int(11) unsigned</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
             <default>0</default>
             <comment></comment>
