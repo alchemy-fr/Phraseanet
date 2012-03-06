@@ -169,10 +169,8 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
         
         $date = new\DateTime('now');
          
-//        $text = sprintf(_("L'export  effectué le %s à destination de %s concernant les elements suivants %s à echoue pour les raisons suivantes : %s")
-//                ,$date->format("Y-m-d H:i:s"), $dest, implode(', ', $records), $reason);
         $text = sprintf(_("L'export effectué le %s à destination de %s à echoue pour les raisons suivantes : %s")
-                ,$date->format("Y-m-d H:i:s") ,  $reason);
+                ,$date->format("Y-m-d H:i:s") , $dest,  $reason);
        
       }
       else
