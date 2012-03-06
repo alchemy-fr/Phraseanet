@@ -307,7 +307,7 @@ function resize(){
   if(p4.preview.open)
     resizePreview();
   $('#idFrameC').resizable('option', 'maxWidth',(bodySize.x-670));
-  $('#idFrameC').resizable('option', 'minWidth',250);
+  $('#idFrameC').resizable('option', 'minWidth',265);
   $('#idFrameE').resizable('option', 'maxWidth',($('#EDITWINDOW').innerWidth()-200));
   $('#idFrameE').resizable('option', 'minWidth',200);
 
@@ -1066,8 +1066,8 @@ $(document).ready(function(){
         saveWindows();
         return;
       }
-      if(nwidth<250)
-        nwidth = 250;
+      if(nwidth<265)
+        nwidth = 265;
       if(el.find('span:first').hasClass('valid') && nwidth<410)
         nwidth = 410;
 
