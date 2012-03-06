@@ -715,7 +715,7 @@ function activeZoning()
     }
     $('#EDIT_query').blur();
   });
-
+  $('#rightFrame').trigger('mousedown');
 }
 
 function RGBtoHex(R,G,B) {
