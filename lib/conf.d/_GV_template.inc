@@ -812,13 +812,12 @@ $GV = array(
   ), array(
     'section' => _('GV::section:: Configuration du client'),
     'vars'    => array(
-//            array(
-//                'type' => 'enum',
-//                'name' => 'GV_bandeauHome',
-//                'comment' => _('reglages:: Affichage par defaut de la home du client'),
-//                'available' => array('QUERY' => _('Question'), 'PUBLI' => _('Publications'), 'HELP' => _('Aide')),
-//                'default' => 'QUERY'
-//            ),
+      array(
+        'type'    => 'integer',
+        'name'    => 'GV_download_max',
+        'comment' => _('Maximum megabytes allowed in download (if request is bigger, then mail is still available)'),
+        'default' => 120
+      ),
       array(
         'type'    => 'integer',
         'name'    => 'GV_ong_search',

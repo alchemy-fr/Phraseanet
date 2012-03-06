@@ -213,7 +213,24 @@
   width:250px;
   display:inline-block;
   margin:5px;
+  background-color: #515150;
+  padding:5px;
 }
+
+#ListManager .content.readonly .badge .deleter{
+  float:right;
+}
+
+
+#ListManager .content.readonly .badge table{
+  width:auto;
+  table-layout: fixed;
+}
+
+#ListManager .content.readonly .badge .infos{
+  padding:2px;
+}
+
 #ListManager h1 span.title{
   font-size:24px;
   line-height:24px;

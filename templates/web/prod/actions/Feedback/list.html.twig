@@ -50,8 +50,9 @@
         </p>
       </div>
       <div class="PNB" style="top:35px;overflow:auto;">
+        {% set role = list.getOwner(user).getRole() %}
         {% for entry in list.getEntries() %}
-          {{ ListsMacros.badgeReadonly(entry) }}
+          {{ ListsMacros.badgeReadonly(entry, role) }}
         {% endfor %}
       </div>
     </div>
@@ -89,13 +90,7 @@
             {% trans 'boutton::chercher' %}
           </button>
         </div>
-        <div class="PNB" style="top:40px;height:20px;bottom:auto;">
-          <ul>
-            <li style="display:inline-block;"><span>{%trans%}all users{%endtrans%}</span><input type="radio" name="ListUser" value="0" checked="checked"/></li>
-            <li style="display:inline-block;"><span>{%trans%}users from list{%endtrans%}</span><input type="radio" name="ListUser" value="1" /></li>
-          </ul>
-        </div>
-        <div class="PNB" style="top:60px;height:120px;bottom:auto;">
+        <div class="PNB" style="top:40px;height:120px;bottom:auto;">
           <table style="table-layout:fixed;width:100%;">
             <tr>
               <td> 
@@ -178,5 +173,12 @@
 <script type="text/javascript">
   $(document).ready(function(){
     p4.ListManager.workOn({{ list.getId() }});
+    $("#ListManager .readonly .badge .deleter").click(function(){
+      var badge = $(this).closest(".badge");
+      var usr_id = badge.find('input[name="id"]').val();
+      p4.ListManager.getList().removeUser(usr_id, function(list, data){
+        badge.remove();
+      });
+    });
   });
 </script>
