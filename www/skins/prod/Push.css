@@ -45,17 +45,18 @@
 
 .PushBox .user_content .footer{
   height:35px;
-  top:350px;
+  top:auto;
   text-align:right;
   left:10px;
   right:50px;
+  bottom:10px;
 }
 
 .PushBox .user_content .badges{
   top:50px;
   overflow:auto;
-  height:290px;
-  bottom:auto;
+  height:auto;
+  bottom:50px;
   left:20px;
   right:20px;
 }
@@ -347,12 +348,12 @@
   table-layout:auto;
 }
 
-#QuickAddUser table tr{
-  padding-top: 5px;
+#QuickAddUser table tr td{
+  padding: 5px;
 }
 
 #QuickAddUser table td:last-child{
-  text-align: center;
+  text-align: left;
 }
 
 #QuickAddUser input{
