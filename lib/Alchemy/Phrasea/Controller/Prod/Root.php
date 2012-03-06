@@ -55,7 +55,7 @@ class Root implements ControllerProviderInterface
                 {
                   if (substr($file, 0, 1) == "." || mb_strtolower($file) == "cvs")
                     continue;
-                  if (is_dir($cssPath . $file))
+                  if (is_dir($cssPath . $file) && ctype_xdigit($file))
                   {
                     $css[$file] = $file;
                   }
