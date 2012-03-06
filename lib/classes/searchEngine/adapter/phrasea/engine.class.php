@@ -645,7 +645,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         {
           $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
         }
-        $val = implode(' '.$field['separator'].' ', $val);
+        $val = implode(' '.$field['separator'][0].' ', $val);
       }
       else
       {
