@@ -38,7 +38,7 @@
         beforeSend:function(){
           if($('#user_adder_dialog').length == 0)
           {
-            $('body').append('<div id="user_adder_dialog" style="display:none;"></div>');
+            $('body').append('<div id="user_adder_dialog" title="' + $this.html() + '" style="display:none;"></div>');
           }
           $('#user_adder_dialog').addClass('loading').empty().dialog({
             buttons:{},
@@ -683,7 +683,7 @@
           buttons[language.valider] = function() {
 
             var callbackOK = function () {
-              $('a.list_refresh', $container).trigger('click');
+              $('#ListManager .lists a.list_refresh', $container).trigger('click');
               p4.Dialog.get(2).Close();
             };
 

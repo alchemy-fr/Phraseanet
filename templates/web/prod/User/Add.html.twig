@@ -51,9 +51,10 @@
         </td>
       </tr>
       <tr>
-        <td colspan="2">
-          <button class="cancel">{% trans 'Cancel' %}</button>
+        <td></td>
+        <td>
           <button class="valid">{% trans 'Add' %}</button>
+          <button class="cancel">{% trans 'Cancel' %}</button>
         </td>
       </tr>
     </table>
@@ -61,6 +62,9 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function(){
+    
+    $("#QuickAddUser button").button();
+    
     $("#QuickAddUser form").bind('submit', function(){
 
 
