@@ -307,7 +307,7 @@ function resize(){
   if(p4.preview.open)
     resizePreview();
   $('#idFrameC').resizable('option', 'maxWidth',(bodySize.x-670));
-  $('#idFrameC').resizable('option', 'minWidth',200);
+  $('#idFrameC').resizable('option', 'minWidth',265);
   $('#idFrameE').resizable('option', 'maxWidth',($('#EDITWINDOW').innerWidth()-200));
   $('#idFrameE').resizable('option', 'minWidth',200);
 
@@ -358,7 +358,8 @@ function newSearch()
   {
     $('li:last',histo).remove();
   }
-  $('.activeproposals').hide();
+
+  $('#idFrameC li.proposals_WZ').removeClass('active');
 
   $('#searchForm').submit();
   return false;
@@ -487,7 +488,7 @@ function initAnswerForm(){
 
         if($.trim(datas.phrasea_props) !== '')
         {
-          $('.activeproposals').show()
+          $('#idFrameC li.proposals_WZ').addClass('active');
         }
         p4.tot = datas.total_answers;
         p4.tot_options = datas.form;
@@ -1065,8 +1066,8 @@ $(document).ready(function(){
         saveWindows();
         return;
       }
-      if(nwidth<185)
-        nwidth = 185;
+      if(nwidth<265)
+        nwidth = 265;
       if(el.find('span:first').hasClass('valid') && nwidth<410)
         nwidth = 410;
 
@@ -1082,6 +1083,10 @@ $(document).ready(function(){
         saveWindows();
       });
     }
+  });
+
+  $('#idFrameC .escamote').bind('click', function(){
+    p4.WorkZone.close();
   });
 
   $('#look_box .tabs').tabs();
@@ -1396,6 +1401,9 @@ $(document).ready(function(){
     {
       if(ui.tab.hash=="#thesaurus_tab")
         thesau_show();
+    },
+    select: function(event, ui){
+      p4.WorkZone.open();
     }
   });
 

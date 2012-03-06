@@ -64,6 +64,7 @@ try
   $app->add(new module_console_schedulerStart('scheduler:start'));
   $app->add(new module_console_fileConfigCheck('check:config'));
   $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
+  $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
   $app->add(new module_console_systemConfigCheck('check:system'));
   $result_code = $app->run();
 }

@@ -24,7 +24,7 @@ use Symfony\Component\Yaml;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_console_fileEnsureProductionSetting extends Command
+class module_console_fileEnsureDevSetting extends Command
 {
 
   const ALERT = 1;
@@ -88,7 +88,7 @@ class module_console_fileEnsureProductionSetting extends Command
     }
     else
     {
-      $output->writeln("\n<info>Your production settings are setted correctly ! Enjoy</info>");
+      $output->writeln("\n<info>Your dev settings are setted correctly ! Enjoy</info>");
     }
     $output->writeln('End');
 
@@ -193,8 +193,8 @@ class module_console_fileEnsureProductionSetting extends Command
       }
       else
       {
-        $work_message = '<comment>Opcode recommended</comment>';
-        $this->alerts++;
+        $work_message = '<error>No cache required</error>';
+        $this->errors++;
       }
     }
     else
@@ -245,11 +245,6 @@ class module_console_fileEnsureProductionSetting extends Command
             $message = "<error>not valid</error>";
             $this->errors++;
           }
-          elseif ($parseUrl["scheme"] !== "https")
-          {
-            $this->alerts++;
-            $message = "<comment>should be https</comment>";
-          }
           else
           {
             $message  = "<info>OK</info>";
@@ -257,14 +252,25 @@ class module_console_fileEnsureProductionSetting extends Command
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'maintenance':
-        case 'debug':
-        case 'display_errors':
           $required = array_diff($required, array($conf));
           $message = '<info>OK</info>';
 
           if ($value !== false)
           {
-            $message = '<error>Should be false</error>';
+            $message = '<error>Should be true</error>';
+            $this->errors++;
+          }
+
+          $this->printConf($output, $conf, $value, false, $message);
+          break;
+        case 'debug':
+        case 'display_errors':
+          $required = array_diff($required, array($conf));
+          $message = '<info>OK</info>';
+
+          if ($value !== true)
+          {
+            $message = '<error>Should be true</error>';
             $this->errors++;
           }
 
@@ -493,7 +499,7 @@ class module_console_fileEnsureProductionSetting extends Command
         case 'type':
           $message = '<info>OK</info>';
 
-          if($value !== 'TemplateEngine\\Twig')
+          if ($value !== 'TemplateEngine\\Twig')
           {
             $message = '<error>Not recognized</error>';
             $this->alerts++;
@@ -528,7 +534,7 @@ class module_console_fileEnsureProductionSetting extends Command
           $required = array_diff($required, array($conf));
           $message = '<info>OK</info>';
 
-          if ($value !== false)
+          if ($value !== true)
           {
             $message = '<error>Should be false</error>';
             $this->errors++;
@@ -648,12 +654,6 @@ class module_console_fileEnsureProductionSetting extends Command
         case 'log':
           $message = '<info>OK</info>';
 
-          if ($value !== false)
-          {
-            $message = '<error>Should be deactivated</error>';
-            $this->errors++;
-          }
-
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'cache':
@@ -687,15 +687,8 @@ class module_console_fileEnsureProductionSetting extends Command
                     }
                     else
                     {
-                      $this->alerts++;
-                      if ($server)
-                      {
-                        $work_message = '<comment>Cache server recommended</comment>';
-                      }
-                      else
-                      {
-                        $work_message = '<comment>Opcode cache recommended</comment>';
-                      }
+                      $this->errors++;
+                      $work_message = '<error>No cache required</error>';
                     }
                   }
                   else
@@ -733,9 +726,9 @@ class module_console_fileEnsureProductionSetting extends Command
           $required = array_diff($required, array($conf));
           $message = '<info>OK</info>';
 
-          if ($value !== false)
+          if ($value !== true)
           {
-            $message = '<error>Should be false</error>';
+            $message = '<error>Should be true</error>';
             $this->errors++;
           }
 
@@ -892,11 +885,7 @@ class module_console_fileEnsureProductionSetting extends Command
       return false;
     }
 
-    if ($Service->getType() === 'array')
-    {
-      return false;
-    }
-    return $server === $Service->getDriver()->isServer();
+    return $Service->getType() === 'array';
   }
 
   private function printConf($output, $scope, $value, $scopage = false, $message = '')

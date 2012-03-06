@@ -196,6 +196,33 @@ span.ww_winTitle{
 	border:none;
 	overflow:hidden;
 }
+
+#idFrameC .ui-tabs .ui-tabs-nav li{
+	height:52px;
+}
+
+#idFrameC .ui-tabs .ui-tabs-nav li a{
+	padding:5px;
+  margin:5px;
+}
+#idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a{
+	background-color:#666666;
+}
+#idFrameC.closed .ui-tabs-panel,
+#idFrameC.closed .ui-resizable-handle{
+	display:none;
+}
+
+#idFrameC li.proposals_WZ.active img.proposals_off,
+#idFrameC li.proposals_WZ img.proposals_on{
+  display:none;
+}
+
+#idFrameC li.proposals_WZ.active img.proposals_on,
+#idFrameC li.proposals_WZ img.proposals_off{
+  display:block;
+}
+
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected
 {
 	background-color:#B1B1B1;

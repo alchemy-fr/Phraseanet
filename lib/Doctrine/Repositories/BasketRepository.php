@@ -261,13 +261,24 @@ class BasketRepository extends EntityRepository
       default:
         $dql     = 'SELECT b, e, s, p
                 FROM Entities\Basket b
-                JOIN b.elements e
+                LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id OR p.usr_id = :validating_usr_id)';
         $params  = array(
           'usr_id'            => $user->get_id(),
           'validating_usr_id' => $user->get_id()
+        );
+        break;
+      case self::MYBASKETS:
+        $dql     = 'SELECT b, e, s, p
+                FROM Entities\Basket b
+                LEFT JOIN b.elements e
+                LEFT JOIN b.validation s
+                LEFT JOIN s.participants p
+                WHERE (b.usr_id = :usr_id)';
+        $params  = array(
+          'usr_id'            => $user->get_id()
         );
         break;
     }
