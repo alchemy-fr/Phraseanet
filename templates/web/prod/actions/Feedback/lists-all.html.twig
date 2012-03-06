@@ -12,7 +12,7 @@
         <ul class="lists">
           {% for list in lists %}
             {% set length = '<span class="counter">' ~ list.getEntries().count() ~ '</span>' %}
-            <li class="list" style="padding:2px;background-color:{{ loop.index is odd ? "#515150" : "none" }}">
+            <li class="list" style="padding:2px;">
               <a href="/prod/push/edit-list/{{ list.getId() }}/" class="list_link">
                 {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                   <img src="/skins/prod/Push/list-icon.png" />

@@ -58,9 +58,9 @@
             </table>
             </form>
           </div>
-          <ul>
+          <ul class="list">
             {% for list in lists %}
-              <li style="padding:2px;background-color:{{ loop.index is odd ? "#515150" : "none" }}">
+              <li class="list" style="padding:2px;">
                 <a class="list_loader" href="/prod/push/list/{{ list.getId() }}/">
                   {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                     <img src="/skins/prod/Push/list-icon.png" />
