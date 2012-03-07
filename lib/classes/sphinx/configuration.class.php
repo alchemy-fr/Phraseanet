@@ -593,6 +593,9 @@ searchd
   # optional, default is 256
   #
   max_filters             = 512
+  
+  compat_sphinxql_magics  = 0
+
 }
 
 ';
