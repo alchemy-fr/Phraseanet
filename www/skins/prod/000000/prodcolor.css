@@ -199,12 +199,18 @@ span.ww_winTitle{
 
 #idFrameC .ui-tabs .ui-tabs-nav li{
 	height:52px;
+  float:left;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li a{
 	padding:5px;
   margin:5px;
 }
+
+#idFrameC.closed .icon-menu li{
+  clear:left;
+}
+
 #idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a{
 	background-color:#666666;
 }
