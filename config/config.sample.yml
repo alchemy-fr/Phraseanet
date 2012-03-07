@@ -41,8 +41,8 @@ prod:
 
   template_engine: twig
   orm: doctrine_prod
-  cache: memcache_cache
-  opcodecache: apc_cache
+  cache: array_cache
+  opcodecache: array_cache
 
 ##############
 #    TEST    #

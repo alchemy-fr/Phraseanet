@@ -67,14 +67,16 @@ class sphinx_configuration
 
     $defaults = array(
         'sbas' => self::OPT_ALL_SBAS
-        , 'libstemmer' => array(self::OPT_LIBSTEMMER_NONE)
+      , 'libstemmer' => array(self::OPT_LIBSTEMMER_NONE)
         , 'enable_star' => self::OPT_ENABLE_STAR_ON
-        , 'min_prefix_len' => self::OPT_MIN_PREFIX_LEN
+      , 'min_prefix_len' => self::OPT_MIN_PREFIX_LEN
         , 'min_infix_len' => self::OPT_MIN_INFIX_LEN
         , 'charset_tables' => array()
     );
 
     $options = array_merge($defaults, $options);
+
+    $options['charset_tables'] = array_unique($options['charset_tables']);
 
     $lb = phrasea::sbas_params();
 
@@ -439,7 +441,7 @@ class sphinx_configuration
     path                  = /var/sphinx/datas/docs_realtime_' . $serialized . '
 
 
-' . $charset_abstract . '
+    ' . $charset_abstract . '
 
     rt_field              = value
 #    rt_field              = meta_struct_id
@@ -593,6 +595,9 @@ searchd
   # optional, default is 256
   #
   max_filters             = 512
+
+  compat_sphinxql_magics  = 0
+
 }
 
 ';

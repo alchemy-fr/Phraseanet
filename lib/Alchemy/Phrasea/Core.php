@@ -275,7 +275,12 @@ class Core extends \Pimple
     $appbox  = \appbox::get_instance($this);
     $session = \Session_Handler::getInstance($appbox);
 
-    return \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    if($session->get_usr_id())
+    {
+      return \User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    }
+    
+    return null;
   }
 
   /**

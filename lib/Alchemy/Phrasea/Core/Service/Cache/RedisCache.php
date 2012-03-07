@@ -71,16 +71,15 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
 
       if ($redis->connect($this->host, $this->port))
       {
-        $service = new CacheDriver\RedisCache();
-        $service->setRedis($redis);
+        $this->cache = new CacheDriver\RedisCache();
+        $this->cache->setRedis($redis);
+        $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
       }
       else
       {
         throw new \Exception(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
       }
 
-      $this->cache = $service;
-      $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
     }
 
     return $this->cache;

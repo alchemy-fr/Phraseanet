@@ -67,16 +67,15 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
 
       if (isset($stats[$key]))
       {
-        $service = new CacheDriver\MemcacheCache();
-        $service->setMemcache($memcache);
+        $this->cache = new CacheDriver\MemcacheCache();
+        $this->cache->setMemcache($memcache);
+
+      $this->cache->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
       }
       else
       {
         throw new \Exception(sprintf("Memcache instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
       }
-
-      $this->cache = $service;
-      $this->cache->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
     }
 
     return $this->cache;

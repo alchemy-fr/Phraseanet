@@ -50,7 +50,7 @@ class module_console_fileEnsureDevSetting extends Command
   {
     parent::__construct($name);
 
-    $this->setDescription('Ensure production settings');
+    $this->setDescription('Ensure development settings');
 
     $this->addArgument('conf', InputArgument::OPTIONAL, 'The file to check', null);
     $this->addOption('strict', 's', InputOption::VALUE_NONE, 'Wheter to fail on alerts or not');
