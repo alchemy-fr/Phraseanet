@@ -545,6 +545,19 @@ div.diapo
 #idFrameT .tools .verticalbuttonset {
  position:relative;
 }
+
+#idFrameT .tools .verticalbuttonset button img{
+  height:15px;
+}
+
+#idFrameT .tools .verticalbuttonset button{
+  height:28px;
+}
+
+#idFrameT .tools .verticalbuttonset span{
+  display:inline-block;
+}
+
 #idFrameT .tools .verticalbuttonset .ui-button-text img,#idFrameT .buttonset img{
  vertical-align:top;
 }
@@ -564,13 +577,18 @@ div.diapo
   background-color: #212121;
 }
 
-
 #idFrameT .tools .verticalbuttonset .submenu{
   position: absolute;
-  top:1.5em;
+  top:28px;
   left:0;
   z-index:30;
 }
+
+/* hack all except ie 6, 7 , 8 */
+:root *> #idFrameT .tools .verticalbuttonset .submenu{
+  top:1.5em;
+}
+
 #idFrameT .tools .verticalbuttonset .ui-state-default{
   border: 1px solid #515151;
 }

@@ -626,14 +626,14 @@
 
         <span class="verticalbuttonset">
           <span>
-            <button class="default_action TOOL_disktt_btn results_window">
-              <img src="/skins/prod/000000/images/disktt_history.gif"/> {% trans 'action : exporter' %}
+            <button class="default_action TOOL_disktt_btn results_window" style="background: url('/skins/prod/000000/images/disktt_history.gif') no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : exporter' %}
             </button>
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
-            <button class="TOOL_print_btn results_window">
-              <img src="/skins/prod/000000/images/print_history.gif"/> {% trans 'action : print' %}
+            <button class="TOOL_print_btn results_window" style="background: url('/skins/prod/000000/images/print_history.gif') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : print' %}
             </button>
           </div>
         </span>
@@ -665,8 +665,8 @@
           <span>
             {% for action in actions %}
               {% if loop.first %}
-              <button class="default_action {{ action.class }} results_window">
-                <img src="{{ action.icon }}"/> {{ action.label }}
+              <button class="default_action {{ action.class }} results_window" style="background: url('{{ action.icon }}')  no-repeat 2px center; padding-left:16px;">
+                {{ action.label }}
               </button>
               {% endif %}
             {% endfor %}
@@ -675,8 +675,8 @@
           <div class="submenu" >
             {% for action in actions %}
               {% if not loop.first %}
-              <button class="{{ action.class }} results_window">
-                <img src="{{ action.icon }}"/> {{ action.label }}
+              <button class="{{ action.class }} results_window" style="background: url('{{ action.icon }}') #313131 no-repeat 2px center; padding-left:16px;">
+                {{ action.label }}
               </button>
               {% endif %}
             {% endfor %}
@@ -695,23 +695,19 @@
         {% if user.ACL().has_right('push') and user.ACL().has_right('bas_chupub') %}
         <span class="verticalbuttonset">
           <span>
-            <button class="TOOL_pushdoc_btn default_action results_window">
-              <img src="/skins/icons/push16.png"/>
+            <button class="TOOL_pushdoc_btn default_action results_window" style="background: url('/skins/icons/push16.png')  no-repeat 2px center; padding-left:16px;">
               {% trans 'action : push' %}
             </button>
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
-            <button class="TOOL_feedback_btn results_window">
-              <img src="/skins/icons/feedback16.png"/>
+            <button class="TOOL_feedback_btn results_window" style="background: url('/skins/icons/feedback16.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'Feedback' %}
             </button>
-            <button class="TOOL_bridge_btn results_window">
-              <img src="/skins/icons/door.png"/>
+            <button class="TOOL_bridge_btn results_window" style="background: url('/skins/icons/door.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'action : bridge' %}
             </button>
-            <button class="TOOL_publish_btn results_window">
-              <img src="/skins/icons/rss16.png"/>
+            <button class="TOOL_publish_btn results_window" style="background: url('/skins/icons/rss16.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'action : publier' %}
             </button>
           </div>
@@ -719,15 +715,13 @@
         {% elseif user.ACL().has_right('push') %}
         <span class="verticalbuttonset">
           <span>
-            <button class="TOOL_pushdoc_btn default_action results_window">
-              <img src="/skins/icons/push16.png"/>
+            <button class="TOOL_pushdoc_btn default_action results_window" style="background: url('/skins/icons/push16.png')  no-repeat 2px center; padding-left:16px;">
               {% trans 'action : push' %}
             </button>
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
-            <button class="TOOL_feedback_btn results_window">
-              <img src="/skins/icons/feedback16.png"/>
+            <button class="TOOL_feedback_btn results_window" style="background: url('/skins/icons/feedback16.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'Feedback' %}
             </button>
           </div>
@@ -735,15 +729,13 @@
         {% elseif user.ACL().has_right('bas_chupub') %}
         <span class="verticalbuttonset">
           <span>
-            <button class="TOOL_bridge_btn default_action results_window">
-              <img src="/skins/icons/door.png"/>
+            <button class="TOOL_bridge_btn default_action results_window" style="background: url('/skins/icons/door.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'action : bridge' %}
             </button>
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
-            <button class="TOOL_publish_btn results_window">
-              <img src="/skins/icons/rss16.png"/>
+            <button class="TOOL_publish_btn results_window" style="background: url('/skins/icons/rss16.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'action : publier' %}
             </button>
           </div>
@@ -751,15 +743,14 @@
         {% endif %}
         {% if user.ACL().has_right('doctools') %}
         <span class="buttonset">
-          <button class="TOOL_imgtools_btn results_window">
-            <img src="/skins/prod/000000/images/imgtools_history.gif"/> {% trans 'action : outils' %}
+          <button class="TOOL_imgtools_btn results_window" style="background: url('/skins/prod/000000/images/imgtools_history.gif')  no-repeat 2px center; padding-left:16px;">
+            {% trans 'action : outils' %}
           </button>
         </span>
         {% endif %}
         {% if user.ACL().has_right('deleterecord') %}
         <span class="buttonset">
-          <button class="TOOL_trash_btn results_window">
-              <img src="/skins/icons/delete.png"/>
+          <button class="TOOL_trash_btn results_window" style="background: url('/skins/icons/delete.png')  no-repeat 2px center; padding-left:16px;" >
             {% trans 'action : supprimer' %}
           </button>
         </span>
