@@ -535,8 +535,22 @@ div.diapo
 }
 
 #idFrameT .tools .verticalbuttonset {
- position:relative;
+  position:relative;
 }
+
+
+#idFrameT .tools .verticalbuttonset button img{
+  height:15px;
+}
+
+#idFrameT .tools .verticalbuttonset button{
+  height:28px;
+}
+
+#idFrameT .tools .verticalbuttonset span{
+  display:inline-block;
+}
+
 #idFrameT .tools .verticalbuttonset .ui-button-text img,#idFrameT .buttonset img{
  vertical-align:top;
 }
