@@ -458,7 +458,8 @@ class task_period_cindexer extends task_abstract
             {
               socket_write($sock, 'Q', 1);
               socket_write($sock, "\r\n", strlen("\r\n"));
-              sleep(5);
+              for($i=0; $this->running && $i<5; $i++)
+                sleep(1);
               $qsent = 'Q';
               $timetokill = time() + 10;
             }
@@ -502,7 +503,8 @@ class task_period_cindexer extends task_abstract
             }
           }
         }
-        sleep(5);
+        for($i=0; $this->running && $i<5; $i++)
+          sleep(1);
       }
 
       if($sock)
@@ -559,11 +561,9 @@ class task_period_cindexer extends task_abstract
           // is the cindexer alive ?
           if(!posix_kill($pid, 0))
           {
-printf("%d \n", __LINE__);
             // dead...
             if($sigsent === NULL)
             {
-printf("%d \n", __LINE__);
               // but it's not my fault
                $this->log(_('task::cindexer:the cindexer crashed'));
                $this->running = false;
@@ -572,12 +572,10 @@ printf("%d \n", __LINE__);
              }
           }
           
-printf("%d \n", __LINE__);
           $this->check_task_status();
 
           if($this->task_status == self::STATUS_TOSTOP)
           {
-printf("%d \n", __LINE__);
             posix_kill($pid, ($sigsent=SIGINT));
             sleep(2);
           }
@@ -585,7 +583,6 @@ printf("%d \n", __LINE__);
           $status = NULL;
           if(pcntl_wait($status, WNOHANG) == $pid)
           {
-printf("%d \n", __LINE__);
             // child (indexer) has exited
             if($sigsent == SIGINT)
             {
@@ -604,10 +601,8 @@ printf("%d \n", __LINE__);
           }
           else
           {
-printf("%d \n", __LINE__);
             if($sigsent == SIGINT && time() > $timetokill)
             {
-printf("%d \n", __LINE__);
               // must kill cindexer
               $this->log(_('task::cindexer:killing the cindexer'));
               $qsent = 'K';

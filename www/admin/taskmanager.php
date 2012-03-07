@@ -83,12 +83,12 @@ if($parm["act"] == "DELETETASK")
         padding-left: 5px;
         padding-right: 5px;
       }
-      #db_processlist table {
+      table.db_processlist {
         border: 1px solid #e0e0e0;
         border-collapse: collapse;
         table-layout: fixed;
       }
-      #db_processlist table th, table td {
+      table.db_processlist th, table.db_processlist td {
         height:auto;
         padding: 2px;
         margin: 0px;
@@ -351,12 +351,16 @@ foreach($tasks as $t)
 
             if(retPing.tasks[tid].pid)
             {
+              $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').addClass("context-menu-item-disabled");
               $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
               $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
+              $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').addClass("context-menu-item-disabled");
             }
             else
             {
+              $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').removeClass("context-menu-item-disabled");
               $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
+              $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').removeClass("context-menu-item-disabled");
               if(retPing.scheduler && retPing.scheduler.pid)
                 $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
               else
@@ -667,7 +671,8 @@ foreach($tasks as $t)
               success: function(ret)
               {
                 retPing = ret;  // global
-                $("#pingTime").empty().append(ret.time);
+                if(ret.time)
+                  $("#pingTime").empty().append(ret.time);
                 if(ret.scheduler)
                 {
                   if(ret.scheduler.status)
@@ -725,6 +730,7 @@ foreach($tasks as $t)
                 if(ret.db_processlist)
                 {
                   var _table = document.createElement('table');
+                  _table.setAttribute('class', 'db_processlist');
                   for(p in ret.db_processlist)
                   {
                     if(p==0)

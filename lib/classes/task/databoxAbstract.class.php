@@ -33,17 +33,14 @@ abstract class task_databoxAbstract extends task_abstract
 
   protected function run2()
   {
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
     while($this->running)
     {
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
       try
       {
         $conn = connection::getPDOConnection();
       }
       catch(Exception $e)
       {
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
         $this->log($e->getMessage());
         $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
@@ -53,12 +50,10 @@ $this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value))
         $this->running = false;
         $this->return_value = self::RETURNSTATUS_TORESTART;
 
-$this->log(sprintf("%s [%d] returning from 'run2()' rv=%s \n", __FILE__, __LINE__, $this->return_value));
         return;
       }
 
       $this->set_last_exec_time();
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
 
       try
       {
@@ -72,14 +67,12 @@ $this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value))
       }
       catch(Exception $e)
       {
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
         $this->task_status = self::STATUS_TOSTOP;
         $this->return_value = self::RETURNSTATUS_STOPPED;
         $rs = array();
       }
       foreach($rs as $row)
       {
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
         if(!$this->running)
           break;
 
@@ -96,7 +89,6 @@ $this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value))
 
         try
         {
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
           $this->load_settings(simplexml_load_string($row['settings']));
         }
         catch(Exception $e)
@@ -106,26 +98,18 @@ $this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value))
         }
 
         $this->current_state = self::STATE_OK;
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
         $this->process_sbas()->check_current_state();
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
         $this->process_sbas()->flush_records_sbas();
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
       }
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
 
       $this->increment_loops();
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
       $this->pause($duration);
     }
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
     $this->process_sbas()->check_current_state();
-$this->log(sprintf("%s [%d] rv=%s \n", __FILE__, __LINE__, $this->return_value));
     $this->process_sbas()->flush_records_sbas();
 
     $this->set_status($this->return_value);
 
-$this->log(sprintf("%s [%d] returning from 'run2()' rv=%s \n", __FILE__, __LINE__, $this->return_value));
 
     return;
   }

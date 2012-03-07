@@ -256,25 +256,25 @@ switch ($parm['action'])
     break;
 */    
   case 'PINGSCHEDULER_JS':
-    $ret = array();
-    $ret['time'] = $dat = date("H:i:s");
+    $ret = array('time'=> date("H:i:s") );
 
     $task_manager = new task_manager($appbox);
     $ret['scheduler'] = $task_manager->get_scheduler_state2();
 
     $ret['tasks'] = array();
+
     foreach ($task_manager->get_tasks(true) as $task)
     {
-      $_t = array(
-                'id'=>$task->get_task_id()
+      $id = $task->get_task_id();
+      $ret['tasks'][$id] = array(
+                'id'=>$id
               , 'pid' =>$task->get_pid()
               , 'crashed'=>$task->get_crash_counter()
               , 'completed'=>$task->get_completed_percentage()
               , 'status'=>$task->get_status()
       );
-      $ret['tasks'][$_t['id']] = $_t;
     }
-    
+
     if(1)
     {
       $sql = 'SHOW PROCESSLIST';
@@ -290,7 +290,7 @@ switch ($parm['action'])
       }
     }
 
-    $output = json_encode($ret);
+    $output = p4string::jsonencode($ret);
     break;
     
   case 'UNMOUNTBASE':
@@ -419,4 +419,6 @@ switch ($parm['action'])
     $output = p4string::jsonencode($ret);
     break;
 }
+
+unset($appbox);
 echo $output;
