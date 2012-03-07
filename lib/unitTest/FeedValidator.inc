@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @example 
- * 
+ * @example
+ *
   try
   {
   $validator = new W3CFeedRawValidator($xml);
@@ -22,7 +22,7 @@
   {
   print "\n" . $e->getMessage();
   }
- * 
+ *
  */
 
 /**
@@ -30,7 +30,7 @@
  */
 class W3CFeedValidatorException extends Exception
 {
-  
+
 }
 
 /**
@@ -55,7 +55,7 @@ class W3CFeedUrlValidator extends W3CFeedValidator
 
   /**
    * The URL of the document to validate
-   * @var string 
+   * @var string
    */
   private $url;
 
@@ -88,12 +88,13 @@ class W3CFeedUrlValidator extends W3CFeedValidator
     {
       throw new W3CFeedValidatorException("Unable to request W3C API");
     }
+
     return new W3CFeedValidatorResponse($response);
   }
 
   /**
    * Check if an url is valid
-   * @param string $url 
+   * @param string $url
    * @return boolean
    */
   private function isValidUrl($url)
@@ -112,14 +113,14 @@ class W3CFeedRawValidator extends W3CFeedValidator
 
   /**
    * The source of the document to validate
-   * @var string 
+   * @var string
    */
   private $rawData;
 
   /**
    * Constructor
    * Init instance which the specified data to validate
-   * @param string $rawData 
+   * @param string $rawData
    */
   public function __construct($rawData)
   {
@@ -151,6 +152,7 @@ class W3CFeedRawValidator extends W3CFeedValidator
     {
       throw new W3CFeedValidatorException("Unable to request W3C API");
     }
+
     return new W3CFeedValidatorResponse($response);
   }
 
@@ -209,36 +211,40 @@ class W3CFeedValidatorResponse
         $string .= $name . "=>" . $detail . "\n";
       }
     }
+
     return $string;
   }
 
   /**
-   * Check if the XML is valid 
-   * @return boolean 
+   * Check if the XML is valid
+   * @return boolean
    */
   public function isValid()
   {
     $xPathQuery = "/env:Envelope/env:Body/m:feedvalidationresponse/m:validity";
+
     return $this->DOMXpath->query($xPathQuery)->item(0)->nodeValue !== "false";
   }
 
   /**
    * Check for errors
-   * @return boolean 
+   * @return boolean
    */
   public function hasError()
   {
     $xPathQuery = "/env:Envelope/env:Body/m:feedvalidationresponse/m:errors/m:errorcount";
+
     return (int) $this->DOMXpath->query($xPathQuery)->item(0)->nodeValue !== 0;
   }
 
   /**
    * check fro warnings
-   * @return boolean 
+   * @return boolean
    */
   public function hasWarning()
   {
     $xPathQuery = "/env:Envelope/env:Body/m:feedvalidationresponse/m:warnings/m:warningcount";
+
     return (int) $this->DOMXpath->query($xPathQuery)->item(0)->nodeValue !== 0;
   }
 
@@ -271,8 +277,8 @@ class W3CFeedValidatorResponse
    *  1 => etc ..
    *  }
    * }
-   * 
-   * @return array 
+   *
+   * @return array
    */
   public function getWarnings()
   {
@@ -286,12 +292,13 @@ class W3CFeedValidatorResponse
         $warnings[] = $this->domNodeToArray($warning);
       }
     }
+
     return $warnings;
   }
 
   /**
    * Get an array with all errors as follow
-   * @return array 
+   * @return array
    */
   public function getErrors()
   {
@@ -305,14 +312,15 @@ class W3CFeedValidatorResponse
         $errors[] = $this->domNodeToArray($error);
       }
     }
+
     return $errors;
   }
 
   /**
    * @source http://www.ermshaus.org/2010/12/php-transform-domnode-to-array
-   * 
+   *
    * Transforms the contents of a DOMNode to an associative array
-   * 
+   *
    * XML node names become array keys, attributes will be discarded. If $node
    * doesn't contain child nodes, a string will be returned.
    *

@@ -69,17 +69,19 @@
   {% endif %}
   {% for field in editing.get_fields() %}
     {% set i = field.get_id() %}
-    <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
-      <img id="editSGtri_{{i}}" style="visibility:hidden;" src="/skins/prod/{{cssfile}}/images/suggested.gif" />
-      <img src="/skins/icons/info.gif" tooltipsrc="/prod/tooltip/metas/FieldInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" class="fieldTips" alt=""/>
-      {% if field.get_dces_element %}
-      <img src="/skins/icons/dublincore.png" tooltipsrc="/prod/tooltip/DCESInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" alt="{% trans 'Ce champ est decrit comme un element DublinCore' %}" class="DCESTips" alt=""/>
-      {% endif %}
-      <span id="spanidEditFieldBox_{{i}}">
-        {{field.get_name()}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
-      </span>
-      <span class="fieldvalue" id="idEditField_{{i}}" >???</span>
-    </div>
+    {% if field.is_readonly() is empty %}
+      <div class="edit_field" id="EditFieldBox_{{i}}" onclick="return(edit_mdwn_fld(event, {{i}}, '{{field.get_name()}}'));" >
+        <img id="editSGtri_{{i}}" style="visibility:hidden;" src="/skins/prod/{{cssfile}}/images/suggested.gif" />
+        <img src="/skins/icons/info.gif" tooltipsrc="/prod/tooltip/metas/FieldInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" class="fieldTips" alt=""/>
+        {% if field.get_dces_element %}
+        <img src="/skins/icons/dublincore.png" tooltipsrc="/prod/tooltip/DCESInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" alt="{% trans 'Ce champ est decrit comme un element DublinCore' %}" class="DCESTips" alt=""/>
+        {% endif %}
+        <span id="spanidEditFieldBox_{{i}}">
+          {{field.get_name()}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
+        </span>
+        <span class="fieldvalue" id="idEditField_{{i}}" >???</span>
+      </div>
+    {% endif %}
   {% endfor %}
 {% endmacro %}
 

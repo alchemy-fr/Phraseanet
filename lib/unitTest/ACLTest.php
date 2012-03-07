@@ -655,48 +655,48 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testis_limited()
   {
     $appbox = appbox::get_instance();
-    
+
     $found = false;
-    
+
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
       {
         $base_id = $collection->get_base_id();
-        
+
         if(!self::$user->ACL()->has_access_to_base($base_id))
           continue;
-        
+
         $this->assertFalse(self::$user->ACL()->is_limited($base_id));
-        
+
         self::$user->ACL()->set_limits($base_id, true, new DateTime('-1 day'), new DateTime('+1 day'));
-        
+
         $this->assertFalse(self::$user->ACL()->is_limited($base_id));
-        
+
         self::$user->ACL()->set_limits($base_id, false, new DateTime('-1 day'), new DateTime('+1 day'));
-        
+
         $this->assertFalse(self::$user->ACL()->is_limited($base_id));
-        
+
         self::$user->ACL()->set_limits($base_id, true, new DateTime('+1 day'), new DateTime('+2 day'));
-        
+
         $this->assertTrue(self::$user->ACL()->is_limited($base_id));
-        
+
         self::$user->ACL()->set_limits($base_id, true, new DateTime('-2 day'), new DateTime('-1 day'));
-        
+
         $this->assertTrue(self::$user->ACL()->is_limited($base_id));
-        
+
         self::$user->ACL()->set_limits($base_id, true, new DateTime('-2 day'), new DateTime('+2 day'));
-        
+
         $this->assertFalse(self::$user->ACL()->is_limited($base_id));
-        
+
         self::$user->ACL()->set_limits($base_id, false, new DateTime('-2 day'), new DateTime('+2 day'));
-        
+
         $this->assertFalse(self::$user->ACL()->is_limited($base_id));
-        
+
         $found = true;
       }
     }
-    
+
     if(!$found)
       $this->fail ('Unable to test');
   }
@@ -704,50 +704,50 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testget_limits()
   {
     $appbox = appbox::get_instance();
-    
+
     $found = false;
-    
+
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
       {
         $base_id = $collection->get_base_id();
-        
+
         if(!self::$user->ACL()->has_access_to_base($base_id))
           continue;
-        
+
         $minusone = new DateTime('-1 day');
-        
+
         $plusone = new DateTime('+1 day');
-        
+
         self::$user->ACL()->set_limits($base_id, true, $minusone, $plusone);
-        
+
         $limits = self::$user->ACL()->get_limits($base_id);
-        
+
         $this->assertEquals($limits['dmin'], $minusone);
-        
+
         $this->assertEquals($limits['dmax'], $plusone);
-        
+
         $minustwo = new DateTime('-2 day');
-        
+
         $plustwo = new DateTime('-2 day');
-        
+
         self::$user->ACL()->set_limits($base_id, true, $minustwo, $plustwo);
-        
+
         $limits = self::$user->ACL()->get_limits($base_id);
 
         $this->assertEquals($limits['dmin'], $minustwo);
-        
+
         $this->assertEquals($limits['dmax'], $plustwo);
-        
+
         self::$user->ACL()->set_limits($base_id, false);
-        
+
         $this->assertNull(self::$user->ACL()->get_limits($base_id));
-        
+
         $found = true;
       }
     }
-    
+
     if(!$found)
       $this->fail ('Unable to test');
   }

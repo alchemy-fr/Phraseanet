@@ -154,7 +154,7 @@ class bootstrap
 
     Twig_Autoloader::register();
     Twig_Extensions_Autoloader::register();
-     
+
     /**
      * Load symfony components needed
      */

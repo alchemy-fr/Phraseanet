@@ -157,8 +157,10 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
   public function isValid()
   {
     if (isset($this->dashboard) && sizeof($this->dashboard) > 0)
+
       return true;
     else
+
       return false;
   }
 
@@ -348,11 +350,11 @@ class module_report_dashboard implements module_report_dashboard_componentInterf
       }
       catch (Exception $e)
       {
-        
+
       }
       $i++;
     }
-    
+
     return;
   }
 

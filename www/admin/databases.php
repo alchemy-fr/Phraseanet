@@ -90,7 +90,7 @@ phrasea::headers();
           {
             $error[] = _('Database name can not contains special characters');
           }
-          
+
           if (count($error) === 0)
           {
             try
@@ -117,7 +117,7 @@ phrasea::headers();
             }
           }
         }
-        elseif ($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port'] 
+        elseif ($parm['new_settings'] && $parm['new_hostname'] && $parm['new_port']
                 && $parm['new_user'] && $parm['new_password']
                 && $parm['new_dbname'] && $parm['new_data_template'])
         {
@@ -126,7 +126,7 @@ phrasea::headers();
           {
             $error[] = _('Database name can not contains special characters');
           }
-          
+
           if (count($error) === 0)
           {
 
@@ -226,7 +226,7 @@ phrasea::headers();
       }
       catch (Exception $e)
       {
-        
+
       }
     }
     ?>
@@ -254,7 +254,7 @@ if ($createBase || $mountBase)
 ?>
 
     </script>
-    <?php 
+    <?php
     foreach($error as $e)
     {
       ?>

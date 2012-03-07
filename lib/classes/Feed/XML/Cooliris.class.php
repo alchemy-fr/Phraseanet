@@ -370,9 +370,11 @@ class Feed_XML_Cooliris extends Feed_XML_Abstract implements Feed_XML_Interface
     $medium = strtolower($content->get_record()->get_type());
 
     if (!in_array($medium, array('image', 'audio', 'video')))
+
       return $this;
 
     if (!$preview_permalink || !$thumbnail_permalink)
+
       return $this;
 
     //add item node to channel node

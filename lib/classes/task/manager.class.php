@@ -238,6 +238,7 @@ class task_manager
       closedir($hdir);
     }
     }
+
     return $tasks;
   }
 }

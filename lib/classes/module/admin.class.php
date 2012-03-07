@@ -77,6 +77,7 @@ class module_admin
     );
 
     $twig = new supertwig();
+
     return $twig->render('admin/tree.html.twig', $params);
 
   }

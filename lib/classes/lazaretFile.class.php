@@ -138,7 +138,7 @@ class lazaretFile
 
     $record = new record_adapter($sbas_id, $record_id);
     $record->substitute_subdef('document', new system_file($pathfile));
-    
+
     $this->delete();
 
     return $this;

@@ -100,9 +100,7 @@ class set_export extends set_abstract
 
         if ($record->is_grouping())
         {
-          $xml = $record->get_xml();
-
-          $regfield = basket_adapter::getRegFields($basrec[0], $xml);
+          $regfield = basket_adapter::getRegFields($basrec[0], $record->get_caption());
 
           foreach ($record->get_children() as $child_basrec)
           {
@@ -430,7 +428,6 @@ class set_export extends set_abstract
 
     foreach ($this->elements as $download_element)
     {
-      echo "eleme";
       $id = count($files);
 
       $files[$id] = array(
@@ -478,7 +475,7 @@ class set_export extends set_abstract
       $sd = $download_element->get_subdefs();
 
       foreach ($download_element->get_downloadable() as $name => $properties)
-      {        
+      {
         if ($properties === false || !in_array($name, $subdefs))
         {
           continue;
@@ -684,7 +681,6 @@ class set_export extends set_abstract
         $desc = self::get_caption(
                         $download_element->get_base_id()
                         , $download_element->get_record_id()
-                        , $session->get_ses_id()
         );
 
         $file = $files[$id]["export_name"]
@@ -714,7 +710,6 @@ class set_export extends set_abstract
         $desc = self::get_caption(
                         $download_element->get_base_id()
                         , $download_element->get_record_id()
-                        , $session->get_ses_id()
                         , true
                         , 'yaml'
         );
@@ -763,6 +758,7 @@ class set_export extends set_abstract
       return false;
     }
     if (isset($list['complete']) && $list['complete'] === true)
+
       return;
 
 
@@ -907,9 +903,8 @@ class set_export extends set_abstract
               case 'yml':
 
                 $vi = trim($vi);
-                $int_vi = (int) $vi;
-                if ($int_vi == $vi)
-                  $vi = $int_vi . ' est egal a ' . $vi;
+                if (ctype_digit($vi))
+                  $vi = (int) $vi;
 
                 $buffer[trim($ki)] = $vi;
                 break;
@@ -995,13 +990,13 @@ class set_export extends set_abstract
       else
       {
         /**
-         * 
+         *
          * Header "Pragma: public" SHOULD be present.
          * In case it is not present, download on IE 8 and previous over HTTPS
          * will fail.
-         * 
+         *
          * @todo : merge this shitty fix with Response object.
-         * 
+         *
          */
         if (!headers_sent())
         {
@@ -1013,6 +1008,7 @@ class set_export extends set_abstract
         $response->headers->set('Content-Disposition', $disposition . "; filename=" . $exportname . ";");
         $response->headers->set('Content-Length', filesize($file));
         $response->setContent(file_get_contents($file));
+
         return $response;
       }
     }
@@ -1063,7 +1059,7 @@ class set_export extends set_abstract
     $user = false;
     if ($anonymous)
     {
-      
+
     }
     else
     {

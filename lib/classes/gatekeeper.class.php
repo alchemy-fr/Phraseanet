@@ -76,6 +76,7 @@ class gatekeeper
     $session = $appbox->get_session();
 
     if (http_request::is_command_line())
+
       return;
 
     if (isset($_SERVER['PHP_SELF']) && trim($_SERVER['PHP_SELF']))
@@ -104,7 +105,7 @@ class gatekeeper
       }
       catch (Exception $e)
       {
-        
+
       }
     }
 
@@ -121,6 +122,7 @@ class gatekeeper
           if ($this->_PHP_SELF == '/thesaurus2/xmlhttp/getterm.x.php'
                   || $this->_PHP_SELF == '/thesaurus2/xmlhttp/searchcandidate.x.php'
                   || $this->_PHP_SELF == '/thesaurus2/xmlhttp/getsy.x.php')
+
             return;
           phrasea::redirect('/login/?redirect=/thesaurus2');
           break;
@@ -129,6 +131,7 @@ class gatekeeper
           break;
         case 'admin':
           if ($this->_script_name === 'runscheduler.php')
+
             return;
           phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
           break;
@@ -148,6 +151,7 @@ class gatekeeper
           return;
         case 'setup':
           if ($appbox->upgradeavailable())
+
             return;
           else
             phrasea::redirect('/login/');
@@ -264,6 +268,7 @@ class gatekeeper
     $parm = $request->get_parms('LOG');
 
     if (is_null($parm["LOG"]))
+
       return $this;
 
     try
@@ -281,11 +286,12 @@ class gatekeeper
     try
     {
       $datas = random::helloToken($parm['LOG']);
+
       return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
     }
     catch (Exception_NotFound $e)
     {
-      
+
     }
 
     return $this;

@@ -200,9 +200,9 @@ class collection implements cache_cacheableInterface
       $stmt = $this->get_connection()->prepare($sql);
       $stmt->execute(array(':pub_wm' => $publi, ':coll_id' => $this->get_coll_id()));
       $stmt->closeCursor();
-      
+
       $this->pub_wm = $publi;
-      
+
       $this->delete_data_from_cache();
     }
 
@@ -223,8 +223,10 @@ class collection implements cache_cacheableInterface
     $stmt->closeCursor();
 
     $this->name = $name;
-    
+
     $this->delete_data_from_cache();
+
+    phrasea::reset_baseDatas();
 
     return $this;
   }
@@ -402,7 +404,7 @@ class collection implements cache_cacheableInterface
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute(array(':prefs' => $this->prefs, ':coll_id' => $this->get_coll_id()));
     $stmt->closeCursor();
-    
+
     $this->delete_data_from_cache();
 
     return $this->prefs;
@@ -607,7 +609,7 @@ class collection implements cache_cacheableInterface
 
       $registry = registry::get_instance();
       if (is_file($registry->get('GV_RootPath') . 'config/wm/' . $base_id))
-        self::$_watermarks['base_id'] = '<img src="/watermark/' . $base_id . '" />';
+        self::$_watermarks['base_id'] = '<img src="/custom/wm/' . $base_id . '" />';
     }
 
     return isset(self::$_watermarks['base_id']) ? self::$_watermarks['base_id'] : '';
@@ -620,7 +622,7 @@ class collection implements cache_cacheableInterface
 
       $registry = registry::get_instance();
       if (is_file($registry->get('GV_RootPath') . 'config/presentation/' . $base_id))
-        self::$_presentations['base_id'] = '<img src="/presentation/' . $base_id . '" />';
+        self::$_presentations['base_id'] = '<img src="/custom/presentation/' . $base_id . '" />';
     }
 
     return isset(self::$_presentations['base_id']) ? self::$_presentations['base_id'] : '';
@@ -633,7 +635,7 @@ class collection implements cache_cacheableInterface
 
       $registry = registry::get_instance();
       if (is_file($registry->get('GV_RootPath') . 'config/stamp/' . $base_id))
-        self::$_stamps['base_id'] = '<img src="/stamp/' . $base_id . '" />';
+        self::$_stamps['base_id'] = '<img src="/custom/stamp/' . $base_id . '" />';
     }
 
     return isset(self::$_stamps['base_id']) ? self::$_stamps['base_id'] : '';

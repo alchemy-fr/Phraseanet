@@ -23,171 +23,205 @@ class module_report
    * @var string - timestamp
    */
   protected $dmin;
+
   /**
    * End date of the report
    * @var string - timestamp
    */
   protected $dmax;
+
   /**
    * Id of the base we want to connect
    * @var int
    */
   protected $sbas_id;
+
   /**
    * Id of the current app's box user
    * @var int
    */
   protected $user_id;
+
   /**
    * The result of the report
    * @var array
    */
   public $report = array();
+
   /**
    * The title of the report
    * @var string
    */
   protected $title = '';
+
   /**
    * default displayed value in the formated tab
    * @var array
    */
   protected $display = array();
+
   /**
    * ?
    * @var <array>
    */
   protected $default_display = array();
+
   /**
    * Contain all the field from the sql request
    * @var array
    */
   protected $champ = array();
+
   /**
    * result of the report
    * @var array
    */
   protected $result = array();
+
   /**
    * The id of all collections from a databox
    * @var string
    */
   protected $list_coll_id = '';
+
   /**
    * The number of record displayed by page if enable limit is false
    * @var int
    */
   protected $nb_record = 30;
+
   /**
    * The current number of the page where are displaying the results
    * @var int
    */
   protected $nb_page = 1;
+
   /**
    * check if there is a previous page
    * @var <bool>
    */
   protected $previous_page = false;
+
   /**
    * check if there is a next page
    * @var <bool>
    */
   protected $next_page = false;
+
   /**
    *
    * @var int total of result
    */
   protected $total = 0;
+
   /**
    * the request executed
    */
   protected $req = '';
+
   /**
    * the request executed
    */
   protected $params = array();
+
   /**
    * do we display  next and previous button
    * @var bool
    */
   protected $display_nav = false;
+
   /**
    * do we display the configuration button
    * @var <bool>
    */
   protected $config = true;
+
   /**
    * gettext tags for days
    * @var <array>
    */
   protected $jour;
+
   /**
    * gettext tags for month
    * @var <array>
    */
   protected $month;
+
   /**
    * The name of the database
    * @var string
    */
   protected $dbname;
+
   /**
    * The periode displayed in a string of the report
    * @var string
    */
   protected $periode;
+
   /**
    * filter executed on report choose by the user
    * @var array;
    */
   protected $tab_filter = array();
+
   /**
    * column displayed in the report choose by the user
    * @var <array>
    */
   protected $active_column = array();
+
   /**
    * array that contains the string displayed
    * foreach filters
    * @var <array>
    */
   protected $posting_filter = array();
+
   /**
    * The ORDER BY filters of the query
    * by default is empty
    * @var array
    */
   protected $tab_order = array();
+
   /**
    * define columns that are boundable
    * @var <array>
    */
   protected $bound = array();
+
   /**
    * do we display print button
    * @var <bool>
    */
   protected $print = true;
+
   /**
    * do we display csv button
    * @var <bool>
    */
   protected $csv = true;
+
   /**
    * do we enable limit filter for the report
    * @var bool
    */
   protected $enable_limit = true;
+
   /**
    * gettext correspondance for all available columns in report
    * @var array
    */
   protected $cor = array();
+
   /**
    * group result of a report this is the name ogf the grouped column
    * @var string
    */
   protected $groupby;
+
   /**
    * disbale or enable pretty string useful for export in csv
    * @var boolean
@@ -197,9 +231,8 @@ class module_report
   /**
    *
    */
-  protected $cor_query = array();/* ~*~*~*~*~*~*~*~*~*~*~*~ */
-  /* METHODS, VARIABLES    */
-  /* ~*~*~*~*~*~*~*~*~*~*~*~ */
+  protected $cor_query = array();
+  protected $isInformative;
 
   /**
    * Constructor
@@ -212,7 +245,7 @@ class module_report
    */
   public function __construct($d1, $d2, $sbas_id, $collist)
   {
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance();
     $session = $appbox->get_session();
     $this->dmin = $d1;
     $this->dmax = $d2;
@@ -220,11 +253,21 @@ class module_report
     $this->list_coll_id = $collist;
     $this->user_id = $session->get_usr_id();
     $this->periode = phraseadate::getPrettyString(new DateTime($d1))
-            . ' - ' . phraseadate::getPrettyString(new DateTime($d2));
+      . ' - ' . phraseadate::getPrettyString(new DateTime($d2));
     $this->dbname = phrasea::sbas_names($sbas_id);
     $this->cor = $this->setCor();
     $this->jour = $this->setDay();
     $this->month = $this->setMonth();
+  }
+
+  public function IsInformative()
+  {
+    return $this->isInformative;
+  }
+
+  public function setIsInformative($isInformative)
+  {
+    $this->isInformative = $isInformative;
   }
 
   public function getUser_id()
@@ -242,7 +285,6 @@ class module_report
     $this->user_id = $user_id;
   }
 
-
   public function getSbas_id()
   {
     return $this->sbas_id;
@@ -253,7 +295,7 @@ class module_report
     $this->sbas_id = $sbas_id;
   }
 
-    public function setPrettyString($bool)
+  public function setPrettyString($bool)
   {
     $this->pretty_string = $bool;
   }
@@ -301,8 +343,6 @@ class module_report
     $this->req = $sql;
   }
 
-
-
   public function getPeriode()
   {
     return $this->periode;
@@ -342,9 +382,9 @@ class module_report
 
   public function setActiveColumn(array $active_column)
   {
-     $this->active_column = $active_column;
+    $this->active_column = $active_column;
 
-     return $this;
+    return $this;
   }
 
   public function getActiveColumn()
@@ -509,6 +549,7 @@ class module_report
   {
     $this->total = $total;
   }
+
   public function getDefault_display()
   {
     return $this->default_display;
@@ -523,7 +564,6 @@ class module_report
   {
     return $this->champ;
   }
-
 
   /**
    * Retourne un objet qui genere la requete selon le type de report
@@ -619,28 +659,28 @@ class module_report
   private function setCor()
   {
     return array(
-        'user' => _('report:: utilisateur'),
-        'coll_id' => _('report:: collections'),
-        'connexion' => _('report:: Connexion'),
-        'comment' => _('report:: commentaire'),
-        'search' => _('report:: question'),
-        'date' => _('report:: date'),
-        'ddate' => _('report:: date'),
-        'fonction' => _('report:: fonction'),
-        'activite' => _('report:: activite'),
-        'pays' => _('report:: pays'),
-        'societe' => _('report:: societe'),
-        'nb' => _('report:: nombre'),
-        'pourcent' => _('report:: pourcentage'),
-        'telechargement' => _('report:: telechargement'),
-        'record_id' => _('report:: record id'),
-        'final' => _('report:: type d\'action'),
-        'xml' => _('report:: sujet'),
-        'file' => _('report:: fichier'),
-        'mime' => _('report:: type'),
-        'size' => _('report:: taille'),
-        'copyright' => _('report:: copyright'),
-        'final' => _('phraseanet:: sous definition')
+      'user'           => _('report:: utilisateur'),
+      'coll_id'        => _('report:: collections'),
+      'connexion'      => _('report:: Connexion'),
+      'comment'        => _('report:: commentaire'),
+      'search'         => _('report:: question'),
+      'date'           => _('report:: date'),
+      'ddate'          => _('report:: date'),
+      'fonction'       => _('report:: fonction'),
+      'activite'       => _('report:: activite'),
+      'pays'           => _('report:: pays'),
+      'societe'        => _('report:: societe'),
+      'nb'             => _('report:: nombre'),
+      'pourcent'       => _('report:: pourcentage'),
+      'telechargement' => _('report:: telechargement'),
+      'record_id'      => _('report:: record id'),
+      'final'          => _('report:: type d\'action'),
+      'xml'            => _('report:: sujet'),
+      'file'           => _('report:: fichier'),
+      'mime'           => _('report:: type'),
+      'size'           => _('report:: taille'),
+      'copyright'      => _('report:: copyright'),
+      'final'          => _('phraseanet:: sous definition')
     );
 
     return;
@@ -653,13 +693,13 @@ class module_report
   private function setDay()
   {
     return Array(
-        1 => _('phraseanet::jours:: lundi'),
-        2 => _('phraseanet::jours:: mardi'),
-        3 => _('phraseanet::jours:: mercredi'),
-        4 => _('phraseanet::jours:: jeudi'),
-        5 => _('phraseanet::jours:: vendredi'),
-        6 => _('phraseanet::jours:: samedi'),
-        7 => _('phraseanet::jours:: dimanche'));
+      1 => _('phraseanet::jours:: lundi'),
+      2 => _('phraseanet::jours:: mardi'),
+      3 => _('phraseanet::jours:: mercredi'),
+      4 => _('phraseanet::jours:: jeudi'),
+      5 => _('phraseanet::jours:: vendredi'),
+      6 => _('phraseanet::jours:: samedi'),
+      7 => _('phraseanet::jours:: dimanche'));
   }
 
   /**
@@ -669,18 +709,18 @@ class module_report
   private function setMonth()
   {
     return array(
-        _('janvier'),
-        _('fevrier'),
-        _('mars'),
-        _('avril'),
-        _('mai'),
-        _('juin'),
-        _('juillet'),
-        _('aout'),
-        _('septembre'),
-        _('octobre'),
-        _('novembre'),
-        _('decembre')
+      _('janvier'),
+      _('fevrier'),
+      _('mars'),
+      _('avril'),
+      _('mai'),
+      _('juin'),
+      _('juillet'),
+      _('aout'),
+      _('septembre'),
+      _('octobre'),
+      _('novembre'),
+      _('decembre')
     );
   }
 
@@ -748,21 +788,21 @@ class module_report
         if (array_key_exists($column, $this->cor))
         {
           $title_text = $this->cor[$column];
-          $def = true;
+          $def        = true;
         }
-        empty($row[0]) ? $title = $column : $title = $row[0];
+        empty($row[0]) ? $title      = $column : $title      = $row[0];
 
-        $sort = $row[1];
+        $sort    = $row[1];
         array_key_exists($column, $this->bound) ?
-                        $bound = $this->bound[$column] : $bound = $row[2];
-        $filter = (isset($row[3]) ? $row[3] : 0);
+            $bound   = $this->bound[$column] : $bound   = $row[2];
+        $filter  = (isset($row[3]) ? $row[3] : 0);
         $groupby = $row[4];
-        $config = array(
-            'title' => $title,
-            'sort' => $sort,
-            'bound' => $bound,
-            'filter' => $filter,
-            'groupby' => $groupby
+        $config  = array(
+          'title'          => $title,
+          'sort'           => $sort,
+          'bound'          => $bound,
+          'filter'         => $filter,
+          'groupby'        => $groupby
         );
         $def ? $config['title'] = $title_text : "";
 
@@ -792,10 +832,10 @@ class module_report
       {
         $stmt = $conn->prepare($this->req);
         $stmt->execute($this->params);
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
       }
-      catch(PDOException $e)
+      catch (PDOException $e)
       {
         echo $e->getMessage();
 
@@ -837,13 +877,13 @@ class module_report
     {
       if ($attribut)
       {
-          foreach ($sxe->$champ->attributes() as $a => $b)
+        foreach ($sxe->$champ->attributes() as $a => $b)
+        {
+          if ($a == $attribut)
           {
-            if ($a == $attribut)
-            {
-              $ret.= $b;
-            }
+            $ret.= $b;
           }
+        }
       }
       else
       {
@@ -871,7 +911,7 @@ class module_report
     $tab["struct"] = "";
     $tab['champs'] = array();
 
-    $databox = databox::get_instance((int) $sbasid);
+    $databox       = databox::get_instance((int) $sbasid);
     $tab['struct'] = $databox->get_structure();
 
     $sxe = $databox->get_sxml_structure();
@@ -897,7 +937,7 @@ class module_report
   public static function getHost($url)
   {
     $parse_url = parse_url(trim($url));
-    $result = isset($parse_url['host']) ? $parse_url['host'] : array_shift(explode('/', $parse_url['path'], 2));
+    $result    = isset($parse_url['host']) ? $parse_url['host'] : array_shift(explode('/', $parse_url['path'], 2));
 
     return trim($result);
   }
