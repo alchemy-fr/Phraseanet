@@ -154,6 +154,14 @@ span.ww_winTitle{
 
 
 
+
+#idFrameC .wrapper{
+  background-color: #404040;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  right:10px;
+}
+
 .ui-tabs
 {
 	background-color:tranparent;

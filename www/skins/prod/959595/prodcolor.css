@@ -154,6 +154,14 @@ span.ww_winTitle{
 
 
 
+
+#idFrameC .wrapper{
+  background-color: #999999;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  right:10px;
+}
+
 .ui-tabs
 {
 	background-color:tranparent;
@@ -501,8 +509,8 @@ div.diapo
 
 
 #answers{
-  background-color: #111111;
-  border:1px solid #111111;
+  background-color: #D9D9D9;
+  border:1px solid #D9D9D9;
 }
 
 #answers_status{

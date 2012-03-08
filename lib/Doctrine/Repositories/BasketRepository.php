@@ -39,6 +39,7 @@ class BasketRepository extends EntityRepository
   {
     $dql = 'SELECT b
             FROM Entities\Basket b
+            LEFT JOIN b.elements e
             WHERE b.usr_id = :usr_id
             AND b.archived = false';
 
