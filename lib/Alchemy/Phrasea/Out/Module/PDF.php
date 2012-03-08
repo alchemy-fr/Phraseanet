@@ -184,8 +184,10 @@ class PDF
       $fimg = $subdef->get_pathfile();
 
       if (!$user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
-              && $subdef->get_type() == media_subdef::TYPE_IMAGE)
-        $fimg = recordutils_image::watermark($rec->get_base_id(), $rec->get_record_id());
+              && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
+      {
+        $fimg = \recordutils_image::watermark($rec->get_base_id(), $rec->get_record_id());
+      }
 
       $wimg = $himg = $ImgSize;
       if ($subdef->get_height() > 0 && $subdef->get_width() > 0)
@@ -479,8 +481,8 @@ class PDF
       $f = $subdef->get_pathfile();
 
       if (!$user->ACL()->has_right_on_base($rec->get_base_id(), "nowatermark")
-              && $subdef->get_type() == media_subdef::TYPE_IMAGE)
-        $f = recordutils_image::watermark($rec->get_base_id(), $rec->get_record_id());
+              && $subdef->get_type() == \media_subdef::TYPE_IMAGE)
+        $f = \recordutils_image::watermark($rec->get_base_id(), $rec->get_record_id());
 
       $wimg = $himg = 150; // preview dans un carre de 150 mm
       if ($subdef->get_width() > 0 && $subdef->get_height() > 0)

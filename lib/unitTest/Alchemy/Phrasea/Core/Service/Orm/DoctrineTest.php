@@ -27,14 +27,12 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     parent::setUp();
     $this->options = array(
       "debug" => false
-      , "log"   => array('service'=>"Log\\sql_logger")
-      , "dbal"  => "main_connexion"
-      , "orm"   => array(
-        "cache" => array(
-          "metadata" => array('service'=>"Cache\\array_cache")
-          , "query"    => array('service'=>"Cache\\array_cache")
-          , "result"   => array('service'=>"Cache\\array_cache")
-        )
+      , "log"   => array('service' => "Log\\sql_logger")
+      , "dbal"    => "main_connexion"
+      , "cache"   => array(
+        "metadata" => array('service' => "Cache\\array_cache")
+        , "query"   => array('service' => "Cache\\array_cache")
+        , "result"  => array('service' => "Cache\\array_cache")
       )
     );
   }
@@ -83,7 +81,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 
   public function testNoCacheInOptions()
   {
-    unset($this->options["orm"]["cache"]);
+    unset($this->options["cache"]);
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
         self::$core, 'hello', $this->options
     );
@@ -96,7 +94,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
 
   public function testUnknowCache()
   {
-    $this->options["orm"]["cache"]["result"] = "unknowCache";
+    $this->options["cache"]["result"] = "unknowCache";
 
     try
     {

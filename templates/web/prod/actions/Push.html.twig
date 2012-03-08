@@ -9,41 +9,58 @@
         {% endif %}
       </div>
       <div class="PNB content" style="top:150px;">
-        <div class="PNB10" style="bottom:0;height:90px;">
+        <div class="PNB10" style="bottom:0;height:150px;">
           <h1>{% trans 'Grant rights' %}</h1>
           <ul class="general_togglers">
             {% if context == 'Feedback' %}
             <li>
-              <a class="general_toggler" feature="agree" href="#">
-                <img src="/skins/prod/Push/contributeur_menu.png" />
+               <button type="button" class="general_toggler" feature="agree">
                 {% trans 'Contributor' %}
-              </a>
+              </button>
             </li>
             <li>
-              <a class="general_toggler" feature="see_others" href="#">
-                <img src="/skins/prod/Push/see_other_menu.png" />
+              <button type="button" class="general_toggler" feature="see_others">
                 {% trans 'See others' %}
-              </a>
+              </button>
             </li>
             {% endif %}
             <li>
-              <a class="general_toggler" feature="HD" href="#">
-                <img src="/skins/prod/Push/download_menu.png" />
+                <button type="button" class="general_toggler" feature="HD">
                 {% trans 'HD Download' %}
-              </a>
+                </button>
             </li>
           </ul>
         </div>
-        <div class="PNB10" style="top:110px;overflow-y:auto;">
+        <div class="PNB10" style="top:150px;overflow-y:auto;">
           <h1>
             {% trans 'Lists' %}
           </h1>
-          <a href="#" class="link list_manager">
-            {% trans 'List Manager' %}
-          </a>
-          <ul>
+          <span style="width:100%;display:block;text-align:center;">
+            <a href="#" class="link list_manager">
+              <b>{% trans 'List Manager' %}</b>
+            </a>
+          </span>
+          <div>
+            <form class="list_saver">
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <input name="name" placeholder="{% trans 'Save this list' %}"/>
+                   </td>
+                  <td>
+                    <button>
+                      <img src="/skins/prod/Push/save_list_as.png" />
+                    </button>
+                   </td>
+                 </tr>
+              </tbody>
+            </table>
+            </form>
+          </div>
+          <ul class="list">
             {% for list in lists %}
-              <li>
+              <li class="list" style="padding:2px;">
                 <a class="list_loader" href="/prod/push/list/{{ list.getId() }}/">
                   {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                     <img src="/skins/prod/Push/list-icon.png" />
@@ -61,17 +78,19 @@
     </div>
   </div>
   <div class="PNB" style="left:205px;">
-    <div class="PNB" style="height:150px;bottom:auto;">
+    <div class="PNB" style="height:150px;bottom:auto;line-height:26px">
       <div class="PNB10">
         <table>
-          <tr>
+          <tr style="vertical-align:top;">
             <td>
-              <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" />
-
-              <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
-
-              <button class="FeedbackSend">{% trans "Send" %}</button>
-              <p>
+              <div id="find-user">
+                <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" style="width:210px;"/>
+                <br/>
+                {% trans 'Select a user in the list'%}, <br/>
+                {% trans 'or' %}
+                <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
+              </div>
+              <p id="recommanded-users">
 
                 {% set recommendation = '' %}
 
@@ -80,8 +99,10 @@
                 {% for user in RecommendedUsers %}
 
                   {% if total <= 4 or loop.index <= 4 %}
-                    {% if recommendation != '' %}
+                    {% if recommendation != '' and not loop.last %}
                       {% set recommendation = recommendation ~ ', ' %}
+                    {% elseif recommendation != '' and loop.last %}
+                      {% set recommendation = recommendation %}
                     {% endif %}
                     {% set recommendation = recommendation
                     ~ ' <a href="#" class="recommended_users" tooltipsrc="/prod/tooltip/user/'
@@ -107,6 +128,7 @@
 
 
                 {% if recommendation != '' %}
+                  {% set recommendation = '<br/>' ~ recommandation %}
                   {% trans %}
                     Please consider send this validation to the following users : {{ recommendation }}
                   {% endtrans %}
@@ -134,7 +156,7 @@
                 </table>
               </div>
             </td>
-            <td style="width:600px;">
+            <td style="width:550px;">
               <p>
                 {% if context == 'Push' %}
                   {% trans 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' %}
@@ -153,12 +175,6 @@
           <table>
             <tr>
               <td>
-                <form class="list_saver">
-                  <input name="name" placeholder="{% trans 'Save this list' %}"/>
-                  <button>
-                    <img src="/skins/prod/Push/save_list_as.png" />
-                  </button>
-                </form>
               </td>
               <td class="options">
                 <button class="select-all">{% trans 'Select all' %}</button>
@@ -183,6 +199,11 @@
           <div class="PNB badges">
           </div>
         </form>
+        <div class="PNB10 footer">
+        <button class="FeedbackSend">
+          {% trans "Send" %}
+        </button>
+      </div>
       </div>
     </div>
   </div>
@@ -236,6 +257,8 @@
 
     p4.Feedback = new Feedback($('#PushBox'), '{{ context }}');
     p4.ListManager = new ListManager($('#ListManager'));
+
+    $(".general_toggler").button();
 
   });
 </script>

@@ -81,7 +81,7 @@ class sphinxrt
     if ($rt_id)
     {
       $this->connection->beginTransaction();
-      $sql = "DELETE FROM " . $rt_id . " WHERE id = " . (int) $id . "";
+      $sql  = "DELETE FROM " . $rt_id . " WHERE id = " . (int) $id . "";
       $stmt = $this->connection->prepare($sql);
       $stmt->execute();
       $stmt->closeCursor();
@@ -99,14 +99,13 @@ class sphinxrt
     $cl = new SphinxClient();
 
     if ($cl->Status() === false)
-
       return $this;
 
     $cl->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));
     $cl->SetConnectTimeout(1);
 
 
-    $status = strrev($status);
+    $status   = strrev($status);
     $new_stat = array();
     for ($i = 4; $i < strlen($status); $i++)
     {
@@ -122,20 +121,18 @@ class sphinxrt
     return $this;
   }
 
-  public function replace_in_metas($rt_id, $meta_id, $tag_id, $record_id, $sbas_id, $coll_id, $grouping, $type, Array $content, DateTime $created)
+  public function replace_in_metas($rt_id, $meta_id, $tag_id, $record_id, $sbas_id, $coll_id, $grouping, $type, $content, DateTime $created)
   {
-    $crc_sbas_tag = crc32($sbas_id . '_' . $tag_id);
-    $crc_sbas_coll = crc32($sbas_id . '_' . $coll_id);
+    $crc_sbas_tag    = crc32($sbas_id . '_' . $tag_id);
+    $crc_sbas_coll   = crc32($sbas_id . '_' . $coll_id);
     $crc_sbas_record = crc32($sbas_id . '_' . $record_id);
-    $crc_type = crc32($type);
+    $crc_type        = crc32($type);
 
     $this->connection->beginTransaction();
 
-//    foreach ($content as $value)
-//    {
-    $sql = "REPLACE INTO " . $rt_id . " VALUES (
+    $sql  = "REPLACE INTO " . $rt_id . " VALUES (
         '" . (int) $meta_id . "'
-        ,'" . str_replace("'", "\'", implode(' ', $content)) . "'
+        ,'" . str_replace("'", "\'", $content) . "'
         ,'" . (int) $tag_id . "'
         ," . (int) $record_id . "
         ," . (int) $sbas_id . "
@@ -149,7 +146,6 @@ class sphinxrt
         ," . (int) $created->format('U') . " )";
     $stmt = $this->connection->prepare($sql);
     $stmt->execute();
-//    }
 
     $stmt->closeCursor();
 
@@ -160,9 +156,9 @@ class sphinxrt
 
   public function replace_in_documents($rt_id, $record_id, $value, $sbas_id, $coll_id, $grouping, $type, DateTime $created)
   {
-    $crc_sbas_coll = crc32($sbas_id . '_' . $coll_id);
+    $crc_sbas_coll   = crc32($sbas_id . '_' . $coll_id);
     $crc_sbas_record = crc32($sbas_id . '_' . $record_id);
-    $crc_type = crc32($type);
+    $crc_type        = crc32($type);
 
     $this->connection->beginTransaction();
 

@@ -1,6 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../../bootstrap.php';
 
 $include_path = realpath(__DIR__ . '/../../vendor/');
 if(strpos(get_include_path(), $include_path) === false)

@@ -453,7 +453,6 @@ class module_report_activity extends module_report
       $this->result[$i]['total'] += 1;
 
       $total['tot_dl'] += 1;
-
     }
 
     $nb_row = $i + 1;
@@ -479,7 +478,7 @@ class module_report_activity extends module_report
    * @param string $on choose the field on what you want the result
    * @return array
    */
-  public function getConnexionBase($tab = false, $on= "")
+  public function getConnexionBase($tab = false, $on = "")
   {
     //default group on user column
     if (empty($on))
@@ -577,7 +576,7 @@ class module_report_activity extends module_report
    * @param array $tab config for the html table
    * @return array
    */
-  public function getDetailDownload($tab = false, $on="")
+  public function getDetailDownload($tab = false, $on = "")
   {
     empty($on) ? $on = "user" : ""; //by default always report on user
 
@@ -638,19 +637,37 @@ class module_report_activity extends module_report
     foreach ($rs as $row)
     {
       $user = $row[$on];
-      if (($save_user != $user) && !is_null($user))
+      if (($save_user != $user) && !is_null($user) && !empty($user))
+      {
+        if ($i >= 0)
+        {
+          if (($this->result[$i]['nbprev'] + $this->result[$i]['nbdoc']) == 0 || ($this->result[$i]['poiddoc'] + $this->result[$i]['poidprev']) == 0)
+          {
+            unset($this->result[$i]);
+          }
+          
+          if (isset($this->result[$i]['poiddoc']) && isset($this->result[$i]['poidprev']))
+          {
+            $this->result[$i]['poiddoc'] = p4string::format_octets($this->result[$i]['poiddoc']);
+            $this->result[$i]['poidprev'] = p4string::format_octets($this->result[$i]['poidprev']);
+          }
+        }
+
+        
         $i++;
+
+        $this->result[$i]['nbprev'] = 0;
+        $this->result[$i]['poidprev'] = 0;
+        $this->result[$i]['nbdoc'] = 0;
+        $this->result[$i]['poiddoc'] = 0;
+      }
+
       //doc info
       if ($row['final'] == 'document' &&
               !is_null($user) && !is_null($row['usrid']))
       {
         $this->result[$i]['nbdoc'] = (!is_null($row['nb']) ? $row['nb'] : 0);
-        $this->result[$i]['poiddoc'] = (!is_null($row['poid']) ?
-                        p4string::format_octets($row['poid']) : 0);
-        if (!isset($this->result[$i]['nbprev']))
-          $this->result[$i]['nbprev'] = 0;
-        if (!isset($this->result[$i]['poidprev']))
-          $this->result[$i]['poidprev'] = 0;
+        $this->result[$i]['poiddoc'] = (!is_null($row['poid']) ? $row['poid'] : 0);
         $this->result[$i]['user'] = empty($row[$on]) ?
                 "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
         $total['nbdoc'] += $this->result[$i]['nbdoc'];
@@ -658,26 +675,25 @@ class module_report_activity extends module_report
         $this->result[$i]['usrid'] = $row['usrid'];
       }
       //preview info
-      if ($row['final'] == 'preview' &&
+      if (($row['final'] == 'preview' || $row['final'] == 'thumbnail') &&
               !is_null($user) &&
               !is_null($row['usrid']))
       {
-        if (!isset($this->result[$i]['nbdoc']))
-          $this->result[$i]['nbdoc'] = 0;
-        if (!isset($this->result[$i]['poiddoc']))
-          $this->result[$i]['poiddoc'] = 0;
-        $this->result[$i]['nbprev'] = (!is_null($row['nb']) ? $row['nb'] : 0);
-        $this->result[$i]['poidprev'] = (!is_null($row['poid']) ?
-                        p4string::format_octets($row['poid']) : 0);
+
+        $this->result[$i]['nbprev'] += (!is_null($row['nb']) ? $row['nb'] : 0);
+        $this->result[$i]['poidprev'] += (!is_null($row['poid']) ? $row['poid'] : 0);
+
         $this->result[$i]['user'] = empty($row[$on]) ?
                 "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
-        $total['nbprev'] += $this->result[$i]['nbprev'];
+        $total['nbprev'] += (!is_null($row['nb']) ? $row['nb'] : 0);
         $total['poidprev'] += (!is_null($row['poid']) ? $row['poid'] : 0);
         $this->result[$i]['usrid'] = $row['usrid'];
       }
+
       $save_user = $user;
     }
-
+    
+    unset($this->result[$i]);
     $nb_row = $i + 1;
     $this->total = $nb_row;
 
@@ -756,7 +772,7 @@ class module_report_activity extends module_report
           }
           catch (Exception $e)
           {
-
+            
           }
         }
         elseif ($value == "size")

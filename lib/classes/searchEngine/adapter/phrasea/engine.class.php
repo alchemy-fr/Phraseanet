@@ -631,7 +631,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       return array();
     $rs = $res['results'];
     $res = array_shift($rs);
-    if (!$res['xml'])
+    if (! isset($res['xml']))
 
       return array();
     $sxe = simplexml_load_string($res['xml']);
@@ -645,7 +645,8 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         {
           $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
         }
-        $val = implode(' '.$field['separator'].' ', $val);
+        $separator = $field['separator'] ? $field['separator'][0] : '';
+        $val = implode(' '.$separator.' ', $val);
       }
       else
       {

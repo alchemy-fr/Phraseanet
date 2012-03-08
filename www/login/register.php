@@ -106,7 +106,7 @@ if ($request->has_post_datas())
       $needed['form_email'] = _('forms::l\'email semble invalide');
 
     //on verifie le login
-    if (strlen($parm['form_login']) < 8)
+    if (strlen($parm['form_login']) < 5)
       $needed['form_login'] = _('forms::la valeur donnee est trop courte');
 
     if (sizeof($needed) === 1 && isset($needed['form_login']) && $needed['form_login'] === true)

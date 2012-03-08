@@ -53,4 +53,11 @@ class ArrayCache extends DoctrineArray implements Cache
     return;
   }
 
+  public function flush()
+  {
+    $this->deleteAll();
+
+    return true;
+  }
+
 }

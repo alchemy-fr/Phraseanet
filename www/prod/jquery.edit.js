@@ -242,9 +242,8 @@ function editField(evt, meta_struct_id)
       });
 
 
-    if(p4.edit.T_fields[meta_struct_id].explain ||
-      p4.edit.T_fields[meta_struct_id].maxLength > 0)
-      {
+    if(p4.edit.T_fields[meta_struct_id].maxLength > 0)
+    {
       var idexplain = $("#idExplain");
       idexplain.html('');
 
@@ -417,7 +416,7 @@ function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
         + (a[key].n != n ? " hetero " : "") + "'>"
       + '<table><tr><td>'
       + extra
-      + '<span class="value" vocabId="' + value.getVocabularyId() + '">'
+      + '<span class="value" vocabId="' + (value.getVocabularyId() ? value.getVocabularyId() : '') + '">'
       + word
       + "</span></td><td class='options'>"
       + '<a href="#" class="add_all"><img src="/skins/icons/plus11.png"/></a> '
@@ -1068,7 +1067,21 @@ function check_required(id_r, id_f)
       }
       else
       {
-        var check_required = $.trim(p4.edit.T_records[r].fields[f].getSerializedValues());
+
+        var check_required = '';
+
+        // le champ existe dans la fiche
+        if(p4.edit.T_fields[f].multi)
+        {
+          // champ multi : on compare la concat des valeurs
+          check_required = $.trim(p4.edit.T_records[r].fields[f].getSerializedValues())
+        }
+        else if(p4.edit.T_records[r].fields[f].getValue())
+        {
+          check_required = $.trim(p4.edit.T_records[r].fields[f].getValue().getValue());
+        }
+
+
         if(check_required == '')
         {
           elem.show();

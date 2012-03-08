@@ -607,18 +607,16 @@ class setup
       if ($Core->getCache()->isServer())
       {
         $stats = $Core->getCache()->getStats();
-
+        
+        echo '<li>' . sprintf(_('setup::Serveur actif sur %s'), $registry->get('GV_cache_server_host') . ':' . $registry->get('GV_cache_server_port')) . '</li>';
+        echo "<table>";
+        
         foreach ($stats as $name => $stat)
         {
-          echo '<li>Statistics given by `' . $name . '`</li>';
-          echo '<li>' . sprintf(_('setup::Serveur actif sur %s'), $registry->get('GV_cache_server_host') . ':' . $registry->get('GV_cache_server_port')) . '</li>';
-          echo "<table>";
-          foreach ($stat as $key => $value)
-          {
-            echo "<tr class='even'><td>" . $key . "</td><td> " . $value . "</td></tr>";
-          }
-          echo "</table>";
+            echo "<tr class='even'><td>" . $name . "</td><td> " . $stat . "</td></tr>";
         }
+        
+        echo "</table>";
       }
       else
       {
@@ -643,9 +641,9 @@ class setup
       }
 
       if ($found > 1)
-        $constraints[] = new Setup_Constraint('Multiple opcode caches', false, 'Many opcode cache load is forbidden', true);
+        $constraints[] = new Setup_Constraint('Multiple opcode caches', false, _('Many opcode cache load is forbidden'), true);
       if ($found === 0)
-        $constraints[] = new Setup_Constraint('No opcode cache', false, 'No opcode cache were detected. Phraseanet strongly recommends the use of XCache or APC.', false);
+        $constraints[] = new Setup_Constraint('No opcode cache', false, _('No opcode cache were detected. Phraseanet strongly recommends the use of XCache or APC.'), false);
 
       return new Setup_ConstraintsIterator($constraints);
     }

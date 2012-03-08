@@ -9,22 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Events\Processor;
-
-use Doctrine\Common\EventArgs;
-
 /**
  *
- * @package
+ * @return \Alchemy\Phrasea\Core
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-interface Processor
-{
+require_once dirname(__FILE__) . '/../classes/bootstrap.class.php';
 
-  /**
-   * The executed process for clearing cache
-   * @return void
-   */
-  public function process(EventArgs $args);
-}
+return bootstrap::execute('test');

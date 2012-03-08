@@ -991,13 +991,6 @@ class databox extends base
       {
 
       }
-
-      if (isset($field['regname']))
-        $meta_struct_field->set_regname();
-      if (isset($field['regdate']))
-        $meta_struct_field->set_regdate();
-      if (isset($field['regdesc']))
-        $meta_struct_field->set_regdesc();
     }
 
     return $this;

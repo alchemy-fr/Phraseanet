@@ -17,8 +17,6 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Events\Listener\Cache\Action\Clear as ClearCacheListener;
-use Doctrine\ORM\Events as DoctrineEvents;
 
 /**
  *
@@ -54,32 +52,32 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
       $config->setSQLLogger($this->getLog($logServiceName));
     }
 
-    //get cache
     $cache = isset($options["cache"]) ? $options["cache"] : false;
-    
+
     if (!$cache || $this->debug)
     {
       $metaCache   = $this->core['CacheService']->get('ORMmetadata', 'Cache\\ArrayCache');
       $queryCache  = $this->core['CacheService']->get('ORMquery', 'Cache\\ArrayCache');
-      $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
+//      $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
     }
     else
     {
       $query   = isset($cache["query"]['service']) ? $cache["query"]['service'] : 'Cache\\ArrayCache';
       $meta    = isset($cache["metadata"]['service']) ? $cache["metadata"]['service'] : 'Cache\\ArrayCache';
-      $results = isset($cache["result"]['service']) ? $cache["result"]['service'] : 'Cache\\ArrayCache';
+//      $results = isset($cache["result"]['service']) ? $cache["result"]['service'] : 'Cache\\ArrayCache';
 
       $queryCache  = $this->core['CacheService']->get('ORMquery', $query);
       $metaCache   = $this->core['CacheService']->get('ORMmetadata', $meta);
-      $resultCache = $this->core['CacheService']->get('ORMresult', $results);
+//      $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
     }
+
+    $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
 
     $config->setMetadataCacheImpl($metaCache->getDriver());
 
     $config->setQueryCacheImpl($queryCache->getDriver());
 
     $config->setResultCacheImpl($resultCache->getDriver());
-
 
     //define autoregeneration of proxies base on debug mode
     $config->setAutoGenerateProxyClasses($this->debug);
@@ -123,11 +121,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $evm = new \Doctrine\Common\EventManager();
 
     $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
-
-    $evm->addEventListener(DoctrineEvents::postUpdate, new ClearCacheListener());
-    $evm->addEventListener(DoctrineEvents::postRemove, new ClearCacheListener());
-    $evm->addEventListener(DoctrineEvents::postPersist, new ClearCacheListener());
-
 
     try
     {

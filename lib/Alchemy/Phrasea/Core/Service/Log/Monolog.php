@@ -66,7 +66,7 @@ class Monolog extends ServiceAbstract implements ServiceInterface
                       , $handler
                       , $this->name
                       , $this->getScope()
-                      , implode(", ", $this->handler)
+                      , implode(", ", $this->handlers)
               )
       );
     }

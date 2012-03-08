@@ -35,8 +35,8 @@ class BasketElementRepository extends EntityRepository
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-    $cacheId = "_user_basket_element_" . $element_id . "_" . $user->get_id() . Entities\BasketElement::CACHE_SUFFIX;
-    $query->useResultCache(true, 1800, $cacheId);
+//    $cacheId = "_user_basket_element_" . $element_id . "_" . $user->get_id() . Entities\BasketElement::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $cacheId);
 
     $element = $query->getOneOrNullResult();
 
@@ -66,8 +66,9 @@ class BasketElementRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
-    $cacheId = "_basket_element_by_record_" . $record->get_serialize_key() . Entities\BasketElement::CACHE_SUFFIX;
-    $query->useResultCache(true, 1800, $cacheId);
+
+//    $cacheId = "_basket_element_by_record_" . $record->get_serialize_key() . Entities\BasketElement::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $cacheId);
 
     return $query->getResult();
   }
@@ -98,8 +99,9 @@ class BasketElementRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
-    $cacheId = "_receveid_element_by_record_" . $record->get_serialize_key() . "_" . $user->getId() . Entities\BasketElement::CACHE_SUFFIX;
-    $query->useResultCache(true, 1800, $cacheId);
+
+//    $cacheId = "_receveid_element_by_record_" . $record->get_serialize_key() . "_" . $user->getId() . Entities\BasketElement::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $cacheId);
 
     return $query->getResult();
   }
@@ -123,8 +125,9 @@ class BasketElementRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
-    $cacheId = "_receveid_validation_element_by_record" . $record->get_serialize_key() . "_" . $user->getId() . Entities\BasketElement::CACHE_SUFFIX;
-    $query->useResultCache(true, 1800, $cacheId);
+
+//    $cacheId = "_receveid_validation_element_by_record" . $record->get_serialize_key() . "_" . $user->getId() . Entities\BasketElement::CACHE_SUFFIX;
+//    $query->useResultCache(true, 1800, $cacheId);
 
     return $query->getResult();
   }

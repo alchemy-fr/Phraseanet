@@ -5161,30 +5161,6 @@
             <comment></comment>
           </field>
           <field>
-            <name>regdate</name>
-            <type>tinyint(1) unsigned</type>
-            <null>YES</null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>regname</name>
-            <type>tinyint(1) unsigned</type>
-            <null>YES</null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
-            <name>regdesc</name>
-            <type>tinyint(1) unsigned</type>
-            <null>YES</null>
-            <extra></extra>
-            <default></default>
-            <comment></comment>
-          </field>
-          <field>
             <name>report</name>
             <type>tinyint(1) unsigned</type>
             <null></null>
@@ -5259,27 +5235,6 @@
             <type>INDEX</type>
             <fields>
               <field>required</field>
-            </fields>
-          </index>
-          <index>
-            <name>regname</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>regname</field>
-            </fields>
-          </index>
-          <index>
-            <name>regdate</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>regdate</field>
-            </fields>
-          </index>
-          <index>
-            <name>regdesc</name>
-            <type>UNIQUE</type>
-            <fields>
-              <field>regdesc</field>
             </fields>
           </index>
           <index>
@@ -5826,7 +5781,7 @@
           <field>
             <name>results</name>
             <type>int(11) unsigned</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
             <default>0</default>
             <comment></comment>

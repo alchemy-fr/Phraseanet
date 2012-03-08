@@ -456,15 +456,6 @@ class appbox extends base
 
       $cacheService = "array_cache";
 
-      if (extension_loaded('apc'))
-      {
-        $cacheService = "apc_cache";
-      }
-      elseif (extension_loaded('xcache'))
-      {
-        $cacheService = "xcache_cache";
-      }
-
       $Core->getConfiguration()->setConnexions($connexion);
 
       $services = $Core->getConfiguration()->getConfigurations();
@@ -474,7 +465,7 @@ class appbox extends base
         if ($serviceName === "doctrine_prod")
         {
 
-          $services["doctrine_prod"]["options"]["orm"]["cache"] = array(
+          $services["doctrine_prod"]["options"]["cache"] = array(
             "query"    => $cacheService,
             "result"   => $cacheService,
             "metadata" => $cacheService
@@ -499,7 +490,7 @@ class appbox extends base
       }
 
       $Core->getConfiguration()->setConfigurations($arrayConf);
-      
+
       $Core->getConfiguration()->setEnvironnement('prod');
     }
     try

@@ -7,7 +7,7 @@
   {% if entry_id %}
     <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"
          id="{{ prefix|default('IMGT') }}_{{record.get_sbas_id}}_{{record.get_record_id}}"
-         class="IMGT diapo grouping type-{{record.get_type}}"
+         class="IMGT diapo type-{{record.get_type}}"
          onDblClick="openPreview('FEED',{{record.get_number()}},{{entry_id}});">
   {% elseif record.is_grouping() %}
     <div style="width:{{th_size+30}}px;" sbas="{{sbas_id}}"

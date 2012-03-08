@@ -307,7 +307,7 @@ function resize(){
   if(p4.preview.open)
     resizePreview();
   $('#idFrameC').resizable('option', 'maxWidth',(bodySize.x-670));
-  $('#idFrameC').resizable('option', 'minWidth',200);
+  $('#idFrameC').resizable('option', 'minWidth',265);
   $('#idFrameE').resizable('option', 'maxWidth',($('#EDITWINDOW').innerWidth()-200));
   $('#idFrameE').resizable('option', 'minWidth',200);
 
@@ -320,7 +320,6 @@ function resize(){
 
 function clearAnswers(){
   $('#formAnswerPage').val('');
-  $('#searchForm input[name="sel"]').val('');
   $('#searchForm input[name="nba"]').val('');
   $('#answers, #dyn_tool').empty();
 }
@@ -346,6 +345,7 @@ function newSearch()
   {
     console.log('Fresh new search, cache empty');
   }
+  p4.Results.Selection.empty()
 
   clearAnswers();
   var val = $('#searchForm input[name="qry"]').val();
@@ -358,7 +358,8 @@ function newSearch()
   {
     $('li:last',histo).remove();
   }
-  $('.activeproposals').hide();
+
+  $('#idFrameC li.proposals_WZ').removeClass('active');
 
   $('#searchForm').submit();
   return false;
@@ -475,16 +476,19 @@ function initAnswerForm(){
       success: function(datas){
 
 
-
         $('#answers').empty().append(datas.results).removeClass('loading');
         $('#tool_results').empty().append(datas.infos);
         $('#tool_navigate').empty().append(datas.navigation);
+
+        $.each(p4.Results.Selection.get(), function(i, el){
+          $('#IMGT_' + el).addClass('selected');
+        });
 
         $('#proposals').empty().append(datas.phrasea_props);
 
         if($.trim(datas.phrasea_props) !== '')
         {
-          $('.activeproposals').show()
+          $('#idFrameC li.proposals_WZ').addClass('active');
         }
         p4.tot = datas.total_answers;
         p4.tot_options = datas.form;
@@ -711,7 +715,7 @@ function activeZoning()
     }
     $('#EDIT_query').blur();
   });
-
+  $('#rightFrame').trigger('mousedown');
 }
 
 function RGBtoHex(R,G,B) {
@@ -1062,8 +1066,8 @@ $(document).ready(function(){
         saveWindows();
         return;
       }
-      if(nwidth<185)
-        nwidth = 185;
+      if(nwidth<265)
+        nwidth = 265;
       if(el.find('span:first').hasClass('valid') && nwidth<410)
         nwidth = 410;
 
@@ -1079,6 +1083,10 @@ $(document).ready(function(){
         saveWindows();
       });
     }
+  });
+
+  $('#idFrameC .escamote').bind('click', function(){
+    p4.WorkZone.close();
   });
 
   $('#look_box .tabs').tabs();
@@ -1149,7 +1157,6 @@ $(document).ready(function(){
   initAnswerForm();
 
   initLook();
-  afterSearch();
 
   setTimeout("sessionactive();", 30000);
 
@@ -1394,6 +1401,9 @@ $(document).ready(function(){
     {
       if(ui.tab.hash=="#thesaurus_tab")
         thesau_show();
+    },
+    select: function(event, ui){
+      p4.WorkZone.open();
     }
   });
 
@@ -2250,9 +2260,9 @@ function activeIcons()
         }
       }
     }
-    if(value !== '' || sstt_id !== '')
+    if(value !== '' || sstt_id !== '' || story !== '')
     {
-      feedbackThis(sstt_id, value);
+      feedbackThis(sstt_id, value, story);
     }
     else
     {
@@ -2580,10 +2590,10 @@ function evt_print(value)
   printThis("lst="+value);
 }
 
-function evt_add_in_chutier(a,b,event,el)
+function evt_add_in_chutier(sbas_id, record_id,event, singleSelection)
 {
-  if($('#baskets .SSTT.active').length == 1)
-    dropOnBask(event,$('#PREV_BASKADD_'+a+'_'+b),$('#baskets .SSTT.active'));
+  var singleSelection = singleSelection || false;
+  p4.WorkZone.addElementToBasket(sbas_id, record_id, event, singleSelection);
 }
 
 
@@ -2647,7 +2657,8 @@ function doDelete(lst)
 
       $.each(data,function(i,n){
         var imgt = $('#IMGT_'+n),
-        chim = $('.CHIM_'+n);
+        chim = $('.CHIM_'+n),
+        stories = $('.STORY_'+n);
         $('.doc_infos', imgt).remove();
         imgt.unbind("click").removeAttr("ondblclick").removeClass("selected").draggable("destroy").removeClass("IMGT").find("img").unbind();
         imgt.find(".thumb img").attr("src","/skins/icons/deleted.png").css({
@@ -2658,7 +2669,14 @@ function doDelete(lst)
         imgt.find(".status,.title,.bottom").empty();
 
         p4.Results.Selection.remove(n);
-        p4.WorkZone.Selection.remove(n);
+        if(stories.length > 0)
+        {
+          p4.WorkZone.refresh();
+        }
+        else
+        {
+          p4.WorkZone.Selection.remove(n);
+        }
       });
       viewNbSelect();
     }

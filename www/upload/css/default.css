@@ -5,8 +5,8 @@
 ----------------------------------------------- */
 
 
-/* ----------------------------------------------- 
-	GLOBAL RESET 
+/* -----------------------------------------------
+	GLOBAL RESET
    ----------------------------------------------- */
 
 html, body, div, span, applet, object, iframe,
@@ -35,8 +35,8 @@ body {
 	color: black;
 	background: white;
 }
-ol, ul { 
-	list-style: none; 
+ol, ul {
+	list-style: none;
 }
 /* tables still need 'cellspacing="0"' in the markup */
 table {
@@ -48,7 +48,7 @@ caption, th, td {
 	font-weight: normal;
 }
 blockquote:before, blockquote:after,
-q:before, q:after { 
+q:before, q:after {
 	content: "";
 }
 blockquote, q {
@@ -56,13 +56,13 @@ blockquote, q {
 }
 
 
-/* ----------------------------------------------- 
+/* -----------------------------------------------
 	BASIC ELEMENTS
    ----------------------------------------------- */
-   
-   
+
+
 /* -- Text Styles ------------------------------- */
-html, 
+html,
 body {
 	margin: 0;
 	padding: 0;
@@ -70,9 +70,9 @@ body {
 	font: 12px/1.4em Helvetica, Arial, sans-serif;
 }
 
-a { 
-	color: #385ea2; 
-	text-decoration: none; 
+a {
+	color: #385ea2;
+	text-decoration: none;
 }
 a:hover { text-decoration: underline; }
 
@@ -91,24 +91,24 @@ h1 a{
 	text-decoration: none;
 }
 
-h2 { 
-	font-size: 22px; 
+h2 {
+	font-size: 22px;
 	font-weight: 300;
 	padding-top: 1em;
 	padding-bottom: .25em;
 }
 
 
-p { 
+p {
 	margin-top: .25em;
 	margin-bottom: .5em;
 }
 
 ul { padding: 4px 5px; }
-ul li { 
-	/*padding: 4px 5px;*/ 
+ul li {
+	/*padding: 4px 5px;*/
 	margin: 0 3px;
-	list-style:square; 
+	list-style:square;
 }
 
 code {
@@ -132,7 +132,7 @@ code {
 	height: 125px;
 	position: relative;
 }
-	#logo { 
+	#logo {
 		padding: 0;
 		margin: 0;
 		background: url(../images/logo.gif) no-repeat 20px 20px;
@@ -150,7 +150,7 @@ code {
 		height: 106px;
 		width: 272px;
 	}
-	
+
 	#version {
 		color: #fff;
 		position: absolute;
@@ -166,7 +166,7 @@ code {
 
 
 /* -- Form Styles ------------------------------- */
-form {	
+form {
 	margin: 0;
 	padding: 0;
 }
@@ -206,8 +206,8 @@ div.flash {
 button,
 input,
 select,
-textarea { 
-	border-width: 1px; 
+textarea {
+	border-width: 1px;
 	margin-bottom: 10px;
 	padding: 2px 3px;
 }
@@ -217,7 +217,7 @@ textarea {
 input[disabled]{ border: 1px solid #ccc } /* FF 2 Fix */
 
 
-label { 
+label {
 	color:white;
 }
 
@@ -276,6 +276,8 @@ td {
 
 .progressName {
 	font-size: 8pt;
+  line-height: 14px;
+  vertical-align: top;
 	font-weight: 700;
 /*	color: #555;*/
 	width: 323px;
@@ -348,11 +350,11 @@ a.progressCancel:hover {
 	#fsUploadProgress { list-style-type: none; margin: 0; padding: 0; width: 60%; }
 	#fsUploadProgress li { width : 310px; margin: 0 3px; xpadding: 0.4em; xpadding-left: 1.5em; font-size: 1.4em; xheight: 18px; }
 	#fsUploadProgress li div { xposition: absolute; xmargin-left: -1.3em; }	.ui-state-highlight { height: 50px; line-height: 1.2em;list-style-type:none; }
-	
-	
-	
-	
-	
+
+
+
+
+
 	td.active{
 		color:white;
 	}

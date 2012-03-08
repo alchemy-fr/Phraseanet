@@ -196,6 +196,39 @@ span.ww_winTitle{
 	border:none;
 	overflow:hidden;
 }
+
+#idFrameC .ui-tabs .ui-tabs-nav li{
+	height:52px;
+  float:left;
+}
+
+#idFrameC .ui-tabs .ui-tabs-nav li a{
+	padding:5px;
+  margin:5px;
+}
+
+#idFrameC.closed .icon-menu li{
+  clear:left;
+}
+
+#idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a{
+	background-color:#666666;
+}
+#idFrameC.closed .ui-tabs-panel,
+#idFrameC.closed .ui-resizable-handle{
+	display:none;
+}
+
+#idFrameC li.proposals_WZ.active img.proposals_off,
+#idFrameC li.proposals_WZ img.proposals_on{
+  display:none;
+}
+
+#idFrameC li.proposals_WZ.active img.proposals_on,
+#idFrameC li.proposals_WZ img.proposals_off{
+  display:block;
+}
+
 .ui-tabs .ui-tabs-nav li.ui-tabs-selected
 {
 	background-color:#B1B1B1;
@@ -512,6 +545,19 @@ div.diapo
 #idFrameT .tools .verticalbuttonset {
  position:relative;
 }
+
+#idFrameT .tools .verticalbuttonset button img{
+  height:15px;
+}
+
+#idFrameT .tools .verticalbuttonset button{
+  height:28px;
+}
+
+#idFrameT .tools .verticalbuttonset span{
+  display:inline-block;
+}
+
 #idFrameT .tools .verticalbuttonset .ui-button-text img,#idFrameT .buttonset img{
  vertical-align:top;
 }
@@ -531,13 +577,18 @@ div.diapo
   background-color: #212121;
 }
 
-
 #idFrameT .tools .verticalbuttonset .submenu{
   position: absolute;
-  top:1.5em;
+  top:28px;
   left:0;
   z-index:30;
 }
+
+/* hack all except ie 6, 7 , 8 */
+:root *> #idFrameT .tools .verticalbuttonset .submenu{
+  top:1.5em;
+}
+
 #idFrameT .tools .verticalbuttonset .ui-state-default{
   border: 1px solid #515151;
 }
@@ -1596,8 +1647,7 @@ BOITES MODALES
 #sbasfiltercont
 {
 	color:#FFFFFF;
-	padding:10px;
-	margin:10px;
+  margin: 0 0 0 10px;
 }
 #adv_search .sbasglob div hr
 {
@@ -2165,7 +2215,7 @@ EDITING
     BORDER:  #666666 1px solid;
     BACKGROUND-COLOR: #666666;
 }*/
-#idFrameE #ZTextMultiValued_values
+#ZTextMultiValued_values
 {
 	background-color:#FFFFFF;
 	border:1px solid #999999;
@@ -2174,13 +2224,14 @@ EDITING
   left:4px;
   right:4px;
   bottom:4px;
-  overflow:auto;
+  overflow-x:auto;
+  overflow-y:scroll;
 }
 #idFrameE #ZTextMultiValued_values div
 {
 	cursor:pointer;
   height:20px;
-	padding:2px;
+	padding:2px 14px 2px 2px;
 }
 #idFrameE #ZTextMultiValued_values div table
 {
@@ -3191,4 +3242,8 @@ dans l'onglet thesaurus : arbres, menus contextuels
 .ui-selectable-helper{
   border:1px dotted #CCCCCC;
   z-index:10000;
+}
+
+#BasketBrowser .diapo .title{
+  height:16px;
 }

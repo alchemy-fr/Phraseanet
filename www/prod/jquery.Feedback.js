@@ -1,6 +1,7 @@
 
 
-;(function(window){
+;
+(function(window){
 
   var Feedback = function($container, context){
     this.container = $($container);
@@ -12,7 +13,7 @@
       {
         selector:'.badge'
       }
-    );
+      );
 
     var $this = this;
 
@@ -37,16 +38,16 @@
         beforeSend:function(){
           if($('#user_adder_dialog').length == 0)
           {
-            $('body').append('<div id="user_adder_dialog" style="display:none;"></div>');
+            $('body').append('<div id="user_adder_dialog" title="' + $this.html() + '" style="display:none;"></div>');
           }
           $('#user_adder_dialog').addClass('loading').empty().dialog({
-              buttons:{},
-              draggable:false,
-              resizable:false,
-              closeOnEscape:true,
-              modal:true,
-              width:'400',
-              height:'400'
+            buttons:{},
+            draggable:false,
+            resizable:false,
+            closeOnEscape:true,
+            modal:true,
+            width:'400',
+            height:'400'
           }).dialog( "moveToTop" );
         },
         success: function(data){
@@ -154,50 +155,61 @@
 
       return false;
     });
-
+    
     $('.FeedbackSend', this.container).bind('click', function(){
-          if($('.badges .badge', $container).length === 0)
-          {
-            alert(language.FeedBackNoUsersSelected);
-            return;
+      if($('.badges .badge', $container).length === 0)
+      {
+        alert(language.FeedBackNoUsersSelected);
+        return;
+      }
+
+      var buttons = {};
+
+      buttons[language.send] = function(){
+        $dialog.Close();
+
+        $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
+        $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
+        $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
+        $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
+
+        $FeedBackForm.trigger('submit');
+      };
+
+      var options = {
+        size : 'Small',
+        buttons : buttons,
+        loading : true,
+        title : language.send,
+        closeOnEscape : true,
+        cancelButton : true
+      };
+
+      var $dialog = p4.Dialog.Create(options, 2);
+      
+      $dialog.getDomElement().bind("keypress", function(event){
+        if(event.which){
+          if(event.which==13){
+            return false;
           }
+        }
+      });
+      
+      var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
 
-          var buttons = {};
+      var callback = function(rendered){
 
-          buttons[language.send] = function(){
-            $dialog.Close();
+        $dialog.setContent(rendered);
 
-            $('input[name="name"]', $FeedBackForm).val($('input[name="name"]', $dialog.getDomElement()).val());
-            $('input[name="duration"]', $FeedBackForm).val($('select[name="duration"]', $dialog.getDomElement()).val());
-            $('textarea[name="message"]', $FeedBackForm).val($('textarea[name="message"]', $dialog.getDomElement()).val());
-            $('input[name="recept"]', $FeedBackForm).attr('checked', $('input[name="recept"]', $dialog.getDomElement()).attr('checked'));
+        $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
+        $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
+        $('.' + $this.Context, $dialog.getDomElement()).show();
+            
+      };
 
-            $FeedBackForm.trigger('submit');
-          };
-
-          var options = {
-            size : 'Small',
-            buttons : buttons,
-            loading : true,
-            title : language.send,
-            closeOnEscape : true,
-            cancelButton : true
-          };
-
-          var $dialog = p4.Dialog.Create(options, 2);
-
-          var $FeedBackForm = $('form[name="FeedBackForm"]', $container);
-
-          var callback = function(rendered){
-
-            $dialog.setContent(rendered);
-
-            $('input[name="name"]', $dialog.getDomElement()).val($('input[name="name"]', $FeedBackForm).val());
-            $('textarea[name="message"]', $dialog.getDomElement()).val($('textarea[name="message"]', $FeedBackForm).val());
-            $('.' + $this.Context, $dialog.getDomElement()).show();
-          };
-
-          p4.Mustache.Render('Feedback-SendForm', {language:language}, callback);
+      p4.Mustache.Render('Feedback-SendForm', {
+        language:language
+      }, callback);
     }).button();
 
     $('.user_content .badges', this.container).disableSelection();
@@ -235,7 +247,9 @@
 
     $('.user_content .badges .badge .deleter', this.container).live('click', function(event){
       var $elem = $(this).closest('.badge');
-      $elem.fadeOut(function(){$elem.remove();});
+      $elem.fadeOut(function(){
+        $elem.remove();
+      });
       return;
     });
 
@@ -274,64 +288,68 @@
         return false;
       }
 
-      p4.Lists.create($input.val(), function(list){$input.val('');list.addUsers(users);});
+      p4.Lists.create($input.val(), function(list){
+        $input.val('');
+        list.addUsers(users);
+      });
 
       return false;
     });
 
     $('input[name="users-search"]', this.container).autocomplete({
-        minLength: 2,
-        source: function( request, response ) {
-          $.ajax({
-            url: '/prod/push/search-user/',
-            dataType: "json",
-            data: {
-              query: request.term
-            },
-            success: function( data ) {
-              response( data );
-            }
-          });
+      minLength: 2,
+      source: function( request, response ) {
+
+      $.ajax({
+        url: '/prod/push/search-user/',
+        dataType: "json",
+        data: {
+        query: request.term
         },
-        select: function( event, ui ) {
-          if(ui.item.type == 'USER')
-          {
-            $this.selectUser(ui.item);
-          }
-          if(ui.item.type == 'LIST')
-          {
-            for(e in ui.item.entries)
-            {
-              $this.selectUser(ui.item.entries[e].User);
-            }
-          }
-          return false;
+        success: function( data ) {
+        response( data );
         }
+        });
+      },
+      select: function( event, ui ) {
+      if(ui.item.type == 'USER')
+      {
+      $this.selectUser(ui.item);
+      }
+      if(ui.item.type == 'LIST')
+      {
+      for(e in ui.item.entries)
+      {
+      $this.selectUser(ui.item.entries[e].User);
+      }
+      }
+      return false;
+      }
       })
-      .data( "autocomplete" )._renderItem = function( ul, item ) {
+    .data( "autocomplete" )._renderItem = function( ul, item ) {
 
-        var autocompleter = $('input[name="users-search"]', $this.container);
+      var autocompleter = $('input[name="users-search"]', $this.container);
 
-        autocompleter.addClass('loading');
+      autocompleter.addClass('loading');
 
-        var callback = function(datas){
-          $(datas).data( "item.autocomplete", item ).appendTo( ul );
-          autocompleter.data( "autocomplete" ).menu.refresh();
-          autocompleter.data('autocomplete')._resizeMenu();
-          autocompleter.removeClass('loading');
-        };
-
-        if(item.type == 'USER')
-        {
-          var datas = p4.Mustache.Render('List-User-Item', item, callback);
-        }
-        if(item.type == 'LIST')
-        {
-          var datas = p4.Mustache.Render('List-List-Item', item, callback);
-        }
-
-        return;
+      var callback = function(datas){
+        $(datas).data( "item.autocomplete", item ).appendTo( ul );
+        autocompleter.data( "autocomplete" ).menu.refresh();
+        autocompleter.data('autocomplete')._resizeMenu();
+        autocompleter.removeClass('loading');
       };
+
+      if(item.type == 'USER')
+      {
+        var datas = p4.Mustache.Render('List-User-Item', item, callback);
+      }
+      if(item.type == 'LIST')
+      {
+        var datas = p4.Mustache.Render('List-List-Item', item, callback);
+      }
+
+      return;
+    };
 
     return this;
   };
@@ -360,12 +378,14 @@
     },
     loadUser : function(usr_id, callback) {
       var $this = this;
-
+      
       $.ajax({
         type: 'GET',
         url: '/prod/push/user/' + usr_id + '/',
         dataType: 'json',
-        data: {usr_id : usr_id},
+        data: {
+          usr_id : usr_id
+        },
         success: function(data){
           if(typeof callback === 'function')
           {
@@ -376,7 +396,7 @@
     },
     loadList : function(url, callback) {
       var $this = this;
-
+      
       $.ajax({
         type: 'GET',
         url: url,
@@ -395,6 +415,7 @@
     addUser : function($form, callback){
 
       var $this = this;
+      
       $.ajax({
         type: 'POST',
         url: '/prod/push/add-user/',
@@ -456,7 +477,7 @@
     $('a.user_adder', this.container).bind('click', function(){
 
       var $this = $(this);
-
+      
       $.ajax({
         type: "GET",
         url: $this.attr('href'),
@@ -467,13 +488,13 @@
             $('body').append('<div id="user_adder_dialog" style="display:none;"></div>');
           }
           $('#user_adder_dialog').addClass('loading').empty().dialog({
-              buttons:{},
-              draggable:false,
-              resizable:false,
-              closeOnEscape:true,
-              modal:true,
-              width:'400',
-              height:'400'
+            buttons:{},
+            draggable:false,
+            resizable:false,
+            closeOnEscape:true,
+            modal:true,
+            width:'400',
+            height:'400'
           }).dialog( "moveToTop" );
         },
         success: function(data){
@@ -576,9 +597,9 @@
 
     var initRight = function(){
 
-      var $container = this.container = $('#ListManager .editor');
+      var $container = $('#ListManager .editor');
 
-      $('form[name="list-editor-search"]', this.container).bind('submit', function(){
+      $('form[name="list-editor-search"]', $container).bind('submit', function(){
 
         var $this = $(this);
         var dest = $('.list-editor-results', $container);
@@ -599,11 +620,11 @@
         return false;
       });
 
-      $('form[name="list-editor-search"] select', this.container).bind('change', function(){
+      $('form[name="list-editor-search"] select, form[name="list-editor-search"] input[name="ListUser"]', $container).bind('change', function(){
         $(this).closest('form').trigger('submit');
       });
 
-      $('button', this.container).button();
+      $('button', $container).button();
 
       $('.EditToggle', $container).bind('click', function(){
         $('.content.readonly, .content.readwrite', $('#ListManager')).toggle();
@@ -614,7 +635,44 @@
         return false;
       });
 
-      $('button.deleter', this.container).bind('click', function(event){
+      $('form[name="SaveName"]', $container).bind('submit', function(){
+        var $this = $(this);
+        
+        $.ajax({
+          type: $this.attr('method'),
+          url: $this.attr('action'),
+          dataType: 'json',
+          data: $this.serializeArray(),
+          beforeSend:function(){
+
+          },
+          success: function(data){
+            if(data.success)
+            {
+              humane.info(data.message);
+              $('#ListManager .lists .list_refresh').trigger('click');
+            }
+            else
+            {
+              humane.error(data.message);
+            }
+            return;
+          },
+          error: function(){
+
+            return;
+          },
+          timeout: function(){
+
+            return;
+          }
+        });
+
+        return false;
+      });
+
+
+      $('button.deleter', $container).bind('click', function(event){
 
         var list_id = $(this).find('input[name=list_id]').val();
 
@@ -625,7 +683,7 @@
           buttons[language.valider] = function() {
 
             var callbackOK = function () {
-              $('a.list_refresh', $container).trigger('click');
+              $('#ListManager .lists a.list_refresh', $container).trigger('click');
               p4.Dialog.get(2).Close();
             };
 
@@ -647,8 +705,7 @@
         return false;
       });
     };
-
-
+         
     initLeft();
 
     $('.badges a.deleter', this.container).live('click', function(){

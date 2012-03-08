@@ -32,6 +32,12 @@
         <img src="/skins/icons/push16.png"/>
       </button>
       {% endif %}
+      
+      {% if user.ACL().has_right('push') %}
+      <button class="ui-corner-all TOOL_feedback_btn basket_window" title="{% trans 'Feedback' %}">
+        <img src="/skins/icons/feedback16.png"/>
+      </button>
+      {% endif %}
       {% if user.ACL().has_right('bas_chupub') %}
       <button class="ui-corner-all TOOL_bridge_btn story_window" title="{% trans 'action : bridge' %}">
         <img src="/skins/icons/door.png"/>

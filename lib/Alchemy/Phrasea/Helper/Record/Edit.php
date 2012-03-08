@@ -422,27 +422,6 @@ class Edit extends RecordHelper
   {
     $i = count($this->javascript_fields);
 
-    switch ($meta->get_type())
-    {
-      case 'datetime':
-        $format  = _('phraseanet::technique::datetime-edit-format');
-        $explain = _('phraseanet::technique::datetime-edit-explain');
-        break;
-      case 'date':
-        $format  = _('phraseanet::technique::date-edit-format');
-        $explain = _('phraseanet::technique::date-edit-explain');
-        break;
-      case 'time':
-        $format  = _('phraseanet::technique::time-edit-format');
-        $explain = _('phraseanet::technique::time-edit-explain');
-        break;
-      default:
-        $format  = $explain = "";
-        break;
-    }
-
-    $regfield = ($meta->is_regname() || $meta->is_regdesc() || $meta->is_regdate());
-
     $source    = $meta->get_source();
     $separator = $meta->get_separator();
 
@@ -455,12 +434,11 @@ class Edit extends RecordHelper
       , 'required'             => $meta->is_required()
       , 'readonly'             => $meta->is_readonly()
       , 'type'                 => $meta->get_type()
-      , 'format'               => $format
-      , 'explain'              => $explain
+      , 'format'               => ''
+      , 'explain'              => ''
       , 'tbranch'              => $meta->get_tbranch()
       , 'maxLength'            => $source ? $source->maxlength() : 0
       , 'minLength'            => $source ? $source->minLength() : 0
-      , 'regfield'             => $regfield
       , 'multi'                => $meta->is_multi()
       , 'separator'            => $separator
       , 'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null
@@ -615,55 +593,6 @@ class Edit extends RecordHelper
     }
 
     return $this;
-
-//    foreach ($trecchanges as $fname => $fchange)
-//    {
-//      $bool = false;
-//      if ($regfields && $parm['act_option'] == 'SAVEGRP'
-//              && $fname == $regfields['regname'])
-//      {
-//        try
-//        {
-//          $basket = basket_adapter::getInstance($parm['ssel']);
-//          $basket->name = implode(' ', $fchange['values']);
-//          $basket->save();
-//          $bool = true;
-//        }
-//        catch (Exception $e)
-//        {
-//          echo $e->getMessage();
-//        }
-//      }
-//      if ($regfields && $parm['act_option'] == 'SAVEGRP'
-//              && $fname == $regfields['regdesc'])
-//      {
-//        try
-//        {
-//          $basket = basket_adapter::getInstance($parm['ssel']);
-//          $basket->desc = implode(' ', $fchange['values']);
-//          $basket->save();
-//          $bool = true;
-//        }
-//        catch (Exception $e)
-//        {
-//          echo $e->getMessage();
-//        }
-//      }
-//      if ($bool)
-//      {
-//        try
-//        {
-//          $basket = basket_adapter::getInstance($parm['ssel']);
-//          $basket->delete_cache();
-//        }
-//        catch (Exception $e)
-//        {
-//
-//        }
-//      }
-//    }
-//
-//    return $this;
   }
 
 }

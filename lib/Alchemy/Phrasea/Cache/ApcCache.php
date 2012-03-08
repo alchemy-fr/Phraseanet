@@ -52,4 +52,9 @@ class ApcCache extends DoctrineApc implements Cache
     return $this;
   }
 
+  public function flush()
+  {
+    return apc_clear_cache() && apc_clear_cache('user');
+  }
+
 }

@@ -95,8 +95,6 @@ interface record_Interface
 
   public function set_binary_status($status);
 
-  public function get_reg_name();
-
   public function get_hd_file();
 
   public function delete();

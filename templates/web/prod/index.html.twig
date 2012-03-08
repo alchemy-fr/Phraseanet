@@ -2,7 +2,7 @@
 {% set unique_id = module.getRandom() %}
 {% for base in search_datas['bases'] %}
 {% set sbas_id = base['sbas_id'] %}
-<div class="sbas_list sbas_{{sbas_id}}">
+<div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom:10px;">
   <input type="hidden" name="reference" value="{{sbas_id}}"/>
   <div class="clksbas" style="text-align:center;">
     <input type="checkbox" checked style="display:none" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}" />
@@ -233,35 +233,41 @@
   <div id="idFrameC" class="PNB" style="right:auto;width:{{w1}}%;">
     <div class="PNB wrapper">
       <div class="tabs ui-tabs">
-        <ul class="PNB ui-tabs-nav ui-helper-reset" style="bottom:auto;height:30px;">
+        <ul class="icon-menu ui-tabs-nav ui-helper-reset">
           <li class="ui-tabs-selected ui-corner-top">
             <a href="#baskets">
-              {% trans 'phraseanet:: panier' %}
+              <img src="/skins/icons/workzone32.png" title="{% trans 'phraseanet:: panier' %}"/>
               <span id="basket_menu_trigger" style="cursor:pointer;padding:3px;font-size:12px;">&#9660;</span>
             </a>
           </li>
           {% if GV_thesaurus %}
-          <li>
+          <li class="proposals_WZ">
             <a href="#proposals">
-              <img class="activeproposals" src="/skins/icons/button-red.png"
-                  style="display:none;vertical-align:middle;margin:0 3px;" title="{% trans 'phraseanet:: propositions' %}" />
-              {% trans 'phraseanet:: propositions' %}
+              <img class="proposals_off" src="/skins/icons/proposition_off32.png" title="{% trans 'phraseanet:: propositions' %}"/>
+              <img class="proposals_on" src="/skins/icons/proposition_on32.png" title="{% trans 'phraseanet:: propositions' %}"/>
             </a>
           </li>
           <li>
-            <a href="#thesaurus_tab">{% trans 'phraseanet:: thesaurus' %}</a>
+            <a href="#thesaurus_tab">
+              <img src="/skins/icons/thesaurus_32.png" title="{% trans 'phraseanet:: thesaurus' %}"/>
+            </a>
           </li>
           {% endif %}
+          <li style="float:right;">
+            <a href="#" class="escamote" style="margin:8px 0;">
+              <img src="/skins/icons/workzoneEscamote.png" title="{% trans 'Close the WorkZone' %}"/>
+            </a>
+          </li>
         </ul>
-        <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:30px;">
+        <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:52px;">
           {% import 'prod/WorkZone/Macros.twig'  as  WorkZoneMacros %}
           {{WorkZoneMacros.make_bloc(WorkZone)}}
         </div>
         {% if GV_thesaurus %}
-        <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;"
+        <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;"
             ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
         </div>
-        <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:30px;">
+        <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;">
           <div id="THPD_tabs">
             <ul>
               <li><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
@@ -424,14 +430,11 @@
 
 
               <div>
-                <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
-              </div>
-              <div>
                 <table style="width:100%;table-layout:fixed;">
                   <tr>
                     <td style="width:50%;vertical-align:top;">
                       <div class="sbasglob ui-corner-all">
-                        <div style="text-align:center;margin:0 10px;">
+                        <div style="text-align:center;margin:10px;">
                           <input class="input-button" type="button"
                                 value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
                           <input class="input-button" type="button"
@@ -443,6 +446,9 @@
                     <td style="width:50%;vertical-align:top;">
                       <div id="sbasfiltercont" class="ui-corner-all">
                         <div>
+                          <div style="margin:10px 0;">
+                            <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
+                          </div>
                           {% if registry.get('GV_sphinx') %}
                           {% trans 'Trier par ' %}
                             <select name="sort">
@@ -461,7 +467,7 @@
                               <option value=""></option>
                               {% for field_id, field in search_datas['fields'] %}
                                 {% if field['type'] == 'date' %}
-                                <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{ field['fieldname'] }}</option>
+                                <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}" {% if registry.get('GV_phrasea_sort') == field['fieldname'] %}selected="selected"{% endif %}>{{ field['fieldname'] }}</option>
                                 {% endif %}
                               {% endfor %}
                             </select>
@@ -620,14 +626,14 @@
 
         <span class="verticalbuttonset">
           <span>
-            <button class="default_action TOOL_disktt_btn results_window">
-              <img src="/skins/prod/000000/images/disktt_history.gif"/> {% trans 'action : exporter' %}
+            <button class="default_action TOOL_disktt_btn results_window" style="background: url('/skins/prod/000000/images/disktt_history.gif') no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : exporter' %}
             </button>
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
-            <button class="TOOL_print_btn results_window">
-              <img src="/skins/prod/000000/images/print_history.gif"/> {% trans 'action : print' %}
+            <button class="TOOL_print_btn results_window" style="background: url('/skins/prod/000000/images/print_history.gif') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : print' %}
             </button>
           </div>
         </span>
@@ -659,8 +665,8 @@
           <span>
             {% for action in actions %}
               {% if loop.first %}
-              <button class="default_action {{ action.class }} results_window">
-                <img src="{{ action.icon }}"/> {{ action.label }}
+              <button class="default_action {{ action.class }} results_window" style="background: url('{{ action.icon }}')  no-repeat 2px center; padding-left:16px;">
+                {{ action.label }}
               </button>
               {% endif %}
             {% endfor %}
@@ -669,8 +675,8 @@
           <div class="submenu" >
             {% for action in actions %}
               {% if not loop.first %}
-              <button class="{{ action.class }} results_window">
-                <img src="{{ action.icon }}"/> {{ action.label }}
+              <button class="{{ action.class }} results_window" style="background: url('{{ action.icon }}') #313131 no-repeat 2px center; padding-left:16px;">
+                {{ action.label }}
               </button>
               {% endif %}
             {% endfor %}
@@ -689,23 +695,19 @@
         {% if user.ACL().has_right('push') and user.ACL().has_right('bas_chupub') %}
         <span class="verticalbuttonset">
           <span>
-            <button class="TOOL_pushdoc_btn default_action results_window">
-              <img src="/skins/icons/push16.png"/>
+            <button class="TOOL_pushdoc_btn default_action results_window" style="background: url('/skins/icons/push16.png')  no-repeat 2px center; padding-left:16px;">
               {% trans 'action : push' %}
             </button>
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
-            <button class="TOOL_feedback_btn results_window">
-              <img src="/skins/icons/feedback16.png"/>
+            <button class="TOOL_feedback_btn results_window" style="background: url('/skins/icons/feedback16.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'Feedback' %}
             </button>
-            <button class="TOOL_bridge_btn results_window">
-              <img src="/skins/icons/door.png"/>
+            <button class="TOOL_bridge_btn results_window" style="background: url('/skins/icons/door.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'action : bridge' %}
             </button>
-            <button class="TOOL_publish_btn results_window">
-              <img src="/skins/icons/rss16.png"/>
+            <button class="TOOL_publish_btn results_window" style="background: url('/skins/icons/rss16.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'action : publier' %}
             </button>
           </div>
@@ -713,15 +715,13 @@
         {% elseif user.ACL().has_right('push') %}
         <span class="verticalbuttonset">
           <span>
-            <button class="TOOL_pushdoc_btn default_action results_window">
-              <img src="/skins/icons/push16.png"/>
+            <button class="TOOL_pushdoc_btn default_action results_window" style="background: url('/skins/icons/push16.png')  no-repeat 2px center; padding-left:16px;">
               {% trans 'action : push' %}
             </button>
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
-            <button class="TOOL_feedback_btn results_window">
-              <img src="/skins/icons/feedback16.png"/>
+            <button class="TOOL_feedback_btn results_window" style="background: url('/skins/icons/feedback16.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'Feedback' %}
             </button>
           </div>
@@ -729,15 +729,13 @@
         {% elseif user.ACL().has_right('bas_chupub') %}
         <span class="verticalbuttonset">
           <span>
-            <button class="TOOL_bridge_btn default_action results_window">
-              <img src="/skins/icons/door.png"/>
+            <button class="TOOL_bridge_btn default_action results_window" style="background: url('/skins/icons/door.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'action : bridge' %}
             </button>
             <button class="trigger">{% trans 'Select an action' %}</button>
           </span>
           <div class="submenu">
-            <button class="TOOL_publish_btn results_window">
-              <img src="/skins/icons/rss16.png"/>
+            <button class="TOOL_publish_btn results_window" style="background: url('/skins/icons/rss16.png') #313131 no-repeat 2px center; padding-left:16px;">
               {% trans 'action : publier' %}
             </button>
           </div>
@@ -745,15 +743,14 @@
         {% endif %}
         {% if user.ACL().has_right('doctools') %}
         <span class="buttonset">
-          <button class="TOOL_imgtools_btn results_window">
-            <img src="/skins/prod/000000/images/imgtools_history.gif"/> {% trans 'action : outils' %}
+          <button class="TOOL_imgtools_btn results_window" style="background: url('/skins/prod/000000/images/imgtools_history.gif')  no-repeat 2px center; padding-left:16px;">
+            {% trans 'action : outils' %}
           </button>
         </span>
         {% endif %}
         {% if user.ACL().has_right('deleterecord') %}
         <span class="buttonset">
-          <button class="TOOL_trash_btn results_window">
-              <img src="/skins/icons/delete.png"/>
+          <button class="TOOL_trash_btn results_window" style="background: url('/skins/icons/delete.png')  no-repeat 2px center; padding-left:16px;" >
             {% trans 'action : supprimer' %}
           </button>
         </span>

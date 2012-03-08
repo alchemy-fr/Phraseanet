@@ -23,7 +23,7 @@ use Doctrine\Common\DataFixtures\Loader;
  * @link        www.phraseanet.com
  */
 
-bootstrap::execute('test');
+\bootstrap::register_autoloads();
 
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase
@@ -483,7 +483,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
   {
     parent::setUp();
     //create a new core instance loaded with the test environment for each test
-    self::$core = new \Alchemy\Phrasea\Core('test');
+    self::$core = \bootstrap::execute('test');
+    //$this->app['EM'] = self::$core->getEntityManager();
     //set Mozilla user agent as default
     $browser = Browser::getInstance();
     $browser->setUserAgent(self::USER_AGENT_FIREFOX8MAC);

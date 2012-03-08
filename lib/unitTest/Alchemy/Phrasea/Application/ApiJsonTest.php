@@ -363,6 +363,39 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     }
   }
 
+  public function testRecordsCaptionRoute()
+  {
+    foreach (static::$databoxe_ids as $databox_id)
+    {
+      $databox = databox::get_instance($databox_id);
+
+      $collection = array_shift($databox->get_collections());
+      $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+
+      $record = record_adapter::create($collection, $system_file);
+
+      $record_id = $record->get_record_id();
+
+      $route = '/records/' . $databox_id . '/' . $record_id . '/caption/?oauth_token=' . self::$token;
+      $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+
+      $crawler = $this->client->request('GET', $route);
+      $content = json_decode($this->client->getResponse()->getContent());
+
+      $this->evaluateResponse200($this->client->getResponse());
+      $this->evaluateMetaJson200($content);
+
+      $this->evaluateRecordsCaptionResponse($content);
+      $record->delete();
+    }
+    $route = '/records/24892534/51654651553/metadatas/?oauth_token=' . self::$token;
+    $this->evaluateNotFoundRoute($route, array('GET'));
+    $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+    $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/?oauth_token=' . self::$token;
+    $this->evaluateBadRequestRoute($route, array('GET'));
+    $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+  }
+
   public function testRecordsMetadatasRoute()
   {
     foreach (static::$databoxe_ids as $databox_id)
@@ -654,7 +687,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
       {
         if (!in_array($metadata->meta_id, array_keys($toupdate)))
           continue;
-        $saved_value = $toupdate[$metadata->meta_id]['value'][0];
+        $saved_value = $toupdate[$metadata->meta_id]['value'];
         $this->assertEquals($saved_value, $metadata->value);
       }
       $record->delete();
@@ -1157,6 +1190,20 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
           $this->assertTrue(is_string($value), 'test technical data ' . $key);
           break;
       }
+    }
+  }
+
+  protected function evaluateRecordsCaptionResponse($content)
+  {
+    foreach ($content->response as $field)
+    {
+      $this->assertTrue(is_object($field), 'Un bloc field est un objet');
+      $this->assertObjectHasAttribute('meta_structure_id', $meta);
+      $this->assertTrue(is_int($field->meta_structure_id));
+      $this->assertObjectHasAttribute('name', $field);
+      $this->assertTrue(is_string($meta->name));
+      $this->assertObjectHasAttribute('value', $field);
+      $this->assertTrue(is_string($meta->value));
     }
   }
 

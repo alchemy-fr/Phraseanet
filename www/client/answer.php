@@ -14,34 +14,34 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 /* @var $Core \Alchemy\Phrasea\Core */
-$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
+$Core     = \bootstrap::getCore();
+$appbox   = appbox::get_instance($Core);
+$session  = $appbox->get_session();
 $registry = $appbox->get_registry();
-$user = $Core->getAuthenticatedUser();
+$user     = $Core->getAuthenticatedUser();
 
 if (!isset($parm))
 {
 
   $request = http_request::getInstance();
-  $parm = $request->get_parms("mod", "bas"
-          , "pag"
-          , "qry", "search_type", "recordtype"
-          , "qryAdv", 'opAdv', 'status', 'datemin', 'datemax'
-          , 'dateminfield', 'datemaxfield'
-          , 'datefield'
-          , 'sort'
-          , 'stemme'
-          , 'infield'
-          , "nba"
-          , "regroup" // si rech par doc, regroup ,ou pizza
-          , "ord"
+  $parm    = $request->get_parms("mod", "bas"
+    , "pag"
+    , "qry", "search_type", "recordtype"
+    , "qryAdv", 'opAdv', 'status', 'datemin', 'datemax'
+    , 'dateminfield', 'datemaxfield'
+    , 'datefield'
+    , 'sort'
+    , 'stemme'
+    , 'infield'
+    , "nba"
+    , "regroup" // si rech par doc, regroup ,ou pizza
+    , "ord"
   );
 }
-$qry = '';
+$qry     = '';
 
 if (trim($parm['qry']) != '')
 {
@@ -87,7 +87,7 @@ else
   $mod_row = (int) ($mod[0]);
   $mod_col = (int) ($mod[1]);
 }
-$mod_xy = $mod_col * $mod_row;
+$mod_xy  = $mod_col * $mod_row;
 
 $tbases = array();
 
@@ -101,9 +101,9 @@ $options->set_bases($parm['bas'], $user->ACL());
 if (!is_array($parm['infield']))
   $parm['infield'] = array();
 
-foreach($parm['infield'] as $offset=>$value)
+foreach ($parm['infield'] as $offset => $value)
 {
-  if(trim($value) === '')
+  if (trim($value) === '')
     unset($parm['infield'][$offset]);
 }
 
@@ -161,8 +161,8 @@ if ($registry->get('GV_thesaurus'))
   if ($registry->get('GV_clientAutoShowProposals'))
   {
     ?>
-    if("<?php echo p4string::MakeString(proposalsToHTML($qp['main']->proposals), "JS") ?>" != "<div class=\"proposals\"></div>")
-    chgOng(4);
+        if("<?php echo p4string::MakeString(proposalsToHTML($qp['main']->proposals), "JS") ?>" != "<div class=\"proposals\"></div>")
+        chgOng(4);
     <?php
   }
   ?>
@@ -177,14 +177,14 @@ $history = queries::history();
 echo '<script language="javascript" type="text/javascript">$("#history").empty().append("' . str_replace('"', '\"', $history) . '")</script>';
 
 $nbanswers = $result->get_count_available_results();
-$longueur = strlen($parm['qry']);
+$longueur  = strlen($parm['qry']);
 
 $qrys = '<div>' . _('client::answers: rapport de questions par bases') . '</div>';
 
 foreach ($qrySbas as $sbas => $qryBas)
   $qrys .= '<div style="font-weight:bold;">' . phrasea::sbas_names($sbas) . '</div><div>' . $qryBas . '</div>';
 
-$txt = "<b>" . substr($parm['qry'], 0, 36) . ($longueur > 36 ? "..." : "") . "</b>" . sprintf(_('client::answers: %d reponses'), (int) $nbanswers) . " <a style=\"float:none;display:inline-block;padding:2px 3px\" class=\"infoTips\" title=\"" . str_replace('"', "'", $qrys) . "\">&nbsp;</a>";
+$txt    = "<b>" . substr($parm['qry'], 0, 36) . ($longueur > 36 ? "..." : "") . "</b>" . sprintf(_('client::answers: %d reponses'), (int) $nbanswers) . " <a style=\"float:none;display:inline-block;padding:2px 3px\" class=\"infoTips\" title=\"" . str_replace('"', "'", $qrys) . "\">&nbsp;</a>";
 ?>
 <script type="text/javascript">
   $(document).ready(function(){
@@ -194,13 +194,13 @@ $txt = "<b>" . substr($parm['qry'], 0, 36) . ($longueur > 36 ? "..." : "") . "</
 </script>
 <?php
 $npages = $result->get_total_pages();
-$pages = '';
-$ecart = 3;
-$max = (2 * $ecart) + 3;
+$pages  = '';
+$ecart  = 3;
+$max    = (2 * $ecart) + 3;
 
 if ($npages > $max)
 {
-  for ($p = 1; $p < $npages; $p++)
+  for ($p = 1; $p <= $npages; $p++)
   {
     if ($p == $page)
       $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
@@ -216,23 +216,23 @@ if ($npages > $max)
       $pages .= '<span onclick="gotopage(' . ($p ) . ');" class="naviButton">' . ($p) . '...</span>';
 
     if (($p == $page)
-            || ( ( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
-            || ( ($page < ($ecart + 2)) && ($p < ($max - $ecart + 2) ) )
-            || ( ($page >= ($npages - $ecart - 2)) && ($p >= ($npages - (2 * $ecart) - 2) ) )
-            || ( $p == 0)
+      || ( ( $p >= ($page - $ecart) ) && ( $p <= ($page + $ecart) ))
+      || ( ($page < ($ecart + 2)) && ($p < ($max - $ecart + 2) ) )
+      || ( ($page >= ($npages - $ecart - 2)) && ($p >= ($npages - (2 * $ecart) - 2) ) )
+      || ( $p == 0)
     )
       $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
   }
 }
 else
 {
-  for ($p = 1; $p < $npages; $p++)
+  for ($p = 1; $p <= $npages; $p++)
   {
     if ($p == $page)
       $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
     else
       $pages .= '<span onclick="gotopage(' . ($p) . ');" class="naviButton">' . ($p) . '</span>';
-    if ($p  < $npages)
+    if ($p < $npages)
       $pages .= '<span class="naviButton" style="cursor:default;"> - </span>';
   }
 }
@@ -250,30 +250,29 @@ $string2.= '</div>';
 if ($page != 0 && $nbanswers)
 {
   ?>
-    $("#PREV_PAGE").bind('click',function(){gotopage(<?php echo ($page - 1) ?>)});
+        $("#PREV_PAGE").bind('click',function(){gotopage(<?php echo ($page - 1) ?>)});
   <?php
 }
 else
 {
   ?>
-    $("#PREV_PAGE").unbind('click');
+        $("#PREV_PAGE").unbind('click');
   <?php
 }
 if ($page != $npages - 1 && $nbanswers)
 {
   ?>
-    $("#NEXT_PAGE").bind('click',function(){gotopage(<?php echo ($page + 1) ?>)});
+        $("#NEXT_PAGE").bind('click',function(){gotopage(<?php echo ($page + 1) ?>)});
   <?php
 }
 else
 {
   ?>
-    $("#NEXT_PAGE").unbind('click');
+        $("#NEXT_PAGE").unbind('click');
 <?php } ?>
-});
+  });
 </script>
 <?php
-
 $layoutmode = "grid";
 if ($mod_col == 1)
   $layoutmode = "list";
@@ -315,8 +314,17 @@ if (count($result->get_datas()) > 0)
       $docType = $record->get_type();
 
       $title = $record->get_title();
-      $light_info = $twig->render('common/technical_datas.twig', array('record' => $record));
-      $caption = $twig->render('common/caption.html', array('view' => 'answer', 'record' => $record));
+
+      try
+      {
+        $record->get_subdef('document');
+        $light_info = $twig->render('common/technical_datas.twig', array('record' => $record));
+      }
+      catch (\Exception $e)
+      {
+        $light_info = '';
+      }
+      $caption    = $twig->render('common/caption.html', array('view'   => 'answer', 'record' => $record));
 
 
       if ($i == 0)
@@ -344,8 +352,6 @@ if (count($result->get_datas()) > 0)
     }
     ?><div class="diapo w160px" style="margin-bottom:0;border-bottom:none;">
               <div class="title"><?php echo $title ?></div><?php
-
-
         $status = '';
         $status .= '<div class="status">';
         $status .= $record->get_status_icons();
@@ -353,21 +359,20 @@ if (count($result->get_datas()) > 0)
 
         echo $status;
 
-        $isVideo = ($docType == 'video');
-        $isAudio = ($docType == 'audio');
-        $isImage = ($docType == 'image');
+        $isVideo    = ($docType == 'video');
+        $isAudio    = ($docType == 'audio');
+        $isImage    = ($docType == 'image');
         $isDocument = ($docType == 'document');
 
 
         $sd = $record->get_subdefs();
 
-        $isImage = false;
+        $isImage    = false;
         $isDocument = false;
         if (!$isVideo && !$isAudio)
         {
           $isImage = true;
         }
-
     ?><table cellpadding="0" cellspacing="0" style="margin: 0pt auto;"><?php
     ?><tr class="h160px"><?php
     ?><td class="image w160px h160px"><?php
@@ -401,30 +406,27 @@ if (count($result->get_datas()) > 0)
             $pic_roll = '/prod/tooltip/caption/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/answer/';
 
           $pic_roll = str_replace(array('&', '"'), array('&amp;', '&quot;'), $pic_roll);
-    ?><img style="<?php if ($thumbnail->get_width() > $thumbnail->get_height())
-              { ?>width:128px;<?php }
-            else
-            { ?>height:128px;<?php } ?>" onclick="<?php echo $onclick ?>" class=" captionTips"  id="IMG<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>"  src="<?php echo $thumbnail->get_url() ?>"  tooltipsrc="<?php echo ($pic_roll) ?>" />
+    ?><img onclick="<?php echo $onclick ?>" class="<?php echo ($thumbnail->get_width() > $thumbnail->get_height()) ? 'hthbimg' : 'vthbimg' ?> captionTips"  id="IMG<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>"  src="<?php echo $thumbnail->get_url() ?>"  tooltipsrc="<?php echo ($pic_roll) ?>" />
                   </td>
                 </tr>
               </table>
             </div>
             <div class="diapo w160px" style="border-top:none;"><?php ?><div class="buttons"><?php
-              $minilogos = "";
+                     $minilogos = "";
 
-              $minilogos .= '<div class="minilogos">' . collection::getLogo($record->get_base_id());
-              $minilogos .= '</div>';
-              $sbas_id = $record->get_sbas_id();
-              echo $minilogos;
+                     $minilogos .= '<div class="minilogos">' . collection::getLogo($record->get_base_id());
+                     $minilogos .= '</div>';
+                     $sbas_id = $record->get_sbas_id();
+                     echo $minilogos;
 
-              if (
-                      $ACL->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
-                      $ACL->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
-                      $ACL->has_right_on_base($record->get_base_id(), 'cancmd')
-              )
-              {
+                     if (
+                       $ACL->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
+                       $ACL->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
+                       $ACL->has_right_on_base($record->get_base_id(), 'cancmd')
+                     )
+                     {
       ?><div class="downloader" title="<?php echo _('action : exporter') ?>" onclick="evt_dwnl('<?php echo $sbas_id ?>_<?php echo $record->get_record_id() ?>');"></div><?php
-        }
+          }
     ?>
                 <div class="printer" title="<?php echo _('action : print') ?>" onClick="evt_print('<?php echo $sbas_id ?>_<?php echo $record->get_record_id() ?>');"></div>
                 <?php
@@ -489,20 +491,20 @@ function proposalsToHTML(&$proposals)
 {
 
   $html = '<div class="proposals">';
-  $b = true;
+  $b    = true;
   foreach ($proposals["BASES"] as $zbase)
   {
     if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0)
     {
       $style = $b ? 'style="margin-top:0px;"' : '';
-      $b = false;
+      $b     = false;
       $html .= "<h1 $style>" . sprintf(_('reponses::propositions pour la base %s'), htmlentities($zbase["NAME"])) . "</h1>";
     }
-    $t = true;
+    $t     = true;
     foreach ($zbase["TERMS"] as $path => $props)
     {
       $style = $t ? 'style="margin-top:0px;"' : '';
-      $t = false;
+      $t     = false;
       $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), htmlentities($props["TERM"])) . "</h2>";
       $html .= $props["HTML"];
     }

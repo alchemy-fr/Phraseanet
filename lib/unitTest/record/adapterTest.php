@@ -468,11 +468,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     );
   }
 
-  public function testGet_reg_name()
-  {
-    $this->assertTrue(is_string(self::$story_1->get_reg_name()));
-  }
-
   public function testGet_record_by_sha()
   {
     $tmp_records = record_adapter::get_record_by_sha(self::$record_1->get_sbas_id(), self::$record_1->get_sha256());
