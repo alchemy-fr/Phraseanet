@@ -358,7 +358,7 @@ $GV = array(
       array(
         'type'      => 'enum',
         'name'      => 'GV_phrasea_sort',
-        'comment'   => _('Tri par defaut au démarrage'),
+        'comment'   => _('Default results sort'),
         'default'   => '',
         'available' => $date_sort_fields
       )
