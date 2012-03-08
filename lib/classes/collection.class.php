@@ -514,14 +514,14 @@ class collection implements cache_cacheableInterface
     $stmt->closeCursor();
 
     $new_bas = $conn->lastInsertId();
-
-    phrasea::reset_baseDatas();
-    self::set_admin($new_bas, $user);
     $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
     $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
     cache_databox::update($sbas_id, 'structure');
 
+
+    phrasea::reset_baseDatas();
+    self::set_admin($new_bas, $user);
 
     return self::get_from_coll_id($databox, $new_id);
   }
