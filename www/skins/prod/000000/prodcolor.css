@@ -199,12 +199,18 @@ span.ww_winTitle{
 
 #idFrameC .ui-tabs .ui-tabs-nav li{
 	height:52px;
+  float:left;
 }
 
 #idFrameC .ui-tabs .ui-tabs-nav li a{
 	padding:5px;
   margin:5px;
 }
+
+#idFrameC.closed .icon-menu li{
+  clear:left;
+}
+
 #idFrameC .ui-tabs .ui-tabs-nav li.ui-state-active a{
 	background-color:#666666;
 }
@@ -573,10 +579,16 @@ div.diapo
 
 #idFrameT .tools .verticalbuttonset .submenu{
   position: absolute;
-  top:1.5em;
+  top:28px;
   left:0;
   z-index:30;
 }
+
+/* hack all except ie 6, 7 , 8 */
+:root *> #idFrameT .tools .verticalbuttonset .submenu{
+  top:1.5em;
+}
+
 #idFrameT .tools .verticalbuttonset .ui-state-default{
   border: 1px solid #515151;
 }

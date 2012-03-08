@@ -180,12 +180,14 @@ $(function() {
       $(".bridge_all_selector", $panel).bind("click", function() {
          var checkboxes = $('.bridge_element_selector', $panel);
          var $this = $(this);
-         var event = jQuery.Event("click");
-         event.selector_all = true;
 
          checkboxes.each(function(i, checkbox){
           if($(checkbox).is(':checked') !== $this.is(':checked'))
+          {
+            var event = jQuery.Event("click");
+            event.selector_all = true;
             $(checkbox).trigger(event);
+          }
          });
       });
 
