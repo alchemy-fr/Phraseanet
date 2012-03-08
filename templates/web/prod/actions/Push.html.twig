@@ -128,8 +128,9 @@
 
 
                 {% if recommendation != '' %}
+                  {% set recommendation = '<br/>' ~ recommandation %}
                   {% trans %}
-                    Please consider send this validation to the following users : <br/> {{ recommendation }}
+                    Please consider send this validation to the following users : {{ recommendation }}
                   {% endtrans %}
                 {% endif %}
               </p>
@@ -256,7 +257,7 @@
 
     p4.Feedback = new Feedback($('#PushBox'), '{{ context }}');
     p4.ListManager = new ListManager($('#ListManager'));
-    
+
     $(".general_toggler").button();
 
   });
