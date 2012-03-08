@@ -19,7 +19,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
 {
 
   const MAIL_NO_VALID = 1;
-  const MAIL_FAIL = 2;
+  const MAIL_FAIL     = 2;
 
   /**
    *
@@ -46,11 +46,11 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
   public function fire($event, $params, &$object)
   {
     $default = array(
-        'usr_id' => null
-        , 'lst' => ''
-        , 'ssttid' => ''
-        , 'dest' => ''
-        , 'reason' => ''
+      'usr_id' => null
+      , 'lst'    => ''
+      , 'ssttid' => ''
+      , 'dest'   => ''
+      , 'reason' => ''
     );
 
     $params = array_merge($default, $params);
@@ -61,9 +61,9 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
 
     $root = $dom_xml->createElement('datas');
 
-    $lst = $dom_xml->createElement('lst');
+    $lst    = $dom_xml->createElement('lst');
     $ssttid = $dom_xml->createElement('ssttid');
-    $dest = $dom_xml->createElement('dest');
+    $dest   = $dom_xml->createElement('dest');
     $reason = $dom_xml->createElement('reason');
 
     $lst->appendChild($dom_xml->createTextNode($params['lst']));
@@ -89,11 +89,11 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
       $user = User_Adapter::getInstance($params['usr_id'], $this->appbox);
       $name = $user->get_display_name();
 
-      $to = array('email' => $user->get_email(), 'name' => $name);
+      $to = array('email' => $user->get_email(), 'name'  => $name);
 
       $from = array(
-          'email' => $this->registry->get('GV_defaulmailsenderaddr'),
-          'name' => $this->registry->get('GV_homeTitle')
+        'email' => $this->registry->get('GV_defaulmailsenderaddr'),
+        'name'  => $this->registry->get('GV_homeTitle')
       );
 
       if (parent::email())
@@ -113,18 +113,18 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
    */
   public function datas($datas, $unread)
   {
-    $sx = simplexml_load_string($datas);
+    $sx     = simplexml_load_string($datas);
     $usr_id = (int) $sx->usr_id;
     $reason = (int) $sx->reason;
-    $lst = (string) $sx->lst;
+    $lst    = (string) $sx->lst;
     $ssttid = (int) $sx->ssttid;
-    $dest = (string) $sx->dest;
-    
-    if($reason == self::MAIL_NO_VALID)
+    $dest   = (string) $sx->dest;
+
+    if ($reason == self::MAIL_NO_VALID)
     {
       $reason = _('email is not valid');
     }
-    elseif($reason == self::MAIL_FAIL)
+    elseif ($reason == self::MAIL_FAIL)
     {
       $reason = _('failed to send mail');
     }
@@ -132,62 +132,16 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
     {
       $reason = _('an error occured while exporting records');
     }
-    
-    try
-    {
-      if ($ssttid)
-      {
-        $core = \bootstrap::getCore();
-        $appbox = \appbox::get_instance($core);
-        $em = $core->getEntityManager();
-        $repository = $em->getRepository('\Entities\Basket');
-        $basket = $repository->findUserBasket((int) $ssttid, \User_Adapter::getInstance($usr_id, $appbox), false);
-        $date = new\DateTime('now');
-        $text = sprintf(_("L'export effectue le %s à destination de %s concernant le panier suivant %s à echoue pour les raisons suivantes : %s")
-               ,$date->format("Y-m-d H:i:s"), $dest, $basket->getName(), $reason);
-      }
-      elseif($lst)
-      {
-        /*$records = array();
-        $allRecords = explode(";", $lst);
-        foreach ($allRecords as $basrec)
-        {
-          $basrec = explode('_', $basrec);
-          if (count($basrec) == 2)
-          {
-            try
-            {
-              $record = new record_adapter((int) $basrec[0], (int) $basrec[1]);
-              $records[] = $record->get_title();
-            }
-            catch (Exception $e)
-            {
-              continue;
-            }
-          }
-        }*/
-        
-        $date = new\DateTime('now');
-         
-        $text = sprintf(_("L'export effectué le %s à destination de %s à echoue pour les raisons suivantes : %s")
-                ,$date->format("Y-m-d H:i:s") , $dest,  $reason);
-       
-      }
-      else
-      {
-        $date = new\DateTime('now');
-        $text = sprintf(_("L'export effectue le %s à echoué"), $date->format("Y-m-d H:i:s"));
-      }
-    }
-    catch (\Exception $e)
-    {
-      $date = new\DateTime('now');
-      $text = sprintf(_("L'export effectue le %s à echoue"), $date->format("Y-m-d H:i:s"));
-    }
+
+    $text       = sprintf(
+      _("The delivery to %s failed for the following reason : %s")
+      , $dest
+      , $reason
+    );
 
     $ret = array(
-        'text' => $text
-        , 'class' => ''
+      'text'  => $text
+      , 'class' => ''
     );
 
     return $ret;
@@ -199,7 +153,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
    */
   public function get_name()
   {
-    return _('Export by email fail');
+    return _('Email export fails');
   }
 
   /**
@@ -208,7 +162,7 @@ class eventsmanager_notify_downloadmailfail extends eventsmanager_notifyAbstract
    */
   public function get_description()
   {
-    return _('Recevoir des notifications lorsqu\'un export par email echoue');
+    return _('Get a notification when a mail export fails');
   }
 
   /**
