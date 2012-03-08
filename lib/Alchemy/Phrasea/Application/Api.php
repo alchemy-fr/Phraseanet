@@ -307,7 +307,7 @@ return call_user_func(function()
        *
        */
       $route = '/records/search/';
-      $app->post(
+      $app->match(
         $route, function() use ($app)
         {
           $result = $app['api']->search_records($app['request']);

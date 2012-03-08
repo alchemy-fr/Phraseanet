@@ -293,7 +293,7 @@ class API_V1_adapter extends API_V1_Abstract
     $options->set_sort($params['sort'], $params['ord']);
     $options->set_use_stemming($params['stemme']);
 
-    $perPage       = $params['per_page'];
+    $perPage       = (int) $params['per_page'];
     $search_engine = new searchEngine_adapter($registry);
     $search_engine->set_options($options);
 

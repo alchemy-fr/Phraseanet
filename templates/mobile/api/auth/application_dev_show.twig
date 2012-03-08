@@ -1,0 +1,78 @@
+{% block app_show %}
+<h1 style='text-align:left'>{% trans 'Application' %}</h1>
+<input type="hidden" value="{{app.get_id}}" name="app_id"/>
+<div>
+  <ul class='app-list'>
+    <li>
+      <div>
+        <span class='app-row'><strong><a  class="link" id="app_dev_new" href="/api/oauthv2/applications/dev/{{app.get_id}}/show">{{app.get_name}}</a></strong></span>
+        <span class='app-row'>{{app.get_description }}</span>
+      </div>
+    </li>
+  </ul>
+</div>
+<h1 style='text-align:left'>{% trans 'settings OAuth' %}</h1>
+<p style='text-align:left'>{% trans 'Les parametres oauth de votre application.' %}</p>
+<table id="app-oauth-setting">
+  <tbody>
+    <tr>
+      <td>Client ID</td>
+      <td>{{app.get_client_id}}</td>
+    </tr>
+    <tr>
+      <td>Client Secret</td>
+      <td>{{app.get_client_secret}}</td>
+    </tr>
+    <tr>
+      <td>{% trans 'URL de callback' %}</td>
+      {% if app.get_type == constant('API_OAuth2_Application::DESKTOP_TYPE') %}
+        <td>
+            <span>{{app.get_redirect_uri}}</span> 
+        </td>
+      {% else %}
+        <td class="url_callback"><span class="url_callback_input">{{app.get_redirect_uri}}</span> 
+          <button type="button" class="save_callback" style="display:none;">save</button>
+          <button type="button" class="modifier_callback" style="display:none;">modifier</button>
+        </td>
+      {%endif%}
+    </tr>
+    <tr>
+      <td>Authorize endpoint</td>
+      <td>{{registry.get('GV_ServerName')}}api/oauthv2/authorize</td>
+    </tr>
+    <tr>
+      <td>Access endpoint</td>
+      <td>{{registry.get('GV_ServerName')}}api/oauthv2/token</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 style='text-align:left'>{% trans 'Votre token d\'access' %}</h1>
+<p style='text-align:left'> {% trans 'Les paramétres oauth de votre application.' %}</p>
+<table id="app-access-token-setting">
+  <tbody>
+    <tr>
+      <td style='width:25%'>
+        {% trans 'Token' %}
+        </td>
+        <td>
+          <span id="my_access_token">
+     {% if not token  is none %}
+       {{token|default('')}}
+     {% else %}
+       {% trans 'Le token n\'a pas encore ete genere' %}
+     {% endif %}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td style='width:25%'></td>
+          <td><button id="generate_access" type="button" value="{{app.get_id}}">{% trans 'boutton::generer' %}</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style='text-align:left'>
+      <a class="dev_back link" href="/api/oauthv2/applications/dev"><button>{% trans 'boutton::retour' %}</button></a>
+    </div>
+
+{% endblock %}
