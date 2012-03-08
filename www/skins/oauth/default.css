@@ -1,3 +1,5 @@
+/************* CSS Oauth pages *************/
+
 /****************** Page *******************/
 
 html, body {
@@ -20,7 +22,6 @@ html, body {
     background: radial-gradient(center, ellipse cover,  #666666 0%,#595959 0%,#4c4c4c 12%,#474747 20%,#131313 77%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#131313',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
-
 #namePhr {
     color: #A9A9A9;
     text-align: center;
@@ -32,19 +33,15 @@ html, body {
     padding: 10px;
     text-align: center;
 }
-
 p.login_error {
     color: #FF0000;
 }
-
 p.login_hello {
     color: #FFFFFF;
 }
-
 #login-form {
     text-align: center;
 }
-
 #myLogin {
     background: #FFFFFF;
     box-shadow: 0px 0px 10px #DCDCDC;
@@ -53,7 +50,6 @@ p.login_hello {
     padding: 10px;
     margin-bottom: 0;
 }
-
 #myPass {
     background: #FFFFFF;
     box-shadow: 0px 0px 10px #DCDCDC;
@@ -62,16 +58,13 @@ p.login_hello {
     padding: 10px;
     margin-bottom: 0;
 }
-
 #button_login {
     margin-top: 20px; 
 }
-
 #hello-box {
     padding: 10px;
     text-align: center;
 }
-
 #text-box {
     background: #FFFFFF;
     box-shadow: 0px 0px 10px #DCDCDC;
@@ -79,27 +72,22 @@ p.login_hello {
     padding: 10px;
     color: #000000;
 }
-
 #top-text-box {
     padding-bottom: 5px;
     border-bottom: 1px dashed #000000;
     font-weight: bold;
 }
-
 #main-text-box {
     padding-top: 10px;
     color: #808080;
 }
-
 #main-text-box span {
     color: #FFA500;
 }
-
 #btn-box {
     padding: 10px;
     text-align: center;
 }
-
 form.access-deny {
     display: inline-block;
     margin-top: 10px;
