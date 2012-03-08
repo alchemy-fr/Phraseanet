@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-08 11:19+0100\n"
-"PO-Revision-Date: 2012-03-08 11:19+0100\n"
+"POT-Creation-Date: 2012-03-08 14:29+0100\n"
+"PO-Revision-Date: 2012-03-08 14:29+0100\n"
 "Last-Translator: Romain Neutron <imprec@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -3893,8 +3893,8 @@ msgid "phraseanet:: tri par nom"
 msgstr "Tri alphabétique"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:676
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1598
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1770
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1589
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1761
 msgid "Preferences"
 msgstr "Préférences"
 
@@ -4029,208 +4029,208 @@ msgstr "Audios"
 
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1222
 #: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1355
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1456
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1497
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1524
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1455
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1492
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1517
 msgid "Select an action"
 msgstr "Sélectionner une action"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1652
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1643
 msgid "raccourci :: a propos des raccourcis claviers"
 msgstr "A propos des raccourcis clavier"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1657
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1648
 msgid "Raccourcis claviers en cours de recherche : "
 msgstr "Raccourcis de la fenêtre principale "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1662
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1698
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1653
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1689
 msgid "Raccourcis:: ctrl-a : tout selectionner "
 msgstr "ctrl-a : sélectionner tout "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1666
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1702
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1657
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1693
 msgid "Raccourcis:: ctrl-p : imprimer la selection "
 msgstr "ctrl-p :  imprimer la sélection "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1670
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1706
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1661
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1697
 msgid "Raccourcis:: ctrl-e : editer la selection "
 msgstr "ctrl-e : éditer la sélection "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1674
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1665
 msgid "Raccourcis::fleche gauche : page precedente "
 msgstr "flèche gauche : page précédente "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1678
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1669
 msgid "Raccourcis::fleche droite : page suivante "
 msgstr "flèche droite : page suivante "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1682
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1673
 msgid "Raccourcis::fleche haut : scroll vertical "
 msgstr "flèche haute : défilement vers le haut "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1686
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1677
 msgid "Raccourcis::fleche bas : scroll vertical "
 msgstr "flèche basse : défilement vers le bas "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1693
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1684
 msgid "Raccourcis claviers de la zone des paniers : "
 msgstr "Raccourcis de la zone des paniers & reportages "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1713
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1704
 msgid "Raccourcis claviers en cours de editing : "
 msgstr "Raccourci de la fenêtre d'édition "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1718
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1709
 msgid "Raccourcis::tab/shift-tab se ballade dans les champs "
 msgstr "Tab/shift-tab : Changer de champs "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1725
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1716
 msgid "Raccourcis claviers en cours de preview : "
 msgstr "Raccourcis de la fenêtre vue détaillée "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1730
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1721
 msgid "Raccourcis::fleche gauche : en avant "
 msgstr "flèche droite : document suivant "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1734
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1725
 msgid "Raccourcis::fleche gauche : en arriere "
 msgstr "flèche gauche : document précédent "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1738
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1729
 msgid "Raccourcis::espace : arreter/demarrer le diaporama "
 msgstr "espace : démarrer/arrêter le diaporama "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1746
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1737
 msgid "Vous pouvez quitter la plupart des fenetres survolantes via la touche echap "
 msgstr "Vous pouvez fermer la plupart des fênetres en sur impression avec la touche echap "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1756
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1747
 msgid "raccourcis :: ne plus montrer cette aide"
 msgstr "Ne plus montrer cette aide"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1776
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1767
 msgid "Affichage"
 msgstr "Affichage"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1780
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1771
 msgid "Configuration"
 msgstr "Configuration"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1788
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1779
 msgid "Mode de presentation"
 msgstr "Mode de présentation"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1802
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1793
 msgid "reponses:: mode vignettes"
 msgstr "Vignettes"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1812
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1803
 msgid "reponses:: mode liste"
 msgstr "Liste"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1818
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1809
 msgid "Theme"
 msgstr "Thème"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1827
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1818
 msgid "Selecteur de theme"
 msgstr "Sélecteur de thème"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1849
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1840
 msgid "Presentation de vignettes"
 msgstr "Présentation de vignettes"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1860
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1851
 msgid "Iconographe (description au rollover)"
 msgstr "Iconographe (description au rollover)"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1872
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1863
 msgid "Graphiste (preview au rollover)"
 msgstr "Graphiste (prévisualisation au rollover)"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1882
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1873
 msgid "Informations techniques"
 msgstr "Informations techniques"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1893
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1884
 msgid "Afficher"
 msgstr "Afficher"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1905
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1896
 msgid "Afficher dans la notice"
 msgstr "Afficher dans la notice"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1917
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1908
 msgid "Ne pas afficher"
 msgstr "Ne pas afficher"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1927
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1918
 msgid "Type de documents"
 msgstr "Type de document"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1938
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1929
 msgid "Afficher une icone"
 msgstr "Afficher une icône"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1946
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1937
 msgid "reponses:: images par pages : "
 msgstr "Résultats par page "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1959
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1950
 msgid "reponses:: taille des images : "
 msgstr "Taille des vignettes "
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1973
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1964
 msgid "Couleur de selection"
 msgstr "Couleur de sélection"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1978
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1969
 msgid "choisir"
 msgstr "Choisir"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1988
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1979
 msgid "Affichage au demarrage"
 msgstr "Afficher au démarrage"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2004
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:1995
 msgid "Ma derniere question"
 msgstr "Ma dernière question"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2015
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2006
 msgid "Une question personnelle"
 msgstr "La question"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2037
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2028
 msgid "Aide"
 msgstr "Aide"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2087
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2078
 msgid "preview:: Description"
 msgstr "Notice"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2091
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2082
 msgid "preview:: Historique"
 msgstr "Historique"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2098
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2089
 msgid "preview:: Popularite"
 msgstr "Popularité"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2151
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2142
 msgid "Presentation de vignettes de panier"
 msgstr "Présentation des vignettes de panier"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2168
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2159
 msgid "Afficher les status"
 msgstr "Afficher les Status"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2186
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2177
 msgid "Afficher la fiche descriptive"
 msgstr "Afficher la notice"
 
-#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2204
+#: tmp/cache_twig/40/69/2ac30f0a229293a32167fa6e3b21.php:2195
 msgid "Afficher le titre"
 msgstr "Afficher le titre"
 
@@ -4736,11 +4736,11 @@ msgstr "Vers quel API voulez vous vous connecter ?"
 msgid "Aucun bridge disponible. Veuillez contacté un administrateur."
 msgstr "Aucun bridge n'est disponible. Veuillez contacter un administrateur système."
 
-#: tmp/cache_twig/72/18/6cd1f10af63b9cad709afe772368.php:507
+#: tmp/cache_twig/72/18/6cd1f10af63b9cad709afe772368.php:509
 msgid "Vous n'avez pas assez de droits sur les elements selectionnes"
 msgstr "Vous ne disposez pas des droits suffisants sur les documents sélectionnés"
 
-#: tmp/cache_twig/72/18/6cd1f10af63b9cad709afe772368.php:514
+#: tmp/cache_twig/72/18/6cd1f10af63b9cad709afe772368.php:516
 msgid "Vous n'avez pas assez de droits sur certains elements selectionnes"
 msgstr "Vous ne disposez pas des droits sur certains des documents sélectionnés"
 
@@ -5086,7 +5086,7 @@ msgid "HD Download"
 msgstr "Téléchargement HD"
 
 #: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:79
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:441
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:444
 msgid "List Manager"
 msgstr "List Manager"
 
@@ -5110,51 +5110,51 @@ msgstr "Ajouter un utilisateur"
 msgid "and %n% more peoples"
 msgstr "and %n% autres personnes"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:274
-msgid "Please consider send this validation to the following users : <br/> %recommendation%"
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:277
+msgid "Please consider send this validation to the following users : %recommendation%"
 msgstr ""
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:283
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:286
 msgid "Users suggestion"
 msgstr "Suggestion d'utilisateurs"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:331
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:334
 msgid "Push::unpush permet d'envoyer un lot d'image a des destinataires"
 msgstr "«Diffuser»: Envoie un lot de documents à des destinataires. Les destinataires recevront un e-mail, contenant un lien lançant Phraseanet Lightbox. Cette interface donne un accès immédiat en visualisation et/ou téléchargement. Pour les utilisateurs authentifiés, elle est également disponible sous forme d’un panier «Reçu»."
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:337
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:340
 msgid "Push::une validation est une demande d'appreciation a d'autres personnes"
 msgstr "«Valider» envoie une demande d'appréciation sur un lot de documents à des destinataires. Ces destinataires recevront un e-mail, contenant un lien lançant Phraseanet Lightbox. Cette interface leur donne un accès immédiat aux documents pour \"appréciation\", et/ou téléchargement. Pour les utilisateurs authentifiés, la «validation» est également disponible sous forme d’un panier."
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:358
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:361
 msgid "Select all"
 msgstr "Tout sélectionner"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:362
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:365
 msgid "Deselect all"
 msgstr "Tout désélectionner"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:408
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:411
 msgid "Send"
 msgstr "Envoyer"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:426
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:429
 msgid "Back to Push"
 msgstr "Retour au Push"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:432
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:435
 msgid "Back to Feedback"
 msgstr "Retour au Feedback"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:459
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:462
 msgid "Welcome to the ListManager !"
 msgstr "Bienvenue sur le List Manager !"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:468
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:471
 msgid "Start by creating one by using the \"add\" button on the left !"
 msgstr "Commencer en utilisant le bouton \"Ajouter\" sur la gauche de l'écran !"
 
-#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:477
+#: tmp/cache_twig/a4/c0/09f2dba82ef9b8342ca3bf692c14.php:480
 msgid "Select a list on the left and edit it !"
 msgstr "Sélectionner une liste sur la gauche puis éditez la !"
 
@@ -8840,26 +8840,6 @@ msgstr "La Databox est inaccessible"
 msgid "an error occured : %s"
 msgstr "L'erreur %s est survenue"
 
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:428
-msgid "phraseanet::technique::datetime-edit-format"
-msgstr "YYYY/MM/DD HH:NN:SS"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:432
-msgid "phraseanet::technique::date-edit-format"
-msgstr "YYYY/MM/DD"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:433
-msgid "phraseanet::technique::date-edit-explain"
-msgstr "aaaa/mm/jj"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:436
-msgid "phraseanet::technique::time-edit-format"
-msgstr "HH:MM:SS"
-
-#: lib/Alchemy/Phrasea/Helper/Record/Edit.php:437
-msgid "phraseanet::technique::time-edit-explain"
-msgstr "hh:mm:ss"
-
 #: lib/Alchemy/Phrasea/Helper/User/Edit.php:570
 msgid "Email addess is not valid"
 msgstr "L'adresse email n'est pas valide"
@@ -8920,6 +8900,21 @@ msgstr "La liste est introuvable"
 #: lib/Doctrine/Repositories/UsrListRepository.php:56
 msgid "You have not access to this list"
 msgstr "Vous n'avez pas accès à cette liste"
+
+#~ msgid "phraseanet::technique::datetime-edit-format"
+#~ msgstr "YYYY/MM/DD HH:NN:SS"
+
+#~ msgid "phraseanet::technique::date-edit-format"
+#~ msgstr "YYYY/MM/DD"
+
+#~ msgid "phraseanet::technique::date-edit-explain"
+#~ msgstr "aaaa/mm/jj"
+
+#~ msgid "phraseanet::technique::time-edit-format"
+#~ msgstr "HH:MM:SS"
+
+#~ msgid "phraseanet::technique::time-edit-explain"
+#~ msgstr "hh:mm:ss"
 
 #~ msgid "Story description"
 #~ msgstr "Description du reportage"
