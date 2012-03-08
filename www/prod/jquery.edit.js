@@ -242,9 +242,8 @@ function editField(evt, meta_struct_id)
       });
 
 
-    if(p4.edit.T_fields[meta_struct_id].explain ||
-      p4.edit.T_fields[meta_struct_id].maxLength > 0)
-      {
+    if(p4.edit.T_fields[meta_struct_id].maxLength > 0)
+    {
       var idexplain = $("#idExplain");
       idexplain.html('');
 
