@@ -3231,3 +3231,7 @@ dans l'onglet thesaurus : arbres, menus contextuels
   border:1px dotted #CCCCCC;
   z-index:10000;
 }
+
+#BasketBrowser .diapo .title{
+  height:16px;
+}
