@@ -607,15 +607,15 @@ class setup
       if ($Core->getCache()->isServer())
       {
         $stats = $Core->getCache()->getStats();
-        
+
         echo '<li>' . sprintf(_('setup::Serveur actif sur %s'), $registry->get('GV_cache_server_host') . ':' . $registry->get('GV_cache_server_port')) . '</li>';
         echo "<table>";
-        
+
         foreach ($stats as $name => $stat)
         {
             echo "<tr class='even'><td>" . $name . "</td><td> " . $stat . "</td></tr>";
         }
-        
+
         echo "</table>";
       }
       else
@@ -806,7 +806,7 @@ class setup
       $appConf = new \Alchemy\Phrasea\Core\Configuration\ApplicationSpecification();
 
       $appConf->delete();
-      
+
       return;
     }
 

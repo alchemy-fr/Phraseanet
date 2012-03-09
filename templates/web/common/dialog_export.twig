@@ -492,7 +492,7 @@
                                           count += parseInt($(count_el).val());
                                   }
                           });
-                          
+
                           {% set max_download = registry.get('GV_download_max', 120) %}
                           {% set alert_too_big%}
                                   "{% trans %} You can not directly download more than {{max_download}} Mo ; time to package all documents is too long{% endtrans %}\n"+

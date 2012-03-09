@@ -40,6 +40,7 @@ class ArrayCache extends DoctrineArray implements Cache
     {
       throw new Exception(sprintf('Unable to find key %s', $id));
     }
+
     return $this->fetch($id);
   }
 

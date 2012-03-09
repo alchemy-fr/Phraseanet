@@ -110,7 +110,7 @@ class Story implements ControllerProviderInterface
                     , 'meta_id' => null
                     , 'value' => $value
                 );
-                
+
                 break;
               }
 
@@ -334,7 +334,7 @@ class Story implements ControllerProviderInterface
                       }
                       catch (\Exception $e)
                       {
-                        
+
                       }
 
                       $Serializer = $app['Core']['Serializer'];

@@ -300,6 +300,7 @@ class module_console_fileEnsureProductionSetting extends Command
       $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
       $this->errors++;
     }
+
     return;
   }
 
@@ -441,6 +442,7 @@ class module_console_fileEnsureProductionSetting extends Command
     {
       $config = new \Doctrine\DBAL\Configuration();
       $conn   = \Doctrine\DBAL\DriverManager::getConnection($connexion->all(), $config);
+
       return true;
     }
     catch (\Exception $e)
@@ -896,6 +898,7 @@ class module_console_fileEnsureProductionSetting extends Command
     {
       return false;
     }
+
     return $server === $Service->getDriver()->isServer();
   }
 

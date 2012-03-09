@@ -645,7 +645,7 @@ class module_report_activity extends module_report
           {
             unset($this->result[$i]);
           }
-          
+
           if (isset($this->result[$i]['poiddoc']) && isset($this->result[$i]['poidprev']))
           {
             $this->result[$i]['poiddoc'] = p4string::format_octets($this->result[$i]['poiddoc']);
@@ -653,7 +653,7 @@ class module_report_activity extends module_report
           }
         }
 
-        
+
         $i++;
 
         $this->result[$i]['nbprev'] = 0;
@@ -692,7 +692,7 @@ class module_report_activity extends module_report
 
       $save_user = $user;
     }
-    
+
     unset($this->result[$i]);
     $nb_row = $i + 1;
     $this->total = $nb_row;
@@ -772,7 +772,7 @@ class module_report_activity extends module_report
           }
           catch (Exception $e)
           {
-            
+
           }
         }
         elseif ($value == "size")

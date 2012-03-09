@@ -293,7 +293,7 @@ return call_user_func(
           $basket_collection = $repository->findActiveValidationAndBasketByUser(
             $app['Core']->getAuthenticatedUser()
           );
-          
+
           $basket = $repository->findUserBasket(
             $ssel_id
             , $app['Core']->getAuthenticatedUser()

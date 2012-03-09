@@ -226,15 +226,15 @@ if (!is_null($templates) || !is_null($parm['deny']) || !is_null($parm['accept'])
 
         bodySize.y = $(window).height();
         bodySize.x = $(window).width();
-        
+
         var $heightd =  $('#tab_demandes').outerHeight(true);
         var maxSize = (bodySize.y - 120);
-        
+
         if($heightd > maxSize)
         {
           $('#tab_demandes').height(maxSize);
         }
-        
+
       }
       $(document).ready(function(){
 

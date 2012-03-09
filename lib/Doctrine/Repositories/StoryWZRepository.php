@@ -56,6 +56,7 @@ class StoryWZRepository extends EntityRepository
                 {
                   return 0;
                 }
+
                 return ($a < $b) ? -1 : 1;
               });
 

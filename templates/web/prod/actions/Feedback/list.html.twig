@@ -93,7 +93,7 @@
         <div class="PNB" style="top:40px;height:120px;bottom:auto;">
           <table style="table-layout:fixed;width:100%;">
             <tr>
-              <td> 
+              <td>
                 <label>{% trans 'Activite' %}</label>
               </td>
               <td>
@@ -102,10 +102,10 @@
               <td >
                 <label>{% trans 'Company' %}</label>
               </td>
-              <td > 
+              <td >
                 <label>{% trans 'Country' %}</label>
               </td>
-              <td >  
+              <td >
                 <label>{% trans 'Position' %}</label>
               </td>
             </tr>
@@ -135,7 +135,7 @@
                 </select>
               </td>
               <td>
-               
+
                 <select size="5" multiple="multiple" name="Country[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Code, Country in query.getRelatedCountries() %}
@@ -144,7 +144,7 @@
                 </select>
               </td>
               <td >
-               
+
                 <select size="5" multiple="multiple" name="Position[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Position in query.getRelatedPositions() %}

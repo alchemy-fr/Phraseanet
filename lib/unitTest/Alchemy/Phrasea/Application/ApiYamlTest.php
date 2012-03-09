@@ -401,7 +401,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     $this->evaluateBadRequestRoute($route, array('GET'));
     $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
   }
-  
+
   public function testRecordsMetadatasRoute()
   {
     foreach (static::$databoxe_ids as $databox_id)
@@ -1243,7 +1243,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
       $this->assertTrue(is_string($meta["value"]));
     }
   }
-  
+
   protected function evaluateRecordsMetadataResponse($content)
   {
     $this->assertArrayHasKey("metadatas", $content["response"]);

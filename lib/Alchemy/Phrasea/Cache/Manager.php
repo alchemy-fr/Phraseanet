@@ -88,7 +88,7 @@ class Manager
     if ($this->hasChange($cacheKey, $service_name))
     {
       $driver->flush();
-      
+
       if ($write)
       {
         $this->registry[$cacheKey] = $service_name;

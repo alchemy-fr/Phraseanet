@@ -49,6 +49,7 @@ class Configuration
     {
       $specifications = new Configuration\ApplicationSpecification();
     }
+
     return new self($specifications, $environment);
   }
 

@@ -35,6 +35,7 @@ $extractDateFields = function(\Alchemy\Phrasea\Core $Core) {
       $date_sort_fields[$date['fieldname']] = $date['fieldname'];
     }
   }
+
   return $date_sort_fields;
 };
 

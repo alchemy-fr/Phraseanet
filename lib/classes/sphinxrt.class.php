@@ -99,6 +99,7 @@ class sphinxrt
     $cl = new SphinxClient();
 
     if ($cl->Status() === false)
+
       return $this;
 
     $cl->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));

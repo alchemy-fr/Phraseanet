@@ -138,17 +138,17 @@ class Bridge_Api_Flickr_Container implements Bridge_Api_ContainerInterface
     return $this->type;
   }
 
-  
+
   public function get_duration()
   {
     return '';
   }
-  
+
   public function get_category()
   {
     return '';
   }
-    
+
   public function is_private()
   {
     return null;

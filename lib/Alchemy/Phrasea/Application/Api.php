@@ -315,8 +315,8 @@ return call_user_func(function()
           return $app['response']($result);
         }
       );
-      
-      
+
+
       $route = '/records/{databox_id}/{record_id}/caption/';
       $app->get(
       $route, function($databox_id, $record_id) use ($app)

@@ -207,7 +207,7 @@ class API_V1_adapter extends API_V1_Abstract
   public function caption_records(Request $request, $databox_id, $record_id)
   {
     $result = new API_V1_result($request, $this);
-    
+
     $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
     $fields = $record->get_caption()->get_fields();
     $ret = array();
@@ -220,9 +220,10 @@ class API_V1_adapter extends API_V1_Abstract
       );
     }
     $result->set_datas($ret);
+
     return $result;
   }
-  
+
   /**
    * Get an API_V1_result containing the results of a records search
    *

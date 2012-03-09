@@ -53,12 +53,12 @@ class API_OAuth2_Form_DevAppDesktop
 
   /**
    *
-   * @var string 
+   * @var string
    */
   public $type;
   public $scheme_website;
   public $urlwebsite;
-  
+
   /**
    *
    * @param Request $request
@@ -116,7 +116,7 @@ class API_OAuth2_Form_DevAppDesktop
 
   /**
    *
-   * @return string 
+   * @return string
    */
   public function getType()
   {
@@ -132,7 +132,7 @@ class API_OAuth2_Form_DevAppDesktop
   {
     return $this->urlwebsite;
   }
-  
+
   public function getSchemeCallback()
   {
     return '';
@@ -152,6 +152,7 @@ class API_OAuth2_Form_DevAppDesktop
     $metadata->addPropertyConstraint('description', new Constraints\NotBlank($blank));
     $metadata->addPropertyConstraint('urlwebsite', new Constraints\NotBlank($blank));
     $metadata->addPropertyConstraint('urlwebsite', new Constraints\Url($url));
+
     return;
   }
 

@@ -222,13 +222,13 @@ class set_order extends set_abstract
     $core = \bootstrap::getCore();
 
     $em = $core->getEntityManager();
-    
+
     $Basket = null;
     /* @var $repository \Repositories\BasketRepository */
     if($this->ssel_id)
     {
       $repository = $em->getRepository('\Entities\Basket');
-      
+
       try
       {
         $Basket = $repository->findUserBasket($this->ssel_id, $core->getAuthenticatedUser(), false);
@@ -284,8 +284,8 @@ class set_order extends set_abstract
         $Basket->addBasketElement($BasketElement);
 
         $em->persist($BasketElement);
-        
-        
+
+
         $params = array(
             ':usr_id' => $session->get_usr_id()
             , ':order_id' => $this->id

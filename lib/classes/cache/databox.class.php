@@ -59,6 +59,7 @@ class cache_databox
     if ($date <= $last_update)
     {
       self::$refreshing = false;
+
       return;
     }
 

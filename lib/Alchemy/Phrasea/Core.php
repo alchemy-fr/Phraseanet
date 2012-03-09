@@ -279,7 +279,7 @@ class Core extends \Pimple
     {
       return \User_Adapter::getInstance($session->get_usr_id(), $appbox);
     }
-    
+
     return null;
   }
 

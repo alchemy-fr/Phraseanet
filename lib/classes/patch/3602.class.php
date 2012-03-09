@@ -64,9 +64,9 @@ class patch_3602 implements patchInterface
     }
     catch(\PDOException $e)
     {
-      
+
     }
-    
+
     return true;
   }
 

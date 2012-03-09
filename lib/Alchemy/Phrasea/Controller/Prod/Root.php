@@ -44,7 +44,7 @@ class Root implements ControllerProviderInterface
               $registry = $app['Core']->getRegistry();
               $user = $app['Core']->getAuthenticatedUser();
               $cssPath = $registry->get('GV_RootPath') . 'www/skins/prod/';
-              
+
               $css = array();
               $cssfile = false;
 
@@ -79,7 +79,7 @@ class Root implements ControllerProviderInterface
               $thjslist = "";
 
               $queries_topics = '';
-              
+
               if ($registry->get('GV_client_render_topics') == 'popups')
               {
                 $queries_topics = \queries::dropdown_topics();
@@ -90,7 +90,7 @@ class Root implements ControllerProviderInterface
               }
 
               $sbas = $bas2sbas = array();
-              
+
               foreach ($appbox->get_databoxes() as $databox)
               {
                 $sbas_id = $databox->get_sbas_id();

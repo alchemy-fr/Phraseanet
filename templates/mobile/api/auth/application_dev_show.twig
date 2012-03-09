@@ -27,10 +27,10 @@
       <td>{% trans 'URL de callback' %}</td>
       {% if app.get_type == constant('API_OAuth2_Application::DESKTOP_TYPE') %}
         <td>
-            <span>{{app.get_redirect_uri}}</span> 
+            <span>{{app.get_redirect_uri}}</span>
         </td>
       {% else %}
-        <td class="url_callback"><span class="url_callback_input">{{app.get_redirect_uri}}</span> 
+        <td class="url_callback"><span class="url_callback_input">{{app.get_redirect_uri}}</span>
           <button type="button" class="save_callback" style="display:none;">save</button>
           <button type="button" class="modifier_callback" style="display:none;">modifier</button>
         </td>

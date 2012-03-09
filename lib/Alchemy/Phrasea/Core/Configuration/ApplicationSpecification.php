@@ -134,12 +134,14 @@ class ApplicationSpecification implements Specification
       $this->getConfigurationsFile();
       $this->getConnexionsFile();
       $this->getServicesFile();
+
       return true;
     }
     catch (\Exception $e)
     {
 
     }
+
     return false;
   }
 

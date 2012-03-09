@@ -763,7 +763,7 @@ class Push implements ControllerProviderInterface
         {
           $query->havePositions($request->get('Position'));
         }
-        
+
         $sort = $request->get('srt', 'usr_creationdate');
         $ord  = $request->get('ord', 'desc');
 

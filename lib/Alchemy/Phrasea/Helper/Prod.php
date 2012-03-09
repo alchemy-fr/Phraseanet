@@ -35,10 +35,10 @@ class Prod extends Helper
     $user = $this->getCore()->getAuthenticatedUser();
 
     if(!$user instanceof \User_Adapter)
-    {  
+    {
       return $search_datas;
     }
-    
+
     $searchSet = $user->getPrefs('search');
 
     foreach ($user->ACL()->get_granted_sbas() as $databox)
