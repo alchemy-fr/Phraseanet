@@ -84,15 +84,6 @@ class Configuration
 
     $cacheService = "array_cache";
 
-    if (extension_loaded('apc'))
-    {
-      $cacheService = "apc_cache";
-    }
-    elseif (extension_loaded('xcache'))
-    {
-      $cacheService = "xcache_cache";
-    }
-
     $retrieve_old_credentials = function(\SplFileObject $connexionInc)
       {
         require $connexionInc->getPathname();

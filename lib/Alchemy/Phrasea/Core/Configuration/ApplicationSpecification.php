@@ -31,21 +31,21 @@ class ApplicationSpecification implements Specification
   public function setConfigurations($configurations)
   {
     return file_put_contents(
-        $this->getConfigurationsPathFile(), $this->parser->dump($configurations, 5)
+        $this->getConfigurationsPathFile(), $this->parser->dump($configurations, 7)
     );
   }
 
   public function setConnexions($connexions)
   {
     return file_put_contents(
-        $this->getConnexionsPathFile(), $this->parser->dump($connexions, 5)
+        $this->getConnexionsPathFile(), $this->parser->dump($connexions, 7)
     );
   }
 
   public function setServices($services)
   {
     return file_put_contents(
-        $this->getServicesPathFile(), $this->parser->dump($services, 5)
+        $this->getServicesPathFile(), $this->parser->dump($services, 7)
     );
   }
 

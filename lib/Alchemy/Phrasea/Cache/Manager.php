@@ -111,7 +111,7 @@ class Manager
     $this->registry[$name] = $driver;
 
     $datas = sprintf("#LastUpdate: %s\n", $date->format(DATE_ISO8601))
-            . $this->parser->dump($this->registry);
+            . $this->parser->dump($this->registry, 6);
 
     file_put_contents($this->cacheFile->getPathname(), $datas);
   }
