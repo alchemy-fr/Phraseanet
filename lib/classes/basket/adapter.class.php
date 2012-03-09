@@ -1215,7 +1215,7 @@ class basket_adapter implements cache_cacheableInterface
       $expires = new DateTime('+10 days');
       $url = $this->appbox->get_registry()->get('GV_ServerName')
               . 'lightbox/index.php?LOG=' . random::getUrlToken(
-                      'validate'
+                      \random::TYPE_VALIDATE
                       , $row['usr_id']
                       , $expires
                       , $this->get_ssel_id()

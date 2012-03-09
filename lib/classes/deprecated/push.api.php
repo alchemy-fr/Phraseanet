@@ -1541,7 +1541,8 @@ function pushIt($usr, $newBask, $parmLST, $users, $mail_content, $lng, $accuse)
       $from = trim($me->get_email()) != "" ? $me->get_email() : false;
 
 
-      $url = $registry->get('GV_ServerName') . 'lightbox/index.php?LOG=' . random::getUrlToken('view', $user->get_id(), null, $new_basket->get_ssel_id());
+      $url = $registry->get('GV_ServerName') . 'lightbox/index.php?LOG='
+        . random::getUrlToken(\random::TYPE_VIEW, $user->get_id(), null, $new_basket->get_ssel_id());
 
       if ($me->get_id() == $user->get_id())
         $my_link = $url;
@@ -1621,7 +1622,8 @@ function pushValidation($usr, $ssel_id, $listUsrs, $time, $mail_content, $accuse
 
     $message = $mail_content . "<br/>\n<br/>\n";
 
-    $url = $registry->get('GV_ServerName') . 'lightbox/index.php?LOG=' . random::getUrlToken('validate', $user->get_id(), $expires, $ssel_id);
+    $url = $registry->get('GV_ServerName') . 'lightbox/index.php?LOG='
+      . random::getUrlToken(\random::TYPE_VALIDATE, $user->get_id(), $expires, $ssel_id);
 
     $name = $user->get_display_name();
 
