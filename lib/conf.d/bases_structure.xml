@@ -3816,7 +3816,7 @@
           </field>
           <field>
             <name>type</name>
-            <type>enum('view','validate','password','rss','email','download')</type>
+            <type>enum('FEED_ENTRY', 'view','validate','password','rss','email','download')</type>
             <null></null>
             <extra></extra>
             <collation>ascii_bin</collation>

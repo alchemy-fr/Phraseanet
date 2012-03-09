@@ -72,11 +72,10 @@ class gatekeeper
   function check_directory()
   {
     $request = http_request::getInstance();
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance();
     $session = $appbox->get_session();
 
     if (http_request::is_command_line())
-
       return;
 
     if (isset($_SERVER['PHP_SELF']) && trim($_SERVER['PHP_SELF']))
@@ -100,7 +99,7 @@ class gatekeeper
       try
       {
         $cookie = Session_Handler::get_cookie('persistent');
-        $auth = new Session_Authentication_PersistentCookie($appbox, $cookie);
+        $auth   = new Session_Authentication_PersistentCookie($appbox, $cookie);
         $session->restore($auth->get_user(), $auth->get_ses_id());
       }
       catch (Exception $e)
@@ -120,9 +119,8 @@ class gatekeeper
           break;
         case 'thesaurus2':
           if ($this->_PHP_SELF == '/thesaurus2/xmlhttp/getterm.x.php'
-                  || $this->_PHP_SELF == '/thesaurus2/xmlhttp/searchcandidate.x.php'
-                  || $this->_PHP_SELF == '/thesaurus2/xmlhttp/getsy.x.php')
-
+            || $this->_PHP_SELF == '/thesaurus2/xmlhttp/searchcandidate.x.php'
+            || $this->_PHP_SELF == '/thesaurus2/xmlhttp/getsy.x.php')
             return;
           phrasea::redirect('/login/?redirect=/thesaurus2');
           break;
@@ -131,7 +129,6 @@ class gatekeeper
           break;
         case 'admin':
           if ($this->_script_name === 'runscheduler.php')
-
             return;
           phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
           break;
@@ -151,7 +148,6 @@ class gatekeeper
           return;
         case 'setup':
           if ($appbox->upgradeavailable())
-
             return;
           else
             phrasea::redirect('/login/');
@@ -230,7 +226,7 @@ class gatekeeper
    */
   protected function give_guest_access()
   {
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance();
     $request = http_request::getInstance();
     $session = $appbox->get_session();
 
@@ -246,7 +242,7 @@ class gatekeeper
       catch (Exception $e)
       {
         $url = '/login/?redirect=' . $parm['redirect']
-                . '&error=' . urlencode($e->getMessage());
+          . '&error=' . urlencode($e->getMessage());
         phrasea::redirect($url);
       }
       phrasea::redirect('/' . $this->_directory . '/index.php');
@@ -262,13 +258,12 @@ class gatekeeper
    */
   protected function token_access()
   {
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance();
     $request = new http_request();
     $session = $appbox->get_session();
-    $parm = $request->get_parms('LOG');
+    $parm    = $request->get_parms('LOG');
 
     if (is_null($parm["LOG"]))
-
       return $this;
 
     try
@@ -287,7 +282,19 @@ class gatekeeper
     {
       $datas = random::helloToken($parm['LOG']);
 
-      return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
+      switch ($datas['type'])
+      {
+        default:
+          return $this;
+          break;
+        case \random::TYPE_FEED_ENTRY:
+          return phrasea::redirect("/lightbox/feeds/entry/" . $datas['datas'] . "/");
+          break;
+        case \random::TYPE_VALIDATE:
+        case \random::TYPE_VIEW:
+          return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
+          break;
+      }
     }
     catch (Exception_NotFound $e)
     {
@@ -305,7 +312,7 @@ class gatekeeper
    */
   public function require_session()
   {
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance();
     $session = $appbox->get_session();
     if ($session->is_authenticated())
     {

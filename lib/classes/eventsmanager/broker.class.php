@@ -21,7 +21,7 @@ class eventsmanager_broker
   }
 
   /**
-   * @return eventsmanager
+   * @return \eventsmanager_broker
    */
   public static function getInstance(appbox &$appbox)
   {
