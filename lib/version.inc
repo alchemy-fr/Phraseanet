@@ -15,5 +15,5 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-define('GV_version', '3.5.12.0');
+define('GV_version', '3.5.13.0');
 define('GV_version_name', 'Baobab');
