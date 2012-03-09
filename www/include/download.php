@@ -56,7 +56,7 @@ $list['export_name'] = $exportname . '.zip';
 
 $endDate = new DateTime('+3 hours');
 
-$url = random::getUrlToken('download', $session->get_usr_id(), $endDate, serialize($list));
+$url = random::getUrlToken(\random::TYPE_DOWNLOAD, $session->get_usr_id(), $endDate, serialize($list));
 
 if ($url)
 {

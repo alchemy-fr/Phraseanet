@@ -258,7 +258,7 @@ class Push implements ControllerProviderInterface
 
             $url = $registry->get('GV_ServerName')
               . 'lightbox/index.php?LOG='
-              . \random::getUrlToken('view', $user_receiver->get_id(), null, $Basket->getId());
+              . \random::getUrlToken(\random::TYPE_VIEW, $user_receiver->get_id(), null, $Basket->getId());
 
             $params = array(
               'from'       => $user->get_id()
@@ -489,7 +489,7 @@ class Push implements ControllerProviderInterface
 
             $url = $registry->get('GV_ServerName')
               . 'lightbox/index.php?LOG='
-              . \random::getUrlToken('view', $participant_user->get_id(), null, $Basket->getId());
+              . \random::getUrlToken(\random::TYPE_VIEW, $participant_user->get_id(), null, $Basket->getId());
 
             $params = array(
               'from'       => $user->get_id()

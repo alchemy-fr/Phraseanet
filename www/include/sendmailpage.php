@@ -61,7 +61,7 @@ $list['email'] = $Request->get("destmail", "");
 $endate_obj = new DateTime('+1 day');
 $endDate = $endate_obj;
 
-$token = random::getUrlToken('email', false, $endDate, serialize($list));
+$token = random::getUrlToken(\random::TYPE_EMAIL, false, $endDate, serialize($list));
 
 //GET EMAILS
 

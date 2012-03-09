@@ -127,7 +127,7 @@ class mail
   {
     $registry = registry::get_instance();
     $date = new DateTime('1 day');
-    $token = random::getUrlToken('email', $usr_id, $date, $email);
+    $token = random::getUrlToken(\random::TYPE_EMAIL, $usr_id, $date, $email);
 
     $url = $registry->get('GV_ServerName') . 'login/reset-email.php?token=' . $token;
 
@@ -174,7 +174,7 @@ class mail
   {
     $registry = registry::get_instance();
     $expire = new DateTime('+3 days');
-    $token = random::getUrlToken('password', $usr_id, $expire, $email);
+    $token = random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $expire, $email);
 
     $subject = _('login::register: sujet email : confirmation de votre adresse email');
 

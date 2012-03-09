@@ -3163,7 +3163,17 @@ function set_up_feed_box(data)
       url: $form.attr('action'),
       data: $form.serializeArray(),
       dataType:'json',
+      beforeSend:function(){
+        $('button', $feed_box).attr('disabled', 'disabled');
+      },
+      error:function(){
+        $('button', $feed_box).removeAttr('disabled');
+      },
+      timeout:function(){
+        $('button', $feed_box).removeAttr('disabled');
+      },
       success: function(data){
+        $('button', $feed_box).removeAttr('disabled');
         if(data.error === true)
         {
           alert(data.message);
