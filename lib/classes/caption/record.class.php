@@ -50,10 +50,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
     $this->record = $record;
     $this->databox = $databox;
 
-
-    $this->retrieve_fields();
-
-
     return $this;
   }
 
@@ -182,7 +178,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
   protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine = null)
   {
     $fields = array();
-    foreach ($this->fields as $meta_struct_id => $field)
+    foreach ($this->retrieve_fields() as $meta_struct_id => $field)
     {
       if (is_array($grep_fields) && !in_array($field->get_name(), $grep_fields))
         continue;

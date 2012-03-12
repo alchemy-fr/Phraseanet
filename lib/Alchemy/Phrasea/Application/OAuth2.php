@@ -207,6 +207,7 @@ return call_user_func(function()
                             if ($oauth2_adapter->isNativeApp($params['redirect_uri']))
                             {
                               $params = $oauth2_adapter->finishNativeClientAuthorization($app_authorized, $params);
+                              $params['user'] = $app['user'];
                               $html = $twig->render("api/auth/native_app_access_token.twig", $params);
 
                               return new Response($html, 200, array("content-type" => "text/html"));
@@ -270,7 +271,7 @@ return call_user_func(function()
                    */
                   $route = "/applications/dev/new";
                   $app->get($route, function() use ($app)
-                          {           
+                          {
                             $var = array("violations" => null, 'form' => null, 'request' => $app['request']);
 
                             return $app['response']('api/auth/application_dev_new.twig', $var);

@@ -50,10 +50,10 @@ class API_OAuth2_Form_DevAppInternet
    * @var string
    */
   public $callback;
-  
+
   public $scheme_website;
   public $scheme_callback;
-  
+
   public $urlwebsite;
   public $urlcallback;
 
@@ -71,10 +71,10 @@ class API_OAuth2_Form_DevAppInternet
     $this->scheme_website = $request->get('scheme-website', 'http://');
     $this->scheme_callback = $request->get('scheme-callback', 'http://');
     $this->type = API_OAuth2_Application::WEB_TYPE;
-    
+
     $this->urlwebsite = $this->scheme_website.$this->website;
     $this->urlcallback = $this->scheme_callback.$this->callback;
-    
+
     return $this;
   }
 
@@ -116,7 +116,7 @@ class API_OAuth2_Form_DevAppInternet
 
   /**
    *
-   * @return string 
+   * @return string
    */
   public function getType()
   {
@@ -159,6 +159,7 @@ class API_OAuth2_Form_DevAppInternet
     $metadata->addPropertyConstraint('urlwebsite', new Constraints\Url($url));
     $metadata->addPropertyConstraint('urlcallback', new Constraints\NotBlank($blank));
     $metadata->addPropertyConstraint('urlcallback', new Constraints\Url($url));
+
     return;
   }
 

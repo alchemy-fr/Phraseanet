@@ -121,7 +121,7 @@ class UserProvider implements ControlProviderInterface
   public function getRessource($id)
   {
     $Core = \bootstrap::getCore();
-    
+
     return \User_Adapter::getInstance($id, \appbox::get_instance($Core));
   }
 

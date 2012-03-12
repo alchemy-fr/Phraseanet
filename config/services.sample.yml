@@ -52,11 +52,11 @@ Orm:
       dbal: main_connexion
       cache:
         query:
-          service: Cache\apc_cache
+          service: Cache\array_cache
         result:
-          service: Cache\memcache_cache
+          service: Cache\array_cache
         metadata:
-          service: Cache\apc_cache
+          service: Cache\array_cache
 
 TemplateEngine:
   #Define a template engine service

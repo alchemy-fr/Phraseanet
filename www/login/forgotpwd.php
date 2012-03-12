@@ -46,7 +46,7 @@ if (isset($parm["mail"]) && trim($parm["mail"]) != "")
   }
 
   $date = new DateTime('1 day');
-  $url = random::getUrlToken('password', $user->get_id(), $date);
+  $url = random::getUrlToken(\random::TYPE_PASSWORD, $user->get_id(), $date);
 
   if ($url !== false)
   {

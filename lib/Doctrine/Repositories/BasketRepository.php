@@ -37,11 +37,9 @@ class BasketRepository extends EntityRepository
    */
   public function findActiveByUser(\User_Adapter $user, $sort = null)
   {
-    $dql = 'SELECT b, e, s, p
+    $dql = 'SELECT b
             FROM Entities\Basket b
             LEFT JOIN b.elements e
-            LEFT JOIN b.validation s
-            LEFT JOIN s.participants p
             WHERE b.usr_id = :usr_id
             AND b.archived = false';
 
@@ -57,9 +55,6 @@ class BasketRepository extends EntityRepository
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('usr_id' => $user->get_id()));
 
-//    $idCache = "_active_by_user_" . ($sort === null ? "" : $sort. "_" )  . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $idCache);
-
     return $query->getResult();
   }
 
@@ -71,7 +66,7 @@ class BasketRepository extends EntityRepository
    */
   public function findUnreadActiveByUser(\User_Adapter $user)
   {
-    $dql = 'SELECT b, e, s, p
+    $dql = 'SELECT b
             FROM Entities\Basket b
             JOIN b.elements e
             LEFT JOIN b.validation s
@@ -79,9 +74,11 @@ class BasketRepository extends EntityRepository
             WHERE b.archived = false
             AND (
               (b.usr_id = :usr_id_owner AND b.is_read = false)
-              OR (b.usr_id != :usr_id_ownertwo AND p.usr_id = :usr_id_participant
-                    AND p.is_aware = false)
+              OR (b.usr_id != :usr_id_ownertwo
+                  AND p.usr_id = :usr_id_participant
+                  AND p.is_aware = false)
               )
+            AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())
             ORDER BY e.ord ASC';
 
     $params = array(
@@ -92,9 +89,6 @@ class BasketRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
-
-//    $idCache = "findUnreadActiveByUser" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $idCache);
 
     return $query->getResult();
   }
@@ -108,7 +102,7 @@ class BasketRepository extends EntityRepository
    */
   public function findActiveValidationByUser(\User_Adapter $user, $sort = null)
   {
-    $dql = 'SELECT b, e, s, p, v
+    $dql = 'SELECT b
             FROM Entities\Basket b
             JOIN b.elements e
             JOIN e.validation_datas v
@@ -129,9 +123,6 @@ class BasketRepository extends EntityRepository
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array(1        => $user->get_id(), 2        => $user->get_id()));
 
-//    $idCache = "_active_validation_by_user_" . $user->get_id() . "_" . $sort . Entities\Basket::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $idCache);
-
     return $query->getResult();
   }
 
@@ -146,20 +137,14 @@ class BasketRepository extends EntityRepository
    */
   public function findUserBasket($basket_id, \User_Adapter $user, $requireOwner)
   {
-    $dql = 'SELECT b, e, s, p, v
+    $dql = 'SELECT b, e
             FROM Entities\Basket b
             LEFT JOIN b.elements e
-            LEFT JOIN e.validation_datas v
-            LEFT JOIN b.validation s
-            LEFT JOIN s.participants p
             WHERE b.id = :basket_id
             ORDER BY e.ord ASC';
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('basket_id' => $basket_id));
-
-//    $cacheId    = "_find_user_" . $basket_id . Entities\Basket::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $cacheId);
 
     $basket = $query->getOneOrNullResult();
 
@@ -173,7 +158,6 @@ class BasketRepository extends EntityRepository
     {
       $participant = false;
 
-      $basket = $this->_em->merge($basket);
       if ($basket->getValidation() && !$requireOwner)
       {
         try
@@ -213,9 +197,6 @@ class BasketRepository extends EntityRepository
     $query   = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-//    $idCache = "_containing_record_" . $record->get_serialize_key() . Entities\Basket::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $idCache);
-
     return $query->getResult();
   }
 
@@ -235,7 +216,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::VALIDATION_DONE:
-        $dql     = 'SELECT b, e, s
+        $dql     = 'SELECT b, e
                 FROM Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation s
@@ -247,7 +228,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::VALIDATION_SENT:
-        $dql    = 'SELECT b, v, e
+        $dql    = 'SELECT b, e
                 FROM Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation v
@@ -257,15 +238,26 @@ class BasketRepository extends EntityRepository
         );
         break;
       default:
-        $dql     = 'SELECT b, e, s, p
+        $dql     = 'SELECT b, e
                 FROM Entities\Basket b
-                JOIN b.elements e
+                LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id OR p.usr_id = :validating_usr_id)';
         $params  = array(
           'usr_id'            => $user->get_id(),
           'validating_usr_id' => $user->get_id()
+        );
+        break;
+      case self::MYBASKETS:
+        $dql     = 'SELECT b, e
+                FROM Entities\Basket b
+                LEFT JOIN b.elements e
+                LEFT JOIN b.validation s
+                LEFT JOIN s.participants p
+                WHERE (b.usr_id = :usr_id)';
+        $params  = array(
+          'usr_id'            => $user->get_id()
         );
         break;
     }
@@ -286,7 +278,7 @@ class BasketRepository extends EntityRepository
       $params['description'] = '%' . $query . '%';
     }
 
-    $dql .= ' ORDER BY e.ord ASC';
+    $dql .= ' ORDER BY b.id DESC, e.ord ASC';
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
@@ -294,12 +286,41 @@ class BasketRepository extends EntityRepository
     $count         = Paginate::getTotalQueryResults($query);
     $paginateQuery = Paginate::getPaginateQuery($query, $offset, $perPage);
 
-//    $idCache = "_" . $type . "_workzone_basket_" . $user->get_id() . Entities\Basket::CACHE_SUFFIX;
-//    $paginateQuery->useResultCache(true, 1800, $idCache);
-
     $result = $paginateQuery->getResult();
 
     return array('count'  => $count, 'result' => $result);
+  }
+
+  /**
+   * Return all actives validation where current user is involved and user basket
+   * @param \User_Adapter $user
+   * @param type $sort
+   * @return Array
+   */
+  public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
+  {
+    $dql = 'SELECT b, e
+            FROM Entities\Basket b
+            LEFT JOIN b.elements e
+            LEFT JOIN b.validation s
+            LEFT JOIN s.participants p
+            WHERE (b.usr_id = :usr_id
+            AND b.archived = false) OR (b.usr_id != :usr_id AND p.usr_id = :usr_id
+             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()))';
+
+    if ($sort == 'date')
+    {
+      $dql .= ' ORDER BY b.created DESC, e.ord ASC';
+    }
+    elseif ($sort == 'name')
+    {
+      $dql .= ' ORDER BY b.name ASC, e.ord ASC';
+    }
+
+    $query = $this->_em->createQuery($dql);
+    $query->setParameters(array('usr_id' => $user->get_id()));
+
+    return $query->getResult();
   }
 
 }

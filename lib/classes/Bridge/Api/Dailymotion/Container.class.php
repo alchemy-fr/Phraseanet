@@ -131,4 +131,18 @@ class Bridge_Api_Dailymotion_Container implements Bridge_Api_ContainerInterface
     return $this->url;
   }
 
+  public function get_duration()
+  {
+    return '';
+  }
+
+  public function get_category()
+  {
+    return '';
+  }
+
+  public function is_private()
+  {
+    return null;
+  }
 }

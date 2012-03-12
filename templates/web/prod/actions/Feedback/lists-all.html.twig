@@ -1,16 +1,18 @@
 
       <div class="PNB10 lists">
         <h1>{% trans 'Lists' %}</h1>
-        <a href="/prod/lists/list/" class="list_adder link">
-          {% trans "Add" %}
-        </a>
-        <a href="/prod/lists/all/" class="list_refresh link">
-          {% trans "Refresh" %}
-        </a>
+        <span class="action">
+          <a href="/prod/lists/list/" class="list_adder link">
+            {% trans "Add" %}
+          </a>
+          <a href="/prod/lists/all/" class="list_refresh link">
+            {% trans "Refresh" %}
+          </a>
+        </span>
         <ul class="lists">
           {% for list in lists %}
             {% set length = '<span class="counter">' ~ list.getEntries().count() ~ '</span>' %}
-            <li class="list">
+            <li class="list" style="padding:2px;">
               <a href="/prod/push/edit-list/{{ list.getId() }}/" class="list_link">
                 {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
                   <img src="/skins/prod/Push/list-icon.png" />

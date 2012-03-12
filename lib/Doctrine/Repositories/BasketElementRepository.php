@@ -17,7 +17,7 @@ class BasketElementRepository extends EntityRepository
 
   public function findUserElement($element_id, \User_Adapter $user)
   {
-    $dql = 'SELECT e, b, s, p, vd
+    $dql = 'SELECT e
             FROM Entities\BasketElement e
             JOIN e.basket b
             LEFT JOIN e.validation_datas vd
@@ -35,9 +35,6 @@ class BasketElementRepository extends EntityRepository
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-//    $cacheId = "_user_basket_element_" . $element_id . "_" . $user->get_id() . Entities\BasketElement::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $cacheId);
-
     $element = $query->getOneOrNullResult();
 
     /* @var $element \Entities\BasketElement */
@@ -51,7 +48,7 @@ class BasketElementRepository extends EntityRepository
 
   public function findElementsByRecord(\record_adapter $record)
   {
-    $dql = 'SELECT e, b, s, p
+    $dql = 'SELECT e
             FROM Entities\BasketElement e
             JOIN e.basket b
             LEFT JOIN b.validation s
@@ -67,9 +64,6 @@ class BasketElementRepository extends EntityRepository
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-//    $cacheId = "_basket_element_by_record_" . $record->get_serialize_key() . Entities\BasketElement::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $cacheId);
-
     return $query->getResult();
   }
 
@@ -81,7 +75,7 @@ class BasketElementRepository extends EntityRepository
    */
   public function findReceivedElementsByRecord(\record_adapter $record, \User_Adapter $user)
   {
-    $dql = 'SELECT e, b, s, p
+    $dql = 'SELECT e
             FROM Entities\BasketElement e
             JOIN e.basket b
             LEFT JOIN b.validation s
@@ -100,15 +94,12 @@ class BasketElementRepository extends EntityRepository
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
-//    $cacheId = "_receveid_element_by_record_" . $record->get_serialize_key() . "_" . $user->getId() . Entities\BasketElement::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $cacheId);
-
     return $query->getResult();
   }
 
   public function findReceivedValidationElementsByRecord(\record_adapter $record, \User_Adapter $user)
   {
-    $dql = 'SELECT e, b, v, p
+    $dql = 'SELECT e
             FROM Entities\BasketElement e
             JOIN e.basket b
             JOIN b.validation v
@@ -125,9 +116,6 @@ class BasketElementRepository extends EntityRepository
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
-
-//    $cacheId = "_receveid_validation_element_by_record" . $record->get_serialize_key() . "_" . $user->getId() . Entities\BasketElement::CACHE_SUFFIX;
-//    $query->useResultCache(true, 1800, $cacheId);
 
     return $query->getResult();
   }

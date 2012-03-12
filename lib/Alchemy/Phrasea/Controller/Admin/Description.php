@@ -99,18 +99,6 @@ class Description implements ControllerProviderInterface
                       $field->set_dces_element($dces_element);
                       $field->save();
 
-                      if ($request->get('regname') == $field->get_id())
-                      {
-                        $field->set_regname();
-                      }
-                      if ($request->get('regdate') == $field->get_id())
-                      {
-                        $field->set_regdate();
-                      }
-                      if ($request->get('regdesc') == $field->get_id())
-                      {
-                        $field->set_regdesc();
-                      }
                     }
                     catch (\Exception $e)
                     {

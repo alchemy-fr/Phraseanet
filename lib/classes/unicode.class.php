@@ -1391,7 +1391,7 @@ class unicode
     return $no_diacritics;
   }
 
-  public function remove_nonazAZ09($string, $keep_underscores = true, $keep_minus = true)
+  public function remove_nonazAZ09($string, $keep_underscores = true, $keep_minus = true, $keep_dot = false)
   {
     $regexp = '/[a-zA-Z0-9';
     if ($keep_minus === true)
@@ -1402,6 +1402,11 @@ class unicode
     {
       $regexp .= '_';
     }
+    if ($keep_dot === true)
+    {
+      $regexp .= '\.';
+    }
+    
     $regexp .= ']{1}/';
 
     $string = $this->remove_diacritics($string);

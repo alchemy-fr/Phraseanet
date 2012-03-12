@@ -21,13 +21,15 @@
   <div data-role="content">
     {{ thumbnail.format100percent(record.get_preview(),'',session, record.get_thumbnail()) }}
     {% if basket_element.getBasket().getValidation() %}
-      <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
-        <input {% if basket_element.getUserValidationDatas(user).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
-          <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{% trans 'validation:: OUI' %}</label>
+      {% if basket_element.getBasket().getValidation().getParticipant(user).getCanAgree() %}
+        <fieldset data-role="controlgroup" data-type="horizontal" style="text-align:center;">
+          <input {% if basket_element.getUserValidationDatas(user).getAgreement() == true%}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-yes_{{basket_element.getId()}}" value="yes"  />
+            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-yes_{{basket_element.getId()}}">{% trans 'validation:: OUI' %}</label>
 
-        <input {% if basket_element.getUserValidationDatas(user).getAgreement() == false and basket_element.getUserValidationDatas(user).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
-          <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{% trans 'validation:: NON' %}</label>
-      </fieldset>
+          <input {% if basket_element.getUserValidationDatas(user).getAgreement() == false and basket_element.getUserValidationDatas(user).getAgreement() is not null %}checked="checked"{% endif %} type="radio" name="radio-view" id="radio-view-no_{{basket_element.getId()}}" value="no"  />
+            <label class="agreement_radio" style="width:130px;text-align:center;" for="radio-view-no_{{basket_element.getId()}}">{% trans 'validation:: NON' %}</label>
+        </fieldset>
+      {% endif %}
       <div style="text-align:center;margin:0 0 1em 0">
         <a href="/lightbox/ajax/NOTE_FORM/{{basket_element.getId()}}/" data-role="button" data-inline="true" data-rel="dialog" data-transition="slidedown">
           {% trans 'validation:: editer ma note' %}

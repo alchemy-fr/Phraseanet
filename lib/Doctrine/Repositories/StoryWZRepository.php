@@ -44,7 +44,26 @@ class StoryWZRepository extends EntityRepository
 
     if ($sort == 'name')
     {
-      uasort($stories, array('\\Repositories\\StoryWZRepository', 'title_compare'));
+      $sortedStories = array();
+      foreach ($stories as $story)
+      {
+        $sortedStories[] = $story->getRecord()->get_title();
+      }
+
+      uasort($sortedStories, function($a, $b)
+              {
+                if ($a == $b)
+                {
+                  return 0;
+                }
+
+                return ($a < $b) ? -1 : 1;
+              });
+
+      foreach ($sortedStories as $idStory => $titleStory)
+      {
+        $sortedStories[$idStory] = $stories[$idStory];
+      }
     }
 
     return $stories;
@@ -54,7 +73,7 @@ class StoryWZRepository extends EntityRepository
   {
     $story = $this->find($id);
 
-    if($story)
+    if ($story)
     {
       try
       {
@@ -66,7 +85,7 @@ class StoryWZRepository extends EntityRepository
         throw new \Exception_NotFound('Story not found');
       }
 
-      if($story->getUser()->get_id() !== $user->get_id())
+      if ($story->getUser()->get_id() !== $user->get_id())
       {
         throw new \Exception_Forbidden('You have not access to ths story');
       }
@@ -77,16 +96,6 @@ class StoryWZRepository extends EntityRepository
     }
 
     return $story;
-  }
-
-  protected static function title_compare(\Entities\StoryWZ $a, \Entities\StoryWZ $b)
-  {
-    if ($a->getRecord()->get_title() == $b->getRecord()->get_title())
-    {
-      return 0;
-    }
-
-    return ($a->getRecord()->get_title() < $b->getRecord()->get_title()) ? -1 : 1;
   }
 
   public function findUserStory(\User_Adapter $user, \record_adapter $Story)

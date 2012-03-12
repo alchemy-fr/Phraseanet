@@ -292,6 +292,7 @@ phrasea::headers();
             },
             success: function(data){
               alert(data.message);
+
               return;
             }
           });

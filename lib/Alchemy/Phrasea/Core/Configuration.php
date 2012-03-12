@@ -49,6 +49,7 @@ class Configuration
     {
       $specifications = new Configuration\ApplicationSpecification();
     }
+
     return new self($specifications, $environment);
   }
 
@@ -82,15 +83,6 @@ class Configuration
     $this->initialize();
 
     $cacheService = "array_cache";
-
-    if (extension_loaded('apc'))
-    {
-      $cacheService = "apc_cache";
-    }
-    elseif (extension_loaded('xcache'))
-    {
-      $cacheService = "xcache_cache";
-    }
 
     $retrieve_old_credentials = function(\SplFileObject $connexionInc)
       {

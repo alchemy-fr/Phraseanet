@@ -36,7 +36,7 @@
                       placeholder="{% trans 'admin::compte-utilisateur identifiant' %}"  />
               <input autocapitalize="off" autocorrect="off" {% if maintenance == true %}disabled{% endif %} tabindex="2"
                 placeholder="{% trans 'admin::compte-utilisateur mot de passe' %}" name="pwd" id="pwd" value="" type="password" />
-              <input type="hidden" name="app" value="{{module}}"/>
+              <input type="hidden" name="redirect" value="{{redirect}}">
               <fieldset data-role="controlgroup">
                 <input type="checkbox" name="remember" id="remember" value="1" checked="checked" class="custom" />
                 <label for="remember">{% trans 'Garder ma session active' %}</label>

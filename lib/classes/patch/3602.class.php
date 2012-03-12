@@ -54,12 +54,18 @@ class patch_3602 implements patchInterface
 
   function apply(base &$databox)
   {
+    try
+    {
+      $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
-    $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
+    }
+    catch(\PDOException $e)
+    {
 
-    $stmt = $databox->get_connection()->prepare($sql);
-    $stmt->execute();
-    $stmt->closeCursor();
+    }
 
     return true;
   }

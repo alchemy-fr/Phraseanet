@@ -68,7 +68,7 @@ switch ($action)
   case 'CSS':
     require ($registry->get('GV_RootPath') . 'lib/classes/deprecated/prodUtils.php');
     $parm = $request->get_parms('color');
-    $output = $user->setPrefs('css', $color);
+    $output = $user->setPrefs('css', $parm['color']);
     break;
 
   case 'SAVETEMPPREF':

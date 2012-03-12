@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpFoundation\Response,
     Symfony\Component\HttpFoundation\RedirectResponse,
     Symfony\Component\HttpKernel\Exception\HttpException,
+    Symfony\Component\Finder\Finder,
     Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Alchemy\Phrasea\Helper;
 
@@ -40,49 +41,56 @@ class Root implements ControllerProviderInterface
               \User_Adapter::updateClientInfos(1);
 
               $appbox = \appbox::get_instance($app['Core']);
-              $css = array();
-              $cssfile = false;
               $registry = $app['Core']->getRegistry();
-
-              $session = $appbox->get_session();
               $user = $app['Core']->getAuthenticatedUser();
-
               $cssPath = $registry->get('GV_RootPath') . 'www/skins/prod/';
 
-              if ($hdir = opendir($cssPath))
+              $css = array();
+              $cssfile = false;
+
+              $finder = new Finder();
+
+              $iterator = $finder
+                      ->directories()
+                      ->depth(0)
+                      ->filter(function(\SplFileInfo $fileinfo)
+                              {
+                                return ctype_xdigit($fileinfo->getBasename());
+                              })
+                      ->in($cssPath);
+
+              foreach ($iterator as $dir)
               {
-                while (false !== ($file = readdir($hdir)))
-                {
-                  if (substr($file, 0, 1) == "." || mb_strtolower($file) == "cvs")
-                    continue;
-                  if (is_dir($cssPath . $file))
-                  {
-                    $css[$file] = $file;
-                  }
-                }
-                closedir($hdir);
+                $baseName = $dir->getBaseName();
+                $css[$baseName] = $baseName;
               }
 
               $cssfile = $user->getPrefs('css');
+
               if (!$cssfile && isset($css['000000']))
+              {
                 $cssfile = '000000';
+              }
 
 
               $user_feeds = \Feed_Collection::load_all($appbox, $user);
               $feeds = array_merge(array($user_feeds->get_aggregate()), $user_feeds->get_feeds());
 
-              $srt = 'name asc';
-
-
               $thjslist = "";
 
               $queries_topics = '';
+
               if ($registry->get('GV_client_render_topics') == 'popups')
-                $queries_topics = queries::dropdown_topics();
+              {
+                $queries_topics = \queries::dropdown_topics();
+              }
               elseif ($registry->get('GV_client_render_topics') == 'tree')
+              {
                 $queries_topics = \queries::tree_topics();
+              }
 
               $sbas = $bas2sbas = array();
+
               foreach ($appbox->get_databoxes() as $databox)
               {
                 $sbas_id = $databox->get_sbas_id();
@@ -130,8 +138,6 @@ class Root implements ControllerProviderInterface
                   'GV_bitly_user' => $registry->get('GV_bitly_user'),
                   'GV_bitly_key' => $registry->get('GV_bitly_key')
                       ));
-
-
 
               return new Response($out);
             });

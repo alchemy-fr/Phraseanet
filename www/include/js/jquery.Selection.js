@@ -218,9 +218,15 @@
       return this.datas;
     },
     empty : function(){
+      var $this = this;
       this.datas = new Array();
 
       jQuery(this.options.selector, this.$container).filter('.selected:visible').removeClass('selected');
+
+      if(typeof $this.options.selectStop === 'function')
+      {
+        $this.options.selectStop(jQuery.Event('selectStop'), $this);
+      }
 
       return this;
     },

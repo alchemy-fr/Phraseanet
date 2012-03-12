@@ -307,7 +307,7 @@ return call_user_func(function()
        *
        */
       $route = '/records/search/';
-      $app->post(
+      $app->match(
         $route, function() use ($app)
         {
           $result = $app['api']->search_records($app['request']);
@@ -315,6 +315,19 @@ return call_user_func(function()
           return $app['response']($result);
         }
       );
+
+
+      $route = '/records/{databox_id}/{record_id}/caption/';
+      $app->get(
+      $route, function($databox_id, $record_id) use ($app)
+      {
+        $result = $app['api']->caption_records($app['request'], $databox_id, $record_id);
+
+        return $app['response']($result);
+      }
+    )->assert('databox_id', '\d+')->assert('record_id', '\d+');
+
+      $app->get('/records/{any_id}/{anyother_id}/caption/', $bad_request_exception);
 
 
       /**

@@ -558,7 +558,7 @@ class Session_Handler
       $browser = Browser::getInstance();
 
       if($this->is_authenticated())
-        $user = User_Adapter::getInstance ($this->get_usr_id (), appbox::get_instance ());
+        $user = User_Adapter::getInstance ($this->get_usr_id (), appbox::get_instance (\bootstrap::getCore()));
 
       return Session_Logger::create($databox, $browser, $this, $user);
     }

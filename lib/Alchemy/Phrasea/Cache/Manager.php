@@ -71,21 +71,23 @@ class Manager
     try
     {
       $configuration = $this->core->getConfiguration()->getService($service_name);
-      $write         = true;
+      $service = Builder::create($this->core, $service_name, $configuration);
+      $driver = $service->getDriver();
+      $write = true;
     }
     catch (\Exception $e)
     {
       $configuration = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
-          array('type' => 'Cache\\ArrayCache')
+                      array('type' => 'Cache\\ArrayCache')
       );
+      $service = Builder::create($this->core, $service_name, $configuration);
+      $driver = $service->getDriver();
       $write = false;
     }
 
-    $service = Builder::create($this->core, $service_name, $configuration);
-
     if ($this->hasChange($cacheKey, $service_name))
     {
-      $service->getDriver()->flushAll();
+      $service->getDriver()->flush();
       if ($write)
       {
         $this->registry[$cacheKey] = $service_name;
@@ -108,7 +110,7 @@ class Manager
     $this->registry[$name] = $driver;
 
     $datas = sprintf("#LastUpdate: %s\n", $date->format(DATE_ISO8601))
-      . $this->parser->dump($this->registry);
+            . $this->parser->dump($this->registry, 6);
 
     file_put_contents($this->cacheFile->getPathname(), $datas);
   }

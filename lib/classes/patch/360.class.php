@@ -59,7 +59,7 @@ class patch_360 implements patchInterface
 
     foreach ($tables as $table)
     {
-      $sql  = 'TRUNCATE ' . $table;
+      $sql  = 'DELETE FROM ' . $table;
       $stmt = $appbox->get_connection()->prepare($sql);
       $stmt->execute();
       $stmt->closeCursor();

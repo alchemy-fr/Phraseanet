@@ -378,12 +378,7 @@ var p4 = p4 || {};
   }
 
 
-
-
-
-
-
-  function dropOnBask(event,from,destKey)
+  function dropOnBask(event,from,destKey, singleSelection)
   {
     var action = "",
     from = $(from), dest_uri = '', lstbr = [],
@@ -420,9 +415,13 @@ var p4 = p4 || {};
 
     if(action=="IMGT2CHU" || action=="IMGT2REG")
     {
-      if($(from).hasClass('.baskAdder'))
+      if($(from).hasClass('.baskAdder') )
       {
         lstbr = [$(from).attr('id').split('_').slice(2,4).join('_')];
+      }
+      else if(singleSelection)
+      {
+        lstbr = [$(from).attr('id').split('_').slice(1,3).join('_') ];
       }
       else
       {
@@ -570,11 +569,56 @@ var p4 = p4 || {};
     p4.WorkZone = {
       'Selection':new Selectable($('#baskets'), {selector : '.CHIM'}),
       'refresh':refreshBaskets,
+      'addElementToBasket': function(sbas_id, record_id, event , singleSelection) {
+        singleSelection = !!singleSelection || false;
+        if($('#baskets .SSTT.active').length == 1)
+        {
+          return dropOnBask(event,$('#IMGT_'+ sbas_id +'_'+ record_id), $('#baskets .SSTT.active'), singleSelection);
+        }
+      },
       'reloadCurrent':function(){
         var sstt = $('#baskets .content:visible');
         if(sstt.length === 0)
           return;
         getContent(sstt.prev());
+      },
+      'close':function(){
+
+        var frame = $('#idFrameC'),
+        that = this;
+
+        if(!frame.hasClass('closed'))
+        {
+          frame.data('openwidth', frame.width());
+          frame.animate({width:100},
+            300,
+            'linear',
+            function(){
+              answerSizer();
+              linearize();
+            });
+          frame.addClass('closed');
+          $('.escamote', frame).hide();
+          $('li.ui-tabs-selected', frame).removeClass('ui-tabs-selected');
+          frame.unbind('click.escamote').bind('click.escamote', function(){
+            that.open();
+          })
+        }
+      },
+      'open':function(){
+
+        var frame = $('#idFrameC');
+
+        if(frame.hasClass('closed'))
+        {
+          var width = frame.data('openwidth') ? frame.data('openwidth') : 300;
+          frame.css({width:width});
+              answerSizer();
+              linearize();
+          frame.removeClass('closed');
+          $('.escamote', frame).show();
+          frame.unbind('click.escamote');
+        }
       }
     };
   });

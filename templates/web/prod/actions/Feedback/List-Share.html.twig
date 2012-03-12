@@ -3,20 +3,21 @@
 {% else %}
   <div id="ListShare">
     <div>
-      <h2>{% trans 'About Roles : ' %}</h2>
+      <h2 style="font-size:14px; margin-bottom:10px;"><b>{% trans 'About Roles : ' %}</b></h2>
       <p>
-        {% trans 'Admin can edit shares, modify content' %}
+        - {% trans 'Admin can edit shares, modify content' %}
       </p>
       <p>
-        {% trans 'Editor can modify content' %}
+        - {% trans 'Editor can modify content' %}
       </p>
       <p>
-        {% trans 'Access user have readonly access' %}
+        - {% trans 'Access user have readonly access' %}
       </p>
     </div>
-    <div>
+    <div style="margin-top:10px;">
       <form name="list_share_user">
-        <input type="text" class="search" name="user" value="" style="width:120px" />
+        <label for="use">{% trans 'Find a user' %} : </label>
+        <input type="text" class="search" name="user" value="" style="width:180px" />
       </form>
     </div>
     <div>
@@ -27,11 +28,11 @@
             <td>
               <img src="/skins/icons/user.png"/>
             </td>
-            <td>
+            <td style="width:150px;padding:5px;">
               {{ owner.getUser().get_display_name() }}
               <input type="hidden" name="usr_id" value="{{ owner.getUser().get_id() }}" />
             </td>
-            <td>
+            <td style="padding-right:10px;min-width:100px;">
               {% if user.get_id() == owner.getUser(user).get_id() %}
                 {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
                   {% trans 'You are Admin' %}
@@ -51,10 +52,12 @@
               </select>
               {% endif %}
             </td>
-            <td>
-              <a href="#" class="deleter">
-                <img src="/skins/prod/Push/close_badge.png" title="{% trans 'Remove' %}"/>
-              </a>
+            <td style="width:15px">
+               {% if user.get_id() != owner.getUser(user).get_id() %}
+                  <a href="#" class="deleter">
+                    <img src="/skins/prod/Push/close_badge.png" title="{% trans 'Remove' %}"/>
+                  </a>
+                {% endif %}
               <a href="#" class="notifier">
                 <img src="/skins/prod/Push/Notify.png" title="{% trans 'Notify' %}"/>
               </a>
@@ -86,6 +89,17 @@
         return false;
       });
 
+      $('.deleter', $container).bind('click', function(){
+        var owner = $(this).closest('.owner');
+        var usr_id = owner.find('input[name="usr_id"]').val();
+
+        unShareWith(usr_id, function(data){
+          owner.remove();
+        });
+
+        return false;
+      });
+
 
       function shareWith(usr_id, role)
       {
@@ -102,6 +116,39 @@
             if(data.success)
             {
               humane.info(data.message);
+            }
+            else
+            {
+              humane.error(data.message);
+            }
+            $dialog.refresh();
+
+            return;
+          },
+          error: function(){
+            return;
+          },
+          timeout: function(){
+            return;
+          }
+        });
+      }
+
+      function unShareWith(usr_id, callback)
+      {
+
+        $.ajax({
+          type: 'POST',
+          url: '/prod/lists/list/{{ list.getId() }}/unshare/' + usr_id + '/',
+          dataType: 'json',
+          data : {},
+          beforeSend:function(){
+          },
+          success: function(data){
+            if(data.success)
+            {
+              humane.info(data.message);
+              callback(data);
             }
             else
             {

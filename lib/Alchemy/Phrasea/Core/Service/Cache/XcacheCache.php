@@ -42,9 +42,9 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
 
     if (!$this->cache)
     {
-      $service = new CacheDriver\XcacheCache();
+      $this->cache = new CacheDriver\XcacheCache();
 
-      $service->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+      $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
     }
 
     return $this->cache;

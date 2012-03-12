@@ -377,19 +377,31 @@
                 </td>
                 <td class="users_col case_right_quota">
                   <div class="quota_trigger quota_{{rights['base_id']}}">
-                    <img src="/skins/icons/buttoninfo2.gif" />
+                    {% if rights['restrict_dwnld'] > 0 %}
+                    <img src="/skins/icons/user_details_on.png" />
+                    {% else %}
+                    <img src="/skins/icons/user_details_off.png" />
+                    {% endif %}
                     <input type="hidden" name="quota_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col case_right_time">
                   <div class="time_trigger time_{{rights['base_id']}}">
-                    <img src="/skins/icons/buttoninfo2.gif" />
+                    {% if rights['time_limited'] > 0 %}
+                    <img src="/skins/icons/user_details_on.png" />
+                    {% else %}
+                    <img src="/skins/icons/user_details_off.png" />
+                    {% endif %}
                     <input type="hidden" name="time_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col case_right_masks">
                   <div class="masks_trigger quotatime_{{rights['base_id']}}">
-                    <img src="/skins/icons/buttoninfo2.gif" />
+                    {% if rights['masks'] > 0 %}
+                    <img src="/skins/icons/user_details_on.png" />
+                    {% else %}
+                    <img src="/skins/icons/user_details_off.png" />
+                    {% endif %}
                     <input type="hidden" name="masks_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>

@@ -210,7 +210,7 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
    */
   public function get_category()
   {
-    return null;
+    return '';
   }
 
   /**
@@ -219,7 +219,7 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
    */
   public function get_duration()
   {
-    return null;
+    return '';
   }
 
   /**
@@ -279,5 +279,4 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
   {
     return $this->entry["tags"];
   }
-
 }

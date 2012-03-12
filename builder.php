@@ -12,7 +12,7 @@ system('./vendors.php');
  *
  * Vendors has to be called two times.
  * We should fix that
- * 
+ *
  */
 system('./vendors.php');
 
@@ -34,8 +34,9 @@ $finder
   ->name('.gitmodules')
   ->name('.gitignore')
   ->name('check_cs.php')
+  ->name('cleaner.php')
   ->name('launchpadToLocales.php')
-  ->name('localesToLaunchpad.php')
+  ->name('localesToLaunchPad.php')
   ->name('pom.xml')
   ->name('vendors.php')
   ->name('builder.php')

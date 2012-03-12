@@ -44,6 +44,7 @@ class module_console_fileEnsureProductionSetting extends Command
     , 'checkOpcodeCacheService'
   );
   protected $errors = 0;
+  protected $alerts = 0;
 
   public function __construct($name = null)
   {
@@ -52,6 +53,7 @@ class module_console_fileEnsureProductionSetting extends Command
     $this->setDescription('Ensure production settings');
 
     $this->addArgument('conf', InputArgument::OPTIONAL, 'The file to check', null);
+    $this->addOption('strict', 's', InputOption::VALUE_NONE, 'Wheter to fail on alerts or not');
 
     return $this;
   }
@@ -74,8 +76,23 @@ class module_console_fileEnsureProductionSetting extends Command
 
     $this->runTests($output);
 
+    $retval = $this->errors;
+    if ($input->getOption('strict'))
+    {
+      $retval += $this->alerts;
+    }
+
+    if ($retval > 0)
+    {
+      $output->writeln("\n<error>Some errors found in your conf</error>");
+    }
+    else
+    {
+      $output->writeln("\n<info>Your production settings are setted correctly ! Enjoy</info>");
+    }
     $output->writeln('End');
-    return 0;
+
+    return $retval;
   }
 
   private function runTests(OutputInterface $output)
@@ -112,15 +129,6 @@ class module_console_fileEnsureProductionSetting extends Command
 
       call_user_func(array($this, $test), $output);
     }
-    if ($this->errors)
-    {
-      $output->writeln("\n<error>Some errors found in your conf</error>");
-    }
-    else
-    {
-      $output->writeln("\n<info>Your production settings are setted correctly ! Enjoy</info>");
-    }
-    return $this->errors;
   }
 
   private function checkParse(OutputInterface $output)
@@ -156,6 +164,7 @@ class module_console_fileEnsureProductionSetting extends Command
       else
       {
         $work_message = '<comment>Cache server recommended</comment>';
+        $this->alerts++;
       }
     }
     else
@@ -185,6 +194,7 @@ class module_console_fileEnsureProductionSetting extends Command
       else
       {
         $work_message = '<comment>Opcode recommended</comment>';
+        $this->alerts++;
       }
     }
     else
@@ -211,6 +221,7 @@ class module_console_fileEnsureProductionSetting extends Command
       switch ($conf)
       {
         default:
+          $this->alerts++;
           $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
           break;
         case 'servername':
@@ -226,6 +237,7 @@ class module_console_fileEnsureProductionSetting extends Command
           }
           elseif ($url == 'http://sub.domain.tld/')
           {
+            $this->alerts++;
             $message = "<comment>may be wrong</comment>";
           }
           elseif (!filter_var($url, FILTER_VALIDATE_URL))
@@ -235,6 +247,7 @@ class module_console_fileEnsureProductionSetting extends Command
           }
           elseif ($parseUrl["scheme"] !== "https")
           {
+            $this->alerts++;
             $message = "<comment>should be https</comment>";
           }
           else
@@ -247,7 +260,14 @@ class module_console_fileEnsureProductionSetting extends Command
         case 'debug':
         case 'display_errors':
           $required = array_diff($required, array($conf));
-          $message  = $value ? '<error>Should be false</error>' : '<info>OK</info>';
+          $message = '<info>OK</info>';
+
+          if ($value !== false)
+          {
+            $message = '<error>Should be false</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'database':
@@ -280,6 +300,7 @@ class module_console_fileEnsureProductionSetting extends Command
       $output->writeln(sprintf('<error>Miss required keys %s</error>', implode(', ', $required)));
       $this->errors++;
     }
+
     return;
   }
 
@@ -335,11 +356,17 @@ class module_console_fileEnsureProductionSetting extends Command
       switch ($conf)
       {
         default:
+          $this->alerts++;
           $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
           break;
         case 'charset':
           $required = array_diff($required, array($conf));
-          $message  = $value == 'UTF8' ? '<info>OK</info>' : '<comment>Not recognized</comment>';
+          $message = '<info>OK</info>';
+          if ($value !== 'UTF8')
+          {
+            $message  = '<comment>Not recognized</comment>';
+            $this->alerts++;
+          }
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'path':
@@ -351,23 +378,50 @@ class module_console_fileEnsureProductionSetting extends Command
         case 'user':
         case 'host':
           $required = array_diff($required, array($conf));
-          $message  = is_scalar($value) ? '<info>OK</info>' : '<error>Should be scalar</error>';
+          $message = '<info>OK</info>';
+
+          if (!is_scalar($value))
+          {
+            $message = '<error>Should be scalar</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'port':
           $required = array_diff($required, array($conf));
-          $message  = ctype_digit($value) ? '<info>OK</info>' : '<error>Should be scalar</error>';
+          $message = '<info>OK</info>';
+
+          if (!ctype_digit($value))
+          {
+            $message = '<error>Should be ctype_digit</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'password':
           $required = array_diff($required, array($conf));
-          $message  = is_scalar($value) ? '<info>OK</info>' : '<error>Should be scalar</error>';
+          $message = '<info>OK</info>';
+
+          if (!is_scalar($value))
+          {
+            $message = '<error>Should be scalar</error>';
+            $this->errors++;
+          }
+
           $value    = '***********';
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'driver':
           $required = array_diff($required, array($conf));
-          $message = $value === 'pdo_mysql' ? '<info>OK</info>' : '<error>MySQL recommended</error>';
+          $message = '<info>OK</info>';
+
+          if ($value !== 'pdo_mysql')
+          {
+            $message = '<error>MySQL recommended</error>';
+            $this->errors++;
+          }
           $this->printConf($output, $conf, $value, false, $message);
           break;
       }
@@ -388,6 +442,7 @@ class module_console_fileEnsureProductionSetting extends Command
     {
       $config = new \Doctrine\DBAL\Configuration();
       $conn   = \Doctrine\DBAL\DriverManager::getConnection($connexion->all(), $config);
+
       return true;
     }
     catch (\Exception $e)
@@ -410,7 +465,7 @@ class module_console_fileEnsureProductionSetting extends Command
     }
     catch (\Exception $e)
     {
-      $work_message = '<error>Failed - could not connect !</error>';
+      $work_message = '<error>Failed - could not load template engine !</error>';
       $this->errors++;
     }
 
@@ -438,14 +493,29 @@ class module_console_fileEnsureProductionSetting extends Command
       switch ($conf)
       {
         case 'type':
-          $message = $value == 'TemplateEngine\\Twig' ? '<info>OK</info>' : '<error>Not recognized</error>';
+          $message = '<info>OK</info>';
+
+          if($value !== 'TemplateEngine\\Twig')
+          {
+            $message = '<error>Not recognized</error>';
+            $this->alerts++;
+          }
+
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'options':
-          $message = is_array($value) ? '<info>OK</info>' : '<error>Should be array</error>';
+          $message = '<info>OK</info>';
+
+          if (!is_array($value))
+          {
+            $message = '<error>Should be array</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, $conf, 'array()', false, $message);
           break;
         default:
+          $this->alerts++;
           $this->printConf($output, $conf, 'unknown', false, '<comment>Not recognized</comment>');
           break;
       }
@@ -458,21 +528,43 @@ class module_console_fileEnsureProductionSetting extends Command
         case 'debug';
         case 'strict_variables';
           $required = array_diff($required, array($conf));
-          $message  = $value == false ? '<info>OK</info>' : '<error>Should be false</error>';
+          $message = '<info>OK</info>';
+
+          if ($value !== false)
+          {
+            $message = '<error>Should be false</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, "\t" . $conf, $value, false, $message);
           break;
         case 'autoescape';
         case 'optimizer';
           $required = array_diff($required, array($conf));
-          $message  = $value == true ? '<info>OK</info>' : '<error>Should be true</error>';
+          $message = '<info>OK</info>';
+
+          if ($value !== true)
+          {
+            $message = '<error>Should be true</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, "\t" . $conf, $value, false, $message);
           break;
         case 'charset';
           $required = array_diff($required, array($conf));
-          $message = $value == 'utf-8' ? '<info>OK</info>' : '<comment>Not recognized</comment>';
+          $message = '<info>OK</info>';
+
+          if ($value !== 'utf-8')
+          {
+            $message = '<comment>Not recognized</comment>';
+            $this->alerts++;
+          }
+
           $this->printConf($output, "\t" . $conf, $value, false, $message);
           break;
         default:
+          $this->alerts++;
           $this->printConf($output, "\t" . $conf, $value, false, '<comment>Not recognized</comment>');
           break;
       }
@@ -533,10 +625,18 @@ class module_console_fileEnsureProductionSetting extends Command
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'options':
-          $message = is_array($value) ? '<info>OK</info>' : '<error>Should be array</error>';
+          $message = '<info>OK</info>';
+
+          if (!is_array($value))
+          {
+            $message = '<error>Should be array</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, $conf, 'array()', false, $message);
           break;
         default:
+          $this->alerts++;
           $this->printConf($output, $conf, 'unknown', false, '<comment>Not recognized</comment>');
           break;
       }
@@ -548,12 +648,26 @@ class module_console_fileEnsureProductionSetting extends Command
       switch ($conf)
       {
         case 'log':
-          $message  = $value == false ? '<info>OK</info>' : '<error>Should be deactivated</error>';
+          $message = '<info>OK</info>';
+
+          if ($value !== false)
+          {
+            $message = '<error>Should be deactivated</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'cache':
           $required = array_diff($required, array($conf));
-          $message = is_array($value) ? '<info>OK</info>' : '<error>Should be Array</error>';
+          $message = '<info>OK</info>';
+
+          if (!is_array($value))
+          {
+            $message = '<error>Should be Array</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, $conf, 'array()', false, $message);
 
           $required_caches = array('query', 'result', 'metadata');
@@ -575,6 +689,7 @@ class module_console_fileEnsureProductionSetting extends Command
                     }
                     else
                     {
+                      $this->alerts++;
                       if ($server)
                       {
                         $work_message = '<comment>Cache server recommended</comment>';
@@ -598,6 +713,7 @@ class module_console_fileEnsureProductionSetting extends Command
                   $this->verifyCacheOptions($output, $value_cache);
                   break;
                 default:
+                  $this->alerts++;
                   $this->printConf($output, "\t" . $key_cache, $value_cache, false, '<comment>Not recognized</comment>');
                   break;
               }
@@ -617,7 +733,14 @@ class module_console_fileEnsureProductionSetting extends Command
           break;
         case 'debug':
           $required = array_diff($required, array($conf));
-          $message  = $value == false ? '<info>OK</info>' : '<error>Should be false</error>';
+          $message = '<info>OK</info>';
+
+          if ($value !== false)
+          {
+            $message = '<error>Should be false</error>';
+            $this->errors++;
+          }
+
           $this->printConf($output, $conf, $value, false, $message);
           break;
         case 'dbal':
@@ -636,6 +759,7 @@ class module_console_fileEnsureProductionSetting extends Command
           $this->printConf($output, $conf, $value, false, $message);
           break;
         default:
+          $this->alerts++;
           $this->printConf($output, $conf, $value, false, '<comment>Not recognized</comment>');
           break;
       }
@@ -684,15 +808,30 @@ class module_console_fileEnsureProductionSetting extends Command
         {
           case 'host';
             $required_options = array_diff($required_options, array($conf));
-            $message          = is_scalar($value) ? '<info>OK</info>' : '<error>Should be scalar</error>';
+            $message = '<info>OK</info>';
+
+            if (!is_scalar($value))
+            {
+              $message = '<error>Should be scalar</error>';
+              $this->errors++;
+            }
+
             $this->printConf($output, "\t\t" . $conf, $value, false, $message);
             break;
           case 'port';
             $required_options = array_diff($required_options, array($conf));
-            $message = ctype_digit($value) ? '<info>OK</info>' : '<comment>Not recognized</comment>';
+            $message = '<info>OK</info>';
+
+            if (!ctype_digit($value))
+            {
+              $message = '<comment>Not recognized</comment>';
+              $this->alerts++;
+            }
+
             $this->printConf($output, "\t\t" . $conf, $value, false, $message);
             break;
           default:
+            $this->alerts++;
             $this->printConf($output, "\t\t" . $conf, $value, false, '<comment>Not recognized</comment>');
             break;
         }
@@ -729,7 +868,7 @@ class module_console_fileEnsureProductionSetting extends Command
           return false;
           break;
         case 'memcache':
-          if (!memcache_connect($Service->getHost(), $Service->getPort()))
+          if (!@memcache_connect($Service->getHost(), $Service->getPort()))
           {
             return false;
           }
@@ -759,6 +898,7 @@ class module_console_fileEnsureProductionSetting extends Command
     {
       return false;
     }
+
     return $server === $Service->getDriver()->isServer();
   }
 

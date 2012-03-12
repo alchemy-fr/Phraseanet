@@ -466,7 +466,7 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     }
     if ($token === false)
     {
-      $token = random::getUrlToken('rss', $this->id);
+      $token = random::getUrlToken(\random::TYPE_RSS, $this->id);
     }
 
     return new system_url($registry->get('GV_ServerName') . 'atom/' . $token);

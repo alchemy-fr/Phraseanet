@@ -232,7 +232,7 @@ return call_user_func(
           $repository = $em->getRepository('\Entities\Basket');
 
           /* @var $repository \Repositories\BasketRepository */
-          $basket_collection = $repository->findActiveByUser(
+          $basket_collection = $repository->findActiveValidationAndBasketByUser(
             $app['Core']->getAuthenticatedUser()
           );
 
@@ -290,7 +290,7 @@ return call_user_func(
           $repository = $em->getRepository('\Entities\Basket');
 
           /* @var $repository \Repositories\BasketRepository */
-          $basket_collection = $repository->findActiveByUser(
+          $basket_collection = $repository->findActiveValidationAndBasketByUser(
             $app['Core']->getAuthenticatedUser()
           );
 
@@ -570,7 +570,7 @@ return call_user_func(
             $expires = new \DateTime('+10 days');
             $url     = $appbox->get_registry()->get('GV_ServerName')
               . 'lightbox/index.php?LOG=' . \random::getUrlToken(
-                'validate'
+                \random::TYPE_VALIDATE
                 , $basket->getValidation()->getInitiator()->get_id()
                 , $expires
                 , $basket->getId()

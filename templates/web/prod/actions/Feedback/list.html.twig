@@ -6,7 +6,7 @@
       <tr>
         <td>
           {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
-          <form method="POST" action="/prod/lists/list/{{ list.getId() }}/update/">
+          <form method="POST" name="SaveName" action="/prod/lists/list/{{ list.getId() }}/update/">
             <label>{% trans 'List Name' %}</label>
             <input name="name" value="{{ list.getName() }}"/>
             <button>
@@ -50,8 +50,9 @@
         </p>
       </div>
       <div class="PNB" style="top:35px;overflow:auto;">
+        {% set role = list.getOwner(user).getRole() %}
         {% for entry in list.getEntries() %}
-          {{ ListsMacros.badgeReadonly(entry) }}
+          {{ ListsMacros.badgeReadonly(entry, role) }}
         {% endfor %}
       </div>
     </div>
@@ -90,12 +91,26 @@
           </button>
         </div>
         <div class="PNB" style="top:40px;height:120px;bottom:auto;">
-          <table style="table-layout:fixed;">
+          <table style="table-layout:fixed;width:100%;">
             <tr>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Activite' %}
-                </label>
+              <td>
+                <label>{% trans 'Activite' %}</label>
+              </td>
+              <td>
+                <label>{% trans 'Template' %}</label>
+              </td>
+              <td >
+                <label>{% trans 'Company' %}</label>
+              </td>
+              <td >
+                <label>{% trans 'Country' %}</label>
+              </td>
+              <td >
+                <label>{% trans 'Position' %}</label>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <select size="5" multiple="multiple" name="Activity[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Activity in query.getRelatedActivities() %}
@@ -103,10 +118,7 @@
                   {% endfor %}
                 </select>
               </td>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Template' %}
-                </label>
+              <td>
                 <select size="5" multiple="multiple" name="Template[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Template in query.getRelatedTemplates() %}
@@ -114,10 +126,7 @@
                   {% endfor %}
                 </select>
               </td>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Company' %}
-                </label>
+              <td>
                 <select size="5" multiple="multiple" name="Company[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Company in query.getRelatedCompanies() %}
@@ -125,10 +134,8 @@
                   {% endfor %}
                 </select>
               </td>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Country' %}
-                </label>
+              <td>
+
                 <select size="5" multiple="multiple" name="Country[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Code, Country in query.getRelatedCountries() %}
@@ -136,10 +143,8 @@
                   {% endfor %}
                 </select>
               </td>
-              <td style="width:20%;">
-                <label>
-                  {% trans 'Position' %}
-                </label>
+              <td >
+
                 <select size="5" multiple="multiple" name="Position[]" style="width:80%;">
                   <option value="">{% trans 'All' %}</option>
                   {% for Position in query.getRelatedPositions() %}
@@ -168,5 +173,12 @@
 <script type="text/javascript">
   $(document).ready(function(){
     p4.ListManager.workOn({{ list.getId() }});
+    $("#ListManager .readonly .badge .deleter").click(function(){
+      var badge = $(this).closest(".badge");
+      var usr_id = badge.find('input[name="id"]').val();
+      p4.ListManager.getList().removeUser(usr_id, function(list, data){
+        badge.remove();
+      });
+    });
   });
 </script>

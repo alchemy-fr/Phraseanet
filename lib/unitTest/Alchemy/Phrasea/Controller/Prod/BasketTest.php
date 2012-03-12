@@ -461,6 +461,74 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals(2, $basket->getElements()->count());
   }
 
+
+  public function testAddElementToValidationPost()
+  {
+
+    $em = self::$core->getEntityManager();
+
+    $datas = $em->getRepository('Entities\ValidationData')->findAll();
+    $countDatas = count($datas);
+
+    $validationSession = new \Entities\ValidationSession();
+
+    $validationSession->setDescription('Une description au hasard');
+    $validationSession->setName('Un nom de validation');
+    $expires = new \DateTime();
+    $expires->modify('+1 week');
+    $validationSession->setExpires($expires);
+    $validationSession->setInitiator(self::$user);
+
+    $basket = new \Entities\Basket();
+    $basket->setName('test');
+    $basket->setDescription('description');
+    $basket->setOwner(self::$user);
+    $basket->setValidation($validationSession);
+    $validationSession->setBasket($basket);
+
+
+    $validationParticipant = new \Entities\ValidationParticipant();
+    $validationParticipant->setSession($validationSession);
+    $validationParticipant->setUser(self::$user_alt1);
+    $validationSession->addValidationParticipant($validationParticipant);
+
+    $em->persist($validationParticipant);
+    $em->persist($basket);
+    $em->persist($validationSession);
+
+    $em->flush();
+
+    $route = sprintf('/baskets/%s/addElements/', $basket->getId());
+
+    $records = array(
+        self::$record_1->get_serialize_key(),
+        self::$record_2->get_serialize_key(),
+        ' ',
+        '42',
+        'abhak',
+        self::$record_no_access->get_serialize_key(),
+    );
+
+    $lst = implode(';', $records);
+
+    $this->client->request('POST', $route, array('lst' => $lst));
+
+    $response = $this->client->getResponse();
+
+    $this->assertEquals(302, $response->getStatusCode());
+
+    $em = self::$core->getEntityManager();
+    /* @var $em \Doctrine\ORM\EntityManager */
+    $basket = $em->getRepository('Entities\Basket')->find($basket->getId());
+
+    $this->assertEquals(2, $basket->getElements()->count());
+
+    $datas = $em->getRepository('Entities\ValidationData')->findAll();
+
+    $this->assertTrue($countDatas < count($datas), 'assert that '.count($datas).' > '.$countDatas );
+  }
+
+
   public function testAddElementPostJSON()
   {
     $basket = $this->insertOneBasket();

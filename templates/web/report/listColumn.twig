@@ -1,4 +1,6 @@
 {% block listColumn %}
+
+  <div class='modalwrapper' style="height:400px; overflow-y: auto">
     <div class="columnjson_title">{% trans "Cochez les cases correspondantes aux colonnes que vous desirez voire apparaitre dans le report" %} </div> <br />
         <div>
             <div class="columnjson_link_box">
@@ -29,6 +31,7 @@
             {% endif %}
         {% endfor %}
         </form>
+  </div>
             <script type="text/javascript">
                 $('a#on').click(function(){
                     $(this).closest('#dialog').find(':checkbox').attr('checked', true);

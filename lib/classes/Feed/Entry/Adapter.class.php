@@ -141,7 +141,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':id' => $this->id));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row  = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     if (!$row)
@@ -156,13 +156,13 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     $this->created_on = new DateTime($row['created_on']);
 
     $datas = array(
-        'title' => $this->title
-        , 'subtitle' => $this->subtitle
-        , 'author_name' => $this->author_name
-        , 'author_email' => $this->author_email
-        , 'publisher_id' => $this->publisher_id
-        , 'updated_on' => $this->updated_on
-        , 'created_on' => $this->created_on
+      'title'        => $this->title
+      , 'subtitle'     => $this->subtitle
+      , 'author_name'  => $this->author_name
+      , 'author_email' => $this->author_email
+      , 'publisher_id' => $this->publisher_id
+      , 'updated_on'   => $this->updated_on
+      , 'created_on'   => $this->created_on
     );
 
     $this->set_data_to_cache($datas);
@@ -175,9 +175,9 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     $registry = registry::get_instance();
 
     $href = sprintf(
-            '%slightbox/feeds/entry/%d/'
-            , $registry->get('GV_ServerName')
-            , $this->get_id()
+      '%slightbox/feeds/entry/%d/'
+      , $registry->get('GV_ServerName')
+      , $this->get_id()
     );
 
     return new Feed_Link($href, $this->get_title(), 'text/html');
@@ -231,10 +231,10 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
     if ($title === '')
       throw new Exception_InvalidArgument();
 
-    $sql = 'UPDATE feed_entries
+    $sql  = 'UPDATE feed_entries
             SET title = :title, updated_on = NOW() WHERE id = :entry_id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
-    $stmt->execute(array(':title' => $title, ':entry_id' => $this->get_id()));
+    $stmt->execute(array(':title'    => $title, ':entry_id' => $this->get_id()));
     $stmt->closeCursor();
     $this->title = $title;
     $this->delete_data_from_cache();
@@ -251,11 +251,11 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
   {
     $subtitle = strip_tags($subtitle);
 
-    $sql = 'UPDATE feed_entries
+    $sql    = 'UPDATE feed_entries
             SET description = :subtitle, updated_on = NOW()
             WHERE id = :entry_id';
     $params = array(':subtitle' => $subtitle, ':entry_id' => $this->get_id());
-    $stmt = $this->appbox->get_connection()->prepare($sql);
+    $stmt       = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
     $this->subtitle = $subtitle;
@@ -271,14 +271,14 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
    */
   public function set_author_name($author_name)
   {
-    $sql = 'UPDATE feed_entries
+    $sql    = 'UPDATE feed_entries
             SET author_name = :author_name, updated_on = NOW()
             WHERE id = :entry_id';
     $params = array(
-        ':author_name' => $author_name,
-        ':entry_id' => $this->get_id()
+      ':author_name' => $author_name,
+      ':entry_id'    => $this->get_id()
     );
-    $stmt = $this->appbox->get_connection()->prepare($sql);
+    $stmt          = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
     $this->author_name = $author_name;
@@ -294,14 +294,14 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
    */
   public function set_author_email($author_email)
   {
-    $sql = 'UPDATE feed_entries
+    $sql    = 'UPDATE feed_entries
             SET author_email = :author_email, updated_on = NOW()
             WHERE id = :entry_id';
     $params = array(
-        ':author_email' => $author_email,
-        ':entry_id' => $this->get_id()
+      ':author_email' => $author_email,
+      ':entry_id'     => $this->get_id()
     );
-    $stmt = $this->appbox->get_connection()->prepare($sql);
+    $stmt           = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
     $this->author_email = $author_email;
@@ -312,14 +312,14 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
   public function set_created_on(DateTime $datetime)
   {
-    $sql = 'UPDATE feed_entries
+    $sql    = 'UPDATE feed_entries
             SET created_on = :created_on
             WHERE id = :entry_id';
     $params = array(
-        ':created_on' => $datetime->format(DATE_ISO8601),
-        ':entry_id' => $this->get_id()
+      ':created_on' => $datetime->format(DATE_ISO8601),
+      ':entry_id'   => $this->get_id()
     );
-    $stmt = $this->appbox->get_connection()->prepare($sql);
+    $stmt         = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
     $this->created_on = $datetime;
@@ -330,14 +330,14 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
   public function set_updated_on(DateTime $datetime)
   {
-    $sql = 'UPDATE feed_entries
+    $sql    = 'UPDATE feed_entries
             SET updated_on = :updated_on
             WHERE id = :entry_id';
     $params = array(
-        ':updated_on' => $datetime->format(DATE_ISO8601),
-        ':entry_id' => $this->get_id()
+      ':updated_on' => $datetime->format(DATE_ISO8601),
+      ':entry_id'   => $this->get_id()
     );
-    $stmt = $this->appbox->get_connection()->prepare($sql);
+    $stmt         = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
     $this->updated_on = $datetime;
@@ -411,10 +411,9 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
   public function get_content()
   {
     if ($this->items)
-
       return $this->items;
 
-    $rs = $this->retrieve_elements();
+    $rs    = $this->retrieve_elements();
     $items = array();
     foreach ($rs as $item_id)
     {
@@ -444,11 +443,11 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     }
 
-    $sql = 'SELECT id FROM feed_entry_elements
+    $sql  = 'SELECT id FROM feed_entry_elements
             WHERE entry_id = :entry_id ORDER BY ord ASC';
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':entry_id' => $this->get_id()));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs         = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $items = array();
@@ -474,7 +473,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
       $content->delete();
     }
 
-    $sql = 'DELETE FROM feed_entries WHERE id = :entry_id';
+    $sql  = 'DELETE FROM feed_entries WHERE id = :entry_id';
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':entry_id' => $this->get_id()));
     $stmt->closeCursor();
@@ -515,12 +514,12 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
               , :description, NOW(), NOW(), :author_name, :author_email)';
 
     $params = array(
-        ':feed_id' => $feed->get_id()
-        , ':publisher_id' => $publisher->get_id()
-        , ':title' => trim($title)
-        , ':description' => trim($subtitle)
-        , ':author_name' => trim($author_name)
-        , ':author_email' => trim($author_mail)
+      ':feed_id'      => $feed->get_id()
+      , ':publisher_id' => $publisher->get_id()
+      , ':title'        => trim($title)
+      , ':description'  => trim($subtitle)
+      , ':author_name'  => trim($author_name)
+      , ':author_email' => trim($author_mail)
     );
 
     $stmt = $appbox->get_connection()->prepare($sql);
@@ -531,7 +530,12 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     $feed->delete_data_from_cache();
 
-    return new self($appbox, $feed, $entry_id);
+    $entry = new self($appbox, $feed, $entry_id);
+
+    $eventsmanager = \eventsmanager_broker::getInstance($appbox);
+    $eventsmanager->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry_id), $entry);
+
+    return $entry;
   }
 
   /**
@@ -542,10 +546,10 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
    */
   public static function load_from_id(appbox $appbox, $id)
   {
-    $sql = 'SELECT feed_id FROM feed_entries WHERE id = :entry_id';
+    $sql  = 'SELECT feed_id FROM feed_entries WHERE id = :entry_id';
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':entry_id' => $id));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row        = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     if (!$row)

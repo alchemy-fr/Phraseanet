@@ -286,7 +286,6 @@ class UsrLists implements ControllerProviderInterface
 
           $list->setName($list_name);
 
-          $em->merge($list);
           $em->flush();
 
           $datas = array(
@@ -459,7 +458,7 @@ class UsrLists implements ControllerProviderInterface
             $list->addUsrListEntry($entry);
 
             $em->persist($entry);
-            $em->merge($list);
+
             $inserted_usr_ids[] = $user_entry->get_id();
           }
 
@@ -585,14 +584,12 @@ class UsrLists implements ControllerProviderInterface
             $list->addUsrListOwner($owner);
 
             $em->persist($owner);
-            $em->merge($list);
           }
 
           $role = $app['request']->get('role');
 
           $owner->setRole($role);
 
-          $em->merge($owner);
           $em->flush();
 
           $datas = array(

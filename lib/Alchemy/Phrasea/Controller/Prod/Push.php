@@ -183,10 +183,12 @@ class Push implements ControllerProviderInterface
 
           $appbox = \appbox::get_instance($app['Core']);
 
-          $push_name = $request->get(
-            'name'
-            , sprintf(_('Push from %s'), $user->get_display_name())
-          );
+          $push_name = $request->get('name');
+
+          if (trim($push_name) === '')
+          {
+            $push_name = sprintf(_('Push from %s'), $user->get_display_name());
+          }
 
           $push_description = $request->get('push_description');
 
@@ -231,6 +233,9 @@ class Push implements ControllerProviderInterface
               $BasketElement->setRecord($element);
               $BasketElement->setBasket($Basket);
 
+              $em->persist($BasketElement);
+
+              $Basket->addBasketElement($BasketElement);
 
               if ($receiver['HD'])
               {
@@ -248,15 +253,13 @@ class Push implements ControllerProviderInterface
                   , \ACL::GRANT_ACTION_PUSH
                 );
               }
-
-              $em->persist($BasketElement);
             }
 
             $em->flush();
 
             $url = $registry->get('GV_ServerName')
               . 'lightbox/index.php?LOG='
-              . \random::getUrlToken('view', $user_receiver->get_id(), null, $Basket->getId());
+              . \random::getUrlToken(\random::TYPE_VIEW, $user_receiver->get_id(), null, $Basket->getId());
 
             $params = array(
               'from'       => $user->get_id()
@@ -322,10 +325,12 @@ class Push implements ControllerProviderInterface
 
           $repository = $em->getRepository('\Entities\Basket');
 
-          $validation_name = $request->get(
-            'name'
-            , sprintf(_('Validation from %s'), $user->get_display_name())
-          );
+          $validation_name = $request->get('name');
+
+          if (trim($validation_name) === '')
+          {
+            $validation_name = sprintf(_('Validation from %s'), $user->get_display_name());
+          }
 
           $validation_description = $request->get('validation_description');
 
@@ -362,6 +367,8 @@ class Push implements ControllerProviderInterface
               $BasketElement->setBasket($Basket);
 
               $em->persist($BasketElement);
+
+              $Basket->addBasketElement($BasketElement);
             }
             $em->flush();
           }
@@ -485,7 +492,7 @@ class Push implements ControllerProviderInterface
 
             $url = $registry->get('GV_ServerName')
               . 'lightbox/index.php?LOG='
-              . \random::getUrlToken('view', $participant_user->get_id(), null, $Basket->getId());
+              . \random::getUrlToken(\random::TYPE_VIEW, $participant_user->get_id(), null, $Basket->getId());
 
             $params = array(
               'from'       => $user->get_id()

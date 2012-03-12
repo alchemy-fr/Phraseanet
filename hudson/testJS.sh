@@ -38,7 +38,7 @@ echo "ok !";
 # Valid link ?
 
 echo -n "Check link validity : ";
-wget --no-check-certificate $instance -o /dev/null
+wget --no-check-certificate $instance --output-document=/dev/null
 if [ ! $? -eq 0 ]
 then
 	echo "Link does not exists.";

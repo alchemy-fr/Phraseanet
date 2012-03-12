@@ -67,8 +67,10 @@ return call_user_func(function()
       $app->get('/', function() use ($app)
         {
           if ($app['install'] === true)
+
             return $app->redirect('/setup/installer/');
           if ($app['upgrade'] === true)
+
             return $app->redirect('/setup/upgrader/');
         });
 

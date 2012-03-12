@@ -438,7 +438,7 @@ function T_search(menuItem, menu, cmenu, e, label)
     }
   }
 
-  $('form[name="phrasea_query"] input[name="query"]').val(v);
+  $('form[name="phrasea_query"] input[name="qry"]').val(v);
   checkFilters();
   newSearch();
 }
@@ -635,6 +635,7 @@ function TXdblClick(e)
           {
             var sbid = tid.split(".")[1];
             var term = $(x).hasClass('separator') ? $(x).prev().text() : $(x).text();
+            console.log('do thes');
             doThesSearch('T', sbid, term, null);
           }
           break;
@@ -682,21 +683,21 @@ function doThesSearch(type, sbid, term, field)
   $('#adv_search input[name="bas[]"]').each(
   function(i,n)
   {
-    var base_id = $(n).val();
+      var base_id = $(n).val();
 
-    bas2sbas["b"+base_id].ckobj = this;
-    bas2sbas["b"+base_id].waschecked = this.checked;
-    if(bas2sbas["b"+base_id].sbid == sbid)
-    {
-      if(this.checked)
-        nck++;
+      bas2sbas["b"+base_id].ckobj = this;
+      bas2sbas["b"+base_id].waschecked = this.checked;
+      if(bas2sbas["b"+base_id].sbid == sbid)
+      {
+        if(this.checked)
+          nck++;
+      }
+      else
+      {
+        this.checked = false;
+      }
     }
-    else
-    {
-      this.checked = false;
-    }
-  }
-);
+  );
 
   if(nck == 0 || type=='C')
   {
@@ -711,7 +712,7 @@ function doThesSearch(type, sbid, term, field)
     v = '*:"' + term.replace("(", "[").replace(")", "]") + '"';
   else
     v = '"' + term + '" IN ' + field;
-  $('form[name="phrasea_query"] input[name="query"]').val(v);
+  $('form[name="phrasea_query"] input[name="qry"]').val(v);
   checkFilters();
   newSearch();
 }

@@ -59,9 +59,6 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         , 'readonly_' . $id => 0
         , 'type_' . $id => 'string'
         , 'vocabulary_' . $id => 'User'
-        , 'regname' => $id
-        , 'regdate' => $id
-        , 'regdesc' => $id
     ));
 
     $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -149,9 +146,6 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         , 'readonly_' . $id => 0
         , 'type_' . $id => 'string'
         , 'vocabulary_' . $id => 'Unknow_Vocabulary'
-        , 'regname' => $id
-        , 'regdate' => $id
-        , 'regdesc' => $id
     ));
 
     $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -169,9 +163,6 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         , 'readonly_' . $id => 0
         , 'type_' . $id => 'string'
         , 'vocabulary_' . $id => 'Unknow_Vocabulary'
-        , 'regname' => $id
-        , 'regdate' => $id
-        , 'regdesc' => $id
     ));
 
     $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -194,9 +185,6 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         , 'readonly_' . $id => 0
         , 'type_' . $id => 'string'
         , 'vocabulary_' . $id => 'Unknow_Vocabulary'
-        , 'regname' => $id
-        , 'regdate' => $id
-        , 'regdesc' => $id
     ));
 
     $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -220,9 +208,6 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         , 'readonly_' . $id => 0
         , 'type_' . $id => 'string'
         , 'vocabulary_' . $id => 'Unknow_Vocabulary'
-        , 'regname' => $id
-        , 'regdate' => $id
-        , 'regdesc' => $id
     ));
 
     $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -251,9 +236,6 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         , 'readonly_' . $id => 0
         , 'type_' . $id => 'string'
         , 'vocabulary_' . $id => 'User'
-        , 'regname' => $id
-        , 'regdate' => $id
-        , 'regdesc' => $id
     ));
     $this->assertTrue($this->client->getResponse()->isOk());
     $this->assertEquals("You are not allowed to access this zone", $this->client->getResponse()->getContent());

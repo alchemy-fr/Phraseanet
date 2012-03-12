@@ -5,25 +5,16 @@ Phraseanet 3.5 - Digital Asset Management application
 
 Metadatas Management (include Thesaurus and DublinCore Mapping)
 Search Engine (Sphinx Search Integration)
-RestFull APIS (See Developer Documentation http://docs.phraseanet.com/Devel)
+RestFull APIS (See Developer Documentation https://docs.phraseanet.com/3.6/Devel)
 Bridge to Youtube/Dailymotion/Flickr
 
 #Documentation :
 
-http://docs.phraseanet.com
+https://docs.phraseanet.com/3.6/
 
 #Easy Installation
 
-**Fetch Sources**
-
-<pre>
-
-git clone git://github.com/alchemy-fr/Phraseanet.git Phraseanet
-cd Phraseanet
-./vendors.php
-
-</pre>
-
+Get the latests sources here https://github.com/alchemy-fr/Phraseanet/downloads
 
 **Setup your webserver**
 

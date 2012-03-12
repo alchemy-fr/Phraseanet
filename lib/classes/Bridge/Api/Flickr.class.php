@@ -377,6 +377,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
             if (!$response->isOk())
             {
               if ($response->err_code === 3) //Already exists in photoset
+
                 return;
               throw new Bridge_Exception_ApiConnectorRequestFailed();
             }
@@ -663,12 +664,15 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
   {
 
     if (!$this->registry->get('GV_flickr_api'))
+
       return false;
 
     if (trim($this->registry->get('GV_flickr_client_id')) === '')
+
       return false;
 
     if (trim($this->registry->get('GV_flickr_client_secret')) === '')
+
       return false;
 
     return true;

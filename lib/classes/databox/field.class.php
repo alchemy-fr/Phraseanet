@@ -98,23 +98,15 @@ class databox_field implements cache_cacheableInterface
    */
   protected $thumbtitle;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $regdate;
+  protected $renamed = false;
 
   /**
    *
-   * @var <type>
-   */
-  protected $regdesc;
-
-  /**
    *
-   * @var <type>
+   * To implement : change multi
+   * Change vocab Id
+   *
    */
-  protected $regname;
 
   /**
    *
@@ -163,7 +155,7 @@ class databox_field implements cache_cacheableInterface
 
     $connbas = $this->get_connection();
 
-    $sql = "SELECT `regdate`, `regdesc`, `regname`, `thumbtitle`, `separator`
+    $sql = "SELECT `thumbtitle`, `separator`
               , `dces_element`, `tbranch`, `type`, `report`, `multi`, `required`
               , `readonly`, `indexable`, `name`, `src`
               , `VocabularyControlType`, `RestrictToVocabularyControl`
@@ -215,10 +207,6 @@ class databox_field implements cache_cacheableInterface
 
     $this->separator = $separator;
     $this->thumbtitle = $row['thumbtitle'];
-
-    $this->regdesc = !!$row['regdesc'];
-    $this->regname = !!$row['regname'];
-    $this->regdate = !!$row['regdate'];
 
     return $this;
   }
@@ -367,6 +355,12 @@ class databox_field implements cache_cacheableInterface
     $stmt = $connbas->prepare($sql);
     $stmt->execute($params);
 
+    if ($this->renamed)
+    {
+      caption_field::rename_all_metadatas($this);
+      $this->renamed = false;
+    }
+
     $dom_struct = $this->databox->get_dom_structure();
     $xp_struct  = $this->databox->get_xpath_structure();
 
@@ -421,7 +415,14 @@ class databox_field implements cache_cacheableInterface
    */
   public function set_name($name)
   {
+    $previous_name = $this->name;
+
     $this->name = self::generateName($name);
+
+    if ($this->name !== $previous_name)
+    {
+      $this->renamed = true;
+    }
 
     return $this;
   }
@@ -623,39 +624,6 @@ class databox_field implements cache_cacheableInterface
 
   /**
    *
-   * @return databox_field
-   */
-  public function set_regdate()
-  {
-    $this->set_reg_attr('date');
-
-    return $this;
-  }
-
-  /**
-   *
-   * @return databox_field
-   */
-  public function set_regdesc()
-  {
-    $this->set_reg_attr('desc');
-
-    return $this;
-  }
-
-  /**
-   *
-   * @return databox_field
-   */
-  public function set_regname()
-  {
-    $this->set_reg_attr('name');
-
-    return $this;
-  }
-
-  /**
-   *
    * @param string $attr
    * @return databox_field
    */
@@ -681,33 +649,6 @@ class databox_field implements cache_cacheableInterface
     }
 
     return $this;
-  }
-
-  /**
-   *
-   * @return boolean
-   */
-  public function is_regname()
-  {
-    return $this->regname;
-  }
-
-  /**
-   *
-   * @return boolean
-   */
-  public function is_regdesc()
-  {
-    return $this->regdesc;
-  }
-
-  /**
-   *
-   * @return boolean
-   */
-  public function is_regdate()
-  {
-    return $this->regdate;
   }
 
   /**
@@ -870,10 +811,10 @@ class databox_field implements cache_cacheableInterface
 
     $sql = "INSERT INTO metadatas_structure
         (`id`, `name`, `src`, `readonly`, `indexable`, `type`, `tbranch`,
-          `thumbtitle`, `multi`, `regname`, `regdesc`, `regdate` ,
+          `thumbtitle`, `multi`,
           `report`, `sorter`)
         VALUES (null, :name, '', 0, 1, 'text', '',
-          null, 0, null, null, null,
+          null, 0,
           1, :sorter)";
 
     $stmt = $databox->get_connection()->prepare($sql);

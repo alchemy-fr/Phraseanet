@@ -27,7 +27,7 @@ class eventsmanager_broker
   }
 
   /**
-   * @return eventsmanager
+   * @return \eventsmanager_broker
    */
   public static function getInstance(appbox &$appbox, \Alchemy\Phrasea\Core $core)
   {

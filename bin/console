@@ -52,11 +52,19 @@ try
 
   $app->add(new module_console_aboutAuthors('about:authors'));
   $app->add(new module_console_aboutLicense('about:license'));
+
+  $app->add(new module_console_checkExtension('check:extension'));
+
   $app->add(new module_console_systemUpgrade('system:upgrade'));
+
+  $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
+
   $app->add(new module_console_systemMailCheck('system:mailCheck'));
   $app->add(new module_console_systemBackupDB('system:backupDB'));
   $app->add(new module_console_systemClearCache('system:clearCache'));
   $app->add(new module_console_systemTemplateGenerator('system:templateGenerator'));
+  $app->add(new module_console_systemExport('system:export'));
+
   $app->add(new module_console_taskrun('task:run'));
   $app->add(new module_console_tasklist('task:list'));
   $app->add(new module_console_schedulerState('scheduler:state'));
@@ -64,12 +72,21 @@ try
   $app->add(new module_console_schedulerStart('scheduler:start'));
   $app->add(new module_console_fileConfigCheck('check:config'));
   $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
+  $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
   $app->add(new module_console_systemConfigCheck('check:system'));
+
+
+  $app->add(new module_console_fieldsList('fields:list'));
+  $app->add(new module_console_fieldsDelete('fields:delete'));
+  $app->add(new module_console_fieldsRename('fields:rename'));
+  $app->add(new module_console_fieldsMerge('fields:merge'));
+
+  
   $result_code = $app->run();
 }
 catch (Exception $e)
 {
-  echo "an error occured";
+  echo "an error occured";var_dump($e->getMessage());
 }
 
 exit($result_code);

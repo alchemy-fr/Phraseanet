@@ -131,6 +131,7 @@ class gatekeeper
           if ($this->_PHP_SELF == '/thesaurus2/xmlhttp/getterm.x.php'
             || $this->_PHP_SELF == '/thesaurus2/xmlhttp/searchcandidate.x.php'
             || $this->_PHP_SELF == '/thesaurus2/xmlhttp/getsy.x.php')
+
             return;
           phrasea::redirect('/login/?redirect=/thesaurus2');
           break;
@@ -292,7 +293,19 @@ class gatekeeper
     {
       $datas = random::helloToken($parm['LOG']);
 
-      return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
+      switch ($datas['type'])
+      {
+        default:
+          return $this;
+          break;
+        case \random::TYPE_FEED_ENTRY:
+          return phrasea::redirect("/lightbox/feeds/entry/" . $datas['datas'] . "/");
+          break;
+        case \random::TYPE_VALIDATE:
+        case \random::TYPE_VIEW:
+          return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
+          break;
+      }
     }
     catch (Exception_NotFound $e)
     {

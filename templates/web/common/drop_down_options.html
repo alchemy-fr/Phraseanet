@@ -7,10 +7,10 @@
         <tr>
           <td>
             <div class="context-menu context-menu-theme-vista">
-              {% if user.ACL.has_right_on_base(record.get_base_id, 'canputinalbum') %}
+              {% if user.ACL.has_right_on_base(record.get_base_id, 'canputinalbum') and not record.is_grouping() %}
               <div title="" class="context-menu-item">
                 <div class="context-menu-item-inner"
-                     onclick="evt_add_in_chutier('{{record.get_base_id}}','{{record.get_record_id}}',false,this);return(false);">
+                     onclick="evt_add_in_chutier('{{record.get_base_id}}','{{record.get_record_id}}',false,true);return(false);">
                   {% trans 'action : ajouter au panier' %}
                 </div>
               </div>
