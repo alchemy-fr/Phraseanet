@@ -100,6 +100,25 @@ class databox_field implements cache_cacheableInterface
 
   /**
    *
+   * @var <type>
+   */
+  protected $regdate;
+
+  /**
+   *
+   * @var <type>
+   */
+  protected $regdesc;
+
+  /**
+   *
+   * @var <type>
+   */
+  protected $regname;
+  protected $renamed = false;
+
+  /**
+   *
    * @var int
    */
   protected $sbas_id;
@@ -345,6 +364,12 @@ class databox_field implements cache_cacheableInterface
     $stmt = $connbas->prepare($sql);
     $stmt->execute($params);
 
+    if ($this->renamed)
+    {
+      caption_field::rename_all_metadatas($this);
+      $this->renamed = false;
+    }
+
     $dom_struct = $this->databox->get_dom_structure();
     $xp_struct  = $this->databox->get_xpath_structure();
 
@@ -399,7 +424,14 @@ class databox_field implements cache_cacheableInterface
    */
   public function set_name($name)
   {
+    $previous_name = $this->name;
+
     $this->name = self::generateName($name);
+
+    if ($this->name !== $previous_name)
+    {
+      $this->renamed = true;
+    }
 
     return $this;
   }

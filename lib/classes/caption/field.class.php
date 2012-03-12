@@ -403,6 +403,58 @@ class caption_field
     return $values;
   }
 
+  public static function rename_all_metadatas(databox_field $databox_field)
+  {
+    $sql = 'SELECT count(id) as count_id FROM metadatas
+            WHERE meta_struct_id = :meta_struct_id';
+    $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
+    $params = array(
+        ':meta_struct_id' => $databox_field->get_id()
+    );
+
+    $stmt->execute($params);
+    $rowcount = $stmt->rowCount();
+    $stmt->closeCursor();
+
+    $n = 0;
+    $increment = 500;
+
+    while ($n < $rowcount)
+    {
+      $sql = 'SELECT record_id, id FROM metadatas
+              WHERE meta_struct_id = :meta_struct_id LIMIT ' . $n . ', ' . $increment;
+
+      $params = array(
+          ':meta_struct_id' => $databox_field->get_id()
+      );
+
+      $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
+      $stmt->execute($params);
+      $rowcount = $stmt->rowCount();
+      $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $stmt->closeCursor();
+      unset($stmt);
+
+      foreach ($rs as $row)
+      {
+        try
+        {
+          $record = $databox_field->get_databox()->get_record($row['record_id']);
+          $record->set_metadatas(array());
+          unset($record);
+        }
+        catch (Exception $e)
+        {
+
+        }
+      }
+
+      $n += $increment;
+    }
+
+    return;
+  }
+
   public static function delete_all_metadatas(databox_field $databox_field)
   {
     $sql = 'SELECT count(id) as count_id FROM metadatas
@@ -444,6 +496,7 @@ class caption_field
           $record        = $databox_field->get_databox()->get_record($row['record_id']);
           $caption_field = new caption_field($databox_field, $record);
           $caption_field->delete();
+          $record->set_metadatas(array());
           unset($caption_field);
           unset($record);
         }
