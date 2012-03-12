@@ -415,10 +415,6 @@ class Basket implements ControllerProviderInterface
 
           if(null !== $validationSession = $basket->getValidation())
           {
-            if(false !== $validationSession->isFinished())
-            {
-              continue;
-            }
 
             $participants = $validationSession->getParticipants();
 
