@@ -137,7 +137,7 @@ class BasketRepository extends EntityRepository
    */
   public function findUserBasket($basket_id, \User_Adapter $user, $requireOwner)
   {
-    $dql = 'SELECT b
+    $dql = 'SELECT b, e
             FROM Entities\Basket b
             LEFT JOIN b.elements e
             WHERE b.id = :basket_id
@@ -158,7 +158,6 @@ class BasketRepository extends EntityRepository
     {
       $participant = false;
 
-      $basket = $this->_em->merge($basket);
       if ($basket->getValidation() && !$requireOwner)
       {
         try
@@ -183,7 +182,7 @@ class BasketRepository extends EntityRepository
   public function findContainingRecordForUser(\record_adapter $record, \User_Adapter $user)
   {
 
-    $dql = 'SELECT b
+    $dql = 'SELECT b, e
             FROM Entities\Basket b
             JOIN b.elements e
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
@@ -208,7 +207,7 @@ class BasketRepository extends EntityRepository
     switch ($type)
     {
       case self::RECEIVED:
-        $dql    = 'SELECT b
+        $dql    = 'SELECT b, e
                 FROM Entities\Basket b
                 JOIN b.elements e
                 WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
@@ -217,7 +216,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::VALIDATION_DONE:
-        $dql     = 'SELECT b
+        $dql     = 'SELECT b, e
                 FROM Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation s
@@ -229,7 +228,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::VALIDATION_SENT:
-        $dql    = 'SELECT b
+        $dql    = 'SELECT b, e
                 FROM Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation v
@@ -239,7 +238,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       default:
-        $dql     = 'SELECT b
+        $dql     = 'SELECT b, e
                 FROM Entities\Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
@@ -251,7 +250,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::MYBASKETS:
-        $dql     = 'SELECT b
+        $dql     = 'SELECT b, e
                 FROM Entities\Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
@@ -300,7 +299,7 @@ class BasketRepository extends EntityRepository
    */
   public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
   {
-    $dql = 'SELECT b
+    $dql = 'SELECT b, e
             FROM Entities\Basket b
             LEFT JOIN b.elements e
             LEFT JOIN b.validation s
