@@ -8,8 +8,8 @@
         <img style="margin:30px 0;" src="/skins/icons/Feedback60.png"/>
         {% endif %}
       </div>
-      <div class="PNB content" style="top:150px;">
-        <div class="PNB10" style="bottom:0;height:150px;">
+      <div class="PNB content" style="top:150px;overflow-y:auto;">
+        <div style="padding:10px">
           <h1>{% trans 'Grant rights' %}</h1>
           <ul class="general_togglers">
             {% if context == 'Feedback' %}
@@ -31,7 +31,7 @@
             </li>
           </ul>
         </div>
-        <div class="PNB10" style="top:150px;overflow-y:auto;">
+        <div style="padding:10px;">
           <h1>
             {% trans 'Lists' %}
           </h1>
@@ -128,7 +128,7 @@
 
 
                 {% if recommendation != '' %}
-                  {% set recommendation = '<br/>' ~ recommandation %}
+                  {% set recommendation = '<br/>' ~ recommendation %}
                   {% trans %}
                     Please consider send this validation to the following users : {{ recommendation }}
                   {% endtrans %}
@@ -156,7 +156,9 @@
                 </table>
               </div>
             </td>
-            <td style="width:550px;">
+            <td style="width:10px;">
+            </td>
+            <td>
               <p>
                 {% if context == 'Push' %}
                   {% trans 'Push::unpush permet d\'envoyer un lot d\'image a des destinataires' %}
@@ -172,7 +174,7 @@
     <div class="PNB" style="top:150px;">
       <div class="PNB10 content user_content">
         <div class="PNB10 header">
-          <table>
+          <table style="table-layout:auto;">
             <tr>
               <td>
               </td>
