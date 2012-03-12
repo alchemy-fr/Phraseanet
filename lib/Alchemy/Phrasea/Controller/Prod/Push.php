@@ -233,6 +233,9 @@ class Push implements ControllerProviderInterface
               $BasketElement->setRecord($element);
               $BasketElement->setBasket($Basket);
 
+              $em->persist($BasketElement);
+
+              $Basket->addBasketElement($BasketElement);
 
               if ($receiver['HD'])
               {
@@ -250,8 +253,6 @@ class Push implements ControllerProviderInterface
                   , \ACL::GRANT_ACTION_PUSH
                 );
               }
-
-              $em->persist($BasketElement);
             }
 
             $em->flush();
@@ -366,6 +367,8 @@ class Push implements ControllerProviderInterface
               $BasketElement->setBasket($Basket);
 
               $em->persist($BasketElement);
+
+              $Basket->addBasketElement($BasketElement);
             }
             $em->flush();
           }
