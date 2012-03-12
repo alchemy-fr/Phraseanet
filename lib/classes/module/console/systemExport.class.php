@@ -29,7 +29,7 @@ class module_console_systemExport extends Command
   {
     parent::__construct($name);
 
-    $this->setDescription('Backup Phraseanet Databases');
+    $this->setDescription('Export all phraseanet records to a directory');
 
     /**
      * To implement
