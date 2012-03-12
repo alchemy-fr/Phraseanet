@@ -114,6 +114,8 @@ class databox_field implements cache_cacheableInterface
    */
   protected $regname;
 
+  protected $renamed = false;
+
   /**
    *
    * @var int
@@ -329,6 +331,12 @@ class databox_field implements cache_cacheableInterface
     $stmt = $connbas->prepare($sql);
     $stmt->execute($params);
 
+    if($this->renamed)
+    {
+      caption_field::rename_all_metadatas($this);
+      $this->renamed = false;
+    }
+
     $dom_struct = $this->databox->get_dom_structure();
     $xp_struct = $this->databox->get_xpath_structure();
 
@@ -386,6 +394,12 @@ class databox_field implements cache_cacheableInterface
     $unicode_processor = new unicode();
     $name = $unicode_processor->remove_nonazAZ09($name, false, false);
     $name = $unicode_processor->remove_first_digits($name);
+
+    if($this->name !== $name)
+    {
+      $this->renamed = true;
+    }
+
     $this->name = $name;
 
     return $this;
