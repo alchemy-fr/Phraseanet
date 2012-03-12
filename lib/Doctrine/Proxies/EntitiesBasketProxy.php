@@ -34,8 +34,8 @@ class EntitiesBasketProxy extends \Entities\Basket implements \Doctrine\ORM\Prox
             unset($this->_entityPersister, $this->_identifier);
         }
     }
-
-
+    
+    
     public function getId()
     {
         $this->__load();
@@ -218,6 +218,6 @@ class EntitiesBasketProxy extends \Entities\Basket implements \Doctrine\ORM\Prox
             }
             unset($this->_entityPersister, $this->_identifier);
         }
-
+        
     }
 }

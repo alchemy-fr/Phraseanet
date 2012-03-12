@@ -98,24 +98,15 @@ class databox_field implements cache_cacheableInterface
    */
   protected $thumbtitle;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $regdate;
-
-  /**
-   *
-   * @var <type>
-   */
-  protected $regdesc;
-
-  /**
-   *
-   * @var <type>
-   */
-  protected $regname;
   protected $renamed = false;
+
+  /**
+   *
+   *
+   * To implement : change multi
+   * Change vocab Id
+   *
+   */
 
   /**
    *
