@@ -350,6 +350,21 @@ class User_Query implements User_QueryInterface
       {
         case self::LIKE_FIRSTNAME:
         case self::LIKE_LASTNAME:
+
+          $qrys = array();
+          foreach (explode(' ', $like_value) as $like_val)
+          {
+            $qrys[] = sprintf(
+              ' usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
+              , $like_field
+              , str_replace(array('"', '%'), array('\"', '\%'), $like_val)
+            );
+          }
+
+          if (count($qrys) > 0)
+            $sql_like[] = ' (' . implode(' OR ', $qrys) . ') ';
+          
+          break;
         case self::LIKE_COMPANY:
         case self::LIKE_EMAIL:
         case self::LIKE_LOGIN:
@@ -561,7 +576,6 @@ class User_Query implements User_QueryInterface
   public function get_total()
   {
     if ($this->total)
-
       return $this->total;
 
     $conn = $this->appbox->get_connection();
@@ -722,7 +736,6 @@ class User_Query implements User_QueryInterface
   public function on_base_ids(Array $base_ids = null)
   {
     if (!$base_ids)
-
       return $this;
 
     $this->bases_restrictions = true;
@@ -747,7 +760,6 @@ class User_Query implements User_QueryInterface
   public function on_sbas_ids(Array $sbas_ids = null)
   {
     if (!$sbas_ids)
-
       return $this;
 
     $this->sbas_restrictions = true;
