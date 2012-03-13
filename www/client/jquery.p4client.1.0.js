@@ -30,22 +30,23 @@ function acceptCgus(name,value)
 
 function cancelCgus(id)
 {
-  $.ajax({
-    type: "POST",
-    url: "/prod/TOU/deny/" + id + "/",
-    dataType:'json',
-    success: function(data){
-      if(data.success)
-      {
-        alert(language.cgusRelog);
-        self.location.replace(self.location.href);
-      }
-      alert
-      {
-        humane.error(data.message);
-      }
-    }
-  });
+
+	$.ajax({
+		type: "POST",
+		url: "/prod/prodFeedBack.php",
+		data: {
+			sbas_id:id,
+			action:'DENY_CGU'
+		},
+		success: function(data){
+			if(data == '1')
+			{
+				alert(language.cgusRelog);
+				self.location.replace(self.location.href);
+			}
+		}
+	});
+
 }
 
 function activateCgus()
@@ -631,8 +632,8 @@ function clktri(id){
  * CHUTIER
  **************/
 
-function evt_add_in_chutier(base_id, record_id){
-	$('#formChubas')[0].value = base_id;
+function evt_add_in_chutier(sbas_id, record_id){
+	$('#formChubas')[0].value = sbas_id;
 	$('#formChuact')[0].value = "ADDIMG";
 	$('#formChup0')[0].value = record_id;
 	$('#formChu').submit();
@@ -780,6 +781,8 @@ function evt_dwnl(lst)
 {
 	var dialog_box = $('#dialog_dwnl');
 
+	dialog_box = $('#dialog_dwnl');
+
 	dialog_box.empty().addClass('loading').dialog({
 		width:800,
 		height:600,
@@ -816,36 +819,6 @@ function evt_dwnl(lst)
 	});
 
 }
-
-
-//function evt_dwnl(lst){
-//	var top;
-//	var left;
-//
-//	var url = "" +
-//	"/include/multiexports.php" +
-//	"?" +
-//	"&callclient=1";
-//
-//
-//	$('#MODALDL').attr('src',url);
-//
-//
-//	var t = (bodySize.y - 400) / 2;
-//	var l = (bodySize.x - 550) / 2;
-//
-//	$('#MODALDL').css({
-//		'display': 'block',
-//		'opacity': 0,
-//		'width': '550px',
-//		'position': 'absolute',
-//		'top': t,
-//		'left': l,
-//		'height': '400px'
-//	}).fadeTo(500, 1);
-//
-//	showOverlay(2);
-//}
 
 function profil(value)
 {

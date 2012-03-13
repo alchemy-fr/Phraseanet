@@ -43,7 +43,7 @@ if ($Request->get('act') == "ADDIMG" && ($Request->get("p0") != "" && $Request->
   /* @var $repository \Repositories\BasketRepository */
   $basket = $repository->findUserBasket($Request->get('courChuId'), $user, true);
 
-  $sbas_id = phrasea::sbasFromBas($Request->get('bas'));
+  $sbas_id = $Request->get('sbas');
   $record = new record_adapter($sbas_id, $Request->get('p0'));
 
   $BasketElement = new \Entities\BasketElement();
