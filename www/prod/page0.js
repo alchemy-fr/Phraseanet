@@ -281,6 +281,7 @@ function dropOnBask(event,from,destKey)
   {
     sselcont = [];
     lstbr = p4.sel.join(';');
+      console.log(from, $(from).hasClass('baskAdder'));
     if($(from).hasClass('baskAdder'))
       lstbr = $(from).attr('id').split('_').slice(2,4).join('_');
   }
@@ -3352,7 +3353,10 @@ function evt_print(value)
 function evt_add_in_chutier(a,b,event,el)
 {
   if($('#baskets .SSTT.active').length == 1)
+  {
+    console.log('evaluating', '#PREV_BASKADD_'+a+'_'+b);
     dropOnBask(event,$('#PREV_BASKADD_'+a+'_'+b),$('#baskets .SSTT.active'));
+  }
 }
 
 

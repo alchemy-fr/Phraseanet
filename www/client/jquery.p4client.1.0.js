@@ -632,8 +632,8 @@ function clktri(id){
  * CHUTIER
  **************/
 
-function evt_add_in_chutier(base_id, record_id){
-	$('#formChubas')[0].value = base_id;
+function evt_add_in_chutier(sbas_id, record_id){
+	$('#formChubas')[0].value = sbas_id;
 	$('#formChuact')[0].value = "ADDIMG";
 	$('#formChup0')[0].value = record_id;
 	$('#formChu').submit();

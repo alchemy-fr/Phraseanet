@@ -588,7 +588,7 @@ if ($cssfile)
                         </form>
                         <div id="dialog_dwnl" title="<?php echo _('action : exporter') ?>" style="display:none;z-index12000;"></div>
                         <form name="formChu" id="formChu" action="./baskets.php" method="post" style="visibility:hidden; display:none" >
-                          <input type="hidden" name="bas" id="formChubas" value="">
+                          <input type="hidden" name="sbas" id="formChubas" value="">
                           <input type="hidden" name="act" id="formChuact" value="">
                           <input type="hidden" name="p0"  id="formChup0" value="">
                           <input type="hidden" name="ssel_id" value="">

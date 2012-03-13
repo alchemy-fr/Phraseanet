@@ -431,7 +431,7 @@ $npages = $result->get_total_pages();
             <?php
                 if ($ACL->has_right_on_base($record->get_base_id(), "canputinalbum"))
                 {
-            ?><div class="baskAdder" title="<?php echo _('action : ajouter au panier') ?>" onClick="evt_add_in_chutier('<?php echo $record->get_base_id() ?>', '<?php echo $record->get_record_id() ?>');"></div><?php
+            ?><div class="baskAdder" title="<?php echo _('action : ajouter au panier') ?>" onClick="evt_add_in_chutier('<?php echo $record->get_sbas_id() ?>', '<?php echo $record->get_record_id() ?>');"></div><?php
                 }
                 if ($mod_col != '1')
                 {

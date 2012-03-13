@@ -21,7 +21,7 @@ $session = $appbox->get_session();
 $usr_id = $session->get_usr_id();
 
 $request = http_request::getInstance();
-$parm = $request->get_parms("bas", "courChuId", "act", "p0", "first");
+$parm = $request->get_parms("sbas", "courChuId", "act", "p0", "first");
 
 $parm['p0'] = utf8_decode($parm['p0']);
 
@@ -41,7 +41,7 @@ if ($parm["act"] == "DELIMG" && $parm["p0"] != "")
 if ($parm["act"] == "ADDIMG" && ($parm["p0"] != "" && $parm["p0"] != null))
 {
   $basket = basket_adapter::getInstance($appbox, $parm['courChuId'], $user->get_id());
-  $sbas_id = phrasea::sbasFromBas($parm['bas']);
+  $sbas_id = (int) $parm['sbas'];
   $record = new record_adapter($sbas_id, $parm['p0']);
   $basket->push_element($record, false, false);
   unset($record);
