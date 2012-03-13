@@ -1,14 +1,14 @@
 
 {% if (record.is_from_basket is empty) and user.ACL().has_right_on_base(record.get_base_id(), 'canputinalbum') %}
   <div sbas="{{record.get_sbas_id()}}" id="PREV_BASKADD_{{record.get_serialize_key}}"
-       class="baskAdder" title="{% trans 'action : ajouter au panier' %}" 
-       onclick="evt_add_in_chutier('{{record.get_base_id()}}','{{record.get_record_id()}}',false);return(false);"></div>
+       class="baskAdder" title="{% trans 'action : ajouter au panier' %}"
+       onclick="evt_add_in_chutier('{{record.get_sbas_id()}}','{{record.get_record_id()}}',false,this);return(false);"></div>
 {% endif %}
 
-  <div class="printer" title="'{% trans 'action : print' %}" 
+  <div class="printer" title="'{% trans 'action : print' %}"
        onclick="evt_print('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);"></div>
 
 {% if user.ACL().has_right_on_base(record.get_base_id(), 'candwnldhd') or user.ACL().has_right_on_base(record.get_base_id(), 'candwnldpreview') %}
-    <div class="downloader" title="{% trans 'action : exporter' %}" 
+    <div class="downloader" title="{% trans 'action : exporter' %}"
     onclick="evt_dwnl('{{record.get_sbas_id()}}_{{record.get_record_id()}}');return(false);"></div>
 {% endif %}

@@ -576,56 +576,51 @@ $user = User_Adapter::getInstance($usr_id, $appbox);
     <!-- BOITE MODALE DIALOG -->
     <div id="MESSAGE"></div>
 
-    <?php
-    echo databox_cgu::askAgreement();
-    ?>
-    <div id="OVERLAY2" style="display:none;">
-
-    </div>
-    <iframe id="MODALDL" class="modalbox" src="" name="download" frameborder="0">
-    </iframe>
-  <!--<iframe style="display:none;" id="download" name="download"></iframe>-->
-    <form style="display:none;" action="./index.php" target="_self" id="mainForm">
-    </form>
-    <div id="dialog_dwnl" title="<?php echo _('action : exporter') ?>" style="display:none;z-index:12000;"></div>
-    <form name="formChu" id="formChu" action="./baskets.php" method="post" style="visibility:hidden; display:none" >
-      <input type="hidden" name="bas" id="formChubas" value="">
-      <input type="hidden" name="act" id="formChuact" value="">
-      <input type="hidden" name="p0"  id="formChup0" value="">
-      <input type="hidden" name="ssel_id" value="">
-      <input type="hidden" name="courChuId" id="formChuBaskId" value="">
-    </form>
-    <form name="formPrintPage" action="printpage.php" method="post" style="visibility:hidden; display:none" >
-      <input type="hidden" name="lst" value="">
-    </form>
-    <form name="validatorEject" target="wVal" id="validatorEject" action="/lightbox/index.php" method="post" style="visibility:hidden; display:none" >
-      <input type="hidden" name="ssel_id" id="ssel2val" value="">
-      <input type="hidden" name="mode" value="0">
-    </form>
-    <form name="logout" target="_self" id="logout" action="/login/logout.php" method="post" style="visibility:hidden; display:none" >
-      <input type="hidden" name="app" value="client">
-    </form>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
-    <script type="text/javascript" src="/include/minify/g=client"></script>
-    <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.6.min.js"></script>
-    <script type="text/javascript">
+                        </div>
+                        <iframe id="MODALDL" class="modalbox" src="" name="download" frameborder="0">
+                        </iframe>
+                      <!--<iframe style="display:none;" id="download" name="download"></iframe>-->
+                        <form style="display:none;" action="./index.php" target="_self" id="mainForm">
+                        </form>
+                        <div id="dialog_dwnl" title="<?php echo _('action : exporter') ?>" style="display:none;z-index12000;"></div>
+                        <form name="formChu" id="formChu" action="./baskets.php" method="post" style="visibility:hidden; display:none" >
+                          <input type="hidden" name="sbas" id="formChubas" value="">
+                          <input type="hidden" name="act" id="formChuact" value="">
+                          <input type="hidden" name="p0"  id="formChup0" value="">
+                          <input type="hidden" name="ssel_id" value="">
+                          <input type="hidden" name="courChuId" id="formChuBaskId" value="">
+                        </form>
+                        <form name="formPrintPage" action="printpage.php" method="post" style="visibility:hidden; display:none" >
+                          <input type="hidden" name="lst" value="">
+                        </form>
+                        <form name="validatorEject" target="wVal" id="validatorEject" action="/lightbox/index.php" method="post" style="visibility:hidden; display:none" >
+                          <input type="hidden" name="ssel_id" id="ssel2val" value="">
+                          <input type="hidden" name="mode" value="0">
+                        </form>
+                        <form name="logout" target="_self" id="logout" action="/login/logout.php" method="post" style="visibility:hidden; display:none" >
+                          <input type="hidden" name="app" value="client">
+                        </form>
+                        <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+                        <script type="text/javascript" src="/include/minify/g=client"></script>
+                        <script type="text/javascript" src="/include/jslibs/flowplayer/flowplayer-3.2.6.min.js"></script>
+                        <script type="text/javascript">
 
 
-      function reModCol()
-      {
-        var mod_col = $('#mod')[0].options[$('#mod')[0].selectedIndex].value.split('X');
-        if(mod_col[0])
-          mod_col = mod_col[1]
-        var w = Math.round((bodyW - 16) / (mod_col==1?4:mod_col)) - 12;
+                          function reModCol()
+                          {
+                            var mod_col = $('#mod')[0].options[$('#mod')[0].selectedIndex].value.split('X');
+                            if(mod_col[0])
+                              mod_col = mod_col[1]
+                            var w = Math.round((bodyW - 16) / (mod_col==1?4:mod_col)) - 12;
 
-        if(w < 128)
-          w = 128;
-        var propname = document.styleSheets[0].cssRules ? "cssRules":"rules";  // firefox=cssRules ; safari,ie=rules
-        document.styleSheets[0][propname][0].style.width  = (w-20)+"px";  // IMG.hthbimg
-        document.styleSheets[0][propname][1].style.height = (w-20)+"px";  // IMG.vthbimg
-        document.styleSheets[0][propname][2].style.width  = (w)+"px";  // .w160px
-        document.styleSheets[0][propname][3].style.height = (w)+"px";  // .h160px
-      }
+                            if(w < 128)
+                              w = 128;
+                            var propname = document.styleSheets[0].cssRules ? "cssRules":"rules";  // firefox=cssRules ; safari,ie=rules
+                            document.styleSheets[0][propname][0].style.width  = (w-20)+"px";  // IMG.hthbimg
+                            document.styleSheets[0][propname][1].style.height = (w-20)+"px";  // IMG.vthbimg
+                            document.styleSheets[0][propname][2].style.width  = (w)+"px";  // .w160px
+                            document.styleSheets[0][propname][3].style.height = (w)+"px";  // .h160px
+                          }
 
 
 

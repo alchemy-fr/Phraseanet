@@ -155,13 +155,13 @@ $ACL = $user->ACL();
 if ($registry->get('GV_thesaurus'))
 {
   ?>
-  <script language="javascr<?php ?>ipt">
-    document.getElementById('proposals').innerHTML = "<div style='height:0px; overflow:hidden'>\n<?php echo p4string::MakeString($qp['main']->proposals["QRY"], "JS") ?>\n</div>\n<?php echo p4string::MakeString(proposalsToHTML($qp['main']->proposals), "JS") ?>";
+  <script language="javascript">
+    document.getElementById('proposals').innerHTML = "<div style='height:0px; overflow:hidden'>\n<?php echo p4string::MakeString($parm['qry'], "JS") ?>\n</div>\n<?php echo p4string::MakeString($proposals, "JS") ?>";
   <?php
   if ($registry->get('GV_clientAutoShowProposals'))
   {
     ?>
-        if("<?php echo p4string::MakeString(proposalsToHTML($qp['main']->proposals), "JS") ?>" != "<div class=\"proposals\"></div>")
+        if("<?php echo p4string::MakeString($proposals, "JS") ?>" != "<div class=\"proposals\"></div>")
         chgOng(4);
     <?php
   }
@@ -432,11 +432,11 @@ if (count($result->get_datas()) > 0)
                 <?php
                 if ($ACL->has_right_on_base($record->get_base_id(), "canputinalbum"))
                 {
-                  ?><div class="baskAdder" title="<?php echo _('action : ajouter au panier') ?>" onClick="evt_add_in_chutier('<?php echo $record->get_base_id() ?>', '<?php echo $record->get_record_id() ?>');"></div><?php
-          }
-          if ($mod_col != '1')
-          {
-                  ?>
+            ?><div class="baskAdder" title="<?php echo _('action : ajouter au panier') ?>" onClick="evt_add_in_chutier('<?php echo $record->get_sbas_id() ?>', '<?php echo $record->get_record_id() ?>');"></div><?php
+                }
+                if ($mod_col != '1')
+                {
+            ?>
                   <div style="margin-right:3px;" class="infoTips" id="INFO<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>" tooltipsrc="/prod/tooltip/tc_datas/<?php echo $record->get_sbas_id() ?>/<?php echo $record->get_record_id() ?>/"></div>
                   <?php
                   try
@@ -487,30 +487,30 @@ if (count($result->get_datas()) > 0)
   phrasea::getHome('HELP', 'client');
 }
 
-function proposalsToHTML(&$proposals)
-{
-
-  $html = '<div class="proposals">';
-  $b    = true;
-  foreach ($proposals["BASES"] as $zbase)
-  {
-    if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0)
-    {
-      $style = $b ? 'style="margin-top:0px;"' : '';
-      $b     = false;
-      $html .= "<h1 $style>" . sprintf(_('reponses::propositions pour la base %s'), htmlentities($zbase["NAME"])) . "</h1>";
-    }
-    $t     = true;
-    foreach ($zbase["TERMS"] as $path => $props)
-    {
-      $style = $t ? 'style="margin-top:0px;"' : '';
-      $t     = false;
-      $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), htmlentities($props["TERM"])) . "</h2>";
-      $html .= $props["HTML"];
-    }
-  }
-  $html .= '</div>';
-
-  return($html);
-}
+//function proposalsToHTML(&$proposals)
+//{
+//
+//  $html = '<div class="proposals">';
+//  $b    = true;
+//  foreach ($proposals["BASES"] as $zbase)
+//  {
+//    if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0)
+//    {
+//      $style = $b ? 'style="margin-top:0px;"' : '';
+//      $b     = false;
+//      $html .= "<h1 $style>" . sprintf(_('reponses::propositions pour la base %s'), htmlentities($zbase["NAME"])) . "</h1>";
+//    }
+//    $t     = true;
+//    foreach ($zbase["TERMS"] as $path => $props)
+//    {
+//      $style = $t ? 'style="margin-top:0px;"' : '';
+//      $t     = false;
+//      $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), htmlentities($props["TERM"])) . "</h2>";
+//      $html .= $props["HTML"];
+//    }
+//  }
+//  $html .= '</div>';
+//
+//  return($html);
+//}
 
