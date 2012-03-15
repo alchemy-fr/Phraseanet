@@ -362,4 +362,136 @@ class caption_Field_Value
     return $caption_field_value;
   }
 
+  /**
+   *
+   * @return string
+   */
+  public function highlight_thesaurus()
+  {
+    $value = $this->getValue();
+
+    $databox         = $this->databox_field->get_databox();
+    $XPATH_thesaurus = $databox->get_xpath_thesaurus();
+
+    $tbranch = $this->databox_field->get_tbranch();
+
+    if (!$tbranch || !$XPATH_thesaurus)
+    {
+      return $value;
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
+    $session = $appbox->get_session();
+    $unicode = new unicode();
+
+    $DOM_branchs = $XPATH_thesaurus->query($tbranch);
+
+    $fvalue = $value;
+
+    $cleanvalue = str_replace(array("<em>", "</em>", "'"), array("", "", "&apos;"), $fvalue);
+
+    list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
+    $term_noacc    = $unicode->remove_indexer_chars($term_noacc);
+    $context_noacc = $unicode->remove_indexer_chars($context_noacc);
+    if ($context_noacc)
+    {
+      $q = "//sy[@w='" . $term_noacc . "' and @k='" . $context_noacc . "']";
+    }
+    else
+    {
+      $q    = "//sy[@w='" . $term_noacc . "' and not(@k)]";
+    }
+    $qjs  = $link = "";
+    foreach ($DOM_branchs as $DOM_branch)
+    {
+      $nodes = $XPATH_thesaurus->cache_query($q, $DOM_branch);
+      if ($nodes->length > 0)
+      {
+        $lngfound = false;
+        foreach ($nodes as $node)
+        {
+          if ($node->getAttribute("lng") == $session->get_I18n())
+          {
+            // le terme est dans la bonne langue, on le rend cliquable
+            list($term, $context) = $this->splitTermAndContext($fvalue);
+            $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
+            $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
+            $qjs = $term;
+            if ($context)
+            {
+              $qjs .= " [" . $context . "]";
+            }
+            $link = $fvalue;
+
+            $lngfound = true;
+            break;
+          }
+
+          $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $session->usr_i18 . "']", $node->parentNode);
+          foreach ($synonyms as $synonym)
+          {
+            $k = $synonym->getAttribute("k");
+            if ($synonym->getAttribute("w") != $term_noacc || $k != $context_noacc)
+            {
+              $link = $qjs  = $synonym->getAttribute("v");
+              if ($k)
+              {
+                $link .= " (" . $k . ")";
+                $qjs .= " [" . $k . "]";
+              }
+
+              $lngfound = true;
+              break;
+            }
+          }
+        }
+        if (!$lngfound)
+        {
+          list($term, $context) = $this->splitTermAndContext($fvalue);
+          $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
+          $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
+          $qjs = $term;
+          if ($context)
+          {
+            $qjs .= " [" . $context . "]";
+          }
+          $link = $fvalue;
+        }
+      }
+    }
+    if ($qjs)
+    {
+      $value = "<a class=\"bounce\" onclick=\"bounce('" . $databox->get_sbas_id() . "','"
+        . str_replace("'", "\'", $qjs)
+        . "', '"
+        . str_replace("'", "\'", $this->databox_field->get_name())
+        . "');return(false);\">"
+        . $link
+        . "</a>";
+    }
+
+    return $value;
+  }
+
+  /**
+   *
+   * @param string $word
+   * @return array
+   */
+  protected function splitTermAndContext($word)
+  {
+    $term    = trim($word);
+    $context = "";
+    if (($po      = strpos($term, "(")) !== false)
+    {
+      if (($pc = strpos($term, ")", $po)) !== false)
+      {
+        $context = trim(substr($term, $po + 1, $pc - $po - 1));
+        $term    = trim(substr($term, 0, $po));
+      }
+    }
+
+    return array($term, $context);
+  }
+
 }
