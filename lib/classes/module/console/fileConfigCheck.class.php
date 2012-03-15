@@ -404,8 +404,6 @@ class module_console_fileConfigCheck extends Command
 
       if ($service->getType() === 'doctrine')
       {
-        $caches = $service->getCacheServices();
-
         if ($service->isDebug() && self::PROD === $this->env)
         {
           $output->writeln(sprintf(
@@ -423,6 +421,7 @@ class module_console_fileConfigCheck extends Command
           );
         }
 
+        $this->markTestSkipped('To rewrite');
         foreach ($caches->all() as $key => $cache)
         {
           if ($cache->getType() === 'array' && self::PROD === $this->env)
