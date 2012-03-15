@@ -104,7 +104,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     {
       throw new \Exception(sprintf(
           "Missing dbal configuration for '%s' service"
-          , $this->name
+          , __CLASS__
         )
       );
     }
