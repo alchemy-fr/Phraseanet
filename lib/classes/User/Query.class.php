@@ -348,23 +348,29 @@ class User_Query implements User_QueryInterface
     {
       switch ($like_field)
       {
-        case self::LIKE_FIRSTNAME:
-        case self::LIKE_LASTNAME:
-
+        case self::LIKE_NAME:
           $qrys = array();
           foreach (explode(' ', $like_value) as $like_val)
           {
+            if (trim($like_val) === '')
+              continue;
+
             $qrys[] = sprintf(
-              ' usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci '
-              , $like_field
+              ' (usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci
+                OR usr.`%s` LIKE "%s%%"  COLLATE utf8_unicode_ci)  '
+              , self::LIKE_FIRSTNAME
+              , str_replace(array('"', '%'), array('\"', '\%'), $like_val)
+              , self::LIKE_LASTNAME
               , str_replace(array('"', '%'), array('\"', '\%'), $like_val)
             );
           }
 
           if (count($qrys) > 0)
-            $sql_like[] = ' (' . implode(' OR ', $qrys) . ') ';
-          
+            $sql_like[] = ' (' . implode(' AND ', $qrys) . ') ';
+
           break;
+        case self::LIKE_FIRSTNAME:
+        case self::LIKE_LASTNAME:
         case self::LIKE_COMPANY:
         case self::LIKE_EMAIL:
         case self::LIKE_LOGIN:
@@ -690,15 +696,15 @@ class User_Query implements User_QueryInterface
   public function like($like_field, $like_value)
   {
 
-    if ($like_field == self::LIKE_NAME)
-    {
-      $this->like_field[self::LIKE_FIRSTNAME] = trim($like_value);
-      $this->like_field[self::LIKE_LASTNAME] = trim($like_value);
-    }
-    else
-    {
+//    if ($like_field == self::LIKE_NAME)
+//    {
+//      $this->like_field[self::LIKE_FIRSTNAME] = trim($like_value);
+//      $this->like_field[self::LIKE_LASTNAME] = trim($like_value);
+//    }
+//    else
+//    {
       $this->like_field[trim($like_field)] = trim($like_value);
-    }
+//    }
 
     $this->total = $this->page = $this->total_page = null;
 

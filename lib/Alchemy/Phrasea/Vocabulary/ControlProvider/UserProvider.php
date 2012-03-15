@@ -55,8 +55,7 @@ class UserProvider implements ControlProviderInterface
 
     $users = $user_query
         ->like(\User_Query::LIKE_EMAIL, $query)
-        ->like(\User_Query::LIKE_FIRSTNAME, $query)
-        ->like(\User_Query::LIKE_LASTNAME, $query)
+        ->like(\User_Query::LIKE_NAME, $query)
         ->like(\User_Query::LIKE_LOGIN, $query)
         ->like_match(\User_Query::LIKE_MATCH_OR)
         ->include_phantoms(true)
