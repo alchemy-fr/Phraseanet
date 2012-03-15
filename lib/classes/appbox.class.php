@@ -112,8 +112,22 @@ class appbox extends base
         throw new Exception('Invalid file format');
       }
     }
-    if (!in_array($pic_type, array(collection::PIC_LOGO, collection::PIC_WM, collection::PIC_STAMP, collection::PIC_PRESENTATION)))
-      throw new Exception('unknown pic_type');
+
+    switch($pic_type)
+    {
+      case collection::PIC_WM;
+          $collection->reset_watermark();
+        break;
+      case collection::PIC_LOGO:
+      case collection::PIC_PRESENTATION:
+        break;
+      case collection::PIC_STAMP:
+          $collection->reset_stamp();
+        break;
+      default:
+        throw new Exception('unknown pic_type');
+        break;
+    }
 
     if ($pic_type == collection::PIC_LOGO)
       $collection->update_logo($pathfile);

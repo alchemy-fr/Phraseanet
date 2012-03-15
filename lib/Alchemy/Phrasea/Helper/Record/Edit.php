@@ -576,6 +576,9 @@ class Edit extends RecordHelper
         $record->set_binary_status($newstat);
       }
 
+      $collection = \collection::get_from_base_id($record->get_base_id());
+      $collection->reset_stamp($record->get_record_id());
+      
       $record->write_metas();
 
       if ($statbits != '')

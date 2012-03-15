@@ -293,9 +293,37 @@ class collection implements cache_cacheableInterface
 
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute(array(':coll_id' => $this->get_coll_id()));
+
     while ($row2 = $stmt->fetch(PDO::FETCH_ASSOC))
     {
       @unlink(p4string::addEndSlash($row2['path']) . 'watermark_' . $row2['file']);
+    }
+    $stmt->closeCursor();
+
+    return $this;
+  }
+
+  public function reset_stamp($record_id = null)
+  {
+
+    $sql = 'SELECT path, file FROM record r INNER JOIN subdef s USING(record_id)
+            WHERE r.coll_id = :coll_id
+              AND r.type="image" AND s.name IN ("preview", "document")';
+
+    $params = array(':coll_id' => $this->get_coll_id());
+
+    if($record_id)
+    {
+      $sql .= ' AND record_id = :record_id';
+      $params[':record_id'] = $record_id;
+    }
+
+    $stmt = $this->get_connection()->prepare($sql);
+    $stmt->execute($params);
+
+    while ($row2 = $stmt->fetch(PDO::FETCH_ASSOC))
+    {
+      @unlink(p4string::addEndSlash($row2['path']) . 'stamp_' . $row2['file']);
     }
     $stmt->closeCursor();
 
