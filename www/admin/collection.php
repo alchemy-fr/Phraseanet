@@ -139,7 +139,6 @@ switch ($parm['act'])
 
   case 'SENDWM':
   case 'DELWM':
-    $collection->reset_watermark();
 
     if ($parm['act'] == 'SENDWM' && isset($_FILES['newWm']))
     {
