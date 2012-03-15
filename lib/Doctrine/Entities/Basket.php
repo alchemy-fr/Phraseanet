@@ -23,7 +23,6 @@ require_once __DIR__ . '/../../classes/User/Adapter.class.php';
 class Basket
 {
 
-  const CACHE_SUFFIX = '_basket';
   /**
    * @var integer $id
    */

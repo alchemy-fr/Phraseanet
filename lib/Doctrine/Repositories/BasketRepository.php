@@ -293,6 +293,7 @@ class BasketRepository extends EntityRepository
 
   /**
    * Return all actives validation where current user is involved and user basket
+   *
    * @param \User_Adapter $user
    * @param type $sort
    * @return Array
@@ -304,9 +305,10 @@ class BasketRepository extends EntityRepository
             LEFT JOIN b.elements e
             LEFT JOIN b.validation s
             LEFT JOIN s.participants p
-            WHERE (b.usr_id = :usr_id
-            AND b.archived = false) OR (b.usr_id != :usr_id AND p.usr_id = :usr_id
-             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP()))';
+            WHERE (b.usr_id = :usr_id AND b.archived = false)
+              OR (b.usr_id != :usr_id AND p.usr_id = :usr_id
+                  AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())
+                  )';
 
     if ($sort == 'date')
     {

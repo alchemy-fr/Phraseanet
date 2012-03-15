@@ -34,7 +34,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     'Log\\Doctrine\Monolog', 'Log\\Doctrine\\Phpecho'
   );
   protected $entityManager;
-  protected $cacheServices = array();
   protected $debug;
 
   public function __construct(Core $core, $name, Array $options)
@@ -58,17 +57,14 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     {
       $metaCache   = $this->core['CacheService']->get('ORMmetadata', 'Cache\\ArrayCache');
       $queryCache  = $this->core['CacheService']->get('ORMquery', 'Cache\\ArrayCache');
-//      $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
     }
     else
     {
       $query   = isset($cache["query"]['service']) ? $cache["query"]['service'] : 'Cache\\ArrayCache';
       $meta    = isset($cache["metadata"]['service']) ? $cache["metadata"]['service'] : 'Cache\\ArrayCache';
-//      $results = isset($cache["result"]['service']) ? $cache["result"]['service'] : 'Cache\\ArrayCache';
 
       $queryCache  = $this->core['CacheService']->get('ORMquery', $query);
       $metaCache   = $this->core['CacheService']->get('ORMmetadata', $meta);
-//      $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
     }
 
     $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
@@ -138,107 +134,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $this->addTypes();
 
     return $this;
-  }
-
-  protected static function loadClasses()
-  {
-    require_once __DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Doctrine\ORM'
-        , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Doctrine\DBAL'
-        , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Doctrine\Common'
-        , realpath(__DIR__ . '/../../../../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Doctrine\Common\DataFixtures'
-        , realpath(__DIR__ . '/../../../../../vendor/data-fixtures/lib')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'PhraseaFixture'
-        , realpath(__DIR__ . '/../../../../../conf.d/')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Entities'
-        , realpath(__DIR__ . '/../../../../../Doctrine')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Repositories'
-        , realpath(__DIR__ . '/../../../../../Doctrine')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Proxies'
-        , realpath(__DIR__ . '/../../../../../Doctrine')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Events'
-        , realpath(__DIR__ . '/../../../../../Doctrine')
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Symfony'
-        , realpath(__DIR__ . '/../../../../vendor/doctrine2-orm/lib/vendor')
-    );
-
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Doctrine\Logger'
-        , realpath(__DIR__ . '/../../../../../../../')
-    );
-
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Monolog'
-        , realpath(__DIR__ . '/../../../../../vendor/Silex/vendor/monolog/src')
-    );
-
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Types'
-        , realpath(__DIR__ . '/../../../../../Doctrine')
-    );
-
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'Gedmo'
-        , __DIR__ . "/../../../../../vendor/doctrine2-gedmo/lib"
-    );
-    $classLoader->register();
-
-    $classLoader = new \Doctrine\Common\ClassLoader(
-        'DoctrineExtensions'
-        , __DIR__ . "/../../../../../vendor/doctrine2-beberlei/lib"
-    );
-    $classLoader->register();
-
-    return;
   }
 
   protected function addTypes()
@@ -330,11 +225,6 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   public function getScope()
   {
     return 'orm';
-  }
-
-  public function getCacheServices()
-  {
-    return new ParameterBag($this->cacheServices);
   }
 
   public function isDebug()

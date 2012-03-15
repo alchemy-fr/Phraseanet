@@ -141,8 +141,10 @@ return call_user_func(function()
           $app['token']  = \API_OAuth2_Token::load_by_oauth_token($app["appbox"], $oauth2_adapter->getToken());
 
           if ($session->is_authenticated())
-
+          {
             return;
+          }
+          
           if ($oauth2_adapter->has_ses_id())
           {
             try
@@ -173,7 +175,16 @@ return call_user_func(function()
           $pathInfo = $request->getPathInfo();
           $route    = $parseRoute($pathInfo, $response);
           $log      = \API_V1_Log::create(
-              $app["appbox"], $account, $request->getMethod() . " " . $pathInfo, $response->getStatusCode(), $response->headers->get('content-type'), $route['ressource'], $route['general'], $route['aspect'], $route['action']);
+              $app["appbox"]
+              , $account
+              , $request->getMethod() . " " . $pathInfo
+              , $response->getStatusCode()
+              , $response->headers->get('content-type')
+              , $route['ressource']
+              , $route['general']
+              , $route['aspect']
+              , $route['action']
+          );
         });
 
       /**
@@ -319,13 +330,13 @@ return call_user_func(function()
 
       $route = '/records/{databox_id}/{record_id}/caption/';
       $app->get(
-      $route, function($databox_id, $record_id) use ($app)
-      {
-        $result = $app['api']->caption_records($app['request'], $databox_id, $record_id);
+        $route, function($databox_id, $record_id) use ($app)
+        {
+          $result = $app['api']->caption_records($app['request'], $databox_id, $record_id);
 
-        return $app['response']($result);
-      }
-    )->assert('databox_id', '\d+')->assert('record_id', '\d+');
+          return $app['response']($result);
+        }
+      )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
       $app->get('/records/{any_id}/{anyother_id}/caption/', $bad_request_exception);
 
