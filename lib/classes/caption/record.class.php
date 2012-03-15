@@ -178,7 +178,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
   protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine = null)
   {
     $fields = array();
-    
+
     foreach ($this->retrieve_fields() as $meta_struct_id => $field)
     {
       if (is_array($grep_fields) && !in_array($field->get_name(), $grep_fields))
@@ -209,8 +209,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
           if(!isset($fields[$key]))
             continue;
 
-          if(strpos($fields[$key]['value'], '<a ') === false)
-            $fields[$key]['value'] = $ret[$n];
+          //if(strpos($fields[$key]['value'], '<a ') === false)
+          $fields[$key]['value'] = $ret[$n];
 
           $n++;
         }
