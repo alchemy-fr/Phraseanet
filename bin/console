@@ -70,7 +70,6 @@ try
   $app->add(new module_console_schedulerState('scheduler:state'));
   $app->add(new module_console_schedulerStop('scheduler:stop'));
   $app->add(new module_console_schedulerStart('scheduler:start'));
-  $app->add(new module_console_fileConfigCheck('check:config'));
   $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
   $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
   $app->add(new module_console_systemConfigCheck('check:system'));
@@ -81,7 +80,7 @@ try
   $app->add(new module_console_fieldsRename('fields:rename'));
   $app->add(new module_console_fieldsMerge('fields:merge'));
 
-  
+
   $result_code = $app->run();
 }
 catch (Exception $e)
