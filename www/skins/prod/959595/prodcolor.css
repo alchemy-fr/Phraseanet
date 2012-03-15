@@ -199,7 +199,7 @@ span.ww_winTitle{
 }
 .ui-tabs .ui-tabs-nav li
 {
-	background-color:transparent;
+	background-color:#999999;
 	height:30px;
 	border:none;
 	overflow:hidden;
