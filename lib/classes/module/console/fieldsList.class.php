@@ -37,7 +37,7 @@ class module_console_fieldsList extends Command
   public function execute(InputInterface $input, OutputInterface $output)
   {
 
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
 
     foreach ($appbox->get_databoxes() as $databox)
     {
