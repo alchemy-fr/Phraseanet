@@ -20,19 +20,10 @@ require_once __DIR__ . '/../../../../../PhraseanetPHPUnitAbstract.class.inc';
 class ServiceArrayCacheTest extends PhraseanetPHPUnitAbstract
 {
 
-  public function testScope()
-  {
-    $cache = new \Alchemy\Phrasea\Core\Service\Cache\ArrayCache(
-        self::$core, 'hello', array()
-    );
-
-    $this->assertEquals("cache", $cache->getScope());
-  }
-
   public function testService()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\ArrayCache(
-        self::$core, 'hello', array()
+        self::$core, array()
     );
 
     $service = $cache->getDriver();
@@ -42,7 +33,7 @@ class ServiceArrayCacheTest extends PhraseanetPHPUnitAbstract
   public function testServiceException()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\ArrayCache(
-        self::$core, 'hello', array()
+        self::$core, array()
     );
 
     try
@@ -59,7 +50,7 @@ class ServiceArrayCacheTest extends PhraseanetPHPUnitAbstract
   public function testType()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\ArrayCache(
-        self::$core, 'hello', array()
+        self::$core, array()
     );
 
     $this->assertEquals("array", $cache->getType());

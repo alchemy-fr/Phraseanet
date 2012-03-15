@@ -217,7 +217,6 @@ class Installer implements ControllerProviderInterface
 
                   $ormService = \Alchemy\Phrasea\Core\Service\Builder::create(
                                   $app['Core']
-                                  , $serviceName
                                   , $confService
                   );
 

@@ -28,11 +28,6 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
 
   protected $cache;
 
-  public function getScope()
-  {
-    return 'cache';
-  }
-
   public function getDriver()
   {
     if (!extension_loaded('xcache'))
@@ -53,11 +48,6 @@ class XcacheCache extends ServiceAbstract implements ServiceInterface
   public function getType()
   {
     return 'xcache';
-  }
-
-  public static function getMandatoryOptions()
-  {
-    return array();
   }
 
 }

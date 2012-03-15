@@ -26,26 +26,20 @@ use Alchemy\Phrasea\Core,
 class MemcacheCache extends ServiceAbstract implements ServiceInterface
 {
 
-  protected $cache;
-
   const DEFAULT_HOST = "localhost";
   const DEFAULT_PORT = "11211";
 
+  protected $cache;
   protected $host;
   protected $port;
 
-  public function __construct(Core $core, $name, Array $options)
+  protected function init()
   {
-    parent::__construct( $core, $name, $options);
-
+    $options = $this->getOptions();
+    
     $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
 
     $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
-  }
-
-  public function getScope()
-  {
-    return 'cache';
   }
 
   public function getDriver()
@@ -55,7 +49,7 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
       throw new \Exception('The Memcache cache requires the Memcache extension.');
     }
 
-    if(!$this->cache)
+    if (!$this->cache)
     {
       $memcache = new \Memcache();
 
@@ -70,7 +64,7 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
         $this->cache = new CacheDriver\MemcacheCache();
         $this->cache->setMemcache($memcache);
 
-      $this->cache->setNamespace(md5(realpath(__DIR__.'/../../../../../../')));
+        $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
       }
       else
       {
@@ -94,11 +88,6 @@ class MemcacheCache extends ServiceAbstract implements ServiceInterface
   public function getPort()
   {
     return $this->port;
-  }
-
-  public static function getMandatoryOptions()
-  {
-    return array('host', 'port');
   }
 
 }

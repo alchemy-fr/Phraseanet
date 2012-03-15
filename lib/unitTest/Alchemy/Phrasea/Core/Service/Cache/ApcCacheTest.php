@@ -20,19 +20,10 @@ require_once __DIR__ . '/../../../../../PhraseanetPHPUnitAbstract.class.inc';
 class ServiceApcCacheTest extends PhraseanetPHPUnitAbstract
 {
 
-  public function testScope()
-  {
-    $cache = new \Alchemy\Phrasea\Core\Service\Cache\ApcCache(
-        self::$core, 'hello', array()
-    );
-
-    $this->assertEquals("cache", $cache->getScope());
-  }
-
   public function testService()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\ApcCache(
-        self::$core, 'hello', array()
+        self::$core, array()
     );
 
     if (extension_loaded('apc'))
@@ -57,7 +48,7 @@ class ServiceApcCacheTest extends PhraseanetPHPUnitAbstract
   public function testServiceException()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\ApcCache(
-        self::$core, 'hello', array()
+        self::$core, array()
     );
 
     try
@@ -74,7 +65,7 @@ class ServiceApcCacheTest extends PhraseanetPHPUnitAbstract
   public function testType()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\ApcCache(
-        self::$core, 'hello', array()
+        self::$core, array()
     );
 
     $this->assertEquals("apc", $cache->getType());

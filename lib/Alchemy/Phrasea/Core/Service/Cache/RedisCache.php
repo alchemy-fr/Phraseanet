@@ -25,27 +25,21 @@ use Alchemy\Phrasea\Core,
  */
 class RedisCache extends ServiceAbstract implements ServiceInterface
 {
-
-  protected $cache;
-
+  
   const DEFAULT_HOST = "localhost";
   const DEFAULT_PORT = "6379";
 
+  protected $cache;
   protected $host;
   protected $port;
 
-  public function __construct(Core $core, $name, Array $options)
+  protected function init()
   {
-    parent::__construct($core, $name, $options);
-
+    $options = $this->getOptions();
+    
     $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
 
     $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
-  }
-
-  public function getScope()
-  {
-    return 'cache';
   }
 
   /**
@@ -98,11 +92,6 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
   public function getPort()
   {
     return $this->port;
-  }
-
-  public static function getMandatoryOptions()
-  {
-    return array('host', 'port');
   }
 
 }

@@ -37,10 +37,10 @@ class Monolog extends ServiceAbstract implements ServiceInterface
    */
   protected $monolog;
 
-  public function __construct(Core $core, $name, Array $options)
+  protected function init()
   {
-    parent::__construct( $core, $name, $options);
-
+    $options = $this->getOptions();
+    
     if (empty($options))
     {
       throw new \Exception(sprintf("'%s' service options can not be empty", $this->name));
@@ -52,8 +52,8 @@ class Monolog extends ServiceAbstract implements ServiceInterface
     if (!$handler)
     {
       throw new \Exception(sprintf(
-                      "You must specify at least one handler for %s service"
-                      , $this->name
+                      "You must specify at least one handler for '%s' service"
+                      , __CLASS__
               )
       );
     }
@@ -64,8 +64,7 @@ class Monolog extends ServiceAbstract implements ServiceInterface
                       "The handler type '%s' declared in %s %s service is not valid.
           Available types are %s."
                       , $handler
-                      , $this->name
-                      , $this->getScope()
+                      , __CLASS__
                       , implode(", ", $this->handlers)
               )
       );
@@ -88,7 +87,7 @@ class Monolog extends ServiceAbstract implements ServiceInterface
     {
       throw new \Exception(sprintf(
                       "Missing filename option in '%s' service"
-                      , $this->name
+                      , __CLASS__
               )
       );
     }
@@ -129,14 +128,9 @@ class Monolog extends ServiceAbstract implements ServiceInterface
     return 'monolog';
   }
 
-  public function getScope()
+  public function getMandatoryOptions()
   {
-    return 'log';
-  }
-
-  public static function getMandatoryOptions()
-  {
-    return array('output', 'channel', 'handler', 'max_day', 'filename');
+    return array('channel', 'handler', 'filename');
   }
 }
 

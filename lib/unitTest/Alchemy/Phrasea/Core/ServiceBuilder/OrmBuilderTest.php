@@ -28,7 +28,7 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
 
     try
     {
-      $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, "test", $configuration);
+      $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
       $this->fail("An exception should be raised");
     }
     catch (\Exception $e)
@@ -55,7 +55,7 @@ class OrmBuilderTest extends PhraseanetPHPUnitAbstract
         )
     );
 
-    $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, "test", $configuration);
+    $service = Alchemy\Phrasea\Core\Service\Builder::create(self::$core, $configuration);
     $this->assertInstanceOf("\Alchemy\Phrasea\Core\Service\ServiceAbstract", $service);
   }
 

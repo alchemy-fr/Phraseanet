@@ -28,11 +28,6 @@ class ApcCache extends ServiceAbstract implements ServiceInterface
 
   protected $cache;
 
-  public function getScope()
-  {
-    return 'cache';
-  }
-
   public function getDriver()
   {
     if (!extension_loaded('apc'))
@@ -55,10 +50,6 @@ class ApcCache extends ServiceAbstract implements ServiceInterface
     return 'apc';
   }
 
-  public static function getMandatoryOptions()
-  {
-    return array();
-  }
-
+  
 }
 

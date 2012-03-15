@@ -23,25 +23,37 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 abstract class ServiceAbstract
 {
 
-  protected $name;
   protected $core;
   protected $options;
-  protected $configuration;
 
-  public function __construct(Core $core, $name, Array $options)
+  final public function __construct(Core $core, Array $options)
   {
     $this->core = $core;
-    $this->name = $name;
     $this->options = $options;
+
+    $mandatory = $this->getMandatoryOptions();
+
+    if ($mandatory !== array_intersect($mandatory, array_keys($options)))
+    {
+      throw new Exception\MissingParameters(
+              sprintf(
+                      'Missing parameters %s'
+                      , implode(', ', array_diff($mandatory, array_keys($options)))
+              )
+      );
+    }
+
+    $this->init();
   }
 
-  /**
-   *
-   * @return string
-   */
-  public function getName()
+  protected function init()
   {
-    return $this->name;
+    return;
+  }
+
+  protected function getCore()
+  {
+    return $this->core;
   }
 
   /**
@@ -53,6 +65,13 @@ abstract class ServiceAbstract
     return $this->options;
   }
 
-  abstract public static function getMandatoryOptions();
+  /**
+   *
+   * @return Array
+   */
+  public function getMandatoryOptions()
+  {
+    return array();
+  }
 
 }

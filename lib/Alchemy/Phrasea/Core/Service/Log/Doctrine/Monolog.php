@@ -15,9 +15,9 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
-
 use Alchemy\Phrasea\Core\Service\Log\Monolog as ParentLog;
 use Doctrine\Logger\MonologSQLLogger;
+
 /**
  *
  * @package
@@ -26,27 +26,27 @@ use Doctrine\Logger\MonologSQLLogger;
  */
 class Monolog extends ParentLog implements ServiceInterface
 {
+
   const JSON_OUTPUT = 'json';
   const YAML_OUTPUT = 'yaml';
   const VAR_DUMP_OUTPUT = 'vdump';
-
-  protected $outputs = array(
-      self::JSON_OUTPUT, self::YAML_OUTPUT, self::VAR_DUMP_OUTPUT
-  );
 
   public function getDriver()
   {
     $output = isset($this->options["output"]) ? $this->options["output"] : self::JSON_OUTPUT;
 
-    if (!in_array($output, $this->outputs))
+    $outputs = array(
+        self::JSON_OUTPUT, self::YAML_OUTPUT, self::VAR_DUMP_OUTPUT
+    );
+
+    if (!in_array($output, $outputs))
     {
       throw new \Exception(sprintf(
-                      "The output type '%s' declared in %s %s service is not valid.
+                      "The output type '%s' declared in %s service is not valid.
           Available types are %s."
                       , $output
-                      , $this->name
-                      , $this->getScope()
-                      , implode(", ", $this->outputs)
+                      , __CLASS__
+                      , implode(", ", $outputs)
               )
       );
     }
@@ -59,9 +59,5 @@ class Monolog extends ParentLog implements ServiceInterface
     return 'doctrine_monolog';
   }
 
-  public static function getMandatoryOptions()
-  {
-    return array('output', 'channel', 'handler', 'max_day', 'filename');
-  }
 
 }

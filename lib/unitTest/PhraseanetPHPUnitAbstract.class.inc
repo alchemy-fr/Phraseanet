@@ -822,8 +822,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     $confService = $configuration->getService($serviceName);
 
     $templateService = \Alchemy\Phrasea\Core\Service\Builder::create(
-                    self::$core,
-                    $serviceName
+                    self::$core
                     , $confService
     );
 

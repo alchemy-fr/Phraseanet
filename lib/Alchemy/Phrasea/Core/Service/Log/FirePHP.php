@@ -29,35 +29,21 @@ class FirePHP extends ServiceAbstract implements ServiceInterface
 
   protected $logger;
 
-  public function __construct(\Alchemy\Phrasea\Core $core, $name, Array $options)
-  {
-    parent::__construct($core, $name, $options);
-
-    $this->logger = new Logger('FirePHP');
-
-    $this->logger->pushHandler(new FirePHPHandler());
-
-    return $this;
-  }
-
   public function getDriver()
   {
+    if (!$this->logger)
+    {
+      $this->logger = new Logger('FirePHP');
+
+      $this->logger->pushHandler(new FirePHPHandler());
+    }
+    
     return $this->logger;
   }
 
   public function getType()
   {
     return 'FirePHP Monolog';
-  }
-
-  public function getScope()
-  {
-    return 'log';
-  }
-
-  public static function getMandatoryOptions()
-  {
-    return array();
   }
 
 }

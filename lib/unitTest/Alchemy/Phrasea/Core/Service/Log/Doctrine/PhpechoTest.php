@@ -24,7 +24,7 @@ class DoctrinePhpechoTest extends PhraseanetPHPUnitAbstract
   {
 
     $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Phpecho(
-        self::$core, 'hello', array()
+        self::$core, array()
     );
 
     $this->assertInstanceOf("\Doctrine\DBAL\Logging\EchoSQLLogger", $log->getDriver());
@@ -33,18 +33,10 @@ class DoctrinePhpechoTest extends PhraseanetPHPUnitAbstract
   public function testType()
   {
     $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Phpecho(
-        self::$core, 'hello', array()
+        self::$core, array()
     );
 
     $this->assertEquals("phpecho", $log->getType());
-  }
-
-  public function testScope()
-  {
-    $log = new \Alchemy\Phrasea\Core\Service\Log\Doctrine\Phpecho(
-        self::$core, 'hello', array()
-    );
-    $this->assertEquals("log", $log->getScope());
   }
 
 }

@@ -94,7 +94,6 @@ class Core extends \Pimple
 
     $this['CacheService'] = $this->share(function() use ($core)
       {
-
         if (!file_exists(__DIR__ . '/../../../tmp/cache_registry.yml'))
         {
           touch(__DIR__ . '/../../../tmp/cache_registry.yml');
@@ -112,7 +111,7 @@ class Core extends \Pimple
         $serviceName   = $core->getConfiguration()->getOrm();
         $configuration = $core->getConfiguration()->getService($serviceName);
 
-        $Service = Core\Service\Builder::create($core, $serviceName, $configuration);
+        $Service = Core\Service\Builder::create($core, $configuration);
 
         return $Service->getDriver();
       });
@@ -139,7 +138,7 @@ class Core extends \Pimple
         $serviceName   = $core->getConfiguration()->getTemplating();
         $configuration = $core->getConfiguration()->getService($serviceName);
 
-        $Service = Core\Service\Builder::create($core, $serviceName, $configuration);
+        $Service = Core\Service\Builder::create($core, $configuration);
 
         return $Service->getDriver();
       });

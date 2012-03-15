@@ -27,19 +27,17 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 class Doctrine extends ServiceAbstract implements ServiceInterface
 {
 
-  protected $outputs = array(
-    'json', 'yaml', 'vdump'
-  );
   protected $loggers = array(
-    'Log\\Doctrine\Monolog', 'Log\\Doctrine\\Phpecho'
+      'Log\\Doctrine\Monolog'
+      , 'Log\\Doctrine\\Phpecho'
   );
   protected $entityManager;
   protected $debug;
 
-  public function __construct(Core $core, $name, Array $options)
+  protected function init()
   {
-    parent::__construct($core, $name, $options);
-
+    $options = $this->getOptions();
+    
     $config = new \Doctrine\ORM\Configuration();
 
     $this->debug = !!$options["debug"];
@@ -55,16 +53,16 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
 
     if (!$cache || $this->debug)
     {
-      $metaCache   = $this->core['CacheService']->get('ORMmetadata', 'Cache\\ArrayCache');
-      $queryCache  = $this->core['CacheService']->get('ORMquery', 'Cache\\ArrayCache');
+      $metaCache = $this->core['CacheService']->get('ORMmetadata', 'Cache\\ArrayCache');
+      $queryCache = $this->core['CacheService']->get('ORMquery', 'Cache\\ArrayCache');
     }
     else
     {
-      $query   = isset($cache["query"]['service']) ? $cache["query"]['service'] : 'Cache\\ArrayCache';
-      $meta    = isset($cache["metadata"]['service']) ? $cache["metadata"]['service'] : 'Cache\\ArrayCache';
+      $query = isset($cache["query"]['service']) ? $cache["query"]['service'] : 'Cache\\ArrayCache';
+      $meta = isset($cache["metadata"]['service']) ? $cache["metadata"]['service'] : 'Cache\\ArrayCache';
 
-      $queryCache  = $this->core['CacheService']->get('ORMquery', $query);
-      $metaCache   = $this->core['CacheService']->get('ORMmetadata', $meta);
+      $queryCache = $this->core['CacheService']->get('ORMquery', $query);
+      $metaCache = $this->core['CacheService']->get('ORMmetadata', $meta);
     }
 
     $resultCache = $this->core['CacheService']->get('ORMresult', 'Cache\\ArrayCache');
@@ -81,7 +79,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     $chainDriverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
 
     $driverYaml = new \Doctrine\ORM\Mapping\Driver\YamlDriver(
-        array(__DIR__ . '/../../../../../conf.d/Doctrine')
+                    array(__DIR__ . '/../../../../../conf.d/Doctrine')
     );
 
     $chainDriverImpl->addDriver($driverYaml, 'Entities');
@@ -99,9 +97,9 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     if (!$connexion)
     {
       throw new \Exception(sprintf(
-          "Missing dbal configuration for '%s' service"
-          , __CLASS__
-        )
+                      "Missing dbal configuration for '%s' service"
+                      , __CLASS__
+              )
       );
     }
 
@@ -125,9 +123,9 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     catch (\Exception $e)
     {
       throw new \Exception(sprintf(
-          "Failed to create doctrine service for the following reason '%s'"
-          , $e->getMessage()
-        )
+                      "Failed to create doctrine service for the following reason '%s'"
+                      , $e->getMessage()
+              )
       );
     }
 
@@ -184,11 +182,13 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     catch (\Exception $e)
     {
       $message = sprintf(
-        "%s from %s service in orm:log scope"
-        , $e->getMessage()
-        , $this->name
+              "%s from %s service"
+              , $e->getMessage()
+              , __CLASS__
       );
-      $e       = new \Exception($message);
+
+      $e = new \Exception($message);
+
       throw $e;
     }
 
@@ -197,17 +197,16 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     if (!in_array($type, $this->loggers))
     {
       throw new \Exception(sprintf(
-          "The logger type '%s' declared in %s %s service is not valid.
+                      "The logger type '%s' declared in %s service is not valid.
           Available types are %s."
-          , $type
-          , $this->name
-          , $this->getScope()
-          , implode(", ", $this->loggers)
-        )
+                      , $type
+                      , __CLASS__
+                      , implode(", ", $this->loggers)
+              )
       );
     }
 
-    $service = Core\Service\Builder::create($this->core, $serviceName, $configuration);
+    $service = Core\Service\Builder::create($this->core, $configuration);
 
     return $service->getDriver();
   }
@@ -222,17 +221,12 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
     return 'doctrine';
   }
 
-  public function getScope()
-  {
-    return 'orm';
-  }
-
   public function isDebug()
   {
     return $this->debug;
   }
 
-  public static function getMandatoryOptions()
+  public function getMandatoryOptions()
   {
     return array('debug', 'dbal');
   }

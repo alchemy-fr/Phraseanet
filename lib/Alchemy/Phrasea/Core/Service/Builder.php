@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag,
 class Builder
 {
 
-  public static function create(Core $core, $name, ParameterBag $configuration)
+  public static function create(Core $core, ParameterBag $configuration)
   {
     $classname = __NAMESPACE__ . '\\' . $configuration->get("type");
 
@@ -41,19 +41,7 @@ class Builder
       $options = array();
     }
 
-    $mandatory = $classname::getMandatoryOptions();
-
-    if ($mandatory !== array_intersect($mandatory, array_keys($options)))
-    {
-      throw new Exception\MissingParameters(
-        sprintf(
-          'Missing parameters %s'
-          , implode(', ', array_diff($mandatory, array_keys($options)))
-        )
-      );
-    }
-
-    return new $classname($core, $name, $options);
+    return new $classname($core, $options);
   }
 
 }

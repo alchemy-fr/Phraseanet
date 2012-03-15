@@ -466,7 +466,7 @@ class module_console_fileEnsureDevSetting extends Command
 
     try
     {
-      Core\Service\Builder::create(\bootstrap::getCore(), $templateEngineName, $configuration);
+      Core\Service\Builder::create(\bootstrap::getCore(), $configuration);
       $work_message = '<info>Works !</info>';
     }
     catch (\Exception $e)
@@ -592,7 +592,7 @@ class module_console_fileEnsureDevSetting extends Command
 
     try
     {
-      $service      = Core\Service\Builder::create(\bootstrap::getCore(), $ormName, $configuration);
+      $service      = Core\Service\Builder::create(\bootstrap::getCore(), $configuration);
       $work_message = '<info>Works !</info>';
     }
     catch (\Exception $e)
@@ -774,7 +774,7 @@ class module_console_fileEnsureDevSetting extends Command
       $conf = $this->configuration->getService($ServiceName);
 
       $Service = Core\Service\Builder::create(
-          \bootstrap::getCore(), $ServiceName, $conf
+          \bootstrap::getCore(), $conf
       );
     }
     catch (\Exception $e)
@@ -845,7 +845,7 @@ class module_console_fileEnsureDevSetting extends Command
       $originalConfiguration = $this->configuration->getService($ServiceName);
 
       $Service = Core\Service\Builder::create(
-          \bootstrap::getCore(), $ServiceName, $originalConfiguration
+          \bootstrap::getCore(), $originalConfiguration
       );
     }
     catch (\Exception $e)
@@ -879,7 +879,7 @@ class module_console_fileEnsureDevSetting extends Command
       $originalConfiguration = $this->configuration->getService($ServiceName);
 
       $Service = Core\Service\Builder::create(
-          \bootstrap::getCore(), $ServiceName, $originalConfiguration
+          \bootstrap::getCore(), $originalConfiguration
       );
     }
     catch (\Exception $e)

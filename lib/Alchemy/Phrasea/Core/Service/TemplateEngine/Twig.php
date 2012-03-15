@@ -26,15 +26,13 @@ class Twig extends ServiceAbstract implements ServiceInterface
   protected $twig;
   protected $templatesPath = array();
 
-  public function __construct(Core $core, $name, Array $options)
+  protected function init()
   {
-    parent::__construct( $core, $name, $options);
-
     $this->templatesPath = $this->resolvePaths();
 
     try
     {
-      if (!isset($this->options['debug']) || !$this->options['debug'])
+      if (!$this->options['debug'])
       {
         $this->options['cache'] = realpath(__DIR__ . '/../../../../../../tmp/cache_twig/');
       }
@@ -50,7 +48,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
     {
       throw new \Exception(sprintf(
           "Unable to create '%s' service for the following reason %s"
-          , $this->name
+          , __CLASS__
           , $e->getMessage()
         )
       );
@@ -207,12 +205,7 @@ class Twig extends ServiceAbstract implements ServiceInterface
     return 'twig';
   }
 
-  public function getScope()
-  {
-    return 'template_engine';
-  }
-
-  public static function getMandatoryOptions()
+  public function getMandatoryOptions()
   {
     return array('debug', 'charset', 'strict_variables', 'autoescape', 'optimizer');
   }

@@ -29,11 +29,6 @@ class ArrayCache extends ServiceAbstract implements ServiceInterface
 
   protected $cache;
 
-  public function getScope()
-  {
-    return 'cache';
-  }
-
   public function getDriver()
   {
     if (!$this->cache)
@@ -49,11 +44,6 @@ class ArrayCache extends ServiceAbstract implements ServiceInterface
   public function getType()
   {
     return 'array';
-  }
-
-  public static function getMandatoryOptions()
-  {
-    return array();
   }
 
 }

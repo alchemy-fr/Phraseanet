@@ -26,7 +26,6 @@ use Doctrine\DBAL\Logging\EchoSQLLogger;
 class Phpecho extends ServiceAbstract implements ServiceInterface
 {
 
-
   public function getDriver()
   {
     return new EchoSQLLogger();
@@ -35,16 +34,6 @@ class Phpecho extends ServiceAbstract implements ServiceInterface
   public function getType()
   {
     return 'phpecho';
-  }
-
-  public function getScope()
-  {
-    return 'log';
-  }
-
-  public static function getMandatoryOptions()
-  {
-    return array();
   }
 
 }

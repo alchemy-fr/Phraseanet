@@ -71,7 +71,7 @@ class Manager
     try
     {
       $configuration = $this->core->getConfiguration()->getService($service_name);
-      $service = Builder::create($this->core, $service_name, $configuration);
+      $service = Builder::create($this->core, $configuration);
       $driver = $service->getDriver();
       $write = true;
     }
@@ -80,7 +80,7 @@ class Manager
       $configuration = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
                       array('type' => 'Cache\\ArrayCache')
       );
-      $service = Builder::create($this->core, $service_name, $configuration);
+      $service = Builder::create($this->core, $configuration);
       $driver = $service->getDriver();
       $write = false;
     }

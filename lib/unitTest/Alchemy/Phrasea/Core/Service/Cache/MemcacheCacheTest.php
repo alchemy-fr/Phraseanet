@@ -20,19 +20,10 @@ require_once __DIR__ . '/../../../../../PhraseanetPHPUnitAbstract.class.inc';
 class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
 {
 
-  public function testScope()
-  {
-    $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    self::$core, 'hello', array()
-    );
-
-    $this->assertEquals("cache", $cache->getScope());
-  }
-
   public function testService()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    self::$core, 'hello', array()
+                    self::$core, array()
     );
 
     if (extension_loaded('memcache'))
@@ -57,7 +48,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
   public function testServiceException()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    self::$core, 'hello', array()
+                    self::$core, array()
     );
 
     try
@@ -74,7 +65,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
   public function testType()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    self::$core, 'hello', array()
+                    self::$core, array()
     );
 
     $this->assertEquals("memcache", $cache->getType());
@@ -83,7 +74,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
   public function testHost()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    self::$core, 'hello', array()
+                    self::$core, array()
     );
 
     $this->assertEquals(\Alchemy\Phrasea\Core\Service\Cache\MemcacheCache::DEFAULT_HOST, $cache->getHost());
@@ -92,7 +83,7 @@ class ServiceMemcacheCacheTest extends PhraseanetPHPUnitAbstract
   public function testPort()
   {
     $cache = new \Alchemy\Phrasea\Core\Service\Cache\MemcacheCache(
-                    self::$core, 'hello', array()
+                    self::$core, array()
     );
 
     $this->assertEquals(\Alchemy\Phrasea\Core\Service\Cache\MemcacheCache::DEFAULT_PORT, $cache->getPort());

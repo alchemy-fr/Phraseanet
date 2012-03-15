@@ -32,18 +32,12 @@ class ServiceAbstractTest extends PhraseanetPHPUnitAbstract
     $stub = $this->getMockForAbstractClass(
             "\Alchemy\Phrasea\Core\Service\ServiceAbstract"
             , array(
-         self::$core,
-        'abstract'
+         self::$core
         , array('option' => 'my_options')
             )
     );
 
     $this->object = $stub;
-  }
-
-  public function testGetName()
-  {
-    $this->assertEquals("abstract", $this->object->getName());
   }
 
   public function testGetOptions()

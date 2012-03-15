@@ -25,22 +25,19 @@ class TwigTest extends PhraseanetPHPUnitAbstract
   public function setUp()
   {
     parent::setUp();
-    $this->options = array();
-  }
-
-  public function testScope()
-  {
-    $doctrine = new \Alchemy\Phrasea\Core\Service\TemplateEngine\Twig(
-                   self::$core, 'hello', $this->options
+    $this->options = array(
+       'debug' => true
+      ,'charset' => 'utf-8'
+      ,'strict_variables' => true
+      ,'autoescape' => true
+      ,'optimizer' => true
     );
-
-    $this->assertEquals("template_engine", $doctrine->getScope());
   }
 
   public function testService()
   {
     $doctrine = new \Alchemy\Phrasea\Core\Service\TemplateEngine\Twig(
-                   self::$core, 'hello', $this->options
+                   self::$core,  $this->options
     );
 
     $this->assertInstanceOf("\Twig_Environment", $doctrine->getDriver());
@@ -49,7 +46,7 @@ class TwigTest extends PhraseanetPHPUnitAbstract
   public function testServiceExcpetion()
   {
     $doctrine = new \Alchemy\Phrasea\Core\Service\TemplateEngine\Twig(
-                   self::$core, 'hello', $this->options
+                   self::$core,  $this->options
     );
 
     $this->assertInstanceOf("\Twig_Environment", $doctrine->getDriver());
@@ -58,7 +55,7 @@ class TwigTest extends PhraseanetPHPUnitAbstract
   public function testType()
   {
     $doctrine = new \Alchemy\Phrasea\Core\Service\TemplateEngine\Twig(
-                   self::$core, 'hello', $this->options
+                   self::$core,  $this->options
     );
 
     $this->assertEquals("twig", $doctrine->getType());

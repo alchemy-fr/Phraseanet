@@ -37,19 +37,10 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     );
   }
 
-  public function testScope()
-  {
-    $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-        self::$core, 'hello', $this->options
-    );
-
-    $this->assertEquals("orm", $doctrine->getScope());
-  }
-
   public function testService()
   {
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-        self::$core, 'hello', $this->options
+        self::$core,  $this->options
     );
 
     $this->assertInstanceOf("\Doctrine\ORM\EntityManager", $doctrine->getDriver());
@@ -58,7 +49,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   public function testType()
   {
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-        self::$core, 'hello', $this->options
+        self::$core,  $this->options
     );
 
     $this->assertEquals("doctrine", $doctrine->getType());
@@ -69,7 +60,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     try
     {
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-          self::$core, 'hello', $this->options
+          self::$core,  $this->options
       );
       $this->fail("should raise an exception");
     }
@@ -84,7 +75,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     $this->markTestSkipped('To rewrite');
     unset($this->options["cache"]);
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-        self::$core, 'hello', $this->options
+        self::$core,  $this->options
     );
 
     foreach ($doctrine->getCacheServices()->all() as $service)
@@ -100,7 +91,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     try
     {
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-          self::$core, 'hello', $this->options
+          self::$core,  $this->options
       );
       $this->fail("An exception should be raised");
     }
@@ -113,14 +104,14 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   public function testIsDebug()
   {
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-        self::$core, 'hello', $this->options
+        self::$core,  $this->options
     );
 
     $this->assertFalse($doctrine->isDebug());
 
     $this->options['debug'] = true;
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-        self::$core, 'hello', $this->options
+        self::$core,  $this->options
     );
 
     $this->assertTrue($doctrine->isDebug());
@@ -130,7 +121,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
   {
     $this->markTestSkipped('To rewrite');
     $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-        self::$core, 'hello', $this->options
+        self::$core,  $this->options
     );
     $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag"
       , $doctrine->getCacheServices());
@@ -149,7 +140,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     if (extension_loaded("apc") && extension_loaded("xcache"))
     {
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-          self::$core, 'hello', $this->options
+          self::$core,  $this->options
       );
       $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag"
         , $doctrine->getCacheServices());
@@ -169,7 +160,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
       try
       {
         $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-            self::$core, 'hello', $this->options
+            self::$core,  $this->options
         );
         $this->fail("An exception should be raised");
       }
@@ -186,7 +177,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     {
       $this->options["log"] = "unknowLogger";
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-          self::$core, 'hello', $this->options
+          self::$core,  $this->options
       );
       $this->fail("should raise an exception");
     }
@@ -202,7 +193,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     {
       unset($this->options["dbal"]);
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-          self::$core, 'hello', $this->options
+          self::$core,  $this->options
       );
       $this->fail("should raise an exception");
     }
@@ -218,7 +209,7 @@ class DoctrineTest extends PhraseanetPHPUnitAbstract
     {
       $this->options["dbal"] = "unknowDbal";
       $doctrine = new \Alchemy\Phrasea\Core\Service\Orm\Doctrine(
-          self::$core, 'hello', $this->options
+          self::$core,  $this->options
       );
       $this->fail("should raise an exception");
     }
