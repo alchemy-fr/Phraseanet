@@ -532,7 +532,7 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
 
     $entry = new self($appbox, $feed, $entry_id);
 
-    $eventsmanager = \eventsmanager_broker::getInstance($appbox);
+    $eventsmanager = \eventsmanager_broker::getInstance($appbox, \bootstrap::getCore());
     $eventsmanager->trigger('__FEED_ENTRY_CREATE__', array('entry_id' => $entry_id), $entry);
 
     return $entry;
