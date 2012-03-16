@@ -137,7 +137,7 @@ class caption_field
    * @param string $separator
    * @return string
    */
-  protected static function serialize_value(Array $values, $separator)
+  protected static function serialize_value(Array $values, $separator, $highlight = false)
   {
     if (strlen($separator) > 1)
       $separator = $separator[0];
@@ -151,7 +151,10 @@ class caption_field
 
     foreach ($values as $value)
     {
-      $array_values[] = $value->getValue();
+      if ($highlight)
+        $array_values[] = $value->highlight_thesaurus();
+      else
+        $array_values[] = $value->getValue();
     }
 
     return implode($separator, $array_values);
@@ -181,7 +184,7 @@ class caption_field
    * @param string $custom_separator
    * @return mixed
    */
-  public function get_serialized_values($custom_separator = false)
+  public function get_serialized_values($custom_separator = false, $highlightTheso = false)
   {
     if ($this->databox_field->is_multi() === true)
     {
@@ -190,7 +193,7 @@ class caption_field
       else
         $separator = $this->databox_field->get_separator();
 
-      return self::serialize_value($this->values, $separator);
+      return self::serialize_value($this->values, $separator, $highlightTheso);
     }
     else
     {
@@ -198,7 +201,7 @@ class caption_field
       {
         /* @var $value Caption_Field_Value */
 
-        return $value->getValue();
+        return $value->highlight_thesaurus();
       }
     }
 
@@ -247,130 +250,9 @@ class caption_field
    */
   public function highlight_thesaurus()
   {
-    $appbox   = appbox::get_instance(\bootstrap::getCore());
-    $session  = $appbox->get_session();
-    $registry = $appbox->get_registry();
-    $unicode  = new unicode();
-
-    $sbas_id = $this->databox_field->get_databox()->get_sbas_id();
-
-    $value = $this->get_serialized_values();
-
-    $databox         = databox::get_instance($sbas_id);
-    $XPATH_thesaurus = $databox->get_xpath_thesaurus();
-
-    $tbranch = $this->databox_field->get_tbranch();
-    if ($tbranch && $XPATH_thesaurus)
-    {
-      $DOM_branchs = $XPATH_thesaurus->query($tbranch);
-
-      $fvalue = $value;
-
-      $cleanvalue = str_replace(array("<em>", "</em>", "'"), array("", "", "&apos;"), $fvalue);
-
-      list($term_noacc, $context_noacc) = $this->splitTermAndContext($cleanvalue);
-      $term_noacc    = $unicode->remove_indexer_chars($term_noacc);
-      $context_noacc = $unicode->remove_indexer_chars($context_noacc);
-      if ($context_noacc)
-      {
-        $q = "//sy[@w='" . $term_noacc . "' and @k='" . $context_noacc . "']";
-      }
-      else
-      {
-        $q    = "//sy[@w='" . $term_noacc . "' and not(@k)]";
-      }
-      $qjs  = $link = "";
-      foreach ($DOM_branchs as $DOM_branch)
-      {
-        $nodes = $XPATH_thesaurus->cache_query($q, $DOM_branch);
-        if ($nodes->length > 0)
-        {
-          $lngfound = false;
-          foreach ($nodes as $node)
-          {
-            if ($node->getAttribute("lng") == $session->get_I18n())
-            {
-              // le terme est dans la bonne langue, on le rend cliquable
-              list($term, $context) = $this->splitTermAndContext($fvalue);
-              $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
-              $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
-              $qjs = $term;
-              if ($context)
-              {
-                $qjs .= " [" . $context . "]";
-              }
-              $link = $fvalue;
-
-              $lngfound = true;
-              break;
-            }
-
-            $synonyms = $XPATH_thesaurus->query("sy[@lng='" . $session->usr_i18 . "']", $node->parentNode);
-            foreach ($synonyms as $synonym)
-            {
-              $k = $synonym->getAttribute("k");
-              if ($synonym->getAttribute("w") != $term_noacc || $k != $context_noacc)
-              {
-                $link = $qjs  = $synonym->getAttribute("v");
-                if ($k)
-                {
-                  $link .= " (" . $k . ")";
-                  $qjs .= " [" . $k . "]";
-                }
-
-                $lngfound = true;
-                break;
-              }
-            }
-          }
-          if (!$lngfound)
-          {
-            list($term, $context) = $this->splitTermAndContext($fvalue);
-            $term = str_replace(array("<em>", "</em>"), array("", ""), $term);
-            $context = str_replace(array("<em>", "</em>"), array("", ""), $context);
-            $qjs = $term;
-            if ($context)
-            {
-              $qjs .= " [" . $context . "]";
-            }
-            $link = $fvalue;
-          }
-        }
-      }
-      if ($qjs)
-      {
-        $value = "<a class=\"bounce\" onclick=\"bounce('" . $sbas_id . "','"
-          . str_replace("'", "\'", $qjs)
-          . "', '"
-          . str_replace("'", "\'", $this->get_name())
-          . "');return(false);\">"
-          . $link
-          . "</a>";
-      }
-    }
+    $value = $this->get_serialized_values(false, true);
 
     return $value;
-  }
-
-  /**
-   *
-   * @param string $word
-   * @return array
-   */
-  protected function splitTermAndContext($word)
-  {
-    $term    = trim($word);
-    $context = "";
-    if (($po      = strpos($term, "(")) !== false)
-    {
-      if (($pc = strpos($term, ")", $po)) !== false)
-      {
-        $context = trim(substr($term, $po + 1, $pc - $po - 1));
-        $term    = trim(substr($term, 0, $po));
-      }
-    }
-
-    return array($term, $context);
   }
 
   /**
@@ -405,18 +287,18 @@ class caption_field
 
   public static function rename_all_metadatas(databox_field $databox_field)
   {
-    $sql = 'SELECT count(id) as count_id FROM metadatas
+    $sql    = 'SELECT count(id) as count_id FROM metadatas
             WHERE meta_struct_id = :meta_struct_id';
-    $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
+    $stmt   = $databox_field->get_databox()->get_connection()->prepare($sql);
     $params = array(
-        ':meta_struct_id' => $databox_field->get_id()
+      ':meta_struct_id' => $databox_field->get_id()
     );
 
     $stmt->execute($params);
     $rowcount = $stmt->rowCount();
     $stmt->closeCursor();
 
-    $n = 0;
+    $n         = 0;
     $increment = 500;
 
     while ($n < $rowcount)
@@ -425,13 +307,13 @@ class caption_field
               WHERE meta_struct_id = :meta_struct_id LIMIT ' . $n . ', ' . $increment;
 
       $params = array(
-          ':meta_struct_id' => $databox_field->get_id()
+        ':meta_struct_id' => $databox_field->get_id()
       );
 
-      $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
+      $stmt     = $databox_field->get_databox()->get_connection()->prepare($sql);
       $stmt->execute($params);
       $rowcount = $stmt->rowCount();
-      $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $rs       = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $stmt->closeCursor();
       unset($stmt);
 
