@@ -303,5 +303,54 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals("attachment; filename=export.txt", $response->headers->get("content-disposition"));
   }
 
+  
+  public function testResetRights()
+  {
+    $appbox = \appbox::get_instance(self::$core);
+    $username = uniqid('user_');
+    $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
+    
+    $user->ACL()->give_access_to_sbas(array_keys($appbox->get_databoxes()));
+
+    foreach ($appbox->get_databoxes() as $databox)
+    {
+
+      $rights = array(
+          'bas_manage' => '1'
+          , 'bas_modify_struct' => '1'
+          , 'bas_modif_th' => '1'
+          , 'bas_chupub' => '1'
+      );
+
+      $user->ACL()->update_rights_to_sbas($databox->get_sbas_id(), $rights);
+
+      foreach ($databox->get_collections() as $collection)
+      {
+        $base_id = $collection->get_base_id();
+        $user->ACL()->give_access_to_base(array($base_id));
+
+        $rights = array(
+            'canputinalbum' => '1'
+            , 'candwnldhd' => '1'
+            , 'candwnldsubdef' => '1'
+            , 'nowatermark' => '1'
+        );
+
+        $user->ACL()->update_rights_to_base($collection->get_base_id(), $rights);
+        break;
+      }
+    }
+//    
+    
+    $this->client->request('POST', '/users/rights/reset/', array('users' => $user->get_id()));
+    $response = $this->client->getResponse();
+    $this->assertTrue($response->isOK());
+    $this->assertEquals("application/json", $response->headers->get("content-type"));
+    $datas = json_decode($response->getContent());
+    $this->assertTrue(is_object($datas));
+    $this->assertFalse($datas->error);
+    $this->assertFalse($user->ACL()->has_access_to_base($base_id));
+    $user->delete();
+  }
 
 }

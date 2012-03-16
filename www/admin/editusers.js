@@ -74,13 +74,13 @@ function ini_edit_usrs(){
   $('#users_rights_form div.switch_right').bind('click', function(event){
     user_click_box(event, $(this));
   });
-  $('#right-ajax button.users_rights_valid').bind('click', function(){
+$('#right-ajax button.users_rights_valid').bind('click', function(){
     var datas = {
       users:$('#users_rights_form input[name="users"]').val(),
       values:$('#users_rights_form').serialize(),
       template:$('#users_rights_form select[name="template"]').val(),
       user_infos:$('#user_infos_form').serialize()
-      };
+    };
     $.ajax({
       type: 'POST',
       url: '/admin/users/rights/apply/',

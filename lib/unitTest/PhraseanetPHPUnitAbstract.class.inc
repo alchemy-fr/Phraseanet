@@ -453,7 +453,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     //init core
     if (null === self::$core)
     {
-      self::$core = bootstrap::getCore();
+      self::$core = \bootstrap::getCore();
     }
   }
 

@@ -671,4 +671,41 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
     }
   }
 
+  public function resetRights()
+  {
+    $authUser = $this->core->getAuthenticatedUser();
+    $adminACL = $authUser->ACL();
+    $base_ids = array_keys($adminACL->get_granted_base(array('canadmin')));
+
+    foreach ($this->users as $usr_id)
+    {
+      $user = \User_Adapter::getInstance($usr_id, \appbox::get_instance($this->core));
+      $ACL = $user->ACL();
+
+      if ($user->is_template())
+      {
+        $template = $user;
+
+        if ($template->get_template_owner()->get_id() !== $authUser->get_id())
+        {
+          continue;
+        }
+      }
+      
+      foreach ($base_ids as $base_id)
+      {
+        if (!$ACL->has_access_to_base($base_id))
+        {
+          continue;
+        }
+
+        $ACL->set_limits($base_id, false);
+        $ACL->set_masks_on_base($base_id, 0, 0, 0, 0);
+        $ACL->remove_quotas_on_base($base_id);
+      }
+      $ACL->revoke_access_from_bases($base_ids);
+      $ACL->revoke_unused_sbas_rights();
+    }
+  }
+
 }
