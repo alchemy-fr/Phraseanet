@@ -215,6 +215,8 @@ class mail
     $body .= '<div><a href="' . $registry->get('GV_ServerName') . '">' . $registry->get('GV_ServerName') . "</a></div>\n";
     $body = '<body>' . $body . '</body>';
 
+    $body = str_replace('https://', 'http://', $body);
+
     try
     {
       $mail->CharSet = 'utf-8';
