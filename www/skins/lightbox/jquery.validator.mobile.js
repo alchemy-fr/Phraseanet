@@ -2,10 +2,10 @@ $(document).ready(function(){
   if(typeof validator_loaded === 'boolean')
     return;
 
-  $('.agreement_radio').live('mousedown', function(){
+  $('.agreement_radio').live('vmousedown', function(){
     var sselcont_id = $(this).attr('for').split('_').pop();
     var agreement = $('#' + $(this).attr('for')).val() == 'yes' ? '1' : '-1';
-
+  
     $.mobile.pageLoading();
 
     $.ajax({
