@@ -425,7 +425,7 @@ class Push implements ControllerProviderInterface
             foreach (array('see_others', 'usr_id', 'agree', 'HD') as $mandatoryparam)
             {
               if (!array_key_exists($mandatoryparam, $participant))
-                throw new ControllerException(sprintf(_('Missing mandatory participant parameter %s'), $mandatoryparam));
+                throw new ControllerException(sprintf(_('Missing mandatory parameter %s'), $mandatoryparam));
             }
 
             try

@@ -85,7 +85,7 @@
         <img src="/skins/icons/dublincore.png" tooltipsrc="/prod/tooltip/DCESInfos/{{field.get_databox().get_sbas_id()}}/{{field.get_id()}}/" alt="{% trans 'Ce champ est decrit comme un element DublinCore' %}" class="DCESTips" />
         {% endif %}
         {% if field.get_thumbtitle %}
-        <img src="/skins/icons/titre16.png" title="{% trans 'This field is represent the title of the document' %}" />
+        <img src="/skins/icons/titre16.png" title="{% trans 'This field represents the title of the document' %}" />
         {% endif %}
         <span id="spanidEditFieldBox_{{i}}">
           {{field.get_name()}} {% if field.is_required() %}<span style="font-weight:bold;font-size:16px;"> * </span>{% endif %} :
