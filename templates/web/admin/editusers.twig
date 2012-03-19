@@ -152,6 +152,7 @@
                 <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
                 {% endfor %}
               </select>
+               <button type='button' id='reset_rights'>{% trans 'reset users rights' %}</button>  
             </td>
           </tr>
         </table>
@@ -377,19 +378,31 @@
                 </td>
                 <td class="users_col case_right_quota">
                   <div class="quota_trigger quota_{{rights['base_id']}}">
-                    <img src="/skins/icons/buttoninfo2.gif" />
+                    {% if rights['restrict_dwnld'] > 0 %}
+                    <img src="/skins/icons/user_details_on.png" />
+                    {% else %}
+                    <img src="/skins/icons/user_details_off.png" />
+                    {% endif %}
                     <input type="hidden" name="quota_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col case_right_time">
                   <div class="time_trigger time_{{rights['base_id']}}">
-                    <img src="/skins/icons/buttoninfo2.gif" />
+                    {% if rights['time_limited'] > 0 %}
+                    <img src="/skins/icons/user_details_on.png" />
+                    {% else %}
+                    <img src="/skins/icons/user_details_off.png" />
+                    {% endif %}
                     <input type="hidden" name="time_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
                 <td class="users_col case_right_masks">
                   <div class="masks_trigger quotatime_{{rights['base_id']}}">
-                    <img src="/skins/icons/buttoninfo2.gif" />
+                    {% if rights['masks'] > 0 %}
+                    <img src="/skins/icons/user_details_on.png" />
+                    {% else %}
+                    <img src="/skins/icons/user_details_off.png" />
+                    {% endif %}
                     <input type="hidden" name="masks_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
@@ -455,9 +468,9 @@
             </td>
             <td>
               <select name="gender">
-                <option {% if main_user.get_gender() == 0 %}"selected"{% endif %} value="0" >{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
-                <option {% if main_user.get_gender() == 1 %}"selected"{% endif %} value="1" >{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
-                <option {% if main_user.get_gender() == 2 %}"selected"{% endif %} value="2" >{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
+                <option {% if main_user.get_gender() == 0 %}selected="selected"{% endif %} value="0" >{% trans 'admin::compte-utilisateur:sexe: mademoiselle' %}</option>
+                <option {% if main_user.get_gender() == 1 %}selected="selected"{% endif %} value="1" >{% trans 'admin::compte-utilisateur:sexe: madame' %}</option>
+                <option {% if main_user.get_gender() == 2 %}selected="selected"{% endif %} value="2" >{% trans 'admin::compte-utilisateur:sexe: monsieur' %}</option>
               </select>
             </td>
           </tr>
@@ -560,3 +573,50 @@
     <a href="/admin/users/search/" class="users_rights_cancel">{% trans 'boutton::retour' %}</a>
   </div>
 </div>
+
+<script type='text/javascript'>
+$('#users_rights_form button#reset_rights').bind('click', function(){
+    if(confirm("{% trans'are you sure you want reset rights ?' %}"))
+    {
+      var users = $('#users_rights_form input[name="users"]').val();
+    
+      $.ajax({
+        type: 'POST',
+        url: '/admin/users/rights/reset/',
+        dataType:'json',
+        data: {
+          users : users
+        },
+        success: function(data){
+
+          if(!data.error)
+          {
+            if(users === '')
+            {
+              return false;
+            }
+
+            $('#right-ajax').empty().addClass('loading');
+            p4.users.sel = [];
+            $.ajax({
+              type: 'GET',
+              url: '/admin/users/rights/',
+              data: {
+                users : users
+              },
+              success: function(data){
+                $('#right-ajax').removeClass('loading').html(data);
+              }
+            });
+            return false;
+          }
+          else
+          {
+            alert(data.message);
+          }
+        }
+      });
+    }
+  });
+  
+</script>

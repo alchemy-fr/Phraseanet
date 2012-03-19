@@ -88,7 +88,8 @@ class record_preview extends record_adapter
    */
   public function __construct($env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine = null, $query = '')
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $Core = bootstrap::getCore();
     $number = null;
     $this->env = $env;
 
@@ -138,37 +139,42 @@ class record_preview extends record_adapter
 
         break;
       case "BASK":
-        $basket = basket_adapter::getInstance($appbox, $contId, $appbox->get_session()->get_usr_id());
+        $em = $Core->getEntityManager();
+        $repository = $em->getRepository('\Entities\Basket');
 
-        $this->container = $basket;
-        $this->total = count($basket->get_elements());
-        $i     = 0;
+        /* @var $repository \Repositories\BasketRepository */
+        $Basket = $repository->findUserBasket($contId, $Core->getAuthenticatedUser(), false);
+
+        /* @var $Basket \Entities\Basket */
+        $this->container = $Basket;
+        $this->total = $Basket->getElements()->count();
+        $i = 0;
         $first = true;
 
-        foreach ($basket->get_elements() as $element)
+        foreach ($Basket->getElements() as $element)
         {
+          /* @var $element \Entities\BasketElement */
           $i++;
           if ($first)
           {
-            $sbas_id   = $element->get_record()->get_sbas_id();
-            $record_id = $element->get_record()->get_record_id();
-            $this->name = $basket->get_name();
-            $number    = $element->get_order();
+            $sbas_id = $element->getRecord()->get_sbas_id();
+            $record_id = $element->getRecord()->get_record_id();
+            $this->name = $Basket->getName();
+            $number = $element->getOrd();
           }
           $first     = false;
 
-          if ($element->get_order() == $pos)
+          if ($element->getOrd() == $pos)
           {
-            $sbas_id   = $element->get_record()->get_sbas_id();
-            $record_id = $element->get_record()->get_record_id();
-            $this->name = $basket->get_name();
-            $number    = $element->get_order();
+            $sbas_id = $element->getRecord()->get_sbas_id();
+            $record_id = $element->getRecord()->get_record_id();
+            $this->name = $Basket->getName();
+            $number = $element->getOrd();
           }
         }
         break;
       case "FEED":
-        $entry     = Feed_Entry_Adapter::load_from_id($appbox, $contId);
-//        $basket = basket_adapter::getInstance($appbox, $contId, $appbox->get_session()->get_usr_id());
+        $entry = Feed_Entry_Adapter::load_from_id($appbox, $contId);
 
         $this->container = $entry;
         $this->total = count($entry->get_content());
@@ -205,6 +211,7 @@ class record_preview extends record_adapter
   public function get_train($pos = 0, $query = '', searchEngine_adapter $search_engine = null)
   {
     if ($this->train)
+
       return $this->train;
 
     switch ($this->env)
@@ -218,7 +225,7 @@ class record_preview extends record_adapter
         $this->train = $results->get_datas();
         break;
       case 'BASK':
-        $this->train = $this->container->get_elements();
+        $this->train = $this->container->getElements();
         break;
       case 'REG':
         $this->train = $this->container->get_children();
@@ -267,6 +274,7 @@ class record_preview extends record_adapter
   public function get_title($highlight = '', searchEngine_adapter $search_engine = null)
   {
     if ($this->title)
+
       return $this->title;
 
     $this->title = collection::getLogo($this->get_base_id()) . ' ';
@@ -295,7 +303,7 @@ class record_preview extends record_adapter
         else
         {
           $this->title .= sprintf(
-            '%s %d/%d ', $title, $this->get_number(), $this->total
+                  '%s %s', $title, $this->get_number() . '/' . $this->total
           );
         }
         break;
@@ -323,11 +331,13 @@ class record_preview extends record_adapter
   public function get_short_history()
   {
     if (!is_null($this->short_history))
+    {
       return $this->short_history;
+    }
 
     $tab = array();
 
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
     $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -383,7 +393,7 @@ class record_preview extends record_adapter
         }
         catch (Exception $e)
         {
-          
+
         }
 
         $tab[$hour][$site][$action][$row['usr_id']] =
@@ -415,8 +425,11 @@ class record_preview extends record_adapter
   public function get_view_popularity()
   {
     if (!is_null($this->view_popularity))
+    {
       return $this->view_popularity;
-    $appbox  = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -512,8 +525,11 @@ class record_preview extends record_adapter
   public function get_refferer_popularity()
   {
     if (!is_null($this->refferer_popularity))
+    {
       return $this->refferer_popularity;
-    $appbox  = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -598,8 +614,11 @@ class record_preview extends record_adapter
   {
 
     if (!is_null($this->download_popularity))
+    {
       return $this->download_popularity;
-    $appbox  = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);

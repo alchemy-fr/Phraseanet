@@ -34,7 +34,7 @@ function Minify_groupUri($group, $forceAmpersand = false)
         : "/?g={$group}";
 
     return _Minify_getBuild($group)->uri(
-        '/' . basename(dirname(__FILE__)) . $path
+        '/' . basename(__DIR__) . $path
         ,$forceAmpersand
     );
 }
@@ -83,7 +83,7 @@ function _Minify_getBuild($group)
     static $builds = array();
     static $gc = false;
     if (false === $gc) {
-        $gc = (require dirname(__FILE__) . '/groupsConfig.php');
+        $gc = (require __DIR__ . '/groupsConfig.php');
     }
     if (! isset($builds[$group])) {
         $builds[$group] = new Minify_Build($gc[$group]);

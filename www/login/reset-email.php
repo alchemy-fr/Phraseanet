@@ -14,8 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 require_once($registry->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');
@@ -45,7 +47,7 @@ if (!is_null($parm['token']))
 
         <link REL="stylesheet" TYPE="text/css" HREF="/login/home.css" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js"></script>
+        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js"></script>
       </head>
       <body>
         <div style="width:950px;margin-left:auto;margin-right:auto;">
@@ -79,7 +81,7 @@ if (!is_null($parm['token']))
 
         <link REL="stylesheet" TYPE="text/css" HREF="/login/home.css" />
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js"></script>
+        <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js"></script>
       </head>
       <body>
         <div style="width:950px;margin-left:auto;margin-right:auto;">
@@ -106,7 +108,7 @@ if (!is_null($parm['token']))
 }
 
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 $usr_id = $session->get_usr_id();
@@ -133,7 +135,7 @@ if (isset($parm['form_password']) && isset($parm['form_email']) && isset($parm['
 
     if (str_replace(array("\r\n", "\r", "\n", "\t"), '_', trim($parm['form_email'])) == $parm['form_email_confirm'])
     {
-      require_once(dirname(__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+      require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
       if (PHPMailer::ValidateAddress($parm['form_email']))
       {
         if (mail::reset_email($parm['form_email'], $session->get_usr_id()) === true)
@@ -158,7 +160,7 @@ phrasea::headers();
   <title><?php echo $registry->get('GV_homeTitle') ?> - <?php echo _('admin::compte-utilisateur changer mon mot de passe') ?></title>
   <link REL="stylesheet" TYPE="text/css" HREF="/login/home.css" />
   <link rel="icon" type="image/png" href="/favicon.ico" />
-  <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js"></script>
+  <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js"></script>
   <script type="text/javascript">
     $(document).ready(function() {
       $("#mainform").validate(

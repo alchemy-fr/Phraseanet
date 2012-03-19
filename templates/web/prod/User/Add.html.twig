@@ -1,0 +1,99 @@
+{# designed to be printed in a small box #}
+<div id="QuickAddUser" class="PNB10" callback="{{ callback }}">
+  <form method="POST" action="/prod/push/add-user/">
+    <table>
+      <tr>
+        <td>
+          <label for="">{% trans 'First Name' %} *</label>
+        </td>
+        <td>
+          <input name="firstname" type="text" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">{% trans 'Last Name' %} *</label>
+        </td>
+        <td>
+          <input name="lastname" type="text" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">{% trans 'Email Name' %} *</label>
+        </td>
+        <td>
+          <input name="email" type="text" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">{% trans 'Job' %}</label>
+        </td>
+        <td>
+          <input name="job" type="text" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">{% trans 'Company' %}</label>
+        </td>
+        <td>
+          <input name="company" type="text" value=""/>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">{% trans 'City' %}</label>
+        </td>
+        <td>
+          <input name="city" type="text" value="" class="geoname_field"/>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <button class="valid">{% trans 'Add' %}</button>
+          <button class="cancel">{% trans 'Cancel' %}</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $("#QuickAddUser button").button();
+
+    $("#QuickAddUser form").bind('submit', function(){
+
+
+      return false;
+    });
+    $("#QuickAddUser form button.cancel").bind('click', function(){
+
+      $(this).closest('.ui-dialog-content').dialog('destroy');
+      $(this).closest('.ui-dialog-content').remove();
+
+      return false;
+    });
+    $("#QuickAddUser form button.valid").bind('click', function(){
+
+      var $form = $(this).closest('form');
+      var $this = $(this);
+
+      var callback = function(){
+        $this.closest('.ui-dialog-content').dialog('destroy').remove()
+      };
+
+      p4.Feedback.addUser($form, callback);
+
+      return false;
+    });
+
+
+
+
+
+  });
+</script>

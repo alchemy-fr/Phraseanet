@@ -33,7 +33,7 @@ class set_exportftp extends set_export
    */
   public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user_f = User_Adapter::getInstance($session->get_usr_id(), $appbox);
     $conn = $appbox->get_connection();

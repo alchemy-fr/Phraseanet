@@ -17,15 +17,21 @@ abstract class eventsmanager_eventAbstract
   protected $registry;
   /**
    *
+   * @var \Alchemy\Phrasea\Core
+   */
+  protected $core;
+  /**
+   *
    * @var eventsmanager
    */
   protected $broker;
 
 
-  public function __construct(appbox &$appbox, registryInterface $registry, eventsmanager_broker &$broker)
+  public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
   {
     $this->appbox = $appbox;
-    $this->registry = $registry;
+    $this->registry = $core->getRegistry();
+    $this->core = $core;
     $this->broker = $broker;
 
     return $this;

@@ -1,6 +1,14 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
+
+$include_path = realpath(__DIR__ . '/../../vendor/');
+if(strpos(get_include_path(), $include_path) === false)
+{
+  $new_include_path = $include_path . PATH_SEPARATOR . get_include_path();
+  set_include_path($new_include_path);
+}
+
+require_once __DIR__ . "/../../vendor/Phlickr/Api.php";
 
 /*
  * This file is part of Phraseanet
@@ -64,6 +72,21 @@ class Bridge_Api_Apitest_Containers implements Bridge_Api_ContainerInterface
   }
 
   public function get_url()
+  {
+
+  }
+
+  public function get_category()
+  {
+
+  }
+
+  public function is_private()
+  {
+
+  }
+
+  public function get_rating()
   {
 
   }
@@ -150,7 +173,11 @@ class Bridge_Api_Apitest_Element implements Bridge_Api_ElementInterface
 
 class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Interface
 {
+
   const AUTH_TYPE = 'None';
+
+  public static $hasError = false;
+  public static $hasException = false;
 
   public function __construct(registryInterface $registry, Bridge_Api_Auth_Interface $auth)
   {
@@ -364,19 +391,31 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   }
 
-  public function create_container($container_type, Request $request)
+  public function create_container($container_type, \Symfony\Component\HttpFoundation\Request $request)
   {
-
+    if (self::$hasException)
+    {
+      self::$hasException = false;
+      throw new \Exception("une erreur");
+    }
   }
 
   public function add_element_to_container($element_type, $element_id, $destination, $container_id)
   {
-
+    if (self::$hasException)
+    {
+      self::$hasException = false;
+      throw new \Exception("une erreur");
+    }
   }
 
   public function delete_object($object, $object_id)
   {
-
+    if (self::$hasException)
+    {
+      self::$hasException = false;
+      throw new \Exception("une erreur");
+    }
   }
 
   /**
@@ -385,7 +424,12 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
    */
   public function acceptable_records()
   {
+    $func = function($record)
+            {
+              return true;
+            };
 
+    return $func;
   }
 
   public function get_element_status(Bridge_Element $element)
@@ -420,12 +464,19 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   public function check_upload_constraints(array $datas, record_adapter $record)
   {
+    if (self::$hasError)
+    {
+      self::$hasError = false;
 
+      return array('title' => 'too long');
+    }
+
+    return array();
   }
 
-  public function get_upload_datas(Request $request, record_adapter $record)
+  public function get_upload_datas(\Symfony\Component\HttpFoundation\Request $request, record_adapter $record)
   {
-
+    return array();
   }
 
   public function is_multiple_upload()
@@ -435,12 +486,27 @@ class Bridge_Api_Apitest extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
   public function check_update_constraints(Array $datas)
   {
+    if (!self::$hasError)
+    {
+      if (self::$hasException)
+      {
+        self::$hasException = false;
+        throw new \Exception('une erreur');
+      }
 
+      return array();
+    }
+    elseif (self::$hasError)
+    {
+      self::$hasError = false;
+
+      return array('title' => 'too long');
+    }
   }
 
-  public function get_update_datas(Request $request)
+  public function get_update_datas(\Symfony\Component\HttpFoundation\Request $request)
   {
-
+    return array();
   }
 
 }

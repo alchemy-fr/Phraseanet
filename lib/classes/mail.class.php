@@ -208,11 +208,14 @@ class mail
 
     $body = eregi_replace("[\]", '', $body);
 
-    $body .= "<br/>\n"._('Si le lien n\'est pas cliquable, copiez-collez le dans votre navigateur.')."<br/>\n";
     $body .= "<br/><br/><br/><br/>\n\n\n\n";
+    $body .= '<div style="font-style:italic;">'._('si cet email contient des liens non cliquables copiez/collez ces liens dans votre navigateur.').'</div>';
+    $body .= "<br/>\n";
     $body .= '<div style="font-style:italic;">' . _('phraseanet::signature automatique des notifications par mail, infos a l\'url suivante') . "</div>\n";
     $body .= '<div><a href="' . $registry->get('GV_ServerName') . '">' . $registry->get('GV_ServerName') . "</a></div>\n";
     $body = '<body>' . $body . '</body>';
+
+    $body = str_replace('https://', 'http://', $body);
 
     try
     {
@@ -258,7 +261,7 @@ class mail
         $mail->ConfirmReadingTo = $reading_confirm_to;
       }
 
-      $mail->MsgHTML(strip_tags($body, '<div><br><ul><li>'));
+      $mail->MsgHTML(strip_tags($body, '<div><br><ul><li><em><strong><span><br>'));
 
       foreach ($files as $f)
       {

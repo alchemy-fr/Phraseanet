@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . "/../../../../lib/vendor/oauth2/lib/OAuth2.inc";
+require_once __DIR__ . "/../../../../lib/vendor/oauth2/lib/OAuth2.inc";
 /*
  * This file is part of Phraseanet
  *

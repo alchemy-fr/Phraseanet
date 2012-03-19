@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for Session_Authentication_Native.
@@ -26,13 +26,13 @@ class Session_Authentication_NativeTest extends PhraseanetPHPUnitAbstract
     $usr_id = User_Adapter::get_usr_id_from_login($login);
     if ($usr_id)
     {
-      $this->local_user = User_Adapter::getInstance($usr_id, appbox::get_instance());
+      $this->local_user = User_Adapter::getInstance($usr_id, appbox::get_instance(\bootstrap::getCore()));
     }
     else
     {
-      $this->local_user = User_Adapter::create(appbox::get_instance(), $login, $password, null, false);
+      $this->local_user = User_Adapter::create(appbox::get_instance(\bootstrap::getCore()), $login, $password, null, false);
     }
-    $this->object = new Session_Authentication_Native(appbox::get_instance(), $login, $password);
+    $this->object = new Session_Authentication_Native(appbox::get_instance(\bootstrap::getCore()), $login, $password);
   }
 
   public function tearDown()

@@ -1,0 +1,36 @@
+Entities\ValidationParticipant:
+  type: entity
+  repositoryClass: Repositories\ValidationParticipantRepository
+  table: ValidationParticipants
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    usr_id:
+      type: integer
+    is_aware:
+      type: boolean
+    is_confirmed:
+      type: boolean
+    can_agree:
+      type: boolean
+    can_see_others:
+      type: boolean
+    reminded:
+      type: datetime
+      nullable: true;
+  oneToMany:
+    datas:
+      targetEntity: ValidationData
+      mappedBy: participant
+      cascade: ["ALL"]
+  manyToOne:
+    session:
+      targetEntity: ValidationSession
+      inversedBy: participants
+      joinColumn:
+        name: ValidationSession_id
+        referencedColumnName: id
+      cascade: ["persist"]

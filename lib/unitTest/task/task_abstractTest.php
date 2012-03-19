@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for task_abstract.
@@ -11,7 +11,7 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
 
   public function testCreate()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $task = task_abstract::create($appbox, 'task_period_apibridge');
     $task->delete();

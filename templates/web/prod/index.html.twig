@@ -1,0 +1,1156 @@
+{% macro bas_list(module, search_datas) %}
+{% set unique_id = module.getRandom() %}
+{% for base in search_datas['bases'] %}
+{% set sbas_id = base['sbas_id'] %}
+<div class="sbas_list sbas_{{sbas_id}}" style="margin-bottom:10px;">
+  <input type="hidden" name="reference" value="{{sbas_id}}"/>
+  <div class="clksbas" style="text-align:center;">
+    <input type="checkbox" checked style="display:none" id="sbasChkr_{{sbas_id}}_{{unique_id}}" class="sbasChkr_{{sbas_id}}" />
+    <label for="sbasChkr_{{sbas_id}}_{{unique_id}}"  onclick="clksbas({{sbas_id}}, $('#sbasChkr_{{sbas_id}}_{{unique_id}}'));return false;">
+      <span>{{sbas_id|sbas_names}}</span>
+      <span class="infos_sbas_{{sbas_id}}">
+        {{base["collections"]|length}}/{{base['collections']|length}}
+      </span>
+    </label>
+  </div>
+
+  <div class="sbascont sbascont_{{sbas_id}}" style="-moz-column-width:150px;-webkit-column-width: 150px;-moz-column-gap: 20px;-webkit-column-gap: 20px;">
+    <ul style="list-style-type:none;padding:0;margin:0;" class="basChild_{{sbas_id}}">
+      {% for collection in base["collections"] %}
+      {% set base_id = collection["base_id"] %}
+      <li style="margin:0 5px;" class="clkbas">
+        <input class="ck_{{collection["base_id"]}} checkbas checkbox"
+               onclick="cancelEvent(event);return false;"
+               onmousedown="infoSbas(this, {{sbas_id}}, false, event);return false;"
+               id="ck_{{collection["base_id"]}}_{{unique_id}}" type="checkbox"
+               name="bas[]" value="{{collection["base_id"]}}" {% if collection["selected"] %}checked="checked"{% endif %} />
+               <label style="cursor:pointer;" onclick="infoSbas($('#ck_{{base_id}}_{{unique_id}}'),{{sbas_id}}, false, event);return false;"
+               for="ck_{{base_id}}_{{unique_id}}" class="ck_{{base_id}} {% if collection["selected"] %}selected{% endif %}">{{base_id|get_collection_logo|raw}} {{base_id|bas_names}}</label>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  {% endfor %}
+  {% endmacro %}
+
+  {% extends "common/index.twig" %}
+
+  {% block icon %}
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  {% endblock %}
+
+  {% block rss %}
+    {% for feed in feeds %}
+        {% set link = feed.get_user_link(registry, user, 'rss') %}
+        <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
+        {% set link = feed.get_user_link(registry, user, 'atom') %}
+        <link rel="alternate" type="{{ link.get_mimetype() }}" title="{{ link.get_title() }}" href="{{ link.get_href() }}" />
+    {% endfor %}
+  {% endblock %}
+
+  {% block stylesheet %}
+  <style type="text/css">
+                  #idFrameE .diapo
+                  {
+                  WIDTH : 134px;
+                  HEIGHT : 134px;
+  }
+
+  DIV.HDIV
+  {
+    visibility: hidden;
+    BACKGROUND-COLOR:#00FF00;
+    POSITION: relative;
+    LEFT: 0px;
+    WIDTH: 100%;
+    HEIGHT: 1px;
+    overflow: hidden;
+  }
+
+  .noRepresent
+  { background-color:#A2F5F5; }
+
+
+  .disable{
+    display:none;
+  }
+
+
+</style>
+<style type="text/css">  /* NE PAS FUSIONER AVEC LE BLOC PRECEDENT */
+  .MenuSG
+  {
+  }
+  .MenuSG DIV
+  {
+    WIDTH: 220px;
+  }
+  .MenuSG A,.MenuSG A:link,.MenuSG A:visited,.MenuSG A:active,.MenuSG A:hover
+  {
+  }
+  .MenuSG A:hover
+  {
+  }
+</style>
+<style type="text/css">
+  .MenuSG
+  {
+    BORDER-RIGHT: 2px outset;
+    BORDER-TOP: 2px outset;
+    DISPLAY: none;
+    FONT-SIZE: 8pt;
+    Z-INDEX: 100;
+    VISIBILITY: visible;
+    OVERFLOW: hidden;
+    BORDER-LEFT: 2px outset;
+    COLOR: #000000;
+    BORDER-BOTTOM: 2px outset;
+    FONT-FAMILY: Tahoma;
+    POSITION: absolute;
+    BACKGROUND-COLOR: #e6e4e0;
+    TEXT-DECORATION: none;
+    LEFT: 500px;
+    TOP: 300px;
+    WIDTH: 220px;
+    COLOR: #222222;
+
+  }
+  .MenuSG DIV
+  {
+    WIDTH: 220px;
+    overflow-y:scroll;
+    WHITE-SPACE: normal;
+    COLOR: #222222;
+    BORDER-bottom:#CCCCCC 1px solid;
+    margin-top:1px;
+    margin-bottom:1px;
+  }
+  .MenuSG A,.MenuSG A:link,.MenuSG A:visited,.MenuSG A:active,.MenuSG A:hover
+  {
+
+    cursor: pointer;
+    DISPLAY: block;
+    PADDING-LEFT: 5px;
+    COLOR: #000000;
+    PADDING-TOP: 2px;
+    WHITE-SPACE: normal;
+    BACKGROUND-COLOR: #e6e4e0;
+    POSITION: relative;
+    TOP: 0px;
+    LEFT: 0px;
+    TEXT-DECORATION: none;
+    COLOR: #222222;
+  }
+  .MenuSG A:hover
+  {
+    COLOR: #ffffff;
+    BACKGROUND-COLOR: #191970;
+    TEXT-DECORATION: none;
+  }
+
+  .sugg_val{
+    font-size : 10px;
+    color:black;
+    border-bottom : 1px solid black;
+    padding:3px;
+    height:16px;
+    background:white;
+  }
+  .sugg_val_sel{
+    background:#FBFFA8;
+  }
+  .indicator{
+    color:green;
+    float:right;
+    font-size:9px;
+    position:relative;
+    font-style:italic;
+  }
+</style>
+
+<style type="text/css">
+  /* Vertical Tabs
+  ----------------------------------*/
+  .ui-tabs-vertical .ui-tabs-nav { padding: .2em .1em .2em .2em; float: left; width: 12em; }
+  .ui-tabs-vertical .ui-tabs-nav li { clear: left; width: 100%; border-bottom-width: 1px !important; border-right-width: 0 !important; margin: 0 -1px .2em 0; }
+  .ui-tabs-vertical .ui-tabs-nav li a { display:block; }
+  .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 0; padding-right: .1em; border-right-width: 1px; border-right-width: 1px; }
+</style>
+
+<link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/colorpicker/css/colorpicker.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,login/geonames.css,include/jquery.image_enhancer.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css" >
+<link id="skinCss" type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=skins/prod/{{cssfile}}/prodcolor.css" >
+<link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/vendor/humane-js/themes/libnotify.css,skins/prod/Prod.css,skins/prod/Basket.css,skins/prod/Push.css" >
+<!--[if IE 7]>
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie7.css" >
+<![endif]-->
+<!--[if IE 8]>
+        <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/prod/ie8.css" >
+<![endif]-->
+<style title="color_selection" type="text/css">
+
+/*  .diapo.ui-selecting,#reorder_box .diapo.selecting, #EDIT_ALL .diapo.selecting, .list.selecting, .list.selecting .diapo
+  {
+    COLOR: #{% if user.getPrefs('fontcolor-selection') != '' %}{{user.getPrefs('fontcolor-selection')}}{% else %}FFFFFF{% endif %};
+    BACKGROUND-COLOR: #{% if user.getPrefs('background-selection-disabled') != '' %}{{user.getPrefs('background-selection-disabled')}}{% else %}333333{% endif %};
+  }*/
+  .diapo.selected,#reorder_box .diapo.selected, #EDIT_ALL .diapo.selected, .list.selected, .list.selected .diapo
+  {
+    COLOR: #{% if user.getPrefs('fontcolor-selection') != '' %}{{user.getPrefs('fontcolor-selection')}}{% else %}FFFFFF{% endif %};
+    BACKGROUND-COLOR: #{% if user.getPrefs('background-selection') != '' %}{{user.getPrefs('background-selection')}}{% else %}404040{% endif %};
+  }
+</style>
+{% endblock %}
+
+
+{% block javascript %}
+<script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+{% endblock %}
+
+
+{% block content %}
+
+{% set search_datas = module_prod.get_search_datas() %}
+<div style="position:absolute;top:0;left:0;right:0;bottom:0;background-color:#1a1a1a;z-index:32766;">
+  <div id="loader" style="top:200px;margin:0 auto;-moz-border-radius:5px;-webkit-border-radius:5px;background-color:#CCCCCC;position:relative;margin:0 auto;text-align:center;left:color:black;width:400px;height:100px;padding:20px;;z-index:32767;">
+    <div style="margin:0 10px 10px;font-family:Helvetica,Arial,sans-serif;font-size:18px;color:#1A1A1A;text-align:left;">Phraseanet</div>
+    <div style="text-align:center;">{% trans 'Chargement' %}</div>
+    <div style="width:220px;height:19px;margin:20px auto;">
+      <div id="loader_bar" style="height:19px;width:10%;background-image:url(/skins/icons/main-loader.gif)"></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="desktop" class="PNB" style="overflow:hidden;">
+
+  {% set ratio = user.getPrefs('search_window') %}
+  {% if ratio == 0 %}
+  {% set ratio = '0.333' %}
+  {% endif %}
+  {% set w1 = (100 * ratio)|round %}
+  {% set w2 = (100 - w1) %}
+  <div id="idFrameC" class="PNB" style="right:auto;width:{{w1}}%;">
+    <div class="PNB wrapper">
+      <div class="tabs ui-tabs">
+        <ul class="icon-menu ui-tabs-nav ui-helper-reset">
+          <li class="ui-tabs-selected ui-corner-top">
+            <a href="#baskets">
+              <img src="/skins/icons/workzone32.png" title="{% trans 'phraseanet:: panier' %}"/>
+              <span id="basket_menu_trigger" style="cursor:pointer;padding:3px;font-size:12px;">&#9660;</span>
+            </a>
+          </li>
+          {% if GV_thesaurus %}
+          <li class="proposals_WZ">
+            <a href="#proposals">
+              <img class="proposals_off" src="/skins/icons/proposition_off32.png" title="{% trans 'phraseanet:: propositions' %}"/>
+              <img class="proposals_on" src="/skins/icons/proposition_on32.png" title="{% trans 'phraseanet:: propositions' %}"/>
+            </a>
+          </li>
+          <li>
+            <a href="#thesaurus_tab">
+              <img src="/skins/icons/thesaurus_32.png" title="{% trans 'phraseanet:: thesaurus' %}"/>
+            </a>
+          </li>
+          {% endif %}
+          <li style="float:right;">
+            <a href="#" class="escamote" style="margin:8px 0;">
+              <img src="/skins/icons/workzoneEscamote.png" title="{% trans 'Close the WorkZone' %}"/>
+            </a>
+          </li>
+        </ul>
+        <div id="baskets" class="PNB ui-tabs-panel ui-accordion" style="top:52px;">
+          {% import 'prod/WorkZone/Macros.twig'  as  WorkZoneMacros %}
+          {{WorkZoneMacros.make_bloc(WorkZone)}}
+        </div>
+        {% if GV_thesaurus %}
+        <div id="proposals" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;"
+            ondblclick="return(thesau_dblclickThesaurus(event));" onclick="return(thesau_clickThesaurus(event));">
+        </div>
+        <div id="thesaurus_tab" class="PNB ui-tabs-panel ui-tabs-hide" style="top:52px;">
+          <div id="THPD_tabs">
+            <ul>
+              <li><a href="#THPD_T"><span>{% trans 'prod::thesaurusTab:thesaurus' %}</span></a></li>
+              <li><a href="#THPD_C"><span>{% trans 'prod::thesaurusTab:candidats' %}</span></a></li>
+            </ul>
+            <div class="ui-tabs-panels-container">
+              <div id="THPD_T">
+                <div id='THPD_WIZARDS' style="position:relative; top:0px; left:0px; height:auto; width:100%;">
+                  <div class="wizard wiz_0">
+                    <!-- empty wizard -->
+                  </div>
+                  <div class="wizard wiz_1" style="display:none">
+                    <div class="txt">{% trans 'prod::thesaurusTab:wizard:accepter le terme candidat' %}</div>
+                  </div>
+                  <div class="wizard wiz_2" style="display:none">
+                    <div class="txt">{% trans 'prod::thesaurusTab:wizard:remplacer par le terme' %}</div>
+                  </div>
+                  <form class="gform" href="#" onsubmit="T_Gfilter(this);return(false);">
+                    <input type="text" onkeyup="T_Gfilter_delayed(this.value, 300)" style="width:150px;" />
+                    <input class="th_ok"     type="submit" value="{% trans 'boutton::rechercher' %}" />
+                    <input class="th_cancel" type="button" value="{% trans 'boutton::annuler' %}"
+                          onclick="thesauCancelWizard();return(false);"/>
+                  </form>
+                </div>
+                <div id='THPD_T_treeBox' class="searchZone"
+                    style="position:absolute; top:0px; bottom:0px; left:0px; width:100%; overflow:auto">
+                  <div onclick="Xclick(event);return(false);" ondblclick="TXdblClick(event);">
+                    <ul class="treeview" id="THPD_T_tree">
+                      {% for base in search_datas['bases'] %}
+                      {% if base['thesaurus'] %}
+                      <li id="TX_P.{{base['sbas_id']}}.T" class="expandable{% if loop.last %} last{% endif %}">
+                        <div class="hitarea expandable-hitarea"></div>
+                        <span>{{base['sbas_id']|sbas_names}}</span>
+                        <ul style="display:none">{% trans 'chargement' %}</ul>
+                      </li>
+                      {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div id="THPD_C">
+                <div id='THPD_C_treeBox' class="searchZone">
+                  <div onclick="Xclick(event);return(false);" ondblclick="CXdblClick(event);">
+                    <ul class="treeview" id="THPD_C_tree">
+                      {% for base in search_datas['bases'] %}
+                      {% if base['cterms'] %}
+                      <li id="CX_P.{{base['sbas_id']}}.C" class="expandable{% if loop.last %} last{% endif %}">
+                        <div class="hitarea expandable-hitarea"></div>
+                        <span>{{base['sbas_id']|sbas_names}}</span>
+                        <ul style="display:none">{% trans 'chargement' %}</ul>
+                      </li>
+                      {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:none" id="THPD_confirm_del_dlg">
+            <div id="THPD_confirm_del_dlg_msg">{% trans 'prod::thesaurusTab:dlg:supprimer le terme ?' %}</div>
+          </div>
+          <div style="display:none" id="THPD_confirm_accept_dlg">
+            <div id="THPD_confirm_accept_dlg_msg">{% trans 'prod::thesaurusTab:dlg:accepter le terme ?' %}</div>
+          </div>
+          <div style="display:none" id="THPD_confirm_replace_dlg">
+            <div id="THPD_confirm_replace_dlg_msg">{% trans 'prod::thesaurusTab:dlg:remplacer le terme ?' %}</div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div id="basket_menu" class="context-menu context-menu-theme-vista" style="display:none;">
+      <ul style="list-style-type:none;margin:0;padding:0">
+        <li class="context-menu-item">
+          <div class="context-menu-item-inner"@>
+            <a title="{% trans 'action:: nouveau panier' %}" class="dialog small-dialog" href="/prod/baskets/create/">
+              <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau panier' %}" />
+              {% trans 'action:: nouveau panier' %}
+            </a>
+          </div>
+          <div class="context-menu-item-inner"@>
+            <a title="{% trans 'Browse Baskets' %}" class="dialog" href="/prod/WorkZone/Browse/">
+              {% trans 'Browse Baskets' %}
+            </a>
+          </div>
+          <div class="context-menu-item-inner"@>
+            <a title="{% trans 'action:: nouveau reportage' %}" class="dialog small-dialog" href="/prod/story/create/">
+              <img style="cursor:pointer;" src="/skins/icons/mtadd_0.gif" title="{% trans 'action:: nouveau reportage' %}" />
+              {% trans 'action:: nouveau reportage' %}
+            </a>
+          </div>
+        </li>
+        <li class="context-menu-item">
+          <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','date');">
+            <img style="cursor:pointer;" src="/skins/icons/cal.png" title="{% trans 'phraseanet:: tri par date' %}" />
+            {% trans 'phraseanet:: tri par date' %}
+          </div>
+        </li>
+        <li class="context-menu-item">
+          <div class="context-menu-item-inner" onclick="return p4.WorkZone.refresh('current','name');">
+            <img style="cursor:pointer;" src="/skins/icons/alpha.png" title="{% trans 'phraseanet:: tri par nom' %}" />
+            {% trans 'phraseanet:: tri par nom' %}
+          </div>
+        </li>
+        <li class="context-menu-item">
+          <div class="context-menu-item-inner" onclick="basketPrefs();">
+            {% trans 'Preferences' %}
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="PNB" id="rightFrame" style="left:auto;width:{{w2}}%;">
+
+    <div id="headBlock" class="PNB" style="height:90px;bottom:auto;">
+      <div style="margin:15px auto;line-height:30px;width:580px;">
+
+
+
+          <form id="searchForm" action="/prod/query/" name="phrasea_query" class="phrasea_query">
+            <input autocomplete="off" class="search query" id="EDIT_query" name="qry" type="text" name="qry" value="{{user.getPrefs('start_page_query')}}">
+
+            <a href="#" class="adv_trigger adv_search_button">
+              <img src="/skins/icons/settings.png" title="{% trans 'Advanced Search' %}"/>
+            </a>
+            <button type="submit">{% trans 'boutton::rechercher' %}</button>
+
+            <div style="margin:5px 0">
+            {% if GV_multiAndReport %}
+              <input type="radio" value="0" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type == 0 %}checked="checked"{% endif %} id="mode_type_doc"/><label for="mode_type_doc">{% trans 'phraseanet::type:: documents' %}</label>
+              <input type="radio" value="1" class="mode_type_doc_reg checkbox" name="search_type" {% if GV_defaultQuery_type != 0 %}checked="checked"{% endif %} id="mode_type_reg"/><label for="mode_type_reg">{% trans 'phraseanet::type:: reportages' %}</label>
+            {% else %}
+              <input type="hidden" value="0" name="search_type" />
+            {% endif %}
+              <select name="recordtype" id="recordtype_sel">
+                <option value="">{% trans 'Tout type' %}</option>
+                <option value="image">{% trans 'Image' %}</option>
+                <option value="video">{% trans 'Video' %}</option>
+                <option value="audio">{% trans 'Audio' %}</option>
+                <option value="document">{% trans 'Document' %}</option>
+                <option value="flash">{% trans 'Flash' %}</option>
+              </select>
+            </div>
+
+
+
+
+            <input type="hidden" name="pag" id="formAnswerPage" value="">
+            <input type="hidden" name="sel" value="">
+
+
+
+
+
+
+            <div class="adv_options" style="display:none;">
+
+
+              <div>
+                <table style="width:100%;table-layout:fixed;">
+                  <tr>
+                    <td style="width:50%;vertical-align:top;">
+                      <div class="sbasglob ui-corner-all">
+                        <div style="text-align:center;margin:10px;">
+                          <input class="input-button" type="button"
+                                value="{% trans 'boutton:: selectionner toutes les bases' %}" onclick="checkBases(true);"/>
+                          <input class="input-button" type="button"
+                                value="{% trans 'boutton:: selectionner aucune base' %}" onclick="checkBases(false);"/>
+                        </div>
+                        {{_self.bas_list(module_prod, search_datas)}}
+                      </div>
+                    </td>
+                    <td style="width:50%;vertical-align:top;">
+                      <div id="sbasfiltercont" class="ui-corner-all">
+                        <div>
+                          <div style="margin:10px 0;">
+                            <input onclick="reset_adv_search();" type="button" value="{% trans 'Re-initialiser' %}" class="input-button"/>
+                          </div>
+                          {% if registry.get('GV_sphinx') %}
+                          {% trans 'Trier par ' %}
+                            <select name="sort">
+                              <option value="relevance">{% trans 'pertinence'%}</option>
+                              <option value="created_on">{% trans 'date dajout'%}</option>
+                              <option value="random">{% trans 'aleatoire'%}</option>
+                            </select>
+                            <select name="ord">
+                              <option value="desc">{% trans 'descendant'%}</option>
+                              <option value="asc">{% trans 'ascendant'%}</option>
+                            </select>
+                            <input type="checkbox" checked="checked" name="stemme" /> {% trans 'rechercher par stemme' %}
+                          {% else %}
+                            {% trans 'Trier par ' %}
+                            <select name="sort">
+                              <option value=""></option>
+                              {% for field_id, field in search_datas['fields'] %}
+                                {% if field['type'] == 'date' %}
+                                <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}" {% if registry.get('GV_phrasea_sort') == field['fieldname'] %}selected="selected"{% endif %}>{{ field['fieldname'] }}</option>
+                                {% endif %}
+                              {% endfor %}
+                            </select>
+                            <select name="ord">
+                              <option value="desc">{% trans 'descendant'%}</option>
+                              <option value="asc">{% trans 'ascendant'%}</option>
+                            </select>
+                            <input type="hidden" name="ord" id="searchOrd" value="PHRASEA_ORDER_DESC" />
+                          {% endif %}
+                          <div class="field_filter">
+                            <div>
+                              {% trans 'Les termes apparaissent dans le(s) champs' %}
+                            </div>
+                            <select size="8" multiple onchange="checkFilters(true);" name="fields[]" style="vertical-align:middle;width:100%;">
+                              <option value="phraseanet--all--fields">{% trans 'rechercher dans tous les champs' %}</option>
+                              {% for field_id, field in search_datas['fields'] %}
+                                {% if field['type'] != 'date' %}
+                                  <option class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                {% endif %}
+                              {% endfor %}
+                            </select>
+                          </div>
+
+                          {% set status_length = search_status|length %}
+                          {% if status_length > 0 %}
+
+                          <div style="margin:5px 0;">
+                            <hr/>
+                          </div>
+                          <div class="status_filter">
+
+                            <div>
+                              {% trans 'Status des documents a rechercher' %}
+                            </div>
+                            <table>
+                              {% for n, stat in search_status %}
+                              {% for s in stat %}
+                              <tr>
+                                <td>
+                                  {% if s['imgoff'] %}
+                                  <img src="{{s['imgoff']}}" title="{{s['labeloff']}}" />
+                                  {% endif %}
+                                  <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
+                                        type="checkbox" value="{{s['sbas']|implode(' field_')}}"
+                                        n="{{n}}" name="status[{{n}}][off][]"/><label>{{s['labeloff']}}</label>
+                                </td>
+                                <td>
+                                  {% if s['imgoff'] %}
+                                  <img src="{{s['imgon']}}" title="{{s['labelon']}}" />
+                                  {% endif %}
+                                  <input onchange="checkFilters(true);" class="field_switch field_{{s['sbas']|implode('field_')}}"
+                                        type="checkbox" value="{{s['sbas']|implode(' field_')}}"
+                                        n="{{n}}" name="status[{{n}}][on][]"/><label>{{s['labelon']}}</label>
+                                </td>
+                              </tr>
+                              {% endfor %}
+                              {% endfor %}
+                            </table>
+                          </div>
+                          {% endif %}
+
+                          {% set dates_length = search_datas['dates']|length %}
+                          {% if dates_length > 0 %}
+                          <div style="margin:5px 0;">
+                            <hr/>
+                          </div>
+                          <div class="date_filter">
+                            <div>{% trans 'Rechercher dans un champ date' %}</div>
+                            <table>
+                              <tr>
+                                <td colspan="2">
+                                  <select name="datefield">
+                                    {% for field_id, field in search_datas['dates'] %}
+                                    <option onchange="checkFilters(true);"
+                                            class="field_switch field_{{field['sbas']|implode(' field_')}}" value="{{field_id}}">{{field['fieldname']}}</option>
+                                    {% endfor %}
+                                    <option value="{{search_datas['dates']|array_keys|implode('|')}}" selected="selected">
+                                      {% trans 'rechercher dans tous les champs' %}
+                                    </option>
+                                  </select>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  {% trans 'phraseanet::time:: de' %}
+                                  <input onchange="checkFilters(true);" class="datepicker" type="text" name="datemin">
+                                </td>
+                                <td>
+                                  {% trans 'phraseanet::time:: a' %}
+                                  <input onchange="checkFilters(true);" class="datepicker" type="text" name="datemax">
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!--
+          <div id="history-queries" class="PNB" style="top:30px;overflow:hidden;">
+            <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
+              {{queries_history|raw}}
+            </div>
+          </div>
+          {% if queries_topics %}
+          <div id="choosen-topics" class="PNB" style="top:30px;overflow:hidden;">
+            <div class="PNB10" style="overflow-y:auto;overflow-x:auto;">
+              {{queries_topics|raw}}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>-->
+
+    </div>
+    <div id="idFrameT" class="PNB ui-corner-top" style="top:110px;">
+      <div class="tools PNB10" style="font-size:10px;z-index:200;height:28px;">
+
+
+
+        <span class="verticalbuttonset">
+          <span>
+            <button class="default_action">
+              <img src="/skins/icons/ccoch0.gif"/>&nbsp;
+            </button>
+            <button class="trigger">{% trans 'Select' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="answer_selector all_selector">
+              {% trans 'reponses:: selectionner tout' %}
+            </button>
+            <button class="answer_selector none_selector">
+              {% trans 'reponses:: selectionner rien' %}
+            </button>
+            <button class="answer_selector image_selector">
+              {% trans 'phraseanet::type:: images' %}
+            </button>
+            <button class="answer_selector document_selector">
+              {% trans 'phraseanet::type:: documents' %}
+            </button>
+            <button class="answer_selector video_selector">
+              {% trans 'phraseanet::type:: videos' %}
+            </button>
+            <button class="answer_selector audio_selector">
+              {% trans 'phraseanet::type:: audios' %}
+            </button>
+          </div>
+        </span>
+
+        <span class="verticalbuttonset">
+          <span>
+            <button class="default_action TOOL_disktt_btn results_window" style="background: url('/skins/prod/000000/images/disktt_history.gif') no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : exporter' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_print_btn results_window" style="background: url('/skins/prod/000000/images/print_history.gif') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : print' %}
+            </button>
+          </div>
+        </span>
+
+        {% set actions = {} %}
+        {% if user.ACL().has_right('modifyrecord') %}
+          {% set label %}
+            {% trans 'action : editer' %}
+          {% endset %}
+          {% set actions = actions|merge( { 'edit' : {'icon': "/skins/prod/000000/images/ppen_history.gif", 'class':'TOOL_ppen_btn', 'label' : label} }) %}
+        {% endif %}
+        {% if user.ACL().has_right('changestatus') %}
+          {% set label %}
+            {% trans 'action : status' %}
+          {% endset %}
+          {% set actions = actions|merge( { 'status' : {'icon': "/skins/prod/000000/images/chgstatus_history.gif", 'class':'TOOL_chgstatus_btn', 'label' : label} }) %}
+        {% endif %}
+        {% if user.ACL().has_right('deleterecord') and user.ACL().has_right('addrecord') %}
+          {% set label %}
+            {% trans 'action : collection' %}
+          {% endset %}
+          {% set actions = actions|merge( { 'move' : {'icon': "/skins/prod/000000/images/chgcoll_history.gif", 'class':'TOOL_chgcoll_btn', 'label' : label} }) %}
+        {% endif %}
+
+        {% set n_actions = actions|length %}
+
+        {% if n_actions > 1 %}
+        <span class="verticalbuttonset">
+          <span>
+            {% for action in actions %}
+              {% if loop.first %}
+              <button class="default_action {{ action.class }} results_window" style="background: url('{{ action.icon }}')  no-repeat 2px center; padding-left:16px;">
+                {{ action.label }}
+              </button>
+              {% endif %}
+            {% endfor %}
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu" >
+            {% for action in actions %}
+              {% if not loop.first %}
+              <button class="{{ action.class }} results_window" style="background: url('{{ action.icon }}') #313131 no-repeat 2px center; padding-left:16px;">
+                {{ action.label }}
+              </button>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </span>
+        {% elseif n_actions == 1 %}
+          <span class="buttonset">
+            {% for action in actions %}
+              <button class="{{ action.class }} results_window">
+                <img src="{{ action.icon }}"/> {{ action.label }}
+              </button>
+            {% endfor %}
+          </span>
+        {% endif %}
+
+        {% if user.ACL().has_right('push') and user.ACL().has_right('bas_chupub') %}
+        <span class="verticalbuttonset">
+          <span>
+            <button class="TOOL_pushdoc_btn default_action results_window" style="background: url('/skins/icons/push16.png')  no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : push' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_feedback_btn results_window" style="background: url('/skins/icons/feedback16.png') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'Feedback' %}
+            </button>
+            <button class="TOOL_bridge_btn results_window" style="background: url('/skins/icons/door.png') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : bridge' %}
+            </button>
+            <button class="TOOL_publish_btn results_window" style="background: url('/skins/icons/rss16.png') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : publier' %}
+            </button>
+          </div>
+        </span>
+        {% elseif user.ACL().has_right('push') %}
+        <span class="verticalbuttonset">
+          <span>
+            <button class="TOOL_pushdoc_btn default_action results_window" style="background: url('/skins/icons/push16.png')  no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : push' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_feedback_btn results_window" style="background: url('/skins/icons/feedback16.png') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'Feedback' %}
+            </button>
+          </div>
+        </span>
+        {% elseif user.ACL().has_right('bas_chupub') %}
+        <span class="verticalbuttonset">
+          <span>
+            <button class="TOOL_bridge_btn default_action results_window" style="background: url('/skins/icons/door.png') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : bridge' %}
+            </button>
+            <button class="trigger">{% trans 'Select an action' %}</button>
+          </span>
+          <div class="submenu">
+            <button class="TOOL_publish_btn results_window" style="background: url('/skins/icons/rss16.png') #313131 no-repeat 2px center; padding-left:16px;">
+              {% trans 'action : publier' %}
+            </button>
+          </div>
+        </span>
+        {% endif %}
+        {% if user.ACL().has_right('doctools') %}
+        <span class="buttonset">
+          <button class="TOOL_imgtools_btn results_window" style="background: url('/skins/prod/000000/images/imgtools_history.gif')  no-repeat 2px center; padding-left:16px;">
+            {% trans 'action : outils' %}
+          </button>
+        </span>
+        {% endif %}
+        {% if user.ACL().has_right('deleterecord') %}
+        <span class="buttonset">
+          <button class="TOOL_trash_btn results_window" style="background: url('/skins/icons/delete.png')  no-repeat 2px center; padding-left:16px;" >
+            {% trans 'action : supprimer' %}
+          </button>
+        </span>
+        {% endif %}
+      </div>
+      <div id="answers" class=" PNB10" style="top:48px;bottom:30px;">
+        <script>
+          $(document).ready(function(){
+        {% if user.getPrefs('start_page') == 'QUERY' %}
+          $('form[name="phrasea_query"]').addClass('triggerAfterInit')
+        {% elseif user.getPrefs('start_page') == 'LAST_QUERY' %}
+          $('form[name="phrasea_query"]').addClass('triggerAfterInit')
+        {% elseif user.getPrefs('start_page') == 'PUBLI' %}
+          getHome('PUBLI');
+        {% endif %}
+          });
+        </script>
+      </div>
+      <div id="answers_status" class="PNB">
+        <table>
+          <tr>
+            <td class="infos">
+              <a href="#" onclick="lookBox(this,event);return false;">{% trans 'Preferences' %} </a>
+              |
+              <span id="tool_results">
+
+              </span>
+            </td>
+            <td class="navigation">
+              <div id="tool_navigate">
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+  </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+<div>
+  <form style="visibility:hidden;display:none;" name="formDownload" action="/include/download.php" method="post" target="HFrameZ" >
+    <input type="hidden" name="act" value="DOWNLOAD" />
+    <input type="hidden" name="lst" value="" />
+    <input type="hidden" name="fromchu" value="" />
+    <input type="hidden" name="type" value="" />
+    <input type="checkbox" name="obj[]" value="document" />
+    <input type="checkbox" name="obj[]" value="preview" />
+    <input type="checkbox" name="obj[]" value="caption" />
+    <input type="hidden" name="SSTTID" value="" />
+  </form>
+  <form style="visibility:hidden;display:none;" name="formZ" action="???" method="post">
+    <input type="hidden" name="act" value="???" />
+    <input type="hidden" name="p0" value="?" />
+    <input type="hidden" name="p1" value="?" />
+  </form>
+  <div id="idFrameW0">
+    <div class="pbarBck">
+      <div id="idProgressBar0" class="pbarFrt" style="width:0%;"></div>
+    </div>
+  </div>
+</div>
+
+<div id="MESSAGE"></div>
+<div id="MESSAGE-push"></div>
+<div id="MESSAGE-publi"></div>
+<div id="DIALOG"></div>
+<div id="keyboard-dialog" class="{% if user.getPrefs('keyboard_infos') != '0' %}auto{% endif %}" style="display:none;" title="{% trans 'raccourci :: a propos des raccourcis claviers' %}">
+  <div>
+    <h1>{% trans 'Raccourcis claviers en cours de recherche : ' %}</h1>
+    <ul>
+      <li>{% trans 'Raccourcis:: ctrl-a : tout selectionner ' %}</li>
+      <li>{% trans 'Raccourcis:: ctrl-p : imprimer la selection ' %}</li>
+      <li>{% trans 'Raccourcis:: ctrl-e : editer la selection ' %}</li>
+      <li>{% trans 'Raccourcis::fleche gauche : page precedente ' %}</li>
+      <li>{% trans 'Raccourcis::fleche droite : page suivante ' %}</li>
+      <li>{% trans 'Raccourcis::fleche haut : scroll vertical ' %}</li>
+      <li>{% trans 'Raccourcis::fleche bas : scroll vertical ' %}</li>
+    </ul>
+  </div>
+  <div>
+    <h1>{% trans 'Raccourcis claviers de la zone des paniers : ' %}</h1>
+    <ul>
+      <li>{% trans 'Raccourcis:: ctrl-a : tout selectionner ' %}</li>
+      <li>{% trans 'Raccourcis:: ctrl-p : imprimer la selection ' %}</li>
+      <li>{% trans 'Raccourcis:: ctrl-e : editer la selection ' %}</li>
+    </ul>
+  </div>
+  <div>
+    <h1>{% trans 'Raccourcis claviers en cours de editing : ' %}</h1>
+    <ul>
+      <li>{% trans 'Raccourcis::tab/shift-tab se ballade dans les champs ' %}</li>
+    </ul>
+  </div>
+  <div>
+    <h1>{% trans 'Raccourcis claviers en cours de preview : ' %}</h1>
+    <ul>
+      <li>{% trans 'Raccourcis::fleche gauche : en avant ' %}</li>
+      <li>{% trans 'Raccourcis::fleche gauche : en arriere ' %}</li>
+      <li>{% trans 'Raccourcis::espace : arreter/demarrer le diaporama ' %}</li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      <li>{% trans 'Vous pouvez quitter la plupart des fenetres survolantes via la touche echap ' %}</li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      <li>
+        <input id="keyboard-stop" type="checkbox"/>
+        <label for="keyboard-stop">{% trans 'raccourcis :: ne plus montrer cette aide' %}</label>
+      </li>
+    </ul>
+  </div>
+</div>
+
+{{cgus_agreement|raw}}
+
+<div style="display:none;position:relative;" id="look_box" title="{% trans 'Preferences' %}" >
+  <div class="tabs">
+    <ul>
+      <li><a href="#look_box_screen">{% trans 'Affichage' %}</a></li>
+      <li><a href="#look_box_settings">{% trans 'Configuration' %}</a></li>
+    </ul>
+    <div id="look_box_screen">
+      <div class="box">
+        <div class="" style="float:left;width:49%;">
+          <h1>{% trans 'Mode de presentation' %}</h1>
+
+          {% set mod = user.getPrefs('view') %}
+          <input onchange="setPref('view',$(this).val())" name="view_type" type="radio" class="checkbox" value="thumbs" id="thumbs_view" {% if mod == 'thumbs' %}checked="checked"{% endif %}/>
+                 <label for="thumbs_view">{% trans 'reponses:: mode vignettes' %}</label>
+          <input onchange="setPref('view',$(this).val())" name="view_type" type="radio" class="checkbox" value="list" id="list_view" {% if mod == 'list' %}checked="checked"{% endif %}/>
+                 <label for="list_view">{% trans 'reponses:: mode liste' %}</label>
+        </div>
+        <div style="float:left;width:49%;">
+          <h1>{% trans 'Theme' %}</h1>
+          {% for color, file in css %}
+          <div title="{% trans 'Selecteur de theme' %}" class="colorpicker_box"
+               onclick="setCss('{{color}}')" style="width:16px;height:16px;background-color:#{{color}};">&nbsp;</div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="box">
+        {% set rollover_thumbnail = user.getPrefs('rollover_thumbnail') %}
+        <h1>{% trans 'Presentation de vignettes' %}</h1>
+        <div>
+          <input onchange="setPref('rollover_thumbnail',$(this).val())" name="rollover_thumbnail" type="radio" class="checkbox" value="caption" id="rollover_caption" {% if rollover_thumbnail == 'caption' %}checked="checked" {% endif %}/>
+                 <label for="rollover_caption">{% trans 'Iconographe (description au rollover)' %}</label>
+        </div>
+        <div>
+          <input onchange="setPref('rollover_thumbnail',$(this).val())" name="rollover_thumbnail" type="radio" class="checkbox" value="preview" id="rollover_preview" {% if rollover_thumbnail == 'preview' %}checked="checked" {% endif %}/>
+                 <label for="rollover_preview">{% trans 'Graphiste (preview au rollover)' %}</label>
+        </div>
+      </div>
+      <div class="box">
+        {% set technical_display = user.getPrefs('technical_display') %}
+        <h1>{% trans 'Informations techniques' %}</h1>
+        <div>
+          <input onchange="setPref('technical_display',$(this).val())" name="technical_display" type="radio" class="checkbox" value="1" id="technical_show" {% if technical_display == '1' %}checked="checked"{% endif %}/>
+                 <label for="technical_show">{% trans 'Afficher' %}</label>
+        </div>
+        <div>
+          <input onchange="setPref('technical_display',$(this).val())" name="technical_display" type="radio" class="checkbox" value="group" id="technical_group" {% if technical_display == 'group' %}checked="checked"{% endif %}/>
+                 <label for="technical_group">{% trans 'Afficher dans la notice' %}</label>
+        </div>
+        <div>
+          <input onchange="setPref('technical_display',$(this).val())" name="technical_display" type="radio" class="checkbox" value="0" id="technical_hide" {% if technical_display == '0' %}checked="checked"{% endif %}/>
+                 <label for="technical_hide">{% trans 'Ne pas afficher' %}</label>
+        </div>
+      </div>
+      <div class="box">
+        {% set doctype_display = user.getPrefs('doctype_display') %}
+        <h1>{% trans 'Type de documents' %}</h1>
+        <div>
+          <input onchange="setPref('doctype_display',($(this).attr('checked') ? '1' :'0'))" name="doctype_display" type="checkbox" class="checkbox" value="1" id="doctype_display_show" {% if doctype_display != '0' %}checked="checked"{% endif %}/>
+                 <label for="doctype_display_show">{% trans 'Afficher une icone' %}</label>
+        </div>
+      </div>
+      <div class="box">
+        <div class="" style="float:left;width:49%;">
+          <h1>{% trans 'reponses:: images par pages : ' %}</h1>
+          <div class="box">
+            <div id="nperpage_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
+            <input type="text" readonly style="width:35px;" value="{{user.getPrefs('images_per_page')}}" id="nperpage_value"/>
+          </div>
+        </div>
+        <div style="float:left;width:49%;">
+          <h1>{% trans 'reponses:: taille des images : ' %}</h1>
+          <div class="box">
+            <div id="sizeAns_slider" class="ui-corner-all" style="width:100px;display:inline-block;"></div>
+            <input type="hidden" value="{{user.getPrefs('images_size')}}" id="sizeAns_value"/>
+          </div>
+        </div>
+      </div>
+      <div class="box">
+        <h1>{% trans 'Couleur de selection' %}</h1>
+        <div id="backcolorpickerHolder" class="colorpickerbox">
+          <div class="submiter">{% trans 'choisir' %}</div>
+        </div>
+      </div>
+    </div>
+    <div id="look_box_settings">
+      <div class="box">
+        <div class="" style="float:left;width:100%;">
+          <h1>{% trans 'Affichage au demarrage' %}</h1>
+          {% set start_page_pref = user.getPrefs('start_page') %}
+          <div class="box" >
+            <select style="width:150px;" name="start_page" onchange="start_page_selector();">
+              <option value="LAST_QUERY" {% if start_page_pref == 'LAST_QUERY' %}selected="selected"{% endif %} >
+                      {% trans 'Ma derniere question' %}
+            </option>
+            <option value="QUERY" {% if start_page_pref == 'QUERY' %}selected="selected"{% endif %} >
+                    {% trans 'Une question personnelle' %}
+          </option>
+          <option value="PUBLI" {% if start_page_pref == 'PUBLI' %}selected="selected"{% endif %} >
+                  {% trans 'Publications' %}
+        </option>
+        <option value="HELP" {% if start_page_pref == 'HELP' %}selected="selected"{% endif %} >
+                {% trans 'Aide' %}
+      </option>
+    </select>
+    <input style="width:120px;display:{% if start_page_pref == 'QUERY' %}inline{% else %}none{% endif %}" type="text" name="start_page_value" value="{{user.getPrefs('start_page_query')}}" />
+    <input onclick="set_start_page();" type="button" value="{% trans 'boutton::valider' %}" />
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="PREVIEWBOX" class="PNB" style="overflow:hidden;">
+  <div class="PNB" style="right:180px;">
+    <div id="PREVIEWTITLE" style="height:55px;bottom:auto;" class="PNB">
+      <div class="PNB10 ui-corner-top" id='PREVIEWTITLEWRAPPER'>
+        <span id="SPANTITLE" class="PNB10"> </span>
+      </div>
+    </div>
+    <div class="PNB" style="top:55px;">
+      <div id="PREVIEWLEFT" class="preview_col PNB" style="width:60%;right:auto;overflow:hidden;">
+        <div id="PREVIEWCURRENT" class="ui-corner-bottom PNB10" style="top:0;height:116px;bottom:auto;">
+          <div id="PREVIEWCURRENTGLOB" style="">
+          </div>
+        </div>
+        <div id="PREVIEWIMGCONT" class="dblclick preview_col_cont PNB10" style="overflow:hidden;top:146px;"></div>
+      </div>
+      <div class="gui_vsplitter gui_vsplitter2" style="left:60%;">
+
+      </div>
+      <div id="PREVIEWRIGHT" class="preview_col PNB" style="top:7px;left:60%;overflow:hidden;">
+        <div id="PREVIEWIMGDESC" class="PNB10">
+          <ul class="PNB" style="height:30px;bottom:auto;">
+            <li><a href="#PREVIEWIMGDESCINNER-BOX">{% trans 'preview:: Description' %}</a></li>
+            <li><a href="#HISTORICOPS-BOX">{% trans 'preview:: Historique' %}</a></li>
+            {% if GV_google_api is not empty %}
+            <li><a href="#popularity-BOX">{% trans 'preview:: Popularite' %}</a></li>
+            {% endif %}
+          </ul>
+          <div id="PREVIEWIMGDESCINNER-BOX" class="descBoxes PNB">
+            <div id="PREVIEWIMGDESCINNER" class="PNB10">
+            </div>
+          </div>
+          <div id="HISTORICOPS-BOX" class="descBoxes PNB">
+            <div id="HISTORICOPS" class="PNB10">
+            </div>
+          </div>
+          {% if GV_google_api is not empty %}
+          <div id="popularity-BOX" class="descBoxes PNB">
+            <div id="popularity" class="PNB10">
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="PNB" style="width:180px;left:auto;">
+    <div class="PNB10 ui-corner-all" style="height:20px;">
+      <div onclick="closePreview();" style="cursor:pointer;color:#CCCCCC;font-size:14px;font-weight:bold;text-align:center;text-decoration:underline;">
+        {% trans 'boutton::fermer' %}
+      </div>
+    </div>
+    <div id="PREVIEWOTHERS" style="top:40px;" class="PNB10 ui-corner-all">
+      <div id="PREVIEWOTHERSINNER" style=""></div>
+    </div>
+  </div>
+</div>
+<div id="EDITWINDOW" style="display:none;" class="PNB">
+  <div id="idFrameE" style="position:absolute;top:10px;left:10px;right:10px;bottom:10px;">
+
+  </div>
+</div>
+
+<div id="basket_preferences" style="display:none;">
+  <div class="box">
+    <h1>{% trans 'Presentation de vignettes de panier' %}</h1>
+    <div>
+      {% set basket_status_display = user.getPrefs('basket_status_display') %}
+      <input onchange="setPref('basket_status_display',($(this).attr('checked') ? '1' :'0'))"
+             name="basket_status_display" type="checkbox" class="checkbox" value="1"
+             id="basket_status_display" {% if basket_status_display == '1' %}checked="checked"{% endif %}/>
+             <label for="basket_status_display">{% trans 'Afficher les status' %}</label>
+    </div>
+    <div>
+      {% set basket_caption_display = user.getPrefs('basket_caption_display') %}
+      <input onchange="setPref('basket_caption_display',($(this).attr('checked') ? '1' :'0'))"
+             name="basket_caption_display" type="checkbox" class="checkbox" value="1"
+             id="basket_caption_display" {% if basket_caption_display == '1' %}checked="checked"{% endif %}/>
+             <label for="basket_caption_display">{% trans 'Afficher la fiche descriptive' %}</label>
+    </div>
+    <div>
+      {% set basket_title_display = user.getPrefs('basket_title_display') %}
+      <input onchange="setPref('basket_title_display',($(this).attr('checked') ? '1' :'0'))"
+             name="basket_title_display" type="checkbox" class="checkbox" value="1"
+             id="basket_title_display" {% if basket_title_display == '1' %}checked="checked"{% endif %}/>
+             <label for="basket_title_display">{% trans 'Afficher le titre' %}</label>
+    </div>
+  </div>
+</div>
+
+<div id="dialog_publicator" title="{% trans 'action : bridge' %}" style="display:none;">
+</div>
+
+<div id="modal_feed" title="{% trans 'action : publier' %}" style="display:none;">
+</div>
+<form id="push_form" style="display:none;" method="post" target="download" action="/prod/pushdoc.php">
+  <input name="lst" value=""/>
+  <input name="ACT" value="LOAD"/>
+  <input name="SSTTID" value="LOAD"/>
+</form>
+
+<div id="dialog_dwnl" title="{% trans 'action : exporter' %}" style="display:none;"></div>
+<script type="text/javascript">
+  {% include "prod/thesaurus.js" %}
+</script>
+<script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/g=prod"></script>
+<script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
+<script type="text/javascript" src="{{registry.get('GV_STATIC_URL')}}/include/minify/f=include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    p4.reg_delete="{% if user.getPrefs("warning_on_delete_story") %}true{% else %}false{% endif %}";
+  });
+
+  function sessionactive(){
+    $.ajax({
+      type: "POST",
+      url: "/include/updses.php",
+      dataType: "json",
+      data: {
+        app : 1,
+        usr : {{session.get_usr_id()}}
+      },
+      error: function(){
+        window.setTimeout("sessionactive();", 10000);
+      },
+      timeout: function(){
+        window.setTimeout("sessionactive();", 10000);
+      },
+      success: function(data){
+        if(data)
+          manageSession(data, true);
+        var t = 120000;
+        if(data.apps && parseInt(data.apps)>1)
+          t = Math.round((Math.sqrt(parseInt(data.apps)-1) * 1.3 * 60000));
+        window.setTimeout("sessionactive();", t);
+
+        return;
+      }
+    })
+  };
+
+function setCss(color)
+{
+  $("#skinCss").attr("href","/include/minify/f=skins/prod/"+color+"/prodcolor.css");
+  $.post("prodFeedBack.php", {
+    action: "CSS",
+    color: color,
+    t: Math.random()
+  }, function(data){
+    return;
+  });
+  if ($.browser.msie && $.browser.version == "6.0")
+    $("select").hide().show();
+}
+
+{% if GV_bitly_user is not empty and GV_bitly_key is not empty %}
+$(document).ready(function(){
+$("#bitly_loader").attr("src","http{{ request.is_secure() ? 's' : '' }}://bit.ly/javascript-api.js?version=latest&login={{GV_bitly_user}}&apiKey={{GV_bitly_key}}");
+});
+{% endif %}
+</script>
+<script type="text/javascript" id="bitly_loader"></script>
+
+
+
+{% endblock %}
+

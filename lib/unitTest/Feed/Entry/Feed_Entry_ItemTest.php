@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 /**
  * Test class for Feed_Entry_Item.
@@ -35,7 +35,7 @@ class Feed_Entry_ItemTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
 

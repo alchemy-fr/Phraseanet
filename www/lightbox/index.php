@@ -1,8 +1,7 @@
 <?php
 
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-bootstrap::register_autoloads();
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$app = require dirname(__FILE__) . '/../../lib/classes/module/Lightbox.php';
+$app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Lightbox.php';
 
 $app->run();

@@ -1,0 +1,43 @@
+
+<form target="_blank" name="formprintpage" method="POST" action="/prod/printer/print.pdf">
+
+  {% if printer.get_count_actionable() > 0 %}
+    {% if printer.get_count_preview() > 0 %}
+
+      <u>{% trans 'phraseanet:: preview' %}</u><br/>
+      <input type="radio" name="lay" value="preview" id="RADI_PRE_LAB" />
+      <label for="RADI_PRE_LAB">
+        {% trans 'print:: image de choix seulement' %}
+      </label><br/>
+      <input type="radio" name="lay" value="previewCaption" id="RADI_PRE_CAP" />
+      <label for="RADI_PRE_CAP">
+        {% trans 'print:: image de choix et description' %}
+      </label><br/>
+      <input type="radio" name="lay" value="previewCaptionTdm" id="RADI_PRE_TDM" />
+      <label for="RADI_PRE_TDM">
+        {% trans 'print:: image de choix et description avec planche contact' %}
+      </label><br/>
+
+    <br /><br />
+    {% endif %}
+    {% if printer.get_count_thumbnail() > 0 %}
+
+      <u>{% trans 'print:: imagette' %}</u><br/>
+      <input type="radio" name="lay" value="thumbnailList" id="RADI_PRE_THUM" />
+      <label for="RADI_PRE_THUM">
+        {% trans 'print:: liste d\'imagettes' %}
+      </label><br/>
+      <input type="radio" name="lay" checked value="thumbnailGrid" id="RADI_PRE_THUMGRI" />
+      <label for="RADI_PRE_THUMGRI">
+        {% trans 'print:: planche contact (mosaique)' %}
+      </label><br/>
+
+    {% endif %}
+  {% elseif printer.get_count_element_received() > 0 %}
+    {% trans 'None of the selected records can be printed ' %}
+  {% else %}
+    {% trans 'export:: erreur : aucun document selectionne' %}
+  {% endif %}
+  <input type="hidden" name="lst" value="{{ printer.get_serialize_list }}" />
+  <button type="submit">{% trans 'boutton::imprimer' %}</button>
+</form>

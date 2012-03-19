@@ -61,27 +61,25 @@
 
           {% endif %}
 
-
-          <div style="text-align:center;">
-            <button class="move_validate">{% trans 'boutton::valider' %}</button>
-            <button class="move_cancel">{% trans 'boutton::annuler' %}</button>
-          </div>
         </form>
       </div>
 
     <script type="text/javascript">
-      $(document).ready(function(){
-        var form = $('#record_move_coll form');
-        $('button.move_cancel', form).bind('click', function(){
-          $('#record_move_coll').dialog('close').remove();
 
-          return false;
-        });
-        $('button.move_validate', form).bind('click', function(){
-          var coll_son = $('input[name="chg_coll_son"]:checked').length > 0 ? '1' : '0';
+      $(document).ready(function(){
+
+        $dialog = p4.Dialog.get(1);
+
+        var $form = $dialog.getDomElement();
+
+        var buttons = {};
+
+        buttons[language.valider] = function(){
+
+          var coll_son = $('input[name="chg_coll_son"]:checked', $form).length > 0 ? '1' : '0';
           var datas = {
-            lst:$('input[name="lst"]', form).val(),
-            base_id:$('select[name="base_id"]').val(),
+            lst:$('input[name="lst"]', $form).val(),
+            base_id:$('select[name="base_id"]', $form).val(),
             chg_coll_son:coll_son
           };
           $.ajax({
@@ -89,11 +87,14 @@
             url: "/prod/records/movecollection/apply/",
             data: datas,
             success: function(data){
-               $('#record_move_coll').dialog('close').remove();
+                $dialog.Close();
             }
           });
 
           return false;
-        });
+        };
+
+        $dialog.setOption('buttons', buttons);
+
       });
     </script>

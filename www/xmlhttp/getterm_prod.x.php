@@ -15,7 +15,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
 $request = http_request::getInstance();
 $parm = $request->get_parms(
                 "bid"
@@ -24,10 +26,7 @@ $parm = $request->get_parms(
                 , "debug"
 );
 
-$appbox = appbox::get_instance();
-$session = $appbox->get_session();
-$registry = $appbox->get_registry();
-$parm['lng'] = $session->get_I18n();
+$parm['lng'] = $Core->getLocale();
 
 if ($parm["debug"])
 {

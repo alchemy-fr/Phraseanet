@@ -1,28 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-  <head>
-    <title>
-    {% if error is defined %}
-      {% trans 'Fail' %}
-    {% else %}
-      {% trans 'Success' %}
-    {% endif %}
-    </title>
-  </head>
-  <body>
-    {% if error is defined %}
-      <p>
-        {% trans %}
-         Erreur : {{error}}
-        {% endtrans %}
-      </p>
-    {% else %}
-      <input type="text" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
-      <p>
-        {% set expiration_date = token.expires_in() %}
-        {% trans %}
-        Expire dans {{expiration_date}}
-        {% endtrans %}
-      </p>
-    {% endif %}
-  </body>
+    <head>
+        <meta charset="utf-8" />
+        <title>
+        {% if error is defined %}
+            {% trans 'Fail' %}
+        {% else %}
+            {% trans 'Success' %}
+        {% endif %}
+            </title>
+        <meta name="author" content="Alchemy" />
+
+        <!-- Mobile viewport optimized -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- styles -->
+        <link rel="stylesheet" type="text/css" href="/skins/html5/bootstrap/css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="/skins/html5/bootstrap/css/bootstrap-responsive.css" />
+        <link rel="stylesheet" type="text/css" href="/skins/oauth/default.css" />
+
+        <!-- All JavaScript at the bottom, except this Modernizr build.
+        Modernizr enables HTML5 elements & feature detects for optimal performance. -->
+        <script type="text/javascript" src="/skins/html5/Boilerplate/js/modernizr-2.5.2.min.js"></script>
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+        <div id="page" class="container">
+            <div id="main" class="row">
+
+                <div id="title-box" class="span6 offset3">
+                    <h1 id="namePhr">{{home_title}}</h1>
+                </div>
+
+                {% if user is not none %}
+                    {% set username = '<b>' ~ user.get_display_name() ~ '</b>' %}
+                    <div id="hello-box" class="span6 offset3">
+                        <p class="login_hello">
+                            {% trans %}
+                            Hello {{username}}
+                            {% endtrans %}
+                        </p>
+                    </div>
+                {% endif %}
+                <div id="text-box" class="span6 offset3">
+                    {% if error is defined %}
+                        <div id="top-text-box">
+                            <h4>{% trans %}Erreur{% endtrans %}</h4>
+                        </div>
+                        <div id="main-text-box">
+                            <p>
+                                {% trans %}
+                                {{error}}
+                                {% endtrans %}
+                            </p>
+                            <input type="text" class="input-xlarge" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
+                        </div>
+                    {% else %}
+                        <div id="top-text-box">
+                            <h4>{% trans %}Code d'acc&egrave;s{% endtrans %}</h4>
+                        </div>
+                        <div id="main-text-box">
+                            <p>
+                                {% trans %}
+                                Copiez le code ci-dessous, retournez dans votre application et collez-le &agrave l'endroit requis :
+                                {% endtrans %}
+                            </p>
+                            <input type="text" class="input-xlarge" name="access_token" value="{{token.access_token}}" size="{{token.access_token|length}}"/>
+                        </div>
+                    {% endif %}
+                </div>
+                <p> </p>
+
+            </div>
+        </div>
+
+        <!-- JavaScript at the bottom for fast page loading -->
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-alert.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-button.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-carousel.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-collapse.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-dropdown.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-modal.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-tooltip.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-popover.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-scrollspy.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-tab.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-transition.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap-typeahead.js"></script>
+
+    </body>
 </html>

@@ -558,7 +558,7 @@ class Session_Handler
       $browser = Browser::getInstance();
 
       if($this->is_authenticated())
-        $user = User_Adapter::getInstance ($this->get_usr_id (), appbox::get_instance ());
+        $user = User_Adapter::getInstance ($this->get_usr_id (), appbox::get_instance (\bootstrap::getCore()));
 
       return Session_Logger::create($databox, $browser, $this, $user);
     }
@@ -571,10 +571,12 @@ class Session_Handler
       return $this;
     }
 
-    $registry = $this->appbox->get_registry();
+    $Core = bootstrap::getCore();
+
+    $registry = $Core->getRegistry();
     $date_two_day = new DateTime('+' . (int) $registry->get('GV_validation_reminder') . ' days');
 
-    $events_mngr = eventsmanager_broker::getInstance($this->appbox);
+    $events_mngr = eventsmanager_broker::getInstance($this->appbox, $Core);
 
     $sql = 'SELECT v.id as validate_id, v.usr_id, v.ssel_id
               , s.usr_id as owner, t.value
@@ -708,7 +710,7 @@ class Session_Handler
       $rs[$k]['created_on'] = new DateTime($row['created_on']);
       $rs[$k]['lastaccess'] = new DateTime($row['lastaccess']);
       $rs[$k]['token'] = !!$row['token'];
-      $rs[$k]['usr_id'] = User_Adapter::getInstance($row['usr_id'], appbox::get_instance());
+      $rs[$k]['usr_id'] = User_Adapter::getInstance($row['usr_id'], appbox::get_instance(\bootstrap::getCore()));
 
       $datas = $geonames->find_geoname_from_ip($row['ip']);
 

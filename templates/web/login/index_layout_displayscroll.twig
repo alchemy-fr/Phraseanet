@@ -1,11 +1,13 @@
 <div style="height:180px;position:relative;">
         <div style="height:95px;width:220px;float:right;margin:25px 10px 0;">
                 <div style="margin-top:0px;height:20px;">
-                    {{login.get_register_link}}
-                    {{login.get_guest_link}}
+                    {{login.get_register_link|raw}}
+                    {{login.get_guest_link|raw}}
                 </div>
                 <div style="margin-top:10px;height:20px;">
-                    {{login.get_password_link}}
+                  <a target="_self" class="link" rel="external" href="/login/forgotpwd.php">
+                    {% trans 'login:: Forgot your password' %}
+                  </a>
                 </div>
                 <div style="margin-top:10px;height:25px;">
                     <div style="float:left;text-align:left;">
@@ -14,7 +16,7 @@
                     </div>
                 </div>
         </div>
-        {{captcha_system}}
+        {{captcha_system|raw}}
         <div style="height:110px;width:310px;float:right;margin:10px 20px 0 10px;">
                 <div>
           <div class="notice notice_cookie" style="display:none;">
@@ -25,7 +27,7 @@
             {% trans 'Vous etes maintenant deconnecte. A bientot.' %}
           </div>
           {% endif %}
-                    {{errorWarning}}{{confirmWarning}}
+                    {{errorWarning|raw}}{{confirmWarning|raw}}
                 </div>
                 <div style="margin-top:10px;">
                     <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur identifiant' %}</div>

@@ -34,27 +34,42 @@ class set_export extends set_abstract
    * @param int $sstid
    * @return set_export
    */
-  public function __construct($lst, $sstid)
+  public function __construct($lst, $sstid, $storyWZid = null)
   {
-    $appbox   = appbox::get_instance();
+    $Core = bootstrap::getCore();
+
+    $appbox   = appbox::get_instance($Core);
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
-
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user = $Core->getAuthenticatedUser();
 
     $download_list = array();
 
     $remain_hd = array();
 
+    if ($storyWZid)
+    {
+      $repository = $Core->getEntityManager()->getRepository('\\Entities\\StoryWZ');
+
+      $storyWZ = $repository->findByUserAndId($user, $storyWZid);
+
+      $lst = $storyWZ->getRecord()->get_serialize_key();
+    }
+
     if ($sstid != "")
     {
-      $basket = basket_adapter::getInstance($appbox, $sstid, $user->get_id());
+      $em         = $Core->getEntityManager();
+      $repository = $em->getRepository('\Entities\Basket');
 
-      foreach ($basket->get_elements() as $basket_element)
+      /* @var $repository \Repositories\BasketRepository */
+      $Basket = $repository->findUserBasket($sstid, $user, false);
+
+      foreach ($Basket->getElements() as $basket_element)
       {
-        $base_id   = $basket_element->get_record()->get_base_id();
-        $record_id = $basket_element->get_record()->get_record_id();
+        /* @var $basket_element \Entities\BasketElement */
+        $base_id   = $basket_element->getRecord()->get_base_id();
+        $record_id = $basket_element->getRecord()->get_record_id();
 
         if (!isset($remain_hd[$base_id]))
         {
@@ -70,9 +85,9 @@ class set_export extends set_abstract
 
         $current_element = $download_list[] =
           new record_exportElement(
-            $basket_element->get_record()->get_sbas_id(),
+            $basket_element->getRecord()->get_sbas_id(),
             $record_id,
-            $basket->get_name() . '/',
+            $Basket->getName() . '/',
             $remain_hd[$base_id]
         );
 
@@ -100,8 +115,6 @@ class set_export extends set_abstract
 
         if ($record->is_grouping())
         {
-          $regfield = basket_adapter::getRegFields($basrec[0], $record->get_caption());
-
           foreach ($record->get_children() as $child_basrec)
           {
             $base_id   = $child_basrec->get_base_id();
@@ -124,7 +137,7 @@ class set_export extends set_abstract
               new record_exportElement(
                 $child_basrec->get_sbas_id(),
                 $record_id,
-                $regfield['regname'] . '_' . $n . '/',
+                $record->get_title() . '_' . $n . '/',
                 $remain_hd[$base_id]
             );
 
@@ -411,7 +424,7 @@ class set_export extends set_abstract
     {
       throw new Exception('No subdefs given');
     }
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -756,8 +769,9 @@ class set_export extends set_abstract
       return false;
     }
     if (isset($list['complete']) && $list['complete'] === true)
+    {
       return;
-
+    }
 
     $files = $list['files'];
 
@@ -850,7 +864,7 @@ class set_export extends set_abstract
     $sbas_id = phrasea::sbasFromBas($bas);
     $record  = new record_adapter($sbas_id, $rec);
     $desc    = $record->get_xml();
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $databox = databox::get_instance($sbas_id);
@@ -892,16 +906,28 @@ class set_export extends set_abstract
           case 'yaml':
           case 'yml':
 
-            $vi = $field->get_value();
-            if (ctype_digit($vi))
-              $vi = (int) $vi;
+            $vi = $field->get_values();
 
-            $buffer[$field->get_name()] = $vi;
+            if ($field->is_multi())
+            {
+              $buffer[$field->get_name()] = array();
+              foreach ($vi as $value)
+              {
+                $val                          = $value->getValue();
+                $buffer[$field->get_name()][] = ctype_digit($val) ? (int) $val : $val;
+              }
+            }
+            else
+            {
+              $value                      = array_pop($vi);
+              $val                        = $value->getValue();
+              $buffer[$field->get_name()] = ctype_digit($val) ? (int) $val : $val;
+            }
             break;
           case 'xml':
           default:
             $dom_el                     = $dom->createElement($field->get_name());
-            $dom_el->appendChild($dom->createTextNode($field->get_value(true)));
+            $dom_el->appendChild($dom->createTextNode($field->get_serialized_values()));
             $dom_desc->appendChild($dom_el);
             break;
         }
@@ -939,7 +965,7 @@ class set_export extends set_abstract
   public static function stream_file(
   $file, $exportname, $mime, $disposition = 'attachment')
   {
-    require_once dirname(__FILE__) . "/../../../lib/vendor/Silex/autoload.php";
+    require_once __DIR__ . "/../../../lib/vendor/Silex/autoload.php";
     $registry = registry::get_instance();
 
     $disposition = in_array($disposition, array('inline', 'attachment')) ?
@@ -960,9 +986,9 @@ class set_export extends set_abstract
       {
         $file_xaccel = str_replace(
           array(
-          $registry->get('GV_X_Accel_Redirect'),
-          $registry->get('GV_RootPath') . 'tmp/download/',
-          $registry->get('GV_RootPath') . 'tmp/lazaret/'
+            $registry->get('GV_X_Accel_Redirect'),
+            $registry->get('GV_RootPath') . 'tmp/download/',
+            $registry->get('GV_RootPath') . 'tmp/lazaret/'
           )
           , array(
           '/' . $registry->get('GV_X_Accel_Redirect_mount_point') . '/',
@@ -1048,7 +1074,7 @@ class set_export extends set_abstract
   public static function log_download(Array $list, $type, $anonymous = false, $comment = '')
   {
     //download
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user    = false;
     if ($anonymous)
@@ -1057,7 +1083,7 @@ class set_export extends set_abstract
     }
     else
     {
-      $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance());
+      $user = User_Adapter::getInstance($session->get_usr_id(), appbox::get_instance(\bootstrap::getCore()));
     }
 
     $tmplog = array();

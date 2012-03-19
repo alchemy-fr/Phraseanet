@@ -1,0 +1,56 @@
+<div>
+  <form action="/prod/baskets/{{ basket.getId() }}/update/" method="POST">
+    <div>
+      <label>{% trans 'panier:: nom' %}</label>
+    </div>
+    <div>
+      <input style="width:100%;margin:10px 0;" type="text" name="name" value="{{ basket.getName() }}"/>
+    </div>
+    <div>
+      <label>{% trans 'panier:: description' %}</label>
+    </div>
+    <div>
+      <textarea style="width:100%;height:120px;" name="description">{{ basket.getDescription() }}</textarea>
+    </div>
+    <div>
+      <button>{% trans 'boutton::valider' %}</button>
+    </div>
+  </form>
+  <script type="text/javascript">
+    $(document).ready(function(){
+
+      $('#DIALOG form').bind('submit', function(event){
+
+        //$this.SetLoader(true);
+
+        var $form = $(this);
+
+        $.ajax({
+          type: $form.attr('method'),
+          url: $form.attr('action'),
+          dataType: 'json',
+          data: $form.serializeArray(),
+          beforeSend:function(){
+
+          },
+          success: function(data){
+
+            return p4.WorkZone.refresh(data.basket.id);
+            $('#DIALOG').dialog('close').empty();
+
+            return;
+          },
+          error: function(){
+
+          },
+          timeout: function(){
+
+          }
+        });
+
+        return false;
+      });
+
+    });
+  </script>
+</div>

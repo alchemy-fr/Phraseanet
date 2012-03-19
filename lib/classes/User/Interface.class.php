@@ -147,8 +147,6 @@ interface User_Interface
 
   public static function avLanguages();
 
-  public static function detectLanguage(registryInterface $registry, $setLng = null);
-
   public function setPrefs($prop, $value);
 
   public function getPrefs($prop);

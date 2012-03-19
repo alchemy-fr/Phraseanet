@@ -15,9 +15,12 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance();
+$em = $Core->getEntityManager();
+
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $session->close_storage();
 $ret = array('status' => 'unknown', 'message' => false);
@@ -40,6 +43,8 @@ else
   die(p4string::jsonencode($ret));
 }
 
+$user = $Core->getAuthenticatedUser();
+
 try
 {
   $conn = $appbox->get_connection();
@@ -56,20 +61,26 @@ $session->set_event_module($parm['app'], true);
 $ret['status'] = 'ok';
 $ret['notifications'] = false;
 
-$evt_mngr = eventsmanager_broker::getInstance($appbox);
+$evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
 $notif = $evt_mngr->get_notifications();
 
 $browser = Browser::getInstance();
 
-$twig = new supertwig();
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
 $ret['notifications'] = $twig->render('prod/notifications.twig', array('notifications' => $notif));
 
 $ret['changed'] = array();
 
-$baskets = basketCollection::get_updated_baskets();
+$repository = $em->getRepository('\Entities\Basket');
+
+/* @var $repository \Repositories\BasketRepository */
+$baskets = $repository->findUnreadActiveByUser($user);
+
 foreach ($baskets as $basket)
 {
-  $ret['changed'][] = $basket->get_ssel_id();
+  $ret['changed'][] = $basket->getId();
 }
 
 

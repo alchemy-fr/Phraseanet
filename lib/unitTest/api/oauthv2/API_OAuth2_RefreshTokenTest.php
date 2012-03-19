@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_RefreshTokenTest extends PhraseanetPHPUnitAbstract
 {
@@ -16,7 +16,7 @@ class API_OAuth2_RefreshTokenTest extends PhraseanetPHPUnitAbstract
 
   public function setUp()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
     $this->account = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
 

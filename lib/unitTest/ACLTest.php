@@ -1,7 +1,7 @@
 <?php
 
 //require_once 'PHPUnit/Framework.php';
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 /**
  * Test class for ACL.
@@ -29,7 +29,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $usr_id = User_Adapter::get_usr_id_from_login('test_phpunit2');
     try
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
       $template = User_Adapter::getInstance($usr_id, $appbox);
       $template->delete();
     }
@@ -40,7 +40,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $usr_id = User_Adapter::get_usr_id_from_login('test_phpunit3');
     try
     {
-      $appbox = appbox::get_instance();
+      $appbox = appbox::get_instance(\bootstrap::getCore());
       $cobaye = User_Adapter::getInstance($usr_id, $appbox);
       $cobaye->delete();
     }
@@ -53,7 +53,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testApply_model()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $template = User_Adapter::create($appbox, 'test_phpunit2', 'blabla2', 'test2@example.com', false);
     $template->set_template(self::$user);
 
@@ -85,7 +85,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testRevoke_access_from_bases()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $base_ids = array();
     foreach ($appbox->get_databoxes() as $databox)
@@ -110,7 +110,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGive_access_to_base()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -126,7 +126,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGive_access_to_sbas()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -147,7 +147,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testRevoke_unused_sbas_rights()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     foreach ($appbox->get_databoxes() as $databox)
     {
       $sbas_id = $databox->get_sbas_id();
@@ -172,7 +172,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testSet_quotas_on_base()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
@@ -195,7 +195,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testDuplicate_right_from_bas()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $first = true;
     $base_ref = null;
@@ -238,7 +238,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testHas_right_on_base()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $rights_false = array(
         'imgtools' => false
@@ -287,7 +287,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testRemaining_download()
   {
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
@@ -310,7 +310,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testRemove_remaining()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
@@ -339,7 +339,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testHas_right()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
 
     $rights = array(
@@ -363,7 +363,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testHas_right_on_sbas()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $rights_false = array(
         'bas_modify_struct' => false
@@ -403,7 +403,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_mask_and()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
@@ -427,7 +427,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_mask_xor()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
@@ -451,7 +451,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testHas_access_to_base()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $base_ids = array();
     $n = 0;
     foreach ($appbox->get_databoxes() as $databox)
@@ -512,7 +512,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testGet_granted_base()
   {
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $base_ids = array();
     $n = 0;
     foreach ($appbox->get_databoxes() as $databox)
@@ -551,7 +551,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_granted_sbas()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $sbas_ids = array();
     $n = 0;
     foreach ($appbox->get_databoxes() as $databox)
@@ -583,7 +583,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testHas_access_to_module()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     foreach ($appbox->get_databoxes() as $databox)
     {
@@ -654,7 +654,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testis_limited()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $found = false;
 
@@ -703,7 +703,7 @@ class ACLTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testget_limits()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $found = false;
 

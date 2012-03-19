@@ -14,25 +14,22 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$appbox   = appbox::get_instance();
-$session  = $appbox->get_session();
-$registry = $appbox->get_registry();
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance(\bootstrap::getCore());
+$session = $appbox->get_session();
 phrasea::headers();
 
 $request = http_request::getInstance();
 $parm    = $request->get_parms("act", "sbas_id", "record_id", "cchd", "ccfilename");
 
-$user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+$user = $Core->getAuthenticatedUser();
 
-$sbas_id = $parm["sbas_id"];
-
-$pathhd  = null;
-$baseurl = null;
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.12/css/dark-hive/jquery-ui-1.8.12.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/dark-hive/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
   </head>
   <body onload="parent.hideDwnl();">
 

@@ -23,11 +23,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 
-require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
+$Core = require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+
+$result_code = 1;
 
 try
 {
-  bootstrap::register_autoloads();
+  \bootstrap::register_autoloads();
 
   $app = new Application("
   _____  _    _ _____            _____ ______          _   _ ______ _______
@@ -45,7 +47,8 @@ try
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-                  . ' KONSOLE KOMMANDER', GV_version . ' ' . GV_version_name);
+                  . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName()
+                  . ' ' . \Alchemy\Phrasea\Core\Version::getNumber());
 
   $app->add(new module_console_aboutAuthors('about:authors'));
   $app->add(new module_console_aboutLicense('about:license'));
@@ -57,7 +60,6 @@ try
   $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
   $app->add(new module_console_systemMailCheck('system:mailCheck'));
-  $app->add(new module_console_systemConfigCheck('system:configCheck'));
   $app->add(new module_console_systemBackupDB('system:backupDB'));
   $app->add(new module_console_systemClearCache('system:clearCache'));
   $app->add(new module_console_systemTemplateGenerator('system:templateGenerator'));
@@ -68,15 +70,22 @@ try
   $app->add(new module_console_schedulerState('scheduler:state'));
   $app->add(new module_console_schedulerStop('scheduler:stop'));
   $app->add(new module_console_schedulerStart('scheduler:start'));
+  $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
+  $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
+  $app->add(new module_console_systemConfigCheck('check:system'));
+
 
   $app->add(new module_console_fieldsList('fields:list'));
   $app->add(new module_console_fieldsDelete('fields:delete'));
   $app->add(new module_console_fieldsRename('fields:rename'));
   $app->add(new module_console_fieldsMerge('fields:merge'));
 
-  $app->run();
+
+  $result_code = $app->run();
 }
 catch (Exception $e)
 {
   echo "an error occured";var_dump($e->getMessage());
 }
+
+exit($result_code);

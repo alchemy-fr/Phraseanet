@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for databox_field.
@@ -25,8 +25,13 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
   public function setUp()
   {
     $this->databox = self::$record_1->get_databox();
-    $this->name = 'Field test';
-    $this->object = databox_field::create($this->databox, $this->name);
+    $this->name = 'Field Test';
+
+    $this->object = $this->databox->get_meta_structure()->get_element_by_name($this->name);
+
+    if(!$this->object instanceof databox_field)
+      $this->object = databox_field::create($this->databox, $this->name);
+
     $this->id = $this->object->get_id();
   }
 
@@ -288,72 +293,6 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
    * @todo Implement testSet_thumbtitle().
    */
   public function testSet_thumbtitle()
-  {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
-  }
-
-  /**
-   * @todo Implement testSet_regdate().
-   */
-  public function testSet_regdate()
-  {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
-  }
-
-  /**
-   * @todo Implement testSet_regdesc().
-   */
-  public function testSet_regdesc()
-  {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
-  }
-
-  /**
-   * @todo Implement testSet_regname().
-   */
-  public function testSet_regname()
-  {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
-  }
-
-  /**
-   * @todo Implement testIs_regname().
-   */
-  public function testIs_regname()
-  {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
-  }
-
-  /**
-   * @todo Implement testIs_regdesc().
-   */
-  public function testIs_regdesc()
-  {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
-  }
-
-  /**
-   * @todo Implement testIs_regdate().
-   */
-  public function testIs_regdate()
   {
     // Remove the following lines when you implement this test.
     $this->markTestIncomplete(

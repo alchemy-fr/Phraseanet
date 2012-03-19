@@ -10,13 +10,6 @@
 </div>
 <hr/>
 <div>
-{% if field.get_type() == 'datetime' %}
-  {% trans 'phraseanet::technique::datetime-edit-explain' %}<br/>
-{% elseif field.get_type() == 'date' %}
-  {% trans 'phraseanet::technique::date-edit-explain (aaaa/mm/jj)' %}<br/>
-{% elseif field.get_type() == 'time' %}
-  {% trans 'phraseanet::technique::time-edit-explain (hh:mm:ss)' %}<br/>
-{% endif %}
 
 {% if field.get_source().minLength() > 0 %}
   {% set minLength = field.get_source().minLength() %}

@@ -308,7 +308,7 @@ class task_period_workflow01 extends task_databoxAbstract
 
   public function printInterfaceHTML()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
     ob_start();
@@ -475,7 +475,7 @@ class task_period_workflow01 extends task_databoxAbstract
   {
     $request = http_request::getInstance();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 

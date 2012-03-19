@@ -14,9 +14,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers();
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 $registry = $appbox->get_registry();
 require($registry->get('GV_RootPath') . "lib/vendor/PHPShortener/phpshortener.class.php");
 $session = Session_Handler::getInstance($appbox);
@@ -24,17 +26,16 @@ $session = Session_Handler::getInstance($appbox);
 $request = http_request::getInstance();
 $parm = $request->get_parms("bas", "rec");
 
-$usr_id = $session->get_usr_id();
-$user = User_Adapter::getInstance($usr_id, $appbox);
+$user = $Core->getAuthenticatedUser();
 
 $right = false;
 ?>
 
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/prod/<?php echo $user->getPrefs('css') ?>/prodcolor.css" />
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
 
     <script language="javascript">
 

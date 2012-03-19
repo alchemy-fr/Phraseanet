@@ -226,7 +226,7 @@ class task_period_archive extends task_abstract
    */
   public function printInterfaceHTML()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     ob_start();
     ?>
@@ -481,10 +481,7 @@ class task_period_archive extends task_abstract
                 $duration = time() - $duration;
                 if ($duration < ($period + $cold))
                 {
-                  $conn->close();
                   sleep(($period + $cold) - $duration);
-                  unset($conn);
-                  $conn = connection::getPDOConnection();
                 }
                 break;
               case 'MAXRECSDONE':
@@ -832,12 +829,14 @@ class task_period_archive extends task_abstract
         {
           $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
           if($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+
             return;
           elseif($magicmethod == 'UNLOCK' && !file_exists($path . '/' . $magicfile))
+
             return;
         }
       }
-      
+
       while(($file = $listFolder->read()) !== NULL)
       {
         if ($this->isIgnoredFile($file))

@@ -45,30 +45,45 @@ class module_console_taskrun extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    if(!setup::is_installed())
+    if (!setup::is_installed())
     {
-      throw new RuntimeException('Phraseanet is not set up');
+      $output->writeln('Phraseanet is not set up');
+
+      return 1;
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $task_id = (int) $input->getArgument('task_id');
 
     if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id')))
-      throw new \RuntimeException('Argument must be an Id.');
+    {
+      $output->writeln('Argument must be an Id.');
 
-    $appbox = appbox::get_instance();
-    $task_manager = new task_manager($appbox);
-    $task = $task_manager->get_task($task_id);
+      return 1;
+    }
 
-    $runner = task_abstract::RUNNER_SCHEDULER;
-    if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL)
-      $runner = task_abstract::RUNNER_MANUAL;
+    try
+    {
+      $appbox = appbox::get_instance(\bootstrap::getCore());
+      $task_manager = new task_manager($appbox);
+      $task = $task_manager->get_task($task_id);
 
-    $task->run($runner);
+      $runner = task_abstract::RUNNER_SCHEDULER;
 
-    return $this;
+      if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL)
+      {
+        $runner = task_abstract::RUNNER_MANUAL;
+      }
+
+      $task->run($runner);
+
+      return 0;
+    }
+    catch (\exception $e)
+    {
+      return 1;
+    }
   }
-
 
 }

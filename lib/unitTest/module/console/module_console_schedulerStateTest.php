@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Symfony\Component\Console\Tester\CommandTester;
 use \Symfony\Component\Console\Application;
@@ -21,7 +21,7 @@ class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase
     $commandTester = new CommandTester($command);
     $commandTester->execute(array('command' => $command->getName()));
 
-    $task_manager = new task_manager(appbox::get_instance());
+    $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
     $state = $task_manager->get_scheduler_state();
 
     $sentence = sprintf('Scheduler is %s', $state['schedstatus']);

@@ -42,15 +42,17 @@ class module_console_systemConfigCheck extends Command
       $output->writeln('<error>YOU MUST ENABLE GETTEXT SUPPORT TO USE PHRASEANET</error>');
       $output->writeln('Canceled');
 
-      return;
+      return 1;
     }
+
+     $ok = true;
 
     if (setup::is_installed())
     {
       $registry = registry::get_instance();
 
       $output->writeln(_('*** CHECK BINARY CONFIGURATION ***'));
-      $this->processConstraints(setup::check_binaries($registry), $output);
+      $ok = $this->processConstraints(setup::check_binaries($registry), $output) && $ok;
       $output->writeln("");
     }
     else
@@ -58,51 +60,67 @@ class module_console_systemConfigCheck extends Command
       $registry = new Setup_Registry();
     }
 
+
+
     $output->writeln(_('*** FILESYSTEM CONFIGURATION ***'));
-    $this->processConstraints(setup::check_writability($registry), $output);
+    $ok = $this->processConstraints(setup::check_writability($registry), $output) && $ok;
     $output->writeln("");
     $output->writeln(_('*** CHECK CACHE OPCODE ***'));
-    $this->processConstraints(setup::check_cache_opcode(), $output);
+    $ok = $this->processConstraints(setup::check_cache_opcode(), $output) && $ok;
     $output->writeln("");
     $output->writeln(_('*** CHECK CACHE SERVER ***'));
-    $this->processConstraints(setup::check_cache_server(), $output);
+    $ok = $this->processConstraints(setup::check_cache_server(), $output) && $ok;
     $output->writeln("");
     $output->writeln(_('*** CHECK PHP CONFIGURATION ***'));
-    $this->processConstraints(setup::check_php_configuration(), $output);
+    $ok = $this->processConstraints(setup::check_php_configuration(), $output) && $ok;
     $output->writeln("");
     $output->writeln(_('*** CHECK PHP EXTENSIONS ***'));
-    $this->processConstraints(setup::check_php_extension(), $output);
+    $ok = $this->processConstraints(setup::check_php_extension(), $output) && $ok;
     $output->writeln("");
     $output->writeln(_('*** CHECK PHRASEA ***'));
-    $this->processConstraints(setup::check_phrasea(), $output);
+    $ok = $this->processConstraints(setup::check_phrasea(), $output) && $ok;
     $output->writeln("");
     $output->writeln(_('*** CHECK SYSTEM LOCALES ***'));
-    $this->processConstraints(setup::check_system_locales(), $output);
+    $ok = $this->processConstraints(setup::check_system_locales(), $output) && $ok;
     $output->writeln("");
 
     $output->write('Finished !', true);
 
-    return;
+    return (int)!$ok;
   }
 
   protected function processConstraints(Setup_ConstraintsIterator $constraints, OutputInterface &$output)
   {
+    $hasError = false;
     foreach ($constraints as $constraint)
     {
-      $this->processConstraint($constraint, $output);
+      if (!$hasError && !$this->processConstraint($constraint, $output))
+      {
+        $hasError = true;
+      }
     }
+
+    return !$hasError;
   }
 
   protected function processConstraint(Setup_Constraint $constraint, OutputInterface &$output)
   {
+    $ok = true;
     if ($constraint->is_ok())
+    {
       $output->writeln("\t\t<info>" . $constraint->get_message() . '</info>');
+    }
     elseif ($constraint->is_blocker())
+    {
       $output->writeln("\t!!!\t<error>" . $constraint->get_message() . '</error>');
+      $ok = false;
+    }
     else
+    {
       $output->writeln("\t/!\\\t<comment>" . $constraint->get_message() . '</comment>');
+    }
 
-    return;
+    return $ok;
   }
 
 }

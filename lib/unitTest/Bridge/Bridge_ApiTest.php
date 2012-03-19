@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
-require_once dirname(__FILE__) . '/Bridge_datas.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/Bridge_datas.inc';
 
 /**
  * Test class for Bridge_Api.
@@ -20,7 +20,7 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function setUp()
   {
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $sql = 'DELETE FROM bridge_apis WHERE name = "Apitest"';
     $stmt = $appbox->get_connection()->prepare($sql);
@@ -36,7 +36,7 @@ class Bridge_ApiTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function tearDown()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $this->object->delete();
 

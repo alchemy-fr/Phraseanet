@@ -41,7 +41,7 @@ class API_OAuth2_Autoloader
    */
   static public function autoload($class)
   {
-    if (file_exists($file = dirname(__FILE__) . '/../../../vendor/oauth2/lib/' . str_replace(array('_', "\0"), array('/', ''), $class) . '.inc'))
+    if (file_exists($file = __DIR__ . '/../../../vendor/oauth2/lib/' . str_replace(array('_', "\0"), array('/', ''), $class) . '.inc'))
     {
       require $file;
     }

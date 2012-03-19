@@ -47,7 +47,7 @@
         <label lang="fr">Prévisualisation</label>
         <label lang="en">Preview</label>
       </subdef>
-      <subdef class="thumbnail" name="thumbnailGIF" downloadable="true">
+      <subdef class="thumbnail" name="thumbnailgif" downloadable="true">
         <path>{{datapathweb}}{{basename}}/subdefs</path>
         <size>200</size>
         <mediatype>gif</mediatype>
@@ -149,7 +149,7 @@
     <SpecialInstruct src="/rdf:RDF/rdf:Description/IPTC:SpecialInstructions"/>
 
         <!-- 2:55 -->
-    <Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" regdate="1" />
+    <Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" />
 
         <!-- 2:80 -->
     <Byline src="/rdf:RDF/rdf:Description/IPTC:By-line"/>
@@ -170,7 +170,7 @@
     <OriginalRef src="/rdf:RDF/rdf:Description/IPTC:OriginalTransmissionReference" />
 
         <!-- 2:105 -->
-    <Headline src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" regname="1" />
+    <Headline src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" />
 
         <!-- 2:110 -->
     <Credit src="/rdf:RDF/rdf:Description/IPTC:Credit" report="1" />
@@ -179,7 +179,7 @@
     <Source src="/rdf:RDF/rdf:Description/IPTC:Source" />
 
         <!-- 2:120 -->
-    <Caption src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" regdesc="1" />
+    <Caption src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" />
 
         <!-- 2:122 -->
     <CaptionWriter src="/rdf:RDF/rdf:Description/IPTC:Writer-Editor" />

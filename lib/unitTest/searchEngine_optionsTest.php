@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 /**
  * Test class for searchEngine_options.

@@ -17,7 +17,7 @@
  */
 function giveMeBases($usr=null)
 {
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
   $conn = $appbox->get_connection();
 
   $inscriptions = null;
@@ -197,7 +197,7 @@ function giveMeBaseUsr($usr, $lng)
 {
 
   $noDemand = true;
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
 
   $out = '<table border="0" style="table-layout:fixed;font-size:11px;" cellspacing=0 width="100%">' .
           '<tr>' .
@@ -209,7 +209,7 @@ function giveMeBaseUsr($usr, $lng)
   $inscriptions = giveMeBases($usr);
   foreach ($inscriptions as $sbasId => $baseInsc)
   {
-    //je pr�sente la base
+    //je presente la base
     if (($baseInsc['CollsRegistered'] || $baseInsc['CollsRefuse'] || $baseInsc['CollsWait'] || $baseInsc['CollsIntime'] || $baseInsc['CollsOuttime'] || $baseInsc['CollsNonactif'] || $baseInsc['CollsCGU'] || $baseInsc['Colls']))//&& $baseInsc['inscript'])
       $out .= '<tr><td colspan="3" style="text-align:center;"><h3>' . phrasea::sbas_names ($sbasId) . '</h3></td></tr>';
 
@@ -239,10 +239,10 @@ function giveMeBaseUsr($usr, $lng)
     }
     if ($baseInsc['CollsWait'])
     {
-        $base_id = phrasea::baseFromColl($sbasId, $collId);
       foreach ($baseInsc['CollsWait'] as $collId => $isTrue)
       {
-        $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:orange;">' . _('login::register: en attente d\'acces sur') . phrasea::bas_names($base_id) . '</span>';
+        $base_id = phrasea::baseFromColl($sbasId, $collId);
+        $out .= '<tr><td colspan="3" style="text-align:center;"><span style="color:orange;">' . _('login::register: en attente d\'acces sur') .' '. phrasea::bas_names($base_id) . '</span>';
         if (trim($isTrue) != '')
           $out .= ' <a class="inscriptlink" href="/include/cguUtils.php?action=PRINT&bas=' . $sbasId . '&col=' . $collId . '">' . _('login::register::CGU: lire les CGU') . '</a>';
         $out .= '</td></tr>';
@@ -344,7 +344,7 @@ function giveMeBaseUsr($usr, $lng)
 
 function giveModInscript($usr, $lng)
 {
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
   $session = $appbox->get_session();
   $out = '<html lang="' . $session->get_I18n() . '">' .
           '<head>' .
@@ -383,7 +383,7 @@ function giveModInscript($usr, $lng)
 
 function giveInscript($lng, $demandes=null)
 {
-  $appbox = appbox::get_instance();
+  $appbox = appbox::get_instance(\bootstrap::getCore());
 
   $out = '<table  border="0" style="table-layout:fixed" cellspacing=0 width="590">' .
           '<tr>' .

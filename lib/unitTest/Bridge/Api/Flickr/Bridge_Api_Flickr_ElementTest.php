@@ -1,7 +1,7 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
-require_once dirname(__FILE__) . '/../../Bridge_datas.inc';
+require_once __DIR__ . '/../../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../Bridge_datas.inc';
 
 /**
  * Test class for Bridge_Api_Flickr_Element.
@@ -119,14 +119,14 @@ class Bridge_Api_Flickr_ElementTest extends PHPUnit_Framework_TestCase
 
   public function testGet_category()
   {
-    $this->assertNull($this->object_list->get_category());
-    $this->assertNull($this->object_alone->get_category());
+    $this->assertEmpty($this->object_list->get_category());
+    $this->assertEmpty($this->object_alone->get_category());
   }
 
   public function testGet_duration()
   {
-    $this->assertNull($this->object_list->get_duration());
-    $this->assertNull($this->object_alone->get_duration());
+    $this->assertEmpty($this->object_list->get_duration());
+    $this->assertEmpty($this->object_alone->get_duration());
   }
 
   public function testGet_view_count()

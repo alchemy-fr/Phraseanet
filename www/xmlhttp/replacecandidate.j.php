@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 $registry = registry::get_instance();
 
 $request = http_request::getInstance();
@@ -242,10 +242,7 @@ function simplified($t)
   return(array('a' => $sa, 'u' => $su));
 }
 
-if ($parm['debug'])
-  var_dump($result);
-else
-  print(p4string::jsonencode(array('parm' => $parm, 'result' => $result)));
+print(p4string::jsonencode(array('parm' => $parm, 'result' => $result)));
 
 if ($parm['debug'])
   print("</pre>");

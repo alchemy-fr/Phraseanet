@@ -20,9 +20,10 @@ class registry implements registryInterface
 
   /**
    *
-   * @var cache_opcode_adapter
+   * @var \Alchemy\Phrasea\Cache\Cache
    */
   protected $cache;
+
   /**
    *
    * @var registry
@@ -41,27 +42,32 @@ class registry implements registryInterface
    */
   public static function get_instance()
   {
-    $prefix = crc32(dirname(__FILE__));
     if (!self::$_instance instanceof self)
-      self::$_instance = new self(new cache_opcode_adapter($prefix));
+    {
+      self::$_instance = new self();
+    }
 
     return self::$_instance;
   }
 
   /**
    *
-   * @param cache_opcode_interface $cache
+   * @param \Alchemy\Phrasea\Cache\Cache $cache
    * @return registry
    */
-  protected function __construct(cache_opcode_interface $cache)
+  protected function __construct()
   {
-    $this->cache = $cache;
+    $this->cache = new Alchemy\Phrasea\Cache\ArrayCache();
 
-    require dirname(__FILE__) . '/../../config/config.inc';
-    $this->cache->set('GV_RootPath', dirname(dirname(dirname(__FILE__))) . '/');
-    $this->cache->set('GV_ServerName', p4string::addEndSlash($servername));
-    $this->cache->set('GV_debug', !!$debug);
-    $this->cache->set('GV_maintenance', !!$maintenance);
+    $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+
+    $this->cache->save('GV_RootPath', dirname(dirname(__DIR__)) . '/');
+    if ($configuration->isInstalled())
+    {
+      $this->cache->save('GV_ServerName', $configuration->getPhraseanet()->get('servername'));
+      $this->cache->save('GV_debug', $configuration->isDebug());
+      $this->cache->save('GV_maintenance', $configuration->isMaintained());
+    }
 
     return $this;
   }
@@ -72,7 +78,7 @@ class registry implements registryInterface
    */
   protected function load()
   {
-    if ($this->cache->get('registry_loaded') !== true)
+    if ($this->cache->fetch('registry_loaded') !== true)
     {
       $rs = array();
       $loaded = false;
@@ -110,10 +116,10 @@ class registry implements registryInterface
             break;
         }
 
-        $this->cache->set($row['key'], $value);
+        $this->cache->save($row['key'], $value);
       }
       if ($loaded === true)
-        $this->cache->set('registry_loaded', true);
+        $this->cache->save('registry_loaded', true);
     }
 
 
@@ -127,15 +133,15 @@ class registry implements registryInterface
    */
   public function get($key, $defaultvalue = null)
   {
-    if (!$this->cache->is_set($key))
+    if (!$this->cache->contains($key))
       $this->load();
 
-    if(!$this->cache->is_set($key) && !is_null($defaultvalue))
+    if (!$this->cache->contains($key) && !is_null($defaultvalue))
 
       return $defaultvalue;
     else
 
-      return $this->cache->get($key);
+      return $this->cache->fetch($key);
   }
 
   /**
@@ -144,17 +150,9 @@ class registry implements registryInterface
    * @param mixed $value
    * @return registry
    */
-  public function set($key, $value, $type = 'string')
+  public function set($key, $value, $type)
   {
     $this->load();
-    $delete_cache = false;
-    if ($key === 'GV_cache_server_type')
-    {
-      $current_cache = $this->get('GV_cache_server_type');
-      if ($current_cache !== $value)
-        $delete_cache = true;
-    }
-
 
     switch ($type)
     {
@@ -186,13 +184,7 @@ class registry implements registryInterface
     $stmt->execute(array(':key' => $key, ':value' => $sql_value, ':type' => $type));
     $stmt->closeCursor();
 
-    $this->cache->set($key, $value);
-
-    if ($delete_cache === true)
-    {
-      $cache = cache_adapter::get_instance($this);
-      $cache->flush();
-    }
+    $this->cache->save($key, $value);
 
     return $this;
   }
@@ -206,7 +198,7 @@ class registry implements registryInterface
   {
     $this->load();
 
-    return $this->cache->is_set($key);
+    return $this->cache->contains($key);
   }
 
   /**
@@ -224,7 +216,7 @@ class registry implements registryInterface
     $stmt->execute(array(':key' => $key));
     $stmt->closeCursor();
 
-    $this->cache->un_set($key);
+    $this->cache->delete($key);
 
     return $this;
   }

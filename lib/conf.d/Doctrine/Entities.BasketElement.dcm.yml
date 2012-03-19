@@ -1,0 +1,45 @@
+Entities\BasketElement:
+  type: entity
+  repositoryClass: Repositories\BasketElementRepository
+  table: BasketElements
+  uniqueConstraints:
+    unique_recordcle:
+      columns: basket_id,sbas_id,record_id
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+
+  fields:
+    record_id:
+      type: integer
+    sbas_id:
+      type: integer
+    ord:
+      type: integer
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  manyToOne:
+    basket:
+      targetEntity: Basket
+      inversedBy: elements
+      joinColumn:
+        name: basket_id
+        referencedColumnName: id
+      cascade: ["persist"]
+  oneToMany:
+    validation_datas:
+      targetEntity: ValidationData
+      mappedBy: basket_element
+      cascade: ["ALL"]
+  lifecycleCallbacks:
+    prePersist: [ setLastInBasket ]

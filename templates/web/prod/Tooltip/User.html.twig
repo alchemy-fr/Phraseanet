@@ -1,0 +1,14 @@
+<div class="UserTooltip" style="position:relative;width:300px;height:100px;">
+  <div class="PNB" style="width:100px;right:auto;">
+    <img style="margin:14px 8px;" src="/skins/icons/user.png"/>
+  </div>
+  <div class="PNB" style="left:100px;">
+    <h1> {{ user.get_display_name() }}</h1>
+    <ul>
+      <li>{{ user.get_email() }}</li>
+      <li>{{ user.get_company() }}</li>
+      <li>{{ user.get_job() }}</li>
+      <li>{{ user.get_position() }}</li>
+    </ul>
+  </div>
+</div>

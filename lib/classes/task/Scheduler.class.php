@@ -47,21 +47,14 @@ class task_Scheduler
 
   protected static function get_connection()
   {
-    require dirname(__FILE__) . '/../../../config/connexion.inc';
-
-    if (!self::$connection)
-    {
-      self::$connection = new connection_pdo ('appbox', $hostname, $port, $user, $password, $dbname);
-    }
-
-    return self::$connection;
+    return \connection::getPDOConnection();
   }
 
   public function run(OutputInterface $output = null, $log_tasks = true)
   {
-    require_once dirname(__FILE__) . '/../../bootstrap.php';
+    require_once __DIR__ . '/../../bootstrap.php';
     $this->output = $output;
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $registry = $appbox->get_registry();
 
     $system = system_server::get_platform();
@@ -525,19 +518,7 @@ class task_Scheduler
         }
       }
 
-      $to_reopen = false;
-      if ($conn->ping())
-      {
-        $conn->close();
-        unset($conn);
-        self::$connection = null;
-        $to_reopen = true;
-      }
       sleep($sleeptime);
-      if ($to_reopen)
-      {
-        $conn = self::get_connection();
-      }
     }
 
     $sql  = "UPDATE sitepreff SET schedstatus='stopped', schedpid='0'";

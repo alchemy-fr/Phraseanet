@@ -4,15 +4,15 @@
 {% import 'common/caption_templates/preview.html' as caption %}
 
 {% block javascript %}
-    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
         <script type="text/javascript" src="/include/minify/g=lightbox"></script>
         <script type="text/javascript" src="/include/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 {% endblock %}
 
 {% block stylesheet %}
     <link type="text/css" rel="stylesheet"
-        href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/lightbox/lightbox.css" media="screen"/>
+        href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/lightbox/lightbox.css" media="screen"/>
   {% endblock %}
 
 
@@ -36,8 +36,8 @@
                                 </td>
                                 <td style="text-align:right;width:230px;">
                                     <div class="options">
-                    {% set basket_element = first_item %}
-                                        {% include 'lightbox/sc_options_box.twig' %}
+                    {% set feed_element = first_item %}
+                                        {% include 'lightbox/feed_options_box.twig' %}
                                     </div>
                                 </td>
                             </tr>
@@ -48,8 +48,6 @@
               {% set bask_prev = first_item.get_record().get_preview() %}
               {{thumbnail.format(bask_prev,bask_prev.get_width(),bask_prev.get_height(),'',session, false)}}
             {% endif %}
-                        {% include 'lightbox/selector_box.twig' %}
-                        {% include 'lightbox/sc_note.twig' %}
                     </div>
                 </div>
                 <div id="record_compare" class="PNB record_display_box">

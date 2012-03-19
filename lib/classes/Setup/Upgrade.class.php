@@ -179,7 +179,7 @@ class Setup_Upgrade
    */
   public static function get_lock_file()
   {
-    return dirname(__FILE__) . '/../../../tmp/upgrade.lock';
+    return __DIR__ . '/../../../tmp/upgrade.lock';
   }
 
   /**

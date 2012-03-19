@@ -14,9 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$appbox   = appbox::get_instance();
+$appbox   = appbox::get_instance($Core);
 $session  = $appbox->get_session();
 $registry = $appbox->get_registry();
 
@@ -100,12 +101,12 @@ if ($request->has_post_datas())
       $needed['form_password'] = _('forms::la valeur donnee contient des caracteres invalides');
 
     //2 - on verifie que lemail a lair correcte si elle est requise
-    require_once(dirname(__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+    require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
     if (trim($parm['form_email']) != '' && !PHPMailer::ValidateAddress($parm['form_email']))
       $needed['form_email'] = _('forms::l\'email semble invalide');
 
     //on verifie le login
-    if (strlen($parm['form_login']) < 8)
+    if (strlen($parm['form_login']) < 5)
       $needed['form_login'] = _('forms::la valeur donnee est trop courte');
 
     if (sizeof($needed) === 1 && isset($needed['form_login']) && $needed['form_login'] === true)
@@ -182,7 +183,7 @@ if ($request->has_post_datas())
         {
           $template_user_id = User_Adapter::get_usr_id_from_login('autoregister');
 
-          $template_user = User_Adapter::getInstance($template_user_id, appbox::get_instance());
+          $template_user = User_Adapter::getInstance($template_user_id, appbox::get_instance($Core));
 
           $base_ids = array();
 
@@ -210,7 +211,7 @@ if ($request->has_post_datas())
           $demandOK[$base_id] = true;
         }
 
-        $event_mngr = eventsmanager_broker::getInstance($appbox);
+        $event_mngr = eventsmanager_broker::getInstance($appbox, $Core);
 
         $params = array(
           'demand'       => $demandOK
@@ -243,7 +244,7 @@ if ($request->has_post_datas())
       }
       catch (Exception $e)
       {
-        
+
       }
     }
   }
@@ -258,7 +259,7 @@ phrasea::headers();
     <link REL="stylesheet" TYPE="text/css" HREF="/login/geonames.css" />
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
     <title><?php echo $registry->get('GV_homeTitle') ?> - <?php echo _('login:: register') ?></title>
-    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js,include/jslibs/jquery.validate.login.js"></script>
+    <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery.validate.js,include/jslibs/jquery.validate.password.js,include/jslibs/jquery.validate.login.js"></script>
     <script type="text/javascript">
 
 <?php
@@ -288,7 +289,7 @@ foreach ($arrayVerif as $ar => $ver)
     if ($ar == 'form_email')
       $msg .= ',email:"' . (str_replace('"', '\"', _('forms::l\'email semble invalide'))) . '"';
 
-    $msg .= ',login:"' . (str_replace('"', '\"', _('login invalide (8 caracteres sans accents ni espaces)'))) . '"';
+    $msg .= ',login:"' . (str_replace('"', '\"', _('login invalide (5 caracteres sans accents ni espaces)'))) . '"';
     $msg .= '}';
   }
 }
@@ -321,11 +322,9 @@ foreach ($arrayVerif as $ar => $ver)
 
   $('#form_email').rules("add",{email:true});
 
-  //            $('#form_login').rules("add",{
-  //              minlength: 5
-  //            });
-
-  $('#form_login').rules("add",{login : true});
+              $('#form_login').rules("add",{
+                minlength: 5
+              });
 
   $('#form_password').rules("add",{password: "#form_login"});
   $('#form_password_confirm').rules("add",{equalTo: "#form_password"});
@@ -377,7 +376,7 @@ if ($register_enabled)
               <tr>
                 <td class="form_label">
                   <label for="form_login">
-<?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login'] === true) ? '<span class="requiredField">*</span>' : '' ?> <?php echo _('admin::compte-utilisateur identifiant') ?> <br/><span style="font-size:9px;"><?php echo _('8 caracteres minimum') ?></span> :
+<?php echo (isset($arrayVerif['form_login']) && $arrayVerif['form_login'] === true) ? '<span class="requiredField">*</span>' : '' ?> <?php echo _('admin::compte-utilisateur identifiant') ?> <br/><span style="font-size:9px;"><?php echo _('5 caracteres minimum') ?></span> :
                   </label>
                 </td>
                 <td class="form_input">

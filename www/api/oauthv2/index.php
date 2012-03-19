@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 try
 {
-  $app = require dirname(__FILE__).'/../../../lib/classes/module/api/OAuthv2.php';
+  $app = require __DIR__ . '/../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
   $app->run();
 }
 catch (Exception $e)

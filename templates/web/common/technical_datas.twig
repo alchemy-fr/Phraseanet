@@ -2,18 +2,23 @@
 
 {% if record.is_grouping() == false %}
 
-  {% if document.get_width() %}
-    {% trans 'Largeur' %} :
-    {{document.get_width()}}
-    <br />
-  {% endif %}
+  {% set document = record.get_subdef('document') %}
+
+  {% if document %}
+    {% if document.get_width() %}
+      {% trans 'Largeur' %} :
+      {{document.get_width()}}
+      <br />
+    {% endif %}
 
 
-  {% if document.get_height() %}
-    {% trans 'Hauteur' %} :
-    {{document.get_height()}}
-    <br />
+    {% if document.get_height() %}
+      {% trans 'Hauteur' %} :
+      {{document.get_height()}}
+      <br />
+    {% endif %}
   {% endif %}
+
   {% if record.get_original_name() %}
     {% trans 'Nom Original' %} :
     {{record.get_original_name() }}
@@ -26,22 +31,26 @@
     <br />
   {% endif %}
 
-  {% if document.get_size() %}
-    {% trans 'Taille' %} :
-    {{document.get_size()|formatoctet}}
-    <br />
+  {% if document %}
+    {% if document.get_size() %}
+      {% trans 'Taille' %} :
+      {{document.get_size()|formatoctet}}
+      <br />
+    {% endif %}
   {% endif %}
 
 
-  {% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
-    {% trans 'Dimensions a l\'impression' %}
-    <br/>
-    {% set size_w = (document.get_width() * (254/100) / 300) %}
-    {% set size_h = (document.get_height() * (254/100) / 300) %}
-    300 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
-    {% set size_w = (document.get_width() * (254/100) / 72) %}
-    {% set size_h = (document.get_height() * (254/100) / 72) %}
-    <br/>   72 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
+  {% if document %}
+    {% if record.get_type() == 'image' and document.get_width() and document.get_height() %}
+      {% trans 'Dimensions a l\'impression' %}
+      <br/>
+      {% set size_w = (document.get_width() * (254/100) / 300) %}
+      {% set size_h = (document.get_height() * (254/100) / 300) %}
+      300 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
+      {% set size_w = (document.get_width() * (254/100) / 72) %}
+      {% set size_h = (document.get_height() * (254/100) / 72) %}
+      <br/>   72 dpi : {{size_w|round(1)}}x{{size_h|round(1)}} cm
+    {% endif %}
   {% endif %}
 
   {% if record.get_type() == 'video' %}

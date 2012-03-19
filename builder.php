@@ -10,7 +10,8 @@ printf('Retrieve vendors ...' . PHP_EOL);
 system('./vendors.php');
 /**
  *
- * Temporary fix for builder
+ * Vendors has to be called two times.
+ * We should fix that
  *
  */
 system('./vendors.php');
@@ -33,6 +34,9 @@ $finder
   ->name('.gitmodules')
   ->name('.gitignore')
   ->name('check_cs.php')
+  ->name('cleaner.php')
+  ->name('launchpadToLocales.php')
+  ->name('localesToLaunchPad.php')
   ->name('pom.xml')
   ->name('vendors.php')
   ->name('builder.php')
@@ -71,6 +75,7 @@ $finder
   ->name('hudson')
   ->name('.svn')
   ->name('.git')
+  ->name('flash')
   ->ignoreDotFiles(false)
   ->ignoreVCS(false)
   ->in(__DIR__);

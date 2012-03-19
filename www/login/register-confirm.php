@@ -15,9 +15,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
 
-$appbox  = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+$appbox  = appbox::get_instance($Core);
 $request = http_request::getInstance();
 $parm    = $request->get_parms('code');
 
@@ -48,7 +50,11 @@ if (PHPMailer::ValidateAddress($user->get_email()))
   {
     mail::mail_confirm_registered($user->get_email());
   }
-  else
+  $user->set_mail_locked(false);
+  random::removeToken($parm['code']);
+
+  require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+  if (PHPMailer::ValidateAddress($user->get_email()))
   {
     $appbox_register = new appbox_register($appbox);
     $list            = $appbox_register->get_collection_awaiting_for_user($user);

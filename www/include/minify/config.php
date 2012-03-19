@@ -1,5 +1,5 @@
 <?php
-$_SERVER["DOCUMENT_ROOT"] = dirname( __FILE__ ) . '/../../../www/';
+$_SERVER["DOCUMENT_ROOT"] = __DIR__ . '/../../../www/';
 /**
  * Configuration for default Minify application
  * @package Minify
@@ -150,8 +150,8 @@ $min_uploaderHoursBehind = 0;
  * Path to Minify's lib folder. If you happen to move it, change
  * this accordingly.
  */
-$min_libPath = dirname(__FILE__) . '/lib';
-$min_cachePath = dirname( __FILE__ ) . '/../../../tmp/cache_minify';
+$min_libPath = __DIR__ . '/lib';
+$min_cachePath = __DIR__ . '/../../../tmp/cache_minify';
 
 
 // try to disable output_compression (may not have an effect)

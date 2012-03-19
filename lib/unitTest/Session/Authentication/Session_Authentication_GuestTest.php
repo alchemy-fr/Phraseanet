@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for Session_Authentication_Guest.
@@ -20,7 +20,7 @@ class Session_Authentication_GuestTest extends PhraseanetPHPUnitAbstract
    */
   public function setUp()
   {
-    $this->object = new Session_Authentication_Guest(appbox::get_instance());
+    $this->object = new Session_Authentication_Guest(appbox::get_instance(\bootstrap::getCore()));
   }
 
   /**

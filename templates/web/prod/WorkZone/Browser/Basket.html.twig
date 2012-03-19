@@ -1,0 +1,119 @@
+<div class="PNB">
+  <div class="PNB header" style="height:40px;bottom:auto;">
+    <table>
+      <tr>
+        <td style="width:230px;">
+          <a href="#" class="back">
+            <img src="/skins/prod/Basket/Browser/BASKET_LIST.png"/>
+            {% trans 'Back to basket list' %}
+          </a>
+        </td>
+        <td>
+          <h1 class="title">
+            <img class="loader" src="/skins/prod/Basket/Browser/loader.gif" />
+            {% if Basket.getValidation() is empty or Basket.getValidation().isInitiator(user) %}
+            <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=1" class="archiver archive_toggler" style="display:{{ Basket.getArchived ? 'none' : '' }};">
+              <span>
+                <img src="/skins/prod/Basket/Browser/archive.png"/>
+              </span>
+            </a>
+            <a href="/prod/baskets/{{ Basket.getId() }}/archive/?archive=0" class="unarchiver archive_toggler" style="display:{{ Basket.getArchived ? '' : 'none' }};">
+              <span>
+                <img src="/skins/prod/Basket/Browser/archived.png"/>
+              </span>
+            </a>
+            {% endif %}
+            <a class="basket_link" href="#">
+              {{ Basket.getName() }}
+            </a>
+          </h1>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  {% set top = 0 %}
+
+  {% if Basket.getPusher() %}
+    {% set top = top + 40 %}
+    <div class="PNB" style="top:40px;bottom:auto;height:40px;background-color:#404040;">
+      <div class="PNB10">
+        <p>
+          {% set user_name = '<a tooltipsrc="/prod/tooltip/user/' ~ Basket.getPusher().get_id() ~ '/" href="/user/' ~ Basket.getPusher().get_id() ~ '/" class="UserTips">' ~ Basket.getPusher().get_display_name() ~ '</a>' %}
+          {% trans %}
+            Received from {{ user_name }}
+          {% endtrans %}
+        </p>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if Basket.getValidation() %}
+    {% set top = top + 160 %}
+    <div class="PNB" style="top:40px;bottom:auto;height:160px;background-color:#404040;">
+      <div class="PNB10">
+        <p>
+          {% set list_participants = '' %}
+          {% for Participant in Basket.getValidation().getParticipants() %}
+
+            {% if list_participants != '' %}
+              {% set list_participants = list_participants ~ ', ' %}
+            {% endif %}
+
+            {% set list_participants = list_participants ~ '<a class="UserTips" tooltipsrc="/prod/tooltip/user/'
+                                        ~ Participant.getUser().get_id()
+                                        ~ '/" href="/user/'
+                                        ~ Participant.getUser().get_id() ~ '/">'
+                                        ~ Participant.getUser().get_display_name
+                                        ~ '</a>' %}
+          {% endfor %}
+          {% trans %}
+            Sent for validation to {{ list_participants }}
+          {% endtrans %}
+        </p>
+      </div>
+    </div>
+  {% endif %}
+
+  {% set top = top + 40 %}
+
+  <div class="PNB" style="height:40px;bottom:auto;top:{{ top }}px;">
+    <div class="PNB10">
+    {% set ElementsCount = Basket.getElements().count() %}
+    {% if ElementsCount == 0 %}
+      {% trans 'No records' %}
+    {% elseif ElementsCount == 1 %}
+      {% trans '1 record' %}
+    {% else %}
+      {% trans %}{{ ElementsCount }} records{% endtrans %}
+    {% endif %}
+    </div>
+  </div>
+
+
+  {% set top = top + 40 %}
+
+
+  {% import 'common/thumbnail.html' as thumbnail %}
+
+
+  <div class="PNB" style="top:{{ top }}px;">
+    <div class="PNB10">
+    {% for BasketElement in Basket.getElements() %}
+      {% set record = BasketElement.getRecord() %}
+      <div class="diapo" style="width:150px; height:180px;">
+        <div class='title'>
+        {{record.get_original_name()}}
+        </div>
+        <div>
+          {{thumbnail.format(record.get_thumbnail,140,140, '', session, true)}}
+        </div>
+        <div style='position:absolute; bottom:0px; left:0px; height:20px'>
+          <div class="previewTips" tooltipsrc="/prod/tooltip/preview/{{record.get_sbas_id()}}/{{record.get_record_id()}}/"></div>
+          <img class="infoTips" tooltipsrc="/prod/tooltip/tc_datas/{{record.get_sbas_id()}}/{{record.get_record_id()}}/" src="/skins/icons/info.gif"/>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+</div>

@@ -14,9 +14,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 
@@ -27,7 +29,7 @@ $needed = array();
 
 if (isset($parm["mail"]) && trim($parm["mail"]) != "")
 {
-  require_once(dirname (__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
+  require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
   if (!PHPMailer::ValidateAddress($parm['mail']))
   {
     return phrasea::redirect('/login/forgotpwd.php?error=noaccount');
@@ -124,7 +126,7 @@ if ($parm['token'] !== null)
     random::helloToken($parm['token']);
     $tokenize = true;
 ?>
-              <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
+              <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
               <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.js"></script>
               <script type="text/javascript" language="javascript" src="/include/minify/f=include/jslibs/jquery.validate.password.js"></script>
 

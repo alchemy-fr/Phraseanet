@@ -34,7 +34,7 @@
       </span>
     </a>
     <input type="hidden" value="{{invite_user.get_id()}}" name="invite_user_id"/>
-    
+
     <a class="autoregister_modifier" href="#">
       <span>
         {% trans 'Reglages:: reglages d inscitpition automatisee' %}
@@ -59,7 +59,7 @@
       <button type="submit">{% trans 'boutton::chercher' %}</button>
     </p>
   </form>
-  <form id="users_apply_template" method="post" action="/admin/users/apply_template/" target="_self">
+  <form id="users_apply_template" method="post" action="/admin/users/apply_template/" target="_self" style="float:left">
     <p class="admin_head_opts">
       {% trans 'Apply a template' %}
       <select name="template_chooser">
@@ -72,230 +72,279 @@
     </p>
   </form>
 
-<table id="users" cellspacing="0"  cellpadding="0" border="0" class="admintable">
-  <thead>
-    <tr>
-      <th style="text-align: center;" class="sortable {{ parm.srt == 'usr_id' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-        {% trans 'admin::compte-utilisateur id utilisateur' %}
-        <span class="ord_notifier">
-          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-        </span>
-        <input type="hidden" name="srt" value="usr_id" />
-      </th>
-      <th class="sortable {{ parm.srt == 'usr_login' ? 'sorted' :  '' }} ">
-        <span>
-        {% trans 'admin::compte-utilisateur identifiant' %}
-        </span>
-        <span class="ord_notifier">
-          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-        </span>
-        <input type="hidden" name="srt" value="usr_login" />
-      </th>
-      <th class="sortable {{ parm.srt == 'usr_nom' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-        <span>
-        {% trans 'admin::compte-utilisateur nom/prenom' %}
-        </span>
-        <span class="ord_notifier">
-          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-        </span>
-        <input type="hidden" name="srt" value="usr_nom" />
-      </th>
-      <th class="sortable {{ parm.srt == 'societe' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-        <span>
-        {% trans 'admin::compte-utilisateur societe' %}
-        </span>
-        <span class="ord_notifier">
-          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-        </span>
-        <input type="hidden" name="srt" value="societe" />
-      </th>
-      <th class="sortable {{ parm.srt == 'usr_mail' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-        <span>
-        {% trans 'admin::compte-utilisateur email' %}
-        </span>
-        <span class="ord_notifier">
-          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-        </span>
-        <input type="hidden" name="srt" value="usr_mail" />
-      </th>
-      <th class="sortable {{ parm.srt == 'pays' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-        <span>
-        {% trans 'admin::compte-utilisateur pays' %}
-        </span>
-        <span class="ord_notifier">
-          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-        </span>
-        <input type="hidden" name="srt" value="pays" />
-      </th>
-      <th class="sortable {{ parm.srt == 'lastModel' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-        <span>
-        {% trans 'admin::compte-utilisateur dernier modele applique' %}
-        </span>
-        <span class="ord_notifier">
-          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-        </span>
-        <input type="hidden" name="srt" value="lastModel" />
-      </th>
-      <th class="sortable {{ parm.srt == 'usr_creationdate' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
-        <span>
-        {% trans 'admin::compte-utilisateur date de creation' %}
-        </span>
-        <span class="ord_notifier">
-          {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
-        </span>
-        <input type="hidden" name="srt" value="usr_creationdate" />
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for usr in users.get_results %}
-    <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.get_id()}}">
-      <td style="text-align: center;">
-        {% if usr.is_template() %}
+  <form id="users_reset_rights" method="post" action="/admin/users/rights/reset/" target="_self" style="float:right">
+    <input type="hidden" value="" name="users">
+    <button type='button'>{% trans 'reset users rights' %}</button>
+  </form>
+
+  <table id="users" cellspacing="0"  cellpadding="0" border="0" class="admintable">
+    <thead>
+      <tr>
+        <th style="text-align: center;" class="sortable {{ parm.srt == 'usr_id' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+          {% trans 'admin::compte-utilisateur id utilisateur' %}
+          <span class="ord_notifier">
+            {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+          </span>
+          <input type="hidden" name="srt" value="usr_id" />
+        </th>
+        <th class="sortable {{ parm.srt == 'usr_login' ? 'sorted' :  '' }} ">
+          <span>
+            {% trans 'admin::compte-utilisateur identifiant' %}
+          </span>
+          <span class="ord_notifier">
+            {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+          </span>
+          <input type="hidden" name="srt" value="usr_login" />
+        </th>
+        <th class="sortable {{ parm.srt == 'usr_nom' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+          <span>
+            {% trans 'admin::compte-utilisateur nom/prenom' %}
+          </span>
+          <span class="ord_notifier">
+            {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+          </span>
+          <input type="hidden" name="srt" value="usr_nom" />
+        </th>
+        <th class="sortable {{ parm.srt == 'societe' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+          <span>
+            {% trans 'admin::compte-utilisateur societe' %}
+          </span>
+          <span class="ord_notifier">
+            {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+          </span>
+          <input type="hidden" name="srt" value="societe" />
+        </th>
+        <th class="sortable {{ parm.srt == 'usr_mail' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+          <span>
+            {% trans 'admin::compte-utilisateur email' %}
+          </span>
+          <span class="ord_notifier">
+            {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+          </span>
+          <input type="hidden" name="srt" value="usr_mail" />
+        </th>
+        <th class="sortable {{ parm.srt == 'pays' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+          <span>
+            {% trans 'admin::compte-utilisateur pays' %}
+          </span>
+          <span class="ord_notifier">
+            {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+          </span>
+          <input type="hidden" name="srt" value="pays" />
+        </th>
+        <th class="sortable {{ parm.srt == 'lastModel' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+          <span>
+            {% trans 'admin::compte-utilisateur dernier modele applique' %}
+          </span>
+          <span class="ord_notifier">
+            {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+          </span>
+          <input type="hidden" name="srt" value="lastModel" />
+        </th>
+        <th class="sortable {{ parm.srt == 'usr_creationdate' ? 'sorted' :  '' }} {{ parm.ord == 'asc' ? 'sort_asc' :  'sort_desc' }}">
+          <span>
+            {% trans 'admin::compte-utilisateur date de creation' %}
+          </span>
+          <span class="ord_notifier">
+            {{ parm.ord == 'asc' ? '&#x25bc;' :  '&#x25B2;' }}
+          </span>
+          <input type="hidden" name="srt" value="usr_creationdate" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for usr in users.get_results %}
+      <tr class="{% if loop.index is odd %}odd{% else %}even{% endif %}" id="user_{{usr.get_id()}}">
+        <td style="text-align: center;">
+          {% if usr.is_template() %}
           <img title="{% trans 'This is a template' %}" src="/skins/icons/template.png"/>
-        {% else %}
+          {% else %}
           {% if usr.ACL().is_phantom() %}
           <img title="{% trans 'This user has no rights' %}" src="/skins/admin/ghost.png"/>
           {% endif %}
           {{usr.get_id()}}
-        {% endif %}
-      </td>
-      <td>
-        {{usr.get_login()}}
-      </td>
-      <td>
-        {{usr.get_firstname()}} {{usr.get_lastname()}}
-      </td>
-      <td>
-        {{usr.get_company()}}
-      </td>
-      <td>
-        {{usr.get_email()}}
-      </td>
-      <td>
-        {{usr.get_country()}}
-      </td>
-      <td>
-        {{usr.get_applied_template()}}
-      </td>
-      <td>
-        {{usr.get_creation_date()|getDate}}
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-
-  
-<form id="export_form" method="post" target="exportwindow" action="/admin/users/search/export/">
-  <input name="srt" value="{{parm['srt']}}" type="hidden" />
-  <input name="ord" value="{{parm.ord}}" type="hidden" />
-  <input name="act" value="{{parm.act}}" type="hidden" />
-  {% for sbas_id in parm.sbas_id %}
-  <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
-  {% endfor %}
-  {% for base_id in parm.base_id %}
-  <input name="base_id[]" value="{{base_id}}" type="hidden" />
-  {% endfor %}
-  <input name="usr_ids" value="{{parm.usr_ids}}" type="hidden" />
-  <input name="like_value" value="{{parm.like_value}}" type="hidden" />
-  <input name="like_field" value="{{parm.like_field}}" type="hidden" />
-  <input name="inactives" value="{{parm.inactives}}" type="hidden" />
-</form>
-  
-<form id="users_page_form" method="post" target="_self" action="/admin/users/search/">
-  {{users.get_total}} resultats
-
-  {% set pages = users.get_total() / parm['per_page'] %}
-  {% set modulo = users.get_total() % parm['per_page'] %}
-
-  {% if modulo > 0 %}{% set pages = pages + 1 %}{% endif %}
-  {{pages|floor}} pages
-  {% if users.get_page > 2 %}
-  <button class="pager first"><<</button>
-  {% endif %}
-  {% if users.get_page > 1 %}
-  <button class="pager prev"><</button>
-  {% endif %}
-  <input type="text" value="{{users.get_page}}" />
-  {% if users.get_page < pages -1 %}
-  <button class="pager next">></button>
-  {% endif %}
-  {% if users.get_page < pages - 2 %}
-  <button class="pager last">>></button>
-  {% endif %}
-  <select name="per_page">
-    {% set n_par_page = 10 %}
-    <option value="10" {% if parm['per_page'] == 10%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
-    {% set n_par_page = 20 %}
-    <option value="20" {% if parm['per_page'] == 20%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
-    {% set n_par_page = 50 %}
-    <option value="50" {% if parm['per_page'] == 50%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
-  </select>
-  <button class="user_modifier">{% trans 'boutton::modifier' %}</button>
-  <button class="user_deleter">{% trans 'Supprimer' %}</button>
+          {% endif %}
+        </td>
+        <td>
+          {{usr.get_login()}}
+        </td>
+        <td>
+          {{usr.get_firstname()}} {{usr.get_lastname()}}
+        </td>
+        <td>
+          {{usr.get_company()}}
+        </td>
+        <td>
+          {{usr.get_email()}}
+        </td>
+        <td>
+          {{usr.get_country()}}
+        </td>
+        <td>
+          {{usr.get_applied_template()}}
+        </td>
+        <td>
+          {{usr.get_creation_date()|getDate}}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 
-  <input type="hidden" name="total_results" value="{{users.get_total()}}"/>
-  <input type="hidden" name="page" value="{{users.get_page()}}"/>
-  <input name="srt" value="{{parm['srt']}}" type="hidden" />
-  <input name="ord" value="{{parm.ord}}" type="hidden" />
-  <input name="act" value="{{parm.act}}" type="hidden" />
-  {% for sbas_id in parm.sbas_id %}
-  <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
-  {% endfor %}
-  {% for base_id in parm.base_id %}
-  <input name="base_id[]" value="{{base_id}}" type="hidden" />
-  {% endfor %}
-  <input name="usr_ids" value="{{parm.usr_ids}}" type="hidden" />
-  <input name="like_value" value="{{parm.like_value}}" type="hidden" />
-  <input name="like_field" value="{{parm.like_field}}" type="hidden" />
-  <input name="inactives" value="{{parm.inactives}}" type="hidden" />
-  <input name="offset_start" value="{{parm.offset_start}}" type="hidden" />
-
-</form>
-<form target="_blank" method="post" action="/admin/users/export/csv/">
-  {% if parm.base_id is not empty %}
-    {% for base_id in parm.base_id %}
-    <input name="base_id[]" value="{{base_id}}" type="hidden" />
-    {% endfor %}
-  {% endif %}
-  {% if parm.sbas_id is not empty %}
+  <form id="export_form" method="post" target="exportwindow" action="/admin/users/search/export/">
+    <input name="srt" value="{{parm['srt']}}" type="hidden" />
+    <input name="ord" value="{{parm.ord}}" type="hidden" />
     {% for sbas_id in parm.sbas_id %}
     <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
     {% endfor %}
-  {% endif %}
-  <input name="like_value" value="{{parm.like_value}}" type="hidden" />
-  <input name="like_field" value="{{parm.like_field}}" type="hidden" />
-  <button>{% trans 'boutton::exporter' %}</button>
-</form>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $.each(p4.users.sel, function(i,n){
-      var el = $('#user_'+n);
-      if(el.length > 0)
-      {
-        el.addClass('selected');
-      }
-    });
-    $('#users_page_form select[name="per_page"]').bind('change', function(){
-      $(this).closest('form').submit();
-    });
-    
+    {% for base_id in parm.base_id %}
+    <input name="base_id[]" value="{{base_id}}" type="hidden" />
+    {% endfor %}
+    {% if parm['usr_ids'] is defined %}
+    <input name="usr_ids" value="{{parm.usr_ids}}" type="hidden" />
+    {% endif %}
+    <input name="like_value" value="{{parm.like_value}}" type="hidden" />
+    <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+    <input name="inactives" value="{{parm.inactives}}" type="hidden" />
+  </form>
+
+  <form id="users_page_form" method="post" target="_self" action="/admin/users/search/">
+    {{users.get_total}} resultats
+
+    {% set pages = users.get_total() / parm['per_page'] %}
+    {% set modulo = users.get_total() % parm['per_page'] %}
+
+    {% if modulo > 0 %}{% set pages = pages + 1 %}{% endif %}
+    {{pages|floor}} pages
+    {% if users.get_page > 2 %}
+    <button class="pager first"><<</button>
+    {% endif %}
+    {% if users.get_page > 1 %}
+    <button class="pager prev"><</button>
+    {% endif %}
+    <input type="text" value="{{users.get_page}}" />
+    {% if users.get_page < pages -1 %}
+    <button class="pager next">></button>
+    {% endif %}
+    {% if users.get_page < pages - 2 %}
+    <button class="pager last">>></button>
+    {% endif %}
+    <select name="per_page">
+      {% set n_par_page = 10 %}
+      <option value="10" {% if parm['per_page'] == 10%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+      {% set n_par_page = 20 %}
+      <option value="20" {% if parm['per_page'] == 20%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+      {% set n_par_page = 50 %}
+      <option value="50" {% if parm['per_page'] == 50%}selected="selected"{% endif %}>{% trans %}{{n_par_page}} par page {% endtrans %}</option>
+    </select>
+    <button class="user_modifier">{% trans 'boutton::modifier' %}</button>
+    <button class="user_deleter">{% trans 'Supprimer' %}</button>
+
+
+    <input type="hidden" name="total_results" value="{{users.get_total()}}"/>
+    <input type="hidden" name="page" value="{{users.get_page()}}"/>
+    <input name="srt" value="{{parm['srt']}}" type="hidden" />
+    <input name="ord" value="{{parm.ord}}" type="hidden" />
+    {% if parm['act'] is defined %}
+    <input name="act" value="{{parm.act}}" type="hidden" />
+    {% endif %}
+    {% for sbas_id in parm.sbas_id %}
+    <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
+    {% endfor %}
+    {% for base_id in parm.base_id %}
+    <input name="base_id[]" value="{{base_id}}" type="hidden" />
+    {% endfor %}
+    {% if parm['usr_ids'] is defined %}
+    <input name="usr_ids" value="{{parm.usr_ids}}" type="hidden" />
+    {% endif %}
+    <input name="like_value" value="{{parm.like_value}}" type="hidden" />
+    <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+    <input name="inactives" value="{{parm.inactives}}" type="hidden" />
+    <input name="offset_start" value="{{parm.offset_start}}" type="hidden" />
+
+  </form>
+  <form target="_blank" method="post" action="/admin/users/export/csv/">
+    {% if parm.base_id is not empty %}
+    {% for base_id in parm.base_id %}
+    <input name="base_id[]" value="{{base_id}}" type="hidden" />
+    {% endfor %}
+    {% endif %}
+    {% if parm.sbas_id is not empty %}
+    {% for sbas_id in parm.sbas_id %}
+    <input name="sbas_id[]" value="{{sbas_id}}" type="hidden" />
+    {% endfor %}
+    {% endif %}
+    <input name="like_value" value="{{parm.like_value}}" type="hidden" />
+    <input name="like_field" value="{{parm.like_field}}" type="hidden" />
+    <button>{% trans 'boutton::exporter' %}</button>
+  </form>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $.each(p4.users.sel, function(i,n){
+        var el = $('#user_'+n);
+        if(el.length > 0)
+        {
+          el.addClass('selected');
+        }
+      });
+      $('#users_page_form select[name="per_page"]').bind('change', function(){
+        $(this).closest('form').submit();
+      });
+
+      $('#users_reset_rights button').bind('click', function(){
+        var selectedUsers =  $("#users tr.selected");
+
+        if(selectedUsers.length === 0)
+        {
+          alert("{% trans 'select at least one user' %}");
+          return;
+        }
+
+        var users = '';
+        $.each(selectedUsers, function(i,n){
+          users += $(n).attr("id").split("_").pop() + ';';
+        });
+
+        if(confirm("{% trans 'are you sure you want reset rights ?' %}"))
+        {
+          $("#users_reset_rights input[name='users']").val(users);
+
+          var form = $(this).closest('form');
+
+          $.ajax({
+            url: form.attr("action"),
+            dataType: 'json',
+            type : form.attr('method'),
+            data: form.serializeArray(),
+            success: function(data){
+              if(data.error)
+              {
+                alert("{% trans 'An error occured' %}");
+              }
+              else
+              {
+                alert("{% trans 'users rights have been reseted' %}");
+              }
+            }
+          });
+        }
+      });
+
   });
-  
-    function importlist()
-		{
-			var myObj = new Object();
-			myObj.myOpener = self;	
-			window.showModalDialog ('/admin/import0.php?rand='+Math.random(),myObj, 'dialogWidth:550px;dialogHeight:330px;center:yes;help:no;status:no;scrollbars:no'  );
-		
-		}
-    function exportlist()
-		{
-			$('#export_form').submit();
-		}
-		
-</script>
-  </div>
+
+  function importlist()
+  {
+    var myObj = new Object();
+    myObj.myOpener = self;
+    window.showModalDialog ('/admin/import0.php?rand='+Math.random(),myObj, 'dialogWidth:550px;dialogHeight:330px;center:yes;help:no;status:no;scrollbars:no'  );
+
+  }
+  function exportlist()
+  {
+    $('#export_form').submit();
+  }
+
+  </script>
+</div>
 {% endblock %}

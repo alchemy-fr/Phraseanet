@@ -47,7 +47,7 @@ class module_report_push extends module_report
   public function __construct($arg1, $arg2, $sbas_id, $collist)
   {
     parent::__construct($arg1, $arg2, $sbas_id, $collist);
-    $this->title = _('report:: document ajoute');
+    $this->title = _('report:: pushed documents');
   }
 
   /**

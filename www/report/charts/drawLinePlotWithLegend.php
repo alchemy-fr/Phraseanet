@@ -1,8 +1,8 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../../../lib/classes/graphik/Graph.class.php");
-require_once(dirname(__FILE__) . "/../../../lib/classes/graphik/LinePlot.class.php");
-require_once(dirname(__FILE__) . "/../../../lib/classes/http/request.class.php");
+require_once(__DIR__ . "/../../../lib/classes/graphik/Graph.class.php");
+require_once(__DIR__ . "/../../../lib/classes/graphik/LinePlot.class.php");
+require_once(__DIR__ . "/../../../lib/classes/http/request.class.php");
 
 $request = http_request::getInstance();
 $parm = $request->get_parms("value", 'legend', 'absc');

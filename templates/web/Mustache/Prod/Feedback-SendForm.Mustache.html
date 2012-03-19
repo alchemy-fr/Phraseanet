@@ -1,0 +1,27 @@
+<form>
+  <div class="Feedback" style="display:none;">
+    <label for="PushSendFormDuration">{{ language.FeedBackDuration }}</label>
+    <select id="PushSendFormDuration" name="duration">
+      <option value="20">20</option>
+      <option value="15">15</option>
+      <option value="10">10</option>
+      <option value="5">5</option>
+      <option value="3">3</option>
+      <option value="2">2</option>
+      <option value="1">1</option>
+    </select>
+  </div>
+  <div>
+    <label for="PushSendFormRecept">{{ language.FeedBackName }}</label>
+    <input id="PushSendFormName" type="text" name="name"/>
+  </div>
+  <div>
+    <label for="PushSendFormMessage">{{ language.FeedBackMessage }}</label>
+    <textarea id="PushSendFormMessage" name="message"></textarea>
+  </div>
+  <div>
+    <input id="PushSendFormRecept" type="checkbox" name="recept" value="1"/>
+    <label for="PushSendFormRecept">{{ language.Recept }}</label>
+  </div>
+
+</form>

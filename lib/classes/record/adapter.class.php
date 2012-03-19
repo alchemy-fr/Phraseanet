@@ -369,7 +369,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $dstatus = databox_status::getDisplayStatus();
     $sbas_id = $this->get_sbas_id();
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $user    = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
@@ -476,23 +476,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function move_to_collection(collection &$collection, appbox &$appbox)
   {
-    $sql = 'UPDATE sselcont
-            SET base_id = :base_id
-            WHERE record_id = :record_id
-            AND base_id IN (SELECT base_id FROM bas WHERE sbas_id = :sbas_id)';
-
-    $params = array(
-      ':base_id'   => $collection->get_base_id(),
-      ':record_id' => $this->get_record_id(),
-      ':sbas_id'   => $this->get_sbas_id()
-    );
-
-    $stmt = $appbox->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $stmt->closeCursor();
-
-    basket_adapter::revoke_baskets_record($this, $appbox);
-
     $sql = "UPDATE record SET coll_id = :coll_id WHERE record_id =:record_id";
 
     $params = array(
@@ -524,6 +507,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     {
       return null;
     }
+
     try
     {
       return $this->get_subdef('thumbnailGIF');
@@ -613,8 +597,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_subdef($name)
   {
     $name = strtolower($name);
+
     if (!in_array($name, $this->get_available_subdefs()))
+    {
       throw new Exception_Media_SubdefNotFound ();
+    }
 
     if (isset($this->subdefs[$name]))
     {
@@ -622,7 +609,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     if (!$this->subdefs)
+    {
       $this->subdefs = array();
+    }
 
     $substitute = ($name !== 'document');
 
@@ -804,16 +793,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
       foreach ($caption->get_fields() as $field)
       {
-        if ($field->is_multi())
-          $values = $field->get_value();
-        else
-          $values = array($field->get_value());
+        $values = $field->get_values();
 
         foreach ($values as $value)
         {
           $elem = $dom_doc->createElement($field->get_name());
-          $elem->appendChild($dom_doc->createTextNode($value));
-          $elem->setAttribute('meta_id', $field->get_meta_id());
+          $elem->appendChild($dom_doc->createTextNode($value->getValue()));
+          $elem->setAttribute('meta_id', $value->getId());
           $elem->setAttribute('meta_struct_id', $field->get_meta_struct_id());
           $description->appendChild($elem);
         }
@@ -856,25 +842,32 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         continue;
       }
 
-      $meta_id = null;
+      /**
+       * Replacing original name in multi values is non sense
+       */
+      if (!$data_field->is_multi())
+      {
+        continue;
+      }
 
       try
       {
-        $meta_id = $this->get_caption()->get_field($data_field->get_name())->get_meta_id();
+        $field   = $this->get_caption()->get_field($data_field->get_name())->get_meta_id();
+        $value   = array_pop($field->get_values());
+        $meta_id = $value->getId();
       }
       catch (\Exception $e)
       {
         $meta_id = null;
       }
 
-      $this->set_metadatas(
-        array(
-        'meta_struct_id' => $data_field->get_id()
+      $metas = array(
+        'meta_struct_id' => $field->get_meta_struct_id()
         , 'meta_id'        => $meta_id
-        , 'value'          => array($original_name)
-        )
-        , true
+        , 'value'          => $original_name
       );
+
+      $this->set_metadatas($metas, true);
     }
 
     $sql = 'UPDATE record
@@ -900,11 +893,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function get_title($highlight = false, searchEngine_adapter $searchEngine = null)
   {
-    $sbas_id   = $this->get_sbas_id();
-    $record_id = $this->get_record_id();
-
     $title   = '';
-    $appbox  = appbox::get_instance();
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $fields = $this->get_databox()->get_meta_structure();
@@ -1081,7 +1071,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     try
     {
-      $appbox  = \appbox::get_instance();
+      $appbox  = \appbox::get_instance(\bootstrap::getCore());
       $session = $appbox->get_session();
 
       $connbas = connection::getPDOConnection($this->get_sbas_id());
@@ -1199,29 +1189,55 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       }
     }
 
-    if (!is_array($params['value']))
-      throw new Exception();
+    if (!is_scalar($params['value']))
+    {
+      throw new Exception('Metadata value should be scalar');
+    }
 
     $databox_field = databox_field::get_instance($databox, $params['meta_struct_id']);
 
+    $caption_field = new caption_field($databox_field, $this);
+
+    $vocab    = $vocab_id = null;
+
+    if (isset($params['vocabularyId']) && $databox_field->getVocabularyControl())
+    {
+      try
+      {
+        $vocab    = $databox_field->getVocabularyControl();
+        $vocab_id = $params['vocabularyId'];
+        $vocab->validate($vocab_id);
+      }
+      catch (\Exception $e)
+      {
+        $vocab    = $vocab_id = null;
+      }
+    }
+
+
     if (trim($params['meta_id']) !== '')
     {
-      $tmp_val       = trim(implode('', $params['value']));
-      $caption_field = new caption_field($databox_field, $this, $params['meta_id']);
+      $tmp_val = trim($params['value']);
+
+      $caption_field_value = $caption_field->get_value($params['meta_id']);
 
       if ($tmp_val === '')
       {
-        $caption_field->delete();
-        unset($caption_field);
+        $caption_field_value->delete();
+        unset($caption_field_value);
       }
       else
       {
-        $caption_field->set_value($params['value']);
+        $caption_field_value->set_value($params['value']);
+        if ($vocab && $vocab_id)
+        {
+          $caption_field_value->setVocab($vocab, $vocab_id);
+        }
       }
     }
     else
     {
-      $caption_field = caption_field::create($databox_field, $this, $params['value']);
+      $caption_field_value = caption_Field_Value::create($databox_field, $this, $params['value'], $vocab, $vocab_id);
     }
 
     $this->caption_record = null;
@@ -1243,7 +1259,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       {
         throw new Exception_InvalidArgument('Invalid metadatas argument');
       }
-      
+
       $db_field = \databox_field::get_instance($this->get_databox(), $param['meta_struct_id']);
 
       if ($db_field->is_readonly() === true && !$force_readonly)
@@ -1367,40 +1383,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     return $this;
   }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_reg_name()
-  {
-    if (!$this->is_grouping())
-      return false;
-
-    $balisename = '';
-
-    $struct = $this->databox->get_structure();
-
-    if ($sxe = simplexml_load_string($struct))
-    {
-      $z = $sxe->xpath('/record/description');
-      if ($z && is_array($z))
-      {
-        foreach ($z[0] as $ki => $vi)
-        {
-          if ($vi['regname'] == '1')
-          {
-            $balisename = $ki;
-            break;
-          }
-        }
-      }
-    }
-    $regname    = '';
-    if ($sxe        = simplexml_load_string($this->get_xml()))
-      $regname    = (string) $sxe->description->$balisename;
-
-    return $regname;
-  }
 
   /**
    *
@@ -1462,7 +1444,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     try
     {
-      $appbox  = appbox::get_instance();
+      $appbox  = appbox::get_instance(\bootstrap::getCore());
       $session = $appbox->get_session();
       $log_id  = $session->get_logger($databox)->get_id();
 
@@ -1527,11 +1509,20 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         continue;
       }
-      $meta_id = null;
+
+      /**
+       * Replacing record_id in multi values is non sense
+       */
+      if (!$data_field->is_multi())
+      {
+        continue;
+      }
 
       try
       {
-        $meta_id = $record->get_caption()->get_field($data_field->get_name())->get_meta_id();
+        $field   = $record->get_caption()->get_field($data_field->get_name())->get_meta_id();
+        $value   = array_pop($field->get_values());
+        $meta_id = $value->getId();
       }
       catch (\Exception $e)
       {
@@ -1601,6 +1592,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $hd = $this->get_subdef('document');
     if ($hd->is_physically_present())
+
       return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
     return null;
   }
@@ -1613,7 +1605,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   {
     $connbas  = $this->get_databox()->get_connection();
     $sbas_id  = $this->get_databox()->get_sbas_id();
-    $appbox   = appbox::get_instance();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
     $registry = $appbox->get_registry();
     $conn     = $appbox->get_connection();
 
@@ -1718,21 +1710,17 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $stmt->execute(array(':record_id' => $this->get_record_id()));
     $stmt->closeCursor();
 
-    $sql  = 'SELECT s.ssel_id, c.sselcont_id, s.usr_id
-            FROM sselcont c, ssel s
-            WHERE c.base_id = :base_id AND c.record_id = :record_id
-              AND s.ssel_id = c.ssel_id';
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id(), ':base_id'   => $this->get_base_id()));
-    $rs          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $em = bootstrap::getCore()->getEntityManager();
 
-    foreach ($rs as $row)
+    $repository = $em->getRepository('\Entities\BasketElement');
+
+    /* @var $repository \Repositories\BasketElementRepository */
+    foreach ($repository->findElementsByRecord($this) as $basket_element)
     {
-      $basket = basket_adapter::getInstance($appbox, $row['ssel_id'], $row['usr_id']);
-      $basket->remove_from_ssel($row['sselcont_id']);
+      $em->remove($basket_element);
     }
 
-    $stmt->closeCursor();
+    $em->flush();
 
     foreach ($ftodel as $f)
       @unlink($f);
@@ -1938,37 +1926,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function get_container_baskets()
   {
-    if ($this->container_basket)
-      return $this->container_basket;
+    $Core = bootstrap::getCore();
+    $em   = $Core->getEntityManager();
 
-    $appbox  = appbox::get_instance();
-    $session = $appbox->get_session();
+    $repo = $em->getRepository('\Entities\Basket');
 
-    $baskets = array();
-    $sql = 'SELECT s.ssel_id FROM ssel s, sselcont c
-            WHERE s.ssel_id = c.ssel_id
-              AND c.base_id = :base_id AND record_id = :record_id
-              AND usr_id = :usr_id AND temporaryType="0"';
+    /* @var $$repo \Repositories\BasketRepository */
 
-    $params = array(
-      ':base_id'   => $this->get_base_id()
-      , ':record_id' => $this->get_record_id()
-      , ':usr_id'    => $session->get_usr_id()
-    );
-
-    $stmt = $appbox->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
-
-    foreach ($rs as $row)
-    {
-      $baskets[$row['ssel_id']] = basket_adapter::getInstance($appbox, $row['ssel_id'], $session->get_usr_id());
-    }
-
-    $this->container_basket = $baskets;
-
-    return $this->container_basket;
+    return $repo->findContainingRecordForUser($this, $Core->getAuthenticatedUser());
   }
 
   /**
@@ -2010,7 +1975,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     if (!$this->is_grouping())
       throw new Exception('This record is not a grouping');
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $sql = 'SELECT record_id
               FROM regroup g
@@ -2053,7 +2018,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function get_grouping_parents()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $sql = 'SELECT r.record_id
             FROM regroup g
@@ -2087,6 +2052,89 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     return $set;
+  }
+
+  public function hasChild(\record_adapter $record)
+  {
+    return $this->get_children()->offsetExists($record->get_serialize_key());
+  }
+
+  public function appendChild(\record_adapter $record)
+  {
+    if (!$this->is_grouping())
+      throw new \Exception('Only stories can append children');
+
+    $connbas = $this->get_databox()->get_connection();
+
+    $ord = 0;
+
+    $sql = "SELECT (max(ord)+1) as ord
+            FROM regroup WHERE rid_parent = :parent_record_id";
+
+    $stmt = $connbas->prepare($sql);
+
+    $stmt->execute(array(':parent_record_id' => $this->get_record_id()));
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $stmt->closeCursor();
+
+    if ($row)
+    {
+      $ord = is_null($row["ord"]) ? 0 : $row["ord"];
+    }
+
+    $sql = 'INSERT INTO regroup (id, rid_parent, rid_child, dateadd, ord)
+              VALUES (null, :parent_record_id, :record_id, NOW(), :ord)';
+
+    $params = array(
+      ':parent_record_id' => $this->get_record_id()
+      , ':record_id'        => $record->get_record_id()
+      , ':ord'              => $ord
+    );
+
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute($params);
+
+    $stmt->closeCursor();
+
+    $sql  = 'UPDATE record SET moddate = NOW() WHERE record_id = :record_id';
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute(array(':record_id' => $this->get_record_id()));
+    $stmt->closeCursor();
+
+    $this->delete_data_from_cache();
+
+    return $this;
+  }
+
+  public function removeChild(\record_adapter $record)
+  {
+    if (!$this->is_grouping())
+      throw new \Exception('Only stories can append children');
+
+    $connbas = $this->get_databox()->get_connection();
+
+    $sql = "DELETE FROM regroup WHERE rid_parent = :parent_record_id
+                  AND rid_child = :record_id";
+
+    $params = array(
+      ':parent_record_id' => $this->get_record_id()
+      , ':record_id'        => $record->get_record_id()
+    );
+
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute($params);
+    $stmt->closeCursor();
+
+    $sql  = 'UPDATE record SET moddate = NOW() WHERE record_id = :record_id';
+    $stmt = $connbas->prepare($sql);
+    $stmt->execute(array(':record_id' => $this->get_record_id()));
+    $stmt->closeCursor();
+
+    $this->delete_data_from_cache();
+
+    return $this;
   }
 
 }

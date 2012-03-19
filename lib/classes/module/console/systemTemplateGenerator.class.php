@@ -36,16 +36,16 @@ class module_console_systemTemplateGenerator extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    require_once dirname(__FILE__) . '/../../../../lib/vendor/Twig/lib/Twig/Autoloader.php';
-    require_once dirname(__FILE__) . '/../../../../lib/vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
+    require_once __DIR__ . '/../../../../lib/vendor/Twig/lib/Twig/Autoloader.php';
+    require_once __DIR__ . '/../../../../lib/vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
 
 
     Twig_Autoloader::register();
     Twig_Extensions_Autoloader::register();
 
 
-    $tplDir = dirname(__FILE__) . '/../../../../templates/';
-    $tmpDir = dirname(__FILE__) . '/../../../../tmp/cache_twig/';
+    $tplDir = __DIR__ . '/../../../../templates/';
+    $tmpDir = __DIR__ . '/../../../../tmp/cache_twig/';
     $loader = new Twig_Loader_Filesystem($tplDir);
 
     $twig = new Twig_Environment($loader, array(
@@ -54,7 +54,9 @@ class module_console_systemTemplateGenerator extends Command
             ));
     $twig->addExtension(new Twig_Extensions_Extension_I18n());
 
-
+    /**
+     * @todo clean all duplicate filters
+     */
     $twig->addFilter('serialize', new Twig_Filter_Function('serialize'));
     $twig->addFilter('sbas_names', new Twig_Filter_Function('phrasea::sbas_names'));
     $twig->addFilter('sbas_name', new Twig_Filter_Function('phrasea::sbas_names'));
@@ -78,9 +80,11 @@ class module_console_systemTemplateGenerator extends Command
     $twig->addFilter('key_exists', new Twig_Filter_Function('array_key_exists'));
     $twig->addFilter('array_keys', new Twig_Filter_Function('array_keys'));
     $twig->addFilter('round', new Twig_Filter_Function('round'));
+    $twig->addFilter('get_class', new Twig_Filter_Function('get_class'));
     $twig->addFilter('formatdate', new Twig_Filter_Function('phraseadate::getDate'));
     $twig->addFilter('getPrettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
     $twig->addFilter('prettyDate', new Twig_Filter_Function('phraseadate::getPrettyString'));
+    $twig->addFilter('prettyString', new Twig_Filter_Function('phraseadate::getPrettyString'));
     $twig->addFilter('formatoctet', new Twig_Filter_Function('p4string::format_octet'));
     $twig->addFilter('getDate', new Twig_Filter_Function('phraseadate::getDate'));
     $twig->addFilter('geoname_name_from_id', new Twig_Filter_Function('geonames::name_from_id'));
@@ -118,7 +122,7 @@ class module_console_systemTemplateGenerator extends Command
 
     $output->writeln("");
 
-    return;
+    return $n_error;
   }
 
 }

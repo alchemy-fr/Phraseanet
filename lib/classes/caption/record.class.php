@@ -50,10 +50,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
     $this->record = $record;
     $this->databox = $databox;
 
-
-    $this->retrieve_fields();
-
-
     return $this;
   }
 
@@ -87,7 +83,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
       try
       {
         $databox_meta_struct = databox_field::get_instance($this->databox, $row['structure_id']);
-        $metadata            = new caption_field($databox_meta_struct, $this->record, $row['meta_id']);
+        $metadata = new caption_field($databox_meta_struct, $this->record);
 
         $rec_fields[$databox_meta_struct->get_id()] = $metadata;
         $dces_element                               = $metadata->get_databox_field()->get_dces_element();
@@ -137,6 +133,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     foreach ($this->retrieve_fields() as $meta_struct_id => $field)
     {
       if ($field->get_name() == $fieldname)
+
         return $field;
     }
 
@@ -181,7 +178,8 @@ class caption_record implements caption_interface, cache_cacheableInterface
   protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine = null)
   {
     $fields = array();
-    foreach ($this->fields as $meta_struct_id => $field)
+
+    foreach ($this->retrieve_fields() as $meta_struct_id => $field)
     {
       if (is_array($grep_fields) && !in_array($field->get_name(), $grep_fields))
         continue;
@@ -208,7 +206,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
         foreach ($fields as $key => $value)
         {
+          if(!isset($fields[$key]))
+            continue;
+
+          //if(strpos($fields[$key]['value'], '<a ') === false)
           $fields[$key]['value'] = $ret[$n];
+
           $n++;
         }
       }

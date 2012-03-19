@@ -22,13 +22,19 @@
             <img src="/skins/lightbox/save.png"/>
         </button>
         <form name="download_form" style="display:none;">
-            <input type="hidden" name="basrec" value="{{basket_element.get_record().get_serialize_key()}}"/>
+            <input type="hidden" name="basrec" value="{{basket_element.getRecord().get_serialize_key()}}"/>
         </form>
          |
-        {% if basket_element.is_validation_item() %}
+        {% if basket_element.getBasket().getValidation() %}
             <button class="comment_button">
                 <img src="/skins/lightbox/note.png"/>
-                {{basket_element.get_note_count}}
+                {% set n = 0 %}
+                {% for validationData in basket_element.getValidationDatas() %}
+                  {% if validationData.getNote() %}
+                    {% set n = n+1 %}
+                  {% endif %}
+                {% endfor %}
+                {{ n }}
             </button>
         {% endif %}
     {% endif %}

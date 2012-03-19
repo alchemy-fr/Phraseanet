@@ -66,7 +66,7 @@ class set_order extends set_abstract
    */
   public function __construct($id)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
 
@@ -202,7 +202,7 @@ class set_order extends set_abstract
    */
   public function send_elements(Array $elements_ids, $force)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
     $pusher = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -219,19 +219,41 @@ class set_order extends set_abstract
       }
     }
 
-    try
-    {
-      $basket = basket_adapter::getInstance($appbox, $this->ssel_id, $session->get_usr_id());
-    }
-    catch (Exception $e)
-    {
-      $basket = basket_adapter::create($appbox, sprintf(_('Commande du %s'), $this->created_on->format('Y-m-d')), $this->user, '', $pusher);
+    $core = \bootstrap::getCore();
 
-      $this->ssel_id = $basket->get_ssel_id();
+    $em = $core->getEntityManager();
+
+    $Basket = null;
+    /* @var $repository \Repositories\BasketRepository */
+    if($this->ssel_id)
+    {
+      $repository = $em->getRepository('\Entities\Basket');
+
+      try
+      {
+        $Basket = $repository->findUserBasket($this->ssel_id, $core->getAuthenticatedUser(), false);
+      }
+      catch(\Exception $e)
+      {
+        $Basket = null;
+      }
+    }
+
+    if(!$Basket)
+    {
+      $Basket = new \Entities\Basket();
+      $Basket->setName(sprintf(_('Commande du %s'), $this->created_on->format('Y-m-d')));
+      $Basket->setOwner($this->user);
+      $Basket->setPusher($core->getAuthenticatedUser());
+
+      $em->persist($Basket);
+      $em->flush();
+
+      $this->ssel_id = $Basket->getId();
 
       $sql = 'UPDATE `order` SET ssel_id = :ssel_id WHERE id = :order_id';
       $stmt = $conn->prepare($sql);
-      $stmt->execute(array(':ssel_id' => $basket->get_ssel_id(), ':order_id' => $this->id));
+      $stmt->execute(array(':ssel_id' => $Basket->getId(), ':order_id' => $this->id));
       $stmt->closeCursor();
     }
 
@@ -254,20 +276,27 @@ class set_order extends set_abstract
       {
         $sbas_id = phrasea::sbasFromBas($basrec['base_id']);
         $record = new record_adapter($sbas_id, $basrec['record_id']);
-        $ret = $basket->push_element($record, false, false);
-        if ($ret['error'] === false)
-        {
-          $params = array(
-              ':usr_id' => $session->get_usr_id()
-              , ':order_id' => $this->id
-              , ':order_element_id' => $order_element_id
-          );
 
-          $stmt->execute($params);
+        $BasketElement = new \Entities\BasketElement();
+        $BasketElement->setRecord($record);
+        $BasketElement->setBasket($Basket);
 
-          $n++;
-          $this->user->ACL()->grant_hd_on($record, $pusher, 'order');
-        }
+        $Basket->addBasketElement($BasketElement);
+
+        $em->persist($BasketElement);
+
+
+        $params = array(
+            ':usr_id' => $session->get_usr_id()
+            , ':order_id' => $this->id
+            , ':order_element_id' => $order_element_id
+        );
+
+        $stmt->execute($params);
+
+        $n++;
+        $this->user->ACL()->grant_hd_on($record, $pusher, 'order');
+
         unset($record);
       }
       catch (Exception $e)
@@ -275,11 +304,13 @@ class set_order extends set_abstract
 
       }
     }
+
+    $em->flush();
     $stmt->closeCursor();
 
     if ($n > 0)
     {
-      $evt_mngr = eventsmanager_broker::getInstance($appbox);
+      $evt_mngr = eventsmanager_broker::getInstance($appbox, $core);
 
       $params = array(
           'ssel_id' => $this->ssel_id,
@@ -301,7 +332,8 @@ class set_order extends set_abstract
    */
   public function deny_elements(Array $elements_ids)
   {
-    $appbox = appbox::get_instance();
+    $Core = bootstrap::getCore();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
 
@@ -328,7 +360,7 @@ class set_order extends set_abstract
 
     if ($n > 0)
     {
-      $evt_mngr = eventsmanager_broker::getInstance($appbox);
+      $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
 
       $params = array(
           'from' => $session->get_usr_id(),

@@ -23,6 +23,7 @@ class appbox extends base
    * @var int
    */
   protected $id;
+
   /**
    *
    * @var appbox
@@ -33,6 +34,7 @@ class appbox extends base
    *
    * constant defining the app type
    */
+
   const BASE_TYPE = self::APPLICATION_BOX;
 
   /**
@@ -43,19 +45,21 @@ class appbox extends base
   protected $cache;
   protected $connection;
   protected $registry;
+  protected $Core;
+
   const CACHE_LIST_BASES = 'list_bases';
-  const CACHE_SBAS_IDS = 'sbas_ids';
+  const CACHE_SBAS_IDS   = 'sbas_ids';
 
   /**
    * Singleton pattern
    *
    * @return appbox
    */
-  public static function get_instance(registryInterface &$registry = null)
+  public static function get_instance(\Alchemy\Phrasea\Core $Core, registryInterface &$registry = null)
   {
     if (!self::$_instance instanceof self)
     {
-      self::$_instance = new self($registry);
+      self::$_instance = new self($Core, $registry);
     }
 
     return self::$_instance;
@@ -66,21 +70,26 @@ class appbox extends base
    *
    * @return appbox
    */
-  protected function __construct(registryInterface $registry=null)
+  protected function __construct(\Alchemy\Phrasea\Core $Core, registryInterface $registry = null)
   {
-    $this->connection = connection::getPDOConnection();
+    $this->Core = $Core;
     if (!$registry)
-      $registry = registry::get_instance();
+      $registry = registry::get_instance($Core);
+    $this->connection = connection::getPDOConnection(null, $registry);
     $this->registry = $registry;
     $this->session = Session_Handler::getInstance($this);
 
-    require dirname(__FILE__) . '/../../config/connexion.inc';
+    $configuration = $Core->getConfiguration();
 
-    $this->host = $hostname;
-    $this->port = $port;
-    $this->user = $user;
-    $this->passwd = $password;
-    $this->dbname = $dbname;
+    $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+    $connexion = $configuration->getConnexion($choosenConnexion);
+
+    $this->host = $connexion->get('host');
+    $this->port = $connexion->get('port');
+    $this->user = $connexion->get('user');
+    $this->passwd = $connexion->get('password');
+    $this->dbname = $connexion->get('dbname');
 
     return $this;
   }
@@ -92,7 +101,7 @@ class appbox extends base
    * @param string $pic_type
    * @return appbox
    */
-  public function write_collection_pic(collection $collection, system_file $pathfile=null, $pic_type)
+  public function write_collection_pic(collection $collection, system_file $pathfile = null, $pic_type)
   {
     if ($pathfile instanceof system_file)
     {
@@ -124,7 +133,7 @@ class appbox extends base
       $collection->update_logo($pathfile);
 
     $registry = registry::get_instance();
-    $file = $registry->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
+    $file     = $registry->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
     if (is_file($file))
     {
       unlink($file);
@@ -166,7 +175,7 @@ class appbox extends base
    * @param <type> $pic_type
    * @return appbox
    */
-  public function write_databox_pic(databox $databox, system_file $pathfile=null, $pic_type)
+  public function write_databox_pic(databox $databox, system_file $pathfile = null, $pic_type)
   {
 
     if ($pathfile instanceof system_file)
@@ -181,7 +190,7 @@ class appbox extends base
     if (!in_array($pic_type, array(databox::PIC_PDF)))
       throw new Exception('unknown pic_type');
     $registry = $databox->get_registry();
-    $file = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id();
+    $file     = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id();
     if (is_file($file))
     {
       unlink($file);
@@ -226,8 +235,8 @@ class appbox extends base
   public function set_collection_order(collection $collection, $ordre)
   {
     $sqlupd = "UPDATE bas SET ord = :ordre WHERE base_id = :base_id";
-    $stmt = $this->get_connection()->prepare($sqlupd);
-    $stmt->execute(array(':ordre' => $ordre, ':base_id' => $collection->get_base_id()));
+    $stmt   = $this->get_connection()->prepare($sqlupd);
+    $stmt->execute(array(':ordre'   => $ordre, ':base_id' => $collection->get_base_id()));
     $stmt->closeCursor();
 
     $collection->get_databox()->delete_data_from_cache(\databox::CACHE_COLLECTIONS);
@@ -244,12 +253,12 @@ class appbox extends base
   public function set_databox_indexable(databox $databox, $boolean)
   {
     $boolean = !!$boolean;
-    $sql = 'UPDATE sbas SET indexable = :indexable WHERE sbas_id = :sbas_id';
+    $sql     = 'UPDATE sbas SET indexable = :indexable WHERE sbas_id = :sbas_id';
 
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute(array(
-        ':indexable' => ($boolean ? '1' : '0'),
-        ':sbas_id' => $databox->get_sbas_id()
+      ':indexable' => ($boolean ? '1' : '0'),
+      ':sbas_id'   => $databox->get_sbas_id()
     ));
     $stmt->closeCursor();
 
@@ -267,7 +276,7 @@ class appbox extends base
 
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute(array(':sbas_id' => $databox->get_sbas_id()));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row       = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $indexable = $row ? $row['indexable'] : null;
@@ -284,13 +293,13 @@ class appbox extends base
   public function set_databox_viewname(databox $databox, $viewname)
   {
     $viewname = strip_tags($viewname);
-    $sql = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
+    $sql      = 'UPDATE sbas SET viewname = :viewname WHERE sbas_id = :sbas_id';
 
     $stmt = $this->get_connection()->prepare($sql);
-    $stmt->execute(array(':viewname' => $viewname, ':sbas_id' => $databox->get_sbas_id()));
+    $stmt->execute(array(':viewname' => $viewname, ':sbas_id'  => $databox->get_sbas_id()));
     $stmt->closeCursor();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
     cache_databox::update($databox->get_sbas_id(), 'structure');
 
@@ -308,7 +317,7 @@ class appbox extends base
 
   public function forceUpgrade(Setup_Upgrade &$upgrader)
   {
-    $upgrader->add_steps(7 + count($this->get_databoxes()));
+    $upgrader->add_steps(8 + count($this->get_databoxes()));
 
     $registry = $this->get_registry();
 
@@ -316,10 +325,24 @@ class appbox extends base
      * Step 1
      */
     $upgrader->set_current_message(_('Flushing cache'));
-    if ($this->get_cache()->ping())
+
+    $this->Core['CacheService']->flushAll();
+
+    $upgrader->add_steps_complete(1);
+
+
+    $upgrader->set_current_message(_('Creating new tables'));
+    $core = bootstrap::getCore();
+    $em   = $core->getEntityManager();
+    //create schema
+
+    if ($em->getConnection()->getDatabasePlatform()->supportsAlterTable())
     {
-      $this->get_cache()->flush();
+      $tool  = new \Doctrine\ORM\Tools\SchemaTool($em);
+      $metas = $em->getMetadataFactory()->getAllMetadata();
+      $tool->updateSchema($metas, true);
     }
+
     $upgrader->add_steps_complete(1);
 
     /**
@@ -359,7 +382,7 @@ class appbox extends base
      */
     foreach ($this->get_databoxes() as $s)
     {
-      $upgrader->set_current_message(sprintf(_('Upgrading %s'),$s->get_viewname()));
+      $upgrader->set_current_message(sprintf(_('Upgrading %s'), $s->get_viewname()));
       $advices = array_merge($advices, $s->upgradeDB(true, $upgrader));
       $upgrader->add_steps_complete(1);
     }
@@ -376,10 +399,9 @@ class appbox extends base
      * Step 9
      */
     $upgrader->set_current_message(_('Flushing cache'));
-    if ($this->get_cache()->ping())
-    {
-      $this->get_cache()->flush();
-    }
+
+    $this->Core['CacheService']->flushAll();
+
     $upgrader->add_steps_complete(1);
 
     return $advices;
@@ -387,15 +409,17 @@ class appbox extends base
 
   protected function post_upgrade(Setup_Upgrade &$upgrader)
   {
+    $Core = bootstrap::getCore();
+
     $upgrader->add_steps(1 + count($this->get_databoxes()));
-    $this->apply_patches($this->get_version(), GV_version, true, $upgrader);
-    $this->setVersion(GV_version);
+    $this->apply_patches($this->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
+    $this->setVersion($Core->getVersion()->getNumber());
     $upgrader->add_steps_complete(1);
 
     foreach ($this->get_databoxes() as $databox)
     {
-      $databox->apply_patches($databox->get_version(), GV_version, true, $upgrader);
-      $databox->setVersion(GV_version);
+      $databox->apply_patches($databox->get_version(), $Core->getVersion()->getNumber(), true, $upgrader);
+      $databox->setVersion($Core->getVersion()->getNumber());
       $upgrader->add_steps_complete(1);
     }
 
@@ -410,12 +434,14 @@ class appbox extends base
    * @param type $write_file
    * @return type
    */
-  public static function create(registryInterface &$registry, connection_interface $conn, $dbname, $write_file = false)
+  public static function create(\Alchemy\Phrasea\Core $Core, registryInterface &$registry, connection_interface $conn, $dbname, $write_file = false)
   {
     $credentials = $conn->get_credentials();
 
     if ($conn->is_multi_db() && trim($dbname) === '')
-      throw new Exception(_('Nom de base de donnee incorrect'));
+    {
+      throw new \Exception(_('Nom de base de donnee incorrect'));
+    }
 
     if ($write_file)
     {
@@ -423,23 +449,67 @@ class appbox extends base
       {
         $credentials['dbname'] = $dbname;
       }
-      $connexion = dirname(__FILE__) . "/../../config/connexion.inc";
-      if (is_file($connexion))
-        unlink($connexion);
 
-      $EOL = PHP_EOL;
-
-      $connexionINI = '<?php' . $EOL;
       foreach ($credentials as $key => $value)
       {
-        $connexionINI .= '$' . $key . ' = "' . str_replace('"', '\"', $value) . '";' . $EOL;
+        $key                = $key == 'hostname' ? 'host' : $key;
+        $connexionINI[$key] = (string) $value;
       }
 
-      if (!file_put_contents($connexion, $connexionINI, FILE_APPEND) !== false)
-        throw new Exception(sprintf(_('Impossible d\'ecrire dans le dossier %s'), dirname(dirname(__FILE__)) . "/config/"));
+      $Core->getConfiguration()->initialize();
+      $connexionINI['driver']  = 'pdo_mysql';
+      $connexionINI['charset'] = 'UTF8';
 
-      if (function_exists('chmod'))
-        chmod($connexion, 0700);
+      $serverName = $registry->get('GV_ServerName');
+
+      $root = __DIR__ . '/../../';
+
+      $connexion = array(
+        'main_connexion' => $connexionINI,
+        'test_connexion' => array(
+          'driver'  => 'pdo_sqlite',
+          'path'    => realpath($root . 'lib/unitTest') . '/tests.sqlite',
+          'charset' => 'UTF8'
+        ));
+
+      $cacheService = "array_cache";
+
+      $Core->getConfiguration()->setConnexions($connexion);
+
+      $services = $Core->getConfiguration()->getConfigurations();
+
+      foreach ($services as $serviceName => $service)
+      {
+        if ($serviceName === "doctrine_prod")
+        {
+
+          $services["doctrine_prod"]["options"]["cache"] = array(
+            "query"    => $cacheService,
+            "result"   => $cacheService,
+            "metadata" => $cacheService
+          );
+        }
+      }
+      $Core->getConfiguration()->setConfigurations($services);
+
+      $arrayConf = $Core->getConfiguration()->getConfigurations();
+
+      foreach ($arrayConf as $key => $value)
+      {
+        if (is_array($value) && array_key_exists('phraseanet', $value))
+        {
+          $arrayConf[$key]["phraseanet"]["servername"] = $serverName;
+        }
+
+        if (is_array($value) && $key === 'prod')
+        {
+          $arrayConf[$key]["cache"] = $cacheService;
+        }
+      }
+
+      $Core->getConfiguration()->setConfigurations($arrayConf);
+
+      $Core->getConfiguration()->setEnvironnement('prod');
     }
     try
     {
@@ -468,7 +538,7 @@ class appbox extends base
 
     try
     {
-      $appbox = self::get_instance($registry);
+      $appbox = self::get_instance($Core, $registry);
       $appbox->insert_datas();
     }
     catch (Exception $e)
@@ -525,7 +595,7 @@ class appbox extends base
 
     $stmt = $this->get_connection()->prepare($sql);
     $stmt->execute();
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
@@ -559,7 +629,7 @@ class appbox extends base
   public static function list_databox_templates()
   {
     $files = array();
-    $dir = new DirectoryIterator(dirname(__FILE__) . '/../conf.d/data_templates/');
+    $dir = new DirectoryIterator(__DIR__ . '/../conf.d/data_templates/');
     foreach ($dir as $fileinfo)
     {
       if ($fileinfo->isFile())

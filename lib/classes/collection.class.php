@@ -126,7 +126,7 @@ class collection implements cache_cacheableInterface
 
     $this->is_active = true;
     $this->delete_data_from_cache();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
     $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
     cache_databox::update($this->databox->get_sbas_id(), 'structure');
@@ -142,7 +142,7 @@ class collection implements cache_cacheableInterface
     $stmt->closeCursor();
     $this->is_active = false;
     $this->delete_data_from_cache();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
     $this->databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
     cache_databox::update($this->databox->get_sbas_id(), 'structure');
@@ -332,7 +332,7 @@ class collection implements cache_cacheableInterface
 
   public function delete()
   {
-    while($this->get_record_amount() > 0)
+    while ($this->get_record_amount() > 0)
     {
       $this->empty_collection();
     }
@@ -342,7 +342,7 @@ class collection implements cache_cacheableInterface
     $stmt->execute(array(':coll_id' => $this->get_coll_id()));
     $stmt->closeCursor();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $sql = "DELETE FROM bas WHERE base_id = :base_id";
     $stmt = $appbox->get_connection()->prepare($sql);
@@ -378,8 +378,10 @@ class collection implements cache_cacheableInterface
   {
     $coll_id = phrasea::collFromBas($base_id);
     $sbas_id = phrasea::sbasFromBas($base_id);
-    if(!$sbas_id || !$coll_id)
-      throw new Exception_Databox_CollectionNotFound();
+    if (!$sbas_id || !$coll_id)
+    {
+      throw new Exception_Databox_CollectionNotFound(sprintf("Collection could not be found"));
+    }
     $databox = databox::get_instance($sbas_id);
 
     return self::get_from_coll_id($databox, $coll_id);
@@ -507,7 +509,7 @@ class collection implements cache_cacheableInterface
     $conn = $appbox->get_connection();
     $new_bas = false;
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $prefs = '<?xml version="1.0" encoding="UTF-8"?>
@@ -540,14 +542,14 @@ class collection implements cache_cacheableInterface
     $stmt->closeCursor();
 
     $new_bas = $conn->lastInsertId();
-
-    phrasea::reset_baseDatas();
-    self::set_admin($new_bas, $user);
     $databox->delete_data_from_cache(databox::CACHE_COLLECTIONS);
 
     $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
     cache_databox::update($sbas_id, 'structure');
 
+
+    phrasea::reset_baseDatas();
+    self::set_admin($new_bas, $user);
 
     return self::get_from_coll_id($databox, $new_id);
   }
@@ -581,7 +583,7 @@ class collection implements cache_cacheableInterface
 
   public static function mount_collection($sbas_id, $coll_id, User_Adapter $user)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $sql = "INSERT INTO bas (base_id, active, server_coll_id, sbas_id, aliases)

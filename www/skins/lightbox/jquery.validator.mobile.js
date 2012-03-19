@@ -2,10 +2,10 @@ $(document).ready(function(){
   if(typeof validator_loaded === 'boolean')
     return;
 
-  $('.agreement_radio').live('mousedown', function(){
+  $('.agreement_radio').live('vmousedown', function(){
     var sselcont_id = $(this).attr('for').split('_').pop();
     var agreement = $('#' + $(this).attr('for')).val() == 'yes' ? '1' : '-1';
-
+  
     $.mobile.pageLoading();
 
     $.ajax({
@@ -24,15 +24,22 @@ $(document).ready(function(){
         $.mobile.pageLoading(true);
       },
       success: function(datas){
-        if(agreement == '1')
-          $('.valid_choice_'+sselcont_id).removeClass('disagree').addClass('agree');
+        if(!datas.error)
+        {
+          if(agreement == '1')
+            $('.valid_choice_'+sselcont_id).removeClass('disagree').addClass('agree');
+          else
+            $('.valid_choice_'+sselcont_id).removeClass('agree').addClass('disagree');
+          $.mobile.pageLoading(true);
+          if(datas.error)
+          {
+            alert(datas.datas);
+            return;
+          }
+        }
         else
-          $('.valid_choice_'+sselcont_id).removeClass('agree').addClass('disagree');
-        $.mobile.pageLoading(true);
-        if(datas.error)
         {
           alert(datas.datas);
-          return;
         }
         return;
       }

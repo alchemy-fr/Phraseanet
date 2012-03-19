@@ -66,7 +66,7 @@ abstract class task_appboxAbstract extends task_abstract
         if (!$this->running)
           break;
 
-        $appbox = appbox::get_instance();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
         try
         {
           $this->load_settings(simplexml_load_string($row['settings']));
@@ -152,12 +152,6 @@ abstract class task_appboxAbstract extends task_abstract
     $this->check_memory_usage()
             ->check_records_done()
             ->check_task_status();
-
-    if ($conn instanceof PDO)
-    {
-      $conn->close();
-      unset($conn);
-    }
 
     if ($rowstodo > 0)
       $this->setProgress(0, 0);
