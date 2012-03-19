@@ -28,12 +28,6 @@ class ArrayCache extends DoctrineArray implements Cache
     return false;
   }
 
-  public function getStats()
-  {
-
-    return null;
-  }
-
   public function get($id)
   {
     if (!$this->contains($id))
@@ -52,13 +46,6 @@ class ArrayCache extends DoctrineArray implements Cache
     }
 
     return;
-  }
-
-  public function flush()
-  {
-    $this->deleteAll();
-
-    return true;
   }
 
 }

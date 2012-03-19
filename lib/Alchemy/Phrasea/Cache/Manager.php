@@ -60,7 +60,7 @@ class Manager
   {
     foreach ($this->registry as $cacheKey => $service_name)
     {
-      $this->get($cacheKey, $service_name)->getDriver()->flush();
+      $this->get($cacheKey, $service_name)->getDriver()->flushAll();
     }
 
     return $this;
@@ -87,8 +87,7 @@ class Manager
 
     if ($this->hasChange($cacheKey, $service_name))
     {
-      $driver->flush();
-
+      $service->getDriver()->flush();
       if ($write)
       {
         $this->registry[$cacheKey] = $service_name;

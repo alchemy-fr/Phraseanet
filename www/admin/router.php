@@ -15,8 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../lib/bootstrap.php";
-bootstrap::register_autoloads();
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('session');

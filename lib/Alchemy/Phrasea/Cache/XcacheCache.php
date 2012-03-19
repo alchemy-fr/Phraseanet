@@ -27,11 +27,6 @@ class XcacheCache extends DoctrineXcache implements Cache
     return false;
   }
 
-  public function getStats()
-  {
-    return null;
-  }
-
   public function get($key)
   {
     if (!$this->contains($key))
@@ -50,11 +45,6 @@ class XcacheCache extends DoctrineXcache implements Cache
     }
 
     return $this;
-  }
-
-  public function flush()
-  {
-    return xcache_clear_cache(XC_TYPE_VAR, 0);
   }
 
 }

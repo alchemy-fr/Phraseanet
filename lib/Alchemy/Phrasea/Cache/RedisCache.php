@@ -99,11 +99,6 @@ class RedisCache extends AbstractCache implements Cache
     return true;
   }
 
-  public function getStats()
-  {
-    return null;
-  }
-
   public function get($key)
   {
     if (!$this->contains($key))
@@ -124,7 +119,7 @@ class RedisCache extends AbstractCache implements Cache
     return $this;
   }
 
-  public function flush()
+  public function flushAll()
   {
     return $this->_redis->flushAll();
   }

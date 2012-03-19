@@ -23,7 +23,6 @@ use Doctrine\Common\DataFixtures\Loader;
  * @link        www.phraseanet.com
  */
 
-\bootstrap::register_autoloads();
 
 
 abstract class PhraseanetPHPUnitAbstract extends WebTestCase

@@ -20,6 +20,11 @@ class XcacheCacheTest extends \PHPUnit_Framework_TestCase
    */
   public function setUp()
   {
+    if(!function_exists('xcache_info'))
+    {
+      $this->markTestSkipped('Xcache not loaded');
+    }
+    
     $this->object = new \Alchemy\Phrasea\Cache\XcacheCache;
   }
 
