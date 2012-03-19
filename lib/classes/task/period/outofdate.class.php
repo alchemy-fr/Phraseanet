@@ -553,7 +553,8 @@ class task_period_outofdate extends task_abstract
       if(!$conn->ping())
       {
         $this->log(("Warning : abox connection lost, restarting in 10 min."));
-        sleep(60 * 10);
+        for($i=0; $i<60 * 10; $i++)
+          sleep(1);
         $this->running = false;
 
         return(self::RETURNSTATUS_TORESTART);
@@ -568,12 +569,12 @@ class task_period_outofdate extends task_abstract
       catch(Exception $e)
       {
         $this->log(("dbox connection lost, restarting in 10 min."));
-        sleep(60 * 10);
+        for($i=0; $i<60 * 10; $i++)
+          sleep(1);
         $this->running = false;
 
         return(self::RETURNSTATUS_TORESTART);
       }
-
 
       $this->set_last_exec_time();
 
@@ -671,14 +672,27 @@ class task_period_outofdate extends task_abstract
     $nchanged = 0;
     foreach($tsql as $xsql)
     {
-     $stmt = $this->connbas->prepare($xsql['sql']);
-     $stmt->execute($xsql['params']);
-     $n = $stmt->rowCount();
-     $stmt->closeCursor();
+      try
+      {
+        $stmt = $this->connbas->prepare($xsql['sql']);
+        if($stmt->execute($xsql['params']))
+        {
+          $n = $stmt->rowCount();
+          $stmt->closeCursor();
 
-     $nchanged += $n;
-     if($n > 0)
-        $this->log(sprintf(("SQL=%s\n - %s changes"), $xsql['sql'], $n));
+          $nchanged += $n;
+          if($n > 0)
+             $this->log(sprintf("SQL='%s' ; parms=%s - %s changes", $xsql['sql'], var_export($xsql['params']), $n));
+        }
+        else
+        {
+          $this->log(sprintf("ERROR SQL='%s' ; parms=%s", $xsql['sql'], var_export($xsql['params'], true)));
+        }
+      }
+      catch (ErrorException $e)
+      {
+        $this->log(sprintf("ERROR SQL='%s' ; parms=%s", $xsql['sql'], var_export($xsql['params'], true)));
+      }
     }
 
     $ret = ($nchanged > 0 ? $nchanged : 'NORECSTODO');
@@ -686,228 +700,6 @@ class task_period_outofdate extends task_abstract
     return($ret);
   }
 
-
-
-
-  /*
-    function doRecords()
-    {
-    $ndone = 0;
-    $ret = 'NORECSTODO';
-
-    $date1 = $date2 = NULL;
-    $field1 = $field2 = '';
-
-    // test : DATE 1
-    if(($field1 = trim($this->sxTaskSettings->field1)) != '')
-    {
-    $date1 = time();
-    if(($delta = (int) ($this->sxTaskSettings->fieldDv1)) > 0)
-    {
-    if($this->sxTaskSettings->fieldDs1 == '-')
-    $date1 += 86400 * $delta;
-    else
-    $date1 -= 86400 * $delta;
-    }
-    $date1 = date("YmdHis", $date1);
-    }
-    // test : DATE 2
-    if(($field2 = trim($this->sxTaskSettings->field2)) != '')
-    {
-    $date2 = time();
-    if(($delta = (int) ($this->sxTaskSettings->fieldDv2)) > 0)
-    {
-    if($this->sxTaskSettings->fieldDs2 == '-')
-    $date2 += 86400 * $delta;
-    else
-    $date2 -= 86400 * $delta;
-    }
-    $date2 = date("YmdHis", $date2);
-    }
-
-
-    $sqlset = $params = $tmp_params = array();
-    for($i = 0; $i <= 2; $i++)
-    {
-    $sqlwhere[$i] = '';
-    $sqlset[$i] = '';
-    $x = 'status' . $i;
-    @list($tostat, $statval) = explode('_', (string) ($this->sxTaskSettings->{$x}));
-    if($tostat >= 4 && $tostat <= 63)
-    {
-    if($statval == '0')
-    {
-    $sqlset[$i] = 'status=status & ~(1<<' . $tostat . ')';
-    $sqlwhere[$i] .= '(status & (1<<' . $tostat . ') = 0)';
-    }
-    elseif($statval == '1')
-    {
-    $sqlset[$i] = 'status=status|(1<<' . $tostat . ')';
-    $sqlwhere[$i] .= '(status & (1<<' . $tostat . ') != 0)';
-    }
-    }
-    $x = 'coll' . $i;
-    if(($tocoll = (string) ($this->sxTaskSettings->{$x})) != '')
-    {
-    $sqlset[$i] .= ( $sqlset[$i] ? ', ' : '') . ('coll_id = :coll_id_set' . $i);
-    $sqlwhere[$i] .= ( $sqlwhere[$i] ? ' AND ' : '') . '(coll_id = :coll_id_where' . $i . ')';
-    $tmp_params[':coll_id_set' . $i] = $tocoll;
-    $tmp_params[':coll_id_where' . $i] = $tocoll;
-    }
-    }
-    for($i = 0; $i <= 2; $i++)
-    {
-    //      if(!$sqlwhere[$i])
-    //        $sqlwhere[$i] = '1';
-    }
-
-    $nchanged = 0;
-    // $sqlupd = 'UPDATE record INNER JOIN prop ON prop.record_id=record.record_id';
-
-    if($date1)
-    {
-    $params = array();
-    $params[':name1'] = $field1;
-    $params[':date1'] = $date1;
-    $params[':coll_id_set0'] = $tmp_params[':coll_id_set0'];
-
-    $w = 'p1.name = :name1 AND :date1 <= p1.value';
-    if($sqlwhere[1] && $sqlwhere[2])
-    {
-    $w .= ' AND ((' . $sqlwhere[1] . ') OR (' . $sqlwhere[2] . '))';
-    $params[':coll_id_where1'] = $tmp_params[':coll_id_where1'];
-    $params[':coll_id_where2'] = $tmp_params[':coll_id_where2'];
-    }
-    else
-    {
-    if($sqlwhere[1])
-    {
-    $w .= ' AND ' . $sqlwhere[1];
-    $params[':coll_id_where1'] = $tmp_params[':coll_id_where1'];
-    }
-    elseif($sqlwhere[2])
-    {
-    $w .= ' AND ' . $sqlwhere[2];
-    $params[':coll_id_where2'] = $tmp_params[':coll_id_where2'];
-    }
-    }
-
-    $sql = "UPDATE prop AS p1 INNER JOIN record USING(record_id)
-    SET " . $sqlset[0] .
-    " WHERE " . $w;
-    printf("%d : %s \n%s", __LINE__, $sql, var_export($params, true));
-
-    $stmt = $this->connbas->prepare($sql);
-    $stmt->execute($params);
-    $n = $stmt->rowCount();
-    $stmt->closeCursor();
-
-    $nchanged += $n;
-    if($n > 0)
-    $this->log(sprintf(("SQL=%s\n - %s changes"), $sql, $n));
-    }
-
-
-
-
-
-    if($date2 && $date1)
-    {
-    $params = array();
-    $params[':name1'] = $field1;
-    $params[':name2'] = $field2;
-    $params[':date1'] = $date1;
-    $params[':date2'] = $date2;
-    $params[':coll_id_set1'] = $tmp_params[':coll_id_set1'];
-
-    $w = 'p1.name = :name1 AND p2.name = :name2 AND :date1 > p1.value AND :date2 <= p2.value';
-    if($sqlwhere[0] && $sqlwhere[2])
-    {
-    $w .= ' AND ((' . $sqlwhere[0] . ') OR (' . $sqlwhere[2] . '))';
-    $params[':coll_id_where0'] = $tmp_params[':coll_id_where0'];
-    $params[':coll_id_where2'] = $tmp_params[':coll_id_where2'];
-    }
-    else
-    {
-    if($sqlwhere[0])
-    {
-    $w .= ' AND ' . $sqlwhere[0];
-    $params[':coll_id_where0'] = $tmp_params[':coll_id_where0'];
-    }
-    elseif($sqlwhere[2])
-    {
-    $w .= ' AND ' . $sqlwhere[2];
-    $params[':coll_id_where2'] = $tmp_params[':coll_id_where2'];
-    }
-    }
-
-    $sql = "UPDATE (prop AS p1 INNER JOIN prop AS p2 USING(record_id))
-    INNER JOIN record USING(record_id)
-    SET " . $sqlset[1] .
-    " WHERE " . $w;
-    printf("%d : %s \n%s", __LINE__, $sql, var_export($params, true));
-
-    $stmt = $this->connbas->prepare($sql);
-    $stmt->execute($params);
-    $n = $stmt->rowCount();
-    $stmt->closeCursor();
-
-    $nchanged += $n;
-    if($n > 0)
-    $this->log(sprintf(("SQL=%s\n - %s changes"), $sql, $n));
-    }
-
-
-
-    if($date2)
-    {
-    $params = array();
-    $params[':name2'] = $field2;
-    $params[':date2'] = $date2;
-    $params[':coll_id_set2'] = $tmp_params[':coll_id_set2'];
-
-    $w = 'p2.name = :name2 AND :date2 > p2.value';
-    if($sqlwhere[0] && $sqlwhere[1])
-    {
-    $w .= ' AND ((' . $sqlwhere[0] . ') OR (' . $sqlwhere[2] . '))';
-    $params[':coll_id_where0'] = $tmp_params[':coll_id_where0'];
-    $params[':coll_id_where1'] = $tmp_params[':coll_id_where1'];
-    }
-    else
-    {
-    if($sqlwhere[0])
-    {
-    $w .= ' AND ' . $sqlwhere[0];
-    $params[':coll_id_where0'] = $tmp_params[':coll_id_where0'];
-    }
-    elseif($sqlwhere[1])
-    {
-    $w .= ' AND ' . $sqlwhere[1];
-    $params[':coll_id_where1'] = $tmp_params[':coll_id_where1'];
-    }
-    }
-
-    $sql = "UPDATE prop AS p2 INNER JOIN record USING(record_id)
-    SET " . $sqlset[2] .
-    " WHERE " . $w;
-
-    printf("%d : %s \n%s", __LINE__, $sql, var_export($params, true));
-
-    $stmt = $this->connbas->prepare($sql);
-    $stmt->execute($params);
-    $n = $stmt->rowCount();
-    $stmt->closeCursor();
-
-    $nchanged += $n;
-    if($n > 0)
-    $this->log(sprintf(("SQL=%s\n - %s changes"), $sql, $n));
-    }
-
-    $ret = ($nchanged > 0 ? $nchanged : 'NORECSTODO');
-
-    return($ret);
-    }
-   */
 
   private function calcSQL($sxTaskSettings)
   {
@@ -1007,22 +799,9 @@ class task_period_outofdate extends task_abstract
       $sql = "UPDATE prop AS p1 INNER JOIN record USING(record_id)
               SET " . $sqlset[0] .
               " WHERE " . $w;
-// printf("%d : %s \n%s", __LINE__, $sql, var_export($params, true));
-
+ 
       $ret[] = array('sql'=>$sql, 'params'=>$params);
-
-//      $stmt = $this->connbas->prepare($sql);
-//      $stmt->execute($params);
-//      $n = $stmt->rowCount();
-//      $stmt->closeCursor();
-//
-//      $nchanged += $n;
-//      if($n > 0)
-//        $this->log(sprintf(("SQL=%s\n - %s changes"), $sql, $n));
     }
-
-
-
 
 
     if($date1 && $date2)
@@ -1059,20 +838,9 @@ class task_period_outofdate extends task_abstract
              INNER JOIN record USING(record_id)
               SET " . $sqlset[1] .
               " WHERE " . $w;
-// printf("%d : %s \n%s", __LINE__, $sql, var_export($params, true));
 
       $ret[] = array('sql'=>$sql, 'params'=>$params);
-
-//      $stmt = $this->connbas->prepare($sql);
-//      $stmt->execute($params);
-//      $n = $stmt->rowCount();
-//      $stmt->closeCursor();
-//
-//      $nchanged += $n;
-//      if($n > 0)
-//        $this->log(sprintf(("SQL=%s\n - %s changes"), $sql, $n));
     }
-
 
 
     if($date2 && $sqlset[2])
@@ -1085,7 +853,7 @@ class task_period_outofdate extends task_abstract
       $w = 'p2.name = :name2 AND :date2 > p2.value';
       if($sqlwhere[0] && $sqlwhere[1])
       {
-        $w .= ' AND ((' . $sqlwhere[0] . ') OR (' . $sqlwhere[2] . '))';
+        $w .= ' AND ((' . $sqlwhere[0] . ') OR (' . $sqlwhere[1] . '))';
         $params[':coll_id_where0'] = $tmp_params[':coll_id_where0'];
         $params[':coll_id_where1'] = $tmp_params[':coll_id_where1'];
       }
@@ -1107,122 +875,14 @@ class task_period_outofdate extends task_abstract
              SET " . $sqlset[2] .
               " WHERE " . $w;
 
-// printf("%d : %s \n%s", __LINE__, $sql, var_export($params, true));
-
       $ret[] = array('sql'=>$sql, 'params'=>$params);
-
-//      $stmt = $this->connbas->prepare($sql);
-//      $stmt->execute($params);
-//      $n = $stmt->rowCount();
-//      $stmt->closeCursor();
-//
-//      $nchanged += $n;
-//      if($n > 0)
-//        $this->log(sprintf(("SQL=%s\n - %s changes"), $sql, $n));
     }
 
     return($ret);
   }
 
-  private function no_calcSQL($sxTaskSettings)
-  {
-    $ret = array();
 
-    $date1 = $date2 = time();
-    $field1 = $field2 = '';
-
-    // test : DATE 1
-    if(($field1 = trim($sxTaskSettings->field1)) != '')
-    {
-      if(($delta = (int) ($sxTaskSettings->fieldDv1)) > 0)
-      {
-        if($sxTaskSettings->fieldDs1 == '-')
-          $date1 += 86400 * $delta;
-        else
-          $date1 -= 86400 * $delta;
-      }
-    }
-    // test : DATE 2
-    if(($field2 = trim($sxTaskSettings->field2)) != '')
-    {
-      if(($delta = (int) ($sxTaskSettings->fieldDv2)) > 0)
-      {
-        if($sxTaskSettings->fieldDs2 == '-')
-          $date2 += 86400 * $delta;
-        else
-          $date2 -= 86400 * $delta;
-      }
-    }
-
-    $date1 = date("YmdHis", $date1);
-    $date2 = date("YmdHis", $date2);
-
-    $sqlset = array();
-    for($i = 0; $i <= 2; $i++)
-    {
-      $sqlset[$i] = '';
-      $x = 'status' . $i;
-      @list($tostat, $statval) = explode('_', (string) ($sxTaskSettings->{$x}));
-      if($tostat >= 4 && $tostat <= 63)
-      {
-        if($statval == '0')
-          $sqlset[$i] = 'status=status&~(1<<' . $tostat . ')';
-        elseif($statval == '1')
-          $sqlset[$i] = 'status=status|(1<<' . $tostat . ')';
-      }
-      $x = 'coll' . $i;
-      if(($tocoll = (string) ($sxTaskSettings->{$x})) != '')
-        $sqlset[$i] .= ($sqlset[$i] ? ', ' : '') . ('coll_id=\'' . $tocoll . '\'');
-    }
-
-    // $sqlupd = 'UPDATE record INNER JOIN prop ON prop.record_id=record.record_id';
-
-    if($sqlset[0] && $field1)
-    {
-      $sql = 'UPDATE prop AS p1 INNER JOIN record USING(record_id)' .
-              ' SET ' . $sqlset[0] .
-              ' WHERE p1.name=\'' . $field1 . '\' AND \'' . $date1 . '\'<=p1.value';
-      $ret[] = $sql;
-    }
-
-    if($sqlset[1])
-    {
-      if($field1 && $field2)
-      {
-        $sql = 'UPDATE (prop AS p1 INNER JOIN prop AS p2 USING(record_id))' .
-                ' INNER JOIN record USING(record_id)' .
-                ' SET ' . $sqlset[1] .
-                ' WHERE (p1.name=\'' . $field1 . '\' AND \'' . $date1 . '\'>p1.value)' .
-                ' AND (p2.name=\'' . $field2 . '\' AND \'' . $date2 . '\'<=p2.value)';
-        $ret[] = $sql;
-      }
-      elseif($field1)
-      {
-        $sql = 'UPDATE prop AS p1 INNER JOIN record USING(record_id)' .
-                ' SET ' . $sqlset[1] .
-                ' WHERE p1.name=\'' . $field1 . '\' AND \'' . $date1 . '\'>p1.value';
-        $ret[] = $sql;
-      }
-      elseif($field2)
-      {
-        $sql = 'UPDATE prop AS p2 INNER JOIN record USING(record_id)' .
-                ' SET ' . $sqlset[1] .
-                ' WHERE p2.name=\'' . $field2 . '\' AND \'' . $date2 . '\'<=p2.value';
-        $ret[] = $sql;
-      }
-    }
-
-    if($sqlset[2] && $field2)
-    {
-      $sql = 'UPDATE prop AS p2 INNER JOIN record USING(record_id)' .
-              ' SET ' . $sqlset[2] .
-              ' WHERE p2.name=\'' . $field2 . '\' AND \'' . $date2 . '\'>p2.value';
-      $ret[] = $sql;
-    }
-
-    return($ret);
-  }
-
+  
   public function facility()
   {
     $ret = NULL;
@@ -1279,6 +939,6 @@ class task_period_outofdate extends task_abstract
     }
     print(json_encode($ret));
   }
-
 }
+
 ?>

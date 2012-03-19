@@ -17,7 +17,6 @@
  */
 abstract class task_databoxAbstract extends task_abstract
 {
-
 //  abstract public function help();
 //
 //  abstract public function getName();
@@ -34,17 +33,20 @@ abstract class task_databoxAbstract extends task_abstract
 
   protected function run2()
   {
-    while ($this->running)
+    while($this->running)
     {
       try
       {
         $conn = connection::getPDOConnection();
       }
-      catch (Exception $e)
+      catch(Exception $e)
       {
         $this->log($e->getMessage());
         $this->log(("Warning : abox connection lost, restarting in 10 min."));
-        sleep(60 * 10);
+
+        for($t = 60 * 10; $this->running && $t; $t--) // DON'T do sleep(600) because it prevents ticks !
+          sleep(1);
+
         $this->running = false;
         $this->return_value = self::RETURNSTATUS_TORESTART;
 
@@ -63,24 +65,24 @@ abstract class task_databoxAbstract extends task_abstract
         $this->records_done = 0;
         $duration = time();
       }
-      catch (Exception $e)
+      catch(Exception $e)
       {
         $this->task_status = self::STATUS_TOSTOP;
         $this->return_value = self::RETURNSTATUS_STOPPED;
         $rs = array();
       }
-      foreach ($rs as $row)
+      foreach($rs as $row)
       {
-        if (!$this->running)
+        if(!$this->running)
           break;
 
         $this->sbas_id = (int) $row['sbas_id'];
 
-        if ($this->mono_sbas_id && $this->sbas_id !== $this->mono_sbas_id)
+        if($this->mono_sbas_id && $this->sbas_id !== $this->mono_sbas_id)
         {
           continue;
         }
-        if ($this->mono_sbas_id)
+        if($this->mono_sbas_id)
         {
           $this->log('This task works on ' . phrasea::sbas_names($this->mono_sbas_id));
         }
@@ -89,21 +91,25 @@ abstract class task_databoxAbstract extends task_abstract
         {
           $this->load_settings(simplexml_load_string($row['settings']));
         }
-        catch (Exception $e)
+        catch(Exception $e)
         {
           $this->log($e->getMessage());
           continue;
         }
 
         $this->current_state = self::STATE_OK;
-        $this->process_sbas()
-                ->check_current_state()
-                ->flush_records_sbas();
+        $this->process_sbas()->check_current_state();
+        $this->process_sbas()->flush_records_sbas();
       }
 
       $this->increment_loops();
       $this->pause($duration);
     }
+    $this->process_sbas()->check_current_state();
+    $this->process_sbas()->flush_records_sbas();
+
+    $this->set_status($this->return_value);
+
 
     return;
   }
@@ -126,7 +132,7 @@ abstract class task_databoxAbstract extends task_abstract
        */
       $rs = $this->retrieve_sbas_content($databox);
     }
-    catch (Exception $e)
+    catch(Exception $e)
     {
       $this->log('Error  : ' . $e->getMessage());
       $rs = array();
@@ -135,10 +141,10 @@ abstract class task_databoxAbstract extends task_abstract
     $rowstodo = count($rs);
     $rowsdone = 0;
 
-    if ($rowstodo > 0)
+    if($rowstodo > 0)
       $this->setProgress(0, $rowstodo);
 
-    foreach ($rs as $row)
+    foreach($rs as $row)
     {
       try
       {
@@ -148,7 +154,7 @@ abstract class task_databoxAbstract extends task_abstract
          */
         $this->process_one_content($databox, $row);
       }
-      catch (Exception $e)
+      catch(Exception $e)
       {
         $this->log("Exception : " . $e->getMessage()
                 . " " . basename($e->getFile()) . " " . $e->getLine());
@@ -166,7 +172,7 @@ abstract class task_databoxAbstract extends task_abstract
               ->check_records_done()
               ->check_task_status();
 
-      if (!$this->running)
+      if(!$this->running)
         break;
     }
 
@@ -175,11 +181,16 @@ abstract class task_databoxAbstract extends task_abstract
             ->check_records_done()
             ->check_task_status();
 
-    if ($rowstodo > 0)
+    if($connbas instanceof PDO)
+    {
+      $connbas->close();
+      unset($connbas);
+    }
+
+    if($rowstodo > 0)
       $this->setProgress(0, 0);
 
     return $this;
   }
 
 }
-

@@ -20,6 +20,8 @@ abstract class task_abstract
   const STATE_MAXMEGSREACHED = 'STATE_MAXMEGS';
   const STATE_MAXRECSDONE = 'STATE_MAXRECS';
   const STATE_FINISHED = 'STATE_FINISHED';
+  
+  const SIGNAL_SCHEDULER_DIED = 'SIGNAL_SCHEDULER_DIED';
 
   protected $suicidable = false;
   protected $launched_by = 0;
@@ -87,6 +89,9 @@ abstract class task_abstract
    */
   protected $return_value;
   protected $runner;
+  
+  private $input;
+  private $output;
 
   /**
    * delay between two loops
@@ -102,7 +107,15 @@ abstract class task_abstract
 
   public function get_status()
   {
-    return $this->task_status;
+    $conn = connection::getPDOConnection();
+    $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
+    $stmt = $conn->prepare($sql);
+    $stmt->execute(array(':taskid' => $this->taskid));
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    if(!$row)
+      throw new Exception('Unknown task id');
+    return $row['status'];
   }
 
   public function printInterfaceHEAD()
@@ -129,7 +142,7 @@ abstract class task_abstract
         , self::RETURNSTATUS_TORESTART
         , self::STATUS_TOSTART
     );
-    if (!in_array($status, $av_status))
+    if(!in_array($status, $av_status))
       throw new Exception(sprintf('unknown status `%s`', $status));
 
 
@@ -139,24 +152,24 @@ abstract class task_abstract
     $stmt = $conn->prepare($sql);
     $stmt->execute(array(':status' => $status, ':taskid' => $this->get_task_id()));
     $stmt->closeCursor();
-
+$this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
     $this->task_status = $status;
 
     return $this->task_status;
   }
 
-  public function set_pid($pid)
-  {
-    $conn = connection::getPDOConnection();
-
-    $sql = 'UPDATE task2 SET pid = :pid WHERE task_id = :taskid';
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':pid' => $pid, ':taskid' => $this->get_task_id()));
-    $stmt->closeCursor();
-
-    return $this;
-  }
-
+//  public function set_pid($pid)
+//  {
+//    $conn = connection::getPDOConnection();
+//
+//    $sql = 'UPDATE task2 SET pid = :pid WHERE task_id = :taskid';
+//    $stmt = $conn->prepare($sql);
+//    $stmt->execute(array(':pid' => $pid, ':taskid' => $this->get_task_id()));
+//    $stmt->closeCursor();
+//
+//    return $this;
+//  }
+  // 'active' means 'auto-start when scheduler starts' 
   public function set_active($boolean)
   {
     $conn = connection::getPDOConnection();
@@ -220,6 +233,7 @@ abstract class task_abstract
   {
     return $this->crash_counter;
   }
+
   public function increment_crash_counter()
   {
     $conn = connection::getPDOConnection();
@@ -237,6 +251,7 @@ abstract class task_abstract
     return $this->settings;
   }
 
+  // 'active' means 'auto-start when scheduler starts' 
   public function is_active()
   {
     return $this->active;
@@ -261,14 +276,15 @@ abstract class task_abstract
   function __construct($taskid)
   {
     $this->taskid = $taskid;
+
     phrasea::use_i18n(Session_Handler::get_locale());
 
     $this->system = system_server::get_platform();
 
     $this->launched_by = array_key_exists("REQUEST_URI", $_SERVER) ? self::LAUCHED_BY_BROWSER : self::LAUCHED_BY_COMMANDLINE;
-    if ($this->system != "DARWIN" && $this->system != "WINDOWS" && $this->system != "LINUX")
+    if($this->system != "DARWIN" && $this->system != "WINDOWS" && $this->system != "LINUX")
     {
-      if ($this->launched_by == self::LAUCHED_BY_COMMANDLINE)
+      if($this->launched_by == self::LAUCHED_BY_COMMANDLINE)
       {
 //        printf("Desole, ce programme ne fonctionne pas sous '" . $this->system . "'.\n");
         flush();
@@ -277,7 +293,7 @@ abstract class task_abstract
     }
     else
     {
-      if ($this->launched_by == self::LAUCHED_BY_COMMANDLINE)
+      if($this->launched_by == self::LAUCHED_BY_COMMANDLINE)
       {
         flush();
       }
@@ -287,11 +303,14 @@ abstract class task_abstract
     {
       $conn = connection::getPDOConnection();
     }
-    catch (Exception $e)
+    catch(Exception $e)
     {
       $this->log($e->getMessage());
       $this->log(("Warning : abox connection lost, restarting in 10 min."));
-      sleep(60 * 10);
+
+      for($t = 60 * 10; $this->running && $t > 0; $t--) // DON'T do sleep(600) because it prevents ticks !
+        sleep(1);
+
       $this->running = false;
 
       return('');
@@ -302,7 +321,7 @@ abstract class task_abstract
     $stmt->execute(array(':taskid' => $this->get_task_id()));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
-    if (!$row)
+    if(!$row)
       throw new Exception('Unknown task id');
     $this->title = $row['name'];
     $this->crash_counter = (int) $row['crashed'];
@@ -347,24 +366,24 @@ abstract class task_abstract
 
   public function delete()
   {
-    $conn = connection::getPDOConnection();
-    $registry = registry::get_instance();
-    $sql = "DELETE FROM task2 WHERE task_id = :task_id";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':task_id' => $this->get_task_id()));
-    $stmt->closeCursor();
+    if(!$this->get_pid()) // do not delete a running task
+    {
+      $conn = connection::getPDOConnection();
+      $registry = registry::get_instance();
+      $sql = "DELETE FROM task2 WHERE task_id = :task_id";
+      $stmt = $conn->prepare($sql);
+      $stmt->execute(array(':task_id' => $this->get_task_id()));
+      $stmt->closeCursor();
 
-    $lock_file = $registry->get('GV_RootPath') . 'tmp/locks/task_' . $this->get_task_id() . '.lock';
-    if (is_writable($lock_file))
-      unlink($lock_file);
-
-    return;
+      $lock_file = $registry->get('GV_RootPath') . 'tmp/locks/task_' . $this->get_task_id() . '.lock';
+      @unlink($lock_file);
+    }
   }
 
   protected function check_memory_usage()
   {
     $current_memory = memory_get_usage();
-    if ($current_memory >> 20 >= $this->maxmegs)
+    if($current_memory >> 20 >= $this->maxmegs)
     {
       $this->log(sprintf(
                       "Max memory (%s M) reached (current is %s M)"
@@ -379,7 +398,7 @@ abstract class task_abstract
 
   protected function check_records_done()
   {
-    if ($this->records_done >= (int) ($this->maxrecs))
+    if($this->records_done >= (int) ($this->maxrecs))
     {
       $this->current_state = self::STATE_MAXRECSDONE;
     }
@@ -400,26 +419,68 @@ abstract class task_abstract
 
   public function get_pid()
   {
-    $conn = connection::getPDOConnection();
-    $sql = 'SELECT pid FROM task2 WHERE task_id = :taskid';
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':taskid' => $this->get_task_id()));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+    $pid = NULL;
 
-    $pid = $row ? $row['pid'] : null;
+    $taskid = $this->get_task_id();
 
+    $registry = registry::get_instance();
+    system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
+
+    if(($fd = fopen(($lockfile = ($lockdir . 'task_' . $taskid . '.lock')), 'a+')))
+    {
+// ************************************************
+// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : fopen(%s) \n", __FILE__, __LINE__, $lockfile), FILE_APPEND);
+      if(flock($fd, LOCK_EX | LOCK_NB) === FALSE)
+      {
+        // already locked ? : task running
+        $pid = fgets($fd);
+// ************************************************
+// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : can't flock() : pid=%s \n", __FILE__, __LINE__, $pid), FILE_APPEND);
+      }
+      else
+      {
+        // can lock : not running
+// ************************************************
+// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : NOT RUNNING can flock() : pid=%s \n", __FILE__, __LINE__, file_get_contents($lockfile)), FILE_APPEND);
+        flock($fd, LOCK_UN);
+      }
+      fclose($fd);
+    }
     return $pid;
   }
 
+  /*
+    public function is_running()
+    {
+    $retval = false;
+    $registry = registry::get_instance();
+    $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
+    $tasklock = fopen($lockfile = ($lockdir . '/task_' . $this->get_task_id() . '.lock'), 'a+');
+
+    if (flock($tasklock, LOCK_SH | LOCK_NB) != true)
+    {
+    $retval = true;
+    }
+    else
+    {
+    ftruncate($tasklock, 0);
+    flock($tasklock, LOCK_UN | LOCK_NB);
+    fclose($tasklock);
+    unlink($lockfile);
+    }
+
+    return $retval;
+    }
+   */
+
   protected function check_current_state()
   {
-    switch ($this->current_state)
+    switch($this->current_state)
     {
       case self::STATE_MAXMEGSREACHED:
       case self::STATE_MAXRECSDONE:
       default:
-        if ($this->get_runner() == self::RUNNER_SCHEDULER)
+        if($this->get_runner() == self::RUNNER_SCHEDULER)
         {
           $this->task_status = self::STATUS_TOSTOP;
           $this->return_value = self::RETURNSTATUS_TORESTART;
@@ -427,7 +488,7 @@ abstract class task_abstract
         break;
       case self::STATE_FINISHED:
         $this->task_status = self::STATUS_TOSTOP;
-        if ($this->suicidable === true)
+        if($this->suicidable === true)
         {
           $this->return_value = self::RETURNSTATUS_TODELETE;
           $this->log('will hang myself');
@@ -456,13 +517,13 @@ abstract class task_abstract
       $stmt->execute(array(':taskid' => $this->get_task_id()));
       $row = $stmt->fetch(PDO::FETCH_ASSOC);
       $stmt->closeCursor();
-      if (!$row || $row['status'] == 'tostop')
+      if(!$row || $row['status'] == 'tostop')
       {
         $this->task_status = self::STATUS_TOSTOP;
         $this->return_value = self::RETURNSTATUS_STOPPED;
       }
     }
-    catch (Exception $e)
+    catch(Exception $e)
     {
       $this->return_value = self::RETURNSTATUS_STOPPED;
       $this->task_status = self::STATUS_TOSTOP;
@@ -471,23 +532,36 @@ abstract class task_abstract
 
     return $this;
   }
+  
+  public function set_running($stat)
+  {
+    $this->running = $stat;
+  }
 
   protected function pause($when_started=0)
   {
     $this->log($this->records_done . ' records done');
-    if ($this->running)// && $this->records_done == 0)
+    if($this->running)// && $this->records_done == 0)
     {
       $when_started = time() - $when_started;
-      if ($when_started < $this->period)
+      if($when_started < $this->period)
       {
         $conn = connection::getPDOConnection();
-        sleep($this->period - $when_started);
+        $conn->close();
+        unset($conn);
+        for($t = $this->period - $when_started; $this->running && $t > 0; $t--) // DON'T do sleep($this->period - $when_started) because it prevents ticks !
+          sleep(1);
       }
     }
   }
 
-  final public function run($runner)
+  final public function run($runner, $input=null, $output = null)
   {
+    $this->input = $input;
+    $this->output = $output;
+
+// ************************************************
+// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : LAUNCHING : tid=%s \n", __FILE__, __LINE__, $this->get_task_id()), FILE_APPEND);
     $taskid = $this->get_task_id();
     $conn = connection::getPDOConnection();
 
@@ -495,9 +569,11 @@ abstract class task_abstract
     system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
     $locker = true;
     $tasklock = fopen(($lockfile = ($lockdir . 'task_' . $taskid . '.lock')), 'a+');
-    if (flock($tasklock, LOCK_EX | LOCK_NB, $locker) != true)
+    if(flock($tasklock, LOCK_EX | LOCK_NB, $locker) === FALSE)
     {
-      printf(("runtask::ERROR : task already running.\n"), $taskid);
+// ************************************************
+// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : LAUNCH OPENED AND CANT LOCK : pid=%s \n", __FILE__, __LINE__, getmypid()), FILE_APPEND);
+      $this->log("runtask::ERROR : task already running.");
       fclose($tasklock);
 
       return;
@@ -507,67 +583,46 @@ abstract class task_abstract
       ftruncate($tasklock, 0);
       fwrite($tasklock, '' . getmypid());
       fflush($tasklock);
+// ************************************************
+// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : LAUNCH OPENED AND LOCKED : pid=%s \n", __FILE__, __LINE__, getmypid()), FILE_APPEND);
     }
 
     $this->set_runner($runner);
-    $this->set_pid(getmypid());
+//    $this->set_pid(getmypid());
     $this->set_status(self::STATUS_STARTED);
 
     $this->running = true;
+
     $this->run2();
-    $this->set_pid(0);
 
     flock($tasklock, LOCK_UN | LOCK_NB);
     ftruncate($tasklock, 0);
     fclose($tasklock);
     @unlink($lockfile);
 
-    if ($this->return_value == self::RETURNSTATUS_TODELETE)
+    if($this->return_value == self::RETURNSTATUS_TODELETE)
       $this->delete();
     else
       $this->set_status($this->return_value);
-
     return $this;
   }
 
   abstract protected function run2();
 
-  public function is_running()
-  {
-    $retval = false;
-    $registry = registry::get_instance();
-    $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
-    $tasklock = fopen($lockfile = ($lockdir . '/task_' . $this->get_task_id() . '.lock'), 'a+');
-
-    if (flock($tasklock, LOCK_SH | LOCK_NB) != true)
-    {
-      $retval = true;
-    }
-    else
-    {
-      ftruncate($tasklock, 0);
-      flock($tasklock, LOCK_UN | LOCK_NB);
-      fclose($tasklock);
-      unlink($lockfile);
-    }
-
-    return $retval;
-  }
-
   protected function load_settings(SimpleXMLElement $sx_task_settings)
   {
     $this->period = (int) $sx_task_settings->period;
-    if ($this->period <= 0 || $this->period >= 60 * 60)
+    if($this->period <= 0 || $this->period >= 60 * 60)
       $this->period = 60;
 
     $this->maxrecs = (int) $sx_task_settings->maxrecs;
-    if ($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000)
+    if($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000)
       $this->maxrecs = 100;
     $this->maxmegs = (int) $sx_task_settings->maxmegs;
-    if ($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512)
+    if($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512)
       $this->maxmegs = 24;
     $this->record_buffer_size = (int) $sx_task_settings->flush;
-    if ($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100)
+    if($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100)
       $this->record_buffer_size = 10;
 
     return $this;
@@ -575,7 +630,7 @@ abstract class task_abstract
 
   protected function increment_loops()
   {
-    if ($this->get_runner() == self::RUNNER_SCHEDULER && $this->loop > $this->maxloops)
+    if($this->get_runner() == self::RUNNER_SCHEDULER && $this->loop > $this->maxloops)
     {
       $this->log(sprintf(('%d loops done, restarting'), $this->loop));
       $this->task_status = self::STATUS_TOSTOP;
@@ -589,7 +644,7 @@ abstract class task_abstract
 
   public function apply_task_status()
   {
-    if ($this->task_status == self::STATUS_TOSTOP)
+    if($this->task_status == self::STATUS_TOSTOP)
     {
       $this->running = false;
     }
@@ -601,7 +656,7 @@ abstract class task_abstract
   {
     static $lastt = null;
     $t = explode(' ', ($ut = microtime()));
-    if ($lastt === null)
+    if($lastt === null)
       $lastt = $t;
     $dt = ($t[0] - $lastt[0]) + ($t[1] - $lastt[1]);
 
@@ -613,13 +668,31 @@ abstract class task_abstract
     // print($s);
   }
 
-  function log($msg = '')
+  public function log($message)
   {
-    // $d = debug_backtrace(false);
-    // printf("%s\t[%s]\t%s\r\n", date('r'), $d[0]['line'], $msg);
-    printf("%s\t%s\r\n", date('r'), $msg);
-  }
+    $registry = registry::get_instance();
+    $logdir = $registry->get('GV_RootPath') . 'logs/';
 
+    logs::rotate($logdir . 'task_l_'.$this->taskid.'.log');
+    logs::rotate($logdir . 'task_o_'.$this->taskid.'.log');
+    logs::rotate($logdir . 'task_e_'.$this->taskid.'.log');
+
+    $date_obj = new DateTime();
+    $message = sprintf("%s\t%s", $date_obj->format(DATE_ATOM), $message);
+
+    if($this->output)
+    {
+      $this->output->writeln($message);
+    }
+    if( $this->input && !($this->input->getOption('nolog')) )
+    {
+      file_put_contents($logdir . 'task_l_'.$this->taskid.'.log', $message."\n", FILE_APPEND);
+    }
+
+    return $this;
+  }
+  
+  
   public static function interfaceAvailable()
   {
     return true;
@@ -634,7 +707,7 @@ abstract class task_abstract
    */
   public static function create(appbox $appbox, $class_name, $settings = null)
   {
-    if (!class_exists($class_name))
+    if(!class_exists($class_name))
       throw new Exception('Unknown task class');
 
     $sql = 'INSERT INTO task2
@@ -645,9 +718,9 @@ abstract class task_abstract
                       :name, "0000/00/00 00:00:00", :class, :settings)';
 
 
-    if ($settings && !DOMDocument::loadXML($settings))
+    if($settings && !DOMDocument::loadXML($settings))
       throw new Exception('settings invalide');
-    elseif (!$settings)
+    elseif(!$settings)
       $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
 
     $params = array(
@@ -669,7 +742,7 @@ abstract class task_abstract
   {
     global $argc, $argv;
     $t = "usage: " . $argv[0] . " [options]\noptions:\n";
-    foreach ($this->argt as $n => $v)
+    foreach($this->argt as $n => $v)
       $t .= "\t" . $n . $v["usage"] . "\n";
 
     return($t);
@@ -700,9 +773,9 @@ abstract class task_abstract
       $stmt->closeCursor();
       $this->completed_percentage = $p;
     }
-    catch (Exception $e)
+    catch(Exception $e)
     {
-
+      
     }
 
     return $this;

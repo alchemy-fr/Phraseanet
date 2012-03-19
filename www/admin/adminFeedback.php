@@ -126,26 +126,26 @@ switch ($parm['action'])
     break;
 
   case 'SETTASKSTATUS':
-
-    $parm = $request->get_parms("task_id", "status");
-
+    $parm = $request->get_parms('task_id', 'status', 'signal');
     try
     {
       $task_manager = new task_manager($appbox);
       $task = $task_manager->get_task($parm['task_id']);
+      $pid = (int)($task->get_pid());
       $task->set_status($parm["status"]);
+      $signal = (int)($parm['signal']);
+      if( $signal > 0 && $pid )
+        posix_kill($pid, $signal);
     }
     catch (Exception $e)
     {
 
     }
-
+    $output = json_encode($pid);
     break;
 
   case 'SETSCHEDSTATUS':
-
-    $parm = $request->get_parms('status');
-
+    $parm = $request->get_parms('status', 'signal');
     try
     {
       $task_manager = new task_manager($appbox);
@@ -156,18 +156,10 @@ switch ($parm['action'])
     {
 
     }
-    $ret = new DOMDocument("1.0", "UTF-8");
-    $ret->standalone = true;
-    $ret->preserveWhiteSpace = false;
-    $root = $ret->appendChild($ret->createElement("result"));
-    $root->appendChild($ret->createCDATASection(var_export($parm, true)));
-
-    $output = $ret->saveXML();
     break;
+  
   case 'RESETTASKCRASHCOUNTER':
-
     $parm = $request->get_parms("task_id");
-
     try
     {
       $task_manager = new task_manager($appbox);
@@ -185,15 +177,10 @@ switch ($parm['action'])
     $root->appendChild($ret->createCDATASection(var_export($parm, true)));
 
     $output = $ret->saveXML();
-
-
     break;
 
   case 'CHANGETASK':
-
     $parm = $request->get_parms('act', 'task_id', "usr");
-
-
     $ret = new DOMDocument("1.0", "UTF-8");
     $ret->standalone = true;
     $ret->preserveWhiteSpace = false;
@@ -219,7 +206,7 @@ switch ($parm['action'])
 
     $output = $ret->saveXML();
     break;
-
+/*
   case 'PINGSCHEDULER':
     $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
 
@@ -234,7 +221,6 @@ switch ($parm['action'])
 
 
     $root->setAttribute('time', $dat);
-
 
     $task_manager = new task_manager($appbox);
     $scheduler_state = $task_manager->get_scheduler_state();
@@ -287,6 +273,45 @@ switch ($parm['action'])
 
 
     break;
+*/    
+  case 'PINGSCHEDULER_JS':
+    $ret = array('time'=> date("H:i:s") );
+
+    $task_manager = new task_manager($appbox);
+    $ret['scheduler'] = $task_manager->get_scheduler_state2();
+
+    $ret['tasks'] = array();
+
+    foreach ($task_manager->get_tasks(true) as $task)
+    {
+      $id = $task->get_task_id();
+      $ret['tasks'][$id] = array(
+                'id'=>$id
+              , 'pid' =>$task->get_pid()
+              , 'crashed'=>$task->get_crash_counter()
+              , 'completed'=>$task->get_completed_percentage()
+              , 'status'=>$task->get_status()
+      );
+    }
+
+    if(1)
+    {
+      $sql = 'SHOW PROCESSLIST';
+      $stmt = $appbox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $rows = $stmt->fetchALL(PDO::FETCH_ASSOC);
+      $stmt->closeCursor();
+      $ret['db_processlist'] = array();
+      foreach($rows as $row)
+      {
+        if($row['Info'] != $sql)
+          $ret['db_processlist'][] = $row;
+      }
+    }
+
+    $output = p4string::jsonencode($ret);
+    break;
+    
   case 'UNMOUNTBASE':
     $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
     $ret = array('sbas_id' => null);
@@ -413,4 +438,6 @@ switch ($parm['action'])
     $output = p4string::jsonencode($ret);
     break;
 }
+
+unset($appbox);
 echo $output;
