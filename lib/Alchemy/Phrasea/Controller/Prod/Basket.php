@@ -536,14 +536,12 @@ class Basket implements ControllerProviderInterface
 
         if ($basket->getIsRead() === false)
         {
-          $basket = $em->merge($basket);
           $basket->setIsRead(true);
           $em->flush();
         }
 
         if ($basket->getValidation())
         {
-          $basket = $em->merge($basket);
           if ($basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->getIsAware() === false)
           {
             $basket->getValidation()->getParticipant($app['Core']->getAuthenticatedUser())->setIsAware(true);
@@ -556,7 +554,7 @@ class Basket implements ControllerProviderInterface
 
         $params = array(
           'basket' => $basket,
-          'ordre'  => $request->get('ordre')
+          'ordre'  => $request->get('order')
         );
 
         $html = $twig->render('prod/WorkZone/Basket.html.twig', $params);

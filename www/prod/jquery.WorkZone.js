@@ -79,9 +79,13 @@ var p4 = p4 || {};
 
     var active = $('#baskets .SSTT.ui-state-active');
     if(active.length==0)
+    {
       return;
+    }
+    
+    var order = $(this).val();
 
-    getContent(active);
+    getContent(active, order);
   });
 
 
@@ -277,16 +281,23 @@ var p4 = p4 || {};
 
 
 
-  function getContent(header)
+  function getContent(header, order)
   {
     if(window.console)
     {
       console.log('Reload content for ', header);
     }
+    
+    var url = $('a', header).attr('href');
+    
+    if(typeof order !== 'undefined')
+    {
+      url += '?order=' + order;
+    }
 
     $.ajax({
       type: "GET",
-      url: $('a', header).attr('href'),
+      url: url,
       dataType:'html',
       beforeSend:function(){
         $('#tooltip').hide();

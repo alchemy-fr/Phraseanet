@@ -23,6 +23,10 @@ require_once __DIR__ . '/../../classes/User/Adapter.class.php';
 class Basket
 {
 
+  const ELEMENTSORDER_NAT = 'nat';
+  const ELEMENTSORDER_DESC = 'desc';
+  const ELEMENTSORDER_ASC = 'asc';
+  
   /**
    * @var integer $id
    */
@@ -241,6 +245,92 @@ class Basket
   public function getElements()
   {
     return $this->elements;
+  }
+  
+  public function getElementsByOrder($ordre)
+  {
+    if($ordre === self::ELEMENTSORDER_DESC)
+    {
+      $ret = new \Doctrine\Common\Collections\ArrayCollection();
+      $elements = $this->elements->toArray();
+      
+      uasort($elements, 'self::setBEOrderDESC');
+
+      foreach($elements as $elem)
+      {
+        $ret->add($elem);
+      }
+      
+      return $ret;
+    }
+    elseif($ordre === self::ELEMENTSORDER_ASC)
+    {
+      $ret = new \Doctrine\Common\Collections\ArrayCollection();
+      $elements = $this->elements->toArray();
+      
+      uasort($elements, 'self::setBEOrderASC');
+
+      foreach($elements as $elem)
+      {
+        $ret->add($elem);
+      }
+      
+      return $ret; 
+    }
+    
+      return $this->elements;
+  }
+  
+  private static function setBEOrderDESC($element1, $element2)
+  {
+    $total_el1 = 0;
+    $total_el2 = 0;
+    
+    foreach($element1->getValidationDatas() as $datas)
+    {
+      if($datas->getAgreement() !== null)
+      {
+        $total_el1 += $datas->getAgreement() ? 1 : 0;
+      }
+    }
+    foreach($element2->getValidationDatas() as $datas)
+    {
+      if($datas->getAgreement() !== null)
+      {
+        $total_el2 += $datas->getAgreement() ? 1 : 0;
+      }
+    }
+    
+    if($total_el1 === $total_el2)
+      return 0;
+    
+    return $total_el1 < $total_el2 ? 1 : -1;
+  }
+  
+  private static function setBEOrderASC($element1, $element2)
+  {
+    $total_el1 = 0;
+    $total_el2 = 0;
+    
+    foreach($element1->getValidationDatas() as $datas)
+    {
+      if($datas->getAgreement() !== null)
+      {
+        $total_el1 += $datas->getAgreement() ? 0 : 1;
+      }
+    }
+    foreach($element2->getValidationDatas() as $datas)
+    {
+      if($datas->getAgreement() !== null)
+      {
+        $total_el2 += $datas->getAgreement() ? 0 : 1;
+      }
+    }
+    
+    if($total_el1 === $total_el2)
+      return 0;
+    
+    return $total_el1 < $total_el2 ? 1 : -1;
   }
 
   public function setPusher(\User_Adapter $user)
