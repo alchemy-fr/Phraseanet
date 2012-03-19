@@ -1,5 +1,9 @@
 {% macro make_bloc(WorkZone, selected_type, selected_id, srt) %}
-  <div class="alert_datas_changed ui-corner-all">{% trans 'Vous avez recu un nouveau panier' %} <a class="basket_refresher" href="#">{% trans 'rafraichir' %}</a></div>
+  <div class="alert_datas_changed ui-corner-all">
+    <a title="{% trans 'rafraichir' %}" class="basket_refresher" href="#">
+      {% trans 'Vous avez recu un nouveau panier' %}
+    </a>
+  </div>
   <div class="bloc">
   <div class="insidebloc">
     {% set content = WorkZone.getContent(srt) %}
