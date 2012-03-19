@@ -202,7 +202,11 @@ class eventsmanager_notify_orderdeliver extends eventsmanager_notifyAbstract
       $em = $this->core->getEntityManager();
       $repository = $em->getRepository('\Entities\Basket');
 
-      $basket = $repository->findUserBasket($ssel_id, $this->core->getAuthenticatedUser(), false);
+       $basket = $repository->findOneBy(array(
+          'id' => $ssel_id
+          , 'pusher_id' => $this->core->getAuthenticatedUser()->get_id()
+              )
+      );
     }
     catch (Exception $e)
     {

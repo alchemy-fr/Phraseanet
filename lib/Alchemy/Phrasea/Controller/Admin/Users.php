@@ -61,6 +61,30 @@ class Users implements ControllerProviderInterface
             }
     );
 
+    $controllers->post('/rights/reset/', function(Application $app, Request $request)
+            {
+              try
+              {
+                $core = $app['Core'];
+                $datas = array('error' => false);
+
+                $helper = new UserHelper\Edit($core, $request);
+                $helper->resetRights();
+              }
+              catch (\Exception $e)
+              {
+                $datas['error'] = true;
+                $datas['message'] = $e->getMessage();
+              }
+
+              return new Response(
+                              $core->getSerializer()->serialize($datas, 'json')
+                              , 200
+                              , array('Content-Type' => 'application/json')
+              );
+            }
+    );
+
     $controllers->post('/delete/', function(Application $app)
             {
               $module = new UserHelper\Edit($app['Core'], $app['request']);

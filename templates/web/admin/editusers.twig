@@ -152,6 +152,7 @@
                 <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
                 {% endfor %}
               </select>
+               <button type='button' id='reset_rights'>{% trans 'reset users rights' %}</button>  
             </td>
           </tr>
         </table>
@@ -572,3 +573,50 @@
     <a href="/admin/users/search/" class="users_rights_cancel">{% trans 'boutton::retour' %}</a>
   </div>
 </div>
+
+<script type='text/javascript'>
+$('#users_rights_form button#reset_rights').bind('click', function(){
+    if(confirm("{% trans'are you sure you want reset rights ?' %}"))
+    {
+      var users = $('#users_rights_form input[name="users"]').val();
+    
+      $.ajax({
+        type: 'POST',
+        url: '/admin/users/rights/reset/',
+        dataType:'json',
+        data: {
+          users : users
+        },
+        success: function(data){
+
+          if(!data.error)
+          {
+            if(users === '')
+            {
+              return false;
+            }
+
+            $('#right-ajax').empty().addClass('loading');
+            p4.users.sel = [];
+            $.ajax({
+              type: 'GET',
+              url: '/admin/users/rights/',
+              data: {
+                users : users
+              },
+              success: function(data){
+                $('#right-ajax').removeClass('loading').html(data);
+              }
+            });
+            return false;
+          }
+          else
+          {
+            alert(data.message);
+          }
+        }
+      });
+    }
+  });
+  
+</script>

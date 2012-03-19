@@ -486,7 +486,7 @@ function initAnswerForm(){
 
         $('#proposals').empty().append(datas.phrasea_props);
 
-        if($.trim(datas.phrasea_props) !== '')
+        if(datas.phrasea_props && $.trim(datas.phrasea_props) !== '')
         {
           $('#idFrameC li.proposals_WZ').addClass('active');
         }
