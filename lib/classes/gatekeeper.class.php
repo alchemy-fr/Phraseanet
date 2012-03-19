@@ -41,15 +41,16 @@ class gatekeeper
    * @var gatekeeper
    */
   protected static $_instance;
+  protected $Core;
 
   /**
    *
    * @return gatekeeper
    */
-  public static function getInstance()
+  public static function getInstance(\Alchemy\Phrasea\Core $Core)
   {
     if (!(self::$_instance instanceof self))
-      self::$_instance = new self();
+      self::$_instance = new self($Core);
 
     return self::$_instance;
   }
@@ -58,8 +59,10 @@ class gatekeeper
    *
    * @return gatekeeper
    */
-  function __construct()
+  function __construct(\Alchemy\Phrasea\Core $Core)
   {
+    $this->Core = $Core;
+
     return $this;
   }
 
@@ -71,8 +74,8 @@ class gatekeeper
    */
   function check_directory()
   {
-    $request = http_request::getInstance();
-    $appbox = appbox::get_instance();
+    $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+    $appbox  = appbox::get_instance($this->Core);
     $session = $appbox->get_session();
 
     if (http_request::is_command_line())
@@ -100,7 +103,7 @@ class gatekeeper
       try
       {
         $cookie = Session_Handler::get_cookie('persistent');
-        $auth = new Session_Authentication_PersistentCookie($appbox, $cookie);
+        $auth   = new Session_Authentication_PersistentCookie($appbox, $cookie);
         $session->restore($auth->get_user(), $auth->get_ses_id());
       }
       catch (Exception $e)
@@ -116,12 +119,19 @@ class gatekeeper
         case 'prod':
         case 'client':
           $this->give_guest_access();
-          phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          if ($request->isXmlHttpRequest())
+          {
+            phrasea::headers(404);
+          }
+          else
+          {
+            phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
+          }
           break;
         case 'thesaurus2':
           if ($this->_PHP_SELF == '/thesaurus2/xmlhttp/getterm.x.php'
-                  || $this->_PHP_SELF == '/thesaurus2/xmlhttp/searchcandidate.x.php'
-                  || $this->_PHP_SELF == '/thesaurus2/xmlhttp/getsy.x.php')
+            || $this->_PHP_SELF == '/thesaurus2/xmlhttp/searchcandidate.x.php'
+            || $this->_PHP_SELF == '/thesaurus2/xmlhttp/getsy.x.php')
 
             return;
           phrasea::redirect('/login/?redirect=/thesaurus2');
@@ -230,7 +240,7 @@ class gatekeeper
    */
   protected function give_guest_access()
   {
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance($this->Core);
     $request = http_request::getInstance();
     $session = $appbox->get_session();
 
@@ -246,10 +256,10 @@ class gatekeeper
       catch (Exception $e)
       {
         $url = '/login/?redirect=' . $parm['redirect']
-                . '&error=' . urlencode($e->getMessage());
+          . '&error=' . urlencode($e->getMessage());
         phrasea::redirect($url);
       }
-      phrasea::redirect('/' . $this->_directory . '/index.php');
+      phrasea::redirect('/' . $this->_directory . '/');
     }
 
     return $this;
@@ -262,10 +272,10 @@ class gatekeeper
    */
   protected function token_access()
   {
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance($this->Core);
     $request = new http_request();
     $session = $appbox->get_session();
-    $parm = $request->get_parms('LOG');
+    $parm    = $request->get_parms('LOG');
 
     if (is_null($parm["LOG"]))
 
@@ -287,7 +297,19 @@ class gatekeeper
     {
       $datas = random::helloToken($parm['LOG']);
 
-      return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
+      switch ($datas['type'])
+      {
+        default:
+          return $this;
+          break;
+        case \random::TYPE_FEED_ENTRY:
+          return phrasea::redirect("/lightbox/feeds/entry/" . $datas['datas'] . "/");
+          break;
+        case \random::TYPE_VALIDATE:
+        case \random::TYPE_VIEW:
+          return phrasea::redirect("/lightbox/validate/" . $datas['datas'] . "/");
+          break;
+      }
     }
     catch (Exception_NotFound $e)
     {
@@ -305,7 +327,7 @@ class gatekeeper
    */
   public function require_session()
   {
-    $appbox = appbox::get_instance();
+    $appbox  = appbox::get_instance($this->Core);
     $session = $appbox->get_session();
     if ($session->is_authenticated())
     {

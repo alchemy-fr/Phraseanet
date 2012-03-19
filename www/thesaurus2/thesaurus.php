@@ -14,9 +14,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers();
-$appbox = appbox::get_instance();
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 
 $request = http_request::getInstance();
@@ -51,8 +53,8 @@ User_Adapter::updateClientInfos(5);
     </script>
 
     <link rel="shortcut icon" type="image/x-icon" href="/thesaurus2/favicon.ico">
-    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/minify/g=thesaurus"></script>
     <script type="text/javascript">
 

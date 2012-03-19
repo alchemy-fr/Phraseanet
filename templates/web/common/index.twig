@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="{{ session.get_I18n }}">
+<html lang="{{ session.get_I18n }}" style="overflow:hidden;">
   <head>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{home_title}} - {{ module_name }} </title>
@@ -13,10 +13,8 @@
   <body class="PNB">
     <div id="mainContainer" class="PNB">
       {% include 'common/menubar.twig' %}
-      <div class="PNB" style="top:30px;overflow-y:auto;overflow-x:auto;">
-        <div class="PNB" id="mainContent" style="min-width:900px;">
-                {% block content %}{% endblock %}
-        </div>
+      <div class="PNB" id="mainContent" style="top:30px;min-width:900px;overflow-y:auto;overflow-x:auto;">
+        {% block content %}{% endblock %}
       </div>
     </div>
     {% include 'common/analytics.twig' %}

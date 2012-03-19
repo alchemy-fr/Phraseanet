@@ -2,9 +2,9 @@
 <div class="PNB10 container">
   <div class="PNB" >
     <p style="width:100%;text-align:center;margin-top:30px;padding:10px;font-size:14px;font-weight:900">
-        {% set bridge_name = api.get_connector().get_name() %}
+        {% set name = api.get_connector().get_name() %}
         {% trans %}
-          {{ bridge_name }} est momentanement indisponible a cause d'un trop grand nombre de requetes
+          {{ name }} est momentanement indisponible a cause d'un trop grand nombre de requetes
         {% endtrans %}
 
         {%trans %}

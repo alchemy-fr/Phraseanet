@@ -67,12 +67,14 @@ class module_console_taskrun extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    if(!setup::is_installed())
+    if (!setup::is_installed())
     {
-      throw new RuntimeException('Phraseanet is not set up');
+      $output->writeln('Phraseanet is not set up');
+
+      return 1;
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $task_id = (int) $input->getArgument('task_id');
 
@@ -104,8 +106,10 @@ class module_console_taskrun extends Command
     
 $this->task->log(sprintf("%s [%d] taskrun : returned from 'run()', get_status()=%s \n", __FILE__, __LINE__, $this->task->get_status()));
 
-    return $this;
-  }
+      if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL)
+      {
+        $runner = task_abstract::RUNNER_MANUAL;
+      }
 
   public function tick_handler()
   {

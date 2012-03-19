@@ -12,22 +12,28 @@ class eventsmanager_broker
    * @var appbox
    */
   protected $appbox;
+  /**
+   *
+   * @var \Alchemy\Phrasea\Core
+   */
+  protected $core;
 
-  private function __construct(appbox &$appbox)
+  private function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core)
   {
     $this->appbox = $appbox;
+    $this->core = $core;
 
     return $this;
   }
 
   /**
-   * @return eventsmanager
+   * @return \eventsmanager_broker
    */
-  public static function getInstance(appbox &$appbox)
+  public static function getInstance(appbox &$appbox, \Alchemy\Phrasea\Core $core)
   {
     if (!self::$_instance)
     {
-      self::$_instance = new self($appbox);
+      self::$_instance = new self($appbox, $core);
     }
 
     return self::$_instance;
@@ -50,7 +56,7 @@ class eventsmanager_broker
         {
           continue;
         }
-        $this->pool_classes[$classname] = new $classname($this->appbox, $this->appbox->get_registry(), $this);
+        $this->pool_classes[$classname] = new $classname($this->appbox, $this->core, $this);
 
         foreach ($this->pool_classes[$classname]->get_events() as $event)
           $this->bind($event, $classname);
@@ -67,17 +73,17 @@ class eventsmanager_broker
   {
     $iterators_pool = array();
 
-    $root = dirname(__FILE__) . '/../../';
+    $root = __DIR__ . '/../../';
 
     if ($type == 'event')
     {
-      $iterators_pool['event'][] = new DirectoryIterator(dirname(__FILE__) . '/event/');
-      if (file_exists(dirname(__FILE__) . '/event/'))
-        $iterators_pool['event'][] = new DirectoryIterator(dirname(__FILE__) . '/event/');
+      $iterators_pool['event'][] = new DirectoryIterator(__DIR__ . '/event/');
+      if (file_exists(__DIR__ . '/event/'))
+        $iterators_pool['event'][] = new DirectoryIterator(__DIR__ . '/event/');
     }
     if ($type == 'notify')
     {
-      $iterators_pool['notify'][] = new DirectoryIterator(dirname(__FILE__) . '/notify/');
+      $iterators_pool['notify'][] = new DirectoryIterator(__DIR__ . '/notify/');
     }
 
     $ret = array();
@@ -100,7 +106,7 @@ class eventsmanager_broker
             {
               continue;
             }
-            $obj = new $classname($this->appbox, $this->appbox->get_registry(), $this);
+            $obj = new $classname($this->appbox, $this->core, $this);
 
             $ret[$classname] = $obj->get_name();
           }
@@ -164,7 +170,7 @@ class eventsmanager_broker
 
   function get_json_notifications($page=0)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $unread = 0;
@@ -242,7 +248,7 @@ class eventsmanager_broker
 
   function get_unread_notifications_number()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $total = 0;
@@ -265,7 +271,7 @@ class eventsmanager_broker
 
   function get_notifications()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $unread = 0;

@@ -15,28 +15,28 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $request = http_request::getInstance();
 $registry = registry::get_instance();
 
 $parm = $request->get_parms(
-                "dmin"
-                , "dmax"
-                , "baslst"
-                , "popbases"
-                , "tbl"
-                , "precise"
-                , "preciseWord"
-                , "preciseUser"
-                , "page"
-                , "limit"
-                , "fonction"
-                , "pays"
-                , "societe"
-                , "activite"
-                , "on"
-                , "docwhat"
+        "dmin"
+        , "dmax"
+        , "baslst"
+        , "popbases"
+        , "tbl"
+        , "precise"
+        , "preciseWord"
+        , "preciseUser"
+        , "page"
+        , "limit"
+        , "fonction"
+        , "pays"
+        , "societe"
+        , "activite"
+        , "on"
+        , "docwhat"
 );
 
 extract($parm);
@@ -75,15 +75,15 @@ foreach ($popbases as $key => $val)
 //fill the last entry
 $selection[$id_sbas]['liste'] = $liste;
 
-$twig = new supertwig();
-$twig->addFilter(array('sbas_names' => 'phrasea::sbas_names'));
-$twig->display(
-        'report/ajax_report_content.twig',
-        array(
-            'selection' => $selection,
-            'param' => $parm,
-            'anonymous' => $registry->get('GV_anonymousReport'),
-            'ajax' => true
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
+
+echo $twig->render(
+        'report/ajax_report_content.twig', array(
+    'selection' => $selection,
+    'param' => $parm,
+    'anonymous' => $registry->get('GV_anonymousReport'),
+    'ajax' => true
         )
 );
-?>
+

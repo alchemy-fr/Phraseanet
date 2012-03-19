@@ -1,0 +1,37 @@
+<div class="badge badge_{{ usr_id }}">
+   <a href="#" class="deleter">
+    <img src="/skins/prod/Push/close_badge.png"/>
+  </a>
+  <input name="id" value="{{ usr_id }}" type="hidden" />
+  <table>
+    <tr>
+      <td class="icon">
+        <img src="/skins/icons/user.png"/>
+      </td>
+      <td class="infos">
+        <div>
+          <input type="hidden" name="participants[{{ usr_id }}][usr_id]" value="{{ usr_id }}" />
+          <table>
+            <tr>
+              <td colspan="3">
+                <span class="name">{{ display_name }}</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <span class="subtite">{{ subtitle }}</span>
+              </td>
+            </tr>
+            <tr class="toggles">
+              <td class="toggle status_off toggle_HD">
+                <img title="{% trans 'User can download HD' %}" class="toggle_off" src="/skins/prod/Push/download_off_badge.png" />
+                <img title="{% trans 'User can download HD' %}" class="toggle_on" src="/skins/prod/Push/download_badge.png" />
+                <input type="hidden" name="participants[{{ usr_id }}][HD]" value="0" />
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

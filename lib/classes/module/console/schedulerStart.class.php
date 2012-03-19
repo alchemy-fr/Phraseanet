@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of Phraseanet
  *
@@ -54,17 +55,27 @@ class module_console_schedulerStart extends Command
 
   public function execute(InputInterface $zinput, OutputInterface $output)
   {
-    if(!setup::is_installed())
+    if (!setup::is_installed())
     {
-      throw new RuntimeException('Phraseanet is not set up');
+      $output->writeln('Phraseanet is not set up');
+
+      return 1;
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $scheduler = new task_Scheduler();
     $scheduler->run($zinput, $output); //, !$input->getOption('nolog'), !$input->getOption('notasklog'));
 
-    return;
+    try
+    {
+      $scheduler = new task_Scheduler();
+      $scheduler->run($output, true);
+    }
+    catch (\Exception $e)
+    {
+      return 1;
+    }
   }
 
 }

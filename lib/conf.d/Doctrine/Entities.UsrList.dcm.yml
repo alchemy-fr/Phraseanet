@@ -1,0 +1,33 @@
+Entities\UsrList:
+  type: entity
+  repositoryClass: Repositories\UsrListRepository
+  table: UsrLists
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  oneToMany:
+    owners:
+      targetEntity: UsrListOwner
+      mappedBy: list
+      cascade: ["ALL"]
+    entries:
+      targetEntity: UsrListEntry
+      mappedBy: list
+      cascade: ["ALL"]
+
+

@@ -15,15 +15,15 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
-$session = $appbox->get_session();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
 $request = http_request::getInstance();
 $parm = $request->get_parms('id');
 
 $id = $parm['id'];
 
-$dashboard = new module_report_dashboard($session->get_usr_id());
+$dashboard = new module_report_dashboard($Core->getAuthenticatedUser()->get_id());
 
 $var = array(
     'rs' => $dashboard->dashboard['activity_day'][$id],
@@ -32,16 +32,9 @@ $var = array(
     'ajax_chart' => true
 );
 
-$twig = new supertwig();
 
-$twig->addFilter(
-        array(
-            'serialize' => 'serialize'
-            , 'sbas_names' => 'phrasea::sbas_names'
-            , 'unite' => 'p4string::format_octets'
-            , 'stristr' => 'stristr'
-        )
-);
+$twig = $Core->getTwig();
+
 $html = $twig->render('report/chart.twig', $var);
 $t = array("rs" => $html);
 echo json_encode($t);

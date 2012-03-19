@@ -50,18 +50,15 @@ class caption_record implements caption_interface, cache_cacheableInterface
     $this->record = $record;
     $this->databox = $databox;
 
-
-    $this->retrieve_fields();
-
-
     return $this;
   }
 
   protected function retrieve_fields()
   {
     if (is_array($this->fields))
-
+    {
       return $this->fields;
+    }
 
     $fields = array();
     try
@@ -70,12 +67,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
     catch (Exception $e)
     {
-      $sql = "SELECT m.id as meta_id, s.id as structure_id
+      $sql  = "SELECT m.id as meta_id, s.id as structure_id
           FROM metadatas m, metadatas_structure s
           WHERE m.record_id = :record_id AND s.id = m.meta_struct_id";
       $stmt = $this->databox->get_connection()->prepare($sql);
       $stmt->execute(array(':record_id' => $this->record->get_record_id()));
-      $fields = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $fields      = $stmt->fetchAll(PDO::FETCH_ASSOC);
       $stmt->closeCursor();
       $this->set_data_to_cache($fields);
     }
@@ -86,10 +83,10 @@ class caption_record implements caption_interface, cache_cacheableInterface
       try
       {
         $databox_meta_struct = databox_field::get_instance($this->databox, $row['structure_id']);
-        $metadata = new caption_field($databox_meta_struct, $this->record, $row['meta_id']);
+        $metadata = new caption_field($databox_meta_struct, $this->record);
 
         $rec_fields[$databox_meta_struct->get_id()] = $metadata;
-        $dces_element = $metadata->get_databox_field()->get_dces_element();
+        $dces_element                               = $metadata->get_databox_field()->get_dces_element();
         if ($dces_element instanceof databox_Field_DCESAbstract)
         {
           $this->dces_elements[$dces_element->get_label()] = $databox_meta_struct->get_id();
@@ -127,6 +124,24 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
   /**
    *
+   * @param type $fieldname
+   * @return \caption_field
+   * @throws \Exception
+   */
+  public function get_field($fieldname)
+  {
+    foreach ($this->retrieve_fields() as $meta_struct_id => $field)
+    {
+      if ($field->get_name() == $fieldname)
+
+        return $field;
+    }
+
+    throw new \Exception('Field not found');
+  }
+
+  /**
+   *
    * @param type $label
    * @return caption_field
    */
@@ -134,8 +149,10 @@ class caption_record implements caption_interface, cache_cacheableInterface
   {
     $fields = $this->retrieve_fields();
     if (isset($this->dces_elements[$label]))
-
+    {
       return $fields[$this->dces_elements[$label]];
+    }
+
     return null;
   }
 
@@ -146,7 +163,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
    * @param searchEngine_adapter $searchEngine
    * @return array
    */
-  public function get_highlight_fields($highlight='', Array $grep_fields = null, searchEngine_adapter $searchEngine = null)
+  public function get_highlight_fields($highlight = '', Array $grep_fields = null, searchEngine_adapter $searchEngine = null)
   {
     return $this->highlight_fields($highlight, $grep_fields, $searchEngine);
   }
@@ -158,23 +175,24 @@ class caption_record implements caption_interface, cache_cacheableInterface
    * @param searchEngine_adapter $searchEngine
    * @return array
    */
-  protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine =null)
+  protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine = null)
   {
     $fields = array();
-    foreach ($this->fields as $meta_struct_id => $field)
+
+    foreach ($this->retrieve_fields() as $meta_struct_id => $field)
     {
       if (is_array($grep_fields) && !in_array($field->get_name(), $grep_fields))
         continue;
 
       $value = preg_replace(
-              "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
-              , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
-              , $field->highlight_thesaurus()
+        "(([^']{1})((https?|file):((/{2,4})|(\\{2,4}))[\w:#%/;$()~_?/\-=\\\.&]*)([^']{1}))"
+        , '$1 $2 <a title="' . _('Open the URL in a new window') . '" class="ui-icon ui-icon-extlink" href="$2" style="display:inline;padding:2px 5px;margin:0 4px 0 2px;" target="_blank"> &nbsp;</a>$7'
+        , $field->highlight_thesaurus()
       );
 
       $fields[$field->get_name()] = array(
-          'value' => $value
-          , 'separator' => $field->get_databox_field()->get_separator()
+        'value'     => $value
+        , 'separator' => $field->get_databox_field()->get_separator()
       );
     }
 
@@ -188,7 +206,12 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
         foreach ($fields as $key => $value)
         {
+          if(!isset($fields[$key]))
+            continue;
+
+          //if(strpos($fields[$key]['value'], '<a ') === false)
           $fields[$key]['value'] = $ret[$n];
+
           $n++;
         }
       }

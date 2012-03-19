@@ -77,7 +77,7 @@ class module_report_add extends module_report
 
     $ret = array();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     foreach ($rs as $row)
     {

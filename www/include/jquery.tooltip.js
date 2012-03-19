@@ -7,14 +7,14 @@
  * Copyright (c) 2006 - 2008 J�rn Zaefferer
  *
  * $Id: jquery.tooltip.js 5741 2008-06-21 15:22:16Z joern.zaefferer $
- * 
+ *
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  */
- 
+
 (function($) {
-	
+
   // the tooltip element
   var helper = {},
   // the title of the current element, used for restoring
@@ -25,7 +25,7 @@
   IE = $.browser.msie && (/MSIE\s(5\.5|6\.)/).test(navigator.userAgent),
   // flag for mouse tracking
   track = false;
-	
+
   $.tooltip = {
     blocked: false,
     ajaxTimeout : false,
@@ -51,7 +51,6 @@
 
     delayAjax : function(a,b,c)
     {
-//
   var options_serial = p4.tot_options;
   var query = p4.tot_query;
       var datas = {
@@ -72,7 +71,7 @@
       });
     }
   };
-	
+
   $.fn.extend({
     tooltip: function(settings) {
       settings = $.extend({}, $.tooltip.defaults, settings);
@@ -83,7 +82,7 @@
         this.tooltipText = $(this).attr('title');
         this.tooltipSrc = $(this).attr('tooltipsrc');
 
-        this.ajaxLoad = (this.tooltipText === '' && this.tooltipSrc !== '');
+        this.ajaxLoad = ($.trim(this.tooltipText) === '' && this.tooltipSrc !== '');
         this.ajaxTimeout;
 
         this.orEl = $(this);
@@ -132,7 +131,7 @@
       return this.attr('href') || this.attr('src');
     }
   });
-	
+
   function createHelper(settings) {
     // there can be only one tooltip helper
     if( helper.parent )
@@ -143,7 +142,7 @@
     .appendTo(document.body)
     // hide it at first
     .hide();
-			
+
     // apply bgiframe if available
     if ( $.fn.bgiframe )
       helper.parent.bgiframe();
@@ -153,11 +152,11 @@
     helper.body = $('div.body', helper.parent);
     helper.url = $('div.url', helper.parent);
   }
-	
+
   function settings(element) {
     return $.data(element, "tooltip");
   }
-	
+
   // main event handler to start showing tooltips
   function handle(event) {
 
@@ -170,15 +169,15 @@
     else
       visible();
     show();
-		
+
     // if selected, update the helper position when the mouse moves
     track = !!settings(this).track;
     $(document.body).bind('mousemove', update);
-		
+
     // update at least once
     update(event);
   }
-	
+
   // save elements title before the tooltip is displayed
   function save(event) {
     // if this is the current source, or it has no title (occurs with click event), stop
@@ -193,7 +192,7 @@
     // save current
     $.tooltip.current = this;
     title = this.tooltipText;
-		
+
     //		if ( settings(this).bodyHandler ) {
     //			helper.title.hide();
     //			var bodyContent = settings(this).bodyHandler.call(this);
@@ -216,13 +215,13 @@
     //		} else {
     //			helper.body.html(title).show();
     //		}
-		
+
     // if element has href or src, add and show it, otherwise hide it
     if( settings(this).showURL && $(this).url() )
       helper.url.html( $(this).url().replace('http://', '') ).show();
     else
       helper.url.hide();
-		
+
     // add an optional class for this tip
     //		helper.parent.addClass(settings(this).extraClass);
     if(this.ajaxLoad)
@@ -241,8 +240,8 @@
 
   function positioning(event)
   {
-
-    helper.body.html(title).show();
+    helper.body.html(title);
+    helper.body.show();
     $this = $.tooltip.current;
     // fix PNG background for IE
     if (settings($this).fixPNG )
@@ -252,8 +251,11 @@
       var width = 'auto';
       var height = 'auto';
       var ratio = 1;
+      var resizeImgTips = false;
       var $imgTips = $('#' + settings($.tooltip.current).id + ' .imgTips');
-      if ($imgTips[0]) {
+
+      if ($imgTips[0] && $('#' + settings($.tooltip.current).id + ' .noToolTipResize').length === 0) {
+        resizeImgTips = true;
         width = parseInt($imgTips[0].style.width);
         height = parseInt($imgTips[0].style.height);
         ratio = width/height;
@@ -326,7 +328,7 @@
 
 
         //correction par ratio
-        if ($('#' + settings($.tooltip.current).id + ' .imgTips')[0]) {
+        if (resizeImgTips && $('#' + settings($.tooltip.current).id + ' .imgTips')[0]) {
 
           if(ratioSurfaceH > ratioImage)
           {
@@ -404,7 +406,7 @@
 
 
         //si ya une image on re-ajuste au ratio
-        if ($('#' + settings($.tooltip.current).id + ' .imgTips')[0]) {
+        if (resizeImgTips && $('#' + settings($.tooltip.current).id + ' .imgTips')[0]) {
           if(width == 'auto')
             width = $('#' + settings($.tooltip.current).id).width();
           if(height == 'auto')
@@ -440,20 +442,14 @@
           top: top
         });
 
-        $imgTips.css({
-          width: width,
-          height: height
-//          ,
-//          left: left,
-//          top: top
-        });
+        if(resizeImgTips)
+        {
+          $imgTips.css({
+            width: width,
+            height: height
+          });
+        }
 
-//        if($imgTips.size() > 0)
-//        {
-//          $('#' + settings($.tooltip.current).id).image_enhance('destroy').image_enhance({
-//            zoomable:true
-//          });
-//        }
       }
 
     }
@@ -464,7 +460,7 @@
   // delete timeout and show helper
   function show() {
     tID = null;
-		
+
     if ((!IE || !$.fn.bgiframe) && settings($.tooltip.current).fade) {
       if (helper.parent.is(":animated"))
         helper.parent.stop().show().fadeTo(settings($.tooltip.current).fade, 100);
@@ -475,7 +471,7 @@
     }
     update();
   }
-	
+
   function fix(event)
   {
     if(!settings(this).fixable)
@@ -490,21 +486,21 @@
     $('#tooltip .tooltip_closer').show();
     $.tooltip.blocked = true;
   }
-	
+
   function visible(){
     $.tooltip.visible = true;
     helper.parent.css({
       visibility:'visible'
     });
   }
-	
+
   /**
 	 * callback for mousemove
 	 * updates the helper position
 	 * removes itself when no current element
 	 */
   function update(event)	{
-		
+
     if($.tooltip.blocked)
       return;
 
@@ -516,7 +512,7 @@
     if ( !track && helper.parent.is(":visible")) {
       $(document.body).unbind('mousemove', update);
     }
-		
+
     // if no current element is available, remove this listener
     if( $.tooltip.current === null ) {
       $(document.body).unbind('mousemove', update);
@@ -525,7 +521,7 @@
 
     // remove position helper classes
     helper.parent.removeClass("viewport-right").removeClass("viewport-bottom");
-		
+
     if(!settings($.tooltip.current).outside)
     {
       var left = helper.parent[0].offsetLeft;
@@ -547,7 +543,7 @@
           top: top
         });
       }
-			
+
       var v = viewport(),
       h = helper.parent[0];
       // check horizontal position
@@ -566,17 +562,17 @@
       }
     }
   }
-	
+
   function viewport() {
     return {
       x: $(window).width(),
       y: $(window).height(),
-			
+
       cx: 0,
       cy: 0
     };
   }
-	
+
   // hide helper and restore added classes and the title
   function hide(event)
   {
@@ -604,11 +600,11 @@
         helper.parent.stop().fadeOut(tsettings.fade, complete);
     } else
       complete();
-		
+
     if( tsettings.fixPNG )
       helper.parent.unfixPNG();
   }
-	
+
 })(jQuery);
 
 function unfix_tooltip()

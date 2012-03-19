@@ -34,8 +34,8 @@
         {% set title = '' %}
         {% set desc = '' %}
         {% if publishing.is_basket() %}
-          {% set title = publishing.get_original_basket().get_name() %}
-          {% set desc = publishing.get_original_basket().get_description() %}
+          {% set title = publishing.get_original_basket().getName() %}
+          {% set desc = publishing.get_original_basket().getDescription() %}
         {% endif %}
         <div><label for="feed_add_title">{% trans 'publication : titre' %}</label></div>
         <div><input class="required_text" type="text" name="title" id="feed_add_title" value="{{title}}" /></div>

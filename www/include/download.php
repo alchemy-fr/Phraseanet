@@ -15,11 +15,14 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$Request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 
-$gatekeeper = gatekeeper::getInstance();
+$gatekeeper = gatekeeper::getInstance($Core);
 $gatekeeper->require_session();
 
 
@@ -40,15 +43,20 @@ $exportname = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
 
 if ($parm["ssttid"] != "")
 {
-  $basket = basket_adapter::getInstance($appbox, $parm['ssttid'], $session->get_usr_id());
-  $exportname = str_replace(' ', '_', $basket->get_name()) . "_" . date("Y-n-d");
+  $em = $Core->getEntityManager();
+  $repository = $em->getRepository('\Entities\Basket');
+
+  /* @var $repository \Repositories\BasketRepository */
+
+  $basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser(), false);
+  $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
 }
 
 $list['export_name'] = $exportname . '.zip';
 
 $endDate = new DateTime('+3 hours');
 
-$url = random::getUrlToken('download', $session->get_usr_id(), $endDate, serialize($list));
+$url = random::getUrlToken(\random::TYPE_DOWNLOAD, $session->get_usr_id(), $endDate, serialize($list));
 
 if ($url)
 {
@@ -62,7 +70,7 @@ if ($url)
   );
 
 
-  $events_mngr = eventsmanager_broker::getInstance($appbox);
+  $events_mngr = eventsmanager_broker::getInstance($appbox, $Core);
   $events_mngr->trigger('__DOWNLOAD__', $params);
 
   return phrasea::redirect('/download/' . $url);

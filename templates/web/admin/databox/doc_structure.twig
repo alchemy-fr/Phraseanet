@@ -25,9 +25,9 @@
 
 <html>
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/yui2.8/build/reset/reset.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,include/jslibs/jquery-treeview/jquery.treeview.css,skins/common/main.css,skins/admin/admincolor.css" />
+    <script type="text/javascript" src="/include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="/include/jquery.tooltip.js"></script>
     <style>
         body{
@@ -87,6 +87,10 @@
           });
 
           $('.alertTips').tooltip();
+
+          $('button.struct_saver').bind('click', function(){
+            $('#form_struct').submit();
+          });
 
           var buttons = {};
           var dialog_adder = $('#field_adder');
@@ -201,7 +205,7 @@
         });
         </script>
       </head>
-      <body>
+      <body style="overflow-x:scroll;">
         <div id="warning_dialog" style="display:none" title="{% trans 'Attention !' %}" >
         </div>
         <div style="display:none" id="field_changer">
@@ -229,8 +233,9 @@
             <button class="field_adder">
               {% trans 'boutton::ajouter' %}
             </button>
+            <button class="struct_saver">Submit</button>
           </div>
-          <form action="/admin/description.php" method="post" target="_self" id="form_struct">
+          <form action="/admin/description/{{ databox.get_sbas_id() }}/" method="post" target="_self" id="form_struct">
             <input name="newfield" id="newfield" type="hidden" />
             <table class="admintable">
               <thead>
@@ -253,6 +258,12 @@
                     {% trans 'Indexable' %}
                   </th>
                   <th>
+                    {% trans 'Vocabulary Type' %}
+                  </th>
+                  <th>
+                    {% trans 'Vocabulary restricted' %}
+                  </th>
+                  <th>
                     {% trans 'Required' %}
                   </th>
                   <th>
@@ -269,15 +280,6 @@
                   </th>
                   <th>
                     {% trans 'Affiche dans report' %}
-                  </th>
-                  <th>
-                    Regdate
-                  </th>
-                  <th>
-                    Regname
-                  </th>
-                  <th>
-                    Regdesc
                   </th>
                   <th>
                     {% trans 'Afficher en titre' %}
@@ -313,6 +315,21 @@
                                         <td>
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="indexable_{{field.get_id()}}" type="checkbox" {% if field.is_indexable() %}checked="checked"{% endif %}/>
                                         </td>
+
+                                        <td>
+                                          {% if field.is_multi() %}
+                                          <select class="metafield_{{field.get_id()}}" {{disabled}} name="vocabulary_{{field.get_id()}}">
+                                            <option value=""></option>
+                                            {% for vocabulary in vocabularies %}
+                                            <option {% if field.getVocabularyControl() and field.getVocabularyControl().getType() == vocabulary.getType() %}selected="selected"{% endif %} value="{{ vocabulary.getType() }}">{{ vocabulary.getName() }}</option>
+                                            {% endfor %}
+                                          </select>
+                                          {% endif %}
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} name="vocabularyrestricted_{{field.get_id()}}" type="checkbox" {% if field.isVocabularyRestricted() %}checked="checked"{% endif %}/>
+                                        </td>
+
                                         <td>
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="required_{{field.get_id()}}" type="checkbox" {% if field.is_required() %}checked="checked"{% endif %}/>
                                         </td>
@@ -340,15 +357,6 @@
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="report_{{field.get_id()}}" type="checkbox" {% if field.is_report() %}checked="checked"{% endif %}/>
                                         </td>
                                         <td>
-                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regdate() %}checked="checked"{% endif %} name="regdate" value="{{field.get_id()}}"/>
-                                        </td>
-                                        <td>
-                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regname() %}checked="checked"{% endif %} name="regname" value="{{field.get_id()}}"/>
-                                        </td>
-                                        <td>
-                                          <input class="metafield_{{field.get_id()}}" {{disabled}} type="radio" {% if field.is_regdesc() %}checked="checked"{% endif %} name="regdesc" value="{{field.get_id()}}"/>
-                                        </td>
-                                        <td>
                                           <select class="metafield_{{field.get_id()}}" {{disabled}} name="thumbtitle_{{field.get_id()}}">
               {{_self.thumbtitle_selector(field.get_thumbtitle())}}
                                             </select>
@@ -357,7 +365,6 @@
         {% endfor %}
                                       </tbody>
                                     </table>
-                                    <input type="hidden" name="p0" value="{{databox.get_sbas_id()}}" />
                                     <button type="submit">Submit</button>
                                   </form>
                                 </body>

@@ -10,7 +10,7 @@
  */
 
 /**
- * 
+ *
  * @package
  * @package     KonsoleKomander
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -23,46 +23,69 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
 
-require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
+$Core = require_once dirname(__FILE__) . '/../lib/bootstrap.php';
+
+$result_code = 1;
 
 try
 {
-  bootstrap::register_autoloads();
+  \bootstrap::register_autoloads();
 
   $app = new Application("
-  _____  _    _ _____            _____ ______          _   _ ______ _______ 
+  _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
- | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |   
- |  ___/|  __  |  _  /  / /\ \  \___ \|  __|   / /\ \ | . ` |  __|    | |   
- | |    | |  | | | \ \ / ____ \ ____) | |____ / ____ \| |\  | |____   | |   
- |_|    |_|  |_|_|  \_|_/    \_\_____/|______/_/    \_\_| \_|______|  |_|   
-  _  __                 _       _  __                             _         
- | |/ /___ _ _  ___ ___| |___  | |/ /___ _ __  _ __  __ _ _ _  __| |___ _ _ 
+ | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
+ |  ___/|  __  |  _  /  / /\ \  \___ \|  __|   / /\ \ | . ` |  __|    | |
+ | |    | |  | | | \ \ / ____ \ ____) | |____ / ____ \| |\  | |____   | |
+ |_|    |_|  |_|_|  \_|_/    \_\_____/|______/_/    \_\_| \_|______|  |_|
+  _  __                 _       _  __                             _
+ | |/ /___ _ _  ___ ___| |___  | |/ /___ _ __  _ __  __ _ _ _  __| |___ _ _
  | ' </ _ \ ' \(_-</ _ \ / -_) | ' </ _ \ '  \| '  \/ _` | ' \/ _` / -_) '_|
- |_|\_\___/_||_/__/\___/_\___| |_|\_\___/_|_|_|_|_|_\__,_|_||_\__,_\___|_|  
-                                                                            
+ |_|\_\___/_||_/__/\___/_\___| |_|\_\___/_|_|_|_|_|_\__,_|_||_\__,_\___|_|
+
  Phraseanet Copyright (C) 2004 Alchemy
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-                  . ' KONSOLE KOMMANDER', GV_version . ' ' . GV_version_name);
+                  . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName()
+                  . ' ' . \Alchemy\Phrasea\Core\Version::getNumber());
 
   $app->add(new module_console_aboutAuthors('about:authors'));
   $app->add(new module_console_aboutLicense('about:license'));
+
+  $app->add(new module_console_checkExtension('check:extension'));
+
   $app->add(new module_console_systemUpgrade('system:upgrade'));
+
+  $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
+
   $app->add(new module_console_systemMailCheck('system:mailCheck'));
-  $app->add(new module_console_systemConfigCheck('system:configCheck'));
   $app->add(new module_console_systemBackupDB('system:backupDB'));
   $app->add(new module_console_systemClearCache('system:clearCache'));
   $app->add(new module_console_systemTemplateGenerator('system:templateGenerator'));
+  $app->add(new module_console_systemExport('system:export'));
+
   $app->add(new module_console_taskrun('task:run'));
   $app->add(new module_console_tasklist('task:list'));
   $app->add(new module_console_schedulerState('scheduler:state'));
   $app->add(new module_console_schedulerStop('scheduler:stop'));
   $app->add(new module_console_schedulerStart('scheduler:start'));
-  $app->run();
+  $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
+  $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
+  $app->add(new module_console_systemConfigCheck('check:system'));
+
+
+  $app->add(new module_console_fieldsList('fields:list'));
+  $app->add(new module_console_fieldsDelete('fields:delete'));
+  $app->add(new module_console_fieldsRename('fields:rename'));
+  $app->add(new module_console_fieldsMerge('fields:merge'));
+
+
+  $result_code = $app->run();
 }
 catch (Exception $e)
 {
-  echo "an error occured";
+  echo "an error occured";var_dump($e->getMessage());
 }
+
+exit($result_code);

@@ -23,11 +23,13 @@ class connection
    * @var Array
    */
   private static $_PDO_instance = array();
+
   /**
    *
    * @var boolean
    */
   private static $_selfinstance;
+
   /**
    *
    * @var Array
@@ -107,7 +109,7 @@ class connection
    * @param string $name
    * @return connection_pdo
    */
-  public static function getPDOConnection($name = null)
+  public static function getPDOConnection($name = null, registryInterface $registry = null)
   {
     self::instantiate();
     if (trim($name) == '')
@@ -134,10 +136,19 @@ class connection
       }
       else
       {
-        if (!is_file(dirname(__FILE__) . '/../../config/connexion.inc'))
-          throw new Exception('Unable to load config file');
-        require (dirname(__FILE__) . '/../../config/connexion.inc');
+        $configuration = \Alchemy\Phrasea\Core\Configuration::build();
+
+        $choosenConnexion = $configuration->getPhraseanet()->get('database');
+
+        $connexion = $configuration->getConnexion($choosenConnexion);
+
+        $hostname = $connexion->get('host');
+        $port = $connexion->get('port');
+        $user = $connexion->get('user');
+        $password = $connexion->get('password');
+        $dbname = $connexion->get('dbname');
       }
+
       if (isset($connection_params[$name]))
       {
         $hostname = $connection_params[$name]['host'];
@@ -149,7 +160,7 @@ class connection
 
       try
       {
-        self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname);
+        self::$_PDO_instance[$name] = new connection_pdo($name, $hostname, $port, $user, $password, $dbname, array(), $registry);
         self::$_PDO_instance[$name]->query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'");
       }
       catch (Exception $e)

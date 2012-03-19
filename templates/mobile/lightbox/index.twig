@@ -13,27 +13,23 @@
 {% endblock %}
 
 {% macro valid_baskets_length(baskets) %}
-    {% set foo = 0 %}
+    {% set number = 0 %}
     {% for item in baskets %}
-        {% if item.is_valid() %}
-            {% set foo = foo + 1 %}
+        {% if item.getValidation() %}
+            {% set number = number + 1 %}
         {% endif %}
     {% endfor %}
-  {{foo}}
+  {{number}}
 {% endmacro %}
 
-{% macro baskets_length(baskets_collection) %}
-    {% set foo = 0 %}
-    {% for key,baskets in baskets_collection.get_baskets() %}
-        {% if key == 'baskets' or key == 'recept' %}
-            {% for item in baskets %}
-                {% if item.is_valid() == false %}
-                    {% set foo = foo + 1 %}
-                {% endif %}
-            {% endfor %}
+{% macro baskets_length(baskets) %}
+    {% set number = 0 %}
+    {% for item in baskets %}
+        {% if item.getValidation() == false %}
+            {% set number = number + 1 %}
         {% endif %}
     {% endfor %}
-  {{foo}}
+  {{number}}
 {% endmacro %}
 
 {% block content %}
@@ -46,7 +42,7 @@
     <ul data-role="listview">
       <li>
         <a href="#validation">{% trans 'Validations'%}</a>
-        <span class="ui-li-count">{{_self.valid_baskets_length(baskets_collection.get_baskets().baskets)}}</span>
+        <span class="ui-li-count">{{_self.valid_baskets_length(baskets_collection)}}</span>
       </li>
       <li>
         <a href="#baskets">{% trans 'Paniers'%}</a>
@@ -67,7 +63,7 @@
     <h1>{% trans 'a propos'%}</h1>
   </div>
     <div data-role="content">
-    <p>Phraseanet Version {{session.get_version()}}</p>
+    <p>Phraseanet Version {{core.getVersion().getName()}} - {{core.getVersion().getNumber()}}</p>
     <p>
       <a href='http://www.gnu.org/licenses/gpl.html' target='_blank'>
         <img src='http{{ request.is_secure() ? 's' : '' }}://www.gnu.org/graphics/gplv3-88x31.png' style='vertical-align:middle;'/>
@@ -91,22 +87,18 @@
       {% trans 'Voici vos validations en cours' %}
     </p>
     <ul data-role="listview">
-            {% for key,baskets in baskets_collection.get_baskets() %}
-                {% if key == 'baskets' %}
-                    {% for item in baskets %}
-                        {% if item.is_valid() %}
-              {% set basket_length = item.get_elements()|length%}
-              <li>
-                {% if item.get_first_element() %}
-                <img src="{{item.get_first_element.get_record().get_thumbnail.get_url()}}" />
-                {% endif %}
-                <h3><a href="/lightbox/validate/{{item.get_ssel_id()}}/">{{item.get_name()}}</a></h3>
-                <p>{{item.get_description()}}</p>
-                <span class="ui-li-count">{{basket_length}}</span>
-              </li>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+            {% for basket in baskets_collection %}
+              {% if basket.getValidation() %}
+                {% set basket_length = basket.getElements().count() %}
+                <li>
+                  {% if basket.getElements().first() %}
+                  <img src="{{ basket.getElements().first().getRecord().get_thumbnail.get_url()}}" />
+                  {% endif %}
+                  <h3><a href="/lightbox/validate/{{basket.getId()}}/">{{basket.getName()}}</a></h3>
+                  <p>{{ basket.getDescription() }}</p>
+                  <span class="ui-li-count">{{ basket_length }}</span>
+                </li>
+              {% endif %}
             {% endfor %}
     </ul>
   </div>
@@ -124,22 +116,18 @@
       {% trans 'Voici vos paniers' %}
     </p>
     <ul data-role="listview">
-            {% for key,baskets in baskets_collection.get_baskets() %}
-                {% if key == 'baskets' or key == 'recept' %}
-                    {% for item in baskets %}
-                        {% if item.is_valid() == false %}
-              {% set basket_length = item.get_elements()|length%}
-              <li>
-                {% if item.get_first_element() %}
-                <img src="{{item.get_first_element.get_record().get_thumbnail.get_url()}}" />
-                {% endif %}
-                <h3><a href="/lightbox/validate/{{item.get_ssel_id()}}/">{{item.get_name()}}</a></h3>
-                <p>{{item.get_description()}}</p>
-                <span class="ui-li-count">{{basket_length}}</span>
-              </li>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
+            {% for basket in baskets_collection %}
+              {% if basket.getValidation() is empty %}
+                {% set basket_length = basket.getElements().count() %}
+                <li>
+                  {% if basket.getElements().first() %}
+                  <img src="{{ basket.getElements().first().getRecord().get_thumbnail.get_url()}}" />
+                  {% endif %}
+                  <h3><a href="/lightbox/validate/{{ basket.getId() }}/">{{ basket.getName() }}</a></h3>
+                  <p>{{ basket.getDescription() }}</p>
+                  <span class="ui-li-count">{{basket_length}}</span>
+                </li>
+              {% endif %}
             {% endfor %}
     </ul>
   </div>

@@ -1,0 +1,213 @@
+{% if list is empty %}
+  {% trans 'You are not authorized to do this' %}
+{% else %}
+  <div id="ListShare">
+    <div>
+      <h2 style="font-size:14px; margin-bottom:10px;"><b>{% trans 'About Roles : ' %}</b></h2>
+      <p>
+        - {% trans 'Admin can edit shares, modify content' %}
+      </p>
+      <p>
+        - {% trans 'Editor can modify content' %}
+      </p>
+      <p>
+        - {% trans 'Access user have readonly access' %}
+      </p>
+    </div>
+    <div style="margin-top:10px;">
+      <form name="list_share_user">
+        <label for="use">{% trans 'Find a user' %} : </label>
+        <input type="text" class="search" name="user" value="" style="width:180px" />
+      </form>
+    </div>
+    <div>
+      <form name="owners">
+      {% for owner in list.getOwners() %}
+        <table class="owner">
+          <tr>
+            <td>
+              <img src="/skins/icons/user.png"/>
+            </td>
+            <td style="width:150px;padding:5px;">
+              {{ owner.getUser().get_display_name() }}
+              <input type="hidden" name="usr_id" value="{{ owner.getUser().get_id() }}" />
+            </td>
+            <td style="padding-right:10px;min-width:100px;">
+              {% if user.get_id() == owner.getUser(user).get_id() %}
+                {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
+                  {% trans 'You are Admin' %}
+                {% endif %}
+              {% else %}
+              <label>{% trans 'Role' %}</label>
+              <select name="role">
+                <option {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_USER') %}selected {% endif %} value="{{ constant('\\Entities\\UsrListOwner::ROLE_USER') }}">
+                  {% trans 'Access' %}
+                </option>
+                <option {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}selected {% endif %} value="{{ constant('\\Entities\\UsrListOwner::ROLE_EDITOR') }}">
+                  {% trans 'Editor' %}
+                </option>
+                <option {% if owner.getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}selected {% endif %} value="{{ constant('\\Entities\\UsrListOwner::ROLE_ADMIN') }}">
+                  {% trans 'Admin' %}
+                </option>
+              </select>
+              {% endif %}
+            </td>
+            <td style="width:15px">
+               {% if user.get_id() != owner.getUser(user).get_id() %}
+                  <a href="#" class="deleter">
+                    <img src="/skins/prod/Push/close_badge.png" title="{% trans 'Remove' %}"/>
+                  </a>
+                {% endif %}
+              <a href="#" class="notifier">
+                <img src="/skins/prod/Push/Notify.png" title="{% trans 'Notify' %}"/>
+              </a>
+            </td>
+          </tr>
+        </table>
+      {% endfor %}
+      </form>
+    </div>
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      var $container = $('#ListShare'),
+      $completer_form = $('form[name="list_share_user"]', $container),
+      $owners_form = $('form[name="owners"]', $container),
+      $autocompleter = $('input[name="user"]', $completer_form),
+      $dialog = p4.Dialog.get(2);
+
+      $completer_form.bind('submit', function(){
+        return false;
+      });
+
+      $('select[name="role"]', $owners_form).bind('change', function(){
+        var usr_id = $(this).closest('.owner').find('input[name="usr_id"]').val(),
+        role = $(this).val();
+
+        shareWith(usr_id, role);
+
+        return false;
+      });
+
+      $('.deleter', $container).bind('click', function(){
+        var owner = $(this).closest('.owner');
+        var usr_id = owner.find('input[name="usr_id"]').val();
+
+        unShareWith(usr_id, function(data){
+          owner.remove();
+        });
+
+        return false;
+      });
+
+
+      function shareWith(usr_id, role)
+      {
+        var role = typeof role === 'undefined' ? 1 : role;
+
+        $.ajax({
+          type: 'POST',
+          url: '/prod/lists/list/{{ list.getId() }}/share/' + usr_id + '/',
+          dataType: 'json',
+          data : {role : role},
+          beforeSend:function(){
+          },
+          success: function(data){
+            if(data.success)
+            {
+              humane.info(data.message);
+            }
+            else
+            {
+              humane.error(data.message);
+            }
+            $dialog.refresh();
+
+            return;
+          },
+          error: function(){
+            return;
+          },
+          timeout: function(){
+            return;
+          }
+        });
+      }
+
+      function unShareWith(usr_id, callback)
+      {
+
+        $.ajax({
+          type: 'POST',
+          url: '/prod/lists/list/{{ list.getId() }}/unshare/' + usr_id + '/',
+          dataType: 'json',
+          data : {},
+          beforeSend:function(){
+          },
+          success: function(data){
+            if(data.success)
+            {
+              humane.info(data.message);
+              callback(data);
+            }
+            else
+            {
+              humane.error(data.message);
+            }
+            $dialog.refresh();
+
+            return;
+          },
+          error: function(){
+            return;
+          },
+          timeout: function(){
+            return;
+          }
+        });
+      }
+
+      $autocompleter.autocomplete({
+            minLength: 2,
+            source: function( request, response ) {
+              $.ajax({
+                url: '/prod/push/search-user/',
+                dataType: "json",
+                data: {
+                  query: request.term
+                },
+                success: function( data ) {
+                  response( data );
+                }
+              });
+            },
+            select: function( event, ui ) {
+              if(ui.item.type == 'USER')
+              {
+                shareWith(ui.item.usr_id);
+              }
+
+              return false;
+            }
+          })
+          .data( "autocomplete" )._renderItem = function( ul, item ) {
+
+            $autocompleter.addClass('loading');
+
+            var callback = function(datas){
+              $(datas).data( "item.autocomplete", item ).appendTo( ul );
+              $autocompleter.data( "autocomplete" ).menu.refresh();
+              $autocompleter.data('autocomplete')._resizeMenu();
+              $autocompleter.removeClass('loading');
+            };
+
+            if(item.type == 'USER')
+            {
+              var datas = p4.Mustache.Render('List-User-Item', item, callback);
+            }
+
+            return;
+          };
+    });
+  </script>
+{% endif %}

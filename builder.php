@@ -2,68 +2,103 @@
 <?php
 /*
  * Build Phraseanet for download
- * 
+ *
  */
 
-require_once __DIR__ . '/lib/bootstrap.php';
+printf('Retrieve vendors ...' . PHP_EOL);
+
+system('./vendors.php');
+/**
+ *
+ * Vendors has to be called two times.
+ * We should fix that
+ *
+ */
+system('./vendors.php');
+
+require_once __DIR__ . '/lib/classes/bootstrap.class.php';
+
+\bootstrap::register_autoloads();
 
 use Symfony\Component\Finder\Finder;
-
-$fix = isset($argv[1]) && 'fix' == $argv[1];
 
 chdir(__DIR__);
 
 set_time_limit(0);
 
-printf('Retrieve vendors ...' . PHP_EOL);
-
-system('./vendors.php');
+printf('Remove files ...' . PHP_EOL);
 
 $finder = new Finder();
+$finder
+  ->files()
+  ->name('.gitmodules')
+  ->name('.gitignore')
+  ->name('check_cs.php')
+  ->name('cleaner.php')
+  ->name('launchpadToLocales.php')
+  ->name('localesToLaunchPad.php')
+  ->name('pom.xml')
+  ->name('vendors.php')
+  ->name('builder.php')
+  ->ignoreDotFiles(false)
+  ->ignoreVCS(false)
+  ->in(__DIR__);
+
+$files = array();
+
+foreach ($finder as $file)
+{
+  $files[] = $file->getPathname();
+}
+
+foreach ($files as $file)
+{
+  echo "rm $file\n";
+  unlink($file);
+}
+
+$finder = new Finder();
+
 $finder
   ->directories()
   ->name('test')
   ->name('tests')
-  ->name('unitTests')
+  ->name('unitTest')
   ->name('demos')
   ->name('demo')
   ->name('example')
   ->name('examples')
+  ->name('docs')
+  ->name('documentation')
+  ->name('doc')
+  ->name('as-docs')
+  ->name('hudson')
   ->name('.svn')
   ->name('.git')
-  ->in(
-    array(
-      __DIR__ . '/lib',
-      __DIR__ . '/bin',
-      __DIR__ . '/config',
-      __DIR__ . '/www',
-      __DIR__ . '/templates'
-    )
-  )
-  ->exclude('vendor')
-;
+  ->name('flash')
+  ->ignoreDotFiles(false)
+  ->ignoreVCS(false)
+  ->in(__DIR__);
+
+
+$dirs = array();
 
 foreach ($finder as $dir)
 {
-  $cmd = sprintf('rm -Rf %s' . PHP_EOL, escapeshellarg($dir->getPathname()));
-
-  if ($fix)
-    system($cmd);
-  else
-    printf($cmd);
+  $dirs[] = $dir->getPathname();
 }
 
-$root_files = array('hudson', 'check_cs.php', 'pom.xml', 'vendors.php', 'builder.php');
-
-
-foreach ($root_files as $file)
+foreach ($dirs as $dir)
 {
-  $cmd = sprintf('rm -Rf %s/%s' . PHP_EOL, __DIR__, escapeshellarg($file));
+  if (!is_dir($dir))
+  {
+    continue;
+  }
 
-  if ($fix)
-    system($cmd);
-  else
-    printf($cmd);
+  $cmd = sprintf('rm -Rf %s' . PHP_EOL, escapeshellarg($dir));
+
+  printf($cmd);
+  system($cmd);
 }
 
 exit(0);

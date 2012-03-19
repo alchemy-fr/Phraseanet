@@ -14,9 +14,11 @@
  *
  */
 
-require_once __DIR__ . '/lib/bootstrap.php';
+require_once __DIR__ . '/lib/Alchemy/Phrasea/Core.php';
 
 use Symfony\Component\Finder\Finder;
+
+\Alchemy\Phrasea\Core::initAutoloads();
 
 $fix = isset($argv[1]) && 'fix' == $argv[1];
 
@@ -43,6 +45,7 @@ $finder
   ->notName(basename(__FILE__))
   ->exclude('.git')
   ->exclude('vendor')
+  ->exclude('Doctrine/Proxies')
 ;
 
 $count = 0;

@@ -183,7 +183,7 @@ class task_period_writemeta extends task_databoxAbstract
 
   public function printInterfaceHTML()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $sbas_ids = User_Adapter::getInstance($session->get_usr_id(), $appbox)
                     ->ACL()->get_granted_sbas(array('bas_manage'));
@@ -310,9 +310,9 @@ class task_period_writemeta extends task_databoxAbstract
 
     if ($record->get_uuid())
     {
-      $subCMD .= '-XMP-exif:ImageUniqueID=';
+      $subCMD .= ' -XMP-exif:ImageUniqueID=';
       $subCMD .= escapeshellarg($record->get_uuid());
-      $subCMD .= '-IPTC:UniqueDocumentID=';
+      $subCMD .= ' -IPTC:UniqueDocumentID=';
       $subCMD .= escapeshellarg($record->get_uuid());
     }
 
@@ -325,24 +325,24 @@ class task_period_writemeta extends task_databoxAbstract
 
       $multi = $meta->is_multi();
       $type = $meta->get_type();
-      $datas = $field->get_value();
+      $datas = $field->get_values();
 
       if ($multi)
       {
-        $datas = $field->get_value();
         foreach ($datas as $value)
         {
-          $value = $this->format_value($type, $value);
+          $value = $this->format_value($type, $value->getValue());
 
-          $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
+          $subCMD .= ' -'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
           $subCMD .= escapeshellarg($value).' ';
         }
       }
       else
       {
-        $datas = $this->format_value($type, $datas);
+        $value = array_pop($datas);
+        $datas = $this->format_value($type, $value->getValue());
 
-        $subCMD .= '-'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
+        $subCMD .= ' -'.$meta->get_metadata_namespace().':'.$meta->get_metadata_tagname().'=';
         $subCMD .= escapeshellarg($datas).' ';
       }
     }
@@ -354,7 +354,7 @@ class task_period_writemeta extends task_databoxAbstract
         $cmd = 'start /B /LOW ';
       $cmd .= ( $registry->get('GV_exiftool') . ' -m -overwrite_original ');
       if ($name != 'document' || $this->clear_doc)
-        $cmd .= '-all:all= ';
+        $cmd .= ' -all:all= ';
 
       $cmd .= ' -codedcharacterset=utf8 ';
 

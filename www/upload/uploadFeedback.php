@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $request = http_request::getInstance();
 $parm = $request->get_parms('action', 'from_id', 'to_id', 'actions', 'id');
@@ -128,14 +128,11 @@ switch ($action)
     {
       $lazaret = new lazaret();
 
-      $twig = new supertwig();
-      $twig->addFilter(array('nl2br' => 'nl2br'));
-      $twig->addFilter(array('phraseadate' => 'phraseadate::getPrettyString'));
-      $twig->addFilter(array('basnames' => 'phrasea::bas_names'));
+      $core = \bootstrap::getCore();
+      $twig = $core->getTwig();
 
       $output = $twig->render(
-                      'upload/lazaret.twig',
-                      array('lazaret' => $lazaret)
+              'upload/lazaret.twig', array('lazaret' => $lazaret)
       );
     }
     catch (Exception $e)

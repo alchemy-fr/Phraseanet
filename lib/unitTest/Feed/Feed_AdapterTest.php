@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 /**
  * Test class for Feed_Adapter.
@@ -20,7 +20,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public static function setUpBeforeClass()
   {
     parent::setUpBeforeClass();
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $auth = new Session_Authentication_None(self::$user);
     $appbox->get_session()->authenticate($auth);
     self::$object = Feed_Adapter::create($appbox, self::$user, self::$title, self::$subtitle);
@@ -40,11 +40,11 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testSet_icon()
   {
     $this->assertEquals('/skins/icons/rss32.gif', self::$object->get_icon_url());
-    $file = new system_file(dirname(__FILE__) . '/../testfiles/p4logo.jpg');
+    $file = new system_file(__DIR__ . '/../testfiles/p4logo.jpg');
     self::$object->set_icon($file);
     try
     {
-      $file = new system_file(dirname(__FILE__) . '/../testfiles/iphone_pic.jpg');
+      $file = new system_file(__DIR__ . '/../testfiles/iphone_pic.jpg');
       self::$object->set_icon($file);
       $this->fail('Should fail');
     }
@@ -77,7 +77,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertTrue(self::$object->is_public());
 
     $coll = null;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
@@ -125,7 +125,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   {
 
     $coll = null;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     foreach ($appbox->get_databoxes() as $databox)
     {
       foreach ($databox->get_collections() as $collection)
@@ -208,7 +208,7 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testLoad_with_user()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->assertEquals(Feed_Adapter::load_with_user($appbox, self::$user, self::$object->get_id())->get_id(), self::$object->get_id());
   }
 

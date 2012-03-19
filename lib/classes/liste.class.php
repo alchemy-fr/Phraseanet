@@ -5,7 +5,7 @@ class liste
 
   public static function filter($lst)
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     if (!is_array($lst))

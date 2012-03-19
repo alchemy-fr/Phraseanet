@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
 {
@@ -15,7 +15,7 @@ class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
 
   public function setUp()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
     $this->account = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
 
@@ -73,8 +73,8 @@ class API_OAuth2_AuthCodeTest extends PhraseanetPHPUnitAbstract
 
   public function testLoad_codes_by_account()
   {
-    $this->assertTrue(is_array(API_OAuth2_AuthCode::load_codes_by_account(appbox::get_instance(), $this->account)));
-    $this->assertTrue(count(API_OAuth2_AuthCode::load_codes_by_account(appbox::get_instance(), $this->account)) > 0);
+    $this->assertTrue(is_array(API_OAuth2_AuthCode::load_codes_by_account(appbox::get_instance(\bootstrap::getCore()), $this->account)));
+    $this->assertTrue(count(API_OAuth2_AuthCode::load_codes_by_account(appbox::get_instance(\bootstrap::getCore()), $this->account)) > 0);
   }
 
 }

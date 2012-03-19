@@ -20,7 +20,7 @@ class queries
 
   public static function tree_topics()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -71,7 +71,7 @@ class queries
 
   public static function topics_exists()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -88,7 +88,7 @@ class queries
 
   public static function dropdown_topics()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $registry = $appbox->get_registry();
 
@@ -221,7 +221,7 @@ class queries
 
   public static function history()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     $conn = $appbox->get_connection();
 

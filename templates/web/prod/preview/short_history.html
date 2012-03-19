@@ -23,7 +23,8 @@
           {% trans 'report::Edition des meta-donnees' %}
         {% elseif action == 'collection' %}
           {% set dest = done['final']|implode(', ') %}
-          {% trans %}report::Changement de collection vers : {{dest}}{% endtrans %}
+          {% set coll_name = dest|bas_name %}
+          {% trans %}report::Changement de collection vers : {{coll_name}}{% endtrans %}
         {% elseif action == 'status' %}
           {% trans 'report::Edition des status' %}
         {% elseif action == 'print' %}
@@ -55,7 +56,7 @@
         {% endif %}
           <span class="actor">
           {% if user.ACL().has_right_on_base(record.get_base_id(), 'canreport') %}
-            {% if done['user'].get_id() != session.get_usr_id() %}
+            {% if done['user'] and done['user'].get_id() != session.get_usr_id() %}
               {% set user_infos = done['user'].get_display_name() %}
               {% trans %}report:: par {{ user_infos }}{% endtrans %}
             {% endif %}

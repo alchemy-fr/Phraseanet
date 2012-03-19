@@ -70,7 +70,6 @@ class module_report_sqldownload extends module_report_sql implements module_repo
 
       $this->sql .= $this->filter->getOrderFilter() ? : '';
 
-//      var_dump(str_replace(array_keys($this->params), array_values($this->params), $this->sql), $this->sql, $this->params);
       $stmt = $this->connbas->prepare($this->sql);
       $stmt->execute($this->params);
       $this->total_row = $stmt->rowCount();

@@ -88,7 +88,7 @@ class Bridge_Api_Auth_OAuth2 extends Bridge_Api_Auth_Abstract implements Bridge_
     $response = json_decode($response_json, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
 
     if (!is_array($response) || !isset($response['refresh_token']) || !isset($response['access_token']))
-      throw new Bridge_Exception_ApiConnectorAccessTokenFailed('Unable to retrive tokens');
+      throw new Bridge_Exception_ApiConnectorAccessTokenFailed('Unable to retrieve tokens');
 
     return array('refresh_token' => $response['refresh_token'], 'auth_token' => $response['access_token']);
   }

@@ -1,4 +1,3 @@
-
 jQuery(document).ready(function(){	
 	var date = new Date();
 	date.setMonth(date.getMonth() + 2);
@@ -34,4 +33,3 @@ function setTab(tab,el)
 	jQuery('.tab-content').hide();
 	jQuery('#id-'+tab).show();
 }
-				

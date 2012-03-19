@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class downloadReportTest extends PhraseanetPHPUnitAbstract
 {
@@ -31,7 +31,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
     $thid->dmax = $date->format("Y-m-d H:i:s");
     $date->modify('-6 month');
     $this->dmin = $date->format("Y-m-d H:i:s");
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $databoxes = $appbox->get_databoxes();
     $this->ret = array();
     foreach ($databoxes as $databox)

@@ -1,0 +1,41 @@
+Entities\ValidationSession:
+  type: entity
+  table: ValidationSessions
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    initiator_id:
+      type: integer
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+    expires:
+      type: datetime
+      nullable: true
+  oneToOne:
+    basket:
+      targetEntity: Basket
+      inversedBy: validation
+      joinColumn:
+        name: basket_id
+        referencedColumnName: id
+      cascade: ["persist"]
+  oneToMany:
+    participants:
+      targetEntity: ValidationParticipant
+      mappedBy: session
+      cascade: ["ALL"]
+
+
+
+

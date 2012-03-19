@@ -15,50 +15,44 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
+require_once __DIR__ . "/../../lib/bootstrap.php";
 
 /* get all the post parameters from report.php's form */
 
 
 $request = http_request::getInstance();
 $param = $request->get_parms(
-                "dmin", // date minimal of the reporting
-                "dmax", // date maximal of the reporting
-                "page", // current page of the reporting
-                "limit", // numbers of result by page displayed in the reporting
-                "tbl", // action requested
-                "collection", // list of collection which concerns the reporting
-                "user", // id of user which concern the reporting
-                "precise", // 1 = precision on content of the doc we're lookin for; 2 = precison on id of the document we're looking for
-                "order", // order result of the reporting
-                "champ", // precise the field we want order
-                "word", // precise the word we're lookin for in our documents
-                "sbasid", // the report relates to this base iD
-                "rid", // precise the id of the document we are looking for
-                "filter_column", // name of the colonne we want applied the filter
-                "filter_value", // value of the filter
-                "liste", // default = off, if on, apply the new filter
-                "liste_filter", // memorize the current(s) applied filters
-                "conf", // default = off, if on, apply the new configuration
-                "list_column", // contain the list of the column the user wants to see
-                "groupby", // name of the column that the user wants group
-                "societe", // the name of the selectionned firm
-                "fonction", // the name of the selectionned function
-                "activite", // the name of the selectionned activity
-                "pays", // the name of the selectionned country
-                "on", // this field contain the name of the column the user wants display the download by
-                "top", // this field contains the number of the top questions he wants to see
-                "from", "printcsv", "docwhat"
+        "dmin", // date minimal of the reporting
+        "dmax", // date maximal of the reporting
+        "page", // current page of the reporting
+        "limit", // numbers of result by page displayed in the reporting
+        "tbl", // action requested
+        "collection", // list of collection which concerns the reporting
+        "user", // id of user which concern the reporting
+        "precise", // 1 = precision on content of the doc we're lookin for; 2 = precison on id of the document we're looking for
+        "order", // order result of the reporting
+        "champ", // precise the field we want order
+        "word", // precise the word we're lookin for in our documents
+        "sbasid", // the report relates to this base iD
+        "rid", // precise the id of the document we are looking for
+        "filter_column", // name of the colonne we want applied the filter
+        "filter_value", // value of the filter
+        "liste", // default = off, if on, apply the new filter
+        "liste_filter", // memorize the current(s) applied filters
+        "conf", // default = off, if on, apply the new configuration
+        "list_column", // contain the list of the column the user wants to see
+        "groupby", // name of the column that the user wants group
+        "societe", // the name of the selectionned firm
+        "fonction", // the name of the selectionned function
+        "activite", // the name of the selectionned activity
+        "pays", // the name of the selectionned country
+        "on", // this field contain the name of the column the user wants display the download by
+        "top", // this field contains the number of the top questions he wants to see
+        "from", "printcsv", "docwhat"
 );
 
-$twig = new supertwig();
-
-$twig->addFilter(array(
-    'sbas_names' => 'phrasea::sbas_names',
-    'str_replace' => 'str_replace',
-    'serialize' => 'serialize',
-    'strval' => 'strval'
-));
+$core = \bootstrap::getCore();
+$twig = $core->getTwig();
 
 $conf_info_usr = array(
     'config' => array(
@@ -258,7 +252,7 @@ function doCsv($obj, $param, $conf, $twig)
   {
     $csv = format::arr_to_csv($result_csv, $display);
   }
-  catch(Exception $e)
+  catch (Exception $e)
   {
     $csv = false;
   }
@@ -351,8 +345,8 @@ function displayListColumn($conf, $param, $twig)
   if ($param['conf'] == "on")
   {
     $html = $twig->render('report/listColumn.twig', array(
-                'conf' => $conf,
-                'param' => $param
+        'conf' => $conf,
+        'param' => $param
             ));
     $t = array('liste' => $html, "title" => _("configuration"));
     echo p4string::jsonencode($t);
@@ -379,8 +373,8 @@ function groupBy($obj, $param, $twig, $on = false)
 function displayColValue($tab, $column, $twig, $on = false)
 {
   $test = $twig->render('report/colFilter.twig', array(
-              'result' => $tab,
-              'field' => $column
+      'result' => $tab,
+      'field' => $column
           ));
   $t = array('diag' => $test, "title" => sprintf(_("filtrer les resultats sur la colonne %s"), $column));
   echo p4string::jsonencode($t);

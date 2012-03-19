@@ -14,9 +14,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-
-$appbox = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 
@@ -139,7 +139,6 @@ switch ($parm['act'])
 
   case 'SENDWM':
   case 'DELWM':
-    $collection->reset_watermark();
 
     if ($parm['act'] == 'SENDWM' && isset($_FILES['newWm']))
     {
@@ -264,9 +263,9 @@ phrasea::headers();
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript">
       var ntask = 0 ;
 
@@ -291,6 +290,8 @@ phrasea::headers();
 
             },
             success: function(data){
+              alert(data.message);
+
               return;
             }
           });

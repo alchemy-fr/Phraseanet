@@ -27,7 +27,7 @@
           {% trans 'Vous etes maintenant deconnecte. A bientot.' %}
         </div>
         {% endif %}
-                {{errorWarning}}{{confirmWarning}}
+                {{errorWarning|raw}}{{confirmWarning|raw}}
             </div>
             <div style="margin-top:20px;">
                 <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur identifiant' %}</div>
@@ -38,9 +38,13 @@
                 <div style="margin-top:3px;">{% trans 'admin::compte-utilisateur mot de passe' %}</div>
                 <div style="margin-top:3px;"><input {% if maintenance == true %}disabled{% endif %} tabindex="2" name="pwd"
                     id="pwd" value="" type="password" style="width:100%" /></div>
-                <div style="text-align:right;margin-top:3px;">{{login.get_password_link}}</div>
+                <div style="text-align:right;margin-top:3px;">
+                  <a target="_self" class="link" rel="external" href="/login/forgotpwd.php">
+                    {% trans 'login:: Forgot your password' %}
+                  </a>
+                </div>
             </div>
-            {{captcha_system}}
+            {{captcha_system|raw}}
             <div style="margin-top:10px;">
                 <div><input tabindex="4" class="checkbox" type="checkbox" name="remember" id="remember-me" value="1" />
                     <label for="remember-me">{% trans 'login::Remember me' %}</label></div>
@@ -50,10 +54,10 @@
                     tabindex="5" type="submit" value="{% trans 'login:: connexion' %}"/></div>
             </div>
             <div style="margin-top:20px;">
-                {{login.get_register_link}}
+               {{login.get_register_link|raw}}
             </div>
             <div style="margin-top:10px;">
-                {{login.get_guest_link}}
+                {{login.get_guest_link|raw}}
             </div>
         </div>
 </div>

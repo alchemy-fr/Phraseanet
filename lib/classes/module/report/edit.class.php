@@ -47,7 +47,7 @@ class module_report_edit extends module_report
   public function __construct($arg1, $arg2, $sbas_id, $collist)
   {
     parent::__construct($arg1, $arg2, $sbas_id, $collist);
-    $this->title = _('report:: document ajoute');
+    $this->title = _('report:: edited documents');
   }
 
   /**
@@ -76,7 +76,7 @@ class module_report_edit extends module_report
     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $ret = array();
     foreach ($rs as $row)

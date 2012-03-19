@@ -14,13 +14,14 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance(\bootstrap::getCore());
 $session = $appbox->get_session();
-$registry = $appbox->get_registry();
 phrasea::headers();
 
-$user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+$user = $Core->getAuthenticatedUser();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
@@ -100,30 +101,30 @@ if ($parm["act"] == "START" || $parm["act"] == "WORK")
       $basrec = explode('_', $basrec);
       if (count($basrec) !== 2)
         continue;
-        try
+
+      try
+      {
+        $record = new record_adapter($basrec[0], $basrec[1]);
+        $base_id = $record->get_base_id();
+        if (isset($mska[$basrec[0]]) && isset($msko[$basrec[0]]))
         {
           $record = new record_adapter($basrec[0], $basrec[1]);
-          $base_id = $record->get_base_id();
-          if (isset($mska[$basrec[0]]) && isset($msko[$basrec[0]]))
-          {
-            $record = new record_adapter($basrec[0], $basrec[1]);
-            $status = $record->get_status();
-            $status = databox_status::operation_and($status, $mska[$basrec[0]]);
-            $status = databox_status::operation_or($status,  $msko[$basrec[0]]);
-            $record->set_binary_status($status);
+          $status = $record->get_status();
+          $status = databox_status::operation_and($status, $mska[$basrec[0]]);
+          $status = databox_status::operation_or($status,  $msko[$basrec[0]]);
+          $record->set_binary_status($status);
 
             $session->get_logger($record->get_databox())
                     ->log($record, Session_Logger::EVENT_STATUS, '', '');
 
-            basket_adapter::revoke_baskets_record($record, $appbox);
-            $maj++;
-            unset($record);
-          }
+          $maj++;
+          unset($record);
         }
-        catch (Exception $e)
-        {
+      }
+      catch (Exception $e)
+      {
 
-        }
+      }
     }
 ?>
     <div style="font-size:11px;text-align:center;">

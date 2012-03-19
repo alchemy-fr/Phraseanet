@@ -14,8 +14,10 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-$appbox = appbox::get_instance();
+
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 
 $request = http_request::getInstance();
@@ -97,8 +99,9 @@ if($parm["act"] == "DELETETASK")
         padding-right: 5px;
       }
     </style>
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js,include/jslibs/jquery-ui-1.8.12/development-bundle/ui/i18n/jquery-ui-i18n.js,include/jslibs/jquery.contextmenu.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js,include/jslibs/jquery.contextmenu.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript">
 
       var retPing = null;

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for Session_Logger.
@@ -44,7 +44,7 @@ class Session_LoggerTest extends PhraseanetPHPUnitAbstract
 
   protected function feed_datas()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->session = $appbox->get_session();
     $user = self::$user;
     $auth = new Session_Authentication_None($user);

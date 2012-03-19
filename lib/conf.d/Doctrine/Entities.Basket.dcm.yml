@@ -1,0 +1,46 @@
+Entities\Basket:
+  type: entity
+  repositoryClass: Repositories\BasketRepository
+  table: Baskets
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+      length: 128
+    description:
+      type: text
+      nullable: true
+    usr_id:
+      type: integer
+    is_read:
+      type: boolean
+    pusher_id:
+      type: integer
+      nullable: true
+    archived:
+      type: boolean
+      default: false
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  oneToOne:
+    validation:
+      targetEntity: ValidationSession
+      mappedBy: basket
+      cascade: ["ALL"]
+  oneToMany:
+    elements:
+      targetEntity: BasketElement
+      mappedBy: basket
+      cascade: ["ALL"]

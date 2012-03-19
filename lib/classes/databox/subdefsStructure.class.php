@@ -129,8 +129,9 @@ class databox_subdefsStructure implements IteratorAggregate
   public function get_subdef($subdef_type, $subdef_name)
   {
     if (isset($this->AvSubdefs[$subdef_type]) && isset($this->AvSubdefs[$subdef_type][$subdef_name]))
-
+    {
       return $this->AvSubdefs[$subdef_type][$subdef_name];
+    }
     throw new Exception_Databox_SubdefNotFound();
   }
 
@@ -146,9 +147,9 @@ class databox_subdefsStructure implements IteratorAggregate
     $dom_struct = $this->databox->get_dom_structure();
     $dom_xp = $this->databox->get_xpath_structure();
     $nodes = $dom_xp->query(
-                    '//record/subdefs/'
-                    . 'subdefgroup[@name="' . $group . '"]/'
-                    . 'subdef[@name="' . $name . '"]'
+            '//record/subdefs/'
+            . 'subdefgroup[@name="' . $group . '"]/'
+            . 'subdef[@name="' . $name . '"]'
     );
 
     if ($nodes->length > 0)
@@ -173,22 +174,22 @@ class databox_subdefsStructure implements IteratorAggregate
    * @param string $class
    * @return databox_subdefsStructure
    */
-  public function add_subdef($group, $name, $class)
+  public function add_subdef($groupname, $name, $class)
   {
     $dom_struct = $this->databox->get_dom_structure();
 
     $subdef = $dom_struct->createElement('subdef');
     $subdef->setAttribute('class', $class);
-    $subdef->setAttribute('name', $name);
+    $subdef->setAttribute('name', mb_strtolower($name));
 
     $dom_xp = $this->databox->get_xpath_structure();
-    $query = '//record/subdefs/subdefgroup[@name="' . $group . '"]';
+    $query = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
     $groups = $dom_xp->query($query);
 
     if ($groups->length == 0)
     {
       $group = $dom_struct->createElement('subdefgroup');
-      $group->setAttribute('name', $group);
+      $group->setAttribute('name', $groupname);
       $dom_xp->query('/record/subdefs')->item(0)->appendChild($group);
     }
     else
@@ -233,7 +234,7 @@ class databox_subdefsStructure implements IteratorAggregate
     $dom_xp = $this->databox->get_xpath_structure();
 
     $nodes = $dom_xp->query('//record/subdefs/'
-                    . 'subdefgroup[@name="' . $group . '"]');
+            . 'subdefgroup[@name="' . $group . '"]');
     if ($nodes->length > 0)
     {
       $dom_group = $nodes->item(0);
@@ -255,9 +256,9 @@ class databox_subdefsStructure implements IteratorAggregate
     }
 
     $nodes = $dom_xp->query(
-                    '//record/subdefs/'
-                    . 'subdefgroup[@name="' . $group . '"]/'
-                    . 'subdef[@name="' . $name . '"]'
+            '//record/subdefs/'
+            . 'subdefgroup[@name="' . $group . '"]/'
+            . 'subdef[@name="' . $name . '"]'
     );
 
     if ($nodes->length > 0)

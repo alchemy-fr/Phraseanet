@@ -15,9 +15,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
-
-$appbox = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 
@@ -37,22 +37,18 @@ if (!$user->is_admin())
 
 
 $cache_flushed = false;
-if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache')
+if ($parm['flush_cache'])
 {
-  $cache = $appbox->get_cache()->flush();
-
-  if ($cache->ping())
-  {
-    if ($cache->flush() === true)
-      $cache_flushed = true;
-  }
+  $Core = \bootstrap::getCore();
+  $Core['CacheService']->flushAll();
+  $cache_flushed = true;
 }
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
   <head>
-    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
-    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.5.2.js"></script>
-    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.12/js/jquery-ui-1.8.12.custom.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="/include/minify/f=include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css,skins/common/main.css,skins/admin/admincolor.css" />
+    <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/jslibs/jquery-ui-1.8.17/js/jquery-ui-1.8.17.custom.min.js"></script>
     <style type="text/css">
       body
       {
@@ -86,6 +82,10 @@ if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache'
         margin:5px 0 5px 40px;
         border:1px solid #404040;
       }
+      ul.setup table{
+        width:100%;
+        table-layout: fixed;
+      }
       .setup li{
         margin:0px 0;
         padding:2px 5px 2px 30px;
@@ -101,6 +101,10 @@ if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache'
       }
       tr.even{
         background-color:#CCCCCC;
+      }
+      #flush_button {
+        width:360px;
+        margin: 5px 0 5px 40px;
       }
     </style>
 
@@ -180,7 +184,7 @@ if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache'
     {
     ?>
       <div>
-<?php echo _('admin::Le serveur memcached a ete flushe'); ?>
+<?php echo _('all caches services have been flushed'); ?>
       </div>
 <?php
     }
@@ -318,19 +322,14 @@ if ($parm['flush_cache'] && $registry->get('GV_cache_server_type') !== 'nocache'
           setup::check_cache_opcode();
           setup::check_cache_memcache();
 
-          if ($registry->get('GV_cache_server_type') !== 'nocache')
+          if ($Core->getCache()->isServer())
           {
-            $cache = cache_adapter::get_instance($registry);
-
-            if ($cache->ping())
-            {
         ?>
               <form method="post" action="sitestruct.php">
                 <input type="hidden" name="flush_cache" value="1"/>
-                <input type="submit" value="Flush Memcached"/>
+                <input id="flush_button" type="submit" value="Flush All Caches" />
               </form>
 <?php
-            }
           }
 ?>
         <?php

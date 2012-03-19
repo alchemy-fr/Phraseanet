@@ -1,0 +1,38 @@
+Entities\UsrListOwner:
+  type: entity
+  repositoryClass: Repositories\UsrListOwnerRepository
+  table: UsrListOwners
+  uniqueConstraints:
+    unique_owner:
+      columns: usr_id,id
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    usr_id:
+      type: integer
+    role:
+      type: string
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  manyToOne:
+    list:
+      targetEntity: UsrList
+      inversedBy: owners
+      joinColumn:
+        name: list_id
+        referencedColumnName: id
+      cascade: ["persist"]
+
+
+

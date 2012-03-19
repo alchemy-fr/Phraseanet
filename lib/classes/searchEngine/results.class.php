@@ -121,7 +121,7 @@ class searchEngine_results
    */
   public function get_suggestions()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     return $this->engine->get_suggestions($session);

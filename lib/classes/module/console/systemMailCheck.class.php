@@ -43,7 +43,7 @@ class module_console_systemMailCheck extends Command
   public function execute(InputInterface $input, OutputInterface $output)
   {
 
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     $output->writeln("Processing...");
 
@@ -65,7 +65,7 @@ class module_console_systemMailCheck extends Command
 
     $output->write('Finished !', true);
 
-    return;
+    return 0;
   }
 
   protected function manage_group($email, $users, $output, $appbox)

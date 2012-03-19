@@ -86,16 +86,17 @@ class record_preview extends record_adapter
    * @param boolean $reload_train
    * @return record_preview
    */
-  public function __construct($env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine =null, $query='')
+  public function __construct($env, $pos, $contId, $reload_train, searchEngine_adapter $search_engine = null, $query = '')
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $Core = bootstrap::getCore();
     $number = null;
     $this->env = $env;
 
     switch ($env)
     {
       case "RESULT":
-        $results = $search_engine->query_per_offset($query, (int) ($pos), 1);
+        $results   = $search_engine->query_per_offset($query, (int) ($pos), 1);
         $mypreview = array();
 
         if ($results->get_datas()->is_empty())
@@ -104,22 +105,22 @@ class record_preview extends record_adapter
         }
         foreach ($results->get_datas() as $record)
         {
-          $number = $pos;
-          $sbas_id = $record->get_sbas_id();
+          $number    = $pos;
+          $sbas_id   = $record->get_sbas_id();
           $record_id = $record->get_record_id();
           break;
         }
         break;
       case "REG":
-        $contId = explode('_', $contId);
-        $sbas_id = $contId[0];
+        $contId    = explode('_', $contId);
+        $sbas_id   = $contId[0];
         $record_id = $contId[1];
 
         $this->container = new record_adapter($sbas_id, $record_id);
         if ($pos == 0)
         {
           $number = 0;
-          $title = _('preview:: regroupement ');
+          $title  = _('preview:: regroupement ');
         }
         else
         {
@@ -127,52 +128,57 @@ class record_preview extends record_adapter
           $children = $this->container->get_children();
           foreach ($children as $child)
           {
-            $sbas_id = $child->get_sbas_id();
+            $sbas_id   = $child->get_sbas_id();
             $record_id = $child->get_record_id();
             if ($child->get_number() == $pos)
               break;
           }
-          $number = $pos;
+          $number    = $pos;
           $this->total = $children->get_count();
         }
 
         break;
       case "BASK":
-        $basket = basket_adapter::getInstance($appbox, $contId, $appbox->get_session()->get_usr_id());
+        $em = $Core->getEntityManager();
+        $repository = $em->getRepository('\Entities\Basket');
 
-        $this->container = $basket;
-        $this->total = count($basket->get_elements());
+        /* @var $repository \Repositories\BasketRepository */
+        $Basket = $repository->findUserBasket($contId, $Core->getAuthenticatedUser(), false);
+
+        /* @var $Basket \Entities\Basket */
+        $this->container = $Basket;
+        $this->total = $Basket->getElements()->count();
         $i = 0;
         $first = true;
 
-        foreach ($basket->get_elements() as $element)
+        foreach ($Basket->getElements() as $element)
         {
+          /* @var $element \Entities\BasketElement */
           $i++;
           if ($first)
           {
-            $sbas_id = $element->get_record()->get_sbas_id();
-            $record_id = $element->get_record()->get_record_id();
-            $this->name = $basket->get_name();
-            $number = $element->get_order();
+            $sbas_id = $element->getRecord()->get_sbas_id();
+            $record_id = $element->getRecord()->get_record_id();
+            $this->name = $Basket->getName();
+            $number = $element->getOrd();
           }
-          $first = false;
+          $first     = false;
 
-          if ($element->get_order() == $pos)
+          if ($element->getOrd() == $pos)
           {
-            $sbas_id = $element->get_record()->get_sbas_id();
-            $record_id = $element->get_record()->get_record_id();
-            $this->name = $basket->get_name();
-            $number = $element->get_order();
+            $sbas_id = $element->getRecord()->get_sbas_id();
+            $record_id = $element->getRecord()->get_record_id();
+            $this->name = $Basket->getName();
+            $number = $element->getOrd();
           }
         }
         break;
       case "FEED":
         $entry = Feed_Entry_Adapter::load_from_id($appbox, $contId);
-//        $basket = basket_adapter::getInstance($appbox, $contId, $appbox->get_session()->get_usr_id());
 
         $this->container = $entry;
         $this->total = count($entry->get_content());
-        $i = 0;
+        $i     = 0;
         $first = true;
 
         foreach ($entry->get_content() as $element)
@@ -180,19 +186,19 @@ class record_preview extends record_adapter
           $i++;
           if ($first)
           {
-            $sbas_id = $element->get_record()->get_sbas_id();
+            $sbas_id   = $element->get_record()->get_sbas_id();
             $record_id = $element->get_record()->get_record_id();
             $this->name = $entry->get_title();
-            $number = $element->get_ord();
+            $number    = $element->get_ord();
           }
-          $first = false;
+          $first     = false;
 
           if ($element->get_ord() == $pos)
           {
-            $sbas_id = $element->get_record()->get_sbas_id();
+            $sbas_id   = $element->get_record()->get_sbas_id();
             $record_id = $element->get_record()->get_record_id();
             $this->name = $entry->get_title();
-            $number = $element->get_ord();
+            $number    = $element->get_ord();
           }
         }
         break;
@@ -202,7 +208,7 @@ class record_preview extends record_adapter
     return $this;
   }
 
-  public function get_train($pos = 0, $query='', searchEngine_adapter $search_engine=null)
+  public function get_train($pos = 0, $query = '', searchEngine_adapter $search_engine = null)
   {
     if ($this->train)
 
@@ -212,14 +218,14 @@ class record_preview extends record_adapter
     {
       case 'RESULT':
         $perPage = 56;
-        $index = ($pos - 3) < 0 ? 0 : ($pos - 3);
-        $page = (int) ceil($pos / $perPage);
+        $index   = ($pos - 3) < 0 ? 0 : ($pos - 3);
+        $page    = (int) ceil($pos / $perPage);
         $results = $search_engine->query_per_offset($query, $index, $perPage);
 
         $this->train = $results->get_datas();
         break;
       case 'BASK':
-        $this->train = $this->container->get_elements();
+        $this->train = $this->container->getElements();
         break;
       case 'REG':
         $this->train = $this->container->get_children();
@@ -265,7 +271,7 @@ class record_preview extends record_adapter
    *
    * @return String
    */
-  public function get_title($highlight = '', searchEngine_adapter $search_engine=null)
+  public function get_title($highlight = '', searchEngine_adapter $search_engine = null)
   {
     if ($this->title)
 
@@ -278,15 +284,15 @@ class record_preview extends record_adapter
 
       case "RESULT":
         $this->title .= sprintf(
-                _('preview:: resultat numero %s '), '<span id="current_result_n">' . ($this->number + 1)
-                . '</span> : '
+          _('preview:: resultat numero %s '), '<span id="current_result_n">' . ($this->number + 1)
+          . '</span> : '
         );
 
         $this->title .= parent::get_title($highlight, $search_engine);
         break;
       case "BASK":
         $this->title .= $this->name . ' - ' . parent::get_title($highlight, $search_engine)
-                . ' (' . $this->get_number() . '/' . $this->total . ') ';
+          . ' (' . $this->get_number() . '/' . $this->total . ') ';
         break;
       case "REG":
         $title = parent::get_title();
@@ -297,7 +303,7 @@ class record_preview extends record_adapter
         else
         {
           $this->title .= sprintf(
-                  _('%s %d/%d '), $title, $this->get_number() . '/' . $this->total
+                  '%s %s', $title, $this->get_number() . '/' . $this->total
           );
         }
         break;
@@ -325,21 +331,22 @@ class record_preview extends record_adapter
   public function get_short_history()
   {
     if (!is_null($this->short_history))
-
+    {
       return $this->short_history;
+    }
 
     $tab = array();
 
-    $appbox = appbox::get_instance();
-    $session = $appbox->get_session();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
+    $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
     $report = $user->ACL()->has_right_on_base($this->get_base_id(), 'canreport');
 
     $connsbas = connection::getPDOConnection($this->get_sbas_id());
 
-    $sql = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
+    $sql    = 'SELECT d . * , l.user, l.usrid as usr_id, l.site
                 FROM log_docs d, log l
                 WHERE d.log_id = l.id
                 AND d.record_id = :record_id ';
@@ -349,14 +356,14 @@ class record_preview extends record_adapter
     {
       $sql .= ' AND ((l.usrid = :usr_id AND l.site= :site) OR action="add")';
       $params[':usr_id'] = $session->get_usr_id();
-      $params[':site'] = $registry->get('GV_sit');
+      $params[':site']   = $registry->get('GV_sit');
     }
 
     $sql .= 'ORDER BY d.date, usrid DESC';
 
     $stmt = $connsbas->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
@@ -390,20 +397,20 @@ class record_preview extends record_adapter
         }
 
         $tab[$hour][$site][$action][$row['usr_id']] =
-                array(
-                    'final' => array()
-                    , 'comment' => array()
-                    , 'user' => $user
+          array(
+            'final' => array()
+            , 'comment' => array()
+            , 'user' => $user
         );
       }
 
       if (!in_array($row['final'], $tab[$hour][$site][$action][$row['usr_id']]['final']))
         $tab[$hour][$site][$action][$row['usr_id']]['final'][] =
-                $row['final'];
+          $row['final'];
 
       if (!in_array($row['comment'], $tab[$hour][$site][$action][$row['usr_id']]['comment']))
         $tab[$hour][$site][$action][$row['usr_id']]['comment'][] =
-                $row['comment'];
+          $row['comment'];
     }
 
     $this->short_history = array_reverse($tab);
@@ -418,14 +425,16 @@ class record_preview extends record_adapter
   public function get_view_popularity()
   {
     if (!is_null($this->view_popularity))
-
+    {
       return $this->view_popularity;
-    $appbox = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-    $report = $user->ACL()->has_right_on_base(
-            $this->get_base_id(), 'canreport');
+    $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $report   = $user->ACL()->has_right_on_base(
+      $this->get_base_id(), 'canreport');
     $registry = $appbox->get_registry();
 
     if (!$report && !$registry->get('GV_google_api'))
@@ -436,16 +445,16 @@ class record_preview extends record_adapter
     }
 
     $views = $dwnls = array();
-    $top = 1;
-    $day = 30;
-    $min = 0;
+    $top     = 1;
+    $day     = 30;
+    $min     = 0;
     $average = 0;
 
     while ($day >= 0)
     {
 
-      $datetime = new DateTime('-' . $day . ' days');
-      $date = date_format($datetime, 'Y-m-d');
+      $datetime     = new DateTime('-' . $day . ' days');
+      $date         = date_format($datetime, 'Y-m-d');
       $views[$date] = $dwnls[$date] = 0;
       $day--;
     }
@@ -458,14 +467,14 @@ class record_preview extends record_adapter
           GROUP BY datee ORDER BY datee ASC';
 
     $connsbas = connection::getPDOConnection($this->get_sbas_id());
-    $stmt = $connsbas->prepare($sql);
+    $stmt     = $connsbas->prepare($sql);
     $stmt->execute(
-            array(
-                ':record_id' => $this->get_record_id(),
-                ':site' => $registry->get('GV_sit')
-            )
+      array(
+        ':record_id' => $this->get_record_id(),
+        ':site'      => $registry->get('GV_sit')
+      )
     );
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs          = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
@@ -473,8 +482,8 @@ class record_preview extends record_adapter
       if (isset($views[$row['datee']]))
       {
         $views[$row['datee']] = (int) $row['views'];
-        $top = max((int) $row['views'], $top);
-        $min = isset($min) ? min($row['views'], $min) : $row['views'];
+        $top                  = max((int) $row['views'], $top);
+        $min                  = isset($min) ? min($row['views'], $min) : $row['views'];
         $average += $row['views'];
       }
     }
@@ -482,26 +491,26 @@ class record_preview extends record_adapter
     $topScale = round($top * 1.2);
 
     $average = $average / 30;
-    $max = round(($top) * 100 / ($topScale));
-    $min = round($min * 100 / ($topScale));
+    $max     = round(($top) * 100 / ($topScale));
+    $min     = round($min * 100 / ($topScale));
     $average = round($average * 100 / ($topScale));
 
-    $width = 350;
+    $width  = 350;
     $height = 150;
-    $url = 'http://chart.apis.google.com/chart?' .
-            'chs=' . $width . 'x' . $height .
-            '&chd=t:' . implode(',', $views) .
-            '&cht=lc' .
-            '&chf=bg,s,00000000' .
-            '&chxt=x,y,r' .
-            '&chds=0,' . $topScale .
-            '&chls=2.0&chxtc=2,-350' .
-            '&chxl=0:|' . date_format(new DateTime('-30 days'), 'd M') . '|'
-            . date_format(new DateTime('-15 days'), 'd M') . '|'
-            . date_format(new DateTime(), 'd M') . '|1:|0|'
-            . round($top / 2, 2) . '|' . $top
-            . '|2:|min|average|max' .
-            '&chxp=2,' . $min . ',' . $average . ',' . $max;
+    $url    = 'http://chart.apis.google.com/chart?' .
+      'chs=' . $width . 'x' . $height .
+      '&chd=t:' . implode(',', $views) .
+      '&cht=lc' .
+      '&chf=bg,s,00000000' .
+      '&chxt=x,y,r' .
+      '&chds=0,' . $topScale .
+      '&chls=2.0&chxtc=2,-350' .
+      '&chxl=0:|' . date_format(new DateTime('-30 days'), 'd M') . '|'
+      . date_format(new DateTime('-15 days'), 'd M') . '|'
+      . date_format(new DateTime(), 'd M') . '|1:|0|'
+      . round($top / 2, 2) . '|' . $top
+      . '|2:|min|average|max' .
+      '&chxp=2,' . $min . ',' . $average . ',' . $max;
 
 
     $this->view_popularity = new media_adapter($url, $width, $height);
@@ -516,14 +525,16 @@ class record_preview extends record_adapter
   public function get_refferer_popularity()
   {
     if (!is_null($this->refferer_popularity))
-
+    {
       return $this->refferer_popularity;
-    $appbox = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-    $report = $user->ACL()->has_right_on_base(
-            $this->get_base_id(), 'canreport');
+    $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $report   = $user->ACL()->has_right_on_base(
+      $this->get_base_id(), 'canreport');
     $registry = $appbox->get_registry();
 
     if (!$report && !$registry->get('GV_google_api'))
@@ -543,7 +554,7 @@ class record_preview extends record_adapter
 
     $stmt = $connsbas->prepare($sql);
     $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs          = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $referrers = array();
@@ -571,24 +582,24 @@ class record_preview extends record_adapter
       if (strpos($row['referrer'], $registry->get('GV_ServerName') . 'permalink/') !== false)
       {
         if (strpos($row['referrer'], '/view/') !== false)
-          $row['referrer'] = _('report::presentation page preview');
+          $row['referrer']             = _('report::presentation page preview');
         else
-          $row['referrer'] = _('report::acces direct');
+          $row['referrer']             = _('report::acces direct');
       }
       if (!isset($referrers[$row['referrer']]))
         $referrers[$row['referrer']] = 0;
       $referrers[$row['referrer']] += (int) $row['views'];
     }
 
-    $width = 550;
+    $width  = 550;
     $height = 100;
 
     $url = 'http://chart.apis.google.com/chart?'
-            . 'cht=p3&chf=bg,s,00000000&chd=t:'
-            . implode(',', $referrers)
-            . '&chs=' . $width . 'x' . $height
-            . '&chl='
-            . urlencode(implode('|', array_keys($referrers))) . '';
+      . 'cht=p3&chf=bg,s,00000000&chd=t:'
+      . implode(',', $referrers)
+      . '&chs=' . $width . 'x' . $height
+      . '&chl='
+      . urlencode(implode('|', array_keys($referrers))) . '';
 
     $this->refferer_popularity = new media_adapter($url, $width, $height);
 
@@ -603,15 +614,17 @@ class record_preview extends record_adapter
   {
 
     if (!is_null($this->download_popularity))
-
+    {
       return $this->download_popularity;
-    $appbox = appbox::get_instance();
+    }
+
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
-    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user     = User_Adapter::getInstance($session->get_usr_id(), $appbox);
     $registry = $appbox->get_registry();
-    $report = $user->ACL()->has_right_on_base(
-            $this->get_base_id(), 'canreport');
+    $report   = $user->ACL()->has_right_on_base(
+      $this->get_base_id(), 'canreport');
 
     $ret = false;
     if (!$report && !$registry->get('GV_google_api'))
@@ -622,16 +635,16 @@ class record_preview extends record_adapter
     }
 
     $views = $dwnls = array();
-    $top = 1;
-    $day = 30;
-    $min = 0;
+    $top     = 1;
+    $day     = 30;
+    $min     = 0;
     $average = 0;
 
     while ($day >= 0)
     {
 
-      $datetime = new DateTime('-' . $day . ' days');
-      $date = date_format($datetime, 'Y-m-d');
+      $datetime     = new DateTime('-' . $day . ' days');
+      $date         = date_format($datetime, 'Y-m-d');
       $views[$date] = $dwnls[$date] = 0;
       $day--;
     }
@@ -646,14 +659,14 @@ class record_preview extends record_adapter
         GROUP BY datee ORDER BY datee ASC';
 
     $connsbas = connection::getPDOConnection($this->get_sbas_id());
-    $stmt = $connsbas->prepare($sql);
+    $stmt     = $connsbas->prepare($sql);
     $stmt->execute(
-            array(
-                ':record_id' => $this->get_record_id(),
-                ':site' => $registry->get('GV_sit')
-            )
+      array(
+        ':record_id' => $this->get_record_id(),
+        ':site'      => $registry->get('GV_sit')
+      )
     );
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs          = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $top = 10;
@@ -663,23 +676,23 @@ class record_preview extends record_adapter
       if (isset($dwnls[$row['datee']]))
       {
         $dwnls[$row['datee']] = (int) $row['dwnl'];
-        $top = max(((int) $row['dwnl'] + 10), $top);
+        $top                  = max(((int) $row['dwnl'] + 10), $top);
       }
     }
 
-    $width = 250;
+    $width  = 250;
     $height = 150;
-    $url = 'http://chart.apis.google.com/chart?' .
-            'chs=' . $width . 'x' . $height .
-            '&chd=t:' . implode(',', $dwnls) .
-            '&cht=lc' .
-            '&chf=bg,s,00000000' .
-            '&chxt=x,y' .
-            '&chds=0,' . $top .
-            '&chxl=0:|' . date_format(new DateTime('-30 days'), 'd M') . '|'
-            . date_format(new DateTime('-15 days'), 'd M') . '|'
-            . date_format(new DateTime(), 'd M') . '|1:|0|'
-            . round($top / 2) . '|' . $top . '';
+    $url    = 'http://chart.apis.google.com/chart?' .
+      'chs=' . $width . 'x' . $height .
+      '&chd=t:' . implode(',', $dwnls) .
+      '&cht=lc' .
+      '&chf=bg,s,00000000' .
+      '&chxt=x,y' .
+      '&chds=0,' . $top .
+      '&chxl=0:|' . date_format(new DateTime('-30 days'), 'd M') . '|'
+      . date_format(new DateTime('-15 days'), 'd M') . '|'
+      . date_format(new DateTime(), 'd M') . '|1:|0|'
+      . round($top / 2) . '|' . $top . '';
 
     $ret = new media_adapter($url, $width, $height);
     $this->download_popularity = $ret;

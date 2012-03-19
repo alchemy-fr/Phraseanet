@@ -223,7 +223,7 @@ class task_period_archive extends task_abstract
    */
   public function printInterfaceHTML()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
 
     ob_start();
     ?>
@@ -828,12 +828,14 @@ class task_period_archive extends task_abstract
         {
           $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
           if($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+
             return;
           elseif($magicmethod == 'UNLOCK' && !file_exists($path . '/' . $magicfile))
+
             return;
         }
       }
-      
+
       while(($file = $listFolder->read()) !== NULL)
       {
         // on gere le magicfile

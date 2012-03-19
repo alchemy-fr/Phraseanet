@@ -18,6 +18,7 @@
 class connection_pdo extends connection_abstract implements connection_interface
 {
 
+  protected $registry;
   /**
    *
    * @param string $name
@@ -29,8 +30,9 @@ class connection_pdo extends connection_abstract implements connection_interface
    * @param array $options
    * @return connection_pdo
    */
-  public function __construct($name, $hostname, $port, $user, $passwd, $dbname=false, $options=array())
+  public function __construct($name, $hostname, $port, $user, $passwd, $dbname=false, $options=array(), registryInterface $registry = null)
   {
+    $this->registry = $registry ? $registry : registry::get_instance();
     $this->name = $name;
     if ($dbname)
       $dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname . ';port=' . $port . ';';
@@ -63,13 +65,12 @@ class connection_pdo extends connection_abstract implements connection_interface
    */
   public function prepare($statement, $driver_options = array())
   {
-    $registry = registry::get_instance();
-    if ($registry->get('GV_debug'))
+    if ($this->registry->get('GV_debug'))
 
       return new connection_pdoStatementDebugger(parent::prepare($statement, $driver_options));
     else
 
-      return parent::prepare($statement, $driver_options);
+    return parent::prepare($statement, $driver_options);
   }
 
   /**
@@ -88,7 +89,7 @@ class connection_pdo extends connection_abstract implements connection_interface
    */
   protected function log($message)
   {
-    file_put_contents(dirname(__FILE__) . '/../../../logs/sql_log.log', $message . "\n", FILE_APPEND);
+    file_put_contents(__DIR__ . '/../../../logs/sql_log.log', $message . "\n", FILE_APPEND);
 
     return $this;
   }

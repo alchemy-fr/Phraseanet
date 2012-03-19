@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetPHPUnitAbstract.class.inc';
 
 class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 {
@@ -12,7 +12,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 
   public function setUp()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->object = API_OAuth2_Application::create($appbox, self::$user, 'test app');
   }
 
@@ -24,14 +24,14 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
   public function testLoad_from_client_id()
   {
     $client_id = $this->object->get_client_id();
-    $loaded = API_OAuth2_Application::load_from_client_id(appbox::get_instance(), $client_id);
+    $loaded = API_OAuth2_Application::load_from_client_id(appbox::get_instance(\bootstrap::getCore()), $client_id);
     $this->assertInstanceOf('API_OAuth2_Application', $loaded);
     $this->assertEquals($this->object, $loaded);
   }
 
   public function testLoad_dev_app_by_user()
   {
-    $apps = API_OAuth2_Application::load_dev_app_by_user(appbox::get_instance(), self::$user);
+    $apps = API_OAuth2_Application::load_dev_app_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
     $this->assertTrue(is_array($apps));
     $this->assertTrue(count($apps) > 0);
     $found = false;
@@ -48,7 +48,7 @@ class API_OAuth2_ApplicationTest extends PhraseanetPHPUnitAbstract
 
   public function testLoad_app_by_user()
   {
-    $apps = API_OAuth2_Application::load_app_by_user(appbox::get_instance(), self::$user);
+    $apps = API_OAuth2_Application::load_app_by_user(appbox::get_instance(\bootstrap::getCore()), self::$user);
     $this->assertTrue(is_array($apps));
     $this->assertTrue(count($apps) > 0);
     $found = false;

@@ -47,7 +47,7 @@
         <label lang="fr">Prévisualisation</label>
         <label lang="en">Preview</label>
       </subdef>
-      <subdef class="thumbnail" name="thumbnailGIF" downloadable="true">
+      <subdef class="thumbnail" name="thumbnailgif" downloadable="true">
         <path>{{datapathweb}}{{basename}}/subdefs</path>
         <size>200</size>
         <mediatype>gif</mediatype>
@@ -86,6 +86,50 @@
         <label lang="en">Thumbnail</label>
       </subdef>
     </subdefgroup>
+    <subdefgroup name="document">
+      <subdef class="preview" name="preview" downloadable="false">
+        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+        <mediatype>flexpaper</mediatype>
+        <writeDatas>no</writeDatas>
+        <baseurl></baseurl>
+        <label lang="fr">Prévisualisation</label>
+        <label lang="en">Preview</label>
+      </subdef>
+      <subdef class="thumbnail" name="thumbnail" downloadable="false">
+        <path>{{datapathweb}}{{basename}}/subdefs</path>
+        <mediatype>image</mediatype>
+        <method>resample</method>
+        <dpi>72</dpi>
+        <size>200</size>
+        <writeDatas>no</writeDatas>
+        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+        <label lang="fr">Imagette</label>
+        <label lang="en">Thumbnail</label>
+      </subdef>
+    </subdefgroup>
+    <subdefgroup name="flash">
+      <subdef class="preview" name="preview" downloadable="false">
+        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+        <mediatype>image</mediatype>
+        <size>200</size>
+        <writeDatas>no</writeDatas>
+        <method>resample</method>
+        <dpi>72</dpi>
+        <baseurl></baseurl>
+        <label lang="fr">Prévisualisation</label>
+        <label lang="en">Preview</label>
+      </subdef>
+      <subdef class="thumbnail" name="thumbnail" downloadable="false">
+        <path>{{datapathweb}}{{basename}}/subdefs</path>
+        <mediatype>image</mediatype>
+        <writeDatas>no</writeDatas>
+        <method>resample</method>
+        <dpi>72</dpi>
+        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+        <label lang="fr">Imagette</label>
+        <label lang="en">Thumbnail</label>
+      </subdef>
+    </subdefgroup>
   </subdefs>
 
   <description>
@@ -105,7 +149,7 @@
     <SpecialInstruct src="/rdf:RDF/rdf:Description/IPTC:SpecialInstructions"/>
 
         <!-- 2:55 -->
-    <Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" regdate="1" />
+    <Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" />
 
         <!-- 2:80 -->
     <Byline src="/rdf:RDF/rdf:Description/IPTC:By-line"/>
@@ -126,7 +170,7 @@
     <OriginalRef src="/rdf:RDF/rdf:Description/IPTC:OriginalTransmissionReference" />
 
         <!-- 2:105 -->
-    <Headline src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" regname="1" />
+    <Headline src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" />
 
         <!-- 2:110 -->
     <Credit src="/rdf:RDF/rdf:Description/IPTC:Credit" report="1" />
@@ -135,7 +179,7 @@
     <Source src="/rdf:RDF/rdf:Description/IPTC:Source" />
 
         <!-- 2:120 -->
-    <Caption src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" regdesc="1" />
+    <Caption src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" />
 
         <!-- 2:122 -->
     <CaptionWriter src="/rdf:RDF/rdf:Description/IPTC:Writer-Editor" />

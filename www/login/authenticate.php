@@ -15,9 +15,11 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../lib/bootstrap.php";
 
-$appbox = appbox::get_instance();
+/* @var $Core \Alchemy\Phrasea\Core */
+$Core = require_once __DIR__ . "/../../lib/bootstrap.php";
+
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 $registry = $appbox->get_registry();
 
@@ -106,13 +108,13 @@ if ((!is_null($parm['login']) && !is_null($parm['pwd'])) || $is_guest)
   {
     $date = new DateTime('5 minutes');
     $usr_id = User_Adapter::get_usr_id_from_login($parm['login']);
-    $url = random::getUrlToken('password', $usr_id, $date);
+    $url = random::getUrlToken(\random::TYPE_PASSWORD, $usr_id, $date);
 
     $url = '/login/forgotpwd.php?token=' . $url . '&salt=1';
 
     return phrasea::redirect($url);
   }
-  catch (Exception $e)
+  catch (\Exception $e)
   {
     return phrasea::redirect("/login/?redirect=" . $parm['redirect'] . "&error=".$e->getMessage().$e->getFile().$e->getLine() );
   }
@@ -140,4 +142,3 @@ else
 {
   return phrasea::redirect("/login/");
 }
-?>

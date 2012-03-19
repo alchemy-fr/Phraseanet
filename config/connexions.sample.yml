@@ -1,0 +1,19 @@
+#Here you can define many connexions configurations
+#Please refer to Doctrine documentation abstraction layer for database connection configuration
+#DBAL connection : http://www.doctrine-project.org/docs/dbal/2.1/en/reference/configuration.html
+
+#Define a connexion to MYSQL database named main_connexion
+main_connexion:
+    host: <HOSTNAME>
+    port: <PORT>
+    user: <USERNAME>
+    password: <PASSWORD>
+    dbname: <DATABASE_NAME>
+    driver: pdo_mysql
+    charset: UTF8
+
+#Define a connexion to a SQLite database named test_connexion
+test_connexion:
+    driver: pdo_sqlite
+    path: /PATH/TO/SQLITE/DATABASE
+    charset: UTF8

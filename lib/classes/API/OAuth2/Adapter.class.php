@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-require_once dirname(__FILE__) . '/../../../vendor/oauth2/lib/OAuth2.inc';
+require_once __DIR__ . '/../../../vendor/oauth2/lib/OAuth2.inc';
 
 /**
  *
@@ -406,10 +406,21 @@ class API_OAuth2_Adapter extends OAuth2
         'response_type' => $request->get('response_type', false)
         , 'client_id' => $request->get('client_id', false)
         , 'redirect_uri' => $request->get('redirect_uri', false)
-        , 'scope' => $request->get('scope', false)
-        , 'state' => $request->get('state', false)
     );
 
+
+    $scope = $request->get('scope', false);
+    $state = $request->get('state', false);
+
+    if($state)
+    {
+      $datas["state"] = $state;
+    }
+
+    if($scope)
+    {
+      $datas["scope"] = $scope;
+    }
 
     $filters = array(
         "client_id" => array(

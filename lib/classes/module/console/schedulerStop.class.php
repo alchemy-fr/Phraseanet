@@ -33,19 +33,30 @@ class module_console_schedulerStop extends Command
 
     return $this;
   }
+
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    if(!setup::is_installed())
+    if (!setup::is_installed())
     {
-      throw new RuntimeException('Phraseanet is not set up');
+      $output->writeln('Phraseanet is not set up');
+
+      return 1;
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
-    $appbox = appbox::get_instance();
-    $task_manager = new task_manager($appbox);
+    try
+    {
+      $appbox = appbox::get_instance(\bootstrap::getCore());
+      $task_manager = new task_manager($appbox);
+      $task_manager->set_sched_status(task_manager::STATUS_SCHED_TOSTOP);
 
-    $task_manager->set_sched_status(task_manager::STATUS_SCHED_TOSTOP);
+      return 0;
+    }
+    catch (\Exception $e)
+    {
+      return 1;
+    }
 
     return;
   }

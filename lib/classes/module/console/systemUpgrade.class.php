@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of Phraseanet
  *
@@ -36,47 +37,41 @@ class module_console_systemUpgrade extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
+    $Core = \bootstrap::getCore();
     if (!setup::is_installed())
     {
 
-      if (file_exists(dirname(__FILE__) . "/../../../../config/connexion.inc")
-              && !file_exists(dirname(__FILE__) . "/../../../../config/config.inc")
-              && file_exists(dirname(__FILE__) . "/../../../../config/_GV.php"))
+      $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
+      $output->writeln('Would you like it to be created based on your settings ?');
+
+      $dialog = $this->getHelperSet()->get('dialog');
+      do
       {
-
-        $output->writeln('This version of Phraseanet requires a config/config.inc');
-        $output->writeln('Would you like it to be created based on your settings ?');
-
-        $dialog = $this->getHelperSet()->get('dialog');
-        do
-        {
-          $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
-        }
-        while (!in_array($continue, array('y', 'n')));
-
-        if ($continue == 'y')
-        {
-          require __DIR__ . "/../../../../config/_GV.php";
-
-          $datas = '<?php'."\n"
-            .'$servername = "'.GV_ServerName.'";'."\n"
-            .'$maintenance=false;'."\n"
-            .'$debug=false;'."\n"
-            .'$debug=true;'."\n"
-            .'';
-
-          file_put_contents(__DIR__ . "/../../../../config/config.inc", $datas);
-        }
-        else
-        {
-          throw new RuntimeException('Phraseanet is not set up');
-        }
-
+        $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
       }
+      while (!in_array($continue, array('y', 'n')));
 
+      if ($continue == 'y')
+      {
+        try
+        {
+          $connexionInc = new \SplFileObject(__DIR__ . '/../../../../config/connexion.inc');
+          $configInc    = new \SplFileObject(__DIR__ . '/../../../../config/config.inc');
+
+          $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
+        }
+        catch (\Exception $e)
+        {
+
+        }
+      }
+      else
+      {
+        throw new RuntimeException('Phraseanet is not set up');
+      }
     }
 
-    require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
+    require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
     $output->write('Phraseanet is going to be upgraded', true);
     $dialog = $this->getHelperSet()->get('dialog');
@@ -92,8 +87,9 @@ class module_console_systemUpgrade extends Command
     {
       try
       {
+        $Core   = \bootstrap::getCore();
         $output->write('<info>Upgrading...</info>', true);
-        $appbox = appbox::get_instance();
+        $appbox = appbox::get_instance($Core);
 
         if (count(User_Adapter::get_wrong_email_users($appbox)) > 0)
         {
@@ -101,10 +97,11 @@ class module_console_systemUpgrade extends Command
         }
 
         $upgrader = new Setup_Upgrade($appbox);
-        $advices = $appbox->forceUpgrade($upgrader);
+        $advices  = $appbox->forceUpgrade($upgrader);
       }
-      catch (Exception $e)
+      catch (\Exception $e)
       {
+
         $output->writeln(sprintf('<error>An error occured while upgrading : %s </error>', $e->getMessage()));
       }
     }

@@ -31,7 +31,7 @@ function setSizeLimits()
 }
 
 function edit_kdwn(evt, src)
-{  
+{
   cancelKey = false;
 
   switch(evt.keyCode)
@@ -56,15 +56,15 @@ function edit_kdwn(evt, src)
 // des events sur le textarea pour tracker la selection (chercher dans le thesaurus...)
 // ----------------------------------------------------------------------------------------------
 function edit_mdwn_ta(evt)
-{ 
+{
   evt.cancelBubble = true;
   return(true);
 }
 
 // mouse up textarea
 function edit_mup_ta(evt, obj)
-{ 
-	
+{
+
   if(p4.edit.T_fields[p4.edit.curField].tbranch)
   {
     if(obj.value != "")
@@ -76,7 +76,7 @@ function edit_mup_ta(evt, obj)
 // key up textarea
 function edit_kup_ta(evt, obj)
 {
-	
+
   var cancelKey = false;
   var o;
   switch(evt.keyCode)
@@ -88,7 +88,7 @@ function edit_kup_ta(evt, obj)
       cancelKey = true;
       break;
   }
-	
+
   if(cancelKey)
   {
     evt.cancelBubble = true;
@@ -124,7 +124,7 @@ function edit_mdwn_status(evt)
 }
 
 // ---------------------------------------------------------------------------
-// on a clique sur un champ 
+// on a clique sur un champ
 // ---------------------------------------------------------------------------
 function edit_mdwn_fld(evt, meta_struct_id, fieldname)
 {
@@ -165,16 +165,16 @@ function editStatus(evt)
 
   document.getElementById('idEditZTextArea').blur();
   document.getElementById('EditTextMultiValued').blur();
-	
+
   $("#idFieldNameEdit", p4.edit.editBox).html("[STATUS]") ;
   $("#idExplain", p4.edit.editBox).html("&nbsp;");
 
   $("#ZTextMultiValued", p4.edit.editBox).hide();
   $("#ZTextMonoValued", p4.edit.editBox).hide();
   $("#ZTextStatus", p4.edit.editBox).show();
-	
+
   $("#idEditZone", p4.edit.editBox).show();
-	
+
   document.getElementById("editFakefocus").focus();
   p4.edit.curField = -1;
   activeField();
@@ -185,7 +185,7 @@ function activeField()
   var meta_struct_id = parseInt(p4.edit.curField);
 
   meta_struct_id = (isNaN(meta_struct_id) || meta_struct_id <0)?'status':meta_struct_id;
-	
+
   $('#divS div.active, #divS div.hover').removeClass('active hover');
   $('#EditFieldBox_'+meta_struct_id).addClass('active');
 
@@ -206,26 +206,52 @@ function editField(evt, meta_struct_id)
 {
   document.getElementById('idEditZTextArea').blur();
   document.getElementById('EditTextMultiValued').blur();
-  
+  $(".editDiaButtons", p4.edit.editBox).hide();
+
   $('#idEditZTextArea, #EditTextMultiValued').unbind('keyup.maxLength');
-	
+
   p4.edit.curField = meta_struct_id;
   if(meta_struct_id >= 0)
   {
     var name = p4.edit.T_fields[meta_struct_id].name + (p4.edit.T_fields[meta_struct_id].required ? '<span style="font-weight:bold;font-size:16px;"> * </span>' : '');
     $("#idFieldNameEdit", p4.edit.editBox).html(name) ;
 
-    if(p4.edit.T_fields[meta_struct_id].explain ||
-      p4.edit.T_fields[meta_struct_id].maxLength > 0)
-      {
+    var vocabType = p4.edit.T_fields[meta_struct_id].vocabularyControl;
+
+    $('#idEditZTextArea, #EditTextMultiValued').autocomplete({
+        minLength: 2,
+        source: function( request, response ) {
+          $.ajax({
+            url: '/prod/records/edit/vocabulary/' + vocabType + '/',
+            dataType: "json",
+            data: {
+              sbas_id: p4.edit.sbas_id,
+              query: request.term
+            },
+            success: function( data ) {
+              response( data.results );
+            }
+          });
+        },
+        select: function( event, ui ) {
+
+          edit_addmval(ui.item.label, ui.item.id);
+
+          return false;
+        }
+      });
+
+
+    if(p4.edit.T_fields[meta_struct_id].maxLength > 0)
+    {
       var idexplain = $("#idExplain");
       idexplain.html('');
-      
+
       $('#idEditZTextArea, #EditTextMultiValued').bind('keyup.maxLength', function(){
         var remaining = Math.max((p4.edit.T_fields[meta_struct_id].maxLength - $(this).val().length), 0);
         idexplain.html("<span class='metadatas_restrictionsTips' tooltipsrc='/prod/tooltip/metas/restrictionsInfos/"+p4.edit.sbas_id+"/"+meta_struct_id+"/'><img src='/skins/icons/help32.png' /><!--<img src='/skins/icons/alert.png' />--> Caracteres restants : "+(remaining)+"</span>");
         $('.metadatas_restrictionsTips', idexplain).tooltip();
-      }).trigger('keyup.maxLength');      
+      }).trigger('keyup.maxLength');
     }
     else
     {
@@ -236,7 +262,7 @@ function editField(evt, meta_struct_id)
     {
       // champ monovalue : textarea
       $(".editDiaButtons", p4.edit.editBox).hide();
-			
+
       if(p4.edit.T_fields[meta_struct_id].type == "date")
       {
         $("#idEditZTextArea", p4.edit.editBox).css("height", "16px");
@@ -247,11 +273,11 @@ function editField(evt, meta_struct_id)
         $("#idEditDateZone", p4.edit.editBox).hide();
         $("#idEditZTextArea", p4.edit.editBox).css("height", "100%");
       }
-			
+
       $("#ZTextStatus", p4.edit.editBox).hide();
       $("#ZTextMultiValued", p4.edit.editBox).hide();
       $("#ZTextMonoValued", p4.edit.editBox).show();
-			
+
       if(p4.edit.T_fields[meta_struct_id]._status == 2)
       {
         // heterogene
@@ -264,7 +290,7 @@ function editField(evt, meta_struct_id)
         // homogene
         $("#idEditZTextArea", p4.edit.editBox).val(p4.edit.fieldLastValue = p4.edit.T_fields[meta_struct_id]._value);
         $("#idEditZTextArea", p4.edit.editBox).removeClass("hetero");
-				
+
         $("#idDivButtons", p4.edit.editBox).hide();	// valeurs homog�nes
         if(p4.edit.T_fields[meta_struct_id].type == "date")
         {
@@ -281,11 +307,11 @@ function editField(evt, meta_struct_id)
         }
       }
       p4.edit.textareaIsDirty = false;
-	
+
       $("#idEditZone", p4.edit.editBox).show();
-      
+
       $('#idEditZTextArea').trigger('keyup.maxLength');
-      
+
       self.setTimeout("document.getElementById('idEditZTextArea').focus();", 50);
     }
     else
@@ -294,70 +320,19 @@ function editField(evt, meta_struct_id)
       $("#ZTextStatus", p4.edit.editBox).hide();
       $("#ZTextMonoValued", p4.edit.editBox).hide();
       $("#ZTextMultiValued", p4.edit.editBox).show();
-			
+
       $("#idDivButtons", p4.edit.editBox).hide();	// valeurs homogenes
 
-      // on compare toutes les valeurs de chaque fiche selectionnee
-      p4.edit.T_mval = [];			// tab des mots, pour trier
-      var a = [];		// key : mot ; val : nbr d'occurences distinctes
-      var n = 0;					// le nbr de records selectionnes
+      updateCurrentMval(meta_struct_id);
 
-      for(var r=0; r<p4.edit.T_records.length; r++)
-      {
-        if(!p4.edit.T_records[r]._selected)
-          continue;
-
-        if(p4.edit.T_records[r].fields[meta_struct_id])
-        {
-          // le champ est present dans le record
-          for(var f=0; f<p4.edit.T_records[r].fields[meta_struct_id].value.length; f++)
-          {
-            var v = p4.edit.T_records[r].fields[meta_struct_id].value[f];		// le mot
-							
-            if(typeof(a['%'+v]) == 'undefined')
-            {
-              a['%'+v] = {
-                'n':0,
-                'f':new Array()
-              };	// n:nbr d'occurences DISTINCTES du mot ; f:flag presence mot dans r
-              p4.edit.T_mval.push(v);
-            }
-						
-            if(!a['%'+v].f[r])
-              a['%'+v].n++;		// premiere apparition du mot dans le record r
-            a['%'+v].f[r] = true;	// on ne recomptera pas le mot s'il apparait a nouveau dans le meme record
-          }
-        }
-        n++;
-      }
-      p4.edit.T_mval.sort(SortCompareStrings);
-			
-      var t = "";
-      for(var i in p4.edit.T_mval)	// pour lire le tableau 'a' dans l'ordre trie par 'p4.edit.T_mval'
-      {
-        v = p4.edit.T_mval[i];
-        if(i>0 && p4.edit.T_mval[i-1]==p4.edit.T_mval[i])
-          continue;	// on n'accepte pas les doublons
-        if(a['%'+v].n == n)
-        {
-          // le mot etait present dans tous les records selectionnes
-          t += "<div multi=\"0\" onclick=\"edit_clkmval(this, "+i+")\">" + v + "</div>";
-        }
-        else
-        {
-          // le mot n'etait pas present dans tous les records
-          t += "<div multi=\"1\" class=\"hetero\" onclick=\"edit_clkmval(this, "+i+")\">" + v + "</div>";
-        }
-      }
-      $('#ZTextMultiValued_values', p4.edit.editBox).html(t);
       $('#EditTextMultiValued', p4.edit.editBox).val("");
       $('#idEditZone', p4.edit.editBox).show();
-      
+
       $('#EditTextMultiValued').trigger('keyup.maxLength');
-      
+
       self.setTimeout("document.getElementById('EditTextMultiValued').focus();", 50);
 
-      reveal_mval();
+//      reveal_mval();
     }
   }
   else
@@ -370,14 +345,124 @@ function editField(evt, meta_struct_id)
   activeField();
 }
 
+function updateCurrentMval(meta_struct_id, HighlightValue, vocabularyId)
+{
+
+  // on compare toutes les valeurs de chaque fiche selectionnee
+  p4.edit.T_mval = [];			// tab des mots, pour trier
+  var a = [];		// key : mot ; val : nbr d'occurences distinctes
+  var n = 0;					// le nbr de records selectionnes
+
+  for(r in p4.edit.T_records)
+  {
+    if(!p4.edit.T_records[r]._selected)
+      continue;
+
+    p4.edit.T_records[r].fields[meta_struct_id].sort(SortCompareMetas);
+
+    var values = p4.edit.T_records[r].fields[meta_struct_id].getValues();
+
+    for(v in values)
+    {
+      var word = values[v].getValue();
+      var key = values[v].getVocabularyId() + '%' + word;
+
+      if(typeof(a[key]) == 'undefined')
+      {
+        a[key] = {
+          'n':0,
+          'f':new Array()
+        };	// n:nbr d'occurences DISTINCTES du mot ; f:flag presence mot dans r
+        p4.edit.T_mval.push(values[v]);
+      }
+
+      if(!a[key].f[r])
+        a[key].n++;		// premiere apparition du mot dans le record r
+      a[key].f[r] = true;	// on ne recomptera pas le mot s'il apparait a nouveau dans le meme record
+
+    }
+
+    n++;
+  }
+
+  p4.edit.T_mval.sort(SortCompareMetas);
+
+  var t = "";
+  for(var i in p4.edit.T_mval)	// pour lire le tableau 'a' dans l'ordre trie par 'p4.edit.T_mval'
+  {
+    var value = p4.edit.T_mval[i];
+    var word = value.getValue();
+    var key = value.getVocabularyId() + '%' + word;
+
+    var extra = value.getVocabularyId() ? '<img src="/skins/icons/ressource16.png" /> ' : '';
+
+    if(i>0)
+    {
+      if(value.getVocabularyId() !== null && p4.edit.T_mval[i-1].getVocabularyId() == value.getVocabularyId())
+      {
+        continue;
+      }
+      if(value.getVocabularyId() === null && p4.edit.T_mval[i-1].getVocabularyId() === null)
+      {
+        if(p4.edit.T_mval[i-1].getValue() == value.getValue())
+        {
+          continue;	// on n'accepte pas les doublons
+        }
+      }
+    }
+
+    t += "<div onclick=\"edit_clkmval(this, "+i+")\" class='"
+        + (((value.getVocabularyId() === null || value.getVocabularyId() == vocabularyId) && HighlightValue == word) ? ' hilighted ' : '')
+        + (a[key].n != n ? " hetero " : "") + "'>"
+      + '<table><tr><td>'
+      + extra
+      + '<span class="value" vocabId="' + (value.getVocabularyId() ? value.getVocabularyId() : '') + '">'
+      + word
+      + "</span></td><td class='options'>"
+      + '<a href="#" class="add_all"><img src="/skins/icons/plus11.png"/></a> '
+      + '<a href="#" class="remove_all"><img src="/skins/icons/minus11.png"/></a>'
+      + "</td></tr></table>"
+      + "</div>";
+  }
+  $('#ZTextMultiValued_values', p4.edit.editBox).html(t);
+
+  $('#ZTextMultiValued_values .add_all', p4.edit.editBox).unbind('click').bind('click', function(){
+    var container = $(this).closest('div');
+
+    var span = $('span.value', container)
+
+    var value = span.text();
+    var vocab_id = span.attr('vocabid');
+
+    edit_addmval(value, vocab_id);
+    updateFieldDisplay();
+    return false;
+  });
+  $('#ZTextMultiValued_values .remove_all', p4.edit.editBox).unbind('click').bind('click', function(){
+    var container = $(this).closest('div');
+
+    var span = $('span.value', container)
+
+    var value = span.text();
+    var vocab_id = span.attr('vocabid');
+
+    edit_delmval(value, vocab_id);
+    updateFieldDisplay();
+    return false;
+  });
+
+  updateFieldDisplay();
+}
+
+
 // ---------------------------------------------------------------------------
 // on a clique sur une des multi-valeurs dans la liste
 // ---------------------------------------------------------------------------
 function edit_clkmval(mvaldiv, ival)
 {
-  $('#EditTextMultiValued', p4.edit.editBox).val(p4.edit.T_mval[ival]);
-  $('#EditTextMultiValued').trigger('keyup.maxLength');
-  reveal_mval();		// on highlight la liste sur la valeur saisie
+  $(mvaldiv).parent().find('.hilighted').removeClass('hilighted');
+  $(mvaldiv).addClass('hilighted');
+  reveal_mval(p4.edit.T_mval[ival].getValue(), p4.edit.T_mval[ival].getVocabularyId());
 }
 
 
@@ -385,283 +470,107 @@ function edit_clkmval(mvaldiv, ival)
 // highlight la valeur en cours de saisie dans la liste des multi-valeurs
 // appele par le onkeyup
 // ---------------------------------------------------------------------------
-function reveal_mval()
+function reveal_mval(value, vocabularyId)
 {
-  var button_del = false;
-  var button_add = true;
-  var textZone = document.getElementById('EditTextMultiValued');
-  var v = textZone.value;
+  if(typeof vocabularyId === 'undefined')
+    vocabularyId = null;
 
-  var vu = v.toUpperCase();
+  var textZone = $('#EditTextMultiValued');
 
   if(p4.edit.T_fields[p4.edit.curField].tbranch)
   {
-    if(v != "")
-      ETHSeeker.search(v);
+    if(value != "")
+      ETHSeeker.search(value);
   }
 
-  var l = v.length;
-  $("#ZTextMultiValued_values > div").each(
-    function(i)
-    {
-      with($(this))
-      {
-        var k  = html();
-        var k = k.replace(new RegExp("</?I>", "gi"), "");
-        var x  = k.substr(0,l);
-        var k2 = k;
-        if(x.toUpperCase() == vu)
-          k2 = "<I>" + x + "</I>" + k.substr(l);
-        html(k2);
-
-        if(k == v)
-        {
-          button_del = true;		// on peut supprimer un mot meme s'il n'est pas dans tous les records
-          addClass("hilighted");
-          if(attr("multi")=="0")
-            button_add = false;		// pas la peine d'ajouter un mot s'il est deja dans tous les records
-        }
-        else
-        {
-          removeClass("hilighted");
-        }
-        }
-    }
-    );
-
-  if(v != "")
+  if(value != "")
   {
     //		var nsel = 0;
-    var tot_records = p4.edit.T_records.length;
-		
-    for(var r=0; r<tot_records; r++)
+    for(rec_i in p4.edit.T_records)
     {
-      //			if(p4.edit.T_records[r]._selected)
-      //				nsel++;
-			
-      isin = false;
-      if(p4.edit.T_records[r].fields[p4.edit.curField])
+      if(p4.edit.T_records[rec_i].fields[p4.edit.curField].hasValue(value, vocabularyId))
       {
-        // le champ est present dans le record
-        var tot_fields = p4.edit.T_records[r].fields[p4.edit.curField].value.length;
-        for(var f=0; !isin && f<tot_fields; f++)
-        {
-          if(p4.edit.T_records[r].fields[p4.edit.curField].value[f] == v)
-          {
-            isin = true;
-            break;
-          }
-        }
-      }
-      if(isin)
-      {
-        $("#idEditDiaButtonsP_"+r).hide();
-        var talt = $.sprintf(language.editDelSimple,v);
-        $("#idEditDiaButtonsM_"+r).show().attr('alt', talt).attr('Title', talt);
+        $("#idEditDiaButtonsP_"+rec_i).hide();
+        var talt = $.sprintf(language.editDelSimple,value);
+        $("#idEditDiaButtonsM_"+rec_i).show()
+        .attr('alt', talt)
+        .attr('Title', talt)
+        .unbind('click').bind('click', function(){
+          var indice = $(this).attr('id').split('_').pop();
+          edit_diabutton(indice, 'del', value, vocabularyId);
+        });
       }
       else
       {
-        $("#idEditDiaButtonsM_"+r).hide();
-        $("#idEditDiaButtonsP_"+r).show();
-        var talt = $.sprintf(language.editAddSimple,v);
-        $("#idEditDiaButtonsP_"+r).show().attr('alt', talt).attr('Title', talt);
+        $("#idEditDiaButtonsM_"+rec_i).hide();
+        $("#idEditDiaButtonsP_"+rec_i).show();
+        var talt = $.sprintf(language.editAddSimple,value);
+        $("#idEditDiaButtonsP_"+rec_i).show().attr('alt', talt)
+        .attr('Title', talt)
+        .unbind('click').bind('click', function(){
+          var indice = $(this).attr('id').split('_').pop();
+          edit_diabutton(indice, 'add', value, vocabularyId);
+        });
       }
     }
     $(".editDiaButtons", p4.edit.editBox).show();
   }
-  else
-  {
-    button_del = button_add = false;	// on ne peut rien faire s'il n'y a rien de saisi
-    $(".editDiaButtons", p4.edit.editBox).hide();
-  }
 
-  var talt;
-  talt = $.sprintf(language.editAddMulti,v);
-  $("#EditButAddMultiValued", p4.edit.editBox).css("visibility", button_add ? "visible" : "hidden").attr('alt', talt).attr('Title', talt);
-  talt = $.sprintf(language.editDelMulti,v);
-  $("#EditButDelMultiValued", p4.edit.editBox).css("visibility", button_del ? "visible" : "hidden").attr('alt', talt).attr('Title', talt);
-	
-  textZone.focus();
+  textZone.trigger('focus');
   return(true);
 }
 
-function edit_diabutton(irec, act)
+function edit_diabutton(record_indice, act, value, vocabularyId)
 {
   var meta_struct_id = p4.edit.curField;		// le champ en cours d'editing
-  var v = $('#EditTextMultiValued', p4.edit.editBox).val();
-
-  // on ajoute/supprime le mot dans le record
-  if(p4.edit.T_records[irec].fields[meta_struct_id])
+  if(act == 'del')
   {
-    // le champ est present dans le record
-    var found = false;
-    for(var f=0; !found && f<p4.edit.T_records[irec].fields[meta_struct_id].value.length; f++)
-    {
-      if(p4.edit.T_records[irec].fields[meta_struct_id].value[f] == v)
-      {
-        found = true;	// le mot existe dans le champ
-        if(act == 'del')
-        {
-          // on le supprime
-          p4.edit.T_records[irec].fields[meta_struct_id].value.splice(f,1);
-        }
-      }
-    }
-    if(!found && act=='add')
-    {
-      // la valeur n'existait pas, on l'ajoute
-      p4.edit.T_records[irec].fields[meta_struct_id].value.push(v);
-      // on trie
-      p4.edit.T_records[irec].fields[meta_struct_id].value = p4.edit.T_records[irec].fields[meta_struct_id].value.sort(SortCompareStrings);
-      p4.edit.T_records[irec].fields[meta_struct_id].dirty = true;
-      p4.edit.T_records[irec].fields[meta_struct_id].meta_struct_id = meta_struct_id;
-    }
-  }
-  else
-  {
-    if(act=='add')
-    {
-      // le champ n'existe pas dans le record, on le cree
-      p4.edit.T_records[irec].fields[meta_struct_id] = {
-        'dirty': true,
-        'value': [ v ],
-        'meta_struct_id':meta_struct_id
-      };
-    }
+    p4.edit.T_records[record_indice].fields[meta_struct_id].removeValue(value, vocabularyId);
   }
 
-  p4.edit.T_mval = [];			// tab des mots, pour trier
-  var a = new Array();		// key : mot ; val : nbr d'occurences distinctes
-  var n = 0;					// le nbr de records selectionnes
-  for(var r=0; r<p4.edit.T_records.length; r++)
+  if(act=='add')
   {
-    if(!p4.edit.T_records[r]._selected)
-      continue;
-
-    if(p4.edit.T_records[r].fields[meta_struct_id])
-    {
-      // le champ est present dans le record
-      for(var f=0; f<p4.edit.T_records[r].fields[meta_struct_id].value.length; f++)
-      {
-        var v = p4.edit.T_records[r].fields[meta_struct_id].value[f];		// le mot
-					
-        if(typeof(a['%'+v]) == 'undefined')
-        {
-          a['%'+v] = {
-            'n':0,
-            'f':new Array()
-          };	// n:nbr d'occurences DISTINCTES du mot ; f:flag presence mot dans r
-          p4.edit.T_mval.push(v);
-        }
-				
-        if(!a['%'+v].f[r])
-          a['%'+v].n++;		// premiere apparition du mot dans le record r
-        a['%'+v].f[r] = true;	// on ne recomptera pas le mot s'il apparait a nouveau dans le meme record
-      }
-    }
-    n++;
+    p4.edit.T_records[record_indice].fields[meta_struct_id].addValue(value, false, vocabularyId);
   }
-	
-  p4.edit.T_mval.sort(SortCompareStrings);
-	
-  var t = "";
-  for(var i in p4.edit.T_mval)	// pour lire le tableau 'a' dans l'ordre trie par 'p4.edit.T_mval'
-  {
-    v = p4.edit.T_mval[i];
-    if(i>0 && p4.edit.T_mval[i-1]==p4.edit.T_mval[i])
-      continue;	// on n'accepte pas les doublons
-    if(a['%'+v].n == n)
-    {
-      // le mot etait present dans tous les records selectionnes
-      t += "<div multi=\"0\" onclick=\"edit_clkmval(this, "+i+")\">" + v + "</div>";
-    }
-    else
-    {
-      // le mot n'etait pas present dans tous les records
-      t += "<div multi=\"1\" class=\"hetero\" onclick=\"edit_clkmval(this, "+i+")\">" + v + "</div>";
-    }
-  }
-  $("#ZTextMultiValued_values", p4.edit.editBox).html(t);
-  $("#idEditZone", p4.edit.editBox).show();
+  updateCurrentMval(meta_struct_id, value, vocabularyId);
+  reveal_mval(value, vocabularyId);
 
-  self.setTimeout("document.getElementById('EditTextMultiValued').focus();", 50);
-  reveal_mval();
 }
 
 // ---------------------------------------------------------------------------
 // on a clique sur le bouton 'ajouter' un mot dans le multi-val
 // ---------------------------------------------------------------------------
-function edit_addmval()
+function edit_addmval(value, VocabularyId)
 {
   var meta_struct_id = p4.edit.curField;		// le champ en cours d'editing
-  var v = $('#EditTextMultiValued', p4.edit.editBox).val();
+
   // on ajoute le mot dans tous les records selectionnes
   for(var r=0; r<p4.edit.T_records.length; r++)
   {
     if(!p4.edit.T_records[r]._selected)
       continue;
 
-    if(p4.edit.T_records[r].fields[meta_struct_id])
-    {
-      // le champ est present dans le record
-      var found = false;
-      for(var f=0; !found && f<p4.edit.T_records[r].fields[meta_struct_id].value.length; f++)
-      {
-        if(p4.edit.T_records[r].fields[meta_struct_id].value[f] == v)
-          found = true;	// le mot existe deja dans le champ pour ce record
-      }
-      if(!found)
-      {
-        // la valeur n'existait pas, on l'ajoute
-        p4.edit.T_records[r].fields[meta_struct_id].value.push(v);
-        // on trie
-        p4.edit.T_records[r].fields[meta_struct_id].value = p4.edit.T_records[r].fields[meta_struct_id].value.sort(SortCompareStrings);
-        p4.edit.T_records[r].fields[meta_struct_id].dirty = true;
-        p4.edit.T_records[r].fields[meta_struct_id].meta_struct_id = meta_struct_id;
-      }
-    }
-    else
-    {
-      // le champ n'existe pas dans le record, on le cree
-      p4.edit.T_records[r].fields[meta_struct_id] = {
-        'dirty': true,
-        'value': [ v ],
-        'meta_struct_id' : meta_struct_id
-      };
-    }
+    p4.edit.T_records[r].fields[meta_struct_id].addValue(value, false, VocabularyId);
   }
-	
+
   updateEditSelectedRecords(null);
 }
 
 // ---------------------------------------------------------------------------
 // on a clique sur le bouton 'supprimer' un mot dans le multi-val
 // ---------------------------------------------------------------------------
-function edit_delmval()
+function edit_delmval(value, VocabularyId)
 {
   var meta_struct_id = p4.edit.curField;		// le champ en cours d'editing
-  var v = $('#EditTextMultiValued', p4.edit.editBox).val();
-  // on ajoute le mot dans tous les records selectionnes
+
   for(var r=0; r<p4.edit.T_records.length; r++)
   {
     if(!p4.edit.T_records[r]._selected)
       continue;
 
-    if(p4.edit.T_records[r].fields[meta_struct_id])
-    {
-      // le champ est present dans le record
-      var t=0;		// to
-      for(var f=0; f < p4.edit.T_records[r].fields[meta_struct_id].value.length; f++ )
-      {
-        if(p4.edit.T_records[r].fields[meta_struct_id].value[f] != v)
-          p4.edit.T_records[r].fields[meta_struct_id].value[t++] = p4.edit.T_records[r].fields[meta_struct_id].value[f];
-      }
-      p4.edit.T_records[r].fields[meta_struct_id].value.length = t;
-      p4.edit.T_records[r].fields[meta_struct_id].dirty = true;
-      p4.edit.T_records[r].fields[meta_struct_id].meta_struct_id = meta_struct_id;
-    }
+    p4.edit.T_records[r].fields[meta_struct_id].removeValue(value, VocabularyId);
   }
-	
+
   updateEditSelectedRecords(null);
 }
 
@@ -693,7 +602,7 @@ function edit_validField(evt, action)
   if(o = document.getElementById("idEditField_"+p4.edit.curField))
   {
     t = $("#idEditZTextArea", p4.edit.editBox).val();
-		
+
     status = 0;
     firstvalue = "";
     for(i=0; i<p4.edit.T_records.length; i++)
@@ -703,80 +612,22 @@ function edit_validField(evt, action)
 
       if(action == "ok" || action == "ask_ok")
       {
-        // remplace tout le contenu
-        if(typeof(p4.edit.T_records[i].fields[p4.edit.curField]) == "undefined")
-          p4.edit.T_records[i].fields[p4.edit.curField] = {
-            'dirty': null,
-            'value': null
-          };		// si le champ n'existait pas, on le cree
-        newvalue = t;
+        p4.edit.T_records[i].fields[p4.edit.curField].addValue(t, false, null);
       }
       else if(action == "fusion" || action == "ask_fusion")
       {
-        // ajoute a la fin
-        if(typeof(p4.edit.T_records[i].fields[p4.edit.curField]) == "undefined")
-        {
-          // si le champ n'existait pas, on le cree
-          p4.edit.T_records[i].fields[p4.edit.curField] = {
-            'dirty': null,
-            'value': null
-          };
-          newvalue = t;
-        }
-        else
-        {
-          if(p4.edit.T_fields[p4.edit.curField].multi)
-            oldvalue = getConcatMulti(p4.edit.T_records[i].fields[p4.edit.curField].value);
-          else
-            oldvalue = p4.edit.T_records[i].fields[p4.edit.curField].value;
-          if(oldvalue == "")
-            newvalue = t;
-          else
-            newvalue = oldvalue + (p4.edit.T_fields[p4.edit.curField].multi ? " ; " : " ") + t;
-        }
+        p4.edit.T_records[i].fields[p4.edit.curField].addValue(t, true, null);
       }
-			
-      // on compare les valeurs du champ sur toutes les fiches selectionnees
-      if(status == 0)
-      {
-        // premiere fiche
-        status = 1;			// meme valeur partout
-        firstvalue = newvalue;
-      }
-      else if(status == 1)
-      {
-        if(newvalue != firstvalue)
-          status = 2;		// mixed
-      }
-			
-      if(p4.edit.T_fields[p4.edit.curField].multi)
-        newvalue = getSplitMulti(newvalue);
 
-      p4.edit.T_records[i].fields[p4.edit.curField].dirty = true;
-      p4.edit.T_records[i].fields[p4.edit.curField].value = newvalue;
-      p4.edit.T_records[i].fields[p4.edit.curField].meta_struct_id = p4.edit.curField;
-			
       check_required(i, p4.edit.curField);
-    }
-		
-    p4.edit.T_fields[p4.edit.curField]._status = status;
-    if(status == 2)
-    {
-      p4.edit.T_fields[p4.edit.curField]._value = "";
-      o.innerHTML = "<span class='hetero'>xxxxx</span>";
-    }
-    else
-    {
-      p4.edit.T_fields[p4.edit.curField]._value = firstvalue;
-      // l'objet 'o' est un span avec white-space:normal pour wrapper.
-      // pour afficher les cr/lf du text, on adapte un peu pour html
-      o.innerHTML = cleanTags(firstvalue).replace(/\n/gm, "<span style='color:#0080ff'>&para;</span><br/>");
     }
   }
 
+  updateFieldDisplay();
+
   p4.edit.textareaIsDirty = false;
-	
-	
+
+
   editField(evt, p4.edit.curField);
   return(true);
 }
@@ -789,7 +640,7 @@ function skipImage(evt, step)
   var sel = $('.diapo.selected', cache);
 
   sel.removeClass('selected');
-	
+
   var i = step==1 ? (parseInt(last.attr('pos'))+1) : (parseInt(first.attr('pos'))-1);
 
   if(i < 0)
@@ -804,12 +655,12 @@ function skipImage(evt, step)
 function edit_select_all()
 {
   $('#EDIT_FILM2 .diapo', p4.edit.editBox).addClass('selected');
-	
+
   for(i in p4.edit.T_records)
     p4.edit.T_records[i]._selected = true;
 
   p4.edit.lastClickId = 1 ;
-	
+
   updateEditSelectedRecords(null);		// null : no evt available
 }
 
@@ -875,9 +726,9 @@ function edit_clk_editimg(evt, i)
         $("#idEditDiapo_"+i, p4.edit.editBox).removeClass('selected');
     }
   }
-	
+
   $('#TH_Opreview .PNB10').empty();
-	
+
   var selected = $('#EDIT_FILM2 .diapo.selected');
   if(selected.length == 1)
   {
@@ -915,7 +766,7 @@ function edit_clkstatus(evt, bit, val)
     {
       if($('#idEditDiapo_'+id).hasClass('nostatus'))
         continue;
-			
+
       p4.edit.T_records[id].statbits[bit].value = val;
       p4.edit.T_records[id].statbits[bit].dirty = true;
     }
@@ -924,6 +775,8 @@ function edit_clkstatus(evt, bit, val)
 
 function updateEditSelectedRecords(evt)
 {
+  $(".editDiaButtons", p4.edit.editBox).hide();
+
   for(n in p4.edit.T_statbits)	// tous les statusbits de la base
   {
     p4.edit.T_statbits[n]._value = "-1";			// val unknown
@@ -966,7 +819,7 @@ function updateEditSelectedRecords(evt)
   var nostatus = $('.diapo.selected.nostatus', p4.edit.editBox).length;
   var status_box = $('#ZTextStatus');
   $('.nostatus, .somestatus, .displaystatus', status_box).hide();
-	
+
   if(nostatus == 0)
   {
     $('.displaystatus', status_box).show();
@@ -983,7 +836,7 @@ function updateEditSelectedRecords(evt)
       $('.somestatus, .displaystatus', status_box).show();
     }
   }
-	
+
   // calcul des valeurs suggerees COMMUNES aux records (collections) selectionnes //
   for(f in p4.edit.T_fields)	// tous les champs de la base
     p4.edit.T_fields[f]._sgval = [];
@@ -996,11 +849,11 @@ function updateEditSelectedRecords(evt)
     if(!p4.edit.T_records[i]._selected)
       continue;
     nrecsel++;
-			
+
     var bid = "b"+p4.edit.T_records[i].bid;
     if(t_selcol[bid])
       continue;
-			
+
     t_selcol[bid] = 1;
     ncolsel++;
     for(f in p4.edit.T_sgval[bid])
@@ -1031,7 +884,7 @@ function updateEditSelectedRecords(evt)
             {
               $("#EditTextMultiValued", p4.edit.editBox).val(label);
               $('#EditTextMultiValued').trigger('keyup.maxLength');
-              edit_addmval();
+              edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);
             }
             else
             {
@@ -1084,9 +937,19 @@ function updateEditSelectedRecords(evt)
       $("#editSGtri_"+f, p4.edit.editBox).css("visibility", "hidden");
     }
   }
-	
+
   $('#idFrameE .ww_status', p4.edit.editBox).html( nrecsel + " record(s) selected for editing");
 
+  updateFieldDisplay();
+
+  if(p4.edit.curField == -1)
+    editStatus(evt);
+  else
+    editField(evt, p4.edit.curField);
+}
+
+function updateFieldDisplay()
+{
   for(f in p4.edit.T_fields)	// tous les champs de la base
   {
     p4.edit.T_fields[f]._status = 0;			// val unknown
@@ -1094,11 +957,11 @@ function updateEditSelectedRecords(evt)
     {
       if(!p4.edit.T_records[i]._selected)
         continue;
-				
-      if(typeof(p4.edit.T_records[i].fields[f])=="undefined")
+
+
+      if(p4.edit.T_records[i].fields[f].isEmpty())
       {
-        // le champ n'existe pas dans ce record, on le considere comme 'vide'
-        v = "";
+        var v = "";
       }
       else
       {
@@ -1106,14 +969,14 @@ function updateEditSelectedRecords(evt)
         if(p4.edit.T_fields[f].multi)
         {
           // champ multi : on compare la concat des valeurs
-          v = getConcatMulti(p4.edit.T_records[i].fields[f].value);
+          var v = p4.edit.T_records[i].fields[f].getSerializedValues()
         }
         else
         {
-          v = p4.edit.T_records[i].fields[f].value;
+          var v = p4.edit.T_records[i].fields[f].getValue().getValue();
         }
       }
-			
+
       if(p4.edit.T_fields[f]._status == 0)
       {
         p4.edit.T_fields[f]._value  = v;
@@ -1134,53 +997,19 @@ function updateEditSelectedRecords(evt)
         o.innerHTML = cleanTags(p4.edit.T_fields[f]._value).replace(/\n/gm, "<span style='color:#0080ff'>&para;</span><br/>");
     }
   }
-
-  if(p4.edit.curField == -1)
-    editStatus(evt);
-  else
-    editField(evt, p4.edit.curField);
 }
 
-function SortCompareStrings(a, b)
+function SortCompareMetas(a, b)
 {
-  if(typeof(a) != 'string')
+  if(typeof(a) != 'object')
     return(-1);
-  if(typeof(b) != 'string')
+  if(typeof(b) != 'object')
     return(1);
-  var na = a.toUpperCase();
-  var nb = b.toUpperCase();
+  var na = a.getValue().toUpperCase();
+  var nb = b.getValue().toUpperCase();
   if(na == nb)
     return(0);
   return(na < nb ? -1 : 1);
-}
-
-// ---------------------------------------------------------------------
-// retourne une valeur concatenee pour comparer des champs multi-val
-// ---------------------------------------------------------------------
-function getConcatMulti(a)
-{
-  var v = "";
-  var i;
-  if(typeof(a)=="string")
-    return(a);
-  a = a.sort();
-  for(i in a)
-  {
-    if(a[i]=="")
-      continue;	// on n'accepte pas les mots vides
-    if(i==0 || a[i]!=a[i-1])	// on supprime les doublons
-      v += (v ? " ; ":"") + a[i];
-  }
-  return(v);
-}
-
-// ---------------------------------------------------------------------
-// retourne une valeur decoupee en multi-val
-// ---------------------------------------------------------------------
-function getSplitMulti(s)
-{
-  var v = new RegExp("\b*;\b*", "g");
-  return(s.split(v));
 }
 
 //---------------------------------------------------------------------
@@ -1211,26 +1040,26 @@ function check_required(id_r, id_f)
     id_r = false;
   if(typeof id_f == 'undefined')
     id_f = false;
-	
+
   for(f in p4.edit.T_fields)
   {
     if(id_f !== false && f != id_f)
       continue;
-		
+
     var name = p4.edit.T_fields[f].name;
-		
+
     if(!p4.edit.T_fields[f].required)
       continue;
-		
+
     for(r in p4.edit.T_records)
     {
       if(id_r !== false && r != id_r)
         continue;
-			
+
       var elem = $('#idEditDiapo_'+r+' .require_alert');
-			
+
       elem.hide();
-			
+
       if(!p4.edit.T_records[r].fields[f])
       {
         elem.show();
@@ -1238,9 +1067,21 @@ function check_required(id_r, id_f)
       }
       else
       {
-        var values = p4.edit.T_fields[f].multi ? (p4.edit.T_records[r].fields[f].value.length > 0 ? p4.edit.T_records[r].fields[f].value : ['']) : [ p4.edit.T_records[r].fields[f].value ];
-	
-        var check_required = $.trim(values.join(''));
+
+        var check_required = '';
+
+        // le champ existe dans la fiche
+        if(p4.edit.T_fields[f].multi)
+        {
+          // champ multi : on compare la concat des valeurs
+          check_required = $.trim(p4.edit.T_records[r].fields[f].getSerializedValues())
+        }
+        else if(p4.edit.T_records[r].fields[f].getValue())
+        {
+          check_required = $.trim(p4.edit.T_records[r].fields[f].getValue().getValue());
+        }
+
+
         if(check_required == '')
         {
           elem.show();
@@ -1248,7 +1089,7 @@ function check_required(id_r, id_f)
         }
       }
     }
-		
+
   }
   return required_fields;
 }
@@ -1260,12 +1101,12 @@ function edit_applyMultiDesc(evt)
 {
   var sendorder = "";
   var sendChuOrder = "";
-  	
+
   var t = [];
 
   if(p4.edit.textareaIsDirty && edit_validField(evt, "ask_ok")==false)
     return(false);
-  	
+
   var required_fields = check_required();
 
   if(required_fields)
@@ -1277,7 +1118,7 @@ function edit_applyMultiDesc(evt)
   $("#EDIT_ALL", p4.edit.editBox).hide();
 
   $("#EDIT_WORKING", p4.edit.editBox).show();
-	
+
   for(r in p4.edit.T_records)
   {
     var record_datas = {
@@ -1291,31 +1132,19 @@ function edit_applyMultiDesc(evt)
 
     for(f in p4.edit.T_records[r].fields)
     {
-      var name    = p4.edit.T_fields[f].name;
-      var meta_id = '';
-      if(typeof p4.edit.T_records[r].fields[f].meta_id != 'undefined')
-        var meta_id = p4.edit.T_records[r].fields[f].meta_id;
-      var type    = p4.edit.T_fields[f].type;
-      var values  = p4.edit.T_fields[f].multi ? (p4.edit.T_records[r].fields[f].value.length > 0 ? p4.edit.T_records[r].fields[f].value : ['']) : [ p4.edit.T_records[r].fields[f].value ];
-			
-      if(!p4.edit.T_records[r].fields[f].dirty)
+      if(!p4.edit.T_records[r].fields[f].isDirty())
+      {
         continue;
-      
+      }
+
       editDirty = true;
       record_datas.edit = 1;
 
-      var temp = {
-        meta_id : meta_id,
-        meta_struct_id : p4.edit.T_records[r].fields[f].meta_struct_id,
-        value  : []
-      };
-
-      for(v in values)
-      {
-        temp.value.push(cleanTags(values[v]));
-      }
-      record_datas.metadatas.push(temp);
+      record_datas.metadatas = record_datas.metadatas.concat(
+        p4.edit.T_records[r].fields[f].exportDatas()
+      );
     }
+
     // les statbits
     var tsb  = [];
     for(var n=0; n<64; n++)
@@ -1338,7 +1167,7 @@ function edit_applyMultiDesc(evt)
       t.push(record_datas);
     }
   }
-	
+
   var options = {
     mds:t,
     sbid : p4.edit.sbas_id,
@@ -1351,10 +1180,10 @@ function edit_applyMultiDesc(evt)
   };
   if(p4.edit.newrepresent != false)
     options.newrepresent = p4.edit.newrepresent;
-	
+
   //  options.mds = t;
-	
-	
+
+
   $.ajax({
     url :"/prod/records/edit/apply/"
     ,
@@ -1365,7 +1194,9 @@ function edit_applyMultiDesc(evt)
     ,
     success : function(data){
       if(p4.edit.what == 'GRP' || p4.edit.what == 'SSEL')
-        refreshBaskets('current');
+      {
+        p4.WorkZone.refresh('current');
+      }
       $("#Edit_copyPreset_dlg").remove();
       $('#EDITWINDOW').hide();
       hideOverlay(2);
@@ -1374,30 +1205,30 @@ function edit_applyMultiDesc(evt)
       return;
     }
   });
-	
+
 }
 
 function edit_cancelMultiDesc(evt)
 {
-  
-  
+
+
   var dirty = false;
-  
+
   evt.cancelBubble = true;
   if(evt.stopPropagation)
     evt.stopPropagation();
-	
+
   if(p4.edit.curField >= 0)
   {
     if(p4.edit.textareaIsDirty && edit_validField(evt, "ask_ok")==false)
       return;
   }
-	
+
   for(r in p4.edit.T_records)
   {
     for(f in p4.edit.T_records[r].fields)
     {
-      if( (dirty |= p4.edit.T_records[r].fields[f].dirty) )
+      if( (dirty |= p4.edit.T_records[r].fields[f].isDirty()) )
         break;
     }
     for(var n in p4.edit.T_records[r].statbits)
@@ -1420,7 +1251,7 @@ function edit_cancelMultiDesc(evt)
         e.style.display = "";
     }
     self.setTimeout("$('#EDITWINDOW').fadeOut();hideOverlay(2);", 100);
-		
+
   }
 }
 
@@ -1462,7 +1293,7 @@ function edit_dblclickThesaurus(event)	// ondblclick dans le thesaurus
           {
             $("#EditTextMultiValued", p4.edit.editBox).val(w);
             $('#EditTextMultiValued').trigger('keyup.maxLength');
-            edit_addmval();
+            edit_addmval($('#EditTextMultiValued', p4.edit.editBox).val(), null);
           }
           else
           {
@@ -1492,7 +1323,7 @@ function edit_thesaurus_ow(id)	// on ouvre ou ferme une branche de thesaurus
     // on ouvre
     o.className = "o";
     document.getElementById("TH_P."+id).innerHTML = "-";
-		
+
     var t_id = id.split(".");
     var sbas_id = t_id[0];
     t_id.shift();
@@ -1512,14 +1343,14 @@ function edit_thesaurus_ow(id)	// on ouvre ou ferme une branche de thesaurus
 function EditThesaurusSeeker(sbas_id)
 {
   this.jq = null;
-	
+
   this.sbas_id = sbas_id;
-	
+
   var zid = (""+sbas_id).replace(new RegExp("\\.", "g"), "\\.") + "\\.T";
-	
+
   this.TH_P_node = $("#TH_P\\." + zid, p4.edit.editBox);
   this.TH_K_node = $("#TH_K\\." + zid, p4.edit.editBox);
-	
+
   this._ctimer = null;
 
   this.search = function(txt) {
@@ -1528,7 +1359,7 @@ function EditThesaurusSeeker(sbas_id)
     var js = "ETHSeeker.search_delayed('"+txt.replace("'", "\\'")+"');" ;
     this._ctimer = setTimeout(js, 125);
   };
-	
+
   this.search_delayed = function(txt) {
     if(this.jq && typeof this.jq.abort == "function")
     {
@@ -1546,7 +1377,7 @@ function EditThesaurusSeeker(sbas_id)
     };
 
     var me = this;
-		
+
     this.jq = $.ajax({
       url: url,
       data: parms,
@@ -1604,41 +1435,16 @@ function EditThesaurusSeeker(sbas_id)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function replace()
 {
-	
-	
   var field   = $("#EditSRField", p4.edit.editBox).val();
   var search  = $("#EditSearch",  p4.edit.editBox).val();
   var replace = $("#EditReplace", p4.edit.editBox).val();
-	
+
   var where  = $("[name=EditSR_Where]:checked", p4.edit.editBox).val();
   var commut  = "";
   var rgxp    = $("#EditSROptionRX", p4.edit.editBox).attr('checked') ? true : false;
-	
+
   var r_search;
   if(rgxp)
   {
@@ -1660,10 +1466,10 @@ function replace()
     if(where == "exact")
       r_search = "^" + r_search + "$";
   }
-	
+
   search = new RegExp(r_search, commut);
-	
-  var r, f, v, oldv, oldlist;
+
+  var r, f, n = 0;
   for(r in p4.edit.T_records)
   {
     if(!p4.edit.T_records[r]._selected)
@@ -1672,59 +1478,20 @@ function replace()
     {
       if(field == '' || field==f)
       {
-        if(typeof(p4.edit.T_records[r].fields[f].value) == "string")
-        {
-          var oldv = p4.edit.T_records[r].fields[f].value;
-          var newv = oldv.replace(search, replace);
-          if(newv != oldv)
-          {
-            p4.edit.T_records[r].fields[f].value = newv;
-            p4.edit.T_records[r].fields[f].dirty = true;
-            p4.edit.T_records[r].fields[f].meta_struct_id = f;
-          }
-        }
-        else
-        {
-          for(v in p4.edit.T_records[r].fields[f].value)
-          {
-            var oldv = p4.edit.T_records[r].fields[f].value[v];
-            var newv = oldv.replace(search, replace);
-            if(newv != oldv)
-            {
-              p4.edit.T_records[r].fields[f].value[v] = newv;
-              p4.edit.T_records[r].fields[f].dirty = true;
-              p4.edit.T_records[r].fields[f].meta_struct_id = f;
-            }
-          }
-          // no duplicates in multi-valued please
-          var oldlist = p4.edit.T_records[r].fields[f].value;
-          p4.edit.T_records[r].fields[f].value = [];
-          for(var i in oldlist)
-          {
-            var found = false;
-            for(v in p4.edit.T_records[r].fields[f].value)
-            {
-              if(p4.edit.T_records[r].fields[f].value[v] == oldlist[i])
-              {
-                found = true;
-                break;
-              }
-            }
-            if(!found)
-              p4.edit.T_records[r].fields[f].value.push(oldlist[i]);
-          }
-          p4.edit.T_records[r].fields[f].value.sort(SortCompareStrings);
-        }
+        n += p4.edit.T_records[r].fields[f].replaceValue(search, replace);
       }
     }
   }
+
+  humane.info($.sprintf(language.nFieldsChanged, n));
+
   updateEditSelectedRecords(null);
 }
 
 function changeReplaceMode(ckRegExp)
 {
-	
-	
+
+
   if(ckRegExp.checked)
   {
     $("#EditSR_TX", p4.edit.editBox).hide();
@@ -1764,7 +1531,7 @@ function preset_paint(data)
       return false;
     }
     );
-	
+
   $(".EDIT_presets_list A.title").dblclick(
     function()
     {
@@ -1774,7 +1541,7 @@ function preset_paint(data)
       return false;
     }
     );
-	
+
   $(".EDIT_presets_list A.delete").click(
     function()
     {
@@ -1802,7 +1569,7 @@ function preset_delete(preset_id, li)
     data: p,
     dataType: 'json',
     success: function(data, textStatus){
-        li.remove();
+      li.remove();
     }
   });
 }
@@ -1813,14 +1580,14 @@ function preset_load(preset_id)
     "act":"LOAD",
     "presetid":preset_id
   };
-  
+
   $.getJSON(
     "/xmlhttp/editing_presets.j.php",
     p,
     function(data, textStatus)
     {
       $("#Edit_copyPreset_dlg").dialog("close");
-      
+
       for(i in p4.edit.T_fields)
       {
         p4.edit.T_fields[i].preset = null;
@@ -1838,27 +1605,9 @@ function preset_load(preset_id)
         {
           if(p4.edit.T_fields[i].preset != null)
           {
-            if(!(""+i in p4.edit.T_records[r].fields))
+            for(val in p4.edit.T_fields[i].preset)
             {
-              p4.edit.T_records[r].fields[""+i] = {};
-            }
-            
-            if(p4.edit.T_fields[i].multi)
-            {
-              p4.edit.T_records[r].fields[""+i].value = [];
-              p4.edit.T_records[r].fields[""+i].meta_struct_id = p4.edit.T_fields[i].meta_struct_id;
-              p4.edit.T_records[r].fields[""+i].dirty = true;
-              
-              for(val in p4.edit.T_fields[i].preset)
-              {
-                p4.edit.T_records[r].fields[""+i].value.push(p4.edit.T_fields[i].preset[val]);
-              }
-            }
-            else
-            {
-              p4.edit.T_records[r].fields[""+i].value = p4.edit.T_fields[i].preset[0];
-              p4.edit.T_records[r].fields[""+i].meta_struct_id = p4.edit.T_fields[i].meta_struct_id;
-              p4.edit.T_records[r].fields[""+i].dirty = true;
+              p4.edit.T_records[r].fields[""+i].addValue(p4.edit.T_fields[i].preset[val], false, null);
             }
           }
         }
@@ -1893,7 +1642,7 @@ function hsplit1()
 function vsplit1()
 {
   $('#divS_wrapper').height('auto');
-	
+
   var el = $('#divS_wrapper');
   if(el.length == 0)
     return;
@@ -1918,27 +1667,27 @@ function setPreviewEdit()
 {
   if(!$('#TH_Opreview').is(':visible'))
     return false;
-	
+
   var selected = $('#EDIT_FILM2 .diapo.selected');
-	
+
   if(selected.length != 1)
   {
     return;
   }
 
   var id = selected.attr('id').split('_').pop();
-	
+
   var container = $('#TH_Opreview');
   var zoomable = $('img.record.zoomable', container);
-	
+
   if(zoomable.length > 0 && zoomable.hasClass('zoomed'))
     return;
-	
+
   //  var datas = p4.edit.T_records[id].preview;
-	
+
   var h = parseInt($('input[name=height]', container).val());
   var w = parseInt($('input[name=width]', container).val());
-	
+
   //  if(datas.doctype == 'video')
   //  {
   //    var h = parseInt(datas.height);
@@ -1949,7 +1698,7 @@ function setPreviewEdit()
 
   var margX = 0;
   var margY = 0;
-	
+
   if($('img.record.record_audio', container).length > 0)
   {
     var margY = 100;
@@ -1959,13 +1708,13 @@ function setPreviewEdit()
   var display_box = $('#TH_Opreview .PNB10');
   var dwidth = display_box.width();
   var dheight = display_box.height();
-	
-	
+
+
   //  if(datas.doctype != 'flash')
   //  {
   var ratioP = w / h;
   var ratioD = dwidth / dheight;
-		
+
   if (ratioD > ratioP) {
     //je regle la hauteur d'abord
     if ((parseInt(h) + margY) > dheight) {
@@ -1994,14 +1743,14 @@ function setPreviewEdit()
     top: t,
     left: l
   }).attr('width',w).attr('height',h);
-	
+
 }
 
 function previewEdit(r)
 {
-	
+
   $('#TH_Opreview .PNB10').empty().append(p4.edit.T_records[r].preview);
-	
+
   //  var data = p4.edit.T_records[r].preview;
 
   //  if ((data.doctype == 'video' || data.doctype == 'audio' || data.doctype == 'flash')) {
@@ -2045,7 +1794,7 @@ function previewEdit(r)
   //      });
   //    }
   //  }
-	
+
   if($('img.PREVIEW_PIC.zoomable').length > 0)
   {
     $('img.PREVIEW_PIC.zoomable').draggable();
@@ -2060,9 +1809,66 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   p4.edit.what = what;
   p4.edit.regbasprid = regbasprid;
   p4.edit.ssel = ssel;
-	
+
+  for(r in p4.edit.T_records)
+  {
+    var fields = {};
+
+    for(f in p4.edit.T_records[r].fields)
+    {
+      var meta_struct_id = p4.edit.T_records[r].fields[f].meta_struct_id;
+
+      var name = p4.edit.T_fields[meta_struct_id].name;
+
+      var multi = p4.edit.T_fields[meta_struct_id].multi;
+      var required = p4.edit.T_fields[meta_struct_id].required;
+      var readonly = p4.edit.T_fields[meta_struct_id].readonly;
+      var maxLength = p4.edit.T_fields[meta_struct_id].maxLength;
+      var minLength = p4.edit.T_fields[meta_struct_id].minLength;
+      var type = p4.edit.T_fields[meta_struct_id].type;
+      var separator = p4.edit.T_fields[meta_struct_id].separator;
+      var vocabularyControl = p4.edit.T_fields[meta_struct_id].vocabularyControl;
+      var vocabularyRestricted = p4.edit.T_fields[meta_struct_id].vocabularyRestricted;
+
+      var fieldOptions = {
+        multi:multi,
+        required:required,
+        readonly:readonly,
+        maxLength:maxLength,
+        minLength:minLength,
+        type:type,
+        separator:separator,
+        vocabularyControl:vocabularyControl,
+        vocabularyRestricted:vocabularyRestricted
+      };
+
+      var databoxField = new p4.databoxField(name, meta_struct_id, fieldOptions);
+
+      var values = [];
+
+      for(v in p4.edit.T_records[r].fields[f].values)
+      {
+        var meta_id = p4.edit.T_records[r].fields[f].values[v].meta_id;
+        var value = p4.edit.T_records[r].fields[f].values[v].value;
+        var vocabularyId = p4.edit.T_records[r].fields[f].values[v].vocabularyId;
+
+        values.push(new p4.recordFieldValue(meta_id, value, vocabularyId));
+      }
+
+      fields[f] = new p4.recordField(databoxField, values);
+    }
+
+    p4.edit.T_records[r].fields = fields;
+    p4.edit.fields = fields;
+
+  }
+
+  $('#EditTextMultiValued').bind('keyup', function(){
+    reveal_mval($(this).val());
+  });
+
   $('#EDIT_MID_R .tabs').tabs();
-	
+
   $('#divS div.edit_field:odd').addClass('odd');
   $('#divS div').bind('mouseover',function(){
     $(this).addClass('hover');
@@ -2071,22 +1877,22 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   });
 
   $('#editcontextwrap').remove();
-	
+
   if($('#editcontextwrap').length == 0)
     $('body').append('<div id="editcontextwrap"></div>');
-	
+
   self.setTimeout("edit_select_all();", 100);
 
   $('.previewTips, .DCESTips, .fieldTips', p4.edit.editBox).tooltip({
-    fixable:true, 
+    fixable:true,
     fixableIndex:1200
   });
   $('.infoTips', p4.edit.editBox).tooltip();
-	
+
   if(p4.edit.what == 'GRP')
   {
     $('#EDIT_FILM2 .reg_opts').show();
-		
+
     $.each($('#EDIT_FILM2 .contextMenuTrigger'),function(){
 
       var id = $(this).attr('id').split('_').slice(1,3).join('_');
@@ -2102,7 +1908,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       });
     });
   }
-	
+
   $('#EDIT_TOP', p4.edit.editBox).resizable({
     handles : 's',
     minHeight:100,
@@ -2116,7 +1922,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       setSizeLimits();
     }
   });
-	
+
   $('#divS_wrapper', p4.edit.editBox).resizable({
     handles : 'e',
     minWidth:200,
@@ -2130,7 +1936,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       setSizeLimits();
     }
   });
-	
+
   $('#EDIT_MID_R', p4.edit.editBox).resizable({
     handles : 'w',
     minWidth:200,
@@ -2144,7 +1950,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       setSizeLimits();
     }
   });
-	
+
   $('#EDIT_ZOOMSLIDER', p4.edit.editBox).slider({
     min:60,
     max:300,
@@ -2160,7 +1966,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       setPref("editing_images_size", p4.edit.diapoSize);
     }
   });
-	
+
   var buttons = {};
   buttons[language.valider] = function(e)
   {
@@ -2181,7 +1987,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     modal:true,
     buttons: buttons
   });
-	
+
   var buttons = {};
   buttons[language.valider] = function()
   {
@@ -2193,7 +1999,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       jtitle[0].focus();
       return;
     }
-			
+
     var p = {
       "act":"SAVE",
       "sbas":p4.edit.sbas_id,
@@ -2241,9 +2047,9 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
   buttons[language.annuler] = function()
   {
     $(this).dialog("close");
-		
+
   };
-	
+
   $("#Edit_copyPreset_dlg", p4.edit.editBox).dialog( {
     zIndex:5000,
     stack:true,
@@ -2260,15 +2066,15 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     },
     buttons:buttons
   });
-	
+
   $('#idEditDateZone', p4.edit.editBox).datepicker({
     changeYear: true,
     changeMonth:true,
     dateFormat: 'yy/mm/dd',
     onSelect: function(dateText, inst)
     {
-				
-				
+
+
       var lval = $('#idEditZTextArea', p4.edit.editBox).val();
       if(lval != dateText)
       {
@@ -2280,7 +2086,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       }
     }
   });
-	
+
   $('input.input-button').hover(
     function(){
       $(this).addClass('hover');
@@ -2289,7 +2095,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
       $(this).removeClass('hover');
     }
     );
-		
+
   ETHSeeker = new EditThesaurusSeeker(p4.edit.sbas_id);
 
   hsplit1();
@@ -2309,12 +2115,14 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
     {
       preset_paint(data);
     }
-  );
+    );
 
   check_required();
 
-  $('#TH_Opresets button.adder').button().bind('click', function(){preset_copy();});
- 
+  $('#TH_Opresets button.adder').button().bind('click', function(){
+    preset_copy();
+  });
+
   try{
     $('#divS .edit_field:first').trigger('mousedown');
   }
@@ -2332,6 +2140,8 @@ function setRegDefault(n,record_id)
 
   var src = $('#idEditDiapo_'+n).find('img.edit_IMGT').attr('src');
   var style = $('#idEditDiapo_'+n).find('img.edit_IMGT').attr('style');
-	
+
   $('#EDIT_GRPDIAPO .edit_IMGT').attr('src',src).attr('style',style);
 }
+
+

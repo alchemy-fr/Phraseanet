@@ -49,3 +49,26 @@
 [submodule "lib/vendor/Twig-extensions"]
 	path = lib/vendor/Twig-extensions
 	url = git://github.com/fabpot/Twig-extensions.git
+[submodule "lib/vendor/doctrine2-gedmo"]
+	path = lib/vendor/doctrine2-gedmo
+	url = git://github.com/l3pp4rd/DoctrineExtensions.git
+[submodule "lib/vendor/doctrine2-orm"]
+	path = lib/vendor/doctrine2-orm
+	url = git://github.com/doctrine/doctrine2.git
+[submodule "lib/vendor/data-fixtures"]
+	path = lib/vendor/data-fixtures
+	url = https://github.com/doctrine/data-fixtures
+[submodule "www/include/vendor/humane-js"]
+	path = www/include/vendor/humane-js
+	url = https://github.com/wavded/humane-js.git
+
+
+[submodule "www/include/vendor/qunit"]
+	path = www/include/vendor/qunit
+	url = git://github.com/jquery/qunit.git
+[submodule "lib/vendor/doctrine2-beberlei"]
+	path = lib/vendor/doctrine2-beberlei
+	url = git://github.com/beberlei/DoctrineExtensions.git
+[submodule "www/include/vendor/mustache-js"]
+	path = www/include/vendor/mustache-js
+	url = https://github.com/janl/mustache.js.git

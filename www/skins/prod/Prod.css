@@ -1,0 +1,14 @@
+#idFrameC{
+  top:10px;
+  bottom:10px;
+}
+
+#idFrameC .ui-tabs{
+  bottom:10px;
+  left:0;
+}
+
+#answers{
+  overflow-x:hidden;
+  overflow-y:auto;
+}

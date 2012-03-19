@@ -1,0 +1,295 @@
+{% import 'common/thumbnail.html' as thumbnail %}
+<div id="reorder_options" class="PNB" style="height:30px;bottom:auto;">
+    <span>{% trans 'Reordonner automatiquement' %}</span>
+    <select id="auto_order">
+      <option value="">{% trans 'Choisir' %}</option>
+      <option value="default">{% trans 'Re-initialiser' %}</option>
+      <option value="title">{% trans 'Titre' %}</option>
+    </select>
+    <button type="button" class="autoorder">{% trans 'Re-ordonner' %}</button>
+    <button type="button" class="reverseorder">{% trans 'Inverser' %}</button>
+</div>
+<div style="top:30px;overflow:auto;" id="reorder_box" class="PNB">
+    <div class="elements">
+    {% for element in story.get_children() %}
+      <div id="ORDER_{{ element.get_record_id() }}" class="CHIM diapo" style="height:130px;overflow:hidden;">
+        <div class="title" title="{{ element.get_title() }}" style="position:relative;z-index:1200;height:30px;overflow:visible;text-align:center;">
+          <span>{{ element.get_title() }}</span>
+          {{ thumbnail.format(element.get_thumbnail(), 80, 80, '', session) }}
+          <form style="display:none;">
+            <input type="hidden" name="id" value="{{ element.get_record_id() }}"/>
+            <input type="hidden" name="title" value="{{ element.get_title() }}"/>
+            <input type="hidden" name="default" value="{{ element.get_number() }}"/>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
+    <form name="reorder" method="POST" action="/prod/story/{{story.get_sbas_id() }}/{{story.get_record_id() }}/reorder/">
+      {% for element in story.get_children() %}
+        <input type="hidden" name="element[{{ element.get_record_id() }}]" value="{{ element.get_number() }}"/>
+      {% endfor %}
+      <button>{% trans 'boutton::valider' %}</button>
+    </form>
+</div>
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+
+      var container = p4.Dialog.get(1).getDomElement();
+
+
+      $('button.autoorder', container).bind('click', function(){
+        autoorder();
+
+        return false;
+      });
+      $('button.reverseorder', container).bind('click', function(){
+        reverse_order();
+
+        return false;
+      });
+      function autoorder()
+      {
+        var val = $.trim($('#auto_order').val());
+        if(val == '')
+
+          return;
+
+        var sorter = {};
+
+        $('#reorder_box .diapo form').each(function(i,n){
+          var id = $('input[name=id]',n).val();
+
+          switch(val)
+          {
+            case 'title':
+            default:
+              var data = $('input[name=title]',n).val();
+              break;
+            case 'default':
+              var data = $('input[name=default]',n).val();
+              break;
+          }
+          sorter[id] = data;
+        });
+
+        var data_type = 'string';
+
+        switch(val)
+        {
+          case 'default':
+            var data_type = 'integer';
+            break;
+        }
+
+        sorter = arraySortByValue(sorter, data_type);
+
+        var last_moved = false;
+
+        for(i in sorter)
+        {
+          var elem = $('#ORDER_'+i);
+          if(last_moved)
+          {
+            elem.insertAfter(last_moved);
+          }
+          else
+          {
+            $('#reorder_box .elements').prepend(elem);
+          }
+          last_moved = elem;
+        }
+
+      }
+
+      function arraySortByValue(datas, data_type) {
+
+        var tmp = new Array();
+        for (i in datas) {
+          tmp.push({
+            v: i,
+            c: datas[i].toUpperCase(),
+            o: datas[i]
+          });
+        }
+        switch(data_type)
+        {
+          case 'string':
+            tmp.sort(function (x, y) {
+              return y.c < x.c;
+            });
+            break;
+          case 'integer':
+            tmp.sort(function (x, y) {
+              return parseInt(y.c) < parseInt(x.c);
+            });
+            break;
+        }
+
+        var out = {};
+        for (i in tmp) {
+          out[tmp[i].v] = tmp[i].o;
+        }
+
+        return out;
+      }
+
+
+      function reverse_order()
+      {
+        var elems = $('#reorder_box .diapo');
+
+        var last_moved = false;
+
+        elems.each(function(i,n){
+          var elem = $(n);
+          if(last_moved)
+          {
+            elem.insertBefore(last_moved);
+          }
+          else
+          {
+            $('#reorder_box .elements').append(elem);
+          }
+          last_moved = elem;
+        });
+      }
+
+      $('.elements', container).sortable({
+        appendTo : container,
+        placeholder: 'diapo ui-sortable-placeholder',
+        distance:20,
+        cursorAt: {
+          top:10,
+          left:-20
+        },
+        items:'div.diapo',
+        scroll:true,
+        scrollSensitivity:40,
+        scrollSpeed:30,
+        start:function(event, ui){
+          var selected = $('.selected',container);
+
+          selected.each(function(i,n){
+            $(n).attr('position',i);
+          });
+
+          var n = selected.length - 1;
+
+          $('.selected:visible', container).hide();
+
+          while(n > 0)
+          {
+            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').insertAfter($('.diapo.ui-sortable-placeholder', cont));
+            n--;
+          }
+        },
+        stop:function(event, ui){
+
+          $('.diapo.ui-sortable-placeholderfollow', container).remove();
+
+          var main_id = $(ui.item[0]).attr('id');
+
+          var selected = $('.selected',container);
+          var sorter = new Array();
+
+
+          selected.each(function(i,n){
+
+            var position = parseInt($(n).attr('position'));
+
+            if(position !== '')
+            {
+              sorter[position] = $(n);
+            }
+
+            var id = $(n).attr('id');
+            if(id == main_id)
+            {
+              return;
+            }
+
+          });
+
+          var before = true;
+          var last_moved = $(ui.item[0]);
+          $(sorter).each(function(i,n){
+            $(n).show().removeAttr('position');
+            if($(n).attr('id') == main_id)
+            {
+              before = false;
+            }
+            else
+            {
+              if(before)
+                $(n).insertBefore($(ui.item[0]));
+              else
+                $(n).insertAfter($(last_moved));
+
+            }
+            last_moved = sorter[i];
+          });
+
+        },
+        change:function(){
+          $('.diapo.ui-sortable-placeholderfollow', container).remove();
+
+          var n = OrderSelection.length() - 1 ;
+          while(n > 0)
+          {
+            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').insertAfter($('.diapo.ui-sortable-placeholder', container));
+            n--;
+          }
+        }
+
+      }).disableSelection();
+
+      var OrderSelection = new Selectable($('.elements', container), {
+          selector : '.CHIM'
+        });
+
+
+      $('form[name="reorder"]', container).bind('submit', function(event){
+
+        //$this.SetLoader(true);
+
+
+        var $form = $(this);
+
+        $('.elements form', container).each(function(i, el){
+          var id = $('input[name="id"]', $(el)).val();
+
+          $('input[name="element[' + id + ']"]', $form).val(i+1);
+        });
+
+        $.ajax({
+          type: $form.attr('method'),
+          url: $form.attr('action'),
+          data: $form.serializeArray(),
+          dataType: 'json',
+          beforeSend:function(){
+
+          },
+          success: function(data){
+            if(!data.success)
+            {
+              alert(data.message);
+            }
+            p4.WorkZone.refresh('current', null, false, 'story');
+            p4.Dialog.get(1).Close();
+
+            return;
+          },
+          error: function(){
+
+          },
+          timeout: function(){
+
+          }
+        });
+
+        return false;
+      });
+    });
+  </script>

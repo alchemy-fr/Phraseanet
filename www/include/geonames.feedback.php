@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-include(dirname(__FILE__) . '/../../lib/bootstrap.php');
+include(__DIR__ . '/../../lib/bootstrap.php');
 $output = '';
 
 $request = http_request::getInstance();
@@ -27,8 +27,10 @@ switch ($action)
 {
   case 'FIND':
     $geoname = new geonames();
-    $twig = new supertwig();
-    $output = $twig->render('geonames/city_list.twig', array('geonames'=>$geoname->find_city($parm['city'])));
+    $core = \bootstrap::getCore();
+    $twig = $core->getTwig();
+
+    $output = $twig->render('geonames/city_list.twig', array('geonames' => $geoname->find_city($parm['city'])));
     break;
 }
 

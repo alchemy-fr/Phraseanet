@@ -15,7 +15,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once dirname(__FILE__) . "/../../../lib/bootstrap.php";
+require_once __DIR__ . "/../../../lib/bootstrap.php";
 $registry = registry::get_instance();
 
 $request = http_request::getInstance();
@@ -63,9 +63,6 @@ if ($parm["bid"] !== null)
     {
       $s_thits .= ( str_replace('d', '.', $rowbas['value']) . ';');
     }
-
-    if ($parm['debug'])
-      var_dump($s_thits);
 
     if ($parm['typ'] == 'CT')
     {

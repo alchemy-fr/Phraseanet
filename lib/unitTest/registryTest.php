@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for registry.
@@ -30,16 +30,16 @@ class registryTest extends PhraseanetPHPUnitAbstract
     /**
      * Set value with default type (string)
      */
-    $this->object->set('key_test', 'value1');
+    $this->object->set('key_test', 'value1', registry::TYPE_STRING);
     $this->assertTrue($this->object->get('key_test') === 'value1');
 
-    $this->object->set('key_test', 1);
+    $this->object->set('key_test', 1, registry::TYPE_STRING);
     $this->assertTrue($this->object->get('key_test') === '1');
 
-    $this->object->set('key_test', '1');
+    $this->object->set('key_test', '1', registry::TYPE_STRING);
     $this->assertTrue($this->object->get('key_test') === '1');
 
-    $this->object->set('key_test', array('caca'));
+    $this->object->set('key_test', array('caca'), registry::TYPE_STRING);
     $this->assertTrue($this->object->get('key_test') === 'Array');
 
 
@@ -157,7 +157,7 @@ class registryTest extends PhraseanetPHPUnitAbstract
 
   public function testIs_set()
   {
-    $this->object->set('key_test', 'value');
+    $this->object->set('key_test', 'value', registry::TYPE_STRING);
     $this->assertTrue($this->object->is_set('key_test'));
     $this->assertFalse($this->object->is_set('keifgjkqskodfqsflqkspfoqsfp'));
   }

@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Symfony\Component\Console\Tester\CommandTester;
 use \Symfony\Component\Console\Application;
@@ -25,7 +25,7 @@ class module_console_tasklistTest extends PHPUnit_Framework_TestCase
     $commandTester = new CommandTester($command);
     $commandTester->execute(array('command' => $command->getName()));
 
-    $task_manager = new task_manager(appbox::get_instance());
+    $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
     $lines = explode("\n", trim($commandTester->getDisplay()));
 
     if(count($task_manager->get_tasks()) > 0)

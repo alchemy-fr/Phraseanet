@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for mail.

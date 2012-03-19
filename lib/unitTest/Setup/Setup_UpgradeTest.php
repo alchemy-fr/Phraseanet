@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../PhraseanetPHPUnitAbstract.class.inc';
+require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 /**
  * Test class for Setup_Upgrade.
@@ -16,7 +16,7 @@ class Setup_UpgradeTest extends PhraseanetPHPUnitAbstract
 
   public function setUp()
   {
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $this->object = new Setup_Upgrade($appbox);
   }
 

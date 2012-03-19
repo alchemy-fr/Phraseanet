@@ -1130,11 +1130,14 @@ class system_file extends SplFileObject
           $tmpval[] = $val;
       }
 
-      $ret[$meta->get_id()] = array(
+      foreach ($tmpval as $val)
+      {
+      $ret[] = array(
           'meta_struct_id' => $meta->get_id(),
           'meta_id' => null,
-          'value' => $tmpval
+            'value' => $val
       );
+    }
     }
 
 
@@ -1205,16 +1208,19 @@ class system_file extends SplFileObject
         $fv = array($fv);
       }
 
-      if (isset($metadatas[$meta->get_id()]) && $meta->is_multi() === true)
-      {
-        $fv = array_unique(array_merge($metadatas[$meta->get_id()], $fv));
-      }
+//      if (isset($metadatas[$meta->get_id()]) && $meta->is_multi() === true)
+//      {
+//        $fv = array_unique(array_merge($metadatas[$meta->get_id()], $fv));
+//      }
 
-      $metadatas[$meta->get_id()] = array(
-          'meta_struct_id' => $meta->get_id(),
-          'meta_id' => null,
-          'value' => $fv
-      );
+      foreach($fv as $value)
+      {
+        $metadatas[] = array(
+            'meta_struct_id' => $meta->get_id(),
+            'meta_id' => null,
+            'value' => $value
+        );
+      }
 
       unset($meta);
     }
