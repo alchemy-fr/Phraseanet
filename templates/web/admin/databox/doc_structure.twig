@@ -317,12 +317,14 @@
                                         </td>
 
                                         <td>
+                                          {% if field.is_multi() %}
                                           <select class="metafield_{{field.get_id()}}" {{disabled}} name="vocabulary_{{field.get_id()}}">
                                             <option value=""></option>
                                             {% for vocabulary in vocabularies %}
                                             <option {% if field.getVocabularyControl() and field.getVocabularyControl().getType() == vocabulary.getType() %}selected="selected"{% endif %} value="{{ vocabulary.getType() }}">{{ vocabulary.getName() }}</option>
                                             {% endfor %}
                                           </select>
+                                          {% endif %}
                                         </td>
                                         <td>
                                           <input class="metafield_{{field.get_id()}}" {{disabled}} name="vocabularyrestricted_{{field.get_id()}}" type="checkbox" {% if field.isVocabularyRestricted() %}checked="checked"{% endif %}/>
