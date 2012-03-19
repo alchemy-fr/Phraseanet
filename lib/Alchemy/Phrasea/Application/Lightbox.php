@@ -43,12 +43,17 @@ return call_user_func(
           $em         = $app['Core']->getEntityManager();
           $repository = $em->getRepository('\Entities\Basket');
 
+          $current_user = $app['Core']->getAuthenticatedUser();
+
           /* @var $repository \Repositories\BasketRepository */
-          $basket_collection = $repository->findActiveByUser(
-            $app['Core']->getAuthenticatedUser()
+
+          $basket_collection = array_merge(
+            $repository->findActiveByUser($current_user)
+            , $repository->findActiveValidationByUser($current_user)
           );
+
           /* @var $twig \Twig_Environment */
-          $twig              = $app['Core']->getTwig();
+          $twig = $app['Core']->getTwig();
 
           $browser = \Browser::getInstance();
 
