@@ -37,7 +37,7 @@ class Doctrine extends ServiceAbstract implements ServiceInterface
   protected function init()
   {
     $options = $this->getOptions();
-    
+
     $config = new \Doctrine\ORM\Configuration();
 
     $this->debug = !!$options["debug"];

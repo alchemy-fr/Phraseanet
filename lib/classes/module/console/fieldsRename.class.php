@@ -89,6 +89,7 @@ class module_console_fieldsRename extends Command
     if($continue != 'y')
     {
       $output->writeln("Request canceled by user");
+
       return 1;
     }
 

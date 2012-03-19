@@ -152,7 +152,7 @@
                 <option value="{{ template.get_id() }}">{{ template.get_display_name() }}</option>
                 {% endfor %}
               </select>
-               <button type='button' id='reset_rights'>{% trans 'reset users rights' %}</button>  
+               <button type='button' id='reset_rights'>{% trans 'reset users rights' %}</button>
             </td>
           </tr>
         </table>
@@ -579,7 +579,7 @@ $('#users_rights_form button#reset_rights').bind('click', function(){
     if(confirm("{% trans'are you sure you want reset rights ?' %}"))
     {
       var users = $('#users_rights_form input[name="users"]').val();
-    
+
       $.ajax({
         type: 'POST',
         url: '/admin/users/rights/reset/',
@@ -608,6 +608,7 @@ $('#users_rights_form button#reset_rights').bind('click', function(){
                 $('#right-ajax').removeClass('loading').html(data);
               }
             });
+
             return false;
           }
           else
@@ -618,5 +619,5 @@ $('#users_rights_form button#reset_rights').bind('click', function(){
       });
     }
   });
-  
+
 </script>

@@ -60,19 +60,21 @@ class module_console_sphinxGenerateSuggestion extends Command
       $databox = databox::get_instance($sbas_id);
 
       $output->writeln("process Databox " . $databox->get_viewname() . " / $index\n");
-      
+
       if(!is_executable("/usr/local/bin/indexer"))
       {
         $output->writeln("<error>'/usr/local/bin/indexer' is not executable</error>");
+
         return 1;
       }
-      
+
       if(!file_exists($tmp_file))
       {
         $output->writeln("<error> file '".$tmp_file."' does not exist</error>");
+
         return 1;
       }
-      
+
       $cmd = '/usr/local/bin/indexer metadatas' . $index . '  --buildstops ' . $tmp_file . ' 1000000 --buildfreqs';
       exec($cmd);
 

@@ -37,7 +37,7 @@ class FirePHP extends ServiceAbstract implements ServiceInterface
 
       $this->logger->pushHandler(new FirePHPHandler());
     }
-    
+
     return $this->logger;
   }
 

@@ -303,13 +303,13 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $this->assertEquals("attachment; filename=export.txt", $response->headers->get("content-disposition"));
   }
 
-  
+
   public function testResetRights()
   {
     $appbox = \appbox::get_instance(self::$core);
     $username = uniqid('user_');
     $user = User_Adapter::create($appbox, $username, "test", $username . "@email.com", false);
-    
+
     $user->ACL()->give_access_to_sbas(array_keys($appbox->get_databoxes()));
 
     foreach ($appbox->get_databoxes() as $databox)
@@ -340,8 +340,8 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         break;
       }
     }
-//    
-    
+//
+
     $this->client->request('POST', '/users/rights/reset/', array('users' => $user->get_id()));
     $response = $this->client->getResponse();
     $this->assertTrue($response->isOK());

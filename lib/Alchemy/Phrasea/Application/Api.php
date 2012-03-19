@@ -144,7 +144,7 @@ return call_user_func(function()
           {
             return;
           }
-          
+
           if ($oauth2_adapter->has_ses_id())
           {
             try

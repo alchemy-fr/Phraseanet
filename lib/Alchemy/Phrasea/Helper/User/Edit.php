@@ -691,7 +691,7 @@ class Edit extends \Alchemy\Phrasea\Helper\Helper
           continue;
         }
       }
-      
+
       foreach ($base_ids as $base_id)
       {
         if (!$ACL->has_access_to_base($base_id))

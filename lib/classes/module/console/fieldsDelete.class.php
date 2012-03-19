@@ -82,6 +82,7 @@ class module_console_fieldsDelete extends Command
     if($continue != 'y')
     {
       $output->writeln("Request canceled by user");
+
       return 1;
     }
 

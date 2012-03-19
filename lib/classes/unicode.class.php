@@ -1406,7 +1406,7 @@ class unicode
     {
       $regexp .= '\.';
     }
-    
+
     $regexp .= ']{1}/';
 
     $string = $this->remove_diacritics($string);

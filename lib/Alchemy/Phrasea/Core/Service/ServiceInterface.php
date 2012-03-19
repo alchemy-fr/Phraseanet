@@ -25,7 +25,7 @@ interface ServiceInterface
   public function getDriver();
 
   public function getOptions();
-  
+
   public function getMandatoryOptions();
 
 }

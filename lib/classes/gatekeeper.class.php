@@ -79,6 +79,7 @@ class gatekeeper
     $session = $appbox->get_session();
 
     if (http_request::is_command_line())
+
       return;
 
     if (isset($_SERVER['PHP_SELF']) && trim($_SERVER['PHP_SELF']))
@@ -140,6 +141,7 @@ class gatekeeper
           break;
         case 'admin':
           if ($this->_script_name === 'runscheduler.php')
+
             return;
           phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
           break;
@@ -159,6 +161,7 @@ class gatekeeper
           return;
         case 'setup':
           if ($appbox->upgradeavailable())
+
             return;
           else
             phrasea::redirect('/login/');
@@ -275,6 +278,7 @@ class gatekeeper
     $parm    = $request->get_parms('LOG');
 
     if (is_null($parm["LOG"]))
+
       return $this;
 
     try

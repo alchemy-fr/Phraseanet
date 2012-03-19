@@ -40,7 +40,7 @@ class Monolog extends ServiceAbstract implements ServiceInterface
   protected function init()
   {
     $options = $this->getOptions();
-    
+
     if (empty($options))
     {
       throw new \Exception(sprintf("'%s' service options can not be empty", $this->name));

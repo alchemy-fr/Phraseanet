@@ -25,7 +25,7 @@ use Alchemy\Phrasea\Core,
  */
 class RedisCache extends ServiceAbstract implements ServiceInterface
 {
-  
+
   const DEFAULT_HOST = "localhost";
   const DEFAULT_PORT = "6379";
 
@@ -36,7 +36,7 @@ class RedisCache extends ServiceAbstract implements ServiceInterface
   protected function init()
   {
     $options = $this->getOptions();
-    
+
     $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
 
     $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
