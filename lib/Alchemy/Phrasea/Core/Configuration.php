@@ -82,7 +82,7 @@ class Configuration
   {
     $this->initialize();
 
-    $cacheService = "array_cache";
+    $cacheService = "Cache\array_cache";
 
     $retrieve_old_credentials = function(\SplFileObject $connexionInc)
       {
