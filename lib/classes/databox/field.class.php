@@ -98,6 +98,11 @@ class databox_field implements cache_cacheableInterface
    */
   protected $thumbtitle;
 
+  /**
+   *
+   * @var boolean
+   */
+  protected $Business;
   protected $renamed = false;
 
   /**
@@ -157,7 +162,7 @@ class databox_field implements cache_cacheableInterface
 
     $sql = "SELECT `thumbtitle`, `separator`
               , `dces_element`, `tbranch`, `type`, `report`, `multi`, `required`
-              , `readonly`, `indexable`, `name`, `src`
+              , `readonly`, `indexable`, `name`, `src`, `business`
               , `VocabularyControlType`, `RestrictToVocabularyControl`
             FROM metadatas_structure WHERE id=:id";
 
@@ -173,6 +178,7 @@ class databox_field implements cache_cacheableInterface
     $this->readonly = !!$row['readonly'];
     $this->required = !!$row['required'];
     $this->multi = !!$row['multi'];
+    $this->Business = !!$row['business'];
     $this->report = !!$row['report'];
     $this->type = $row['type'] ? : self::TYPE_STRING;
     $this->tbranch = $row['tbranch'];
@@ -227,6 +233,15 @@ class databox_field implements cache_cacheableInterface
   public function isVocabularyRestricted()
   {
     return $this->VocabularyRestriction;
+  }
+
+  /**
+   *
+   * @return boolean
+   */
+  public function isBusiness()
+  {
+    return $this->Business;
   }
 
   /**
@@ -327,6 +342,7 @@ class databox_field implements cache_cacheableInterface
           `required` = :required,
           `separator` = :separator,
           `multi` = :multi,
+          `business` = :business,
           `report` = :report,
           `type` = :type,
           `tbranch` = :tbranch,
@@ -343,6 +359,7 @@ class databox_field implements cache_cacheableInterface
       ':required'              => $this->required ? '1' : '0',
       ':separator'             => $this->separator,
       ':multi'                 => $this->multi ? '1' : '0',
+      ':business'              => $this->Business ? '1' : '0',
       ':report'                => $this->report ? '1' : '0',
       ':type'                  => $this->type,
       ':tbranch'               => $this->tbranch,
@@ -531,6 +548,18 @@ class databox_field implements cache_cacheableInterface
   public function set_readonly($readonly)
   {
     $this->readonly = !!$readonly;
+
+    return $this;
+  }
+
+  /**
+   *
+   * @param boolean $boolean
+   * @return databox_field
+   */
+  public function set_business($boolean)
+  {
+    $this->Business = !!$boolean;
 
     return $this;
   }
@@ -811,11 +840,11 @@ class databox_field implements cache_cacheableInterface
 
     $sql = "INSERT INTO metadatas_structure
         (`id`, `name`, `src`, `readonly`, `indexable`, `type`, `tbranch`,
-          `thumbtitle`, `multi`,
+          `thumbtitle`, `multi`, `business`,
           `report`, `sorter`)
         VALUES (null, :name, '', 0, 1, 'text', '',
           null, 0,
-          1, :sorter)";
+          0, 1, :sorter)";
 
     $stmt = $databox->get_connection()->prepare($sql);
     $stmt->execute(array(':name'   => self::generateName($name), ':sorter' => $sorter));

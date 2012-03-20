@@ -5112,6 +5112,14 @@
             <comment></comment>
           </field>
           <field>
+            <name>business</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
             <name>indexable</name>
             <type>int(1) unsigned</type>
             <null></null>
