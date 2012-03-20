@@ -44,7 +44,7 @@ class module_console_checkExtension extends Command
     if (!extension_loaded('phrasea2'))
       printf("Missing Extension php-phrasea");
 
-    $appbox   = \appbox::get_instance();
+    $appbox   = \appbox::get_instance(\bootstrap::getCore());
     $registry = $appbox->get_registry();
 
     $usr_id = $input->getOption('usr_id');

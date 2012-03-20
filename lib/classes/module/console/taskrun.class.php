@@ -75,14 +75,12 @@ class module_console_taskrun extends Command
       return 1;
     }
 
-    require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
     $task_id = (int) $input->getArgument('task_id');
 
     if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id')))
       throw new \RuntimeException('Argument must be an Id.');
 
-    $appbox       = appbox::get_instance();
+    $appbox       = \appbox::get_instance(\bootstrap::getCore());
     $task_manager = new task_manager($appbox);
     $this->task = $task_manager->get_task($task_id);
 
