@@ -82,8 +82,6 @@ class Configuration
   {
     $this->initialize();
 
-    $cacheService = "Cache\array_cache";
-
     $retrieve_old_credentials = function(\SplFileObject $connexionInc)
       {
         require $connexionInc->getPathname();
@@ -131,28 +129,9 @@ class Configuration
       }
 
       $configs[$env]['phraseanet']['servername'] = $old_parameters['servername'];
-
-      if ($env === 'prod' && isset($configs[$env]['cache']))
-      {
-        $configs[$env]["cache"] = $cacheService;
-      }
-      if ($env === 'prod' && isset($configs[$env]['opcodecache']))
-      {
-        $configs[$env]["opcodecache"] = $cacheService;
-      }
     }
+    
     $this->setConfigurations($configs);
-
-    $services = $this->getServices();
-
-    if (isset($services['Orm']["doctrine_prod"]["options"]["cache"]))
-    {
-      $services['Orm']["doctrine_prod"]["options"]["cache"]['query']['service']    = $cacheService;
-      $services['Orm']["doctrine_prod"]["options"]["cache"]['result']['service']   = $cacheService;
-      $services['Orm']["doctrine_prod"]["options"]["cache"]['metadata']['service'] = $cacheService;
-    }
-
-    $this->setServices($services);
 
     $this->setEnvironnement('prod');
 
