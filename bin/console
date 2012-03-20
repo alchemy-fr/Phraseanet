@@ -29,8 +29,6 @@ $result_code = 1;
 
 try
 {
-  \bootstrap::register_autoloads();
-
   $app = new Application("
   _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
