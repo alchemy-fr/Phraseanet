@@ -22,7 +22,7 @@ class patch_3602 implements patchInterface
    *
    * @var string
    */
-  private $release = '3.6.0a2';
+  private $release = '3.6.0a1';
   /**
    *
    * @var Array
@@ -40,7 +40,7 @@ class patch_3602 implements patchInterface
 
   public function require_all_upgrades()
   {
-    return true;
+    return false;
   }
 
   /**
