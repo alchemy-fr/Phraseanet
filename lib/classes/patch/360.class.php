@@ -22,7 +22,7 @@ class patch_360 implements patchInterface
    *
    * @var string
    */
-  private $release = '3.6.0.0.a1';
+  private $release = '3.6.0a1';
 
   /**
    *
