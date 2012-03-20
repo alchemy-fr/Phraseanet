@@ -470,7 +470,9 @@ class task_period_ftp extends task_appboxAbstract
         {
           $sbas_id = phrasea::sbasFromBas($base_id);
           $record = new record_adapter($sbas_id, $record_id);
-          $sdcaption = $record->get_xml();
+          
+          $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML);
+
           $remotefile = $file["filename"];
 
           if ($subdef == 'caption')

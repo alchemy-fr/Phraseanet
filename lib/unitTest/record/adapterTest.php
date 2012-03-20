@@ -246,19 +246,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertTrue((static::$record_1->get_caption() instanceof caption_record));
   }
 
-  public function testGet_xml()
-  {
-    $xml = self::$record_1->get_xml();
-    $sxe = simplexml_load_string($xml);
-    $this->assertInstanceOf('SimpleXMLElement', $sxe);
-
-    foreach (self::$record_1->get_caption()->get_fields() as $field)
-    {
-      $tagname = $field->get_name();
-      $this->assertEquals($field->get_serialized_values(), (string) $sxe->description->$tagname);
-    }
-  }
-
   public function testGet_original_name()
   {
     $this->assertTrue(static::$record_1->get_original_name() === self::$record_sf_1->getFilename());

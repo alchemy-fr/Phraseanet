@@ -1325,7 +1325,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
     if (self::$record_1 instanceof record_adapter)
     {
-      self::$record_1->delete();
+//      self::$record_1->delete();
       self::$record_1 = null;
     }
     if (self::$record_2 instanceof record_adapter)
