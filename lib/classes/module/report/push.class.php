@@ -112,7 +112,6 @@ class module_report_push extends module_report
   protected function buildResult($rs)
   {
     $i = 0;
-    $pref = parent::getPreff($this->sbas_id);
 
     foreach ($rs as $row)
     {

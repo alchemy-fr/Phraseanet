@@ -500,8 +500,10 @@ class module_report
   public function getOrder($k = false)
   {
     if ($k === false)
-
+    {
       return $this->tab_order;
+    }
+
     return $this->tab_order[$k];
   }
 
@@ -675,7 +677,7 @@ class module_report
       'telechargement' => _('report:: telechargement'),
       'record_id'      => _('report:: record id'),
       'final'          => _('report:: type d\'action'),
-      'xml'            => _('report:: sujet'),
+//      'xml'            => _('report:: sujet'),
       'file'           => _('report:: fichier'),
       'mime'           => _('report:: type'),
       'size'           => _('report:: taille'),
@@ -820,8 +822,10 @@ class module_report
   public function buildReport($tab = false, $groupby = false, $on = false)
   {
     if (sizeof($this->report) > 0)
-
+    {
       return $this->report;
+    }
+
     $conn = connection::getPDOConnection($this->sbas_id);
 
     $this->buildReq($groupby, $on);
@@ -863,75 +867,23 @@ class module_report
     }
   }
 
-  /**
-   * @desc return the text between the node we are looking for
-   * @param string $unXml the XML string
-   * @param string $champ the node
-   * @return string
-   */
-  public static function getChamp($unXml, $champ, $attribut = false)
-  {
-    $ret = "";
-    $sxe = simplexml_load_string($unXml);
-    if ($sxe)
-    {
-      if ($attribut)
-      {
-        foreach ($sxe->$champ->attributes() as $a => $b)
-        {
-          if ($a == $attribut)
-          {
-            $ret.= $b;
-          }
-        }
-      }
-      else
-      {
-        $z = $sxe->xpath('/description/' . $champ);
-
-        if (!$z)
-          $z = $sxe->xpath('/record/description/' . $champ);
-
-        if ($z && is_array($z))
-        {
-          $ret .= $z[0];
-        }
-      }
-    }
-    $ret = trim($ret);
-    if ($ret == "" || $ret == null)
-      $ret = "<i>" . _('report:: non-renseigne') . "</i>";
-
-    return $ret;
-  }
-
   public static function getPreff($sbasid)
   {
     $tab = array();
-    $tab["struct"] = "";
-    $tab['champs'] = array();
 
-    $databox       = databox::get_instance((int) $sbasid);
-    $tab['struct'] = $databox->get_structure();
+    $databox = databox::get_instance((int) $sbasid);
 
-    $sxe = $databox->get_sxml_structure();
-    if ($sxe)
+    foreach ($databox->get_meta_structure() as $databox_field)
     {
-      $z = $sxe->xpath('/record/description');
-      if ($z && is_array($z))
+      /* @var $databox_field \databox_field */
+
+      if ($databox_field->is_report())
       {
-        foreach ($z[0] as $ki => $vi)
-        {
-          foreach ($vi->attributes() as $a => $b)
-          {
-            if ($a == "report" && $b == 1)
-              $tab['champs'][] = $ki;
-          }
-        }
+        $tab[] = $databox_field->get_name();
       }
     }
 
-    return $tab['champs'];
+    return $tab;
   }
 
   public static function getHost($url)

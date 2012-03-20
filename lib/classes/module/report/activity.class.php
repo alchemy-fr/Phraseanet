@@ -29,22 +29,21 @@ class module_report_activity extends module_report
    * @var array
    */
   protected $cor_query = array(
-      'user' => 'log.user',
-      'site' => 'log.site',
-      'societe' => 'log.societe',
-      'pays' => 'log.pays',
-      'activite' => 'log.activite',
-      'fonction' => 'log.fonction',
-      'usrid' => 'log.usrid',
-      'coll_id' => 'record.coll_id',
-      'xml' => 'record.xml',
-      'ddate' => "DATE_FORMAT(log.date, '%Y-%m-%d')",
-      'id' => 'log_docs.id',
-      'log_id' => 'log_docs.log_id',
-      'record_id' => 'log_docs.record_id',
-      'final' => 'log_docs.final',
-      'comment' => 'log_docs.comment',
-      'size' => 'subdef.size'
+    'user'      => 'log.user',
+    'site'      => 'log.site',
+    'societe'   => 'log.societe',
+    'pays'      => 'log.pays',
+    'activite'  => 'log.activite',
+    'fonction'  => 'log.fonction',
+    'usrid'     => 'log.usrid',
+    'coll_id'   => 'record.coll_id',
+    'ddate'     => "DATE_FORMAT(log.date, '%Y-%m-%d')",
+    'id'        => 'log_docs.id',
+    'log_id'    => 'log_docs.log_id',
+    'record_id' => 'log_docs.record_id',
+    'final'     => 'log_docs.final',
+    'comment'   => 'log_docs.comment',
+    'size'      => 'subdef.size'
   );
 
   public function __construct($arg1, $arg2, $sbas_id, $collist)
@@ -101,17 +100,17 @@ class module_report_activity extends module_report
     $this->result = array();
     $this->title = _('report:: activite par heure');
 
-    $s = new module_report_sql($this);
+    $s      = new module_report_sql($this);
     $filter = $s->getFilters();
-    $conn = $s->getConnBas();
+    $conn   = $s->getConnBas();
 
     $params = array();
     $date_filter = $filter->getDateFilter();
-    $params = array_merge($params, $date_filter['params']);
+    $params      = array_merge($params, $date_filter['params']);
     $coll_filter = $filter->getCollectionFilter();
-    $params = array_merge($params, $coll_filter['params']);
+    $params      = array_merge($params, $coll_filter['params']);
     $site_filter = $filter->getGvSitFilter();
-    $params = array_merge($params, $site_filter['params']);
+    $params      = array_merge($params, $site_filter['params']);
 
     $sql = "
                 SELECT DATE_FORMAT( log.date, '%k' ) AS heures, SUM(1) AS nb
@@ -124,7 +123,7 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $res = $this->setDisplayForActivity($rs);
@@ -133,7 +132,7 @@ class module_report_activity extends module_report
 
     foreach ($rs as $row)
     {
-      $row['heures'] = (string) $row['heures'];
+      $row['heures']       = (string) $row['heures'];
       $res[$row['heures']] = round(($row['nb'] / 24), 2);
       if ($res[$row['heures']] < 1)
         $res[$row['heures']] = number_format($res[$row['heures']], 2);
@@ -151,7 +150,7 @@ class module_report_activity extends module_report
 
 
     $this->report['legend'] = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-        13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
+      13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 
     return $this->report;
   }
@@ -164,18 +163,18 @@ class module_report_activity extends module_report
   {
     $result = array();
 
-    $s = new module_report_sql($this);
+    $s      = new module_report_sql($this);
     $filter = $s->getFilters();
-    $conn = $s->getConnBas();
+    $conn   = $s->getConnBas();
 
 
     $params = array(':main_value' => $value);
-    $date_filter = $filter->getDateFilter();
-    $params = array_merge($params, $date_filter['params']);
-    $coll_filter = $filter->getCollectionFilter();
-    $params = array_merge($params, $coll_filter['params']);
-    $site_filter = $filter->getGvSitFilter();
-    $params = array_merge($params, $site_filter['params']);
+    $date_filter  = $filter->getDateFilter();
+    $params       = array_merge($params, $date_filter['params']);
+    $coll_filter  = $filter->getCollectionFilter();
+    $params       = array_merge($params, $coll_filter['params']);
+    $site_filter  = $filter->getGvSitFilter();
+    $params       = array_merge($params, $site_filter['params']);
 
     $sql = "
                 SELECT DATE_FORMAT(log_search.date,'%Y-%m-%d %H:%i:%S') as date ,
@@ -197,7 +196,7 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $this->setChamp($rs);
@@ -227,20 +226,20 @@ class module_report_activity extends module_report
     $this->report['value'] = array();
     $this->report['value2'] = array();
 
-    $s = new module_report_sql($this);
+    $s      = new module_report_sql($this);
     $filter = $s->getFilters();
-    $conn = $s->getConnBas();
+    $conn   = $s->getConnBas();
 
     $i = 0;
     ($no_answer) ? $this->title = _('report:: questions sans reponses') :
-                    $this->title = _('report:: questions les plus posees');
+        $this->title = _('report:: questions les plus posees');
 
 
     $params = array();
     $date_filter = $filter->getDateFilter();
-    $params = array_merge($params, $date_filter['params']);
+    $params      = array_merge($params, $date_filter['params']);
     $coll_filter = $filter->getCollectionFilter();
-    $params = array_merge($params, $coll_filter['params']);
+    $params      = array_merge($params, $coll_filter['params']);
 
     $sql = "
                 SELECT TRIM(log_search.search) as search,
@@ -261,7 +260,7 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $this->setChamp($rs);
@@ -297,25 +296,25 @@ class module_report_activity extends module_report
   public function getAllDownloadByUserBase($usr, $config = false)
   {
     $result = array();
-    $s = new module_report_sql($this);
+    $s      = new module_report_sql($this);
     $filter = $s->getFilters();
-    $conn = $s->getConnBas();
+    $conn   = $s->getConnBas();
 
+    $databox = \databox::get_instance($this->sbas_id);
 
 
     $params = array();
     $date_filter = $filter->getDateFilter();
-    $params = array_merge($params, $date_filter['params']);
+    $params      = array_merge($params, $date_filter['params']);
     $coll_filter = $filter->getCollectionFilter();
-    $params = array_merge($params, $coll_filter['params']);
+    $params      = array_merge($params, $coll_filter['params']);
     $site_filter = $filter->getGvSitFilter();
-    $params = array_merge($params, $site_filter['params']);
+    $params      = array_merge($params, $site_filter['params']);
     $user_filter = $filter->getUserIdFilter($usr);
-    $params = array_merge($params, $user_filter['params']);
+    $params      = array_merge($params, $user_filter['params']);
 
     $sql = "
-                SELECT record.xml as titre,
-                    log_docs.record_id,
+                SELECT log_docs.record_id,
                     log_docs.date, log_docs.final as objets
                 FROM (`log_docs` inner join log on log_docs.log_id = log.id
                     inner join record on log_docs.record_id = record.record_id)
@@ -338,25 +337,27 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $login = User_Adapter::getInstance($usr, appbox::get_instance(\bootstrap::getCore()))->get_display_name();
 
     $this->setChamp($rs);
     ($config) ? $this->setConfigColumn($config) :
-                    $this->initDefaultConfigColumn($this->champ);
+        $this->initDefaultConfigColumn($this->champ);
     $i = 0;
 
     foreach ($rs as $row)
     {
+      $record = $databox->get_record($row['record_id']);
+
       foreach ($this->champ as $key => $value)
       {
-        if ($value == 'titre')
-          $result[$i][$value] = parent::getChamp($row[$value], 'Titre');
-        else
-          $result[$i][$value] = $row[$value];
+        $result[$i][$value] = $row[$value];
       }
+
+      $result[$i]['titre'] = $record->get_title();
+
       $i++;
     }
     $this->title = sprintf(_('report:: Telechargement effectue par l\'utilisateur %s'), $login);
@@ -376,20 +377,20 @@ class module_report_activity extends module_report
 
     $registry = registry::get_instance();
 
-    $s = new module_report_sql($this);
+    $s      = new module_report_sql($this);
     $filter = $s->getFilters();
-    $conn = $s->getConnBas();
+    $conn   = $s->getConnBas();
 
     $params = array();
-    $date_filter = $filter->getDateFilter();
-    $params = array_merge($params, $date_filter['params']);
-    $coll_filter = $filter->getCollectionFilter();
-    $params = array_merge($params, $coll_filter['params']);
-    $site_filter = $filter->getGvSitFilter();
-    $params = array_merge($params, $site_filter['params']);
+    $date_filter   = $filter->getDateFilter();
+    $params        = array_merge($params, $date_filter['params']);
+    $coll_filter   = $filter->getCollectionFilter();
+    $params        = array_merge($params, $coll_filter['params']);
+    $site_filter   = $filter->getGvSitFilter();
+    $params        = array_merge($params, $site_filter['params']);
     $record_filter = $filter->getUserFilter();
     if ($record_filter)
-      $params = array_merge($params, $record_filter['params']);
+      $params        = array_merge($params, $record_filter['params']);
 
     $sql = "
             SELECT
@@ -413,14 +414,14 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $this->setChamp($rs);
     $this->setDisplay($tab);
     $save_date = "";
-    $total = array('tot_doc' => 0, 'tot_prev' => 0, 'tot_dl' => 0);
-    $i = -1;
+    $total     = array('tot_doc'  => 0, 'tot_prev' => 0, 'tot_dl'   => 0);
+    $i         = -1;
 
     $last_date = null;
 
@@ -431,10 +432,10 @@ class module_report_activity extends module_report
       {
         $i++;
         $this->result[$i] = array(
-            'ddate' => $date,
-            'document' => 0,
-            'preview' => 0,
-            'total' => 0
+          'ddate'    => $date,
+          'document' => 0,
+          'preview'  => 0,
+          'total'    => 0
         );
         $last_date = $date;
       }
@@ -486,17 +487,17 @@ class module_report_activity extends module_report
       $on = "user";
     }
 
-    $s = new module_report_sql($this);
+    $s      = new module_report_sql($this);
     $filter = $s->getFilters();
-    $conn = $s->getConnBas();
+    $conn   = $s->getConnBas();
 
     $params = array();
     $date_filter = $filter->getDateFilter();
-    $params = array_merge($params, $date_filter['params']);
+    $params      = array_merge($params, $date_filter['params']);
     $coll_filter = $filter->getCollectionFilter();
-    $params = array_merge($params, $coll_filter['params']);
+    $params      = array_merge($params, $coll_filter['params']);
     $site_filter = $filter->getGvSitFilter();
-    $params = array_merge($params, $site_filter['params']);
+    $params      = array_merge($params, $site_filter['params']);
 
 
     $this->req = "
@@ -521,10 +522,10 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($this->req);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    $i = 0;
+    $i               = 0;
     $total_connexion = 0;
     //set title
     $this->title = _('report:: Detail des connexions');
@@ -534,14 +535,14 @@ class module_report_activity extends module_report
     $this->default_display = array($on, 'connexion');
     //set configuration of column
     ($tab) ? $this->setConfigColumn($tab) :
-                    $this->initDefaultConfigColumn($this->default_display);
+        $this->initDefaultConfigColumn($this->default_display);
     //build result
     foreach ($rs as $row)
     {
       foreach ($this->champ as $key => $value)
       {
         $this->result[$i][$value] = empty($row[$value]) ?
-                "<i>" . _('report:: non-renseigne') . "</i>" : $row[$value];
+          "<i>" . _('report:: non-renseigne') . "</i>" : $row[$value];
 
         if ($value == 'connexion')
           $total_connexion += $row['connexion'];
@@ -580,22 +581,22 @@ class module_report_activity extends module_report
   {
     empty($on) ? $on = "user" : ""; //by default always report on user
 
-    $s = new module_report_sql($this);
+    $s      = new module_report_sql($this);
     $filter = $s->getFilters();
-    $conn = $s->getConnBas();
+    $conn   = $s->getConnBas();
 
     //set title
     $this->title = _('report:: Detail des telechargements');
 
     $params = array();
-    $date_filter = $filter->getDateFilter();
-    $params = array_merge($params, $date_filter['params']);
-    $coll_filter = $filter->getCollectionFilter();
-    $params = array_merge($params, $coll_filter['params']);
-    $site_filter = $filter->getGvSitFilter();
-    $params = array_merge($params, $site_filter['params']);
+    $date_filter   = $filter->getDateFilter();
+    $params        = array_merge($params, $date_filter['params']);
+    $coll_filter   = $filter->getCollectionFilter();
+    $params        = array_merge($params, $coll_filter['params']);
+    $site_filter   = $filter->getGvSitFilter();
+    $params        = array_merge($params, $site_filter['params']);
     $record_filter = $filter->getRecordFilter();
-    $params = array_merge($params, $record_filter['params']);
+    $params        = array_merge($params, $record_filter['params']);
 
     $sql = "
                 SELECT
@@ -618,16 +619,16 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $save_user = "";
-    $i = -1;
-    $total = array(
-        'nbdoc' => 0,
-        'poiddoc' => 0,
-        'nbprev' => 0,
-        'poidprev' => 0
+    $i         = -1;
+    $total     = array(
+      'nbdoc'    => 0,
+      'poiddoc'  => 0,
+      'nbprev'   => 0,
+      'poidprev' => 0
     );
 
     $this->setChamp($rs);
@@ -664,27 +665,27 @@ class module_report_activity extends module_report
 
       //doc info
       if ($row['final'] == 'document' &&
-              !is_null($user) && !is_null($row['usrid']))
+        !is_null($user) && !is_null($row['usrid']))
       {
         $this->result[$i]['nbdoc'] = (!is_null($row['nb']) ? $row['nb'] : 0);
         $this->result[$i]['poiddoc'] = (!is_null($row['poid']) ? $row['poid'] : 0);
         $this->result[$i]['user'] = empty($row[$on]) ?
-                "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
+          "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
         $total['nbdoc'] += $this->result[$i]['nbdoc'];
         $total['poiddoc'] += (!is_null($row['poid']) ? $row['poid'] : 0);
         $this->result[$i]['usrid'] = $row['usrid'];
       }
       //preview info
       if (($row['final'] == 'preview' || $row['final'] == 'thumbnail') &&
-              !is_null($user) &&
-              !is_null($row['usrid']))
+        !is_null($user) &&
+        !is_null($row['usrid']))
       {
 
         $this->result[$i]['nbprev'] += (!is_null($row['nb']) ? $row['nb'] : 0);
         $this->result[$i]['poidprev'] += (!is_null($row['poid']) ? $row['poid'] : 0);
 
         $this->result[$i]['user'] = empty($row[$on]) ?
-                "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
+          "<i>" . _('report:: non-renseigne') . "</i>" : $row[$on];
         $total['nbprev'] += (!is_null($row['nb']) ? $row['nb'] : 0);
         $total['poidprev'] += (!is_null($row['poid']) ? $row['poid'] : 0);
         $this->result[$i]['usrid'] = $row['usrid'];
@@ -702,10 +703,10 @@ class module_report_activity extends module_report
       $this->result[$nb_row]['user'] = '<b>TOTAL</b>';
       $this->result[$nb_row]['nbdoc'] = '<b>' . $total['nbdoc'] . '</b>';
       $this->result[$nb_row]['poiddoc'] =
-              '<b>' . p4string::format_octets($total['poiddoc']) . '</b>';
+        '<b>' . p4string::format_octets($total['poiddoc']) . '</b>';
       $this->result[$nb_row]['nbprev'] = '<b>' . $total['nbprev'] . '</b>';
       $this->result[$nb_row]['poidprev'] =
-              '<b>' . p4string::format_octets($total['poidprev']) . '</b>';
+        '<b>' . p4string::format_octets($total['poidprev']) . '</b>';
     }
     $this->total = sizeof($this->result);
     $this->calculatePages($rs);
@@ -717,21 +718,21 @@ class module_report_activity extends module_report
 
   public function getPush($tab = false)
   {
-    $s = new module_report_sql($this);
+    $s      = new module_report_sql($this);
     $filter = $s->getFilters();
-    $conn = $s->getConnBas();
-    $push = array();
+    $conn   = $s->getConnBas();
+    $push   = array();
 
 
     $params = array();
-    $date_filter = $filter->getDateFilter();
-    $params = array_merge($params, $date_filter['params']);
-    $coll_filter = $filter->getCollectionFilter();
-    $params = array_merge($params, $coll_filter['params']);
-    $site_filter = $filter->getGvSitFilter();
-    $params = array_merge($params, $site_filter['params']);
+    $date_filter   = $filter->getDateFilter();
+    $params        = array_merge($params, $date_filter['params']);
+    $coll_filter   = $filter->getCollectionFilter();
+    $params        = array_merge($params, $coll_filter['params']);
+    $site_filter   = $filter->getGvSitFilter();
+    $params        = array_merge($params, $site_filter['params']);
     $record_filter = $filter->getRecordFilter();
-    $params = array_merge($params, $record_filter['params']);
+    $params        = array_merge($params, $record_filter['params']);
 
 
     $sql = "
@@ -749,7 +750,7 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $this->setChamp($rs);
@@ -802,9 +803,9 @@ class module_report_activity extends module_report
 
   public static function topTenUser($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn     = connection::getPDOConnection($sbas_id);
     $registry = registry::get_instance();
-    $result = array();
+    $result   = array();
     $result['top_ten_doc'] = array();
     $result['top_ten_prev'] = array();
     $result['top_ten_poiddoc'] = array();
@@ -813,10 +814,10 @@ class module_report_activity extends module_report
     $params = array(':site_id' => $registry->get('GV_sit'));
 
     $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
-    $params = array_merge($params, $datefilter['params']);
+    $params     = array_merge($params, $datefilter['params']);
 
     $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
-    $params = array_merge($params, $collfilter['params']);
+    $params     = array_merge($params, $collfilter['params']);
 
     $sql = "
                 SELECT log.usrid, user, final, sum(1) AS nb, sum(size) AS poid
@@ -833,7 +834,7 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $save_id = "";
@@ -848,38 +849,38 @@ class module_report_activity extends module_report
       $id = $row['usrid'];
 
       if (!is_null($row['usrid'])
-              && !is_null($row['user'])
-              && !is_null($row['final']) && !is_null($row['nb'])
-              && !is_null($row['poid']))
+        && !is_null($row['user'])
+        && !is_null($row['final']) && !is_null($row['nb'])
+        && !is_null($row['poid']))
       {
         if ($row['final'] == 'document')
         {
           $result[$kttd][$id]['lib'] = $row['user'];
-          $result[$kttd][$id]['id'] = $id;
-          $result[$kttd][$id]['nb'] = !is_null($row['nb']) ?
-                  (int) $row['nb'] : 0;
-          $result[$kttp][$id]['nb'] = !is_null($row['poid']) ?
-                  (int) $row['poid'] : 0;
+          $result[$kttd][$id]['id']  = $id;
+          $result[$kttd][$id]['nb']  = !is_null($row['nb']) ?
+            (int) $row['nb'] : 0;
+          $result[$kttp][$id]['nb']  = !is_null($row['poid']) ?
+            (int) $row['poid'] : 0;
           $result[$kttp][$id]['lib'] = $row['user'];
-          $result[$kttp][$id]['id'] = $id;
+          $result[$kttp][$id]['id']  = $id;
           if (!isset($result[$kttd][$id]['nb']))
-            $result[$kttd][$id]['nb'] = 0;
+            $result[$kttd][$id]['nb']  = 0;
         }
         if ($row['final'] == 'preview')
         {
           $result[$kttpr][$id]['lib'] = $row['user'];
-          $result[$kttpr][$id]['id'] = $id;
+          $result[$kttpr][$id]['id']  = $id;
           if (!isset($result[$kttpr][$id]['nb']))
-            $result[$kttpr][$id]['nb'] = 0;
-          $result[$kttpr][$id]['nb'] = !is_null($row['nb']) ?
-                  (int) $row['nb'] : 0;
-          $result[$kttpp][$id]['nb'] = !is_null($row['poid']) ?
-                  (int) $row['poid'] : 0;
+            $result[$kttpr][$id]['nb']  = 0;
+          $result[$kttpr][$id]['nb']  = !is_null($row['nb']) ?
+            (int) $row['nb'] : 0;
+          $result[$kttpp][$id]['nb']  = !is_null($row['poid']) ?
+            (int) $row['poid'] : 0;
           $result[$kttpp][$id]['lib'] = $row['user'];
-          $result[$kttpp][$id]['id'] = $id;
+          $result[$kttpp][$id]['id']  = $id;
         }
       }
-      $save_id = $id;
+      $save_id                    = $id;
     }
 
     return $result;
@@ -887,16 +888,16 @@ class module_report_activity extends module_report
 
   public static function activity($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn     = connection::getPDOConnection($sbas_id);
     $registry = registry::get_instance();
-    $res = array();
+    $res      = array();
     $datefilter =
-            module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+      module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+      module_report_sqlfilter::constructCollectionFilter($list_coll_id);
 
     $params = array(':site_id' => $registry->get('GV_sit'));
-    $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+    $params    = array_merge($params, $datefilter['params'], $collfilter['params']);
 
     $sql = "
                 SELECT log_date.id, HOUR(log_date.date) as heures
@@ -905,14 +906,14 @@ class module_report_activity extends module_report
                 AND (" . $collfilter['sql'] . ")
                 AND log_date.site = :site_id";
 
-    $stmt = $conn->prepare($sql);
+    $stmt  = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs    = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $total = $stmt->rowCount();
     $stmt->closeCursor();
 
 
-    for ($i = 0; $i < 24; $i++)
+    for ($i       = 0; $i < 24; $i++)
       $res[$i] = 0;
 
     foreach ($rs as $row)
@@ -929,17 +930,17 @@ class module_report_activity extends module_report
 
   public static function activityDay($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn     = connection::getPDOConnection($sbas_id);
     $registry = registry::get_instance();
-    $result = array();
+    $result   = array();
     $res = array();
     $datefilter =
-            module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+      module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+      module_report_sqlfilter::constructCollectionFilter($list_coll_id);
 
     $params = array(':site_id' => $registry->get('GV_sit'));
-    $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+    $params    = array_merge($params, $datefilter['params'], $collfilter['params']);
 
     $sql = "
             SELECT DISTINCT (
@@ -954,12 +955,12 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
     {
-      $date = new DateTime($row['ddate']);
+      $date                             = new DateTime($row['ddate']);
       $result[$date->format(DATE_ATOM)] = $row['activity'];
     }
 
@@ -973,16 +974,16 @@ class module_report_activity extends module_report
 
   public static function activityQuestion($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn     = connection::getPDOConnection($sbas_id);
     $registry = registry::get_instance();
-    $result = array();
+    $result   = array();
     $datefilter =
-            module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+      module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+      module_report_sqlfilter::constructCollectionFilter($list_coll_id);
 
     $params = array(':site_id' => $registry->get('GV_sit'));
-    $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+    $params    = array_merge($params, $datefilter['params'], $collfilter['params']);
 
     $sql = "
                 SELECT log_date.usrid, log_date.user, sum(1) AS nb
@@ -997,14 +998,14 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
     {
       $result[$row['usrid']]['lib'] = $row['user'];
-      $result[$row['usrid']]['nb'] = (int) $row['nb'];
-      $result[$row['usrid']]['id'] = $row['usrid'];
+      $result[$row['usrid']]['nb']  = (int) $row['nb'];
+      $result[$row['usrid']]['id']  = $row['usrid'];
     }
 
     return $result;
@@ -1012,16 +1013,16 @@ class module_report_activity extends module_report
 
   public static function activiteTopQuestion($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn     = connection::getPDOConnection($sbas_id);
     $registry = registry::get_instance();
-    $result = array();
+    $result   = array();
     $datefilter =
-            module_report_sqlfilter::constructDateFilter($dmin, $dmax);
+      module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter =
-            module_report_sqlfilter::constructCollectionFilter($list_coll_id);
+      module_report_sqlfilter::constructCollectionFilter($list_coll_id);
 
     $params = array(':site_id' => $registry->get('GV_sit'));
-    $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+    $params    = array_merge($params, $datefilter['params'], $collfilter['params']);
 
     $sql = "
             SELECT
@@ -1040,17 +1041,17 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     $conv = array(" " => "");
     foreach ($rs as $row)
     {
-      $question = $row['question'];
-      $question = mb_strtolower(strtr($question, $conv));
+      $question                 = $row['question'];
+      $question                 = mb_strtolower(strtr($question, $conv));
       $result[$question]['lib'] = $row['question'];
-      $result[$question]['nb'] = (int) $row['nb'];
-      $result[$question]['id'] = "false";
+      $result[$question]['nb']  = (int) $row['nb'];
+      $result[$question]['id']  = "false";
     }
 
     return $result;
@@ -1058,7 +1059,7 @@ class module_report_activity extends module_report
 
   public static function activiteTopTenSiteView($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn   = connection::getPDOConnection($sbas_id);
     $result = array();
     $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
@@ -1078,20 +1079,20 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
     {
       ($row['referrer'] != 'NO REFERRER') ?
-                      $host = parent::getHost($row['referrer']) :
-                      $host = 'NO REFERRER';
+          $host                 = parent::getHost($row['referrer']) :
+          $host                 = 'NO REFERRER';
       if (!isset($result[$host]['nb']))
-        $result[$host]['nb'] = 0;
+        $result[$host]['nb']  = 0;
       if (!isset($result[$host]['lib']))
         $result[$host]['lib'] = $host;
       $result[$host]['nb']+= ( (int) $row['nb_view']);
-      $result[$host]['id'] = "false";
+      $result[$host]['id']  = "false";
     }
 
     return $result;
@@ -1099,7 +1100,7 @@ class module_report_activity extends module_report
 
   public static function activiteAddedDocument($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn   = connection::getPDOConnection($sbas_id);
     $result = array();
     $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
@@ -1121,11 +1122,11 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
     foreach ($rs as $row)
     {
-      $date = new DateTime($row['ddate']);
+      $date                             = new DateTime($row['ddate']);
       $result[$date->format(DATE_ATOM)] = $row['activity'];
     }
 
@@ -1134,7 +1135,7 @@ class module_report_activity extends module_report
 
   public static function activiteEditedDocument($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn   = connection::getPDOConnection($sbas_id);
     $result = array();
     $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
@@ -1156,12 +1157,12 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
     {
-      $date = phraseadate::getPrettyString(new DateTime($row['ddate']));
+      $date          = phraseadate::getPrettyString(new DateTime($row['ddate']));
       $result[$date] = $row['activity'];
     }
 
@@ -1170,7 +1171,7 @@ class module_report_activity extends module_report
 
   public static function activiteAddedTopTenUser($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn   = connection::getPDOConnection($sbas_id);
     $result = array();
     $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
@@ -1189,14 +1190,14 @@ class module_report_activity extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
     {
       $result[$row['usrid']]['lib'] = $row['user'];
-      $result[$row['usrid']]['nb'] = $row['nb'];
-      $result[$row['usrid']]['id'] = $row['usrid'];
+      $result[$row['usrid']]['nb']  = $row['nb'];
+      $result[$row['usrid']]['id']  = $row['usrid'];
     }
 
     return $result;

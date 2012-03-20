@@ -35,7 +35,6 @@ class module_report_filter
       'coll_id' => 'report:: collections',
       'comment' => 'report:: commentaire',
       'search' => 'report:: question',
-      'xml' => 'report:: description'
   );
 
   public function __construct($current_filter, $correspondance)
