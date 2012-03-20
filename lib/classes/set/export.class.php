@@ -451,11 +451,9 @@ class set_export extends set_abstract
         'subdefs'       => array()
       );
 
-      $sbas_id = phrasea::sbasFromBas($download_element->get_base_id());
-
       $rename_done = false;
 
-      $desc = $download_element->get_xml();
+      $desc = $download_element->get_caption()->serialize(caption_record::SERIALIZE_XML);
 
       $files[$id]['original_name'] =
         $files[$id]['export_name']   =
@@ -863,7 +861,7 @@ class set_export extends set_abstract
 
     $sbas_id = phrasea::sbasFromBas($bas);
     $record  = new record_adapter($sbas_id, $rec);
-    $desc    = $record->get_xml();
+    $desc    = $record->get_caption()->serialize(caption_record::SERIALIZE_XML);
     $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
@@ -986,9 +984,9 @@ class set_export extends set_abstract
       {
         $file_xaccel = str_replace(
           array(
-            $registry->get('GV_X_Accel_Redirect'),
-            $registry->get('GV_RootPath') . 'tmp/download/',
-            $registry->get('GV_RootPath') . 'tmp/lazaret/'
+          $registry->get('GV_X_Accel_Redirect'),
+          $registry->get('GV_RootPath') . 'tmp/download/',
+          $registry->get('GV_RootPath') . 'tmp/lazaret/'
           )
           , array(
           '/' . $registry->get('GV_X_Accel_Redirect_mount_point') . '/',
@@ -1111,7 +1109,7 @@ class set_export extends set_abstract
           $log["rid"]                              = $record_object->get_record_id();
           $log["subdef"]                           = $o;
           $log["poids"]                            = $obj["size"];
-          $log["shortXml"]                         = $record_object->get_xml();
+          $log["shortXml"]                         = $record_object->get_caption()->serialize(caption_record::SERIALIZE_XML);
           $tmplog[$record_object->get_base_id()][] = $log;
           if (!$anonymous && $o == 'document')
             $user->ACL()->remove_remaining($record_object->get_base_id());
