@@ -687,10 +687,7 @@ class set_export extends set_abstract
 
         system_file::mkdir($caption_dir);
 
-        $desc = self::get_caption(
-            $download_element->get_base_id()
-            , $download_element->get_record_id()
-        );
+        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML);
 
         $file = $files[$id]["export_name"]
           . $files[$id]["subdefs"]['caption']["ajout"] . '.'
@@ -714,14 +711,7 @@ class set_export extends set_abstract
           . $session->get_ses_id() . '/';
         system_file::mkdir($caption_dir);
 
-
-
-        $desc = self::get_caption(
-            $download_element->get_base_id()
-            , $download_element->get_record_id()
-            , true
-            , 'yaml'
-        );
+        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML);
 
         $file = $files[$id]["export_name"]
           . $files[$id]["subdefs"]['caption-yaml']["ajout"] . '.'
@@ -835,121 +825,6 @@ class set_export extends set_abstract
     $system_file->chmod();
 
     return $zipFile;
-  }
-
-  /**
-   *
-   * @param Int $bas
-   * @param Int $rec
-   * @param boolean $check_rights
-   * @return string
-   */
-  public static function get_caption($bas, $rec, $check_rights = true, $format = 'xml')
-  {
-    $dom = new DOMDocument();
-    $dom->formatOutput = true;
-    $dom->xmlStandalone = true;
-    $dom->encoding = 'UTF-8';
-
-    $dom_record = $dom->createElement('record');
-    $dom_desc   = $dom->createElement('description');
-
-    $dom_record->appendChild($dom_desc);
-    $dom->appendChild($dom_record);
-
-    $restrict = array();
-
-    $sbas_id = phrasea::sbasFromBas($bas);
-    $record  = new record_adapter($sbas_id, $rec);
-    $desc    = $record->get_caption()->serialize(caption_record::SERIALIZE_XML);
-    $appbox  = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
-
-    $databox = databox::get_instance($sbas_id);
-    $struct  = $databox->get_structure();
-
-    $rights = true;
-
-    if ($check_rights && $session->is_authenticated())
-    {
-      $user   = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-      $rights = $user->ACL()->has_right_on_base($bas, 'canmodifrecord');
-
-      if ($rights == false)
-      {
-        if ($sxe = simplexml_load_string($struct))
-        {
-          $z = $sxe->xpath('/record/description');
-          if ($z && is_array($z))
-          {
-            foreach ($z[0] as $ki => $vi)
-            {
-              if (isset($vi["export"])
-                && ($vi["export"] == "0" || $vi["export"] == "off"))
-                $restrict[$ki] = true;
-            }
-          }
-        }
-      }
-    }
-
-    $buffer = array();
-
-    foreach ($record->get_caption()->get_fields() as $field)
-    {
-      if (($rights || !isset($restrict[$field->get_name()])))
-      {
-        switch ($format)
-        {
-          case 'yaml':
-          case 'yml':
-
-            $vi = $field->get_values();
-
-            if ($field->is_multi())
-            {
-              $buffer[$field->get_name()] = array();
-              foreach ($vi as $value)
-              {
-                $val                          = $value->getValue();
-                $buffer[$field->get_name()][] = ctype_digit($val) ? (int) $val : $val;
-              }
-            }
-            else
-            {
-              $value                      = array_pop($vi);
-              $val                        = $value->getValue();
-              $buffer[$field->get_name()] = ctype_digit($val) ? (int) $val : $val;
-            }
-            break;
-          case 'xml':
-          default:
-            $dom_el                     = $dom->createElement($field->get_name());
-            $dom_el->appendChild($dom->createTextNode($field->get_serialized_values()));
-            $dom_desc->appendChild($dom_el);
-            break;
-        }
-      }
-    }
-
-    $buffer = array('record' => array('description' => $buffer));
-
-    $dumper = new Symfony\Component\Yaml\Dumper();
-    $buffer = $dumper->dump($buffer, 3);
-
-    switch ($format)
-    {
-      case 'xml':
-      default:
-        $ret = $dom->saveXML();
-        break;
-      case 'yaml':
-      case 'yml':
-        $ret = $buffer;
-        break;
-    }
-
-    return $ret;
   }
 
   /**

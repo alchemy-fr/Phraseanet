@@ -470,14 +470,14 @@ class task_period_ftp extends task_appboxAbstract
         {
           $sbas_id = phrasea::sbasFromBas($base_id);
           $record = new record_adapter($sbas_id, $record_id);
-          
+
           $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML);
 
           $remotefile = $file["filename"];
 
           if ($subdef == 'caption')
           {
-            $desc = set_export::get_caption($base_id, $record_id, false);
+            $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML);
 
             $localfile = $registry->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
             if (file_put_contents($localfile, $desc) === false)
@@ -487,7 +487,7 @@ class task_period_ftp extends task_appboxAbstract
           }
           elseif ($subdef == 'caption-yaml')
           {
-            $desc = set_export::get_caption($base_id, $record_id, false, 'yaml');
+            $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML);
 
             $localfile = $registry->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
             if (file_put_contents($localfile, $desc) === false)
