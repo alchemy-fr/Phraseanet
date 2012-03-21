@@ -41,7 +41,6 @@ try
 
   $ormService = \Alchemy\Phrasea\Core\Service\Builder::create(
       $Core
-      , $serviceName
       , $confService
   );
 
