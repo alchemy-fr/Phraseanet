@@ -44,3 +44,5 @@ Entities\Basket:
       targetEntity: BasketElement
       mappedBy: basket
       cascade: ["ALL"]
+      orderBy:
+        ord: ASC

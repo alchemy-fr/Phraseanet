@@ -45,11 +45,11 @@ class BasketRepository extends EntityRepository
 
     if ($sort == 'date')
     {
-      $dql .= ' ORDER BY b.created DESC, e.ord ASC';
+      $dql .= ' ORDER BY b.created DESC';
     }
     elseif ($sort == 'name')
     {
-      $dql .= ' ORDER BY b.name ASC, e.ord ASC';
+      $dql .= ' ORDER BY b.name ASC';
     }
 
     $query = $this->_em->createQuery($dql);
@@ -78,8 +78,7 @@ class BasketRepository extends EntityRepository
                   AND p.usr_id = :usr_id_participant
                   AND p.is_aware = false)
               )
-            AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())
-            ORDER BY e.ord ASC';
+            AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())';
 
     $params = array(
       'usr_id_owner' => $user->get_id(),
@@ -113,11 +112,11 @@ class BasketRepository extends EntityRepository
 
     if ($sort == 'date')
     {
-      $dql .= ' ORDER BY b.created DESC, e.ord ASC';
+      $dql .= ' ORDER BY b.created DESC';
     }
     elseif ($sort == 'name')
     {
-      $dql .= ' ORDER BY b.name ASC, e.ord ASC';
+      $dql .= ' ORDER BY b.name ASC';
     }
 
     $query = $this->_em->createQuery($dql);
@@ -137,11 +136,10 @@ class BasketRepository extends EntityRepository
    */
   public function findUserBasket($basket_id, \User_Adapter $user, $requireOwner)
   {
-    $dql = 'SELECT b, e
+    $dql = 'SELECT b
             FROM Entities\Basket b
             LEFT JOIN b.elements e
-            WHERE b.id = :basket_id
-            ORDER BY e.ord ASC';
+            WHERE b.id = :basket_id';
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters(array('basket_id' => $basket_id));
@@ -182,12 +180,11 @@ class BasketRepository extends EntityRepository
   public function findContainingRecordForUser(\record_adapter $record, \User_Adapter $user)
   {
 
-    $dql = 'SELECT b, e
+    $dql = 'SELECT b
             FROM Entities\Basket b
             JOIN b.elements e
             WHERE e.record_id = :record_id AND e.sbas_id = e.sbas_id
-              AND b.usr_id = :usr_id
-            ORDER BY e.ord ASC';
+              AND b.usr_id = :usr_id';
 
     $params = array(
       'record_id' => $record->get_record_id(),
@@ -207,7 +204,7 @@ class BasketRepository extends EntityRepository
     switch ($type)
     {
       case self::RECEIVED:
-        $dql    = 'SELECT b, e
+        $dql    = 'SELECT b
                 FROM Entities\Basket b
                 JOIN b.elements e
                 WHERE b.usr_id = :usr_id AND b.pusher_id IS NOT NULL';
@@ -216,7 +213,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::VALIDATION_DONE:
-        $dql     = 'SELECT b, e
+        $dql     = 'SELECT b
                 FROM Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation s
@@ -228,7 +225,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::VALIDATION_SENT:
-        $dql    = 'SELECT b, e
+        $dql    = 'SELECT b
                 FROM Entities\Basket b
                 JOIN b.elements e
                 JOIN b.validation v
@@ -238,7 +235,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       default:
-        $dql     = 'SELECT b, e
+        $dql     = 'SELECT b
                 FROM Entities\Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
@@ -250,7 +247,7 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::MYBASKETS:
-        $dql     = 'SELECT b, e
+        $dql     = 'SELECT b
                 FROM Entities\Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
@@ -278,7 +275,7 @@ class BasketRepository extends EntityRepository
       $params['description'] = '%' . $query . '%';
     }
 
-    $dql .= ' ORDER BY b.id DESC, e.ord ASC';
+    $dql .= ' ORDER BY b.id DESC';
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
@@ -300,7 +297,7 @@ class BasketRepository extends EntityRepository
    */
   public function findActiveValidationAndBasketByUser(\User_Adapter $user, $sort = null)
   {
-    $dql = 'SELECT b, e
+    $dql = 'SELECT b
             FROM Entities\Basket b
             LEFT JOIN b.elements e
             LEFT JOIN b.validation s
@@ -312,11 +309,11 @@ class BasketRepository extends EntityRepository
 
     if ($sort == 'date')
     {
-      $dql .= ' ORDER BY b.created DESC, e.ord ASC';
+      $dql .= ' ORDER BY b.created DESC';
     }
     elseif ($sort == 'name')
     {
-      $dql .= ' ORDER BY b.name ASC, e.ord ASC';
+      $dql .= ' ORDER BY b.name ASC';
     }
 
     $query = $this->_em->createQuery($dql);

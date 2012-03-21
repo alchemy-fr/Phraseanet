@@ -138,6 +138,12 @@ class EntitiesBasketProxy extends \Entities\Basket implements \Doctrine\ORM\Prox
         return parent::getElements();
     }
 
+    public function getElementsByOrder($ordre)
+    {
+        $this->__load();
+        return parent::getElementsByOrder($ordre);
+    }
+
     public function setPusher(\User_Adapter $user)
     {
         $this->__load();
