@@ -6484,6 +6484,14 @@
 
             <comment></comment>
           </field>
+          <field>
+            <name>business</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
