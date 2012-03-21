@@ -38,6 +38,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
   protected $dces_elements = array();
   protected $databox;
 
+  const SERIALIZE_XML  = 'xml';
+  const SERIALIZE_YAML = 'yaml';
+
   /**
    *
    * @param record_Interface $record
@@ -52,9 +55,6 @@ class caption_record implements caption_interface, cache_cacheableInterface
 
     return $this;
   }
-
-  const SERIALIZE_XML  = 'xml';
-  const SERIALIZE_YAML = 'yaml';
 
   public function serialize($format)
   {
@@ -171,21 +171,14 @@ class caption_record implements caption_interface, cache_cacheableInterface
     $rec_fields = array();
     foreach ($fields as $row)
     {
-      try
-      {
-        $databox_meta_struct = databox_field::get_instance($this->databox, $row['structure_id']);
-        $metadata            = new caption_field($databox_meta_struct, $this->record);
+      $databox_meta_struct = databox_field::get_instance($this->databox, $row['structure_id']);
+      $metadata            = new caption_field($databox_meta_struct, $this->record);
 
-        $rec_fields[$databox_meta_struct->get_id()] = $metadata;
-        $dces_element                               = $metadata->get_databox_field()->get_dces_element();
-        if ($dces_element instanceof databox_Field_DCESAbstract)
-        {
-          $this->dces_elements[$dces_element->get_label()] = $databox_meta_struct->get_id();
-        }
-      }
-      catch (Exception $e)
+      $rec_fields[$databox_meta_struct->get_id()] = $metadata;
+      $dces_element                               = $metadata->get_databox_field()->get_dces_element();
+      if ($dces_element instanceof databox_Field_DCESAbstract)
       {
-
+        $this->dces_elements[$dces_element->get_label()] = $databox_meta_struct->get_id();
       }
     }
     $this->fields = $rec_fields;
@@ -198,7 +191,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
    * @param array $grep_fields
    * @return array
    */
-  public function get_fields(Array $grep_fields = null)
+  public function get_fields(Array $grep_fields = null, $IncludeBusiness = false)
   {
     $fields = array();
 
