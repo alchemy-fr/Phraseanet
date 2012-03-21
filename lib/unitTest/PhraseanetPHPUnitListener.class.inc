@@ -1,7 +1,9 @@
 <?php
 
-class SimpleTestListener implements PHPUnit_Framework_TestListener
+class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
 {
+
+  private static $skipped = array();
 
   public function addError(PHPUnit_Framework_Test $test, Exception $e, $time)
   {
@@ -20,6 +22,21 @@ class SimpleTestListener implements PHPUnit_Framework_TestListener
 
   public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
   {
+    echo "feed... ++ " . count(static::$skipped) . "\n";
+    static::$skipped[] = get_class($test) . ':' . $test->getName() . ' - ' . $e->getMessage();
+
+    return;
+  }
+
+  public function getSkipped()
+  {
+    return static::$skipped;
+  }
+
+  public function resetSkipped()
+  {
+    static::$skipped = array();
+
     return;
   }
 
