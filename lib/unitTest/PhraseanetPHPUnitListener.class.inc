@@ -22,7 +22,6 @@ class PhraseanetPHPUnitListener implements PHPUnit_Framework_TestListener
 
   public function addSkippedTest(PHPUnit_Framework_Test $test, Exception $e, $time)
   {
-    echo "feed... ++ " . count(static::$skipped) . "\n";
     static::$skipped[] = get_class($test) . ':' . $test->getName() . ' - ' . $e->getMessage();
 
     return;
