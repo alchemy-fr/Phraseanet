@@ -353,7 +353,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $metadatas[] = array(
           'meta_struct_id' => $meta_el->get_id()
           , 'meta_id'        => $meta_id
-          , 'value'          => 'un jeu de test'
+          , 'value'          => 'un premier jeu de test'
+        );
+
+        $metadatas[] = array(
+          'meta_struct_id' => $meta_el->get_id()
+          , 'meta_id'        => $meta_id
+          , 'value'          => 'un second jeu de test'
         );
       }
     }
@@ -396,7 +402,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals($multi_imploded, $field->get_serialized_values());
       }
       else
-        $this->assertEquals('un jeu de test', $field->get_serialized_values());
+        $this->assertEquals('un second jeu de test', $field->get_serialized_values());
     }
   }
 
