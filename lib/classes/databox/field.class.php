@@ -247,9 +247,9 @@ class databox_field implements cache_cacheableInterface
 
   /**
    *
-   * @param databox $databox
+   * @param \databox $databox
    * @param int $id
-   * @return databox_field
+   * @return \databox_field
    */
   public static function get_instance(databox &$databox, $id)
   {
