@@ -27,7 +27,7 @@ class ServiceArrayCacheTest extends PhraseanetPHPUnitAbstract
     );
 
     $service = $cache->getDriver();
-    $this->assertTrue($service instanceof \Doctrine\Common\Cache\AbstractCache);
+    $this->assertTrue($service instanceof \Doctrine\Common\Cache\CacheProvider);
   }
 
   public function testServiceException()
