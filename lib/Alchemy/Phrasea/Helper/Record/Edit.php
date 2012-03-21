@@ -253,7 +253,7 @@ class Edit extends RecordHelper
 
       $_lst[$indice]['originalname'] = $record->get_original_name();
 
-      foreach ($record->get_caption()->get_fields() as $field)
+      foreach ($record->get_caption()->get_fields(null, true) as $field)
       {
         $meta_struct_id = $field->get_meta_struct_id();
         if (!isset($this->javascript_fields[$meta_struct_id]))
@@ -538,7 +538,7 @@ class Edit extends RecordHelper
        */
       if ($write_edit_el instanceof \databox_field)
       {
-        $fields = $record->get_caption()->get_fields(array($write_edit_el->get_name()));
+        $fields = $record->get_caption()->get_fields(array($write_edit_el->get_name()), true);
         $field = array_pop($fields);
 
         $meta_id = null;
