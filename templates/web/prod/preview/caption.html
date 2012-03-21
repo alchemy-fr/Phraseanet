@@ -3,7 +3,7 @@
   {% if user.ACL().has_right_on_base(record.get_base_id, 'canmodifrecord') %}
     <div class="edit_button" style="text-align:right">
       <a href="#" onclick="editThis('IMGT','{{record.get_serialize_key()}}');">
-        <img style="vertical-align:middle" src="/skins/prod/000000/images/ppen_history.gif" /> 
+        <img style="vertical-align:middle" src="/skins/prod/000000/images/ppen_history.gif" />
         {% trans 'action : editer' %}
       </a>
     </div>
@@ -11,10 +11,11 @@
   <div style="text-align:center;">
     {{record.get_status_icons()|raw}}
   </div>
+  {% set business = user.ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
   {% if record.is_from_reg()  %}
-    {{caption.format_caption(record)}}
+    {{caption.format_caption(record, '', null, business)}}
   {% else %}
-    {{caption.format_caption(record, highlight, searchEngine)}}
+    {{caption.format_caption(record, highlight, searchEngine, business)}}
   {% endif %}
   <hr style="margin:10px 0;"/>
   {% include 'common/technical_datas.twig' %}

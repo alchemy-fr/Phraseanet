@@ -198,7 +198,14 @@ class caption_record implements caption_interface, cache_cacheableInterface
     foreach ($this->retrieve_fields() as $meta_struct_id => $field)
     {
       if ($grep_fields && !in_array($field->get_name(), $grep_fields))
+      {
         continue;
+      }
+
+      if($field->get_databox_field()->isBusiness() === true && !$IncludeBusiness)
+      {
+        continue;
+      }
 
       $fields[] = $field;
     }
@@ -214,7 +221,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
    */
   public function get_field($fieldname)
   {
-    foreach ($this->retrieve_fields() as $meta_struct_id => $field)
+    foreach ($this->get_fields() as $meta_struct_id => $field)
     {
       if ($field->get_name() == $fieldname)
         return $field;
@@ -230,7 +237,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
    */
   public function get_dc_field($label)
   {
-    $fields = $this->retrieve_fields();
+    $fields = $this->get_fields();
     if (isset($this->dces_elements[$label]))
     {
       return $fields[$this->dces_elements[$label]];
@@ -246,9 +253,9 @@ class caption_record implements caption_interface, cache_cacheableInterface
    * @param searchEngine_adapter $searchEngine
    * @return array
    */
-  public function get_highlight_fields($highlight = '', Array $grep_fields = null, searchEngine_adapter $searchEngine = null)
+  public function get_highlight_fields($highlight = '', Array $grep_fields = null, searchEngine_adapter $searchEngine = null, $includeBusiness = false)
   {
-    return $this->highlight_fields($highlight, $grep_fields, $searchEngine);
+    return $this->highlight_fields($highlight, $grep_fields, $searchEngine, $includeBusiness);
   }
 
   /**
@@ -258,11 +265,11 @@ class caption_record implements caption_interface, cache_cacheableInterface
    * @param searchEngine_adapter $searchEngine
    * @return array
    */
-  protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine = null)
+  protected function highlight_fields($highlight, Array $grep_fields = null, searchEngine_adapter $searchEngine = null, $includeBusiness = false)
   {
     $fields = array();
 
-    foreach ($this->retrieve_fields() as $meta_struct_id => $field)
+    foreach ($this->get_fields(array(), $includeBusiness) as $meta_struct_id => $field)
     {
       if (is_array($grep_fields) && !in_array($field->get_name(), $grep_fields))
         continue;

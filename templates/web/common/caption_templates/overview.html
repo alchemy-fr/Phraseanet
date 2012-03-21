@@ -1,5 +1,5 @@
-{% macro format_caption(record) %}
-  {% for name, value in record.get_caption().get_highlight_fields() %}
+{% macro format_caption(record, highlight, searchEngine, includeBusiness) %}
+  {% for name, value in record.get_caption().get_highlight_fields(highlight, null, searchEngine, includeBusiness) %}
   <div><b>{{name}}</b> : {{value.value|raw}}</div>
   {% endfor %}
 {% endmacro %}
