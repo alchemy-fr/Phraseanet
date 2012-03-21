@@ -70,6 +70,7 @@ class caption_field
       /**
        * TRIGG CORRECTION;
        */
+      throw new \Exception('Inconsistency detected');
     }
 
     foreach ($rs as $row)
@@ -332,6 +333,77 @@ class caption_field
       }
 
       $n += $increment;
+    }
+
+    return;
+  }
+
+  public static function merge_all_metadatas(databox_field $databox_field)
+  {
+    $sql = 'SELECT record_id, id, value FROM metadatas
+              WHERE meta_struct_id = :meta_struct_id ORDER BY record_id';
+
+    $params = array(
+      ':meta_struct_id' => $databox_field->get_id()
+    );
+
+    $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
+    $stmt->execute($params);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    unset($stmt);
+
+    $current_record_id = null;
+    $values            = $current_metadatas = array();
+
+    foreach ($rs as $row)
+    {
+      if ($current_record_id && $current_record_id != $row['record_id'])
+      {
+        try
+        {
+          $record = $databox_field->get_databox()->get_record($current_record_id);
+          $record->set_metadatas($current_metadatas);
+          $record->set_metadatas(array(array(
+              'meta_id'        => null
+              , 'meta_struct_id' => $databox_field->get_id()
+              , 'value'          => implode(' ; ', $values)
+            )));
+          unset($record);
+        }
+        catch (Exception $e)
+        {
+
+        }
+
+        $values            = $current_metadatas = array();
+      }
+
+      $current_record_id = $row['record_id'];
+
+      $current_metadatas[] = array(
+        'meta_id'        => $row['id']
+        , 'meta_struct_id' => $databox_field->get_id()
+        , 'value'          => ''
+      );
+
+      $values[] = $row['value'];
+    }
+
+    try
+    {
+      $record = $databox_field->get_databox()->get_record($current_record_id);
+      $record->set_metadatas($current_metadatas);
+      $record->set_metadatas(array(array(
+          'meta_id'        => null
+          , 'meta_struct_id' => $databox_field->get_id()
+          , 'value'          => implode(' ; ', $values)
+        )));
+      unset($record);
+    }
+    catch (Exception $e)
+    {
+
     }
 
     return;

@@ -104,6 +104,7 @@ class databox_field implements cache_cacheableInterface
    */
   protected $Business;
   protected $renamed = false;
+  protected $metaToMerge = false;
 
   /**
    *
@@ -378,6 +379,12 @@ class databox_field implements cache_cacheableInterface
       $this->renamed = false;
     }
 
+    if ($this->metaToMerge)
+    {
+      caption_field::merge_all_metadatas($this);
+      $this->metaToMerge = false;
+    }
+
     $dom_struct = $this->databox->get_dom_structure();
     $xp_struct  = $this->databox->get_xpath_structure();
 
@@ -583,7 +590,14 @@ class databox_field implements cache_cacheableInterface
    */
   public function set_multi($multi)
   {
-    $this->multi = !!$multi;
+    $multi = !!$multi;
+
+    if($this->multi !== $multi && !$multi)
+    {
+      $this->metaToMerge = true;
+    }
+
+    $this->multi = $multi;
 
     return $this;
   }
@@ -647,35 +661,6 @@ class databox_field implements cache_cacheableInterface
   public function set_thumbtitle($value)
   {
     $this->thumbtitle = $value;
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param string $attr
-   * @return databox_field
-   */
-  protected function set_reg_attr($attr)
-  {
-    try
-    {
-      $sql = 'UPDATE metadatas_structure SET reg' . $attr . ' = null';
-
-      $stmt = $this->get_connection()->prepare($sql);
-      $stmt->execute();
-      $stmt->closeCursor();
-
-      $sql = 'UPDATE metadatas_structure SET reg' . $attr . '= 1 WHERE id= :id';
-
-      $stmt = $this->get_connection()->prepare($sql);
-      $stmt->execute(array(':id' => $this->id));
-      $stmt->closeCursor();
-    }
-    catch (Exception $e)
-    {
-
-    }
 
     return $this;
   }

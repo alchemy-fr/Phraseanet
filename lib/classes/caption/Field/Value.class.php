@@ -309,13 +309,18 @@ class caption_Field_Value
         );
 
         $all_datas = array();
-        foreach ($this->record->get_caption()->get_fields() as $field)
+
+        foreach ($this->record->get_caption()->get_fields(null, true) as $field)
         {
           if (!$field->is_indexable())
+          {
             continue;
+          }
+
           $all_datas[] = $field->get_serialized_values();
         }
-        $all_datas   = implode(' ', $all_datas);
+
+        $all_datas = implode(' ', $all_datas);
 
         $sphinx_rt->replace_in_documents(
           "docs_realtime" . $sbas_crc, //$this->id,
@@ -334,6 +339,35 @@ class caption_Field_Value
   public static function create(databox_field &$databox_field, record_Interface $record, $value, Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
   {
     $connbas = $databox_field->get_connection();
+
+    /**
+     * Check consistency
+     */
+    if (!$databox_field->is_multi())
+    {
+      try
+      {
+        $field = $record->get_caption()->get_field($databox_field->get_name());
+        $caption_field_value = array_pop($field->get_values());
+        /* @var $value \caption_Field_Value */
+        $caption_field_value->set_value($value);
+
+        if (!$vocabulary || !$vocabularyId)
+        {
+          $caption_field_value->removeVocabulary();
+        }
+        else
+        {
+          $caption_field_value->setVocab($vocabulary, $vocabularyId);
+        }
+
+        return $caption_field_value;
+      }
+      catch (\Exception $e)
+      {
+
+      }
+    }
 
     $sql_ins = 'INSERT INTO metadatas
       (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)
