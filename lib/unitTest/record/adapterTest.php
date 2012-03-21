@@ -30,6 +30,18 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $metadatas   = $system_file->extract_metadatas($databox->get_meta_structure());
     static::$record_23->set_metadatas($metadatas['metadatas']);
 
+
+    /**
+     * Reset thumbtitle in order to have consistent tests (testGet_title)
+     */
+    foreach(static::$record_1->get_databox()->get_meta_structure() as $databox_field)
+    {
+
+      /* @var $databox_field \databox_field */
+      $databox_field->set_thumbtitle(false)->save();
+    }
+
+
     $system_file = new system_file(__DIR__ . '/../testfiles/cestlafete.jpg');
   }
 
