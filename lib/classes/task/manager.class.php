@@ -172,7 +172,8 @@ class task_manager
       fclose($schedlock);
     }
 
-    $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay, schedstatus AS status FROM sitepreff";
+    $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay
+            , schedstatus AS status FROM sitepreff";
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute();
     $ret = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -185,7 +186,8 @@ class task_manager
       $ret['status'] = 'stopped';
     }
     $ret['pid'] = $pid;
-    return($ret);
+
+    return $ret;
   }
 
   public static function getAvailableTasks()
