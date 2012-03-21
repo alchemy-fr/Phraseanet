@@ -320,8 +320,17 @@ class task_period_writemeta extends task_databoxAbstract
     {
       $meta = $field->get_databox_field();
 
+      /* @var $meta \databox_field */
+
       if (trim($meta->get_metadata_source()) === '')
+      {
         continue;
+      }
+
+      if ($meta->isBusiness())
+      {
+        continue;
+      }
 
       $multi = $meta->is_multi();
       $type = $meta->get_type();
