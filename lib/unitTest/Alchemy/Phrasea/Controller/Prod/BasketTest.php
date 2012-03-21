@@ -470,31 +470,32 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     $datas = $em->getRepository('Entities\ValidationData')->findAll();
     $countDatas = count($datas);
 
+    $basket = $this->insertOneBasket();
+
     $validationSession = new \Entities\ValidationSession();
 
     $validationSession->setDescription('Une description au hasard');
     $validationSession->setName('Un nom de validation');
+
     $expires = new \DateTime();
     $expires->modify('+1 week');
+
     $validationSession->setExpires($expires);
     $validationSession->setInitiator(self::$user);
 
-    $basket = new \Entities\Basket();
-    $basket->setName('test');
-    $basket->setDescription('description');
-    $basket->setOwner(self::$user);
-    $basket->setValidation($validationSession);
-    $validationSession->setBasket($basket);
+    $em->persist($validationSession);
 
+    $basket->setValidation($validationSession);
+
+    $validationSession->setBasket($basket);
 
     $validationParticipant = new \Entities\ValidationParticipant();
     $validationParticipant->setSession($validationSession);
     $validationParticipant->setUser(self::$user_alt1);
-    $validationSession->addValidationParticipant($validationParticipant);
 
     $em->persist($validationParticipant);
-    $em->persist($basket);
-    $em->persist($validationSession);
+
+    $validationSession->addValidationParticipant($validationParticipant);
 
     $em->flush();
 
