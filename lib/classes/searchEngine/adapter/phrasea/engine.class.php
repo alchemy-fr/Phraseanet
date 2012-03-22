@@ -425,7 +425,8 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
               , false
               , $this->opt_search_type == 1 ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
               , $sort
-              , TRUE  // TRUE ; allow search on business fields
+              , $this->colls[$sbas_id]  //  allow search on business fields for every coll
+           //   , array()  //  don't search on business fields
       );
 
       $total_time += $this->results[$sbas_id]['time_all'];
