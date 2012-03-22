@@ -9,8 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use DoctrineExtensions\Paginate\Paginate;
-
 /**
  *
  * @package
@@ -61,41 +59,46 @@ class patch_361 implements patchInterface
 
     $em = $Core->getEntityManager();
 
-    $dql = 'SELECT e FROM Entities\BasketElement e';
+    $conn = $appbox->get_connection();
 
-    $query = $em->createQuery($dql);
+    $sql    = 'SELECT sbas_id, record_id, id FROM BasketElements';
+    $stmt   = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
 
-    $count = Paginate::getTotalQueryResults($query);
+    $count = count($rs);
 
-    $n       = 0;
-    $perPage = 100;
-
-    while ($n < $count)
+    foreach ($result as $row)
     {
-      $paginateQuery = Paginate::getPaginateQuery($query, $n, $perPage);
+      $sbas_id = (int) $row['sbas_id'];
 
-      $result = $paginateQuery->getResult();
-
-      foreach ($result as $basketElement)
+      try
       {
-        try
-        {
-          $basketElement->getRecord();
-        }
-        catch (\Exception $e)
-        {
-          $em->remove($basketElement);
-        }
+        $connbas = connection::getPDOConnection($sbas_id);
+      }
+      catch (\Exception $e)
+      {
+        $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
+        $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
+        continue;
       }
 
-      unset($paginateQuery);
-      unset($result);
-      $em->flush();
+      $sql  = 'SELECT record_id FROM record WHERE record_id = :record_id';
+      $stmt = $connbas->prepare($sql);
+      $stmt->execute(array(':record_id' => $row['record_id']));
+      $rowCount    = $stmt->rowCount();
+      $stmt->closeCursor;
 
-      $n += $perPage;
+      if ($rowCount == 0)
+      {
+        $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
+        $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
+      }
     }
 
-    $dql = 'SELECT b FROM Entities\Basket b';
+
+    $dql = 'SELECT b FROM Entities\Basket b WHERE b.description != ""';
 
     $query = $em->createQuery($dql);
 
@@ -124,14 +127,15 @@ class patch_361 implements patchInterface
         $basket->setDescription($description);
       }
 
-      unset($paginateQuery);
-      unset($result);
-      $em->flush();
-
       $n += $perPage;
+      $em->flush();
     }
+
+    $em->flush();
+
 
     return true;
   }
 
 }
+
