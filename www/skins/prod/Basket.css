@@ -44,6 +44,7 @@
 }
 
 #BasketBrowser .result td.thumbnail{
+  text-align:center;
   width:105px;
 }
 #BasketBrowser .result td.thumbnail .counter{
