@@ -83,7 +83,7 @@ class databox_fieldUnknown extends databox_field
   }
 
   /**
-   * Return tru because the field is unknown
+   * Return true because the field is unknown
    *
    * @return boolean
    */

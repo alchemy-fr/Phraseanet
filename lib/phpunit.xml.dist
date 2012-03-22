@@ -40,7 +40,7 @@
     </filter>
 
   <listeners>
-    <listener class="SimpleTestListener" file="unitTest/PHPUNITListener.inc"></listener>
+    <listener class="PhraseanetPHPUnitListener" file="unitTest/PhraseanetPHPUnitListener.class"></listener>
   </listeners>
 
 </phpunit>

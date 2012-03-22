@@ -263,6 +263,7 @@ switch ($action)
             , "namecaract"
             , "NAMMKDFOLD"
             , "logfile"
+            , "businessfields"
     );
 
     $download = new set_exportftp($parm['lst'], $parm['ssttid']);
@@ -275,7 +276,7 @@ switch ($action)
     {
       try
       {
-        $download->prepare_export($parm['obj']);
+        $download->prepare_export($parm['obj'], false, $parm['businessfields']);
         $download->export_ftp($parm['usr_dest'], $parm['addr'], $parm['login'], $parm['pwd'], $parm['ssl'], $parm['nbretry'], $parm['passif'], $parm['destfolder'], $parm['NAMMKDFOLD'], $parm['logfile']);
 
         $output = p4string::jsonencode(array('error' => false, 'message' => _('Export enregistre dans la file dattente')));

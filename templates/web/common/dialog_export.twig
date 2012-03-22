@@ -66,15 +66,15 @@
       </td>
       <td>
         <input type="checkbox" class="checkbox ftp_folder_check" {% if datas.prefixFTPfolder != '' %}checked="checked"{% endif %} name="MKDFOLD" id="idMKDFOLD_{{datas.usr_id}}" value="MKDFOLD"  />
-               <input style="width:250px;" type="text" name="NAMMKDFOLD" id="prefixFTPfolder_{{datas.usr_id}}" value="{{datas.prefixFTPfolder}}" {% if datas.prefixFTPfolder == '' %}disabled="disabled"{% endif %}/>
+        <input style="width:250px;" type="text" name="NAMMKDFOLD" id="prefixFTPfolder_{{datas.usr_id}}" value="{{datas.prefixFTPfolder}}" {% if datas.prefixFTPfolder == '' %}disabled="disabled"{% endif %}/>
       </td>
     </tr>
     <tr>
       <td>
-                    <label for="logfile_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: ecrire un fichier de log' %}  </label>
+        <label for="logfile_{{datas.usr_id}}">{% trans 'admin::compte-utilisateur:ftp: ecrire un fichier de log' %}  </label>
       </td>
       <td>
-                    <input type="checkbox" class="checkbox ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1"  />
+        <input type="checkbox" class="checkbox ftp_logfile_check" name="logfile" id="logfile_{{datas.usr_id}}" value="1"  />
       </td>
     </tr>
   </table>
@@ -118,30 +118,35 @@
         <form method="post" target="_blank" action="/include/download.php">
           <input type="hidden" name="lst" value="{{lst}}"/>
           <input type="hidden" name="ssttid" value="{{ssttid}}"/>
-                    {% for name, values in download.get_display_download() %}
-                        {% if values.available > 0 %}
-
-          <div>
-            <input class="checkbox" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
-            <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
-            <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
-            <label for="download_{{name}}">{{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}})</label>
-                                {% set title%}
-                                    {% trans 'Documents indisponibles' %}
-                                {% endset %}
-                                {% if values.refused|length > 0 %}
-            <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
-            <div style="display:none;" class="undisposable">
-              <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
-                                    {% for datas in values.refused%}
-                                        {{ thumbnail.format(datas, 80, 80,'', session, true) }}
-                                    {% endfor %}
-            </div>
-                                {% endif %}
+          {% for name, values in download.get_display_download() %}
+            {% if values.available > 0 %}
+              <div>
+                <input class="checkbox {{values.class}}" type="checkbox" id="download_{{name}}" name="obj[]" value="{{name}}" />
+                <input type="hidden" name="download_{{name}}" value="{{values.size}}" />
+                <input type="hidden" name="count_{{name}}" value="{{values.available}}" />
+                <label for="download_{{name}}">{{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}})</label>
+                {% set title%}
+                    {% trans 'Documents indisponibles' %}
+                {% endset %}
+                {% if values.refused|length > 0 %}
+                  <a href="#" class="undisposable_link" title="{{title|e}}"> + </a>
+                  <div style="display:none;" class="undisposable">
+                    <div>{% trans 'Les documents ne peuvent pas etre exportes' %}</div>
+                      {% for datas in values.refused%}
+                          {{ thumbnail.format(datas, 80, 80,'', session, true) }}
+                      {% endfor %}
+                    </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+          {% if download.has_business_fields_access() %}
+          <div class="businessfields" style="margin-left:20px;display:none;">
+            <input type="checkbox" class="checkbox" name="businessfields" id="business_download" value="1"  />
+            <label for="business_download">{% trans 'Include Business-fields in caption' %}</label>
           </div>
-                        {% endif %}
-                    {% endfor %}
-                    {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
+          {% endif %}
+          {{ _self.choose_title('download', choose_export_title, default_export_title) }}
           <div class="buttons_line">
             <button type="button" class="download_button">{% trans 'boutton::telecharger'%}</button>
             <button type="button" class="close_button">{% trans 'boutton::annuler'%}</button>
@@ -178,7 +183,7 @@
                         {% for name, values in download.get_display_download() %}
                             {% if values.available > 0 %}
             <div>
-              <input class="checkbox" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
+              <input class="checkbox {{values.class}}" type="checkbox" id="sendmail_{{name}}" name="obj[]" value="{{name}}" />
               <label for="sendmail_{{name}}"> {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}})</label>
                                     {% set title%}
                                         {% trans 'Documents indisponibles' %}
@@ -196,7 +201,13 @@
                             {% endif %}
                         {% endfor %}
           </div>
-                    {{ _self.choose_title('download', choose_export_title, default_export_title) }}
+          {% if download.has_business_fields_access() %}
+          <div class="businessfields" style="margin-left:20px;display:none;">
+            <input type="checkbox" class="checkbox" name="businessfields" id="business_sendmail" value="1"  />
+            <label for="business_sendmail">{% trans 'Include Business-fields in caption' %}</label>
+          </div>
+          {% endif %}
+                    {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
           <div class="buttons_line">
             <button type="button" class="sendmail_button">{% trans 'boutton::envoyer'%}</button>
             <img class="sendmail_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
@@ -386,7 +397,7 @@
                         {% for name, values in download.get_display_ftp() %}
                             {% if values.available > 0 %}
             <div>
-              <input class="checkbox" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
+              <input class="checkbox {{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
               <label for="ftp_{{name}}"> {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}}))</label>
                                     {% set title%}
                                         {% trans 'Documents indisponibles' %}
@@ -404,6 +415,12 @@
                             {% endif %}
                         {% endfor %}
           </div>
+          {% if download.has_business_fields_access() %}
+          <div class="businessfields" style="margin-left:20px;display:none;">
+            <input type="checkbox" class="checkbox" name="businessfields" id="business_ftp" value="1"  />
+            <label for="business_ftp">{% trans 'Include Business-fields in caption' %}</label>
+          </div>
+          {% endif %}
           <div class="buttons_line">
             <button type="button" class="tryftp_button">{% trans 'boutton::essayer'%}</button>
             <img class="tryftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
@@ -607,6 +624,20 @@
                           $(this).next('.undisposable').slideToggle();
 
                           return false;
+                  });
+
+                  $('input[name="obj[]"]', $('#download, #sendmail, #ftp')).bind('change', function(){
+
+                    var $form = $(this).closest('form');
+
+                    if($('input.caption[name="obj[]"]:checked', $form).length > 0)
+                    {
+                      $('div.businessfields', $form).show();
+                    }
+                    else
+                    {
+                      $('div.businessfields', $form).hide();
+                    }
                   });
           });
   </script>

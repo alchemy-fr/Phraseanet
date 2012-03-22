@@ -27,6 +27,7 @@ class set_export extends set_abstract
   protected $display_ftp;
   protected $ftp_datas;
   protected $list;
+  protected $businessFieldsAccess;
 
   /**
    *
@@ -186,17 +187,24 @@ class set_export extends set_abstract
     $this->total_order = 0;
     $this->total_ftp = 0;
 
+    $this->businessFieldsAccess = false;
+
     foreach ($this->elements as $download_element)
     {
+      if($user->ACL()->has_right_on_base($download_element->get_base_id(), 'canmodifrecord'))
+      {
+        $this->businessFieldsAccess = true;
+      }
+
       foreach ($download_element->get_downloadable() as $name => $properties)
       {
         if (!isset($display_download[$name]))
         {
           $display_download[$name] = array(
-            'size'      => 0,
-            'total'     => 0,
-            'available' => 0,
-            'refused'   => array()
+            'size'           => 0,
+            'total'          => 0,
+            'available'      => 0,
+            'refused'        => array()
           );
         }
 
@@ -206,14 +214,13 @@ class set_export extends set_abstract
         {
           $display_download[$name]['available']++;
           $display_download[$name]['label'] = $properties['label'];
+          $display_download[$name]['class'] = $properties['class'];
           $this->total_download++;
-          $display_download[$name]['size'] +=
-            $download_element->get_size($name);
+          $display_download[$name]['size'] += $download_element->get_size($name);
         }
         else
         {
-          $display_download[$name]['refused'][] =
-            $download_element->get_thumbnail();
+          $display_download[$name]['refused'][] = $download_element->get_thumbnail();
         }
       }
       foreach ($download_element->get_orderable() as $name => $properties)
@@ -236,8 +243,7 @@ class set_export extends set_abstract
         }
         else
         {
-          $display_orderable[$name]['refused'][] =
-            $download_element->get_thumbnail();
+          $display_orderable[$name]['refused'][] = $download_element->get_thumbnail();
         }
       }
     }
@@ -357,6 +363,10 @@ class set_export extends set_abstract
   {
     return $this->ftp_datas;
   }
+  public function has_business_fields_access()
+  {
+    return $this->businessFieldsAccess;
+  }
 
   /**
    *
@@ -418,12 +428,15 @@ class set_export extends set_abstract
    * @param boolean $rename_title
    * @return Array
    */
-  public function prepare_export(Array $subdefs, $rename_title = false)
+  public function prepare_export(Array $subdefs, $rename_title, $includeBusinessFields )
   {
     if (!is_array($subdefs))
     {
       throw new Exception('No subdefs given');
     }
+
+    $includeBusinessFields = !!$includeBusinessFields;
+
     $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
@@ -453,7 +466,14 @@ class set_export extends set_abstract
 
       $rename_done = false;
 
-      $desc = $download_element->get_caption()->serialize(caption_record::SERIALIZE_XML);
+      $BF = false;
+
+      if($includeBusinessFields && $user->ACL()->has_right_on_base($download_element->get_base_id(), 'canmodifrecord'))
+      {
+        $BF = true;
+      }
+
+      $desc = $download_element->get_caption()->serialize(caption_record::SERIALIZE_XML, $BF);
 
       $files[$id]['original_name'] =
         $files[$id]['export_name']   =
@@ -687,7 +707,7 @@ class set_export extends set_abstract
 
         system_file::mkdir($caption_dir);
 
-        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML);
+        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML, $BF);
 
         $file = $files[$id]["export_name"]
           . $files[$id]["subdefs"]['caption']["ajout"] . '.'
@@ -695,14 +715,12 @@ class set_export extends set_abstract
 
         $path = $caption_dir;
 
-        if ($handle = fopen($path . $file, "w"))
-        {
-          fwrite($handle, $desc);
-          fclose($handle);
-          $files[$id]["subdefs"]['caption']["path"] = $path;
-          $files[$id]["subdefs"]['caption']["file"] = $file;
-          $files[$id]["subdefs"]['caption']["size"] = filesize($path . $file);
-        }
+        file_put_contents($path . $file, $desc);
+
+        $files[$id]["subdefs"]['caption']["path"] = $path;
+        $files[$id]["subdefs"]['caption']["file"] = $file;
+        $files[$id]["subdefs"]['caption']["size"] = filesize($path . $file);
+        $files[$id]["subdefs"]['caption']['businessfields'] = $BF ? '1' : '0';
       }
       if (in_array('caption-yaml', $subdefs))
       {
@@ -711,7 +729,7 @@ class set_export extends set_abstract
           . $session->get_ses_id() . '/';
         system_file::mkdir($caption_dir);
 
-        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML);
+        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $BF);
 
         $file = $files[$id]["export_name"]
           . $files[$id]["subdefs"]['caption-yaml']["ajout"] . '.'
@@ -719,14 +737,12 @@ class set_export extends set_abstract
 
         $path = $caption_dir;
 
-        if ($handle = fopen($path . $file, "w"))
-        {
-          fwrite($handle, $desc);
-          fclose($handle);
-          $files[$id]["subdefs"]['caption-yaml']["path"] = $path;
-          $files[$id]["subdefs"]['caption-yaml']["file"] = $file;
-          $files[$id]["subdefs"]['caption-yaml']["size"] = filesize($path . $file);
-        }
+        file_put_contents($path . $file, $desc);
+
+        $files[$id]["subdefs"]['caption-yaml']["path"] = $path;
+        $files[$id]["subdefs"]['caption-yaml']["file"] = $file;
+        $files[$id]["subdefs"]['caption-yaml']["size"] = filesize($path . $file);
+        $files[$id]["subdefs"]['caption-yaml']['businessfields'] = $BF ? '1' : '0';
       }
     }
 

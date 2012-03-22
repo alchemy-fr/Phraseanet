@@ -103,7 +103,7 @@ class databox_field implements cache_cacheableInterface
    * @var boolean
    */
   protected $Business;
-  protected $renamed = false;
+  protected $renamed     = false;
   protected $metaToMerge = false;
 
   /**
@@ -200,19 +200,8 @@ class databox_field implements cache_cacheableInterface
       $this->dces_element = new $dc_class();
     }
 
-    if (!$this->multi)
-    {
-      $separator = "";
-    }
-    else
-    {
-      $separator = $row['separator'];
+    $this->separator = self::checkMultiSeparator($row['separator'], $this->multi);
 
-      if (strpos($separator, ';') === false)
-        $separator .= ';';
-    }
-
-    $this->separator = $separator;
     $this->thumbtitle = $row['thumbtitle'];
 
     return $this;
@@ -441,7 +430,14 @@ class databox_field implements cache_cacheableInterface
   {
     $previous_name = $this->name;
 
-    $this->name = self::generateName($name);
+    $name = self::generateName($name);
+
+    if($name === '')
+    {
+      throw new \Exception_InvalidArgument();
+    }
+
+    $this->name = $name;
 
     if ($this->name !== $previous_name)
     {
@@ -592,12 +588,14 @@ class databox_field implements cache_cacheableInterface
   {
     $multi = !!$multi;
 
-    if($this->multi !== $multi && !$multi)
+    if ($this->multi !== $multi && !$multi)
     {
       $this->metaToMerge = true;
     }
 
     $this->multi = $multi;
+
+    $this->set_separator(';');
 
     return $this;
   }
@@ -645,12 +643,24 @@ class databox_field implements cache_cacheableInterface
    */
   public function set_separator($separator)
   {
-    if (strpos($separator, ';') === false)
-      $separator .= ';';
-
-    $this->separator = $separator;
+    $this->separator = self::checkMultiSeparator($separator, $this->multi);
 
     return $this;
+  }
+
+  protected static function checkMultiSeparator($separator, $multi)
+  {
+    if (!$multi)
+    {
+      return '';
+    }
+
+    if (strpos($separator, ';') === false)
+    {
+      $separator .= ';';
+    }
+
+    return $separator;
   }
 
   /**
@@ -750,15 +760,6 @@ class databox_field implements cache_cacheableInterface
    *
    * @return boolean
    */
-  public function is_distinct()
-  {
-    return true;
-  }
-
-  /**
-   *
-   * @return boolean
-   */
   public function is_report()
   {
     return $this->report;
@@ -827,12 +828,19 @@ class databox_field implements cache_cacheableInterface
         (`id`, `name`, `src`, `readonly`, `indexable`, `type`, `tbranch`,
           `thumbtitle`, `multi`, `business`,
           `report`, `sorter`)
-        VALUES (null, :name, '', 0, 1, 'text', '',
+        VALUES (null, :name, '', 0, 1, 'string', '',
           null, 0,
           0, 1, :sorter)";
 
+    $name = self::generateName($name);
+
+    if($name === '')
+    {
+      throw new \Exception_InvalidArgument();
+    }
+
     $stmt = $databox->get_connection()->prepare($sql);
-    $stmt->execute(array(':name'   => self::generateName($name), ':sorter' => $sorter));
+    $stmt->execute(array(':name'   => $name, ':sorter' => $sorter));
     $id       = $databox->get_connection()->lastInsertId();
     $stmt->closeCursor();
 

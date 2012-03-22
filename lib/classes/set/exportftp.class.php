@@ -33,34 +33,34 @@ class set_exportftp extends set_export
    */
   public function export_ftp($usr_to, $host, $login, $password, $ssl, $retry, $passif, $destfolder, $makedirectory, $logfile)
   {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
-    $user_f = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-    $conn = $appbox->get_connection();
+    $user_f  = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $conn    = $appbox->get_connection();
 
     $email_dest = '';
     if ($usr_to)
     {
-      $user_t = User_Adapter::getInstance($usr_to, $appbox);
+      $user_t     = User_Adapter::getInstance($usr_to, $appbox);
       $email_dest = $user_t->get_email();
     }
 
 
     $text_mail_receiver = "Bonjour,\n"
-            . "L'utilisateur "
-            . $user_f->get_display_name() . " (login : " . $user_f->get_login() . ") "
-            . "a fait un transfert FTP sur le serveur ayant comme adresse \""
-            . $host . "\" avec le login \"" . $login . "\"  "
-            . "et pour repertoire de destination \""
-            . $destfolder . "\"\n";
+      . "L'utilisateur "
+      . $user_f->get_display_name() . " (login : " . $user_f->get_login() . ") "
+      . "a fait un transfert FTP sur le serveur ayant comme adresse \""
+      . $host . "\" avec le login \"" . $login . "\"  "
+      . "et pour repertoire de destination \""
+      . $destfolder . "\"\n";
 
     $text_mail_sender = "Bonjour,\n"
-            . "Vous avez fait un export FTP  avec les caracteristiques "
-            . "de connexion suivantes\n"
-            . "- adresse du serveur : \"" . $host . "\"\n"
-            . "- login utilisé \"" . $login . "\"\n"
-            . "- repertoire de destination \"" . $destfolder . "\"\n"
-            . "\n";
+      . "Vous avez fait un export FTP  avec les caracteristiques "
+      . "de connexion suivantes\n"
+      . "- adresse du serveur : \"" . $host . "\"\n"
+      . "- login utilisé \"" . $login . "\"\n"
+      . "- repertoire de destination \"" . $destfolder . "\"\n"
+      . "\n";
 
     $fn = "id";
     $fv = "null";
@@ -98,23 +98,23 @@ class set_exportftp extends set_export
     $fv .= ",:logfile";
 
     $params = array(
-        ':nbretry' => (((int) $retry * 1) > 0 ? (int) $retry : 5)
-        , ':mail' => $email_dest
-        , ':addr' => $host
-        , ':login' => $login
-        , ':ssl' => ($ssl == '1' ? '1' : '0')
-        , ':pwd' => $password
-        , ':passif' => ($passif == "1" ? "1" : "0")
-        , ':destfolder' => $destfolder
-        , ':sendermail' => $user_f->get_email()
-        , ':text_mail_receiver' => $text_mail_receiver
-        , ':text_mail_sender' => $text_mail_sender
-        , ':usr_id' => $session->get_usr_id()
-        , ':foldertocreate' => $makedirectory
-        , ':logfile' => (!!$logfile ? '1' : '0')
+      ':nbretry'            => (((int) $retry * 1) > 0 ? (int) $retry : 5)
+      , ':mail'               => $email_dest
+      , ':addr'               => $host
+      , ':login'              => $login
+      , ':ssl'                => ($ssl == '1' ? '1' : '0')
+      , ':pwd'                => $password
+      , ':passif'             => ($passif == "1" ? "1" : "0")
+      , ':destfolder'         => $destfolder
+      , ':sendermail'         => $user_f->get_email()
+      , ':text_mail_receiver' => $text_mail_receiver
+      , ':text_mail_sender'   => $text_mail_sender
+      , ':usr_id'             => $session->get_usr_id()
+      , ':foldertocreate'     => $makedirectory
+      , ':logfile'            => (!!$logfile ? '1' : '0')
     );
 
-    $sql = "INSERT INTO ftp_export ($fn) VALUES ($fv)";
+    $sql  = "INSERT INTO ftp_export ($fn) VALUES ($fv)";
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
     $stmt->closeCursor();
@@ -122,10 +122,10 @@ class set_exportftp extends set_export
     $ftp_export_id = $conn->lastInsertId();
 
     $sql = 'INSERT INTO ftp_export_elements
-            (id, ftp_export_id, base_id, record_id, subdef, filename, folder)
+            (id, ftp_export_id, base_id, record_id, subdef, filename, folder, businessfields)
             VALUES
             (null, :ftp_export_id, :base_id, :record_id, :subdef,
-              :filename, :folder)';
+              :filename, :folder, :businessfields)';
 
     $stmt = $conn->prepare($sql);
 
@@ -134,16 +134,19 @@ class set_exportftp extends set_export
       foreach ($file['subdefs'] as $subdef => $properties)
       {
         $filename = $file['export_name']
-                . $properties["ajout"] . '.'
-                . $properties['exportExt'];
+          . $properties["ajout"] . '.'
+          . $properties['exportExt'];
 
-        $params = array(
-            ':ftp_export_id' => $ftp_export_id
-            , ':base_id' => $file['base_id']
-            , ':record_id' => $file['record_id']
-            , ':subdef' => $subdef
-            , ':filename' => $filename
-            , ':folder' => $properties['folder']
+        $bfields = isset($properties['businessfields']) ? $properties['businessfields'] : null;
+        
+        $params  = array(
+          ':ftp_export_id'  => $ftp_export_id
+          , ':base_id'        => $file['base_id']
+          , ':record_id'      => $file['record_id']
+          , ':subdef'         => $subdef
+          , ':filename'       => $filename
+          , ':folder'         => $properties['folder']
+          , ':businessfields' => $bfields
         );
         $stmt->execute($params);
       }

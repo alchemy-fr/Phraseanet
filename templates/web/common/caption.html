@@ -5,16 +5,18 @@
 {% import 'common/caption_templates/overview.html' as cap_ovr %}
 {% import 'common/caption_templates/preview.html' as cap_prev %}
 
+{% set business = user.ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
+
 {% if view == 'answer' %}
-  {{cap_ans.format_caption(record, highlight|default(''), searchEngine|default(null))}}
+  {{cap_ans.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
 {% elseif view == 'lazaret' %}
-  {{cap_laz.format_caption(record, highlight|default(''), searchEngine|default(null))}}
+  {{cap_laz.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
 {% elseif view == 'preview' %}
-  {{cap_prev.format_caption(record, highlight|default(''), searchEngine|default(null))}}
+  {{cap_prev.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
 {% elseif view == 'basket' %}
-  {{cap_bas.format_caption(record, highlight|default(''), searchEngine|default(null))}}
+  {{cap_bas.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
 {% elseif view == 'overview' %}
-  {{cap_ovr.format_caption(record, highlight|default(''), searchEngine|default(null))}}
+  {{cap_ovr.format_caption(record, highlight|default(''), searchEngine|default(null), business)}}
 {% elseif view == 'publi' %}
-  {{cap_pub.format_caption(record, '', null)}}
+  {{cap_pub.format_caption(record, '', null, business)}}
 {% endif %}

@@ -19,7 +19,8 @@
           <td valign="top">
             <div class='desc' style='max-height:{{th_size+70}}px;overflow-y:auto;'>
               <div class="fixeddesc">
-                {{caption.format_caption(record, highlight, searchEngine)}}
+                {% set business = user.ACL().has_right_on_base(record.get_base_id(), 'canmodifrecord') %}
+                {{caption.format_caption(record, highlight, searchEngine, business)}}
                 {% if user.getPrefs('technical_display') == 'group' %}<hr/>{{record.get_technical_infos|raw}}{% endif %}
               </div>
             </div>
@@ -28,6 +29,6 @@
       </table>
     </div>
   {% endfor %}
-  
+
 {% endblock %}
 

@@ -93,8 +93,9 @@
                 <div class="right_column_wrapper caption right_column_wrapper_caption PNB" style="{% if basket.getValidation() %}display:none;{% endif %}">
                     <div id="record_infos" class="PNB">
                         <div class="container PNB">
+              {% set business = user.ACL().has_right_on_base(basket_element.getRecord().get_base_id(), 'canmodifrecord') %}
               {% if basket_element %}
-                {{caption.format_caption(basket_element.getRecord())}}
+                {{caption.format_caption(basket_element.getRecord(), '', null, business)}}
               {% endif %}
             </div>
                     </div>

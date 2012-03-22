@@ -471,13 +471,13 @@ class task_period_ftp extends task_appboxAbstract
           $sbas_id = phrasea::sbasFromBas($base_id);
           $record = new record_adapter($sbas_id, $record_id);
 
-          $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML);
+          $sdcaption = $record->get_caption()->serialize(caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
 
           $remotefile = $file["filename"];
 
           if ($subdef == 'caption')
           {
-            $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML);
+            $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_XML, $ftp_export["businessfields"]);
 
             $localfile = $registry->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
             if (file_put_contents($localfile, $desc) === false)
@@ -487,7 +487,7 @@ class task_period_ftp extends task_appboxAbstract
           }
           elseif ($subdef == 'caption-yaml')
           {
-            $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML);
+            $desc = $record->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $ftp_export["businessfields"]);
 
             $localfile = $registry->get('GV_RootPath') . 'tmp/' . md5($desc . time() . mt_rand());
             if (file_put_contents($localfile, $desc) === false)

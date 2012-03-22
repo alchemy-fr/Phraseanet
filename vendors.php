@@ -13,6 +13,8 @@
  * Get all dependencies needed for Phraseanet
  */
 
+chdir(__DIR__);
+
 set_time_limit(0);
 
 system('git submodule init');
@@ -25,7 +27,7 @@ foreach ($iterator as $file)
   /* @var $file SplFileInfo */
   if($file->isDir())
   {
-    $cmd = sprintf('cd %s && git submodule init && git submodule update', 
+    $cmd = sprintf('cd %s && git submodule init && git submodule update',
             escapeshellarg($file->getPathname()));
     system($cmd);
   }
