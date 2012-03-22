@@ -54,7 +54,7 @@ if ($Request->get("ssttid", "") != "")
 
 $download = new set_export($Request->get('lst', ''), $Request->get('ssttid', ''));
 
-$list = $download->prepare_export($Request->get('obj'), $titre);
+$list = $download->prepare_export($Request->get('obj'), $titre, $Request->get('businessfields'));
 $list['export_name'] = $exportname . '.zip';
 $list['email'] = $Request->get("destmail", "");
 

@@ -28,7 +28,7 @@ $gatekeeper->require_session();
 
 
 $request = http_request::getInstance();
-$parm = $request->get_parms("lst", "obj", "ssttid", "type");
+$parm = $request->get_parms("lst", "obj", "ssttid", "type", "businessfields");
 
 $download = new set_export($parm['lst'], $parm['ssttid']);
 
@@ -37,7 +37,7 @@ if ($parm["type"] == "title")
 else
   $titre=false;
 
-$list = $download->prepare_export($parm['obj'], $titre);
+$list = $download->prepare_export($parm['obj'], $titre, $parm['businessfields']);
 
 $exportname = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
 
