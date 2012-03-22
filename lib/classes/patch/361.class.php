@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use DoctrineExtensions\Paginate\Paginate;
+
 /**
  *
  * @package
@@ -59,40 +61,75 @@ class patch_361 implements patchInterface
 
     $em = $Core->getEntityManager();
 
-    $repository = $em->getRepository('\Entities\BasketElement');
+    $dql = 'SELECT e FROM Entities\BasketElement e';
 
-    foreach($repository->findAll() as $basketElement)
+    $query = $em->createQuery($dql);
+
+    $count = Paginate::getTotalQueryResults($query);
+
+    $n       = 0;
+    $perPage = 100;
+
+    while ($n < $count)
     {
-      try
+      $paginateQuery = Paginate::getPaginateQuery($query, $n, $perPage);
+
+      $result = $paginateQuery->getResult();
+
+      foreach ($result as $basketElement)
       {
-        $basketElement->getRecord();
+        try
+        {
+          $basketElement->getRecord();
+        }
+        catch (\Exception $e)
+        {
+          $em->remove($basketElement);
+        }
       }
-      catch(\Exception $e)
-      {
-        $em->remove($basketElement);
-      }
+
+      unset($paginateQuery);
+      unset($result);
+      $em->flush();
+
+      $n += $perPage;
     }
 
+    $dql = 'SELECT b FROM Entities\Basket b';
 
-    $em = $Core->getEntityManager();
+    $query = $em->createQuery($dql);
 
-    $repository = $em->getRepository('\Entities\Basket');
+    $count = Paginate::getTotalQueryResults($query);
 
-    foreach($repository->findAll() as $basket)
+    $n       = 0;
+    $perPage = 100;
+
+    while ($n < $count)
     {
-      $htmlDesc = $basket->getDescription();
+      $paginateQuery = Paginate::getPaginateQuery($query, $n, $perPage);
 
-      $description = trim(strip_tags(str_replace("<br />", "\n", $htmlDesc)));
+      $result = $paginateQuery->getResult();
 
-      if($htmlDesc == $description)
+      foreach ($result as $basket)
       {
-        continue;
+        $htmlDesc = $basket->getDescription();
+
+        $description = trim(strip_tags(str_replace("<br />", "\n", $htmlDesc)));
+
+        if ($htmlDesc == $description)
+        {
+          continue;
+        }
+
+        $basket->setDescription($description);
       }
 
-      $basket->setDescription($description);
-    }
+      unset($paginateQuery);
+      unset($result);
+      $em->flush();
 
-    $em->flush();
+      $n += $perPage;
+    }
 
     return true;
   }
