@@ -214,6 +214,7 @@ class set_export extends set_abstract
         {
           $display_download[$name]['available']++;
           $display_download[$name]['label'] = $properties['label'];
+          $display_download[$name]['class'] = $properties['class'];
           $this->total_download++;
           $display_download[$name]['size'] += $download_element->get_size($name);
         }
