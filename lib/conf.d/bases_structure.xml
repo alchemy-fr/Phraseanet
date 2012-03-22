@@ -2254,6 +2254,14 @@
             <comment></comment>
           </field>
           <field>
+            <name>businessfields</name>
+            <type>tinyint(1) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
             <name>error</name>
             <type>tinyint(1) unsigned</type>
             <null></null>

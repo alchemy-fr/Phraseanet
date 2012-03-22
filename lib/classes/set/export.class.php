@@ -720,6 +720,7 @@ class set_export extends set_abstract
         $files[$id]["subdefs"]['caption']["path"] = $path;
         $files[$id]["subdefs"]['caption']["file"] = $file;
         $files[$id]["subdefs"]['caption']["size"] = filesize($path . $file);
+        $files[$id]["subdefs"]['caption']['businessfields'] = $BF ? '1' : '0';
       }
       if (in_array('caption-yaml', $subdefs))
       {
@@ -741,7 +742,7 @@ class set_export extends set_abstract
         $files[$id]["subdefs"]['caption-yaml']["path"] = $path;
         $files[$id]["subdefs"]['caption-yaml']["file"] = $file;
         $files[$id]["subdefs"]['caption-yaml']["size"] = filesize($path . $file);
-
+        $files[$id]["subdefs"]['caption-yaml']['businessfields'] = $BF ? '1' : '0';
       }
     }
 

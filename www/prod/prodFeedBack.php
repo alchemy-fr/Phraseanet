@@ -263,6 +263,7 @@ switch ($action)
             , "namecaract"
             , "NAMMKDFOLD"
             , "logfile"
+            , "businessfields"
     );
 
     $download = new set_exportftp($parm['lst'], $parm['ssttid']);

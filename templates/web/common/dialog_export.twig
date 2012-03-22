@@ -203,8 +203,8 @@
           </div>
           {% if download.has_business_fields_access() %}
           <div class="businessfields" style="margin-left:20px;display:none;">
-            <input type="checkbox" class="checkbox" name="businessfields" id="business_download" value="1"  />
-            <label for="business_download">{% trans 'Include Business-fields in caption' %}</label>
+            <input type="checkbox" class="checkbox" name="businessfields" id="business_sendmail" value="1"  />
+            <label for="business_sendmail">{% trans 'Include Business-fields in caption' %}</label>
           </div>
           {% endif %}
                     {{ _self.choose_title('sendmail', choose_export_title, default_export_title) }}
@@ -397,7 +397,7 @@
                         {% for name, values in download.get_display_ftp() %}
                             {% if values.available > 0 %}
             <div>
-              <input class="checkbox" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
+              <input class="checkbox {{values.class}}" type="checkbox" id="ftp_{{name}}" name="obj[]" value="{{name}}" />
               <label for="ftp_{{name}}"> {{values.label}} {% if values.total != values.available %}{{values.available}}/{{values.total}}{% endif %} ({{values.size|format_octets}}))</label>
                                     {% set title%}
                                         {% trans 'Documents indisponibles' %}
@@ -415,6 +415,12 @@
                             {% endif %}
                         {% endfor %}
           </div>
+          {% if download.has_business_fields_access() %}
+          <div class="businessfields" style="margin-left:20px;display:none;">
+            <input type="checkbox" class="checkbox" name="businessfields" id="business_ftp" value="1"  />
+            <label for="business_ftp">{% trans 'Include Business-fields in caption' %}</label>
+          </div>
+          {% endif %}
           <div class="buttons_line">
             <button type="button" class="tryftp_button">{% trans 'boutton::essayer'%}</button>
             <img class="tryftp_button_loader" src="/skins/icons/loader404040.gif" style="visibility:hidden;margin:0 5px;"/>
@@ -620,7 +626,7 @@
                           return false;
                   });
 
-                  $('input[name="obj[]"]', $('#download, #sendmail')).bind('change', function(){
+                  $('input[name="obj[]"]', $('#download, #sendmail, #ftp')).bind('change', function(){
 
                     var $form = $(this).closest('form');
 
