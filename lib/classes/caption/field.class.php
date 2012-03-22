@@ -43,7 +43,7 @@ class caption_field
    * @param int $id
    * @return caption_field
    */
-  public function __construct(databox_field &$databox_field, record_Interface $record, $mergeOnError = true)
+  public function __construct(databox_field &$databox_field, record_Interface $record)
   {
     $this->record = $record;
     $this->databox_field = $databox_field;

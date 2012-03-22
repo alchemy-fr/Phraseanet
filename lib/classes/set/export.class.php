@@ -435,7 +435,7 @@ class set_export extends set_abstract
       throw new Exception('No subdefs given');
     }
 
-    $includeBusinessFields = $this->businessFieldsAccess ? !!$includeBusinessFields : false;
+    $includeBusinessFields = !!$includeBusinessFields;
 
     $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
@@ -466,7 +466,14 @@ class set_export extends set_abstract
 
       $rename_done = false;
 
-      $desc = $download_element->get_caption()->serialize(caption_record::SERIALIZE_XML, $includeBusinessFields);
+      $BF = false;
+
+      if($includeBusinessFields && $user->ACL()->has_right_on_base($download_element->get_base_id(), 'canmodifrecord'))
+      {
+        $BF = true;
+      }
+
+      $desc = $download_element->get_caption()->serialize(caption_record::SERIALIZE_XML, $BF);
 
       $files[$id]['original_name'] =
         $files[$id]['export_name']   =
@@ -700,7 +707,7 @@ class set_export extends set_abstract
 
         system_file::mkdir($caption_dir);
 
-        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML, $includeBusinessFields);
+        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML, $BF);
 
         $file = $files[$id]["export_name"]
           . $files[$id]["subdefs"]['caption']["ajout"] . '.'
@@ -721,7 +728,7 @@ class set_export extends set_abstract
           . $session->get_ses_id() . '/';
         system_file::mkdir($caption_dir);
 
-        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $includeBusinessFields);
+        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $BF);
 
         $file = $files[$id]["export_name"]
           . $files[$id]["subdefs"]['caption-yaml']["ajout"] . '.'
