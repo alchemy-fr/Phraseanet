@@ -48,7 +48,7 @@ class Manager
     $this->parser = new \Symfony\Component\Yaml\Yaml();
     $this->core = $core;
 
-    $this->registry = $this->parser->parse($file);
+    $this->registry = $this->parser->parse($file) ? : array();
   }
 
   protected function exists($name)
@@ -62,6 +62,8 @@ class Manager
     {
       $this->get($cacheKey, $service_name)->getDriver()->flushAll();
     }
+
+    file_put_contents($this->cacheFile->getPathname(), '');
 
     return $this;
   }
