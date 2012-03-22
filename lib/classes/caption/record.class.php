@@ -56,15 +56,15 @@ class caption_record implements caption_interface, cache_cacheableInterface
     return $this;
   }
 
-  public function serialize($format)
+  public function serialize($format, $includeBusinessFields = false)
   {
     switch ($format)
     {
       case self::SERIALIZE_XML:
-        return $this->serializeXML();
+        return $this->serializeXML(!!$includeBusinessFields);
         break;
       case self::SERIALIZE_YAML:
-        return $this->serializeYAML();
+        return $this->serializeYAML(!!$includeBusinessFields);
         break;
       default:
         throw new \Exception(sprintf('Unknown format %s', $format));
@@ -72,11 +72,11 @@ class caption_record implements caption_interface, cache_cacheableInterface
     }
   }
 
-  protected function serializeYAML()
+  protected function serializeYAML($includeBusinessFields)
   {
     $buffer = array();
 
-    foreach ($this->get_fields() as $field)
+    foreach ($this->get_fields(array(), $includeBusinessFields) as $field)
     {
       $vi = $field->get_values();
 
@@ -104,7 +104,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     return $dumper->dump($buffer, 3);
   }
 
-  protected function serializeXML()
+  protected function serializeXML($includeBusinessFields)
   {
     $dom_doc = new DOMDocument('1.0', 'UTF-8');
     $dom_doc->formatOutput = true;
@@ -116,7 +116,7 @@ class caption_record implements caption_interface, cache_cacheableInterface
     $description = $dom_doc->createElement('description');
     $record->appendChild($description);
 
-    foreach ($this->get_fields() as $field)
+    foreach ($this->get_fields(array(), $includeBusinessFields) as $field)
     {
       $values = $field->get_values();
 
