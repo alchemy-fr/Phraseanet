@@ -17,17 +17,15 @@
  */
 class sphinx_configuration
 {
+
   const OPT_ALL_SBAS = 'all';
-
   const OPT_LIBSTEMMER_NONE = 'none';
-  const OPT_LIBSTEMMER_FR = 'fr';
-  const OPT_LIBSTEMMER_EN = 'en';
-
-  const OPT_ENABLE_STAR_ON = 'yes';
+  const OPT_LIBSTEMMER_FR   = 'fr';
+  const OPT_LIBSTEMMER_EN   = 'en';
+  const OPT_ENABLE_STAR_ON  = 'yes';
   const OPT_ENABLE_STAR_OFF = 'no';
-
   const OPT_MIN_PREFIX_LEN = 0;
-  const OPT_MIN_INFIX_LEN = 1;
+  const OPT_MIN_INFIX_LEN  = 1;
 
   public function __construct()
   {
@@ -37,7 +35,7 @@ class sphinx_configuration
   public function get_available_charsets()
   {
     $available_charsets = array();
-    $dir = __DIR__ . '/charsetTable/';
+    $dir      = __DIR__ . '/charsetTable/';
     echo $dir;
     $registry = registry::get_instance();
     foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
@@ -66,12 +64,12 @@ class sphinx_configuration
   {
 
     $defaults = array(
-        'sbas' => self::OPT_ALL_SBAS
+      'sbas'       => self::OPT_ALL_SBAS
       , 'libstemmer' => array(self::OPT_LIBSTEMMER_NONE)
-        , 'enable_star' => self::OPT_ENABLE_STAR_ON
+      , 'enable_star'    => self::OPT_ENABLE_STAR_ON
       , 'min_prefix_len' => self::OPT_MIN_PREFIX_LEN
-        , 'min_infix_len' => self::OPT_MIN_INFIX_LEN
-        , 'charset_tables' => array()
+      , 'min_infix_len'  => self::OPT_MIN_INFIX_LEN
+      , 'charset_tables' => array()
     );
 
     $options = array_merge($defaults, $options);
@@ -96,11 +94,11 @@ class sphinx_configuration
       }
     }
 
-    $charsets = explode("\n", $charsets);
+    $charsets    = explode("\n", $charsets);
     $last_detect = false;
 
 
-    for ($i = (count($charsets) - 1); $i >= 0; $i--)
+    for ($i = (count($charsets) - 1); $i >= 0; $i -- )
     {
       if (trim($charsets[$i]) === '')
       {
@@ -115,7 +113,7 @@ class sphinx_configuration
       if ($last_detect === true && substr(trim($charsets[$i]), (strlen(trim($charsets[$i])) - 1), 1) !== ',')
         $charsets[$i] = rtrim($charsets[$i]) . ', ';
       $charsets[$i] = "  " . $charsets[$i] . " \\\n";
-      $last_detect = true;
+      $last_detect  = true;
     }
 
     $charsets = "\\\n" . implode('', $charsets);
@@ -216,7 +214,9 @@ class sphinx_configuration
         CRC32(CONCAT_WS("_", ' . $id . ', r.record_id)) as crc_sbas_record, \
         CONCAT_WS("_", ' . $id . ', r.coll_id) as sbas_coll, \
         CRC32(r.type) as crc_type, r.coll_id, \
-        UNIX_TIMESTAMP(credate) as created_on, 0 as deleted \
+        UNIX_TIMESTAMP(credate) as created_on, 0 as deleted, \
+        CRC32(CONCAT_WS("_", r.coll_id, s.business)) as crc_coll_business, \
+        s.business \
       FROM metadatas m, metadatas_structure s, record r \
       WHERE m.record_id = r.record_id AND m.meta_struct_id = s.id \
         AND s.indexable = "1"
@@ -231,9 +231,12 @@ class sphinx_configuration
     sql_attr_uint         = crc_sbas_record
     sql_attr_uint         = crc_type
     sql_attr_uint         = deleted
+    sql_attr_uint         = business
+    sql_attr_uint         = crc_coll_business
     sql_attr_timestamp    = created_on
 
-    sql_attr_multi        = uint status from query; SELECT m.id as id, CRC32(CONCAT_WS("_", ' . $id . ', s.name)) as name \
+    sql_attr_multi        = uint status from query; SELECT m.id as id, \
+      CRC32(CONCAT_WS("_", ' . $id . ', s.name)) as name \
       FROM metadatas m, status s \
       WHERE s.record_id = m.record_id AND s.value = 1 \
       ORDER BY m.id ASC
@@ -341,6 +344,8 @@ class sphinx_configuration
     rt_attr_uint          = crc_sbas_record
     rt_attr_uint          = crc_type
     rt_attr_uint          = deleted
+    rt_attr_uint          = business
+    rt_attr_uint          = crc_coll_business
     rt_attr_timestamp     = created_on
   }
 
@@ -371,13 +376,17 @@ class sphinx_configuration
     sql_attr_uint         = deleted
     sql_attr_timestamp    = created_on
 
-    sql_attr_multi        = uint status from query; SELECT r.record_id as id, CRC32(CONCAT_WS("_", ' . $id . ', s.name)) as name \
+    sql_attr_multi        = uint status from query; SELECT r.record_id as id, \
+      CRC32(CONCAT_WS("_", ' . $id . ', s.name)) as name \
       FROM record r, status s \
       WHERE s.record_id = r.record_id AND s.value = 1 \
       ORDER BY r.record_id ASC
 
     sql_joined_field      = metas from query; \
-      SELECT record_id as id, value FROM metadatas ORDER BY record_id ASC
+      SELECT m.record_id as id, m.value \
+      FROM metadatas m, metadatas_structure s \
+      WHERE s.id = m.meta_struct_id AND s.business = 0 \
+      ORDER BY m.record_id ASC
 
     # datas returned in the resultset
     sql_query_info        = SELECT r.* FROM record r WHERE r.record_id=$id

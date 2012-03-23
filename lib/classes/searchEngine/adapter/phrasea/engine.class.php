@@ -178,20 +178,20 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
   {
 
     $html = '';
-    $b = true;
+    $b    = true;
     foreach ($proposals["BASES"] as $zbase)
     {
       if ((int) (count($proposals["BASES"]) > 1) && count($zbase["TERMS"]) > 0)
       {
         $style = $b ? 'style="margin-top:0px;"' : '';
-        $b = false;
+        $b     = false;
         $html .= "<h1 $style>" . sprintf(_('reponses::propositions pour la base %s'), $zbase["NAME"]) . "</h1>";
       }
-      $t = true;
+      $t     = true;
       foreach ($zbase["TERMS"] as $path => $props)
       {
         $style = $t ? 'style="margin-top:0px;"' : '';
-        $t = false;
+        $t     = false;
         $html .= "<h2 $style>" . sprintf(_('reponses::propositions pour le terme %s'), $props["TERM"]) . "</h2>";
         $html .= $props["HTML"];
       }
@@ -211,9 +211,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     {
       $proposals = self::proposalsToHTML($this->qp['main']->proposals);
       if (trim($proposals) !== '')
-
-        return "<div style='height:0px; overflow:hidden'>" . $this->qp['main']->proposals["QRY"]
-                . "</div><div class='proposals'>" . $proposals . "</div>";
+      {  return "<div style='height:0px; overflow:hidden'>" . $this->qp['main']->proposals["QRY"]
+          . "</div><div class='proposals'>" . $proposals . "</div>";
+      }
     }
 
     return null;
@@ -233,7 +233,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     assert($offset >= 0);
     assert(is_int($perPage));
 
-    $page = floor($offset / $perPage)+1;
+    $page = floor($offset / $perPage) + 1;
 
     $this->current_page = $page;
     $this->perPage = $perPage;
@@ -247,16 +247,16 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       $query .= ' AND recordtype=' . $this->opt_record_type;
     }
 
-    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
-    $sql = 'SELECT query, query_time FROM cache WHERE session_id = :ses_id';
+    $sql  = 'SELECT query, query_time FROM cache WHERE session_id = :ses_id';
     $stmt = $appbox->get_connection()->prepare($sql);
     $stmt->execute(array(':ses_id' => $session->get_ses_id()));
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row      = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    $date_obj = new DateTime('-10 min');
+    $date_obj   = new DateTime('-10 min');
     $date_quest = new DateTime($row['query_time']);
 
     $reseted = $this->reseted;
@@ -283,12 +283,12 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     $results = new set_result();
 
 
-    $perPage = $this->get_per_page();
-    $page = $this->get_current_page();
+    $perPage    = $this->get_per_page();
+    $page       = $this->get_current_page();
     $this->offset_start = $courcahnum = (($page - 1) * $perPage);
 
     $res = phrasea_fetch_results(
-            $session->get_ses_id(), (int)(($page - 1) * $perPage) + 1, $perPage, false
+      $session->get_ses_id(), (int) (($page - 1) * $perPage) + 1, $perPage, false
     );
 
     $rs = array();
@@ -302,9 +302,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         $sbas_id = phrasea::sbasFromBas($data['base_id']);
 
         $record = new record_adapter(
-                        $sbas_id,
-                        $data['record_id'],
-                        $courcahnum
+            $sbas_id,
+            $data['record_id'],
+            $courcahnum
         );
 
         $results->add_element($record);
@@ -313,7 +313,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       {
 
       }
-      $courcahnum++;
+      $courcahnum ++;
     }
 
     return new searchEngine_results($results, $this);
@@ -325,7 +325,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
    */
   public function reset_cache()
   {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
     phrasea_clear_cache($session->get_ses_id());
     $this->reseted = true;
@@ -357,7 +357,17 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
    */
   public function get_suggestions(Session_Handler $session)
   {
-    return array();
+    $props = array();
+    foreach($this->qp['main']->proposals['QUERIES'] as $prop)
+    {
+      $props[] = array(
+          'value'   => $prop
+          , 'current' => false
+          , 'hits'    => null
+        );
+    }
+
+    return $props;
   }
 
   /**
@@ -375,19 +385,19 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
    */
   protected function query()
   {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
+    $appbox   = appbox::get_instance(\bootstrap::getCore());
+    $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
 
-    $dateLog = date("Y-m-d H:i:s");
+    $dateLog   = date("Y-m-d H:i:s");
     $nbanswers = 0;
 
     $sql = 'UPDATE cache SET query = :query, query_time = NOW()
             WHERE session_id = :ses_id';
 
     $params = array(
-        'query' => $this->get_parsed_query()
-        , ':ses_id' => $session->get_ses_id()
+      'query'   => $this->get_parsed_query()
+      , ':ses_id' => $session->get_ses_id()
     );
 
     $stmt = $appbox->get_connection()->prepare($sql);
@@ -398,9 +408,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     $sort = '';
 
-    if($this->options->get_sortby())
+    if ($this->options->get_sortby())
     {
-      switch($this->options->get_sortord())
+      switch ($this->options->get_sortord())
       {
         case searchEngine_options::SORT_MODE_ASC:
           $sort = '+';
@@ -415,18 +425,24 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     foreach ($this->queries as $sbas_id => $qry)
     {
+      $BF = array();
+
+      foreach ($this->options->get_business_fields() as $base_id)
+      {
+        $BF[] = phrasea::collFromBas($base_id);
+      }
+
       $this->results[$sbas_id] = phrasea_query2(
-              $session->get_ses_id()
-              , $sbas_id
-              , $this->colls[$sbas_id]
-              , $this->arrayq[$sbas_id]
-              , $registry->get('GV_sit')
-              , (string) $session->get_usr_id()
-              , false
-              , $this->opt_search_type == 1 ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
-              , $sort
-              , $this->colls[$sbas_id]  //  allow search on business fields for every coll
-           //   , array()  //  don't search on business fields
+        $session->get_ses_id()
+        , $sbas_id
+        , $this->colls[$sbas_id]
+        , $this->arrayq[$sbas_id]
+        , $registry->get('GV_sit')
+        , (string) $session->get_usr_id()
+        , false
+        , $this->opt_search_type == 1 ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
+        , $sort
+              , $BF
       );
 
       $total_time += $this->results[$sbas_id]['time_all'];
@@ -444,11 +460,11 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
                (null, :log_id, :date, :query, :nbresults, :colls)";
 
       $params = array(
-          ':log_id' => $logger->get_id()
-          , ':date' => $dateLog
-          , ':query' => $this->query
-          , ':nbresults' => $this->results[$sbas_id]["nbanswers"]
-          , ':colls' => implode(',', $this->colls[$sbas_id])
+        ':log_id'    => $logger->get_id()
+        , ':date'      => $dateLog
+        , ':query'     => $this->query
+        , ':nbresults' => $this->results[$sbas_id]["nbanswers"]
+        , ':colls'     => implode(',', $this->colls[$sbas_id])
       );
 
       $stmt = $conn2->prepare($sql3);
@@ -474,8 +490,8 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
    */
   protected function singleParse($sbas)
   {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
+    $appbox       = appbox::get_instance(\bootstrap::getCore());
+    $session      = $appbox->get_session();
     $this->qp[$sbas] = new searchEngine_adapter_phrasea_queryParser(Session_Handler::get_locale());
     $this->qp[$sbas]->debug = false;
     if ($sbas == 'main')
@@ -529,15 +545,15 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       {
         $requestStat = 'xxxx';
 
-        for ($i = 4; ($i <= 64); $i++)
+        for ($i = 4; ($i <= 64); $i ++ )
         {
-          if (!isset($this->opt_status[$i]))
+          if ( ! isset($this->opt_status[$i]))
           {
             $requestStat = 'x' . $requestStat;
             continue;
           }
-          $set = false;
-          $val = '';
+          $set         = false;
+          $val         = '';
           if (isset($this->opt_status[$i][$sbas]) && $this->opt_status[$i][$sbas] == '0')
           {
             $set = true;
@@ -546,9 +562,9 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
           if (isset($this->opt_status[$i][$sbas]) && $this->opt_status[$i][$sbas] == '1')
           {
             if ($set)
-              $val = 'x';
+              $val         = 'x';
             else
-              $val = '1';
+              $val         = '1';
           }
           $requestStat = ( $val != '' ? $val : 'x' ) . $requestStat;
         }
@@ -575,7 +591,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
 
     foreach ($appbox->get_databoxes() as $databox)
     {
-      if (!isset($this->queries[$databox->get_sbas_id()]))
+      if ( ! isset($this->queries[$databox->get_sbas_id()]))
         continue;
 
       //$databox = databox::get_instance($sbas_id);
@@ -622,22 +638,21 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
   {
     $ret = array();
 
-    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
-    $res = phrasea_fetch_results(
-            $session->get_ses_id(), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
+    $res     = phrasea_fetch_results(
+      $session->get_ses_id(), ($record->get_number() + 1), 1, true, "[[em]]", "[[/em]]"
     );
 
-    if (!isset($res['results']) || !is_array($res['results']))
-
+    if ( ! isset($res['results']) || ! is_array($res['results']))
       return array();
-    $rs = $res['results'];
+    $rs  = $res['results'];
     $res = array_shift($rs);
-    if (! isset($res['xml']))
+    if ( ! isset($res['xml']))
     {
       return array();
     }
-    
+
     $sxe = simplexml_load_string($res['xml']);
 
     foreach ($fields as $name => $field)
@@ -645,12 +660,12 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
       if ($sxe->description->$name)
       {
         $val = array();
-        foreach($sxe->description->$name as $value)
+        foreach ($sxe->description->$name as $value)
         {
           $val[] = str_replace(array('[[em]]', '[[/em]]'), array('<em>', '</em>'), (string) $value);
         }
         $separator = $field['separator'] ? $field['separator'][0] : '';
-        $val = implode(' '.$separator.' ', $val);
+        $val       = implode(' ' . $separator . ' ', $val);
       }
       else
       {
