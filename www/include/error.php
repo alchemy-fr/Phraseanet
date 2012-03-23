@@ -14,9 +14,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-include_once __DIR__ . '/../../lib/bootstrap.php';
+$Core = include_once __DIR__ . '/../../lib/bootstrap.php';
 
-$appbox = appbox::get_instance(\bootstrap::getCore());
+$appbox = appbox::get_instance($Core);
 $session = $appbox->get_session();
 phrasea::use_i18n(Session_Handler::get_locale());
 

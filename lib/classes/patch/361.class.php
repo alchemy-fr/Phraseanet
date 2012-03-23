@@ -59,42 +59,83 @@ class patch_361 implements patchInterface
 
     $em = $Core->getEntityManager();
 
-    $repository = $em->getRepository('\Entities\BasketElement');
+    $conn = $appbox->get_connection();
 
-    foreach($repository->findAll() as $basketElement)
+    $sql    = 'SELECT sbas_id, record_id, id FROM BasketElements';
+    $stmt   = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    $count = count($rs);
+
+    foreach ($result as $row)
     {
+      $sbas_id = (int) $row['sbas_id'];
+
       try
       {
-        $basketElement->getRecord();
+        $connbas = connection::getPDOConnection($sbas_id);
       }
-      catch(\Exception $e)
+      catch (\Exception $e)
       {
-        $em->remove($basketElement);
-      }
-    }
-
-
-    $em = $Core->getEntityManager();
-
-    $repository = $em->getRepository('\Entities\Basket');
-
-    foreach($repository->findAll() as $basket)
-    {
-      $htmlDesc = $basket->getDescription();
-
-      $description = trim(strip_tags(str_replace("<br />", "\n", $htmlDesc)));
-
-      if($htmlDesc == $description)
-      {
+        $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
+        $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
         continue;
       }
 
-      $basket->setDescription($description);
+      $sql  = 'SELECT record_id FROM record WHERE record_id = :record_id';
+      $stmt = $connbas->prepare($sql);
+      $stmt->execute(array(':record_id' => $row['record_id']));
+      $rowCount    = $stmt->rowCount();
+      $stmt->closeCursor;
+
+      if ($rowCount == 0)
+      {
+        $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
+        $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
+      }
+    }
+
+
+    $dql = "SELECT b FROM Entities\Basket b WHERE b.description != ''";
+
+    $query = $em->createQuery($dql);
+
+    $count = Paginate::getTotalQueryResults($query);
+
+    $n       = 0;
+    $perPage = 100;
+
+    while ($n < $count)
+    {
+      $paginateQuery = Paginate::getPaginateQuery($query, $n, $perPage);
+
+      $result = $paginateQuery->getResult();
+
+      foreach ($result as $basket)
+      {
+        $htmlDesc = $basket->getDescription();
+
+        $description = trim(strip_tags(str_replace("<br />", "\n", $htmlDesc)));
+
+        if ($htmlDesc == $description)
+        {
+          continue;
+        }
+
+        $basket->setDescription($description);
+      }
+
+      $n += $perPage;
+      $em->flush();
     }
 
     $em->flush();
+
 
     return true;
   }
 
 }
+
