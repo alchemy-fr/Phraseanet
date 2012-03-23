@@ -104,7 +104,7 @@ if ($user->ACL()->has_right('modifyrecord'))
 
   foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection)
   {
-    if (count($bas) === 0 || in_array($collection->get_base_id(), $bas))
+    if (count($parm['bas']) === 0 || in_array($collection->get_base_id(), $parm['bas']))
     {
       $BF[] = $collection->get_base_id();
     }

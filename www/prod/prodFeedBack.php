@@ -53,7 +53,7 @@ switch ($action)
 
       foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection)
       {
-        if (count($bas) === 0 || in_array($collection->get_base_id(), $bas))
+        if (count($params['bases']) === 0 || in_array($collection->get_base_id(), $params['bases']))
         {
           $BF[] = $collection->get_base_id();
         }
