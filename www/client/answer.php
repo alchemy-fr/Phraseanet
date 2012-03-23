@@ -23,7 +23,7 @@ $session  = $appbox->get_session();
 $registry = $appbox->get_registry();
 $user     = $Core->getAuthenticatedUser();
 
-if (!isset($parm))
+if ( ! isset($parm))
 {
 
   $request = http_request::getInstance();
@@ -72,7 +72,7 @@ if (is_null($parm['bas']))
   return;
 }
 
-if (!$parm["mod"])
+if ( ! $parm["mod"])
   $parm["mod"] = "3X6";
 
 
@@ -91,14 +91,33 @@ $mod_xy  = $mod_col * $mod_row;
 
 $tbases = array();
 
-
-
-
 $options = new searchEngine_options();
 
+$parm['bas'] = is_array($parm['bas']) ? $parm['bas'] : array_keys($user->ACL()->get_granted_base());
+
+/* @var $user \User_Adapter */
+if ($user->ACL()->has_right('modifyrecord'))
+{
+  $options->set_business_fields(array());
+
+  $BF = array();
+
+  foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection)
+  {
+    if (count($bas) === 0 || in_array($collection->get_base_id(), $bas))
+    {
+      $BF[] = $collection->get_base_id();
+    }
+  }
+  $options->set_business_fields($BF);
+}
+else
+{
+  $options->set_business_fields(array());
+}
 
 $options->set_bases($parm['bas'], $user->ACL());
-if (!is_array($parm['infield']))
+if ( ! is_array($parm['infield']))
   $parm['infield'] = array();
 
 foreach ($parm['infield'] as $offset => $value)
@@ -108,7 +127,7 @@ foreach ($parm['infield'] as $offset => $value)
 }
 
 $options->set_fields($parm['infield']);
-if (!is_array($parm['status']))
+if ( ! is_array($parm['status']))
   $parm['status'] = array();
 $options->set_status($parm['status']);
 $options->set_search_type($parm['search_type']);
@@ -200,7 +219,7 @@ $max    = (2 * $ecart) + 3;
 
 if ($npages > $max)
 {
-  for ($p = 1; $p <= $npages; $p++)
+  for ($p = 1; $p <= $npages; $p ++ )
   {
     if ($p == $page)
       $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
@@ -226,7 +245,7 @@ if ($npages > $max)
 }
 else
 {
-  for ($p = 1; $p <= $npages; $p++)
+  for ($p = 1; $p <= $npages; $p ++ )
   {
     if ($p == $page)
       $pages .= '<span class="naviButton sel">' . ($p) . '</span>';
@@ -293,7 +312,7 @@ if (count($result->get_datas()) > 0)
   else // MODE GRILLE
   {
     ?><tr style="visibility:hidden"><?php
-    for ($ii = 0; $ii < $mod_col; $ii++)
+    for ($ii = 0; $ii < $mod_col; $ii ++ )
     {
       ?><td class="w160px"></td><?php
     }
@@ -334,22 +353,22 @@ if (count($result->get_datas()) > 0)
     if (($i % $mod_col == 0 && $i != 0))
     {
       ?></tr><tr><?php
-      }
-      if ($mod_col == 1 && $i != 0)
-      {
+    }
+    if ($mod_col == 1 && $i != 0)
+    {
       ?></tr><tr style="height:20px;">
             <td colspan="2" class="td_mod_lst_img"><hr></td>
           </tr><tr><?php
-    }
+      }
 
-    if ($mod_col == 1)
-    {
+      if ($mod_col == 1)
+      {
       ?><td valign="top" class="td_mod_lst_desc"><?php
     }
     else
     {
       ?><td class="w160px"><?php
-    }
+      }
     ?><div class="diapo w160px" style="margin-bottom:0;border-bottom:none;">
               <div class="title"><?php echo $title ?></div><?php
         $status = '';
@@ -369,62 +388,62 @@ if (count($result->get_datas()) > 0)
 
         $isImage    = false;
         $isDocument = false;
-        if (!$isVideo && !$isAudio)
+        if ( ! $isVideo && ! $isAudio)
         {
           $isImage = true;
         }
     ?><table cellpadding="0" cellspacing="0" style="margin: 0pt auto;"><?php
     ?><tr class="h160px"><?php
     ?><td class="image w160px h160px"><?php
-          if ($isVideo)
-          {
-            $duration = $record->get_formated_duration();
-            if ($duration != '')
-              echo '<div class="dmco_text duration">' . $duration . '</div>';
-          }
-          if ($isAudio)
-          {
-            $duration = $record->get_formated_duration();
-            if ($duration != '')
-              echo '<div class="dmco_text duration">' . $duration . '</div>';
-          }
+              if ($isVideo)
+              {
+                $duration = $record->get_formated_duration();
+                if ($duration != '')
+                  echo '<div class="dmco_text duration">' . $duration . '</div>';
+              }
+              if ($isAudio)
+              {
+                $duration = $record->get_formated_duration();
+                if ($duration != '')
+                  echo '<div class="dmco_text duration">' . $duration . '</div>';
+              }
 
-          $onclick = "";
+              $onclick = "";
 
-          if ($record->is_grouping())
-          {
-            $onclick = 'openPreview(\'REG\',0,\'' . $sbas_id . '_' . $record->get_record_id() . '\');';
-          }
-          else
-          {
-            $onclick = 'openPreview(\'RESULT\',' . $record->get_number() . ');';
-          }
+              if ($record->is_grouping())
+              {
+                $onclick = 'openPreview(\'REG\',0,\'' . $sbas_id . '_' . $record->get_record_id() . '\');';
+              }
+              else
+              {
+                $onclick = 'openPreview(\'RESULT\',' . $record->get_number() . ');';
+              }
 
-          if ($mod_col == '1')
-            $pic_roll = '/prod/tooltip/preview/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/';
-          else
-            $pic_roll = '/prod/tooltip/caption/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/answer/';
+              if ($mod_col == '1')
+                $pic_roll = '/prod/tooltip/preview/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/';
+              else
+                $pic_roll = '/prod/tooltip/caption/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/answer/';
 
-          $pic_roll = str_replace(array('&', '"'), array('&amp;', '&quot;'), $pic_roll);
+              $pic_roll = str_replace(array('&', '"'), array('&amp;', '&quot;'), $pic_roll);
     ?><img onclick="<?php echo $onclick ?>" class="<?php echo ($thumbnail->get_width() > $thumbnail->get_height()) ? 'hthbimg' : 'vthbimg' ?> captionTips"  id="IMG<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>"  src="<?php echo $thumbnail->get_url() ?>"  tooltipsrc="<?php echo ($pic_roll) ?>" />
                   </td>
                 </tr>
               </table>
             </div>
             <div class="diapo w160px" style="border-top:none;"><?php ?><div class="buttons"><?php
-                     $minilogos = "";
+                $minilogos = "";
 
-                     $minilogos .= '<div class="minilogos">' . collection::getLogo($record->get_base_id());
-                     $minilogos .= '</div>';
-                     $sbas_id = $record->get_sbas_id();
-                     echo $minilogos;
+                $minilogos .= '<div class="minilogos">' . collection::getLogo($record->get_base_id());
+                $minilogos .= '</div>';
+                $sbas_id = $record->get_sbas_id();
+                echo $minilogos;
 
-                     if (
-                       $ACL->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
-                       $ACL->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
-                       $ACL->has_right_on_base($record->get_base_id(), 'cancmd')
-                     )
-                     {
+                if (
+                  $ACL->has_right_on_base($record->get_base_id(), 'candwnldpreview') ||
+                  $ACL->has_right_on_base($record->get_base_id(), 'candwnldhd') ||
+                  $ACL->has_right_on_base($record->get_base_id(), 'cancmd')
+                )
+                {
       ?><div class="downloader" title="<?php echo _('action : exporter') ?>" onclick="evt_dwnl('<?php echo $sbas_id ?>_<?php echo $record->get_record_id() ?>');"></div><?php
           }
     ?>
@@ -432,11 +451,11 @@ if (count($result->get_datas()) > 0)
                 <?php
                 if ($ACL->has_right_on_base($record->get_base_id(), "canputinalbum"))
                 {
-            ?><div class="baskAdder" title="<?php echo _('action : ajouter au panier') ?>" onClick="evt_add_in_chutier('<?php echo $record->get_sbas_id() ?>', '<?php echo $record->get_record_id() ?>');"></div><?php
-                }
-                if ($mod_col != '1')
-                {
-            ?>
+                  ?><div class="baskAdder" title="<?php echo _('action : ajouter au panier') ?>" onClick="evt_add_in_chutier('<?php echo $record->get_sbas_id() ?>', '<?php echo $record->get_record_id() ?>');"></div><?php
+          }
+          if ($mod_col != '1')
+          {
+                  ?>
                   <div style="margin-right:3px;" class="infoTips" id="INFO<?php echo $record->get_base_id() ?>_<?php echo $record->get_record_id() ?>" tooltipsrc="/prod/tooltip/tc_datas/<?php echo $record->get_sbas_id() ?>/<?php echo $record->get_record_id() ?>/"></div>
                   <?php
                   try
@@ -456,17 +475,17 @@ if (count($result->get_datas()) > 0)
                 ?></div><?php
                 ?></div><?php
                 ?></td><?php
-            if ($mod_col == 1) // 1X10 ou 1X100
-            {
+        if ($mod_col == 1) // 1X10 ou 1X100
+        {
                   ?><td valign="top"><?php
                   ?><div class="desc1"><?php
                   ?><div class="caption" class="desc2"><?php echo ($caption . '<hr/>' . $light_info) ?></div><?php
                   ?></div><?php
                   ?></td><?php
-        }
-
-        $i++;
       }
+
+      $i ++;
+    }
               ?></tr>
     </table>
     <script type="text/javascript">
@@ -480,9 +499,9 @@ if (count($result->get_datas()) > 0)
 
     </script>
   </div><?php
-    }
-    else
-    {
+      }
+      else
+      {
               ?><div><?php echo _('reponses:: Votre recherche ne retourne aucun resultat'); ?></div><?php
   phrasea::getHome('HELP', 'client');
 }
