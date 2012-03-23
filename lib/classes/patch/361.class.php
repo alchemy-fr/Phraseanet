@@ -98,7 +98,7 @@ class patch_361 implements patchInterface
     }
 
 
-    $dql = 'SELECT b FROM Entities\Basket b WHERE b.description != ""';
+    $dql = "SELECT b FROM Entities\Basket b WHERE b.description != ''";
 
     $query = $em->createQuery($dql);
 
