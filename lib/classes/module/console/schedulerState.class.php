@@ -70,7 +70,7 @@ class module_console_schedulerState extends Command
       return 1;
     }
 
-    return;
+    return 0;
   }
 
 }

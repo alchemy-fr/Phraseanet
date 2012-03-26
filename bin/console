@@ -27,6 +27,8 @@ $Core = require_once dirname(__FILE__) . '/../lib/bootstrap.php';
 
 $result_code = 1;
 
+$result_code = 1;
+
 try
 {
   $app = new Application("
@@ -79,11 +81,11 @@ try
   $app->add(new module_console_fieldsMerge('fields:merge'));
 
 
-  $result_code = $app->run();
+  $result_code = $app->run() === 0 ? : 1;
 }
 catch (Exception $e)
 {
-  echo "an error occured";var_dump($e->getMessage());
+  echo sprintf("an error occured : %s", $e->getMessage());
 }
 
 exit($result_code);

@@ -24,7 +24,7 @@ class binaryAdapter_video_toimage_ffmpeg extends binaryAdapter_video_processorAb
    * @var array
    */
   protected $options = array(
-      'size' => null
+    'size' => null
   );
 
   /**
@@ -42,7 +42,7 @@ class binaryAdapter_video_toimage_ffmpeg extends binaryAdapter_video_processorAb
   protected function process(system_file $origine, $dest)
   {
     $tmpDir = $this->registry->get('GV_RootPath')
-            . 'tmp/' . 'tmp' . time() . '/';
+      . 'tmp/' . 'tmp' . time() . '/';
     system_file::mkdir($tmpDir);
 
     $tmpFile = $tmpDir . 'extract-tmp.jpg';
@@ -61,25 +61,25 @@ class binaryAdapter_video_toimage_ffmpeg extends binaryAdapter_video_processorAb
     $dimensions = $this->get_dimensions($origine, $this->options['size']);
 
     $newHeight = $dimensions['height'];
-    $newWidth = $dimensions['width'];
+    $newWidth  = $dimensions['width'];
 
     $system = system_server::get_platform();
 
     if ($system == 'WINDOWS')
     {
       $cmd = $this->binary
-              . ' -i ' . $this->escapeshellargs($origine->getPathname())
-              . ' -s ' . $newWidth . 'x' . $newHeight
-              . ' -vframes 1 -ss ' . $time_cut
-              . '  -f image2 ' . $this->escapeshellargs($tmpFile);
+        . ' -i ' . $this->escapeshellargs($origine->getPathname())
+        . ' -s ' . $newWidth . 'x' . $newHeight
+        . ' -vframes 1 -ss ' . $time_cut
+        . '  -f image2 ' . $this->escapeshellargs($tmpFile);
     }
     else
     {
       $cmd = $this->binary
-              . ' -i ' . $this->escapeshellargs($origine->getPathname())
-              . ' -s ' . $newWidth . 'x' . $newHeight
-              . ' -vframes 1 -ss ' . $time_cut
-              . '  -f image2 ' . $this->escapeshellargs($tmpFile);
+        . ' -i ' . $this->escapeshellargs($origine->getPathname())
+        . ' -s ' . $newWidth . 'x' . $newHeight
+        . ' -vframes 1 -ss ' . $time_cut
+        . '  -f image2 ' . $this->escapeshellargs($tmpFile);
     }
 
     $this->shell_cmd($cmd);
@@ -87,17 +87,27 @@ class binaryAdapter_video_toimage_ffmpeg extends binaryAdapter_video_processorAb
     if ($this->debug)
       $this->log("Commande executee : $cmd \n");
 
-    if (!file_exists($tmpFile))
+    if ( ! file_exists($tmpFile))
+    {
       throw new Exception('Unable to extract image');
+    }
 
-    $cmd = $this->registry->get('GV_pathcomposite')
-            . ' -gravity SouthEast -quiet -compose over "'
-            . $this->registry->get('GV_RootPath') . 'www/skins/icons/play.png"'
-            . ' ' . $this->escapeshellargs($tmpFile)
-            . ' ' . $this->escapeshellargs($dest);
+    if (file_exists($this->registry->get('GV_RootPath') . 'www/skins/icons/play.png'))
+    {
+      $cmd = $this->registry->get('GV_pathcomposite')
+        . ' -gravity SouthEast -quiet -compose over "'
+        . $this->registry->get('GV_RootPath') . 'www/skins/icons/play.png"'
+        . ' ' . $this->escapeshellargs($tmpFile)
+        . ' ' . $this->escapeshellargs($dest);
 
-    $this->shell_cmd($cmd);
-    unlink($tmpFile);
+      $this->shell_cmd($cmd);
+      unlink($tmpFile);
+    }
+    else
+    {
+      rename($tmpFile, $dest);
+    }
+
     rmdir($tmpDir);
 
     return $this;
