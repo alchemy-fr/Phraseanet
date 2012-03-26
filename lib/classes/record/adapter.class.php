@@ -1221,7 +1221,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $this->caption_record = null;
 
     $xml = new DOMDocument();
-    $xml->loadXML($this->get_caption()->serialize(\caption_record::SERIALIZE_XML));
+    $xml->loadXML($this->get_caption()->serialize(\caption_record::SERIALIZE_XML, true));
 
     $this->set_xml($xml);
     $this->reindex();
