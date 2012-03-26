@@ -93,7 +93,7 @@ class module_console_systemClearCache extends Command
 
     $output->write('Finished !', true);
 
-    return;
+    return 0;
   }
 
 }

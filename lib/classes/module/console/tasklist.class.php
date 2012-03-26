@@ -37,34 +37,36 @@ class module_console_tasklist extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    if(!setup::is_installed())
+    if ( ! setup::is_installed())
     {
       throw new RuntimeException('Phraseanet is not set up');
     }
 
     require_once dirname(__FILE__) . '/../../../../lib/bootstrap.php';
 
-    $appbox = appbox::get_instance();
+    $appbox       = appbox::get_instance();
     $task_manager = new task_manager($appbox);
-    $tasks = $task_manager->get_tasks();
+    $tasks        = $task_manager->get_tasks();
 
-    if(count($tasks) === 0)
-      $output->writeln ('No tasks on your install !');
+    if (count($tasks) === 0)
+    {
+      $output->writeln('No tasks detected');
+    }
 
-    foreach($tasks as $task)
+    foreach ($tasks as $task)
     {
       $this->print_task($task, $output);
     }
 
-    return $this;
+    return 0;
   }
-
 
   protected function print_task(task_abstract $task, OutputInterface &$output)
   {
-    $message = $task->get_task_id()."\t".($task->get_status() )."\t".$task->get_title();
+    $message = $task->get_task_id() . "\t" . ($task->get_status() ) . "\t" . $task->get_title();
     $output->writeln($message);
 
     return $this;
   }
+
 }

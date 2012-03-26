@@ -47,7 +47,7 @@ class module_console_schedulerStop extends Command
 
     $task_manager->set_sched_status(task_manager::STATUS_SCHED_TOSTOP);
 
-    return;
+    return 0;
   }
 
 }

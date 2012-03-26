@@ -61,7 +61,7 @@ class module_console_systemBackupDB extends Command
       $this->dump_base($databox, $input, $output);
     }
 
-    return;
+    return 0;
   }
 
   protected function dump_base(base $base, InputInterface $input, OutputInterface $output)

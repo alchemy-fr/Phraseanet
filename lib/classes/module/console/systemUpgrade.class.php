@@ -114,7 +114,7 @@ class module_console_systemUpgrade extends Command
     }
     $output->write('Finished !', true);
 
-    return;
+    return 0;
   }
 
 }

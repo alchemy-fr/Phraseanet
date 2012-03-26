@@ -55,19 +55,24 @@ class module_console_taskrun extends Command
     $task_id = (int) $input->getArgument('task_id');
 
     if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id')))
+    {
       throw new \RuntimeException('Argument must be an Id.');
+    }
 
     $appbox = appbox::get_instance();
     $task_manager = new task_manager($appbox);
     $task = $task_manager->get_task($task_id);
 
     $runner = task_abstract::RUNNER_SCHEDULER;
+
     if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL)
+    {
       $runner = task_abstract::RUNNER_MANUAL;
+    }
 
     $task->run($runner);
 
-    return $this;
+    return 0;
   }
 
 

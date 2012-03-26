@@ -82,7 +82,7 @@ class module_console_systemConfigCheck extends Command
 
     $output->write('Finished !', true);
 
-    return;
+    return 0;
   }
 
   protected function processConstraints(Setup_ConstraintsIterator $constraints, OutputInterface &$output)

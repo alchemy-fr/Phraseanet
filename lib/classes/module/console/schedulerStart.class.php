@@ -50,7 +50,7 @@ class module_console_schedulerStart extends Command
     $scheduler = new task_Scheduler();
     $scheduler->run($output, true);
 
-    return;
+    return 0;
   }
 
 }
