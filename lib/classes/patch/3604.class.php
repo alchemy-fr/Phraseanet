@@ -23,6 +23,7 @@ class patch_3604 implements patchInterface
    * @var string
    */
   private $release = '3.6.0a2';
+
   /**
    *
    * @var Array
@@ -54,62 +55,80 @@ class patch_3604 implements patchInterface
 
   function apply(base &$databox)
   {
-
     $sql = 'SELECT m . *
       FROM metadatas_structure s, metadatas m
       WHERE m.meta_struct_id = s.id
       AND s.multi = "1"';
 
-    $stmt = $databox->get_connection()->prepare($sql);
+    $stmt     = $databox->get_connection()->prepare($sql);
     $stmt->execute();
-    $rs   = $stmt->fetchAll();
+    $rowCount = $stmt->rowCount();
     $stmt->closeCursor();
 
-    $databox->get_connection()->beginTransaction();
+    $n       = 0;
+    $perPage = 1000;
 
-    $sql  = 'INSERT INTO metadatas(id, record_id, meta_struct_id, value)
-                VALUES (null, :record_id, :meta_struct_id, :value)';
-    $stmt = $databox->get_connection()->prepare($sql);
-
-    $databox_fields = array();
-
-    foreach ($rs as $row)
+    while ($n < $rowCount)
     {
-      $meta_struct_id = $row['meta_struct_id'];
 
-      if (!isset($databox_fields[$meta_struct_id]))
+      $sql = 'SELECT m . *
+      FROM metadatas_structure s, metadatas m
+      WHERE m.meta_struct_id = s.id
+      AND s.multi = "1" LIMIT ' . $n . ', ' . $perPage;
+
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $stmt->closeCursor();
+
+      $databox->get_connection()->beginTransaction();
+
+      $sql  = 'INSERT INTO metadatas(id, record_id, meta_struct_id, value)
+                VALUES (null, :record_id, :meta_struct_id, :value)';
+      $stmt = $databox->get_connection()->prepare($sql);
+
+      $databox_fields = array();
+
+      foreach ($rs as $row)
       {
-        $databox_fields[$meta_struct_id] = \databox_field::get_instance($databox, $meta_struct_id);
+        $meta_struct_id = $row['meta_struct_id'];
+
+        if ( ! isset($databox_fields[$meta_struct_id]))
+        {
+          $databox_fields[$meta_struct_id] = \databox_field::get_instance($databox, $meta_struct_id);
+        }
+
+        $values = \caption_field::get_multi_values($row['value'], $databox_fields[$meta_struct_id]->get_separator());
+
+        foreach ($values as $value)
+        {
+          $params = array(
+            ':record_id'      => $row['record_id'],
+            ':meta_struct_id' => $row['meta_struct_id'],
+            ':value'          => $value,
+          );
+          $stmt->execute($params);
+        }
       }
 
-      $values = \caption_field::get_multi_values($row['value'], $databox_fields[$meta_struct_id]->get_separator());
+      $stmt->closeCursor();
 
-      foreach ($values as $value)
+
+      $sql  = 'DELETE FROM metadatas WHERE id = :id';
+      $stmt = $databox->get_connection()->prepare($sql);
+
+      foreach ($rs as $row)
       {
-        $params = array(
-          ':record_id'      => $row['record_id'],
-          ':meta_struct_id' => $row['meta_struct_id'],
-          ':value'          => $value,
-        );
+        $params = array(':id' => $row['id']);
         $stmt->execute($params);
       }
+
+      $stmt->closeCursor();
+
+      $databox->get_connection()->commit();
+
+      $n+= $perPage;
     }
-
-    $stmt->closeCursor();
-
-
-    $sql  = 'DELETE FROM metadatas WHERE id = :id';
-    $stmt = $databox->get_connection()->prepare($sql);
-
-    foreach ($rs as $row)
-    {
-      $params = array(':id' => $row['id']);
-      $stmt->execute($params);
-    }
-
-    $stmt->closeCursor();
-
-    $databox->get_connection()->commit();
 
     return true;
   }
