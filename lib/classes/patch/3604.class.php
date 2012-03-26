@@ -55,6 +55,20 @@ class patch_3604 implements patchInterface
 
   function apply(base &$databox)
   {
+
+    try
+    {
+      $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
+
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
+    }
+    catch(\PDOException $e)
+    {
+
+    }
+    
     $sql = 'SELECT m . *
       FROM metadatas_structure s, metadatas m
       WHERE m.meta_struct_id = s.id
