@@ -25,6 +25,8 @@ use Symfony\Component\Console\Application;
 
 require_once dirname(__FILE__) . '/../lib/classes/bootstrap.class.php';
 
+$ret = 1;
+
 try
 {
   bootstrap::register_autoloads();
@@ -45,7 +47,7 @@ try
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-                  . ' KONSOLE KOMMANDER', GV_version . ' ' . GV_version_name);
+      . ' KONSOLE KOMMANDER', GV_version . ' ' . GV_version_name);
 
   $app->add(new module_console_aboutAuthors('about:authors'));
   $app->add(new module_console_aboutLicense('about:license'));
@@ -74,9 +76,12 @@ try
   $app->add(new module_console_fieldsRename('fields:rename'));
   $app->add(new module_console_fieldsMerge('fields:merge'));
 
-  $app->run();
+  $ret = $app->run() === 0 ? : 1;
 }
 catch (Exception $e)
 {
-  echo "an error occured";var_dump($e->getMessage());
+  echo sprintf("an error occured : %s", $e->getMessage());
 }
+
+exit($ret);
+
