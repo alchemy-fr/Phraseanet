@@ -19,24 +19,23 @@ class module_report_download extends module_report
 {
 
   protected $cor_query = array(
-      'user' => 'log.user',
-      'site' => 'log.site',
-      'societe' => 'log.societe',
-      'pays' => 'log.pays',
-      'activite' => 'log.activite',
-      'fonction' => 'log.fonction',
-      'usrid' => 'log.usrid',
-      'coll_id' => 'record.coll_id',
-      'xml' => 'record.xml',
-      'ddate' => "log_docs.date",
-      'id' => 'log_docs.id',
-      'log_id' => 'log_docs.log_id',
-      'record_id' => 'log_docs.record_id',
-      'final' => 'log_docs.final',
-      'comment' => 'log_docs.comment',
-      'size' => 'subdef.size',
-      'mime' => 'subdef.mime',
-      'file' => 'subdef.file'
+    'user'      => 'log.user',
+    'site'      => 'log.site',
+    'societe'   => 'log.societe',
+    'pays'      => 'log.pays',
+    'activite'  => 'log.activite',
+    'fonction'  => 'log.fonction',
+    'usrid'     => 'log.usrid',
+    'coll_id'   => 'record.coll_id',
+    'ddate'     => "log_docs.date",
+    'id'        => 'log_docs.id',
+    'log_id'    => 'log_docs.log_id',
+    'record_id' => 'log_docs.record_id',
+    'final'     => 'log_docs.final',
+    'comment'   => 'log_docs.comment',
+    'size'      => 'subdef.size',
+    'mime'      => 'subdef.mime',
+    'file'      => 'subdef.file'
   );
 
   /**
@@ -61,7 +60,7 @@ class module_report_download extends module_report
   protected function buildReq($groupby = false, $on = false)
   {
     $sql = $this->sqlBuilder('download')
-                    ->setOn($on)->setGroupBy($groupby)->buildSql();
+        ->setOn($on)->setGroupBy($groupby)->buildSql();
 
     $this->req = $sql->getSql();
     $this->params = $sql->getParams();
@@ -71,16 +70,16 @@ class module_report_download extends module_report
   public function colFilter($field, $on = false)
   {
     $ret = array();
-    $s = $this->sqlBuilder('download');
-    $var = $s->sqlDistinctValByField($field);
-    $sql = $var['sql'];
+    $s      = $this->sqlBuilder('download');
+    $var    = $s->sqlDistinctValByField($field);
+    $sql    = $var['sql'];
     $params = $var['params'];
 
     $registry = registry::get_instance();
 
     $stmt = $s->getConnBas()->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
@@ -96,7 +95,7 @@ class module_report_download extends module_report
         $caption = p4string::format_octets($value);
       else
         $caption = $value;
-      $ret[] = array('val' => $caption, 'value' => $value);
+      $ret[]   = array('val'   => $caption, 'value' => $value);
     }
 
     return $ret;
@@ -110,34 +109,47 @@ class module_report_download extends module_report
    */
   protected function buildResult($rs)
   {
-    $i = 0;
+    $i    = 0;
     $pref = parent::getPreff($this->sbas_id);
 
     foreach ($rs as $row)
     {
       if ($this->enable_limit && ($i > $this->nb_record))
         break;
+
       foreach ($this->champ as $column)
       {
-        $this->formatResult($column, $row[$column], $pref, $i);
+        $this->formatResult($column, $row[$column], $i);
+      }
+
+      if (array_key_exists('record_id', $row))
+      {
+        $record = new \record_adapter($this->sbas_id, $row['record_id']);
+
+        foreach ($pref as $field)
+        {
+          try
+          {
+            $this->result[$i][$field] = $record->get_caption()
+              ->get_field($field)
+              ->get_serialized_values();
+          }
+          catch (\Exception $e)
+          {
+            $this->result[$i][$field] = '';
+          }
+        }
       }
       $i++;
     }
   }
 
-  private function formatResult($column, $value, $pref, $i)
+  private function formatResult($column, $value, $i)
   {
     if ($value)
     {
       if ($column == 'coll_id')
         $this->result[$i][$column] = $this->formatCollId($value);
-      elseif ($column == 'xml' && (sizeof($pref) > 0))
-      {
-        foreach ($pref as $field)
-        {
-          $this->result[$i][$field] = parent::getChamp($value, $field);
-        }
-      }
       elseif ($column == 'ddate')
         $this->result[$i][$column] = $this->formatDateValue($value);
       elseif ($column == 'size')
@@ -161,11 +173,11 @@ class module_report_download extends module_report
 
   private function formatDateValue($value)
   {
-    $datetime = new DateTime($value);
+    $datetime   = new DateTime($value);
     $dateString = $datetime->format(DATE_ATOM);
 
     return $this->pretty_string ?
-            phraseadate::getPrettyString($datetime) : $dateString;
+      phraseadate::getPrettyString($datetime) : $dateString;
   }
 
   private function formatCollId($value)
@@ -175,19 +187,19 @@ class module_report_download extends module_report
 
   public static function getNbDl($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
+    $conn     = connection::getPDOConnection($sbas_id);
     $registry = registry::get_instance();
 
-    $params = array(':site_id' => $registry->get('GV_sit'));
+    $params = array(':site_id'  => $registry->get('GV_sit'));
     $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
-    $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+    $params     = array_merge($params, $datefilter['params'], $collfilter['params']);
 
     $finalfilter = $datefilter['sql'] . ' AND ';
     $finalfilter .= $collfilter['sql'] . ' AND ';
     $finalfilter .= 'log.site = :site_id';
 
-    $sql = '
+    $sql  = '
             SELECT SUM(1) AS nb
             FROM (  log
                 INNER JOIN log_docs as log_date ON log.id = log_date.log_id
@@ -204,7 +216,7 @@ class module_report_download extends module_report
         ';
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row  = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     return $row ? $row['nb'] : 0;
@@ -212,18 +224,20 @@ class module_report_download extends module_report
 
   public static function getTopDl($dmin, $dmax, $sbas_id, $list_coll_id)
   {
-    $conn = connection::getPDOConnection($sbas_id);
-    $registry = registry::get_instance();
+    $databox = \databox::get_instance((int) $sbas_id);
+    $conn    = $databox->get_connection();
 
-    $params = array(':site_id' => $registry->get('GV_sit'));
+    $registry = $databox->get_registry();
+
+    $params = array(':site_id'  => $registry->get('GV_sit'));
     $datefilter = module_report_sqlfilter::constructDateFilter($dmin, $dmax);
     $collfilter = module_report_sqlfilter::constructCollectionFilter($list_coll_id);
-    $params = array_merge($params, $datefilter['params'], $collfilter['params']);
+    $params     = array_merge($params, $datefilter['params'], $collfilter['params']);
 
     $finalfilter = "";
-    $array = array(
-        'preview' => array(),
-        'document' => array()
+    $array       = array(
+      'preview' => array(),
+      'document' => array()
     );
 
     $finalfilter .= $datefilter['sql'] . ' AND ';
@@ -232,7 +246,7 @@ class module_report_download extends module_report
 
 
     $sql = '
-            SELECT record.record_id as id, SUM(1) AS nb, subdef.name, record.xml
+            SELECT record.record_id as id, SUM(1) AS nb, subdef.name
             FROM ( log
                 INNER JOIN log_docs as log_date  ON log.id = log_date.log_id
                 INNER JOIN record    ON log_date.record_id = record.record_id
@@ -251,32 +265,34 @@ class module_report_download extends module_report
 
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
     foreach ($rs as $row)
     {
-      $k = $row['id'] . '_' . $sbas_id;
-      $orig_name = parent::getChamp($row['xml'], 'doc', 'originalname');
+      $record = $databox->get_record($row['id']);
+
+      $k         = $row['id'] . '_' . $sbas_id;
+      $orig_name = $record->get_original_name();
+
       if ($row['name'] == 'document')
       {
-        $array[$row['name']][$k]['nb'] = (int) $row['nb'];
-        $array[$row['name']][$k]['lib'] = $orig_name;
+        $array[$row['name']][$k]['nb']     = (int) $row['nb'];
+        $array[$row['name']][$k]['lib']    = $orig_name;
         $array[$row['name']][$k]['sbasid'] = $sbas_id;
-        $array[$row['name']][$k]['id'] = $row['id'];
+        $array[$row['name']][$k]['id']     = $row['id'];
       }
       elseif ($row['name'] == "preview")
       {
-        $array[$row['name']][$k]['nb'] = (int) $row['nb'];
-        $array[$row['name']][$k]['lib'] = $orig_name;
+        $array[$row['name']][$k]['nb']     = (int) $row['nb'];
+        $array[$row['name']][$k]['lib']    = $orig_name;
         $array[$row['name']][$k]['sbasid'] = $sbas_id;
-        $array[$row['name']][$k]['id'] = $row['id'];
+        $array[$row['name']][$k]['id']     = $row['id'];
       }
     }
 
     return $array;
   }
-
 
 }
 

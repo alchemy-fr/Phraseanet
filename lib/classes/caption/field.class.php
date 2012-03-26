@@ -65,16 +65,17 @@ class caption_field
     $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    if (!$databox_field->is_multi() && count($rs) > 1)
-    {
-      /**
-       * TRIGG CORRECTION;
-       */
-    }
-
     foreach ($rs as $row)
     {
       $this->values[$row['id']] = new caption_Field_Value($databox_field, $record, $row['id']);
+
+      /**
+       * Inconsistent, should not happen
+       */
+      if(!$databox_field->is_multi())
+      {
+        break;
+      }
     }
 
     return $this;
@@ -332,6 +333,79 @@ class caption_field
       }
 
       $n += $increment;
+    }
+
+    return;
+  }
+
+  protected static function merge_metadatas(databox_field $databox_field, record_adapter $record)
+  {
+    $sql = 'SELECT record_id, id, value FROM metadatas
+              WHERE meta_struct_id = :meta_struct_id
+                AND record_id = :record_id';
+
+    $params = array(
+      ':meta_struct_id' => $databox_field->get_id(),
+      ':record_id'      => $record->get_record_id()
+    );
+
+    $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
+    $stmt->execute($params);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    unset($stmt);
+
+    $values            = $current_metadatas = array();
+
+    foreach ($rs as $row)
+    {
+      $current_metadatas[] = array(
+        'meta_id'        => $row['id']
+        , 'meta_struct_id' => $databox_field->get_id()
+        , 'value'          => ''
+      );
+
+      $values[] = $row['value'];
+    }
+
+    try
+    {
+      $record = $databox_field->get_databox()->get_record($record->get_record_id());
+      $record->set_metadatas($current_metadatas);
+      $record->set_metadatas(array(array(
+          'meta_id'        => null
+          , 'meta_struct_id' => $databox_field->get_id()
+          , 'value'          => implode(' ; ', $values)
+        )));
+
+      unset($record);
+    }
+    catch (Exception $e)
+    {
+
+    }
+
+    return;
+  }
+
+  public static function merge_all_metadatas(databox_field $databox_field)
+  {
+    $sql = 'SELECT distinct record_id FROM metadatas
+              WHERE meta_struct_id = :meta_struct_id ';
+
+    $params = array(
+      ':meta_struct_id' => $databox_field->get_id()
+    );
+
+    $stmt = $databox_field->get_databox()->get_connection()->prepare($sql);
+    $stmt->execute($params);
+    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    unset($stmt);
+
+    foreach ($rs as $row)
+    {
+      self::merge_metadatas($databox_field, $databox_field->get_databox()->get_record($row['record_id']));
     }
 
     return;

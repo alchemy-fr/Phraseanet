@@ -765,61 +765,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    */
   public function get_caption()
   {
-    if (!$this->caption_record)
-      $this->caption_record = new caption_record($this, $this->get_databox());
-
-    return $this->caption_record;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_xml()
-  {
-    if (!$this->xml)
-    {
-      $dom_doc = new DOMDocument('1.0', 'UTF-8');
-      $dom_doc->formatOutput = true;
-      $dom_doc->standalone = true;
-
-      $record      = $dom_doc->createElement('record');
-      $record->setAttribute('record_id', $this->get_record_id());
-      $dom_doc->appendChild($record);
-      $description = $dom_doc->createElement('description');
-      $record->appendChild($description);
-
-      $caption = $this->get_caption();
-
-      foreach ($caption->get_fields() as $field)
-      {
-        $values = $field->get_values();
-
-        foreach ($values as $value)
-        {
-          $elem = $dom_doc->createElement($field->get_name());
-          $elem->appendChild($dom_doc->createTextNode($value->getValue()));
-          $elem->setAttribute('meta_id', $value->getId());
-          $elem->setAttribute('meta_struct_id', $field->get_meta_struct_id());
-          $description->appendChild($elem);
-        }
-      }
-
-      $doc = $dom_doc->createElement('doc');
-
-      $tc_datas = $this->get_technical_infos();
-
-      foreach ($tc_datas as $key => $data)
-      {
-        $doc->setAttribute($key, $data);
-      }
-
-      $record->appendChild($doc);
-
-      $this->xml = $dom_doc->saveXML();
-    }
-
-    return $this->xml;
+    
+    return new caption_record($this, $this->get_databox());
   }
 
   /**
@@ -1274,7 +1221,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     $this->caption_record = null;
 
     $xml = new DOMDocument();
-    $xml->loadXML($this->get_xml());
+    $xml->loadXML($this->get_caption()->serialize(\caption_record::SERIALIZE_XML));
 
     $this->set_xml($xml);
     $this->reindex();
@@ -1382,7 +1329,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     return $this;
   }
-
 
   /**
    *
@@ -1591,9 +1537,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
   public function get_hd_file()
   {
     $hd = $this->get_subdef('document');
-    if ($hd->is_physically_present())
 
+    if ($hd->is_physically_present())
+    {
       return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
+    }
+
     return null;
   }
 
@@ -1626,8 +1575,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     $origcoll = phrasea::collFromBas($this->get_base_id());
 
+    $xml = $this->get_caption()->serialize(\caption_record::SERIALIZE_XML);
+
     $appbox->get_session()->get_logger($this->get_databox())
-      ->log($this, Session_Logger::EVENT_DELETE, $origcoll, $this->get_xml());
+      ->log($this, Session_Logger::EVENT_DELETE, $origcoll, $xml);
 
     $sql  = "DELETE FROM record WHERE record_id = :record_id";
     $stmt = $connbas->prepare($sql);

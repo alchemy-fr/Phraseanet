@@ -81,7 +81,7 @@ class searchEngine_adapter_phrasea_queryParser
    *
    * @var array
    */
-  var $proposals   = Array("QRY"   => "", "BASES" => array());
+  var $proposals   = Array("QRY"   => "", "BASES" => array(), "QUERIES" => array());
 
   /**
    * Current language for thesaurus
@@ -119,7 +119,7 @@ class searchEngine_adapter_phrasea_queryParser
       }
     }
 
-    $this->proposals = Array("QRY"   => "", "BASES" => array());
+    $this->proposals = Array("QRY"   => "", "BASES" => array(), "QUERIES" => array());
     $this->phq = $this->mb_trim($phq, 'UTF-8');
     if ($this->phq != "")
 
@@ -662,6 +662,8 @@ class searchEngine_adapter_phrasea_queryParser
           $alt .= "" . $lng . ": " . p4string::MakeString($sy["v"], "js");
         }
       }
+
+      $this->proposals['QUERIES'][$syfound["w"]] = $syfound["w"];
 
       $thtml = $syfound["v"];
       $kjs   = $syfound["k"] ? ("'" . p4string::MakeString($syfound["k"], "js") . "'") : "null";

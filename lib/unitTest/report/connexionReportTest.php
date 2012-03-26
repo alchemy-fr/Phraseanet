@@ -113,7 +113,6 @@ class connexionReportTest extends PhraseanetPHPUnitAbstract
     }
 
     $result = $this->save_report->buildReport(false, 'user');
-    $this->reporttestResultWithChamp($result, $this->save_report->getChamps());
   }
 
 

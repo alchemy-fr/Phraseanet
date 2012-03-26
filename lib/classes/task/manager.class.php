@@ -154,21 +154,8 @@ class task_manager
 
   public function get_scheduler_state()
   {
-    $sql = "SELECT schedstatus,
-            UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS schedqdelay, schedpid
-          FROM sitepreff";
-    $stmt = $this->appbox->get_connection()->prepare($sql);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
-
-    return $row;
-  }
-
-  public function get_scheduler_state2()
-  {
     $pid = NULL;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
     if( ($schedlock = fopen( $lockdir . 'scheduler.lock', 'a+')) )
     {
@@ -185,7 +172,8 @@ class task_manager
       fclose($schedlock);
     }
 
-    $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay, schedstatus AS status FROM sitepreff";
+    $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay
+            , schedstatus AS status FROM sitepreff";
     $stmt = $this->appbox->get_connection()->prepare($sql);
     $stmt->execute();
     $ret = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -198,7 +186,8 @@ class task_manager
       $ret['status'] = 'stopped';
     }
     $ret['pid'] = $pid;
-    return($ret);
+
+    return $ret;
   }
 
   public static function getAvailableTasks()

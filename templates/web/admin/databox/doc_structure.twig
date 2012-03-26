@@ -284,6 +284,9 @@
                   <th>
                     {% trans 'Afficher en titre' %}
                   </th>
+                  <th>
+                    {% trans 'Business Field' %}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -358,9 +361,12 @@
                                         </td>
                                         <td>
                                           <select class="metafield_{{field.get_id()}}" {{disabled}} name="thumbtitle_{{field.get_id()}}">
-              {{_self.thumbtitle_selector(field.get_thumbtitle())}}
-                                            </select>
-                                          </td>
+                                            {{_self.thumbtitle_selector(field.get_thumbtitle())}}
+                                          </select>
+                                        </td>
+                                        <td>
+                                          <input class="metafield_{{field.get_id()}}" {{disabled}} name="business_{{field.get_id()}}" type="checkbox" {% if field.isBusiness() %}checked="checked"{% endif %}/>
+                                        </td>
                                         </tr>
         {% endfor %}
                                       </tbody>

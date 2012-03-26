@@ -157,7 +157,7 @@ switch ($parm['action'])
 
     }
     break;
-  
+
   case 'RESETTASKCRASHCOUNTER':
     $parm = $request->get_parms("task_id");
     try
@@ -206,79 +206,11 @@ switch ($parm['action'])
 
     $output = $ret->saveXML();
     break;
-/*
-  case 'PINGSCHEDULER':
-    $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
-
-    $ret = new DOMDocument("1.0", "UTF-8");
-    $ret->standalone = true;
-    $ret->preserveWhiteSpace = false;
-    $root = $ret->appendChild($ret->createElement("result"));
-    $root->appendChild($ret->createCDATASection(var_export(array(), true)));
-
-    $h = "";
-    $dat = date("H:i:s");
-
-
-    $root->setAttribute('time', $dat);
-
-    $task_manager = new task_manager($appbox);
-    $scheduler_state = $task_manager->get_scheduler_state();
-
-    $schedstatus = $scheduler_state['schedstatus'];
-    $schedqdelay = $scheduler_state['schedqdelay'];
-    $schedpid = $scheduler_state['schedpid'];
-
-    $root->setAttribute('status', $schedstatus);
-    $root->setAttribute('qdelay', $schedqdelay);
-
-    $schedlock = fopen($lockfile = ($lockdir . 'scheduler.lock'), 'a+');
-    if (flock($schedlock, LOCK_SH | LOCK_NB) != true)
-    {
-      $root->setAttribute('locked', '1');
-    }
-    else
-    {
-      $root->setAttribute('locked', '0');
-    }
-    if ($schedpid > 0)
-      $root->setAttribute('pid', $schedpid);
-    else
-      $root->setAttribute('pid', '');
-
-    foreach ($task_manager->get_tasks() as $task)
-    {
-      $task_node = $root->appendChild($ret->createElement("task"));
-      $task_node->setAttribute('id', $task->get_task_id());
-      $task_node->setAttribute('status', $task->get_status());
-      $task_node->setAttribute('active', $task->is_active());
-      $task_node->setAttribute('crashed', $task->get_crash_counter());
-      $task_node->setAttribute('completed', $task->get_completed_percentage());
-
-      $task_node->setAttribute('runner', $task->get_runner());
-      if ($task->is_running())
-      {
-        $task_node->setAttribute('running', '1');
-        $task_node->setAttribute('pid', $task->get_pid());
-      }
-      else
-      {
-        $task_node->setAttribute('running', '0');
-        $task_node->setAttribute('pid', '');
-      }
-
-    }
-
-    $output = $ret->saveXML();
-
-
-    break;
-*/    
   case 'PINGSCHEDULER_JS':
     $ret = array('time'=> date("H:i:s") );
 
     $task_manager = new task_manager($appbox);
-    $ret['scheduler'] = $task_manager->get_scheduler_state2();
+    $ret['scheduler'] = $task_manager->get_scheduler_state();
 
     $ret['tasks'] = array();
 
@@ -311,7 +243,7 @@ switch ($parm['action'])
 
     $output = p4string::jsonencode($ret);
     break;
-    
+
   case 'UNMOUNTBASE':
     $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
     $ret = array('sbas_id' => null);

@@ -210,13 +210,13 @@ class API_V1_adapter extends API_V1_Abstract
 
     $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
     $fields = $record->get_caption()->get_fields();
-    $ret = array();
+    $ret    = array();
     foreach ($fields as $field)
     {
       $ret[$field->get_meta_struct_id()] = array(
         'meta_structure_id' => $field->get_meta_struct_id()
-        , 'name'            => $field->get_name()
-        , 'value'           => $field->get_serialized_values(";")
+        , 'name'              => $field->get_name()
+        , 'value'             => $field->get_serialized_values(";")
       );
     }
     $result->set_datas($ret);
@@ -279,11 +279,35 @@ class API_V1_adapter extends API_V1_Abstract
 
     $options = new searchEngine_options();
 
+    $params['bases'] = is_array($params['bases']) ? $params['bases'] : array_keys($user->ACL()->get_granted_base());
+
+    /* @var $user \User_Adapter */
+    if ($user->ACL()->has_right('modifyrecord'))
+    {
+      $options->set_business_fields(array());
+
+      $BF = array();
+
+      foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection)
+      {
+        if (count($params['bases']) === 0 || in_array($collection->get_base_id(), $params['bases']))
+        {
+          $BF[] = $collection->get_base_id();
+        }
+      }
+      $options->set_business_fields($BF);
+    }
+    else
+    {
+      $options->set_business_fields(array());
+    }
+
     $options->set_bases($params['bases'], $user->ACL());
-    if (!is_array($params['fields']))
+
+    if ( ! is_array($params['fields']))
       $params['fields'] = array();
     $options->set_fields($params['fields']);
-    if (!is_array($params['status']))
+    if ( ! is_array($params['status']))
       $params['status'] = array();
     $options->set_status($params['status']);
     $options->set_search_type($params['search_type']);
@@ -458,14 +482,14 @@ class API_V1_adapter extends API_V1_Abstract
     {
       $metadatas = $request->get('metadatas');
 
-      if (!is_array($metadatas))
+      if ( ! is_array($metadatas))
       {
         throw new Exception('Metadatas should be an array');
       }
 
       foreach ($metadatas as $metadata)
       {
-        if (!is_array($metadata))
+        if ( ! is_array($metadata))
         {
           throw new Exception('Each Metadata value should be an array');
         }
@@ -495,15 +519,15 @@ class API_V1_adapter extends API_V1_Abstract
 
       $datas = strrev($record->get_status());
 
-      if (!is_array($status))
+      if ( ! is_array($status))
         throw new API_V1_exception_badrequest();
       foreach ($status as $n => $value)
       {
         if ($n > 63 || $n < 4)
           throw new API_V1_exception_badrequest();
-        if (!in_array($value, array('0', '1')))
+        if ( ! in_array($value, array('0', '1')))
           throw new API_V1_exception_badrequest();
-        if (!isset($status_bits[$n]))
+        if ( ! isset($status_bits[$n]))
           throw new API_V1_exception_badrequest ();
 
         $datas = substr($datas, 0, ($n - 1)) . $value . substr($datas, ($n + 1));
@@ -748,7 +772,7 @@ class API_V1_adapter extends API_V1_Abstract
       'basket_element_id' => $basket_element->getId()
       , 'order'             => $basket_element->getOrd()
       , 'record'            => $this->list_record($basket_element->getRecord())
-      , 'validation_item'   => !!$basket_element->getValidationDatas()
+      , 'validation_item'   => ! ! $basket_element->getValidationDatas()
     );
 
     if ($basket_element->getValidationDatas())
@@ -1094,7 +1118,7 @@ class API_V1_adapter extends API_V1_Abstract
     $ret    = array();
     foreach ($databox->get_statusbits() as $bit => $status_datas)
     {
-      $ret[$bit] = array('bit'   => $bit, 'state' => !!substr($status, ($bit - 1), 1));
+      $ret[$bit] = array('bit'   => $bit, 'state' => ! ! substr($status, ($bit - 1), 1));
     }
 
     return $ret;
@@ -1132,7 +1156,6 @@ class API_V1_adapter extends API_V1_Abstract
      * @todo  ajouter une option pour avoir les values serialisées
      *        dans un cas multi
      */
-
     return array(
       'meta_id'           => $value->getId()
       , 'meta_structure_id' => $field->get_meta_struct_id()
@@ -1156,7 +1179,7 @@ class API_V1_adapter extends API_V1_Abstract
       , 'pusher_usr_id' => $basket->getPusherId()
       , 'ssel_id'       => $basket->getId()
       , 'updated_on'    => $basket->getUpdated()->format(DATE_ATOM)
-      , 'unread'        => !$basket->getIsRead()
+      , 'unread'        => ! $basket->getIsRead()
     );
 
     if ($basket->getValidation())

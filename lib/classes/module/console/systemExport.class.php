@@ -139,7 +139,7 @@ class module_console_systemExport extends Command
       $output->writeln("Export datas from selected base_ids");
     }
 
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
 
     $total  = $errors = 0;
 
@@ -298,8 +298,9 @@ class module_console_systemExport extends Command
     {
       case 'xml':
         $pathinfo = pathinfo($dest_file->getPathname());
+        $xml = $record->get_caption()->serialize(caption_record::SERIALIZE_XML);
         $xml_file = dirname($outfile) . '/' . $pathinfo['filename'] . '.xml';
-        file_put_contents($xml_file, $record->get_xml());
+        file_put_contents($xml_file, $xml);
         break;
       default:
         break;

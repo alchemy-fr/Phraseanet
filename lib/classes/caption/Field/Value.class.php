@@ -97,7 +97,7 @@ class caption_Field_Value
       /**
        * Vocabulary Control has been deactivated
        */
-      if (!$this->databox_field->getVocabularyControl())
+      if ( ! $this->databox_field->getVocabularyControl())
       {
         $this->removeVocabulary();
       }
@@ -111,7 +111,7 @@ class caption_Field_Value
       /**
        * Current Id is not available anymore
        */
-      elseif (!$this->VocabularyType->validate($this->VocabularyId))
+      elseif ( ! $this->VocabularyType->validate($this->VocabularyId))
       {
         $this->removeVocabulary();
       }
@@ -301,21 +301,42 @@ class caption_Field_Value
       if (isset($sbas_params[$sbas_id]))
       {
         $params   = $sbas_params[$sbas_id];
-        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
+        $sbas_crc = crc32(
+          str_replace(
+            array('.', '%')
+            , '_'
+            , sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])
+          )
+        );
 
         $sphinx_rt = sphinxrt::get_instance($registry);
         $sphinx_rt->replace_in_metas(
-          "metas_realtime" . $sbas_crc, $this->id, $this->databox_field->get_id(), $this->record->get_record_id(), $sbas_id, phrasea::collFromBas($this->record->get_base_id()), ($this->record->is_grouping() ? '1' : '0'), $this->record->get_type(), $value, $this->record->get_creation_date()
+          "metas_realtime" . $sbas_crc
+          , $this->id
+          , $this->databox_field->get_id()
+          , $this->record->get_record_id()
+          , $sbas_id
+          , phrasea::collFromBas($this->record->get_base_id())
+          , ($this->record->is_grouping() ? '1' : '0')
+          , $this->record->get_type()
+          , $value
+          , ($this->databox_field->isBusiness() ? '1' : '0')
+          , $this->record->get_creation_date()
         );
 
         $all_datas = array();
-        foreach ($this->record->get_caption()->get_fields() as $field)
+
+        foreach ($this->record->get_caption()->get_fields(null, true) as $field)
         {
-          if (!$field->is_indexable())
+          if ( ! $field->is_indexable())
+          {
             continue;
+          }
+
           $all_datas[] = $field->get_serialized_values();
         }
-        $all_datas   = implode(' ', $all_datas);
+
+        $all_datas = implode(' ', $all_datas);
 
         $sphinx_rt->replace_in_documents(
           "docs_realtime" . $sbas_crc, //$this->id,
@@ -334,6 +355,35 @@ class caption_Field_Value
   public static function create(databox_field &$databox_field, record_Interface $record, $value, Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null, $vocabularyId = null)
   {
     $connbas = $databox_field->get_connection();
+
+    /**
+     * Check consistency
+     */
+    if ( ! $databox_field->is_multi())
+    {
+      try
+      {
+        $field               = $record->get_caption()->get_field($databox_field->get_name());
+        $caption_field_value = array_pop($field->get_values());
+        /* @var $value \caption_Field_Value */
+        $caption_field_value->set_value($value);
+
+        if ( ! $vocabulary || ! $vocabularyId)
+        {
+          $caption_field_value->removeVocabulary();
+        }
+        else
+        {
+          $caption_field_value->setVocab($vocabulary, $vocabularyId);
+        }
+
+        return $caption_field_value;
+      }
+      catch (\Exception $e)
+      {
+
+      }
+    }
 
     $sql_ins = 'INSERT INTO metadatas
       (id, record_id, meta_struct_id, value, VocabularyType, VocabularyId)
@@ -375,7 +425,7 @@ class caption_Field_Value
 
     $tbranch = $this->databox_field->get_tbranch();
 
-    if (!$tbranch || !$XPATH_thesaurus)
+    if ( ! $tbranch || ! $XPATH_thesaurus)
     {
       return $value;
     }
@@ -445,7 +495,7 @@ class caption_Field_Value
             }
           }
         }
-        if (!$lngfound)
+        if ( ! $lngfound)
         {
           list($term, $context) = $this->splitTermAndContext($fvalue);
           $term = str_replace(array("<em>", "</em>"), array("", ""), $term);

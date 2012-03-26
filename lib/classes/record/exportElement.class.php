@@ -222,7 +222,7 @@ class record_exportElement extends record_adapter
       }
     }
 
-    $xml = $this->get_xml();
+    $xml = $this->get_caption()->serialize(caption_record::SERIALIZE_XML);
 
     if ($xml)
     {

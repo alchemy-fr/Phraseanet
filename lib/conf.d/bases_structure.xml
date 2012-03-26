@@ -2254,6 +2254,14 @@
             <comment></comment>
           </field>
           <field>
+            <name>businessfields</name>
+            <type>tinyint(1) unsigned</type>
+            <null>YES</null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
             <name>error</name>
             <type>tinyint(1) unsigned</type>
             <null></null>
@@ -5112,6 +5120,14 @@
             <comment></comment>
           </field>
           <field>
+            <name>business</name>
+            <type>int(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
             <name>indexable</name>
             <type>int(1) unsigned</type>
             <null></null>
@@ -5474,6 +5490,14 @@
             <null></null>
             <extra></extra>
             <default>0</default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>business</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
             <comment></comment>
           </field>
         </fields>
@@ -6468,6 +6492,14 @@
 
             <comment></comment>
           </field>
+          <field>
+            <name>business</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -7179,6 +7211,15 @@
             <comment></comment>
 
           </field>
+          <field>
+            <name>business</name>
+            <type>tinyint(1) unsigned</type>
+            <null></null>
+            <extra></extra>
+            <default>1</default>
+            <comment></comment>
+          </field>
+
         </fields>
         <indexes>
           <index>

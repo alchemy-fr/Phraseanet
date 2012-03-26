@@ -29,7 +29,7 @@ class ServiceXcacheCacheTest extends PhraseanetPHPUnitAbstract
     if (extension_loaded('xcache'))
     {
       $service = $cache->getDriver();
-      $this->assertTrue($service instanceof \Doctrine\Common\Cache\AbstractCache);
+      $this->assertTrue($service instanceof \Doctrine\Common\Cache\CacheProvider);
     }
     else
     {

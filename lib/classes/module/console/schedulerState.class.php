@@ -49,8 +49,10 @@ class module_console_schedulerState extends Command
     {
       $appbox = appbox::get_instance(\bootstrap::getCore());
       $task_manager = new task_manager($appbox);
+
       $state = $task_manager->get_scheduler_state();
-      if ($state['schedstatus'] == 'started')
+
+      if ($state['status'] == 'started')
       {
         $output->writeln(sprintf(
                         'Scheduler is %s on pid %d'
@@ -60,7 +62,7 @@ class module_console_schedulerState extends Command
       }
       else
       {
-        $output->writeln(sprintf('Scheduler is %s', $state['schedstatus']));
+        $output->writeln(sprintf('Scheduler is %s', $state['status']));
       }
 
       return 0;

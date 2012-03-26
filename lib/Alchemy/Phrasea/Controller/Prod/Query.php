@@ -47,7 +47,29 @@ class Query implements ControllerProviderInterface
 
         $options = new \searchEngine_options();
 
-        $bas = is_array($request->get('bas')) ? $request->get('bas') : array();
+
+        $bas = is_array($request->get('bas')) ? $request->get('bas') : array_keys($user->ACL()->get_granted_base());
+
+        /* @var $user \User_Adapter */
+        if ($user->ACL()->has_right('modifyrecord'))
+        {
+          $options->set_business_fields(array());
+
+          $BF = array();
+
+          foreach ($user->ACL()->get_granted_base(array('canmodifrecord')) as $collection)
+          {
+            if (count($bas) === 0 || in_array($collection->get_base_id(), $bas))
+            {
+              $BF[] = $collection->get_base_id();
+            }
+          }
+          $options->set_business_fields($BF);
+        }
+        else
+        {
+          $options->set_business_fields(array());
+        }
 
         $status = is_array($request->get('status')) ? $request->get('status') : array();
         $fields = is_array($request->get('fields')) ? $request->get('fields') : array();
@@ -100,7 +122,7 @@ class Query implements ControllerProviderInterface
           {
             if ($d2bottom < 4)
             {
-              for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i++)
+              for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i ++ )
               {
                 if ($i == $page)
                   $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" />';
@@ -117,7 +139,7 @@ class Query implements ControllerProviderInterface
                 $string .= "<a onclick='gotopage(1);return false;'>&lt;&lt;</a>";
               else
                 $start = 1;
-              for ($i     = ($start); $i <= $npages; $i++)
+              for ($i     = ($start); $i <= $npages; $i ++ )
               {
                 if ($i == $page)
                   $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" />';
@@ -130,7 +152,7 @@ class Query implements ControllerProviderInterface
           {
             $string .= "<a onclick='gotopage(1);return false;'>&lt;&lt;</a>";
 
-            for ($i = ($page - 2); $i <= ($page + 2); $i++)
+            for ($i = ($page - 2); $i <= ($page + 2); $i ++ )
             {
               if ($i == $page)
                 $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" />';
@@ -160,8 +182,6 @@ class Query implements ControllerProviderInterface
         $explain .= " </b></span>";
         $explain .= '<br><div>' . $result->get_query_time() . ' s</div>dans index ' . $result->get_search_indexes();
         $explain .= "</div>";
-
-
 
         $infoResult = '<a href="#" class="infoDialog" infos="' . str_replace('"', '&quot;', $explain) . '">' . sprintf(_('reponses:: %d reponses'), $result->get_count_total_results()) . '</a> | ' . sprintf(_('reponses:: %s documents selectionnes'), '<span id="nbrecsel"></span>');
 

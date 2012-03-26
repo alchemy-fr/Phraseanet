@@ -33,7 +33,6 @@ class module_report_nav extends module_report
       'fonction' => 'log.fonction',
       'usrid' => 'log.usrid',
       'coll_id' => 'record.coll_id',
-      'xml' => 'record.xml',
       'ddate' => "log.date",
       'id' => 'log_docs.id',
       'log_id' => 'log_docs.log_id',

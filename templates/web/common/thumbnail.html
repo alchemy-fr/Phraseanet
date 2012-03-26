@@ -1,6 +1,10 @@
 {% macro format(thumbnail, b_w, b_h, extraclass, session, wrap)%}
   {% set record_type = thumbnail.get_type() %}
 
+
+  {% set b_width = b_w %}
+  {% set b_height = b_h|default(b_w) %}
+  
   {% if record_type == 'AUDIO_MP3' %}
 
       {% set d_width = 320 %}
@@ -12,9 +16,6 @@
       {% set d_height = 600 %}
       {% set top = 0 %}
   {% else %}
-
-    {% set b_width = b_w %}
-    {% set b_height = b_h|default(b_w) %}
 
     {% set b_ratio = b_width / b_height %}
     {% set i_ratio = thumbnail.get_width() / thumbnail.get_height() %}

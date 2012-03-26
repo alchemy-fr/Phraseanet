@@ -69,8 +69,6 @@ interface record_Interface
 
   public function get_caption();
 
-  public function get_xml();
-
   public function get_original_name();
 
   public function get_title($highlight = false, searchEngine_adapter $searchEngine = null);

@@ -10,6 +10,7 @@
  */
 
 require_once __DIR__ . "/../../lib/classes/bootstrap.class.php";
+require_once __DIR__ . "/PhraseanetPHPUnitListener.class.inc";
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpKernel\Client;
@@ -1313,6 +1314,20 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
    */
   private static function deleteRessources()
   {
+    $skipped = \PhraseanetPHPUnitListener::getSkipped();
+
+    if($skipped)
+    {
+      echo "\nSkipped test : \n\n";
+      foreach($skipped as $skipped_test)
+      {
+        echo $skipped_test . "\n";
+      }
+      echo "\n";
+    }
+
+    \PhraseanetPHPUnitListener::resetSkipped();
+
     if (self::$story_1 instanceof record_adapter)
     {
       self::$story_1->delete();

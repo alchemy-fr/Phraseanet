@@ -85,10 +85,10 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     foreach ($options->get_bases() as $bas)
     {
       $this->distinct_sbas[phrasea::sbasFromBas($bas)] = true;
-      $key = phrasea::sbasFromBas($bas) . '_' . phrasea::collFromBas($bas);
-      $sbas_id = phrasea::sbasFromBas($bas);
+      $key                = phrasea::sbasFromBas($bas) . '_' . phrasea::collFromBas($bas);
+      $sbas_id            = phrasea::sbasFromBas($bas);
       $sbas_ids[$sbas_id] = $sbas_id;
-      $filters[] = crc32($key);
+      $filters[]          = crc32($key);
     }
 
     if ($filters)
@@ -103,18 +103,45 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     foreach ($sbas_ids as $sbas_id)
     {
       $databox = databox::get_instance($sbas_id);
-      $fields = $databox->get_meta_structure();
+      $fields  = $databox->get_meta_structure();
 
       foreach ($fields as $field)
       {
-        if (!in_array($field->get_id(), $options->get_fields()))
+        if ( ! in_array($field->get_id(), $options->get_fields()))
           continue;
 
-        $key = $sbas_id . '_' . $field->get_id();
+        $key       = $sbas_id . '_' . $field->get_id();
         $filters[] = crc32($key);
         $this->search_in_field = true;
       }
     }
+
+    $crc_coll_business = array();
+
+    if ($options->get_business_fields())
+    {
+      $this->search_in_field = true;
+
+      foreach ($options->get_business_fields() as $base_id)
+      {
+        $crc_coll_business[] = crc32(phrasea::collFromBas($base_id) . '_1');
+        $crc_coll_business[] = crc32(phrasea::collFromBas($base_id) . '_0');
+      }
+
+      $non_business = array_diff($options->get_bases(), $options->get_business_fields());
+
+      foreach ($non_business as $base_id)
+      {
+        $crc_coll_business[] = crc32(phrasea::collFromBas($base_id) . '_0');
+      }
+
+      $this->sphinx->SetFilter('crc_coll_business', $crc_coll_business);
+    }
+    elseif ($this->search_in_field)
+    {
+      $this->sphinx->SetFilter('business', array(0));
+    }
+
 
     if ($filters)
     {
@@ -126,14 +153,14 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
      */
     foreach ($sbas_ids as $sbas_id)
     {
-      $databox = databox::get_instance($sbas_id);
-      $s_status = $databox->get_statusbits();
+      $databox     = databox::get_instance($sbas_id);
+      $s_status    = $databox->get_statusbits();
       $status_opts = $options->get_status();
       foreach ($s_status as $n => $status)
       {
-        if (!array_key_exists($n, $status_opts))
+        if ( ! array_key_exists($n, $status_opts))
           continue;
-        if (!array_key_exists($sbas_id, $status_opts[$n]))
+        if ( ! array_key_exists($sbas_id, $status_opts[$n]))
           continue;
         $crc = crc32($sbas_id . '_' . $n);
         $this->sphinx->SetFilter('status', array($crc), ($status_opts[$n][$sbas_id] == '0'));
@@ -228,7 +255,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     else
     {
       $offset = 0;
-      while (($pos = mb_strpos($this->query, '-', $offset)) !== false)
+      while (($pos    = mb_strpos($this->query, '-', $offset)) !== false)
       {
         $offset = $pos + 1;
         if ($pos === 0)
@@ -262,7 +289,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     assert(is_int($offset));
     assert($offset >= 0);
     assert(is_int($perPage));
-    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $appbox  = appbox::get_instance(\bootstrap::getCore());
     $session = $appbox->get_session();
 
     $page = ceil($offset / $perPage) + 1;
@@ -284,7 +311,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     $index_keys = array();
     foreach ($params as $sbas_id => $params)
     {
-      if (!array_key_exists($sbas_id, $this->distinct_sbas))
+      if ( ! array_key_exists($sbas_id, $this->distinct_sbas))
         continue;
       $index_keys[] = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
     }
@@ -308,7 +335,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $found = true;
           }
         }
-        if (!$found)
+        if ( ! $found)
           $index .= 'documents' . implode(', documents', $index_keys);
         $index .= ', docs_realtime' . implode(', docs_realtime', $index_keys);
       }
@@ -329,7 +356,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $found = true;
           }
         }
-        if (!$found)
+        if ( ! $found)
           $index = 'metadatas' . implode(',metadatas', $index_keys);
         $index .= ', metas_realtime' . implode(', metas_realtime', $index_keys);
       }
@@ -337,7 +364,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
     $this->current_index = $index;
 
-    $res = $this->sphinx->Query($this->query, $this->current_index);
+    $res     = $this->sphinx->Query($this->query, $this->current_index);
     $results = new set_result();
 
     if ($res === false)
@@ -370,10 +397,10 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
           try
           {
             $record =
-                    new record_adapter(
-                            $match['attrs']['sbas_id']
-                            , $match['attrs']['record_id']
-                            , $courcahnum
+              new record_adapter(
+                $match['attrs']['sbas_id']
+                , $match['attrs']['record_id']
+                , $courcahnum
             );
 
             $results->add_element($record);
@@ -382,7 +409,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
           {
 
           }
-          $courcahnum++;
+          $courcahnum ++;
         }
       }
     }
@@ -400,7 +427,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     $t = "__" . $keyword . "__";
 
     $trigrams = "";
-    for ($i = 0; $i < strlen($t) - 2; $i++)
+    for ($i        = 0; $i < strlen($t) - 2; $i ++ )
       $trigrams .= substr($t, $i, 3) . " ";
 
     return $trigrams;
@@ -453,8 +480,8 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
   {
 
     $trigrams = $this->BuildTrigrams($word);
-    $query = "\"$trigrams\"/1";
-    $len = strlen($word);
+    $query    = "\"$trigrams\"/1";
+    $len      = strlen($word);
 
     $this->sphinx->ResetGroupBy();
     $this->sphinx->ResetFilters();
@@ -471,7 +498,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     $index_keys = array();
     foreach ($params as $sbas_id => $p)
     {
-      if (!array_key_exists($sbas_id, $this->distinct_sbas))
+      if ( ! array_key_exists($sbas_id, $this->distinct_sbas))
         continue;
       $index_keys[] = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $p['host'], $p['port'], $p['user'], $p['dbname'])));
     }
@@ -484,7 +511,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
       return array();
     }
 
-    if (!$res || !isset($res["matches"]))
+    if ( ! $res || ! isset($res["matches"]))
     {
       return array();
     }
@@ -508,12 +535,12 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
    */
   public function get_suggestions(Session_Handler $session, $only_last_word = false)
   {
-    if (!$this->current_index)
+    if ( ! $this->current_index)
       $this->current_index = '*';
 
-    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $appbox       = appbox::get_instance(\bootstrap::getCore());
     $supposed_qry = mb_strtolower($this->query);
-    $pieces = explode(" ", str_replace(array("all", "last", "et", "ou", "sauf", "and", "or", "except", "in", "dans", "'", '"', "(", ")", "_", "-"), ' ', $supposed_qry));
+    $pieces       = explode(" ", str_replace(array("all", "last", "et", "ou", "sauf", "and", "or", "except", "in", "dans", "'", '"', "(", ")", "_", "-"), ' ', $supposed_qry));
 
     $clef = 'sph_sugg_' . crc32(serialize($this->options) . ' ' . $this->current_index . implode(' ', $pieces) . ' ' . ($only_last_word ? '1' : '0'));
 
@@ -540,7 +567,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
     $suggestions = array();
 
     $total_chaines = 0;
-    $propal_n = $this->get_total_results();
+    $propal_n      = $this->get_total_results();
 
     if (function_exists('enchant_broker_init'))
     {
@@ -561,9 +588,9 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $suggs = array_unique(array_merge($suggs, enchant_dict_suggest($d, $piece)));
           }
 
-          $suggestions[$n] = array('original' => $piece, 'suggs' => $suggs);
+          $suggestions[$n] = array('original' => $piece, 'suggs'    => $suggs);
 
-          $n++;
+          $n ++;
         }
         enchant_broker_free_dict($d);
       }
@@ -576,8 +603,8 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
       {
         foreach ($this->get_sugg_trigrams($piece) as $tri_sugg)
         {
-          $suggestions[$n] = array('original' => $piece, 'suggs' => array($tri_sugg));
-          $n++;
+          $suggestions[$n] = array('original' => $piece, 'suggs'    => array($tri_sugg));
+          $n ++;
         }
       }
     }
@@ -598,12 +625,18 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
         }
         $tmp_qq[] = str_replace($suggestion['original'], $sugg, $supposed_qry);
       }
-      $q_todo = array_unique(array_merge($tmp_qq, array($supposed_qry)));
+      $q_todo   = array_unique(array_merge($tmp_qq, array($supposed_qry)));
 
-      $n++;
+      $n ++;
     }
 
-    $propals = array(array('value' => $supposed_qry, 'current' => true, 'hits' => $this->get_total_results()));
+    $propals = array(
+      array(
+        'value'   => $supposed_qry
+        , 'current' => true
+        , 'hits'    => $this->get_total_results()
+      )
+    );
 
     foreach ($q_todo as $f)
     {
@@ -641,7 +674,12 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
 
       if ($found > 0)
       {
-        $propals[] = array('value' => $f, 'current' => false, 'hits' => $found, 'cache' => $cache);
+        $propals[] = array(
+          'value'   => $f
+          , 'current' => false
+          , 'hits'    => $found
+          , 'cache'   => $cache
+        );
       }
     }
 
@@ -689,8 +727,8 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
    */
   public function build_excerpt($query, array $fields, record_adapter $record)
   {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
+    $appbox           = appbox::get_instance(\bootstrap::getCore());
+    $session          = $appbox->get_session();
     $selected_sbas_id = $record->get_sbas_id();
 
     $index = '';
@@ -724,7 +762,7 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $found = true;
           }
         }
-        if (!$found)
+        if ( ! $found)
           $index .= 'documents' . implode(', documents', $index_keys);
       }
       else
@@ -744,18 +782,18 @@ class searchEngine_adapter_sphinx_engine extends searchEngine_adapter_abstract i
             $found = true;
           }
         }
-        if (!$found)
+        if ( ! $found)
           $index = 'metadatas' . implode(',metadatas', $index_keys);
       }
     }
-    $opts = array(
-        'before_match' => "<em>",
-        'after_match' => "</em>"
+    $opts  = array(
+      'before_match' => "<em>",
+      'after_match'  => "</em>"
     );
 
     $fields_to_send = array();
 
-    foreach($fields as $k=>$f)
+    foreach ($fields as $k => $f)
     {
       $fields_to_send[$k] = $f['value'];
     }

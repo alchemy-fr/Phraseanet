@@ -17,22 +17,20 @@
  */
 class searchEngine_options implements Serializable
 {
-  const RECORD_RECORD = 0;
+
+  const RECORD_RECORD   = 0;
   const RECORD_GROUPING = 1;
-
-  const TYPE_IMAGE = 'image';
-  const TYPE_VIDEO = 'video';
-  const TYPE_AUDIO = 'audio';
-  const TYPE_DOCUMENT = 'document';
-  const TYPE_FLASH = 'flash';
-  const TYPE_ALL = '';
-
-  const SORT_RELEVANCE = 'relevance';
+  const TYPE_IMAGE      = 'image';
+  const TYPE_VIDEO      = 'video';
+  const TYPE_AUDIO      = 'audio';
+  const TYPE_DOCUMENT   = 'document';
+  const TYPE_FLASH      = 'flash';
+  const TYPE_ALL        = '';
+  const SORT_RELEVANCE  = 'relevance';
   const SORT_CREATED_ON = 'created_on';
-  const SORT_RANDOM = 'random';
-
-  const SORT_MODE_ASC = 'asc';
-  const SORT_MODE_DESC = 'desc';
+  const SORT_RANDOM     = 'random';
+  const SORT_MODE_ASC   = 'asc';
+  const SORT_MODE_DESC  = 'desc';
 
   /**
    *
@@ -104,7 +102,8 @@ class searchEngine_options implements Serializable
    *
    * @var string
    */
-  protected $sort_ord = self::SORT_MODE_DESC;
+  protected $sort_ord        = self::SORT_MODE_DESC;
+  protected $business_fields = array();
 
   /**
    * Constructor
@@ -148,6 +147,18 @@ class searchEngine_options implements Serializable
     return $this;
   }
 
+  public function set_business_fields(Array $base_ids)
+  {
+    $this->business_fields = $base_ids;
+
+    return $this;
+  }
+
+  public function get_business_fields()
+  {
+    return $this->business_fields;
+  }
+
   /**
    *
    * @return string
@@ -173,7 +184,7 @@ class searchEngine_options implements Serializable
    */
   public function set_use_stemming($boolean)
   {
-    $this->stemming = !!$boolean;
+    $this->stemming = ! ! $boolean;
 
     return $this;
   }
@@ -351,9 +362,9 @@ class searchEngine_options implements Serializable
    */
   public function set_min_date($min_date)
   {
-    if (!is_null($min_date) && trim($min_date) !== '')
+    if ( ! is_null($min_date) && trim($min_date) !== '')
     {
-      $this->date_min = DateTime::createFromFormat('d/m/Y H:i:s', $min_date.' 00:00:00');
+      $this->date_min = DateTime::createFromFormat('d/m/Y H:i:s', $min_date . ' 00:00:00');
     }
 
     return $this;
@@ -375,9 +386,9 @@ class searchEngine_options implements Serializable
    */
   public function set_max_date($max_date)
   {
-    if (!is_null($max_date) && trim($max_date) !== '')
+    if ( ! is_null($max_date) && trim($max_date) !== '')
     {
-      $this->date_max = DateTime::createFromFormat('d/m/Y H:i:s', $max_date.' 23:59:59');
+      $this->date_max = DateTime::createFromFormat('d/m/Y H:i:s', $max_date . ' 23:59:59');
     }
 
     return $this;
@@ -442,7 +453,7 @@ class searchEngine_options implements Serializable
 
     foreach ($serialized as $key => $value)
     {
-      if(is_null($value))
+      if (is_null($value))
       {
         $value = null;
       }
@@ -453,14 +464,13 @@ class searchEngine_options implements Serializable
       elseif ($value instanceof stdClass)
       {
         $tmpvalue = (array) $value;
-        $value = array();
+        $value    = array();
 
-        foreach($tmpvalue as $k=>$data)
+        foreach ($tmpvalue as $k => $data)
         {
-          $k = ctype_digit($k) ? (int) $k : $k;
+          $k         = ctype_digit($k) ? (int) $k : $k;
           $value[$k] = $data;
         }
-
       }
 
       $this->$key = $value;

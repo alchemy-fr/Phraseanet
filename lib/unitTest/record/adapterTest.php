@@ -30,6 +30,18 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $metadatas   = $system_file->extract_metadatas($databox->get_meta_structure());
     static::$record_23->set_metadatas($metadatas['metadatas']);
 
+
+    /**
+     * Reset thumbtitle in order to have consistent tests (testGet_title)
+     */
+    foreach(static::$record_1->get_databox()->get_meta_structure() as $databox_field)
+    {
+
+      /* @var $databox_field \databox_field */
+      $databox_field->set_thumbtitle(false)->save();
+    }
+
+
     $system_file = new system_file(__DIR__ . '/../testfiles/cestlafete.jpg');
   }
 
@@ -246,19 +258,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     $this->assertTrue((static::$record_1->get_caption() instanceof caption_record));
   }
 
-  public function testGet_xml()
-  {
-    $xml = self::$record_1->get_xml();
-    $sxe = simplexml_load_string($xml);
-    $this->assertInstanceOf('SimpleXMLElement', $sxe);
-
-    foreach (self::$record_1->get_caption()->get_fields() as $field)
-    {
-      $tagname = $field->get_name();
-      $this->assertEquals($field->get_serialized_values(), (string) $sxe->description->$tagname);
-    }
-  }
-
   public function testGet_original_name()
   {
     $this->assertTrue(static::$record_1->get_original_name() === self::$record_sf_1->getFilename());
@@ -366,7 +365,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $metadatas[] = array(
           'meta_struct_id' => $meta_el->get_id()
           , 'meta_id'        => $meta_id
-          , 'value'          => 'un jeu de test'
+          , 'value'          => 'un premier jeu de test'
+        );
+
+        $metadatas[] = array(
+          'meta_struct_id' => $meta_el->get_id()
+          , 'meta_id'        => $meta_id
+          , 'value'          => 'un second jeu de test'
         );
       }
     }
@@ -409,7 +414,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals($multi_imploded, $field->get_serialized_values());
       }
       else
-        $this->assertEquals('un jeu de test', $field->get_serialized_values());
+        $this->assertEquals('un second jeu de test', $field->get_serialized_values());
     }
   }
 

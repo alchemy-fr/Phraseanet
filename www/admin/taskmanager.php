@@ -57,7 +57,7 @@ if($parm["act"] == "DELETETASK")
   <head>
 
     <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/admin/admincolor.css" />
-    <link rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.12/css/ui-lightness/jquery-ui-1.8.12.custom.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css" type="text/css" media="screen" />
     <style>
       .divTop
       {
@@ -69,35 +69,6 @@ if($parm["act"] == "DELETETASK")
         text-align:center;
         table-layout: fixed;
       }
-      table.task_manager {
-        border: 1px solid #e0e0e0;
-        border-collapse: collapse;
-        table-layout: fixed;
-      }
-      table.task_manager tr {
-        height:auto;
-      }
-      table.task_manager th, table.task_manager td {
-        height:auto;
-        padding: 2px;
-        margin: 0px;
-        border: 1px solid #e0e0e0;
-        padding-left: 5px;
-        padding-right: 5px;
-      }
-      table.db_processlist {
-        border: 1px solid #e0e0e0;
-        border-collapse: collapse;
-        table-layout: fixed;
-      }
-      table.db_processlist th, table.db_processlist td {
-        height:auto;
-        padding: 2px;
-        margin: 0px;
-        border: 1px solid #e0e0e0;
-        padding-left: 5px;
-        padding-right: 5px;
-      }
     </style>
     <link rel="stylesheet" href="/include/minify/f=include/jslibs/jquery.contextmenu.css,include/jslibs/jquery-ui-1.8.17/css/ui-lightness/jquery-ui-1.8.17.custom.css" type="text/css" media="screen" />
     <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js,include/jslibs/jquery-ui-1.8.17/jquery-ui-i18n.js,include/jslibs/jquery.contextmenu.js"></script>
@@ -105,7 +76,7 @@ if($parm["act"] == "DELETETASK")
     <script type="text/javascript">
 
       var retPing = null;
-      
+
       var newTaskMenu = null;
 
       var allgetID = new Array ;
@@ -238,8 +209,8 @@ foreach($tasks as $t)
           //            theme:'vista'
         }
       );
-        
- 
+
+
         $('.dropdown.scheduler').contextMenu(
         [
           {
@@ -271,7 +242,7 @@ foreach($tasks as $t)
               title:'Scheduler preferences'
             }
           }
-        ]          
+        ]
         ,
         {
           // theme:'vista',
@@ -298,8 +269,8 @@ foreach($tasks as $t)
         }
       );
 
- 
- 
+
+
         $('.task_manager .dropdown.task').contextMenu(
         [
           {
@@ -343,7 +314,7 @@ foreach($tasks as $t)
           optionsIdx:{'edit':0, 'start':1, 'stop':2, 'delete':3, 'log':5},
           doclick:function()
           {
-              
+
           },
           beforeShow:function()
           {
@@ -369,12 +340,12 @@ foreach($tasks as $t)
               else
                 $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
             }
-             
+
           }
         }
       );
 
- 
+
         self.setTimeout("pingScheduler(true);", 100); // true : loop forever each 2 sec
       })
     </script>
@@ -391,7 +362,7 @@ foreach($tasks as $t)
         <?php echo sprintf(_('Last update at %s.'), '<span id="pingTime"></span>'); ?>
       </span>
     </h1>
- 
+
     <table class="admintable task_manager" cellpadding="0" cellSpacing="0">
       <thead>
         <tr>
@@ -486,7 +457,7 @@ foreach($tasks as $t)
                 }
               });
             }
-              
+
             $.ajax({
               url: "/admin/adminFeedback.php",
               data : {task_id:tid, action:"SETTASKSTATUS", status:status, signal:signal},
@@ -665,7 +636,7 @@ foreach($tasks as $t)
             }
            */
 
-          
+
           function pingScheduler(repeat)
           {
             $.ajax({
@@ -692,7 +663,7 @@ foreach($tasks as $t)
                   $("#STATUS_SCHED").html('');
                   $("#PID_SCHED").html('-');
                 }
-                
+
                 if(ret.tasks)
                 {
                   for(id in ret.tasks)
@@ -701,12 +672,12 @@ foreach($tasks as $t)
                       $("#STATUS_"+id).html(ret.tasks[id].status);
                     else
                       $("#STATUS_"+id).html('');
-                    
+
                     if(ret.tasks[id].pid)
                       $("#PID_"+id).html(ret.tasks[id].pid);
                     else
                       $("#PID_"+id).html('-');
-                    
+
                     if(ret.tasks[id].crashed)
                     {
 //                      $("#WARNING_"+id).show().setAttribute("src", "/skins/icons/alert.png");
@@ -716,7 +687,7 @@ foreach($tasks as $t)
                     {
                       $("#WARNING_"+id).hide();
                     }
-                    
+
                     if(ret.tasks[id].completed && ret.tasks[id].completed>0 && ret.tasks[id].completed<=100)
                     {
                       $("#COMP_"+id).width(ret.tasks[id].completed + "%");
@@ -729,7 +700,7 @@ foreach($tasks as $t)
                     }
                   }
                 }
-                
+
                 if(ret.db_processlist)
                 {
                   var _table = document.createElement('table');

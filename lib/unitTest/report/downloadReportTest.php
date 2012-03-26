@@ -27,17 +27,17 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
 
   public function setUp()
   {
-    $date = new Datetime();
+    $date      = new Datetime();
     $thid->dmax = $date->format("Y-m-d H:i:s");
     $date->modify('-6 month');
     $this->dmin = $date->format("Y-m-d H:i:s");
-    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $appbox    = appbox::get_instance(\bootstrap::getCore());
     $databoxes = $appbox->get_databoxes();
     $this->ret = array();
     foreach ($databoxes as $databox)
     {
       $colls = $databox->get_collections();
-      $rett = array();
+      $rett  = array();
       foreach ($colls as $coll)
       {
         $rett[$coll->get_coll_id()] = $coll->get_coll_id();
@@ -54,7 +54,6 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
     $this->manyCol($ret);
     $ret = $this->report->colFilter('coll_id');
     $this->manyCol($ret);
-
   }
 
   public function manyCol($ret)
@@ -70,84 +69,93 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
   public function testBuildReport()
   {
     $conf = array(
-        'user' => array(_('report:: utilisateurs'), 1, 1, 1, 1),
-        'ddate' => array(_('report:: date'), 1, 0, 1, 1),
-        'record_id' => array(_('report:: record id'), 1, 1, 1, 1),
-        'final' => array(_('phrseanet:: sous definition'), 1, 0, 1, 1),
-        'coll_id' => array(_('report:: collections'), 1, 0, 1, 1),
-        'comment' => array(_('report:: commentaire'), 1, 0, 0, 0),
-        'fonction' => array(_('report:: fonction'), 1, 1, 1, 1),
-        'activite' => array(_('report:: activite'), 1, 1, 1, 1),
-        'pays' => array(_('report:: pays'), 1, 1, 1, 1),
-        'societe' => array(_('report:: societe'), 1, 1, 1, 1)
+      'user' => array(_('report:: utilisateurs'), 1, 1, 1, 1),
+      'ddate' => array(_('report:: date'), 1, 0, 1, 1),
+      'record_id' => array(_('report:: record id'), 1, 1, 1, 1),
+      'final' => array(_('phrseanet:: sous definition'), 1, 0, 1, 1),
+      'coll_id' => array(_('report:: collections'), 1, 0, 1, 1),
+      'comment' => array(_('report:: commentaire'), 1, 0, 0, 0),
+      'fonction' => array(_('report:: fonction'), 1, 1, 1, 1),
+      'activite' => array(_('report:: activite'), 1, 1, 1, 1),
+      'pays' => array(_('report:: pays'), 1, 1, 1, 1),
+      'societe' => array(_('report:: societe'), 1, 1, 1, 1)
     );
 
     foreach ($this->ret as $sbasid => $collections)
     {
       $this->report = new module_report_download(
-                      $this->dmin,
-                      $this->dmax,
-                      $sbasid,
-                      $collections
+          $this->dmin,
+          $this->dmax,
+          $sbasid,
+          $collections
       );
 
       $this->ColFilter();
       $result = $this->report->buildReport($conf);
 
       $this->reporttestPage($result);
-      if (count($result['result']) > 0) $this->reporttestConf($conf);
-      if (count($result['result']) > 0) $this->reporttestResult($result, $conf);
+      if (count($result['result']) > 0)
+        $this->reporttestConf($conf);
+      if (count($result['result']) > 0)
+        $this->reporttestResult($result, $conf);
     }
 
     foreach ($this->ret as $sbasid => $collections)
     {
       $this->report = new module_report_download(
-                      $this->dmin,
-                      $this->dmax,
-                      $sbasid,
-                      $collections
+          $this->dmin,
+          $this->dmax,
+          $sbasid,
+          $collections
       );
 
       $this->ColFilter();
 
       $result = $this->report->buildReport(false, 'fonction');
+
       $this->reporttestPage($result);
-      if (count($result['result']) > 0) $this->reporttestConf($conf, 'fonction');
-      if (count($result['result']) > 0) $this->reporttestResult($result, $conf, 'fonction');
+      if (count($result['result']) > 0)
+        $this->reporttestConf($conf, 'fonction');
+      if (count($result['result']) > 0)
+        $this->reporttestResult($result, $conf, 'fonction');
     }
 
     foreach ($this->ret as $sbasid => $collections)
     {
       $this->report = new module_report_download(
-                      $this->dmin,
-                      $this->dmax,
-                      $sbasid,
-                      $collections
+          $this->dmin,
+          $this->dmax,
+          $sbasid,
+          $collections
       );
 
       $this->ColFilter();
 
       $result = $this->report->buildReport(false, 'record_id', 'DOC');
       $this->reporttestPage($result);
-      if (count($result['result']) > 0) $this->reporttestConf($conf, 'record_id');
-      if (count($result['result']) > 0) $this->reporttestResult($result, $conf, 'record_id');
+      if (count($result['result']) > 0)
+        $this->reporttestConf($conf, 'record_id');
+      if (count($result['result']) > 0)
+        $this->reporttestResult($result, $conf, 'record_id');
     }
 
-        foreach ($this->ret as $sbasid => $collections)
+    foreach ($this->ret as $sbasid => $collections)
     {
       $this->report = new module_report_download(
-                      $this->dmin,
-                      $this->dmax,
-                      $sbasid,
-                      $collections
+          $this->dmin,
+          $this->dmax,
+          $sbasid,
+          $collections
       );
 
       $this->ColFilter();
 
       $result = $this->report->buildReport(false, 'user', 'DOC');
       $this->reporttestPage($result);
-      if (count($result['result']) > 0) $this->reporttestConf($conf, 'user');
-      if (count($result['result']) > 0) $this->reporttestResult($result, $conf, 'user');
+      if (count($result['result']) > 0)
+        $this->reporttestConf($conf, 'user');
+      if (count($result['result']) > 0)
+        $this->reporttestResult($result, $conf, 'user');
     }
   }
 
@@ -157,24 +165,31 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
 
     $nbPage = $this->report->getTotal() / $this->report->getNbRecord();
 
-    if ($this->report->getTotal() > $this->report->getNbRecord()) $this->assertTrue($report['display_nav']);
-    else $this->assertFalse($report['display_nav']);
+    if ($this->report->getTotal() > $this->report->getNbRecord())
+      $this->assertTrue($report['display_nav']);
+    else
+      $this->assertFalse($report['display_nav']);
 
-    if ($report['page'] == 1) $this->assertFalse($report['previous_page']);
-    else $this->assertEquals($report['page'] - 1, $report['previous_page']);
+    if ($report['page'] == 1)
+      $this->assertFalse($report['previous_page']);
+    else
+      $this->assertEquals($report['page'] - 1, $report['previous_page']);
 
-    if (intval(ceil($nbPage)) == $report['page'] || intval(ceil($nbPage)) == 0) $this->assertFalse($report['next_page']);
-    else $this->assertEquals($report['page'] + 1, $report['next_page']);
+    if (intval(ceil($nbPage)) == $report['page'] || intval(ceil($nbPage)) == 0)
+      $this->assertFalse($report['next_page']);
+    else
+      $this->assertEquals($report['page'] + 1, $report['next_page']);
   }
 
   public function reporttestConf($conf, $groupby = false)
   {
     if ($groupby)
     {
-      if($groupby != 'record_id')
+      if ($groupby != 'record_id')
         $this->assertEquals(count($this->report->getDisplay()), 2);
     }
-    else $this->assertEquals(count($this->report->getDisplay()), count($conf));
+    else
+      $this->assertEquals(count($this->report->getDisplay()), count($conf));
 
     if (!$groupby)
     {
@@ -190,10 +205,14 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
         $i = 0;
         foreach ($colconf as $key => $value)
         {
-          if ($i == 1) $this->assertEquals($conf[$col][$i], $value);
-          elseif ($i == 2) $this->assertEquals($conf[$col][$i], $value);
-          elseif ($i == 3) $this->assertEquals($conf[$col][$i], $value);
-          elseif ($i == 4) $this->assertEquals($conf[$col][$i], $value);
+          if ($i == 1)
+            $this->assertEquals($conf[$col][$i], $value);
+          elseif ($i == 2)
+            $this->assertEquals($conf[$col][$i], $value);
+          elseif ($i == 3)
+            $this->assertEquals($conf[$col][$i], $value);
+          elseif ($i == 4)
+            $this->assertEquals($conf[$col][$i], $value);
           $i++;
         }
       }
@@ -201,8 +220,7 @@ class downloadReportTest extends PhraseanetPHPUnitAbstract
     else
     {
 
-        $this->assertArrayHasKey($groupby, $this->report->getDisplay());
-
+      $this->assertArrayHasKey($groupby, $this->report->getDisplay());
     }
   }
 

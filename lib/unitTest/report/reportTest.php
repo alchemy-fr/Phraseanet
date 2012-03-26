@@ -65,15 +65,8 @@ class reportTest extends PhraseanetPHPUnitAbstract
       $this->report = new module_report($this->dmin, $this->dmax, $sbasid, $collections);
       $this->report->setUser_id(self::$user->get_id());
       $this->assertEquals($collections, $this->report->getListCollId());
-      $this->champ($this->report);
       $this->host($this->report);
     }
-  }
-
-  public function champ($report)
-  {
-     $chps = $report->getChamp($this->xml, 'report');
-      $this->assertEquals('hello',$chps);
   }
 
   public function host($report)
@@ -200,7 +193,7 @@ class reportTest extends PhraseanetPHPUnitAbstract
       $report->expects($this->any())->method('buildReq')->will($this->returnValue(''));
       $report->expects($this->any())->method('buildResult')->will($this->returnValue(array()));
       $result = $report->buildReport(false, 'user');
-      $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $report->getChamps());
+//      $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $report->getChamps());
     }
   }
 }

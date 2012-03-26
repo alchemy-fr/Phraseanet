@@ -27,6 +27,7 @@ class set_export extends set_abstract
   protected $display_ftp;
   protected $ftp_datas;
   protected $list;
+  protected $businessFieldsAccess;
 
   /**
    *
@@ -186,17 +187,24 @@ class set_export extends set_abstract
     $this->total_order = 0;
     $this->total_ftp = 0;
 
+    $this->businessFieldsAccess = false;
+
     foreach ($this->elements as $download_element)
     {
+      if($user->ACL()->has_right_on_base($download_element->get_base_id(), 'canmodifrecord'))
+      {
+        $this->businessFieldsAccess = true;
+      }
+
       foreach ($download_element->get_downloadable() as $name => $properties)
       {
         if (!isset($display_download[$name]))
         {
           $display_download[$name] = array(
-            'size'      => 0,
-            'total'     => 0,
-            'available' => 0,
-            'refused'   => array()
+            'size'           => 0,
+            'total'          => 0,
+            'available'      => 0,
+            'refused'        => array()
           );
         }
 
@@ -206,14 +214,13 @@ class set_export extends set_abstract
         {
           $display_download[$name]['available']++;
           $display_download[$name]['label'] = $properties['label'];
+          $display_download[$name]['class'] = $properties['class'];
           $this->total_download++;
-          $display_download[$name]['size'] +=
-            $download_element->get_size($name);
+          $display_download[$name]['size'] += $download_element->get_size($name);
         }
         else
         {
-          $display_download[$name]['refused'][] =
-            $download_element->get_thumbnail();
+          $display_download[$name]['refused'][] = $download_element->get_thumbnail();
         }
       }
       foreach ($download_element->get_orderable() as $name => $properties)
@@ -236,8 +243,7 @@ class set_export extends set_abstract
         }
         else
         {
-          $display_orderable[$name]['refused'][] =
-            $download_element->get_thumbnail();
+          $display_orderable[$name]['refused'][] = $download_element->get_thumbnail();
         }
       }
     }
@@ -357,6 +363,10 @@ class set_export extends set_abstract
   {
     return $this->ftp_datas;
   }
+  public function has_business_fields_access()
+  {
+    return $this->businessFieldsAccess;
+  }
 
   /**
    *
@@ -418,12 +428,15 @@ class set_export extends set_abstract
    * @param boolean $rename_title
    * @return Array
    */
-  public function prepare_export(Array $subdefs, $rename_title = false)
+  public function prepare_export(Array $subdefs, $rename_title, $includeBusinessFields )
   {
     if (!is_array($subdefs))
     {
       throw new Exception('No subdefs given');
     }
+
+    $includeBusinessFields = !!$includeBusinessFields;
+
     $appbox   = appbox::get_instance(\bootstrap::getCore());
     $session  = $appbox->get_session();
     $registry = $appbox->get_registry();
@@ -451,11 +464,16 @@ class set_export extends set_abstract
         'subdefs'       => array()
       );
 
-      $sbas_id = phrasea::sbasFromBas($download_element->get_base_id());
-
       $rename_done = false;
 
-      $desc = $download_element->get_xml();
+      $BF = false;
+
+      if($includeBusinessFields && $user->ACL()->has_right_on_base($download_element->get_base_id(), 'canmodifrecord'))
+      {
+        $BF = true;
+      }
+
+      $desc = $download_element->get_caption()->serialize(caption_record::SERIALIZE_XML, $BF);
 
       $files[$id]['original_name'] =
         $files[$id]['export_name']   =
@@ -689,10 +707,7 @@ class set_export extends set_abstract
 
         system_file::mkdir($caption_dir);
 
-        $desc = self::get_caption(
-            $download_element->get_base_id()
-            , $download_element->get_record_id()
-        );
+        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML, $BF);
 
         $file = $files[$id]["export_name"]
           . $files[$id]["subdefs"]['caption']["ajout"] . '.'
@@ -700,14 +715,12 @@ class set_export extends set_abstract
 
         $path = $caption_dir;
 
-        if ($handle = fopen($path . $file, "w"))
-        {
-          fwrite($handle, $desc);
-          fclose($handle);
-          $files[$id]["subdefs"]['caption']["path"] = $path;
-          $files[$id]["subdefs"]['caption']["file"] = $file;
-          $files[$id]["subdefs"]['caption']["size"] = filesize($path . $file);
-        }
+        file_put_contents($path . $file, $desc);
+
+        $files[$id]["subdefs"]['caption']["path"] = $path;
+        $files[$id]["subdefs"]['caption']["file"] = $file;
+        $files[$id]["subdefs"]['caption']["size"] = filesize($path . $file);
+        $files[$id]["subdefs"]['caption']['businessfields'] = $BF ? '1' : '0';
       }
       if (in_array('caption-yaml', $subdefs))
       {
@@ -716,14 +729,7 @@ class set_export extends set_abstract
           . $session->get_ses_id() . '/';
         system_file::mkdir($caption_dir);
 
-
-
-        $desc = self::get_caption(
-            $download_element->get_base_id()
-            , $download_element->get_record_id()
-            , true
-            , 'yaml'
-        );
+        $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $BF);
 
         $file = $files[$id]["export_name"]
           . $files[$id]["subdefs"]['caption-yaml']["ajout"] . '.'
@@ -731,14 +737,12 @@ class set_export extends set_abstract
 
         $path = $caption_dir;
 
-        if ($handle = fopen($path . $file, "w"))
-        {
-          fwrite($handle, $desc);
-          fclose($handle);
-          $files[$id]["subdefs"]['caption-yaml']["path"] = $path;
-          $files[$id]["subdefs"]['caption-yaml']["file"] = $file;
-          $files[$id]["subdefs"]['caption-yaml']["size"] = filesize($path . $file);
-        }
+        file_put_contents($path . $file, $desc);
+
+        $files[$id]["subdefs"]['caption-yaml']["path"] = $path;
+        $files[$id]["subdefs"]['caption-yaml']["file"] = $file;
+        $files[$id]["subdefs"]['caption-yaml']["size"] = filesize($path . $file);
+        $files[$id]["subdefs"]['caption-yaml']['businessfields'] = $BF ? '1' : '0';
       }
     }
 
@@ -841,121 +845,6 @@ class set_export extends set_abstract
 
   /**
    *
-   * @param Int $bas
-   * @param Int $rec
-   * @param boolean $check_rights
-   * @return string
-   */
-  public static function get_caption($bas, $rec, $check_rights = true, $format = 'xml')
-  {
-    $dom = new DOMDocument();
-    $dom->formatOutput = true;
-    $dom->xmlStandalone = true;
-    $dom->encoding = 'UTF-8';
-
-    $dom_record = $dom->createElement('record');
-    $dom_desc   = $dom->createElement('description');
-
-    $dom_record->appendChild($dom_desc);
-    $dom->appendChild($dom_record);
-
-    $restrict = array();
-
-    $sbas_id = phrasea::sbasFromBas($bas);
-    $record  = new record_adapter($sbas_id, $rec);
-    $desc    = $record->get_xml();
-    $appbox  = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
-
-    $databox = databox::get_instance($sbas_id);
-    $struct  = $databox->get_structure();
-
-    $rights = true;
-
-    if ($check_rights && $session->is_authenticated())
-    {
-      $user   = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-      $rights = $user->ACL()->has_right_on_base($bas, 'canmodifrecord');
-
-      if ($rights == false)
-      {
-        if ($sxe = simplexml_load_string($struct))
-        {
-          $z = $sxe->xpath('/record/description');
-          if ($z && is_array($z))
-          {
-            foreach ($z[0] as $ki => $vi)
-            {
-              if (isset($vi["export"])
-                && ($vi["export"] == "0" || $vi["export"] == "off"))
-                $restrict[$ki] = true;
-            }
-          }
-        }
-      }
-    }
-
-    $buffer = array();
-
-    foreach ($record->get_caption()->get_fields() as $field)
-    {
-      if (($rights || !isset($restrict[$field->get_name()])))
-      {
-        switch ($format)
-        {
-          case 'yaml':
-          case 'yml':
-
-            $vi = $field->get_values();
-
-            if ($field->is_multi())
-            {
-              $buffer[$field->get_name()] = array();
-              foreach ($vi as $value)
-              {
-                $val                          = $value->getValue();
-                $buffer[$field->get_name()][] = ctype_digit($val) ? (int) $val : $val;
-              }
-            }
-            else
-            {
-              $value                      = array_pop($vi);
-              $val                        = $value->getValue();
-              $buffer[$field->get_name()] = ctype_digit($val) ? (int) $val : $val;
-            }
-            break;
-          case 'xml':
-          default:
-            $dom_el                     = $dom->createElement($field->get_name());
-            $dom_el->appendChild($dom->createTextNode($field->get_serialized_values()));
-            $dom_desc->appendChild($dom_el);
-            break;
-        }
-      }
-    }
-
-    $buffer = array('record' => array('description' => $buffer));
-
-    $dumper = new Symfony\Component\Yaml\Dumper();
-    $buffer = $dumper->dump($buffer, 3);
-
-    switch ($format)
-    {
-      case 'xml':
-      default:
-        $ret = $dom->saveXML();
-        break;
-      case 'yaml':
-      case 'yml':
-        $ret = $buffer;
-        break;
-    }
-
-    return $ret;
-  }
-
-  /**
-   *
    * @param string $file
    * @param string $exportname
    * @param string $mime
@@ -986,9 +875,9 @@ class set_export extends set_abstract
       {
         $file_xaccel = str_replace(
           array(
-            $registry->get('GV_X_Accel_Redirect'),
-            $registry->get('GV_RootPath') . 'tmp/download/',
-            $registry->get('GV_RootPath') . 'tmp/lazaret/'
+          $registry->get('GV_X_Accel_Redirect'),
+          $registry->get('GV_RootPath') . 'tmp/download/',
+          $registry->get('GV_RootPath') . 'tmp/lazaret/'
           )
           , array(
           '/' . $registry->get('GV_X_Accel_Redirect_mount_point') . '/',
@@ -1111,7 +1000,7 @@ class set_export extends set_abstract
           $log["rid"]                              = $record_object->get_record_id();
           $log["subdef"]                           = $o;
           $log["poids"]                            = $obj["size"];
-          $log["shortXml"]                         = $record_object->get_xml();
+          $log["shortXml"]                         = $record_object->get_caption()->serialize(caption_record::SERIALIZE_XML);
           $tmplog[$record_object->get_base_id()][] = $log;
           if (!$anonymous && $o == 'document')
             $user->ACL()->remove_remaining($record_object->get_base_id());

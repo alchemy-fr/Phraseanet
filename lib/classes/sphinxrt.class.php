@@ -45,11 +45,11 @@ class sphinxrt
    */
   public static function get_instance(registry $registry, $retry_on_failure = false)
   {
-    if (!$retry_on_failure && self::$_failure === true)
+    if ( ! $retry_on_failure && self::$_failure === true)
     {
       throw new Exception('Unable to connect to sphinx rt, try set retry_on_failure true');
     }
-    if (!self::$_instance instanceof self)
+    if ( ! self::$_instance instanceof self)
     {
       self::$_instance = new self($registry);
     }
@@ -99,8 +99,9 @@ class sphinxrt
     $cl = new SphinxClient();
 
     if ($cl->Status() === false)
-
+    {
       return $this;
+    }
 
     $cl->SetServer($registry->get('GV_sphinx_host'), (int) $registry->get('GV_sphinx_port'));
     $cl->SetConnectTimeout(1);
@@ -108,7 +109,7 @@ class sphinxrt
 
     $status   = strrev($status);
     $new_stat = array();
-    for ($i = 4; $i < strlen($status); $i++)
+    for ($i = 4; $i < strlen($status); $i ++ )
     {
       if (substr($status, $i, 1) == '1')
         $new_stat[] = crc32($sbas_id . '_' . $i);
@@ -122,7 +123,7 @@ class sphinxrt
     return $this;
   }
 
-  public function replace_in_metas($rt_id, $meta_id, $tag_id, $record_id, $sbas_id, $coll_id, $grouping, $type, $content, DateTime $created)
+  public function replace_in_metas($rt_id, $meta_id, $tag_id, $record_id, $sbas_id, $coll_id, $grouping, $type, $content, $business, DateTime $created)
   {
     $crc_sbas_tag    = crc32($sbas_id . '_' . $tag_id);
     $crc_sbas_coll   = crc32($sbas_id . '_' . $coll_id);
@@ -144,6 +145,8 @@ class sphinxrt
         ," . (int) $crc_sbas_record . "
         ," . (int) $crc_type . "
         ,0
+        ," . (int) $business . "
+        ," . (int) crc32($coll_id . '_' . $business) . "
         ," . (int) $created->format('U') . " )";
     $stmt = $this->connection->prepare($sql);
     $stmt->execute();

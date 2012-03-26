@@ -55,8 +55,7 @@ class task_Scheduler
 
   protected static function get_connection()
   {
-    require dirname(__FILE__) . '/../../../config/connexion.inc';
-    return(appbox::get_instance()->get_connection());
+    return appbox::get_instance(\bootstrap::getCore())->get_connection();
   }
 
   public function run($input=null, OutputInterface $output = null) //, $log = true, $log_tasks = true)
@@ -66,7 +65,7 @@ class task_Scheduler
     require_once dirname(__FILE__) . '/../../bootstrap.php';
     $this->input = $input;
     $this->output = $output;
-    $appbox = appbox::get_instance();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
     $registry = $appbox->get_registry();
 
     $nullfile = '';
@@ -122,7 +121,7 @@ class task_Scheduler
 
     $logdir = $registry->get('GV_RootPath') . 'logs/';
 
-    $conn = appbox::get_instance()->get_connection();
+    $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
 
     $taskPoll = array(); // the poll of tasks
 
@@ -184,7 +183,7 @@ class task_Scheduler
           sleep(1);
         try
         {
-          $conn = appbox::get_instance()->get_connection();
+          $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
        }
         catch(ErrorException $e)
         {
