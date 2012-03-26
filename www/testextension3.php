@@ -433,10 +433,15 @@ if($ph_session)
       else
 				$code .= "\t\t\t, '' \t\t// no sort \n" ;
       
+//			if($parm['businessfields'])
+//				$code .= "\t\t\t, TRUE \t\t// search on business fields \n" ;
+//      else
+//				$code .= "\t\t\t, FALSE \t\t// do not search on business fields \n" ;
+      
 			if($parm['businessfields'])
-				$code .= "\t\t\t, TRUE \t\t// search on business fields \n" ;
+				$code .= "\t\t\t," . my_var_export($base["searchcoll"]) . "\t\t// search on business fields \n" ;
       else
-				$code .= "\t\t\t, FALSE \t\t// do not search on business fields \n" ;
+				$code .= "\t\t\t, array() \t\t// do not search on business fields \n" ;
       
       
 			$code .= "\t\t);" ;
