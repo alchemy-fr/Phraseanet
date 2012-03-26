@@ -58,7 +58,7 @@ class module_console_schedulerStop extends Command
       return 1;
     }
 
-    return;
+    return 0;
   }
 
 }
