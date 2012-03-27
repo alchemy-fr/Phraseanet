@@ -75,8 +75,15 @@ class module_console_checkExtension extends Command
       $output->writeln("<info>$function</info>");
     }
 
-    require (__DIR__ . '/../../../../config/connexion.inc');
-
+    $Core = \bootstrap::getCore();
+    $configuration = $Core->getConfiguration();
+    $choosenConnection = $configuration->getPhraseanet()->get('database');
+    $connexion = $configuration->getConnexion($choosenConnection);
+    $hostname = $connexion->get('host');
+    $port = $connexion->get('port');
+    $user = $connexion->get('user');
+    $password = $connexion->get('password');
+    $dbname = $connexion->get('dbname');
 
     $output->writeln("\n-- phrasea_conn --");
 
