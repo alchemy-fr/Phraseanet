@@ -1739,7 +1739,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
       {
         $this->generate_subdef($subdef, $pathdest);
       }
-      catch (Exception $e)
+      catch (\Exception $e)
       {
         if ($log_details)
           echo $e->getMessage() . "\n";
