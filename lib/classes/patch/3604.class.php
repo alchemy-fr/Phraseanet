@@ -55,6 +55,31 @@ class patch_3604 implements patchInterface
 
   function apply(base &$databox)
   {
+    /**
+     * Fail if upgrade has previously failed, no problem
+     */
+    try
+    {
+      $sql  = "ALTER TABLE `metadatas`
+              ADD `updated` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1',
+              ADD INDEX ( `updated` )";
+
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
+
+      $sql  = 'UPDATE metadatas SET updated = "0"
+              WHERE meta_struct_id
+                IN (SELECT id FROM metadatas_structure WHERE multi = "1")';
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
+    }
+    catch (\Exception $e)
+    {
+
+    }
+
 
     try
     {
@@ -72,7 +97,7 @@ class patch_3604 implements patchInterface
     $sql = 'SELECT m . *
       FROM metadatas_structure s, metadatas m
       WHERE m.meta_struct_id = s.id
-      AND s.multi = "1"';
+      AND s.multi = "1" AND updated="0"';
 
     $stmt     = $databox->get_connection()->prepare($sql);
     $stmt->execute();
@@ -84,7 +109,6 @@ class patch_3604 implements patchInterface
 
     while ($n < $rowCount)
     {
-
       $sql = 'SELECT m . *
       FROM metadatas_structure s, metadatas m
       WHERE m.meta_struct_id = s.id
@@ -142,6 +166,21 @@ class patch_3604 implements patchInterface
       $databox->get_connection()->commit();
 
       $n+= $perPage;
+    }
+
+    /**
+     * Remove the extra column
+     */
+    try
+    {
+      $sql  = "ALTER TABLE `metadatas` DROP `updated`";
+      $stmt = $databox->get_connection()->prepare($sql);
+      $stmt->execute();
+      $stmt->closeCursor();
+    }
+    catch (\Exception $e)
+    {
+
     }
 
     return true;
