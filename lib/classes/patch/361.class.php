@@ -1,5 +1,7 @@
 <?php
 
+use DoctrineExtensions\Paginate\Paginate;
+
 /*
  * This file is part of Phraseanet
  *
@@ -138,4 +140,5 @@ class patch_361 implements patchInterface
   }
 
 }
+
 
