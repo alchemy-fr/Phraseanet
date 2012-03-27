@@ -139,7 +139,7 @@ class module_console_systemExport extends Command
       $output->writeln("Export datas from selected base_ids");
     }
 
-    $appbox = \appbox::get_instance();
+    $appbox = \appbox::get_instance(\bootstrap::getCore());
 
     $total  = $errors = 0;
 
