@@ -506,33 +506,53 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     $databox = $record->get_databox();
     $connbas = $databox->get_connection();
 
-    $path = $system_file->getPath();
+    $path    = $system_file->getPath();
     $newname = $system_file->getFilename();
 
     $datas = $system_file->get_technical_datas();
 
-    $mime = $system_file->get_mime();
-    $size = $system_file->getSize();
+    $params = array(
+      ':path'       => $path,
+      ':file'       => $newname,
+      ':baseurl'    => $baseurl,
+      ':width'      => isset($datas[system_file::TC_DATAS_WIDTH]) ? $datas[system_file::TC_DATAS_WIDTH] : '',
+      ':height'     => isset($datas[system_file::TC_DATAS_HEIGHT]) ? $datas[system_file::TC_DATAS_HEIGHT] : '',
+      ':mime'       => $system_file->get_mime(),
+      ':size'       => $system_file->getSize(),
+      ':dispatched' => 1,
+    );
 
-    $sql = "REPLACE INTO subdef
+    try
+    {
+      $subdef = new self($record, $name);
+
+      if(!$subdef->is_physically_present())
+      {
+        throw new \Exception_Media_SubdefNotFound('Require the real one');
+      }
+      
+      $sql = "UPDATE subdef
+              SET path = :path, file = :file, baseurl = :baseurl
+                  , width = :width , height = :height, mime = :mime
+                  , size = :size, dispatched = :dispatched, updated_on = NOW()
+              WHERE subdef_id = :subdef_id";
+
+      $params[':subdef_id'] = $subdef->get_subdef_id();
+    }
+    catch (\Exception_Media_SubdefNotFound $e)
+    {
+      $sql = "INSERT INTO subdef
               (record_id, name, path, file, baseurl, width
                 , height, mime, size, dispatched, created_on, updated_on)
               VALUES (:record_id, :name, :path, :file, :baseurl, :width, :height
                 , :mime, :size, :dispatched, NOW(), NOW())";
 
+      $params[':record_id'] = $record->get_record_id();
+      $params[':name'] = $name;
+    }
+
     $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(
-        ':record_id' => $record->get_record_id(),
-        ':name' => $name,
-        ':path' => $path,
-        ':file' => $newname,
-        ':baseurl' => $baseurl,
-        ':width' => isset($datas[system_file::TC_DATAS_WIDTH]) ? $datas[system_file::TC_DATAS_WIDTH] : '',
-        ':height' => isset($datas[system_file::TC_DATAS_HEIGHT]) ? $datas[system_file::TC_DATAS_HEIGHT] : '',
-        ':mime' => $system_file->get_mime(),
-        ':size' => $system_file->getSize(),
-        ':dispatched' => 1,
-    ));
+    $stmt->execute($params);
     $stmt->closeCursor();
 
     return new self($record, $name);

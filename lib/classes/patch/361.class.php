@@ -90,7 +90,7 @@ class patch_361 implements patchInterface
       $stmt = $connbas->prepare($sql);
       $stmt->execute(array(':record_id' => $row['record_id']));
       $rowCount    = $stmt->rowCount();
-      $stmt->closeCursor;
+      $stmt->closeCursor();
 
       if ($rowCount == 0)
       {
