@@ -211,7 +211,8 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
     {
       $proposals = self::proposalsToHTML($this->qp['main']->proposals);
       if (trim($proposals) !== '')
-      {  return "<div style='height:0px; overflow:hidden'>" . $this->qp['main']->proposals["QRY"]
+      {
+        return "<div style='height:0px; overflow:hidden'>" . $this->qp['main']->proposals["QRY"]
           . "</div><div class='proposals'>" . $proposals . "</div>";
       }
     }
@@ -358,13 +359,13 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
   public function get_suggestions(Session_Handler $session)
   {
     $props = array();
-    foreach($this->qp['main']->proposals['QUERIES'] as $prop)
+    foreach ($this->qp['main']->proposals['QUERIES'] as $prop)
     {
       $props[] = array(
-          'value'   => $prop
-          , 'current' => false
-          , 'hits'    => null
-        );
+        'value'   => $prop
+        , 'current' => false
+        , 'hits'    => null
+      );
     }
 
     return $props;
@@ -442,7 +443,7 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         , false
         , $this->opt_search_type == 1 ? PHRASEA_MULTIDOC_REGONLY : PHRASEA_MULTIDOC_DOCONLY
         , $sort
-              , $BF
+        , $BF
       );
 
       $total_time += $this->results[$sbas_id]['time_all'];

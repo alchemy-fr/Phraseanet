@@ -190,6 +190,8 @@ class module_console_checkExtension extends Command
         , $usr_id
         , FALSE
         , PHRASEA_MULTIDOC_DOCONLY
+        , ''
+        , array()
       );
 
 
