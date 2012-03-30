@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-require_once __DIR__ . "/../../lib/classes/bootstrap.class.php";
 require_once __DIR__ . "/PhraseanetPHPUnitListener.class.inc";
 
 use Silex\WebTestCase;

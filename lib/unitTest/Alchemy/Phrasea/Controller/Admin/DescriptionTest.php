@@ -237,7 +237,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         , 'type_' . $id => 'string'
         , 'vocabulary_' . $id => 'User'
     ));
-    $this->assertTrue($this->client->getResponse()->isOk());
+    $this->assertFalse($this->client->getResponse()->isOk());
     $this->assertEquals("You are not allowed to access this zone", $this->client->getResponse()->getContent());
     $field->delete();
   }
@@ -253,7 +253,7 @@ class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $databox = array_shift($appbox->get_databoxes());
 
     $this->client->request("GET", "/description/" . $databox->get_sbas_id() . "/");
-    $this->assertTrue($this->client->getResponse()->isOk());
+    $this->assertFalse($this->client->getResponse()->isOk());
     $this->assertEquals("You are not allowed to access this zone", $this->client->getResponse()->getContent());
   }
 
