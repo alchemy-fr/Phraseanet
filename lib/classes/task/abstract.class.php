@@ -262,7 +262,7 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
     return $this->completed_percentage;
   }
 
-  protected $period = 60;
+  protected $period = 10;
   protected $taskid = NULL;
   protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
   protected $argt = array(
@@ -611,20 +611,11 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
 
   protected function load_settings(SimpleXMLElement $sx_task_settings)
   {
-    $this->period = (int) $sx_task_settings->period;
-    if($this->period <= 0 || $this->period >= 60 * 60)
-      $this->period = 60;
-
-    $this->maxrecs = (int) $sx_task_settings->maxrecs;
-    if($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000)
-      $this->maxrecs = 100;
-    $this->maxmegs = (int) $sx_task_settings->maxmegs;
-    if($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512)
-      $this->maxmegs = 24;
-    $this->record_buffer_size = (int) $sx_task_settings->flush;
-    if($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100)
-      $this->record_buffer_size = 10;
-
+    $this->period = max(10, min(3600, (int) $sx_task_settings->period));
+    $this->maxrecs = max(10, min(1000,  (int) $sx_task_settings->maxrecs));
+    $this->maxmegs = max(16, min(512,  (int) $sx_task_settings->maxmegs));
+    $this->record_buffer_size = max(1, min(100,  (int) $sx_task_settings->flush));
+    
     return $this;
   }
 
