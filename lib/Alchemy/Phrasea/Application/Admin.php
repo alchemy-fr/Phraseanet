@@ -27,8 +27,6 @@ return call_user_func(
 
       $app['Core'] = \bootstrap::getCore();
 
-      $app["debug"] = $app["Core"]->getConfiguration()->isDebug();
-
       $app->mount('/', new Controller\Root());
       $app->mount('/publications', new Controller\Publications());
       $app->mount('/users', new Controller\Users());
@@ -38,10 +36,8 @@ return call_user_func(
       $app->mount('/tests/connection', new ControllerUtils\ConnectionTest());
       $app->mount('/tests/pathurl', new ControllerUtils\PathFileTest());
 
-      $app->error(function(\Exception $e)
-        {
-          return $e->getMessage();
-        });
-
+      $app->error(function($e){
+        return new \Symfony\Component\HttpFoundation\Response($e->getMessage(), 403);
+      });
       return $app;
     });

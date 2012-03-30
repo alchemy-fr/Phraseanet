@@ -26,8 +26,6 @@ return call_user_func(function()
       $app         = new \Silex\Application();
       $app['Core'] = \bootstrap::getCore();
 
-      $app["debug"] = $app["Core"]->getConfiguration()->isDebug();
-
       $app->before(function(Request $request)
         {
           $request->setRequestFormat(
@@ -115,15 +113,15 @@ return call_user_func(function()
 
             return new Response($json, 200, array('Content-Type' => 'application/json'));
           }
-          if($e instanceof \Exception_BadRequest)
+          if ($e instanceof \Exception_BadRequest)
           {
             return new Response('Bad Request', 400);
           }
-          if($e instanceof \Exception_NotFound)
+          if ($e instanceof \Exception_NotFound)
           {
             return new Response('Not Found', 404);
           }
-          if($e instanceof \Exception_Forbidden)
+          if ($e instanceof \Exception_Forbidden)
           {
             return new Response('Not Found', 403);
           }

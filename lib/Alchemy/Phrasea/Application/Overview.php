@@ -33,8 +33,6 @@ return call_user_func(
       $appbox  = \appbox::get_instance($app['Core']);
       $session = $appbox->get_session();
 
-      $app["debug"] = $app["Core"]->getConfiguration()->isDebug();
-
       $deliver_content = function(\Session_Handler $session, \record_adapter $record, $subdef, $watermark, $stamp, $app)
         {
 
@@ -86,16 +84,16 @@ return call_user_func(
 
           $record->get_type();
 
-          if (!$session->is_authenticated())
+          if ( ! $session->is_authenticated())
             throw new \Exception_Session_NotAuthenticated();
 
           $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
 
-          if (!$user->ACL()->has_access_to_subdef($record, $subdef))
+          if ( ! $user->ACL()->has_access_to_subdef($record, $subdef))
             throw new \Exception_UnauthorizedAction();
 
           $stamp     = false;
-          $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+          $watermark = ! $user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
           if ($watermark)
           {
@@ -145,13 +143,24 @@ return call_user_func(
         {
 
           $databox = \databox::get_instance((int) $sbas_id);
-          $record  = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
-          if (!($record instanceof \record_adapter))
-            throw new \Exception('bad luck');
-          /* @var $twig \Twig_Environment */
-          $twig    = $app['Core']->getTwig();
 
-          return $twig->render('overview.twig', array('subdef_name' => $subdef, 'module_name' => 'overview', 'module'      => 'overview', 'view'        => 'overview', 'record'      => $record));
+          $record = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
+
+          if ( ! ($record instanceof \record_adapter))
+            throw new \Exception('bad luck');
+
+          /* @var $twig \Twig_Environment */
+          $twig = $app['Core']->getTwig();
+
+          $params = array(
+            'subdef_name' => $subdef
+            , 'module_name' => 'overview'
+            , 'module'      => 'overview'
+            , 'view'        => 'overview'
+            , 'record'      => $record
+          );
+
+          return $twig->render('overview.twig', $params);
         })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
 
@@ -160,7 +169,7 @@ return call_user_func(
           {
             $databox = \databox::get_instance((int) $sbas_id);
             $record  = \media_Permalink_Adapter::challenge_token($databox, $key, $record_id, $subdef);
-            if (!($record instanceof \record_adapter))
+            if ( ! ($record instanceof \record_adapter))
               throw new \Exception('bad luck');
 
             $watermark = $stamp     = false;
@@ -169,7 +178,7 @@ return call_user_func(
             {
               $user = \User_Adapter::getInstance($session->get_usr_id(), \appbox::get_instance($app['Core']));
 
-              $watermark = !$user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
+              $watermark = ! $user->ACL()->has_right_on_base($record->get_base_id(), 'nowatermark');
 
               if ($watermark)
               {
