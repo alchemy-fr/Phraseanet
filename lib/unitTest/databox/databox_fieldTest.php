@@ -402,11 +402,6 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
   {
     $this->assertFalse($this->object_mono->is_on_error());
     $this->assertFalse($this->object_multi->is_on_error());
-
-    $meta = databox_fieldUnknown::get_instance(self::$record_1->get_databox(), 25);
-    $meta->set_name('A beautifull name');
-
-    $this->assertTrue($meta->is_on_error());
   }
 
   public function testRenameField()

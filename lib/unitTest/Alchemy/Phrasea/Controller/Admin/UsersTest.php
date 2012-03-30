@@ -125,7 +125,10 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteQuota()
   {
-    $this->client->request('POST', '/users/rights/quotas/');
+    $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
+    $params = array('base_id'=>$base_id, 'users'=>self::$user->get_id());
+
+    $this->client->request('POST', '/users/rights/quotas/', $params);
     $response = $this->client->getResponse();
     $this->assertTrue($response->isOK());
   }
@@ -142,8 +145,9 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteQuotaRemove()
   {
-    $params = array(
-        'base_id' => self::$collection->get_base_id());
+    $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
+    $params = array('base_id'=>$base_id, 'users'=>self::$user->get_id());
+
     $this->client->request('POST', '/users/rights/quotas/apply/', $params);
     $response = $this->client->getResponse();
     $this->assertTrue($response->isOK());
@@ -151,7 +155,10 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteRightTime()
   {
-    $this->client->request('POST', '/users/rights/time/');
+    $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
+    $params = array('base_id'=>$base_id, 'users'=>self::$user->get_id());
+
+    $this->client->request('POST', '/users/rights/time/', $params);
     $response = $this->client->getResponse();
     $this->assertTrue($response->isOK());
   }
@@ -176,7 +183,10 @@ class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
   public function testRouteRightMask()
   {
-    $this->client->request('POST', '/users/rights/masks/');
+    $base_id = array_pop(array_keys(self::$user->ACL()->get_granted_base()));
+    $params = array('base_id'=>$base_id, 'users'=>self::$user->get_id());
+
+    $this->client->request('POST', '/users/rights/masks/', $params);
     $response = $this->client->getResponse();
     $this->assertTrue($response->isOK());
   }
