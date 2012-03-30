@@ -336,16 +336,16 @@
                     <input type="hidden" name="sbas_id" value="{{rights['sbas_id']}}"/>
                   </div>
                 </td>
-                <td style="text-align:center;width:19px;">
+                <td style="text-align:center;width:19px;" title="{% trans 'Allowed to publish' %}">
                   {{_self.format_checkbox(user, rights, 'bas_chupub', users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;">
+                <td style="text-align:center;width:19px;" title="{% trans 'Manage Thesaurus' %}">
                   {{_self.format_checkbox(user, rights, 'bas_modif_th', users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;">
+                <td style="text-align:center;width:19px;" title="{% trans 'Manage Database' %}">
                   {{_self.format_checkbox(user, rights, 'bas_manage', users, 'sbas')}}
                 </td>
-                <td style="text-align:center;width:19px;">
+                <td style="text-align:center;width:19px;" title="{% trans 'Manage DB fields' %}">
                   {{_self.format_checkbox(user, rights, 'bas_modify_struct', users, 'sbas')}}
                 </td>
                 <td style="text-align:center;width:48px;"></td>
@@ -355,28 +355,28 @@
                 <td style="overflow:hidden;white-space:nowrap;">
                   {{rights['base_id']|bas_name}}
                 </td>
-                <td class="users_col case_right_access">
+                <td class="users_col case_right_access" title="{% trans 'Access' %}">
                   {{_self.format_checkbox(user, rights, 'access', users, 'base')}}
                 </td>
-                <td class="users_col case_right_actif">
+                <td class="users_col case_right_actif" title="{% trans 'Active' %}">
                   {{_self.format_checkbox(user, rights, 'actif', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canputinalbum">
+                <td class="users_col case_right_canputinalbum" title="{% trans 'Allowed to add in basket' %}">
                   {{_self.format_checkbox(user, rights, 'canputinalbum', users, 'base')}}
                 </td>
-                <td class="users_col case_right_candwnldpreview">
+                <td class="users_col case_right_candwnldpreview" title="{% trans 'Access to preview' %}">
                   {{_self.format_checkbox(user, rights, 'candwnldpreview', users, 'base')}}
                 </td>
-                <td class="users_col case_right_nowatermark">
+                <td class="users_col case_right_nowatermark" title="{% trans 'Remove watermark' %}">
                   {{_self.format_checkbox(user, rights, 'nowatermark', users, 'base')}}
                 </td>
-                <td class="users_col case_right_candwnldhd">
+                <td class="users_col case_right_candwnldhd" title="{% trans 'Access to HD' %}">
                   {{_self.format_checkbox(user, rights, 'candwnldhd', users, 'base')}}
                 </td>
-                <td class="users_col case_right_cancmd">
+                <td class="users_col case_right_cancmd" title="{% trans 'Allowed to order' %}">
                   {{_self.format_checkbox(user, rights, 'cancmd', users, 'base')}}
                 </td>
-                <td class="users_col case_right_quota">
+                <td class="users_col case_right_quota" title="{% trans 'Set download quotas' %}">
                   <div class="quota_trigger quota_{{rights['base_id']}}">
                     {% if rights['restrict_dwnld'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
@@ -386,7 +386,7 @@
                     <input type="hidden" name="quota_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
-                <td class="users_col case_right_time">
+                <td class="users_col case_right_time" title="{% trans 'Set time restrictions' %}">
                   <div class="time_trigger time_{{rights['base_id']}}">
                     {% if rights['time_limited'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
@@ -396,7 +396,7 @@
                     <input type="hidden" name="time_base_id" value="{{rights['base_id']}}"/>
                   </div>
                 </td>
-                <td class="users_col case_right_masks">
+                <td class="users_col case_right_masks" title="{% trans 'Set statuses restrictions' %}">
                   <div class="masks_trigger quotatime_{{rights['base_id']}}">
                     {% if rights['masks'] > 0 %}
                     <img src="/skins/icons/user_details_on.png" />
@@ -409,34 +409,34 @@
 
                 <td style="text-align:center;width:100px;"></td>
 
-                <td class="users_col case_right_canaddrecord">
+                <td class="users_col case_right_canaddrecord" title="{% trans 'Allowed to add' %}">
                   {{_self.format_checkbox(user, rights, 'canaddrecord', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canmodifrecord">
+                <td class="users_col case_right_canmodifrecord" title="{% trans 'Allowed to edit' %}">
                   {{_self.format_checkbox(user, rights, 'canmodifrecord', users, 'base')}}
                 </td>
-                <td class="users_col case_right_chgstatus">
+                <td class="users_col case_right_chgstatus" title="{% trans 'Allowed to change statuses' %}">
                   {{_self.format_checkbox(user, rights, 'chgstatus', users, 'base')}}
                 </td>
-                <td class="users_col case_right_candeleterecord">
+                <td class="users_col case_right_candeleterecord" title="{% trans 'Allowed to delete' %}">
                   {{_self.format_checkbox(user, rights, 'candeleterecord', users, 'base')}}
                 </td>
-                <td class="users_col case_right_imgtools">
+                <td class="users_col case_right_imgtools" title="{% trans 'Access to image tools' %}">
                   {{_self.format_checkbox(user, rights, 'imgtools', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canadmin">
+                <td class="users_col case_right_canadmin" title="{% trans 'Manage users' %}">
                   {{_self.format_checkbox(user, rights, 'canadmin', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canreport">
+                <td class="users_col case_right_canreport" title="{% trans 'Allowed to access report' %}">
                   {{_self.format_checkbox(user, rights, 'canreport', users, 'base')}}
                 </td>
-                <td class="users_col case_right_canpush">
+                <td class="users_col case_right_canpush" title="{% trans 'Allowed to push' %}">
                   {{_self.format_checkbox(user, rights, 'canpush', users, 'base')}}
                 </td>
-                <td class="users_col case_right_manage">
+                <td class="users_col case_right_manage" title="{% trans 'Manage collection' %}">
                   {{_self.format_checkbox(user, rights, 'manage', users, 'base')}}
                 </td>
-                <td class="users_col case_right_modify">
+                <td class="users_col case_right_modify" title="{% trans 'Manage values lists' %}">
                   {{_self.format_checkbox(user, rights, 'modify_struct', users, 'base')}}
                 </td>
                 <td colspan="5">
