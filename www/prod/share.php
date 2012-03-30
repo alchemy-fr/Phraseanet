@@ -20,7 +20,6 @@ $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 phrasea::headers();
 $appbox = appbox::get_instance($Core);
 $registry = $appbox->get_registry();
-require($registry->get('GV_RootPath') . "lib/vendor/PHPShortener/phpshortener.class.php");
 $session = Session_Handler::getInstance($appbox);
 
 $request = http_request::getInstance();

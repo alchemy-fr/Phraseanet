@@ -188,9 +188,6 @@ class mail
 
   public static function validateEmail($email)
   {
-    $registry = registry::get_instance();
-    require_once($registry->get('GV_RootPath') . 'lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
-
     return PHPMailer::ValidateAddress($email);
   }
 
@@ -198,7 +195,6 @@ class mail
   {
 
     $registry = registry::get_instance();
-    require_once($registry->get('GV_RootPath') . 'lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
 
     if (!isset($to['email']) || !PHPMailer::ValidateAddress($to['email']))
 

@@ -43,7 +43,6 @@ if (!$user->get_mail_locked())
 $user->set_mail_locked(false);
 random::removeToken($parm['code']);
 
-require_once(dirname(__FILE__) . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
 if (PHPMailer::ValidateAddress($user->get_email()))
 {
   if (count($user->ACL()->get_granted_base()) > 0)
@@ -53,7 +52,6 @@ if (PHPMailer::ValidateAddress($user->get_email()))
   $user->set_mail_locked(false);
   random::removeToken($parm['code']);
 
-  require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
   if (PHPMailer::ValidateAddress($user->get_email()))
   {
     $appbox_register = new appbox_register($appbox);

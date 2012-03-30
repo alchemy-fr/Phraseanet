@@ -12,9 +12,6 @@
 namespace Alchemy\Phrasea\Application;
 
 require_once __DIR__ . "/../../../../lib/bootstrap.php";
-require_once __DIR__ . "/../../../../lib/classes/API/OAuth2/Autoloader.class.php";
-
-\API_OAuth2_Autoloader::register();
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;

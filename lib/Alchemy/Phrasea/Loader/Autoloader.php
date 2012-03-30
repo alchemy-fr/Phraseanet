@@ -23,11 +23,13 @@ use Symfony\Component\ClassLoader\UniversalClassLoader;
  */
 class Autoloader extends UniversalClassLoader
 {
+
   /**
    * An array of path to check
    * @var type
    */
   private $paths = array();
+  private $classmap = array();
 
   /**
    * Construct a new phrasea Autoloader
@@ -40,6 +42,13 @@ class Autoloader extends UniversalClassLoader
   {
     $this->paths['config'] = __DIR__ . '/../../../../config/classes/';
     $this->paths['library'] = __DIR__ . '/../../../classes/';
+
+    $getComposerClassMap = function()
+            {
+              return require realpath(__DIR__ . '/../../../../vendor/.composer/autoload_classmap.php');
+            };
+
+    $this->classmap = $getComposerClassMap();
   }
 
   /**
@@ -71,13 +80,20 @@ class Autoloader extends UniversalClassLoader
    * @param string $class
    * @return mixed string|null
    */
-  private function checkFile($class)
+  private function checkFile($classname)
   {
-    foreach($this->paths as $path)
+    if (isset($this->classmap[$classname]))
     {
-      $file = $path. str_replace('_', '/', $class) . '.class.php';
+      return $this->classmap[$classname];
+    }
+    
+    $normalized_classname = str_replace('_', '/', $classname);
 
-      if(file_exists($file))
+    foreach ($this->paths as $path)
+    {
+      $file = $path . $normalized_classname . '.class.php';
+
+      if (file_exists($file))
       {
         return $file;
       }
@@ -92,4 +108,5 @@ class Autoloader extends UniversalClassLoader
   {
     return $this->paths;
   }
+
 }

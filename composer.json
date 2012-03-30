@@ -29,8 +29,47 @@
     "symfony/serializer": "2.1.*",
     "symfony/validator": "2.1.*",
     "symfony/yaml": "2.1.*",
-    "silex/silex": "1.0.*"
+    "phpexiftool/phpexiftool": "dev-master",
+    "mediavorus/mediavorus": "dev-master",
+    "silex/silex": "1.0.*",
+    "alchemy/oauth2php": "master",
+    "alchemy/tcpdf": "master",
+    "alchemy/phlickr": "master",
+    "alchemy/phpshortener": "master",
+    "alchemy/phpmailer": "master",
+    "alchemy/moovrelocator": "master",
+    "alchemy/gdata": "master"
   },
+  "repositories": [
+  {
+    "type": "vcs",
+    "url": "https://github.com/alchemy-fr/tcpdf"
+  },
+  {
+    "type": "vcs",
+    "url": "https://github.com/alchemy-fr/oauth2-php"
+  },
+  {
+    "type": "vcs",
+    "url": "https://github.com/alchemy-fr/Phlickr"
+  },
+  {
+    "type": "vcs",
+    "url": "https://github.com/alchemy-fr/PHPShortener"
+  },
+  {
+    "type": "vcs",
+    "url": "https://github.com/alchemy-fr/PHPMailer_v5.1"
+  },
+  {
+    "type": "vcs",
+    "url": "https://github.com/alchemy-fr/MoovRelocator"
+  },
+  {
+    "type": "vcs",
+    "url": "https://github.com/alchemy-fr/gdata"
+  }
+  ],
   "autoload": {
     "psr-0": {
       "Alchemy": "lib"

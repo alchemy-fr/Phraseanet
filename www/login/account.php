@@ -17,10 +17,6 @@
 /* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-require_once __DIR__ . "/../../lib/classes/API/OAuth2/Autoloader.class.php";
-
-API_OAuth2_Autoloader::register();
-
 $appbox = appbox::get_instance($Core);
 
 require_once($appbox->get_registry()->get('GV_RootPath') . 'lib/classes/deprecated/inscript.api.php');

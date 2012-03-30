@@ -4,8 +4,6 @@ require_once __DIR__ . '/../../../PhraseanetWebTestCaseAuthenticatedAbstract.cla
 
 require_once __DIR__ . '/../../../../Alchemy/Phrasea/Application/OAuth2.php';
 
-API_OAuth2_Autoloader::register();
-
 use Symfony\Component\HttpFoundation\Response;
 use Silex\WebTestCase;
 

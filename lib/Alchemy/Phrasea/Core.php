@@ -428,12 +428,10 @@ class Core extends \Pimple
       $loader = new Loader\Autoloader();
     }
 
-
     $getComposerNamespaces = function()
       {
         return require realpath(__DIR__ . '/../../../vendor/.composer/autoload_namespaces.php');
       };
-
       
     foreach ($getComposerNamespaces() as $prefix => $path)
     {

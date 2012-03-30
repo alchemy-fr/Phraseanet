@@ -1,15 +1,5 @@
 <?php
 
-
-$include_path = realpath(__DIR__ . '/../../vendor/');
-if(strpos(get_include_path(), $include_path) === false)
-{
-  $new_include_path = $include_path . PATH_SEPARATOR . get_include_path();
-  set_include_path($new_include_path);
-}
-
-require_once __DIR__ . "/../../vendor/Phlickr/Api.php";
-
 /*
  * This file is part of Phraseanet
  *

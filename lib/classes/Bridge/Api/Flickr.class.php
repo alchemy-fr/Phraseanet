@@ -9,18 +9,7 @@
  * file that was distributed with this source code.
  */
 
-
-$include_path = realpath(__DIR__ . '/../../../vendor');
-if (strpos(get_include_path(), $include_path . ':') === false)
-{
-  $new_include_path = $include_path . PATH_SEPARATOR . get_include_path();
-  set_include_path($new_include_path);
-}
-
 use \Symfony\Component\HttpFoundation\Request;
-
-require_once __DIR__ . "/../../../vendor/Phlickr/Api.php";
-require_once __DIR__ . "/../../../vendor/Phlickr/Uploader.php";
 
 /**
  *

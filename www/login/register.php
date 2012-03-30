@@ -101,7 +101,6 @@ if ($request->has_post_datas())
       $needed['form_password'] = _('forms::la valeur donnee contient des caracteres invalides');
 
     //2 - on verifie que lemail a lair correcte si elle est requise
-    require_once(__DIR__ . '/../../lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
     if (trim($parm['form_email']) != '' && !PHPMailer::ValidateAddress($parm['form_email']))
       $needed['form_email'] = _('forms::l\'email semble invalide');
 

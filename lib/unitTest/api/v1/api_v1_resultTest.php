@@ -1,6 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../../../../lib/vendor/oauth2/lib/OAuth2.inc";
 require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
 use Symfony\Component\HttpFoundation\Request;
