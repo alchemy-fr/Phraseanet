@@ -12,7 +12,6 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use DoctrineExtensions\Paginate\Paginate;
 use Entities;
 
 /**
@@ -81,10 +80,10 @@ class BasketRepository extends EntityRepository
             AND (s.expires IS NULL OR s.expires > CURRENT_TIMESTAMP())';
 
     $params = array(
-      'usr_id_owner' => $user->get_id(),
-      'usr_id_ownertwo' => $user->get_id(),
+      'usr_id_owner'       => $user->get_id(),
+      'usr_id_ownertwo'    => $user->get_id(),
       'usr_id_participant' => $user->get_id()
-      );
+    );
 
     $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
@@ -120,7 +119,7 @@ class BasketRepository extends EntityRepository
     }
 
     $query = $this->_em->createQuery($dql);
-    $query->setParameters(array(1        => $user->get_id(), 2        => $user->get_id()));
+    $query->setParameters(array(1 => $user->get_id(), 2 => $user->get_id()));
 
     return $query->getResult();
   }
@@ -156,7 +155,7 @@ class BasketRepository extends EntityRepository
     {
       $participant = false;
 
-      if ($basket->getValidation() && !$requireOwner)
+      if ($basket->getValidation() && ! $requireOwner)
       {
         try
         {
@@ -168,7 +167,7 @@ class BasketRepository extends EntityRepository
 
         }
       }
-      if (!$participant)
+      if ( ! $participant)
       {
         throw new \Exception_Forbidden(_('You have not access to this basket'));
       }
@@ -188,10 +187,10 @@ class BasketRepository extends EntityRepository
 
     $params = array(
       'record_id' => $record->get_record_id(),
-      'usr_id' => $user->get_id()
+      'usr_id'    => $user->get_id()
     );
 
-    $query   = $this->_em->createQuery($dql);
+    $query = $this->_em->createQuery($dql);
     $query->setParameters($params);
 
     return $query->getResult();
@@ -247,14 +246,14 @@ class BasketRepository extends EntityRepository
         );
         break;
       case self::MYBASKETS:
-        $dql     = 'SELECT b
+        $dql                = 'SELECT b
                 FROM Entities\Basket b
                 LEFT JOIN b.elements e
                 LEFT JOIN b.validation s
                 LEFT JOIN s.participants p
                 WHERE (b.usr_id = :usr_id)';
-        $params  = array(
-          'usr_id'            => $user->get_id()
+        $params             = array(
+          'usr_id' => $user->get_id()
         );
         break;
     }
@@ -278,14 +277,13 @@ class BasketRepository extends EntityRepository
     $dql .= ' ORDER BY b.id DESC';
 
     $query = $this->_em->createQuery($dql);
-    $query->setParameters($params);
+    $query->setParameters($params)
+      ->setFirstResult($offset)
+      ->setMaxResults($perPage);
 
-    $count         = Paginate::getTotalQueryResults($query);
-    $paginateQuery = Paginate::getPaginateQuery($query, $offset, $perPage);
+    $paginator = new \Doctrine\ORM\Tools\Pagination\Paginator($query, true);
 
-    $result = $paginateQuery->getResult();
-
-    return array('count'  => $count, 'result' => $result);
+    return $paginator;
   }
 
   /**

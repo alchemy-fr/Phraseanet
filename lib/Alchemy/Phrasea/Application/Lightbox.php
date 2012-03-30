@@ -32,11 +32,7 @@ return call_user_func(
 
       $appbox = \appbox::get_instance($app['Core']);
 
-      $session = $appbox->get_session();
-
-      $app["debug"] = $app["Core"]->getConfiguration()->isDebug();
-
-      $app->get('/', function (\Silex\Application $app) use ($session, $appbox)
+      $app->get('/', function (\Silex\Application $app) use ($appbox)
         {
           \User_Adapter::updateClientInfos((6));
 
@@ -58,7 +54,7 @@ return call_user_func(
           $browser = \Browser::getInstance();
 
           $template = 'lightbox/index.twig';
-          if (!$browser->isNewGeneration() && !$browser->isMobile())
+          if ( ! $browser->isNewGeneration() && ! $browser->isMobile())
           {
             $template = 'lightbox/IE6/index.twig';
           }
@@ -76,13 +72,13 @@ return call_user_func(
         }
       );
 
-      $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id) use ($session, $appbox)
+      $app->get('/ajax/NOTE_FORM/{sselcont_id}/', function(\Silex\Application $app, $sselcont_id) use ($appbox)
         {
           /* @var $twig \Twig_Environment */
           $twig    = $app['Core']->getTwig();
           $browser = \Browser::getInstance();
 
-          if (!$browser->isMobile())
+          if ( ! $browser->isMobile())
           {
             return new Response('');
           }
@@ -135,7 +131,7 @@ return call_user_func(
             $template_preview   = 'common/preview.html';
             $template_caption   = 'common/caption.html';
 
-            if (!$browser->isNewGeneration())
+            if ( ! $browser->isNewGeneration())
             {
               $template_options   = 'lightbox/IE6/sc_options_box.twig';
               $template_agreement = 'lightbox/IE6/agreement_box.twig';
@@ -198,7 +194,7 @@ return call_user_func(
             $template_preview = 'common/preview.html';
             $template_caption = 'common/caption.html';
 
-            if (!$browser->isNewGeneration())
+            if ( ! $browser->isNewGeneration())
             {
               $template_options = 'lightbox/IE6/feed_options_box.twig';
             }
@@ -226,7 +222,7 @@ return call_user_func(
         }
       )->assert('entry_id', '\d+')->assert('item_id', '\d+');
 
-      $app->get('/validate/{ssel_id}/', function (\Silex\Application $app, $ssel_id) use ($session, $appbox)
+      $app->get('/validate/{ssel_id}/', function (\Silex\Application $app, $ssel_id) use ($appbox)
         {
 
           \User_Adapter::updateClientInfos((6));
@@ -267,7 +263,7 @@ return call_user_func(
 
           $template = 'lightbox/validate.twig';
 
-          if (!$browser->isNewGeneration() && !$browser->isMobile())
+          if ( ! $browser->isNewGeneration() && ! $browser->isMobile())
             $template = 'lightbox/IE6/validate.twig';
 
           $response = new Response($twig->render($template, array(
@@ -284,7 +280,7 @@ return call_user_func(
         }
       )->assert('ssel_id', '\d+');
 
-      $app->get('/compare/{ssel_id}/', function (\Silex\Application $app, $ssel_id) use ($session, $appbox)
+      $app->get('/compare/{ssel_id}/', function (\Silex\Application $app, $ssel_id) use ($appbox)
         {
 
           \User_Adapter::updateClientInfos((6));
@@ -325,7 +321,7 @@ return call_user_func(
 
           $template = 'lightbox/validate.twig';
 
-          if (!$browser->isNewGeneration() && !$browser->isMobile())
+          if ( ! $browser->isNewGeneration() && ! $browser->isMobile())
             $template = 'lightbox/IE6/validate.twig';
 
           $response = new Response($twig->render($template, array(
@@ -344,7 +340,7 @@ return call_user_func(
 
 
 
-      $app->get('/feeds/entry/{entry_id}/', function (\Silex\Application $app, $entry_id) use ($session, $appbox)
+      $app->get('/feeds/entry/{entry_id}/', function (\Silex\Application $app, $entry_id) use ($appbox)
         {
 
           \User_Adapter::updateClientInfos((6));
@@ -358,7 +354,7 @@ return call_user_func(
 
           $template = 'lightbox/feed.twig';
 
-          if (!$browser->isNewGeneration() && !$browser->isMobile())
+          if ( ! $browser->isNewGeneration() && ! $browser->isMobile())
             $template = 'lightbox/IE6/feed.twig';
 
           $output = $twig->render($template, array(
@@ -492,7 +488,7 @@ return call_user_func(
             /* @var $basket_element \Entities\BasketElement */
             $validationDatas = $basket_element->getUserValidationDatas($user);
 
-            if (!$basket_element->getBasket()
+            if ( ! $basket_element->getBasket()
                 ->getValidation()
                 ->getParticipant($user)->getCanAgree())
             {
@@ -536,7 +532,7 @@ return call_user_func(
       )->assert('sselcont_id', '\d+');
 
 
-      $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(\Silex\Application $app, $ssel_id) use ($session, $appbox)
+      $app->post('/ajax/SET_RELEASE/{ssel_id}/', function(\Silex\Application $app, $ssel_id) use ($appbox)
         {
 
           $em = $app['Core']->getEntityManager();
@@ -556,12 +552,12 @@ return call_user_func(
               , false
             );
 
-            if (!$basket->getValidation())
+            if ( ! $basket->getValidation())
             {
               throw new ControllerException('There is no validation session attached to this basket');
             }
 
-            if (!$basket->getValidation()->getParticipant($user)->getCanAgree())
+            if ( ! $basket->getValidation()->getParticipant($user)->getCanAgree())
             {
               throw new ControllerException('You have not right to agree');
             }

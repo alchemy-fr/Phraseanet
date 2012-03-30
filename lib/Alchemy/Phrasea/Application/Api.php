@@ -37,32 +37,9 @@ return call_user_func(function()
       $app["appbox"] = \appbox::get_instance($app['Core']);
 
       /**
-       * Associated user to related token
-       * @var User_Adapter
-       */
-      $app['p4user'] = null;
-
-      /**
        * @var API_OAuth2_Token
        */
       $app['token'] = null;
-
-      /**
-       * Protected Closure
-       * @var Closure
-       * @return Symfony\Component\HttpFoundation\Response
-       */
-      $app['response'] = $app->protect(function ($result)
-        {
-          $response = new Response(
-              $result->format()
-              , $result->get_http_code()
-              , array('Content-Type' => $result->get_content_type())
-          );
-          $response->setCharset('UTF-8');
-
-          return $response;
-        });
 
       /**
        * Api Service
@@ -72,8 +49,6 @@ return call_user_func(function()
         {
           return new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
         };
-
-
 
       $parseRoute = function ($route, Response $response)
         {
@@ -98,7 +73,7 @@ return call_user_func(function()
                 case \API_V1_Log::RECORDS_RESSOURCE :
                   if ((int) $exploded_route[1] > 0 && sizeof($exploded_route) == 4)
                   {
-                    if (!isset($exploded_route[3]))
+                    if ( ! isset($exploded_route[3]))
                       $aspect = "record";
                     elseif (preg_match("/^set/", $exploded_route[3]))
                       $action = $exploded_route[3];
@@ -137,8 +112,8 @@ return call_user_func(function()
           $oauth2_adapter = new \API_OAuth2_Adapter($app["appbox"]);
           $oauth2_adapter->verifyAccessToken();
 
-          $app['p4user'] = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app["appbox"]);
-          $app['token']  = \API_OAuth2_Token::load_by_oauth_token($app["appbox"], $oauth2_adapter->getToken());
+          $user         = \User_Adapter::getInstance($oauth2_adapter->get_usr_id(), $app["appbox"]);
+          $app['token'] = \API_OAuth2_Token::load_by_oauth_token($app["appbox"], $oauth2_adapter->getToken());
 
           if ($session->is_authenticated())
           {
@@ -149,7 +124,7 @@ return call_user_func(function()
           {
             try
             {
-              $session->restore($app['p4user'], $oauth2_adapter->get_ses_id());
+              $session->restore($user, $oauth2_adapter->get_ses_id());
 
               return;
             }
@@ -158,7 +133,7 @@ return call_user_func(function()
 
             }
           }
-          $auth = new \Session_Authentication_None($app['p4user']);
+          $auth = new \Session_Authentication_None($user);
           $session->authenticate($auth);
           $oauth2_adapter->remember_this_ses_id($session->get_ses_id());
 
@@ -208,7 +183,7 @@ return call_user_func(function()
       $app->get(
         $route, function() use ($app)
         {
-          return $app['response']($app['api']->get_databoxes($app['request']));
+          return $app['api']->get_databoxes($app['request'])->get_response();
         }
       );
 
@@ -228,7 +203,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_databox_collections($app['request'], $databox_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+');
 
@@ -251,7 +226,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_databox_status($app['request'], $databox_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+');
 
@@ -271,7 +246,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_databox_metadatas($app['request'], $databox_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+');
 
@@ -291,7 +266,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_databox_terms($app['request'], $databox_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+');
 
@@ -323,7 +298,7 @@ return call_user_func(function()
         {
           $result = $app['api']->search_records($app['request']);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       );
 
@@ -334,7 +309,7 @@ return call_user_func(function()
         {
           $result = $app['api']->caption_records($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -357,7 +332,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_record_metadatas($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -379,7 +354,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_record_status($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -401,7 +376,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_record_related($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -423,7 +398,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_record_embed($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -445,7 +420,7 @@ return call_user_func(function()
         {
           $result = $app['api']->set_record_metadatas($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -467,7 +442,7 @@ return call_user_func(function()
         {
           $result = $app['api']->set_record_status($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+')->assert('record_id', '\d+');
 
@@ -490,7 +465,7 @@ return call_user_func(function()
         {
           $result = $app['api']->set_record_collection($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('databox_id', '\d+')->assert('record_id', '\d+');
       $app->post('/records/{wrong_databox_id}/{wrong_record_id}/setcollection/', $bad_request_exception);
@@ -501,7 +476,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_record($app['request'], $databox_id, $record_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         })->assert('databox_id', '\d+')->assert('record_id', '\d+');
       $app->get('/records/{any_id}/{anyother_id}/', $bad_request_exception);
 
@@ -519,7 +494,7 @@ return call_user_func(function()
         {
           $result = $app['api']->search_baskets($app['request']);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       );
 
@@ -538,7 +513,7 @@ return call_user_func(function()
         {
           $result = $app['api']->create_basket($app['request']);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       );
 
@@ -559,7 +534,7 @@ return call_user_func(function()
         {
           $result = $app['api']->get_basket($app['request'], $basket_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('basket_id', '\d+');
       $app->get('/baskets/{wrong_basket_id}/content/', $bad_request_exception);
@@ -580,7 +555,7 @@ return call_user_func(function()
         {
           $result = $app['api']->set_basket_title($app['request'], $basket_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('basket_id', '\d+');
       $app->post('/baskets/{wrong_basket_id}/setname/', $bad_request_exception);
@@ -601,7 +576,7 @@ return call_user_func(function()
         {
           $result = $app['api']->set_basket_description($app['request'], $basket_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('basket_id', '\d+');
       $app->post('/baskets/{wrong_basket_id}/setdescription/', $bad_request_exception);
@@ -621,7 +596,7 @@ return call_user_func(function()
         {
           $result = $app['api']->delete_basket($app['request'], $basket_id);
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('basket_id', '\d+');
       $app->post('/baskets/{wrong_basket_id}/delete/', $bad_request_exception);
@@ -642,9 +617,9 @@ return call_user_func(function()
       $app->get(
         $route, function() use ($app)
         {
-          $result = $app['api']->search_publications($app['request'], $app['p4user']);
+          $result = $app['api']->search_publications($app['request'], $app['Core']->getAuthenticatedUser());
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       );
 
@@ -663,9 +638,9 @@ return call_user_func(function()
       $app->get(
         $route, function($feed_id) use ($app)
         {
-          $result = $app['api']->get_publication($app['request'], $feed_id, $app['p4user']);
+          $result = $app['api']->get_publication($app['request'], $feed_id, $app['Core']->getAuthenticatedUser());
 
-          return $app['response']($result);
+          return $result->get_response();
         }
       )->assert('feed_id', '\d+');
       $app->get('/feeds/{wrong_feed_id}/content/', $bad_request_exception);
@@ -702,7 +677,7 @@ return call_user_func(function()
 
           $result = $app['api']->get_error_message($app['request'], $code);
 
-          return $app['response']($result);
+          return $result->get_response();
         });
 ////  public function get_version();
 ////

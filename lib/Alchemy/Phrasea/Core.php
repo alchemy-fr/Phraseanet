@@ -15,14 +15,14 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\Serializer;
 use Alchemy\Phrasea\Core\Configuration;
 
-require_once __DIR__ . '/../../vendor/Silex/vendor/pimple/lib/Pimple.php';
+require_once __DIR__ . '/../../../vendor/pimple/pimple/lib/Pimple.php';
 
-require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/Yaml/Yaml.php';
-require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/Yaml/Parser.php';
-require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/Yaml/Inline.php';
-require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/Yaml/Unescaper.php';
-require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/DependencyInjection/ParameterBag/ParameterBagInterface.php';
-require_once __DIR__ . '/../../vendor/symfony/src/Symfony/Component/DependencyInjection/ParameterBag/ParameterBag.php';
+require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Yaml.php';
+require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Parser.php';
+require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Inline.php';
+require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Unescaper.php';
+require_once __DIR__ . '/../../../vendor/symfony/dependency-injection/Symfony/Component/DependencyInjection/ParameterBag/ParameterBagInterface.php';
+require_once __DIR__ . '/../../../vendor/symfony/dependency-injection/Symfony/Component/DependencyInjection/ParameterBag/ParameterBag.php';
 
 require_once __DIR__ . '/Core/Configuration/Specification.php';
 require_once __DIR__ . '/Core/Configuration.php';
@@ -45,6 +45,8 @@ class Core extends \Pimple
     , 'es_ES' => 'Español'
     , 'fr_FR' => 'Français'
   );
+  
+  protected static $autoloader_initialized = false;
 
   /**
    *
@@ -61,7 +63,7 @@ class Core extends \Pimple
     /**
      * Cache Autoload if it's not debug mode
      */
-    static::initAutoloads($this->configuration->isInstalled() && !$this->configuration->isDebug());
+    static::initAutoloads($this->configuration->isInstalled() && ! $this->configuration->isDebug());
 
     $this->init();
 
@@ -94,7 +96,7 @@ class Core extends \Pimple
 
     $this['CacheService'] = $this->share(function() use ($core)
       {
-        if (!file_exists(__DIR__ . '/../../../tmp/cache_registry.yml'))
+        if ( ! file_exists(__DIR__ . '/../../../tmp/cache_registry.yml'))
         {
           touch(__DIR__ . '/../../../tmp/cache_registry.yml');
         }
@@ -118,18 +120,18 @@ class Core extends \Pimple
 
 
     $this['Cache'] = $this->share(function() use ($core)
-        {
-        $serviceName   = $core->getConfiguration()->getCache();
+      {
+        $serviceName = $core->getConfiguration()->getCache();
 
         return $core['CacheService']->get('MainCache', $serviceName)->getDriver();
-        });
+      });
 
     $this['OpcodeCache'] = $this->share(function() use ($core)
-        {
-        $serviceName   = $core->getConfiguration()->getOpcodeCache();
+      {
+        $serviceName = $core->getConfiguration()->getOpcodeCache();
 
         return $core['CacheService']->get('OpcodeCache', $serviceName)->getDriver();
-        });
+      });
 
 
 
@@ -163,10 +165,10 @@ class Core extends \Pimple
 
     $this->enableLocales();
 
-    !defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
-    !defined('JETON_WRITE_META_DOC') ? define('JETON_WRITE_META_DOC', 0x02) : '';
-    !defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
-    !defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
+    ! defined('JETON_MAKE_SUBDEF') ? define('JETON_MAKE_SUBDEF', 0x01) : '';
+    ! defined('JETON_WRITE_META_DOC') ? define('JETON_WRITE_META_DOC', 0x02) : '';
+    ! defined('JETON_WRITE_META_SUBDEF') ? define('JETON_WRITE_META_SUBDEF', 0x04) : '';
+    ! defined('JETON_WRITE_META') ? define('JETON_WRITE_META', 0x06) : '';
 
     return;
   }
@@ -274,7 +276,7 @@ class Core extends \Pimple
     $appbox  = \appbox::get_instance($this);
     $session = \Session_Handler::getInstance($appbox);
 
-    if($session->get_usr_id())
+    if ($session->get_usr_id())
     {
       return \User_Adapter::getInstance($session->get_usr_id(), $appbox);
     }
@@ -309,7 +311,7 @@ class Core extends \Pimple
 
   protected function getRequest()
   {
-    if (!$this->request)
+    if ( ! $this->request)
       $this->request = Request::createFromGlobals();
 
     return $this->request;
@@ -397,6 +399,11 @@ class Core extends \Pimple
    */
   public static function initAutoloads($cacheAutoload = false)
   {
+    if(static::$autoloader_initialized)
+    {
+      return;
+    }
+    
     require_once __DIR__ . '/Loader/Autoloader.php';
 
     if ($cacheAutoload === true)
@@ -421,36 +428,33 @@ class Core extends \Pimple
       $loader = new Loader\Autoloader();
     }
 
-    //Register prefixes
-    $loader->registerPrefixes(array(
-      'Twig' => realpath(__DIR__ . '/../../vendor/Twig/lib'))
-    );
 
-    $loader->registerPrefixes(array(
-      'Twig_Extensions' => realpath(__DIR__ . '/../../vendor/Twig-extensions/lib'))
-    );
-    //Register namespaces
+    $getComposerNamespaces = function()
+      {
+        return require realpath(__DIR__ . '/../../../vendor/.composer/autoload_namespaces.php');
+      };
+
+      
+    foreach ($getComposerNamespaces() as $prefix => $path)
+    {
+      if (substr($prefix, -1) === '_')
+        $loader->registerPrefix($prefix, $path);
+      else
+        $loader->registerNamespace($prefix, $path);
+    }
+
     $loader->registerNamespaces(array(
-      'Alchemy'                        => realpath(__DIR__ . '/../..'),
-      'Symfony'                        => realpath(__DIR__ . '/../../vendor/symfony/src'),
-      'Doctrine\\ORM'                  => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib'),
-      'Doctrine\\DBAL'                 => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-dbal/lib'),
-      'Doctrine\\Common'               => realpath(__DIR__ . '/../../vendor/doctrine2-orm/lib/vendor/doctrine-common/lib'),
-      'Doctrine\\Common\\DataFixtures' => realpath(__DIR__ . '/../../vendor/data-fixtures/lib'),
-      'Entities'                       => realpath(__DIR__ . '/../../Doctrine/'),
-      'Repositories'                   => realpath(__DIR__ . '/../../Doctrine/'),
-      'Proxies'                        => realpath(__DIR__ . '/../../Doctrine/'),
-      'Doctrine\\Logger'               => realpath(__DIR__ . '/../../'),
-      'Monolog'                        => realpath(__DIR__ . '/../../vendor/Silex/vendor/monolog/src'),
-      'Gedmo'                          => realpath(__DIR__ . '/../../vendor/doctrine2-gedmo/lib'),
-      'DoctrineExtensions'             => realpath(__DIR__ . "/../../vendor/doctrine2-beberlei/lib"),
-      'Types'                          => realpath(__DIR__ . "/../../Doctrine"),
-      'PhraseaFixture'                 => realpath(__DIR__ . "/../../conf.d"),
+      'Entities'           => realpath(__DIR__ . '/../../Doctrine/'),
+      'Repositories'       => realpath(__DIR__ . '/../../Doctrine/'),
+      'Proxies'            => realpath(__DIR__ . '/../../Doctrine/'),
+      'Doctrine\\Logger'   => realpath(__DIR__ . '/../../'),
+      'Types'              => realpath(__DIR__ . "/../../Doctrine"),
+      'PhraseaFixture'     => realpath(__DIR__ . "/../../conf.d"),
     ));
 
     $loader->register();
-
-    require_once __DIR__ . '/../../vendor/Silex/autoload.php';
+    
+    static::$autoloader_initialized = true;
 
     return;
   }
@@ -462,10 +466,12 @@ class Core extends \Pimple
   public static function initPHPConf()
   {
     ini_set('output_buffering', '4096');
+
     if ((int) ini_get('memory_limit') < 2048)
     {
       ini_set('memory_limit', '2048M');
     }
+
     ini_set('error_reporting', '6143');
     ini_set('default_charset', 'UTF-8');
     ini_set('session.use_cookies', '1');

@@ -91,14 +91,14 @@ class WorkZone implements ControllerProviderInterface
         );
 
         $page    = floor($offsetStart / $PerPage) + 1;
-        $maxPage = floor($Baskets['count'] / $PerPage) + 1;
+        $maxPage = floor(count($Baskets) / $PerPage) + 1;
 
 
         $params = array(
-          'Baskets' => $Baskets['result']
+          'Baskets' => $Baskets
           , 'Page'    => $page
           , 'MaxPage' => $maxPage
-          , 'Total'   => $Baskets['count']
+          , 'Total'   => count($Baskets)
           , 'Query'   => $request->get('Query')
           , 'Year'    => $request->get('Year')
           , 'Type'    => $request->get('Type')

@@ -28,61 +28,67 @@ class API_V1_result
    * @var string
    */
   protected $api_version;
+
   /**
    *
    * @var string
    */
   protected $response_time;
+
   /**
    *
    * @var int
    */
   protected $http_code = 200;
+
   /**
    *
    * @var string
    */
   protected $error_message;
+
   /**
    *
    * @var string
    */
   protected $error_details;
+
   /**
    *
    * @var string
    */
   protected $request;
+
   /**
    *
    * @var mixed
    */
   protected $response;
+
   /**
    *
    * @var string
    */
   protected $response_type;
 
-
   /**
    * Constant for responsetype json
    */
-  const FORMAT_JSON = 'json';
+
+  const FORMAT_JSON  = 'json';
   /**
    * Constant for responsetype yaml
    */
-  const FORMAT_YAML = 'yaml';
+  const FORMAT_YAML  = 'yaml';
   /**
    * Constant for responsetype jsonp
    */
   const FORMAT_JSONP = 'jsonp';
-
-  const ERROR_BAD_REQUEST = 'Bad Request';
-  const ERROR_UNAUTHORIZED = 'Unauthorized';
-  const ERROR_FORBIDDEN = 'Forbidden';
-  const ERROR_NOTFOUND = 'Not Found';
-  const ERROR_METHODNOTALLOWED = 'Method Not Allowed';
+  const ERROR_BAD_REQUEST         = 'Bad Request';
+  const ERROR_UNAUTHORIZED        = 'Unauthorized';
+  const ERROR_FORBIDDEN           = 'Forbidden';
+  const ERROR_NOTFOUND            = 'Not Found';
+  const ERROR_METHODNOTALLOWED    = 'Method Not Allowed';
   const ERROR_INTERNALSERVERERROR = 'Internal Server Error';
 
   /**
@@ -110,10 +116,9 @@ class API_V1_result
   protected function parse_response_type()
   {
     if (trim($this->request->get('callback')) !== '')
-
       return $this->response_type = self::FORMAT_JSONP;
 
-    $accept = $this->request->getAcceptableContentTypes();
+    $accept         = $this->request->getAcceptableContentTypes();
     $response_types = array();
 
     foreach ($accept as $key => $app_type)
@@ -122,14 +127,17 @@ class API_V1_result
     }
 
     if (array_key_exists('application/json', $response_types))
-
+    {
       return $this->response_type = self::FORMAT_JSON;
+    }
     if (array_key_exists('application/yaml', $response_types))
-
+    {
       return $this->response_type = self::FORMAT_YAML;
+    }
     if (array_key_exists('text/yaml', $response_types))
-
+    {
       return $this->response_type = self::FORMAT_YAML;
+    }
 
     return $this->response_type = self::FORMAT_JSON;
   }
@@ -159,22 +167,22 @@ class API_V1_result
   public function format()
   {
     $request_uri = sprintf('%s %s'
-            , $this->request->getMethod()
-            , $this->request->getBasePath()
-             .$this->request->getPathInfo()
+      , $this->request->getMethod()
+      , $this->request->getBasePath()
+      . $this->request->getPathInfo()
     );
 
     $ret = array(
-        'meta' => array(
-            'api_version' => $this->api_version
-            , 'request' => $request_uri
-            , 'response_time' => $this->response_time
-            , 'http_code' => $this->http_code
-            , 'error_message' => $this->error_message
-            , 'error_details' => $this->error_details
-            , 'charset' => 'UTF-8'
-        )
-        , 'response' => $this->response
+      'meta' => array(
+        'api_version'   => $this->api_version
+        , 'request'       => $request_uri
+        , 'response_time' => $this->response_time
+        , 'http_code'     => $this->http_code
+        , 'error_message' => $this->error_message
+        , 'error_details' => $this->error_details
+        , 'charset'       => 'UTF-8'
+      )
+      , 'response'      => $this->response
     );
 
     $return_value = false;
@@ -183,17 +191,17 @@ class API_V1_result
     {
       case self::FORMAT_JSON:
       default:
-        $return_value = p4string::jsonencode($ret);
+        $return_value    = p4string::jsonencode($ret);
         break;
       case self::FORMAT_YAML:
-        if($ret['response'] instanceof stdClass)
+        if ($ret['response'] instanceof stdClass)
           $ret['response'] = array();
 
-        $dumper = new Symfony\Component\Yaml\Dumper();
+        $dumper       = new Symfony\Component\Yaml\Dumper();
         $return_value = $dumper->dump($ret, 8);
         break;
       case self::FORMAT_JSONP:
-        $callback = trim($this->request->get('callback'));
+        $callback     = trim($this->request->get('callback'));
         $return_value = $callback . '(' . p4string::jsonencode($ret) . ')';
         break;
     }
@@ -284,7 +292,7 @@ class API_V1_result
    */
   public function set_error_code($code)
   {
-    switch($code = (int)$code)
+    switch ($code = (int) $code)
     {
       case 400:
         $this->http_code = $code;
@@ -316,7 +324,6 @@ class API_V1_result
         $this->error_message = self::ERROR_INTERNALSERVERERROR;
         $this->error_details = API_V1_exception_internalservererror::get_details();
         break;
-
     }
 
     return $this;
@@ -329,12 +336,14 @@ class API_V1_result
    */
   public function get_http_code()
   {
-    if($this->response_type == self::FORMAT_JSONP && $this->http_code != 500)
-
+    if ($this->response_type == self::FORMAT_JSONP && $this->http_code != 500)
+    {
       return 200;
+    }
     else
-
+    {
       return $this->http_code;
+    }
   }
 
   /**
@@ -343,6 +352,25 @@ class API_V1_result
    */
   public function set_http_code($code)
   {
-    $this->http_code = (int)$code;
+    $this->http_code = (int) $code;
   }
+
+  /**
+   * Return a Symfony Response
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
+  public function get_response()
+  {
+    $response = new Symfony\Component\HttpFoundation\Response(
+        $this->format()
+        , $this->get_http_code()
+        , array('Content-Type' => $this->get_content_type())
+    );
+
+    $response->setCharset('UTF-8');
+
+    return $response;
+  }
+
 }

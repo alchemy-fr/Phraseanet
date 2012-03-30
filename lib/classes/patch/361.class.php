@@ -1,7 +1,5 @@
 <?php
 
-use DoctrineExtensions\Paginate\Paginate;
-
 /*
  * This file is part of Phraseanet
  *
@@ -100,20 +98,26 @@ class patch_361 implements patchInterface
 
     $dql = "SELECT b FROM Entities\Basket b WHERE b.description != ''";
 
-    $query = $em->createQuery($dql);
+    $query = $em->createQuery($dql)
+      ->setFirstResult($n)
+      ->setMaxResults($perPage);
 
-    $count = Paginate::getTotalQueryResults($query);
+    $paginator = new Paginator($query, true);
+
+    $count = count($paginator);
 
     $n       = 0;
     $perPage = 100;
 
     while ($n < $count)
     {
-      $paginateQuery = Paginate::getPaginateQuery($query, $n, $perPage);
+      $query = $em->createQuery($dql)
+        ->setFirstResult($n)
+        ->setMaxResults($perPage);
 
-      $result = $paginateQuery->getResult();
+      $paginator = new Paginator($query, true);
 
-      foreach ($result as $basket)
+      foreach ($paginator as $basket)
       {
         $htmlDesc = $basket->getDescription();
 
@@ -138,5 +142,4 @@ class patch_361 implements patchInterface
   }
 
 }
-
 

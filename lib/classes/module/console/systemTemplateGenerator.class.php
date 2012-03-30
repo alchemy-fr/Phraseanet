@@ -36,16 +36,9 @@ class module_console_systemTemplateGenerator extends Command
 
   public function execute(InputInterface $input, OutputInterface $output)
   {
-    require_once __DIR__ . '/../../../../lib/vendor/Twig/lib/Twig/Autoloader.php';
-    require_once __DIR__ . '/../../../../lib/vendor/Twig-extensions/lib/Twig/Extensions/Autoloader.php';
-
-
-    Twig_Autoloader::register();
-    Twig_Extensions_Autoloader::register();
-
-
     $tplDir = __DIR__ . '/../../../../templates/';
     $tmpDir = __DIR__ . '/../../../../tmp/cache_twig/';
+    
     $loader = new Twig_Loader_Filesystem($tplDir);
 
     $twig = new Twig_Environment($loader, array(
