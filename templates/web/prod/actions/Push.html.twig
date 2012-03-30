@@ -86,9 +86,11 @@
               <div id="find-user">
                 <input class="search" name="users-search" placeholder="{% trans 'Users' %}" type="text" style="width:210px;"/>
                 <br/>
-                {% trans 'Select a user in the list'%}, <br/>
-                {% trans 'or' %}
-                <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
+                {% trans 'Select a user in the list'%} <br/>
+                {% if user.ACL().has_right('manageusers') %}
+                  {% trans 'or' %}
+                  <a href="/prod/push/add-user/" class="user_adder link">{% trans 'Add user' %}</a>
+                {% endif %}
               </div>
               <p id="recommanded-users">
 
