@@ -220,6 +220,7 @@ abstract class task_abstract
   {
     return $this->crash_counter;
   }
+
   public function increment_crash_counter()
   {
     $conn = connection::getPDOConnection();
@@ -247,7 +248,7 @@ abstract class task_abstract
     return $this->completed_percentage;
   }
 
-  protected $period = 60;
+  protected $period = 10;
   protected $taskid = NULL;
   protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
   protected $argt = array(
@@ -556,9 +557,7 @@ abstract class task_abstract
 
   protected function load_settings(SimpleXMLElement $sx_task_settings)
   {
-    $this->period = (int) $sx_task_settings->period;
-    if ($this->period <= 0 || $this->period >= 60 * 60)
-      $this->period = 60;
+    $this->period = max(10, min(3600, (int) $sx_task_settings->period));
 
     $this->maxrecs = (int) $sx_task_settings->maxrecs;
     if ($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000)
@@ -702,7 +701,7 @@ abstract class task_abstract
     }
     catch (Exception $e)
     {
-
+      
     }
 
     return $this;
