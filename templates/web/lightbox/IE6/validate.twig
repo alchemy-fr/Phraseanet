@@ -95,8 +95,8 @@
                 <div class="right_column_wrapper right_column_wrapper_caption left unselectable" style="width:230px;height:auto;{% if basket.getValidation() %}display:none;{% endif %}">
                     <div id="record_infos">
                         <div class="container">
-              {% set business = user.ACL().has_right_on_base(basket_element.getRecord().get_base_id(), 'canmodifrecord') %}
               {% if basket_element %}
+                {% set business = user.ACL().has_right_on_base(basket_element.getRecord().get_base_id(), 'canmodifrecord') %}
                 {{caption.format_caption(basket_element.getRecord(), '', null, business)}}
               {% endif %}
             </div>
