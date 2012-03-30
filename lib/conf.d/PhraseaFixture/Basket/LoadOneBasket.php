@@ -13,6 +13,7 @@ namespace PhraseaFixture\Basket;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
@@ -29,7 +30,7 @@ class LoadOneBasket extends \PhraseaFixture\AbstractWZ implements FixtureInterfa
    */
   public $basket;
 
-  public function load($manager)
+  public function load(ObjectManager $manager)
   {
     $basket = new \Entities\Basket();
 

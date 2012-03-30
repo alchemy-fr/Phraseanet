@@ -13,6 +13,7 @@ namespace PhraseaFixture\UsrLists;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
@@ -29,7 +30,7 @@ class UsrList extends ListAbstract implements FixtureInterface
    */
   public $list;
 
-  public function load($manager)
+  public function load(ObjectManager $manager)
   {
     $list = new \Entities\UsrList();
 

@@ -13,6 +13,7 @@ namespace PhraseaFixture\Story;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
@@ -29,7 +30,7 @@ class LoadOneStory extends \PhraseaFixture\AbstractWZ implements FixtureInterfac
    */
   public $story;
 
-  public function load($manager)
+  public function load(ObjectManager $manager)
   {
     $story = new \Entities\StoryWZ();
 

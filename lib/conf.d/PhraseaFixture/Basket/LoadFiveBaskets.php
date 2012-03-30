@@ -13,6 +13,7 @@ namespace PhraseaFixture\Basket;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
@@ -29,7 +30,7 @@ class LoadFiveBaskets extends \PhraseaFixture\AbstractWZ implements FixtureInter
    */
   public $baskets;
 
-  public function load($manager)
+  public function load(ObjectManager $manager)
   {
     for ($i = 0; $i < 5; $i++)
     {

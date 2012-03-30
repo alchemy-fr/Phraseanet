@@ -13,6 +13,7 @@ namespace PhraseaFixture\ValidationParticipant;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
@@ -35,7 +36,7 @@ class LoadParticipantWithSession extends \PhraseaFixture\AbstractWZ implements F
    */
   private $session;
 
-  public function load($manager)
+  public function load(ObjectManager $manager)
   {
     $validationParticipant = new \Entities\ValidationParticipant();
 

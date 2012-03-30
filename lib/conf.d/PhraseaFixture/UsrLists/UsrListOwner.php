@@ -12,6 +12,8 @@ namespace PhraseaFixture\UsrLists;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+
 /**
  *
  * @package
@@ -27,7 +29,7 @@ class UsrListOwner extends ListAbstract implements FixtureInterface
    */
   public $owner;
 
-  public function load($manager)
+  public function load(ObjectManager $manager)
   {
     $owner = new \Entities\UsrListOwner();
 

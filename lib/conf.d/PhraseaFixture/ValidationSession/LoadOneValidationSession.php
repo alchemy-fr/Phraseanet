@@ -13,6 +13,7 @@ namespace PhraseaFixture\ValidationSession;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
@@ -29,7 +30,7 @@ class LoadOneValidationSession extends \PhraseaFixture\AbstractWZ implements Fix
    */
   public $validationSession;
 
-  public function load($manager)
+  public function load(ObjectManager $manager)
   {
     $validationSession = new \Entities\ValidationSession();
 

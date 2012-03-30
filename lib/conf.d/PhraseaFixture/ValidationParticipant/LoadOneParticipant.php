@@ -13,6 +13,7 @@ namespace PhraseaFixture\ValidationParticipant;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
@@ -29,7 +30,7 @@ class LoadOneParticipant extends \PhraseaFixture\AbstractWZ implements FixtureIn
    */
   public $validationParticipant;
 
-  public function load($manager)
+  public function load(ObjectManager $manager)
   {
     $validationParticipant = new \Entities\ValidationParticipant();
 
