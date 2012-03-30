@@ -76,6 +76,7 @@
           </li>
 
           {# MODULE #}
+          {% if user.ACL.has_access_to_module('upload') %}
           <li>
             <a target="_blank" href="/upload/">
               <span class="{% if module == "upload" %}selected{% endif %}">
@@ -83,6 +84,7 @@
               </span>
             </a>
           </li>
+          {% endif %}
 
           {# MODULE #}
           {% if module == "prod" or module == "client" %}
