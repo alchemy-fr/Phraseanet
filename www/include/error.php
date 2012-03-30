@@ -14,11 +14,27 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-$Core = include_once __DIR__ . '/../../lib/bootstrap.php';
+$request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
 
-$appbox = appbox::get_instance($Core);
-$session = $appbox->get_session();
-phrasea::use_i18n(Session_Handler::get_locale());
+$locales = \Alchemy\Phrasea\Core::getAvailableLanguages();
+
+$current_locale = \Session_Handler::get_locale();
+
+if (!$current_locale)
+{
+  foreach ($locales as $code => $locale)
+  {
+    if ($request->getLocale() == $locale)
+    {
+      $current_locale = $locale;
+      break;
+    }
+  }
+  if (!$current_locale)
+    $current_locale = 'fr_FR';
+}
+
+phrasea::use_i18n($current_locale);
 
 $request = http_request::getInstance();
 
