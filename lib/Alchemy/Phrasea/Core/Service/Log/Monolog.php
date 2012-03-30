@@ -77,7 +77,7 @@ class Monolog extends ServiceAbstract implements ServiceInterface
     if (!class_exists($handlerClassName))
     {
       throw new \Exception(sprintf(
-                      'Unable to log monolog handler ùs looked for class %s'
+                      'Unable to log monolog handler %s looked for class %s'
                       , $handlerName
                       , $handlerClassName)
       );
