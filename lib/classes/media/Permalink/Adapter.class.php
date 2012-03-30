@@ -378,9 +378,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
 
     if ($row)
     {
-      $record = new record_adapter($databox->get_sbas_id(), $record_id);
-
-      return $record;
+      return new record_adapter($databox->get_sbas_id(), $record_id);
     }
 
     return null;
