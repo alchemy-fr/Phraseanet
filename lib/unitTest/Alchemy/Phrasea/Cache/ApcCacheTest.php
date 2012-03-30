@@ -16,7 +16,7 @@ class ApcCacheTest extends \PHPUnit_Framework_TestCase
 
   public function setUp()
   {
-    if (extension_loaded('apc'))
+    if (!extension_loaded('apc'))
     {
       $this->markTestSkipped('Apc is not installed');
     }
