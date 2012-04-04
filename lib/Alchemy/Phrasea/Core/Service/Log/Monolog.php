@@ -22,7 +22,7 @@ use Alchemy\Phrasea\Core,
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class Monolog extends ServiceAbstract implements ServiceInterface
+class Monolog extends ServiceAbstract
 {
   const DEFAULT_MAX_DAY = 10;
 

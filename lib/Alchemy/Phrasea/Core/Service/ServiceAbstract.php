@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-abstract class ServiceAbstract
+abstract class ServiceAbstract implements ServiceInterface
 {
 
   protected $core;

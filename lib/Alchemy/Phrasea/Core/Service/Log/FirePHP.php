@@ -24,7 +24,7 @@ use Monolog\Handler\FirePHPHandler;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class FirePHP extends ServiceAbstract implements ServiceInterface
+class FirePHP extends ServiceAbstract
 {
 
   protected $logger;

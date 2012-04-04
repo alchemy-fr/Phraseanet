@@ -23,7 +23,7 @@ use Alchemy\Phrasea\Core,
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class XcacheCache extends ServiceAbstract implements ServiceInterface
+class XcacheCache extends ServiceAbstract
 {
 
   protected $cache;

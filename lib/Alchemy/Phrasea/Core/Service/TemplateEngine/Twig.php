@@ -16,7 +16,7 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
 
-class Twig extends ServiceAbstract implements ServiceInterface
+class Twig extends ServiceAbstract
 {
 
   /**
