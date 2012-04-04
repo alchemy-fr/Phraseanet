@@ -11,8 +11,6 @@
 
 namespace Alchemy\Phrasea\Application;
 
-require_once __DIR__ . "/../../../../lib/bootstrap.php";
-
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception;
