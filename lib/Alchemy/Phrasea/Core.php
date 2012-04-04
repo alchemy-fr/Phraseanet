@@ -45,7 +45,7 @@ class Core extends \Pimple
     , 'es_ES' => 'Español'
     , 'fr_FR' => 'Français'
   );
-  
+
   protected static $autoloader_initialized = false;
 
   /**
@@ -403,7 +403,7 @@ class Core extends \Pimple
     {
       return;
     }
-    
+
     require_once __DIR__ . '/Loader/Autoloader.php';
 
     if ($cacheAutoload === true)
@@ -432,7 +432,7 @@ class Core extends \Pimple
       {
         return require realpath(__DIR__ . '/../../../vendor/.composer/autoload_namespaces.php');
       };
-      
+
     foreach ($getComposerNamespaces() as $prefix => $path)
     {
       if (substr($prefix, -1) === '_')
@@ -451,7 +451,11 @@ class Core extends \Pimple
     ));
 
     $loader->register();
-    
+
+    set_include_path(
+      get_include_path() . PATH_SEPARATOR . realpath(__DIR__ . '/../../../vendor/alchemy/gdata')
+    );
+
     static::$autoloader_initialized = true;
 
     return;
