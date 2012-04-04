@@ -560,6 +560,7 @@ class collection implements cache_cacheableInterface
     $rights = array(
         "canputinalbum" => "1",
         "candwnldhd" => "1",
+        "nowatermark" => "1",
         "candwnldpreview" => "1",
         "cancmd" => "1",
         "canadmin" => "1",
