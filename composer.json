@@ -32,6 +32,7 @@
     "phpexiftool/phpexiftool": "dev-master",
     "mediavorus/mediavorus": "dev-master",
     "silex/silex": "1.0.*",
+    "imagine/Imagine": "0.2.*",
     "alchemy/oauth2php": "master",
     "alchemy/tcpdf": "master",
     "alchemy/phlickr": "master",
