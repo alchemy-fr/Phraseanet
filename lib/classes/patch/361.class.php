@@ -69,7 +69,7 @@ class patch_361 implements patchInterface
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
 
-    $count = count($rs);
+    $count = count($result);
 
     foreach ($result as $row)
     {
