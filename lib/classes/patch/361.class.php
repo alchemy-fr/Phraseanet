@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 /**
  *
  * @package
@@ -98,6 +100,9 @@ class patch_361 implements patchInterface
 
     $dql = "SELECT b FROM Entities\Basket b WHERE b.description != ''";
 
+    $n       = 0;
+    $perPage = 100;
+
     $query = $em->createQuery($dql)
       ->setFirstResult($n)
       ->setMaxResults($perPage);
@@ -105,9 +110,6 @@ class patch_361 implements patchInterface
     $paginator = new Paginator($query, true);
 
     $count = count($paginator);
-
-    $n       = 0;
-    $perPage = 100;
 
     while ($n < $count)
     {
