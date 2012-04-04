@@ -551,6 +551,8 @@ class collection implements cache_cacheableInterface
     phrasea::reset_baseDatas();
     self::set_admin($new_bas, $user);
 
+    $appbox->get_session()->renew_phrasea_session();
+
     return self::get_from_coll_id($databox, $new_id);
   }
 
@@ -560,6 +562,7 @@ class collection implements cache_cacheableInterface
     $rights = array(
         "canputinalbum" => "1",
         "candwnldhd" => "1",
+        "nowatermark" => "1",
         "candwnldpreview" => "1",
         "cancmd" => "1",
         "canadmin" => "1",

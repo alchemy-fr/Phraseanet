@@ -315,6 +315,25 @@ class Session_Handler
       return isset($_COOKIE[$name]);
   }
 
+  public function renew_phrasea_session()
+  {
+    if (!$this->phrasea_session instanceof Session_Phrasea)
+      throw new \Exception('No phrasea session available');
+
+    $this->phrasea_session->close();
+
+    $user = \User_Adapter::getInstance($this->get_usr_id(), $this->appbox);
+
+    $this->phrasea_session = new Session_Phrasea($this->appbox, $user);
+    $this->phrasea_session->create(\Browser::getInstance());
+
+    $this->phrasea_session->open();
+    $ses_id = $this->phrasea_session->get_id();
+    
+    $this->storage()->set('usr_id', $user->get_id());
+    $this->storage()->set('ses_id', $ses_id);
+  }
+
   /**
    * Open the phrasea session
    *

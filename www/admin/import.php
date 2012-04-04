@@ -269,13 +269,13 @@ phrasea::headers();
 
           if ($loginNotExist)
           {
-            $user = User_Adapter::create($appbox, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
+            $NewUser = User_Adapter::create($appbox, $curUser['usr_login'], $curUser['usr_password'], $curUser['usr_mail'], false);
 
-            $newid = $user->get_id();
+            $newid = $NewUser->get_id();
 
             $admBasid = array_keys($user->ACL()->get_granted_base(array('manage')));
             $template_user = User_Adapter::getInstance($parm["modelToAplly"], $appbox);
-            $user->ACL()->apply_model($template_user, $admBasid);
+            $NewUser->ACL()->apply_model($template_user, $admBasid);
 
             $nbcreation++;
           }
