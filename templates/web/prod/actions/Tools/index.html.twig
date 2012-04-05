@@ -1,0 +1,267 @@
+{% set selectionLength = selection|length %}
+
+{% set nbHdSubstitute = 0 %}
+{% set nbThumbSubstitute = 0 %}
+
+{% for record in selection %}
+  {% set subdefs = record.get_subdefs() %}
+  {% if subdefs|length > 0 %}
+    {% for key, subdef in subdefs if subdef.is_substituted() %}
+      {% if key == 'document' %}
+        {% set nbHdSubstitute = nbHdSubstitute + 1 %}
+      {% endif%}
+
+      {% if key == 'thumbnail' %}
+        {% set nbThumbSubstitute = nbThumbSubstitute + 1 %}
+      {% endif%}
+
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+<div id='prod-tool-box' class="PNB10">
+  
+  {# jquery Tabs #}
+  <div id="tool-tabs">
+    {# jquery menu #}
+    <ul>
+      <li>
+        <a href="#subdefs">
+          {% trans "regeneration of sub-definitions" %}
+        </a>
+      </li>
+      <li>
+        <a href="#image">
+          {% trans "image tool"%}
+        </a>
+      </li>
+      {% if selectionLength == 1 and registry.get('GV_seeOngChgDoc') %}
+        <li>
+          <a href="#hdsub">
+            {% trans "substitution HD" %}
+          </a>
+        </li>
+      {% endif %}
+      {% if selectionLength == 1 and registry.get('GV_seeNewThumb') %}
+        <li>
+          <a href="#sdsub">
+            {% trans "substitution of sub-definitions" %}
+          </a>
+        </li>
+      {% endif %}
+      {% if metadatas %}
+        <li>
+          <a href="#exiftool">
+            {% trans "meta-datas" %}
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+      
+    {# subef section #}
+    <div id="subdefs" class="tabBox">
+      <form id="new-img-form" action="/prod/tools/image/" method="post">
+        
+        {% if nbThumbSubstitute > 0 %}
+          <div style="color:#A00;">
+            {% trans "Attention, certain documents ont des sous-definitions substituees"%}
+          </div>
+          <input type="checkbox" name="ForceThumbSubstit" value="1" id="FTS" />
+          <label for="FTS">
+            {% trans "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" %}
+          </label>
+          <br/>
+        {% else %}
+          <input type="hidden" name="ForceThumbSubstit" value="1">
+        {% endif %}
+          
+        <div>
+          <h6>
+            {% trans "Reconstruire les sous definitions" %} :
+          </h6>
+          <select name="rebuild">
+            <option selected="selected" value="none">
+              {% trans "recreer aucune les sous-definitions" %}
+            </option>
+            <option value="all">
+              {% trans "recreer toutes les sous-definitions" %}
+            </option>
+          </select>
+
+          <input type="hidden" name="ACT" value="SEND" />
+          <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+          <div>
+            <button class='action_submiter' type="button">{% trans "validate" %}</button>
+            <button type="button">{% trans "cancel" %}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+      
+    {# image section #}
+    <div id="image" class="tabBox">
+      <form name="formpushdoc" action="/prod/tools/rotate/" method="post">
+        {% trans "Cette action n\'a d\'effet que sur les images"%}
+        <br/>
+        <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
+        <label for="ROTA_90">
+            {% trans "rotation 90 degres horaire"%}
+        </label>
+        <br />
+        <input type="radio" name="rotation" id="ROTA_C90" value="-90">
+        <label for="ROTA_C90">
+          {% trans "rotation 90 degres anti-horaires"%}
+        </label>
+        <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+        <input type="hidden" name="element" value="" />
+        <input type="hidden" name="cchd" value="" />
+        <div>
+          <button class='action_submiter' type="button">{% trans "validate" %}</button>
+          <button type="button">{% trans "cancel" %}</button>
+        </div>
+      </form>
+    </div>
+      
+    {# hd sub section #}
+    {% if selectionLength == 1 and registry.get('GV_seeOngChgDoc') %}
+      {% for record in selection %}
+        <div id="hdsub" class="tabBox">
+          <form 
+            name ="formchgHD" 
+            action="/prod/tools/hddoc/" 
+            enctype="multipart/form-data" 
+            method="post"
+            target="uploadHdsub">
+            <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
+            <input name="newHD" type="file" />
+            <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
+            <label for="CCFNALP">
+              {% trans "mettre a jour le nom original de fichier apres substitution"%}
+            </label>
+            <input type="hidden" name="ACT" value="SEND" />
+            <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
+            <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+            <div class="load"></div>
+            <div>
+              <button class='iframe_submiter' type="button">
+                {% trans "validate" %}
+              </button>
+              <button type="button">
+                {% trans "cancel" %}
+              </button>
+            </div>
+          </form>
+          <div class='resultAction'></div>
+        </div>
+      {% endfor %}
+    {% endif %}   
+      
+    {# sd sub section #}
+    {% if selectionLength == 1 and registry.get('GV_seeNewThumb') %}
+      {% for record in selection %}
+        <div id="sdsub" class="tabBox">
+          <br />
+          <form 
+            name="formchgHD" 
+            action="/prod/tools/chgthumb/" 
+            enctype="multipart/form-data" 
+            method="post"
+            target="uploadHdsub">
+            <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
+            <input name="newThumb" type="file" />
+            <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
+            <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+            <div class="load"></div>
+            <div>
+              <button class='iframe_submiter' type="button">
+                {% trans "validate" %}
+              </button>
+              <button type="button">
+                {% trans "cancel" %}
+              </button>
+            </div>
+          </form>
+          <div class='resultAction'></div>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    {# exiftool section #}
+    {% if metadatas %}
+      {% for record in selection %}
+        <div id="exiftool"  class="tabBox">
+          {% set thumbnail = record.get_thumbnail() %}
+          
+          <img 
+            src="{{thumbnail.get_url()}}" 
+            width="{{thumbnail.get_width()}}" 
+            height="{{thumbnail.get_height()}}" />
+          
+          {% if record is not none %}
+            <h1><b>{{record.get_title()}}</b></h1>
+          {% endif %}
+
+          <hr>
+          <div>
+            <h1><b>HTML</b></h1>
+            {% for line in metadatasFirst %}
+              {% spaceless %}
+                {{line|raw}}
+              {% endspaceless %}
+            {% endfor %}
+          </div>
+          <hr>
+          <div>
+          <h1><b>XML</b></h1>
+          {% for line in metadatasSecond %}
+              {{line|raw}}<br/>
+          {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+  {# hidden iframe to handle upload #}
+  <iframe 
+    id="uploadHdsub"
+    name="uploadHdsub"
+    height="90" 
+    width="600" 
+    >
+  </iframe>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var scope = $("#prod-tool-box");
+    $("#tool-tabs", scope).tabs();
+    
+    $(".iframe_submiter", scope).bind("click", function(){
+      var form = $(this).closest("form");
+      form.submit();
+      form.find('.load').empty().html(language.loading + ' ...');
+      $("#uploadHdsub").contents().find(".content").empty();
+      $("#uploadHdsub").load(function(){
+        form.find('.load').empty();
+        var iframeContent = $("#uploadHdsub").contents().find(".content").html();
+        form.closest('div').find('.resultAction').empty().append(iframeContent);
+      });
+    });
+
+    $(".action_submiter", scope).bind("click", function(){
+      var form = $(this).closest("form");
+      
+      $.ajax({
+          url : form.attr("action"),
+          type : form.attr("method"),
+          dataType : 'json',
+          data : form.serializeArray(),
+          success : function(data){
+            if(!data.success){
+              humane.error(data.message);
+            }
+          }
+        });
+    });
+  });
+</script>

@@ -1,0 +1,9 @@
+
+<div class='content'>
+  {% if success %}
+    {% trans ' successfull operation '%} 
+  {% else %}
+    {% trans ' an error occured '%}
+    {{errorMessage}}
+  {% endif %}
+</div>
