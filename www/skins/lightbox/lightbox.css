@@ -19,6 +19,12 @@ a, a:hover, a:visited {
     color: #BFBFBF;
 }
 
+#record_infos a, 
+#record_infos a:hover, 
+#record_infos a:visited {
+    color: #000000;
+}
+
 ul {
     list-style-type: none;
     margin: 0;
