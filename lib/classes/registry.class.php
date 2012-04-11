@@ -98,6 +98,11 @@ class registry implements registryInterface
       }
       foreach ($rs as $row)
       {
+        if(in_array($row['key'], array('GV_ServerName', 'GV_debug', 'GV_maintenance')))
+        {
+          continue;
+        }
+
         switch ($row['type'])
         {
           case self::TYPE_BOOLEAN:
