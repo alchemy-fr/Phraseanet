@@ -266,7 +266,7 @@ span.ww_winTitle{
 	background-color:#404040;
 }
 .ui-tabs .ui-tabs-panel.tabBox{
-	height:310px;
+	height:405px;
 	overflow:auto;
 	position:relative;
 	padding:10px;
@@ -3242,4 +3242,172 @@ dans l'onglet thesaurus : arbres, menus contextuels
 
 #BasketBrowser .diapo .title{
   height:16px;
+}
+
+
+/** THUMB EXTRACTOR  */
+#thumbExtractor{
+  background-color:#404040;
+}
+
+#thumbExtractor .main_title{
+  height:15px;
+  font-weight: bold;
+  top:15px
+}
+
+#thumbExtractor .part_title_left{
+  height:20px;
+  width:320px;
+  top:30px;
+  left:10px;
+}
+
+
+#thumbExtractor .part_title_right{
+  height:20px;
+  width:320px;
+  top:30px;
+  left:380px;
+}
+
+#thumbExtractor #thumb_info{
+  padding-top: 25px;
+  font-style: italic;
+}
+
+#thumbExtractor .frame_video{
+  border:1px solid #1A1B1B;
+  height:210px;
+  width:320px;
+  top:50px;
+  left:10px;
+}
+
+#thumbExtractor #thumb_video{
+  height:100%;
+  width:100%;
+}
+
+#thumbExtractor .frame_canva{
+  border:1px solid #1A1B1B;
+  border-bottom:none;
+  height:210px;
+  width:320px; 
+  top:50px; 
+  left:380px;
+  z-index:2; 
+  text-align:center
+}
+
+#thumbExtractor .action_bar_left{
+  height:20px;
+  width:320px;
+  left:10px;
+  top:260px;
+  background-color: #3B3D3B;
+  border:1px solid #3B3D3B;
+  padding:2px;
+}
+
+#thumbExtractor .action_bar_right{
+  height:20px;
+  width:320px;
+  top:260px;
+  left:380px;
+  background-color: #3B3D3B;
+  border:1px solid #3B3D3B;
+  display: table-row;
+  padding:2px;
+}
+
+#thumbExtractor .action_bar_right .action_icon{
+  padding-right:10px;
+  display: table-cell;
+  vertical-align: middle
+}
+
+#thumbExtractor .action_bar_right .action_icon:hover{
+  cursor:pointer;
+}
+
+#thumbExtractor #thumb_reset_button{
+  width:41px;
+  height:41px;
+  position:absolute;
+  bottom:10px;
+  right:60px;
+  display:none;
+}
+
+#thumbExtractor #thumb_delete_button{
+  width:41px;
+  height:41px;
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  display:none
+}
+
+#thumbExtractor #thumb_delete_button, #thumbExtractor #thumb_reset_button{
+  cursor: pointer;
+}
+
+#thumbExtractor #thumb_slider{
+  height:95px;
+  width:320px;
+  top:285px;
+  left:380px;
+  padding:0;
+  overflow:auto;
+}
+
+#thumbExtractor #thumb_wrapper{
+  white-space:nowrap;
+  margin-top: 15px;
+}
+
+#thumbExtractor #thumb_wrapper img{
+    display: inline-block;
+    width: 80px;
+    height: 60px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#thumbExtractor #thumb_wrapper img.selected{
+  border:2px solid white;
+}
+
+#thumbExtractor #thumb_camera_button{
+  cursor:pointer;
+  height:50px;
+  width:320px;
+  top:300px;
+  left:10px;
+  text-align:center;
+}
+
+#thumbExtractor #thumb_validate_button{
+  cursor:pointer;
+  height:30px;
+  width:80px;
+  top:385px;
+  left:620px;
+  padding:0;
+}
+
+#thumbExtractor .action_frame .ui-slider .ui-slider-handle {
+  background-color: #fff;
+}
+
+#thumb_confirm table{
+  table-layout: fixed;
+  width:100%;
+}
+
+#thumb_confirm table td{
+  padding: 5px;
+  text-align:center;
+  vartical-align:middle;
 }
