@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute,
     Alchemy\Phrasea\Helper;
+use DataURI;
 
 /**
  *
@@ -46,7 +47,7 @@ class Tools implements ControllerProviderInterface
               $metadatas = false;
               $record = null;
               $metadatasFirst = $metadatasSecond = array();
-               
+
               if (count($selection) == 1 && ! empty($binary))
               {
                 try
@@ -78,7 +79,7 @@ class Tools implements ControllerProviderInterface
               }
 
               $template = 'prod/actions/Tools/index.html.twig';
-              
+
               $var = array(
                   'helper' => $helper,
                   'selection' => $selection,
@@ -119,12 +120,12 @@ class Tools implements ControllerProviderInterface
 
     $controllers->post('/image/', function(Application $app, Request $request)
             {
-              $return = array('success' => false);
+              $return = array('success' => true);
 
               $helper = new Helper\Record\Tools($app['Core'], $request);
 
               $selection = $helper->get_elements();
-
+              
               if ($request->get('ForceThumbSubstit') == '1')
               {
                 foreach ($selection as $record)
@@ -132,15 +133,15 @@ class Tools implements ControllerProviderInterface
                   try
                   {
                     $record->rebuild_subdefs();
-                    $return['success'] = true;
                   }
                   catch (\Exception $e)
                   {
-                    
+                    $return['success'] = false;
+                    $return['message'] = _('an error occured');
                   }
                 }
               }
-
+              
               $json = $app['Core']->getSerializer()->serialize($return, 'json');
               return new Response($json, 200, array('content-type' => 'application/json'));
             });
@@ -247,6 +248,62 @@ class Tools implements ControllerProviderInterface
                 return new Response($app['Core']->getTwig()->render($template, $var));
               }
             });
+
+    $controllers->post('/thumb-extractor/confirm-box/', function(Application $app, Request $request)
+            {
+              $return = array('error' => false, 'datas' =>'');
+              $template = 'prod/actions/Tools/confirm.html.twig';
+
+              try
+              {
+                $record = new \record_adapter($request->get('sbas_id'), $request->get('record_id'));
+                $var = array(
+                    'video_title' => $record->get_title()
+                    , 'image' => $request->get('image', '')
+                );
+                $return['datas'] = $app['Core']->getTwig()->render($template, $var);
+              }
+              catch (\Exception $e)
+              {
+                $return['datas'] = _('an error occured');
+                $return['error'] = true;
+              }
+
+              $json = $app['Core']->getSerializer()->serialize($return, 'json');
+              return new Response($json, 201, array('content-type' => 'application/json'));
+            });
+
+    $controllers->post('/thumb-extractor/apply/', function(Application $app, Request $request)
+            {
+              $return = array('success' => false, 'message' => '');
+
+              try
+              {
+                $record = new \record_adapter($request->get('sbas_id'), $request->get('record_id'));
+
+                $dataUri = DataURI\Parser::parse($request->get('image', ''));
+
+                $path = $app['Core']->getRegistry()->get('GV_RootPath') . 'tmp';
+
+                $name = sprintf('extractor_thumb_%s', $record->get_serialize_key());
+
+                $fileName = sprintf('%s/%s.png', $path, $name);
+
+                file_put_contents($fileName, $dataUri->getData());
+
+                $record->substitute_subdef('thumbnail', new \system_file($fileName));
+
+                $return['success'] = true;
+              }
+              catch (\Exception $e)
+              {
+                $return['message'] = $e->getMessage();
+              }
+
+              $json = $app['Core']->getSerializer()->serialize($return, 'json');
+              return new Response($json, 201, array('content-type' => 'application/json'));
+            });
+
     return $controllers;
   }
 
