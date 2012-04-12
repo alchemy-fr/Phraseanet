@@ -64,9 +64,6 @@ class RedisTest extends \PhraseanetPHPUnitAbstract
     $cache->delete('test_key2');
     $this->assertFalse($cache->contains('test_key2'));
 
-    $ids = $cache->getIds();
-    $this->assertTrue(in_array('test_key', $ids));
-
     $this->assertEquals($redis, $cache->getRedis());
   }
 

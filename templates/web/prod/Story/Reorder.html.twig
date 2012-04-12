@@ -36,7 +36,7 @@
   <script type="text/javascript">
     $(document).ready(function(){
 
-      var container = p4.Dialog.get(1).getDomElement();
+      var container = $('#reorder_box');//p4.Dialog.get(1).getDomElement();
 
 
       $('button.autoorder', container).bind('click', function(){
@@ -181,7 +181,7 @@
 
           while(n > 0)
           {
-            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').insertAfter($('.diapo.ui-sortable-placeholder', cont));
+            $('<div style="height:130px;" class="diapo ui-sortable-placeholderfollow"></div>').insertAfter($('.diapo.ui-sortable-placeholder', container));
             n--;
           }
         },

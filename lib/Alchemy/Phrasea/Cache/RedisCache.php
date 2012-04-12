@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Doctrine\Common\Cache\AbstractCache;
+use Doctrine\Common\Cache\CacheProvider;
 
 /**
  *
@@ -19,7 +19,7 @@ use Doctrine\Common\Cache\AbstractCache;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class RedisCache extends AbstractCache implements Cache
+class RedisCache extends CacheProvider
 {
 
   /**
@@ -50,15 +50,7 @@ class RedisCache extends AbstractCache implements Cache
   /**
    * {@inheritdoc}
    */
-  public function getIds()
-  {
-    return $this->_redis->keys('*');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function _doFetch($id)
+  protected function doFetch($id)
   {
     return $this->_redis->get($id);
   }
@@ -66,7 +58,7 @@ class RedisCache extends AbstractCache implements Cache
   /**
    * {@inheritdoc}
    */
-  protected function _doContains($id)
+  protected function doContains($id)
   {
     return (bool) $this->_redis->get($id);
   }
@@ -74,7 +66,7 @@ class RedisCache extends AbstractCache implements Cache
   /**
    * {@inheritdoc}
    */
-  protected function _doSave($id, $data, $lifeTime = 0)
+  protected function doSave($id, $data, $lifeTime = 0)
   {
     if (0 === $lifeTime)
     {
@@ -89,9 +81,25 @@ class RedisCache extends AbstractCache implements Cache
   /**
    * {@inheritdoc}
    */
-  protected function _doDelete($id)
+  protected function doDelete($id)
   {
     return $this->_redis->delete($id);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function doFlush()
+  {
+    return $this->_redis->flushAll();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function doGetStats()
+  {
+    return $this->_redis->info();
   }
 
   public function isServer()
@@ -117,11 +125,6 @@ class RedisCache extends AbstractCache implements Cache
     }
 
     return $this;
-  }
-
-  public function flushAll()
-  {
-    return $this->_redis->flushAll();
   }
 
 }

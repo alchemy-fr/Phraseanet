@@ -847,6 +847,16 @@ div.diapo
 	position:relative;
 }
 
+#reorder_box .diapo {
+    height:130px;
+    width:100px;
+}
+
+#reorder_box .diapo.ui-sortable-placeholder,
+#reorder_box .diapo.ui-sortable-placeholderfollow {
+    background-color:orange;
+}
+
 #reorder_box .CHIM.diapo img{
 	z-index: 1000;
 	position: relative;

@@ -372,7 +372,7 @@ if ($refreshFinder)
         minLength: 2,
         select: function( event, ui ) {
           var form = $('#admin_adder');
-          $('input[name="admins[]"]', form).val(ui.item.id);
+          $('input[name="admins[]"]:last', form).val(ui.item.id);
           form.submit();
         }
       }).data( "autocomplete" )._renderItem = function( ul, item ) {
@@ -599,7 +599,7 @@ if ($refreshFinder)
           foreach ($admins as $usr_id => $user)
           {
 ?>
-            <div><input name="admins[]" type="checkbox" value="<?php echo $usr_id ?>" id="adm_<?php echo $usr_id ?>" checked /><label for="adm_<?php echo $usr_id ?>"><?php echo $user->get_display_name(); ?></label></div>
+            <div><input name="admins[]" type="checkbox" value="<?php echo $user->get_id() ?>" id="adm_<?php echo $user->get_id() ?>" checked /><label for="adm_<?php echo $user->get_id() ?>"><?php echo $user->get_display_name(); ?></label></div>
 <?php
           }
 ?>
