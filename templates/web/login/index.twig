@@ -149,7 +149,7 @@
                 {% if login.get_cgus != '' %}
                     <div id="id-about" class="tab-content" style="display:none;">
                         <div style="position:relative;float:left;width:930px;height:490px;overflow:auto;">
-                            {{login.get_cgus}}
+                            {{login.get_cgus|raw}}
                         </div>
                     </div>
                 {% endif %}
