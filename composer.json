@@ -31,6 +31,7 @@
     "symfony/yaml": "2.1.*",
     "phpexiftool/phpexiftool": "dev-master",
     "mediavorus/mediavorus": "dev-master",
+    "data-uri/data-uri": "dev-master",
     "silex/silex": "1.0.*",
     "imagine/Imagine": "0.2.*",
     "alchemy/oauth2php": "master",

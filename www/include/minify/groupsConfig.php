@@ -86,6 +86,8 @@ $groups = array(
         , '//prod/page0.js'
         , '//prod/jquery.WorkZone.js'
         , '//prod/jquery.Alerts.js'
+        , '//include/jslibs/pixastic.custom.js'
+        , '//prod/ThumbExtractor.js'
         , '//prod/publicator.js'
         , '//prod/jquery.order.js'
         , '//include/jslibs/jquery.sprintf.1.0.3.js'

@@ -1,0 +1,697 @@
+{% set selectionLength = selection|length %}
+
+{% set nbHdSubstitute = 0 %}
+{% set nbThumbSubstitute = 0 %}
+
+{% for record in selection %}
+  {% set subdefs = record.get_subdefs() %}
+  {% if subdefs|length > 0 %}
+    {% for key, subdef in subdefs if subdef.is_substituted() %}
+      {% if key == 'document' %}
+        {% set nbHdSubstitute = nbHdSubstitute + 1 %}
+      {% endif%}
+
+      {% if key == 'thumbnail' %}
+        {% set nbThumbSubstitute = nbThumbSubstitute + 1 %}
+      {% endif%}
+
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+<div id='prod-tool-box' class="PNB10">
+  
+  {# jquery Tabs #}
+  <div id="tool-tabs">
+    {# jquery menu #}
+    <div>
+      <ul>
+        <li>
+          <a href="#subdefs">
+            {% trans "regeneration of sub-definitions" %}
+          </a>
+        </li>
+        {% if selectionLength == 1%}
+          {% for record in selection %}
+            {% if record.get_type() == 'video' %}
+              <li>
+                <a href="#thumbExtractor">
+                  {% trans "video tool" %}
+                </a>
+              </li>
+              {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if selectionLength == 1%}
+          {% for record in selection %}
+            {% if record.get_type() == 'image' %}
+              <li>
+                <a href="#image">
+                  {% trans "image tool"%}
+                </a>
+              </li>
+           {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if selectionLength == 1 and registry.get('GV_seeOngChgDoc') %}
+          <li>
+            <a href="#substitution">
+              {% trans "substitution" %}
+            </a>
+          </li>
+        {% endif %}
+        {% if metadatas %}
+          <li>
+            <a href="#exiftool">
+              {% trans "meta-datas" %}
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+    {# subef section #}
+    <div id="subdefs" class="tabBox">
+      <form id="new-img-form" action="/prod/tools/image/" method="post">
+        <fieldset style='border:1px solid #999;padding:20px;'>
+          <legend style='color:#EEE'>&nbsp;<b>{% trans "Reconstruire les sous definitions" %}</b>&nbsp;</legend>
+          {% if nbThumbSubstitute > 0 %}
+            <div style="color:#A00;">
+              {% trans "Attention, certain documents ont des sous-definitions substituees"%}
+            </div>
+            <input type="checkbox" name="ForceThumbSubstit" value="1" id="FTS" />
+            <label for="FTS">
+              {% trans "Forcer la reconstruction sur les enregistrements ayant des thumbnails substituees" %}
+            </label>
+            <br/>
+          {% else %}
+            <input type="hidden" name="ForceThumbSubstit" value="1">
+          {% endif %}
+
+          <div>
+            <select name="rebuild">
+              <option selected="selected" value="none">
+                {% trans "recreer aucune sous-definitions" %}
+              </option>
+              <option value="all">
+                {% trans "recreer toutes les sous-definitions" %}
+              </option>
+            </select>
+
+            <input type="hidden" name="ACT" value="SEND" />
+            <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+          </fieldset>
+          <div style='text-align:right;padding-top:10px;'>
+            <button class='action_submiter' type="button">{% trans "validate" %}</button>
+            <button class='action_cancel' type="button">{% trans "cancel" %}</button>
+          </div>
+      </form>
+    </div>
+      
+     {% if selectionLength == 1%}
+      {% for record in selection %}
+        {% if record.get_type() == 'video' %}
+          <div id="thumbExtractor"  class="tabBox">
+            <div class="PNB10 main_title">
+              <img src='/skins/prod/ThumbExtractor/camera_title.png'/> 
+              {% trans "screenshot video" %}
+            </div>
+            <hr style='margin-top:25px;'/>
+            <div class="PNB part_title_left">
+
+            </div>
+
+            <div class="PNB frame_video">
+              <video id="thumb_video" controls="" preload="auto">
+                <source id="mp4" type="video/mp4" src="/web//db_install/ThemeFromShaftb-boyRemix_512kb.mp4" />
+                <source id="ogv" type="video/ogg" src="/web//db_install/ThemeFromShaftb-boyRemix.ogv" />
+                <p>No HTML5.</p>
+              </video>
+            </div>
+
+            <div class="PNB action_bar_left">
+
+            </div>
+
+            <div id="thumb_camera_button" class="PNB">
+              <img src="/skins/prod/ThumbExtractor/camera_button.png" alt="{% trans 'take a screenshot' %}" />
+            </div>
+
+            <div class="PNB part_title_right">
+
+            </div>
+
+            <div class="PNB frame_canva">
+              <div id="thumb_reset_button">
+                <img src="/skins/prod/ThumbExtractor/reset.png" />
+              </div>
+              <div id="thumb_delete_button">
+                <img src="/skins/prod/ThumbExtractor/delete.png" />
+              </div>
+              <p id='thumb_info'>{% trans 'To take a screenshot click on camera' %}</p>
+              <canvas id="thumb_canvas" >
+
+              </canvas>
+            </div>
+            <div class="PNB action_bar_right">
+              <div class="action_icon">
+                <img id="flipH" src="/skins/prod/ThumbExtractor/flip_horizontal.png"/>
+              </div>
+              <div class="action_icon">
+                <img id="flipV" src="/skins/prod/ThumbExtractor/flip_vertical.png"/>
+              </div>
+              <div class="action_icon">
+                <img id="brightness" src="/skins/prod/ThumbExtractor/luminosity.png" />
+              </div>
+              <div class="action_icon">
+                <img id="contrast" src="/skins/prod/ThumbExtractor/contrast.png" />
+              </div>
+            </div>
+            
+            <div id="thumb_slider" class="PNB">
+              <div id="thumb_wrapper">
+
+              </div>
+            </div>
+
+            <div id="action_frame_brightness" class="PNB action_frame" style='background-color:#3B3D3B;z-index: 5;top:295px;left:380px;width:325px;height:125px;display: none;'>
+              <div class='close_action_frame PNB' style='background: url("/skins/prod/Push/close_badge.png") #141616 no-repeat center center; top:5px;left:310px;width:10px;height:10px;'></div>
+              <div>
+                {% trans 'brightness settings' %}
+                <hr style='color:#141616' />
+              </div>
+              <table style="table-layout:fixed; width:100%">
+                <tbody>
+                  <tr>
+                    <td style='width:45px; text-align:center'>
+                        <input id="value-brightness" type="text" style="width:45px;border:none;color:white;background-color:#3B3D3B" readonly="readonly" value="0">
+                    </td>
+                    <td style='padding:5px;text-align:center'>
+                      <div id="slider-brightness" ></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class='PNB' style="top:80px;left:220px;width:90px;height:30px;">
+                <button class="apply-brightness">{% trans 'validate'%}</button>
+              </div>
+            </div>
+
+            <div id="action_frame_contrast" class="PNB action_frame" style='background-color:#3B3D3B;z-index: 5;top:295px;left:380px;width:325px;height:125px;display: none;'>
+              <div class='close_action_frame PNB' style='background: url("/skins/prod/Push/close_badge.png") #141616 no-repeat center center; top:5px;left:310px;width:10px;height:10px;'>
+              </div>
+              <div>
+                {% trans 'contrast settings' %}
+                <hr style='color:#141616' />
+              </div>
+              <table style="table-layout:fixed;width:100%">
+                <tbody>
+                  <tr>
+                    <td style='width:45px; text-align:center'>
+                        <input id="value-contrast" type="text" style="width:45px;border:none;color:white;background-color:#3B3D3B" readonly="readonly" value="0.3">
+                    </td>
+                    <td style='padding:5px;text-align:center'>
+                      <div id="slider-contrast" ></div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class='PNB' style="top:80px;left:220px;width:90px;height:30px;">
+                <button class="apply-contrast">{% trans 'validate'%}</button>
+              </div>
+            </div>
+            
+            <div id="thumb_validate_button" class="PNB">
+              <input type="hidden" value='{{record.get_sbas_id()}}' name='sbas_id'>
+              <input type="hidden" value='{{record.get_record_id()}}' name='record_id'>
+              <img src="/skins/prod/ThumbExtractor/validate_button.png" alt="{% trans 'take a screenshot' %}" />
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+      
+    {# image section #}
+    {% if selectionLength == 1%}
+      {% for record in selection %}
+        {% if record.get_type() == 'image' %}
+          <div id="image" class="tabBox">
+            <form name="formpushdoc" action="/prod/tools/rotate/" method="post">
+              <fieldset style='border:1px solid #999;padding:20px;'>
+                <legend style='color:#EEE'>&nbsp;<b>{% trans "image rotation" %}</b>&nbsp;</legend>
+                  <input type="radio" name="rotation" id="ROTA_90" value="90" checked="checked">
+                  <label for="ROTA_90">
+                      {% trans "rotation 90 degres horaire"%}
+                  </label>
+                  <br />
+                  <input type="radio" name="rotation" id="ROTA_C90" value="-90">
+                  <label for="ROTA_C90">
+                    {% trans "rotation 90 degres anti-horaires"%}
+                  </label>
+                  <input type="hidden" name="lst" value="{{helper.get_serialize_list()}}" />
+                  <input type="hidden" name="element" value="" />
+                  <input type="hidden" name="cchd" value="" />
+              </fieldset>
+              <div style='text-align:right;padding-top:10px;'>
+                <button class='action_submiter' type="button">{% trans "validate" %}</button>
+                <button class='action_cancel' type="button">{% trans "cancel" %}</button>
+              </div>
+            </form>
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+      
+    {# hd sub section #}
+    {% if selectionLength == 1 %}
+      {% for record in selection %}
+        <div id="substitution" class="tabBox">
+          
+         {% if registry.get('GV_seeOngChgDoc') %}
+            <div id="substitution-hd">
+              <form 
+                name ="formchgHD" 
+                action="/prod/tools/hddoc/" 
+                enctype="multipart/form-data" 
+                method="post"
+                target="uploadHdsub">
+                
+                <fieldset style='border:1px solid #999;padding:20px;'>
+                  <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution HD" %}</b>&nbsp;</legend>
+                  <div>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
+                    <input id='new-hd-file' name="newHD" type="file" />
+                    <br />
+                    <input type="checkbox" name="ccfilename" id="CCFNALP" value="1">
+                    <label for="CCFNALP">
+                      {% trans "mettre a jour le nom original de fichier apres substitution"%}
+                    </label>
+                    <input type="hidden" name="ACT" value="SEND" />
+                    <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}"/>
+                    <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+                    <div class="load"></div>
+                  </div>
+                </fieldset>
+                <div style='text-align:right;padding-top:10px;'>
+                  <button class='iframe_submiter' type="button">
+                    {% trans "validate" %}
+                  </button>
+                  <button type="button" class='action_cancel'>
+                    {% trans "cancel" %}
+                  </button>
+                </div>
+              </form>
+              <div class='resultAction'></div>
+            </div>
+          {% endif %}
+            
+          {% if registry.get('GV_seeNewThumb') %}
+            <div id="substitution-sd">
+              <form 
+                name="formchgHD" 
+                action="/prod/tools/chgthumb/" 
+                enctype="multipart/form-data" 
+                method="post"
+                target="uploadHdsub">
+                <fieldset style='border:1px solid #999;padding:20px;'>
+                  <legend style='color:#EEE'>&nbsp;<b>{% trans "substitution SD" %}</b>&nbsp;</legend>
+                  <div>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="20000000" />
+                    <input id='new-sd-file' name="newThumb" type="file" />
+                    <input type="hidden" name="sbas_id" value="{{record.get_sbas_id()}}" />
+                    <input type="hidden" name="record_id" value="{{record.get_record_id()}}" />
+                    <div class="load"></div>
+                  </div>
+                </fieldset>
+                <div style='text-align:right;padding-top:10px;'>
+                  <button class='iframe_submiter' type="button">
+                    {% trans "validate" %}
+                  </button>
+                  <button type="button" class='action_cancel'>
+                    {% trans "cancel" %}
+                  </button>
+                </div>
+              </form>
+              <div class='resultAction'></div>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% endif %}   
+      
+    {# exiftool section #}
+    {% if metadatas %}
+      {% for record in selection %}
+        <div id="exiftool"  class="tabBox">
+          {% set thumbnail = record.get_thumbnail() %}
+          
+          <img style='float:left; margin-right:15px'
+            src="{{thumbnail.get_url()}}" 
+            width="{{thumbnail.get_width()}}" 
+            height="{{thumbnail.get_height()}}" />
+          
+          {#{% if record is not none %}
+            <h1><b>{{record.get_title()}}</b></h1>
+          {% endif %}#}
+
+          
+          <div>
+            <h1><b>HTML</b></h1>
+            <hr>
+            {% for line in metadatasFirst %}
+              {% spaceless %}
+                {{line|raw}}
+              {% endspaceless %}
+            {% endfor %}
+          </div>
+          
+          <div>
+          <h1><b>XML</b></h1>
+          <hr />
+          {% for line in metadatasSecond %}
+              {{line|raw}}<br/>
+          {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+  
+    
+  {# hidden iframe to handle upload #}
+  <iframe 
+    id="uploadHdsub"
+    name="uploadHdsub"
+    height="0" 
+    width="0" 
+    >
+  </iframe>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var scope = $("#prod-tool-box");
+    var width = 0;
+    
+    $("#tool-tabs", scope).tabs();
+    
+    $(".iframe_submiter", scope).bind("click", function(){
+      var form = $(this).closest("form");
+      form.submit();
+      form.find('.load').empty().html(language.loading + ' ...');
+      $("#uploadHdsub").contents().find(".content").empty();
+      $("#uploadHdsub").load(function(){
+        form.find('.load').empty();
+        var iframeContent = $("#uploadHdsub").contents().find(".content").html();
+        form.closest('div').find('.resultAction').empty().append(iframeContent);
+      });
+    });
+
+    $(".action_submiter", scope).bind("click", function(){
+      var form = $(this).closest("form");
+      $.ajax({
+          url : form.attr("action"),
+          type : form.attr("method"),
+          dataType : 'json',
+          data : form.serializeArray(),
+          success : function(data){
+            if(!data.success){
+              humane.error(data.message);
+            }
+          }
+        });
+    });
+    
+    $(".action_cancel", scope).bind("click", function(){
+      var dialog = p4.Dialog.get(1);
+      dialog.Close();
+    });
+    
+    //thumbExtractor
+    
+    $("#slider-brightness", scope).slider({
+        slide: function() {
+          $("#value-brightness").val(Math.round($("#slider-brightness").slider("value") / 100 * 300) - 150);
+        }
+    }).slider( "option", "value", 50); 
+    
+    $("#slider-contrast").slider({
+      slide: function() {
+        $("#value-contrast").val(
+        (
+          (
+            $("#slider-contrast").slider("value") / 100 * 4
+          )
+          -1
+        ).toFixed(1));
+      }
+    }).slider( "option", "value", 1/3*100); 
+    
+    var sliderWrapper = $("#thumb_wrapper", scope);
+
+    var ThumbEditor = new this.THUMB_EDITOR("thumb_video", "thumb_canvas");
+
+    $("#thumb_reset_button",scope).bind("click", function(){
+      var curImg = sliderWrapper.find(".selected");
+      var id = curImg.attr("id").split("_").pop();
+      var originalScreenShot = ThumbEditor.store.get(id);
+      var newImg = $("<img />");
+
+      curImg.after(newImg).remove();
+
+      newImg
+      .attr("id", "#working_"+ id)
+      .attr("src", originalScreenShot.getDataURI())
+      .trigger("click");
+    });
+
+    $("#thumb_delete_button", scope).bind("click", function(){
+      var img = sliderWrapper.find(".selected");
+      var id = img.attr("id").split("_").pop();
+      var previous = img.prev();
+      var next = img.next();
+
+      if(previous.length > 0)
+      {
+        previous.trigger("click");
+      }
+      else if(next.length > 0)
+      {
+        next.trigger("click");
+      }
+      else
+      {
+        $(this).hide();
+        $("#thumb_reset_button",scope).hide();
+        $("#thumb_info", scope).show();
+        ThumbEditor.resetCanva();
+      }
+
+      img.remove();
+      ThumbEditor.store.remove(id);
+    });
+    
+    $(".close_action_frame", scope).bind("click", function(){
+      $(this).closest(".action_frame").hide();
+    });
+    
+    $("#flipV", scope).bind("click", function(){
+      Pixastic.process($("#thumb_canvas").get(0),
+        "flipv",
+        null,
+        function(canvas){$("#thumb_canvas").trigger("tool_event");}
+      );
+    });
+
+    $("#flipH", scope).bind("click", function(){
+        Pixastic.process($("#thumb_canvas").get(0),
+        "fliph", 
+        null, function(canvas){$("#thumb_canvas").trigger("tool_event");}
+      );
+    });
+    
+    $("#brightness", scope).bind("click", function(){
+      $("#action_frame_brightness", scope).show();
+      $("#action_frame_contrast", scope).hide();
+    });
+    
+    $("#contrast", scope).bind("click", function(){
+      $("#action_frame_brightness", scope).hide();
+      $("#action_frame_contrast", scope).show();
+    });
+    
+    $(".apply-brightness", scope).bind("click", function(){
+      Pixastic.process($("#thumb_canvas").get(0), "brightness", {
+        brightness: $("#value-brightness").val(),
+        contrast: $("#value-contrast").val(),
+        legacy: false
+      }, null, function(canvas){$("#thumb_canvas").trigger("tool_event");});
+    });
+    
+    $(".apply-contrast").bind("click", function(){
+      Pixastic.process($("#thumb_canvas").get(0), "brightness", {
+        brightness: $("#value-brightness").val(),
+        contrast: $("#value-contrast").val(),
+        legacy: false
+      }, null, function(canvas){$("#thumb_canvas").trigger("tool_event");});
+    });
+        
+    $("img", sliderWrapper).live("click", function(){
+      $('.selected', sliderWrapper).removeClass('selected');
+      $(this).addClass('selected');
+
+      ThumbEditor.copy($(this).get(0));
+    });
+
+    $("#thumb_camera_button", scope).bind("click", function(){
+      $("#thumb_info", scope).hide();
+      $("#thumb_delete_button", scope).show();
+      $("#thumb_reset_button",scope).show();
+      
+      var screenshot = ThumbEditor.screenshot();
+      var img = $("<img />");
+      $('.selected', sliderWrapper).removeClass('selected');
+      img.addClass('selected')
+      .attr('id', 'working_'+ screenshot.getId())
+      .attr('src', screenshot.getDataURI())
+      .attr("alt", screenshot.getVideoTime())
+      .appendTo(sliderWrapper);
+    });
+    
+    $("#thumb_canvas").live('tool_event', function(){
+      var thumbnail = $('.selected', sliderWrapper);
+
+      if(thumbnail.length === 0)
+      {
+        console.error('No image selected');
+        return;
+      }
+
+      thumbnail.attr('src', ThumbEditor.getCanvaImage());
+
+    });
+    
+    $("#thumb_validate_button", scope).bind("click", function(){
+      
+      var thumbnail = $('.selected', sliderWrapper);
+
+      if(thumbnail.length === 0)
+      {
+        var dialog = p4.Dialog.Create({
+          size:'Alert',
+          title: '{% trans "alert" %}',
+          closeOnEscape:true
+        }, 3);
+        
+        var content = $("<div />").css({
+          'text-align':'center',
+          'width': '100%',
+          'font-size':'14px'
+        }).append('{% trans "no image selected" %}');
+        dialog.setContent(content);
+        
+        return;
+      }
+      
+      var buttons = {};
+      
+      var record_id = $("input[name=record_id]").val();
+      var sbas_id = $("input[name=sbas_id]").val();
+      
+      
+      function disableConfirmButton(dialog){
+        dialog.getDomElement().closest('.ui-dialog').find(".ui-dialog-buttonpane button").filter(function() {
+              return $(this).text() == language.valider;
+            }).addClass("ui-state-disabled").attr("disabled", true);
+      }
+      
+      
+      function enableConfirmButton(dialog){
+        dialog.getDomElement().closest('.ui-dialog').find(".ui-dialog-buttonpane button").filter(function() {
+              return $(this).text() == language.valider;
+            }).removeClass("ui-state-disabled").attr("disabled", false);
+      }
+      
+      buttons[language.valider] = function(){
+        var dialog = p4.Dialog.get(2);
+        var buttonPanel = dialog.getDomElement().closest('.ui-dialog').find(".ui-dialog-buttonpane");
+        var loadingDiv = buttonPanel.find('.info-div');
+        
+        if(loadingDiv.length == 0)
+        {
+           loadingDiv = $("<div />").css({
+              'width' : '120px',
+              'height' : '40px',
+              'float':'left',
+              'line-height' : '40px',
+              'padding-left' : '40px',
+              'text-align' : 'left',
+              'background-position' : 'left center'
+            }).attr('class', 'info-div').prependTo(buttonPanel);
+        }
+          
+        $.ajax({
+          type: "POST",
+          url: "/prod/tools/thumb-extractor/apply/",
+          data: {
+            image: $("#thumb_confirm img.selected").attr('src'),
+            record_id : record_id,
+            sbas_id: sbas_id
+          },
+          beforeSend: function(){
+            disableConfirmButton(dialog);
+            loadingDiv.empty().addClass('loading').append('{% trans "processing" %}');
+          },
+          success: function(data){
+            loadingDiv.empty().removeClass('loading');
+            
+            if(data.success)
+            {
+              dialog.Close();
+              p4.Dialog.get(1).Close();
+            }
+            else
+            {
+              var content = $("<div />").css({'color':'#a00'}).append("{% trans "an error occured" %} " + data.message);
+              loadingDiv.append(content);
+              enableConfirmButton(dialog);
+            }
+          }
+        });
+      };
+      
+      //show confirm box, content is loaded here /prod/tools/thumb-extractor/confirm-box/
+      var dialog = p4.Dialog.Create({
+        size:'Small',
+        title:"{% trans 'thumbnail validation' %}",
+        cancelButton:true,
+        buttons: buttons 
+      }, 2);
+      
+      var datas = {
+        image: $('.selected', sliderWrapper).attr("src"),
+        sbas_id: sbas_id,
+        record_id: record_id
+      };
+      
+      $.ajax({
+        type: "POST",
+        url: "/prod/tools/thumb-extractor/confirm-box/",
+        data: datas,
+        success: function(data){
+          
+          if(data.error)
+          {
+            var content = $("<div />").css({'font-size':'16px', 'text-align':'center'}).append(data.datas);
+            dialog.setContent(content);
+            disableConfirmButton(dialog);
+          }
+          else
+          {
+            dialog.setContent(data.datas);
+          }
+        }
+      });
+    });
+     scope.find('button').button();
+  });
+</script>

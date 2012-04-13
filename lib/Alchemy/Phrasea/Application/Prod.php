@@ -53,6 +53,7 @@ return call_user_func(function()
       $app->mount('/feeds', new Controller\Feed());
       $app->mount('/tooltip', new Controller\Tooltip());
       $app->mount('/language', new Controller\Language());
+      $app->mount('/tools/', new Controller\Tools());
       $app->mount('/', new Controller\Root());
 
       $app->error(function (\Exception $e, $code) use ($app)

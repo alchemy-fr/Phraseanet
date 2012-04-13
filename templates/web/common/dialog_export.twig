@@ -518,7 +518,7 @@
                           {% endset %}
                           if(count>1 && total/1024/1024 > {{max_download}})
                           {
-                                  if(confirm({{alert_too_big|escape("js")}}))
+                                  if(confirm("{{alert_too_big|escape("js")}}"))
                                   {
                                     $('input[name="obj[]"]:checked', $('#download')).each(function(i,n){
                                       $('input[name="obj[]"][value="'+$(n).val()+'"]', $('#sendmail')).attr('checked', true);

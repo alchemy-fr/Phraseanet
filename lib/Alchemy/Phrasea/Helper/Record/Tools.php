@@ -9,14 +9,20 @@
  * file that was distributed with this source code.
  */
 
+namespace Alchemy\Phrasea\Helper\Record;
+
+
+use Alchemy\Phrasea\Core;
+use Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
+
 /**
  *
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . "/../../../lib/bootstrap.php";
+class Tools extends RecordHelper
+{
 
-$app = require __DIR__ . '/../../../lib/Alchemy/Phrasea/Application/OAuth2.php';
-
-$app->run();
+}
