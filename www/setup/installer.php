@@ -17,9 +17,7 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-require_once __DIR__ . '/../../lib/classes/bootstrap.class.php';
-bootstrap::register_autoloads();
-bootstrap::set_php_configuration();
+require_once __DIR__ . '/../../lib/bootstrap.php';
 
 $app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Setup.php';
 

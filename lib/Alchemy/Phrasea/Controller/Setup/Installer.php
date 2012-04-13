@@ -263,6 +263,12 @@ class Installer implements ControllerProviderInterface
 
                 $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);
 
+                \phrasea::start($app['Core']);
+
+                $auth = new \Session_Authentication_None($user);
+
+                $appbox->get_session()->authenticate($auth);
+
                 if (!\p4string::hasAccent($databox_name))
                 {
                   if ($databox_name)
@@ -331,12 +337,6 @@ class Installer implements ControllerProviderInterface
                     }
                   }
                 }
-
-                \phrasea::start($app['Core']);
-
-                $auth = new \Session_Authentication_None($user);
-
-                $appbox->get_session()->authenticate($auth);
 
                 $redirection = '/admin/?section=taskmanager&notice=install_success';
 
