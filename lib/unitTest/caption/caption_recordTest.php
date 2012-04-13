@@ -25,8 +25,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
-   * @todo Implement testSerialize().
+   * @covers \caption_record::{origMethodName}
    */
   public function testSerializeXML()
   {
@@ -73,6 +72,9 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
     }
   }
 
+  /**
+   * @covers \caption_record::serializeYAML
+   */
   public function testSerializeYAML()
   {
     // Remove the following lines when you implement this test.
@@ -82,7 +84,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * @covers \caption_record::get_fields
    * @todo Implement testGet_fields().
    */
   public function testGet_fields()
@@ -94,7 +96,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * @covers \caption_record::get_field
    * @todo Implement testGet_field().
    */
   public function testGet_field()
@@ -106,7 +108,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * @covers \caption_record::get_dc_field
    * @todo Implement testGet_dc_field().
    */
   public function testGet_dc_field()
@@ -118,7 +120,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * @covers \caption_record::get_highlight_fields
    * @todo Implement testGet_highlight_fields().
    */
   public function testGet_highlight_fields()
@@ -130,7 +132,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * @covers \caption_record::get_cache_key
    * @todo Implement testGet_cache_key().
    */
   public function testGet_cache_key()
@@ -142,7 +144,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * @covers \caption_record::get_data_from_cache
    * @todo Implement testGet_data_from_cache().
    */
   public function testGet_data_from_cache()
@@ -154,7 +156,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * @covers \caption_record::set_data_to_cache
    * @todo Implement testSet_data_to_cache().
    */
   public function testSet_data_to_cache()
@@ -166,7 +168,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers {className}::{origMethodName}
+   * @covers \caption_record::delete_data_from_cache
    * @todo Implement testDelete_data_from_cache().
    */
   public function testDelete_data_from_cache()
@@ -178,5 +180,3 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
 }
-
-?>
