@@ -597,8 +597,8 @@ class API_OAuth2_Adapter extends OAuth2
     }
     else
     {
-      if ($response_type == OAUTH2_AUTH_RESPONSE_TYPE_AUTH_CODE || $response_type == OAUTH2_AUTH_RESPONSE_TYPE_CODE_AND_TOKEN)
-        $result["token"] = $this->createAccessToken($account_id, $scope);
+      if ($response_type == OAUTH2_AUTH_RESPONSE_TYPE_AUTH_CODE)
+        $result["code"] = $this->createAuthCode($account_id, $redirect_uri, $scope);
 
       if ($response_type == OAUTH2_AUTH_RESPONSE_TYPE_ACCESS_TOKEN)
         $result["error"] = OAUTH2_ERROR_UNSUPPORTED_RESPONSE_TYPE;
