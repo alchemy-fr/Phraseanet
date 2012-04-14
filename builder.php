@@ -64,7 +64,6 @@ $finder
   ->directories()
   ->name('test')
   ->name('tests')
-  ->name('unitTest')
   ->name('demos')
   ->name('demo')
   ->name('example')

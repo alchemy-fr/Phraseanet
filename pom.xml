@@ -8,7 +8,7 @@
   <build>
     <directory>/home/sites_web/codecoverage-dev.ci.alchemyasp.com</directory>
     <sourceDirectory>lib/classes</sourceDirectory>
-    <testSourceDirectory>lib/unitTest</testSourceDirectory>
+    <testSourceDirectory>tests</testSourceDirectory>
   </build>
   <properties>
     <sonar.language>php</sonar.language>
