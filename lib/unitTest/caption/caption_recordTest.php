@@ -25,7 +25,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
   }
 
   /**
-   * @covers \caption_record::{origMethodName}
+   * @covers \caption_record::serializeXML
    */
   public function testSerializeXML()
   {
