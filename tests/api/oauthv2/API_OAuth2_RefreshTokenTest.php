@@ -104,5 +104,3 @@ class API_OAuth2_RefreshTokenTest extends PhraseanetPHPUnitAbstract
   }
 
 }
-
-?>
