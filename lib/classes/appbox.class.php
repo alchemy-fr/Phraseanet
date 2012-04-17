@@ -468,7 +468,7 @@ class appbox extends base
         'main_connexion' => $connexionINI,
         'test_connexion' => array(
           'driver'  => 'pdo_sqlite',
-          'path'    => realpath($root . 'lib/unitTest') . '/tests.sqlite',
+          'path'    => realpath($root . 'tests') . '/tests.sqlite',
           'charset' => 'UTF8'
         ));
 

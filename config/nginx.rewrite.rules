@@ -31,6 +31,7 @@ rewrite ^/prod/baskets/.*$        /prod/router.php last;
 rewrite ^/prod/story/.*$          /prod/router.php last;
 rewrite ^/prod/WorkZone/.*$       /prod/router.php last;
 rewrite ^/prod/language/.*$       /prod/router.php last;
+rewrite ^/prod/tools/.*$          /prod/router.php last;
 rewrite ^/prod/TOU/.*$            /prod/router.php last;
 rewrite ^/prod/UserPreferences/.*$  /prod/router.php last;
 rewrite ^/prod/$                  /prod/router.php last;
