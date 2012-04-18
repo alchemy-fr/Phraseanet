@@ -139,7 +139,7 @@ class Edit extends RecordHelper
   public function get_javascript_elements()
   {
     return $this->core['Serializer']->serialize(
-        $this->javascript_elements
+        array_values($this->javascript_elements)
         , 'json'
     );
   }
