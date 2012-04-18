@@ -260,4 +260,34 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     }
   }
 
+  public function testExtract_metadatasWithCaption()
+  {
+    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $databox = null;
+    foreach ($appbox->get_databoxes() as $d)
+    {
+      $databox = $d;
+      break;
+    }
+    $this->assertInstanceOf('databox', $databox);
+    $metadatas = $this->objects['wav']->extract_metadatas($databox->get_meta_structure());
+
+    $this->assertTrue(is_array($metadatas));
+    $this->assertArrayHasKey('metadatas', $metadatas);
+    $this->assertArrayHasKey('status', $metadatas);
+
+    
+    foreach ($metadatas['metadatas'] as $metadata)
+    {
+      $this->assertTrue(is_array($metadata));
+      $this->assertArrayHasKey('meta_struct_id', $metadata);
+      $this->assertArrayHasKey('meta_id', $metadata);
+      $this->assertArrayHasKey('value', $metadata);
+      $this->assertTrue(is_scalar($metadata['value']));
+      $this->assertNull($metadata['meta_id']);
+      $this->assertTrue(is_int($metadata['meta_struct_id']));
+      $this->assertTrue($metadata['meta_struct_id'] > 0);
+    }
+  }
+
 }

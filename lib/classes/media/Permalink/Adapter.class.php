@@ -339,7 +339,7 @@ class media_Permalink_Adapter implements media_Permalink_Interface, cache_cachea
     unset($stmt);
 
     $permalink = self::getPermalink($databox, $media_subdef);
-    $permalink->set_label($media_subdef->get_record()->get_title());
+    $permalink->set_label(strip_tags($media_subdef->get_record()->get_title()));
 
     return $permalink;
   }
