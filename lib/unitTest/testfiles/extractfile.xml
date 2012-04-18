@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<record>
+  <description>
+    <NumPhoto>00000</NumPhoto>
+    <NumProduction>000000</NumProduction>
+    <Object>TEST ALCHEMY</Object>
+    <Headline>TEST ALCHEMY</Headline>
+    <Legende>TEST ALCHEMY</Legende>
+    <Genre>TEST ALCHEMY</Genre>
+    <Semaine>000000</Semaine>
+    <Date>2000/01/01 00:00:00</Date>
+    <Copyright>TEST ALCHEMY.</Copyright>
+    <CreditsPhoto>TEST ALCHEMY</CreditsPhoto>
+    <SupportOriginal>TEST ALCHEMY</SupportOriginal>
+    <AyantDroit>TEST ALCHEMY</AyantDroit>
+    <ChaineSource>TEST ALCHEMY</ChaineSource>
+    <PremiereDiffusion>2012/06/04</PremiereDiffusion>
+    <OrginalDocName>test.jpg</OrginalDocName>
+  </description>
+</record>
