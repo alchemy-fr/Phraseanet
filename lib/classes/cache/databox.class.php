@@ -108,11 +108,6 @@ class cache_databox
           $record = new \record_adapter($sbas_id, $row['value']);
           $record->get_caption()->delete_data_from_cache();
 
-          foreach ($record->get_caption()->get_fields(null, true) as $field)
-          {
-            $field->delete_data_from_cache();
-          }
-
           foreach($record->get_subdefs() as $subdef)
           {
             $subdef->delete_data_from_cache();

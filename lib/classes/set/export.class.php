@@ -138,7 +138,7 @@ class set_export extends set_abstract
               new record_exportElement(
                 $child_basrec->get_sbas_id(),
                 $record_id,
-                $record->get_title() . '_' . $n . '/',
+                $record->get_title(null, null, true) . '_' . $n . '/',
                 $remain_hd[$base_id]
             );
 
@@ -477,7 +477,7 @@ class set_export extends set_abstract
 
       $files[$id]['original_name'] =
         $files[$id]['export_name']   =
-        $download_element->get_original_name();
+        $download_element->get_original_name(true);
 
       $files[$id]['original_name'] =
         trim($files[$id]['original_name']) != '' ?
@@ -490,7 +490,7 @@ class set_export extends set_abstract
 
       if ($rename_title)
       {
-        $title = strip_tags($download_element->get_title());
+        $title = strip_tags($download_element->get_title(null, null, true));
 
         $files[$id]['export_name'] = $unicode->remove_nonazAZ09($title, true);
         $rename_done               = true;
