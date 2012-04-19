@@ -826,9 +826,16 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    *
    * @return string
    */
-  public function get_original_name()
+  public function get_original_name($removeExtension = null)
   {
-    return $this->original_name;
+      if($removeExtension)
+      {
+          return pathinfo($this->original_name, PATHINFO_FILENAME);
+      }
+      else
+      {
+          return $this->original_name;
+      }
   }
 
   public function set_original_name($original_name)
@@ -891,7 +898,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
    *
    * @return string
    */
-  public function get_title($highlight = false, searchEngine_adapter $searchEngine = null)
+  public function get_title($highlight = false, searchEngine_adapter $searchEngine = null, $removeExtension = null)
   {
     $title   = '';
     $appbox  = appbox::get_instance(\bootstrap::getCore());
@@ -924,7 +931,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     if (trim($title) === '')
     {
-      $title = trim($this->get_original_name());
+      $title = trim($this->get_original_name($removeExtension));
     }
 
     $title = $title != "" ? $title : "<i>" . _('reponses::document sans titre') . "</i>";
