@@ -4,7 +4,7 @@
   <div class="PNB" style="height:40px;bottom:auto;">
     <table>
       <tr>
-        <td>
+        <td style="white-space:nowrap;">
           {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_EDITOR') %}
           <form method="POST" name="SaveName" action="/prod/lists/list/{{ list.getId() }}/update/">
             <label>{% trans 'List Name' %}</label>
@@ -17,7 +17,7 @@
             <h1>{{ list.getName() }}</h1>
           {% endif %}
         </td>
-        <td style="text-align:right;width:350px;">
+        <td style="text-align:right;white-space:nowrap;">
           {% if list.getOwner(user).getRole() == constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
           <a href="/prod/lists/list/{{ list.getId() }}/share/" title="{% trans 'Share the list' %}" class="list_sharer">
             <img src="/skins/prod/Push/list-icon.png" />
@@ -26,7 +26,7 @@
           {% endif %}
         </td>
         {% if list.getOwner(user).getRole() >= constant('\\Entities\\UsrListOwner::ROLE_ADMIN') %}
-        <td style="text-align:right;width:150px;">
+        <td style="text-align:right;white-space:nowrap;">
           <button class="deleter">
             {% trans 'Delete' %}
             <input type="hidden" name="list_id" value="{{ list.getId() }}"/>
