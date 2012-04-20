@@ -1391,11 +1391,6 @@ $(document).ready(function(){
     delay: 200
   });
 
-  $('#answers').disableSelection();
-  $('#mainMenu').disableSelection();
-  $('#headBlock .tools, #idFrameT').disableSelection();
-  $('#baskets').disableSelection();
-
   $('#idFrameC .tabs').tabs({
     show: function(event, ui)
     {
