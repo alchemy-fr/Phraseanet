@@ -121,7 +121,7 @@
     if(arrayValues instanceof Array)
     {
       if(arrayValues.length > 1 && !databoxField.isMulti())
-        throw 'You can not add multiple values to a non multi field';
+        throw 'You can not add multiple values to a non multi field ' + databoxField.getName();
 
       var first = true;
 
