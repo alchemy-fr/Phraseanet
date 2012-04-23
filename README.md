@@ -1,4 +1,4 @@
-Phraseanet 3.6 - Digital Asset Management application
+Phraseanet 3.7 - Digital Asset Management application
 =================================================
 
 #Features :
