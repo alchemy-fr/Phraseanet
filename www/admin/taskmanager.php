@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2010 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,6 +10,7 @@
 
 /**
  *
+ * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -243,102 +244,105 @@ foreach ($tasks as $t) {
                     beforeShow:function()
                     {
                         if(!retPing)
+                            return;
+                        if(retPing.scheduler && retPing.scheduler.pid)
+                        {
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
+                        }
+                        else
+                        {
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
+                        }
+                    }
+                }
+            );
 
-                        return;
-                    if(retPing.scheduler && retPing.scheduler.pid)
+
+
+                $('.task_manager .dropdown.task').contextMenu(
+                [
                     {
-                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
-                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
-                    }
-                    else
+                        'Edit':
+                            {
+                            onclick:function(menuItem,menu) { doMenuTask($(this), 'edit'); },
+                            title:'Modifier cette tache'
+                        }
+                    },
                     {
-                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
-                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
+                        'Start':
+                            {
+                            onclick:function(menuItem,menu) { doMenuTask($(this), 'start'); },
+                            title:'Demarrer cette tache'
+                        }
+                    },
+                    {
+                        'Stop':
+                            {
+                            onclick:function(menuItem,menu) { doMenuTask($(this), 'stop'); },
+                            title:'Arreter cette tache'
+                        }
+                    },
+                    {
+                        'Delete':
+                            {
+                            onclick:function(menuItem,menu) { doMenuTask($(this), 'delete'); },
+                            title:'Supprimer cette tache'
+                        }
+                    },
+                    $.contextMenu.separator,
+                    {
+                        'Show log':
+                            {
+                            onclick:function(menuItem,menu) { doMenuTask($(this), 'log'); },
+                            title:'Afficher les logs'
+                        }
+                    }
+                ],
+                {
+                    optionsIdx:{'edit':0, 'start':1, 'stop':2, 'delete':3, 'log':5},
+                    doclick:function()
+                    {
+
+                    },
+                    beforeShow:function()
+                    {
+                        var tid = $($(this)[0].target).parent().attr('id').split('_').pop();
+
+                        if(!retPing || !retPing.tasks[tid])
+                            return;
+
+                        if(retPing.tasks[tid].pid)
+                        {
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').addClass("context-menu-item-disabled");
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').addClass("context-menu-item-disabled");
+                        }
+                        else
+                        {
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').removeClass("context-menu-item-disabled");
+
+                            if(retPing.tasks[tid].status == 'started')
+                                $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
+                            else
+                                $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
+
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').removeClass("context-menu-item-disabled");
+                            if(retPing.scheduler && retPing.scheduler.pid)
+                                $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
+                            else
+                                $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
+                        }
+
                     }
                 }
-            }
-        );
+            );
 
 
-
-            $('.task_manager .dropdown.task').contextMenu(
-            [
-                {
-                    'Edit':
-                        {
-                        onclick:function(menuItem,menu) { doMenuTask($(this), 'edit'); },
-                        title:'Modifier cette tache'
-                    }
-                },
-                {
-                    'Start':
-                        {
-                        onclick:function(menuItem,menu) { doMenuTask($(this), 'start'); },
-                        title:'Demarrer cette tache'
-                    }
-                },
-                {
-                    'Stop':
-                        {
-                        onclick:function(menuItem,menu) { doMenuTask($(this), 'stop'); },
-                        title:'Arreter cette tache'
-                    }
-                },
-                {
-                    'Delete':
-                        {
-                        onclick:function(menuItem,menu) { doMenuTask($(this), 'delete'); },
-                        title:'Supprimer cette tache'
-                    }
-                },
-                $.contextMenu.separator,
-                {
-                    'Show log':
-                        {
-                        onclick:function(menuItem,menu) { doMenuTask($(this), 'log'); },
-                        title:'Afficher les logs'
-                    }
-                }
-            ],
-            {
-                optionsIdx:{'edit':0, 'start':1, 'stop':2, 'delete':3, 'log':5},
-                doclick:function()
-                {
-
-                },
-                beforeShow:function()
-                {
-                    var tid = $($(this)[0].target).parent().attr('id').split('_').pop();
-
-                    if(!retPing || !retPing.tasks[tid])
-
-                    return;
-
-                if(retPing.tasks[tid].pid)
-                {
-                    $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').addClass("context-menu-item-disabled");
-                    $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
-                    $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
-                    $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').addClass("context-menu-item-disabled");
-                }
-                else
-                {
-                    $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').removeClass("context-menu-item-disabled");
-                    $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
-                    $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').removeClass("context-menu-item-disabled");
-                    if(retPing.scheduler && retPing.scheduler.pid)
-                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
-                    else
-                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
-                }
-
-            }
-        }
-    );
-
-
-        self.setTimeout("pingScheduler(true);", 100); // true : loop forever each 2 sec
-    })
+                self.setTimeout("pingScheduler(true);", 100); // true : loop forever each 2 sec
+            })
         </script>
     </head>
     <body>
@@ -425,65 +429,65 @@ foreach ($task_manager->get_tasks($refresh_tasklist) as $task) {
                         <?php ?>
         <script type="text/javascript">
 
-        function editTask(tid)
-        {
-            document.forms["task"].target = "";
-            document.forms["task"].act.value = "EDITTASK";
-            document.forms["task"].tid.value = tid;
-            document.forms["task"].submit();
-        }
+                function editTask(tid)
+                {
+                    document.forms["task"].target = "";
+                    document.forms["task"].act.value = "EDITTASK";
+                    document.forms["task"].tid.value = tid;
+                    document.forms["task"].submit();
+                }
 
-        function setTaskStatus(tid, status, signal, resetCrashCounter)
-        {
-            if(resetCrashCounter)
-            {
-                $.ajax({
-                    url: "/admin/adminFeedback.php",
-                    data : { task_id:tid, action:"RESETTASKCRASHCOUNTER" },
-                    dataType:'xml',
-                    success: function(ret)
+                function setTaskStatus(tid, status, signal, resetCrashCounter)
+                {
+                    if(resetCrashCounter)
                     {
+                        $.ajax({
+                            url: "/admin/adminFeedback.php",
+                            data : { task_id:tid, action:"RESETTASKCRASHCOUNTER" },
+                            dataType:'xml',
+                            success: function(ret)
+                            {
+                            }
+                        });
                     }
-                });
-            }
 
-            $.ajax({
-                url: "/admin/adminFeedback.php",
-                data : {task_id:tid, action:"SETTASKSTATUS", status:status, signal:signal},
-                dataType:'json',
-                success: function(ret)
-                {
-                    pingScheduler(false); // false : just one time
+                    $.ajax({
+                        url: "/admin/adminFeedback.php",
+                        data : {task_id:tid, action:"SETTASKSTATUS", status:status, signal:signal},
+                        dataType:'json',
+                        success: function(ret)
+                        {
+                            pingScheduler(false); // false : just one time
+                        }
+                    });
                 }
-            });
-        }
 
 
-        function setSchedStatus(status)
-        {
-            $.ajax({
-                url: "/admin/adminFeedback.php",
-                data : { action:"SETSCHEDSTATUS", status:status },
-                dataType:'json',
-                success: function(ret)
+                function setSchedStatus(status)
                 {
-                    pingScheduler(false); // false : just one time
+                    $.ajax({
+                        url: "/admin/adminFeedback.php",
+                        data : { action:"SETSCHEDSTATUS", status:status },
+                        dataType:'json',
+                        success: function(ret)
+                        {
+                            pingScheduler(false); // false : just one time
+                        }
+                    });
                 }
-            });
-        }
 
 
-        function deleteTask(tid)
-        {
-            if(confirm("<?php echo p4string::MakeString(_('admin::tasks: supprimer la tache ?'), 'js', '"') ?>"))
-            {
-                document.forms["taskManager"].target = "";
-                document.forms["taskManager"].act.value = "DELETETASK";
-                document.forms["taskManager"].tid.value = tid;
-                document.forms["taskManager"].submit();
-            }
-        }
-        /*
+                function deleteTask(tid)
+                {
+                    if(confirm("<?php echo p4string::MakeString(_('admin::tasks: supprimer la tache ?'), 'js', '"') ?>"))
+                    {
+                        document.forms["taskManager"].target = "";
+                        document.forms["taskManager"].act.value = "DELETETASK";
+                        document.forms["taskManager"].tid.value = tid;
+                        document.forms["taskManager"].submit();
+                    }
+                }
+                /*
                 function old_pingScheduler()
                 {
                   $.ajax({
@@ -623,103 +627,103 @@ foreach ($task_manager->get_tasks($refresh_tasklist) as $task) {
                     }
                   });
                 }
-         */
+                 */
 
 
-        function pingScheduler(repeat)
-        {
-            $.ajax({
-                url: '/admin/adminFeedback.php?action=PINGSCHEDULER_JS',
-                dataType:'json',
-                success: function(ret)
+                function pingScheduler(repeat)
                 {
-                    retPing = ret;  // global
-                    if(ret.time)
-                        $("#pingTime").empty().append(ret.time);
-                    if(ret.scheduler)
-                    {
-                        if(ret.scheduler.status)
-                            $("#STATUS_SCHED").html(ret.scheduler.status);
-                        else
-                            $("#STATUS_SCHED").html('');
-                        if(ret.scheduler.pid)
-                            $("#PID_SCHED").html(ret.scheduler.pid);
-                        else
-                            $("#PID_SCHED").html('-');
-                    }
-                    else
-                    {
-                        $("#STATUS_SCHED").html('');
-                        $("#PID_SCHED").html('-');
-                    }
-
-                    if(ret.tasks)
-                    {
-                        for(id in ret.tasks)
+                    $.ajax({
+                        url: '/admin/adminFeedback.php?action=PINGSCHEDULER_JS',
+                        dataType:'json',
+                        success: function(ret)
                         {
-                            if(ret.tasks[id].status)
-                                $("#STATUS_"+id).html(ret.tasks[id].status);
+                            retPing = ret;  // global
+                            if(ret.time)
+                                $("#pingTime").empty().append(ret.time);
+                            if(ret.scheduler)
+                            {
+                                if(ret.scheduler.status)
+                                    $("#STATUS_SCHED").html(ret.scheduler.status);
+                                else
+                                    $("#STATUS_SCHED").html('');
+                                if(ret.scheduler.pid)
+                                    $("#PID_SCHED").html(ret.scheduler.pid);
+                                else
+                                    $("#PID_SCHED").html('-');
+                            }
                             else
-                                $("#STATUS_"+id).html('');
+                            {
+                                $("#STATUS_SCHED").html('');
+                                $("#PID_SCHED").html('-');
+                            }
 
-                            if(ret.tasks[id].pid)
-                                $("#PID_"+id).html(ret.tasks[id].pid);
-                            else
-                                $("#PID_"+id).html('-');
+                            if(ret.tasks)
+                            {
+                                for(id in ret.tasks)
+                                {
+                                    if(ret.tasks[id].status)
+                                        $("#STATUS_"+id).html(ret.tasks[id].status);
+                                    else
+                                        $("#STATUS_"+id).html('');
 
-                            if(ret.tasks[id].crashed)
-                            {
-                                //                      $("#WARNING_"+id).show().setAttribute("src", "/skins/icons/alert.png");
-                                $("#WARNING_"+id).show().attr("title", "crashed "+ret.tasks[id].crashed+" times");
-                            }
-                            else
-                            {
-                                $("#WARNING_"+id).hide();
+                                    if(ret.tasks[id].pid)
+                                        $("#PID_"+id).html(ret.tasks[id].pid);
+                                    else
+                                        $("#PID_"+id).html('-');
+
+                                    if(ret.tasks[id].crashed)
+                                    {
+                                        //                      $("#WARNING_"+id).show().setAttribute("src", "/skins/icons/alert.png");
+                                        $("#WARNING_"+id).show().attr("title", "crashed "+ret.tasks[id].crashed+" times");
+                                    }
+                                    else
+                                    {
+                                        $("#WARNING_"+id).hide();
+                                    }
+
+                                    if(ret.tasks[id].completed && ret.tasks[id].completed>0 && ret.tasks[id].completed<=100)
+                                    {
+                                        $("#COMP_"+id).width(ret.tasks[id].completed + "%");
+                                        $("#COMPBOX_"+id).show();
+                                    }
+                                    else
+                                    {
+                                        $("#COMPBOX_"+id).hide();
+                                        $("#COMP_"+id).width('0px');
+                                    }
+                                }
                             }
 
-                            if(ret.tasks[id].completed && ret.tasks[id].completed>0 && ret.tasks[id].completed<=100)
+                            if(ret.db_processlist)
                             {
-                                $("#COMP_"+id).width(ret.tasks[id].completed + "%");
-                                $("#COMPBOX_"+id).show();
+                                var _table = document.createElement('table');
+                                _table.setAttribute('class', 'db_processlist');
+                                for(p in ret.db_processlist)
+                                {
+                                    if(p==0)
+                                    {
+                                        var _tr = _table.appendChild(document.createElement('tr'));
+                                        for(c in ret.db_processlist[p])
+                                            _tr.appendChild(document.createElement('th')).appendChild(document.createTextNode(c));
+                                    }
+                                    var _tr = _table.appendChild(document.createElement('tr'));
+                                    for(c in ret.db_processlist[p])
+                                        _tr.appendChild(document.createElement('td')).appendChild(document.createTextNode(ret.db_processlist[p][c]));
+                                }
+                                $("#db_processlist").html(_table);
                             }
-                            else
-                            {
-                                $("#COMPBOX_"+id).hide();
-                                $("#COMP_"+id).width('0px');
-                            }
+                            if(repeat)
+                                self.setTimeout("pingScheduler(true);", 1000);
                         }
-                    }
-
-                    if(ret.db_processlist)
-                    {
-                        var _table = document.createElement('table');
-                        _table.setAttribute('class', 'db_processlist');
-                        for(p in ret.db_processlist)
-                        {
-                            if(p==0)
-                            {
-                                var _tr = _table.appendChild(document.createElement('tr'));
-                                for(c in ret.db_processlist[p])
-                                    _tr.appendChild(document.createElement('th')).appendChild(document.createTextNode(c));
-                            }
-                            var _tr = _table.appendChild(document.createElement('tr'));
-                            for(c in ret.db_processlist[p])
-                                _tr.appendChild(document.createElement('td')).appendChild(document.createTextNode(ret.db_processlist[p][c]));
-                        }
-                        $("#db_processlist").html(_table);
-                    }
-                    if(repeat)
-                        self.setTimeout("pingScheduler(true);", 1000);
+                    });
                 }
-            });
-        }
 
-        function lauchScheduler()
-        {
-            url  = "./runscheduler.php";
-            document.getElementById("zsched").src = url;
-            self.setTimeout('document.getElementById("zsched").src="about:blank";', 2000);
-        }
+                function lauchScheduler()
+                {
+                    url  = "./runscheduler.php";
+                    document.getElementById("zsched").src = url;
+                    self.setTimeout('document.getElementById("zsched").src="about:blank";', 2000);
+                }
 
         </script>
 
