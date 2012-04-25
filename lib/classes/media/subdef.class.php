@@ -459,15 +459,23 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
    */
   public function rotate(registryInterface $registry, $angle)
   {
-    $origine = new system_file($this->get_pathfile());
-    $dest = $origine->getPathname();
+    $Core = \bootstrap::getCore();
 
+    $specs = new MediaAlchemyst\Specification\Image();
+    $specs->setRotationAngle($angle);
 
-    $adapter = new binaryAdapter_image_rotate($registry);
-    $result = $adapter->execute($origine, $dest, array('angle' => $angle));
+    try
+    {
+        $Core['media-alchemyst']->open($this->get_pathfile())
+            ->turnInto($this->get_pathfile(), $specs)
+            ->close();
+    }
+    catch(\MediaAlchemyst\Exception\Exception $e)
+    {
+        return $this;
+    }
 
-    if (!($result instanceof system_file))
-      throw new exception('unable to rotate ' . $this->get_name());
+    $result = new system_file($this->get_pathfile());
 
     $tc_datas = $result->get_technical_datas();
     if ($tc_datas[system_file::TC_DATAS_WIDTH] && $tc_datas[system_file::TC_DATAS_HEIGHT])
@@ -530,7 +538,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
       {
         throw new \Exception_Media_SubdefNotFound('Require the real one');
       }
-      
+
       $sql = "UPDATE subdef
               SET path = :path, file = :file, baseurl = :baseurl
                   , width = :width , height = :height, mime = :mime
