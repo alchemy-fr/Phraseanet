@@ -51,7 +51,7 @@
         <path>{{datapathweb}}{{basename}}/subdefs</path>
         <size>200</size>
         <mediatype>gif</mediatype>
-        <delay>1</delay>
+        <delay>500</delay>
         <writeDatas>no</writeDatas>
         <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
         <label lang="fr">Animation GIF</label>
