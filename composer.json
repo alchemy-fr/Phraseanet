@@ -5,7 +5,7 @@
     "php": ">=5.3.6",
     "twig/twig": "1.6.*",
     "twig/extensions": "master",
-    "doctrine/orm": "2.2.*",
+    "doctrine/orm": ">=2.2.2",
     "gedmo/doctrine-extensions": "2.2.*",
     "swiftmailer/swiftmailer": "4.1.*",
     "doctrine/data-fixtures": "dev-master",
@@ -31,15 +31,14 @@
     "symfony/yaml": "2.1.*",
     "phpexiftool/phpexiftool": "dev-master",
     "mediavorus/mediavorus": "dev-master",
+    "media-alchemyst/media-alchemyst": "dev-master",
     "data-uri/data-uri": "dev-master",
     "silex/silex": "1.0.*",
-    "imagine/Imagine": "0.2.*",
     "alchemy/oauth2php": "master",
     "alchemy/tcpdf": "master",
     "alchemy/phlickr": "master",
     "alchemy/phpshortener": "master",
     "alchemy/phpmailer": "master",
-    "alchemy/moovrelocator": "master",
     "alchemy/gdata": "master"
   },
   "repositories": [
@@ -76,5 +75,13 @@
     "psr-0": {
       "Alchemy": "lib"
     }
-  }
+  },
+    "scripts": {
+        "post-install-cmd": [
+        "PHPExiftool\\Vendors::Init"
+        ],
+        "post-update-cmd": [
+        "PHPExiftool\\Vendors::Init"
+        ]
+    }
 }
