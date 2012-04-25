@@ -73,7 +73,7 @@ return call_user_func(function()
                                     }
                                     catch (\Exception $e)
                                     {
-                                        
+
                                     }
                                 }
                                 $auth = new \Session_Authentication_None($user);

@@ -88,6 +88,7 @@ class Tools implements ControllerProviderInterface
                 'metadatasFirst'  => $metadatasFirst,
                 'metadatasSecond' => $metadatasSecond
               );
+
               return new Response($app['Core']->getTwig()->render($template, $var));
           });
 
@@ -115,6 +116,7 @@ class Tools implements ControllerProviderInterface
               }
 
               $json = $app['Core']->getSerializer()->serialize($return, 'json');
+
               return new Response($json, 200, array('content-type' => 'application/json'));
           });
 
@@ -143,6 +145,7 @@ class Tools implements ControllerProviderInterface
               }
 
               $json = $app['Core']->getSerializer()->serialize($return, 'json');
+
               return new Response($json, 200, array('content-type' => 'application/json'));
           });
 
@@ -251,6 +254,7 @@ class Tools implements ControllerProviderInterface
                     , 'fileName'     => $fileName
                     , 'errorMessage' => $errorMessage
                   );
+
                   return new Response($app['Core']->getTwig()->render($template, $var));
               }
           });
@@ -276,6 +280,7 @@ class Tools implements ControllerProviderInterface
               }
 
               $json = $app['Core']->getSerializer()->serialize($return, 'json');
+
               return new Response($json, 201, array('content-type' => 'application/json'));
           });
 
@@ -307,6 +312,7 @@ class Tools implements ControllerProviderInterface
               }
 
               $json = $app['Core']->getSerializer()->serialize($return, 'json');
+
               return new Response($json, 201, array('content-type' => 'application/json'));
           });
 

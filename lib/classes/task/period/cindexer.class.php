@@ -183,6 +183,7 @@ class task_period_cindexer extends task_abstract
         parent.calccmd();
       </script>
       <?php
+
       return("");
     }
     else // ... so we NEVER come here
@@ -251,6 +252,7 @@ class task_period_cindexer extends task_abstract
       }
     </script>
     <?php
+
     return;
   }
 
@@ -417,7 +419,7 @@ class task_period_cindexer extends task_abstract
     $logdir = p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
 
     $this->return_value = self::RETURNSTATUS_STOPPED; // will be normal ending
-    
+
     if($this->method == self::METHOD_PROC_OPEN)
     {
       $descriptors = array();
@@ -545,7 +547,7 @@ class task_period_cindexer extends task_abstract
 //        $fdERR = fopen($nullfile, 'a+');
         $fdOUT = fopen($logdir . "/task_o_" . $this->get_task_id() . ".log", "a+");
         $fdERR = fopen($logdir . "/task_e_" . $this->get_task_id() . ".log", "a+");
-        
+
         pcntl_exec($cmd, $args);
 
         sleep(2);
@@ -571,7 +573,7 @@ class task_period_cindexer extends task_abstract
                break;
              }
           }
-          
+
           $this->check_task_status();
 
           if($this->task_status == self::STATUS_TOSTOP)
@@ -579,7 +581,7 @@ class task_period_cindexer extends task_abstract
             posix_kill($pid, ($sigsent=SIGINT));
             sleep(2);
           }
-          
+
           $status = NULL;
           if(pcntl_wait($status, WNOHANG) == $pid)
           {
@@ -622,12 +624,12 @@ class task_period_cindexer extends task_abstract
         $fdIN = fopen($nullfile, 'r');
         $fdOUT = fopen($logdir . "/task_o_" . $this->get_task_id() . ".log", "a+");
         $fdERR = fopen($logdir . "/task_e_" . $this->get_task_id() . ".log", "a+");
-        
+
         pcntl_exec($cmd, $args);
 
         sleep(2);
     }
-    
+
     return($this->return_value);
   }
 

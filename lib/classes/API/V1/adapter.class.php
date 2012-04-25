@@ -1156,6 +1156,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @todo  ajouter une option pour avoir les values serialisées
      *        dans un cas multi
      */
+
     return array(
       'meta_id'           => $value->getId()
       , 'meta_structure_id' => $field->get_meta_struct_id()

@@ -264,6 +264,7 @@ class system_file extends SplFileObject
 
 
         if (in_array($this->get_mime(), $raws))
+
             return true;
         return false;
     }
@@ -292,8 +293,10 @@ class system_file extends SplFileObject
         }
 
         if ($lowercase)
+
             return mb_strtolower($extension);
         else
+
             return $extension;
     }
 
@@ -486,6 +489,7 @@ class system_file extends SplFileObject
         $this->technical_datas = array();
 
         if ( ! is_executable($registry->get('GV_mplayer')))
+
             return $this;
 
         $cmd      = $registry->get('GV_mplayer')
@@ -708,6 +712,7 @@ class system_file extends SplFileObject
     public function read_uuid()
     {
         if ($this->uuid)
+
             return $this->uuid;
 
         $datas  = exiftool::extract_metadatas($this, exiftool::EXTRACT_XML_RDF);
@@ -746,6 +751,7 @@ class system_file extends SplFileObject
     public function is_new_in_base($sbas_id)
     {
         if ( ! $this->uuid)
+
             return true;
 
         $connbas = connection::getPDOConnection($sbas_id);
@@ -817,6 +823,7 @@ class system_file extends SplFileObject
                 {
                     $value = $base64_encoded ? base64_decode($v->nodeValue) : $v->nodeValue;
                     if (uuid::is_valid($value))
+
                         return $value;
                 }
             }
@@ -921,6 +928,7 @@ class system_file extends SplFileObject
     public function get_phrasea_tech_field($field)
     {
         if (isset($this->phrasea_tech_field[$field]))
+
             return $this->phrasea_tech_field[$field];
         return null;
     }
@@ -1255,6 +1263,7 @@ class system_file extends SplFileObject
             for ($i   = strlen($mac); $i;)
             {
                 if (strpos($macchars, $mac[ -- $i]) !== false)
+
                     return(iconv('MACINTOSH', 'UTF-8', $mac));
             }
 
@@ -1265,6 +1274,7 @@ class system_file extends SplFileObject
             for ($i = strlen($s); $i;)
             {
                 if (strpos($macchars, $s[ -- $i]) !== false)
+
                     return(iconv('MACINTOSH', 'UTF-8', $s));
             }
 

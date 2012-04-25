@@ -66,6 +66,7 @@ foreach(array('l' => 'log', 'o' => 'stdout', 'e' => 'stderr') as $k => $v)
         if($parm['act'] == 'CLR')
         {
           file_put_contents($logfile, '');
+
           return phrasea::redirect(sprintf("/admin/showlogtask.php?fil=%s&log=%s&id=%s"
                                   , urlencode($parm['fil'])
                                   , urlencode($parm['log'])

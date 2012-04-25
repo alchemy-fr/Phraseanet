@@ -39,5 +39,6 @@ return call_user_func(
       $app->error(function($e){
         return new \Symfony\Component\HttpFoundation\Response($e->getMessage(), 403);
       });
+
       return $app;
     });

@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Request;
 return call_user_func(function()
                 {
                   $app = new \Silex\Application();
-                 
+
                   $app['Core'] = \bootstrap::getCore();
 
                   $app->register(new \Silex\Provider\ValidatorServiceProvider(), array(
@@ -171,7 +171,7 @@ return call_user_func(function()
                             }
 
                             $account = $oauth2_adapter->updateAccount($session->get_usr_id());
-                            
+
                             $params['account_id'] = $account->get_id();
 
                             if ( ! $app_authorized && $action_accept === null)
@@ -225,7 +225,7 @@ return call_user_func(function()
                             {
                               throw new HttpException(400, 'require the use of the https', null, array('content-type'=> 'application/json'));
                             }
-                            
+
                             $app['oauth']->grantAccessToken();
                             ob_flush();
                             flush();
@@ -343,7 +343,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -378,7 +378,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -404,7 +404,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -428,7 +428,7 @@ return call_user_func(function()
                             }
                             catch (\Exception $e)
                             {
-                              
+
                             }
 
                             $Serializer = $app['Core']['Serializer'];
@@ -455,13 +455,13 @@ return call_user_func(function()
                             $code = 500;
                             $msg = 'We are sorry, but something went wrong';
                             $headers = array();
-                            
+
                             if($e instanceof HttpExceptionInterface)
                             {
                                $headers = $e->getHeaders();
                                $msg = $e->getMessage();
                                $code = $e->getStatusCode();
-                               
+
                                if(isset($headers['content-type']) && $headers['content-type'] == 'application/json')
                                {
                                  $obj = new \stdClass();
@@ -470,7 +470,7 @@ return call_user_func(function()
                                  $msg = json_encode($obj);
                                }
                             }
-                            
+
                             return new Response($msg, $code, $headers);
                           });
 

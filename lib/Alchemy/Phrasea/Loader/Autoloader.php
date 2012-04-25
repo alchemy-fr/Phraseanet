@@ -86,7 +86,7 @@ class Autoloader extends UniversalClassLoader
     {
       return $this->classmap[$classname];
     }
-    
+
     $normalized_classname = str_replace('_', '/', $classname);
 
     foreach ($this->paths as $path)

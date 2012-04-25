@@ -20,7 +20,7 @@ abstract class task_abstract
   const STATE_MAXMEGSREACHED = 'STATE_MAXMEGS';
   const STATE_MAXRECSDONE = 'STATE_MAXRECS';
   const STATE_FINISHED = 'STATE_FINISHED';
-  
+
   const SIGNAL_SCHEDULER_DIED = 'SIGNAL_SCHEDULER_DIED';
 
   protected $suicidable = false;
@@ -89,7 +89,7 @@ abstract class task_abstract
    */
   protected $return_value;
   protected $runner;
-  
+
   private $input;
   private $output;
 
@@ -115,6 +115,7 @@ abstract class task_abstract
     $stmt->closeCursor();
     if(!$row)
       throw new Exception('Unknown task id');
+
     return $row['status'];
   }
 
@@ -169,7 +170,7 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
 //
 //    return $this;
 //  }
-  // 'active' means 'auto-start when scheduler starts' 
+  // 'active' means 'auto-start when scheduler starts'
   public function set_active($boolean)
   {
     $conn = connection::getPDOConnection();
@@ -251,7 +252,7 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
     return $this->settings;
   }
 
-  // 'active' means 'auto-start when scheduler starts' 
+  // 'active' means 'auto-start when scheduler starts'
   public function is_active()
   {
     return $this->active;
@@ -446,6 +447,7 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
       }
       fclose($fd);
     }
+
     return $pid;
   }
 
@@ -532,7 +534,7 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
 
     return $this;
   }
-  
+
   public function set_running($stat)
   {
     $this->running = $stat;
@@ -604,6 +606,7 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
       $this->delete();
     else
       $this->set_status($this->return_value);
+
     return $this;
   }
 
@@ -615,7 +618,7 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
     $this->maxrecs = max(10, min(1000,  (int) $sx_task_settings->maxrecs));
     $this->maxmegs = max(16, min(512,  (int) $sx_task_settings->maxmegs));
     $this->record_buffer_size = max(1, min(100,  (int) $sx_task_settings->flush));
-    
+
     return $this;
   }
 
@@ -682,8 +685,8 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
 
     return $this;
   }
-  
-  
+
+
   public static function interfaceAvailable()
   {
     return true;
@@ -766,7 +769,7 @@ $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
     }
     catch(Exception $e)
     {
-      
+
     }
 
     return $this;

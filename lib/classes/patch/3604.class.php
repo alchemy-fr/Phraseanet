@@ -93,7 +93,7 @@ class patch_3604 implements patchInterface
     {
 
     }
-    
+
     $sql = 'SELECT m . *
       FROM metadatas_structure s, metadatas m
       WHERE m.meta_struct_id = s.id

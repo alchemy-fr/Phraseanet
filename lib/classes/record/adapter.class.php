@@ -1080,7 +1080,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
         catch (Exception $e)
         {
-            
+
         }
 
         return $this;
@@ -1696,6 +1696,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         if ( ! $subdefs)
         {
             $Core['monolog']->addInfo(sprintf('Nothing to do for %s', $this->get_type()));
+
             return;
         }
 

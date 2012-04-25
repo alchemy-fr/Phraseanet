@@ -799,7 +799,7 @@ class task_period_outofdate extends task_abstract
       $sql = "UPDATE prop AS p1 INNER JOIN record USING(record_id)
               SET " . $sqlset[0] .
               " WHERE " . $w;
- 
+
       $ret[] = array('sql'=>$sql, 'params'=>$params);
     }
 
@@ -882,7 +882,7 @@ class task_period_outofdate extends task_abstract
   }
 
 
-  
+
   public function facility()
   {
     $ret = NULL;

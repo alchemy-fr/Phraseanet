@@ -138,7 +138,7 @@ class set_exportftp extends set_export
           . $properties['exportExt'];
 
         $bfields = isset($properties['businessfields']) ? $properties['businessfields'] : null;
-        
+
         $params  = array(
           ':ftp_export_id'  => $ftp_export_id
           , ':base_id'        => $file['base_id']

@@ -172,6 +172,7 @@ class task_period_archive extends task_abstract
       <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
       </script>
       <?php
+
       return("");
     }
     else // ... so we NEVER come here
@@ -204,6 +205,7 @@ class task_period_archive extends task_abstract
       }
     </script>
     <?php
+
     return;
   }
 
@@ -514,6 +516,7 @@ class task_period_archive extends task_abstract
       }
     }
     $this->return_value = $ret;
+
     return($ret);
   }
 
@@ -589,6 +592,7 @@ class task_period_archive extends task_abstract
       $stmt->closeCursor();
 
       if($row && $row['status'] == 'tostop')
+
         return('NORECSTODO');
       sleep(2);
       $cold -= 2;
@@ -736,8 +740,10 @@ class task_period_archive extends task_abstract
         {
           $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
           if($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+
             return;
           elseif($magicmethod == 'UNLOCK' && !file_exists($path . '/' . $magicfile))
+
             return;
         }
 
@@ -790,7 +796,7 @@ class task_period_archive extends task_abstract
     }
     catch(Exception $e)
     {
-      
+
     }
 
     return($nnew);
@@ -843,12 +849,14 @@ class task_period_archive extends task_abstract
         {
           $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
           if($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+
             return;
           elseif($magicmethod == 'UNLOCK' && !file_exists($path . '/' . $magicfile))
+
             return;
         }
       }
-      
+
       while(($file = $listFolder->read()) !== NULL)
       {
         if($this->isIgnoredFile($file))
@@ -906,7 +914,7 @@ class task_period_archive extends task_abstract
     }
     catch(Exception $e)
     {
-      
+
     }
 
     return;
@@ -935,6 +943,7 @@ class task_period_archive extends task_abstract
       $iloop = 0;
 
     if($depth == 0 && ($node->getAttribute('temperature') == 'hot' || $node->getAttribute('cid') == '-1'))
+
       return;
 
     $xpath = new DOMXPath($dom); // useful
@@ -1093,6 +1102,7 @@ class task_period_archive extends task_abstract
     $ret = false;
 
     if($depth == 0 && $node->getAttribute('temperature') == 'hot') // if root of hotfolder if hot, die...
+
       return($ret);
 
     $nodesToDel = array();
@@ -1174,6 +1184,7 @@ class task_period_archive extends task_abstract
       $iloop = 0;
 
     if($node->getAttribute('temperature') == 'hot')
+
       return;
 
     $nodesToDel = array();
@@ -1250,6 +1261,7 @@ class task_period_archive extends task_abstract
       $iloop = 0;
 
     if($node->getAttribute('temperature') == 'hot')
+
       return;
 
     $ret = 0;
@@ -1313,6 +1325,7 @@ class task_period_archive extends task_abstract
     $ret = false;
 
     if($depth == 0 && $node->getAttribute('temperature') == 'hot') // if root of hotfolder if hot, die...
+
       return($ret);
 
 //printf("%s : \n", __LINE__);
@@ -1696,6 +1709,7 @@ class task_period_archive extends task_abstract
   {
     $match = $node->getAttribute('match');
     if($match == '*')
+
       return;
 
     $file = $node->getAttribute('name');
@@ -1843,7 +1857,7 @@ class task_period_archive extends task_abstract
           }
           catch(Exception $e)
           {
-            
+
           }
         }
 

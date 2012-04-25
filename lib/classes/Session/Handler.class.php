@@ -329,7 +329,7 @@ class Session_Handler
 
     $this->phrasea_session->open();
     $ses_id = $this->phrasea_session->get_id();
-    
+
     $this->storage()->set('usr_id', $user->get_id());
     $this->storage()->set('ses_id', $ses_id);
   }

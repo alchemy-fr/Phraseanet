@@ -254,6 +254,7 @@ foreach($tasks as $t)
           beforeShow:function()
           {
             if(!retPing)
+
               return;
             if(retPing.scheduler && retPing.scheduler.pid)
             {
@@ -321,6 +322,7 @@ foreach($tasks as $t)
             var tid = $($(this)[0].target).parent().attr('id').split('_').pop();
 
             if(!retPing || !retPing.tasks[tid])
+
               return;
 
             if(retPing.tasks[tid].pid)

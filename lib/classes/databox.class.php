@@ -448,6 +448,7 @@ class databox extends base
         $stmt->closeCursor();
 
         if ($row)
+
             return self::get_instance((int) $row['sbas_id']);
 
         try
@@ -701,6 +702,7 @@ class databox extends base
             }
         }
         if ($n > $limit)
+
             return true;
 
         return false;
@@ -1217,6 +1219,7 @@ class databox extends base
     public function get_structure()
     {
         if ($this->structure)
+
             return $this->structure;
         $this->structure = $this->retrieve_structure();
 
@@ -1257,6 +1260,7 @@ class databox extends base
     public function get_cterms()
     {
         if ($this->cterms)
+
             return $this->cterms;
 
         $sql  = "SELECT value FROM pref WHERE prop='cterms'";
@@ -1423,6 +1427,7 @@ class databox extends base
     public function get_cgus()
     {
         if ($this->cgus)
+
             return $this->cgus;
 
         $this->load_cgus();

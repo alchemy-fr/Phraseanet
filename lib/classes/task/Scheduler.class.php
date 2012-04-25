@@ -50,6 +50,7 @@ class task_Scheduler
     {
       file_put_contents($logdir . "scheduler_l.log", $message . "\n", FILE_APPEND);
     }
+
     return $this;
   }
 
