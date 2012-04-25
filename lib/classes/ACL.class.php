@@ -212,23 +212,23 @@ class ACL implements cache_cacheableInterface
     }
     $granted = false;
 
-    if ($subdef_class == databox_subdefAbstract::CLASS_THUMBNAIL)
+    if ($subdef_class == databox_subdef::CLASS_THUMBNAIL)
     {
       $granted = true;
     }
-    elseif ($subdef_class == databox_subdefAbstract::CLASS_PREVIEW && $this->has_right_on_base($record->get_base_id(), 'candwnldpreview'))
+    elseif ($subdef_class == databox_subdef::CLASS_PREVIEW && $this->has_right_on_base($record->get_base_id(), 'candwnldpreview'))
     {
       $granted = true;
     }
-    elseif ($subdef_class == databox_subdefAbstract::CLASS_PREVIEW && $this->has_preview_grant($record))
+    elseif ($subdef_class == databox_subdef::CLASS_PREVIEW && $this->has_preview_grant($record))
     {
       $granted = true;
     }
-    elseif ($subdef_class == databox_subdefAbstract::CLASS_DOCUMENT && $this->has_right_on_base($record->get_base_id(), 'candwnldhd'))
+    elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $this->has_right_on_base($record->get_base_id(), 'candwnldhd'))
     {
       $granted = true;
     }
-    elseif ($subdef_class == databox_subdefAbstract::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record))
+    elseif ($subdef_class == databox_subdef::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record))
     {
       $granted = true;
     }
