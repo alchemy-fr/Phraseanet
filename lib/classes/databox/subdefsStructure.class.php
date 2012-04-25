@@ -18,264 +18,273 @@
 class databox_subdefsStructure implements IteratorAggregate
 {
 
-  /**
-   *
-   * @var Array
-   */
-  protected $AvSubdefs = array();
+    /**
+     *
+     * @var Array
+     */
+    protected $AvSubdefs = array();
 
-  /**
-   *
-   * @return ArrayIterator
-   */
-  public function getIterator()
-  {
-    return new ArrayIterator($this->AvSubdefs);
-  }
-
-  /**
-   *
-   * @param databox $databox
-   * @return Array
-   */
-  public function __construct(databox &$databox)
-  {
-    $this->databox = $databox;
-
-    $this->load_subdefs();
-
-    return $this->AvSubdefs;
-  }
-
-  /**
-   *
-   * @return databox_subdefsStructure
-   */
-  protected function load_subdefs()
-  {
-
-    $sx_struct = $this->databox->get_sxml_structure();
-
-    $this->AvSubdefs = array(
-        'image' => array(),
-        'video' => array(),
-        'audio' => array(),
-        'document' => array(),
-        'flash' => array()
-    );
-
-    if (!$sx_struct)
-
-      return $this;
-
-    $subdefgroup = $sx_struct->subdefs[0];
-
-
-    foreach ($subdefgroup as $k => $subdefs)
+    /**
+     *
+     * @return ArrayIterator
+     */
+    public function getIterator()
     {
-      $subdefgroup_name = (string) $subdefs->attributes()->name;
+        return new ArrayIterator($this->AvSubdefs);
+    }
 
-      if (!isset($AvSubdefs[$subdefgroup_name]))
-        $AvSubdefs[$subdefgroup_name] = array();
+    /**
+     *
+     * @param databox $databox
+     * @return Array
+     */
+    public function __construct(databox &$databox)
+    {
+        $this->databox = $databox;
 
-      foreach ($subdefs as $sd)
-      {
+        $this->load_subdefs();
 
-        $subdef_name = mb_strtolower((string) $sd->attributes()->name);
-        switch ($subdefgroup_name)
+        return $this->AvSubdefs;
+    }
+
+    public function getSubdefGroup($searchGroup)
+    {
+        $searchGroup = strtolower($searchGroup);
+
+        foreach ($this->AvSubdefs as $groupname => $subdefgroup)
         {
-          case 'audio':
-            $AvSubdefs[$subdefgroup_name][$subdef_name] =
-                    new databox_subdef_audio($sd);
-            break;
-
-          case 'image':
-            $AvSubdefs[$subdefgroup_name][$subdef_name] =
-                    new databox_subdef_image($sd);
-            break;
-
-          case 'video':
-            $AvSubdefs[$subdefgroup_name][$subdef_name] =
-                    new databox_subdef_video($sd);
-            break;
-
-          case 'document':
-            $AvSubdefs[$subdefgroup_name][$subdef_name] =
-                    new databox_subdef_document($sd);
-            break;
-
-          case 'flash':
-            $AvSubdefs[$subdefgroup_name][$subdef_name] =
-                    new databox_subdef_flash($sd);
-            break;
-
-          default:
-            continue;
-            break;
+            if ($searchGroup == $groupname)
+            {
+                return $subdefgroup;
+            }
         }
-      }
+
+        return null;
     }
-    $this->AvSubdefs = $AvSubdefs;
 
-    return $this;
-  }
-
-  /**
-   *
-   * @param type $subdef_type
-   * @param type $subdef_name
-   * @return databox_subdefAbstract
-   */
-  public function get_subdef($subdef_type, $subdef_name)
-  {
-    if (isset($this->AvSubdefs[$subdef_type]) && isset($this->AvSubdefs[$subdef_type][$subdef_name]))
+    /**
+     *
+     * @return databox_subdefsStructure
+     */
+    protected function load_subdefs()
     {
-      return $this->AvSubdefs[$subdef_type][$subdef_name];
+        $sx_struct = $this->databox->get_sxml_structure();
+
+        $this->AvSubdefs = array(
+          'image' => array(),
+          'video' => array(),
+          'audio' => array(),
+          'document' => array(),
+          'flash' => array()
+        );
+
+        if ( ! $sx_struct)
+        {
+            return $this;
+        }
+
+        $subdefgroup = $sx_struct->subdefs[0];
+
+
+        foreach ($subdefgroup as $k => $subdefs)
+        {
+            $subdefgroup_name = strtolower($subdefs->attributes()->name);
+
+            if ( ! isset($AvSubdefs[$subdefgroup_name]))
+            {
+                $AvSubdefs[$subdefgroup_name] = array();
+            }
+
+            foreach ($subdefs as $sd)
+            {
+                $subdef_name = strtolower($sd->attributes()->name);
+
+                switch ($subdefgroup_name)
+                {
+                    case 'audio':
+                        $type = new \Alchemy\Phrasea\Media\Type\Audio();
+                        break;
+                    case 'image':
+                        $type = new \Alchemy\Phrasea\Media\Type\Image();
+                        break;
+                    case 'video':
+                        $type = new \Alchemy\Phrasea\Media\Type\Video();
+                        break;
+                    case 'document':
+                        $type = new \Alchemy\Phrasea\Media\Type\Document();
+                        break;
+                    case 'flash':
+                        $type = new \Alchemy\Phrasea\Media\Type\Flash();
+                        break;
+                    default:
+                        continue;
+                        break;
+                }
+
+                $AvSubdefs[$subdefgroup_name][$subdef_name] = new databox_subdef($type, $sd);
+            }
+        }
+        $this->AvSubdefs = $AvSubdefs;
+
+        return $this;
     }
-    throw new Exception_Databox_SubdefNotFound();
-  }
 
-  /**
-   *
-   * @param string $group
-   * @param string $name
-   * @return databox_subdefsStructure
-   */
-  public function delete_subdef($group, $name)
-  {
-
-    $dom_struct = $this->databox->get_dom_structure();
-    $dom_xp = $this->databox->get_xpath_structure();
-    $nodes = $dom_xp->query(
-            '//record/subdefs/'
-            . 'subdefgroup[@name="' . $group . '"]/'
-            . 'subdef[@name="' . $name . '"]'
-    );
-
-    if ($nodes->length > 0)
+    /**
+     *
+     * @param type $subdef_type
+     * @param type $subdef_name
+     * @return databox_subdef
+     */
+    public function get_subdef($subdef_type, $subdef_name)
     {
-      $node = $nodes->item(0);
-      $parent = $node->parentNode;
-      $parent->removeChild($node);
+        if (isset($this->AvSubdefs[$subdef_type]) && isset($this->AvSubdefs[$subdef_type][$subdef_name]))
+        {
+            return $this->AvSubdefs[$subdef_type][$subdef_name];
+        }
+        throw new Exception_Databox_SubdefNotFound();
     }
 
-    if (isset($AvSubdefs[$group]) && isset($AvSubdefs[$group][$name]))
-      unset($AvSubdefs[$group][$name]);
-
-    $this->databox->saveStructure($dom_struct);
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param string $group
-   * @param string $name
-   * @param string $class
-   * @return databox_subdefsStructure
-   */
-  public function add_subdef($groupname, $name, $class)
-  {
-    $dom_struct = $this->databox->get_dom_structure();
-
-    $subdef = $dom_struct->createElement('subdef');
-    $subdef->setAttribute('class', $class);
-    $subdef->setAttribute('name', mb_strtolower($name));
-
-    $dom_xp = $this->databox->get_xpath_structure();
-    $query = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
-    $groups = $dom_xp->query($query);
-
-    if ($groups->length == 0)
+    /**
+     *
+     * @param string $group
+     * @param string $name
+     * @return databox_subdefsStructure
+     */
+    public function delete_subdef($group, $name)
     {
-      $group = $dom_struct->createElement('subdefgroup');
-      $group->setAttribute('name', $groupname);
-      $dom_xp->query('/record/subdefs')->item(0)->appendChild($group);
+
+        $dom_struct = $this->databox->get_dom_structure();
+        $dom_xp     = $this->databox->get_xpath_structure();
+        $nodes      = $dom_xp->query(
+          '//record/subdefs/'
+          . 'subdefgroup[@name="' . $group . '"]/'
+          . 'subdef[@name="' . $name . '"]'
+        );
+
+        if ($nodes->length > 0)
+        {
+            $node   = $nodes->item(0);
+            $parent = $node->parentNode;
+            $parent->removeChild($node);
+        }
+
+        if (isset($AvSubdefs[$group]) && isset($AvSubdefs[$group][$name]))
+            unset($AvSubdefs[$group][$name]);
+
+        $this->databox->saveStructure($dom_struct);
+
+        return $this;
     }
-    else
+
+    /**
+     *
+     * @param string $group
+     * @param string $name
+     * @param string $class
+     * @return databox_subdefsStructure
+     */
+    public function add_subdef($groupname, $name, $class)
     {
-      $group = $groups->item(0);
+        $dom_struct = $this->databox->get_dom_structure();
+
+        $subdef = $dom_struct->createElement('subdef');
+        $subdef->setAttribute('class', $class);
+        $subdef->setAttribute('name', mb_strtolower($name));
+
+        $dom_xp = $this->databox->get_xpath_structure();
+        $query  = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
+        $groups = $dom_xp->query($query);
+
+        if ($groups->length == 0)
+        {
+            $group = $dom_struct->createElement('subdefgroup');
+            $group->setAttribute('name', $groupname);
+            $dom_xp->query('/record/subdefs')->item(0)->appendChild($group);
+        }
+        else
+        {
+            $group = $groups->item(0);
+        }
+
+        $group->appendChild($subdef);
+
+        $this->databox->saveStructure($dom_struct);
+
+        $this->load_subdefs();
+
+        return $this;
     }
 
-    $group->appendChild($subdef);
-
-    $this->databox->saveStructure($dom_struct);
-
-    $this->load_subdefs();
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param string $group
-   * @param string $name
-   * @param string $class
-   * @param boolean $downloadable
-   * @param Array $options
-   * @return databox_subdefsStructure
-   */
-  public function set_subdef($group, $name, $class, $downloadable, $options)
-  {
-    $dom_struct = $this->databox->get_dom_structure();
-
-    $subdef = $dom_struct->createElement('subdef');
-    $subdef->setAttribute('class', $class);
-    $subdef->setAttribute('name', mb_strtolower($name));
-    $subdef->setAttribute('downloadable', ($downloadable ? 'true' : 'false'));
-
-    foreach ($options as $option => $value)
+    /**
+     *
+     * @param string $group
+     * @param string $name
+     * @param string $class
+     * @param boolean $downloadable
+     * @param Array $options
+     * @return databox_subdefsStructure
+     */
+    public function set_subdef($group, $name, $class, $downloadable, $options)
     {
-      $child = $dom_struct->createElement($option);
-      $child->appendChild($dom_struct->createTextNode($value));
-      $subdef->appendChild($child);
+        $dom_struct = $this->databox->get_dom_structure();
+
+        $subdef = $dom_struct->createElement('subdef');
+        $subdef->setAttribute('class', $class);
+        $subdef->setAttribute('name', mb_strtolower($name));
+        $subdef->setAttribute('downloadable', ($downloadable ? 'true' : 'false'));
+
+        foreach ($options as $option => $value)
+        {
+            $child = $dom_struct->createElement($option);
+            $child->appendChild($dom_struct->createTextNode($value));
+            $subdef->appendChild($child);
+        }
+
+        $dom_xp = $this->databox->get_xpath_structure();
+
+        $nodes = $dom_xp->query('//record/subdefs/'
+          . 'subdefgroup[@name="' . $group . '"]');
+        if ($nodes->length > 0)
+        {
+            $dom_group = $nodes->item(0);
+        }
+        else
+        {
+            $dom_group = $dom_struct->createElement('subdefgroup');
+            $dom_group->setAttribute('name', $group);
+
+            $nodes = $dom_xp->query('//record/subdefs');
+            if ($nodes->length > 0)
+            {
+                $nodes->item(0)->appendChild($dom_group);
+            }
+            else
+            {
+                throw new Exception('Unable to find /record/subdefs xquery');
+            }
+        }
+
+        $nodes = $dom_xp->query(
+          '//record/subdefs/'
+          . 'subdefgroup[@name="' . $group . '"]/'
+          . 'subdef[@name="' . $name . '"]'
+        );
+
+        if ($nodes->length > 0)
+        {
+            for ($i = 0; $i < $nodes->length; $i ++ )
+            {
+                $dom_group->removeChild($nodes->item($i));
+            }
+        }
+
+        $dom_group->appendChild($subdef);
+
+        $this->databox->saveStructure($dom_struct);
+
+        $this->load_subdefs();
+
+        return $this;
     }
-
-    $dom_xp = $this->databox->get_xpath_structure();
-
-    $nodes = $dom_xp->query('//record/subdefs/'
-            . 'subdefgroup[@name="' . $group . '"]');
-    if ($nodes->length > 0)
-    {
-      $dom_group = $nodes->item(0);
-    }
-    else
-    {
-      $dom_group = $dom_struct->createElement('subdefgroup');
-      $dom_group->setAttribute('name', $group);
-
-      $nodes = $dom_xp->query('//record/subdefs');
-      if ($nodes->length > 0)
-      {
-        $nodes->item(0)->appendChild($dom_group);
-      }
-      else
-      {
-        throw new Exception('Unable to find /record/subdefs xquery');
-      }
-    }
-
-    $nodes = $dom_xp->query(
-            '//record/subdefs/'
-            . 'subdefgroup[@name="' . $group . '"]/'
-            . 'subdef[@name="' . $name . '"]'
-    );
-
-    if ($nodes->length > 0)
-    {
-      for ($i = 0; $i < $nodes->length; $i++)
-      {
-        $dom_group->removeChild($nodes->item($i));
-      }
-    }
-
-    $dom_group->appendChild($subdef);
-
-    $this->databox->saveStructure($dom_struct);
-
-    $this->load_subdefs();
-
-    return $this;
-  }
 
 }

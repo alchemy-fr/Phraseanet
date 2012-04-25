@@ -303,7 +303,7 @@ class task_period_subdef extends task_databoxAbstract
                     , $this->sbas_id, $record_id));
     $record = new record_adapter($this->sbas_id, $record_id);
 
-    $record->generate_subdefs($databox, null, $this->debug);
+    $record->generate_subdefs($databox, null);
 
     $this->recs_to_write[] = $record->get_record_id();
 
