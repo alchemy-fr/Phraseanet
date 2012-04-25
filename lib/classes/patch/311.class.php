@@ -18,51 +18,51 @@
 class patch_311 implements patchInterface
 {
 
-  /**
-   *
-   * @var string
-   */
-  private $release = '3.1.1';
-  /**
-   *
-   * @var Array
-   */
-  private $concern = array(base::DATA_BOX);
+    /**
+     *
+     * @var string
+     */
+    private $release = '3.1.1';
+    /**
+     *
+     * @var Array
+     */
+    private $concern = array(base::DATA_BOX);
 
-  /**
-   *
-   * @return string
-   */
-  function get_release()
-  {
-    return $this->release;
-  }
+    /**
+     *
+     * @return string
+     */
+    function get_release()
+    {
+        return $this->release;
+    }
 
-  public function require_all_upgrades()
-  {
-    return false;
-  }
+    public function require_all_upgrades()
+    {
+        return false;
+    }
 
-  /**
-   *
-   * @return Array
-   */
-  function concern()
-  {
-    return $this->concern;
-  }
+    /**
+     *
+     * @return Array
+     */
+    function concern()
+    {
+        return $this->concern;
+    }
 
-  function apply(base &$databox)
-  {
-    $sql = 'UPDATE record SET jeton = '
-            . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF);
+    function apply(base &$databox)
+    {
+        $sql = 'UPDATE record SET jeton = '
+                        . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF);
 
-    $stmt = $databox->get_connection()->prepare($sql);
-    $stmt->execute();
-    $stmt->closeCursor();
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
 
-    return true;
-  }
+        return true;
+    }
 
 }
 

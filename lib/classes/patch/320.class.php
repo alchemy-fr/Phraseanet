@@ -18,50 +18,50 @@
 class patch_320 implements patchInterface
 {
 
-  /**
-   *
-   * @var string
-   */
-  private $release = '3.2.0.0.a1';
-  /**
-   *
-   * @var Array
-   */
-  private $concern = array(base::DATA_BOX);
+    /**
+     *
+     * @var string
+     */
+    private $release = '3.2.0.0.a1';
+    /**
+     *
+     * @var Array
+     */
+    private $concern = array(base::DATA_BOX);
 
-  /**
-   *
-   * @return string
-   */
-  function get_release()
-  {
-    return $this->release;
-  }
+    /**
+     *
+     * @return string
+     */
+    function get_release()
+    {
+        return $this->release;
+    }
 
-  public function require_all_upgrades()
-  {
-    return false;
-  }
+    public function require_all_upgrades()
+    {
+        return false;
+    }
 
-  /**
-   *
-   * @return Array
-   */
-  function concern()
-  {
-    return $this->concern;
-  }
+    /**
+     *
+     * @return Array
+     */
+    function concern()
+    {
+        return $this->concern;
+    }
 
-  function apply(base &$databox)
-  {
-    $sql = 'UPDATE record SET parent_record_id = "1"
-              WHERE parent_record_id != "0"';
-    $stmt = $databox->get_connection()->prepare($sql);
-    $stmt->execute();
-    $stmt->closeCursor();
+    function apply(base &$databox)
+    {
+        $sql = 'UPDATE record SET parent_record_id = "1"
+                            WHERE parent_record_id != "0"';
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
 
-    return true;
-  }
+        return true;
+    }
 
 }
 

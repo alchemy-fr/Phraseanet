@@ -18,56 +18,56 @@
 class patch_3602 implements patchInterface
 {
 
-  /**
-   *
-   * @var string
-   */
-  private $release = '3.6.0a1';
-  /**
-   *
-   * @var Array
-   */
-  private $concern = array(base::DATA_BOX);
+    /**
+     *
+     * @var string
+     */
+    private $release = '3.6.0a1';
+    /**
+     *
+     * @var Array
+     */
+    private $concern = array(base::DATA_BOX);
 
-  /**
-   *
-   * @return string
-   */
-  function get_release()
-  {
-    return $this->release;
-  }
-
-  public function require_all_upgrades()
-  {
-    return false;
-  }
-
-  /**
-   *
-   * @return Array
-   */
-  function concern()
-  {
-    return $this->concern;
-  }
-
-  function apply(base &$databox)
-  {
-    try
+    /**
+     *
+     * @return string
+     */
+    function get_release()
     {
-      $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
-
-      $stmt = $databox->get_connection()->prepare($sql);
-      $stmt->execute();
-      $stmt->closeCursor();
-    }
-    catch(\PDOException $e)
-    {
-
+        return $this->release;
     }
 
-    return true;
-  }
+    public function require_all_upgrades()
+    {
+        return false;
+    }
+
+    /**
+     *
+     * @return Array
+     */
+    function concern()
+    {
+        return $this->concern;
+    }
+
+    function apply(base &$databox)
+    {
+        try
+        {
+            $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
+
+            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt->execute();
+            $stmt->closeCursor();
+        }
+        catch(\PDOException $e)
+        {
+
+        }
+
+        return true;
+    }
 
 }

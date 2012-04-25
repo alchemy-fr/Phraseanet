@@ -18,51 +18,51 @@
 class patch_3603 implements patchInterface
 {
 
-  /**
-   *
-   * @var string
-   */
-  private $release = '3.6.0a2';
-  /**
-   *
-   * @var Array
-   */
-  private $concern = array(base::APPLICATION_BOX);
+    /**
+     *
+     * @var string
+     */
+    private $release = '3.6.0a2';
+    /**
+     *
+     * @var Array
+     */
+    private $concern = array(base::APPLICATION_BOX);
 
-  /**
-   *
-   * @return string
-   */
-  function get_release()
-  {
-    return $this->release;
-  }
+    /**
+     *
+     * @return string
+     */
+    function get_release()
+    {
+        return $this->release;
+    }
 
-  public function require_all_upgrades()
-  {
-    return true;
-  }
+    public function require_all_upgrades()
+    {
+        return true;
+    }
 
-  /**
-   *
-   * @return Array
-   */
-  function concern()
-  {
-    return $this->concern;
-  }
+    /**
+     *
+     * @return Array
+     */
+    function concern()
+    {
+        return $this->concern;
+    }
 
-  function apply(base &$appbox)
-  {
+    function apply(base &$appbox)
+    {
 
-    $sql = 'UPDATE usr SET usr_mail = NULL
-            WHERE usr_mail IS NOT NULL AND usr_login LIKE "(#deleted%"';
+        $sql = 'UPDATE usr SET usr_mail = NULL
+                        WHERE usr_mail IS NOT NULL AND usr_login LIKE "(#deleted%"';
 
-    $stmt = $appbox->get_connection()->prepare($sql);
-    $stmt->execute();
-    $stmt->closeCursor();
+        $stmt = $appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $stmt->closeCursor();
 
-    return true;
-  }
+        return true;
+    }
 
 }
