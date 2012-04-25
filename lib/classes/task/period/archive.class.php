@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2010 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -28,9 +28,9 @@ class task_period_archive extends task_abstract
      * @var <type>
      */
     protected $mimeTypes = array(
-        "jpg"  => "image/jpeg",
+        "jpg" => "image/jpeg",
         "jpeg" => "image/jpeg",
-        "pdf"  => "application/pdf"
+        "pdf" => "application/pdf"
     );
 
     /**
@@ -165,7 +165,6 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
-
             return("");
         }
         else { // ... so we NEVER come here
@@ -197,7 +196,6 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
-
         return;
     }
 
@@ -236,13 +234,13 @@ class task_period_archive extends task_abstract
             </select>
             <br/>
             <br/>
-        <?php echo _('task::_common_:hotfolder') ?>
+                <?php echo _('task::_common_:hotfolder') ?>
             <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
             <br/>
-        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+                <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
+                <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
             <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
@@ -275,6 +273,8 @@ class task_period_archive extends task_abstract
      */
     protected function run2()
     {
+        $this->debug = TRUE;
+
         $ret = '';
         $conn = connection::getPDOConnection();
 
@@ -302,22 +302,14 @@ class task_period_archive extends task_abstract
         $server_coll_id = $collection->get_coll_id();
 
 
-        // conn est une connexion e application server du site
-        // rowtask : record de la teche en cours
-        // connbas est une connexion e la base distante
-        // rowbas : record contenant les prefs de base et collection
-        // on a les prefs de coll directement dans la session
-
-        $this->running = true;
-        $this->tmask = array(); // les masques de fichiers acceptes par cette tache
+        $this->tmask = array(); // mask(s) of accepted files
         $this->tmaskgrp = array();
         $this->period = 60;
         $this->cold = 60;
 
 
         if (($this->sxBasePrefs = simplexml_load_string($collection->get_prefs()))) {
-
-            $this->sxBasePrefs["id"] = $base_id;  // info utile
+            $this->sxBasePrefs["id"] = $base_id;
 
             $do_it = true;
 
@@ -329,158 +321,189 @@ class task_period_archive extends task_abstract
             if ($this->cold <= 0 || $this->cold >= 60 * 60)
                 $this->cold = 60;
 
-            // si on doit copier le doc dans la base, on verifie que le dossier existe
-            $copyhd = true;
+            // check the data-repository exists
             $pathhd = (string) ($this->sxBasePrefs->path);
-
-            if ($copyhd && $pathhd) {
+            if ($pathhd) {
                 system_file::mkdir($pathhd);
                 if ( ! is_dir($pathhd)) {
                     $this->log(sprintf(_('task::archive:Can\'t create or go to folder \'%s\''), $pathhd));
                     $this->running = false;
+                    return;
                 }
             }
 
-            // on charge les masques de fichiers
+            // load masks
             if ($this->sxTaskSettings->files && $this->sxTaskSettings->files->file) {
                 foreach ($this->sxTaskSettings->files->file as $ft)
                     $this->tmask[] = array(
-                        "mask"    => (string) $ft["mask"]
+                        "mask" => (string) $ft["mask"]
                         , "caption" => (string) $ft["caption"]
-                        , "accept"  => (string) $ft["accept"]
+                        , "accept" => (string) $ft["accept"]
                     );
             }
             if ($this->sxTaskSettings->files && $this->sxTaskSettings->files->grouping) {
                 foreach ($this->sxTaskSettings->files->grouping as $ft)
                     $this->tmaskgrp[] = array(
-                        "mask"           => (string) $ft["mask"]
-                        , "caption"        => (string) $ft["caption"]
+                        "mask" => (string) $ft["mask"]
+                        , "caption" => (string) $ft["caption"]
                         , "representation" => (string) $ft["representation"]
-                        , "accept"         => (string) $ft["accept"]
+                        , "accept" => (string) $ft["accept"]
                     );
             }
             if (count($this->tmask) == 0) {
-                // pas de masque defini : on accepte tout
-                $this->tmask[] = array("mask"    => ".*", "caption" => "", "accept"  => "");
+                // no mask defined : accept all kind of files
+                $this->tmask[] = array("mask" => ".*", "caption" => "", "accept" => "");
             }
 
-            // ici la teche tourne tant qu'elle est active
+            // main loop
+            $this->running = true;
             $loop = 0;
             while ($this->running) {
-                if ( ! $conn->ping()) {
-                    $this->log(("Warning : abox connection lost, restarting in 10 min."));
-                    sleep(60 * 10);
-                    $this->running = false;
-
-                    return(self::RETURNSTATUS_TORESTART);
-                }
-
                 try {
-                    $connbas = connection::getPDOConnection($this->sbas_id);
-                    if ( ! $connbas->ping())
-                        throw new Exception('Mysql has gone away');
+                    $conn = connection::getPDOConnection();
                 } catch (Exception $e) {
-                    $this->log(("dbox connection lost, restarting in 10 min."));
-                    for ($i = 0; $i < 60 * 10 && $this->running; $i ++ )
-                        sleep(1);
-                    $this->running = false;
+                    $this->log($e->getMessage());
+                    if ($this->get_runner() == self::RUNNER_SCHEDULER) {
+                        $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-                    return(self::RETURNSTATUS_TORESTART);
+                        for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
+                            sleep(1);
+                        // because connection is lost we cannot change status to 'torestart'
+                        // anyway the current status 'running' with no pid
+                        // will enforce the scheduler to restart the task
+                    } else {
+                        $this->log(("Error : abox connection lost, quitting."));
+                        // runner = manual : can't restart so simply quit
+                    }
+                    $this->running = FALSE;
+                    return;
                 }
 
                 $path_in = (string) ($this->sxTaskSettings->hotfolder);
                 if ( ! @is_dir($path_in)) {
-                    $this->log(sprintf(('missing hotfolder \'%s\', restarting in 10 min.'), $path_in));
-                    for ($i = 0; $i < 60 * 10 && $this->running; $i ++ )
-                        sleep(1);
-                    $this->running = false;
+                    if ($this->get_runner() == self::RUNNER_SCHEDULER) {
+                        $this->log(sprintf(('Warning : missing hotfolder \'%s\', restarting in 10 min.'), $path_in));
 
-                    return(self::RETURNSTATUS_TORESTART);
+                        for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
+                            sleep(1);
+                        $this->set_status(self::STATUS_TORESTART);
+                    } else {
+                        $this->log(sprintf(('Error : missing hotfolder \'%s\', stopping.'), $path_in));
+                        // runner = manual : can't restart so simply quit
+                        $this->set_status(self::STATUS_STOPPED);
+                    }
+                    $this->running = FALSE;
+                    return;
                 }
-
 
                 $this->set_last_exec_time();
 
-                $sql = "SELECT * FROM task2 WHERE task_id = :task_id";
+                $row = NULL;
+                try {
+                    $sql = "SELECT * FROM task2 WHERE task_id = :task_id";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute(array(':task_id' => $this->get_task_id()));
+                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $stmt->closeCursor();
+                    if ($row && $this->sxTaskSettings = @simplexml_load_string($row['settings'])) {
+                        // copy settings to task, so it's easier to get later
+                        $this->move_archived = p4field::isyes($this->sxTaskSettings->move_archived);
+                        $this->move_error = p4field::isyes($this->sxTaskSettings->move_error);
 
-                $stmt = $conn->prepare($sql);
-                $stmt->execute(array(':task_id' => $this->get_task_id()));
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $stmt->closeCursor();
-
-                if ($row) {
-                    if ($row['status'] == 'tostop') {
-                        $ret = self::RETURNSTATUS_STOPPED;
-                        $this->running = false;
-                    } else {
-
-                        if ($this->sxTaskSettings = simplexml_load_string($row['settings'])) {
-                            // copy settings to task, so it's easier to get later
-                            $this->move_archived = p4field::isyes($this->sxTaskSettings->move_archived);
-                            $this->move_error = p4field::isyes($this->sxTaskSettings->move_error);
-
-                            $period = (int) ($this->sxTaskSettings->period);
-                            if ($period <= 0 || $period >= 60 * 60)
-                                $period = 60;
-                            $cold = (int) ($this->sxTaskSettings->cold);
-                            if ($cold <= 0 || $cold >= 60 * 60)
-                                $cold = 60;
-                        }
-                        else {
+                        $period = (int) ($this->sxTaskSettings->period);
+                        if ($period <= 0 || $period >= 60 * 60)
                             $period = 60;
+                        $cold = (int) ($this->sxTaskSettings->cold);
+                        if ($cold <= 0 || $cold >= 60 * 60)
                             $cold = 60;
-                        }
-
-                        $duration = time();
-                        $r = $this->archiveHotFolder($server_coll_id);
-
-                        if ($loop > 10)
-                            $r = 'MAXLOOP';
-
-                        switch ($r) {
-                            case 'WAIT':
-                                $ret = self::RETURNSTATUS_STOPPED;
-                                $this->running = false;
-                                break;
-                            case 'BAD':
-                                $ret = self::RETURNSTATUS_STOPPED;
-                                $this->running = false;
-                                break;
-                            case 'NORECSTODO':
-                                $duration = time() - $duration;
-                                if ($duration < ($period + $cold)) {
-                                    $conn->close();
-                                    for ($i = 0; $i < (($period + $cold) - $duration) && $this->running; $i ++ )
-                                        sleep(1);
-                                    unset($conn);
-                                    $conn = connection::getPDOConnection();
-                                }
-                                break;
-                            case 'MAXRECSDONE':
-                            case 'MAXMEMORY':
-                            case 'MAXLOOP':
-                                if ($row['status'] == self::STATUS_STARTED && $this->get_runner() !== self::RUNNER_MANUAL) {
-                                    $ret = self::RETURNSTATUS_TORESTART;
-                                    $this->running = false;
-                                }
-                                break;
-                            default:
-                                if ($row['status'] == self::STATUS_STARTED) {
-                                    $ret = self::RETURNSTATUS_STOPPED;
-                                    $this->running = false;
-                                }
-                                break;
-                        }
                     }
-                } else {
-                    $this->running = false;
+                    else {
+                        throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->get_task_id()));
+                    }
+                } catch (Exception $e) {
+                    if ($this->get_runner() == self::RUNNER_SCHEDULER) {
+                        $this->log(sprintf(('Warning : error fetching or reading settings of the task \'%d\', restarting in 10 min.'), $this->get_task_id()));
+
+                        for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
+                            sleep(1);
+                        $this->set_status(self::STATUS_TORESTART);
+                    } else {
+                        $this->log(sprintf(('Error : error fetching task \'%d\', stopping.'), $this->get_task_id()));
+                        // runner = manual : can't restart so simply quit
+                        $this->set_status(self::STATUS_STOPPED);
+                    }
+                    $this->running = FALSE;
+                    return;
+                }
+
+                if ($row['status'] == self::STATUS_TOSTOP) {
+                    $this->running = FALSE;
+                    return;
+                }
+
+                $duration = time();
+                $r = $this->archiveHotFolder($server_coll_id);
+
+                if ($loop > 10)
+                    $r = 'MAXLOOP';
+
+                switch ($r) {
+                    case 'TOSTOP':
+                        $this->set_status(self::STATUS_STOPPED);
+                        $this->running = FALSE;
+                        break;
+                    case 'WAIT':
+                        $this->set_status(self::STATUS_STOPPED);
+                        $this->running = FALSE;
+                        break;
+                    case 'BAD':
+                        $this->set_status(self::STATUS_STOPPED);
+                        $this->running = FALSE;
+                        break;
+                    case 'NORECSTODO':
+                        $duration = time() - $duration;
+                        if ($duration < ($period + $cold)) {
+                            /*
+                              printf("will close a conn in 5sec...\n");
+                              sleep(5);
+                              $conn->close();
+                              unset($conn);
+                              printf("conn closed, waiting 5sec\n");
+                              sleep(5);
+                             */
+                            for ($i = 0; $i < (($period + $cold) - $duration) && $this->running; $i ++ ) {
+                                $s = $this->get_status();
+                                if ($s == self::STATUS_TOSTOP) {
+                                    $this->set_status(self::STATUS_STOPPED);
+                                    $this->running = FALSE;
+                                } else {
+
+                                    //	$conn->close();
+                                    //	unset($conn);
+                                    sleep(1);
+                                    //	$conn = connection::getPDOConnection();
+                                }
+                            }
+                        }
+                        break;
+                    case 'MAXRECSDONE':
+                    case 'MAXMEMORY':
+                    case 'MAXLOOP':
+                        if ($row['status'] == self::STATUS_STARTED && $this->get_runner() !== self::RUNNER_MANUAL) {
+                            $this->set_status(self::STATUS_TORESTART);
+                            $this->running = FALSE;
+                        }
+                        break;
+                    default:
+                        if ($row['status'] == self::STATUS_STARTED) {
+                            $this->set_status(self::STATUS_STOPPED);
+                            $this->running = FALSE;
+                        }
+                        break;
                 }
                 $loop ++;
             }
         }
-        $this->return_value = $ret;
-
-        return($ret);
     }
 
     /**
@@ -537,21 +560,18 @@ class task_period_archive extends task_abstract
         if ($this->debug)
             $this->log("=========== listFilesPhase1 ========== (returned " . $nnew . ")\n" . $dom->saveXML());
 
+        if ($nnew === 'TOSTOP') { // special case : status has changed to TOSTOP while listing files
+            return('TOSTOP');
+        }
+
         $cold = (int) ($this->sxTaskSettings->cold);
         if ($cold <= 0 || $cold >= 60 * 60)
             $cold = 60;
 
         while ($cold > 0) {
-            $sql = "SELECT status FROM task2 WHERE task_id=" . $this->get_task_id();
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':task_id' => $this->get_task_id()));
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            if ($row && $row['status'] == 'tostop') {
-                return('NORECSTODO');
-            }
-
+            $s = $this->get_status();
+            if ($s == self::STATUS_TOSTOP)
+                return('TOSTOP');
             sleep(2);
             $cold -= 2;
         }
@@ -681,11 +701,10 @@ class task_period_archive extends task_abstract
                 // on gere le magicfile
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                     $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
+                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
                         return;
-                    } elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile)) {
+                    elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile))
                         return;
-                    }
                 }
 
                 // on gere le changement de collection
@@ -701,19 +720,35 @@ class task_period_archive extends task_abstract
             }
 
             $iloop = 0;
+            $time0 = time();
             while (($file = $listFolder->read()) !== NULL) {
-                if ($this->isIgnoredFile($file))
-                    continue;
+                if (time() - $time0 >= 2) { // each 2 secs, check the status of the task
+                    $s = $this->get_status();
+                    if ($s == self::STATUS_TOSTOP) {
+                        $nnew = 'TOSTOP'; // since we will return a string...
+                        break;    // ...we can check it against numerical result
+                    }
+                    $time0 = time();
+                }
 
                 if (($iloop ++ % 100) == 0)
                     usleep(1000);
+
+                if ($this->isIgnoredFile($file))
+                    continue;
 
                 if (is_dir($path . '/' . $file)) {
                     $n = $node->appendChild($dom->createElement('file'));
                     $n->setAttribute('isdir', '1');
                     $n->setAttribute('name', $file);
 
-                    $nnew += $this->listFilesPhase1($dom, $n, $path . '/' . $file, $server_coll_id);
+                    $_nnew_ = $this->listFilesPhase1($dom, $n, $path . '/' . $file, $server_coll_id);
+                    if ($_nnew_ === 'TOSTOP') {
+                        $nnew = 'TOSTOP'; // special case to quit recursion
+                        break;
+                    } else {
+                        $nnew += $_nnew_; // normal case, _nnew_ is a number
+                    }
                 } else {
                     $n = $node->appendChild($dom->createElement('file'));
                     $n->setAttribute('name', $file);
@@ -744,7 +779,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function listFilesPhase2($dom, $node, $path, $depth = 0)
+    function listFilesPhase2($dom, $node, $path, $depth=0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -761,24 +796,20 @@ class task_period_archive extends task_abstract
                 // on gere le magicfile
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                     $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
+                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
                         return;
-                    } elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile)) {
+                    elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile))
                         return;
-                    }
                 }
             }
 
-            while (($file = $listFolder->read()) !== NULL) {
-                // on gere le magicfile
-                if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
-                    $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
-                        return;
-                    } elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile)) {
-                        return;
-                    }
-                }
+            // on gere le magicfile
+            if (($magicfile = trim((string) @($sxDotPhrasea->magicfile))) != '') {
+                $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
+                if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+                    return;
+                elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile))
+                    return;
             }
 
             while (($file = $listFolder->read()) !== NULL) {
@@ -846,15 +877,14 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp = false, $depth = 0)
+    function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp=false, $depth=0)
     {
         static $iloop = 0;
         if ($depth == 0)
             $iloop = 0;
 
-        if ($depth == 0 && ($node->getAttribute('temperature') == 'hot' || $node->getAttribute('cid') == '-1')) {
+        if ($depth == 0 && ($node->getAttribute('temperature') == 'hot' || $node->getAttribute('cid') == '-1'))
             return;
-        }
 
         $xpath = new DOMXPath($dom); // useful
 
@@ -873,6 +903,7 @@ class task_period_archive extends task_abstract
             if ($n->getAttribute('isdir') == '1') {
                 if (($grpSettings = $this->getGrpSettings($name)) !== FALSE) { // get 'caption', 'representation'
                     // this is a grp folder, we check it
+
                     $dnl = $xpath->query('./file[@name=".grouping.xml"]', $n);
                     if ($dnl->length == 1) {
                         // this group is old (don't care about any linked files), just flag it
@@ -884,7 +915,7 @@ class task_period_archive extends task_abstract
                         // this group in new (to be created)
                         // do we need one (or both) linked file ? (caption or representation)
                         $err = false;
-                        $flink = array('caption'        => null, 'representation' => null);
+                        $flink = array('caption' => null, 'representation' => null);
 
                         foreach ($flink as $linkName => $v) {
                             if (isset($grpSettings[$linkName]) && $grpSettings[$linkName] != '') {
@@ -979,7 +1010,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth=0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -987,10 +1018,8 @@ class task_period_archive extends task_abstract
 
         $ret = false;
 
-        // if root of hotfolder if hot, die...
-        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') {
+        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') // if root of hotfolder if hot, die...
             return($ret);
-        }
 
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
@@ -1057,15 +1086,14 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function archive($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    function archive($dom, $node, $path, $path_archived, $path_error, $depth=0)
     {
         static $iloop = 0;
         if ($depth == 0)
             $iloop = 0;
 
-        if ($node->getAttribute('temperature') == 'hot') {
+        if ($node->getAttribute('temperature') == 'hot')
             return;
-        }
 
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
@@ -1125,15 +1153,14 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function bubbleResults($dom, $node, $path, $depth = 0)
+    function bubbleResults($dom, $node, $path, $depth=0)
     {
         static $iloop = 0;
         if ($depth == 0)
             $iloop = 0;
 
-        if ($node->getAttribute('temperature') == 'hot') {
+        if ($node->getAttribute('temperature') == 'hot')
             return;
-        }
 
         $ret = 0;
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
@@ -1185,7 +1212,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth = 0)
+    function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth=0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -1193,10 +1220,8 @@ class task_period_archive extends task_abstract
 
         $ret = false;
 
-        // if root of hotfolder if hot, die...
-        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') {
+        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') // if root of hotfolder if hot, die...
             return($ret);
-        }
 
 //printf("%s : \n", __LINE__);
         $nodesToDel = array();
@@ -1524,7 +1549,6 @@ class task_period_archive extends task_abstract
                 $this->archiveFile($dom, $n, $path, $path_archived, $path_error, $nodesToDel, $grp_rid);
             }
         }
-// printf("======== %s %s \n", __LINE__, var_export($nodesToDel, true));
         foreach ($nodesToDel as $n)
             $n->parentNode->removeChild($n);
 
@@ -1543,11 +1567,10 @@ class task_period_archive extends task_abstract
      * @param <type> $grp_rid
      * @return <type>
      */
-    function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid = 0)
+    function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid=0)
     {
         $match = $node->getAttribute('match');
         if ($match == '*')
-
             return;
 
         $file = $node->getAttribute('name');
@@ -1628,9 +1651,9 @@ class task_period_archive extends task_abstract
 
         $system_file = new system_file($path . '/' . $file);
 
-        $caption_file = null;
+        $caption_file = NULL;
 
-        if ($captionFileName != $file) {
+        if ($captionFileName !== NULL && $captionFileName != $file) {
             $caption_file = new system_file($path . '/' . $captionFileName);
         }
 
@@ -1643,7 +1666,7 @@ class task_period_archive extends task_abstract
         $system_file->set_phrasea_tech_field(system_file::TECH_FIELD_SUBPATH, $subpath);
 
         $meta = $system_file->extract_metadatas($databox->get_meta_structure(), $caption_file);
-        unset($databox);
+//    unset($databox);
 
         $hexstat = '';
         if ($meta['status'] !== NULL) {
@@ -1706,7 +1729,6 @@ class task_period_archive extends task_abstract
         }
 
         if ( ! $lazaret) {
-
             $cid = $node->getAttribute('cid');
 
             $base_id = phrasea::baseFromColl($this->sbas_id, $cid);
@@ -1727,7 +1749,7 @@ class task_period_archive extends task_abstract
 
                     $params = array(
                         ':rid_parent' => $grp_rid
-                        , ':rid_child'  => $rid
+                        , ':rid_child' => $rid
                     );
 
                     $stmt = $connbas->prepare($sql);
@@ -1801,7 +1823,7 @@ class task_period_archive extends task_abstract
      * @param <type> $attributes
      * @param <type> $depth
      */
-    function setAllChildren($dom, $node, $attributes, $depth = 0)
+    function setAllChildren($dom, $node, $attributes, $depth=0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -1885,4 +1907,3 @@ class CListFolder
         return(array_shift($this->list));
     }
 }
-
