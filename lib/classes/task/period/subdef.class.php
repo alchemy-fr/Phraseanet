@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2012 Alchemy
+ * (c) 2005-2010 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -142,7 +142,6 @@ class task_period_subdef extends task_databoxAbstract
             <?php echo $form ?>.maxmegs.value = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
             </script>
             <?php
-
             return("");
         }
         else {
@@ -216,104 +215,105 @@ class task_period_subdef extends task_databoxAbstract
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
-            <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+        <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" onchange="chgxmltxt(this, \'flush\');" value="">'); ?>
+        <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" onchange="chgxmltxt(this, \'flush\');" value="">'); ?>
             <br/>
             <br/>
-            <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
+        <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
             <input type="text" name="maxrecs" style="width:40px;" onchange="chgxmltxt(this, 'maxrecs');" value="">
             <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
             <input type="text" name="maxmegs" style="width:40px;" onchange="chgxmltxt(this, 'maxmegs');" value="">
             Mo
             <br/>
         </form>
-        <?php
-        $out = ob_get_clean();
+            <?php
+            $out = ob_get_clean();
 
-        return $out;
-    }
-
-    protected function flush_records_sbas()
-    {
-        $sql = implode(', ', $this->recs_to_write);
-
-        if ($sql != '') {
-            $this->log(sprintf(
-                    'setting %d record(s) to subdef meta writing'
-                    , count($this->recs_to_write)
-                ));
-
-            try {
-                $connbas = connection::getPDOConnection($this->sbas_id);
-                $sql = 'UPDATE record
-                SET status=(status & ~0x03),
-                    jeton=(jeton | ' . JETON_WRITE_META_SUBDEF . ')
-                WHERE record_id IN (' . $sql . ')';
-                $stmt = $connbas->prepare($sql);
-                $stmt->execute();
-                $stmt->closeCursor();
-            } catch (Exception $e) {
-                $this->log($e->getMessage());
-            }
+            return $out;
         }
-        $this->recs_to_write = array();
 
-        return $this;
-    }
+        public function retrieve_sbas_content(databox $databox)
+        {
+            $connbas = $databox->get_connection();
 
-    public function retrieve_sbas_content(databox $databox)
-    {
-        $connbas = $databox->get_connection();
-
-        $sql = 'SELECT coll_id, record_id
+            $sql = 'SELECT coll_id, record_id
               FROM record
               WHERE jeton & ' . JETON_MAKE_SUBDEF . ' > 0
                 AND parent_record_id = 0
               ORDER BY record_id DESC LIMIT 0, 20';
 
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute();
+            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
 
-        return $rs;
-    }
-
-    public function process_one_content(databox $databox, Array $row)
-    {
-        $record_id = $row['record_id'];
-        $this->log(sprintf(
-                "Generate subdefs for :  sbas_id %s / record %s "
-                , $this->sbas_id, $record_id));
-        $record = new record_adapter($this->sbas_id, $record_id);
-
-        $record->generate_subdefs($databox, null);
-
-        $this->recs_to_write[] = $record->get_record_id();
-
-        if (count($this->recs_to_write) >= $this->record_buffer_size) {
-            $this->flush_records_sbas();
+            return $rs;
         }
-        unset($record);
 
-        return $this;
-    }
+        public function process_one_content(databox $databox, Array $row)
+        {
+            $record_id = $row['record_id'];
+            $this->log(sprintf(
+                    "Generate subdefs for :  sbas_id %s / record %s "
+                    , $this->sbas_id, $record_id));
+            $record = new record_adapter($this->sbas_id, $record_id);
 
-    protected function post_process_one_content(databox $databox, Array $row)
-    {
-        $connbas = $databox->get_connection();
-        $sql = 'UPDATE record
+            $record->generate_subdefs($databox, null, $this->debug);
+
+            $this->recs_to_write[] = $record->get_record_id();
+
+            if (count($this->recs_to_write) >= $this->record_buffer_size) {
+                $this->flush_records_sbas();
+            }
+            unset($record);
+
+            return $this;
+        }
+
+        protected function post_process_one_content(databox $databox, Array $row)
+        {
+            $connbas = $databox->get_connection();
+            $sql = 'UPDATE record
               SET jeton=(jeton & ~' . JETON_MAKE_SUBDEF . '), moddate=NOW()
               WHERE record_id=:record_id';
 
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute(array(':record_id' => $row['record_id']));
-        $stmt->closeCursor();
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute(array(':record_id' => $row['record_id']));
+            $stmt->closeCursor();
 
-        return $this;
+            return $this;
+        }
+
+        protected function flush_records_sbas()
+        {
+            $sql = implode(', ', $this->recs_to_write);
+
+            if ($sql != '') {
+                $this->log(sprintf(
+                        'setting %d record(s) to subdef meta writing'
+                        , count($this->recs_to_write)
+                    ));
+
+                try {
+                    $connbas = connection::getPDOConnection($this->sbas_id);
+                    $sql = 'UPDATE record
+                SET status=(status & ~0x03),
+                    jeton=(jeton | ' . JETON_WRITE_META_SUBDEF . ')
+                WHERE record_id IN (' . $sql . ')';
+                    $stmt = $connbas->prepare($sql);
+                    $stmt->execute();
+                    $stmt->closeCursor();
+                } catch (Exception $e) {
+                    $this->log($e->getMessage());
+                }
+            }
+            $this->recs_to_write = array();
+
+            return $this;
+        }
     }
-}
 
+    
