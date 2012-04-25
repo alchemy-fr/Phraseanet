@@ -34,7 +34,14 @@ class Enum implements OptionType
     {
         if ( ! in_array($value, $this->available))
         {
-            throw new \Exception_InvalidArgument('The value provided does not fit in range');
+            throw new \Exception_InvalidArgument(
+              sprintf(
+                'The value provided `%s` for %s does not fit in range ; available are %s'
+                , $value
+                , $this->getName()
+                , implode(', ', $this->getAvailableValues())
+              )
+            );
         }
 
         $this->value = $value;
