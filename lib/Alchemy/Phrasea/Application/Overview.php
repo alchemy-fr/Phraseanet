@@ -102,11 +102,11 @@ return call_user_func(
               ->get_subdef($record->get_type(), $subdef)
               ->get_class();
 
-            if ($subdef_class == \databox_subdefAbstract::CLASS_PREVIEW && $user->ACL()->has_preview_grant($record))
+            if ($subdef_class == \databox_subdef::CLASS_PREVIEW && $user->ACL()->has_preview_grant($record))
             {
               $watermark = false;
             }
-            elseif ($subdef_class == \databox_subdefAbstract::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record))
+            elseif ($subdef_class == \databox_subdef::CLASS_DOCUMENT && $user->ACL()->has_hd_grant($record))
             {
               $watermark = false;
             }

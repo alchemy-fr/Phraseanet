@@ -18,713 +18,728 @@
 class record_adapter implements record_Interface, cache_cacheableInterface
 {
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $xml;
+    /**
+     *
+     * @var <type>
+     */
+    protected $xml;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $base_id;
+    /**
+     *
+     * @var <type>
+     */
+    protected $base_id;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $record_id;
+    /**
+     *
+     * @var <type>
+     */
+    protected $record_id;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $mime;
+    /**
+     *
+     * @var <type>
+     */
+    protected $mime;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $number;
+    /**
+     *
+     * @var <type>
+     */
+    protected $number;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $status;
+    /**
+     *
+     * @var <type>
+     */
+    protected $status;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $subdefs;
+    /**
+     *
+     * @var <type>
+     */
+    protected $subdefs;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $type;
+    /**
+     *
+     * @var <type>
+     */
+    protected $type;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $sha256;
+    /**
+     *
+     * @var <type>
+     */
+    protected $sha256;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $grouping;
+    /**
+     *
+     * @var <type>
+     */
+    protected $grouping;
 
-  /**
-   *
-   * @var <type>
-   */
-  protected $duration;
+    /**
+     *
+     * @var <type>
+     */
+    protected $duration;
 
-  /**
-   *
-   * @var databox
-   */
-  protected $databox;
+    /**
+     *
+     * @var databox
+     */
+    protected $databox;
 
-  /**
-   *
-   * @var DateTime
-   */
-  protected $creation_date;
+    /**
+     *
+     * @var DateTime
+     */
+    protected $creation_date;
 
-  /**
-   *
-   * @var string
-   */
-  protected $original_name;
+    /**
+     *
+     * @var string
+     */
+    protected $original_name;
 
-  /**
-   *
-   * @var Array
-   */
-  protected $technical_datas;
+    /**
+     *
+     * @var Array
+     */
+    protected $technical_datas;
 
-  /**
-   *
-   * @var caption_record
-   */
-  protected $caption_record;
+    /**
+     *
+     * @var caption_record
+     */
+    protected $caption_record;
 
-  /**
-   *
-   * @var string
-   */
-  protected $bitly_link;
+    /**
+     *
+     * @var string
+     */
+    protected $bitly_link;
 
-  /**
-   *
-   * @var string
-   */
-  protected $uuid;
+    /**
+     *
+     * @var string
+     */
+    protected $uuid;
 
-  /**
-   *
-   * @var DateTime
-   */
-  protected $modification_date;
+    /**
+     *
+     * @var DateTime
+     */
+    protected $modification_date;
 
-  const CACHE_ORIGINAL_NAME   = 'originalname';
-  const CACHE_TECHNICAL_DATAS = 'technical_datas';
-  const CACHE_MIME            = 'mime';
-  const CACHE_SHA256          = 'sha256';
-  const CACHE_SUBDEFS         = 'subdefs';
-  const CACHE_GROUPING        = 'grouping';
-  const CACHE_STATUS          = 'status';
+    const CACHE_ORIGINAL_NAME   = 'originalname';
+    const CACHE_TECHNICAL_DATAS = 'technical_datas';
+    const CACHE_MIME            = 'mime';
+    const CACHE_SHA256          = 'sha256';
+    const CACHE_SUBDEFS         = 'subdefs';
+    const CACHE_GROUPING        = 'grouping';
+    const CACHE_STATUS          = 'status';
 
-  /**
-   *
-   * @param <int> $base_id
-   * @param <int> $record_id
-   * @param <int> $number
-   * @param <string> $xml
-   * @param <string> $status
-   * @return record_adapter
-   */
-  public function __construct($sbas_id, $record_id, $number = null)
-  {
-    $this->databox = databox::get_instance((int) $sbas_id);
-    $this->number = (int) $number;
-    $this->record_id = (int) $record_id;
-
-    return $this->load();
-    ;
-  }
-
-  protected function load()
-  {
-    try
+    /**
+     *
+     * @param <int> $base_id
+     * @param <int> $record_id
+     * @param <int> $number
+     * @param <string> $xml
+     * @param <string> $status
+     * @return record_adapter
+     */
+    public function __construct($sbas_id, $record_id, $number = null)
     {
-      $datas = $this->get_data_from_cache();
+        $this->databox = databox::get_instance((int) $sbas_id);
+        $this->number = (int) $number;
+        $this->record_id = (int) $record_id;
 
-      $this->mime = $datas['mime'];
-      $this->sha256 = $datas['sha256'];
-      $this->bitly_link = $datas['bitly_link'];
-      $this->original_name = $datas['original_name'];
-      $this->type = $datas['type'];
-      $this->grouping = $datas['grouping'];
-      $this->uuid = $datas['uuid'];
-      $this->modification_date = $datas['modification_date'];
-      $this->creation_date = $datas['creation_date'];
-      $this->base_id = $datas['base_id'];
-
-      return $this;
-    }
-    catch (Exception $e)
-    {
-
+        return $this->load();
+        ;
     }
 
-    $connbas = $this->databox->get_connection();
-    $sql     = 'SELECT coll_id, record_id,credate , uuid, moddate, parent_record_id
+    protected function load()
+    {
+        try
+        {
+            $datas = $this->get_data_from_cache();
+
+            $this->mime = $datas['mime'];
+            $this->sha256 = $datas['sha256'];
+            $this->bitly_link = $datas['bitly_link'];
+            $this->original_name = $datas['original_name'];
+            $this->type = $datas['type'];
+            $this->grouping = $datas['grouping'];
+            $this->uuid = $datas['uuid'];
+            $this->modification_date = $datas['modification_date'];
+            $this->creation_date = $datas['creation_date'];
+            $this->base_id = $datas['base_id'];
+
+            return $this;
+        }
+        catch (Exception $e)
+        {
+
+        }
+
+        $connbas = $this->databox->get_connection();
+        $sql     = 'SELECT coll_id, record_id,credate , uuid, moddate, parent_record_id
             , type, originalname, bitly, sha256, mime
             FROM record WHERE record_id = :record_id';
-    $stmt    = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->record_id));
-    $row         = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+        $stmt    = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->record_id));
+        $row         = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-    if (!$row)
-      throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->databox->get_sbas_id() . ' not found ');
-
-    $this->base_id = (int) phrasea::baseFromColl($this->databox->get_sbas_id(), $row['coll_id']);
-    $this->creation_date = new DateTime($row['credate']);
-    $this->modification_date = new DateTime($row['moddate']);
-    $this->uuid = $row['uuid'];
-
-    $this->grouping = ($row['parent_record_id'] == '1');
-    $this->type = $row['type'];
-    $this->original_name = $row['originalname'];
-    $this->bitly_link = $row['bitly'];
-    $this->sha256 = $row['sha256'];
-    $this->mime = $row['mime'];
-
-    $datas = array(
-      'mime'              => $this->mime
-      , 'sha256'            => $this->sha256
-      , 'bitly_link'        => $this->bitly_link
-      , 'original_name'     => $this->original_name
-      , 'type'              => $this->type
-      , 'grouping'          => $this->grouping
-      , 'uuid'              => $this->uuid
-      , 'modification_date' => $this->modification_date
-      , 'creation_date'     => $this->creation_date
-      , 'base_id'           => $this->base_id
-    );
-
-    $this->set_data_to_cache($datas);
-
-    return $this;
-  }
-
-  /**
-   *
-   * @return DateTime
-   */
-  public function get_creation_date()
-  {
-    return $this->creation_date;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_uuid()
-  {
-    return $this->uuid;
-  }
-
-  /**
-   *
-   * @return DateTime
-   */
-  public function get_modification_date()
-  {
-    return $this->modification_date;
-  }
-
-  /**
-   *
-   * @return int
-   */
-  public function get_number()
-  {
-    return $this->number;
-  }
-
-  /**
-   * Set a relative number (order) for the vurrent in its set
-   *
-   * @param int $number
-   * @return record_adapter
-   */
-  public function set_number($number)
-  {
-    $this->number = (int) $number;
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param string $type
-   * @return record_adapter
-   */
-  public function set_type($type)
-  {
-    $type = strtolower($type);
-
-    $old_type = $this->get_type();
-
-    if (!in_array($type, array('document', 'audio', 'video', 'image', 'flash', 'map')))
-      throw new Exception('unrecognized document type');
-
-    $connbas = connection::getPDOConnection($this->get_sbas_id());
-
-    $sql  = 'UPDATE record SET type = :type WHERE record_id = :record_id';
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':type'      => $type, ':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
-
-    if ($old_type !== $type)
-      $this->rebuild_subdefs();
-
-    $this->type = $type;
-    $this->delete_data_from_cache();
-
-    return $this;
-  }
-
-  /**
-   * Return true if the record is a grouping
-   *
-   * @return boolean
-   */
-  public function is_grouping()
-  {
-    return $this->grouping;
-  }
-
-  /**
-   * Return base_id of the record
-   *
-   * @return <int>
-   */
-  public function get_base_id()
-  {
-    return $this->base_id;
-  }
-
-  /**
-   * return recor_id of the record
-   *
-   * @return <int>
-   */
-  public function get_record_id()
-  {
-    return $this->record_id;
-  }
-
-  /**
-   *
-   * @return databox
-   */
-  public function get_databox()
-  {
-    return $this->databox;
-  }
-
-  /**
-   *
-   * @return media_subdef
-   */
-  public function get_thumbnail()
-  {
-    return $this->get_subdef('thumbnail');
-  }
-
-  /**
-   *
-   * @return Array
-   */
-  public function get_embedable_medias()
-  {
-    return $this->get_subdefs();
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_status_icons()
-  {
-    $dstatus = databox_status::getDisplayStatus();
-    $sbas_id = $this->get_sbas_id();
-    $appbox  = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
-    $user    = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
-    $status = '';
-
-    if (isset($dstatus[$sbas_id]))
-    {
-      foreach ($dstatus[$sbas_id] as $n => $statbit)
-      {
-        if ($statbit['printable'] == '0' &&
-          !$user->ACL()->has_right_on_base($this->base_id, 'chgstatus'))
-          continue;
-
-        $x = (substr((strrev($this->get_status())), $n, 1));
-
-        $source0 = "/skins/icons/spacer.gif";
-        $style0  = "visibility:hidden;display:none;";
-        $source1 = "/skins/icons/spacer.gif";
-        $style1  = "visibility:hidden;display:none;";
-        if ($statbit["img_on"])
+        if ( ! $row)
         {
-          $source1 = $statbit["img_on"];
-          $style1  = "visibility:auto;display:none;";
+            throw new Exception_Record_AdapterNotFound('Record ' . $this->record_id . ' on database ' . $this->databox->get_sbas_id() . ' not found ');
         }
-        if ($statbit["img_off"])
+
+        $this->base_id = (int) phrasea::baseFromColl($this->databox->get_sbas_id(), $row['coll_id']);
+        $this->creation_date = new DateTime($row['credate']);
+        $this->modification_date = new DateTime($row['moddate']);
+        $this->uuid = $row['uuid'];
+
+        $this->grouping = ($row['parent_record_id'] == '1');
+        $this->type = $row['type'];
+        $this->original_name = $row['originalname'];
+        $this->bitly_link = $row['bitly'];
+        $this->sha256 = $row['sha256'];
+        $this->mime = $row['mime'];
+
+        $datas = array(
+          'mime'              => $this->mime
+          , 'sha256'            => $this->sha256
+          , 'bitly_link'        => $this->bitly_link
+          , 'original_name'     => $this->original_name
+          , 'type'              => $this->type
+          , 'grouping'          => $this->grouping
+          , 'uuid'              => $this->uuid
+          , 'modification_date' => $this->modification_date
+          , 'creation_date'     => $this->creation_date
+          , 'base_id'           => $this->base_id
+        );
+
+        $this->set_data_to_cache($datas);
+
+        return $this;
+    }
+
+    /**
+     *
+     * @return DateTime
+     */
+    public function get_creation_date()
+    {
+        return $this->creation_date;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_uuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     *
+     * @return DateTime
+     */
+    public function get_modification_date()
+    {
+        return $this->modification_date;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function get_number()
+    {
+        return $this->number;
+    }
+
+    /**
+     * Set a relative number (order) for the vurrent in its set
+     *
+     * @param int $number
+     * @return record_adapter
+     */
+    public function set_number($number)
+    {
+        $this->number = (int) $number;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $type
+     * @return record_adapter
+     */
+    public function set_type($type)
+    {
+        $type = strtolower($type);
+
+        $old_type = $this->get_type();
+
+        if ( ! in_array($type, array('document', 'audio', 'video', 'image', 'flash', 'map')))
         {
-          $source0 = $statbit["img_off"];
-          $style0  = "visibility:auto;display:none;";
+            throw new Exception('unrecognized document type');
         }
-        if ($x == '1')
+
+        $connbas = connection::getPDOConnection($this->get_sbas_id());
+
+        $sql  = 'UPDATE record SET type = :type WHERE record_id = :record_id';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':type'      => $type, ':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+        if ($old_type !== $type)
+            $this->rebuild_subdefs();
+
+        $this->type = $type;
+        $this->delete_data_from_cache();
+
+        return $this;
+    }
+
+    /**
+     * Return true if the record is a grouping
+     *
+     * @return boolean
+     */
+    public function is_grouping()
+    {
+        return $this->grouping;
+    }
+
+    /**
+     * Return base_id of the record
+     *
+     * @return <int>
+     */
+    public function get_base_id()
+    {
+        return $this->base_id;
+    }
+
+    /**
+     * return recor_id of the record
+     *
+     * @return <int>
+     */
+    public function get_record_id()
+    {
+        return $this->record_id;
+    }
+
+    /**
+     *
+     * @return databox
+     */
+    public function get_databox()
+    {
+        return $this->databox;
+    }
+
+    /**
+     *
+     * @return media_subdef
+     */
+    public function get_thumbnail()
+    {
+        return $this->get_subdef('thumbnail');
+    }
+
+    /**
+     *
+     * @return Array
+     */
+    public function get_embedable_medias()
+    {
+        return $this->get_subdefs();
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_status_icons()
+    {
+        $dstatus = databox_status::getDisplayStatus();
+        $sbas_id = $this->get_sbas_id();
+        $appbox  = appbox::get_instance(\bootstrap::getCore());
+        $session = $appbox->get_session();
+        $user    = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+
+        $status = '';
+
+        if (isset($dstatus[$sbas_id]))
         {
-          if ($statbit["img_on"])
-          {
-            $style1 = "visibility:auto;display:inline;";
-          }
+            foreach ($dstatus[$sbas_id] as $n => $statbit)
+            {
+                if ($statbit['printable'] == '0' &&
+                  ! $user->ACL()->has_right_on_base($this->base_id, 'chgstatus'))
+                {
+                    continue;
+                }
+
+                $x = (substr((strrev($this->get_status())), $n, 1));
+
+                $source0 = "/skins/icons/spacer.gif";
+                $style0  = "visibility:hidden;display:none;";
+                $source1 = "/skins/icons/spacer.gif";
+                $style1  = "visibility:hidden;display:none;";
+                if ($statbit["img_on"])
+                {
+                    $source1 = $statbit["img_on"];
+                    $style1  = "visibility:auto;display:none;";
+                }
+                if ($statbit["img_off"])
+                {
+                    $source0 = $statbit["img_off"];
+                    $style0  = "visibility:auto;display:none;";
+                }
+                if ($x == '1')
+                {
+                    if ($statbit["img_on"])
+                    {
+                        $style1 = "visibility:auto;display:inline;";
+                    }
+                }
+                else
+                {
+                    if ($statbit["img_off"])
+                    {
+                        $style0 = "visibility:auto;display:inline;";
+                    }
+                }
+                $status .= '<img style="margin:1px;' . $style1 . '" ' .
+                  'class="STAT_' . $this->base_id . '_'
+                  . $this->record_id . '_' . $n . '_1" ' .
+                  'src="' . $source1 . '" title="' .
+                  (isset($statbit["labelon"]) ?
+                    $statbit["labelon"] :
+                    $statbit["lib"]) . '"/>';
+                $status .= '<img style="margin:1px;' . $style0 . '" ' .
+                  'class="STAT_' . $this->base_id . '_'
+                  . $this->record_id . '_' . $n . '_0" ' .
+                  'src="' . $source0 . '" title="' .
+                  (isset($statbit["labeloff"]) ?
+                    $statbit["labeloff"] :
+                    ("non-" . $statbit["lib"])) . '"/>';
+            }
         }
-        else
+
+        return $status;
+    }
+
+    /**
+     * return the type of the document
+     *
+     * @return string
+     */
+    public function get_type()
+    {
+        return $this->type;
+    }
+
+    /**
+     * get duration formatted as xx:xx:xx
+     *
+     * @return string
+     */
+    public function get_formated_duration()
+    {
+        return p4string::format_seconds($this->get_duration());
+    }
+
+    /**
+     * return duration in seconds
+     *
+     * @return int
+     */
+    public function get_duration()
+    {
+        if ( ! $this->duration)
         {
-          if ($statbit["img_off"])
-          {
-            $style0 = "visibility:auto;display:inline;";
-          }
+            $this->duration = $this->get_technical_infos(system_file::TC_DATAS_DURATION);
         }
-        $status .= '<img style="margin:1px;' . $style1 . '" ' .
-          'class="STAT_' . $this->base_id . '_'
-          . $this->record_id . '_' . $n . '_1" ' .
-          'src="' . $source1 . '" title="' .
-          (isset($statbit["labelon"]) ?
-            $statbit["labelon"] :
-            $statbit["lib"]) . '"/>';
-        $status .= '<img style="margin:1px;' . $style0 . '" ' .
-          'class="STAT_' . $this->base_id . '_'
-          . $this->record_id . '_' . $n . '_0" ' .
-          'src="' . $source0 . '" title="' .
-          (isset($statbit["labeloff"]) ?
-            $statbit["labeloff"] :
-            ("non-" . $statbit["lib"])) . '"/>';
-      }
+
+        return $this->duration;
     }
 
-    return $status;
-  }
-
-  /**
-   * return the type of the document
-   *
-   * @return string
-   */
-  public function get_type()
-  {
-    return $this->type;
-  }
-
-  /**
-   * get duration formatted as xx:xx:xx
-   *
-   * @return string
-   */
-  public function get_formated_duration()
-  {
-    return p4string::format_seconds($this->get_duration());
-  }
-
-  /**
-   * return duration in seconds
-   *
-   * @return int
-   */
-  public function get_duration()
-  {
-    if (!$this->duration)
+    /**
+     *
+     * @param collection $collection
+     * @param appbox $appbox
+     * @return record_adapter
+     */
+    public function move_to_collection(collection &$collection, appbox &$appbox)
     {
-      $this->duration = $this->get_technical_infos(system_file::TC_DATAS_DURATION);
+        $sql = "UPDATE record SET coll_id = :coll_id WHERE record_id =:record_id";
+
+        $params = array(
+          ':coll_id'   => $collection->get_coll_id(),
+          ':record_id' => $this->get_record_id()
+        );
+
+        $stmt = $this->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+
+        $this->base_id = $collection->get_base_id();
+
+        $appbox->get_session()->get_logger($this->get_databox())
+          ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
+
+        $this->delete_data_from_cache();
+
+        return $this;
     }
 
-    return $this->duration;
-  }
-
-  /**
-   *
-   * @param collection $collection
-   * @param appbox $appbox
-   * @return record_adapter
-   */
-  public function move_to_collection(collection &$collection, appbox &$appbox)
-  {
-    $sql = "UPDATE record SET coll_id = :coll_id WHERE record_id =:record_id";
-
-    $params = array(
-      ':coll_id'   => $collection->get_coll_id(),
-      ':record_id' => $this->get_record_id()
-    );
-
-    $stmt = $this->get_databox()->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $stmt->closeCursor();
-
-    $this->base_id = $collection->get_base_id();
-
-    $appbox->get_session()->get_logger($this->get_databox())
-      ->log($this, Session_Logger::EVENT_MOVE, $collection->get_coll_id(), '');
-
-    $this->delete_data_from_cache();
-
-    return $this;
-  }
-
-  /**
-   *
-   * @return media
-   */
-  public function get_rollover_thumbnail()
-  {
-    if ($this->get_type() != 'video')
+    /**
+     *
+     * @return media
+     */
+    public function get_rollover_thumbnail()
     {
-      return null;
+        if ($this->get_type() != 'video')
+        {
+            return null;
+        }
+
+        try
+        {
+            return $this->get_subdef('thumbnailGIF');
+        }
+        catch (Exception $e)
+        {
+
+        }
+
+        return null;
     }
 
-    try
+    /**
+     *
+     * @return string
+     */
+    public function get_sha256()
     {
-      return $this->get_subdef('thumbnailGIF');
+        return $this->sha256;
     }
-    catch (Exception $e)
+
+    /**
+     *
+     * @return string
+     */
+    public function get_mime()
     {
-
+        return $this->mime;
     }
 
-    return null;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_sha256()
-  {
-    return $this->sha256;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_mime()
-  {
-    return $this->mime;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_status()
-  {
-    if (!$this->status)
+    /**
+     *
+     * @return string
+     */
+    public function get_status()
     {
-      $this->status = $this->retrieve_status();
+        if ( ! $this->status)
+        {
+            $this->status = $this->retrieve_status();
+        }
+
+        return $this->status;
     }
 
-    return $this->status;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  protected function retrieve_status()
-  {
-    try
+    /**
+     *
+     * @return string
+     */
+    protected function retrieve_status()
     {
-      return $this->get_data_from_cache(self::CACHE_STATUS);
-    }
-    catch (Exception $e)
-    {
+        try
+        {
+            return $this->get_data_from_cache(self::CACHE_STATUS);
+        }
+        catch (Exception $e)
+        {
 
-    }
-    $sql  = 'SELECT BIN(status) as status FROM record
+        }
+        $sql  = 'SELECT BIN(status) as status FROM record
               WHERE record_id = :record_id';
-    $stmt = $this->get_databox()->get_connection()->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $row         = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+        $stmt = $this->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $row         = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-    if (!$row)
-      throw new Exception('status not found');
+        if ( ! $row)
+        {
+            throw new Exception('status not found');
+        }
 
-    $status = $row['status'];
-    $n      = strlen($status);
-    while ($n < 64)
-    {
-      $status = '0' . $status;
-      $n++;
+        $status = $row['status'];
+        $n      = strlen($status);
+        while ($n < 64)
+        {
+            $status = '0' . $status;
+            $n ++;
+        }
+
+        $this->set_data_to_cache($status, self::CACHE_STATUS);
+
+        return $status;
     }
 
-    $this->set_data_to_cache($status, self::CACHE_STATUS);
-
-    return $status;
-  }
-
-  /**
-   *
-   * @param <type> $name
-   * @return media_subdef
-   */
-  public function get_subdef($name)
-  {
-    $name = strtolower($name);
-
-    if (!in_array($name, $this->get_available_subdefs()))
+    public function has_subdef($name)
     {
-      throw new Exception_Media_SubdefNotFound ();
+        return in_array($name, $this->get_available_subdefs());
     }
 
-    if (isset($this->subdefs[$name]))
+    /**
+     *
+     * @param <type> $name
+     * @return media_subdef
+     */
+    public function get_subdef($name)
     {
-      return $this->subdefs[$name];
+        $name = strtolower($name);
+
+        if ( ! in_array($name, $this->get_available_subdefs()))
+        {
+            throw new Exception_Media_SubdefNotFound ();
+        }
+
+        if (isset($this->subdefs[$name]))
+        {
+            return $this->subdefs[$name];
+        }
+
+        if ( ! $this->subdefs)
+        {
+            $this->subdefs = array();
+        }
+
+        $substitute = ($name !== 'document');
+
+        return $this->subdefs[$name] = new media_subdef($this, $name, $substitute);
     }
 
-    if (!$this->subdefs)
+    /**
+     *
+     * @return Array
+     */
+    public function get_subdefs()
     {
-      $this->subdefs = array();
+        if ( ! $this->subdefs)
+        {
+            $this->subdefs = array();
+        }
+
+        $subdefs = $this->get_available_subdefs();
+        foreach ($subdefs as $name)
+        {
+            $this->get_subdef($name);
+        }
+
+        return $this->subdefs;
     }
 
-    $substitute = ($name !== 'document');
-
-    return $this->subdefs[$name] = new media_subdef($this, $name, $substitute);
-  }
-
-  /**
-   *
-   * @return Array
-   */
-  public function get_subdefs()
-  {
-    if (!$this->subdefs)
-      $this->subdefs = array();
-
-    $subdefs = $this->get_available_subdefs();
-    foreach ($subdefs as $name)
+    /**
+     *
+     * @return Array
+     */
+    protected function get_available_subdefs()
     {
-      $this->get_subdef($name);
-    }
+        try
+        {
+            return $this->get_data_from_cache(self::CACHE_SUBDEFS);
+        }
+        catch (Exception $e)
+        {
 
-    return $this->subdefs;
-  }
+        }
 
-  /**
-   *
-   * @return Array
-   */
-  protected function get_available_subdefs()
-  {
-    try
-    {
-      return $this->get_data_from_cache(self::CACHE_SUBDEFS);
-    }
-    catch (Exception $e)
-    {
+        $connbas = $this->get_databox()->get_connection();
 
-    }
-
-    $connbas = $this->get_databox()->get_connection();
-
-    $sql = 'SELECT name FROM record r, subdef s
+        $sql = 'SELECT name FROM record r, subdef s
             WHERE s.record_id = r.record_id AND r.record_id = :record_id';
 
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $rs          = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
-
-    $subdefs = array('preview', 'thumbnail');
-
-    foreach ($rs as $row)
-    {
-      $subdefs[] = $row['name'];
-    }
-    $subdefs   = array_unique($subdefs);
-    $this->set_data_to_cache($subdefs, self::CACHE_SUBDEFS);
-
-    return $subdefs;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_collection_logo()
-  {
-    return collection::getLogo($this->base_id, true);
-  }
-
-  /**
-   *
-   * @param string $data
-   * @return Array
-   */
-  public function get_technical_infos($data = false)
-  {
-
-    if (!$this->technical_datas)
-    {
-      try
-      {
-        $this->technical_datas = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
-      }
-      catch (Exception $e)
-      {
-        $this->technical_datas = array();
-        $connbas = $this->get_databox()->get_connection();
-        $sql     = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
-        $stmt    = $connbas->prepare($sql);
+        $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $this->get_record_id()));
         $rs          = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
+        $subdefs = array('preview', 'thumbnail');
+
         foreach ($rs as $row)
         {
-          switch ($row['name'])
-          {
-            case 'size':
-            case system_file::TC_DATAS_WIDTH:
-            case system_file::TC_DATAS_COLORDEPTH:
-            case system_file::TC_DATAS_HEIGHT:
-            case system_file::TC_DATAS_DURATION:
-              $this->technical_datas[$row['name']] = (int) $row['value'];
-              break;
-            default:
-              $this->technical_datas[$row['name']] = $row['value'];
-              break;
-          }
+            $subdefs[] = $row['name'];
         }
-        /**
-         * @todo un patch pour ca, et rentrer les infos à l'insert
-         */
+        $subdefs   = array_unique($subdefs);
+        $this->set_data_to_cache($subdefs, self::CACHE_SUBDEFS);
+
+        return $subdefs;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_collection_logo()
+    {
+        return collection::getLogo($this->base_id, true);
+    }
+
+    /**
+     *
+     * @param string $data
+     * @return Array
+     */
+    public function get_technical_infos($data = false)
+    {
+
+        if ( ! $this->technical_datas)
+        {
+            try
+            {
+                $this->technical_datas = $this->get_data_from_cache(self::CACHE_TECHNICAL_DATAS);
+            }
+            catch (Exception $e)
+            {
+                $this->technical_datas = array();
+                $connbas = $this->get_databox()->get_connection();
+                $sql     = 'SELECT name, value FROM technical_datas WHERE record_id = :record_id';
+                $stmt    = $connbas->prepare($sql);
+                $stmt->execute(array(':record_id' => $this->get_record_id()));
+                $rs          = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+
+                foreach ($rs as $row)
+                {
+                    switch ($row['name'])
+                    {
+                        case 'size':
+                        case system_file::TC_DATAS_WIDTH:
+                        case system_file::TC_DATAS_COLORDEPTH:
+                        case system_file::TC_DATAS_HEIGHT:
+                        case system_file::TC_DATAS_DURATION:
+                            $this->technical_datas[$row['name']] = (int) $row['value'];
+                            break;
+                        default:
+                            $this->technical_datas[$row['name']] = $row['value'];
+                            break;
+                    }
+                }
+                /**
+                 * @todo un patch pour ca, et rentrer les infos à l'insert
+                 */
 //        try
 //        {
 //          $hd = $this->get_subdef('document');
@@ -739,641 +754,611 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 //        {
 //
 //        }
-        $this->set_data_to_cache($this->technical_datas, self::CACHE_TECHNICAL_DATAS);
-        unset($e);
-      }
+                $this->set_data_to_cache($this->technical_datas, self::CACHE_TECHNICAL_DATAS);
+                unset($e);
+            }
+        }
+
+        if ($data)
+        {
+            if (isset($this->technical_datas[$data]))
+            {
+                return $this->technical_datas[$data];
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return $this->technical_datas;
     }
 
-    if ($data)
+    /**
+     *
+     * @return caption_record
+     */
+    public function get_caption()
     {
-      if (isset($this->technical_datas[$data]))
-      {
-        return $this->technical_datas[$data];
-      }
-      else
-      {
-        return false;
-      }
+
+        return new caption_record($this, $this->get_databox());
     }
 
-    return $this->technical_datas;
-  }
-
-  /**
-   *
-   * @return caption_record
-   */
-  public function get_caption()
-  {
-    
-    return new caption_record($this, $this->get_databox());
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_original_name($removeExtension = null)
-  {
-      if($removeExtension)
-      {
-          return pathinfo($this->original_name, PATHINFO_FILENAME);
-      }
-      else
-      {
-          return $this->original_name;
-      }
-  }
-
-  public function set_original_name($original_name)
-  {
-    $this->original_name = $original_name;
-
-    foreach ($this->get_databox()->get_meta_structure()->get_elements() as $data_field)
+    /**
+     *
+     * @return string
+     */
+    public function get_original_name($removeExtension = null)
     {
-      if ($data_field->get_metadata_source() != metadata_description_PHRASEANET_tffilename::get_source())
-      {
-        continue;
-      }
-
-      /**
-       * Replacing original name in multi values is non sense
-       */
-      if (!$data_field->is_multi())
-      {
-        continue;
-      }
-
-      try
-      {
-        $field   = $this->get_caption()->get_field($data_field->get_name())->get_meta_id();
-        $value   = array_pop($field->get_values());
-        $meta_id = $value->getId();
-      }
-      catch (\Exception $e)
-      {
-        $meta_id = null;
-      }
-
-      $metas = array(
-        'meta_struct_id' => $field->get_meta_struct_id()
-        , 'meta_id'        => $meta_id
-        , 'value'          => $original_name
-      );
-
-      $this->set_metadatas($metas, true);
+        if ($removeExtension)
+        {
+            return pathinfo($this->original_name, PATHINFO_FILENAME);
+        }
+        else
+        {
+            return $this->original_name;
+        }
     }
 
-    $sql = 'UPDATE record
+    public function set_original_name($original_name)
+    {
+        $this->original_name = $original_name;
+
+        foreach ($this->get_databox()->get_meta_structure()->get_elements() as $data_field)
+        {
+            if ($data_field->get_metadata_source() != metadata_description_PHRASEANET_tffilename::get_source())
+            {
+                continue;
+            }
+
+            /**
+             * Replacing original name in multi values is non sense
+             */
+            if ( ! $data_field->is_multi())
+            {
+                continue;
+            }
+
+            try
+            {
+                $field   = $this->get_caption()->get_field($data_field->get_name())->get_meta_id();
+                $value   = array_pop($field->get_values());
+                $meta_id = $value->getId();
+            }
+            catch (\Exception $e)
+            {
+                $meta_id = null;
+            }
+
+            $metas = array(
+              'meta_struct_id' => $field->get_meta_struct_id()
+              , 'meta_id'        => $meta_id
+              , 'value'          => $original_name
+            );
+
+            $this->set_metadatas($metas, true);
+        }
+
+        $sql = 'UPDATE record
             SET originalname = :originalname WHERE record_id = :record_id';
 
-    $params = array(
-      ':originalname' => $original_name
-      , ':record_id'    => $this->get_record_id()
-    );
-
-    $stmt = $this->get_databox()->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $stmt->closeCursor();
-
-    $this->delete_data_from_cache();
-
-    return $this;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_title($highlight = false, searchEngine_adapter $searchEngine = null, $removeExtension = null)
-  {
-    $title   = '';
-    $appbox  = appbox::get_instance(\bootstrap::getCore());
-    $session = $appbox->get_session();
-
-    $fields = $this->get_databox()->get_meta_structure();
-
-    $fields_to_retrieve = array();
-
-    foreach ($fields as $field)
-    {
-      if (in_array($field->get_thumbtitle(), array('1', $session->get_I18n())))
-      {
-        $fields_to_retrieve [] = $field->get_name();
-      }
-    }
-
-    if (count($fields_to_retrieve) > 0)
-    {
-      $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine);
-      $titles           = array();
-      foreach ($retrieved_fields as $key => $value)
-      {
-        if (trim($value['value'] === ''))
-          continue;
-        $titles[] = $value['value'];
-      }
-      $title    = trim(implode(' - ', $titles));
-    }
-
-    if (trim($title) === '')
-    {
-      $title = trim($this->get_original_name($removeExtension));
-    }
-
-    $title = $title != "" ? $title : "<i>" . _('reponses::document sans titre') . "</i>";
-
-    return $title;
-  }
-
-  /**
-   *
-   * @return media_subdef
-   */
-  public function get_preview()
-  {
-    return $this->get_subdef('preview');
-  }
-
-  /**
-   *
-   * @return boolean
-   */
-  public function has_preview()
-  {
-    try
-    {
-      $this->get_subdef('preview');
-
-      return $this->get_subdef('preview')->is_physically_present();
-    }
-    catch (Exception $e)
-    {
-      unset($e);
-    }
-
-    return false;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  public function get_serialize_key()
-  {
-    return $this->get_sbas_id() . '_' . $this->get_record_id();
-  }
-
-  /**
-   *
-   * @return int
-   */
-  public function get_sbas_id()
-  {
-    return $this->get_databox()->get_sbas_id();
-  }
-
-  /**
-   *
-   * @param string $name subdef name
-   * @param system_file $pathfile new file
-   * @return record_adapter
-   */
-  public function substitute_subdef($name, system_file $pathfile)
-  {
-    $newfilename = $this->record_id . '_0_' . $name
-      . '.' . $pathfile->get_extension();
-
-    $base_url = '';
-
-    $original_file = $subdef_def    = false;
-
-    if ($name == 'document')
-    {
-      $baseprefs = $this->get_databox()->get_sxml_structure();
-
-      $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
-
-      $filehd = $this->get_record_id() . "_document." . $pathfile->get_extension(true);
-      $pathhd = databox::dispatch($pathhd);
-
-      copy($pathfile->getPathname(), $pathhd . $filehd);
-
-      $system_file = new system_file($pathhd . $filehd);
-
-      $meta_writable = true;
-    }
-    else
-    {
-      $subdefs = $this->get_databox()->get_subdef_structure();
-
-      foreach ($subdefs as $type => $datas)
-      {
-        if ($this->get_type() != $type)
-          continue;
-
-        if (!isset($datas[$name]))
-          throw new Exception('No available subdef declaration for this type and name');
-
-        $subdef_def = $datas[$name];
-        break;
-      }
-
-      if (!$subdef_def)
-        throw new Exception('Unknown subdef name');
-
-      try
-      {
-        $value = $this->get_subdef($name);
-
-        if ($value->is_substituted())
-        {
-          throw new Exception('Cannot replace a substitution');
-        }
-
-        $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
-        unlink($original_file);
-      }
-      catch (Exception $e)
-      {
-        $path          = databox::dispatch($subdef_def->get_path());
-        system_file::mkdir($path);
-        $original_file = $path . $newfilename;
-      }
-
-      $path_file_dest = $original_file;
-
-      if (trim($subdef_def->get_baseurl()) !== '')
-      {
-        $base_url = str_replace(
-          array((string) $subdef_def->get_path(), $newfilename)
-          , array((string) $subdef_def->get_baseurl(), '')
-          , $path_file_dest
+        $params = array(
+          ':originalname' => $original_name
+          , ':record_id'    => $this->get_record_id()
         );
-      }
 
-      $registry = registry::get_instance();
+        $stmt = $this->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
 
-      $adapter = new binaryAdapter_image_resize($registry);
-      $adapter->execute($pathfile, $path_file_dest, $subdef_def->get_options());
+        $this->delete_data_from_cache();
 
-      $system_file = new system_file($path_file_dest);
-      $system_file->chmod();
-
-      $meta_writable = $subdef_def->meta_writeable();
+        return $this;
     }
 
-    try
+    /**
+     *
+     * @return string
+     */
+    public function get_title($highlight = false, searchEngine_adapter $searchEngine = null, $removeExtension = null)
     {
-      $appbox  = \appbox::get_instance(\bootstrap::getCore());
-      $session = $appbox->get_session();
+        $title   = '';
+        $appbox  = appbox::get_instance(\bootstrap::getCore());
+        $session = $appbox->get_session();
 
-      $connbas = connection::getPDOConnection($this->get_sbas_id());
+        $fields = $this->get_databox()->get_meta_structure();
 
-      $sql  = 'DELETE FROM subdef WHERE record_id= :record_id AND name=:name';
-      $stmt = $connbas->prepare($sql);
-      $stmt->execute(
-        array(
-          ':record_id' => $this->record_id
-          , ':name'      => $name
-        )
-      );
+        $fields_to_retrieve = array();
 
-      $image_size = $system_file->get_technical_datas();
-
-      $sql = 'INSERT INTO subdef
-                (record_id, name, baseurl, file, width,
-                  height, mime, path, size, substit)
-              VALUES
-                (:record_id, :name, :baseurl, :filename,
-                  :width, :height, :mime, :path, :filesize, "1")';
-
-      $stmt = $connbas->prepare($sql);
-
-      $stmt->execute(array(
-        ':record_id' => $this->record_id,
-        ':name'      => $name,
-        ':baseurl'   => $base_url,
-        ':filename'  => $system_file->getFilename(),
-        ':width'     => $image_size[system_file::TC_DATAS_WIDTH],
-        ':height'    => $image_size[system_file::TC_DATAS_HEIGHT],
-        ':mime'      => $system_file->get_mime(),
-        ':path'      => $system_file->getPath(),
-        ':filesize'  => $system_file->getSize()
-      ));
-
-      $sql  = 'UPDATE record SET moddate=NOW() WHERE record_id=:record_id';
-      $stmt = $connbas->prepare($sql);
-      $stmt->execute(array(':record_id' => $this->get_record_id()));
-      $stmt->closeCursor();
-
-
-      try
-      {
-        $subdef = $this->get_subdef($name);
-        $subdef->delete_data_from_cache();
-      }
-      catch (Exception $e)
-      {
-
-      }
-
-      $this->delete_data_from_cache(self::CACHE_SUBDEFS);
-
-
-      if ($meta_writable)
-      {
-        $this->write_metas();
-      }
-      if ($name == 'document')
-      {
-        $this->rebuild_subdefs();
-      }
-
-      $type = $name == 'document' ? 'HD' : $name;
-
-      $session->get_logger($this->get_databox())
-        ->log($this, Session_Logger::EVENT_SUBSTITUTE, $type, '');
-    }
-    catch (Exception $e)
-    {
-      unset($e);
-    }
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param DOMDocument $dom_doc
-   * @return record_adapter
-   */
-  protected function set_xml(DOMDocument $dom_doc)
-  {
-    $connbas = $this->get_databox()->get_connection();
-    $sql     = 'UPDATE record SET xml = :xml WHERE record_id= :record_id';
-    $stmt    = $connbas->prepare($sql);
-    $stmt->execute(
-      array(
-        ':xml'       => $dom_doc->saveXML(),
-        ':record_id' => $this->record_id
-      )
-    );
-
-    $this->reindex();
-
-    return $this;
-  }
-
-  /**
-   *
-   * @todo move this function to caption_record
-   * @param Array $params An array containing three keys : meta_struct_id (int), meta_id (int or null) and value (Array)
-   * @return record_adapter
-   */
-  protected function set_metadata(Array $params, databox $databox)
-  {
-    $mandatoryParams = array('meta_struct_id', 'meta_id', 'value');
-
-    foreach ($mandatoryParams as $param)
-    {
-      if (!array_key_exists($param, $params))
-      {
-        throw new Exception_InvalidArgument(sprintf('Invalid metadata, missing key %s', $param));
-      }
-    }
-
-    if (!is_scalar($params['value']))
-    {
-      throw new Exception('Metadata value should be scalar');
-    }
-
-    $databox_field = databox_field::get_instance($databox, $params['meta_struct_id']);
-
-    $caption_field = new caption_field($databox_field, $this);
-
-    $vocab    = $vocab_id = null;
-
-    if (isset($params['vocabularyId']) && $databox_field->getVocabularyControl())
-    {
-      try
-      {
-        $vocab    = $databox_field->getVocabularyControl();
-        $vocab_id = $params['vocabularyId'];
-        $vocab->validate($vocab_id);
-      }
-      catch (\Exception $e)
-      {
-        $vocab    = $vocab_id = null;
-      }
-    }
-
-
-    if (trim($params['meta_id']) !== '')
-    {
-      $tmp_val = trim($params['value']);
-
-      $caption_field_value = $caption_field->get_value($params['meta_id']);
-
-      if ($tmp_val === '')
-      {
-        $caption_field_value->delete();
-        unset($caption_field_value);
-      }
-      else
-      {
-        $caption_field_value->set_value($params['value']);
-        if ($vocab && $vocab_id)
+        foreach ($fields as $field)
         {
-          $caption_field_value->setVocab($vocab, $vocab_id);
+            if (in_array($field->get_thumbtitle(), array('1', $session->get_I18n())))
+            {
+                $fields_to_retrieve [] = $field->get_name();
+            }
         }
-      }
+
+        if (count($fields_to_retrieve) > 0)
+        {
+            $retrieved_fields = $this->get_caption()->get_highlight_fields($highlight, $fields_to_retrieve, $searchEngine);
+            $titles           = array();
+            foreach ($retrieved_fields as $key => $value)
+            {
+                if (trim($value['value'] === ''))
+                    continue;
+                $titles[] = $value['value'];
+            }
+            $title    = trim(implode(' - ', $titles));
+        }
+
+        if (trim($title) === '')
+        {
+            $title = trim($this->get_original_name($removeExtension));
+        }
+
+        $title = $title != "" ? $title : "<i>" . _('reponses::document sans titre') . "</i>";
+
+        return $title;
     }
-    else
+
+    /**
+     *
+     * @return media_subdef
+     */
+    public function get_preview()
     {
-      $caption_field_value = caption_Field_Value::create($databox_field, $this, $params['value'], $vocab, $vocab_id);
+        return $this->get_subdef('preview');
     }
 
-    $this->caption_record = null;
-
-    return $this;
-  }
-
-  /**
-   *
-   * @todo move this function to caption_record
-   * @param array $metadatas
-   * @return record_adapter
-   */
-  public function set_metadatas(Array $metadatas, $force_readonly = false)
-  {
-    foreach ($metadatas as $param)
+    /**
+     *
+     * @return boolean
+     */
+    public function has_preview()
     {
-      if (!is_array($param))
-      {
-        throw new Exception_InvalidArgument('Invalid metadatas argument');
-      }
+        try
+        {
+            $this->get_subdef('preview');
 
-      $db_field = \databox_field::get_instance($this->get_databox(), $param['meta_struct_id']);
+            return $this->get_subdef('preview')->is_physically_present();
+        }
+        catch (Exception $e)
+        {
+            unset($e);
+        }
 
-      if ($db_field->is_readonly() === true && !$force_readonly)
-      {
-        continue;
-      }
-
-      $this->set_metadata($param, $this->databox);
+        return false;
     }
 
-    $this->xml = null;
-    $this->caption_record = null;
+    /**
+     *
+     * @return string
+     */
+    public function get_serialize_key()
+    {
+        return $this->get_sbas_id() . '_' . $this->get_record_id();
+    }
 
-    $xml = new DOMDocument();
-    $xml->loadXML($this->get_caption()->serialize(\caption_record::SERIALIZE_XML, true));
+    /**
+     *
+     * @return int
+     */
+    public function get_sbas_id()
+    {
+        return $this->get_databox()->get_sbas_id();
+    }
 
-    $this->set_xml($xml);
-    $this->reindex();
+    /**
+     *
+     * @param string $name subdef name
+     * @param system_file $pathfile new file
+     * @return record_adapter
+     */
+    public function substitute_subdef($name, system_file $pathfile)
+    {
+        $newfilename = $this->record_id . '_0_' . $name
+          . '.' . $pathfile->get_extension();
 
-    unset($xml);
+        $base_url = '';
 
-    return $this;
-  }
+        $original_file = $subdef_def    = false;
 
-  /**
-   * Reindex the record
-   *
-   * @return record_adapter
-   */
-  public function reindex()
-  {
-    $connbas = connection::getPDOConnection($this->get_sbas_id());
-    $sql     = 'UPDATE record SET status=(status & ~7 | 4)
+        if ($name == 'document')
+        {
+            $baseprefs = $this->get_databox()->get_sxml_structure();
+
+            $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
+
+            $filehd = $this->get_record_id() . "_document." . $pathfile->get_extension(true);
+            $pathhd = databox::dispatch($pathhd);
+
+            copy($pathfile->getPathname(), $pathhd . $filehd);
+
+            $system_file = new system_file($pathhd . $filehd);
+
+            $meta_writable = true;
+        }
+        else
+        {
+            $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($this->get_type(), $name);
+
+            if ($this->has_subdef($name) && ! $this->get_subdef($name)->is_substituted())
+            {
+                $value         = $this->get_subdef($name);
+                $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
+                unlink($original_file);
+                $this->clearSubdefCache($name);
+            }
+            else
+            {
+                $path          = databox::dispatch($subdef_def->get_path());
+                system_file::mkdir($path);
+                $original_file = $path . $newfilename;
+            }
+
+            $path_file_dest = $original_file;
+
+            if (trim($subdef_def->get_baseurl()) !== '')
+            {
+                $base_url = str_replace(
+                  array($subdef_def->get_path(), $newfilename)
+                  , array($subdef_def->get_baseurl(), '')
+                  , $path_file_dest
+                );
+            }
+
+            try
+            {
+                $Core = \bootstrap::getCore();
+                $Core['media-alchemyst']->open($pathfile->getPathname())
+                  ->turnInto($path_file_dest, $subdef_def->getSpecs())
+                  ->close();
+            }
+            catch (\MediaAlchemyst\Exception\Exception $e)
+            {
+                return $this;
+            }
+
+            $system_file = new system_file($path_file_dest);
+            $system_file->chmod();
+
+            $meta_writable = $subdef_def->meta_writeable();
+        }
+
+        try
+        {
+            $appbox  = \appbox::get_instance(\bootstrap::getCore());
+            $session = $appbox->get_session();
+
+            $connbas = connection::getPDOConnection($this->get_sbas_id());
+
+            $image_size = $system_file->get_technical_datas();
+
+            $sql = 'UPDATE subdef
+                SET baseurl = :baseurl,
+                    file = :filename,
+                    width = :width,
+                    height = :height,
+                    mime = :mime,
+                    path = :path,
+                    size = :size,
+                    substit = 1
+                WHERE name = :name AND record_id = :record_id';
+
+            $stmt = $connbas->prepare($sql);
+
+            $stmt->execute(array(
+              ':record_id' => $this->record_id,
+              ':name'      => $name,
+              ':baseurl'   => $base_url,
+              ':filename'  => $system_file->getFilename(),
+              ':width'     => $image_size[system_file::TC_DATAS_WIDTH],
+              ':height'    => $image_size[system_file::TC_DATAS_HEIGHT],
+              ':mime'      => $system_file->get_mime(),
+              ':path'      => $system_file->getPath(),
+              ':filesize'  => $system_file->getSize()
+            ));
+
+            $subdef = $this->get_subdef($name);
+            $subdef->delete_data_from_cache();
+
+            $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+
+            if ($meta_writable)
+            {
+                $this->write_metas();
+            }
+            if ($name == 'document')
+            {
+                $this->rebuild_subdefs();
+            }
+
+            $type = $name == 'document' ? 'HD' : $name;
+
+            $session->get_logger($this->get_databox())
+              ->log($this, Session_Logger::EVENT_SUBSTITUTE, $type, '');
+        }
+        catch (Exception $e)
+        {
+            
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param DOMDocument $dom_doc
+     * @return record_adapter
+     */
+    protected function set_xml(DOMDocument $dom_doc)
+    {
+        $connbas = $this->get_databox()->get_connection();
+        $sql     = 'UPDATE record SET xml = :xml WHERE record_id= :record_id';
+        $stmt    = $connbas->prepare($sql);
+        $stmt->execute(
+          array(
+            ':xml'       => $dom_doc->saveXML(),
+            ':record_id' => $this->record_id
+          )
+        );
+
+        $this->reindex();
+
+        return $this;
+    }
+
+    /**
+     *
+     * @todo move this function to caption_record
+     * @param Array $params An array containing three keys : meta_struct_id (int), meta_id (int or null) and value (Array)
+     * @return record_adapter
+     */
+    protected function set_metadata(Array $params, databox $databox)
+    {
+        $mandatoryParams = array('meta_struct_id', 'meta_id', 'value');
+
+        foreach ($mandatoryParams as $param)
+        {
+            if ( ! array_key_exists($param, $params))
+            {
+                throw new Exception_InvalidArgument(sprintf('Invalid metadata, missing key %s', $param));
+            }
+        }
+
+        if ( ! is_scalar($params['value']))
+        {
+            throw new Exception('Metadata value should be scalar');
+        }
+
+        $databox_field = databox_field::get_instance($databox, $params['meta_struct_id']);
+
+        $caption_field = new caption_field($databox_field, $this);
+
+        $vocab    = $vocab_id = null;
+
+        if (isset($params['vocabularyId']) && $databox_field->getVocabularyControl())
+        {
+            try
+            {
+                $vocab    = $databox_field->getVocabularyControl();
+                $vocab_id = $params['vocabularyId'];
+                $vocab->validate($vocab_id);
+            }
+            catch (\Exception $e)
+            {
+                $vocab    = $vocab_id = null;
+            }
+        }
+
+
+        if (trim($params['meta_id']) !== '')
+        {
+            $tmp_val = trim($params['value']);
+
+            $caption_field_value = $caption_field->get_value($params['meta_id']);
+
+            if ($tmp_val === '')
+            {
+                $caption_field_value->delete();
+                unset($caption_field_value);
+            }
+            else
+            {
+                $caption_field_value->set_value($params['value']);
+                if ($vocab && $vocab_id)
+                {
+                    $caption_field_value->setVocab($vocab, $vocab_id);
+                }
+            }
+        }
+        else
+        {
+            $caption_field_value = caption_Field_Value::create($databox_field, $this, $params['value'], $vocab, $vocab_id);
+        }
+
+        $this->caption_record = null;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @todo move this function to caption_record
+     * @param array $metadatas
+     * @return record_adapter
+     */
+    public function set_metadatas(Array $metadatas, $force_readonly = false)
+    {
+        foreach ($metadatas as $param)
+        {
+            if ( ! is_array($param))
+            {
+                throw new Exception_InvalidArgument('Invalid metadatas argument');
+            }
+
+            $db_field = \databox_field::get_instance($this->get_databox(), $param['meta_struct_id']);
+
+            if ($db_field->is_readonly() === true && ! $force_readonly)
+            {
+                continue;
+            }
+
+            $this->set_metadata($param, $this->databox);
+        }
+
+        $this->xml = null;
+        $this->caption_record = null;
+
+        $xml = new DOMDocument();
+        $xml->loadXML($this->get_caption()->serialize(\caption_record::SERIALIZE_XML, true));
+
+        $this->set_xml($xml);
+        $this->reindex();
+
+        unset($xml);
+
+        return $this;
+    }
+
+    /**
+     * Reindex the record
+     *
+     * @return record_adapter
+     */
+    public function reindex()
+    {
+        $connbas = connection::getPDOConnection($this->get_sbas_id());
+        $sql     = 'UPDATE record SET status=(status & ~7 | 4)
             WHERE record_id= :record_id';
-    $stmt    = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->record_id));
-    $this->delete_data_from_cache(self::CACHE_STATUS);
+        $stmt    = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->record_id));
+        $this->delete_data_from_cache(self::CACHE_STATUS);
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @return record_adapter
-   */
-  public function rebuild_subdefs()
-  {
-    $connbas = connection::getPDOConnection($this->get_sbas_id());
-    $sql     = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
-    $stmt    = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
+    /**
+     *
+     * @return record_adapter
+     */
+    public function rebuild_subdefs()
+    {
+        $connbas = connection::getPDOConnection($this->get_sbas_id());
+        $sql     = 'UPDATE record SET jeton=(jeton | ' . JETON_MAKE_SUBDEF . ') WHERE record_id = :record_id';
+        $stmt    = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @return record_adapter
-   */
-  public function write_metas()
-  {
-    $connbas = connection::getPDOConnection($this->get_sbas_id());
-    $sql     = 'UPDATE record
+    /**
+     *
+     * @return record_adapter
+     */
+    public function write_metas()
+    {
+        $connbas = connection::getPDOConnection($this->get_sbas_id());
+        $sql     = 'UPDATE record
             SET jeton = ' . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF) . '
             WHERE record_id= :record_id';
-    $stmt    = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->record_id));
+        $stmt    = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->record_id));
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @param string $status
-   * @return record_adapter
-   */
-  public function set_binary_status($status)
-  {
-    $connbas = connection::getPDOConnection($this->get_sbas_id());
+    /**
+     *
+     * @param string $status
+     * @return record_adapter
+     */
+    public function set_binary_status($status)
+    {
+        $connbas = connection::getPDOConnection($this->get_sbas_id());
 
-    $registry = registry::get_instance();
-    $sql      = 'UPDATE record SET status = 0b' . $status . '
+        $registry = registry::get_instance();
+        $sql      = 'UPDATE record SET status = 0b' . $status . '
             WHERE record_id= :record_id';
-    $stmt     = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->record_id));
+        $stmt     = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->record_id));
 
-    $sql  = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';
-    $stmt = $connbas->prepare($sql);
+        $sql  = 'REPLACE INTO status (id, record_id, name, value) VALUES (null, :record_id, :name, :value)';
+        $stmt = $connbas->prepare($sql);
 
-    $status = strrev($status);
-    for ($i      = 4; $i < strlen($status); $i++)
-    {
-      $stmt->execute(array(
-        ':record_id' => $this->get_record_id(),
-        ':name'      => $i,
-        ':value'     => $status[$i]
-      ));
-    }
-    $stmt->closeCursor();
+        $status = strrev($status);
+        for ($i      = 4; $i < strlen($status); $i ++ )
+        {
+            $stmt->execute(array(
+              ':record_id' => $this->get_record_id(),
+              ':name'      => $i,
+              ':value'     => $status[$i]
+            ));
+        }
+        $stmt->closeCursor();
 
-    try
-    {
-      $sphinx = sphinxrt::get_instance($registry);
+        try
+        {
+            $sphinx = sphinxrt::get_instance($registry);
 
-      $sbas_params = phrasea::sbas_params();
-      $sbas_id     = $this->get_sbas_id();
-      if (isset($sbas_params[$sbas_id]))
-      {
-        $params   = $sbas_params[$sbas_id];
-        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
-        $sphinx->update_status(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc), $this->get_sbas_id(), $this->get_record_id(), strrev($status));
-      }
-    }
-    catch (Exception $e)
-    {
+            $sbas_params = phrasea::sbas_params();
+            $sbas_id     = $this->get_sbas_id();
+            if (isset($sbas_params[$sbas_id]))
+            {
+                $params   = $sbas_params[$sbas_id];
+                $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
+                $sphinx->update_status(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc), $this->get_sbas_id(), $this->get_record_id(), strrev($status));
+            }
+        }
+        catch (Exception $e)
+        {
 
-    }
-    $this->delete_data_from_cache(self::CACHE_STATUS);
+        }
+        $this->delete_data_from_cache(self::CACHE_STATUS);
 
 
-    return $this;
-  }
-
-  /**
-   *
-   * @param collection $collection
-   * @param system_file $system_file
-   * @param string $original_name
-   * @param boolean $is_grouping
-   * @return record_adapter
-   */
-  public static function create(collection $collection, system_file &$system_file, $original_name = false, $is_grouping = false)
-  {
-    $type = $system_file->get_phrasea_type();
-
-    if ($is_grouping)
-    {
-      $uuid   = uuid::generate_v4();
-      $sha256 = null;
-    }
-    else
-    {
-      $uuid = $system_file->read_uuid();
-      if (!uuid::is_valid($uuid))
-      {
-        $uuid   = uuid::generate_v4();
-      }
-      $sha256 = $system_file->get_sha256();
+        return $this;
     }
 
-    if (!$original_name)
-      $original_name = $system_file->getFilename();
+    /**
+     *
+     * @param collection $collection
+     * @param system_file $system_file
+     * @param string $original_name
+     * @param boolean $is_grouping
+     * @return record_adapter
+     */
+    public static function create(collection $collection, system_file &$system_file, $original_name = false, $is_grouping = false)
+    {
+        $type = $system_file->get_phrasea_type();
 
-    $databox = $collection->get_databox();
-    $sbas_id = $databox->get_sbas_id();
-    $coll_id = $collection->get_coll_id();
+        if ($is_grouping)
+        {
+            $uuid   = uuid::generate_v4();
+            $sha256 = null;
+        }
+        else
+        {
+            $uuid = $system_file->read_uuid();
+            if ( ! uuid::is_valid($uuid))
+            {
+                $uuid   = uuid::generate_v4();
+            }
+            $sha256 = $system_file->get_sha256();
+        }
 
-    $connbas = $databox->get_connection();
+        if ( ! $original_name)
+        {
+            $original_name = $system_file->getFilename();
+        }
 
-    $sql = 'INSERT INTO record
+        $databox = $collection->get_databox();
+        $sbas_id = $databox->get_sbas_id();
+        $coll_id = $collection->get_coll_id();
+
+        $connbas = $databox->get_connection();
+
+        $sql = 'INSERT INTO record
               (coll_id, record_id, parent_record_id, moddate, credate
                 , jeton, type, sha256, uuid, originalname, mime)
             VALUES
@@ -1381,561 +1366,645 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               , ' . JETON_MAKE_SUBDEF . ' , :type, :sha256, :uuid
               , :originalname, :mime)';
 
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(
-      ':coll_id'          => $coll_id
-      , ':parent_record_id' => ($is_grouping ? 1 : 0)
-      , ':type'             => $type
-      , ':sha256'           => $sha256
-      , ':uuid'             => $uuid
-      , ':originalname'     => $original_name
-      , ':mime'             => $system_file->get_mime()
-    ));
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(
+          ':coll_id'          => $coll_id
+          , ':parent_record_id' => ($is_grouping ? 1 : 0)
+          , ':type'             => $type
+          , ':sha256'           => $sha256
+          , ':uuid'             => $uuid
+          , ':originalname'     => $original_name
+          , ':mime'             => $system_file->get_mime()
+        ));
 
-    $record_id = $connbas->lastInsertId();
-    $record    = new self($sbas_id, $record_id);
+        $record_id = $connbas->lastInsertId();
+        $record    = new self($sbas_id, $record_id);
 
-    try
-    {
-      $appbox  = appbox::get_instance(\bootstrap::getCore());
-      $session = $appbox->get_session();
-      $log_id  = $session->get_logger($databox)->get_id();
+        try
+        {
+            $appbox  = appbox::get_instance(\bootstrap::getCore());
+            $session = $appbox->get_session();
+            $log_id  = $session->get_logger($databox)->get_id();
 
-      $sql  = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)
+            $sql  = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)
             VALUES (null, :log_id, now(),
               :record_id, "add", :coll_id,"")';
-      $stmt = $connbas->prepare($sql);
-      $stmt->execute(array(
-        ':log_id'    => $log_id,
-        ':record_id' => $record_id,
-        ':coll_id'   => $coll_id
-      ));
-      $stmt->closeCursor();
-    }
-    catch (Exception $e)
-    {
-      unset($e);
-    }
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute(array(
+              ':log_id'    => $log_id,
+              ':record_id' => $record_id,
+              ':coll_id'   => $coll_id
+            ));
+            $stmt->closeCursor();
+        }
+        catch (Exception $e)
+        {
+            unset($e);
+        }
 
-    $pathhd = trim($databox->get_sxml_structure()->path);
-    $pathhd = databox::dispatch($pathhd);
+        $pathhd = trim($databox->get_sxml_structure()->path);
+        $pathhd = databox::dispatch($pathhd);
 
-    system_file::mkdir($pathhd);
+        system_file::mkdir($pathhd);
 
-    $newname = $record->get_record_id() . "_document." . $system_file->get_extension();
-    if (!copy($system_file->getPathname(), $pathhd . $newname))
-    {
-      throw new Exception('Unable to write file');
-    }
+        $newname = $record->get_record_id() . "_document." . $system_file->get_extension();
+        if ( ! copy($system_file->getPathname(), $pathhd . $newname))
+        {
+            throw new Exception('Unable to write file');
+        }
 
-    $system_file2 = new system_file($pathhd . $newname);
-    $system_file2->write_uuid($uuid);
+        $system_file2 = new system_file($pathhd . $newname);
+        $system_file2->write_uuid($uuid);
 
-    media_subdef::create($record, 'document', $system_file2);
+        media_subdef::create($record, 'document', $system_file2);
 
-    $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
+        $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
 
-    $tc_datas = $system_file->get_technical_datas();
+        $tc_datas = $system_file->get_technical_datas();
 
-    $sql  = 'REPLACE INTO technical_datas (id, record_id, name, value)
+        $sql  = 'REPLACE INTO technical_datas (id, record_id, name, value)
         VALUES (null, :record_id, :name, :value)';
-    $stmt = $connbas->prepare($sql);
+        $stmt = $connbas->prepare($sql);
 
-    foreach ($tc_datas as $name => $value)
-    {
-      if (is_null($value))
-        continue;
+        foreach ($tc_datas as $name => $value)
+        {
+            if (is_null($value))
+                continue;
 
-      $stmt->execute(array(
-        ':record_id' => $record_id
-        , ':name'      => $name
-        , ':value'     => $value
-      ));
+            $stmt->execute(array(
+              ':record_id' => $record_id
+              , ':name'      => $name
+              , ':value'     => $value
+            ));
+        }
+
+        $stmt->closeCursor();
+
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $data_field)
+        {
+            if ($data_field->get_metadata_source() != metadata_description_PHRASEANET_tfrecordid::get_source())
+            {
+
+                continue;
+            }
+
+            /**
+             * Replacing record_id in multi values is non sense
+             */
+            if ( ! $data_field->is_multi())
+            {
+                continue;
+            }
+
+            try
+            {
+                $field   = $record->get_caption()->get_field($data_field->get_name())->get_meta_id();
+                $value   = array_pop($field->get_values());
+                $meta_id = $value->getId();
+            }
+            catch (\Exception $e)
+            {
+                $meta_id = null;
+            }
+
+            $metas = array(
+              array(
+                'meta_struct_id' => $data_field->get_id()
+                , 'meta_id'        => $meta_id
+                , 'value'          => array($record->get_record_id())
+              )
+            );
+
+            $record->set_metadatas($metas, true);
+        }
+
+
+        return $record;
     }
 
-    $stmt->closeCursor();
-
-    foreach ($record->get_databox()->get_meta_structure()->get_elements() as $data_field)
+    /**
+     *
+     * @param int $base_id
+     * @param int $record_id
+     * @param string $sha256
+     * @return record_adapter
+     */
+    public static function get_record_by_sha($sbas_id, $sha256, $record_id = null)
     {
-      if ($data_field->get_metadata_source() != metadata_description_PHRASEANET_tfrecordid::get_source())
-      {
+        $conn = connection::getPDOConnection($sbas_id);
 
-        continue;
-      }
-
-      /**
-       * Replacing record_id in multi values is non sense
-       */
-      if (!$data_field->is_multi())
-      {
-        continue;
-      }
-
-      try
-      {
-        $field   = $record->get_caption()->get_field($data_field->get_name())->get_meta_id();
-        $value   = array_pop($field->get_values());
-        $meta_id = $value->getId();
-      }
-      catch (\Exception $e)
-      {
-        $meta_id = null;
-      }
-
-      $metas = array(
-        array(
-          'meta_struct_id' => $data_field->get_id()
-          , 'meta_id'        => $meta_id
-          , 'value'          => array($record->get_record_id())
-        )
-      );
-
-      $record->set_metadatas($metas, true);
-    }
-
-
-    return $record;
-  }
-
-  /**
-   *
-   * @param int $base_id
-   * @param int $record_id
-   * @param string $sha256
-   * @return record_adapter
-   */
-  public static function get_record_by_sha($sbas_id, $sha256, $record_id = null)
-  {
-    $conn = connection::getPDOConnection($sbas_id);
-
-    $sql = "SELECT record_id
+        $sql = "SELECT record_id
             FROM record r
             WHERE sha256 IS NOT NULL
               AND sha256 = :sha256";
 
-    $params = array(':sha256' => $sha256);
+        $params = array(':sha256' => $sha256);
 
-    if (!is_null($record_id))
-    {
-      $sql .= ' AND record_id = :record_id';
-      $params[':record_id'] = $record_id;
-    }
+        if ( ! is_null($record_id))
+        {
+            $sql .= ' AND record_id = :record_id';
+            $params[':record_id'] = $record_id;
+        }
 
-    $stmt = $conn->prepare($sql);
-    $stmt->execute($params);
-    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute($params);
+        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-    $records = array();
+        $records = array();
 
-    foreach ($rs as $row)
-    {
-      $k           = count($records);
-      $records[$k] = new record_adapter($sbas_id, $row['record_id']);
-    }
-
-    return $records;
-  }
-
-  /**
-   *
-   * @return system_file
-   */
-  public function get_hd_file()
-  {
-    $hd = $this->get_subdef('document');
-
-    if ($hd->is_physically_present())
-    {
-      return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
-    }
-
-    return null;
-  }
-
-  /**
-   *
-   * @return Array : list of deleted files;
-   */
-  public function delete()
-  {
-    $connbas  = $this->get_databox()->get_connection();
-    $sbas_id  = $this->get_databox()->get_sbas_id();
-    $appbox   = appbox::get_instance(\bootstrap::getCore());
-    $registry = $appbox->get_registry();
-    $conn     = $appbox->get_connection();
-
-    $ftodel = array();
-    foreach ($this->get_subdefs() as $subdef)
-    {
-      if (!$subdef->is_physically_present())
-        continue;
-
-      $ftodel[]  = $subdef->get_pathfile();
-      $watermark = $subdef->get_path() . 'watermark_' . $subdef->get_file();
-      if (file_exists($watermark))
-        $ftodel[]  = $watermark;
-      $stamp     = $subdef->get_path() . 'stamp_' . $subdef->get_file();
-      if (file_exists($stamp))
-        $ftodel[]  = $stamp;
-    }
-
-    $origcoll = phrasea::collFromBas($this->get_base_id());
-
-    $xml = $this->get_caption()->serialize(\caption_record::SERIALIZE_XML);
-
-    $appbox->get_session()->get_logger($this->get_databox())
-      ->log($this, Session_Logger::EVENT_DELETE, $origcoll, $xml);
-
-    $sql  = "DELETE FROM record WHERE record_id = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
-
-
-    $sql  = 'SELECT id FROM metadatas WHERE record_id = :record_id';
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $rs          = $stmt->fetchAll();
-    $stmt->closeCursor();
-
-    try
-    {
-      $sphinx_rt = sphinxrt::get_instance($registry);
-
-      $sbas_params = phrasea::sbas_params();
-
-      if (isset($sbas_params[$sbas_id]))
-      {
-        $params   = $sbas_params[$sbas_id];
-        $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
         foreach ($rs as $row)
         {
-          $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr"), "metas_realtime" . $sbas_crc, $row['id']);
+            $k           = count($records);
+            $records[$k] = new record_adapter($sbas_id, $row['record_id']);
         }
-        $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->get_record_id());
-      }
+
+        return $records;
     }
-    catch (Exception $e)
+
+    /**
+     *
+     * @return system_file
+     */
+    public function get_hd_file()
     {
-      unset($e);
+        $hd = $this->get_subdef('document');
+
+        if ($hd->is_physically_present())
+        {
+            return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
+        }
+
+        return null;
     }
 
-    $sql  = "DELETE FROM metadatas WHERE record_id = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+    /**
+     *
+     * @return Array : list of deleted files;
+     */
+    public function delete()
+    {
+        $connbas  = $this->get_databox()->get_connection();
+        $sbas_id  = $this->get_databox()->get_sbas_id();
+        $appbox   = appbox::get_instance(\bootstrap::getCore());
+        $registry = $appbox->get_registry();
+        $conn     = $appbox->get_connection();
 
-    $sql  = "DELETE FROM prop WHERE record_id = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $ftodel = array();
+        foreach ($this->get_subdefs() as $subdef)
+        {
+            if ( ! $subdef->is_physically_present())
+                continue;
 
-    $sql  = "DELETE FROM idx WHERE record_id = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+            $ftodel[]  = $subdef->get_pathfile();
+            $watermark = $subdef->get_path() . 'watermark_' . $subdef->get_file();
+            if (file_exists($watermark))
+                $ftodel[]  = $watermark;
+            $stamp     = $subdef->get_path() . 'stamp_' . $subdef->get_file();
+            if (file_exists($stamp))
+                $ftodel[]  = $stamp;
+        }
 
-    $sql  = "DELETE FROM permalinks
+        $origcoll = phrasea::collFromBas($this->get_base_id());
+
+        $xml = $this->get_caption()->serialize(\caption_record::SERIALIZE_XML);
+
+        $appbox->get_session()->get_logger($this->get_databox())
+          ->log($this, Session_Logger::EVENT_DELETE, $origcoll, $xml);
+
+        $sql  = "DELETE FROM record WHERE record_id = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+
+        $sql  = 'SELECT id FROM metadatas WHERE record_id = :record_id';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $rs          = $stmt->fetchAll();
+        $stmt->closeCursor();
+
+        try
+        {
+            $sphinx_rt = sphinxrt::get_instance($registry);
+
+            $sbas_params = phrasea::sbas_params();
+
+            if (isset($sbas_params[$sbas_id]))
+            {
+                $params   = $sbas_params[$sbas_id];
+                $sbas_crc = crc32(str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname'])));
+                foreach ($rs as $row)
+                {
+                    $sphinx_rt->delete(array("metadatas" . $sbas_crc, "metadatas" . $sbas_crc . "_stemmed_en", "metadatas" . $sbas_crc . "_stemmed_fr"), "metas_realtime" . $sbas_crc, $row['id']);
+                }
+                $sphinx_rt->delete(array("documents" . $sbas_crc, "documents" . $sbas_crc . "_stemmed_fr", "documents" . $sbas_crc . "_stemmed_en"), "docs_realtime" . $sbas_crc, $this->get_record_id());
+            }
+        }
+        catch (Exception $e)
+        {
+            unset($e);
+        }
+
+        $sql  = "DELETE FROM metadatas WHERE record_id = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+        $sql  = "DELETE FROM prop WHERE record_id = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+        $sql  = "DELETE FROM idx WHERE record_id = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+        $sql  = "DELETE FROM permalinks
             WHERE subdef_id
               IN (SELECT subdef_id FROM subdef WHERE record_id=:record_id)";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
 
-    $sql  = "DELETE FROM subdef WHERE record_id = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $sql  = "DELETE FROM subdef WHERE record_id = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
 
-    $sql  = "DELETE FROM technical_datas WHERE record_id = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $sql  = "DELETE FROM technical_datas WHERE record_id = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
 
-    $sql  = "DELETE FROM thit WHERE record_id = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $sql  = "DELETE FROM thit WHERE record_id = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
 
-    $sql  = "DELETE FROM regroup WHERE rid_parent = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $sql  = "DELETE FROM regroup WHERE rid_parent = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
 
-    $sql  = "DELETE FROM regroup WHERE rid_child = :record_id";
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $sql  = "DELETE FROM regroup WHERE rid_child = :record_id";
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
 
-    $em = bootstrap::getCore()->getEntityManager();
+        $em = bootstrap::getCore()->getEntityManager();
 
-    $repository = $em->getRepository('\Entities\BasketElement');
+        $repository = $em->getRepository('\Entities\BasketElement');
 
-    /* @var $repository \Repositories\BasketElementRepository */
-    foreach ($repository->findElementsByRecord($this) as $basket_element)
-    {
-      $em->remove($basket_element);
-    }
-
-    $em->flush();
-
-    foreach ($ftodel as $f)
-      @unlink($f);
-
-    $this->delete_data_from_cache(self::CACHE_SUBDEFS);
-
-    return array_keys($ftodel);
-  }
-
-  /**
-   *
-   * @param string $option optionnal cache name
-   * @return string
-   */
-  public function get_cache_key($option = null)
-  {
-    return 'record_' . $this->get_serialize_key() . ($option ? '_' . $option : '');
-  }
-
-  /**
-   *
-   * @param databox $databox
-   */
-  public function generate_subdefs(databox $databox, Array $wanted_subdefs = null, $log_details = false)
-  {
-    $available_subdefs = $databox->get_subdef_structure();
-
-    $subdefs = array();
-
-    foreach ($available_subdefs as $groupname => $subdefgroup)
-    {
-      if ($this->get_type() == $groupname)
-      {
-        $subdefs = $subdefgroup;
-        break;
-      }
-    }
-
-    if (count($subdefs) == 0)
-    {
-      if ($log_details)
-        echo 'Aucune sous definition a faire pour ' . $this->get_type() . "\n";
-    }
-
-    $subdef_class   = 'databox_subdef' . ucfirst($this->get_type());
-    $record_subdefs = $this->get_subdefs();
-
-    foreach ($subdefs as $subdef)
-    {
-      $subdefname = $subdef->get_name();
-
-      if (is_array($wanted_subdefs) && !in_array($subdefname, $wanted_subdefs))
-      {
-        continue;
-      }
-      $pathdest = false;
-
-      if (isset($record_subdefs[$subdefname]) && $record_subdefs[$subdefname]->is_physically_present())
-      {
-        $pathdest = $record_subdefs[$subdefname]->get_pathfile();
-        if (!is_file($pathdest))
-          $pathdest = false;
-      }
-      try
-      {
-        $this->generate_subdef($subdef, $pathdest);
-      }
-      catch (\Exception $e)
-      {
-        if ($log_details)
-          echo $e->getMessage() . "\n";
-      }
-
-      if (array_key_exists($subdefname, $record_subdefs))
-      {
-        $record_subdefs[$subdefname]->delete_data_from_cache();
-      }
-
-      try
-      {
-        $subdef = $this->get_subdef($subdefname);
-        if ($subdef instanceof media_subdef)
+        /* @var $repository \Repositories\BasketElementRepository */
+        foreach ($repository->findElementsByRecord($this) as $basket_element)
         {
-          $permalink = $subdef->get_permalink();
-          if ($permalink instanceof media_Permalink_Adapter)
-            $permalink->delete_data_from_cache();
+            $em->remove($basket_element);
         }
-      }
-      catch (Exception $e)
-      {
 
-      }
-      $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+        $em->flush();
+
+        foreach ($ftodel as $f)
+            @unlink($f);
+
+        $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+
+        return array_keys($ftodel);
     }
 
-    return $this;
-  }
-
-  /**
-   *
-   * @todo move to media_subdef class
-   * @param databox_subdefInterface $subdef_class
-   * @param string $pathdest
-   */
-  protected function generate_subdef(databox_subdefInterface $subdef_class, $pathdest)
-  {
-    $registry  = registry::get_instance();
-    $generated = $subdef_class->generate($this, $pathdest, $registry);
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param string $option optionnal cache name
-   * @return mixed
-   */
-  public function get_data_from_cache($option = null)
-  {
-    $databox = $this->get_databox();
-
-    return $databox->get_data_from_cache($this->get_cache_key($option));
-  }
-
-  public function set_data_to_cache($value, $option = null, $duration = 0)
-  {
-    $databox = $this->get_databox();
-
-    return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
-  }
-
-  public function delete_data_from_cache($option = null)
-  {
-    switch ($option)
+    /**
+     *
+     * @param string $option optionnal cache name
+     * @return string
+     */
+    public function get_cache_key($option = null)
     {
-      case self::CACHE_STATUS:
-        $this->status = null;
-        break;
-      case self::CACHE_SUBDEFS:
-        $this->subdefs = null;
-        break;
-      default:
-        break;
+        return 'record_' . $this->get_serialize_key() . ($option ? '_' . $option : '');
     }
-    $databox = $this->get_databox();
 
-    \cache_databox::update($this->get_sbas_id(), 'record', $this->get_record_id());
+    /**
+     *
+     * @param databox $databox
+     */
+    public function generate_subdefs(databox $databox, Array $wanted_subdefs = null)
+    {
+        $subdefs = $databox->get_subdef_structure()->getSubdefGroup($this->get_type());
 
-    return $databox->delete_data_from_cache($this->get_cache_key($option));
-  }
+        $Core = bootstrap::getCore();
 
-  public function log_view($log_id, $referrer, $gv_sit)
-  {
-    $connbas = connection::getPDOConnection($this->get_sbas_id());
+        if ( ! $subdefs)
+        {
+            $Core['monolog']->addInfo(sprintf('Nothing to do for %s', $this->get_type()));
+            return;
+        }
 
-    $sql = 'INSERT INTO log_view (id, log_id, date, record_id, referrer, site_id)
+        foreach ($subdefs as $subdef)
+        {
+            $subdefname = $subdef->get_name();
+
+
+            if ($wanted_subdefs && ! in_array($subdefname, $wanted_subdefs))
+            {
+                continue;
+            }
+
+            $pathdest = null;
+
+            if ($this->has_subdef($subdefname) && $this->get_subdef($subdefname)->is_physically_present())
+            {
+                $pathdest = $this->get_subdef($subdefname)->get_pathfile();
+
+                if ( ! is_file($pathdest) && is_writeable($pathdest))
+                {
+                    unlink($pathdest);
+
+                    $this->clearSubdefCache($subdefname);
+                }
+            }
+
+            $pathdest = $this->generateSubdefPathname($subdef, $pathdest);
+
+            $this->generate_subdef($subdef, $pathdest);
+
+            if (file_exists($pathdest))
+            {
+                $baseurl = $subdef->get_baseurl() ? $subdef->get_baseurl() . substr(dirname($pathdest), strlen($subdef->get_path()) + 1) : '';
+
+                media_subdef::create($this, $subdef->get_name(), new system_file($pathdest), $baseurl);
+            }
+
+            $this->clearSubdefCache($subdefname);
+        }
+
+        return $this;
+    }
+
+    protected function clearSubdefCache($subdefname)
+    {
+        if ($this->has_subdef($subdefname))
+        {
+            $this->get_subdef($subdefname)->delete_data_from_cache();
+
+            $permalink = $this->get_subdef($subdefname)->get_permalink();
+
+            if ($permalink instanceof media_Permalink_Adapter)
+            {
+                $permalink->delete_data_from_cache();
+            }
+        }
+
+        $this->delete_data_from_cache(self::CACHE_SUBDEFS);
+    }
+
+    /**
+     *
+     * @todo move to media_subdef class
+     * @param databox_subdef $subdef_class
+     * @param string $pathdest
+     */
+    protected function generate_subdef(databox_subdef $subdef_class, $pathdest)
+    {
+        $Core = \bootstrap::getCore();
+
+        try
+        {
+            $Core['media-alchemyst']->open($this->get_hd_file()->getPathname());
+            $Core['media-alchemyst']->turnInto($pathdest, $subdef_class->getSpecs());
+            $Core['media-alchemyst']->close();
+        }
+        catch (\MediaAlchemyst\Exception\Exception $e)
+        {
+            $Core['monolog']->addError(sprintf('Subdef generation failed with message %s', $e->getMessage()));
+        }
+
+        return $this;
+    }
+
+    protected function generateSubdefPathname(databox_subdef $subdef, $oldVersion = null)
+    {
+        if ($oldVersion)
+        {
+            $pathdest = p4string::addEndSlash(pathinfo($oldVersion, PATHINFO_DIRNAME));
+        }
+        else
+        {
+            $pathdest = databox::dispatch($subdef->get_path());
+        }
+
+        return $pathdest . $this->get_record_id() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
+    }
+
+    protected function getExtensionFromSpec(MediaAlchemyst\Specification\Specification $spec)
+    {
+        $extension = null;
+
+        switch (true)
+        {
+            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_IMAGE:
+                $extension = 'jpg';
+                break;
+            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_ANIMATION:
+                $extension = 'gif';
+                break;
+            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_AUDIO:
+                $extension = $this->getExtensionFromAudioCodec($spec->getAudioCodec());
+                break;
+            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_VIDEO:
+                $extension = $this->getExtensionFromVideoCodec($spec->getVideoCodec());
+                break;
+            case $spec->getType() === MediaAlchemyst\Specification\Specification::TYPE_SWF:
+                $extension = 'swf';
+                break;
+        }
+
+        return $extension;
+    }
+
+    protected function getExtensionFromAudioCodec($audioCodec)
+    {
+        $extension = null;
+
+        switch ($audioCodec)
+        {
+            case 'flac':
+                $extension = 'flac';
+                break;
+            case 'libmp3lame':
+                $extension = 'mp3';
+                break;
+        }
+
+        return $extension;
+    }
+
+    protected function getExtensionFromVideoCodec($videoCodec)
+    {
+        $extension = null;
+
+        switch ($videoCodec)
+        {
+            case 'libtheora':
+                $extension = 'ogv';
+                break;
+            case 'libvpx':
+                $extension = 'webm';
+                break;
+            case 'libx264':
+                $extension = 'mp4';
+                break;
+        }
+
+        return $extension;
+    }
+
+    /**
+     *
+     * @param string $option optionnal cache name
+     * @return mixed
+     */
+    public function get_data_from_cache($option = null)
+    {
+        $databox = $this->get_databox();
+
+        return $databox->get_data_from_cache($this->get_cache_key($option));
+    }
+
+    public function set_data_to_cache($value, $option = null, $duration = 0)
+    {
+        $databox = $this->get_databox();
+
+        return $databox->set_data_to_cache($value, $this->get_cache_key($option), $duration);
+    }
+
+    public function delete_data_from_cache($option = null)
+    {
+        switch ($option)
+        {
+            case self::CACHE_STATUS:
+                $this->status = null;
+                break;
+            case self::CACHE_SUBDEFS:
+                $this->subdefs = null;
+                break;
+            default:
+                break;
+        }
+        $databox = $this->get_databox();
+
+        \cache_databox::update($this->get_sbas_id(), 'record', $this->get_record_id());
+
+        return $databox->delete_data_from_cache($this->get_cache_key($option));
+    }
+
+    public function log_view($log_id, $referrer, $gv_sit)
+    {
+        $connbas = connection::getPDOConnection($this->get_sbas_id());
+
+        $sql = 'INSERT INTO log_view (id, log_id, date, record_id, referrer, site_id)
             VALUES
             (null, :log_id, now(), :rec, :referrer, :site)';
 
-    $params = array(
-      ':log_id'   => $log_id
-      , ':rec'      => $this->get_record_id()
-      , ':referrer' => $referrer
-      , ':site'     => $gv_sit
-    );
-    $stmt       = $connbas->prepare($sql);
-    $stmt->execute($params);
-    $stmt->closeCursor();
+        $params = array(
+          ':log_id'   => $log_id
+          , ':rec'      => $this->get_record_id()
+          , ':referrer' => $referrer
+          , ':site'     => $gv_sit
+        );
+        $stmt       = $connbas->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
 
-    return $this;
-  }
-
-  public function rotate_subdefs($angle)
-  {
-    $registry = registry::get_instance();
-    foreach ($this->get_subdefs() as $name => $subdef)
-    {
-      if ($name == 'document')
-        continue;
-
-      try
-      {
-        $subdef->rotate($registry, $angle);
-      }
-      catch (Exception $e)
-      {
-
-      }
+        return $this;
     }
 
-    return $this;
-  }
+    public function rotate_subdefs($angle)
+    {
+        $registry = registry::get_instance();
+        foreach ($this->get_subdefs() as $name => $subdef)
+        {
+            if ($name == 'document')
+                continue;
 
-  /**
-   *
-   * @var Array
-   */
-  protected $container_basket;
+            try
+            {
+                $subdef->rotate($registry, $angle);
+            }
+            catch (Exception $e)
+            {
 
-  /**
-   * @todo de meme avec stories
-   * @return Array
-   */
-  public function get_container_baskets()
-  {
-    $Core = bootstrap::getCore();
-    $em   = $Core->getEntityManager();
+            }
+        }
 
-    $repo = $em->getRepository('\Entities\Basket');
+        return $this;
+    }
 
-    /* @var $$repo \Repositories\BasketRepository */
+    /**
+     *
+     * @var Array
+     */
+    protected $container_basket;
 
-    return $repo->findContainingRecordForUser($this, $Core->getAuthenticatedUser());
-  }
+    /**
+     * @todo de meme avec stories
+     * @return Array
+     */
+    public function get_container_baskets()
+    {
+        $Core = bootstrap::getCore();
+        $em   = $Core->getEntityManager();
 
-  /**
-   *
-   * @param databox $databox
-   * @param int $offset_start
-   * @param int $how_many
-   * @return type
-   */
-  public static function get_records_by_originalname(databox $databox, $original_name, $offset_start = 0, $how_many = 10)
-  {
-    $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
-    $how_many     = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);
+        $repo = $em->getRepository('\Entities\Basket');
 
-    $sql = sprintf('SELECT record_id FROM record
+        /* @var $$repo \Repositories\BasketRepository */
+
+        return $repo->findContainingRecordForUser($this, $Core->getAuthenticatedUser());
+    }
+
+    /**
+     *
+     * @param databox $databox
+     * @param int $offset_start
+     * @param int $how_many
+     * @return type
+     */
+    public static function get_records_by_originalname(databox $databox, $original_name, $offset_start = 0, $how_many = 10)
+    {
+        $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
+        $how_many     = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);
+
+        $sql = sprintf('SELECT record_id FROM record
             WHERE original_name = :original_name LIMIT %d, %d'
-      , $offset_start, $how_many);
+          , $offset_start, $how_many);
 
-    $stmt = $databox->get_connection()->prepare($sql);
-    $stmt->execute(array(':original_name' => $original_name));
-    $rs              = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute(array(':original_name' => $original_name));
+        $rs              = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-    $records = array();
-    foreach ($rs as $row)
-    {
-      $records[] = $databox->get_record($row['record_id']);
+        $records = array();
+        foreach ($rs as $row)
+        {
+            $records[] = $databox->get_record($row['record_id']);
+        }
+
+        return $records;
     }
 
-    return $records;
-  }
+    /**
+     *
+     * @return set_selection
+     */
+    public function get_children()
+    {
+        if ( ! $this->is_grouping())
+        {
+            throw new Exception('This record is not a grouping');
+        }
 
-  /**
-   *
-   * @return set_selection
-   */
-  public function get_children()
-  {
-    if (!$this->is_grouping())
-      throw new Exception('This record is not a grouping');
+        $appbox = appbox::get_instance(\bootstrap::getCore());
 
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-
-    $sql = 'SELECT record_id
+        $sql = 'SELECT record_id
               FROM regroup g
                 INNER JOIN (record r
                   INNER JOIN collusr c
@@ -1948,37 +2017,37 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ON (g.rid_child = r.record_id AND g.rid_parent = :record_id)
               ORDER BY g.ord ASC, dateadd ASC, record_id ASC';
 
-    $params = array(
-      ':GV_site'   => $appbox->get_registry()->get('GV_sit')
-      , ':usr_id'    => $appbox->get_session()->get_usr_id()
-      , ':record_id' => $this->get_record_id()
-    );
+        $params = array(
+          ':GV_site'   => $appbox->get_registry()->get('GV_sit')
+          , ':usr_id'    => $appbox->get_session()->get_usr_id()
+          , ':record_id' => $this->get_record_id()
+        );
 
-    $stmt = $this->get_databox()->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+        $stmt = $this->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-    $set = new set_selection();
-    $i   = 1;
-    foreach ($rs as $row)
-    {
-      $set->add_element(new record_adapter($this->get_sbas_id(), $row['record_id'], $i));
-      $i++;
+        $set = new set_selection();
+        $i   = 1;
+        foreach ($rs as $row)
+        {
+            $set->add_element(new record_adapter($this->get_sbas_id(), $row['record_id'], $i));
+            $i ++;
+        }
+
+        return $set;
     }
 
-    return $set;
-  }
+    /**
+     *
+     * @return set_selection
+     */
+    public function get_grouping_parents()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
 
-  /**
-   *
-   * @return set_selection
-   */
-  public function get_grouping_parents()
-  {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-
-    $sql = 'SELECT r.record_id
+        $sql = 'SELECT r.record_id
             FROM regroup g
               INNER JOIN (record r
                 INNER JOIN collusr c
@@ -1992,107 +2061,111 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             WHERE rid_child = :record_id';
 
 
-    $params = array(
-      ':GV_site'   => $appbox->get_registry()->get('GV_sit')
-      , ':usr_id'    => $appbox->get_session()->get_usr_id()
-      , ':record_id' => $this->get_record_id()
-    );
+        $params = array(
+          ':GV_site'   => $appbox->get_registry()->get('GV_sit')
+          , ':usr_id'    => $appbox->get_session()->get_usr_id()
+          , ':record_id' => $this->get_record_id()
+        );
 
-    $stmt = $this->get_databox()->get_connection()->prepare($sql);
-    $stmt->execute($params);
-    $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+        $stmt = $this->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-    $set = new set_selection();
-    foreach ($rs as $row)
-    {
-      $set->add_element(new record_adapter($this->get_sbas_id(), $row['record_id']));
+        $set = new set_selection();
+        foreach ($rs as $row)
+        {
+            $set->add_element(new record_adapter($this->get_sbas_id(), $row['record_id']));
+        }
+
+        return $set;
     }
 
-    return $set;
-  }
+    public function hasChild(\record_adapter $record)
+    {
+        return $this->get_children()->offsetExists($record->get_serialize_key());
+    }
 
-  public function hasChild(\record_adapter $record)
-  {
-    return $this->get_children()->offsetExists($record->get_serialize_key());
-  }
+    public function appendChild(\record_adapter $record)
+    {
+        if ( ! $this->is_grouping())
+        {
+            throw new \Exception('Only stories can append children');
+        }
 
-  public function appendChild(\record_adapter $record)
-  {
-    if (!$this->is_grouping())
-      throw new \Exception('Only stories can append children');
+        $connbas = $this->get_databox()->get_connection();
 
-    $connbas = $this->get_databox()->get_connection();
+        $ord = 0;
 
-    $ord = 0;
-
-    $sql = "SELECT (max(ord)+1) as ord
+        $sql = "SELECT (max(ord)+1) as ord
             FROM regroup WHERE rid_parent = :parent_record_id";
 
-    $stmt = $connbas->prepare($sql);
+        $stmt = $connbas->prepare($sql);
 
-    $stmt->execute(array(':parent_record_id' => $this->get_record_id()));
+        $stmt->execute(array(':parent_record_id' => $this->get_record_id()));
 
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $stmt->closeCursor();
+        $stmt->closeCursor();
 
-    if ($row)
-    {
-      $ord = is_null($row["ord"]) ? 0 : $row["ord"];
-    }
+        if ($row)
+        {
+            $ord = is_null($row["ord"]) ? 0 : $row["ord"];
+        }
 
-    $sql = 'INSERT INTO regroup (id, rid_parent, rid_child, dateadd, ord)
+        $sql = 'INSERT INTO regroup (id, rid_parent, rid_child, dateadd, ord)
               VALUES (null, :parent_record_id, :record_id, NOW(), :ord)';
 
-    $params = array(
-      ':parent_record_id' => $this->get_record_id()
-      , ':record_id'        => $record->get_record_id()
-      , ':ord'              => $ord
-    );
+        $params = array(
+          ':parent_record_id' => $this->get_record_id()
+          , ':record_id'        => $record->get_record_id()
+          , ':ord'              => $ord
+        );
 
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute($params);
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute($params);
 
-    $stmt->closeCursor();
+        $stmt->closeCursor();
 
-    $sql  = 'UPDATE record SET moddate = NOW() WHERE record_id = :record_id';
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $sql  = 'UPDATE record SET moddate = NOW() WHERE record_id = :record_id';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
 
-    $this->delete_data_from_cache();
+        $this->delete_data_from_cache();
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function removeChild(\record_adapter $record)
-  {
-    if (!$this->is_grouping())
-      throw new \Exception('Only stories can append children');
+    public function removeChild(\record_adapter $record)
+    {
+        if ( ! $this->is_grouping())
+        {
+            throw new \Exception('Only stories can append children');
+        }
 
-    $connbas = $this->get_databox()->get_connection();
+        $connbas = $this->get_databox()->get_connection();
 
-    $sql = "DELETE FROM regroup WHERE rid_parent = :parent_record_id
+        $sql = "DELETE FROM regroup WHERE rid_parent = :parent_record_id
                   AND rid_child = :record_id";
 
-    $params = array(
-      ':parent_record_id' => $this->get_record_id()
-      , ':record_id'        => $record->get_record_id()
-    );
+        $params = array(
+          ':parent_record_id' => $this->get_record_id()
+          , ':record_id'        => $record->get_record_id()
+        );
 
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute($params);
-    $stmt->closeCursor();
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
 
-    $sql  = 'UPDATE record SET moddate = NOW() WHERE record_id = :record_id';
-    $stmt = $connbas->prepare($sql);
-    $stmt->execute(array(':record_id' => $this->get_record_id()));
-    $stmt->closeCursor();
+        $sql  = 'UPDATE record SET moddate = NOW() WHERE record_id = :record_id';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
 
-    $this->delete_data_from_cache();
+        $this->delete_data_from_cache();
 
-    return $this;
-  }
+        return $this;
+    }
 
 }

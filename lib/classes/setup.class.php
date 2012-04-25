@@ -45,6 +45,8 @@ class setup
       , "zlib"
       , "intl"
       , "twig"
+      , "gmagick"
+      , "imagick"
   );
   protected static $PHP_CONF = array(
       'output_buffering' => '4096'  //INI_ALL
@@ -561,7 +563,7 @@ class setup
         if (extension_loaded($ext) !== true)
         {
           $blocker = true;
-          if("twig" === $ext)
+          if(in_array($ext, array('twig', 'gmagick', 'imagick')))
           {
             $blocker = false;
           }
