@@ -41,7 +41,7 @@
     </filter>
 
   <listeners>
-    <listener class="PhraseanetPHPUnitListener" file="tests/PhraseanetPHPUnitListener.class"></listener>
+    <listener class="PhraseanetPHPUnitListener" file="tests/PhraseanetPHPUnitListener.class.inc"></listener>
   </listeners>
 
 </phpunit>
