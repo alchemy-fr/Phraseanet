@@ -21,110 +21,103 @@ use Doctrine\Common\Cache\CacheProvider;
  */
 class RedisCache extends CacheProvider
 {
+    /**
+     * @var \Redis
+     */
+    private $_redis;
 
-  /**
-   * @var \Redis
-   */
-  private $_redis;
-
-  /**
-   * Sets the redis instance to use.
-   *
-   * @param Redis $memcache
-   */
-  public function setRedis(\Redis $redis)
-  {
-    $this->_redis = $redis;
-  }
-
-  /**
-   * Gets the memcache instance used by the cache.
-   *
-   * @return Memcache
-   */
-  public function getRedis()
-  {
-    return $this->_redis;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function doFetch($id)
-  {
-    return $this->_redis->get($id);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function doContains($id)
-  {
-    return (bool) $this->_redis->get($id);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function doSave($id, $data, $lifeTime = 0)
-  {
-    if (0 === $lifeTime)
+    /**
+     * Sets the redis instance to use.
+     *
+     * @param Redis $memcache
+     */
+    public function setRedis(\Redis $redis)
     {
-      return $this->_redis->set($id, $data);
-    }
-    else
-    {
-      return $this->_redis->setex($id, $lifeTime, $data);
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function doDelete($id)
-  {
-    return $this->_redis->delete($id);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function doFlush()
-  {
-    return $this->_redis->flushAll();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function doGetStats()
-  {
-    return $this->_redis->info();
-  }
-
-  public function isServer()
-  {
-    return true;
-  }
-
-  public function get($key)
-  {
-    if (!$this->contains($key))
-    {
-      throw new Exception('Unable to retrieve the value');
+        $this->_redis = $redis;
     }
 
-    return $this->fetch($key);
-  }
-
-  public function deleteMulti(array $array_keys)
-  {
-    foreach ($array_keys as $id)
+    /**
+     * Gets the memcache instance used by the cache.
+     *
+     * @return Memcache
+     */
+    public function getRedis()
     {
-      $this->delete($id);
+        return $this->_redis;
     }
 
-    return $this;
-  }
+    /**
+     * {@inheritdoc}
+     */
+    protected function doFetch($id)
+    {
+        return $this->_redis->get($id);
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function doContains($id)
+    {
+        return (bool) $this->_redis->get($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doSave($id, $data, $lifeTime = 0)
+    {
+        if (0 === $lifeTime) {
+            return $this->_redis->set($id, $data);
+        } else {
+            return $this->_redis->setex($id, $lifeTime, $data);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doDelete($id)
+    {
+        return $this->_redis->delete($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doFlush()
+    {
+        return $this->_redis->flushAll();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function doGetStats()
+    {
+        return $this->_redis->info();
+    }
+
+    public function isServer()
+    {
+        return true;
+    }
+
+    public function get($key)
+    {
+        if ( ! $this->contains($key)) {
+            throw new Exception('Unable to retrieve the value');
+        }
+
+        return $this->fetch($key);
+    }
+
+    public function deleteMulti(array $array_keys)
+    {
+        foreach ($array_keys as $id) {
+            $this->delete($id);
+        }
+
+        return $this;
+    }
 }

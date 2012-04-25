@@ -17,11 +17,12 @@
  */
 interface registryInterface
 {
-  public function get($key, $defaultvalue = null);
 
-  public function set($key, $value, $type);
+    public function get($key, $defaultvalue = null);
 
-  public function is_set($key);
+    public function set($key, $value, $type);
 
-  public function un_set($key);
+    public function is_set($key);
+
+    public function un_set($key);
 }

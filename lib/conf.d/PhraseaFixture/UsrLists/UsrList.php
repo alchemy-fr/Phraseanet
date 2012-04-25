@@ -23,32 +23,30 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class UsrList extends ListAbstract implements FixtureInterface
 {
+    /**
+     *
+     * @var \Entities\UsrList
+     */
+    public $list;
 
-  /**
-   *
-   * @var \Entities\UsrList
-   */
-  public $list;
+    public function load(ObjectManager $manager)
+    {
+        $list = new \Entities\UsrList();
 
-  public function load(ObjectManager $manager)
-  {
-    $list = new \Entities\UsrList();
+        $owner = $this->getReference('one-listowner');
 
-    $owner = $this->getReference('one-listowner');
+        $list->setName('new list');
+        $list->addUsrListOwner($owner);
 
-    $list->setName('new list');
-    $list->addUsrListOwner($owner);
+        /* @var $owner \Entities\UsrListOwner */
+        $owner->setList($list);
 
-    /* @var $owner \Entities\UsrListOwner */
-    $owner->setList($list);
+        $manager->persist($list);
+        $manager->merge($owner);
+        $manager->flush();
 
-    $manager->persist($list);
-    $manager->merge($owner);
-    $manager->flush();
+        $this->list = $list;
 
-    $this->list = $list;
-
-    $this->addReference('one-list', $list);
-  }
-
+        $this->addReference('one-list', $list);
+    }
 }

@@ -18,6 +18,7 @@ require_once __DIR__ . '/../../../../vendor/doctrine/common/lib/Doctrine/Common/
 
 use Alchemy\Phrasea\Loader\LoaderStrategy as CacheStrategy;
 use Doctrine\Common\Cache\XcacheCache;
+
 /**
  *
  * @package
@@ -27,12 +28,11 @@ use Doctrine\Common\Cache\XcacheCache;
 Class XcacheAutoloader extends XcacheCache implements CacheStrategy
 {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function isAvailable()
-  {
-    return extension_loaded('xcache') && PHP_SAPI !== 'cli';
-  }
-
+    /**
+     * {@inheritdoc}
+     */
+    public function isAvailable()
+    {
+        return extension_loaded('xcache') && PHP_SAPI !== 'cli';
+    }
 }

@@ -17,17 +17,18 @@
  */
 interface Feed_XML_RSS_ImageInterface
 {
-  public function __construct($url, $title, $link);
 
-  public function get_url();
+    public function __construct($url, $title, $link);
 
-  public function get_title();
+    public function get_url();
 
-  public function get_link();
+    public function get_title();
 
-  public function get_description();
+    public function get_link();
 
-  public function get_height();
+    public function get_description();
 
-  public function get_width();
+    public function get_height();
+
+    public function get_width();
 }

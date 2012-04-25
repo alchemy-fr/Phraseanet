@@ -33,36 +33,31 @@ $info .= _('admin::compte-utilisateur identifiant') . " : " . $user->get_login()
 
 $info2 .= "<br>" . _('admin::compte-utilisateur nom') . "/" . _('admin::compte-utilisateur prenom') . " : ";
 $info2 .= $user->get_display_name();
-if ($user->get_email())
-{
-  $info2 .= "<br>" . _('admin::compte-utilisateur email') . " : " . $user->get_email();
+if ($user->get_email()) {
+    $info2 .= "<br>" . _('admin::compte-utilisateur email') . " : " . $user->get_email();
 }
-if ($user->get_tel())
-{
-  $info2 .= "<br>" . _('admin::compte-utilisateur telephone') . " : " . $user->get_tel();
+if ($user->get_tel()) {
+    $info2 .= "<br>" . _('admin::compte-utilisateur telephone') . " : " . $user->get_tel();
 }
-if ($user->get_job())
-{
-  $info2 .= "<br>" . _('admin::compte-utilisateur poste') . " : " . $user->get_job();
+if ($user->get_job()) {
+    $info2 .= "<br>" . _('admin::compte-utilisateur poste') . " : " . $user->get_job();
 }
-if ($user->get_company())
-{
-  $info2 .= "<br>" . _('admin::compte-utilisateur societe') . " : " . $user->get_company();
+if ($user->get_company()) {
+    $info2 .= "<br>" . _('admin::compte-utilisateur societe') . " : " . $user->get_company();
 }
-if ($user->get_position())
-{
-  $info2 .= "<br>" . _('admin::compte-utilisateur activite') . " : " . $user->get_position();
+if ($user->get_position()) {
+    $info2 .= "<br>" . _('admin::compte-utilisateur activite') . " : " . $user->get_position();
 }
 $info2 .= "<br><div style='background-color:#777777'><font color=#FFFFFF>" . _('admin::compte-utilisateur adresse') . "</font>";
 $info2 .= "<br>" . $user->get_address() . "<br>" . $user->get_zipcode() . " " . $user->get_city();
 $info2 .= "</div>";
 if ($info2 != "")
-  $info .= "<font color=#EEEEEE>" . $info2 . "</font>";
+    $info .= "<font color=#EEEEEE>" . $info2 . "</font>";
 $info = str_replace("<br><br>", "<br>", $info);
 $info = str_replace("\n", "", $info);
 $info = str_replace("\r", "", $info);
 ?>
 <script type="text/javascript">
-  parent.usrDesc[<?php echo $parm["u"] ?>] = "<?php echo p4string::MakeString($info, "js") ?>";
-  parent.redrawUsrDesc(<?php echo $parm["u"] ?>);
+    parent.usrDesc[<?php echo $parm["u"] ?>] = "<?php echo p4string::MakeString($info, "js") ?>";
+    parent.redrawUsrDesc(<?php echo $parm["u"] ?>);
 </script>

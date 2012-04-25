@@ -17,12 +17,12 @@
  */
 class patch_320d implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.2.0.0.a5';
+
     /**
      *
      * @var Array
@@ -65,11 +65,10 @@ class patch_320d implements patchInterface
                         WHERE base_id = :base_id AND usr_id = :usr_id';
         $stmt = $appbox->get_connection()->prepare($sql);
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $params = array(
-                    ':base_id' => $row['base_id'],
-                    ':usr_id' => $row['usr_id']
+                ':base_id' => $row['base_id'],
+                ':usr_id'  => $row['usr_id']
             );
             $stmt->execute($params);
         }
@@ -78,5 +77,4 @@ class patch_320d implements patchInterface
 
         return true;
     }
-
 }

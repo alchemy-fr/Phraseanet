@@ -19,7 +19,6 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  */
 class patch_361 implements patchInterface
 {
-
     /**
      *
      * @var string
@@ -63,35 +62,30 @@ class patch_361 implements patchInterface
 
         $conn = $appbox->get_connection();
 
-        $sql    = 'SELECT sbas_id, record_id, id FROM BasketElements';
-        $stmt   = $conn->prepare($sql);
+        $sql = 'SELECT sbas_id, record_id, id FROM BasketElements';
+        $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($result as $row)
-        {
+        foreach ($result as $row) {
             $sbas_id = (int) $row['sbas_id'];
 
-            try
-            {
+            try {
                 $connbas = connection::getPDOConnection($sbas_id);
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
                 $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
                 continue;
             }
 
-            $sql  = 'SELECT record_id FROM record WHERE record_id = :record_id';
+            $sql = 'SELECT record_id FROM record WHERE record_id = :record_id';
             $stmt = $connbas->prepare($sql);
             $stmt->execute(array(':record_id' => $row['record_id']));
-            $rowCount    = $stmt->rowCount();
+            $rowCount = $stmt->rowCount();
             $stmt->closeCursor();
 
-            if ($rowCount == 0)
-            {
+            if ($rowCount == 0) {
                 $conn->exec('DELETE FROM ValidationDatas WHERE basket_element_id = ' . $row['id']);
                 $conn->exec('DELETE FROM BasketElements WHERE id = ' . $row['id']);
             }
@@ -100,7 +94,7 @@ class patch_361 implements patchInterface
 
         $dql = "SELECT b FROM Entities\Basket b WHERE b.description != ''";
 
-        $n       = 0;
+        $n = 0;
         $perPage = 100;
 
         $query = $em->createQuery($dql)
@@ -111,22 +105,19 @@ class patch_361 implements patchInterface
 
         $count = count($paginator);
 
-        while ($n < $count)
-        {
+        while ($n < $count) {
             $query = $em->createQuery($dql)
                 ->setFirstResult($n)
                 ->setMaxResults($perPage);
 
             $paginator = new Paginator($query, true);
 
-            foreach ($paginator as $basket)
-            {
+            foreach ($paginator as $basket) {
                 $htmlDesc = $basket->getDescription();
 
                 $description = trim(strip_tags(str_replace("<br />", "\n", $htmlDesc)));
 
-                if ($htmlDesc == $description)
-                {
+                if ($htmlDesc == $description) {
                     continue;
                 }
 
@@ -142,6 +133,5 @@ class patch_361 implements patchInterface
 
         return true;
     }
-
 }
 

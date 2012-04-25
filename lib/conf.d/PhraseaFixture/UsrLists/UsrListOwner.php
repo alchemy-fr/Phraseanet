@@ -8,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PhraseaFixture\UsrLists;
 
 use Doctrine\ORM\EntityManager;
@@ -22,32 +23,29 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class UsrListOwner extends ListAbstract implements FixtureInterface
 {
+    /**
+     *
+     * @var \Entities\StoryWZ
+     */
+    public $owner;
 
-  /**
-   *
-   * @var \Entities\StoryWZ
-   */
-  public $owner;
-
-  public function load(ObjectManager $manager)
-  {
-    $owner = new \Entities\UsrListOwner();
-
-    $owner->setRole(\Entities\UsrListOwner::ROLE_ADMIN);
-
-    if (null === $this->user)
+    public function load(ObjectManager $manager)
     {
-      throw new \LogicException('Fill a user to store a new basket');
+        $owner = new \Entities\UsrListOwner();
+
+        $owner->setRole(\Entities\UsrListOwner::ROLE_ADMIN);
+
+        if (null === $this->user) {
+            throw new \LogicException('Fill a user to store a new basket');
+        }
+
+        $owner->setUser($this->user);
+
+        $manager->persist($owner);
+        $manager->flush();
+
+        $this->owner = $owner;
+
+        $this->addReference('one-listowner', $owner);
     }
-
-    $owner->setUser($this->user);
-
-    $manager->persist($owner);
-    $manager->flush();
-
-    $this->owner = $owner;
-
-    $this->addReference('one-listowner', $owner);
-  }
-
 }

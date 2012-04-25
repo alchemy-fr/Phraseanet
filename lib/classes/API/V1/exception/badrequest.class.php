@@ -17,7 +17,6 @@
  */
 class API_V1_exception_badrequest extends API_V1_exception_abstract
 {
-
-  protected static $details = 'Parameter is invalid or missing';
+    protected static $details = 'Parameter is invalid or missing';
 
 }

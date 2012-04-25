@@ -21,176 +21,154 @@ abstract class task_databoxAbstract extends task_abstract
 //
 //  abstract public function getName();
 
-  protected $mono_sbas_id;
+    protected $mono_sbas_id;
 
-  abstract protected function retrieve_sbas_content(databox $databox);
+    abstract protected function retrieve_sbas_content(databox $databox);
 
-  abstract protected function process_one_content(databox $databox, Array $row);
+    abstract protected function process_one_content(databox $databox, Array $row);
 
-  abstract protected function flush_records_sbas();
+    abstract protected function flush_records_sbas();
 
-  abstract protected function post_process_one_content(databox $databox, Array $row);
+    abstract protected function post_process_one_content(databox $databox, Array $row);
 
-  protected function run2()
-  {
-    while($this->running)
+    protected function run2()
     {
-      try
-      {
-        $conn = connection::getPDOConnection();
-      }
-      catch(Exception $e)
-      {
-        $this->log($e->getMessage());
-        $this->log(("Warning : abox connection lost, restarting in 10 min."));
+        while ($this->running) {
+            try {
+                $conn = connection::getPDOConnection();
+            } catch (Exception $e) {
+                $this->log($e->getMessage());
+                $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-        for($t = 60 * 10; $this->running && $t; $t--) // DON'T do sleep(600) because it prevents ticks !
-          sleep(1);
+                for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
+                    sleep(1);
 
-        $this->running = false;
-        $this->return_value = self::RETURNSTATUS_TORESTART;
+                $this->running = false;
+                $this->return_value = self::RETURNSTATUS_TORESTART;
 
-        return;
-      }
+                return;
+            }
 
-      $this->set_last_exec_time();
+            $this->set_last_exec_time();
 
-      try
-      {
-        $sql = 'SELECT sbas_id, task2.* FROM sbas, task2 WHERE task_id = :taskid';
-        $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->get_task_id()));
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-        $this->records_done = 0;
-        $duration = time();
-      }
-      catch(Exception $e)
-      {
-        $this->task_status = self::STATUS_TOSTOP;
-        $this->return_value = self::RETURNSTATUS_STOPPED;
-        $rs = array();
-      }
-      foreach($rs as $row)
-      {
-        if(!$this->running)
-          break;
+            try {
+                $sql = 'SELECT sbas_id, task2.* FROM sbas, task2 WHERE task_id = :taskid';
+                $stmt = $conn->prepare($sql);
+                $stmt->execute(array(':taskid' => $this->get_task_id()));
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $stmt->closeCursor();
+                $this->records_done = 0;
+                $duration = time();
+            } catch (Exception $e) {
+                $this->task_status = self::STATUS_TOSTOP;
+                $this->return_value = self::RETURNSTATUS_STOPPED;
+                $rs = array();
+            }
+            foreach ($rs as $row) {
+                if ( ! $this->running)
+                    break;
 
-        $this->sbas_id = (int) $row['sbas_id'];
+                $this->sbas_id = (int) $row['sbas_id'];
 
-        if($this->mono_sbas_id && $this->sbas_id !== $this->mono_sbas_id)
-        {
-          continue;
+                if ($this->mono_sbas_id && $this->sbas_id !== $this->mono_sbas_id) {
+                    continue;
+                }
+                if ($this->mono_sbas_id) {
+                    $this->log('This task works on ' . phrasea::sbas_names($this->mono_sbas_id));
+                }
+
+                try {
+                    $this->load_settings(simplexml_load_string($row['settings']));
+                } catch (Exception $e) {
+                    $this->log($e->getMessage());
+                    continue;
+                }
+
+                $this->current_state = self::STATE_OK;
+                $this->process_sbas()->check_current_state();
+                $this->process_sbas()->flush_records_sbas();
+            }
+
+            $this->increment_loops();
+            $this->pause($duration);
         }
-        if($this->mono_sbas_id)
-        {
-          $this->log('This task works on ' . phrasea::sbas_names($this->mono_sbas_id));
-        }
-
-        try
-        {
-          $this->load_settings(simplexml_load_string($row['settings']));
-        }
-        catch(Exception $e)
-        {
-          $this->log($e->getMessage());
-          continue;
-        }
-
-        $this->current_state = self::STATE_OK;
         $this->process_sbas()->check_current_state();
         $this->process_sbas()->flush_records_sbas();
-      }
 
-      $this->increment_loops();
-      $this->pause($duration);
+        $this->set_status($this->return_value);
+
+
+        return;
     }
-    $this->process_sbas()->check_current_state();
-    $this->process_sbas()->flush_records_sbas();
 
-    $this->set_status($this->return_value);
-
-
-    return;
-  }
-
-  /**
-   *
-   * @return <type>
-   */
-  protected function process_sbas()
-  {
-    $tsub = array();
-    $connbas = false;
-
-    try
+    /**
+     *
+     * @return <type>
+     */
+    protected function process_sbas()
     {
-      $databox = databox::get_instance($this->sbas_id);
-      $connbas = $databox->get_connection();
-      /**
-       * GET THE RECORDS TO PROCESS ON CURRENT SBAS
-       */
-      $rs = $this->retrieve_sbas_content($databox);
-    }
-    catch(Exception $e)
-    {
-      $this->log('Error  : ' . $e->getMessage());
-      $rs = array();
-    }
+        $tsub = array();
+        $connbas = false;
 
-    $rowstodo = count($rs);
-    $rowsdone = 0;
+        try {
+            $databox = databox::get_instance($this->sbas_id);
+            $connbas = $databox->get_connection();
+            /**
+             * GET THE RECORDS TO PROCESS ON CURRENT SBAS
+             */
+            $rs = $this->retrieve_sbas_content($databox);
+        } catch (Exception $e) {
+            $this->log('Error  : ' . $e->getMessage());
+            $rs = array();
+        }
 
-    if($rowstodo > 0)
-      $this->setProgress(0, $rowstodo);
+        $rowstodo = count($rs);
+        $rowsdone = 0;
 
-    foreach($rs as $row)
-    {
-      try
-      {
+        if ($rowstodo > 0)
+            $this->setProgress(0, $rowstodo);
 
-        /**
-         * PROCESS ONE RECORD
-         */
-        $this->process_one_content($databox, $row);
-      }
-      catch(Exception $e)
-      {
-        $this->log("Exception : " . $e->getMessage()
-                . " " . basename($e->getFile()) . " " . $e->getLine());
-      }
+        foreach ($rs as $row) {
+            try {
 
-      $this->records_done++;
-      $this->setProgress($rowsdone, $rowstodo);
+                /**
+                 * PROCESS ONE RECORD
+                 */
+                $this->process_one_content($databox, $row);
+            } catch (Exception $e) {
+                $this->log("Exception : " . $e->getMessage()
+                    . " " . basename($e->getFile()) . " " . $e->getLine());
+            }
 
-      /**
-       * POST COIT
-       */
-      $this->post_process_one_content($databox, $row);
+            $this->records_done ++;
+            $this->setProgress($rowsdone, $rowstodo);
 
-      $this->check_memory_usage()
-              ->check_records_done()
-              ->check_task_status();
+            /**
+             * POST COIT
+             */
+            $this->post_process_one_content($databox, $row);
 
-      if(!$this->running)
-        break;
-    }
+            $this->check_memory_usage()
+                ->check_records_done()
+                ->check_task_status();
+
+            if ( ! $this->running)
+                break;
+        }
 
 
-    $this->check_memory_usage()
+        $this->check_memory_usage()
             ->check_records_done()
             ->check_task_status();
 
-    if($connbas instanceof PDO)
-    {
-      $connbas->close();
-      unset($connbas);
+        if ($connbas instanceof PDO) {
+            $connbas->close();
+            unset($connbas);
+        }
+
+        if ($rowstodo > 0)
+            $this->setProgress(0, 0);
+
+        return $this;
     }
-
-    if($rowstodo > 0)
-      $this->setProgress(0, 0);
-
-    return $this;
-  }
-
 }

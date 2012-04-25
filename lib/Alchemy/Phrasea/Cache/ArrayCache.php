@@ -22,30 +22,27 @@ use Doctrine\Common\Cache\ArrayCache as DoctrineArray;
 class ArrayCache extends DoctrineArray implements Cache
 {
 
-  public function isServer()
-  {
-
-    return false;
-  }
-
-  public function get($id)
-  {
-    if (!$this->contains($id))
+    public function isServer()
     {
-      throw new Exception(sprintf('Unable to find key %s', $id));
+
+        return false;
     }
 
-    return $this->fetch($id);
-  }
-
-  public function deleteMulti(array $array_keys)
-  {
-    foreach ($array_keys as $id)
+    public function get($id)
     {
-      $this->delete($id);
+        if ( ! $this->contains($id)) {
+            throw new Exception(sprintf('Unable to find key %s', $id));
+        }
+
+        return $this->fetch($id);
     }
 
-    return;
-  }
+    public function deleteMulti(array $array_keys)
+    {
+        foreach ($array_keys as $id) {
+            $this->delete($id);
+        }
 
+        return;
+    }
 }

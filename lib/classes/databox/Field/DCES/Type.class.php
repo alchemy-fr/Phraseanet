@@ -17,20 +17,22 @@
  */
 class databox_Field_DCES_Type extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Type';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Type';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'The nature or genre of the resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#type';
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'The nature or genre of the resource.';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#type';
+
 }

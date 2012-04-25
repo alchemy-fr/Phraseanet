@@ -18,5 +18,4 @@ class Flash implements Type
     {
         return self::TYPE_FLASH;
     }
-
 }

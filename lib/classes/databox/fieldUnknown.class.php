@@ -18,78 +18,73 @@
 class databox_fieldUnknown extends databox_field
 {
 
-  /**
-   *
-   * @param databox $databox
-   * @param int $id
-   * @return databox_fieldUnknown
-   */
-  public function __construct(databox $databox, $id)
-  {
-    $this->set_databox($databox);
-    $this->sbas_id = $databox->get_sbas_id();
-    $this->id = $id;
-
-    return $this;
-  }
-
-  /**
-   *
-   * @param databox $databox
-   * @param int $id
-   * @return databox_fieldUnknown
-   */
-  public static function get_instance(databox &$databox, $id)
-  {
-    $cache_key = 'field_' . $id;
-    $instance_id = $databox->get_sbas_id() . '_' . $id;
-    if (!isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false)
+    /**
+     *
+     * @param databox $databox
+     * @param int $id
+     * @return databox_fieldUnknown
+     */
+    public function __construct(databox $databox, $id)
     {
-      try
-      {
-        self::$_instance[$instance_id] = $databox->get_data_from_cache($cache_key);
-      }
-      catch (Exception $e)
-      {
-        self::$_instance[$instance_id] = new self($databox, $id);
-        $databox->set_data_to_cache(self::$_instance[$instance_id], $cache_key);
-      }
+        $this->set_databox($databox);
+        $this->sbas_id = $databox->get_sbas_id();
+        $this->id = $id;
+
+        return $this;
     }
 
-    return self::$_instance[$instance_id];
-  }
+    /**
+     *
+     * @param databox $databox
+     * @param int $id
+     * @return databox_fieldUnknown
+     */
+    public static function get_instance(databox &$databox, $id)
+    {
+        $cache_key = 'field_' . $id;
+        $instance_id = $databox->get_sbas_id() . '_' . $id;
+        if ( ! isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false) {
+            try {
+                self::$_instance[$instance_id] = $databox->get_data_from_cache($cache_key);
+            } catch (Exception $e) {
+                self::$_instance[$instance_id] = new self($databox, $id);
+                $databox->set_data_to_cache(self::$_instance[$instance_id], $cache_key);
+            }
+        }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_metadata_source()
-  {
-    return '';
-  }
+        return self::$_instance[$instance_id];
+    }
 
-  public function get_metadata_namespace()
-  {
-    return '';
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_metadata_source()
+    {
+        return '';
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_metadata_tagname()
-  {
-    return '';
-  }
+    public function get_metadata_namespace()
+    {
+        return '';
+    }
 
-  /**
-   * Return true because the field is unknown
-   *
-   * @return boolean
-   */
-  public function is_on_error()
-  {
-    return true;
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_metadata_tagname()
+    {
+        return '';
+    }
 
+    /**
+     * Return true because the field is unknown
+     *
+     * @return boolean
+     */
+    public function is_on_error()
+    {
+        return true;
+    }
 }

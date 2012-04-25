@@ -17,7 +17,6 @@
  */
 class patch_320e implements patchInterface
 {
-
     /**
      *
      * @var string
@@ -80,8 +79,7 @@ class patch_320e implements patchInterface
 
         $nodes = $xpath->query('//record/subdefs/subdefgroup/subdef');
 
-        foreach ($nodes as $node)
-        {
+        foreach ($nodes as $node) {
             $name = mb_strtolower(trim($node->getAttribute('name')));
             if ($name === '')
                 continue;
@@ -92,5 +90,4 @@ class patch_320e implements patchInterface
 
         return true;
     }
-
 }

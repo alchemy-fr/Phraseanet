@@ -17,27 +17,25 @@
  */
 class Bridge_Exception_ApiDisabled extends Bridge_Exception
 {
+    protected $api;
 
-  protected $api;
+    /**
+     *
+     * @param Bridge_Api $api
+     */
+    public function __construct(Bridge_Api $api)
+    {
+        $this->api = $api;
 
-  /**
-   *
-   * @param Bridge_Api $api
-   */
-  public function __construct(Bridge_Api $api)
-  {
-    $this->api = $api;
+        parent::__construct();
+    }
 
-    parent::__construct();
-  }
-
-  /**
-   *
-   * @return Bridge_Api
-   */
-  public function get_api()
-  {
-    return $this->api;
-  }
-
+    /**
+     *
+     * @return Bridge_Api
+     */
+    public function get_api()
+    {
+        return $this->api;
+    }
 }

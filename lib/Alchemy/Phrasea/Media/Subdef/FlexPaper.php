@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class FlexPaper extends Provider
 {
-
     protected $options = array();
 
     public function __construct()
@@ -33,12 +32,10 @@ class FlexPaper extends Provider
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec)
-        {
+        if ( ! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Flash();
         }
 
         return $this->spec;
     }
-
 }

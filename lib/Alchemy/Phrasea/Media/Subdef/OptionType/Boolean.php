@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
 class Boolean implements OptionType
 {
-
     protected $name;
     protected $default_value;
     protected $value;
@@ -23,8 +22,7 @@ class Boolean implements OptionType
         $this->name = $name;
         $this->default_value = $default_value;
 
-        if ($default_value)
-        {
+        if ($default_value) {
             $this->setValue($default_value);
         }
     }
@@ -50,5 +48,4 @@ class Boolean implements OptionType
     {
         return $this->value;
     }
-
 }

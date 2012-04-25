@@ -17,7 +17,6 @@
  */
 class patch_360 implements patchInterface
 {
-
     /**
      *
      * @var string
@@ -57,9 +56,8 @@ class patch_360 implements patchInterface
     {
         $tables = array('StoryWZ', 'ValidationDatas', 'ValidationParticipants', 'ValidationSessions', 'BasketElements', 'Baskets');
 
-        foreach ($tables as $table)
-        {
-            $sql  = 'DELETE FROM ' . $table;
+        foreach ($tables as $table) {
+            $sql = 'DELETE FROM ' . $table;
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
@@ -79,25 +77,22 @@ class patch_360 implements patchInterface
 
         $current = array();
 
-        foreach ($rs_s as $row_story)
-        {
+        foreach ($rs_s as $row_story) {
             $serial = $row_story['sbas_id'] . '_' . $row_story['usr_id'] . '_' . $row_story['record_id'];
 
-            if (isset($current[$serial]))
-            {
+            if (isset($current[$serial])) {
                 $stories[] = $row_story;
             }
 
             $current[$serial] = $serial;
         }
 
-        $sql  = 'DELETE FROM ssel
+        $sql = 'DELETE FROM ssel
                              WHERE temporaryType="1" AND record_id = :record_id
                                 AND usr_id = :usr_id AND sbas_id = :sbas_id';
         $stmt = $appbox->get_connection()->prepare($sql);
 
-        foreach ($stories as $row)
-        {
+        foreach ($stories as $row) {
             $params = array(
                 ':usr_id'    => $row['usr_id'],
                 ':sbas_id'   => $row['sbas_id'],
@@ -133,16 +128,15 @@ class patch_360 implements patchInterface
         $stmt->closeCursor();
 
 
-        $sql  = 'SELECT ssel_id FROM ssel WHERE temporaryType = "0"';
+        $sql = 'SELECT ssel_id FROM ssel WHERE temporaryType = "0"';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $sselcont_ids = array();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $sql = 'SELECT c.sselcont_id, c.record_id, b.sbas_id
                         FROM sselcont c, bas b, ssel s
                         WHERE s.temporaryType = "0" AND b.base_id = c.base_id
@@ -150,17 +144,15 @@ class patch_360 implements patchInterface
 
             $stmt = $appbox->get_connection()->prepare($sql);
             $stmt->execute(array(':ssel_id' => $row['ssel_id']));
-            $rs_be     = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $rs_be = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
             $current = array();
 
-            foreach ($rs_be as $row_sselcont)
-            {
+            foreach ($rs_be as $row_sselcont) {
                 $serial = $row_sselcont['sbas_id'] . '_' . $row_sselcont['record_id'];
 
-                if (isset($current[$serial]))
-                {
+                if (isset($current[$serial])) {
                     $sselcont_ids[] = $row_sselcont['sselcont_id'];
                 }
 
@@ -168,11 +160,10 @@ class patch_360 implements patchInterface
             }
         }
 
-        $sql              = 'DELETE FROM sselcont WHERE sselcont_id = :sselcont_id';
-        $stmt             = $appbox->get_connection()->prepare($sql);
+        $sql = 'DELETE FROM sselcont WHERE sselcont_id = :sselcont_id';
+        $stmt = $appbox->get_connection()->prepare($sql);
 
-        foreach ($sselcont_ids as $sselcont_id)
-        {
+        foreach ($sselcont_ids as $sselcont_id) {
             $stmt->execute(array(':sselcont_id' => $sselcont_id));
         }
 
@@ -232,11 +223,11 @@ class patch_360 implements patchInterface
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
 
-        $sql  = 'INSERT INTO ValidationDatas (
+        $sql = 'INSERT INTO ValidationDatas (
                             SELECT d.id , :participant_id as participant_id, d.sselcont_id, d.agreement,
                                 d.note, d.updated_on as updated
                             FROM validate v, validate_datas d, sselcont c
@@ -244,8 +235,7 @@ class patch_360 implements patchInterface
                                 AND v.usr_id = :usr_id AND v.ssel_id = :basket_id
                          )';
         $stmt = $appbox->get_connection()->prepare($sql);
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $params = array(
                 ':participant_id' => $row['participant_id'],
                 ':basket_id'      => $row['basket_id'],
@@ -272,5 +262,4 @@ class patch_360 implements patchInterface
 
         return true;
     }
-
 }

@@ -17,21 +17,23 @@
  */
 class databox_Field_DCES_Publisher extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Publisher';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Publisher';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'An entity responsible for making the resource
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'An entity responsible for making the resource
                           available.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#publisher';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#publisher';
+
 }

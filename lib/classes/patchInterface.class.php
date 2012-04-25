@@ -2,11 +2,12 @@
 
 interface patchInterface
 {
-  function get_release();
 
-  function concern();
+    function get_release();
 
-  function require_all_upgrades();
+    function concern();
 
-  function apply(base &$base);
+    function require_all_upgrades();
+
+    function apply(base &$base);
 }

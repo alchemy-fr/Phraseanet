@@ -26,9 +26,9 @@ $id = $parm['id'];
 $dashboard = new module_report_dashboard($Core->getAuthenticatedUser()->get_id());
 
 $var = array(
-    'rs' => $dashboard->dashboard['activity_day'][$id],
-    'legendDay' => $dashboard->legendDay,
-    "sbas_id" => $id,
+    'rs'         => $dashboard->dashboard['activity_day'][$id],
+    'legendDay'  => $dashboard->legendDay,
+    "sbas_id"    => $id,
     'ajax_chart' => true
 );
 

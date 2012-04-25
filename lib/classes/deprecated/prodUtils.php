@@ -17,136 +17,121 @@
  */
 function deleteRecord($lst, $del_children)
 {
-  $Core = bootstrap::getCore();
-  $em = $Core->getEntityManager();
-  $BE_repository = $em->getRepository('\Entities\BasketElement');
+    $Core = bootstrap::getCore();
+    $em = $Core->getEntityManager();
+    $BE_repository = $em->getRepository('\Entities\BasketElement');
 
-  $appbox = appbox::get_instance(\bootstrap::getCore());
-  $session = $appbox->get_session();
-  $registry = $Core->getRegistry();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $session = $appbox->get_session();
+    $registry = $Core->getRegistry();
 
-  $user = $Core->getAuthenticatedUser();
-  $ACL = $user->ACL();
+    $user = $Core->getAuthenticatedUser();
+    $ACL = $user->ACL();
 
-  $lst = explode(";", $lst);
+    $lst = explode(";", $lst);
 
-  $tcoll = array();
-  $tbase = array();
+    $tcoll = array();
+    $tbase = array();
 
-  $conn = $appbox->get_connection();
+    $conn = $appbox->get_connection();
 
-  foreach ($lst as $basrec)
-  {
-    $basrec = explode("_", $basrec);
-    if (!$basrec || count($basrec) !== 2)
-      continue;
+    foreach ($lst as $basrec) {
+        $basrec = explode("_", $basrec);
+        if ( ! $basrec || count($basrec) !== 2)
+            continue;
 
-    $record = new record_adapter($basrec[0], $basrec[1]);
-    $base_id = $record->get_base_id();
-    if (!isset($tcoll["c" . $base_id]))
-    {
+        $record = new record_adapter($basrec[0], $basrec[1]);
+        $base_id = $record->get_base_id();
+        if ( ! isset($tcoll["c" . $base_id])) {
 
-      $tcoll["c" . $base_id] = null;
+            $tcoll["c" . $base_id] = null;
 
-      foreach ($appbox->get_databoxes() as $databox)
-      {
-        foreach ($databox->get_collections() as $collection)
-        {
-          if ($collection->get_base_id() == $base_id)
-          {
-            $tcoll["c" . $base_id] = array("base_id" => $databox->get_sbas_id(), "id" => $base_id);
-            if (!isset($tbase["b" . $base_id]))
-            {
-              $x = $databox->get_structure();
-              $tbase["b" . $collection->get_base_id()] = array("id" => $collection->get_base_id(), "rids" => array());
+            foreach ($appbox->get_databoxes() as $databox) {
+                foreach ($databox->get_collections() as $collection) {
+                    if ($collection->get_base_id() == $base_id) {
+                        $tcoll["c" . $base_id] = array("base_id" => $databox->get_sbas_id(), "id"      => $base_id);
+                        if ( ! isset($tbase["b" . $base_id])) {
+                            $x = $databox->get_structure();
+                            $tbase["b" . $collection->get_base_id()] = array("id"   => $collection->get_base_id(), "rids" => array());
+                        }
+                        break;
+                    }
+                }
             }
-            break;
-          }
-        }
-      }
-    }
-
-    $temp = null;
-    $temp[0] = $basrec[0];
-    $temp[1] = $basrec[1];
-
-    $tbase["b" . $tcoll["c" . $base_id]["base_id"]]["rids"][] = $temp;
-  }
-  $ret = array();
-
-  foreach ($tbase as $base)
-  {
-    try
-    {
-      foreach ($base["rids"] as $rid)
-      {
-        $record = new record_adapter($rid[0], $rid[1]);
-        if (!$ACL->has_right_on_base($record->get_base_id(), 'candeleterecord'))
-          continue;
-        if ($del_children == "1")
-        {
-          foreach ($record->get_children() as $oneson)
-          {
-            if (!$ACL->has_right_on_base($oneson->get_base_id(), 'candeleterecord'))
-              continue;
-
-            $oneson->delete();
-            $ret[] = $oneson->get_serialize_key();
-          }
-        }
-        $ret[] = $record->get_serialize_key();
-
-        $basket_elements = $BE_repository->findElementsByRecord($record);
-
-        foreach($basket_elements as $basket_element)
-        {
-          $em->remove($basket_element);
         }
 
-        $record->delete();
-        unset($record);
-      }
+        $temp = null;
+        $temp[0] = $basrec[0];
+        $temp[1] = $basrec[1];
+
+        $tbase["b" . $tcoll["c" . $base_id]["base_id"]]["rids"][] = $temp;
     }
-    catch (Exception $e)
-    {
+    $ret = array();
 
+    foreach ($tbase as $base) {
+        try {
+            foreach ($base["rids"] as $rid) {
+                $record = new record_adapter($rid[0], $rid[1]);
+                if ( ! $ACL->has_right_on_base($record->get_base_id(), 'candeleterecord'))
+                    continue;
+                if ($del_children == "1") {
+                    foreach ($record->get_children() as $oneson) {
+                        if ( ! $ACL->has_right_on_base($oneson->get_base_id(), 'candeleterecord'))
+                            continue;
+
+                        $oneson->delete();
+                        $ret[] = $oneson->get_serialize_key();
+                    }
+                }
+                $ret[] = $record->get_serialize_key();
+
+                $basket_elements = $BE_repository->findElementsByRecord($record);
+
+                foreach ($basket_elements as $basket_element) {
+                    $em->remove($basket_element);
+                }
+
+                $record->delete();
+                unset($record);
+            }
+        } catch (Exception $e) {
+
+        }
     }
-  }
 
-  $em->flush();
+    $em->flush();
 
-  return p4string::jsonencode($ret);
+    return p4string::jsonencode($ret);
 }
 
 function whatCanIDelete($lst)
 {
 
-  $appbox = appbox::get_instance(\bootstrap::getCore());
-  $session = $appbox->get_session();
+    $appbox = appbox::get_instance(\bootstrap::getCore());
+    $session = $appbox->get_session();
 
-  $usr_id = $session->get_usr_id();
+    $usr_id = $session->get_usr_id();
 
-  $conn = $appbox->get_connection();
+    $conn = $appbox->get_connection();
 
-  $nbdocsel = 0;
-  $nbgrp = 0;
-  $oksel = array();
-  $arrSel = explode(";", $lst);
+    $nbdocsel = 0;
+    $nbgrp = 0;
+    $oksel = array();
+    $arrSel = explode(";", $lst);
 
-  if (!is_array($lst))
-    $lst = explode(';', $lst);
+    if ( ! is_array($lst))
+        $lst = explode(';', $lst);
 
-  foreach ($lst as $sel)
-  {
-    if ($sel == "")
-      continue;
-    $exp = explode("_", $sel);
+    foreach ($lst as $sel) {
+        if ($sel == "")
+            continue;
+        $exp = explode("_", $sel);
 
-    if (count($exp) !== 2)
-      continue;
+        if (count($exp) !== 2)
+            continue;
 
-    $record = new record_adapter($exp[0], $exp[1]);
-    $sqlV = 'SELECT mask_and, mask_xor, sb.*
+        $record = new record_adapter($exp[0], $exp[1]);
+        $sqlV = 'SELECT mask_and, mask_xor, sb.*
                FROM (sbas sb, bas b, usr u)
                 LEFT JOIN basusr bu ON
                   (bu.base_id = b.base_id AND bu.candeleterecord = "1"
@@ -154,46 +139,41 @@ function whatCanIDelete($lst)
                WHERE u.usr_id = :usr_id AND b.base_id = :base_id
                 AND b.sbas_id = sb.sbas_id';
 
-    $params = array(
-        ':base_id' => $record->get_base_id()
-        , ':usr_id' => $usr_id
-    );
+        $params = array(
+            ':base_id' => $record->get_base_id()
+            , ':usr_id'  => $usr_id
+        );
 
-    $stmt = $conn->prepare($sqlV);
-    $stmt->execute($params);
-    $rowV = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
+        $stmt = $conn->prepare($sqlV);
+        $stmt->execute($params);
+        $rowV = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-    if ($rowV && $rowV['mask_and'] != '' && $rowV['mask_xor'] != '')
-    {
-      try
-      {
-        $connbas = connection::getPDOConnection($rowV['sbas_id']);
-        $sqlS2 = 'SELECT record_id FROM record
+        if ($rowV && $rowV['mask_and'] != '' && $rowV['mask_xor'] != '') {
+            try {
+                $connbas = connection::getPDOConnection($rowV['sbas_id']);
+                $sqlS2 = 'SELECT record_id FROM record
               WHERE ((status ^ ' . $rowV['mask_xor'] . ') & ' . $rowV['mask_and'] . ')=0
                 AND record_id = :record_id';
 
-        $stmt = $connbas->prepare($sqlS2);
-        $stmt->execute(array(':record_id' => $exp[1]));
-        $num_rows = $stmt->rowCount();
-        $stmt->closeCursor();
+                $stmt = $connbas->prepare($sqlS2);
+                $stmt->execute(array(':record_id' => $exp[1]));
+                $num_rows = $stmt->rowCount();
+                $stmt->closeCursor();
 
-        if ($num_rows > 0)
-        {
-          $oksel[] = implode('_', $exp);
-          $nbdocsel++;
-          if ($record->is_grouping())
-            $nbgrp++;
+                if ($num_rows > 0) {
+                    $oksel[] = implode('_', $exp);
+                    $nbdocsel ++;
+                    if ($record->is_grouping())
+                        $nbgrp ++;
+                }
+            } catch (Exception $e) {
+
+            }
         }
-      }
-      catch (Exception $e)
-      {
-
-      }
     }
-  }
 
-  $ret = array('lst' => $oksel, 'groupings' => $nbgrp);
+    $ret = array('lst'       => $oksel, 'groupings' => $nbgrp);
 
-  return p4string::jsonencode($ret);
+    return p4string::jsonencode($ret);
 }

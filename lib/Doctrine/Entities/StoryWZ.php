@@ -24,144 +24,141 @@ require_once __DIR__ . '/../../classes/User/Adapter.class.php';
  */
 class StoryWZ
 {
+    /**
+     * @var integer $id
+     */
+    protected $id;
 
-  /**
-   * @var integer $id
-   */
-  protected $id;
+    /**
+     * @var integer $sbas_id
+     */
+    protected $sbas_id;
 
-  /**
-   * @var integer $sbas_id
-   */
-  protected $sbas_id;
+    /**
+     * @var integer $record_id
+     */
+    protected $record_id;
 
-  /**
-   * @var integer $record_id
-   */
-  protected $record_id;
+    /**
+     * @var integer $usr_id
+     */
+    protected $usr_id;
 
-  /**
-   * @var integer $usr_id
-   */
-  protected $usr_id;
+    /**
+     * @var datetime $created
+     */
+    protected $created;
 
-  /**
-   * @var datetime $created
-   */
-  protected $created;
-
-  /**
-   * Get id
-   *
-   * @return integer
-   */
-  public function getId()
-  {
-    return $this->id;
-  }
-
-  /**
-   * Set sbas_id
-   *
-   * @param integer $sbasId
-   */
-  public function setSbasId($sbasId)
-  {
-    $this->sbas_id = $sbasId;
-  }
-
-  /**
-   * Get sbas_id
-   *
-   * @return integer
-   */
-  public function getSbasId()
-  {
-    return $this->sbas_id;
-  }
-
-  /**
-   * Set record_id
-   *
-   * @param integer $recordId
-   */
-  public function setRecordId($recordId)
-  {
-    $this->record_id = $recordId;
-  }
-
-  /**
-   * Get record_id
-   *
-   * @return integer
-   */
-  public function getRecordId()
-  {
-    return $this->record_id;
-  }
-
-  /**
-   * Set usr_id
-   *
-   * @param integer $usrId
-   */
-  public function setUsrId($usrId)
-  {
-    $this->usr_id = $usrId;
-  }
-
-  /**
-   * Get usr_id
-   *
-   * @return integer
-   */
-  public function getUsrId()
-  {
-    return $this->usr_id;
-  }
-
-  /**
-   * Set created
-   *
-   * @param datetime $created
-   */
-  public function setCreated($created)
-  {
-    $this->created = $created;
-  }
-
-  /**
-   * Get created
-   *
-   * @return datetime
-   */
-  public function getCreated()
-  {
-    return $this->created;
-  }
-
-  public function setUser(\User_Adapter $user)
-  {
-    $this->setUsrId($user->get_id());
-  }
-
-  public function getUser()
-  {
-    if ($this->getUsrId())
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
     {
-      return new \User_Adapter($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
+        return $this->id;
     }
-  }
 
-  public function getRecord()
-  {
-    return new \record_adapter($this->getSbasId(), $this->getRecordId());
-  }
+    /**
+     * Set sbas_id
+     *
+     * @param integer $sbasId
+     */
+    public function setSbasId($sbasId)
+    {
+        $this->sbas_id = $sbasId;
+    }
 
-  public function setRecord(\record_adapter $record)
-  {
-    $this->setRecordId($record->get_record_id());
-    $this->setSbasId($record->get_sbas_id());
-  }
+    /**
+     * Get sbas_id
+     *
+     * @return integer
+     */
+    public function getSbasId()
+    {
+        return $this->sbas_id;
+    }
 
+    /**
+     * Set record_id
+     *
+     * @param integer $recordId
+     */
+    public function setRecordId($recordId)
+    {
+        $this->record_id = $recordId;
+    }
+
+    /**
+     * Get record_id
+     *
+     * @return integer
+     */
+    public function getRecordId()
+    {
+        return $this->record_id;
+    }
+
+    /**
+     * Set usr_id
+     *
+     * @param integer $usrId
+     */
+    public function setUsrId($usrId)
+    {
+        $this->usr_id = $usrId;
+    }
+
+    /**
+     * Get usr_id
+     *
+     * @return integer
+     */
+    public function getUsrId()
+    {
+        return $this->usr_id;
+    }
+
+    /**
+     * Set created
+     *
+     * @param datetime $created
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+    }
+
+    /**
+     * Get created
+     *
+     * @return datetime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    public function setUser(\User_Adapter $user)
+    {
+        $this->setUsrId($user->get_id());
+    }
+
+    public function getUser()
+    {
+        if ($this->getUsrId()) {
+            return new \User_Adapter($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
+        }
+    }
+
+    public function getRecord()
+    {
+        return new \record_adapter($this->getSbasId(), $this->getRecordId());
+    }
+
+    public function setRecord(\record_adapter $record)
+    {
+        $this->setRecordId($record->get_record_id());
+        $this->setSbasId($record->get_sbas_id());
+    }
 }

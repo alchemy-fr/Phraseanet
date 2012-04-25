@@ -13,116 +13,94 @@ use Doctrine\ORM\EntityRepository;
 class StoryWZRepository extends EntityRepository
 {
 
-  public function findByUser(\User_Adapter $user, $sort)
-  {
-    $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.usr_id = :usr_id ';
-
-    if ($sort == 'date')
+    public function findByUser(\User_Adapter $user, $sort)
     {
-      $dql .= ' ORDER BY s.created DESC';
+        $dql = 'SELECT s FROM Entities\StoryWZ s WHERE s.usr_id = :usr_id ';
+
+        if ($sort == 'date') {
+            $dql .= ' ORDER BY s.created DESC';
+        }
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters(array('usr_id' => $user->get_id()));
+
+        $stories = $query->getResult();
+
+        foreach ($stories as $key => $story) {
+            try {
+                $story->getRecord()->get_title();
+            } catch (\Exception_Record_AdapterNotFound $e) {
+                $this->getEntityManager()->remove($story);
+                unset($stories[$key]);
+            }
+        }
+
+        $this->getEntityManager()->flush();
+
+        if ($sort == 'name') {
+            $sortedStories = array();
+            foreach ($stories as $story) {
+                $sortedStories[] = $story->getRecord()->get_title();
+            }
+
+            uasort($sortedStories, function($a, $b) {
+                    if ($a == $b) {
+                        return 0;
+                    }
+
+                    return ($a < $b) ? -1 : 1;
+                });
+
+            foreach ($sortedStories as $idStory => $titleStory) {
+                $sortedStories[$idStory] = $stories[$idStory];
+            }
+        }
+
+        return $stories;
     }
 
-    $query = $this->_em->createQuery($dql);
-    $query->setParameters(array('usr_id' => $user->get_id()));
-
-    $stories = $query->getResult();
-
-    foreach ($stories as $key => $story)
+    public function findByUserAndId(\User_Adapter $user, $id)
     {
-      try
-      {
-        $story->getRecord()->get_title();
-      }
-      catch (\Exception_Record_AdapterNotFound $e)
-      {
-        $this->getEntityManager()->remove($story);
-        unset($stories[$key]);
-      }
+        $story = $this->find($id);
+
+        if ($story) {
+            try {
+                $story->getRecord()->get_title();
+            } catch (\Exception_Record_AdapterNotFound $e) {
+                $this->getEntityManager()->remove($story);
+                throw new \Exception_NotFound('Story not found');
+            }
+
+            if ($story->getUser()->get_id() !== $user->get_id()) {
+                throw new \Exception_Forbidden('You have not access to ths story');
+            }
+        } else {
+            throw new \Exception_NotFound('Story not found');
+        }
+
+        return $story;
     }
 
-    $this->getEntityManager()->flush();
-
-    if ($sort == 'name')
+    public function findUserStory(\User_Adapter $user, \record_adapter $Story)
     {
-      $sortedStories = array();
-      foreach ($stories as $story)
-      {
-        $sortedStories[] = $story->getRecord()->get_title();
-      }
-
-      uasort($sortedStories, function($a, $b)
-              {
-                if ($a == $b)
-                {
-                  return 0;
-                }
-
-                return ($a < $b) ? -1 : 1;
-              });
-
-      foreach ($sortedStories as $idStory => $titleStory)
-      {
-        $sortedStories[$idStory] = $stories[$idStory];
-      }
-    }
-
-    return $stories;
-  }
-
-  public function findByUserAndId(\User_Adapter $user, $id)
-  {
-    $story = $this->find($id);
-
-    if ($story)
-    {
-      try
-      {
-        $story->getRecord()->get_title();
-      }
-      catch (\Exception_Record_AdapterNotFound $e)
-      {
-        $this->getEntityManager()->remove($story);
-        throw new \Exception_NotFound('Story not found');
-      }
-
-      if ($story->getUser()->get_id() !== $user->get_id())
-      {
-        throw new \Exception_Forbidden('You have not access to ths story');
-      }
-    }
-    else
-    {
-      throw new \Exception_NotFound('Story not found');
-    }
-
-    return $story;
-  }
-
-  public function findUserStory(\User_Adapter $user, \record_adapter $Story)
-  {
-    $story = $this->findOneBy(
+        $story = $this->findOneBy(
             array(
-                'usr_id' => $user->get_id(),
-                'sbas_id' => $Story->get_sbas_id(),
+                'usr_id'    => $user->get_id(),
+                'sbas_id'   => $Story->get_sbas_id(),
                 'record_id' => $Story->get_record_id(),
             )
-    );
+        );
 
-    if ($story)
-    {
-      try
-      {
-        $record = $story->getRecord();
-      }
-      catch (\Exception_Record_AdapterNotFound $e)
-      {
-        $this->getEntityManager()->remove($story);
-        $this->getEntityManager()->flush();
-        $story = null;
-      }
+        if ($story) {
+            try {
+                $record = $story->getRecord();
+            } catch (\Exception_Record_AdapterNotFound $e) {
+                $this->getEntityManager()->remove($story);
+                $this->getEntityManager()->flush();
+                $story = null;
+            }
+        }
+
+        return $story;
     }
-
-    return $story;
-  }
-
 }

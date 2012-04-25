@@ -23,15 +23,14 @@ $parm = $request->get_parms('action', 'city');
 
 $action = $parm['action'];
 
-switch ($action)
-{
-  case 'FIND':
-    $geoname = new geonames();
-    $core = \bootstrap::getCore();
-    $twig = $core->getTwig();
+switch ($action) {
+    case 'FIND':
+        $geoname = new geonames();
+        $core = \bootstrap::getCore();
+        $twig = $core->getTwig();
 
-    $output = $twig->render('geonames/city_list.twig', array('geonames' => $geoname->find_city($parm['city'])));
-    break;
+        $output = $twig->render('geonames/city_list.twig', array('geonames' => $geoname->find_city($parm['city'])));
+        break;
 }
 
 

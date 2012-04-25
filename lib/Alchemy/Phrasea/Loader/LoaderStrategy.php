@@ -20,10 +20,9 @@ namespace Alchemy\Phrasea\Loader;
 interface LoaderStrategy
 {
 
-  /**
-   * Check wether the cacheAdapter is available
-   * @Return boolean
-   */
-  public function isAvailable();
-
+    /**
+     * Check wether the cacheAdapter is available
+     * @Return boolean
+     */
+    public function isAvailable();
 }

@@ -17,21 +17,23 @@
  */
 class databox_Field_DCES_Format extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Format';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Format';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'The file format, physical medium,
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'The file format, physical medium,
                           or dimensions of the resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#format';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#format';
+
 }

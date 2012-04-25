@@ -25,29 +25,25 @@ use Alchemy\Phrasea\Core,
  */
 class XcacheCache extends ServiceAbstract
 {
+    protected $cache;
 
-  protected $cache;
-
-  public function getDriver()
-  {
-    if (!extension_loaded('xcache'))
+    public function getDriver()
     {
-      throw new \Exception('The XCache cache requires the XCache extension.');
+        if ( ! extension_loaded('xcache')) {
+            throw new \Exception('The XCache cache requires the XCache extension.');
+        }
+
+        if ( ! $this->cache) {
+            $this->cache = new CacheDriver\XcacheCache();
+
+            $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+        }
+
+        return $this->cache;
     }
 
-    if (!$this->cache)
+    public function getType()
     {
-      $this->cache = new CacheDriver\XcacheCache();
-
-      $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+        return 'xcache';
     }
-
-    return $this->cache;
-  }
-
-  public function getType()
-  {
-    return 'xcache';
-  }
-
 }

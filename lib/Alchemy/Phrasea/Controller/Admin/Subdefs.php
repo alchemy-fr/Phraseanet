@@ -29,109 +29,95 @@ use Silex\ControllerCollection;
 class Subdefs implements ControllerProviderInterface
 {
 
-  public function connect(Application $app)
-  {
+    public function connect(Application $app)
+    {
 
-    $controllers = new ControllerCollection();
+        $controllers = new ControllerCollection();
 
-    $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id)
-            {
-              $databox = \databox::get_instance((int) $sbas_id);
+        $controllers->get('/{sbas_id}/', function(Application $app, $sbas_id) {
+                $databox = \databox::get_instance((int) $sbas_id);
 
-              return new response($app['Core']->getTwig()->render(
-                                      'admin/subdefs.twig', array(
-                                  'databox' => $databox,
-                                  'subdefs' => $databox->get_subdef_structure()
-                                      )
-                              )
-              );
+                return new response($app['Core']->getTwig()->render(
+                            'admin/subdefs.twig', array(
+                            'databox' => $databox,
+                            'subdefs' => $databox->get_subdef_structure()
+                            )
+                        )
+                );
             })->assert('sbas_id', '\d+');
 
-    $controllers->post('/{sbas_id}/', function(Application $app, Request $request, $sbas_id)
-            {
-              $delete_subdef = $request->get('delete_subdef');
-              $toadd_subdef = $request->get('add_subdef');
-              $Parmsubdefs = $request->get('subdefs', array());
+        $controllers->post('/{sbas_id}/', function(Application $app, Request $request, $sbas_id) {
+                $delete_subdef = $request->get('delete_subdef');
+                $toadd_subdef = $request->get('add_subdef');
+                $Parmsubdefs = $request->get('subdefs', array());
 
-              $databox = \databox::get_instance((int) $sbas_id);
+                $databox = \databox::get_instance((int) $sbas_id);
 
-              $add_subdef = array('class' => null, 'name' => null, 'group' => null);
-              foreach ($add_subdef as $k => $v)
-              {
-                if (!isset($toadd_subdef[$k]) || trim($toadd_subdef[$k]) === '')
-                  unset($add_subdef[$k]);
-                else
-                  $add_subdef[$k] = $toadd_subdef[$k];
-              }
-
-              if ($delete_subdef)
-              {
-                $delete_subef = explode('_', $delete_subdef);
-                $group = $delete_subef[0];
-                $name = $delete_subef[1];
-                $subdefs = $databox->get_subdef_structure();
-                $subdefs->delete_subdef($group, $name);
-              }
-              elseif (count($add_subdef) === 3)
-              {
-                $subdefs = $databox->get_subdef_structure();
-                $UnicodeProcessor = new \unicode();
-
-                $group = $add_subdef['group'];
-                $name = $UnicodeProcessor->remove_nonazAZ09($add_subdef['name'], false);
-                $class = $add_subdef['class'];
-
-                $subdefs->add_subdef($group, $name, $class);
-              }
-              else
-              {
-                $subdefs = $databox->get_subdef_structure();
-
-                $options = array();
-
-                foreach ($Parmsubdefs as $post_sub)
-                {
-                  $post_sub_ex = explode('_', $post_sub);
-
-                  $group = $post_sub_ex[0];
-                  $name = $post_sub_ex[1];
-
-                  $class = $request->get($post_sub . '_class');
-                  $downloadable = $request->get($post_sub . '_downloadable');
-
-                  $defaults = array('path', 'baseurl', 'meta', 'mediatype');
-
-                  foreach ($defaults as $def)
-                  {
-                    $parm_loc = $request->get($post_sub . '_' . $def);
-
-                    if ($def == 'meta' && !$parm_loc)
-                    {
-                      $parm_loc = "no";
-                    }
-
-                    $options[$def] = $parm_loc;
-                  }
-
-                  $mediatype = $request->get($post_sub . '_mediatype');
-                  $media = $request->get($post_sub . '_' . $mediatype, array());
-
-                  foreach ($media as $option => $value)
-                  {
-                    if ($option == 'resolution' && $mediatype == 'image')
-                    {
-                      $option = 'dpi';
-                    }
-                    $options[$option] = $value;
-                  }
-                  $subdefs->set_subdef($group, $name, $class, $downloadable, $options);
+                $add_subdef = array('class' => null, 'name'  => null, 'group' => null);
+                foreach ($add_subdef as $k => $v) {
+                    if ( ! isset($toadd_subdef[$k]) || trim($toadd_subdef[$k]) === '')
+                        unset($add_subdef[$k]);
+                    else
+                        $add_subdef[$k] = $toadd_subdef[$k];
                 }
-              }
 
-              return new RedirectResponse('/admin/subdefs/' . $databox->get_sbas_id() . '/');
+                if ($delete_subdef) {
+                    $delete_subef = explode('_', $delete_subdef);
+                    $group = $delete_subef[0];
+                    $name = $delete_subef[1];
+                    $subdefs = $databox->get_subdef_structure();
+                    $subdefs->delete_subdef($group, $name);
+                } elseif (count($add_subdef) === 3) {
+                    $subdefs = $databox->get_subdef_structure();
+                    $UnicodeProcessor = new \unicode();
+
+                    $group = $add_subdef['group'];
+                    $name = $UnicodeProcessor->remove_nonazAZ09($add_subdef['name'], false);
+                    $class = $add_subdef['class'];
+
+                    $subdefs->add_subdef($group, $name, $class);
+                } else {
+                    $subdefs = $databox->get_subdef_structure();
+
+                    $options = array();
+
+                    foreach ($Parmsubdefs as $post_sub) {
+                        $post_sub_ex = explode('_', $post_sub);
+
+                        $group = $post_sub_ex[0];
+                        $name = $post_sub_ex[1];
+
+                        $class = $request->get($post_sub . '_class');
+                        $downloadable = $request->get($post_sub . '_downloadable');
+
+                        $defaults = array('path', 'baseurl', 'meta', 'mediatype');
+
+                        foreach ($defaults as $def) {
+                            $parm_loc = $request->get($post_sub . '_' . $def);
+
+                            if ($def == 'meta' && ! $parm_loc) {
+                                $parm_loc = "no";
+                            }
+
+                            $options[$def] = $parm_loc;
+                        }
+
+                        $mediatype = $request->get($post_sub . '_mediatype');
+                        $media = $request->get($post_sub . '_' . $mediatype, array());
+
+                        foreach ($media as $option => $value) {
+                            if ($option == 'resolution' && $mediatype == 'image') {
+                                $option = 'dpi';
+                            }
+                            $options[$option] = $value;
+                        }
+                        $subdefs->set_subdef($group, $name, $class, $downloadable, $options);
+                    }
+                }
+
+                return new RedirectResponse('/admin/subdefs/' . $databox->get_sbas_id() . '/');
             })->assert('sbas_id', '\d+');
 
-    return $controllers;
-  }
-
+        return $controllers;
+    }
 }

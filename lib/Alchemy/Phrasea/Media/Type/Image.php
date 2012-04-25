@@ -18,5 +18,4 @@ class Image implements Type
     {
         return self::TYPE_IMAGE;
     }
-
 }

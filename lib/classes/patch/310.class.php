@@ -17,12 +17,12 @@
  */
 class patch_310 implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.1.0';
+
     /**
      *
      * @var Array
@@ -60,7 +60,6 @@ class patch_310 implements patchInterface
         $subdefgroups = $sx_structure->xpath('//subdefgroup');
 
         if (count($subdefgroups) > 0)
-
             return;
 
         $subdefs = $sx_structure->xpath('/record/subdefs');
@@ -72,21 +71,18 @@ class patch_310 implements patchInterface
 
         $subdefs_groups = array();
 
-        foreach ($subdefs[0] as $k => $v)
-        {
+        foreach ($subdefs[0] as $k => $v) {
             $type = isset($v->type) ? (string) $v->type : 'image';
 
             if ($type == 'image')
                 $media = 'image';
-            elseif ($type == 'audio')
-            {
+            elseif ($type == 'audio') {
                 if ($v->method == 'MP3')
                     $media = "audio";
                 else
                     $media = "image";
             }
-            elseif ($type == 'video')
-            {
+            elseif ($type == 'video') {
                 if ($v->method == 'AnimGIF')
                     $media = "gif";
                 elseif ($v->method == 'JPG')
@@ -95,8 +91,7 @@ class patch_310 implements patchInterface
                     $media = 'video';
             }
 
-            if (!isset($subdefs_groups[$type]))
-            {
+            if ( ! isset($subdefs_groups[$type])) {
                 $subdefs_groups[$type] = $dom_structure->createElement('subdefgroup');
                 $subdefs_groups[$type]->setAttribute('name', $type);
             }
@@ -107,8 +102,7 @@ class patch_310 implements patchInterface
             $dom_subdef->setAttribute('name', $k);
             $dom_subdef->setAttribute('downloadable', 'true');
 
-            foreach ($v as $tag => $value)
-            {
+            foreach ($v as $tag => $value) {
                 if (in_array($tag, array('type', 'name')))
                     continue;
 
@@ -118,35 +112,29 @@ class patch_310 implements patchInterface
             $dom_element = $dom_structure->createElement('mediatype', $media);
             $dom_subdef->appendChild($dom_element);
 
-            if ($media == 'video')
-            {
+            if ($media == 'video') {
                 $dom_element = $dom_structure->createElement('threads', '1');
                 $dom_subdef->appendChild($dom_element);
             }
 
 
             //preview, thumbnail et thumbnailGIF
-            if ($k == 'preview')
-            {
+            if ($k == 'preview') {
                 $dom_element =
-                                $dom_structure->createElement('label', 'Prévisualisation');
+                    $dom_structure->createElement('label', 'Prévisualisation');
                 $dom_element->setAttribute('xml:lang', 'fr');
                 $dom_subdef->appendChild($dom_element);
                 $dom_element = $dom_structure->createElement('label', 'Preview');
                 $dom_element->setAttribute('lang', 'en');
                 $dom_subdef->appendChild($dom_element);
-            }
-            elseif ($k == 'thumbnailGIF')
-            {
+            } elseif ($k == 'thumbnailGIF') {
                 $dom_element = $dom_structure->createElement('label', 'Animation GIF');
                 $dom_element->setAttribute('lang', 'fr');
                 $dom_subdef->appendChild($dom_element);
                 $dom_element = $dom_structure->createElement('label', 'GIF animation');
                 $dom_element->setAttribute('lang', 'en');
                 $dom_subdef->appendChild($dom_element);
-            }
-            else
-            {
+            } else {
                 $dom_element = $dom_structure->createElement('label', 'Imagette');
                 $dom_element->setAttribute('lang', 'fr');
                 $dom_subdef->appendChild($dom_element);
@@ -164,14 +152,12 @@ class patch_310 implements patchInterface
         $record = $dom_structure->documentElement;
 
         $record->replaceChild(
-                        $new_subefs_node,
-                        $record->getElementsByTagName('subdefs')->item(0)
+            $new_subefs_node, $record->getElementsByTagName('subdefs')->item(0)
         );
 
         $databox->saveStructure($dom_structure);
 
         return true;
     }
-
 }
 

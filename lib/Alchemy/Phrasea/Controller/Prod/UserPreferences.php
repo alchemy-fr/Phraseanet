@@ -31,39 +31,34 @@ use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute,
 class UserPreferences implements ControllerProviderInterface
 {
 
-  public function connect(Application $app)
-  {
-    $controllers = new ControllerCollection();
+    public function connect(Application $app)
+    {
+        $controllers = new ControllerCollection();
 
-    $controllers->post('/save/', function(Application $app, Request $request)
-      {
-        $ret = array('success' => false, 'message' => _('Error while saving preference'));
+        $controllers->post('/save/', function(Application $app, Request $request) {
+                $ret = array('success' => false, 'message' => _('Error while saving preference'));
 
-        try
-        {
-          $user = $app['Core']->getAuthenticatedUser();
+                try {
+                    $user = $app['Core']->getAuthenticatedUser();
 
-          $ret = $user->setPrefs($request->get('prop'), $request->get('value'));
+                    $ret = $user->setPrefs($request->get('prop'), $request->get('value'));
 
-          if ($ret == $request->get('value'))
-            $output = "1";
-          else
-            $output = "0";
+                    if ($ret == $request->get('value'))
+                        $output = "1";
+                    else
+                        $output = "0";
 
-          $ret = array('success' => true, 'message' => _('Preference saved !'));
-        }
-        catch (\Exception $e)
-        {
+                    $ret = array('success' => true, 'message' => _('Preference saved !'));
+                } catch (\Exception $e) {
 
-        }
+                }
 
-        $Serializer = $app['Core']['Serializer'];
-        $datas      = $Serializer->serialize($ret, 'json');
+                $Serializer = $app['Core']['Serializer'];
+                $datas = $Serializer->serialize($ret, 'json');
 
-        return new Response($datas, 200, array('Content-Type' => 'application/json'));
-      });
+                return new Response($datas, 200, array('Content-Type' => 'application/json'));
+            });
 
-    return $controllers;
-  }
-
+        return $controllers;
+    }
 }

@@ -17,23 +17,21 @@
  */
 class Bridge_Api_Auth_Abstract
 {
+    /**
+     *
+     * @var Bridge_AccountSettings
+     */
+    protected $settings;
 
-  /**
-   *
-   * @var Bridge_AccountSettings
-   */
-  protected $settings;
+    /**
+     *
+     * @param Bridge_AccountSettings $settings
+     * @return Bridge_Api_Auth_Abstract
+     */
+    public function set_settings(Bridge_AccountSettings $settings)
+    {
+        $this->settings = $settings;
 
-  /**
-   *
-   * @param Bridge_AccountSettings $settings
-   * @return Bridge_Api_Auth_Abstract
-   */
-  public function set_settings(Bridge_AccountSettings $settings)
-  {
-    $this->settings = $settings;
-
-    return $this;
-  }
-
+        return $this;
+    }
 }

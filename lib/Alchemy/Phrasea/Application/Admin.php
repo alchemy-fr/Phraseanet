@@ -21,24 +21,23 @@ use Alchemy\Phrasea\Controller\Utils as ControllerUtils;
  * @link        www.phraseanet.com
  */
 return call_user_func(
-    function()
-    {
-      $app = new \Silex\Application();
+        function() {
+            $app = new \Silex\Application();
 
-      $app['Core'] = \bootstrap::getCore();
+            $app['Core'] = \bootstrap::getCore();
 
-      $app->mount('/', new Controller\Root());
-      $app->mount('/publications', new Controller\Publications());
-      $app->mount('/users', new Controller\Users());
-      $app->mount('/fields', new Controller\Fields());
-      $app->mount('/subdefs', new Controller\Subdefs);
-      $app->mount('/description', new Controller\Description());
-      $app->mount('/tests/connection', new ControllerUtils\ConnectionTest());
-      $app->mount('/tests/pathurl', new ControllerUtils\PathFileTest());
+            $app->mount('/', new Controller\Root());
+            $app->mount('/publications', new Controller\Publications());
+            $app->mount('/users', new Controller\Users());
+            $app->mount('/fields', new Controller\Fields());
+            $app->mount('/subdefs', new Controller\Subdefs);
+            $app->mount('/description', new Controller\Description());
+            $app->mount('/tests/connection', new ControllerUtils\ConnectionTest());
+            $app->mount('/tests/pathurl', new ControllerUtils\PathFileTest());
 
-      $app->error(function($e){
-        return new \Symfony\Component\HttpFoundation\Response($e->getMessage(), 403);
-      });
+            $app->error(function($e) {
+                    return new \Symfony\Component\HttpFoundation\Response($e->getMessage(), 403);
+                });
 
-      return $app;
-    });
+            return $app;
+        });

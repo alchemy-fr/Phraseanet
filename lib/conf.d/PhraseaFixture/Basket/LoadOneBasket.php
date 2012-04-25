@@ -23,33 +23,30 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class LoadOneBasket extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
+    /**
+     *
+     * @var \Entities\Basket
+     */
+    public $basket;
 
-  /**
-   *
-   * @var \Entities\Basket
-   */
-  public $basket;
-
-  public function load(ObjectManager $manager)
-  {
-    $basket = new \Entities\Basket();
-
-    $basket->setName('test');
-    $basket->setDescription('description');
-
-    if (null === $this->user)
+    public function load(ObjectManager $manager)
     {
-      throw new \LogicException('Fill a user to store a new basket');
+        $basket = new \Entities\Basket();
+
+        $basket->setName('test');
+        $basket->setDescription('description');
+
+        if (null === $this->user) {
+            throw new \LogicException('Fill a user to store a new basket');
+        }
+
+        $basket->setOwner($this->user);
+
+        $manager->persist($basket);
+        $manager->flush();
+
+        $this->basket = $basket;
+
+        $this->addReference('one-basket', $basket);
     }
-
-    $basket->setOwner($this->user);
-
-    $manager->persist($basket);
-    $manager->flush();
-
-    $this->basket = $basket;
-
-    $this->addReference('one-basket', $basket);
-  }
-
 }

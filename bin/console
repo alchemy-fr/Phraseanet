@@ -29,9 +29,8 @@ $result_code = 1;
 
 $result_code = 1;
 
-try
-{
-  $app = new Application("
+try {
+    $app = new Application("
   _____  _    _ _____            _____ ______          _   _ ______ _______
  |  __ \| |  | |  __ \    /\    / ____|  ____|   /\   | \ | |  ____|__   __|
  | |__) | |__| | |__) |  /  \  | (___ | |__     /  \  |  \| | |__     | |
@@ -47,45 +46,43 @@ try
  This program comes with ABSOLUTELY NO WARRANTY.
  This is free software, and you are welcome to redistribute it
  under certain conditions; type `about:license' for details.\n\n"
-                  . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName()
-                  . ' ' . \Alchemy\Phrasea\Core\Version::getNumber());
+            . ' KONSOLE KOMMANDER', \Alchemy\Phrasea\Core\Version::getName()
+            . ' ' . \Alchemy\Phrasea\Core\Version::getNumber());
 
-  $app->add(new module_console_aboutAuthors('about:authors'));
-  $app->add(new module_console_aboutLicense('about:license'));
+    $app->add(new module_console_aboutAuthors('about:authors'));
+    $app->add(new module_console_aboutLicense('about:license'));
 
-  $app->add(new module_console_checkExtension('check:extension'));
+    $app->add(new module_console_checkExtension('check:extension'));
 
-  $app->add(new module_console_systemUpgrade('system:upgrade'));
+    $app->add(new module_console_systemUpgrade('system:upgrade'));
 
-  $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
+    $app->add(new module_console_sphinxGenerateSuggestion('sphinx:generate-suggestions'));
 
-  $app->add(new module_console_systemMailCheck('system:mailCheck'));
-  $app->add(new module_console_systemBackupDB('system:backupDB'));
-  $app->add(new module_console_systemClearCache('system:clearCache'));
-  $app->add(new module_console_systemTemplateGenerator('system:templateGenerator'));
-  $app->add(new module_console_systemExport('system:export'));
+    $app->add(new module_console_systemMailCheck('system:mailCheck'));
+    $app->add(new module_console_systemBackupDB('system:backupDB'));
+    $app->add(new module_console_systemClearCache('system:clearCache'));
+    $app->add(new module_console_systemTemplateGenerator('system:templateGenerator'));
+    $app->add(new module_console_systemExport('system:export'));
 
-  $app->add(new module_console_taskrun('task:run'));
-  $app->add(new module_console_tasklist('task:list'));
-  $app->add(new module_console_schedulerState('scheduler:state'));
-  $app->add(new module_console_schedulerStop('scheduler:stop'));
-  $app->add(new module_console_schedulerStart('scheduler:start'));
-  $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
-  $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
-  $app->add(new module_console_systemConfigCheck('check:system'));
-
-
-  $app->add(new module_console_fieldsList('fields:list'));
-  $app->add(new module_console_fieldsDelete('fields:delete'));
-  $app->add(new module_console_fieldsRename('fields:rename'));
-  $app->add(new module_console_fieldsMerge('fields:merge'));
+    $app->add(new module_console_taskrun('task:run'));
+    $app->add(new module_console_tasklist('task:list'));
+    $app->add(new module_console_schedulerState('scheduler:state'));
+    $app->add(new module_console_schedulerStop('scheduler:stop'));
+    $app->add(new module_console_schedulerStart('scheduler:start'));
+    $app->add(new module_console_fileEnsureProductionSetting('check:ensureProductionSettings'));
+    $app->add(new module_console_fileEnsureDevSetting('check:ensureDevSettings'));
+    $app->add(new module_console_systemConfigCheck('check:system'));
 
 
-  $result_code = $app->run() === 0 ? : 1;
-}
-catch (Exception $e)
-{
-  echo sprintf("an error occured : %s", $e->getMessage());
+    $app->add(new module_console_fieldsList('fields:list'));
+    $app->add(new module_console_fieldsDelete('fields:delete'));
+    $app->add(new module_console_fieldsRename('fields:rename'));
+    $app->add(new module_console_fieldsMerge('fields:merge'));
+
+
+    $result_code = $app->run() === 0 ? : 1;
+} catch (Exception $e) {
+    echo sprintf("an error occured : %s", $e->getMessage());
 }
 
 exit($result_code);

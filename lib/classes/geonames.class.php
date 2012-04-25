@@ -2,180 +2,164 @@
 
 class geonames
 {
+    protected static $NamesFromId = array();
+    protected static $CountryFromId = array();
+    protected static $CountryCodeFromId = array();
+    protected static $GeonameFromIp = array();
+    protected static $Searches = array();
 
-  protected static $NamesFromId = array();
-  protected static $CountryFromId = array();
-  protected static $CountryCodeFromId = array();
-  protected static $GeonameFromIp = array();
-  protected static $Searches = array();
-
-  public function name_from_id($geonameid)
-  {
-    $registry = registry::get_instance();
-    $url      = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
-      . 'get_name.php?geonameid='
-      . $geonameid;
-
-    $ret = '';
-
-    $xml = http_query::getUrl($url);
-    if ($xml)
+    public function name_from_id($geonameid)
     {
+        $registry = registry::get_instance();
+        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'get_name.php?geonameid='
+            . $geonameid;
 
-      $sxe = simplexml_load_string($xml);
+        $ret = '';
 
-      if ($sxe && ($geoname = $sxe->geoname))
-      {
-        $ret = (string) $geoname->city . ', ' . (string) $geoname->country;
-      }
+        $xml = http_query::getUrl($url);
+        if ($xml) {
+
+            $sxe = simplexml_load_string($xml);
+
+            if ($sxe && ($geoname = $sxe->geoname)) {
+                $ret = (string) $geoname->city . ', ' . (string) $geoname->country;
+            }
+        }
+
+        return $ret;
     }
 
-    return $ret;
-  }
-
-  public function get_country($geonameid)
-  {
-    if (trim($geonameid) === '' || trim($geonameid) <= 0)
+    public function get_country($geonameid)
     {
-      return '';
+        if (trim($geonameid) === '' || trim($geonameid) <= 0) {
+            return '';
+        }
+
+        $registry = registry::get_instance();
+        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'get_name.php?geonameid='
+            . $geonameid;
+
+        $ret = '';
+        $xml = http_query::getUrl($url);
+        if ($xml) {
+            $sxe = simplexml_load_string($xml);
+
+            if ($sxe && ($geoname = $sxe->geoname)) {
+                $ret = (string) $geoname->country;
+            }
+        }
+
+        return $ret;
     }
 
-    $registry = registry::get_instance();
-    $url      = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
-      . 'get_name.php?geonameid='
-      . $geonameid;
-
-    $ret = '';
-    $xml = http_query::getUrl($url);
-    if ($xml)
+    public function get_country_code($geonameid)
     {
-      $sxe = simplexml_load_string($xml);
+        $registry = registry::get_instance();
+        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'get_name.php?geonameid='
+            . $geonameid;
 
-      if ($sxe && ($geoname = $sxe->geoname))
-      {
-        $ret = (string) $geoname->country;
-      }
+        $ret = '';
+
+        $xml = http_query::getUrl($url);
+        if ($xml) {
+            $sxe = simplexml_load_string($xml);
+
+            if ($sxe && ($geoname = $sxe->geoname)) {
+                $ret = (string) $geoname->country_code;
+            }
+        }
+
+        return $ret;
     }
 
-    return $ret;
-  }
-
-  public function get_country_code($geonameid)
-  {
-    $registry = registry::get_instance();
-    $url      = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
-      . 'get_name.php?geonameid='
-      . $geonameid;
-
-    $ret = '';
-
-    $xml = http_query::getUrl($url);
-    if ($xml)
+    protected static function clean_input($input)
     {
-      $sxe = simplexml_load_string($xml);
-
-      if ($sxe && ($geoname = $sxe->geoname))
-      {
-        $ret = (string) $geoname->country_code;
-      }
+        return strip_tags(trim($input));
     }
 
-    return $ret;
-  }
-
-  protected static function clean_input($input)
-  {
-    return strip_tags(trim($input));
-  }
-
-  protected static function highlight($title, $length)
-  {
-    return '<span class="highlight">' . mb_substr($title, 0, $length) . '</span>'
-      . mb_substr($title, $length);
-  }
-
-  public function find_city($cityName)
-  {
-    $output = array();
-    $cityName = self::clean_input($cityName);
-
-    if (strlen($cityName) === 0)
-
-      return $output;
-
-    $registry = registry::get_instance();
-    $url      = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
-      . 'find_city.php?city='
-      . urlencode($cityName) . '&maxResult=30';
-
-    $sxe = simplexml_load_string(http_query::getUrl($url));
-
-    foreach ($sxe->geoname as $geoname)
+    protected static function highlight($title, $length)
     {
-      $length = mb_strlen($geoname->title_match);
-
-      $title_highlight = self::highlight($geoname->title, $length);
-
-      $country_highlight = (string) $geoname->country;
-      if (trim($geoname->country_match) !== '')
-      {
-        $length            = mb_strlen($geoname->country_match);
-        $country_highlight = self::highlight($geoname->country, $length);
-      }
-
-      $output[] = array(
-        'title_highlighted'   => $title_highlight
-        , 'title'               => (string) $geoname->title
-        , 'country_highlighted' => $country_highlight
-        , 'country'             => (string) $geoname->country
-        , 'geoname_id'          => (int) $geoname->geonameid
-        , 'region'              => (string) $geoname->region
-      );
+        return '<span class="highlight">' . mb_substr($title, 0, $length) . '</span>'
+            . mb_substr($title, $length);
     }
 
-    return $output;
-  }
-
-  protected $cache_ips = array();
-
-  public function find_geoname_from_ip($ip)
-  {
-    if (array_key_exists($ip, $this->cache_ips))
-
-      return $this->cache_ips[$ip];
-
-    $output = array(
-      'city'         => '',
-      'country_code' => '',
-      'country'      => '',
-      'fips'         => '',
-      'longitude'    => '',
-      'latitude'     => ''
-    );
-
-    $registry = registry::get_instance();
-    $url      = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
-      . 'geoip.php?ip='
-      . urlencode($ip);
-
-    $xml = http_query::getUrl($url);
-    if ($xml)
+    public function find_city($cityName)
     {
-      $sxe = simplexml_load_string($xml);
-      if ($sxe && $sxe->geoname)
-      {
-        $output['city']         = (string) $sxe->geoname->city;
-        $output['country_code'] = (string) $sxe->geoname->country_code;
-        $output['country']      = (string) $sxe->geoname->country;
-        $output['fips']         = (string) $sxe->geoname->fips;
-        $output['longitude']    = (string) $sxe->geoname->longitude;
-        $output['latitude']     = (string) $sxe->geoname->latitude;
-      }
+        $output = array();
+        $cityName = self::clean_input($cityName);
+
+        if (strlen($cityName) === 0)
+            return $output;
+
+        $registry = registry::get_instance();
+        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'find_city.php?city='
+            . urlencode($cityName) . '&maxResult=30';
+
+        $sxe = simplexml_load_string(http_query::getUrl($url));
+
+        foreach ($sxe->geoname as $geoname) {
+            $length = mb_strlen($geoname->title_match);
+
+            $title_highlight = self::highlight($geoname->title, $length);
+
+            $country_highlight = (string) $geoname->country;
+            if (trim($geoname->country_match) !== '') {
+                $length = mb_strlen($geoname->country_match);
+                $country_highlight = self::highlight($geoname->country, $length);
+            }
+
+            $output[] = array(
+                'title_highlighted'   => $title_highlight
+                , 'title'               => (string) $geoname->title
+                , 'country_highlighted' => $country_highlight
+                , 'country'             => (string) $geoname->country
+                , 'geoname_id'          => (int) $geoname->geonameid
+                , 'region'              => (string) $geoname->region
+            );
+        }
+
+        return $output;
     }
-    $this->cache_ips[$ip] = $output;
+    protected $cache_ips = array();
+
+    public function find_geoname_from_ip($ip)
+    {
+        if (array_key_exists($ip, $this->cache_ips))
+            return $this->cache_ips[$ip];
+
+        $output = array(
+            'city'         => '',
+            'country_code' => '',
+            'country'      => '',
+            'fips'         => '',
+            'longitude'    => '',
+            'latitude'     => ''
+        );
+
+        $registry = registry::get_instance();
+        $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
+            . 'geoip.php?ip='
+            . urlencode($ip);
+
+        $xml = http_query::getUrl($url);
+        if ($xml) {
+            $sxe = simplexml_load_string($xml);
+            if ($sxe && $sxe->geoname) {
+                $output['city'] = (string) $sxe->geoname->city;
+                $output['country_code'] = (string) $sxe->geoname->country_code;
+                $output['country'] = (string) $sxe->geoname->country;
+                $output['fips'] = (string) $sxe->geoname->fips;
+                $output['longitude'] = (string) $sxe->geoname->longitude;
+                $output['latitude'] = (string) $sxe->geoname->latitude;
+            }
+        }
+        $this->cache_ips[$ip] = $output;
 
 
-    return $output;
-  }
-
+        return $output;
+    }
 }

@@ -12,35 +12,34 @@
 class recordutils
 {
 
-  public function __construct($bas, $rec)
-  {
+    public function __construct($bas, $rec)
+    {
 
-  }
+    }
 
-  public function __destruct()
-  {
+    public function __destruct()
+    {
 
-  }
+    }
 
-  public static function watermark($bas, $rec)
-  {
+    public static function watermark($bas, $rec)
+    {
 
-  }
+    }
 
-  public static function stamp($bas, $rec)
-  {
+    public static function stamp($bas, $rec)
+    {
 
-  }
+    }
 
-  public function embed_preview()
-  {
+    public function embed_preview()
+    {
 
-  }
+    }
 
-  public function binary_datas($type, $bas, $rec, $usr=false, $ses=false)
-  {
+    public function binary_datas($type, $bas, $rec, $usr = false, $ses = false)
+    {
 
-    return false;
-  }
-
+        return false;
+    }
 }

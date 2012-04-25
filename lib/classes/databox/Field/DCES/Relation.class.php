@@ -17,20 +17,22 @@
  */
 class databox_Field_DCES_Relation extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Relation';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Relation';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'A related resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#relation';
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'A related resource.';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#relation';
+
 }

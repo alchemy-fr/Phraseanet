@@ -17,22 +17,20 @@
  */
 class Setup_ConstraintsIterator implements IteratorAggregate
 {
+    protected $constraints = array();
 
-  protected $constraints = array();
+    public function __construct(Array $constraints)
+    {
+        $this->constraints = $constraints;
+    }
 
-  public function __construct(Array $constraints)
-  {
-    $this->constraints = $constraints;
-  }
+    public function add(Setup_Constraint $constraint)
+    {
+        $this->constraints[] = $constraint;
+    }
 
-  public function add(Setup_Constraint $constraint)
-  {
-    $this->constraints[] = $constraint;
-  }
-
-  public function getIterator()
-  {
-    return new ArrayIterator($this->constraints);
-  }
-
+    public function getIterator()
+    {
+        return new ArrayIterator($this->constraints);
+    }
 }

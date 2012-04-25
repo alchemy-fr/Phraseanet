@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Bridge extends RecordHelper
 {
-
-  protected $flatten_groupings = true;
+    protected $flatten_groupings = true;
 
 }

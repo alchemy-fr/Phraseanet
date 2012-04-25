@@ -17,7 +17,6 @@
  */
 class API_V1_exception_unauthorized extends API_V1_exception_abstract
 {
-
-  protected static $details = 'The OAuth token was provided but was invalid.';
+    protected static $details = 'The OAuth token was provided but was invalid.';
 
 }

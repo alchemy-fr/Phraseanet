@@ -17,12 +17,12 @@
  */
 class patch_306 implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.0.6';
+
     /**
      *
      * @var Array
@@ -58,19 +58,16 @@ class patch_306 implements patchInterface
         $xpath = $databox->get_xpath_structure();
         $res = $xpath->query('/record/subdefs/preview/type');
 
-        foreach ($res as $type)
-        {
-            if ($type->nodeValue == 'video')
-            {
+        foreach ($res as $type) {
+            if ($type->nodeValue == 'video') {
                 $preview = $type->parentNode;
 
                 $to_add = array(
-                        'acodec' => 'faac',
-                        'vcodec' => 'libx264',
-                        'bitrate' => '700'
+                    'acodec'  => 'faac',
+                    'vcodec'  => 'libx264',
+                    'bitrate' => '700'
                 );
-                foreach ($to_add as $k => $v)
-                {
+                foreach ($to_add as $k => $v) {
                     $el = $dom->createElement($k);
                     $el->appendChild($dom->createTextNode($v));
                     $preview->appendChild($el);
@@ -82,5 +79,4 @@ class patch_306 implements patchInterface
 
         return true;
     }
-
 }

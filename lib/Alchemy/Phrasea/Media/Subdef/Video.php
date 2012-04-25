@@ -13,11 +13,10 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class Video extends Audio
 {
-
-    const OPTION_SIZE      = 'size';
+    const OPTION_SIZE = 'size';
     const OPTION_FRAMERATE = 'fps';
-    const OPTION_VCODEC    = 'v_codec';
-    const OPTION_GOPSIZE   = 'GOPsize';
+    const OPTION_VCODEC = 'v_codec';
+    const OPTION_GOPSIZE = 'GOPsize';
 
     protected $options = array();
 
@@ -43,8 +42,7 @@ class Video extends Audio
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec)
-        {
+        if ( ! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Video();
         }
 
@@ -60,5 +58,4 @@ class Video extends Audio
 
         return $this->spec;
     }
-
 }

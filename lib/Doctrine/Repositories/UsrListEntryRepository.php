@@ -13,68 +13,64 @@ use Doctrine\ORM\EntityRepository;
 class UsrListEntryRepository extends EntityRepository
 {
 
-  /**
-   * Get all lists entries matching a given User
-   *
-   * @param \User_Adapter $user
-   * @param type $like
-   */
-  public function findUserList(\User_Adapter $user)
-  {
-    $dql = 'SELECT e FROM Entities\UsrListEntry e
+    /**
+     * Get all lists entries matching a given User
+     *
+     * @param \User_Adapter $user
+     * @param type $like
+     */
+    public function findUserList(\User_Adapter $user)
+    {
+        $dql = 'SELECT e FROM Entities\UsrListEntry e
             WHERE e.usr_id = :usr_id';
 
 
-    $params = array(
-        'usr_id' => $user->get_id(),
-    );
+        $params = array(
+            'usr_id' => $user->get_id(),
+        );
 
-    $query = $this->_em->createQuery($dql);
-    $query->setParameters($params);
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
 
-    return $query->getResult();
-  }
-
-  public function findEntryByListAndEntryId(\Entities\UsrList $list, $entry_id)
-  {
-    $entry = $this->find($entry_id);
-
-    if(!$entry)
-    {
-      throw new \Exception_NotFound('Entry not found');
+        return $query->getResult();
     }
 
-    /* @var $entry \Entities\UsrListEntry */
-    if($entry->getList()->getId() != $list->getId())
+    public function findEntryByListAndEntryId(\Entities\UsrList $list, $entry_id)
     {
-      throw new \Exception_Forbidden('Entry mismatch list');
+        $entry = $this->find($entry_id);
+
+        if ( ! $entry) {
+            throw new \Exception_NotFound('Entry not found');
+        }
+
+        /* @var $entry \Entities\UsrListEntry */
+        if ($entry->getList()->getId() != $list->getId()) {
+            throw new \Exception_Forbidden('Entry mismatch list');
+        }
+
+        return $entry;
     }
 
-    return $entry;
-  }
-
-
-  public function findEntryByListAndUsrId(\Entities\UsrList $list, $usr_id)
-  {
-    $dql = 'SELECT e FROM Entities\UsrListEntry e
+    public function findEntryByListAndUsrId(\Entities\UsrList $list, $usr_id)
+    {
+        $dql = 'SELECT e FROM Entities\UsrListEntry e
               JOIN e.list l
             WHERE e.usr_id = :usr_id AND l.id = :list_id';
 
-    $params = array(
-        'usr_id' => $usr_id,
-        'list_id' => $list->getId(),
-    );
+        $params = array(
+            'usr_id'  => $usr_id,
+            'list_id' => $list->getId(),
+        );
 
-    $query = $this->_em->createQuery($dql);
-    $query->setParameters($params);
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
 
-    $entry = $query->getResult();
+        $entry = $query->getResult();
 
-    if(!$entry)
-    {
-      throw new \Exception_NotFound('Entry not found');
+        if ( ! $entry) {
+            throw new \Exception_NotFound('Entry not found');
+        }
+
+        return $query->getSingleResult();
     }
-
-    return $query->getSingleResult();
-  }
 }

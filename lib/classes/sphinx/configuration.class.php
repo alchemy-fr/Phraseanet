@@ -17,108 +17,97 @@
  */
 class sphinx_configuration
 {
+    const OPT_ALL_SBAS = 'all';
+    const OPT_LIBSTEMMER_NONE = 'none';
+    const OPT_LIBSTEMMER_FR = 'fr';
+    const OPT_LIBSTEMMER_EN = 'en';
+    const OPT_ENABLE_STAR_ON = 'yes';
+    const OPT_ENABLE_STAR_OFF = 'no';
+    const OPT_MIN_PREFIX_LEN = 0;
+    const OPT_MIN_INFIX_LEN = 1;
 
-  const OPT_ALL_SBAS = 'all';
-  const OPT_LIBSTEMMER_NONE = 'none';
-  const OPT_LIBSTEMMER_FR   = 'fr';
-  const OPT_LIBSTEMMER_EN   = 'en';
-  const OPT_ENABLE_STAR_ON  = 'yes';
-  const OPT_ENABLE_STAR_OFF = 'no';
-  const OPT_MIN_PREFIX_LEN = 0;
-  const OPT_MIN_INFIX_LEN  = 1;
-
-  public function __construct()
-  {
-
-  }
-
-  public function get_available_charsets()
-  {
-    $available_charsets = array();
-    $dir      = __DIR__ . '/charsetTable/';
-    echo $dir;
-    $registry = registry::get_instance();
-    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
+    public function __construct()
     {
-      if ($file->isDir() || strpos($file->getPathname(), '/.svn/') !== false)
-      {
-        continue;
-      }
-      if ($file->isFile())
-      {
-        $classname = str_replace(array($registry->get('GV_RootPath') . 'lib/classes/', '.class.php', '/'), array('', '', '_'), $file->getPathname());
-        $available_charsets[$classname] = new $classname;
-      }
-    }
-    ksort($available_charsets);
 
-    return $available_charsets;
-  }
-
-  public function get_available_libstemmer()
-  {
-    return array(self::OPT_LIBSTEMMER_EN, self::OPT_LIBSTEMMER_FR, self::OPT_LIBSTEMMER_NONE);
-  }
-
-  public function get_configuration($options = array())
-  {
-
-    $defaults = array(
-      'sbas'       => self::OPT_ALL_SBAS
-      , 'libstemmer' => array(self::OPT_LIBSTEMMER_NONE)
-      , 'enable_star'    => self::OPT_ENABLE_STAR_ON
-      , 'min_prefix_len' => self::OPT_MIN_PREFIX_LEN
-      , 'min_infix_len'  => self::OPT_MIN_INFIX_LEN
-      , 'charset_tables' => array()
-    );
-
-    $options = array_merge($defaults, $options);
-
-    $options['charset_tables'] = array_unique($options['charset_tables']);
-
-    $lb = phrasea::sbas_params();
-
-    $conf = '';
-
-    $charsets = '';
-    foreach ($options['charset_tables'] as $charset)
-    {
-      try
-      {
-        $charset_table = new $charset();
-        $charsets .= $charset_table->get_table();
-      }
-      catch (Exception $e)
-      {
-
-      }
     }
 
-    $charsets    = explode("\n", $charsets);
-    $last_detect = false;
-
-
-    for ($i = (count($charsets) - 1); $i >= 0; $i -- )
+    public function get_available_charsets()
     {
-      if (trim($charsets[$i]) === '')
-      {
-        unset($charsets[$i]);
-        continue;
-      }
-      if (strpos(trim($charsets[$i]), '#') === 0)
-      {
-        unset($charsets[$i]);
-        continue;
-      }
-      if ($last_detect === true && substr(trim($charsets[$i]), (strlen(trim($charsets[$i])) - 1), 1) !== ',')
-        $charsets[$i] = rtrim($charsets[$i]) . ', ';
-      $charsets[$i] = "  " . $charsets[$i] . " \\\n";
-      $last_detect  = true;
+        $available_charsets = array();
+        $dir = __DIR__ . '/charsetTable/';
+        echo $dir;
+        $registry = registry::get_instance();
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
+            if ($file->isDir() || strpos($file->getPathname(), '/.svn/') !== false) {
+                continue;
+            }
+            if ($file->isFile()) {
+                $classname = str_replace(array($registry->get('GV_RootPath') . 'lib/classes/', '.class.php', '/'), array('', '', '_'), $file->getPathname());
+                $available_charsets[$classname] = new $classname;
+            }
+        }
+        ksort($available_charsets);
+
+        return $available_charsets;
     }
 
-    $charsets = "\\\n" . implode('', $charsets);
+    public function get_available_libstemmer()
+    {
+        return array(self::OPT_LIBSTEMMER_EN, self::OPT_LIBSTEMMER_FR, self::OPT_LIBSTEMMER_NONE);
+    }
 
-    $charset_abstract = '
+    public function get_configuration($options = array())
+    {
+
+        $defaults = array(
+            'sbas'       => self::OPT_ALL_SBAS
+            , 'libstemmer' => array(self::OPT_LIBSTEMMER_NONE)
+            , 'enable_star'    => self::OPT_ENABLE_STAR_ON
+            , 'min_prefix_len' => self::OPT_MIN_PREFIX_LEN
+            , 'min_infix_len'  => self::OPT_MIN_INFIX_LEN
+            , 'charset_tables' => array()
+        );
+
+        $options = array_merge($defaults, $options);
+
+        $options['charset_tables'] = array_unique($options['charset_tables']);
+
+        $lb = phrasea::sbas_params();
+
+        $conf = '';
+
+        $charsets = '';
+        foreach ($options['charset_tables'] as $charset) {
+            try {
+                $charset_table = new $charset();
+                $charsets .= $charset_table->get_table();
+            } catch (Exception $e) {
+
+            }
+        }
+
+        $charsets = explode("\n", $charsets);
+        $last_detect = false;
+
+
+        for ($i = (count($charsets) - 1); $i >= 0; $i -- ) {
+            if (trim($charsets[$i]) === '') {
+                unset($charsets[$i]);
+                continue;
+            }
+            if (strpos(trim($charsets[$i]), '#') === 0) {
+                unset($charsets[$i]);
+                continue;
+            }
+            if ($last_detect === true && substr(trim($charsets[$i]), (strlen(trim($charsets[$i])) - 1), 1) !== ',')
+                $charsets[$i] = rtrim($charsets[$i]) . ', ';
+            $charsets[$i] = "  " . $charsets[$i] . " \\\n";
+            $last_detect = true;
+        }
+
+        $charsets = "\\\n" . implode('', $charsets);
+
+        $charset_abstract = '
 
     docinfo               = extern
     charset_type          = utf-8
@@ -146,13 +135,12 @@ class sphinx_configuration
     min_infix_len         = 1
     ';
 
-    foreach ($lb as $id => $params)
-    {
+        foreach ($lb as $id => $params) {
 
-      $serialized = str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname']));
-      $index_crc = crc32($serialized);
+            $serialized = str_replace(array('.', '%'), '_', sprintf('%s_%s_%s_%s', $params['host'], $params['port'], $params['user'], $params['dbname']));
+            $index_crc = crc32($serialized);
 
-      $conf .= '
+            $conf .= '
 
 
 #------------------------------------------------------------------------------
@@ -248,9 +236,8 @@ class sphinx_configuration
 
 ';
 
-      if (in_array(self::OPT_LIBSTEMMER_NONE, $options['libstemmer']))
-      {
-        $conf .= '
+            if (in_array(self::OPT_LIBSTEMMER_NONE, $options['libstemmer'])) {
+                $conf .= '
   #--------------------------------------
   ### Metadatas Index
 
@@ -261,11 +248,10 @@ class sphinx_configuration
 
   }
 ';
-      }
+            }
 
-      if (in_array(self::OPT_LIBSTEMMER_FR, $options['libstemmer']))
-      {
-        $conf .= '
+            if (in_array(self::OPT_LIBSTEMMER_FR, $options['libstemmer'])) {
+                $conf .= '
 
   #--------------------------------------
   ### Metadatas Index Stemmed FR
@@ -290,10 +276,9 @@ class sphinx_configuration
     index_exact_words     = 1
   }
 ';
-      }
-      if (in_array(self::OPT_LIBSTEMMER_EN, $options['libstemmer']))
-      {
-        $conf .= '
+            }
+            if (in_array(self::OPT_LIBSTEMMER_EN, $options['libstemmer'])) {
+                $conf .= '
 
   #--------------------------------------
   ### Metadatas Index Stemmed EN
@@ -318,8 +303,8 @@ class sphinx_configuration
     index_exact_words     = 1
   }
 ';
-      }
-      $conf .= '
+            }
+            $conf .= '
 
   #--------------------------------------
   ### METAS_REALTIME Index
@@ -474,9 +459,9 @@ class sphinx_configuration
 
 
 ';
-    }
+        }
 
-    $conf .='
+        $conf .='
 
 
 #******************************************************************************
@@ -613,7 +598,6 @@ searchd
 
 
 
-    return $conf;
-  }
-
+        return $conf;
+    }
 }

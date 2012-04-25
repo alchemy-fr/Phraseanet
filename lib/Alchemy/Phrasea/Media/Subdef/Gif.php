@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class Gif extends Image
 {
-
     const OPTION_DELAY = 'delay';
 
     public function __construct()
@@ -35,12 +34,11 @@ class Gif extends Image
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec)
-        {
+        if ( ! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Animation();
         }
 
-        $size       = $this->getOption(self::OPTION_SIZE)->getValue();
+        $size = $this->getOption(self::OPTION_SIZE)->getValue();
         $resolution = $this->getOption(self::OPTION_RESOLUTION)->getValue();
 
         $this->spec->setDelay($this->getOption(self::OPTION_DELAY)->getValue());
@@ -51,5 +49,4 @@ class Gif extends Image
 
         return $this->spec;
     }
-
 }

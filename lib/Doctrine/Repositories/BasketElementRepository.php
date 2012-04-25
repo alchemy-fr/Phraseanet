@@ -15,9 +15,9 @@ use Entities;
 class BasketElementRepository extends EntityRepository
 {
 
-  public function findUserElement($element_id, \User_Adapter $user)
-  {
-    $dql = 'SELECT e
+    public function findUserElement($element_id, \User_Adapter $user)
+    {
+        $dql = 'SELECT e
             FROM Entities\BasketElement e
             JOIN e.basket b
             LEFT JOIN e.validation_datas vd
@@ -26,29 +26,28 @@ class BasketElementRepository extends EntityRepository
             WHERE (b.usr_id = :usr_id OR p.usr_id = :same_usr_id)
               AND e.id = :element_id';
 
-    $params = array(
-        'usr_id' => $user->get_id(),
-        'same_usr_id' => $user->get_id(),
-        'element_id' => $element_id
-    );
+        $params = array(
+            'usr_id'      => $user->get_id(),
+            'same_usr_id' => $user->get_id(),
+            'element_id'  => $element_id
+        );
 
-    $query = $this->_em->createQuery($dql);
-    $query->setParameters($params);
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
 
-    $element = $query->getOneOrNullResult();
+        $element = $query->getOneOrNullResult();
 
-    /* @var $element \Entities\BasketElement */
-    if (null === $element)
-    {
-      throw new \Exception_NotFound(_('Element is not found'));
+        /* @var $element \Entities\BasketElement */
+        if (null === $element) {
+            throw new \Exception_NotFound(_('Element is not found'));
+        }
+
+        return $element;
     }
 
-    return $element;
-  }
-
-  public function findElementsByRecord(\record_adapter $record)
-  {
-    $dql = 'SELECT e
+    public function findElementsByRecord(\record_adapter $record)
+    {
+        $dql = 'SELECT e
             FROM Entities\BasketElement e
             JOIN e.basket b
             LEFT JOIN b.validation s
@@ -56,26 +55,26 @@ class BasketElementRepository extends EntityRepository
             WHERE e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-    $params = array(
-        'sbas_id' => $record->get_sbas_id(),
-        'record_id' => $record->get_record_id()
-    );
+        $params = array(
+            'sbas_id'   => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id()
+        );
 
-    $query = $this->_em->createQuery($dql);
-    $query->setParameters($params);
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
 
-    return $query->getResult();
-  }
+        return $query->getResult();
+    }
 
-  /**
-   *
-   * @param \record_adapter $record
-   * @param \User_Adapter $user
-   * @return \Doctrine\Common\Collections\ArrayCollection
-   */
-  public function findReceivedElementsByRecord(\record_adapter $record, \User_Adapter $user)
-  {
-    $dql = 'SELECT e
+    /**
+     *
+     * @param \record_adapter $record
+     * @param \User_Adapter $user
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function findReceivedElementsByRecord(\record_adapter $record, \User_Adapter $user)
+    {
+        $dql = 'SELECT e
             FROM Entities\BasketElement e
             JOIN e.basket b
             LEFT JOIN b.validation s
@@ -85,21 +84,21 @@ class BasketElementRepository extends EntityRepository
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-    $params = array(
-        'sbas_id' => $record->get_sbas_id(),
-        'record_id' => $record->get_record_id(),
-        'usr_id' => $user->get_id()
-    );
+        $params = array(
+            'sbas_id'   => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id(),
+            'usr_id'    => $user->get_id()
+        );
 
-    $query = $this->_em->createQuery($dql);
-    $query->setParameters($params);
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
 
-    return $query->getResult();
-  }
+        return $query->getResult();
+    }
 
-  public function findReceivedValidationElementsByRecord(\record_adapter $record, \User_Adapter $user)
-  {
-    $dql = 'SELECT e
+    public function findReceivedValidationElementsByRecord(\record_adapter $record, \User_Adapter $user)
+    {
+        $dql = 'SELECT e
             FROM Entities\BasketElement e
             JOIN e.basket b
             JOIN b.validation v
@@ -108,16 +107,15 @@ class BasketElementRepository extends EntityRepository
             AND e.record_id = :record_id
             AND e.sbas_id = :sbas_id';
 
-    $params = array(
-        'sbas_id' => $record->get_sbas_id(),
-        'record_id' => $record->get_record_id(),
-        'usr_id' => $user->get_id()
-    );
+        $params = array(
+            'sbas_id'   => $record->get_sbas_id(),
+            'record_id' => $record->get_record_id(),
+            'usr_id'    => $user->get_id()
+        );
 
-    $query = $this->_em->createQuery($dql);
-    $query->setParameters($params);
+        $query = $this->_em->createQuery($dql);
+        $query->setParameters($params);
 
-    return $query->getResult();
-  }
-
+        return $query->getResult();
+    }
 }

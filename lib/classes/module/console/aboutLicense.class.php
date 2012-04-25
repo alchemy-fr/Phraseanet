@@ -26,20 +26,19 @@ use Symfony\Component\Console\Command\Command;
 class module_console_aboutLicense extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
 
-    $this->setDescription('This program license');
+        $this->setDescription('This program license');
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-    $output->writeln(file_get_contents(__DIR__ . '/../../../../LICENSE'));
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->writeln(file_get_contents(__DIR__ . '/../../../../LICENSE'));
 
-    return 0;
-  }
-
+        return 0;
+    }
 }

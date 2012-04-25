@@ -22,100 +22,92 @@ use \Alchemy\Phrasea\Core\Service\Builder,
  */
 class Manager
 {
+    /**
+     *
+     * @var \SplFileObject
+     */
+    protected $cacheFile;
+    protected $core;
 
-  /**
-   *
-   * @var \SplFileObject
-   */
-  protected $cacheFile;
-  protected $core;
+    /**
+     *
+     * @var \Alchemy\Phrasea\Core\Configuration\Parser
+     */
+    protected $parser;
 
-  /**
-   *
-   * @var \Alchemy\Phrasea\Core\Configuration\Parser
-   */
-  protected $parser;
+    /**
+     *
+     * @var array
+     */
+    protected $registry = array();
 
-  /**
-   *
-   * @var array
-   */
-  protected $registry = array();
-
-  public function __construct(Core $core, \SplFileObject $file)
-  {
-    $this->cacheFile = $file;
-    $this->parser = new \Symfony\Component\Yaml\Yaml();
-    $this->core = $core;
-
-    $this->registry = $this->parser->parse($file) ? : array();
-  }
-
-  protected function exists($name)
-  {
-    return isset($this->registry[$name]);
-  }
-
-  public function flushAll()
-  {
-    foreach ($this->registry as $cacheKey => $service_name)
+    public function __construct(Core $core, \SplFileObject $file)
     {
-      $this->get($cacheKey, $service_name)->getDriver()->flushAll();
+        $this->cacheFile = $file;
+        $this->parser = new \Symfony\Component\Yaml\Yaml();
+        $this->core = $core;
+
+        $this->registry = $this->parser->parse($file) ? : array();
     }
 
-    file_put_contents($this->cacheFile->getPathname(), '');
-
-    return $this;
-  }
-
-  public function get($cacheKey, $service_name)
-  {
-    try
+    protected function exists($name)
     {
-      $configuration = $this->core->getConfiguration()->getService($service_name);
-      $service = Builder::create($this->core, $configuration);
-      $driver = $service->getDriver();
-      $write = true;
-    }
-    catch (\Exception $e)
-    {
-      $configuration = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
-                      array('type' => 'Cache\\ArrayCache')
-      );
-      $service = Builder::create($this->core, $configuration);
-      $driver = $service->getDriver();
-      $write = false;
+        return isset($this->registry[$name]);
     }
 
-    if ($this->hasChange($cacheKey, $service_name))
+    public function flushAll()
     {
-      $service->getDriver()->flushAll();
-      if ($write)
-      {
-        $this->registry[$cacheKey] = $service_name;
-        $this->save($cacheKey, $service_name);
-      }
+        foreach ($this->registry as $cacheKey => $service_name) {
+            $this->get($cacheKey, $service_name)->getDriver()->flushAll();
+        }
+
+        file_put_contents($this->cacheFile->getPathname(), '');
+
+        return $this;
     }
 
-    return $service;
-  }
+    public function get($cacheKey, $service_name)
+    {
+        try {
+            $configuration = $this->core->getConfiguration()->getService($service_name);
+            $service = Builder::create($this->core, $configuration);
+            $driver = $service->getDriver();
+            $write = true;
+        } catch (\Exception $e) {
+            $configuration = new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(
+                    array('type'   => 'Cache\\ArrayCache')
+            );
+            $service = Builder::create($this->core, $configuration);
+            $driver = $service->getDriver();
+            $write = false;
+        }
 
-  protected function hasChange($name, $driver)
-  {
-    return $this->exists($name) ? $this->registry[$name] !== $driver : true;
-  }
+        if ($this->hasChange($cacheKey, $service_name)) {
+            $service->getDriver()->flushAll();
+            if ($write) {
+                $this->registry[$cacheKey] = $service_name;
+                $this->save($cacheKey, $service_name);
+            }
+        }
 
-  protected function save($name, $driver)
-  {
-    $date = new \DateTime();
+        return $service;
+    }
 
-    $this->registry[$name] = $driver;
+    protected function hasChange($name, $driver)
+    {
+        return $this->exists($name) ? $this->registry[$name] !== $driver : true;
+    }
 
-    $datas = sprintf("#LastUpdate: %s\n", $date->format(DATE_ISO8601))
+    protected function save($name, $driver)
+    {
+        $date = new \DateTime();
+
+        $this->registry[$name] = $driver;
+
+        $datas = sprintf("#LastUpdate: %s\n", $date->format(DATE_ISO8601))
             . $this->parser->dump($this->registry, 6);
 
-    file_put_contents($this->cacheFile->getPathname(), $datas);
-  }
-
+        file_put_contents($this->cacheFile->getPathname(), $datas);
+    }
 }
 

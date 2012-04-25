@@ -23,16 +23,15 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class Blob extends Type
 {
-  const BLOB = 'blob';
+    const BLOB = 'blob';
 
-  public function getName()
-  {
-    return static::BLOB;
-  }
+    public function getName()
+    {
+        return static::BLOB;
+    }
 
-  public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-  {
-    return $platform->getDoctrineTypeMapping('BLOB');
-  }
-
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        return $platform->getDoctrineTypeMapping('BLOB');
+    }
 }

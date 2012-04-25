@@ -18,16 +18,15 @@
 class Bridge_Api_ElementCollection extends Bridge_Api_AbstractCollection
 {
 
-  /**
-   *
-   * @param Bridge_Api_ElementInterface $element
-   * @return Bridge_Api_ElementCollection
-   */
-  public function add_element(Bridge_Api_ElementInterface $element)
-  {
-    $this->elements[] = $element;
+    /**
+     *
+     * @param Bridge_Api_ElementInterface $element
+     * @return Bridge_Api_ElementCollection
+     */
+    public function add_element(Bridge_Api_ElementInterface $element)
+    {
+        $this->elements[] = $element;
 
-    return $this;
-  }
-
+        return $this;
+    }
 }

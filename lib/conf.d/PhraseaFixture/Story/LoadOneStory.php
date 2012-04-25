@@ -23,36 +23,32 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class LoadOneStory extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
+    /**
+     *
+     * @var \Entities\StoryWZ
+     */
+    public $story;
 
-  /**
-   *
-   * @var \Entities\StoryWZ
-   */
-  public $story;
-
-  public function load(ObjectManager $manager)
-  {
-    $story = new \Entities\StoryWZ();
-
-    if (null === $this->record)
+    public function load(ObjectManager $manager)
     {
-      throw new \LogicException('Fill a record to store a new story');
+        $story = new \Entities\StoryWZ();
+
+        if (null === $this->record) {
+            throw new \LogicException('Fill a record to store a new story');
+        }
+
+        if (null === $this->user) {
+            throw new \LogicException('Fill a user to store a new story');
+        }
+
+        $story->setRecord($this->record);
+        $story->setUser($this->user);
+
+        $manager->persist($story);
+        $manager->flush();
+
+        $this->story = $story;
+
+        $this->addReference('one-story', $story);
     }
-
-    if (null === $this->user)
-    {
-      throw new \LogicException('Fill a user to store a new story');
-    }
-
-    $story->setRecord($this->record);
-    $story->setUser($this->user);
-
-    $manager->persist($story);
-    $manager->flush();
-
-    $this->story = $story;
-
-    $this->addReference('one-story', $story);
-  }
-
 }

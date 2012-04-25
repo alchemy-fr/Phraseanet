@@ -17,21 +17,23 @@
  */
 class databox_Field_DCES_Source extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Source';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Source';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'A related resource from which
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'A related resource from which
                           the described resource is derived.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#source';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#source';
+
 }

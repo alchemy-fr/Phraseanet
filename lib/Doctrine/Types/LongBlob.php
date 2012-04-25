@@ -23,16 +23,15 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class LongBlob extends Type
 {
-  const LONGBLOB = 'longblob';
+    const LONGBLOB = 'longblob';
 
-  public function getName()
-  {
-    return static::LONGBLOB;
-  }
+    public function getName()
+    {
+        return static::LONGBLOB;
+    }
 
-  public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-  {
-    return $platform->getDoctrineTypeMapping('LONGBLOB');
-  }
-
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        return $platform->getDoctrineTypeMapping('LONGBLOB');
+    }
 }

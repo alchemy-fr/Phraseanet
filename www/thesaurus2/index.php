@@ -14,7 +14,6 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 /* @var $Core \Alchemy\Phrasea\Core */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $appbox = appbox::get_instance($Core);
@@ -23,8 +22,7 @@ $registry = $appbox->get_registry();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
-                "bas",
-                "res"
+    "bas", "res"
 );
 
 $conn = $appbox->get_connection();
@@ -46,20 +44,20 @@ HAVING bas_edit_thesaurus>0
 ORDER BY sbas.ord";
 ?>
 <html lang="<?php echo $session->get_I18n(); ?>">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-<title><?php echo $appbox->get_registry()->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <title><?php echo $appbox->get_registry()->get('GV_homeTitle'); ?> - <?php echo p4string::MakeString(_('phraseanet:: thesaurus')) ?></title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="/thesaurus2/favicon.ico">
-    <link REL="stylesheet" TYPE="text/css" HREF="./thesaurus.css?u=<?php echo mt_rand() ?>" />
+        <link rel="shortcut icon" type="image/x-icon" href="/thesaurus2/favicon.ico">
+        <link REL="stylesheet" TYPE="text/css" HREF="./thesaurus.css?u=<?php echo mt_rand() ?>" />
 
 
-  </head>
+    </head>
 
-  <body onload="ckok();">
-    <br/>
-    <br/>
-    <br/>
+    <body onload="ckok();">
+        <br/>
+        <br/>
+        <br/>
     <center>
 <?php
 $select_bases = "";
@@ -72,103 +70,92 @@ $stmt->execute(array(':usr_id' => $session->get_usr_id()));
 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $stmt->closeCursor();
 
-foreach ($rs as $row)
-{
-  try
-  {
-    $connbas = connection::getPDOConnection($row['sbas_id']);
-  }
-  catch (Exception $e)
-  {
-    continue;
-  }
-  $name = phrasea::sbas_names($row['sbas_id']);
-  $select_bases .= "<option value=\"" . $row["sbas_id"] . "\">" . $name . "</option>\n";
-  $last_base = array("sbid" => $row["sbas_id"], "name" => $name);
-  $nbases++;
+foreach ($rs as $row) {
+    try {
+        $connbas = connection::getPDOConnection($row['sbas_id']);
+    } catch (Exception $e) {
+        continue;
+    }
+    $name = phrasea::sbas_names($row['sbas_id']);
+    $select_bases .= "<option value=\"" . $row["sbas_id"] . "\">" . $name . "</option>\n";
+    $last_base = array("sbid" => $row["sbas_id"], "name" => $name);
+    $nbases ++;
 }
 
-if ($nbases > 0)
-{
-?>
+if ($nbases > 0) {
+    ?>
 
-      <form name="fBase" action="./thesaurus.php" method="post">
-        <input type="hidden" name="res" value="<?php echo $parm["res"] ?>" />
-        <input type="hidden" name="uid" value="<?php echo $usr_id ?>" />
-<?php echo p4string::MakeString(_('thesaurus:: Editer le thesaurus')) ?>
+            <form name="fBase" action="./thesaurus.php" method="post">
+                <input type="hidden" name="res" value="<?php echo $parm["res"] ?>" />
+                <input type="hidden" name="uid" value="<?php echo $usr_id ?>" />
+            <?php echo p4string::MakeString(_('thesaurus:: Editer le thesaurus')) ?>
+            <?php
+            if ($nbases == 1) {
+                printf("\t<input type=\"hidden\" name=\"bid\" value=\"%s\"><b>%s</b><br/>\n", $last_base["sbid"], $last_base["name"]);
+                ?>
+                    <script type="text/javascript">
+                        function ckok()
+                        {
+                            ck = false;
+                            fl = document.getElementsByName("piv");
+                            for(i=0; !ck && i<fl.length; i++)
+                                ck = fl[i].checked;
+                            document.getElementById("button_ok").disabled = !ck;
+                        }
+                    </script>
         <?php
-        if ($nbases == 1)
-        {
-          printf("\t<input type=\"hidden\" name=\"bid\" value=\"%s\"><b>%s</b><br/>\n", $last_base["sbid"], $last_base["name"]);
+    } else {
         ?>
-          <script type="text/javascript">
-            function ckok()
-            {
-              ck = false;
-              fl = document.getElementsByName("piv");
-              for(i=0; !ck && i<fl.length; i++)
-                ck = fl[i].checked;
-              document.getElementById("button_ok").disabled = !ck;
-            }
-          </script>
-<?php
-        }
-        else
-        {
-?>
-          <select name="bid" onchange="ckok();return(true);">
-            <option value=""><?php echo p4string::MakeString(_('phraseanet:: choisir')) /* Editer le thesaurus de la base : */ ?></option>
-<?php echo $select_bases ?>
-          </select>
-<?php ?>
-        <br/>
-        <script type="text/javascript">
-          function ckok()
-          {
-            ck = false;
-            fl = document.getElementsByName("piv");
-            for(i=0; !ck && i<fl.length; i++)
-              ck = fl[i].checked;
-            ck &= document.forms[0].bid.selectedIndex > 0;
-            document.getElementById("button_ok").disabled = !ck;
-          }
-        </script>
+                    <select name="bid" onchange="ckok();return(true);">
+                        <option value=""><?php echo p4string::MakeString(_('phraseanet:: choisir')) /* Editer le thesaurus de la base : */ ?></option>
+        <?php echo $select_bases ?>
+                    </select>
+                    <?php ?>
+                    <br/>
+                    <script type="text/javascript">
+                        function ckok()
+                        {
+                            ck = false;
+                            fl = document.getElementsByName("piv");
+                            for(i=0; !ck && i<fl.length; i++)
+                                ck = fl[i].checked;
+                            ck &= document.forms[0].bid.selectedIndex > 0;
+                            document.getElementById("button_ok").disabled = !ck;
+                        }
+                    </script>
 
-        <br/>
-        <table>
-<?php
-        }
+                    <br/>
+                    <table>
+        <?php
+    }
 
-        $nf = 0;
-        $tlng = User_Adapter::avLanguages();
-        foreach ($tlng as $lng_code => $lng)
-        {
-          printf("<tr><td>%s</td>", $nf == 0 ? p4string::MakeString(_('thesaurus:: langue pivot')) /* Langue pivot : */ : "");
-          print("<td style=\"text-align:left\"><input type='radio' onclick=\"ckok();return(true);\" value='$lng_code' name='piv'><img src='/skins/lng/" . $lng_code . "_flag_18.gif' />&nbsp;(" . $lng_code . ")</td></tr>\n");
-          $nf++;
-        }
-?>
-        </table>
-        <br/>
-        <br/>
-        <input type="hidden" name="ses" value="<?php echo $session->get_ses_id() ?>" />
-        <input type="hidden" name="usr" value="<?php echo $session->get_usr_id() ?>" />
-        <input id="button_ok" type="submit" style="width:80px;" value="<?php echo p4string::MakeString(_('boutton::valider')) ?>" /><br/>
-      </form>
-<?php
-        }
-        else
-        {
-?>
-      <?php echo p4string::MakeString(_('thesaurus:: Vous n\'avez acces a aucune base')) ?>
-          <script type="text/javascript">
-            function ckok()
-            {
-            }
-          </script>
-<?php
-        }
+    $nf = 0;
+    $tlng = User_Adapter::avLanguages();
+    foreach ($tlng as $lng_code => $lng) {
+        printf("<tr><td>%s</td>", $nf == 0 ? p4string::MakeString(_('thesaurus:: langue pivot')) /* Langue pivot : */ : "");
+        print("<td style=\"text-align:left\"><input type='radio' onclick=\"ckok();return(true);\" value='$lng_code' name='piv'><img src='/skins/lng/" . $lng_code . "_flag_18.gif' />&nbsp;(" . $lng_code . ")</td></tr>\n");
+        $nf ++;
+    }
+    ?>
+                </table>
+                <br/>
+                <br/>
+                <input type="hidden" name="ses" value="<?php echo $session->get_ses_id() ?>" />
+                <input type="hidden" name="usr" value="<?php echo $session->get_usr_id() ?>" />
+                <input id="button_ok" type="submit" style="width:80px;" value="<?php echo p4string::MakeString(_('boutton::valider')) ?>" /><br/>
+            </form>
+                    <?php
+                } else {
+                    ?>
+                    <?php echo p4string::MakeString(_('thesaurus:: Vous n\'avez acces a aucune base')) ?>
+            <script type="text/javascript">
+                function ckok()
+                {
+                }
+            </script>
+    <?php
+}
 ?>
     </center>
-  </body>
+</body>
 </html>

@@ -17,21 +17,22 @@
  */
 interface connection_interface
 {
-  public function ping();
 
-  public function get_name();
+    public function ping();
 
-  public function is_multi_db();
+    public function get_name();
 
-  public function get_credentials();
+    public function is_multi_db();
 
-  public function close();
+    public function get_credentials();
 
-  public function prepare($statement, $driver_options = array());
+    public function close();
 
-  public function beginTransaction();
+    public function prepare($statement, $driver_options = array());
 
-  public function commit();
+    public function beginTransaction();
 
-  public function server_info();
+    public function commit();
+
+    public function server_info();
 }

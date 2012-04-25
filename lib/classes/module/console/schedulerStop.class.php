@@ -25,40 +25,35 @@ use Symfony\Component\Console\Command\Command;
 class module_console_schedulerStop extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
-
-    $this->setDescription('Stop the scheduler');
-
-    return $this;
-  }
-
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-    if (!setup::is_installed())
+    public function __construct($name = null)
     {
-      $output->writeln('Phraseanet is not set up');
+        parent::__construct($name);
 
-      return 1;
+        $this->setDescription('Stop the scheduler');
+
+        return $this;
     }
 
-    require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
-    try
+    public function execute(InputInterface $input, OutputInterface $output)
     {
-      $appbox = appbox::get_instance(\bootstrap::getCore());
-      $task_manager = new task_manager($appbox);
-      $task_manager->set_sched_status(task_manager::STATUS_SCHED_TOSTOP);
+        if ( ! setup::is_installed()) {
+            $output->writeln('Phraseanet is not set up');
 
-      return 0;
+            return 1;
+        }
+
+        require_once __DIR__ . '/../../../../lib/bootstrap.php';
+
+        try {
+            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $task_manager = new task_manager($appbox);
+            $task_manager->set_sched_status(task_manager::STATUS_SCHED_TOSTOP);
+
+            return 0;
+        } catch (\Exception $e) {
+            return 1;
+        }
+
+        return 0;
     }
-    catch (\Exception $e)
-    {
-      return 1;
-    }
-
-    return 0;
-  }
-
 }

@@ -17,7 +17,8 @@
  */
 interface caption_interface
 {
-  public function __construct(record_Interface &$record, databox &$databox);
 
-  public function get_highlight_fields($highlight='', Array $grep_fields = null, searchEngine_adapter $searchEngine = null);
+    public function __construct(record_Interface &$record, databox &$databox);
+
+    public function get_highlight_fields($highlight = '', Array $grep_fields = null, searchEngine_adapter $searchEngine = null);
 }

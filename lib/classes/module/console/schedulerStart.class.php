@@ -25,57 +25,52 @@ use Symfony\Component\Console\Command\Command;
 class module_console_schedulerStart extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
 
-    $this->setDescription('Start the scheduler');
-    $this->addOption(
+        $this->setDescription('Start the scheduler');
+        $this->addOption(
             'nolog'
             , NULL
             , 1 | InputOption::VALUE_NONE
             , 'do not log (scheduler) to logfile'
             , NULL
-    );
-    $this->addOption(
+        );
+        $this->addOption(
             'notasklog'
             , NULL
             , 1 | InputOption::VALUE_NONE
             , 'do not log (tasks) to logfiles'
             , NULL
-    );
-    $this->setHelp(
+        );
+        $this->setHelp(
             "You should use launch the command and finish it with `&`"
             . " to return to the console\n\n"
             . "\tie : <info>bin/console scheduler:start &</info>"
-    );
+        );
 
-    return $this;
-  }
-
-  public function execute(InputInterface $zinput, OutputInterface $output)
-  {
-    if (!setup::is_installed())
-    {
-      $output->writeln('Phraseanet is not set up');
-
-      return 1;
+        return $this;
     }
 
-    require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
-    $scheduler = new task_Scheduler();
-    $scheduler->run($zinput, $output); //, !$input->getOption('nolog'), !$input->getOption('notasklog'));
-
-    try
+    public function execute(InputInterface $zinput, OutputInterface $output)
     {
-      $scheduler = new task_Scheduler();
-      $scheduler->run($output, true);
-    }
-    catch (\Exception $e)
-    {
-      return 1;
-    }
-  }
+        if ( ! setup::is_installed()) {
+            $output->writeln('Phraseanet is not set up');
 
+            return 1;
+        }
+
+        require_once __DIR__ . '/../../../../lib/bootstrap.php';
+
+        $scheduler = new task_Scheduler();
+        $scheduler->run($zinput, $output); //, !$input->getOption('nolog'), !$input->getOption('notasklog'));
+
+        try {
+            $scheduler = new task_Scheduler();
+            $scheduler->run($output, true);
+        } catch (\Exception $e) {
+            return 1;
+        }
+    }
 }

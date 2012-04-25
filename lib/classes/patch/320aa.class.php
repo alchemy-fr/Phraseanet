@@ -17,12 +17,12 @@
  */
 class patch_320aa implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.2.0.0.a1';
+
     /**
      *
      * @var Array
@@ -54,7 +54,7 @@ class patch_320aa implements patchInterface
 
     function apply(base &$appbox)
     {
-        if(is_file(__DIR__ . '/../../../config/_GV.php'))
+        if (is_file(__DIR__ . '/../../../config/_GV.php'))
             require __DIR__ . '/../../../config/_GV.php';
         require __DIR__ . '/../../../lib/conf.d/_GV_template.inc';
 
@@ -67,15 +67,12 @@ class patch_320aa implements patchInterface
 
         $registry = $appbox->get_registry();
 
-        foreach ($GV as $section => $datas_section)
-        {
-            foreach ($datas_section['vars'] as $datas)
-            {
+        foreach ($GV as $section => $datas_section) {
+            foreach ($datas_section['vars'] as $datas) {
 
                 $registry->un_set($datas['name']);
                 eval('$test = defined("' . $datas["name"] . '");');
-                if (!$test)
-                {
+                if ( ! $test) {
                     continue;
                 }
                 eval('$val = ' . $datas["name"] . ';');
@@ -83,13 +80,11 @@ class patch_320aa implements patchInterface
                 $val = $val === true ? '1' : $val;
                 $val = $val === false ? '0' : $val;
 
-                if($datas['name'] == 'GV_exiftool' && strpos($val, 'lib/exiftool/exiftool') !== false)
-                {
+                if ($datas['name'] == 'GV_exiftool' && strpos($val, 'lib/exiftool/exiftool') !== false) {
                     $val = str_replace('lib/exiftool/exiftool', 'lib/vendor/exiftool/exiftool', $val);
                 }
 
-                switch ($datas['type'])
-                {
+                switch ($datas['type']) {
                     case registry::TYPE_ENUM_MULTI:
                     case registry::TYPE_INTEGER:
                     case registry::TYPE_BOOLEAN:
@@ -108,5 +103,4 @@ class patch_320aa implements patchInterface
 
         return true;
     }
-
 }

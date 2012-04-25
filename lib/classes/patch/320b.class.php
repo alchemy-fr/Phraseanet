@@ -15,15 +15,14 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
 class patch_320b implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.2.0.0.a3';
+
     /**
      *
      * @var Array
@@ -63,5 +62,4 @@ class patch_320b implements patchInterface
 
         return true;
     }
-
 }

@@ -17,56 +17,57 @@
  */
 class Feed_Entry_Collection implements Feed_Entry_CollectionInterface
 {
+    /**
+     *
+     * @var array
+     */
+    protected $entries = array();
 
-  /**
-   *
-   * @var array
-   */
-  protected $entries = array();
-  /**
-   *
-   * @var DateTime
-   */
-  protected $updated_on;
-  /**
-   *
-   * @var string
-   */
-  protected $title;
-  /**
-   *
-   * @var string
-   */
-  protected $subtitle;
+    /**
+     *
+     * @var DateTime
+     */
+    protected $updated_on;
 
-  /**
-   *
-   * @return Feed_Entry_Collection
-   */
-  public function __construct()
-  {
-    return $this;
-  }
+    /**
+     *
+     * @var string
+     */
+    protected $title;
 
-  /**
-   *
-   * @param Feed_Entry_Adapter $entry
-   * @return Feed_Entry_Collection
-   */
-  public function add_entry(Feed_Entry_Adapter $entry)
-  {
-    $this->entries[] = $entry;
+    /**
+     *
+     * @var string
+     */
+    protected $subtitle;
 
-    return $this;
-  }
+    /**
+     *
+     * @return Feed_Entry_Collection
+     */
+    public function __construct()
+    {
+        return $this;
+    }
 
-  /**
-   *
-   * @return Array
-   */
-  public function get_entries()
-  {
-    return $this->entries;
-  }
+    /**
+     *
+     * @param Feed_Entry_Adapter $entry
+     * @return Feed_Entry_Collection
+     */
+    public function add_entry(Feed_Entry_Adapter $entry)
+    {
+        $this->entries[] = $entry;
 
+        return $this;
+    }
+
+    /**
+     *
+     * @return Array
+     */
+    public function get_entries()
+    {
+        return $this->entries;
+    }
 }

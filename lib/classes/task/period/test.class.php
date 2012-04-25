@@ -18,35 +18,34 @@
 class task_period_test extends task_appboxAbstract
 {
 
-  public function getName()
-  {
-    return "Test";
-  }
+    public function getName()
+    {
+        return "Test";
+    }
 
-  public function help()
-  {
-    return "just saying what i'm doing";
-  }
+    public function help()
+    {
+        return "just saying what i'm doing";
+    }
 
-  protected function retrieve_content(appbox $appbox)
-  {
-    $this->log('test class, retrive content');
+    protected function retrieve_content(appbox $appbox)
+    {
+        $this->log('test class, retrive content');
 
-    return array('hello', 'world');
-  }
+        return array('hello', 'world');
+    }
 
-  protected function process_one_content(appbox $appbox, Array $row)
-  {
-    $this->log(sprintf("test class, process content : `%s`", implode(' ', $row)));
+    protected function process_one_content(appbox $appbox, Array $row)
+    {
+        $this->log(sprintf("test class, process content : `%s`", implode(' ', $row)));
 
-    return $this;
-  }
+        return $this;
+    }
 
-  protected function post_process_one_content(appbox $appbox, Array $row)
-  {
-    $this->log(sprintf("test class, post process content, they were %s", count($row)));
+    protected function post_process_one_content(appbox $appbox, Array $row)
+    {
+        $this->log(sprintf("test class, post process content, they were %s", count($row)));
 
-    return $this;
-  }
-
+        return $this;
+    }
 }

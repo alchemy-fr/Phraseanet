@@ -17,7 +17,8 @@
  */
 interface Feed_CollectionInterface
 {
-  public function get_feeds();
 
-  public function get_aggregate();
+    public function get_feeds();
+
+    public function get_aggregate();
 }

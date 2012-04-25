@@ -17,12 +17,12 @@
  */
 class patch_3602 implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.6.0a1';
+
     /**
      *
      * @var Array
@@ -54,20 +54,16 @@ class patch_3602 implements patchInterface
 
     function apply(base &$databox)
     {
-        try
-        {
+        try {
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        }
-        catch(\PDOException $e)
-        {
+        } catch (\PDOException $e) {
 
         }
 
         return true;
     }
-
 }

@@ -22,10 +22,9 @@ use Doctrine\Common\Cache\Cache as DoctrineCache;
 interface Cache extends DoctrineCache
 {
 
-  public function isServer();
+    public function isServer();
 
-  public function get($key);
+    public function get($key);
 
-  public function deleteMulti(array $array_keys);
-
+    public function deleteMulti(array $array_keys);
 }

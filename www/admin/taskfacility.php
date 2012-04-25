@@ -21,10 +21,6 @@ $request = http_request::getInstance();
 $parm = $request->get_parms('cls', 'taskid');
 
 $cls = 'task_period_' . $parm['cls'];
-$registry = registry::get_instance();
-$tskfile = $registry->get('GV_RootPath') . 'lib/classes/task/period/' . $parm['cls'] . '.class.php';
-
-// require_once $tskfile;
 
 $ztask = new $cls($parm['taskid']);
 

@@ -17,12 +17,12 @@
  */
 class patch_3103 implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.1.0';
+
     /**
      *
      * @var Array
@@ -64,28 +64,25 @@ class patch_3103 implements patchInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $validate_process[$row['ssel_id']][$row['usr_id']] = $row['id'];
         }
 
         $sql = 'SELECT u.*, s.ssel_id, c.base_id, c.record_id , s.usr_id as pushFrom
                             FROM sselcontusr u, sselcont c, ssel s' .
-                        ' WHERE s.ssel_id = c.ssel_id AND u.sselcont_id = c.sselcont_id' .
-                        ' AND s.deleted="0" ' .
-                        ' ORDER BY s.ssel_id ASC, c.sselcont_id ASC';
+            ' WHERE s.ssel_id = c.ssel_id AND u.sselcont_id = c.sselcont_id' .
+            ' AND s.deleted="0" ' .
+            ' ORDER BY s.ssel_id ASC, c.sselcont_id ASC';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $row)
-        {
-            if (!isset($validate_process[$row['ssel_id']]) ||
-                            !array_key_exists($row['usr_id'], $validate_process[$row['ssel_id']])
-            )
-            {
+        foreach ($rs as $row) {
+            if ( ! isset($validate_process[$row['ssel_id']]) ||
+                ! array_key_exists($row['usr_id'], $validate_process[$row['ssel_id']])
+            ) {
 
                 $sql = 'INSERT INTO validate
                         (id, ssel_id, created_on, updated_on, expires_on, last_reminder,
@@ -98,17 +95,17 @@ class patch_3103 implements patchInterface
 
                 $expire = new DateTime($row['dateFin']);
                 $expire = $expire->format('u') == 0 ?
-                                null : phraseadate::format_mysql($expire);
+                    null : phraseadate::format_mysql($expire);
 
 
                 $params = array(
-                        ':ssel_id' => $row['ssel_id']
-                        , ':created_on' => $row['date_maj']
-                        , ':updated_on' => $row['date_maj']
-                        , ':expires_on' => $expire
-                        , ':usr_id' => $row['usr_id']
-                        , ':can_agree' => $row['canAgree']
-                        , ':can_see' => $row['canSeeOther']
+                    ':ssel_id'    => $row['ssel_id']
+                    , ':created_on' => $row['date_maj']
+                    , ':updated_on' => $row['date_maj']
+                    , ':expires_on' => $expire
+                    , ':usr_id'     => $row['usr_id']
+                    , ':can_agree'  => $row['canAgree']
+                    , ':can_see'    => $row['canSeeOther']
                 );
                 $stmt->execute($params);
 
@@ -135,10 +132,10 @@ class patch_3103 implements patchInterface
             $stmt = $conn->prepare($sql);
 
             $params = array(
-                    ':validate_id' => $validate_process[$row['ssel_id']][$row['usr_id']]
-                    , ':sselcont_id' => $row['sselcont_id']
-                    , ':updated_on' => $row['date_maj']
-                    , ':agreement' => $row['agree']
+                ':validate_id' => $validate_process[$row['ssel_id']][$row['usr_id']]
+                , ':sselcont_id' => $row['sselcont_id']
+                , ':updated_on'  => $row['date_maj']
+                , ':agreement'   => $row['agree']
             );
             $stmt->execute($params);
             $stmt->closeCursor();
@@ -146,5 +143,4 @@ class patch_3103 implements patchInterface
 
         return true;
     }
-
 }

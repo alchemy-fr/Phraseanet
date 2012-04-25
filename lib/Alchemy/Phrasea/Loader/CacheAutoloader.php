@@ -23,117 +23,107 @@ require_once __DIR__ . '/Autoloader.php';
  */
 class CacheAutoloader extends Autoloader
 {
+    /**
+     * Array of all cache adapters
+     * @var type
+     */
+    private $cacheAdapters = array(
+        'Apc',
+        'Xcache'
+    );
 
-  /**
-   * Array of all cache adapters
-   * @var type
-   */
-  private $cacheAdapters = array(
-      'Apc',
-      'Xcache'
-  );
+    /**
+     * The cache adapater
+     * @var type
+     */
+    private $cacheAdapter;
 
-  /**
-   * The cache adapater
-   * @var type
-   */
-  private $cacheAdapter;
+    /**
+     * The prefix used to store id's in cache
+     * @var string
+     */
+    private $prefix;
 
-  /**
-   * The prefix used to store id's in cache
-   * @var string
-   */
-  private $prefix;
-
-  /**
-   * Take a identifier cache key prefix
-   * @param string $prefix
-   * @throws \Exceptionwhen none of the op cache code are available
-   */
-  public function __construct($prefix, $namespace = null)
-  {
-    parent::__construct();
-
-    $this->prefix = $prefix;
-
-    foreach ($this->cacheAdapters as $className)
+    /**
+     * Take a identifier cache key prefix
+     * @param string $prefix
+     * @throws \Exceptionwhen none of the op cache code are available
+     */
+    public function __construct($prefix, $namespace = null)
     {
-      $file = sprintf("%s/%sAutoloader.php", __DIR__, $className);
+        parent::__construct();
 
-      if (!file_exists($file))
-      {
-        continue;
-      }
+        $this->prefix = $prefix;
 
-      require_once $file;
+        foreach ($this->cacheAdapters as $className) {
+            $file = sprintf("%s/%sAutoloader.php", __DIR__, $className);
 
-      $className = sprintf("\Alchemy\Phrasea\Loader\%sAutoloader", $className);
+            if ( ! file_exists($file)) {
+                continue;
+            }
 
-      if (!class_exists($className))
-      {
-        continue;
-      }
+            require_once $file;
 
-      $method = new $className();
+            $className = sprintf("\Alchemy\Phrasea\Loader\%sAutoloader", $className);
 
-      if($namespace)
-      {
-        $method->setNamespace($namespace);
-      }
+            if ( ! class_exists($className)) {
+                continue;
+            }
 
-      if ($method instanceof LoaderStrategy && $method->isAvailable())
-      {
-        $this->cacheAdapter = $method;
-        break;
-      }
+            $method = new $className();
+
+            if ($namespace) {
+                $method->setNamespace($namespace);
+            }
+
+            if ($method instanceof LoaderStrategy && $method->isAvailable()) {
+                $this->cacheAdapter = $method;
+                break;
+            }
+        }
+
+        if (null === $this->cacheAdapter) {
+            throw new \Exception('No Cache available');
+        }
     }
 
-    if (null === $this->cacheAdapter)
+    /**
+     * {@inheritdoc}
+     */
+    public function findFile($class)
     {
-      throw new \Exception('No Cache available');
-    }
-  }
+        $file = $this->cacheAdapter->fetch($this->prefix . $class);
 
-  /**
-   * {@inheritdoc}
-   */
-  public function findFile($class)
-  {
-    $file = $this->cacheAdapter->fetch($this->prefix . $class);
+        if (false === $file) {
+            $this->cacheAdapter->save($this->prefix . $class, $file = parent::findFile($class));
+        }
 
-    if (false === $file)
-    {
-      $this->cacheAdapter->save($this->prefix . $class, $file = parent::findFile($class));
+        return $file;
     }
 
-    return $file;
-  }
+    /**
+     * {@inheritdoc}
+     */
+    public function register($prepend = false)
+    {
+        spl_autoload_register(array($this, 'loadClass'), true, $prepend);
+    }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function register($prepend = false)
-  {
-    spl_autoload_register(array($this, 'loadClass'), true, $prepend);
-  }
+    /**
+     * Get the current cache Adapter
+     * @return LoaderStrategy
+     */
+    public function getAdapter()
+    {
+        return $this->cacheAdapter;
+    }
 
-  /**
-   * Get the current cache Adapter
-   * @return LoaderStrategy
-   */
-  public function getAdapter()
-  {
-    return $this->cacheAdapter;
-  }
-
-  /**
-   * Get the identifier cache key prefix
-   * @return string
-   */
-  public function getPrefix()
-  {
-    return $this->prefix;
-  }
-
-
+    /**
+     * Get the identifier cache key prefix
+     * @return string
+     */
+    public function getPrefix()
+    {
+        return $this->prefix;
+    }
 }

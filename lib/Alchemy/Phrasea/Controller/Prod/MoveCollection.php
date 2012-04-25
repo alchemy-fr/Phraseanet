@@ -27,39 +27,36 @@ use Alchemy\Phrasea\Helper\Record as RecordHelper;
 class MoveCollection implements ControllerProviderInterface
 {
 
-  public function connect(Application $app)
-  {
-    $controllers = new ControllerCollection();
+    public function connect(Application $app)
+    {
+        $controllers = new ControllerCollection();
 
-    $controllers->post('/', function(Application $app, Request $request)
-            {
-              $request = $app['request'];
-              $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
-              $move->propose();
+        $controllers->post('/', function(Application $app, Request $request) {
+                $request = $app['request'];
+                $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
+                $move->propose();
 
-              $template = 'prod/actions/collection_default.twig';
-              /* @var $twig \Twig_Environment */
-              $twig = $app['Core']->getTwig();
+                $template = 'prod/actions/collection_default.twig';
+                /* @var $twig \Twig_Environment */
+                $twig = $app['Core']->getTwig();
 
-              return $twig->render($template, array('action' => $move, 'message' => ''));
+                return $twig->render($template, array('action'  => $move, 'message' => ''));
             }
-    );
+        );
 
 
-    $controllers->post('/apply/', function(Application $app)
-            {
-              $request = $app['request'];
-              $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
-              $move->execute($request);
-              $template = 'prod/actions/collection_submit.twig';
+        $controllers->post('/apply/', function(Application $app) {
+                $request = $app['request'];
+                $move = new RecordHelper\MoveCollection($app['Core'], $app['request']);
+                $move->execute($request);
+                $template = 'prod/actions/collection_submit.twig';
 
-              /* @var $twig \Twig_Environment */
-              $twig = $app['Core']->getTwig();
+                /* @var $twig \Twig_Environment */
+                $twig = $app['Core']->getTwig();
 
-              return $twig->render($template, array('action' => $move, 'message' => ''));
+                return $twig->render($template, array('action'  => $move, 'message' => ''));
             });
 
-    return $controllers;
-  }
-
+        return $controllers;
+    }
 }

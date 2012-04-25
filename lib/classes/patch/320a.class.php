@@ -17,12 +17,12 @@
  */
 class patch_320a implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.2.0.0.a2';
+
     /**
      *
      * @var Array
@@ -63,10 +63,9 @@ class patch_320a implements patchInterface
 
         $sql = 'UPDATE usr SET nonce = :nonce WHERE usr_id = :usr_id';
         $stmt = $appbox->get_connection()->prepare($sql);
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $nonce = random::generatePassword(16);
-            $params = array(':usr_id' => $row['usr_id'], ':nonce' => $nonce);
+            $params = array(':usr_id' => $row['usr_id'], ':nonce'  => $nonce);
             $stmt->execute($params);
         }
         $stmt->closeCursor();
@@ -83,14 +82,13 @@ class patch_320a implements patchInterface
 
         $sql = 'UPDATE task2 SET `class` = :class WHERE task_id = :task_id';
         $stmt = $appbox->get_connection()->prepare($sql);
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             if (strpos($row['class'], 'task_period_') !== false)
                 continue;
 
             $params = array(
-                    ':task_id' => $row['task_id']
-                    , ':class' => str_replace('task_', 'task_period_', $row['class'])
+                ':task_id' => $row['task_id']
+                , ':class'   => str_replace('task_', 'task_period_', $row['class'])
             );
 
             $stmt->execute($params);
@@ -100,5 +98,4 @@ class patch_320a implements patchInterface
 
         return true;
     }
-
 }

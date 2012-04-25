@@ -17,12 +17,12 @@
  */
 class patch_311 implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.1.1';
+
     /**
      *
      * @var Array
@@ -55,7 +55,7 @@ class patch_311 implements patchInterface
     function apply(base &$databox)
     {
         $sql = 'UPDATE record SET jeton = '
-                        . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF);
+            . (JETON_WRITE_META_DOC | JETON_WRITE_META_SUBDEF);
 
         $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -63,6 +63,5 @@ class patch_311 implements patchInterface
 
         return true;
     }
-
 }
 

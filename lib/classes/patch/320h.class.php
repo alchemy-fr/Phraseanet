@@ -17,12 +17,12 @@
  */
 class patch_320h implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.2.0.0.a8';
+
     /**
      *
      * @var Array
@@ -62,5 +62,4 @@ class patch_320h implements patchInterface
 
         return true;
     }
-
 }

@@ -17,21 +17,23 @@
  */
 class databox_Field_DCES_Date extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Date';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Date';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'A point or period of time associated with an event
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'A point or period of time associated with an event
                           in the lifecycle of the resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#date';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#date';
+
 }

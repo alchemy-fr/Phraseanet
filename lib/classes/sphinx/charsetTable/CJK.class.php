@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_CJK extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Chinese, Japanese, and Korean';
-  protected $table = '
+    protected $name = 'Chinese, Japanese, and Korean';
+    protected $table = '
     #################################################
     # CJK*
     U+F900->U+8C48, U+F901->U+66F4, U+F902->U+8ECA, U+F903->U+8CC8, U+F904->U+6ED1,

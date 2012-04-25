@@ -20,9 +20,8 @@ $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 $request = http_request::getInstance();
 $parm = $request->get_parms('session');
 
-if ($parm["session"])
-{
-  session_id($parm["session"]);
+if ($parm["session"]) {
+    session_id($parm["session"]);
 }
 
 $app = require __DIR__ . "/../../lib/Alchemy/Phrasea/Application/Admin.php";

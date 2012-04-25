@@ -17,12 +17,12 @@
  */
 class patch_303 implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.0.3';
+
     /**
      *
      * @var Array
@@ -76,24 +76,20 @@ class patch_303 implements patchInterface
         $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $tab_usr[$row['usr_id']] = array(
-                    'fonction' => $row['fonction'],
-                    'societe' => $row['societe'],
-                    'activite' => $row['activite'],
-                    'pays' => $row['pays']
+                'fonction' => $row['fonction'],
+                'societe'  => $row['societe'],
+                'activite' => $row['activite'],
+                'pays'     => $row['pays']
             );
         }
 
-        foreach ($appbox->get_databoxes() as $databox)
-        {
-            foreach ($tab_usr as $id => $columns)
-            {
+        foreach ($appbox->get_databoxes() as $databox) {
+            foreach ($tab_usr as $id => $columns) {
                 $f_req = array();
-                $params = array(':usr_id' => $id, ':site' => $appbox->get_registry()->get('GV_sit'));
-                foreach ($columns as $column => $value)
-                {
+                $params = array(':usr_id' => $id, ':site'   => $appbox->get_registry()->get('GV_sit'));
+                foreach ($columns as $column => $value) {
                     $column = trim($column);
                     $f_req[] = $column . " = :" . $column;
                     $params[':' . $column] = $value;
@@ -116,8 +112,7 @@ class patch_303 implements patchInterface
      */
     function update_users_search_datas(appbox &$appbox)
     {
-        foreach ($appbox->get_databoxes() as $databox)
-        {
+        foreach ($appbox->get_databoxes() as $databox) {
             $date_debut = '0000-00-00 00:00:00';
 
             $sql = 'SELECT MAX(date) as debut FROM `log_search`';
@@ -127,8 +122,7 @@ class patch_303 implements patchInterface
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
-            if ($row)
-            {
+            if ($row) {
                 $date_debut = $row['debut'];
             }
 
@@ -144,5 +138,4 @@ class patch_303 implements patchInterface
 
         return $this;
     }
-
 }

@@ -21,45 +21,43 @@ use Symfony\Component\HttpKernel\Exception;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-return call_user_func(function()
-                {
+return call_user_func(function() {
 
-                    $app = new \Silex\Application();
+            $app = new \Silex\Application();
 
-                    $app["Core"] = \bootstrap::getCore();
+            $app["Core"] = \bootstrap::getCore();
 
-                    $app["appbox"] = \appbox::get_instance($app['Core']);
+            $app["appbox"] = \appbox::get_instance($app['Core']);
 
-                    $app->get(
-                            '/', function() use ($app)
-                            {
-                                $registry = $app["Core"]->getRegistry();
+            $app->get(
+                '/', function() use ($app) {
+                    $registry = $app["Core"]->getRegistry();
 
-                                $apiAdapter = new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
-                                $versionNumber = (float) \Alchemy\Phrasea\Core\Version::getNumber();
-                                $ret = array(
-                                    'install_name' => $registry->get('GV_homeTitle'),
-                                    'description' => $registry->get('GV_metaDescription'),
-                                    'documentation' => 'https://docs.phraseanet.com/Devel',
-                                    'versions' => array(
-                                        '1' => array(
-                                            'number' => $apiAdapter->get_version(),
-                                            'uri' => '/api/v1/',
-                                            'authenticationProtocol' => 'OAuth2',
-                                            'authenticationVersion' => 'draft#v9',
-                                            'authenticationEndPoints' => array(
-                                                'authorization_token' => '/api/oauthv2/authorize',
-                                                'access_token' => '/api/oauthv2/token'
-                                            )
-                                        )
-                                    )
-                                );
+                    $apiAdapter = new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
+                    $versionNumber = (float) \Alchemy\Phrasea\Core\Version::getNumber();
+                    $ret = array(
+                        'install_name'  => $registry->get('GV_homeTitle'),
+                        'description'   => $registry->get('GV_metaDescription'),
+                        'documentation' => 'https://docs.phraseanet.com/Devel',
+                        'versions'      => array(
+                            '1' => array(
+                                'number'                  => $apiAdapter->get_version(),
+                                'uri'                     => '/api/v1/',
+                                'authenticationProtocol'  => 'OAuth2',
+                                'authenticationVersion'   => 'draft#v9',
+                                'authenticationEndPoints' => array(
+                                    'authorization_token' => '/api/oauthv2/authorize',
+                                    'access_token'        => '/api/oauthv2/token'
+                                )
+                            )
+                        )
+                    );
 
-                                $json = $app["Core"]['Serializer']->serialize($ret, 'json');
+                    $json = $app["Core"]['Serializer']->serialize($ret, 'json');
 
-                                return new Response($json, 200, array('content-type' => 'application/json'));
-                            });
-
-                    return $app;
+                    return new Response($json, 200, array('content-type' => 'application/json'));
                 });
+
+            return $app;
+        });
 

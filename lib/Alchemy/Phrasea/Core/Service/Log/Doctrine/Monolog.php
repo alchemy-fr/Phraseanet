@@ -26,38 +26,34 @@ use Doctrine\Logger\MonologSQLLogger;
  */
 class Monolog extends ParentLog
 {
+    const JSON_OUTPUT = 'json';
+    const YAML_OUTPUT = 'yaml';
+    const VAR_DUMP_OUTPUT = 'vdump';
 
-  const JSON_OUTPUT = 'json';
-  const YAML_OUTPUT = 'yaml';
-  const VAR_DUMP_OUTPUT = 'vdump';
-
-  public function getDriver()
-  {
-    $output = isset($this->options["output"]) ? $this->options["output"] : self::JSON_OUTPUT;
-
-    $outputs = array(
-        self::JSON_OUTPUT, self::YAML_OUTPUT, self::VAR_DUMP_OUTPUT
-    );
-
-    if (!in_array($output, $outputs))
+    public function getDriver()
     {
-      throw new \Exception(sprintf(
-                      "The output type '%s' declared in %s service is not valid.
+        $output = isset($this->options["output"]) ? $this->options["output"] : self::JSON_OUTPUT;
+
+        $outputs = array(
+            self::JSON_OUTPUT, self::YAML_OUTPUT, self::VAR_DUMP_OUTPUT
+        );
+
+        if ( ! in_array($output, $outputs)) {
+            throw new \Exception(sprintf(
+                    "The output type '%s' declared in %s service is not valid.
           Available types are %s."
-                      , $output
-                      , __CLASS__
-                      , implode(", ", $outputs)
-              )
-      );
+                    , $output
+                    , __CLASS__
+                    , implode(", ", $outputs)
+                )
+            );
+        }
+
+        return new MonologSQLLogger($this->monolog, $output);
     }
 
-    return new MonologSQLLogger($this->monolog, $output);
-  }
-
-  public function getType()
-  {
-    return 'doctrine_monolog';
-  }
-
-
+    public function getType()
+    {
+        return 'doctrine_monolog';
+    }
 }

@@ -21,22 +21,21 @@ namespace Alchemy\Phrasea\Core\Configuration;
 interface Specification
 {
 
-  public function setConfigurations($configurations);
+    public function setConfigurations($configurations);
 
-  public function setConnexions($connexions);
+    public function setConnexions($connexions);
 
-  public function setServices($services);
+    public function setServices($services);
 
-  public function getConfigurations();
+    public function getConfigurations();
 
-  public function getConnexions();
+    public function getConnexions();
 
-  public function getServices();
+    public function getServices();
 
-  public function initialize();
+    public function initialize();
 
-  public function delete();
+    public function delete();
 
-  public function isSetup();
-
+    public function isSetup();
 }

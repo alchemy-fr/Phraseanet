@@ -22,31 +22,29 @@
  */
 class API_OAuth2_Exception_Redirect_InvalidClient extends API_OAuth2_Exception_Redirect
 {
+    /**
+     *
+     * @var string
+     */
+    protected $error = 'invalid_Client';
 
-  /**
-   *
-   * @var string
-   */
-  protected $error = 'invalid_Client';
+    /**
+     *
+     * @var string
+     */
+    protected $error_description = "The Client id is not valid.";
 
-  /**
-   *
-   * @var string
-   */
-  protected $error_description = "The Client id is not valid.";
+    /**
+     *
+     * @param string $redirect_uri
+     * @param string $state
+     * @param string $error_uri
+     * @return API_OAuth2_Exception_Redirect_InvalidClient
+     */
+    public function __construct($redirect_uri, $state = null, $error_uri = null)
+    {
+        parent::__construct($redirect_uri, $this->error, $this->error_description, $state, $error_uri);
 
-  /**
-   *
-   * @param string $redirect_uri
-   * @param string $state
-   * @param string $error_uri
-   * @return API_OAuth2_Exception_Redirect_InvalidClient
-   */
-  public function __construct($redirect_uri, $state = null, $error_uri = null)
-  {
-    parent::__construct($redirect_uri, $this->error, $this->error_description, $state, $error_uri);
-
-    return $this;
-  }
-
+        return $this;
+    }
 }

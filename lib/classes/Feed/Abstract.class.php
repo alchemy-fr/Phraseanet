@@ -17,79 +17,82 @@
  */
 abstract class Feed_Abstract
 {
-  /**
-   *
-   */
-  const FORMAT_RSS = 'rss';
-  /**
-   *
-   */
-  const FORMAT_ATOM = 'atom';
-  /**
-   *
-   */
-  const FORMAT_COOLIRIS = 'cooliris';
+    /**
+     *
+     */
+    const FORMAT_RSS = 'rss';
+    /**
+     *
+     */
+    const FORMAT_ATOM = 'atom';
+    /**
+     *
+     */
+    const FORMAT_COOLIRIS = 'cooliris';
 
-  /**
-   *
-   * @var appbox
-   */
-  protected $appbox;
-  /**
-   *
-   * @var string
-   */
-  protected $title;
-  /**
-   *
-   * @var string
-   */
-  protected $subtitle;
-  /**
-   *
-   * @var DateTime
-   */
-  protected $created_on;
-  /**
-   *
-   * @var DateTime
-   */
-  protected $updated_on;
+    /**
+     *
+     * @var appbox
+     */
+    protected $appbox;
 
-  /**
-   *
-   * @return string
-   */
-  public function get_title()
-  {
-    return $this->title;
-  }
+    /**
+     *
+     * @var string
+     */
+    protected $title;
 
-  /**
-   *
-   * @return string
-   */
-  public function get_subtitle()
-  {
-    return $this->subtitle;
-  }
+    /**
+     *
+     * @var string
+     */
+    protected $subtitle;
 
-  /**
-   *
-   * @return DateTime
-   */
-  public function get_created_on()
-  {
-    return $this->created_on;
-  }
+    /**
+     *
+     * @var DateTime
+     */
+    protected $created_on;
 
-  /**
-   *
-   * @return DateTime
-   */
-  public function get_updated_on()
-  {
-    return $this->updated_on;
-  }
+    /**
+     *
+     * @var DateTime
+     */
+    protected $updated_on;
 
+    /**
+     *
+     * @return string
+     */
+    public function get_title()
+    {
+        return $this->title;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function get_subtitle()
+    {
+        return $this->subtitle;
+    }
+
+    /**
+     *
+     * @return DateTime
+     */
+    public function get_created_on()
+    {
+        return $this->created_on;
+    }
+
+    /**
+     *
+     * @return DateTime
+     */
+    public function get_updated_on()
+    {
+        return $this->updated_on;
+    }
 }

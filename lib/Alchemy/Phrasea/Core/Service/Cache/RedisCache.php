@@ -25,74 +25,65 @@ use Alchemy\Phrasea\Core,
  */
 class RedisCache extends ServiceAbstract
 {
+    const DEFAULT_HOST = "localhost";
+    const DEFAULT_PORT = "6379";
 
-  const DEFAULT_HOST = "localhost";
-  const DEFAULT_PORT = "6379";
+    protected $cache;
+    protected $host;
+    protected $port;
 
-  protected $cache;
-  protected $host;
-  protected $port;
-
-  protected function init()
-  {
-    $options = $this->getOptions();
-
-    $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
-
-    $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
-  }
-
-  /**
-   *
-   * @return Cache\ApcCache
-   */
-  public function getDriver()
-  {
-    if (!extension_loaded('redis'))
+    protected function init()
     {
-      throw new \Exception('The Redis cache requires the Redis extension.');
+        $options = $this->getOptions();
+
+        $this->host = isset($options["host"]) ? $options["host"] : self::DEFAULT_HOST;
+
+        $this->port = isset($options["port"]) ? $options["port"] : self::DEFAULT_PORT;
     }
 
-
-    if (!$this->cache)
+    /**
+     *
+     * @return Cache\ApcCache
+     */
+    public function getDriver()
     {
-      $redis = new \Redis();
+        if ( ! extension_loaded('redis')) {
+            throw new \Exception('The Redis cache requires the Redis extension.');
+        }
 
-      if (!$redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY))
-      {
-        $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
-      }
 
-      if ($redis->connect($this->host, $this->port))
-      {
-        $this->cache = new CacheDriver\RedisCache();
-        $this->cache->setRedis($redis);
-        $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
-      }
-      else
-      {
-        throw new \Exception(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
-      }
+        if ( ! $this->cache) {
+            $redis = new \Redis();
 
+            if ( ! $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_IGBINARY)) {
+                $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP);
+            }
+
+            if ($redis->connect($this->host, $this->port)) {
+                $this->cache = new CacheDriver\RedisCache();
+                $this->cache->setRedis($redis);
+                $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+            } else {
+                throw new \Exception(sprintf("Redis instance with host '%s' and port '%s' is not reachable", $this->host, $this->port));
+            }
+        }
+
+        return $this->cache;
     }
 
-    return $this->cache;
-  }
+    public function getType()
+    {
+        return 'redis';
+    }
 
-  public function getType()
-  {
-    return 'redis';
-  }
+    public function getHost()
+    {
+        return $this->host;
+    }
 
-  public function getHost()
-  {
-    return $this->host;
-  }
-
-  public function getPort()
-  {
-    return $this->port;
-  }
-
+    public function getPort()
+    {
+        return $this->port;
+    }
 }
 

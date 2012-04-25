@@ -25,63 +25,61 @@ use Symfony\Component\Console\Command\Command;
 class module_console_systemBackupDB extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
 
-    $dir = sprintf(
+        $dir = sprintf(
             '%s/config/'
             , dirname(dirname(dirname(dirname(__DIR__))))
-    );
+        );
 
-    $this->setDescription('Backup Phraseanet Databases');
+        $this->setDescription('Backup Phraseanet Databases');
 
-    $this->addArgument('directory', null, 'The directory where to backup', $dir);
+        $this->addArgument('directory', null, 'The directory where to backup', $dir);
 
-    return $this;
-  }
-
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-    if (!setup::is_installed())
-    {
-      $output->writeln('Argument must be an Id.');
-
-      return 1;
+        return $this;
     }
 
-    require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
-    $output->write('Phraseanet is going to be backup...', true);
-
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-
-    $ok = true;
-
-    $ok = $this->dump_base($appbox, $input, $output) && $ok;
-
-    foreach ($appbox->get_databoxes() as $databox)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
-      $ok = $this->dump_base($databox, $input, $output) && $ok;
+        if ( ! setup::is_installed()) {
+            $output->writeln('Argument must be an Id.');
+
+            return 1;
+        }
+
+        require_once __DIR__ . '/../../../../lib/bootstrap.php';
+
+        $output->write('Phraseanet is going to be backup...', true);
+
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+
+        $ok = true;
+
+        $ok = $this->dump_base($appbox, $input, $output) && $ok;
+
+        foreach ($appbox->get_databoxes() as $databox) {
+            $ok = $this->dump_base($databox, $input, $output) && $ok;
+        }
+
+        return (int) ! $ok;
     }
 
-    return (int) !$ok;
-  }
+    protected function dump_base(base $base, InputInterface $input, OutputInterface $output)
+    {
+        $date_obj = new DateTime();
 
-  protected function dump_base(base $base, InputInterface $input, OutputInterface $output)
-  {
-    $date_obj = new DateTime();
-
-    $filename = sprintf(
+        $filename = sprintf(
             '%s%s_%s.sql'
             , p4string::addEndSlash($input->getArgument('directory'))
             , $base->get_dbname()
             , $date_obj->format('Y_m_d_H_i_s')
-    );
+        );
 
-    $output->write(sprintf('Generating %s ... ', $filename));
+        $output->write(sprintf('Generating %s ... ', $filename));
 
-    $command = sprintf(
+        $command = sprintf(
             'mysqldump --host %s --port %s --user %s --password=%s'
             . ' --database %s --default-character-set=utf8 > %s'
             , $base->get_host()
@@ -90,24 +88,18 @@ class module_console_systemBackupDB extends Command
             , $base->get_passwd()
             , $base->get_dbname()
             , escapeshellarg($filename)
-    );
+        );
 
-    system($command);
+        system($command);
 
-    if (file_exists($filename) && filesize($filename) > 0)
-    {
-      $output->writeln('OK');
+        if (file_exists($filename) && filesize($filename) > 0) {
+            $output->writeln('OK');
 
-      return true;
+            return true;
+        } else {
+            $output->writeln('<error>Failed</error>');
+
+            return false;
+        }
     }
-    else
-    {
-      $output->writeln('<error>Failed</error>');
-
-      return false;
-    }
-
-
-  }
-
 }

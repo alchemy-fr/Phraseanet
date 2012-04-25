@@ -17,17 +17,15 @@
  */
 abstract class API_V1_exception_abstract extends Exception
 {
+    protected static $details;
 
-  protected static $details;
+    public function __construct()
+    {
+        return $this;
+    }
 
-  public function __construct()
-  {
-    return $this;
-  }
-
-  public static function get_details()
-  {
-    return static::$details;
-  }
-
+    public static function get_details()
+    {
+        return static::$details;
+    }
 }

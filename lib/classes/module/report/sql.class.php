@@ -17,115 +17,114 @@
  */
 class module_report_sql
 {
+    /**
+     *
+     * @var connection_PDO
+     */
+    public $conn;
 
-  /**
-   *
-   * @var connection_PDO
-   */
-  public $conn;
-  /**
-   *
-   * @var connection_PDO
-   */
-  public $connbas;
-  /**
-   *
-   * @var module_report_sqlfilter
-   */
-  public $filter;
-  public $sql;
-  public $params;
-  public $total_row;
-  public $enable_limit;
-  public $groupby = false;
-  public $on = false;
+    /**
+     *
+     * @var connection_PDO
+     */
+    public $connbas;
 
-  public function __construct(module_report $report)
-  {
-    $this->conn = connection::getPDOConnection();
-    $this->connbas = connection::getPDOConnection($report->getSbasId());
-    $this->filter = new module_report_sqlfilter($report);
-    $this->sql = '';
-    $this->params = array();
-    $this->total_row = 0;
-    $this->enable_limit = $report->getEnableLimit();
-  }
+    /**
+     *
+     * @var module_report_sqlfilter
+     */
+    public $filter;
+    public $sql;
+    public $params;
+    public $total_row;
+    public $enable_limit;
+    public $groupby = false;
+    public $on = false;
 
-  public function setGroupBy($groupby)
-  {
-    $this->groupby = $groupby;
+    public function __construct(module_report $report)
+    {
+        $this->conn = connection::getPDOConnection();
+        $this->connbas = connection::getPDOConnection($report->getSbasId());
+        $this->filter = new module_report_sqlfilter($report);
+        $this->sql = '';
+        $this->params = array();
+        $this->total_row = 0;
+        $this->enable_limit = $report->getEnableLimit();
+    }
 
-    return $this;
-  }
+    public function setGroupBy($groupby)
+    {
+        $this->groupby = $groupby;
 
-  public function getGroupby()
-  {
-    return $this->groupby;
-  }
+        return $this;
+    }
 
-  public function setOn($on)
-  {
-    $this->on = $on;
+    public function getGroupby()
+    {
+        return $this->groupby;
+    }
 
-    return $this;
-  }
+    public function setOn($on)
+    {
+        $this->on = $on;
 
-  public function getOn()
-  {
-    return $this->on;
-  }
+        return $this;
+    }
 
-  public function setFilter(module_report_sqlfilter $filter)
-  {
-    $this->filter = $filter;
-  }
-  /**
-   *
-   * @return module_report_sqlfilter
-   */
-  public function getFilters()
-  {
-    return $this->filter;
-  }
+    public function getOn()
+    {
+        return $this->on;
+    }
 
-  public function getSql()
-  {
-    return $this->sql;
-  }
+    public function setFilter(module_report_sqlfilter $filter)
+    {
+        $this->filter = $filter;
+    }
 
-  public function getParams()
-  {
-    return $this->params;
-  }
+    /**
+     *
+     * @return module_report_sqlfilter
+     */
+    public function getFilters()
+    {
+        return $this->filter;
+    }
 
-  public function getTotalRows()
-  {
-    return $this->total_row;
-  }
+    public function getSql()
+    {
+        return $this->sql;
+    }
 
-  public function setTotalrows($total)
-  {
-    $this->total_row = $total;
-  }
+    public function getParams()
+    {
+        return $this->params;
+    }
 
-  public function getTransQuery($champ)
-  {
-    $tanslation = $this->filter->getCorFilter();
-    if (array_key_exists($champ, $tanslation))
+    public function getTotalRows()
+    {
+        return $this->total_row;
+    }
 
-      return $tanslation[$champ];
-    else
+    public function setTotalrows($total)
+    {
+        $this->total_row = $total;
+    }
 
-      return $champ;
-  }
+    public function getTransQuery($champ)
+    {
+        $tanslation = $this->filter->getCorFilter();
+        if (array_key_exists($champ, $tanslation))
+            return $tanslation[$champ];
+        else
+            return $champ;
+    }
 
-  /**
-   *
-   * @return connection_PDO
-   */
-  public function getConnBas()
-  {
-    return $this->connbas;
-  }
-
+    /**
+     *
+     * @return connection_PDO
+     */
+    public function getConnBas()
+    {
+        return $this->connbas;
+    }
 }

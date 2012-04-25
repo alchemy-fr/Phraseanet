@@ -23,16 +23,15 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class VarBinary extends Type
 {
-  const VARBINARY = 'varbinary';
+    const VARBINARY = 'varbinary';
 
-  public function getName()
-  {
-    return static::VARBINARY;
-  }
+    public function getName()
+    {
+        return static::VARBINARY;
+    }
 
-  public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-  {
-    return $platform->getDoctrineTypeMapping('VARBINARY');
-  }
-
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        return $platform->getDoctrineTypeMapping('VARBINARY');
+    }
 }

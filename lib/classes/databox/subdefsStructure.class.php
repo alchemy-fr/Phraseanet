@@ -17,7 +17,6 @@
  */
 class databox_subdefsStructure implements IteratorAggregate
 {
-
     /**
      *
      * @var Array
@@ -51,10 +50,8 @@ class databox_subdefsStructure implements IteratorAggregate
     {
         $searchGroup = strtolower($searchGroup);
 
-        foreach ($this->AvSubdefs as $groupname => $subdefgroup)
-        {
-            if ($searchGroup == $groupname)
-            {
+        foreach ($this->AvSubdefs as $groupname => $subdefgroup) {
+            if ($searchGroup == $groupname) {
                 return $subdefgroup;
             }
         }
@@ -71,36 +68,31 @@ class databox_subdefsStructure implements IteratorAggregate
         $sx_struct = $this->databox->get_sxml_structure();
 
         $this->AvSubdefs = array(
-          'image' => array(),
-          'video' => array(),
-          'audio' => array(),
-          'document' => array(),
-          'flash' => array()
+            'image' => array(),
+            'video' => array(),
+            'audio' => array(),
+            'document' => array(),
+            'flash' => array()
         );
 
-        if ( ! $sx_struct)
-        {
+        if ( ! $sx_struct) {
             return $this;
         }
 
         $subdefgroup = $sx_struct->subdefs[0];
 
 
-        foreach ($subdefgroup as $k => $subdefs)
-        {
+        foreach ($subdefgroup as $k => $subdefs) {
             $subdefgroup_name = strtolower($subdefs->attributes()->name);
 
-            if ( ! isset($AvSubdefs[$subdefgroup_name]))
-            {
+            if ( ! isset($AvSubdefs[$subdefgroup_name])) {
                 $AvSubdefs[$subdefgroup_name] = array();
             }
 
-            foreach ($subdefs as $sd)
-            {
+            foreach ($subdefs as $sd) {
                 $subdef_name = strtolower($sd->attributes()->name);
 
-                switch ($subdefgroup_name)
-                {
+                switch ($subdefgroup_name) {
                     case 'audio':
                         $type = new \Alchemy\Phrasea\Media\Type\Audio();
                         break;
@@ -137,8 +129,7 @@ class databox_subdefsStructure implements IteratorAggregate
      */
     public function get_subdef($subdef_type, $subdef_name)
     {
-        if (isset($this->AvSubdefs[$subdef_type]) && isset($this->AvSubdefs[$subdef_type][$subdef_name]))
-        {
+        if (isset($this->AvSubdefs[$subdef_type]) && isset($this->AvSubdefs[$subdef_type][$subdef_name])) {
             return $this->AvSubdefs[$subdef_type][$subdef_name];
         }
         throw new Exception_Databox_SubdefNotFound();
@@ -154,16 +145,15 @@ class databox_subdefsStructure implements IteratorAggregate
     {
 
         $dom_struct = $this->databox->get_dom_structure();
-        $dom_xp     = $this->databox->get_xpath_structure();
-        $nodes      = $dom_xp->query(
-          '//record/subdefs/'
-          . 'subdefgroup[@name="' . $group . '"]/'
-          . 'subdef[@name="' . $name . '"]'
+        $dom_xp = $this->databox->get_xpath_structure();
+        $nodes = $dom_xp->query(
+            '//record/subdefs/'
+            . 'subdefgroup[@name="' . $group . '"]/'
+            . 'subdef[@name="' . $name . '"]'
         );
 
-        if ($nodes->length > 0)
-        {
-            $node   = $nodes->item(0);
+        if ($nodes->length > 0) {
+            $node = $nodes->item(0);
             $parent = $node->parentNode;
             $parent->removeChild($node);
         }
@@ -192,17 +182,14 @@ class databox_subdefsStructure implements IteratorAggregate
         $subdef->setAttribute('name', mb_strtolower($name));
 
         $dom_xp = $this->databox->get_xpath_structure();
-        $query  = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
+        $query = '//record/subdefs/subdefgroup[@name="' . $groupname . '"]';
         $groups = $dom_xp->query($query);
 
-        if ($groups->length == 0)
-        {
+        if ($groups->length == 0) {
             $group = $dom_struct->createElement('subdefgroup');
             $group->setAttribute('name', $groupname);
             $dom_xp->query('/record/subdefs')->item(0)->appendChild($group);
-        }
-        else
-        {
+        } else {
             $group = $groups->item(0);
         }
 
@@ -233,8 +220,7 @@ class databox_subdefsStructure implements IteratorAggregate
         $subdef->setAttribute('name', mb_strtolower($name));
         $subdef->setAttribute('downloadable', ($downloadable ? 'true' : 'false'));
 
-        foreach ($options as $option => $value)
-        {
+        foreach ($options as $option => $value) {
             $child = $dom_struct->createElement($option);
             $child->appendChild($dom_struct->createTextNode($value));
             $subdef->appendChild($child);
@@ -243,37 +229,29 @@ class databox_subdefsStructure implements IteratorAggregate
         $dom_xp = $this->databox->get_xpath_structure();
 
         $nodes = $dom_xp->query('//record/subdefs/'
-          . 'subdefgroup[@name="' . $group . '"]');
-        if ($nodes->length > 0)
-        {
+            . 'subdefgroup[@name="' . $group . '"]');
+        if ($nodes->length > 0) {
             $dom_group = $nodes->item(0);
-        }
-        else
-        {
+        } else {
             $dom_group = $dom_struct->createElement('subdefgroup');
             $dom_group->setAttribute('name', $group);
 
             $nodes = $dom_xp->query('//record/subdefs');
-            if ($nodes->length > 0)
-            {
+            if ($nodes->length > 0) {
                 $nodes->item(0)->appendChild($dom_group);
-            }
-            else
-            {
+            } else {
                 throw new Exception('Unable to find /record/subdefs xquery');
             }
         }
 
         $nodes = $dom_xp->query(
-          '//record/subdefs/'
-          . 'subdefgroup[@name="' . $group . '"]/'
-          . 'subdef[@name="' . $name . '"]'
+            '//record/subdefs/'
+            . 'subdefgroup[@name="' . $group . '"]/'
+            . 'subdef[@name="' . $name . '"]'
         );
 
-        if ($nodes->length > 0)
-        {
-            for ($i = 0; $i < $nodes->length; $i ++ )
-            {
+        if ($nodes->length > 0) {
+            for ($i = 0; $i < $nodes->length; $i ++ ) {
                 $dom_group->removeChild($nodes->item($i));
             }
         }
@@ -286,5 +264,4 @@ class databox_subdefsStructure implements IteratorAggregate
 
         return $this;
     }
-
 }

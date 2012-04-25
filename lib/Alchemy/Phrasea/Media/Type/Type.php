@@ -13,13 +13,11 @@ namespace Alchemy\Phrasea\Media\Type;
 
 interface Type
 {
-
-    const TYPE_AUDIO    = 'Audio';
-    const TYPE_VIDEO    = 'Video';
+    const TYPE_AUDIO = 'Audio';
+    const TYPE_VIDEO = 'Video';
     const TYPE_DOCUMENT = 'Document';
-    const TYPE_FLASH    = 'Flash';
-    const TYPE_IMAGE    = 'Image';
+    const TYPE_FLASH = 'Flash';
+    const TYPE_IMAGE = 'Image';
 
     public function getType();
-
 }

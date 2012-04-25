@@ -17,7 +17,6 @@
  */
 class patch_320c implements patchInterface
 {
-
     /**
      *
      * @var string
@@ -72,42 +71,39 @@ class patch_320c implements patchInterface
 
 
         $phrasea_maps = array(
-                'pdftext' => '/rdf:RDF/rdf:Description/PHRASEANET:pdftext'
-                , 'tf-archivedate' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-archivedate'
-                , 'tf-atime' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-atime'
-                , 'tf-chgdocdate' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-chgdocdate'
-                , 'tf-ctime' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-ctime'
-                , 'tf-editdate' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-editdate'
-                , 'tf-mtime' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-mtime'
-                , 'tf-parentdir' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-parentdir'
-                , 'tf-bits' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-bits'
-                , 'tf-channels' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-channels'
-                , 'tf-extension' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-extension'
-                , 'tf-filename' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-filename'
-                , 'tf-filepath' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-filepath'
-                , 'tf-height' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-height'
-                , 'tf-mimetype' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-mimetype'
-                , 'tf-recordid' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-recordid'
-                , 'tf-size' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-size'
-                , 'tf-width' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-width'
+            'pdftext'        => '/rdf:RDF/rdf:Description/PHRASEANET:pdftext'
+            , 'tf-archivedate' => '/rdf:RDF/rdf:Description/PHRASEANET:tf-archivedate'
+            , 'tf-atime'       => '/rdf:RDF/rdf:Description/PHRASEANET:tf-atime'
+            , 'tf-chgdocdate'  => '/rdf:RDF/rdf:Description/PHRASEANET:tf-chgdocdate'
+            , 'tf-ctime'       => '/rdf:RDF/rdf:Description/PHRASEANET:tf-ctime'
+            , 'tf-editdate'    => '/rdf:RDF/rdf:Description/PHRASEANET:tf-editdate'
+            , 'tf-mtime'       => '/rdf:RDF/rdf:Description/PHRASEANET:tf-mtime'
+            , 'tf-parentdir'   => '/rdf:RDF/rdf:Description/PHRASEANET:tf-parentdir'
+            , 'tf-bits'        => '/rdf:RDF/rdf:Description/PHRASEANET:tf-bits'
+            , 'tf-channels'    => '/rdf:RDF/rdf:Description/PHRASEANET:tf-channels'
+            , 'tf-extension'   => '/rdf:RDF/rdf:Description/PHRASEANET:tf-extension'
+            , 'tf-filename'    => '/rdf:RDF/rdf:Description/PHRASEANET:tf-filename'
+            , 'tf-filepath'    => '/rdf:RDF/rdf:Description/PHRASEANET:tf-filepath'
+            , 'tf-height'      => '/rdf:RDF/rdf:Description/PHRASEANET:tf-height'
+            , 'tf-mimetype'    => '/rdf:RDF/rdf:Description/PHRASEANET:tf-mimetype'
+            , 'tf-recordid'    => '/rdf:RDF/rdf:Description/PHRASEANET:tf-recordid'
+            , 'tf-size'        => '/rdf:RDF/rdf:Description/PHRASEANET:tf-size'
+            , 'tf-width'       => '/rdf:RDF/rdf:Description/PHRASEANET:tf-width'
         );
 
         $sxe = $databox->get_sxml_structure();
         $dom_struct = $databox->get_dom_structure();
         $xp_struct = $databox->get_xpath_structure();
 
-        foreach ($sxe->description->children() as $fname => $field)
-        {
+        foreach ($sxe->description->children() as $fname => $field) {
             $src = trim(isset($field['src']) ? $field['src'] : '');
 
-            if (array_key_exists($src, $phrasea_maps))
-            {
+            if (array_key_exists($src, $phrasea_maps)) {
                 $src = $phrasea_maps[$src];
             }
 
             $nodes = $xp_struct->query('/record/description/' . $fname);
-            if ($nodes->length > 0)
-            {
+            if ($nodes->length > 0) {
                 $node = $nodes->item(0);
                 $node->setAttribute('src', $src);
                 $node->removeAttribute('meta_id');
@@ -131,7 +127,7 @@ class patch_320c implements patchInterface
                     (null, 0, 0, "stopped", 0, 1, "upgrade to v3.2 for sbas ' . $databox->get_sbas_id() . '",
                     "0000-00-00 00:00:00", "task_period_upgradetov32",
                         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>' .
-                        '<tasksettings><sbas_id>' . $databox->get_sbas_id() . '</sbas_id></tasksettings>", -1)';
+            '<tasksettings><sbas_id>' . $databox->get_sbas_id() . '</sbas_id></tasksettings>", -1)';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
@@ -145,17 +141,15 @@ class patch_320c implements patchInterface
 
         return true;
     }
-
 }
-
 
 class extended_databox extends databox
 {
+
     public function __construct($sbas_id)
     {
         parent::__construct($sbas_id);
     }
-
 
     public function migrate_fields()
     {

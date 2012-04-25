@@ -17,7 +17,6 @@
  */
 class patch_3102 implements patchInterface
 {
-
     /**
      *
      * @var string
@@ -64,8 +63,7 @@ class patch_3102 implements patchInterface
         $rowcount = $stmt->rowCount();
         $stmt->closeCursor();
 
-        if ($rowcount == 0)
-        {
+        if ($rowcount == 0) {
             $sql = 'INSERT INTO `task2`
                                 (`task_id`, `usr_id_owner`, `pid`, `status`, `crashed`,
                     `active`, `name`, `last_exec_time`, `class`, `settings`, `completed`)
@@ -73,7 +71,7 @@ class patch_3102 implements patchInterface
                                 (null, 0, 0, "stopped", 0, 1, "upgrade to v3.1",
                 "0000-00-00 00:00:00", "task_period_upgradetov31",
                                         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>' .
-                            '<tasksettings></tasksettings>", -1)';
+                '<tasksettings></tasksettings>", -1)';
 
             $stmt = $conn->prepare($sql);
             $stmt->execute();
@@ -81,8 +79,7 @@ class patch_3102 implements patchInterface
         }
 
 
-        if ($base->get_base_type() == base::DATA_BOX)
-        {
+        if ($base->get_base_type() == base::DATA_BOX) {
             $sql = 'UPDATE record SET sha256 = ""
                             WHERE sha256 IS NULL AND parent_record_id = 0';
             $stmt = $base->get_connection()->prepare($sql);
@@ -92,5 +89,4 @@ class patch_3102 implements patchInterface
 
         return true;
     }
-
 }

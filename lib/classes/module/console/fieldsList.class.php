@@ -25,46 +25,43 @@ use Symfony\Component\Console\Command\Command;
 class module_console_fieldsList extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
-
-    $this->setDescription('List all databox fields');
-
-    return $this;
-  }
-
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-
-    $appbox = \appbox::get_instance(\bootstrap::getCore());
-
-    foreach ($appbox->get_databoxes() as $databox)
+    public function __construct($name = null)
     {
-      /* @var $databox \databox */
-      $output->writeln(
-        sprintf(
-          "\n ---------------- \nOn databox %s (sbas_id %d) :\n"
-          , $databox->get_viewname()
-          , $databox->get_sbas_id()
-          )
-        );
+        parent::__construct($name);
 
-      foreach ($databox->get_meta_structure()->get_elements() as $field)
-      {
-        $output->writeln(
-          sprintf(
-            "  %2d - <info>%s</info> (%s) %s"
-            , $field->get_id()
-            , $field->get_name()
-            , $field->get_type()
-            , ($field->is_multi() ? '<comment>multi</comment>' : '')
-          )
-        );
-      }
+        $this->setDescription('List all databox fields');
+
+        return $this;
     }
 
-    return 0;
-  }
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
 
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+
+        foreach ($appbox->get_databoxes() as $databox) {
+            /* @var $databox \databox */
+            $output->writeln(
+                sprintf(
+                    "\n ---------------- \nOn databox %s (sbas_id %d) :\n"
+                    , $databox->get_viewname()
+                    , $databox->get_sbas_id()
+                )
+            );
+
+            foreach ($databox->get_meta_structure()->get_elements() as $field) {
+                $output->writeln(
+                    sprintf(
+                        "  %2d - <info>%s</info> (%s) %s"
+                        , $field->get_id()
+                        , $field->get_name()
+                        , $field->get_type()
+                        , ($field->is_multi() ? '<comment>multi</comment>' : '')
+                    )
+                );
+            }
+        }
+
+        return 0;
+    }
 }

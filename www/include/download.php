@@ -33,23 +33,22 @@ $parm = $request->get_parms("lst", "obj", "ssttid", "type", "businessfields");
 $download = new set_export($parm['lst'], $parm['ssttid']);
 
 if ($parm["type"] == "title")
-  $titre = true;
+    $titre = true;
 else
-  $titre=false;
+    $titre = false;
 
 $list = $download->prepare_export($parm['obj'], $titre, $parm['businessfields']);
 
 $exportname = "Export_" . date("Y-n-d") . '_' . mt_rand(100, 999);
 
-if ($parm["ssttid"] != "")
-{
-  $em = $Core->getEntityManager();
-  $repository = $em->getRepository('\Entities\Basket');
+if ($parm["ssttid"] != "") {
+    $em = $Core->getEntityManager();
+    $repository = $em->getRepository('\Entities\Basket');
 
-  /* @var $repository \Repositories\BasketRepository */
+    /* @var $repository \Repositories\BasketRepository */
 
-  $basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser(), false);
-  $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
+    $basket = $repository->findUserBasket($Request->get('ssttid'), $Core->getAuthenticatedUser(), false);
+    $exportname = str_replace(' ', '_', $basket->getName()) . "_" . date("Y-n-d");
 }
 
 $list['export_name'] = $exportname . '.zip';
@@ -58,22 +57,21 @@ $endDate = new DateTime('+3 hours');
 
 $url = random::getUrlToken(\random::TYPE_DOWNLOAD, $session->get_usr_id(), $endDate, serialize($list));
 
-if ($url)
-{
+if ($url) {
 
-  $params = array(
-      'lst' => $parm['lst'],
-      'downloader' => $session->get_usr_id(),
-      'subdefs' => $parm['obj'],
-      'from_basket' => $parm["ssttid"],
-      'export_file' => $exportname
-  );
+    $params = array(
+        'lst'         => $parm['lst'],
+        'downloader'  => $session->get_usr_id(),
+        'subdefs'     => $parm['obj'],
+        'from_basket' => $parm["ssttid"],
+        'export_file' => $exportname
+    );
 
 
-  $events_mngr = eventsmanager_broker::getInstance($appbox, $Core);
-  $events_mngr->trigger('__DOWNLOAD__', $params);
+    $events_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+    $events_mngr->trigger('__DOWNLOAD__', $params);
 
-  return phrasea::redirect('/download/' . $url);
+    return phrasea::redirect('/download/' . $url);
 }
 phrasea::headers(500);
 

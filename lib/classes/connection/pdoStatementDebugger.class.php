@@ -17,46 +17,41 @@
  */
 class connection_pdoStatementDebugger
 {
+    /**
+     *
+     * @var PDOStatement
+     */
+    protected $statement;
 
-  /**
-   *
-   * @var PDOStatement
-   */
-  protected $statement;
-
-  public function __construct(PDOStatement $statement)
-  {
-    $this->statement = $statement;
-
-    return $this;
-  }
-
-  public function execute($params = array())
-  {
-    $start = microtime(true);
-    $exception = null;
-    try
+    public function __construct(PDOStatement $statement)
     {
-    $result = $this->statement->execute($params);
+        $this->statement = $statement;
+
+        return $this;
     }
-    catch(Exception $e)
+
+    public function execute($params = array())
     {
-      $exception = $e;
-    }
-    $time = microtime(true) - $start;
-    connection::$log[] = array(
-        'query' => '' . str_replace(array_keys($params), array_values($params), $this->statement->queryString),
-        'time' => $time
+        $start = microtime(true);
+        $exception = null;
+        try {
+            $result = $this->statement->execute($params);
+        } catch (Exception $e) {
+            $exception = $e;
+        }
+        $time = microtime(true) - $start;
+        connection::$log[] = array(
+            'query' => '' . str_replace(array_keys($params), array_values($params), $this->statement->queryString),
+            'time'  => $time
         );
-    if($exception instanceof Exception)
-      throw $exception;
+        if ($exception instanceof Exception)
+            throw $exception;
 
-    return $result;
-  }
+        return $result;
+    }
 
-  public function __call($function_name, $parameters)
-  {
-    return call_user_func_array(array($this->statement, $function_name), $parameters);
-  }
-
+    public function __call($function_name, $parameters)
+    {
+        return call_user_func_array(array($this->statement, $function_name), $parameters);
+    }
 }

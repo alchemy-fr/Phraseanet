@@ -18,5 +18,4 @@ class Audio implements Type
     {
         return self::TYPE_AUDIO;
     }
-
 }

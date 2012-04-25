@@ -27,71 +27,57 @@ use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
  */
 class Printer extends RecordHelper
 {
+    protected $flatten_groupings = true;
 
-  protected $flatten_groupings = true;
+    /**
+     *
+     * @param \Alchemy\Phrasea\Core $core
+     * @return Printer
+     */
+    public function __construct(Core $core, Request $Request)
+    {
+        parent::__construct($core, $Request);
 
-  /**
-   *
-   * @param \Alchemy\Phrasea\Core $core
-   * @return Printer
-   */
-  public function __construct(Core $core, Request $Request)
-  {
-    parent::__construct($core, $Request);
+        $grep = function(\record_adapter $record) {
 
-    $grep = function(\record_adapter $record)
-            {
-
-              try
-              {
-                return $record->get_thumbnail()->get_type() == \media_subdef::TYPE_IMAGE ||
+                try {
+                    return $record->get_thumbnail()->get_type() == \media_subdef::TYPE_IMAGE ||
                         $record->get_preview()->get_type() == \media_subdef::TYPE_IMAGE;
-              }
-              catch (\Exception $e)
-              {
-                return false;
-              }
+                } catch (\Exception $e) {
+                    return false;
+                }
             };
 
-    $this->grep_records($grep);
-  }
-
-  public function get_count_preview()
-  {
-    $n = 0;
-    foreach ($this->get_elements() as $element)
-    {
-      try
-      {
-        $element->get_preview()->get_type() == \media_subdef::TYPE_IMAGE;
-        $n++;
-      }
-      catch (\Exception $e)
-      {
-
-      }
+        $this->grep_records($grep);
     }
 
-    return $n;
-  }
-
-  public function get_count_thumbnail()
-  {
-    $n = 0;
-    foreach ($this->get_elements() as $element)
+    public function get_count_preview()
     {
-      try
-      {
-        $element->get_thumbnail()->get_type() == \media_subdef::TYPE_IMAGE;
-        $n++;
-      }
-      catch (\Exception $e)
-      {
+        $n = 0;
+        foreach ($this->get_elements() as $element) {
+            try {
+                $element->get_preview()->get_type() == \media_subdef::TYPE_IMAGE;
+                $n ++;
+            } catch (\Exception $e) {
 
-      }
+            }
+        }
+
+        return $n;
     }
 
-    return $n;
-  }
+    public function get_count_thumbnail()
+    {
+        $n = 0;
+        foreach ($this->get_elements() as $element) {
+            try {
+                $element->get_thumbnail()->get_type() == \media_subdef::TYPE_IMAGE;
+                $n ++;
+            } catch (\Exception $e) {
 
+            }
+        }
+
+        return $n;
+    }
 }

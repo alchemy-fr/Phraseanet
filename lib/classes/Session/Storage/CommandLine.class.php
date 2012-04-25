@@ -17,137 +17,134 @@
  */
 class Session_Storage_CommandLine extends Session_Storage_Abstract implements Session_Storage_Interface
 {
+    /**
+     *
+     * @var Session_Storage_CommandLine
+     */
+    protected static $_instance;
 
-  /**
-   *
-   * @var Session_Storage_CommandLine
-   */
-  protected static $_instance;
-  /**
-   *
-   * @var string
-   */
-  private static $_name = '';
-  /**
-   *
-   * @var Array
-   */
-  private static $_cli_storage = array();
+    /**
+     *
+     * @var string
+     */
+    private static $_name = '';
 
-  /**
-   *
-   * @param string $session_name
-   * @return Session_Storage_CommandLine
-   */
-  public static function getInstance($session_name)
-  {
-    if (!self::$_instance)
+    /**
+     *
+     * @var Array
+     */
+    private static $_cli_storage = array();
+
+    /**
+     *
+     * @param string $session_name
+     * @return Session_Storage_CommandLine
+     */
+    public static function getInstance($session_name)
     {
-      self::$_instance = new self($session_name);
+        if ( ! self::$_instance) {
+            self::$_instance = new self($session_name);
+        }
+
+        return self::$_instance;
     }
 
-    return self::$_instance;
-  }
-
-  /**
-   *
-   * @param string $name
-   * @return Session_Storage_CommandLine
-   */
-  protected function __construct($name)
-  {
-    return $this;
-  }
-
-  /**
-   *
-   * @param string $key
-   * @return mixed
-   */
-  public function get($key, $default_value = null)
-  {
-    return isset(self::$_cli_storage[self::$_name][$key]) ? self::$_cli_storage[self::$_name][$key] : $default_value;
-  }
-
-  /**
-   *
-   * @param string $key
-   * @return mixed
-   */
-  public function has($key)
-  {
-    return isset(self::$_cli_storage[self::$_name][$key]);
-  }
-
-  /**
-   *
-   * @param string $key
-   * @param mixed $value
-   * @return boolean
-   */
-  public function set($key, $value)
-  {
-    $this->require_open_storage();
-
-    return self::$_cli_storage[self::$_name][$key] = $value;
-  }
-
-  /**
-   *
-   * @param string $key
-   * @return boolean
-   */
-  public function remove($key)
-  {
-    $retval = null;
-    $this->require_open_storage();
-
-    if (isset(self::$_cli_storage[self::$_name][$key]))
+    /**
+     *
+     * @param string $name
+     * @return Session_Storage_CommandLine
+     */
+    protected function __construct($name)
     {
-      $retval = self::$_cli_storage[self::$_name][$key];
-      unset(self::$_cli_storage[self::$_name][$key]);
+        return $this;
     }
 
-    return $retval;
-  }
+    /**
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function get($key, $default_value = null)
+    {
+        return isset(self::$_cli_storage[self::$_name][$key]) ? self::$_cli_storage[self::$_name][$key] : $default_value;
+    }
 
-  /**
-   * Return PHP session name
-   *
-   * @return string
-   */
-  public function getName()
-  {
-    return 'commandLine';
-  }
+    /**
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function has($key)
+    {
+        return isset(self::$_cli_storage[self::$_name][$key]);
+    }
 
-  /**
-   * Return PHP session Id
-   *
-   * @return string
-   */
-  public function getId()
-  {
-    return 'commandLine';
-  }
+    /**
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return boolean
+     */
+    public function set($key, $value)
+    {
+        $this->require_open_storage();
 
+        return self::$_cli_storage[self::$_name][$key] = $value;
+    }
 
-  public function reset()
-  {
-    self::$_cli_storage[self::$_name] = array();
+    /**
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function remove($key)
+    {
+        $retval = null;
+        $this->require_open_storage();
 
-    return;
-  }
+        if (isset(self::$_cli_storage[self::$_name][$key])) {
+            $retval = self::$_cli_storage[self::$_name][$key];
+            unset(self::$_cli_storage[self::$_name][$key]);
+        }
 
-  /**
-   *
-   * @return Void
-   */
-  public function destroy()
-  {
-    unset(self::$_cli_storage[self::$_name]);
+        return $retval;
+    }
 
-    return;
-  }
+    /**
+     * Return PHP session name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'commandLine';
+    }
 
+    /**
+     * Return PHP session Id
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return 'commandLine';
+    }
+
+    public function reset()
+    {
+        self::$_cli_storage[self::$_name] = array();
+
+        return;
+    }
+
+    /**
+     *
+     * @return Void
+     */
+    public function destroy()
+    {
+        unset(self::$_cli_storage[self::$_name]);
+
+        return;
+    }
 }

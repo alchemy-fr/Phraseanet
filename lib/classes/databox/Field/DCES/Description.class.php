@@ -17,20 +17,22 @@
  */
 class databox_Field_DCES_Description extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Description';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Description';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'An account of the resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#description';
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'An account of the resource.';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#description';
+
 }

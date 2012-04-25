@@ -23,35 +23,31 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class LoadFiveBaskets extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
+    /**
+     *
+     * @var array
+     */
+    public $baskets;
 
-  /**
-   *
-   * @var array
-   */
-  public $baskets;
-
-  public function load(ObjectManager $manager)
-  {
-    for ($i = 0; $i < 5; $i++)
+    public function load(ObjectManager $manager)
     {
-      $basket = new \Entities\Basket();
+        for ($i = 0; $i < 5; $i ++ ) {
+            $basket = new \Entities\Basket();
 
-      $basket->setName('test ' . $i);
-      $basket->setDescription('description');
+            $basket->setName('test ' . $i);
+            $basket->setDescription('description');
 
-      if (null === $this->user)
-      {
-        throw new \LogicException('Fill a user to store a new basket');
-      }
+            if (null === $this->user) {
+                throw new \LogicException('Fill a user to store a new basket');
+            }
 
-      $basket->setOwner($this->user);
+            $basket->setOwner($this->user);
 
-      $manager->persist($basket);
+            $manager->persist($basket);
 
-      $this->baskets[] = $basket;
+            $this->baskets[] = $basket;
+        }
+        $this->addReference('five-basket', $basket);
+        $manager->flush();
     }
-    $this->addReference('five-basket', $basket);
-    $manager->flush();
-  }
-
 }

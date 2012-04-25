@@ -17,12 +17,12 @@
  */
 class patch_305 implements patchInterface
 {
-
     /**
      *
      * @var string
      */
     private $release = '3.0.5';
+
     /**
      *
      * @var Array
@@ -65,5 +65,4 @@ class patch_305 implements patchInterface
 
         return true;
     }
-
 }

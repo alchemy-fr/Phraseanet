@@ -23,90 +23,83 @@ use Symfony\Component\ClassLoader\UniversalClassLoader;
  */
 class Autoloader extends UniversalClassLoader
 {
+    /**
+     * An array of path to check
+     * @var type
+     */
+    private $paths = array();
+    private $classmap = array();
 
-  /**
-   * An array of path to check
-   * @var type
-   */
-  private $paths = array();
-  private $classmap = array();
+    /**
+     * Construct a new phrasea Autoloader
+     * Because some custom classes from library folder might be
+     * overwritten in config folder
+     * Phraseanet Loader look classes in configuration folders first
+     * then check library folder if no classes where matched
+     */
+    public function __construct()
+    {
+        $this->paths['config'] = __DIR__ . '/../../../../config/classes/';
+        $this->paths['library'] = __DIR__ . '/../../../classes/';
 
-  /**
-   * Construct a new phrasea Autoloader
-   * Because some custom classes from library folder might be
-   * overwritten in config folder
-   * Phraseanet Loader look classes in configuration folders first
-   * then check library folder if no classes where matched
-   */
-  public function __construct()
-  {
-    $this->paths['config'] = __DIR__ . '/../../../../config/classes/';
-    $this->paths['library'] = __DIR__ . '/../../../classes/';
-
-    $getComposerClassMap = function()
-            {
-              return require realpath(__DIR__ . '/../../../../vendor/.composer/autoload_classmap.php');
+        $getComposerClassMap = function() {
+                return require realpath(__DIR__ . '/../../../../vendor/.composer/autoload_classmap.php');
             };
 
-    $this->classmap = $getComposerClassMap();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function findFile($class)
-  {
-    if (!$file = $this->checkFile($class))
-    {
-      $file = parent::findFile($class);
+        $this->classmap = $getComposerClassMap();
     }
 
-    return $file;
-  }
-
-  /**
-   * Add a path to look for autoloading phraseanet classes
-   * @param string $name
-   * @param string $path
-   */
-  public function addPath($name, $path)
-  {
-    $this->paths[$name] = \p4string::addEndSlash($path);
-  }
-
-  /**
-   * Check whether a class with $class name exists
-   * foreach declared paths
-   * @param string $class
-   * @return mixed string|null
-   */
-  private function checkFile($classname)
-  {
-    if (isset($this->classmap[$classname]))
+    /**
+     * {@inheritdoc}
+     */
+    public function findFile($class)
     {
-      return $this->classmap[$classname];
-    }
+        if ( ! $file = $this->checkFile($class)) {
+            $file = parent::findFile($class);
+        }
 
-    $normalized_classname = str_replace('_', '/', $classname);
-
-    foreach ($this->paths as $path)
-    {
-      $file = $path . $normalized_classname . '.class.php';
-
-      if (file_exists($file))
-      {
         return $file;
-      }
     }
-  }
 
-  /**
-   * Get Paths where classes are checked for autoloading
-   * @return Array
-   */
-  public function getPaths()
-  {
-    return $this->paths;
-  }
+    /**
+     * Add a path to look for autoloading phraseanet classes
+     * @param string $name
+     * @param string $path
+     */
+    public function addPath($name, $path)
+    {
+        $this->paths[$name] = \p4string::addEndSlash($path);
+    }
 
+    /**
+     * Check whether a class with $class name exists
+     * foreach declared paths
+     * @param string $class
+     * @return mixed string|null
+     */
+    private function checkFile($classname)
+    {
+        if (isset($this->classmap[$classname])) {
+            return $this->classmap[$classname];
+        }
+
+        $normalized_classname = str_replace('_', '/', $classname);
+
+        foreach ($this->paths as $path) {
+            $file = $path . $normalized_classname . '.class.php';
+
+            if (file_exists($file)) {
+                return $file;
+            }
+        }
+    }
+
+    /**
+     * Get Paths where classes are checked for autoloading
+     * @return Array
+     */
+    public function getPaths()
+    {
+        return $this->paths;
+    }
 }

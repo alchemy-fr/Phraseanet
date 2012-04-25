@@ -18,20 +18,14 @@
 require_once __DIR__ . "/../../lib/bootstrap.php";
 
 $message = '';
-try
-{
-  $pub = new action_publish(http_request::getInstance());
+try {
+    $pub = new action_publish(http_request::getInstance());
+} catch (Exception $e) {
+    $message = $e->getMessage();
 }
-catch (Exception $e)
-{
-  $message = $e->getMessage();
-}
-try
-{
-  $pub->render($message);
-}
-catch (Exception $e)
-{
-  echo $e->getMessage();
+try {
+    $pub->render($message);
+} catch (Exception $e) {
+    echo $e->getMessage();
 }
 ?>

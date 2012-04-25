@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_gurmukhi extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Gurmukhi';
-  protected $table = '
+    protected $name = 'Gurmukhi';
+    protected $table = '
     ##################################################
     # Gurmukhi
     U+0A33->U+0A32, U+0A36->U+0A38, U+0A59->U+0A16, U+0A5A->U+0A17, U+0A5B->U+0A1C,

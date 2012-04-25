@@ -23,44 +23,40 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class Feed extends RecordHelper
 {
+    /**
+     *
+     * @var Array
+     */
+    protected $required_sbas_rights = array('bas_chupub');
 
-  /**
-   *
-   * @var Array
-   */
-  protected $required_sbas_rights = array('bas_chupub');
+    /**
+     *
+     * @var boolean
+     */
+    protected $works_on_unique_sbas = true;
 
-  /**
-   *
-   * @var boolean
-   */
-  protected $works_on_unique_sbas = true;
+    /**
+     *
+     * @var boolean
+     */
+    protected $flatten_groupings = true;
 
-  /**
-   *
-   * @var boolean
-   */
-  protected $flatten_groupings = true;
-
-  /**
-   *
-   * @param \Alchemy\Phrasea\Core $core
-   * @return Feed
-   */
-  public function __construct(Core $core, Request $Request)
-  {
-    parent::__construct($core, $Request);
-
-    if ($this->is_single_grouping())
+    /**
+     *
+     * @param \Alchemy\Phrasea\Core $core
+     * @return Feed
+     */
+    public function __construct(Core $core, Request $Request)
     {
-      $record = array_pop($this->selection->get_elements());
-      foreach ($record->get_children() as $child)
-      {
-        $this->selection->add_element($child);
-      }
+        parent::__construct($core, $Request);
+
+        if ($this->is_single_grouping()) {
+            $record = array_pop($this->selection->get_elements());
+            foreach ($record->get_children() as $child) {
+                $this->selection->add_element($child);
+            }
+        }
+
+        return $this;
     }
-
-    return $this;
-  }
-
 }

@@ -17,27 +17,28 @@
  */
 interface media_Permalink_Interface
 {
-  public function get_url();
 
-  public function get_page(registryInterface $registry);
+    public function get_url();
 
-  public function get_id();
+    public function get_page(registryInterface $registry);
 
-  public function get_token();
+    public function get_id();
 
-  public function get_is_activated();
+    public function get_token();
 
-  public function get_created_on();
+    public function get_is_activated();
 
-  public function get_last_modified();
+    public function get_created_on();
 
-  public function get_label();
+    public function get_last_modified();
 
-  public function set_is_activated($is_activated);
+    public function get_label();
 
-  public function set_label($label);
+    public function set_is_activated($is_activated);
 
-  public static function getPermalink(databox &$databox, media_subdef &$media_subdef);
+    public function set_label($label);
 
-  public static function create(databox &$databox, media_subdef &$media_subdef);
+    public static function getPermalink(databox &$databox, media_subdef &$media_subdef);
+
+    public static function create(databox &$databox, media_subdef &$media_subdef);
 }

@@ -17,28 +17,26 @@
  */
 class eventsmanager_event_test extends eventsmanager_eventAbstract
 {
+    /**
+     *
+     * @var Array
+     */
+    protected $events = array('__EVENT__');
 
-  /**
-   *
-   * @var Array
-   */
-  protected $events = array('__EVENT__');
+    /**
+     *
+     * @param string $event
+     * @param Array $params
+     * @param mixed content $object
+     * @return event_test
+     */
+    public function fire($event, $params, &$object)
+    {
+        return $this;
+    }
 
-  /**
-   *
-   * @param string $event
-   * @param Array $params
-   * @param mixed content $object
-   * @return event_test
-   */
-  public function fire($event, $params, &$object)
-  {
-    return $this;
-  }
-
-  public function get_name()
-  {
-    return 'Test event';
-  }
-
+    public function get_name()
+    {
+        return 'Test event';
+    }
 }

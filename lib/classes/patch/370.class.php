@@ -19,7 +19,6 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  */
 class patch_370 implements patchInterface
 {
-
     /**
      *
      * @var string
@@ -59,14 +58,13 @@ class patch_370 implements patchInterface
     {
         $conn = $databox->get_connection();
 
-        $sql    = 'SELECT value FROM pref WHERE prop = "structure"';
-        $stmt   = $conn->prepare($sql);
+        $sql = 'SELECT value FROM pref WHERE prop = "structure"';
+        $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $result)
-        {
+        if ( ! $result) {
             throw new \RuntimeException('Unable to find structure');
         }
 
@@ -75,18 +73,16 @@ class patch_370 implements patchInterface
 
         $XPath = new DOMXPath($DOMDocument);
 
-        foreach ($XPath->query('/record/subdefs/subdefgroup/subdef/delay') as $delay)
-        {
+        foreach ($XPath->query('/record/subdefs/subdefgroup/subdef/delay') as $delay) {
             $delay->nodeValue = min(500, max(50, (int) $delay->nodeValue * 400));
         }
 
-        $sql  = 'UPDATE pref SET value = :structure WHERE prop = "structure"';
+        $sql = 'UPDATE pref SET value = :structure WHERE prop = "structure"';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':structure' => $DOMDocument->saveXML()));
         $stmt->closeCursor();
 
         return true;
     }
-
 }
 

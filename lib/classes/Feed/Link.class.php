@@ -17,64 +17,64 @@
  */
 class Feed_Link implements Feed_LinkInterface
 {
+    /**
+     *
+     * @var string
+     */
+    protected $mimetype;
 
-  /**
-   *
-   * @var string
-   */
-  protected $mimetype;
-  /**
-   *
-   * @var string
-   */
-  protected $title;
-  /**
-   *
-   * @var string
-   */
-  protected $href;
+    /**
+     *
+     * @var string
+     */
+    protected $title;
 
-  /**
-   *
-   * @param string $href
-   * @param string $title
-   * @param string $mimetype
-   * @return Feed_Link
-   */
-  public function __construct($href, $title, $mimetype)
-  {
-    $this->mimetype = $mimetype;
-    $this->href = $href;
-    $this->title = $title;
+    /**
+     *
+     * @var string
+     */
+    protected $href;
 
-    return $this;
-  }
+    /**
+     *
+     * @param string $href
+     * @param string $title
+     * @param string $mimetype
+     * @return Feed_Link
+     */
+    public function __construct($href, $title, $mimetype)
+    {
+        $this->mimetype = $mimetype;
+        $this->href = $href;
+        $this->title = $title;
 
-  /**
-   *
-   * @return string
-   */
-  public function get_mimetype()
-  {
-    return $this->mimetype;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_title()
-  {
-    return $this->title;
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_mimetype()
+    {
+        return $this->mimetype;
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_href()
-  {
-    return $this->href;
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_title()
+    {
+        return $this->title;
+    }
 
+    /**
+     *
+     * @return string
+     */
+    public function get_href()
+    {
+        return $this->href;
+    }
 }

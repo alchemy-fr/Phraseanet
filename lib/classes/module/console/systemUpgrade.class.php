@@ -26,92 +26,73 @@ use Symfony\Component\Console\Command\Command;
 class module_console_systemUpgrade extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
-
-    $this->setDescription('Upgrade Phraseanet to the lastest version');
-
-    return $this;
-  }
-
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-    $Core = \bootstrap::getCore();
-    if (!setup::is_installed())
+    public function __construct($name = null)
     {
+        parent::__construct($name);
 
-      $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
-      $output->writeln('Would you like it to be created based on your settings ?');
+        $this->setDescription('Upgrade Phraseanet to the lastest version');
 
-      $dialog = $this->getHelperSet()->get('dialog');
-      do
-      {
-        $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
-      }
-      while (!in_array($continue, array('y', 'n')));
-
-      if ($continue == 'y')
-      {
-        try
-        {
-          $connexionInc = new \SplFileObject(__DIR__ . '/../../../../config/connexion.inc');
-          $configInc    = new \SplFileObject(__DIR__ . '/../../../../config/config.inc');
-
-          $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
-        }
-        catch (\Exception $e)
-        {
-
-        }
-      }
-      else
-      {
-        throw new RuntimeException('Phraseanet is not set up');
-      }
+        return $this;
     }
 
-    require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
-    $output->write('Phraseanet is going to be upgraded', true);
-    $dialog = $this->getHelperSet()->get('dialog');
-
-    do
+    public function execute(InputInterface $input, OutputInterface $output)
     {
-      $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Continuer ?') . ' (Y/n)</question>', 'Y'));
-    }
-    while (!in_array($continue, array('y', 'n')));
+        $Core = \bootstrap::getCore();
+        if ( ! setup::is_installed()) {
 
+            $output->writeln('This version of Phraseanet requires a config/config.yml, config/connexion.yml, config/service.yml');
+            $output->writeln('Would you like it to be created based on your settings ?');
 
-    if ($continue == 'y')
-    {
-      try
-      {
-        $Core   = \bootstrap::getCore();
-        $output->write('<info>Upgrading...</info>', true);
-        $appbox = appbox::get_instance($Core);
+            $dialog = $this->getHelperSet()->get('dialog');
+            do {
+                $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Create automatically') . ' (Y/n)</question>', 'y'));
+            } while ( ! in_array($continue, array('y', 'n')));
 
-        if (count(User_Adapter::get_wrong_email_users($appbox)) > 0)
-        {
-          return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
+            if ($continue == 'y') {
+                try {
+                    $connexionInc = new \SplFileObject(__DIR__ . '/../../../../config/connexion.inc');
+                    $configInc = new \SplFileObject(__DIR__ . '/../../../../config/config.inc');
+
+                    $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
+                } catch (\Exception $e) {
+
+                }
+            } else {
+                throw new RuntimeException('Phraseanet is not set up');
+            }
         }
 
-        $upgrader = new Setup_Upgrade($appbox);
-        $advices  = $appbox->forceUpgrade($upgrader);
-      }
-      catch (\Exception $e)
-      {
+        require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
-        $output->writeln(sprintf('<error>An error occured while upgrading : %s </error>', $e->getMessage()));
-      }
+        $output->write('Phraseanet is going to be upgraded', true);
+        $dialog = $this->getHelperSet()->get('dialog');
+
+        do {
+            $continue = mb_strtolower($dialog->ask($output, '<question>' . _('Continuer ?') . ' (Y/n)</question>', 'Y'));
+        } while ( ! in_array($continue, array('y', 'n')));
+
+
+        if ($continue == 'y') {
+            try {
+                $Core = \bootstrap::getCore();
+                $output->write('<info>Upgrading...</info>', true);
+                $appbox = appbox::get_instance($Core);
+
+                if (count(User_Adapter::get_wrong_email_users($appbox)) > 0) {
+                    return $output->writeln(sprintf('<error>You have to fix your database before upgrade with the system:mailCheck command </error>'));
+                }
+
+                $upgrader = new Setup_Upgrade($appbox);
+                $advices = $appbox->forceUpgrade($upgrader);
+            } catch (\Exception $e) {
+
+                $output->writeln(sprintf('<error>An error occured while upgrading : %s </error>', $e->getMessage()));
+            }
+        } else {
+            $output->write('<info>Canceled</info>', true);
+        }
+        $output->write('Finished !', true);
+
+        return 0;
     }
-    else
-    {
-      $output->write('<info>Canceled</info>', true);
-    }
-    $output->write('Finished !', true);
-
-    return 0;
-  }
-
 }

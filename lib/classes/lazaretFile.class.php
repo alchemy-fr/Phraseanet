@@ -11,7 +11,6 @@
 
 class lazaretFile
 {
-
     protected $storage = array();
 
     /**
@@ -29,7 +28,7 @@ class lazaretFile
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':lazaret_id' => $lazaret_id));
-        $row          = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ( ! $row)
@@ -58,7 +57,7 @@ class lazaretFile
         $file = new system_file($registry->get('GV_RootPath') . 'tmp/lazaret/' . $this->filepath);
 
         if (($record_id = p4file::archiveFile(
-            $file, $this->base_id, false, $this->filename)) === false)
+                $file, $this->base_id, false, $this->filename)) === false)
             throw new Exception(_('Impossible dajouter le fichier a la base'));
 
         $sbas_id = phrasea::sbasFromBas($this->base_id);
@@ -83,24 +82,21 @@ class lazaretFile
      */
     public function delete()
     {
-        $conn     = connection::getPDOConnection();
+        $conn = connection::getPDOConnection();
         $registry = registry::get_instance();
 
-        try
-        {
-            $sql  = 'DELETE FROM lazaret WHERE id = :lazaret_id';
+        try {
+            $sql = 'DELETE FROM lazaret WHERE id = :lazaret_id';
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(':lazaret_id' => $this->id));
             $stmt->closeCursor();
 
-            $file      = $registry->get('GV_RootPath') . 'tmp/lazaret/' . $this->filepath;
+            $file = $registry->get('GV_RootPath') . 'tmp/lazaret/' . $this->filepath;
             $thumbnail = $file . '_thumbnail.jpg';
 
             @unlink($thumbnail);
             @unlink($file);
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
 
         }
 
@@ -126,7 +122,7 @@ class lazaretFile
 
         $stmt = $connbas->prepare($sql);
         $stmt->execute(array(':record_id' => $record_id));
-        $row         = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ( ! $row)
@@ -146,35 +142,33 @@ class lazaretFile
 
     public static function move_uploaded_to_lazaret(system_file $system_file, $base_id, $filename, $errors = '', $status = false)
     {
-        $Core     = \bootstrap::getCore();
-        $appbox   = appbox::get_instance($Core);
-        $session  = $appbox->get_session();
+        $Core = \bootstrap::getCore();
+        $appbox = appbox::get_instance($Core);
+        $session = $appbox->get_session();
         $registry = $appbox->get_registry();
-        $conn     = $appbox->get_connection();
+        $conn = $appbox->get_connection();
 
-        if ( ! $status)
-        {
+        if ( ! $status) {
             $status = '0';
         }
 
         $usr_id = $session->is_authenticated() ? $session->get_usr_id() : false;
 
         $lazaret_root = $registry->get('GV_RootPath') . 'tmp/lazaret/';
-        $pathinfo     = pathinfo($filename);
+        $pathinfo = pathinfo($filename);
 
         $tmp_filename = $filename;
 
         $n = 1;
-        while (file_exists($lazaret_root . $tmp_filename))
-        {
+        while (file_exists($lazaret_root . $tmp_filename)) {
             $tmp_filename = $pathinfo['filename']
-              . '-' . $n . '.' . $pathinfo['extension'];
+                . '-' . $n . '.' . $pathinfo['extension'];
             $n ++;
         }
 
         $pathfile = $lazaret_root . $tmp_filename;
-        $uuid     = $system_file->read_uuid();
-        $sha256   = $system_file->get_sha256();
+        $uuid = $system_file->read_uuid();
+        $sha256 = $system_file->get_sha256();
         rename($system_file->getPathname(), $pathfile);
 
         unset($system_file);
@@ -182,23 +176,19 @@ class lazaretFile
         $system_file = new system_file($pathfile);
         $system_file->chmod();
 
-        try
-        {
+        try {
             $spec = new MediaAlchemyst\Specification\Image();
             $spec->setDimensions(200, 200);
 
             $Core['media-alchemyst']
-              ->open($pathfile)
-              ->turnInto($spec, $pathfile . "_thumbnail.jpg")
-              ->close();
-        }
-        catch (\MediaAlchemyst\Exception\RuntimeException $e)
-        {
+                ->open($pathfile)
+                ->turnInto($spec, $pathfile . "_thumbnail.jpg")
+                ->close();
+        } catch (\MediaAlchemyst\Exception\RuntimeException $e) {
 
         }
 
-        try
-        {
+        try {
 
             $sql = 'INSERT INTO lazaret
             (id, filename, filepath, base_id, uuid, sha256,
@@ -207,14 +197,14 @@ class lazaretFile
           :uuid, :sha256, :errors, 0b' . $status . ', NOW(), :usr_id )';
 
             $params = array(
-              ':filename' => $filename
-              , ':filepath' => $tmp_filename
-              , ':base_id'  => $base_id
-              , ':uuid'     => $uuid
-              , ':sha256'   => $sha256
-              , ':errors'   => $errors
-              , ':usr_id'   => ($usr_id ? $usr_id : null
-              )
+                ':filename' => $filename
+                , ':filepath' => $tmp_filename
+                , ':base_id'  => $base_id
+                , ':uuid'     => $uuid
+                , ':sha256'   => $sha256
+                , ':errors'   => $errors
+                , ':usr_id'   => ($usr_id ? $usr_id : null
+                )
             );
 
             $stmt = $conn->prepare($sql);
@@ -222,9 +212,7 @@ class lazaretFile
             $stmt->closeCursor();
 
             return true;
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
 
         }
 
@@ -233,27 +221,25 @@ class lazaretFile
 
     public static function stream_thumbnail($id)
     {
-        $conn     = connection::getPDOConnection();
+        $conn = connection::getPDOConnection();
         $registry = registry::get_instance();
-        $sql      = "SELECT filepath FROM lazaret WHERE id = :lazaret_id";
+        $sql = "SELECT filepath FROM lazaret WHERE id = :lazaret_id";
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':lazaret_id' => $id));
-        $row          = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ($row)
-        {
+        if ($row) {
             $pathfile = $registry->get('GV_RootPath') . 'tmp/lazaret/'
-              . $row['filepath'] . '_thumbnail.jpg';
+                . $row['filepath'] . '_thumbnail.jpg';
 
             $response = set_export::stream_file(
-                $pathfile, basename($pathfile), 'image/jpeg', 'inline'
+                    $pathfile, basename($pathfile), 'image/jpeg', 'inline'
             );
             $response->send();
         }
 
         return false;
     }
-
 }

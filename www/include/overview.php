@@ -17,7 +17,7 @@
  */
 $Core = require_once __DIR__ . "/../../lib/bootstrap.php";
 
-$app = require __DIR__ .'/../../lib/Alchemy/Phrasea/Application/Overview.php';
+$app = require __DIR__ . '/../../lib/Alchemy/Phrasea/Application/Overview.php';
 
 $app->run();
 

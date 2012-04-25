@@ -17,9 +17,10 @@
  */
 interface Feed_LinkInterface
 {
-  public function get_mimetype();
 
-  public function get_title();
+    public function get_mimetype();
 
-  public function get_href();
+    public function get_title();
+
+    public function get_href();
 }

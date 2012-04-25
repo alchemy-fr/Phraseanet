@@ -19,18 +19,16 @@ namespace Alchemy\Phrasea\Core;
  */
 class Version
 {
+    protected static $number = '3.7.0.0.a2';
+    protected static $name = 'Carnosaurus';
 
-  protected static $number = '3.7.0.0.a2';
-  protected static $name = 'Carnosaurus';
+    public static function getNumber()
+    {
+        return static::$number;
+    }
 
-  public static function getNumber()
-  {
-    return static::$number;
-  }
-
-  public static function getName()
-  {
-    return static::$name;
-  }
-
+    public static function getName()
+    {
+        return static::$name;
+    }
 }

@@ -13,17 +13,16 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class Audio extends Provider
 {
-
-    const OPTION_BITRATE         = 'bitrate';
-    const OPTION_THREADS         = 'threads';
-    const OPTION_ACODEC          = 'a_codec';
+    const OPTION_BITRATE = 'bitrate';
+    const OPTION_THREADS = 'threads';
+    const OPTION_ACODEC = 'a_codec';
     const OPTION_AUDIOSAMPLERATE = 'audiosamplerate';
 
     public function __construct()
     {
         $AVaudiosamplerate = array(
-          8000, 11025, 16000, 22050, 32000, 44056, 44100,
-          47250, 48000, 50000, 50400, 88200, 96000, null
+            8000, 11025, 16000, 22050, 32000, 44056, 44100,
+            47250, 48000, 50000, 50400, 88200, 96000, null
         );
 
         $this->registerOption(new OptionType\Range(self::OPTION_BITRATE, 100, 4000, 800));
@@ -44,8 +43,7 @@ class Audio extends Provider
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec)
-        {
+        if ( ! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Audio();
         }
 
@@ -55,5 +53,4 @@ class Audio extends Provider
 
         return $this->spec;
     }
-
 }

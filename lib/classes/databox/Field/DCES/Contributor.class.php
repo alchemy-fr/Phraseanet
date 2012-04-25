@@ -17,22 +17,23 @@
  */
 class databox_Field_DCES_Contributor extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Contributor';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Contributor';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'An entity responsible for making contributions
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'An entity responsible for making contributions
                           to the resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#contributor';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#contributor';
 
 }

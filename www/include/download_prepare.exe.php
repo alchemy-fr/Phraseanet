@@ -24,20 +24,16 @@ $request = http_request::getInstance();
 $parm = $request->get_parms('token');
 
 $token = (string) ($parm["token"]);
-try
-{
-$datas = ((random::helloToken($token)));
+try {
+    $datas = ((random::helloToken($token)));
+} catch (Exception_NotFound $e) {
+    die('0');
 }
-catch(Exception_NotFound $e)
-{
-  die('0');
-}
-if (!is_string($datas['datas']))
-  die('0');
+if ( ! is_string($datas['datas']))
+    die('0');
 
-if (($list = @unserialize($datas['datas'])) == false)
-{
-  die('0');
+if (($list = @unserialize($datas['datas'])) == false) {
+    die('0');
 }
 
 set_time_limit(0);

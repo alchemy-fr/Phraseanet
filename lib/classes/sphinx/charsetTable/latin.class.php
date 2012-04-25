@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_latin extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Latin';
-  protected $table = '
+    protected $name = 'Latin';
+    protected $table = '
     ##################################################
     # Latin
     # A

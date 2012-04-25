@@ -26,24 +26,21 @@ use Monolog\Handler\FirePHPHandler;
  */
 class FirePHP extends ServiceAbstract
 {
+    protected $logger;
 
-  protected $logger;
-
-  public function getDriver()
-  {
-    if (!$this->logger)
+    public function getDriver()
     {
-      $this->logger = new Logger('FirePHP');
+        if ( ! $this->logger) {
+            $this->logger = new Logger('FirePHP');
 
-      $this->logger->pushHandler(new FirePHPHandler());
+            $this->logger->pushHandler(new FirePHPHandler());
+        }
+
+        return $this->logger;
     }
 
-    return $this->logger;
-  }
-
-  public function getType()
-  {
-    return 'FirePHP Monolog';
-  }
-
+    public function getType()
+    {
+        return 'FirePHP Monolog';
+    }
 }

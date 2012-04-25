@@ -16,5 +16,4 @@ class p4field
 
         return($v == '0' || $v == 'n' || $v == 'no' || $v == 'non' || $v = 'off' || $v == 'false');
     }
-
 }

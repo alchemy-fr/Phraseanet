@@ -17,21 +17,23 @@
  */
 class databox_Field_DCES_Rights extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Rights';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Rights';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'Information about rights held
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'Information about rights held
                           in and over the resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#rights';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#rights';
+
 }

@@ -23,25 +23,20 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag,
 class Builder
 {
 
-  public static function create(Core $core, ParameterBag $configuration)
-  {
-    $classname = __NAMESPACE__ . '\\' . $configuration->get("type");
-
-    if (!class_exists($classname))
+    public static function create(Core $core, ParameterBag $configuration)
     {
-      throw new Exception\ServiceNotFound(sprintf('Service %s not found', $classname));
-    }
+        $classname = __NAMESPACE__ . '\\' . $configuration->get("type");
 
-    try
-    {
-      $options = $configuration->get("options");
-    }
-    catch (\Exception $e)
-    {
-      $options = array();
-    }
+        if ( ! class_exists($classname)) {
+            throw new Exception\ServiceNotFound(sprintf('Service %s not found', $classname));
+        }
 
-    return new $classname($core, $options);
-  }
+        try {
+            $options = $configuration->get("options");
+        } catch (\Exception $e) {
+            $options = array();
+        }
 
+        return new $classname($core, $options);
+    }
 }

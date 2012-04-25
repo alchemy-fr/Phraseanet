@@ -17,34 +17,32 @@
  */
 abstract class Session_Storage_Abstract
 {
+    /**
+     *
+     * @var boolean
+     */
+    protected $open = true;
 
-  /**
-   *
-   * @var boolean
-   */
-  protected $open = true;
+    /**
+     *
+     * @return Session_Storage_Abstract
+     */
+    public function close()
+    {
+        $this->open = false;
 
-  /**
-   *
-   * @return Session_Storage_Abstract
-   */
-  public function close()
-  {
-    $this->open = false;
+        return $this;
+    }
 
-    return $this;
-  }
+    /**
+     *
+     * @return Session_Storage_Abstract
+     */
+    protected function require_open_storage()
+    {
+        if ( ! $this->open)
+            throw new Exception_Session_StorageClosed ();
 
-  /**
-   *
-   * @return Session_Storage_Abstract
-   */
-  protected function require_open_storage()
-  {
-    if (!$this->open)
-      throw new Exception_Session_StorageClosed ();
-
-    return $this;
-  }
-
+        return $this;
+    }
 }

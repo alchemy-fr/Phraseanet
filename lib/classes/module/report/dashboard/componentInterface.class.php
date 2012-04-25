@@ -17,9 +17,10 @@
  */
 interface module_report_dashboard_componentInterface
 {
-  public function process();
 
-  public function getDash();
+    public function process();
 
-  public function isValid();
+    public function getDash();
+
+    public function isValid();
 }

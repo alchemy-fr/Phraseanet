@@ -17,81 +17,78 @@
  */
 class connection_pdo extends connection_abstract implements connection_interface
 {
+    protected $registry;
 
-  protected $registry;
-  /**
-   *
-   * @param string $name
-   * @param string $hostname
-   * @param int $port
-   * @param string $user
-   * @param string $passwd
-   * @param string $dbname
-   * @param array $options
-   * @return connection_pdo
-   */
-  public function __construct($name, $hostname, $port, $user, $passwd, $dbname=false, $options=array(), registryInterface $registry = null)
-  {
-    $this->registry = $registry ? $registry : registry::get_instance();
-    $this->name = $name;
-    if ($dbname)
-      $dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname . ';port=' . $port . ';';
-    else
-      $dsn = 'mysql:host=' . $hostname . ';port=' . $port . ';';
+    /**
+     *
+     * @param string $name
+     * @param string $hostname
+     * @param int $port
+     * @param string $user
+     * @param string $passwd
+     * @param string $dbname
+     * @param array $options
+     * @return connection_pdo
+     */
+    public function __construct($name, $hostname, $port, $user, $passwd, $dbname = false, $options = array(), registryInterface $registry = null)
+    {
+        $this->registry = $registry ? $registry : registry::get_instance();
+        $this->name = $name;
+        if ($dbname)
+            $dsn = 'mysql:dbname=' . $dbname . ';host=' . $hostname . ';port=' . $port . ';';
+        else
+            $dsn = 'mysql:host=' . $hostname . ';port=' . $port . ';';
 
-    $this->credentials['hostname'] = $hostname;
-    $this->credentials['port'] = $port;
-    $this->credentials['user'] = $user;
-    $this->credentials['password'] = $passwd;
-    if ($dbname)
-      $this->credentials['dbname'] = $dbname;
+        $this->credentials['hostname'] = $hostname;
+        $this->credentials['port'] = $port;
+        $this->credentials['user'] = $user;
+        $this->credentials['password'] = $passwd;
+        if ($dbname)
+            $this->credentials['dbname'] = $dbname;
 
-    parent::__construct($dsn, $user, $passwd, $options);
+        parent::__construct($dsn, $user, $passwd, $options);
 
-    $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $this->query("
+        $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->query("
       SET character_set_results = 'utf8', character_set_client = 'utf8',
       character_set_connection = 'utf8', character_set_database = 'utf8',
       character_set_server = 'utf8'");
 
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @param type $statement
-   * @param type $driver_options
-   * @return PDOStatement
-   */
-  public function prepare($statement, $driver_options = array())
-  {
-    if ($this->registry->get('GV_debug'))
+    /**
+     *
+     * @param type $statement
+     * @param type $driver_options
+     * @return PDOStatement
+     */
+    public function prepare($statement, $driver_options = array())
+    {
+        if ($this->registry->get('GV_debug'))
+            return new connection_pdoStatementDebugger(parent::prepare($statement, $driver_options));
+        else
+            return parent::prepare($statement, $driver_options);
+    }
 
-      return new connection_pdoStatementDebugger(parent::prepare($statement, $driver_options));
-    else
+    /**
+     *
+     * @return void
+     */
+    public function close()
+    {
+        connection::close_PDO_connection($this->name);
+    }
 
-    return parent::prepare($statement, $driver_options);
-  }
+    /**
+     *
+     * @param string $message
+     * @return connection_pdo
+     */
+    protected function log($message)
+    {
+        file_put_contents(__DIR__ . '/../../../logs/sql_log.log', $message . "\n", FILE_APPEND);
 
-  /**
-   *
-   * @return void
-   */
-  public function close()
-  {
-    connection::close_PDO_connection($this->name);
-  }
-
-  /**
-   *
-   * @param string $message
-   * @return connection_pdo
-   */
-  protected function log($message)
-  {
-    file_put_contents(__DIR__ . '/../../../logs/sql_log.log', $message . "\n", FILE_APPEND);
-
-    return $this;
-  }
-
+        return $this;
+    }
 }

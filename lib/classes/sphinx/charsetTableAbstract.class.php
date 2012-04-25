@@ -17,22 +17,19 @@
  */
 abstract class sphinx_charsetTableAbstract
 {
+    protected $table;
+    protected $name;
 
-  protected $table;
+    public function get_name()
+    {
+        return $this->name;
+    }
 
-  protected $name;
+    public function get_table()
+    {
+        if (is_null($this->table))
+            throw new Exception('Invalid charsetTable object');
 
-  public function get_name()
-  {
-    return $this->name;
-  }
-
-  public function get_table()
-  {
-    if (is_null($this->table))
-      throw new Exception('Invalid charsetTable object');
-
-    return $this->table;
-  }
-
+        return $this->table;
+    }
 }

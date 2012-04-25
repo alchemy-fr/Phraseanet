@@ -18,5 +18,4 @@ class Document implements Type
     {
         return self::TYPE_DOCUMENT;
     }
-
 }

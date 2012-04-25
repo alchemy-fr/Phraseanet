@@ -26,20 +26,19 @@ use Symfony\Component\Console\Command\Command;
 class module_console_aboutAuthors extends Command
 {
 
-  public function __construct($name = null)
-  {
-    parent::__construct($name);
+    public function __construct($name = null)
+    {
+        parent::__construct($name);
 
-    $this->setDescription('List authors and contributors');
+        $this->setDescription('List authors and contributors');
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function execute(InputInterface $input, OutputInterface $output)
-  {
-    $output->writeln(file_get_contents(__DIR__ . '/../../../../AUTHORS'));
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $output->writeln(file_get_contents(__DIR__ . '/../../../../AUTHORS'));
 
-    return 0;
-  }
-
+        return 0;
+    }
 }

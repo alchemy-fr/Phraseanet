@@ -17,7 +17,6 @@
  */
 class API_V1_exception_methodnotallowed extends API_V1_exception_abstract
 {
-
-  protected static $details = 'Attempting to use POST with a GET-only endpoint, or vice-versa';
+    protected static $details = 'Attempting to use POST with a GET-only endpoint, or vice-versa';
 
 }

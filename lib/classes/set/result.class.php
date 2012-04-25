@@ -18,13 +18,12 @@
 class set_result extends set_abstract
 {
 
-  /**
-   *
-   * @return set_result
-   */
-  public function __construct()
-  {
-    return $this;
-  }
-
+    /**
+     *
+     * @return set_result
+     */
+    public function __construct()
+    {
+        return $this;
+    }
 }

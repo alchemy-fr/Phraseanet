@@ -23,16 +23,15 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 class Binary extends Type
 {
-  const BINARY = 'binary';
+    const BINARY = 'binary';
 
-  public function getName()
-  {
-    return static::BINARY;
-  }
+    public function getName()
+    {
+        return static::BINARY;
+    }
 
-  public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-  {
-    return $platform->getDoctrineTypeMapping('BINARY');
-  }
-
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        return $platform->getDoctrineTypeMapping('BINARY');
+    }
 }

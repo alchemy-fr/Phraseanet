@@ -15,24 +15,22 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class module_report_sqlconnexion extends module_report_sql
-implements module_report_sqlReportInterface
+class module_report_sqlconnexion extends module_report_sql implements module_report_sqlReportInterface
 {
 
-  public function __construct(module_report $report)
-  {
-    parent::__construct($report);
-  }
-
-  public function buildSql()
-  {
-    $report_filter = $this->filter->getReportFilter();
-    $params = $report_filter['params'];
-
-    $this->params = $params;
-    if ($this->groupby == false)
+    public function __construct(module_report $report)
     {
-      $this->sql = "
+        parent::__construct($report);
+    }
+
+    public function buildSql()
+    {
+        $report_filter = $this->filter->getReportFilter();
+        $params = $report_filter['params'];
+
+        $this->params = $params;
+        if ($this->groupby == false) {
+            $this->sql = "
        SELECT
         user,
         usrid,
@@ -48,56 +46,53 @@ implements module_report_sqlReportInterface
         ip
        FROM log";
 
-      $this->sql .= " WHERE " . $report_filter['sql'];
-      $this->sql .= $this->filter->getOrderFilter() ?: '';
+            $this->sql .= " WHERE " . $report_filter['sql'];
+            $this->sql .= $this->filter->getOrderFilter() ? : '';
 
 
-      $stmt = $this->connbas->prepare($this->sql);
-      $stmt->execute($params);
-      $this->total_row = $stmt->rowCount();
-      $stmt->closeCursor();
-      if($this->enable_limit)
-        $this->sql .= $this->filter->getLimitFilter() ?: '';
-
-    }
-    else
-    {
-      $this->sql = "
+            $stmt = $this->connbas->prepare($this->sql);
+            $stmt->execute($params);
+            $this->total_row = $stmt->rowCount();
+            $stmt->closeCursor();
+            if ($this->enable_limit)
+                $this->sql .= $this->filter->getLimitFilter() ? : '';
+        }
+        else {
+            $this->sql = "
        SELECT  TRIM(" . $this->getTransQuery($this->groupby) . ")
               as " . $this->groupby . ", SUM(1) as nb
        FROM  log  ";
 
-      if ($report_filter['sql'])
-        $this->sql .= " WHERE " . $report_filter['sql'];
+            if ($report_filter['sql'])
+                $this->sql .= " WHERE " . $report_filter['sql'];
 
-      $this->sql .= " GROUP BY " . $this->groupby;
-      $this->sql .= $this->filter->getOrderFilter() ?: '';
+            $this->sql .= " GROUP BY " . $this->groupby;
+            $this->sql .= $this->filter->getOrderFilter() ? : '';
 
 
 
-      $stmt = $this->connbas->prepare($this->sql);
-      $stmt->execute($params);
-      $this->total_row = $stmt->rowCount();
-      $stmt->closeCursor();
+            $stmt = $this->connbas->prepare($this->sql);
+            $stmt->execute($params);
+            $this->total_row = $stmt->rowCount();
+            $stmt->closeCursor();
+        }
+
+        return $this;
     }
 
-    return $this;
-  }
+    public function sqlDistinctValByField($field)
+    {
+        $report_filter = $this->filter->getReportFilter();
+        $params = $report_filter['params'];
 
-  public function sqlDistinctValByField($field)
-  {
-    $report_filter = $this->filter->getReportFilter();
-    $params = $report_filter['params'];
-
-    $sql = 'SELECT  DISTINCT(' . $this->getTransQuery($field) . ') as val
+        $sql = 'SELECT  DISTINCT(' . $this->getTransQuery($field) . ') as val
             FROM  log ';
 
-    if ($report_filter['sql'])
-      $sql .= ' WHERE ' . $report_filter['sql'];
+        if ($report_filter['sql'])
+            $sql .= ' WHERE ' . $report_filter['sql'];
 
-    $sql .= ' ORDER BY val ASC';
+        $sql .= ' ORDER BY val ASC';
 
-    return array('sql' => $sql, 'params' => $params);
-  }
-
+        return array('sql'    => $sql, 'params' => $params);
+    }
 }

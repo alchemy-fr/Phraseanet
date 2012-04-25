@@ -20,5 +20,5 @@ require_once __DIR__ . "/../../lib/bootstrap.php";
 $request = http_request::getInstance();
 $parm = $request->get_parms('id');
 
-if (!is_null($parm['id']))
-  lazaretFile::stream_thumbnail((int) $parm['id']);
+if ( ! is_null($parm['id']))
+    lazaretFile::stream_thumbnail((int) $parm['id']);

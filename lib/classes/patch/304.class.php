@@ -17,7 +17,6 @@
  */
 class patch_304 implements patchInterface
 {
-
     /**
      *
      * @var string
@@ -61,8 +60,7 @@ class patch_304 implements patchInterface
         $rowcount = $stmt->rowCount();
         $stmt->closeCursor();
 
-        if ($rowcount == 0)
-        {
+        if ($rowcount == 0) {
             $sql = 'INSERT INTO pref
                 (id, prop, value, locale, updated_on, created_on)
                 VALUES
@@ -74,5 +72,4 @@ class patch_304 implements patchInterface
 
         return true;
     }
-
 }

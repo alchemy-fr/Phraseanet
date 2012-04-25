@@ -26,25 +26,22 @@ use Alchemy\Phrasea\Core,
  */
 class ArrayCache extends ServiceAbstract
 {
+    protected $cache;
 
-  protected $cache;
-
-  public function getDriver()
-  {
-    if (!$this->cache)
+    public function getDriver()
     {
-      $this->cache = new CacheDriver\ArrayCache();
+        if ( ! $this->cache) {
+            $this->cache = new CacheDriver\ArrayCache();
 
-      $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+            $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+        }
+
+        return $this->cache;
     }
 
-    return $this->cache;
-  }
-
-  public function getType()
-  {
-    return 'array';
-  }
-
+    public function getType()
+    {
+        return 'array';
+    }
 }
 

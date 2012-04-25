@@ -8,12 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PhraseaFixture\UsrLists;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
+
 /**
  *
  * @package
@@ -22,29 +24,26 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
  */
 abstract class ListAbstract extends AbstractFixture
 {
+    protected $user;
+    protected $list;
 
-  protected $user;
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-  protected $list;
+    public function setUser(\User_Adapter $user)
+    {
+        $this->user = $user;
+    }
 
-  public function getUser()
-  {
-    return $this->user;
-  }
+    public function getList()
+    {
+        return $this->list;
+    }
 
-  public function setUser(\User_Adapter $user)
-  {
-    $this->user = $user;
-  }
-
-  public function getList()
-  {
-    return $this->list;
-  }
-
-  public function setList(\Entities\UsrList $list)
-  {
-    $this->list = $list;
-  }
-
+    public function setList(\Entities\UsrList $list)
+    {
+        $this->list = $list;
+    }
 }

@@ -18,5 +18,4 @@ class Video implements Type
     {
         return self::TYPE_VIDEO;
     }
-
 }

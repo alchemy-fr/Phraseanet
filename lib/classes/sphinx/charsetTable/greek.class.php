@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_greek extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Greek';
-  protected $table = '
+    protected $name = 'Greek';
+    protected $table = '
     ##################################################
     # Greek
     U+0386->U+03B1, U+0388->U+03B5, U+0389->U+03B7, U+038A->U+03B9, U+038C->U+03BF,

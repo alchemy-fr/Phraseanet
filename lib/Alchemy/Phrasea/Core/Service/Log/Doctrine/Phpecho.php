@@ -15,8 +15,8 @@ use Alchemy\Phrasea\Core,
     Alchemy\Phrasea\Core\Service,
     Alchemy\Phrasea\Core\Service\ServiceAbstract,
     Alchemy\Phrasea\Core\Service\ServiceInterface;
-
 use Doctrine\DBAL\Logging\EchoSQLLogger;
+
 /**
  *
  * @package
@@ -26,14 +26,13 @@ use Doctrine\DBAL\Logging\EchoSQLLogger;
 class Phpecho extends ServiceAbstract
 {
 
-  public function getDriver()
-  {
-    return new EchoSQLLogger();
-  }
+    public function getDriver()
+    {
+        return new EchoSQLLogger();
+    }
 
-  public function getType()
-  {
-    return 'phpecho';
-  }
-
+    public function getType()
+    {
+        return 'phpecho';
+    }
 }

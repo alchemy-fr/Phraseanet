@@ -17,7 +17,6 @@
  */
 class patch_3604 implements patchInterface
 {
-
     /**
      *
      * @var string
@@ -58,9 +57,8 @@ class patch_3604 implements patchInterface
         /**
          * Fail if upgrade has previously failed, no problem
          */
-        try
-        {
-            $sql  = "ALTER TABLE `metadatas`
+        try {
+            $sql = "ALTER TABLE `metadatas`
                             ADD `updated` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '1',
                             ADD INDEX ( `updated` )";
 
@@ -68,29 +66,24 @@ class patch_3604 implements patchInterface
             $stmt->execute();
             $stmt->closeCursor();
 
-            $sql  = 'UPDATE metadatas SET updated = "0"
+            $sql = 'UPDATE metadatas SET updated = "0"
                             WHERE meta_struct_id
                                 IN (SELECT id FROM metadatas_structure WHERE multi = "1")';
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
 
         }
 
 
-        try
-        {
+        try {
             $sql = 'ALTER TABLE `metadatas` DROP INDEX `unique`';
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        }
-        catch(\PDOException $e)
-        {
+        } catch (\PDOException $e) {
 
         }
 
@@ -99,16 +92,15 @@ class patch_3604 implements patchInterface
             WHERE m.meta_struct_id = s.id
             AND s.multi = "1" AND updated="0"';
 
-        $stmt     = $databox->get_connection()->prepare($sql);
+        $stmt = $databox->get_connection()->prepare($sql);
         $stmt->execute();
         $rowCount = $stmt->rowCount();
         $stmt->closeCursor();
 
-        $n       = 0;
+        $n = 0;
         $perPage = 1000;
 
-        while ($n < $rowCount)
-        {
+        while ($n < $rowCount) {
             $sql = 'SELECT m . *
             FROM metadatas_structure s, metadatas m
             WHERE m.meta_struct_id = s.id
@@ -116,30 +108,27 @@ class patch_3604 implements patchInterface
 
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
-            $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
             $databox->get_connection()->beginTransaction();
 
-            $sql  = 'INSERT INTO metadatas(id, record_id, meta_struct_id, value)
+            $sql = 'INSERT INTO metadatas(id, record_id, meta_struct_id, value)
                                 VALUES (null, :record_id, :meta_struct_id, :value)';
             $stmt = $databox->get_connection()->prepare($sql);
 
             $databox_fields = array();
 
-            foreach ($rs as $row)
-            {
+            foreach ($rs as $row) {
                 $meta_struct_id = $row['meta_struct_id'];
 
-                if ( ! isset($databox_fields[$meta_struct_id]))
-                {
+                if ( ! isset($databox_fields[$meta_struct_id])) {
                     $databox_fields[$meta_struct_id] = \databox_field::get_instance($databox, $meta_struct_id);
                 }
 
                 $values = \caption_field::get_multi_values($row['value'], $databox_fields[$meta_struct_id]->get_separator());
 
-                foreach ($values as $value)
-                {
+                foreach ($values as $value) {
                     $params = array(
                         ':record_id'      => $row['record_id'],
                         ':meta_struct_id' => $row['meta_struct_id'],
@@ -152,11 +141,10 @@ class patch_3604 implements patchInterface
             $stmt->closeCursor();
 
 
-            $sql  = 'DELETE FROM metadatas WHERE id = :id';
+            $sql = 'DELETE FROM metadatas WHERE id = :id';
             $stmt = $databox->get_connection()->prepare($sql);
 
-            foreach ($rs as $row)
-            {
+            foreach ($rs as $row) {
                 $params = array(':id' => $row['id']);
                 $stmt->execute($params);
             }
@@ -171,19 +159,15 @@ class patch_3604 implements patchInterface
         /**
          * Remove the extra column
          */
-        try
-        {
-            $sql  = "ALTER TABLE `metadatas` DROP `updated`";
+        try {
+            $sql = "ALTER TABLE `metadatas` DROP `updated`";
             $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
 
         }
 
         return true;
     }
-
 }

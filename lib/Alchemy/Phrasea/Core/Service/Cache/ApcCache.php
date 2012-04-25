@@ -25,31 +25,26 @@ use Alchemy\Phrasea\Core,
  */
 class ApcCache extends ServiceAbstract
 {
+    protected $cache;
 
-  protected $cache;
-
-  public function getDriver()
-  {
-    if (!extension_loaded('apc'))
+    public function getDriver()
     {
-      throw new \Exception('The APC cache requires the APC extension.');
+        if ( ! extension_loaded('apc')) {
+            throw new \Exception('The APC cache requires the APC extension.');
+        }
+
+        if ( ! $this->cache) {
+            $this->cache = new CacheDriver\ApcCache();
+
+            $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+        }
+
+        return $this->cache;
     }
 
-    if (!$this->cache)
+    public function getType()
     {
-      $this->cache = new CacheDriver\ApcCache();
-
-      $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+        return 'apc';
     }
-
-    return $this->cache;
-  }
-
-  public function getType()
-  {
-    return 'apc';
-  }
-
-
 }
 

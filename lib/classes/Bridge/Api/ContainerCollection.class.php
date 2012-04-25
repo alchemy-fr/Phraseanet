@@ -18,16 +18,15 @@
 class Bridge_Api_ContainerCollection extends Bridge_Api_AbstractCollection
 {
 
-  /**
-   *
-   * @param Bridge_Api_ContainerInterface $container
-   * @return Bridge_Api_ContainerCollection
-   */
-  public function add_element(Bridge_Api_ContainerInterface $container)
-  {
-    $this->elements[] = $container;
+    /**
+     *
+     * @param Bridge_Api_ContainerInterface $container
+     * @return Bridge_Api_ContainerCollection
+     */
+    public function add_element(Bridge_Api_ContainerInterface $container)
+    {
+        $this->elements[] = $container;
 
-    return $this;
-  }
-
+        return $this;
+    }
 }

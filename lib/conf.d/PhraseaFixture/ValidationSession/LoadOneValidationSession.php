@@ -23,40 +23,37 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class LoadOneValidationSession extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
+    /**
+     *
+     * @var \Entities\ValidationSession
+     */
+    public $validationSession;
 
-  /**
-   *
-   * @var \Entities\ValidationSession
-   */
-  public $validationSession;
-
-  public function load(ObjectManager $manager)
-  {
-    $validationSession = new \Entities\ValidationSession();
-
-    $validationSession->setBasket(
-            $this->getReference('one-basket') // load the one-basket stored reference
-    );
-
-    $validationSession->setDescription('Une description au hasard');
-    $validationSession->setName('Un nom de validation');
-
-    $expires = new \DateTime();
-    $expires->modify('+1 week');
-    $validationSession->setExpires($expires);
-
-    if (null === $this->user)
+    public function load(ObjectManager $manager)
     {
-      throw new \LogicException('Fill a user to store a new validation Session');
+        $validationSession = new \Entities\ValidationSession();
+
+        $validationSession->setBasket(
+            $this->getReference('one-basket') // load the one-basket stored reference
+        );
+
+        $validationSession->setDescription('Une description au hasard');
+        $validationSession->setName('Un nom de validation');
+
+        $expires = new \DateTime();
+        $expires->modify('+1 week');
+        $validationSession->setExpires($expires);
+
+        if (null === $this->user) {
+            throw new \LogicException('Fill a user to store a new validation Session');
+        }
+        $validationSession->setInitiator($this->user);
+
+        $manager->persist($validationSession);
+        $manager->flush();
+
+        $this->validationSession = $validationSession;
+
+        $this->addReference('one-validation-session', $validationSession);
     }
-    $validationSession->setInitiator($this->user);
-
-    $manager->persist($validationSession);
-    $manager->flush();
-
-    $this->validationSession = $validationSession;
-
-    $this->addReference('one-validation-session', $validationSession);
-  }
-
 }

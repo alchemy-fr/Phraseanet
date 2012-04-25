@@ -18,6 +18,8 @@ interface OptionType
     const TYPE_BOOLEAN = 'Boolean';
 
     public function getType();
+
     public function getName();
+
     public function getValue();
 }

@@ -27,12 +27,12 @@ use Doctrine\Common\Cache\ApcCache;
  */
 Class ApcAutoloader extends ApcCache implements CacheStrategy
 {
-   /**
-   * {@inheritdoc}
-   */
-  public function isAvailable()
-  {
-    return extension_loaded('apc');
-  }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function isAvailable()
+    {
+        return extension_loaded('apc');
+    }
 }

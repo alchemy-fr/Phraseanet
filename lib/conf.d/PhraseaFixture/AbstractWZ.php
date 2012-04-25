@@ -21,30 +21,26 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
  */
 abstract class AbstractWZ extends AbstractFixture
 {
-  protected $user;
+    protected $user;
+    protected $record;
 
-  protected $record;
+    public function getUser()
+    {
+        return $this->user;
+    }
 
+    public function setUser(\User_Adapter $user)
+    {
+        $this->user = $user;
+    }
 
-  public function getUser()
-  {
-    return $this->user;
-  }
+    public function getRecord()
+    {
+        return $this->record;
+    }
 
-  public function setUser(\User_Adapter $user)
-  {
-    $this->user = $user;
-  }
-
-
-  public function getRecord()
-  {
-    return $this->record;
-  }
-
-  public function setRecord(\record_adapter $record)
-  {
-    $this->record = $record;
-  }
-
+    public function setRecord(\record_adapter $record)
+    {
+        $this->record = $record;
+    }
 }

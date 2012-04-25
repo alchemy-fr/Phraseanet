@@ -17,21 +17,23 @@
  */
 class databox_Field_DCES_Creator extends databox_Field_DCESAbstract
 {
+    /**
+     *
+     * @var string
+     */
+    protected $label = 'Creator';
 
-  /**
-   *
-   * @var string
-   */
-  protected $label = 'Creator';
-  /**
-   *
-   * @var string
-   */
-  protected $definition = 'An entity primarily responsible
+    /**
+     *
+     * @var string
+     */
+    protected $definition = 'An entity primarily responsible
                           for making the resource.';
-  /**
-   *
-   * @var string
-   */
-  protected $URI = 'http://dublincore.org/documents/dces/#creator';
+
+    /**
+     *
+     * @var string
+     */
+    protected $URI = 'http://dublincore.org/documents/dces/#creator';
+
 }

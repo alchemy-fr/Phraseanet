@@ -17,15 +17,16 @@
  */
 interface Feed_Entry_ItemInterface
 {
-  public function __construct(appbox &$appbox, Feed_Entry_Adapter &$entry, $id);
 
-  public function get_id();
+    public function __construct(appbox &$appbox, Feed_Entry_Adapter &$entry, $id);
 
-  public function get_record();
+    public function get_id();
 
-  public function get_ord();
+    public function get_record();
 
-  public function delete();
+    public function get_ord();
 
-  public static function create(appbox &$appbox, Feed_Entry_Adapter &$entry, record_adapter &$record);
+    public function delete();
+
+    public static function create(appbox &$appbox, Feed_Entry_Adapter &$entry, record_adapter &$record);
 }

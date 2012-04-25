@@ -23,45 +23,40 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class LoadParticipantWithSession extends \PhraseaFixture\AbstractWZ implements FixtureInterface
 {
+    /**
+     *
+     * @var \Entities\ValidationParticipant
+     */
+    public $validationParticipant;
 
-  /**
-   *
-   * @var \Entities\ValidationParticipant
-   */
-  public $validationParticipant;
+    /**
+     *
+     * @var \Entities\ValidationSession
+     */
+    private $session;
 
-  /**
-   *
-   * @var \Entities\ValidationSession
-   */
-  private $session;
-
-  public function load(ObjectManager $manager)
-  {
-    $validationParticipant = new \Entities\ValidationParticipant();
-
-    if (null === $this->user)
+    public function load(ObjectManager $manager)
     {
-      throw new \LogicException('Fill a user to store a new validation Session');
-    }
-    $validationParticipant->setUser($this->user);
+        $validationParticipant = new \Entities\ValidationParticipant();
 
-    if (null === $this->session)
+        if (null === $this->user) {
+            throw new \LogicException('Fill a user to store a new validation Session');
+        }
+        $validationParticipant->setUser($this->user);
+
+        if (null === $this->session) {
+            throw new \LogicException('Attach a session to the current participant');
+        }
+        $validationParticipant->setSession($this->session);
+
+        $manager->persist($validationParticipant);
+        $manager->flush();
+
+        $this->validationParticipant = $validationParticipant;
+    }
+
+    public function setSession(\Entities\ValidationSession $session)
     {
-      throw new \LogicException('Attach a session to the current participant');
+        $this->session = $session;
     }
-    $validationParticipant->setSession($this->session);
-
-    $manager->persist($validationParticipant);
-    $manager->flush();
-
-    $this->validationParticipant = $validationParticipant;
-  }
-
-  public function setSession(\Entities\ValidationSession $session)
-  {
-    $this->session = $session;
-  }
-
-
 }

@@ -24,113 +24,105 @@ use Alchemy\Phrasea\Core,
  */
 class Monolog extends ServiceAbstract
 {
-  const DEFAULT_MAX_DAY = 10;
+    const DEFAULT_MAX_DAY = 10;
 
-  protected $handlers = array(
-      'rotate' => 'RotatingFile'
-      , 'stream' => 'Stream'
-  );
+    protected $handlers = array(
+        'rotate' => 'RotatingFile'
+        , 'stream' => 'Stream'
+    );
 
-  /**
-   *
-   * @var \Monolog\Logger
-   */
-  protected $monolog;
+    /**
+     *
+     * @var \Monolog\Logger
+     */
+    protected $monolog;
 
-  protected function init()
-  {
-    $options = $this->getOptions();
-
-    if (empty($options))
+    protected function init()
     {
-      throw new \Exception(sprintf("'%s' service options can not be empty", $this->name));
-    }
+        $options = $this->getOptions();
 
-    //defaut to main handler
-    $handler = isset($options["handler"]) ? $options["handler"] : false;
+        if (empty($options)) {
+            throw new \Exception(sprintf("'%s' service options can not be empty", $this->name));
+        }
 
-    if (!$handler)
-    {
-      throw new \Exception(sprintf(
-                      "You must specify at least one handler for '%s' service"
-                      , __CLASS__
-              )
-      );
-    }
+        //defaut to main handler
+        $handler = isset($options["handler"]) ? $options["handler"] : false;
 
-    if (!array_key_exists($handler, $this->handlers))
-    {
-      throw new \Exception(sprintf(
-                      "The handler type '%s' declared in %s %s service is not valid.
+        if ( ! $handler) {
+            throw new \Exception(sprintf(
+                    "You must specify at least one handler for '%s' service"
+                    , __CLASS__
+                )
+            );
+        }
+
+        if ( ! array_key_exists($handler, $this->handlers)) {
+            throw new \Exception(sprintf(
+                    "The handler type '%s' declared in %s %s service is not valid.
           Available types are %s."
-                      , $handler
-                      , __CLASS__
-                      , implode(", ", $this->handlers)
-              )
-      );
+                    , $handler
+                    , __CLASS__
+                    , implode(", ", $this->handlers)
+                )
+            );
+        }
+
+        $handlerName = $this->handlers[$handler];
+
+        $handlerClassName = sprintf('\Monolog\Handler\%sHandler', $handlerName);
+
+        if ( ! class_exists($handlerClassName)) {
+            throw new \Exception(sprintf(
+                    'Unable to log monolog handler %s looked for class %s'
+                    , $handlerName
+                    , $handlerClassName)
+            );
+        }
+
+        if ( ! isset($options["filename"])) {
+            throw new \Exception(sprintf(
+                    "Missing filename option in '%s' service"
+                    , __CLASS__
+                )
+            );
+        }
+
+        $logPath = __DIR__ . '/../../../../../../logs';
+
+        $file = sprintf('%s/%s', $logPath, $options["filename"]);
+
+        if ($handler == 'rotate') {
+            $maxDay = isset($options["max_day"]) ?
+                (int) $options["max_day"] :
+                self::DEFAULT_MAX_DAY;
+
+            $handlerInstance = new $handlerClassName($file, $maxDay);
+        } else {
+            $handlerInstance = new $handlerClassName($file);
+        }
+
+        $channel = isset($options["channel"]) ? $options["channel"] : "monolog";
+
+        $monologLogger = new \Monolog\Logger($channel);
+
+        $monologLogger->pushHandler($handlerInstance);
+
+        $this->monolog = $monologLogger;
     }
 
-    $handlerName = $this->handlers[$handler];
-
-    $handlerClassName = sprintf('\Monolog\Handler\%sHandler', $handlerName);
-
-    if (!class_exists($handlerClassName))
+    public function getDriver()
     {
-      throw new \Exception(sprintf(
-                      'Unable to log monolog handler %s looked for class %s'
-                      , $handlerName
-                      , $handlerClassName)
-      );
+        return $this->monolog;
     }
 
-    if (!isset($options["filename"]))
+    public function getType()
     {
-      throw new \Exception(sprintf(
-                      "Missing filename option in '%s' service"
-                      , __CLASS__
-              )
-      );
+        return 'monolog';
     }
 
-    $logPath = __DIR__ . '/../../../../../../logs';
-
-    $file = sprintf('%s/%s', $logPath, $options["filename"]);
-
-    if ($handler == 'rotate')
+    public function getMandatoryOptions()
     {
-      $maxDay = isset($options["max_day"]) ?
-              (int) $options["max_day"] :
-              self::DEFAULT_MAX_DAY;
-
-      $handlerInstance = new $handlerClassName($file, $maxDay);
+        return array('channel', 'handler', 'filename');
     }
-    else
-    {
-      $handlerInstance = new $handlerClassName($file);
-    }
-
-    $channel = isset($options["channel"]) ? $options["channel"] : "monolog";
-
-    $monologLogger = new \Monolog\Logger($channel);
-
-    $monologLogger->pushHandler($handlerInstance);
-
-    $this->monolog = $monologLogger;
-  }
-
-  public function getDriver()
-  {
-    return $this->monolog;
-  }
-
-  public function getType()
-  {
-    return 'monolog';
-  }
-
-  public function getMandatoryOptions()
-  {
-    return array('channel', 'handler', 'filename');
-  }
 }
 
