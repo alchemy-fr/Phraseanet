@@ -4,21 +4,27 @@ abstract class task_abstract
 {
     const LAUCHED_BY_BROWSER = 1;
     const LAUCHED_BY_COMMANDLINE = 2;
+
     const STATUS_TOSTOP = 'tostop';
     const STATUS_STARTED = 'started';
     const STATUS_TOSTART = 'tostart';
-    const RETURNSTATUS_TORESTART = 'torestart';
-    const RETURNSTATUS_STOPPED = 'stopped';
-    const RETURNSTATUS_TODELETE = 'todelete';
+    const STATUS_TORESTART = 'torestart';
+    const STATUS_STOPPED = 'stopped';
+    const STATUS_TODELETE = 'todelete';
+
     const RUNNER_MANUAL = 'manual';
     const RUNNER_SCHEDULER = 'scheduler';
+
     const STATE_OK = 'STATE_OK';
     const STATE_MAXMEGSREACHED = 'STATE_MAXMEGS';
     const STATE_MAXRECSDONE = 'STATE_MAXRECS';
     const STATE_FINISHED = 'STATE_FINISHED';
+
     const SIGNAL_SCHEDULER_DIED = 'SIGNAL_SCHEDULER_DIED';
 
+    const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
     protected $suicidable = false;
+
     protected $launched_by = 0;
 
     /**
@@ -57,13 +63,6 @@ abstract class task_abstract
     protected $maxloops = 5;
 
     /**
-     * task status, either 'tostop' or 'started'
-     *
-     * @var <type>
-     */
-    protected $task_status = 0;
-
-    /**
      * task state, either ok, maxmemory or maxrecords reached
      *
      * @var <type>
@@ -77,14 +76,10 @@ abstract class task_abstract
      */
     protected $maxmegs;
 
-    /**
-     * the return value for the scheduler
-     *
-     * @var <type>
-     */
-    protected $return_value;
     protected $runner;
+
     private $input;
+
     private $output;
 
     /**
@@ -93,23 +88,30 @@ abstract class task_abstract
      * @var <type>
      */
     protected $title;
+
     protected $settings;
+
     protected $crash_counter;
+
     protected $status;
+
     protected $active;
+
     protected $debug = false;
+
+    protected $completed_percentage;
+
 
     public function get_status()
     {
         $conn = connection::getPDOConnection();
-        $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
+        $sql = 'SELECT status FROM task2 WHERE task_id = :taskid LIMIT 1';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':taskid' => $this->taskid));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         if ( ! $row)
             throw new Exception('Unknown task id');
-
         return $row['status'];
     }
 
@@ -133,9 +135,10 @@ abstract class task_abstract
         $av_status = array(
             self::STATUS_STARTED
             , self::STATUS_TOSTOP
-            , self::RETURNSTATUS_STOPPED
-            , self::RETURNSTATUS_TORESTART
+            , self::STATUS_STOPPED
+            , self::STATUS_TORESTART
             , self::STATUS_TOSTART
+            , self::STATUS_TODELETE
         );
 
         if ( ! in_array($status, $av_status)) {
@@ -149,22 +152,8 @@ abstract class task_abstract
         $stmt->execute(array(':status' => $status, ':taskid' => $this->get_task_id()));
         $stmt->closeCursor();
         $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
-        $this->task_status = $status;
-
-        return $this->task_status;
     }
 
-//  public function set_pid($pid)
-//  {
-//    $conn = connection::getPDOConnection();
-//
-//    $sql = 'UPDATE task2 SET pid = :pid WHERE task_id = :taskid';
-//    $stmt = $conn->prepare($sql);
-//    $stmt->execute(array(':pid' => $pid, ':taskid' => $this->get_task_id()));
-//    $stmt->closeCursor();
-//
-//    return $this;
-//  }
     // 'active' means 'auto-start when scheduler starts'
     public function set_active($boolean)
     {
@@ -187,7 +176,7 @@ abstract class task_abstract
 
         $sql = 'UPDATE task2 SET name = :title WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':title'  => $title, ':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':title' => $title, ':taskid' => $this->get_task_id()));
         $stmt->closeCursor();
 
         $this->title = $title;
@@ -201,7 +190,7 @@ abstract class task_abstract
 
         $sql = 'UPDATE task2 SET settings = :settings WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':settings' => $settings, ':taskid'   => $this->get_task_id()));
+        $stmt->execute(array(':settings' => $settings, ':taskid' => $this->get_task_id()));
         $stmt->closeCursor();
 
         $this->settings = $settings;
@@ -257,11 +246,14 @@ abstract class task_abstract
     {
         return $this->completed_percentage;
     }
-    protected $period = 10;
+    protected $period = 60;
+
     protected $taskid = NULL;
+
     protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
+
     protected $argt = array(
-        "--help" => array("set"    => false, "values" => array(), "usage" => " (no help available)")
+        "--help" => array("set" => false, "values" => array(), "usage" => " (no help available)")
     );
 
     abstract public function getName();
@@ -303,7 +295,7 @@ abstract class task_abstract
             return('');
         }
         $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
-              FROM task2 WHERE task_id = :taskid';
+              FROM task2 WHERE task_id = :taskid LIMIT 1';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':taskid' => $this->get_task_id()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -312,7 +304,6 @@ abstract class task_abstract
             throw new Exception('Unknown task id');
         $this->title = $row['name'];
         $this->crash_counter = (int) $row['crashed'];
-        $this->task_status = $row['status'];
         $this->active = ! ! $row['active'];
         $this->settings = $row['settings'];
         $this->runner = $row['runner'];
@@ -366,21 +357,6 @@ abstract class task_abstract
         }
     }
 
-    protected function check_memory_usage()
-    {
-        $current_memory = memory_get_usage();
-        if ($current_memory >> 20 >= $this->maxmegs) {
-            $this->log(sprintf(
-                    "Max memory (%s M) reached (current is %s M)"
-                    , $this->maxmegs
-                    , $current_memory
-                ));
-            $this->current_state = self::STATE_MAXMEGSREACHED;
-        }
-
-        return $this;
-    }
-
     protected function check_records_done()
     {
         if ($this->records_done >= (int) ($this->maxrecs)) {
@@ -420,104 +396,22 @@ abstract class task_abstract
     public function get_pid()
     {
         $pid = NULL;
-
         $taskid = $this->get_task_id();
 
         $registry = registry::get_instance();
         system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
 
         if (($fd = fopen(($lockfile = ($lockdir . 'task_' . $taskid . '.lock')), 'a+'))) {
-// ************************************************
-// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : fopen(%s) \n", __FILE__, __LINE__, $lockfile), FILE_APPEND);
             if (flock($fd, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked ? : task running
                 $pid = fgets($fd);
-// ************************************************
-// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : can't flock() : pid=%s \n", __FILE__, __LINE__, $pid), FILE_APPEND);
             } else {
                 // can lock : not running
-// ************************************************
-// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : NOT RUNNING can flock() : pid=%s \n", __FILE__, __LINE__, file_get_contents($lockfile)), FILE_APPEND);
                 flock($fd, LOCK_UN);
             }
             fclose($fd);
         }
-
         return $pid;
-    }
-    /*
-      public function is_running()
-      {
-      $retval = false;
-      $registry = registry::get_instance();
-      $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
-      $tasklock = fopen($lockfile = ($lockdir . '/task_' . $this->get_task_id() . '.lock'), 'a+');
-
-      if (flock($tasklock, LOCK_SH | LOCK_NB) != true)
-      {
-      $retval = true;
-      }
-      else
-      {
-      ftruncate($tasklock, 0);
-      flock($tasklock, LOCK_UN | LOCK_NB);
-      fclose($tasklock);
-      unlink($lockfile);
-      }
-
-      return $retval;
-      }
-     */
-
-    protected function check_current_state()
-    {
-        switch ($this->current_state) {
-            case self::STATE_MAXMEGSREACHED:
-            case self::STATE_MAXRECSDONE:
-            default:
-                if ($this->get_runner() == self::RUNNER_SCHEDULER) {
-                    $this->task_status = self::STATUS_TOSTOP;
-                    $this->return_value = self::RETURNSTATUS_TORESTART;
-                }
-                break;
-            case self::STATE_FINISHED:
-                $this->task_status = self::STATUS_TOSTOP;
-                if ($this->suicidable === true) {
-                    $this->return_value = self::RETURNSTATUS_TODELETE;
-                    $this->log('will hang myself');
-                } else {
-                    $this->return_value = self::RETURNSTATUS_STOPPED;
-                }
-                break;
-            case self::STATE_OK:
-
-                break;
-        }
-        $this->apply_task_status();
-
-        return $this;
-    }
-
-    protected function check_task_status()
-    {
-        try {
-            $conn = connection::getPDOConnection();
-            $sql = "SELECT status FROM task2 WHERE task_id = :taskid";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':taskid' => $this->get_task_id()));
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-            if ( ! $row || $row['status'] == 'tostop') {
-                $this->task_status = self::STATUS_TOSTOP;
-                $this->return_value = self::RETURNSTATUS_STOPPED;
-            }
-        } catch (Exception $e) {
-            $this->return_value = self::RETURNSTATUS_STOPPED;
-            $this->task_status = self::STATUS_TOSTOP;
-        }
-        $this->apply_task_status();
-
-        return $this;
     }
 
     public function set_running($stat)
@@ -525,28 +419,33 @@ abstract class task_abstract
         $this->running = $stat;
     }
 
-    protected function pause($when_started = 0)
+    protected function pause($when_started=0)
     {
         $this->log($this->records_done . ' records done');
         if ($this->running) {// && $this->records_done == 0)
             $when_started = time() - $when_started;
             if ($when_started < $this->period) {
-                $conn = connection::getPDOConnection();
-                $conn->close();
-                unset($conn);
-                for ($t = $this->period - $when_started; $this->running && $t > 0; $t -- ) // DON'T do sleep($this->period - $when_started) because it prevents ticks !
-                    sleep(1);
+//        $conn = connection::getPDOConnection();
+                //       $conn->close();
+                //      unset($conn);
+                for ($t = $this->period - $when_started; $this->running && $t > 0; $t -- ) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
+                    $s = $this->get_status();
+                    if ($s == self::STATUS_TOSTOP) {
+                        $this->set_status(self::STATUS_STOPPED);
+                        $this->running = FALSE;
+                    } else {
+                        sleep(1);
+                    }
+                }
             }
         }
     }
 
-    final public function run($runner, $input = null, $output = null)
+    final public function run($runner, $input=null, $output = null)
     {
         $this->input = $input;
         $this->output = $output;
 
-// ************************************************
-// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : LAUNCHING : tid=%s \n", __FILE__, __LINE__, $this->get_task_id()), FILE_APPEND);
         $taskid = $this->get_task_id();
         $conn = connection::getPDOConnection();
 
@@ -554,77 +453,91 @@ abstract class task_abstract
         system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
         $locker = true;
         $tasklock = fopen(($lockfile = ($lockdir . 'task_' . $taskid . '.lock')), 'a+');
+
         if (flock($tasklock, LOCK_EX | LOCK_NB, $locker) === FALSE) {
-// ************************************************
-// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : LAUNCH OPENED AND CANT LOCK : pid=%s \n", __FILE__, __LINE__, getmypid()), FILE_APPEND);
             $this->log("runtask::ERROR : task already running.");
             fclose($tasklock);
 
+            throw new Exception('task already running.', self::ERR_ALREADY_RUNNING);
             return;
-        } else {
-            ftruncate($tasklock, 0);
-            fwrite($tasklock, '' . getmypid());
-            fflush($tasklock);
-// ************************************************
-// file_put_contents("/tmp/scheduler2.log", sprintf("%s [%d] : LAUNCH OPENED AND LOCKED : pid=%s \n", __FILE__, __LINE__, getmypid()), FILE_APPEND);
         }
 
+        // here we run the task
+        ftruncate($tasklock, 0);
+        fwrite($tasklock, '' . getmypid());
+        fflush($tasklock);
+
+        // for windows : unlock then lock shared to allow OTHER processes to read the file
+        // too bad : no critical section nor atomicity
+        flock($tasklock, LOCK_UN);
+        flock($tasklock, LOCK_SH);
+
         $this->set_runner($runner);
-//    $this->set_pid(getmypid());
         $this->set_status(self::STATUS_STARTED);
 
-        $this->running = true;
+        // run the real code of the task -into the task's class- (may throw an exception)
+        $exception = NULL;
+        try {
+            $this->run2();
+        } catch (Exception $exception) {
 
-        $this->run2();
+        }
 
+        // in any case, exception or not, the task is ending so unlock the pid file
         flock($tasklock, LOCK_UN | LOCK_NB);
         ftruncate($tasklock, 0);
         fclose($tasklock);
         @unlink($lockfile);
 
-        if ($this->return_value == self::RETURNSTATUS_TODELETE)
-            $this->delete();
-        else
-            $this->set_status($this->return_value);
+        switch ($this->get_status()) {
+            case self::STATUS_TODELETE:
+                $this->delete();
+                break;
+            case self::STATUS_TOSTOP:
+                $this->set_status(self::STATUS_STOPPED);
+                break;
+        }
 
-        return $this;
+        // if something went wrong, report
+        if ($exception)
+            throw($exception);
     }
 
     abstract protected function run2();
 
     protected function load_settings(SimpleXMLElement $sx_task_settings)
     {
-        $this->period = max(10, min(3600, (int) $sx_task_settings->period));
-        $this->maxrecs = max(10, min(1000, (int) $sx_task_settings->maxrecs));
-        $this->maxmegs = max(16, min(512, (int) $sx_task_settings->maxmegs));
-        $this->record_buffer_size = max(1, min(100, (int) $sx_task_settings->flush));
+        $this->period = (int) $sx_task_settings->period;
+        if ($this->period <= 0 || $this->period >= 60 * 60)
+            $this->period = 60;
+
+        $this->maxrecs = (int) $sx_task_settings->maxrecs;
+        if ($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000)
+            $this->maxrecs = 100;
+        $this->maxmegs = (int) $sx_task_settings->maxmegs;
+        if ($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512)
+            $this->maxmegs = 24;
+        $this->record_buffer_size = (int) $sx_task_settings->flush;
+        if ($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100)
+            $this->record_buffer_size = 10;
 
         return $this;
     }
 
     protected function increment_loops()
     {
-        if ($this->get_runner() == self::RUNNER_SCHEDULER && $this->loop > $this->maxloops) {
+        if ($this->get_runner() == self::RUNNER_SCHEDULER && ++ $this->loop >= $this->maxloops) {
             $this->log(sprintf(('%d loops done, restarting'), $this->loop));
-            $this->task_status = self::STATUS_TOSTOP;
-            $this->return_value = self::RETURNSTATUS_TORESTART;
-        }
-        $this->apply_task_status();
-        $this->loop ++;
+            $this->set_status(self::STATUS_TORESTART);
+//      $this->return_xxxvalue = self::RETURNSTATUS_TORESTART;
 
-        return $this;
-    }
-
-    public function apply_task_status()
-    {
-        if ($this->task_status == self::STATUS_TOSTOP) {
             $this->running = false;
         }
 
         return $this;
     }
 
-    function traceRam($msg = '')
+    function traceRam($msg='')
     {
         static $lastt = null;
         $t = explode(' ', ($ut = microtime()));
@@ -693,9 +606,9 @@ abstract class task_abstract
             $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
 
         $params = array(
-            ':active'   => 1
-            , ':name'     => $class_name::getName()
-            , ':class'    => $class_name
+            ':active' => 1
+            , ':name' => $class_name::getName()
+            , ':class' => $class_name
             , ':settings' => $settings
         );
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -726,7 +639,6 @@ abstract class task_abstract
     {
         return $this->taskid;
     }
-    protected $completed_percentage;
 
     function setProgress($done, $todo)
     {
@@ -736,7 +648,7 @@ abstract class task_abstract
             $conn = connection::getPDOConnection();
             $sql = 'UPDATE task2 SET completed = :p WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':p'      => $p, ':taskid' => $this->get_task_id()));
+            $stmt->execute(array(':p' => $p, ':taskid' => $this->get_task_id()));
             $stmt->closeCursor();
             $this->completed_percentage = $p;
         } catch (Exception $e) {
