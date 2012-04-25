@@ -76,8 +76,9 @@ abstract class base implements cache_cacheableInterface
      */
     public function get_schema()
     {
-        if ($this->schema)
+        if ($this->schema) {
             return $this->schema;
+        }
 
         $this->load_schema();
 
@@ -223,9 +224,9 @@ abstract class base implements cache_cacheableInterface
 
     public function get_version()
     {
-
-        if ($this->version)
+        if ($this->version) {
             return $this->version;
+        }
 
         $version = '0.0.0';
 
@@ -251,10 +252,11 @@ abstract class base implements cache_cacheableInterface
 
     public function upgradeavailable()
     {
-        if ($this->get_version())
+        if ($this->get_version()) {
             return version_compare(\Alchemy\Phrasea\Core\Version::getNumber(), $this->get_version(), '>');
-        else
+        } else {
             return true;
+        }
     }
 
     protected function upgradeDb($apply_patches, Setup_Upgrade &$upgrader)
@@ -375,8 +377,9 @@ abstract class base implements cache_cacheableInterface
      */
     protected function load_schema()
     {
-        if ($this->schema)
+        if ($this->schema) {
             return $this;
+        }
 
         $structure = simplexml_load_file(__DIR__ . "/../../lib/conf.d/bases_structure.xml");
 

@@ -62,8 +62,9 @@ class MoveCollection extends RecordHelper
     {
         $this->available_destinations = array();
 
-        if ( ! $this->is_possible)
+        if ( ! $this->is_possible) {
             return $this;
+        }
 
         $this->available_destinations = array_keys(
             $this->getCore()->getAuthenticatedUser()->ACL()->get_granted_base(

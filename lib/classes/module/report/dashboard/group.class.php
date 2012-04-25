@@ -69,10 +69,11 @@ class module_report_dashboard_group implements module_report_dashboard_component
      */
     public function isValid()
     {
-        if (isset($this->group_dash) && sizeof($this->group_dash) > 0)
+        if (isset($this->group_dash) && sizeof($this->group_dash) > 0) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**

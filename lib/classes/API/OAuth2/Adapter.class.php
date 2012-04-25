@@ -194,8 +194,9 @@ class API_OAuth2_Adapter extends OAuth2
         try {
             $application = API_OAuth2_Application::load_from_client_id($this->appbox, $client_id);
 
-            if ($client_secret === NULL)
+            if ($client_secret === NULL) {
                 return true;
+            }
 
             $crypted = $this->crypt_secret($client_secret, $application->get_nonce());
 
@@ -610,13 +611,16 @@ class API_OAuth2_Adapter extends OAuth2
         $token_param = $this->getAccessTokenParams();
 
 
-        if ($token_param === FALSE) // Access token was not provided
+        if ($token_param === FALSE) { // Access token was not provided
             return $exit_not_present ? $this->errorWWWAuthenticateResponseHeader(OAUTH2_HTTP_BAD_REQUEST, $realm, OAUTH2_ERROR_INVALID_REQUEST, 'The request is missing a required parameter, includes an unsupported parameter or parameter value, repeats the same parameter, uses more than one method for including an access token, or is otherwise malformed.', NULL, $scope) : FALSE;
+        }
+
         // Get the stored token data (from the implementing subclass)
         $token = $this->getAccessToken($token_param);
 
-        if ($token === NULL)
+        if ($token === NULL) {
             return $exit_invalid ? $this->errorWWWAuthenticateResponseHeader(OAUTH2_HTTP_UNAUTHORIZED, $realm, OAUTH2_ERROR_INVALID_TOKEN, 'The access token provided is invalid.', NULL, $scope) : FALSE;
+        }
 
         if (isset($token['revoked']) && $token['revoked']) {
             return $exit_invalid ? $this->errorWWWAuthenticateResponseHeader(OAUTH2_HTTP_UNAUTHORIZED, $realm, OAUTH2_ERROR_INVALID_TOKEN, 'End user has revoked access to his personal datas for your application.', NULL, $scope) : FALSE;
@@ -624,14 +628,15 @@ class API_OAuth2_Adapter extends OAuth2
 
         if ($this->enable_expire) {
             // Check token expiration (I'm leaving this check separated, later we'll fill in better error messages)
-            if (isset($token["expires"]) && time() > $token["expires"])
+            if (isset($token["expires"]) && time() > $token["expires"]) {
                 return $exit_expired ? $this->errorWWWAuthenticateResponseHeader(OAUTH2_HTTP_UNAUTHORIZED, $realm, OAUTH2_ERROR_EXPIRED_TOKEN, 'The access token provided has expired.', NULL, $scope) : FALSE;
+            }
         }
         // Check scope, if provided
         // If token doesn't have a scope, it's NULL/empty, or it's insufficient, then throw an error
-        if ($scope && ( ! isset($token["scope"]) || ! $token["scope"] || ! $this->checkScope($scope, $token["scope"])))
+        if ($scope && ( ! isset($token["scope"]) || ! $token["scope"] || ! $this->checkScope($scope, $token["scope"]))) {
             return $exit_scope ? $this->errorWWWAuthenticateResponseHeader(OAUTH2_HTTP_FORBIDDEN, $realm, OAUTH2_ERROR_INSUFFICIENT_SCOPE, 'The request requires higher privileges than provided by the access token.', NULL, $scope) : FALSE;
-
+        }
         //save token's linked ses_id
         $this->session_id = $token['session_id'];
         $this->usr_id = $token['usr_id'];

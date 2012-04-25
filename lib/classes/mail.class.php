@@ -190,8 +190,9 @@ class mail
 
         $registry = registry::get_instance();
 
-        if ( ! isset($to['email']) || ! PHPMailer::ValidateAddress($to['email']))
+        if ( ! isset($to['email']) || ! PHPMailer::ValidateAddress($to['email'])) {
             return false;
+        }
 
         $mail = new PHPMailer();
 

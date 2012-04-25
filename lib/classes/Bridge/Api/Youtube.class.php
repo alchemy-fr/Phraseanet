@@ -632,8 +632,9 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         $xml = simplexml_load_string($string);
         libxml_clear_errors();
 
-        if ( ! $xml)
+        if ( ! $xml) {
             return false;
+        }
 
         if (isset($xml->HEAD) || isset($xml->head)) {
             return array();
@@ -793,14 +794,17 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
 
     public function is_configured()
     {
-        if ( ! $this->registry->get('GV_youtube_api'))
+        if ( ! $this->registry->get('GV_youtube_api')) {
             return false;
+        }
 
-        if (trim($this->registry->get('GV_youtube_client_id')) === '')
+        if (trim($this->registry->get('GV_youtube_client_id')) === '') {
             return false;
+        }
 
-        if (trim($this->registry->get('GV_youtube_dev_key')) === '')
+        if (trim($this->registry->get('GV_youtube_dev_key')) === '') {
             return false;
+        }
 
         return true;
     }

@@ -66,6 +66,7 @@ if ( ! is_null($parm['token'])) {
             </body>
         </html>
         <?php
+
         return;
     } catch (Exception $e) {
         ?>
@@ -95,6 +96,7 @@ if ( ! is_null($parm['token'])) {
             </body>
         </html>
         <?php
+
         return;
     }
 }

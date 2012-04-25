@@ -105,10 +105,11 @@ abstract class media_abstract
      */
     public function get_orientation()
     {
-        if ($this->width > $this->height)
+        if ($this->width > $this->height) {
             return self::PAYSAGE;
-        else
+        } else {
             return self::PORTRAIT;
+        }
     }
 
     /**

@@ -647,14 +647,17 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
 
     public function is_configured()
     {
-        if ( ! $this->registry->get('GV_dailymotion_api'))
+        if ( ! $this->registry->get('GV_dailymotion_api')) {
             return false;
+        }
 
-        if (trim($this->registry->get('GV_dailymotion_client_id')) === '')
+        if (trim($this->registry->get('GV_dailymotion_client_id')) === '') {
             return false;
+        }
 
-        if (trim($this->registry->get('GV_dailymotion_client_secret')) === '')
+        if (trim($this->registry->get('GV_dailymotion_client_secret')) === '') {
             return false;
+        }
 
         return true;
     }

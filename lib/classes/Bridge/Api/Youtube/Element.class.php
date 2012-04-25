@@ -63,8 +63,9 @@ class Bridge_Api_Youtube_Element implements Bridge_Api_ElementInterface
         $video_thumbnails = $this->entry->getVideoThumbnails();
 
         foreach ($video_thumbnails as $thumb) {
-            if (120 == $thumb['width'] && 90 == $thumb['height'])
+            if (120 == $thumb['width'] && 90 == $thumb['height']) {
                 return $thumb['url'];
+            }
         }
     }
 

@@ -108,8 +108,10 @@ class Bridge_Api
      */
     public function is_disabled()
     {
-        if ($this->disable_time === null)
+        if ($this->disable_time === null) {
             return false;
+        }
+
         $date_obj = new DateTime();
         if ($date_obj > $this->disable_time) {
             $this->enable();

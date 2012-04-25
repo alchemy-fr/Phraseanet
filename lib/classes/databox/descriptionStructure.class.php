@@ -95,8 +95,9 @@ class databox_descriptionStructure implements IteratorAggregate
     {
         $name = databox_field::generateName($name);
 
-        if (isset($this->cache_name_id[$name]))
+        if (isset($this->cache_name_id[$name])) {
             return $this->elements[$this->cache_name_id[$name]];
+        }
 
         foreach ($this->elements as $id => $meta) {
             if ($meta->get_name() === $name) {

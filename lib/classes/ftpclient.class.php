@@ -169,8 +169,9 @@ class ftpclient
     public function mkdir($remote_directory)
     {
         $remote_directory = $this->get_absolute_path($remote_directory);
-        if (isset($this->cached_dirs[$remote_directory]))
+        if (isset($this->cached_dirs[$remote_directory])) {
             return $this;
+        }
 
         if ($this->debug)
             echo "Creation du dossier $remote_directory\n<br>";
@@ -311,8 +312,10 @@ class ftpclient
     {
         if ($this->debug)
             echo "Fermeture de la connexion\n<br>";
-        if ( ! $this->connexion)
+        if ( ! $this->connexion) {
             return $this;
+        }
+
         if ((ftp_close($this->connexion)) === false) {
             throw new Exception('Impossible de fermer la connexion');
         }
@@ -334,8 +337,9 @@ class ftpclient
     protected function get_absolute_path($file)
     {
         $file = str_replace('//', '/', $file);
-        if ($this->is_absolute_path($file))
+        if ($this->is_absolute_path($file)) {
             return $file;
+        }
 
         $pwd = $this->add_end_slash($this->pwd());
 
@@ -346,8 +350,9 @@ class ftpclient
     {
         $path = trim($path);
 
-        if ($path == "" || $path == '/' || $path == '//')
+        if ($path == "" || $path == '/' || $path == '//') {
             return("/");
+        }
 
         if (substr($path, -1, 1) != "/")
             $path .= "/";

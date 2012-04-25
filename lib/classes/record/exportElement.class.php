@@ -255,10 +255,11 @@ class record_exportElement extends record_adapter
      */
     public function get_size($name = false)
     {
-        if ($name)
+        if ($name) {
             return $this->size[$name];
-        else
+        } else {
             return $this->size;
+        }
     }
 
     /**

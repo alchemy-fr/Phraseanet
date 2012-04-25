@@ -429,8 +429,9 @@ class databox extends base
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ($row)
+        if ($row) {
             return self::get_instance((int) $row['sbas_id']);
+        }
 
         try {
             $sql = 'CREATE DATABASE `' . $dbname . '`
@@ -664,8 +665,9 @@ class databox extends base
                 }
             }
         }
-        if ($n > $limit)
+        if ($n > $limit) {
             return true;
+        }
 
         return false;
     }
@@ -1151,8 +1153,10 @@ class databox extends base
      */
     public function get_structure()
     {
-        if ($this->structure)
+        if ($this->structure) {
             return $this->structure;
+        }
+
         $this->structure = $this->retrieve_structure();
 
         return $this->structure;
@@ -1187,8 +1191,9 @@ class databox extends base
      */
     public function get_cterms()
     {
-        if ($this->cterms)
+        if ($this->cterms) {
             return $this->cterms;
+        }
 
         $sql = "SELECT value FROM pref WHERE prop='cterms'";
         $stmt = $this->get_connection()->prepare($sql);
@@ -1343,8 +1348,9 @@ class databox extends base
 
     public function get_cgus()
     {
-        if ($this->cgus)
+        if ($this->cgus) {
             return $this->cgus;
+        }
 
         $this->load_cgus();
 

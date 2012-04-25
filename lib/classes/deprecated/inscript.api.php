@@ -44,8 +44,9 @@ function giveMeBases($usr = null)
         $rsU = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if (count($rsU) == 0)
+        if (count($rsU) == 0) {
             return null;
+        }
 
         foreach ($rsU as $rowU) {
             if ( ! isset($usrerRegis[$rowU['dbname']]))

@@ -183,188 +183,188 @@ class task_period_writemeta extends task_databoxAbstract
             ?>
             <form name="graphicForm" onsubmit="return(false);" method="post">
                 <br/>
-            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+                <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
                 <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
-            <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
+                <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
                 <br/>
                 <input type="checkbox" name="cleardoc" onchange="chgxmlck(this)">
-            <?php echo _('task::writemeta:effacer les metadatas non presentes dans la structure') ?>
+                <?php echo _('task::writemeta:effacer les metadatas non presentes dans la structure') ?>
                 <br/>
                 <br/>
-            <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
+                <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
                 <input type="text" name="maxrecs" style="width:40px;" onchange="chgxmltxt(this, 'maxrecs');" value="">
                 <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
                 <input type="text" name="maxmegs" style="width:40px;" onchange="chgxmltxt(this, 'maxmegs');" value="">
                 Mo
                 <br/>
             </form>
-                <?php
-            }
-            $out = ob_get_clean();
+            <?php
+        }
+        $out = ob_get_clean();
 
-            return $out;
+        return $out;
+    }
+
+    protected function retrieve_sbas_content(databox $databox)
+    {
+        $connbas = $databox->get_connection();
+        $subdefgroups = $databox->get_subdef_structure();
+        $metasubdefs = array();
+
+        foreach ($subdefgroups as $type => $subdefs) {
+            foreach ($subdefs as $sub) {
+                $name = $sub->get_name();
+                if ($sub->meta_writeable())
+                    $metasubdefs[$name . '_' . $type] = true;
+            }
         }
 
-        protected function retrieve_sbas_content(databox $databox)
-        {
-            $connbas = $databox->get_connection();
-            $subdefgroups = $databox->get_subdef_structure();
-            $metasubdefs = array();
+        $this->metasubdefs = $metasubdefs;
 
-            foreach ($subdefgroups as $type => $subdefs) {
-                foreach ($subdefs as $sub) {
-                    $name = $sub->get_name();
-                    if ($sub->meta_writeable())
-                        $metasubdefs[$name . '_' . $type] = true;
-                }
-            }
-
-            $this->metasubdefs = $metasubdefs;
-
-            $sql = 'SELECT record_id, coll_id, jeton
+        $sql = 'SELECT record_id, coll_id, jeton
              FROM record WHERE (jeton & ' . JETON_WRITE_META . ' > 0)';
 
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute();
-            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute();
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
 
-            return $rs;
+        return $rs;
+    }
+
+    protected function format_value($type, $value)
+    {
+        if ($type == 'date') {
+            $value = str_replace(array("-", ":", "/", "."), array(" ", " ", " ", " "), $value);
+            $ip_date_yyyy = 0;
+            $ip_date_mm = 0;
+            $ip_date_dd = 0;
+            $ip_date_hh = 0;
+            $ip_date_nn = 0;
+            $ip_date_ss = 0;
+            switch (sscanf($value, "%d %d %d %d %d %d", $ip_date_yyyy, $ip_date_mm, $ip_date_dd, $ip_date_hh, $ip_date_nn, $ip_date_ss)) {
+                case 1:
+                    $value = sprintf("%04d:00:00", $ip_date_yyyy);
+                    break;
+                case 2:
+                    $value = sprintf("%04d:%02d:00", $ip_date_yyyy, $ip_date_mm);
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                    $value = sprintf("%04d:%02d:%02d", $ip_date_yyyy, $ip_date_mm, $ip_date_dd);
+                    break;
+                default:
+                    $value = '0000:00:00';
+            }
         }
 
-        protected function format_value($type, $value)
-        {
-            if ($type == 'date') {
-                $value = str_replace(array("-", ":", "/", "."), array(" ", " ", " ", " "), $value);
-                $ip_date_yyyy = 0;
-                $ip_date_mm = 0;
-                $ip_date_dd = 0;
-                $ip_date_hh = 0;
-                $ip_date_nn = 0;
-                $ip_date_ss = 0;
-                switch (sscanf($value, "%d %d %d %d %d %d", $ip_date_yyyy, $ip_date_mm, $ip_date_dd, $ip_date_hh, $ip_date_nn, $ip_date_ss)) {
-                    case 1:
-                        $value = sprintf("%04d:00:00", $ip_date_yyyy);
-                        break;
-                    case 2:
-                        $value = sprintf("%04d:%02d:00", $ip_date_yyyy, $ip_date_mm);
-                        break;
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                        $value = sprintf("%04d:%02d:%02d", $ip_date_yyyy, $ip_date_mm, $ip_date_dd);
-                        break;
-                    default:
-                        $value = '0000:00:00';
-                }
-            }
+        return $value;
+    }
 
-            return $value;
+    protected function process_one_content(databox $databox, Array $row)
+    {
+        $coll_id = $row['coll_id'];
+        $record_id = $row['record_id'];
+        $jeton = $row['jeton'];
+
+        $record = new record_adapter($this->sbas_id, $record_id);
+
+        $type = $record->get_type();
+        $subdefs = $record->get_subdefs();
+
+        $tsub = array();
+
+        foreach ($subdefs as $name => $subdef) {
+            $write_document = (($jeton & JETON_WRITE_META_DOC) && $name == 'document');
+            $write_subdef = (($jeton & JETON_WRITE_META_SUBDEF) && isset($this->metasubdefs[$name . '_' . $type]));
+
+            if ($write_document || $write_subdef) {
+                $tsub[$name] = $subdef->get_pathfile();
+            }
         }
 
-        protected function process_one_content(databox $databox, Array $row)
-        {
-            $coll_id = $row['coll_id'];
-            $record_id = $row['record_id'];
-            $jeton = $row['jeton'];
+        $registry = $databox->get_registry();
 
-            $record = new record_adapter($this->sbas_id, $record_id);
+        $fields = $record->get_caption()->get_fields();
 
-            $type = $record->get_type();
-            $subdefs = $record->get_subdefs();
+        $subCMD = '';
 
-            $tsub = array();
+        if ($record->get_uuid()) {
+            $subCMD .= ' -XMP-exif:ImageUniqueID=';
+            $subCMD .= escapeshellarg($record->get_uuid());
+            $subCMD .= ' -IPTC:UniqueDocumentID=';
+            $subCMD .= escapeshellarg($record->get_uuid());
+        }
 
-            foreach ($subdefs as $name => $subdef) {
-                $write_document = (($jeton & JETON_WRITE_META_DOC) && $name == 'document');
-                $write_subdef = (($jeton & JETON_WRITE_META_SUBDEF) && isset($this->metasubdefs[$name . '_' . $type]));
+        foreach ($fields as $field) {
+            $meta = $field->get_databox_field();
 
-                if ($write_document || $write_subdef) {
-                    $tsub[$name] = $subdef->get_pathfile();
-                }
+            /* @var $meta \databox_field */
+
+            if (trim($meta->get_metadata_source()) === '') {
+                continue;
             }
 
-            $registry = $databox->get_registry();
+            $multi = $meta->is_multi();
+            $type = $meta->get_type();
+            $datas = $field->get_values();
 
-            $fields = $record->get_caption()->get_fields();
-
-            $subCMD = '';
-
-            if ($record->get_uuid()) {
-                $subCMD .= ' -XMP-exif:ImageUniqueID=';
-                $subCMD .= escapeshellarg($record->get_uuid());
-                $subCMD .= ' -IPTC:UniqueDocumentID=';
-                $subCMD .= escapeshellarg($record->get_uuid());
-            }
-
-            foreach ($fields as $field) {
-                $meta = $field->get_databox_field();
-
-                /* @var $meta \databox_field */
-
-                if (trim($meta->get_metadata_source()) === '') {
-                    continue;
-                }
-
-                $multi = $meta->is_multi();
-                $type = $meta->get_type();
-                $datas = $field->get_values();
-
-                if ($multi) {
-                    foreach ($datas as $value) {
-                        $value = $this->format_value($type, $value->getValue());
-
-                        $subCMD .= ' -' . $meta->get_metadata_namespace() . ':' . $meta->get_metadata_tagname() . '=';
-                        $subCMD .= escapeshellarg($value) . ' ';
-                    }
-                } else {
-                    $value = array_pop($datas);
-                    $datas = $this->format_value($type, $value->getValue());
+            if ($multi) {
+                foreach ($datas as $value) {
+                    $value = $this->format_value($type, $value->getValue());
 
                     $subCMD .= ' -' . $meta->get_metadata_namespace() . ':' . $meta->get_metadata_tagname() . '=';
-                    $subCMD .= escapeshellarg($datas) . ' ';
+                    $subCMD .= escapeshellarg($value) . ' ';
                 }
+            } else {
+                $value = array_pop($datas);
+                $datas = $this->format_value($type, $value->getValue());
+
+                $subCMD .= ' -' . $meta->get_metadata_namespace() . ':' . $meta->get_metadata_tagname() . '=';
+                $subCMD .= escapeshellarg($datas) . ' ';
             }
-
-            foreach ($tsub as $name => $file) {
-                $cmd = '';
-                if ($this->system == 'WINDOWS')
-                    $cmd = 'start /B /LOW ';
-                $cmd .= ( $registry->get('GV_exiftool') . ' -m -overwrite_original ');
-                if ($name != 'document' || $this->clear_doc)
-                    $cmd .= ' -all:all= ';
-
-                $cmd .= ' -codedcharacterset=utf8 ';
-
-                $cmd .= $subCMD . ' ' . escapeshellarg($file);
-
-                $this->log(sprintf(('writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name));
-
-                $s = trim(shell_exec($cmd));
-
-                $this->log("\t" . $s);
-            }
-
-            return $this;
         }
 
-        protected function flush_records_sbas()
-        {
-            return $this;
+        foreach ($tsub as $name => $file) {
+            $cmd = '';
+            if ($this->system == 'WINDOWS')
+                $cmd = 'start /B /LOW ';
+            $cmd .= ( $registry->get('GV_exiftool') . ' -m -overwrite_original ');
+            if ($name != 'document' || $this->clear_doc)
+                $cmd .= ' -all:all= ';
+
+            $cmd .= ' -codedcharacterset=utf8 ';
+
+            $cmd .= $subCMD . ' ' . escapeshellarg($file);
+
+            $this->log(sprintf(('writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name));
+
+            $s = trim(shell_exec($cmd));
+
+            $this->log("\t" . $s);
         }
 
-        protected function post_process_one_content(databox $databox, Array $row)
-        {
-            $connbas = $databox->get_connection();
-
-            $sql = 'UPDATE record SET jeton=jeton & ~' . JETON_WRITE_META . '
-            WHERE record_id = :record_id';
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute(array(':record_id' => $row['record_id']));
-            $stmt->closeCursor();
-
-            return $this;
-        }
+        return $this;
     }
+
+    protected function flush_records_sbas()
+    {
+        return $this;
+    }
+
+    protected function post_process_one_content(databox $databox, Array $row)
+    {
+        $connbas = $databox->get_connection();
+
+        $sql = 'UPDATE record SET jeton=jeton & ~' . JETON_WRITE_META . '
+            WHERE record_id = :record_id';
+        $stmt = $connbas->prepare($sql);
+        $stmt->execute(array(':record_id' => $row['record_id']));
+        $stmt->closeCursor();
+
+        return $this;
+    }
+}
 

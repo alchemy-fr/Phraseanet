@@ -100,8 +100,10 @@ abstract class set_abstract implements IteratorAggregate
     public function __isset($key)
     {
         trigger_error("Unable to use magic method get for key $key");
-        if (isset($this->$key))
+        if (isset($this->$key)) {
             return true;
+        }
+
         return false;
     }
 

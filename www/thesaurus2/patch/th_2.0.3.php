@@ -108,11 +108,17 @@ class patch_th_2_0_3
     function fixRejected(connection_pdo &$connbas, &$node, $rejected)
     {
         global $debug;
-        if ($node->nodeType != XML_ELEMENT_NODE)
+
+        if ($node->nodeType != XML_ELEMENT_NODE) {
             return;
+        }
+
         $id = $node->getAttribute("id");
-        if (substr($id, 0, 1) == "R")
+
+        if (substr($id, 0, 1) == "R") {
             $rejected = true;
+        }
+
         if ($rejected) {
             $newid = "R" . substr($id, 1);
             if ($newid != $id) {

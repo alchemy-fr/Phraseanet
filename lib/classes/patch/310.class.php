@@ -59,8 +59,9 @@ class patch_310 implements patchInterface
 
         $subdefgroups = $sx_structure->xpath('//subdefgroup');
 
-        if (count($subdefgroups) > 0)
+        if (count($subdefgroups) > 0) {
             return;
+        }
 
         $subdefs = $sx_structure->xpath('/record/subdefs');
 

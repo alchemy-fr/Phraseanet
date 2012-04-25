@@ -228,10 +228,11 @@ class module_report_dashboard_feed implements module_report_dashboard_componentI
      */
     public function isValid()
     {
-        if (isset($this->report) && sizeof($this->report) > 0)
+        if (isset($this->report) && sizeof($this->report) > 0) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 }
 

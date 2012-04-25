@@ -891,8 +891,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public static function get_usr_id_from_email($email)
     {
-        if (is_null($email))
+        if (is_null($email)) {
             return false;
+        }
 
         $conn = connection::getPDOConnection();
         $sql = 'SELECT usr_id FROM usr
@@ -1260,8 +1261,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     protected function load_preferences()
     {
-        if ($this->_prefs)
+        if ($this->_prefs) {
             return $this;
+        }
 
         $registry = \registry::get_instance();
 
@@ -1484,8 +1486,9 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
-        if ( ! $session->is_authenticated())
+        if ( ! $session->is_authenticated()) {
             return;
+        }
 
         $ses_id = $session->get_ses_id();
         $usr_id = $session->get_usr_id();
@@ -1733,8 +1736,10 @@ class User_Adapter implements User_Interface, cache_cacheableInterface
 
     public function get_nonce()
     {
-        if ($this->nonce)
+        if ($this->nonce) {
             return $this->nonce;
+        }
+
         $nonce = false;
 
         $sql = 'SELECT nonce FROM usr WHERE usr_id = :usr_id ';

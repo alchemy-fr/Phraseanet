@@ -250,8 +250,10 @@ class system_file extends SplFileObject
             , 'x3f'  => 'image/x-tika-sigma');
 
 
-        if (in_array($this->get_mime(), $raws))
+        if (in_array($this->get_mime(), $raws)) {
             return true;
+        }
+
         return false;
     }
 
@@ -275,10 +277,11 @@ class system_file extends SplFileObject
             $extension = isset($pi['extension']) ? $pi['extension'] : '';
         }
 
-        if ($lowercase)
+        if ($lowercase) {
             return mb_strtolower($extension);
-        else
-            return $extension;
+        }
+
+        return $extension;
     }
 
     public function get_sha256()
@@ -452,8 +455,9 @@ class system_file extends SplFileObject
 
         $this->technical_datas = array();
 
-        if ( ! is_executable($registry->get('GV_mplayer')))
+        if ( ! is_executable($registry->get('GV_mplayer'))) {
             return $this;
+        }
 
         $cmd = $registry->get('GV_mplayer')
             . ' -identify '
@@ -669,8 +673,9 @@ class system_file extends SplFileObject
 
     public function read_uuid()
     {
-        if ($this->uuid)
+        if ($this->uuid) {
             return $this->uuid;
+        }
 
         $datas = exiftool::extract_metadatas($this, exiftool::EXTRACT_XML_RDF);
         $domrdf = new DOMDocument();
@@ -701,8 +706,9 @@ class system_file extends SplFileObject
 
     public function is_new_in_base($sbas_id)
     {
-        if ( ! $this->uuid)
+        if ( ! $this->uuid) {
             return true;
+        }
 
         $connbas = connection::getPDOConnection($sbas_id);
 
@@ -764,8 +770,9 @@ class system_file extends SplFileObject
 
                 if (($v = $x->firstChild) && $v->nodeType == XML_TEXT_NODE) {
                     $value = $base64_encoded ? base64_decode($v->nodeValue) : $v->nodeValue;
-                    if (uuid::is_valid($value))
+                    if (uuid::is_valid($value)) {
                         return $value;
+                    }
                 }
             }
         }
@@ -859,8 +866,10 @@ class system_file extends SplFileObject
 
     public function get_phrasea_tech_field($field)
     {
-        if (isset($this->phrasea_tech_field[$field]))
+        if (isset($this->phrasea_tech_field[$field])) {
             return $this->phrasea_tech_field[$field];
+        }
+
         return null;
     }
 
@@ -1151,16 +1160,17 @@ class system_file extends SplFileObject
         if (mb_convert_encoding(mb_convert_encoding($s, 'UTF-32', 'UTF-8'), 'UTF-8', 'UTF-32') == $s) {
             $mac = mb_convert_encoding($s, 'windows-1252', 'UTF-8');
             for ($i = strlen($mac); $i;) {
-                if (strpos($macchars, $mac[ -- $i]) !== false)
+                if (strpos($macchars, $mac[ -- $i]) !== false) {
                     return(iconv('MACINTOSH', 'UTF-8', $mac));
+                }
             }
 
             return($s);
-        }
-        else {
+        } else {
             for ($i = strlen($s); $i;) {
-                if (strpos($macchars, $s[ -- $i]) !== false)
+                if (strpos($macchars, $s[ -- $i]) !== false) {
                     return(iconv('MACINTOSH', 'UTF-8', $s));
+                }
             }
 
             return(iconv('windows-1252', 'UTF-8', $s));

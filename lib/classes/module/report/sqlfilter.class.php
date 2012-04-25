@@ -184,8 +184,9 @@ class module_report_sqlfilter
         $this->filter['collection'] = false;
         $coll_filter = array();
 
-        if ($report->getUserId() == '')
+        if ($report->getUserId() == '') {
             return;
+        }
 
         $tab = explode(",", $report->getListCollId());
         if (count($tab) > 0) {

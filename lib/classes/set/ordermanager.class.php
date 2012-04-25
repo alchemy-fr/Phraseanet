@@ -136,8 +136,9 @@ class set_ordermanager extends set_abstract
     {
         $comp = strcasecmp($a['usage'], $b['usage']);
 
-        if ($comp == 0)
+        if ($comp == 0) {
             return 0;
+        }
 
         return $comp < 0 ? -1 : 1;
     }
@@ -152,8 +153,9 @@ class set_ordermanager extends set_abstract
     {
         $comp = strcasecmp($a['usr_display'], $b['usr_display']);
 
-        if ($comp == 0)
+        if ($comp == 0) {
             return 0;
+        }
 
         return $comp < 0 ? -1 : 1;
     }
@@ -168,8 +170,9 @@ class set_ordermanager extends set_abstract
     {
         $comp = $b->format('U') - $a->format('U');
 
-        if ($comp == 0)
+        if ($comp == 0) {
             return 0;
+        }
 
         return $comp < 0 ? -1 : 1;
     }

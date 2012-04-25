@@ -212,8 +212,9 @@ class eventsmanager_notify_validationdone extends eventsmanager_notifyAbstract
         $bool = false;
 
         $session = $this->appbox->get_session();
-        if ( ! $session->is_authenticated())
+        if ( ! $session->is_authenticated()) {
             return false;
+        }
 
         try {
             $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);

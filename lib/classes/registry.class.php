@@ -131,10 +131,11 @@ class registry implements registryInterface
         if ( ! $this->cache->contains($key))
             $this->load();
 
-        if ( ! $this->cache->contains($key) && ! is_null($defaultvalue))
+        if ( ! $this->cache->contains($key) && ! is_null($defaultvalue)) {
             return $defaultvalue;
-        else
-            return $this->cache->fetch($key);
+        }
+
+        return $this->cache->fetch($key);
     }
 
     /**

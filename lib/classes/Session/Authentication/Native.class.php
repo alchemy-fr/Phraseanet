@@ -260,8 +260,9 @@ class Session_Authentication_Native implements Session_Authentication_Interface
         $row_count = $stmt->rowCount();
         $stmt->closeCursor();
 
-        if ($row_count == 0)
+        if ($row_count == 0) {
             return $this;
+        }
 
         if ($this->captcha_challenge_result === true) {
             $sql = 'UPDATE badlog SET locked="0" WHERE (login=:login OR ip=:ip)';

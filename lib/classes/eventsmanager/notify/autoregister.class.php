@@ -49,8 +49,9 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
         $params = array_merge($default, $params);
         $base_ids = array_keys($params['autoregister']);
 
-        if (count($base_ids) == 0)
+        if (count($base_ids) == 0) {
             return;
+        }
 
         $mailColl = array();
 
@@ -261,8 +262,9 @@ class eventsmanager_notify_autoregister extends eventsmanager_notifyAbstract
     {
         $bool = false;
         $session = $this->appbox->get_session();
-        if ( ! $session->is_authenticated() || ! login::register_enabled())
+        if ( ! $session->is_authenticated() || ! login::register_enabled()) {
             return false;
+        }
 
         try {
             $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);

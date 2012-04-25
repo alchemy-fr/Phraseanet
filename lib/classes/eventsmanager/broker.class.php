@@ -316,8 +316,9 @@ class eventsmanager_broker
 
     function read(Array $notifications, $usr_id)
     {
-        if (count($notifications) == 0)
+        if (count($notifications) == 0) {
             return false;
+        }
 
         $sql = 'UPDATE notifications SET unread="0"
             WHERE usr_id = :usr_id

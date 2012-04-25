@@ -65,10 +65,11 @@ class connection_pdo extends connection_abstract implements connection_interface
      */
     public function prepare($statement, $driver_options = array())
     {
-        if ($this->registry->get('GV_debug'))
+        if ($this->registry->get('GV_debug')) {
             return new connection_pdoStatementDebugger(parent::prepare($statement, $driver_options));
-        else
+        } else {
             return parent::prepare($statement, $driver_options);
+        }
     }
 
     /**

@@ -140,12 +140,14 @@ class appbox extends base
         }
         $custom_path.= $collection->get_base_id();
 
-        if (is_null($pathfile))
+        if (is_null($pathfile)) {
             return $this;
+        }
 
         $datas = file_get_contents($pathfile->getPathname());
-        if (is_null($datas))
+        if (is_null($datas)) {
             return $this;
+        }
 
         file_put_contents($file, $datas);
         file_put_contents($custom_path, $datas);
@@ -190,12 +192,14 @@ class appbox extends base
         }
         $custom_path.= $pic_type . '_' . $databox->get_sbas_id();
 
-        if (is_null($pathfile))
+        if (is_null($pathfile)) {
             return $this;
+        }
 
         $datas = file_get_contents($pathfile->getPathname());
-        if (is_null($datas))
+        if (is_null($datas)) {
             return $this;
+        }
 
         file_put_contents($file, $datas);
         file_put_contents($custom_path, $datas);
@@ -515,8 +519,9 @@ class appbox extends base
      */
     public function get_databoxes()
     {
-        if ($this->databoxes)
+        if ($this->databoxes) {
             return $this->databoxes;
+        }
 
         $ret = array();
         foreach ($this->retrieve_sbas_ids() as $sbas_id) {

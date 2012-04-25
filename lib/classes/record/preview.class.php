@@ -196,8 +196,9 @@ class record_preview extends record_adapter
 
     public function get_train($pos = 0, $query = '', searchEngine_adapter $search_engine = null)
     {
-        if ($this->train)
+        if ($this->train) {
             return $this->train;
+        }
 
         switch ($this->env) {
             case 'RESULT':
@@ -257,8 +258,9 @@ class record_preview extends record_adapter
      */
     public function get_title($highlight = '', searchEngine_adapter $search_engine = null)
     {
-        if ($this->title)
+        if ($this->title) {
             return $this->title;
+        }
 
         $this->title = collection::getLogo($this->get_base_id()) . ' ';
 

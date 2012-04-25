@@ -318,8 +318,9 @@ function doUserConf($conf, $param)
 
         return $new_conf;
     }
-    else
+    else {
         return $conf;
+    }
 }
 
 function displayListColumn($conf, $param, $twig)

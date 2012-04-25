@@ -36,12 +36,13 @@ return call_user_func(function() {
 
             $app->get('/', function() use ($app) {
                     $browser = \Browser::getInstance();
-                    if ($browser->isMobile())
+                    if ($browser->isMobile()) {
                         return $app->redirect("/login/?redirect=/lightbox");
-                    elseif ($browser->isNewGeneration())
+                    } elseif ($browser->isNewGeneration()) {
                         return $app->redirect("/login/?redirect=/prod");
-                    else
+                    } else {
                         return $app->redirect("/login/?redirect=/client");
+                    }
                 });
 
             $app->get('/robots.txt', function() use ($app) {

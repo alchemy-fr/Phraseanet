@@ -399,16 +399,16 @@ class task_period_outofdate extends task_abstract
         $sbas_list = $user->ACL()->get_granted_sbas(array('bas_manage'));
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-        <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
+            <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
 
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
                 <option value="">...</option>
-        <?php
-        foreach ($sbas_list as $databox) {
-            $selected = '';
-            print("\t\t\t\t<option value=\"" . $databox->get_sbas_id() . "\" $selected>" . p4string::MakeString($databox->get_viewname(), "form") . "</option>\n");
-        }
-        ?>
+                <?php
+                foreach ($sbas_list as $databox) {
+                    $selected = '';
+                    print("\t\t\t\t<option value=\"" . $databox->get_sbas_id() . "\" $selected>" . p4string::MakeString($databox->get_viewname(), "form") . "</option>\n");
+                }
+                ?>
             </select>
 
             &nbsp;
@@ -416,9 +416,9 @@ class task_period_outofdate extends task_abstract
             <br/>
             <br/>
 
-                <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
-                <?php echo _('task::_common_:minutes (unite temporelle)') ?><br/>
+            <?php echo _('task::_common_:minutes (unite temporelle)') ?><br/>
             <br/>
 
             <table id="OUTOFDATETAB" style="margin-right:10px; ">
@@ -427,7 +427,7 @@ class task_period_outofdate extends task_abstract
                         &nbsp;
                     </td>
                     <td style="width:20%;">
-            <?php echo _('task::outofdate:before') ?>&nbsp;
+                        <?php echo _('task::outofdate:before') ?>&nbsp;
                     </td>
                     <td colspan="2" style="width:20%; white-space:nowrap;">
                         <select style="width:100px" name="field1" id="field1" onchange="chgxmlpopup(this, 'field1');"></select>
@@ -439,7 +439,7 @@ class task_period_outofdate extends task_abstract
                         <input name="fieldDv1" id="fieldDv1" onchange="chgxmltxt(this, 'fieldDv1');" type="text" style="width:30px" value="0"></input>&nbsp;<?php echo _('admin::taskoutofdate: days ') ?>
                     </td>
                     <td style="width:20%; padding-left:20px; padding-right:20px;">
-        <?php echo _('task::outofdate:between') ?>&nbsp;
+                        <?php echo _('task::outofdate:between') ?>&nbsp;
                     </td>
                     <td colspan="2" style="width:20%; white-space:nowrap;">
                         <select style="width:100px" name="field2" id="field2" onchange="chgxmlpopup(this, 'field2');"></select>
@@ -451,12 +451,12 @@ class task_period_outofdate extends task_abstract
                         <input name="fieldDv2" id="fieldDv2" onchange="chgxmltxt(this, 'fieldDv2');" type="text" style="width:30px" value="0"></input>&nbsp;<?php echo _('admin::taskoutofdate: days ') ?>
                     </td>
                     <td  style="width:20%;">
-        <?php echo _('task::outofdate:after') ?>&nbsp;
+                        <?php echo _('task::outofdate:after') ?>&nbsp;
                     </td>
                 </tr>
                 <tr>
                     <td style="white-space:nowrap;">
-        <?php echo _('task::outofdate:coll.') ?>&nbsp;:
+                        <?php echo _('task::outofdate:coll.') ?>&nbsp;:
                     </td>
                     <td colspan="2" style="border-right:1px solid #000000">
                         <select name="coll0" id="coll0" onchange="chgxmlpopup(this, 'coll0');"></select>
@@ -470,7 +470,7 @@ class task_period_outofdate extends task_abstract
                 </tr>
                 <tr>
                     <td style="white-space:nowrap;">
-        <?php echo _('task::outofdate:status') ?>&nbsp;:<br/>
+                        <?php echo _('task::outofdate:status') ?>&nbsp;:<br/>
                     </td>
                     <td colspan="2" style="border-right:1px solid #000000">
                         <select name="status0" id="status0" onchange="chgxmlpopup(this, 'status0');"></select>

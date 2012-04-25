@@ -406,8 +406,9 @@ class Feed_Entry_Adapter implements Feed_Entry_Interface, cache_cacheableInterfa
      */
     public function get_content()
     {
-        if ($this->items)
+        if ($this->items) {
             return $this->items;
+        }
 
         $rs = $this->retrieve_elements();
         $items = array();

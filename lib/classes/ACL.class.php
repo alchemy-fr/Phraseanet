@@ -121,8 +121,9 @@ class ACL implements cache_cacheableInterface
 
         $key = $record->get_serialize_key();
 
-        if (array_key_exists($key, $this->_rights_records_document))
+        if (array_key_exists($key, $this->_rights_records_document)) {
             return true;
+        }
 
         return false;
     }
@@ -229,8 +230,9 @@ class ACL implements cache_cacheableInterface
      */
     public function apply_model(User_Interface $template_user, Array $base_ids)
     {
-        if (count($base_ids) == 0)
+        if (count($base_ids) == 0) {
             return $this;
+        }
 
         $sbas_ids = array();
 
@@ -378,8 +380,9 @@ class ACL implements cache_cacheableInterface
     {
         $this->load_rights_bas();
 
-        if ( ! $this->has_access_to_base($base_id))
+        if ( ! $this->has_access_to_base($base_id)) {
             return false;
+        }
 
         if ($this->is_limited($base_id)) {
             return false;
@@ -463,8 +466,9 @@ class ACL implements cache_cacheableInterface
     {
         $this->load_rights_bas();
 
-        if ( ! $this->has_access_to_base($base_id))
+        if ( ! $this->has_access_to_base($base_id)) {
             return false;
+        }
 
         return $this->_rights_bas[$base_id]['restrict_dwnld'];
     }
@@ -479,8 +483,9 @@ class ACL implements cache_cacheableInterface
     {
         $this->load_rights_bas();
 
-        if ( ! $this->has_access_to_base($base_id))
+        if ( ! $this->has_access_to_base($base_id)) {
             return false;
+        }
 
         return (int) $this->_rights_bas[$base_id]['remain_dwnld'];
     }
@@ -496,8 +501,9 @@ class ACL implements cache_cacheableInterface
     {
         $this->load_rights_bas();
 
-        if ( ! $this->has_access_to_base($base_id))
+        if ( ! $this->has_access_to_base($base_id)) {
             return false;
+        }
 
         $this->_rights_bas[$base_id]['remain_dwnld'] =
             $this->_rights_bas[$base_id]['remain_dwnld'] - (int) $n;
@@ -535,14 +541,16 @@ class ACL implements cache_cacheableInterface
     {
         $this->load_rights_sbas();
 
-        if ( ! isset($this->_rights_sbas[$sbas_id]))
+        if ( ! isset($this->_rights_sbas[$sbas_id])) {
             return false;
+        }
 
         if ( ! isset($this->_rights_sbas[$sbas_id][$right]))
             throw new Exception('This right does not exists');
 
-        if ($this->_rights_sbas[$sbas_id][$right] === true)
+        if ($this->_rights_sbas[$sbas_id][$right] === true) {
             return true;
+        }
 
         return false;
     }
@@ -556,8 +564,9 @@ class ACL implements cache_cacheableInterface
     public function get_mask_and($base_id)
     {
         $this->load_rights_bas();
-        if ( ! $this->has_access_to_base($base_id))
+        if ( ! $this->has_access_to_base($base_id)) {
             return false;
+        }
 
         return $this->_rights_bas[$base_id]['mask_and'];
     }
@@ -571,8 +580,9 @@ class ACL implements cache_cacheableInterface
     public function get_mask_xor($base_id)
     {
         $this->load_rights_bas();
-        if ( ! $this->has_access_to_base($base_id))
+        if ( ! $this->has_access_to_base($base_id)) {
             return false;
+        }
 
         return $this->_rights_bas[$base_id]['mask_xor'];
     }
@@ -698,8 +708,9 @@ class ACL implements cache_cacheableInterface
     protected function load_hd_grant()
     {
 
-        if ($this->_rights_records_preview)
+        if ($this->_rights_records_preview) {
             return $this;
+        }
 
         try {
             $tmp_rights = $this->get_data_from_cache(self::CACHE_RIGHTS_RECORDS);
@@ -747,8 +758,9 @@ class ACL implements cache_cacheableInterface
     protected function load_rights_sbas()
     {
 
-        if ($this->_rights_sbas && $this->_global_rights)
+        if ($this->_rights_sbas && $this->_global_rights) {
             return $this;
+        }
 
         try {
             $this->_rights_sbas = $this->get_data_from_cache(self::CACHE_RIGHTS_SBAS);
@@ -804,8 +816,9 @@ class ACL implements cache_cacheableInterface
      */
     protected function load_rights_bas()
     {
-        if ($this->_rights_bas && $this->_global_rights && is_array($this->_limited))
+        if ($this->_rights_bas && $this->_global_rights && is_array($this->_limited)) {
             return $this;
+        }
 
         try {
             $this->_rights_bas = $this->get_data_from_cache(self::CACHE_RIGHTS_BAS);
@@ -1286,8 +1299,9 @@ class ACL implements cache_cacheableInterface
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row)
+        if ( ! $row) {
             return $this;
+        }
 
         $this->give_access_to_base(array($base_id_dest));
 
@@ -1445,8 +1459,10 @@ class ACL implements cache_cacheableInterface
     public function get_limits($base_id)
     {
         $this->load_rights_bas();
-        if ( ! isset($this->_limited[$base_id]))
+        if ( ! isset($this->_limited[$base_id])) {
             return null;
+        }
+
         return ($this->_limited[$base_id]);
     }
 

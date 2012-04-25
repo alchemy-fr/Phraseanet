@@ -73,9 +73,9 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
 
         }
 
-        if (count($users) == 0)
+        if (count($users) == 0) {
             return;
-
+        }
 
         $dom_xml = new DOMDocument('1.0', 'UTF-8');
 
@@ -239,8 +239,9 @@ class eventsmanager_notify_order extends eventsmanager_notifyAbstract
     {
         $bool = false;
         $session = $this->appbox->get_session();
-        if ( ! $session->is_authenticated())
+        if ( ! $session->is_authenticated()) {
             return false;
+        }
 
         try {
             $user = User_Adapter::getInstance($session->get_usr_id(), $this->appbox);

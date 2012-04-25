@@ -227,11 +227,13 @@ abstract class Feed_XML_Abstract
 
         $medium = strtolower($content->get_record()->get_type());
 
-        if ( ! in_array($medium, array('image', 'audio', 'video')))
+        if ( ! in_array($medium, array('image', 'audio', 'video'))) {
             return $this;
+        }
 
-        if ( ! $preview_permalink || ! $thumbnail_permalink)
+        if ( ! $preview_permalink || ! $thumbnail_permalink) {
             return $this;
+        }
 
         $group = $this->addTag($document, $item, 'media:group');
 

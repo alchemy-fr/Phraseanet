@@ -210,7 +210,9 @@ class Feed_Publisher_Adapter implements Feed_Publisher_Interface, cache_cacheabl
     {
         foreach ($feed->get_publishers() as $publisher) {
             if ($publisher->get_user()->get_id() === $user->get_id())
+            {
                 return $publisher;
+            }
         }
         throw new Exception_Feed_PublisherNotFound('Publisher not found');
     }

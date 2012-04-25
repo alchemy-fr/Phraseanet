@@ -125,8 +125,10 @@ class Setup_Upgrade
      */
     protected function get_percentage()
     {
-        if ($this->total_steps === 0)
+        if ($this->total_steps === 0) {
             return 1;
+        }
+
         return round(max(min(($this->completed_steps / $this->total_steps), 1), 0), 2);
     }
 

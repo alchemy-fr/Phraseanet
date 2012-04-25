@@ -98,8 +98,10 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
 
     private function generate_page_url($entry)
     {
-        if (isset($entry["owner"]) && isset($entry["id"]))
+        if (isset($entry["owner"]) && isset($entry["id"])) {
             return sprintf("http://www.flickr.com/%ss/%s/%s/", $this->type, (string) $entry["owner"], (string) $entry["id"]);
+        }
+
         return "";
     }
 
@@ -112,27 +114,30 @@ class Bridge_Api_Flickr_Element implements Bridge_Api_ElementInterface
      */
     private function generate_thumb_url($entry, $size = '', $extension = '')
     {
-        if (isset($entry["url_t"]))
+        if (isset($entry["url_t"])) {
             return (string) $entry["url_t"];
+        }
 
-        if ( ! isset($entry["farm"]) || ! isset($entry["farm"]) || ! isset($entry["farm"]) || ! isset($entry["farm"]) || ! isset($entry["farm"]))
+        if ( ! isset($entry["farm"]) || ! isset($entry["farm"]) || ! isset($entry["farm"]) || ! isset($entry["farm"]) || ! isset($entry["farm"])) {
             return '';
+        }
 
         $farm = (string) $entry["farm"];
         $server_id = (string) $entry["server"];
         $id_photo = (string) $entry["id"];
         $secret = (string) $entry["secret"];
 
-        if (empty($size) && empty($extension))
+        if (empty($size) && empty($extension)) {
             return sprintf('https://farm%s.static.flickr.com/%s/%s_%s.jpg', $farm, $server_id, $id_photo, $secret);
-        elseif ( ! empty($size) && ! empty($extension))
+        } elseif ( ! empty($size) && ! empty($extension)) {
             return sprintf('https://farm%s.static.flickr.com/%s/%s_%s_%s.jpg', $farm, $server_id, $id_photo, $secret, $size);
-        elseif ( ! empty($size))
+        } elseif ( ! empty($size)) {
             return sprintf('https://farm%s.static.flickr.com/%s/%s_%s_%s.jpg', $farm, $server_id, $id_photo, $secret, $size, '.jpg');
-        elseif ( ! empty($extension))
+        } elseif ( ! empty($extension)) {
             return sprintf('https://farm%s.static.flickr.com/%s/%s_%s_o.%s', $farm, $server_id, $id_photo, $secret, $extension);
-        else
+        } else {
             return "";
+        }
     }
 
     /**

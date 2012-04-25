@@ -74,13 +74,15 @@ class recordutils_image extends recordutils
         $registry = registry::get_instance();
         $debug = false;
 
-        if ( ! $registry->get('GV_imagick'))
+        if ( ! $registry->get('GV_imagick')) {
             return false;
+        }
 
         $sbas_id = phrasea::sbasFromBas($bas);
 
-        if ( ! isset($sbas_id))
+        if ( ! isset($sbas_id)) {
             return false;
+        }
 
         $connSbas = connection::getPDOConnection($sbas_id);
 
@@ -114,8 +116,9 @@ class recordutils_image extends recordutils
             );
         }
 
-        if ($domprefs === FALSE || $sxxml === FALSE)
+        if ($domprefs === FALSE || $sxxml === FALSE) {
             return false;
+        }
 
         $xpprefs = new DOMXPath($domprefs);
 
@@ -124,8 +127,9 @@ class recordutils_image extends recordutils
         $pathTmpStamp = $registry->get('GV_RootPath') . 'tmp/'
             . time() . '-stamptmp_' . $file['file'];
 
-        if ( ! is_file($pathIn))
+        if ( ! is_file($pathIn)) {
             return false;
+        }
 
         if ($file['type'] != 'image' ||
             $xpprefs->query('/baseprefs/stamp')->length == 0) {
@@ -151,8 +155,9 @@ class recordutils_image extends recordutils
         }
 
         // ------------- CACHING !
-        if (is_file($pathOut))
+        if (is_file($pathOut)) {
             return $pathOut;
+        }
 
         $fields = $xpprefs->query('/baseprefs/stamp/*/field');
         for ($i = 0; $i < $fields->length; $i ++ ) {
@@ -174,9 +179,9 @@ class recordutils_image extends recordutils
 
         $collname = phrasea::bas_names($bas);
 
-        if ( ! ($tailleimg = @getimagesize($pathIn)))
+        if ( ! ($tailleimg = @getimagesize($pathIn))) {
             return false;
-
+        }
 
         $image_width = $tailleimg[0];
         $image_height = $tailleimg[1];
@@ -326,8 +331,9 @@ class recordutils_image extends recordutils
 
         unlink($pathTmpStamp);
 
-        if (is_file($pathOut))
+        if (is_file($pathOut)) {
             return $pathOut;
+        }
 
         return false;
     }
@@ -346,8 +352,9 @@ class recordutils_image extends recordutils
 
         $sbas_id = phrasea::sbasFromBas($bas);
 
-        if ( ! isset($sbas_id))
+        if ( ! isset($sbas_id)) {
             return false;
+        }
 
         $connSbas = connection::getPDOConnection($sbas_id);
 
@@ -360,8 +367,9 @@ class recordutils_image extends recordutils
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ( ! $row)
+        if ( ! $row) {
             return false;
+        }
 
         $file = array(
             'type' => $row['type']
@@ -374,12 +382,13 @@ class recordutils_image extends recordutils
 
         $pathOut = $file['path'] . 'watermark_' . $file['file'];
 
-        if ( ! is_file($pathIn))
+        if ( ! is_file($pathIn)) {
             return false;
+        }
 
-        if (is_file($pathOut))
+        if (is_file($pathOut)) {
             return $pathOut;
-
+        }
 
         if ($registry->get('GV_pathcomposite') &&
             file_exists($registry->get('GV_RootPath') . 'config/wm/' . $bas)) { // si il y a un WM
@@ -469,8 +478,9 @@ class recordutils_image extends recordutils
             }
         }
 
-        if (is_file($pathOut))
+        if (is_file($pathOut)) {
             return $pathOut;
+        }
 
         return false;
     }

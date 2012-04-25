@@ -139,14 +139,14 @@ class task_period_ftpPull extends task_appboxAbstract
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
-        <?php echo('task::ftp:proxy') ?>
+            <?php echo('task::ftp:proxy') ?>
             <input type="text" name="proxy" style="width:400px;" onchange="chgxmltxt(this, 'proxy');"><br/>
             <br/>
-        <?php echo('task::ftp:proxy port') ?>
+            <?php echo('task::ftp:proxy port') ?>
             <input type="text" name="proxyport" style="width:400px;" onchange="chgxmltxt(this, 'proxyport');"><br/>
             <br/>
 
-        <?php echo('task::ftp:host') ?>
+            <?php echo('task::ftp:host') ?>
             <input type="text" name="host" style="width:400px;" onchange="chgxmltxt(this, 'host');"><br/>
             <br/>
             <?php echo('task::ftp:port') ?>
@@ -155,13 +155,13 @@ class task_period_ftpPull extends task_appboxAbstract
             <?php echo('task::ftp:user') ?>
             <input type="text" name="user" style="width:400px;" onchange="chgxmltxt(this, 'user');"><br/>
             <br/>
-        <?php echo('task::ftp:password') ?>
+            <?php echo('task::ftp:password') ?>
             <input type="password" name="password" style="width:400px;" onchange="chgxmltxt(this, 'password');"><br/>
             <br/>
-        <?php echo('task::ftp:chemin distant') ?>
+            <?php echo('task::ftp:chemin distant') ?>
             <input type="text" name="ftppath" style="width:400px;" onchange="chgxmltxt(this, 'ftppath');"><br/>
             <br/>
-        <?php echo('task::ftp:localpath') ?>
+            <?php echo('task::ftp:localpath') ?>
             <input type="text" name="localpath" style="width:400px;" onchange="chgxmltxt(this, 'localpath');"><br/>
             <br/>
 
@@ -218,8 +218,9 @@ class task_period_ftpPull extends task_appboxAbstract
         }
 
         // si on doit changer le xml, on verifie qu'il est valide
-        if ($parm["xml"] && ! DOMDocument::loadXML($parm["xml"]))
+        if ($parm["xml"] && ! DOMDocument::loadXML($parm["xml"])) {
             return(false);
+        }
 
         $sql = "";
         $params = array(':task_id' => $taskid);

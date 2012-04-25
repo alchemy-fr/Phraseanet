@@ -34,8 +34,10 @@ class task_manager
 
     public function old_get_tasks($refresh = false)
     {
-        if ($this->tasks && ! $refresh)
+        if ($this->tasks && ! $refresh) {
             return $this->tasks;
+        }
+
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -62,8 +64,9 @@ class task_manager
 
     public function get_tasks($refresh = false)
     {
-        if ($this->tasks && ! $refresh)
+        if ($this->tasks && ! $refresh) {
             return $this->tasks;
+        }
 
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
         $stmt = $this->appbox->get_connection()->prepare($sql);

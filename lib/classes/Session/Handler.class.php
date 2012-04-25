@@ -79,8 +79,9 @@ class Session_Handler
     public function logout()
     {
 //    $this->remove_cookies();
-        if ( ! $this->is_authenticated())
+        if ( ! $this->is_authenticated()) {
             return;
+        }
 
         $this->storage()->reset();
         $this->close_phrasea_session();
@@ -240,12 +241,13 @@ class Session_Handler
      */
     public static function get_cookie($name, $default_value = null)
     {
-        if (http_request::is_command_line() && isset(self::$_cookie[$name]))
+        if (http_request::is_command_line() && isset(self::$_cookie[$name])) {
             return self::$_cookie[$name];
-        elseif ( ! http_request::is_command_line() && isset($_COOKIE[$name]))
+        } elseif ( ! http_request::is_command_line() && isset($_COOKIE[$name])) {
             return $_COOKIE[$name];
-        elseif ($default_value !== null)
+        } elseif ($default_value !== null) {
             return $default_value;
+        }
         return null;
     }
 
@@ -279,10 +281,11 @@ class Session_Handler
             else
                 unset($_COOKIE[$name]);
         }
-        if ( ! http_request::is_command_line())
+        if ( ! http_request::is_command_line()) {
             return setcookie($name, $value, $expire, '/', '', $https, $http_only);
-        else
+        } else {
             return true;
+        }
     }
 
     /**
@@ -292,10 +295,11 @@ class Session_Handler
      */
     public static function isset_cookie($name)
     {
-        if (http_request::is_command_line())
+        if (http_request::is_command_line()) {
             return isset(self::$_cookie[$name]);
-        else
-            return isset($_COOKIE[$name]);
+        }
+
+        return isset($_COOKIE[$name]);
     }
 
     public function renew_phrasea_session()
@@ -417,8 +421,9 @@ class Session_Handler
             $basks = array();
             $oldusr = self::get_cookie('invite-usr_id');
 
-            if ($oldusr == $this->get_usr_id())
+            if ($oldusr == $this->get_usr_id()) {
                 return $this;
+            }
 
             $sql = 'SELECT sselcont_id, s.ssel_id
           FROM sselcont c, ssel s

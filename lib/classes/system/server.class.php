@@ -42,8 +42,10 @@ class system_server
      */
     public function is_nginx()
     {
-        if (strpos($this->_server_software, 'nginx') !== false)
+        if (strpos($this->_server_software, 'nginx') !== false) {
             return true;
+        }
+
         return false;
     }
 
@@ -54,8 +56,10 @@ class system_server
      */
     public function is_lighttpd()
     {
-        if (strpos($this->_server_software, 'lighttpd') !== false)
+        if (strpos($this->_server_software, 'lighttpd') !== false) {
             return true;
+        }
+
         return false;
     }
 
@@ -66,8 +70,10 @@ class system_server
      */
     public function is_apache()
     {
-        if (strpos($this->_server_software, 'apache') !== false)
+        if (strpos($this->_server_software, 'apache') !== false) {
             return true;
+        }
+
         return false;
     }
 
@@ -82,8 +88,10 @@ class system_server
         static $_system = NULL;
         if ($_system === NULL) {
             $_system = strtoupper(php_uname('s'));
-            if ($_system == 'WINDOWS NT')
+
+            if ($_system == 'WINDOWS NT') {
                 $_system = 'WINDOWS';
+            }
         }
 
         return($_system);

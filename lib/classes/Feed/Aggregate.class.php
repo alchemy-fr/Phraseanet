@@ -83,8 +83,9 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
     {
         $result = new Feed_Entry_Collection();
 
-        if (count($this->feeds) === 0)
+        if (count($this->feeds) === 0) {
             return $result;
+        }
 
         $offset_start = (int) $offset_start;
         $how_many = $how_many > 20 ? 20 : (int) $how_many;
@@ -117,8 +118,10 @@ class Feed_Aggregate extends Feed_Abstract implements Feed_Interface
      */
     public function get_count_total_entries()
     {
-        if (count($this->feeds) === 0)
+        if (count($this->feeds) === 0) {
             return 0;
+        }
+
         $sql = 'SELECT count(id) as number
             FROM feed_entries
             WHERE feed_id

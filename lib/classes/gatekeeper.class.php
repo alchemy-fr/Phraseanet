@@ -77,8 +77,9 @@ class gatekeeper
         $appbox = appbox::get_instance($this->Core);
         $session = $appbox->get_session();
 
-        if (http_request::is_command_line())
+        if (http_request::is_command_line()) {
             return;
+        }
 
         if (isset($_SERVER['PHP_SELF']) && trim($_SERVER['PHP_SELF'])) {
             $this->_PHP_SELF = $_SERVER['PHP_SELF'];
@@ -119,16 +120,18 @@ class gatekeeper
                 case 'thesaurus2':
                     if ($this->_PHP_SELF == '/thesaurus2/xmlhttp/getterm.x.php'
                         || $this->_PHP_SELF == '/thesaurus2/xmlhttp/searchcandidate.x.php'
-                        || $this->_PHP_SELF == '/thesaurus2/xmlhttp/getsy.x.php')
+                        || $this->_PHP_SELF == '/thesaurus2/xmlhttp/getsy.x.php') {
                         return;
+                    }
                     phrasea::redirect('/login/?redirect=/thesaurus2');
                     break;
                 case 'report':
                     phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
                     break;
                 case 'admin':
-                    if ($this->_script_name === 'runscheduler.php')
+                    if ($this->_script_name === 'runscheduler.php') {
                         return;
+                    }
                     phrasea::redirect('/login/?redirect=' . $_SERVER['REQUEST_URI']);
                     break;
                 case 'login':
@@ -145,10 +148,11 @@ class gatekeeper
                 case '':
                     return;
                 case 'setup':
-                    if ($appbox->upgradeavailable())
+                    if ($appbox->upgradeavailable()) {
                         return;
-                    else
+                    } else {
                         phrasea::redirect('/login/');
+                    }
                     break;
                 default:
                     phrasea::redirect('/login/');
@@ -246,8 +250,9 @@ class gatekeeper
         $session = $appbox->get_session();
         $parm = $request->get_parms('LOG');
 
-        if (is_null($parm["LOG"]))
+        if (is_null($parm["LOG"])) {
             return $this;
+        }
 
         try {
             if ($session->is_authenticated())

@@ -153,9 +153,9 @@ class task_period_apibridge extends task_appboxAbstract
         }
         $element->set_connector_status($connector_status);
 
-        if ($status === $previous_status)
+        if ($status === $previous_status) {
             return;
-
+        }
 
         switch ($status) {
             case Bridge_Element::STATUS_ERROR:

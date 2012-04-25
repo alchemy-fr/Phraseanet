@@ -68,8 +68,9 @@ class phraseadate
      */
     public static function getPrettyString(DateTime $date = null)
     {
-        if (is_null($date))
+        if (is_null($date)) {
             return null;
+        }
 
         $compareTo = new DateTime('now');
         $diff = $compareTo->format('U') - $date->format('U');

@@ -215,8 +215,9 @@ class phrasea
 
     public static function sbas_params()
     {
-        if (self::$_sbas_params)
+        if (self::$_sbas_params) {
             return self::$_sbas_params;
+        }
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
         try {
@@ -247,8 +248,9 @@ class phrasea
     public static function guest_allowed()
     {
         $usr_id = User_Adapter::get_usr_id_from_login('invite');
-        if ( ! $usr_id)
+        if ( ! $usr_id) {
             return false;
+        }
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $user = User_Adapter::getInstance($usr_id, $appbox);
 

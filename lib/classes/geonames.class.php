@@ -91,8 +91,9 @@ class geonames
         $output = array();
         $cityName = self::clean_input($cityName);
 
-        if (strlen($cityName) === 0)
+        if (strlen($cityName) === 0) {
             return $output;
+        }
 
         $registry = registry::get_instance();
         $url = $registry->get('GV_i18n_service', 'http://localization.webservice.alchemyasp.com/')
@@ -128,8 +129,9 @@ class geonames
 
     public function find_geoname_from_ip($ip)
     {
-        if (array_key_exists($ip, $this->cache_ips))
+        if (array_key_exists($ip, $this->cache_ips)) {
             return $this->cache_ips[$ip];
+        }
 
         $output = array(
             'city'         => '',

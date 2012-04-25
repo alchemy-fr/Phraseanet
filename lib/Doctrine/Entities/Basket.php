@@ -291,8 +291,9 @@ class Basket
             }
         }
 
-        if ($total_el1 === $total_el2)
+        if ($total_el1 === $total_el2) {
             return 0;
+        }
 
         return $total_el1 < $total_el2 ? 1 : -1;
     }
@@ -313,8 +314,9 @@ class Basket
             }
         }
 
-        if ($total_el1 === $total_el2)
+        if ($total_el1 === $total_el2) {
             return 0;
+        }
 
         return $total_el1 < $total_el2 ? 1 : -1;
     }

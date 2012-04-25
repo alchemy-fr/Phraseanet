@@ -112,8 +112,9 @@ class API_V1_result
 
     protected function parse_response_type()
     {
-        if (trim($this->request->get('callback')) !== '')
+        if (trim($this->request->get('callback')) !== '') {
             return $this->response_type = self::FORMAT_JSONP;
+        }
 
         $accept = $this->request->getAcceptableContentTypes();
         $response_types = array();

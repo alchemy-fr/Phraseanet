@@ -353,8 +353,10 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                         $response = $this->_api->executeMethod('flickr.photosets.addPhoto', $params);
 
                         if ( ! $response->isOk()) {
-                            if ($response->err_code === 3) //Already exists in photoset
+                            if ($response->err_code === 3) { //Already exists in photoset
                                 return;
+                            }
+
                             throw new Bridge_Exception_ApiConnectorRequestFailed();
                         }
                         break;
@@ -626,14 +628,17 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     public function is_configured()
     {
 
-        if ( ! $this->registry->get('GV_flickr_api'))
+        if ( ! $this->registry->get('GV_flickr_api')) {
             return false;
+        }
 
-        if (trim($this->registry->get('GV_flickr_client_id')) === '')
+        if (trim($this->registry->get('GV_flickr_client_id')) === '') {
             return false;
+        }
 
-        if (trim($this->registry->get('GV_flickr_client_secret')) === '')
+        if (trim($this->registry->get('GV_flickr_client_secret')) === '') {
             return false;
+        }
 
         return true;
     }

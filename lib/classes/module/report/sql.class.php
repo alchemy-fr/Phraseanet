@@ -113,10 +113,11 @@ class module_report_sql
     public function getTransQuery($champ)
     {
         $tanslation = $this->filter->getCorFilter();
-        if (array_key_exists($champ, $tanslation))
+        if (array_key_exists($champ, $tanslation)) {
             return $tanslation[$champ];
-        else
+        } else {
             return $champ;
+        }
     }
 
     /**

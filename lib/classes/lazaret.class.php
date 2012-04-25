@@ -33,8 +33,9 @@ class lazaret extends set_abstract
 
         $base_ids = array_keys($user->ACL()->get_granted_base(array('canaddrecord')));
 
-        if (count($base_ids) == 0)
+        if (count($base_ids) == 0) {
             return $this;
+        }
 
         $sql = "SELECT id, filepath, filename, base_id,
                     uuid, errors, created_on, usr_id

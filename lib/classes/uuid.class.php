@@ -17,8 +17,9 @@ class uuid
      */
     public static function generate_v3($namespace, $name)
     {
-        if ( ! self::is_valid($namespace))
+        if ( ! self::is_valid($namespace)) {
             return false;
+        }
 
         // Get hexadecimal components of namespace
         $nhex = str_replace(array('-', '{', '}'), '', $namespace);
@@ -82,8 +83,9 @@ class uuid
      */
     public static function generate_v5($namespace, $name)
     {
-        if ( ! self::is_valid($namespace))
+        if ( ! self::is_valid($namespace)) {
             return false;
+        }
 
         // Get hexadecimal components of namespace
         $nhex = str_replace(array('-', '{', '}'), '', $namespace);

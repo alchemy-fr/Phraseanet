@@ -268,12 +268,14 @@ class setup
 
     protected static function discover_binary($binary, array $look_here = array())
     {
-        if (system_server::get_platform() == 'WINDOWS')
+        if (system_server::get_platform() == 'WINDOWS') {
             return null;
+        }
 
         foreach ($look_here as $place) {
-            if (is_executable($place))
+            if (is_executable($place)) {
                 return $place;
+            }
         }
 
         return exec(sprintf('which %s', $binary));
@@ -283,23 +285,24 @@ class setup
     {
         $registry = registry::get_instance();
 
-        if ($registry->get('GV_h264_streaming') !== true)
+        if ($registry->get('GV_h264_streaming') !== true) {
             return;
+        }
         ?>
         <h1>mod_auth_token configuration </h1>
         <ul class="setup">
-        <?php
-        $fileName = $registry->get('GV_mod_auth_token_directory_path') . '/test_mod_auth_token.txt';    // The file to access
+            <?php
+            $fileName = $registry->get('GV_mod_auth_token_directory_path') . '/test_mod_auth_token.txt';    // The file to access
 
-        touch($fileName);
+            touch($fileName);
 
-        $url = $registry->get('GV_ServerName') . p4file::apache_tokenize($fileName);
+            $url = $registry->get('GV_ServerName') . p4file::apache_tokenize($fileName);
 
-        if (http_query::getHttpCodeFromUrl($url) == 200)
-            echo '<li>' . _('mod_auth_token correctement configure') . '</li>';
-        else
-            echo '<li class="blocker">' . _('mod_auth_token mal configure') . '</li>';
-        ?>
+            if (http_query::getHttpCodeFromUrl($url) == 200)
+                echo '<li>' . _('mod_auth_token correctement configure') . '</li>';
+            else
+                echo '<li class="blocker">' . _('mod_auth_token mal configure') . '</li>';
+            ?>
         </ul>
         <?php
     }
@@ -310,9 +313,9 @@ class setup
         ?>
         <h1>Apache Server mods avalaibility</h1>
         <div style="position:relative;float:left;">
-        <?php
-        echo _('Attention, seul le test de l\'activation des mods est effectue, leur bon fonctionnement ne l\'est pas ')
-        ?>
+            <?php
+            echo _('Attention, seul le test de l\'activation des mods est effectue, leur bon fonctionnement ne l\'est pas ')
+            ?>
         </div>
 
         <ul id="apache_mods_checker" class="setup">
@@ -322,27 +325,27 @@ class setup
             </li>
             <li class="blocker">
                 <a href="#" onclick="check_apache_mod(this,'xsendfile');return false;">mod_xsendfile (optionnal)</a>
-            <?php
-            if ($registry->get('GV_modxsendfile')) {
-                ?>
+                <?php
+                if ($registry->get('GV_modxsendfile')) {
+                    ?>
                     <div class="infos"><img style="vertical-align:middle" src="/skins/icons/alert.png"/> <?php echo _('Attention, veuillez verifier la configuration xsendfile, actuellement activee dans le setup'); ?></div>
-            <?php } ?>
+                <?php } ?>
             </li>
             <li class="blocker">
                 <a href="#" onclick="check_apache_mod(this,'authtoken');return false;">mod_auth_token (optionnal)</a>
-            <?php
-            if ($registry->get('GV_h264_streaming')) {
-                ?>
+                <?php
+                if ($registry->get('GV_h264_streaming')) {
+                    ?>
                     <div class="infos"><img style="vertical-align:middle" src="/skins/icons/alert.png"/> <?php echo _('Attention, veuillez verifier la configuration h264_streaming, actuellement activee dans le setup'); ?></div>
-        <?php } ?>
+                <?php } ?>
             </li>
             <li class="blocker">
                 <a href="#" onclick="check_apache_mod(this,'h264');return false;">mod_h264_streaming (optionnal)</a>
-        <?php
-        if ($registry->get('GV_h264_streaming')) {
-            ?>
+                <?php
+                if ($registry->get('GV_h264_streaming')) {
+                    ?>
                     <div class="infos"><img style="vertical-align:middle" src="/skins/icons/alert.png"/> <?php echo _('Attention, veuillez verifier la configuration h264_streaming, actuellement activee dans le setup'); ?></div>
-            <?php } ?>
+                <?php } ?>
             </li>
             <style type="text/css">
                 #apache_mods_checker div.infos{
@@ -387,96 +390,96 @@ class setup
                 }
             </script>
 
-        <?php
-        echo '</ul>';
-    }
+            <?php
+            echo '</ul>';
+        }
 
-    public static function check_phrasea()
-    {
-        $constraints = array();
-        if (function_exists('phrasea_info')) {
-            foreach (phrasea_info() as $name => $value) {
-                switch ($name) {
-                    default:
-                        $result = true;
-                        $message = $name . ' = ' . $value;
-                        break;
-                    case 'temp_writable':
-                        $result = $value == '1';
-                        if ($result)
-                            $message = 'Directory is writeable';
-                        else
-                            $message = 'Directory MUST be writable';
-                        break;
-                    case 'version':
-                        $result = version_compare($value, '1.18.0.3', '>=');
-                        if ($result)
-                            $message = sprintf('Phrasea version %s is ok', $value);
-                        else
-                            $message = sprintf('Phrasea version %s is NOT ok', $value);
-                        break;
+        public static function check_phrasea()
+        {
+            $constraints = array();
+            if (function_exists('phrasea_info')) {
+                foreach (phrasea_info() as $name => $value) {
+                    switch ($name) {
+                        default:
+                            $result = true;
+                            $message = $name . ' = ' . $value;
+                            break;
+                        case 'temp_writable':
+                            $result = $value == '1';
+                            if ($result)
+                                $message = 'Directory is writeable';
+                            else
+                                $message = 'Directory MUST be writable';
+                            break;
+                        case 'version':
+                            $result = version_compare($value, '1.18.0.3', '>=');
+                            if ($result)
+                                $message = sprintf('Phrasea version %s is ok', $value);
+                            else
+                                $message = sprintf('Phrasea version %s is NOT ok', $value);
+                            break;
+                    }
+                    $blocker = $name == 'temp_writable' ? ($value ? '' : 'blocker') : '';
+                    $constraints[] = new Setup_Constraint($name, $result, $message, true);
                 }
-                $blocker = $name == 'temp_writable' ? ($value ? '' : 'blocker') : '';
-                $constraints[] = new Setup_Constraint($name, $result, $message, true);
-            }
-        }
-
-        return new Setup_ConstraintsIterator($constraints);
-    }
-
-    public static function check_writability(registryInterface $registry)
-    {
-        $root = p4string::addEndSlash(realpath(__DIR__ . '/../../'));
-
-        $pathes = array(
-            $root . 'config',
-            $root . 'config/stamp',
-            $root . 'config/status',
-            $root . 'config/minilogos',
-            $root . 'config/templates',
-            $root . 'config/topics',
-            $root . 'config/wm',
-            $root . 'logs',
-            $root . 'tmp',
-            $root . 'www/custom',
-            $root . 'tmp/locks',
-            $root . 'tmp/cache_twig',
-            $root . 'tmp/cache_minify',
-            $root . 'tmp/lazaret',
-            $root . 'tmp/desc_tmp',
-            $root . 'tmp/download',
-            $root . 'tmp/batches');
-
-        if ($registry->is_set('GV_base_datapath_web')) {
-            $pathes[] = $registry->get('GV_base_datapath_web');
-        }
-        if ($registry->is_set('GV_base_datapath_noweb')) {
-            $pathes[] = $registry->get('GV_base_datapath_noweb');
-        }
-
-
-        $constraints = array();
-
-        foreach ($pathes as $p) {
-            if ( ! is_writable($p)) {
-                $message = sprintf('%s not writeable', $p);
-            } else {
-                $message = sprintf('%s OK', $p);
             }
 
-            $constraints[] = new Setup_Constraint(
-                    'Writeability test', is_writable($p), $message, true
-            );
+            return new Setup_ConstraintsIterator($constraints);
         }
-        $php_constraints = new Setup_ConstraintsIterator($constraints);
 
-        return $php_constraints;
-    }
+        public static function check_writability(registryInterface $registry)
+        {
+            $root = p4string::addEndSlash(realpath(__DIR__ . '/../../'));
 
-    function check_mail_form()
-    {
-        echo '<h1>' . _('setup::Tests d\'envois d\'emails') . '</h1>';
-        ?>
+            $pathes = array(
+                $root . 'config',
+                $root . 'config/stamp',
+                $root . 'config/status',
+                $root . 'config/minilogos',
+                $root . 'config/templates',
+                $root . 'config/topics',
+                $root . 'config/wm',
+                $root . 'logs',
+                $root . 'tmp',
+                $root . 'www/custom',
+                $root . 'tmp/locks',
+                $root . 'tmp/cache_twig',
+                $root . 'tmp/cache_minify',
+                $root . 'tmp/lazaret',
+                $root . 'tmp/desc_tmp',
+                $root . 'tmp/download',
+                $root . 'tmp/batches');
+
+            if ($registry->is_set('GV_base_datapath_web')) {
+                $pathes[] = $registry->get('GV_base_datapath_web');
+            }
+            if ($registry->is_set('GV_base_datapath_noweb')) {
+                $pathes[] = $registry->get('GV_base_datapath_noweb');
+            }
+
+
+            $constraints = array();
+
+            foreach ($pathes as $p) {
+                if ( ! is_writable($p)) {
+                    $message = sprintf('%s not writeable', $p);
+                } else {
+                    $message = sprintf('%s OK', $p);
+                }
+
+                $constraints[] = new Setup_Constraint(
+                        'Writeability test', is_writable($p), $message, true
+                );
+            }
+            $php_constraints = new Setup_ConstraintsIterator($constraints);
+
+            return $php_constraints;
+        }
+
+        function check_mail_form()
+        {
+            echo '<h1>' . _('setup::Tests d\'envois d\'emails') . '</h1>';
+            ?>
             <form method="post" action="/admin/sitestruct.php" target="_self">
                 <label>Email : </label><input name="email" type="text" />
                 <input type="submit" value="<?php echo _('boutton::valider'); ?>"/>
@@ -643,8 +646,9 @@ class setup
         {
             $constraints = array();
 
-            if ( ! extension_loaded('gettext'))
+            if ( ! extension_loaded('gettext')) {
                 return new Setup_ConstraintsIterator($constraints);
+            }
 
             foreach (User_Adapter::$locales as $code => $language_name) {
                 phrasea::use_i18n($code, 'test');
@@ -670,14 +674,19 @@ class setup
             if ($is_flag)
                 $current = strtolower($current);
 
-            if (($current === '' || $current === 'off' || $current === '0') && $is_flag)
-                if ($value === 'off' || $value === '0' || $value === '')
+            if (($current === '' || $current === 'off' || $current === '0') && $is_flag) {
+                if ($value === 'off' || $value === '0' || $value === '') {
                     return $current;
-            if (($current === '1' || $current === 'on') && $is_flag)
-                if ($value === 'on' || $value === '1')
+                }
+            }
+            if (($current === '1' || $current === 'on') && $is_flag) {
+                if ($value === 'on' || $value === '1') {
                     return $current;
-            if ($current === $value)
+                }
+            }
+            if ($current === $value) {
                 return $current;
+            }
         }
 
         public static function rollback(connection_pdo $conn, connection_pdo $connbas = null)

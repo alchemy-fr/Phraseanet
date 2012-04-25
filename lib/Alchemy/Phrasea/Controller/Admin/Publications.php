@@ -83,8 +83,9 @@ class Publications implements ControllerProviderInterface
                 $feed = new \Feed_Adapter($appbox, $id);
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
-                if ( ! $feed->is_owner($user))
+                if ( ! $feed->is_owner($user)) {
                     return $app->redirect('/admin/publications/feed/' . $id . '/?error=' . _('You are not the owner of this feed, you can not edit it'));
+                }
 
                 $request = $app['request'];
 
@@ -107,29 +108,35 @@ class Publications implements ControllerProviderInterface
                 $feed = new \Feed_Adapter($appbox, $id);
                 $user = \User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox);
 
-                if ( ! $feed->is_owner($user))
+                if ( ! $feed->is_owner($user)) {
                     return new Response('ERROR:you are not allowed');
+                }
 
                 $request = $app["request"];
 
                 $fileData = $request->files->get("Filedata");
 
-                if ($fileData['error'] !== 0)
+                if ($fileData['error'] !== 0) {
                     return new Response('ERROR:error while upload');
+                }
 
                 $file = new \system_file($fileData['tmp_name']);
-                if ( ! in_array($file->get_mime(), array('image/jpeg', 'image/jpg', 'image/gif')))
+                if ( ! in_array($file->get_mime(), array('image/jpeg', 'image/jpg', 'image/gif'))) {
                     return new Response('ERROR:bad filetype');
+                }
 
-                if ($file->getSize() > 200000)
+                if ($file->getSize() > 200000) {
                     return new Response('ERROR:file too large');
+                }
 
                 $datas = $file->get_technical_datas();
-                if ( ! isset($datas[\system_file::TC_DATAS_WIDTH]) || ! isset($datas[\system_file::TC_DATAS_HEIGHT]))
+                if ( ! isset($datas[\system_file::TC_DATAS_WIDTH]) || ! isset($datas[\system_file::TC_DATAS_HEIGHT])) {
                     return new Response('ERROR:file is not square');
+                }
 
-                if ($datas[\system_file::TC_DATAS_WIDTH] != $datas[\system_file::TC_DATAS_HEIGHT])
+                if ($datas[\system_file::TC_DATAS_WIDTH] != $datas[\system_file::TC_DATAS_HEIGHT]) {
                     return new Response('ERROR:file is not square');
+                }
 
                 $feed->set_icon($file);
                 unlink($file->getPathname());

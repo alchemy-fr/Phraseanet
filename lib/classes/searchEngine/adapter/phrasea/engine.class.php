@@ -607,7 +607,10 @@ class searchEngine_adapter_phrasea_engine extends searchEngine_adapter_abstract 
         );
 
         if ( ! isset($res['results']) || ! is_array($res['results']))
+        {
             return array();
+        }
+
         $rs = $res['results'];
         $res = array_shift($rs);
         if ( ! isset($res['xml'])) {

@@ -115,7 +115,7 @@ class task_period_workflow01 extends task_databoxAbstract
                         parent.chgsbas(<?php echo $form ?>[pops[j].name]);
                 }
             <?php echo $form ?>.period.value   = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
-            parent.calccmd();
+                parent.calccmd();
             </script>
             <?php
             return("");
@@ -305,16 +305,16 @@ class task_period_workflow01 extends task_databoxAbstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-        <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
+            <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
 
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
                 <option value="">...</option>
-        <?php
-        $sbas_ids = $user->ACL()->get_granted_sbas(array('bas_manage'));
-        foreach ($sbas_ids as $databox) {
-            print('<option value="' . $databox->get_sbas_id() . '">' . p4string::MakeString($databox->get_viewname(), "form") . '</option>');
-        }
-        ?>
+                <?php
+                $sbas_ids = $user->ACL()->get_granted_sbas(array('bas_manage'));
+                foreach ($sbas_ids as $databox) {
+                    print('<option value="' . $databox->get_sbas_id() . '">' . p4string::MakeString($databox->get_viewname(), "form") . '</option>');
+                }
+                ?>
             </select>
 
             &nbsp;
@@ -322,9 +322,9 @@ class task_period_workflow01 extends task_databoxAbstract
             <br/>
             <br/>
 
-                <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
-                <?php echo _('task::_common_:minutes (unite temporelle)') ?><br/>
+            <?php echo _('task::_common_:minutes (unite temporelle)') ?><br/>
             <br/>
 
             <table id="OUTOFDATETAB" style="margin-right:10px; ">

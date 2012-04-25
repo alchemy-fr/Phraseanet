@@ -130,8 +130,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      */
     public function get_icon_url()
     {
-        if ($this->icon_url)
+        if ($this->icon_url) {
             return $this->icon_url;
+        }
 
         $url = '/skins/icons/rss32.gif';
 

@@ -71,11 +71,13 @@ class queries
         $session = $appbox->get_session();
         $registry = $appbox->get_registry();
 
-        if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics_' . $session->get_I18n() . '.xml'))
+        if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics_' . $session->get_I18n() . '.xml')) {
             return true;
+        }
 
-        if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics.xml'))
+        if (file_exists($registry->get('GV_RootPath') . 'config/topics/topics.xml')) {
             return true;
+        }
 
         return false;
     }
@@ -239,8 +241,10 @@ class queries
 
     private static function hastopics(&$topics)
     {
-        foreach ($topics->topics as $subtopic)
+        foreach ($topics->topics as $subtopic) {
             return true;
+        }
+
         return false;
     }
 

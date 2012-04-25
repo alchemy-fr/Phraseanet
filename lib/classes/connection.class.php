@@ -52,8 +52,10 @@ class connection
     public static function printLog()
     {
         $registry = registry::get_instance();
-        if ( ! $registry->get('GV_debug'))
+        if ( ! $registry->get('GV_debug')) {
             return;
+        }
+
         $totalTime = 0;
 
         foreach (self::$log as $entry) {
@@ -109,9 +111,9 @@ class connection
             $name = 'appbox';
         } elseif (is_int((int) $name)) {
             $name = (int) $name;
-        }
-        else
+        } else {
             return false;
+        }
 
         if ( ! isset(self::$_PDO_instance[$name])) {
             $hostname = $port = $user = $password = $dbname = false;
@@ -149,8 +151,10 @@ class connection
                 throw new Exception('Connection not available');
             }
         }
-        if (array_key_exists($name, self::$_PDO_instance))
+        if (array_key_exists($name, self::$_PDO_instance)) {
             return self::$_PDO_instance[$name];
+        }
+
         throw new Exception('Connection not available');
     }
 

@@ -121,10 +121,11 @@ class module_report_dashboard_merge implements module_report_dashboard_component
      */
     public function isValid()
     {
-        if (isset($this->sorted) && sizeof($this->sorted) > 0)
+        if (isset($this->sorted) && sizeof($this->sorted) > 0) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**

@@ -62,8 +62,9 @@ class databox_status
         $sbas_params = phrasea::sbas_params();
         $registry = registry::get_instance();
 
-        if ( ! isset($sbas_params[$sbas_id]))
+        if ( ! isset($sbas_params[$sbas_id])) {
             return;
+        }
 
         $path = $this->path = $registry->get('GV_RootPath') . "config/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
         $url = $this->url = "/custom/status/" . urlencode($sbas_params[$sbas_id]["host"]) . "-" . urlencode($sbas_params[$sbas_id]["port"]) . "-" . urlencode($sbas_params[$sbas_id]["dbname"]);
@@ -115,8 +116,9 @@ class databox_status
 
     public static function getDisplayStatus()
     {
-        if (self::$_statuses)
+        if (self::$_statuses) {
             return self::$_statuses;
+        }
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
@@ -243,8 +245,9 @@ class databox_status
         $session = $appbox->get_session();
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
-        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct'))
+        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
             return false;
+        }
 
         $status = self::getStatus($sbas_id);
 
@@ -295,8 +298,9 @@ class databox_status
         $session = $appbox->get_session();
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
-        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct'))
+        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
             return false;
+        }
 
         $status = self::getStatus($sbas_id);
 
@@ -372,15 +376,17 @@ class databox_status
         $session = $appbox->get_session();
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
 
-        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct'))
+        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
             return false;
+        }
 
         $status = self::getStatus($sbas_id);
 
         $switch = in_array($switch, array('on', 'off')) ? $switch : false;
 
-        if ( ! $switch)
+        if ( ! $switch) {
             return false;
+        }
 
         if ($status[$bit]['img_' . $switch]) {
             if (isset($status[$bit]['path_' . $switch]))

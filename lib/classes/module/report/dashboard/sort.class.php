@@ -122,10 +122,11 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
 
     public function isValid()
     {
-        if (isset($this->arraySorted) && sizeof($this->arraySorted) > 0)
+        if (isset($this->arraySorted) && sizeof($this->arraySorted) > 0) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     public function getDash()
@@ -135,8 +136,9 @@ class module_report_dashboard_sort implements module_report_dashboard_componentI
 
     public function getTop($nbtop)
     {
-        if ( ! is_int($nbtop))
+        if ( ! is_int($nbtop)) {
             return array();
+        }
 
         $tmp = array();
 
