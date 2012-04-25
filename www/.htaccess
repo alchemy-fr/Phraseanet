@@ -55,6 +55,8 @@
   RewriteRule ^api/v1/.*$             /api/v1/index.php [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteRule ^api/oauthv2/.*$        /api/oauthv2/index.php [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^api/.*$                /api/index.php [L]
 
   RewriteRule ^permalink/.*$          /include/overview.php [L]
   RewriteRule ^datafiles/.*$          /include/overview.php [L]
