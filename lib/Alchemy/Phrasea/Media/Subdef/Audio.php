@@ -29,7 +29,7 @@ class Audio extends Provider
         $this->registerOption(new OptionType\Range(self::OPTION_BITRATE, 100, 4000, 800));
         $this->registerOption(new OptionType\Range(self::OPTION_THREADS, 1, 16, 1));
         $this->registerOption(new OptionType\Enum(self::OPTION_AUDIOSAMPLERATE, $AVaudiosamplerate));
-        $this->registerOption(new OptionType\Enum(self::OPTION_ACODEC, array('faac', 'mp3', 'libvorbis'), 'faac'));
+        $this->registerOption(new OptionType\Enum(self::OPTION_ACODEC, array('libfaac', 'libvo_aacenc', 'libmp3lame', 'libvorbis'), 'libfaac'));
     }
 
     public function getType()
