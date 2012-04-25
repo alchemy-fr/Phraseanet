@@ -17,7 +17,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-class patch_361 implements patchInterface
+class patch_370 implements patchInterface
 {
 
     /**
