@@ -26,6 +26,7 @@ use Symfony\Component\Console\Command\Command;
 class module_console_taskrun extends Command
 {
     private $task;
+
     private $shedulerPID;
 
     public function __construct($name = null)
@@ -67,40 +68,58 @@ class module_console_taskrun extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         if ( ! setup::is_installed()) {
+            if ($this->task) {
+                $this->task->log(sprintf("signal %s received", $signo));
+                if ($signo == SIGTERM)
+                    $this->task->set_running(false);
+            }
+        }
+// printf("%s (%d) execute\n", __FILE__, __LINE__);
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        if ( ! setup::is_installed()) {
             $output->writeln('Phraseanet is not set up');
 
-            return 1;
-        }
+            if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id')))
+                throw new \RuntimeException('Argument must be an Id.');
 
-        $task_id = (int) $input->getArgument('task_id');
+            $appbox = \appbox::get_instance(\bootstrap::getCore());
+            $task_manager = new task_manager($appbox);
+            $this->task = $task_manager->get_task($task_id);
 
-        if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id')))
-            throw new \RuntimeException('Argument must be an Id.');
+            if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
+                $schedStatus = $task_manager->get_scheduler_state();
+// printf("%s (%d) schedStatus=%s \n", __FILE__, __LINE__, var_export($schedStatus, true));
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $task_manager = new task_manager($appbox);
-        $this->task = $task_manager->get_task($task_id);
+                if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid'])
+                    $this->shedulerPID = $schedStatus['pid'];
+                $runner = task_abstract::RUNNER_MANUAL;
+            }
+            else {
+                $runner = task_abstract::RUNNER_SCHEDULER;
+                $schedStatus = $task_manager->get_scheduler_state();
+                if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid'])
+                    $this->shedulerPID = $schedStatus['pid'];
+            }
 
-        if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
-            $runner = task_abstract::RUNNER_MANUAL;
-        } else {
-            $runner = task_abstract::RUNNER_SCHEDULER;
-            $registry = $appbox->get_registry();
-            $schedFile = $registry->get('GV_RootPath') . 'tmp/locks/scheduler.lock';
-            if (file_exists($schedFile))
-                $this->shedulerPID = (int) (trim(file_get_contents($schedFile)));
-        }
+            register_tick_function(array($this, 'tick_handler'), true);
+            declare(ticks = 1);
+            if (function_exists('pcntl_signal'))
+                pcntl_signal(SIGTERM, array($this, 'sig_handler'));
 
-        register_tick_function(array($this, 'tick_handler'), true);
-        declare(ticks = 1);
-        pcntl_signal(SIGTERM, array($this, 'sig_handler'));
+            try {
+                $this->task->run($runner, $input, $output);
+//		$this->task->log(sprintf("%s [%d] taskrun : returned from 'run()', get_status()=%s \n", __FILE__, __LINE__, $this->task->get_status()));
+            } catch (Exception $e) {
+                $this->task->log(sprintf("taskrun : exception from 'run()', %s \n", $e->getMessage()));
+                return($e->getCode());
+            }
 
-        $this->task->run($runner, $input, $output);
-
-        $this->task->log(sprintf("%s [%d] taskrun : returned from 'run()', get_status()=%s \n", __FILE__, __LINE__, $this->task->get_status()));
-
-        if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
-            $runner = task_abstract::RUNNER_MANUAL;
+            if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
+                $runner = task_abstract::RUNNER_MANUAL;
+            }
         }
     }
 
@@ -113,6 +132,7 @@ class module_console_taskrun extends Command
         }
 
         if (time() - $start > 0) {
+// printf("%s (%d) : tick\n", __FILE__, __LINE__);
             if ($this->shedulerPID) {
                 if ( ! posix_kill($this->shedulerPID, 0)) {
                     if (method_exists($this->task, 'signal'))
@@ -120,10 +140,10 @@ class module_console_taskrun extends Command
                     else
                         $this->task->set_status(task_abstract::STATUS_TOSTOP);
                 }
-            }
 
-            $start = time();
+
+                $start = time();
+            }
         }
     }
 }
-
