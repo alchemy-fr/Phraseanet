@@ -33,10 +33,8 @@ class task_manager
 
     public function old_get_tasks($refresh = false)
     {
-        if ($this->tasks && ! $refresh) {
+        if ($this->tasks && ! $refresh)
             return $this->tasks;
-        }
-
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
         $stmt = $this->appbox->get_connection()->prepare($sql);
         $stmt->execute();
@@ -63,9 +61,8 @@ class task_manager
 
     public function get_tasks($refresh = false)
     {
-        if ($this->tasks && ! $refresh) {
+        if ($this->tasks && ! $refresh)
             return $this->tasks;
-        }
 
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
         $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -148,11 +145,20 @@ class task_manager
 
     public function get_scheduler_state()
     {
-        $pid = NULL;
         $appbox = appbox::get_instance(\bootstrap::getCore());
+
+        $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay
+            , schedstatus AS status FROM sitepreff";
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $ret = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $pid = NULL;
+
         $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
         if (($schedlock = fopen($lockdir . 'scheduler.lock', 'a+'))) {
-            if (flock($schedlock, LOCK_SH | LOCK_NB) === FALSE) {
+            if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked : running !
                 $pid = trim(fgets($schedlock, 512));
             } else {
@@ -161,13 +167,6 @@ class task_manager
             }
             fclose($schedlock);
         }
-
-        $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay
-            , schedstatus AS status FROM sitepreff";
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $ret = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
 
         if ($pid === NULL && $ret['status'] !== 'stopped') {
             // auto fix
@@ -200,7 +199,7 @@ class task_manager
                     try {
                         //      $testclass = new $classname(null);
                         if ($classname::interfaceAvailable()) {
-                            $tasks[] = array("class" => $classname, "name"  => $classname::getName(), "err"   => null);
+                            $tasks[] = array("class" => $classname, "name" => $classname::getName(), "err" => null);
                         }
                     } catch (Exception $e) {
 
