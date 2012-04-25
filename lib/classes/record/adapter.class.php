@@ -980,40 +980,16 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
         else
         {
-            $subdefs = $this->get_databox()->get_subdef_structure();
+            $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($this->get_type(), $name);
 
-            foreach ($subdefs as $type => $datas)
+            if ($this->has_subdef($name) && ! $this->get_subdef($name)->is_substituted())
             {
-                if ($this->get_type() != $type)
-                    continue;
-
-                if ( ! isset($datas[$name]))
-                {
-                    throw new Exception('No available subdef declaration for this type and name');
-                }
-
-                $subdef_def = $datas[$name];
-                break;
-            }
-
-            if ( ! $subdef_def)
-            {
-                throw new Exception('Unknown subdef name');
-            }
-
-            try
-            {
-                $value = $this->get_subdef($name);
-
-                if ($value->is_substituted())
-                {
-                    throw new Exception('Cannot replace a substitution');
-                }
-
+                $value         = $this->get_subdef($name);
                 $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
                 unlink($original_file);
+                $this->clearSubdefCache($name);
             }
-            catch (Exception $e)
+            else
             {
                 $path          = databox::dispatch($subdef_def->get_path());
                 system_file::mkdir($path);
@@ -1025,16 +1001,23 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             if (trim($subdef_def->get_baseurl()) !== '')
             {
                 $base_url = str_replace(
-                  array((string) $subdef_def->get_path(), $newfilename)
-                  , array((string) $subdef_def->get_baseurl(), '')
+                  array($subdef_def->get_path(), $newfilename)
+                  , array($subdef_def->get_baseurl(), '')
                   , $path_file_dest
                 );
             }
 
-            $registry = registry::get_instance();
-
-            $adapter = new binaryAdapter_image_resize($registry);
-            $adapter->execute($pathfile, $path_file_dest, $subdef_def->get_options());
+            try
+            {
+                $Core = \bootstrap::getCore();
+                $Core['media-alchemyst']->open($pathfile->getPathname())
+                  ->turnInto($path_file_dest, $subdef_def->getSpecs())
+                  ->close();
+            }
+            catch (\MediaAlchemyst\Exception\Exception $e)
+            {
+                return $this;
+            }
 
             $system_file = new system_file($path_file_dest);
             $system_file->chmod();
@@ -1049,23 +1032,18 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $connbas = connection::getPDOConnection($this->get_sbas_id());
 
-            $sql  = 'DELETE FROM subdef WHERE record_id= :record_id AND name=:name';
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute(
-              array(
-                ':record_id' => $this->record_id
-                , ':name'      => $name
-              )
-            );
-
             $image_size = $system_file->get_technical_datas();
 
-            $sql = 'INSERT INTO subdef
-                (record_id, name, baseurl, file, width,
-                  height, mime, path, size, substit)
-              VALUES
-                (:record_id, :name, :baseurl, :filename,
-                  :width, :height, :mime, :path, :filesize, "1")';
+            $sql = 'UPDATE subdef
+                SET baseurl = :baseurl,
+                    file = :filename,
+                    width = :width,
+                    height = :height,
+                    mime = :mime,
+                    path = :path,
+                    size = :size,
+                    substit = 1
+                WHERE name = :name AND record_id = :record_id';
 
             $stmt = $connbas->prepare($sql);
 
@@ -1081,24 +1059,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
               ':filesize'  => $system_file->getSize()
             ));
 
-            $sql  = 'UPDATE record SET moddate=NOW() WHERE record_id=:record_id';
-            $stmt = $connbas->prepare($sql);
-            $stmt->execute(array(':record_id' => $this->get_record_id()));
-            $stmt->closeCursor();
-
-
-            try
-            {
-                $subdef = $this->get_subdef($name);
-                $subdef->delete_data_from_cache();
-            }
-            catch (Exception $e)
-            {
-
-            }
+            $subdef = $this->get_subdef($name);
+            $subdef->delete_data_from_cache();
 
             $this->delete_data_from_cache(self::CACHE_SUBDEFS);
-
 
             if ($meta_writable)
             {
@@ -1116,7 +1080,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         }
         catch (Exception $e)
         {
-            unset($e);
+            
         }
 
         return $this;
