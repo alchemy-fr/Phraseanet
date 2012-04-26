@@ -75,6 +75,9 @@ foreach ($finder as $file) {
     // [Structure] Convert tabs to spaces
     $new = preg_replace('/\t/m', '  ', $new);
 
+    // [Structure] Convert tabs to spaces
+    $new = preg_replace('/\* \(c\) 2005-2010 Alchemy/', '* (c) 2005-2012 Alchemy', $new);
+
     // [Structure] Add a blank line before return statements
     $new = preg_replace_callback('/(^.*$)\n(^ +return)/m', function ($match) {
             // don't add it if the previous line is ...
