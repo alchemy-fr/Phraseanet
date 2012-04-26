@@ -232,8 +232,10 @@ class API_OAuth2_Adapter extends OAuth2
     protected function getAccessToken($oauth_token)
     {
         $result = null;
+
         try {
             $token = API_OAuth2_Token::load_by_oauth_token($this->appbox, $oauth_token);
+
             $result = array(
                 'scope'       => $token->get_scope()
                 , 'expires'     => $token->get_expires()
@@ -243,6 +245,7 @@ class API_OAuth2_Adapter extends OAuth2
                 , 'usr_id'      => $token->get_account()->get_user()->get_id()
                 , 'oauth_token' => $token->get_value()
             );
+
         } catch (Exception $e) {
 
         }
@@ -703,6 +706,9 @@ class API_OAuth2_Adapter extends OAuth2
         if ( ! $this->checkRestrictedGrantType($client[0], $input["grant_type"]))
             $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_UNAUTHORIZED_CLIENT);
 
+        if ( ! $this->checkRestrictedGrantType($client[0], $input["grant_type"]))
+            $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_UNAUTHORIZED_CLIENT);
+
         // Do the granting
         switch ($input["grant_type"]) {
             case OAUTH2_GRANT_TYPE_AUTH_CODE:
@@ -718,6 +724,12 @@ class API_OAuth2_Adapter extends OAuth2
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_EXPIRED_TOKEN);
                 break;
             case OAUTH2_GRANT_TYPE_USER_CREDENTIALS:
+                $application = API_OAuth2_Application::load_from_client_id($this->appbox, $client[0]);
+
+                if ( ! $application->is_password_granted()) {
+                    $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_UNSUPPORTED_GRANT_TYPE, 'Password grant type is not enable for your client');
+                }
+
                 if ( ! $input["username"] || ! $input["password"])
                     $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_REQUEST, 'Missing parameters. "username" and "password" required');
 
