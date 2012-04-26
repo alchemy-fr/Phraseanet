@@ -279,6 +279,27 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
             $("#form_create .callback td").show();
         });
 
+        $('.grant-type').live('click', function(){
+            console.log("click");
+            var appId = $(this).val();
+            var grant = $(this).is(":checked") ? "1": "0";
+            var opts = {
+            type:"POST",
+            url : '/api/oauthv2/applications/' + appId + '/grant_password/',
+            dataType: 'json',
+            data : {
+              grant : grant
+            },
+            success : function(data){
+              if(!data.ok)
+              {
+                console.log('error');
+              }
+            }
+          }
+          $.ajax(opts);
+        });
+
         $(".app-btn").live("click", function(){
 
           if (!$(this).hasClass("authorize"))
@@ -323,7 +344,7 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
 
         $("#app_dev, #app_dev_new, #app_dev_create, a.dev_back").live("click", function(e){
           e.preventDefault();
-          target = $(this).attr("href");
+          var target = $(this).attr("href");
           var opts = {
             type:"GET",
             url : target,
