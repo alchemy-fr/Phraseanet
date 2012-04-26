@@ -626,8 +626,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
     {
         $cache_key = self::CACHE_USER_TOKEN . '_' . $user->get_id();
         try {
-            if ( ! $renew)
+            if ( ! $renew) {
                 return $this->get_data_from_cache($cache_key);
+            }
         } catch (Exception $e) {
 
         }

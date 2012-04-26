@@ -985,7 +985,8 @@ class task_period_archive extends task_abstract
 
         $ret = false;
 
-        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') { // if root of hotfolder if hot, die...
+        // if root of hotfolder if hot, die...
+        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') {
             return($ret);
         }
 
@@ -1190,7 +1191,8 @@ class task_period_archive extends task_abstract
 
         $ret = false;
 
-        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') { // if root of hotfolder if hot, die...
+        // if root of hotfolder if hot, die...
+        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') {
             return($ret);
         }
 
