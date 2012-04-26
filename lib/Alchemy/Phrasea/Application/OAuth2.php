@@ -65,7 +65,7 @@ return call_user_func(function() {
                 });
 
 
-            /*             * *******************************************************************
+            /* * *******************************************************************
              *                        AUTHENTIFICATION API
              */
 
@@ -212,7 +212,7 @@ return call_user_func(function() {
                 });
 
 
-            /**
+            /******************************************************************
              * MANAGEMENT APPS
              *
              *
@@ -306,6 +306,30 @@ return call_user_func(function() {
                     try {
                         $account = new \API_OAuth2_Account($app['appbox'], $app['request']->get('account_id'));
                         $account->set_revoked((bool) $app['request']->get('revoke'));
+                        $result['ok'] = true;
+                    } catch (\Exception $e) {
+
+                    }
+
+                    $Serializer = $app['Core']['Serializer'];
+
+                    return new Response(
+                            $Serializer->serialize($result, 'json')
+                            , 200
+                            , array("content-type" => "application/json")
+                    );
+                });
+
+            /**
+             * revoke access from a user to the app
+             * identified by  account id
+             */
+            $route = "/applications/{appId}/grant_password/";
+            $app->post($route, function($appId) use ($app) {
+                    $result = array("ok" => false);
+                    try {
+                        $client = new \API_OAuth2_Application($app['appbox'], $appId);
+                        $client->set_grant_password((bool) $app['request']->get('grant'));
                         $result['ok'] = true;
                     } catch (\Exception $e) {
 

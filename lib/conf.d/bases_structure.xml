@@ -245,7 +245,7 @@
           <field>
             <name>creator</name>
             <type>int(11) unsigned</type>
-            <null></null>
+            <null>YES</null>
             <extra></extra>
             <default></default>
             <comment></comment>
@@ -330,6 +330,22 @@
             <default></default>
             <comment></comment>
           </field>
+          <field>
+            <name>activated</name>
+            <type>int(1)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
+          <field>
+            <name>grant_password</name>
+            <type>int(1)</type>
+            <null></null>
+            <extra></extra>
+            <default></default>
+            <comment></comment>
+          </field>
         </fields>
         <indexes>
           <index>
@@ -348,12 +364,30 @@
           </index>
           <index>
             <name>client_id</name>
-            <type>INDEX</type>
+            <type>UNIQUE</type>
             <fields>
               <field>client_id</field>
             </fields>
           </index>
         </indexes>
+        <defaults>
+          <default>
+            <data key="application_id">null</data>
+            <data key="creator">null</data>
+            <data key="type">desktop</data>
+            <data key="name">phraseanet-navigator</data>
+            <data key="description"></data>
+            <data key="website">http://www.phraseanet.com</data>
+            <data key="created_on">NOW()</data>
+            <data key="last_modified">NOW()</data>
+            <data key="client_id">\alchemy\phraseanet\id\4f981093aebb66.06844599</data>
+            <data key="client_secret">\alchemy\phraseanet\secret\4f9810d4b09799.51622662</data>
+            <data key="nonce">5b6lIf</data>
+            <data key="redirect_uri">urn:ietf:wg:oauth:2.0:oob</data>
+            <data key="activated">1</data>
+            <data key="grant_password">1</data>
+          </default>
+        </defaults>
         <engine>InnoDB</engine>
       </table>
 

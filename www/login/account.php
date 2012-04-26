@@ -262,6 +262,23 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                         $("#form_create .callback td").show();
                 });
 
+                $('.grant-type').live('click', function(){
+                    var appId = $(this).val();
+                    var grant = $(this).is(":checked") ? "1": "0";
+                    var opts = {
+                        type:"POST",
+                        url : '/api/oauthv2/applications/' + appId + '/grant_password/',
+                        dataType: 'json',
+                        data : {
+                            grant : grant
+                        },
+                        success : function(data){
+
+                        }
+                    }
+                    $.ajax(opts);
+                });
+
                 $(".app-btn").live("click", function(){
 
                     if (!$(this).hasClass("authorize"))
@@ -401,26 +418,26 @@ $user = User_Adapter::getInstance($appbox->get_session()->get_usr_id(), $appbox)
                                 <tr valign="top">
                                     <td style="width:98%">
 
-<?php
-$notice = '';
-if ( ! is_null($parm['notice'])) {
-    switch ($parm['notice']) {
-        case 'password-update-ok':
-            $notice = _('login::notification: Mise a jour du mot de passe avec succes');
-            break;
-        case 'account-update-ok':
-            $notice = _('login::notification: Changements enregistres');
-            break;
-        case 'account-update-bad':
-            $notice = _('forms::erreurs lors de l\'enregistrement des modifications');
-            break;
-        case 'demand-ok':
-            $notice = _('login::notification: Vos demandes ont ete prises en compte');
-            break;
-    }
-}
-if ($notice != '') {
-    ?>
+                                        <?php
+                                        $notice = '';
+                                        if ( ! is_null($parm['notice'])) {
+                                            switch ($parm['notice']) {
+                                                case 'password-update-ok':
+                                                    $notice = _('login::notification: Mise a jour du mot de passe avec succes');
+                                                    break;
+                                                case 'account-update-ok':
+                                                    $notice = _('login::notification: Changements enregistres');
+                                                    break;
+                                                case 'account-update-bad':
+                                                    $notice = _('forms::erreurs lors de l\'enregistrement des modifications');
+                                                    break;
+                                                case 'demand-ok':
+                                                    $notice = _('login::notification: Vos demandes ont ete prises en compte');
+                                                    break;
+                                            }
+                                        }
+                                        if ($notice != '') {
+                                            ?>
                                             <div class="notice"><?php echo $notice ?></div>
                                             <?php
                                         }
@@ -471,7 +488,7 @@ if ($notice != '') {
                                                 <tr>
                                                     <td class="form_label"><label for=""><?php echo _('admin::compte-utilisateur email') ?></label></td>
                                                     <td class="form_input" colspan="2">
-<?php echo $user->get_email() ?> <a class="link" href="/login/reset-email.php" target="_self"><?php echo _('login:: Changer mon adresse email') ?></a>
+                                                        <?php echo $user->get_email() ?> <a class="link" href="/login/reset-email.php" target="_self"><?php echo _('login:: Changer mon adresse email') ?></a>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -480,18 +497,18 @@ if ($notice != '') {
                                                 <tr>
                                                     <td colspan="3">Notification par email</td>
                                                 </tr>
-<?php
-$evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
-$notifications = $evt_mngr->list_notifications_available($appbox->get_session()->get_usr_id());
+                                                <?php
+                                                $evt_mngr = eventsmanager_broker::getInstance($appbox, $Core);
+                                                $notifications = $evt_mngr->list_notifications_available($appbox->get_session()->get_usr_id());
 
-foreach ($notifications as $notification_group => $nots) {
-    ?>
+                                                foreach ($notifications as $notification_group => $nots) {
+                                                    ?>
                                                     <tr>
                                                         <td style="font-weight:bold;" colspan="3"><?php echo $notification_group; ?></td>
                                                     </tr>
-                                                            <?php
-                                                            foreach ($nots as $notification) {
-                                                                ?>
+                                                    <?php
+                                                    foreach ($nots as $notification) {
+                                                        ?>
                                                         <tr>
                                                             <td class="form_label" colspan="2"><label for="notif_<?php echo $notification['id'] ?>"><?php echo $notification['description'] ?></label></td>
                                                             <td class="form_input">
@@ -666,10 +683,10 @@ foreach ($notifications as $notification_group => $nots) {
 
 
                             <form name="updatingDemand" id="updatingDemand" action="/login/account.php" method="post">
-<?php
-$demandes = giveMeBaseUsr($usr_id, $lng);
-echo $demandes['tab'];
-?>
+                                <?php
+                                $demandes = giveMeBaseUsr($usr_id, $lng);
+                                echo $demandes['tab'];
+                                ?>
                                 <input type="submit" value="<?php echo _('boutton::valider'); ?>"/>
                             </form>
 
@@ -713,44 +730,45 @@ echo $demandes['tab'];
                                         </td>
                                     </tr>
 
-<?php
-foreach ($appbox->get_session()->get_my_sessions() as $row) {
-    ?>
+                                    <?php
+                                    foreach ($appbox->get_session()->get_my_sessions() as $row) {
+                                        ?>
                                         <tr>
                                             <td>
-    <?php
-    if ($appbox->get_session()->get_ses_id() != $row['session_id']) {
-        ?>
+                                                <?php
+                                                if ($appbox->get_session()->get_ses_id() != $row['session_id']) {
+                                                    ?>
                                                     <img src="/skins/icons/delete.png"/>
-        <?php
-    }
-    ?>
+                                                    <?php
+                                                }
+                                                ?>
                                             </td>
                                             <td>
-    <?php echo phraseadate::getDate(new DateTime($row['created_on'])) ?>
+                                                <?php echo phraseadate::getDate(new DateTime($row['created_on'])) ?>
                                             </td>
                                             <td>
-    <?php echo phraseadate::getDate(new DateTime($row['lastaccess'])) ?>
+                                                <?php echo phraseadate::getDate(new DateTime($row['lastaccess'])) ?>
                                             </td>
                                             <td>
-                                        <?php echo $row['ip'] ?>
-                                        <?php echo $row['ip_infos'] ?>
+                                                <?php echo $row['ip'] ?>
+                                                <?php echo $row['ip_infos'] ?>
                                             </td>
                                             <td>
-                                        <?php echo $row['browser'];
-                                        echo ' ' . $row['browser_version']
-                                        ?>
+                                                <?php
+                                                echo $row['browser'];
+                                                echo ' ' . $row['browser_version']
+                                                ?>
                                             </td>
                                             <td>
-                                                <?php echo $row['screen'] ?>
+    <?php echo $row['screen'] ?>
                                             </td>
                                             <td>
-                                                <?php echo $row['token'] ? 'oui' : '' ?>
+    <?php echo $row['token'] ? 'oui' : '' ?>
                                             </td>
                                         </tr>
-    <?php
-}
-?>
+                                        <?php
+                                    }
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
