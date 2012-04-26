@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,161 +18,160 @@ namespace Entities;
  */
 class UsrListOwner
 {
-  const ROLE_USER = 1;
-  const ROLE_EDITOR = 2;
-  const ROLE_ADMIN = 3;
+    const ROLE_USER = 1;
+    const ROLE_EDITOR = 2;
+    const ROLE_ADMIN = 3;
 
-  /**
-   * @var integer $id
-   */
-  protected $id;
+    /**
+     * @var integer $id
+     */
+    protected $id;
 
-  /**
-   * @var integer $usr_id
-   */
-  protected $usr_id;
+    /**
+     * @var integer $usr_id
+     */
+    protected $usr_id;
 
-  /**
-   * @var string $role
-   */
-  protected $role;
+    /**
+     * @var string $role
+     */
+    protected $role;
 
-  /**
-   * @var datetime $created
-   */
-  protected $created;
+    /**
+     * @var datetime $created
+     */
+    protected $created;
 
-  /**
-   * @var datetime $updated
-   */
-  protected $updated;
+    /**
+     * @var datetime $updated
+     */
+    protected $updated;
 
-  /**
-   * @var Entities\UsrList
-   */
-  protected $list;
+    /**
+     * @var Entities\UsrList
+     */
+    protected $list;
 
-  /**
-   * Get id
-   *
-   * @return integer
-   */
-  public function getId()
-  {
-    return $this->id;
-  }
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-  /**
-   * Set usr_id
-   *
-   * @param integer $usrId
-   */
-  public function setUsrId($usrId)
-  {
-    $this->usr_id = $usrId;
-  }
+    /**
+     * Set usr_id
+     *
+     * @param integer $usrId
+     */
+    public function setUsrId($usrId)
+    {
+        $this->usr_id = $usrId;
+    }
 
-  /**
-   * Get usr_id
-   *
-   * @return integer
-   */
-  public function getUsrId()
-  {
-    return $this->usr_id;
-  }
+    /**
+     * Get usr_id
+     *
+     * @return integer
+     */
+    public function getUsrId()
+    {
+        return $this->usr_id;
+    }
 
-  /**
-   * Set role
-   *
-   * @param string $role
-   */
-  public function setRole($role)
-  {
-    if (!in_array($role, array(self::ROLE_ADMIN, self::ROLE_EDITOR, self::ROLE_USER)))
-      throw new \Exception('Unknown role `' . $role . '`');
+    /**
+     * Set role
+     *
+     * @param string $role
+     */
+    public function setRole($role)
+    {
+        if ( ! in_array($role, array(self::ROLE_ADMIN, self::ROLE_EDITOR, self::ROLE_USER)))
+            throw new \Exception('Unknown role `' . $role . '`');
 
-    $this->role = $role;
-  }
+        $this->role = $role;
+    }
 
-  /**
-   * Get role
-   *
-   * @return string
-   */
-  public function getRole()
-  {
-    return $this->role;
-  }
+    /**
+     * Get role
+     *
+     * @return string
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
 
-  /**
-   * Set created
-   *
-   * @param datetime $created
-   */
-  public function setCreated($created)
-  {
-    $this->created = $created;
-  }
+    /**
+     * Set created
+     *
+     * @param datetime $created
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+    }
 
-  /**
-   * Get created
-   *
-   * @return datetime
-   */
-  public function getCreated()
-  {
-    return $this->created;
-  }
+    /**
+     * Get created
+     *
+     * @return datetime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
 
-  /**
-   * Set updated
-   *
-   * @param datetime $updated
-   */
-  public function setUpdated($updated)
-  {
-    $this->updated = $updated;
-  }
+    /**
+     * Set updated
+     *
+     * @param datetime $updated
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+    }
 
-  /**
-   * Get updated
-   *
-   * @return datetime
-   */
-  public function getUpdated()
-  {
-    return $this->updated;
-  }
+    /**
+     * Get updated
+     *
+     * @return datetime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
 
-  /**
-   * Set list
-   *
-   * @param Entities\UsrList $list
-   */
-  public function setList(\Entities\UsrList $list)
-  {
-    $this->list = $list;
-  }
+    /**
+     * Set list
+     *
+     * @param Entities\UsrList $list
+     */
+    public function setList(\Entities\UsrList $list)
+    {
+        $this->list = $list;
+    }
 
-  /**
-   * Get list
-   *
-   * @return Entities\UsrList
-   */
-  public function getList()
-  {
-    return $this->list;
-  }
+    /**
+     * Get list
+     *
+     * @return Entities\UsrList
+     */
+    public function getList()
+    {
+        return $this->list;
+    }
 
-  public function setUser(\User_Adapter $user)
-  {
-    return $this->setUsrId($user->get_id());
-  }
+    public function setUser(\User_Adapter $user)
+    {
+        return $this->setUsrId($user->get_id());
+    }
 
-  public function getUser()
-  {
-    return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
-  }
-
+    public function getUser()
+    {
+        return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
+    }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
 class Enum implements OptionType
 {
-
     protected $default_value;
     protected $value;
     protected $available;
@@ -24,23 +23,21 @@ class Enum implements OptionType
         $this->available = $available;
         $this->default_value = $default_value;
 
-        if ($default_value)
-        {
+        if ($default_value) {
             $this->setValue($default_value);
         }
     }
 
     public function setValue($value)
     {
-        if ( ! in_array($value, $this->available))
-        {
+        if ( ! in_array($value, $this->available)) {
             throw new \Exception_InvalidArgument(
-              sprintf(
-                'The value provided `%s` for %s does not fit in range ; available are %s'
-                , $value
-                , $this->getName()
-                , implode(', ', $this->getAvailableValues())
-              )
+                sprintf(
+                    'The value provided `%s` for %s does not fit in range ; available are %s'
+                    , $value
+                    , $this->getName()
+                    , implode(', ', $this->getAvailableValues())
+                )
             );
         }
 
@@ -68,5 +65,4 @@ class Enum implements OptionType
     {
         return $this->value;
     }
-
 }

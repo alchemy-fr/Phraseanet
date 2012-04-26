@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class FlexPaper extends Provider
 {
-
     protected $options = array();
 
     public function __construct()
@@ -33,12 +32,10 @@ class FlexPaper extends Provider
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec)
-        {
+        if ( ! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Flash();
         }
 
         return $this->spec;
     }
-
 }

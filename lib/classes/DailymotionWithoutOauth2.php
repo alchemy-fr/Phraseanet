@@ -15,8 +15,7 @@ require_once __DIR__ . '/../vendor/dailymotion-sdk-php/Dailymotion.php';
 class DailymotionWithoutOauth2 extends Dailymotion
 {
 
-
-/**
+    /**
      * Call a remote method.
      *
      * @param $method String the method name to call.
@@ -33,60 +32,43 @@ class DailymotionWithoutOauth2 extends Dailymotion
     {
         $headers = array('Content-Type: application/json');
         $payload = json_encode(array
-        (
+            (
             'call' => $method,
             'args' => $args,
-        ));
+            ));
 
         $status_code = null;
-        try
-        {
+        try {
             $result = json_decode($this->oauthRequest($this->apiEndpointUrl, $payload, $access_token, $headers, $status_code), true);
-        }
-        catch (DailymotionAuthException $e)
-        {
+        } catch (DailymotionAuthException $e) {
 
-            if ($e->error === 'invalid_token')
-            {
-              throw new Bridge_Exception_ActionAuthNeedReconnect();
-            }
-            else
-            {
+            if ($e->error === 'invalid_token') {
+                throw new Bridge_Exception_ActionAuthNeedReconnect();
+            } else {
                 throw $e;
             }
         }
 
-        if (!isset($result))
-        {
+        if ( ! isset($result)) {
             throw new DailymotionApiException('Invalid API server response.');
-        }
-        elseif ($status_code !== 200)
-        {
+        } elseif ($status_code !== 200) {
             throw new DailymotionApiException('Unknown error: ' . $status_code, $status_code);
-        }
-        elseif (is_array($result) && isset($result['error']))
-        {
+        } elseif (is_array($result) && isset($result['error'])) {
             $message = isset($result['error']['message']) ? $result['error']['message'] : null;
             $code = isset($result['error']['code']) ? $result['error']['code'] : null;
-            if ($code === 403)
-            {
+            if ($code === 403) {
                 throw new DailymotionAuthRequiredException($message, $code);
-            }
-            else
-            {
+            } else {
                 throw new DailymotionApiException($message, $code);
             }
-        }
-        elseif (!isset($result['result']))
-        {
+        } elseif ( ! isset($result['result'])) {
             throw new DailymotionApiException("Invalid API server response: no `result' key found.");
         }
 
         return $result['result'];
     }
 
-
-        /**
+    /**
      * Upload a file on the Dailymotion servers and generate an URL to be used with API methods.
      *
      * @param $filePath String a path to the file to upload

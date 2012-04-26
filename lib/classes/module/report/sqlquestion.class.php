@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,22 +18,21 @@
 class module_report_sqlquestion extends module_report_sql implements module_report_sqlReportInterface
 {
 
-  public function __construct(module_report $report)
-  {
-    parent::__construct($report);
-  }
-
-  public function buildSql()
-  {
-    $params = array();
-    $report_filter = $this->filter->getReportFilter();
-    $params = array_merge($params, $report_filter['params']);
-    $this->params = $params;
-
-    if ($this->groupby == false)
+    public function __construct(module_report $report)
     {
-      $this->sql =
-              "
+        parent::__construct($report);
+    }
+
+    public function buildSql()
+    {
+        $params = array();
+        $report_filter = $this->filter->getReportFilter();
+        $params = array_merge($params, $report_filter['params']);
+        $this->params = $params;
+
+        if ($this->groupby == false) {
+            $this->sql =
+                "
        SELECT
         log_search.date ddate,
         search,
@@ -49,20 +48,18 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
        ";
 
 
-      $this->sql .= " WHERE " . $report_filter['sql'];
+            $this->sql .= " WHERE " . $report_filter['sql'];
 
-      $this->sql .= $this->filter->getOrderFilter() ?: '';
+            $this->sql .= $this->filter->getOrderFilter() ? : '';
 
-      $stmt = $this->connbas->prepare($this->sql);
-      $stmt->execute($params);
-      $this->total_row = $stmt->rowCount();
-      $stmt->closeCursor();
+            $stmt = $this->connbas->prepare($this->sql);
+            $stmt->execute($params);
+            $this->total_row = $stmt->rowCount();
+            $stmt->closeCursor();
 
-      $this->sql .= $this->filter->getLimitFilter() ?: '';
-    }
-    else
-    {
-      $this->sql = "
+            $this->sql .= $this->filter->getLimitFilter() ? : '';
+        } else {
+            $this->sql = "
          SELECT
           TRIM(" . $this->getTransQuery($this->groupby) . ") as " . $this->groupby . ",
           SUM(1) as nb
@@ -71,40 +68,39 @@ class module_report_sqlquestion extends module_report_sql implements module_repo
          ON log.id = log_search.log_id
          ";
 
-      $this->sql .= " WHERE " . $report_filter['sql'];
-      $this->sql .= " GROUP BY " . $this->groupby;
-      $this->sql .= " ORDER BY nb DESC";
+            $this->sql .= " WHERE " . $report_filter['sql'];
+            $this->sql .= " GROUP BY " . $this->groupby;
+            $this->sql .= " ORDER BY nb DESC";
 
-      $stmt = $this->connbas->prepare($this->sql);
-      $stmt->execute($params);
-      $this->total_row = $stmt->rowCount();
-      $stmt->closeCursor();
+            $stmt = $this->connbas->prepare($this->sql);
+            $stmt->execute($params);
+            $this->total_row = $stmt->rowCount();
+            $stmt->closeCursor();
+        }
+
+        return $this;
     }
 
-    return $this;
-  }
+    public function sqlDistinctValByField($field)
+    {
+        $params = array();
+        $report_filter = $this->filter->getReportFilter();
+        $params = array_merge($params, $report_filter['params']);
 
-  public function sqlDistinctValByField($field)
-  {
-    $params = array();
-    $report_filter = $this->filter->getReportFilter();
-    $params = array_merge($params, $report_filter['params']);
-
-    $sql = "
+        $sql = "
             SELECT DISTINCT(" . $this->getTransQuery($field) . ") as val
             FROM `log_search`
             INNER JOIN log
             ON log.id = log_search.log_id
             ";
 
-    if ($report_filter['sql'])
-      $sql .= ' WHERE ' . $report_filter['sql'];
+        if ($report_filter['sql'])
+            $sql .= ' WHERE ' . $report_filter['sql'];
 
-    $sql .= " ORDER BY " . $this->getTransQuery($field) . " ASC";
+        $sql .= " ORDER BY " . $this->getTransQuery($field) . " ASC";
 
-    return array('sql' => $sql, 'params' => $params);
-  }
-
+        return array('sql'    => $sql, 'params' => $params);
+    }
 }
 
 ?>

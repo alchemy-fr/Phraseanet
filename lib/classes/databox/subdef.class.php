@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,13 +20,11 @@ use Alchemy\Phrasea\Media\Type\Type as SubdefType;
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class databox_subdef
 {
-
     /**
      * The class type of the subdef
      * Is null or one of the CLASS_* constants
@@ -42,16 +40,16 @@ class databox_subdef
     protected $write_meta;
     protected $downloadable;
     protected static $mediaTypeToSubdefTypes = array(
-      SubdefType::TYPE_AUDIO => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO),
-      SubdefType::TYPE_DOCUMENT => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER),
-      SubdefType::TYPE_FLASH => array(SubdefSpecs::TYPE_IMAGE),
-      SubdefType::TYPE_IMAGE => array(SubdefSpecs::TYPE_IMAGE),
-      SubdefType::TYPE_VIDEO => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION),
+        SubdefType::TYPE_AUDIO => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_AUDIO),
+        SubdefType::TYPE_DOCUMENT => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_FLEXPAPER),
+        SubdefType::TYPE_FLASH => array(SubdefSpecs::TYPE_IMAGE),
+        SubdefType::TYPE_IMAGE => array(SubdefSpecs::TYPE_IMAGE),
+        SubdefType::TYPE_VIDEO => array(SubdefSpecs::TYPE_IMAGE, SubdefSpecs::TYPE_VIDEO, SubdefSpecs::TYPE_ANIMATION),
     );
 
     const CLASS_THUMBNAIL = 'thumbnail';
-    const CLASS_PREVIEW   = 'preview';
-    const CLASS_DOCUMENT  = 'document';
+    const CLASS_PREVIEW = 'preview';
+    const CLASS_DOCUMENT = 'document';
 
     /**
      *
@@ -70,18 +68,15 @@ class databox_subdef
 
         $this->write_meta = p4field::isyes((string) $sd->meta);
 
-        foreach ($sd->label as $label)
-        {
+        foreach ($sd->label as $label) {
             $lang = trim((string) $label->attributes()->lang);
 
-            if ($lang)
-            {
+            if ($lang) {
                 $this->labels[$lang] = (string) $label;
             }
         }
 
-        switch ((string) $sd->mediatype)
-        {
+        switch ((string) $sd->mediatype) {
             default:
             case SubdefSpecs::TYPE_IMAGE:
                 $this->subdef_type = $this->buildImageSubdef($sd);
@@ -107,20 +102,16 @@ class databox_subdef
     {
         $image = new Image();
 
-        if ($sd->size)
-        {
+        if ($sd->size) {
             $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
         }
-        if ($sd->quality)
-        {
+        if ($sd->quality) {
             $image->setOptionValue(Image::OPTION_QUALITY, (int) $sd->quality);
         }
-        if ($sd->strip)
-        {
+        if ($sd->strip) {
             $image->setOptionValue(Image::OPTION_STRIP, p4field::isyes($sd->strip));
         }
-        if ($sd->dpi)
-        {
+        if ($sd->dpi) {
             $image->setOptionValue(Image::OPTION_RESOLUTION, (int) $sd->dpi);
         }
 
@@ -141,12 +132,10 @@ class databox_subdef
     {
         $gif = new Gif();
 
-        if ($sd->size)
-        {
+        if ($sd->size) {
             $gif->setOptionValue(Gif::OPTION_SIZE, (int) $sd->size);
         }
-        if ($sd->delay)
-        {
+        if ($sd->delay) {
             $gif->setOptionValue(Gif::OPTION_DELAY, (int) $sd->delay);
         }
 
@@ -157,24 +146,19 @@ class databox_subdef
     {
         $video = new Video();
 
-        if ($sd->size)
-        {
+        if ($sd->size) {
             $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
         }
-        if ($sd->a_codec)
-        {
+        if ($sd->a_codec) {
             $video->setOptionValue(Video::OPTION_ACODEC, (string) $sd->acodec);
         }
-        if ($sd->v_codec)
-        {
+        if ($sd->v_codec) {
             $video->setOptionValue(Video::OPTION_VCODEC, (string) $sd->vcodec);
         }
-        if ($sd->fps)
-        {
+        if ($sd->fps) {
             $video->setOptionValue(Video::OPTION_FRAMERATE, (int) $sd->fps);
         }
-        if ($sd->bitrate)
-        {
+        if ($sd->bitrate) {
             $video->setOptionValue(Video::OPTION_BITRATE, (int) $sd->bitrate);
         }
 
@@ -244,18 +228,12 @@ class databox_subdef
     {
         $subdefTypes = array();
 
-        if (isset(self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()]))
-        {
-            foreach (self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()] as $subdefType)
-            {
-                if ($subdefType == $this->subdef_type->getType())
-                {
+        if (isset(self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()])) {
+            foreach (self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()] as $subdefType) {
+                if ($subdefType == $this->subdef_type->getType()) {
                     $mediatype_obj = $this->subdef_type;
-                }
-                else
-                {
-                    switch ($subdefType)
-                    {
+                } else {
+                    switch ($subdefType) {
                         case SubdefSpecs::TYPE_ANIMATION:
                             $mediatype_obj = new Gif();
                             break;
@@ -316,5 +294,4 @@ class databox_subdef
     {
         return $this->subdef_type->getOptions();
     }
-
 }

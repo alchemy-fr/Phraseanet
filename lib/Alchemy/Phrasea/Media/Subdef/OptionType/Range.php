@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,6 @@ namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
 class Range implements OptionType
 {
-
     protected $min_value;
     protected $max_value;
     protected $default_value;
@@ -28,16 +27,14 @@ class Range implements OptionType
         $this->default_value = $default_value;
         $this->step = $step;
 
-        if ($default_value)
-        {
+        if ($default_value) {
             $this->setValue($default_value);
         }
     }
 
     public function setValue($value)
     {
-        if ($value > $this->max_value || $value < $this->min_value)
-        {
+        if ($value > $this->max_value || $value < $this->min_value) {
             throw new \Exception_InvalidArgument('The value provided does not fit in range');
         }
 
@@ -75,5 +72,4 @@ class Range implements OptionType
     {
         return $this->max_value;
     }
-
 }

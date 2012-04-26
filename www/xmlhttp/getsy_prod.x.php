@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,6 @@
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -20,9 +19,9 @@ $registry = registry::get_instance();
 
 $request = http_request::getInstance();
 $parm = $request->get_parms(
-                "bid"
-                , "id"
-                , "debug"
+    "bid"
+    , "id"
+    , "debug"
 );
 
 phrasea::headers(200, true, 'text/xml', 'UTF-8', false);
@@ -33,29 +32,26 @@ $ret->preserveWhiteSpace = false;
 $root = $ret->appendChild($ret->createElement("result"));
 $root->appendChild($ret->createCDATASection(var_export($parm, true)));
 
-if ($parm["bid"] !== null)
-{
-  $loaded = false;
+if ($parm["bid"] !== null) {
+    $loaded = false;
 
-  $databox = databox::get_instance((int) $parm['bid']);
-  $dom = $databox->get_dom_thesaurus();
+    $databox = databox::get_instance((int) $parm['bid']);
+    $dom = $databox->get_dom_thesaurus();
 
-  if ($dom)
-  {
-    $xpath = $databox->get_xpath_thesaurus();
-    $q = "/thesaurus//sy[@id='" . $parm["id"] . "']";
-    if ($parm["debug"])
-      print("q:" . $q . "<br/>\n");
+    if ($dom) {
+        $xpath = $databox->get_xpath_thesaurus();
+        $q = "/thesaurus//sy[@id='" . $parm["id"] . "']";
+        if ($parm["debug"])
+            print("q:" . $q . "<br/>\n");
 
-    $nodes = $xpath->query($q);
-    if ($nodes->length > 0)
-    {
-      $n2 = $nodes->item(0);
-      $root->setAttribute("t", $n2->getAttribute("v"));
+        $nodes = $xpath->query($q);
+        if ($nodes->length > 0) {
+            $n2 = $nodes->item(0);
+            $root->setAttribute("t", $n2->getAttribute("v"));
+        }
     }
-  }
 }
 if ($parm["debug"])
-  print("<pre>" . $ret->saveXML() . "</pre>");
+    print("<pre>" . $ret->saveXML() . "</pre>");
 else
-  print($ret->saveXML());
+    print($ret->saveXML());

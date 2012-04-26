@@ -18,30 +18,28 @@
  */
 class Setup_Registry implements registryInterface
 {
+    protected $datas = array();
 
-  protected $datas = array();
+    public function get($key, $defaultvalue = null)
+    {
+        return isset($this->datas[$key]) ? $this->datas[$key] : $defaultvalue;
+    }
 
-  public function get($key, $defaultvalue = null)
-  {
-    return isset($this->datas[$key]) ? $this->datas[$key] : $defaultvalue;
-  }
+    public function set($key, $value, $type)
+    {
+        $this->datas[$key] = $value;
+    }
 
-  public function set($key, $value, $type)
-  {
-    $this->datas[$key] = $value;
-  }
+    public function is_set($key)
+    {
+        return isset($this->datas[$key]);
+    }
 
-  public function is_set($key)
-  {
-    return isset($this->datas[$key]);
-  }
+    public function un_set($key)
+    {
+        if (isset($this->datas[$key]))
+            unset($datas[$key]);
 
-  public function un_set($key)
-  {
-    if (isset($this->datas[$key]))
-      unset($datas[$key]);
-
-    return $this;
-  }
-
+        return $this;
+    }
 }

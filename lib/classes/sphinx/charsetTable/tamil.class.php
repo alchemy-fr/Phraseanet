@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_tamil extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Tamil';
-  protected $table = '
+    protected $name = 'Tamil';
+    protected $table = '
     #################################################
     # Tamil
     U+0B94->U+0B92, U+0B85..U+0B8A, U+0B8E..U+0B90, U+0B92, U+0B93, U+0B95, U+0B99,

@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_cyrillic extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Cyrillic';
-  protected $table = '
+    protected $name = 'Cyrillic';
+    protected $table = '
     ##################################################
     # Cryllic*
     U+0400->U+0435, U+0401->U+0435, U+0402->U+0452, U+0452, U+0403->U+0433,

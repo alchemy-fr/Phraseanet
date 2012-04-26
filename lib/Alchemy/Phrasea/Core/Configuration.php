@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,13 +17,11 @@ use Alchemy\Phrasea\Core\Configuration\ApplicationSpecification;
 /**
  * Handle configuration file mechanism of phraseanet
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class Configuration
 {
-
     /**
      * The finale configuration values as an array
      * @var ParameterBag\ParameterBag
@@ -45,8 +43,7 @@ class Configuration
      */
     public static function build($specifications = null, $environment = null)
     {
-        if ( ! $specifications)
-        {
+        if ( ! $specifications) {
             $specifications = new Configuration\ApplicationSpecification();
         }
 
@@ -63,13 +60,10 @@ class Configuration
     {
         $this->specifications = $specifications;
 
-        if ($specifications->isSetup())
-        {
+        if ($specifications->isSetup()) {
             $configurations = $this->specifications->getConfigurations();
-            $environment    = $environment ? : $configurations[self::KEYWORD_ENV];
-        }
-        else
-        {
+            $environment = $environment ? : $configurations[self::KEYWORD_ENV];
+        } else {
             $environment = null;
         }
 
@@ -82,26 +76,24 @@ class Configuration
     {
         $this->initialize();
 
-        $retrieve_old_credentials = function(\SplFileObject $connexionInc)
-          {
-              require $connexionInc->getPathname();
+        $retrieve_old_credentials = function(\SplFileObject $connexionInc) {
+                require $connexionInc->getPathname();
 
-              return array(
-                'hostname' => $hostname,
-                'port'     => $port,
-                'user'     => $user,
-                'password' => $password,
-                'dbname'   => $dbname,
-              );
-          };
+                return array(
+                    'hostname' => $hostname,
+                    'port'     => $port,
+                    'user'     => $user,
+                    'password' => $password,
+                    'dbname'   => $dbname,
+                );
+            };
 
         $credentials = $retrieve_old_credentials($connexionInc);
 
         $connexions = $this->getConnexions();
 
-        foreach ($credentials as $key => $value)
-        {
-            $key                                = $key == 'hostname' ? 'host' : $key;
+        foreach ($credentials as $key => $value) {
+            $key = $key == 'hostname' ? 'host' : $key;
             $connexions['main_connexion'][$key] = (string) $value;
         }
 
@@ -110,21 +102,18 @@ class Configuration
 
         $configs = $this->getConfigurations();
 
-        $retrieve_old_parameters = function(\SplFileObject $configInc)
-          {
-              require $configInc->getPathname();
+        $retrieve_old_parameters = function(\SplFileObject $configInc) {
+                require $configInc->getPathname();
 
-              return array(
-                'servername' => $servername
-              );
-          };
+                return array(
+                    'servername' => $servername
+                );
+            };
 
         $old_parameters = $retrieve_old_parameters($configInc);
 
-        foreach ($configs as $env => $conf)
-        {
-            if ( ! is_array($configs[$env]) || ! array_key_exists('phraseanet', $configs[$env]))
-            {
+        foreach ($configs as $env => $conf) {
+            if ( ! is_array($configs[$env]) || ! array_key_exists('phraseanet', $configs[$env])) {
                 continue;
             }
 
@@ -168,19 +157,15 @@ class Configuration
     {
         $this->environment = $environment;
 
-        if ($this->specifications->isSetup())
-        {
+        if ($this->specifications->isSetup()) {
             $configurations = $this->specifications->getConfigurations();
 
-            if ( ! isset($configurations[$this->environment]))
-            {
+            if ( ! isset($configurations[$this->environment])) {
                 throw new \Exception('Requested environnment is not available');
             }
 
             $this->configuration = new ParameterBag($configurations[$this->environment]);
-        }
-        else
-        {
+        } else {
             $this->configuration = new ParameterBag(array());
         }
 
@@ -196,12 +181,9 @@ class Configuration
     {
         $phraseanet = $this->getPhraseanet();
 
-        try
-        {
+        try {
             $debug = ! ! $phraseanet->get('debug');
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $debug = false;
         }
 
@@ -217,12 +199,9 @@ class Configuration
     {
         $phraseanet = $this->getPhraseanet();
 
-        try
-        {
+        try {
             $maintained = ! ! $phraseanet->get('maintenance');
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $maintained = false;
         }
 
@@ -238,12 +217,9 @@ class Configuration
     {
         $phraseanet = $this->getPhraseanet();
 
-        try
-        {
+        try {
             $displayErrors = ! ! $phraseanet->get('display_errors');
-        }
-        catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
             $displayErrors = false;
         }
 
@@ -306,7 +282,6 @@ class Configuration
     {
         return $this->specifications->getConnexions();
     }
-
     const KEYWORD_ENV = 'environment';
 
     public function getSelectedEnvironnment()
@@ -323,8 +298,7 @@ class Configuration
     {
         $connexions = $this->getConnexions();
 
-        if ( ! isset($connexions[$name]))
-        {
+        if ( ! isset($connexions[$name])) {
             throw new \Exception(sprintf('Unknown connexion name %s', $name));
         }
 
@@ -367,26 +341,21 @@ class Configuration
      */
     public function getService($name)
     {
-        $scopes   = explode('\\', $name);
+        $scopes = explode('\\', $name);
         $services = new ParameterBag($this->getServices());
-        $service  = null;
+        $service = null;
 
-        while ($scopes)
-        {
+        while ($scopes) {
             $scope = array_shift($scopes);
 
-            try
-            {
-                $service  = new ParameterBag($services->get($scope));
+            try {
+                $service = new ParameterBag($services->get($scope));
                 $services = $service;
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 throw new \Exception(sprintf('Unknow service name %s', $name));
             }
         }
 
         return $service;
     }
-
 }

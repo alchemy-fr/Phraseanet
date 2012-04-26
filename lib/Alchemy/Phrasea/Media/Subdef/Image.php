@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,11 +13,11 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class Image extends Provider
 {
-
     const OPTION_SIZE = 'size';
     const OPTION_RESOLUTION = 'resolution';
     const OPTION_STRIP = 'strip';
     const OPTION_QUALITY = 'quality';
+
     protected $options = array();
 
     public function __construct()
@@ -40,12 +40,11 @@ class Image extends Provider
 
     public function getMediaAlchemystSpec()
     {
-        if ( ! $this->spec)
-        {
+        if ( ! $this->spec) {
             $this->spec = new \MediaAlchemyst\Specification\Image();
         }
 
-        $size       = $this->getOption(self::OPTION_SIZE)->getValue();
+        $size = $this->getOption(self::OPTION_SIZE)->getValue();
         $resolution = $this->getOption(self::OPTION_RESOLUTION)->getValue();
 
         $this->spec->setDimensions($size, $size);
@@ -55,5 +54,4 @@ class Image extends Provider
 
         return $this->spec;
     }
-
 }

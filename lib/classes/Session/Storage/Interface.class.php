@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,38 +17,39 @@
  */
 interface Session_Storage_Interface
 {
-  /**
-   * Close the session storage
-   *
-   * @return Void
-   */
-  public function close();
 
-  /**
-   * Return true if the storage contains the key
-   *
-   * @param string $key
-   * @return boolean
-   */
-  public function has($key);
+    /**
+     * Close the session storage
+     *
+     * @return Void
+     */
+    public function close();
 
-  /**
-   * Set a key in the storage
-   *
-   * @param string $key
-   * @param mixed  $default_value
-   */
-  public function get($key, $default_value = null);
+    /**
+     * Return true if the storage contains the key
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public function has($key);
 
-  public function set($key, $value);
+    /**
+     * Set a key in the storage
+     *
+     * @param string $key
+     * @param mixed  $default_value
+     */
+    public function get($key, $default_value = null);
 
-  public function remove($key);
+    public function set($key, $value);
 
-  public function getName();
+    public function remove($key);
 
-  public function getId();
+    public function getName();
 
-  public function reset();
+    public function getId();
 
-  public function destroy();
+    public function reset();
+
+    public function destroy();
 }
