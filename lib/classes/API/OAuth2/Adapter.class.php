@@ -203,7 +203,7 @@ class API_OAuth2_Adapter extends OAuth2
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return false;
@@ -248,7 +248,7 @@ class API_OAuth2_Adapter extends OAuth2
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return $result;
@@ -321,7 +321,7 @@ class API_OAuth2_Adapter extends OAuth2
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return null;
@@ -375,7 +375,7 @@ class API_OAuth2_Adapter extends OAuth2
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return null;
@@ -498,7 +498,7 @@ class API_OAuth2_Adapter extends OAuth2
       $input["redirect_uri"] = $redirect_uri;
     }
 
-    
+
     /**
      * Check response_type
      */
@@ -507,7 +507,7 @@ class API_OAuth2_Adapter extends OAuth2
       $this->errorDoRedirectUriCallback($input["redirect_uri"], OAUTH2_ERROR_INVALID_REQUEST, 'Invalid response type.', NULL, $input["state"]);
     }
 
-    
+
     /**
      * Check requested auth response type against the list of supported types
      */
@@ -521,7 +521,7 @@ class API_OAuth2_Adapter extends OAuth2
     if ($this->checkRestrictedAuthResponseType($input["client_id"], $input["response_type"]) === FALSE)
       $this->errorDoRedirectUriCallback($input["redirect_uri"], OAUTH2_ERROR_UNAUTHORIZED_CLIENT, NULL, NULL, $input["state"]);
 
-    
+
     /**
      * Validate that the requested scope is supported
      */
@@ -628,7 +628,7 @@ class API_OAuth2_Adapter extends OAuth2
     }
     catch (Exception $e)
     {
-      
+
     }
 
     return false;
@@ -729,7 +729,7 @@ class API_OAuth2_Adapter extends OAuth2
 
     if ( ! $this->checkRestrictedGrantType($client[0], $input["grant_type"]))
       $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_UNAUTHORIZED_CLIENT);
-    
+
     // Do the granting
     switch ($input["grant_type"])
     {
@@ -746,6 +746,13 @@ class API_OAuth2_Adapter extends OAuth2
           $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_EXPIRED_TOKEN);
         break;
       case OAUTH2_GRANT_TYPE_USER_CREDENTIALS:
+        $application = API_OAuth2_Application::load_from_client_id($this->appbox, $client[0]);
+
+        if(!$application->is_password_granted())
+        {
+            $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_UNSUPPORTED_GRANT_TYPE, 'Password grant type is not enable for your client');
+        }
+
         if ( ! $input["username"] || ! $input["password"])
           $this->errorJsonResponse(OAUTH2_HTTP_BAD_REQUEST, OAUTH2_ERROR_INVALID_REQUEST, 'Missing parameters. "username" and "password" required');
 
@@ -839,9 +846,9 @@ class API_OAuth2_Adapter extends OAuth2
       $auth = new \Session_Authentication_Native($appbox, $username, $password);
 
       $auth->challenge_password();
-      
+
       $account = API_OAuth2_Account::load_with_user($appbox, $application, $auth->get_user());
-       
+
       return array(
           'redirect_uri' => $application->get_redirect_uri()
           , 'client_id' => $application->get_client_id()
