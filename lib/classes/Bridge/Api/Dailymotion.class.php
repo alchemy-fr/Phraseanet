@@ -637,6 +637,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 /**
                  * @todo Retieve thumb
                  */
+
                 return new Bridge_Api_Dailymotion_Container($entry, $object, '');
                 break;
             default:

@@ -228,8 +228,10 @@ class Session_Handler
     public function get_session_prefs($key)
     {
         $datas = $this->storage()->get('temp_prefs');
-        if (isset($datas[$key]))
+        if (isset($datas[$key])) {
             return $datas[$key];
+        }
+
         return null;
     }
 
@@ -248,6 +250,7 @@ class Session_Handler
         } elseif ($default_value !== null) {
             return $default_value;
         }
+
         return null;
     }
 

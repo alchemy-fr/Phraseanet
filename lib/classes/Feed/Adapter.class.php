@@ -243,8 +243,10 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      */
     public function has_access(User_Adapter $user)
     {
-        if ($this->get_collection() instanceof collection)
+        if ($this->get_collection() instanceof collection) {
             return $user->ACL()->has_access_to_base($this->collection->get_base_id());
+        }
+
         return true;
     }
 
@@ -286,8 +288,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      */
     public function add_publisher(User_Adapter $user)
     {
-        if (in_array($user->get_id(), array_keys($this->get_publishers())))
+        if (in_array($user->get_id(), array_keys($this->get_publishers()))) {
             return $this;
+        }
 
         Feed_Publisher_Adapter::create($this->appbox, $user, $this, false);
         $this->publishers = null;
@@ -301,8 +304,9 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      */
     protected function load_publishers()
     {
-        if (is_array($this->publishers))
+        if (is_array($this->publishers)) {
             return $this->publishers;
+        }
 
         $sql = 'SELECT id, usr_id, owner FROM feed_publishers
             WHERE feed_id = :feed_id';
@@ -581,8 +585,10 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
      */
     public function get_homepage_link(registryInterface $registry, $format, $page = null)
     {
-        if ( ! $this->is_public())
+        if ( ! $this->is_public()) {
             return null;
+        }
+
         switch ($format) {
             case self::FORMAT_ATOM:
                 return new Feed_Link(

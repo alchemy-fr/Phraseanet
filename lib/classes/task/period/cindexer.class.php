@@ -177,6 +177,7 @@ class task_period_cindexer extends task_abstract
                 parent.calccmd();
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -243,6 +244,7 @@ class task_period_cindexer extends task_abstract
             }
         </script>
         <?php
+
         return;
     }
 

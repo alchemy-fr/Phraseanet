@@ -118,6 +118,7 @@ class task_period_workflow01 extends task_databoxAbstract
                 parent.calccmd();
             </script>
             <?php
+
             return("");
         }
         else { // ... so we NEVER come here

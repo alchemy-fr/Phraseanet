@@ -155,6 +155,7 @@ class task_period_outofdate extends task_abstract
                 parent.calcSQL();
             </script>
             <?php
+
             return("");
         }
         else { // ... so we NEVER come here

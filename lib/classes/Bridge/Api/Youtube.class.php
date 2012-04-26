@@ -871,8 +871,9 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     protected function get_PlaylistEntry_from_Id($element_id)
     {
         foreach ($this->_api->getPlaylistListFeed('default') as $playlist_entry) {
-            if ($element_id == $playlist_entry->getPlaylistId()->getText())
+            if ($element_id == $playlist_entry->getPlaylistId()->getText()) {
                 return $playlist_entry;
+            }
         }
 
         return null;
@@ -891,8 +892,9 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         );
         if ( ! is_null($this->locale)) {
             $youtube_format_locale = str_replace('_', '-', $this->locale);
-            if (in_array(trim($youtube_format_locale), $youtube_available_locale))
+            if (in_array(trim($youtube_format_locale), $youtube_available_locale)) {
                 return $this->locale;
+            }
         }
 
         return "en-US";

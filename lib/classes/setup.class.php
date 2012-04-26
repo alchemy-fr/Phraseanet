@@ -486,6 +486,7 @@ class setup
             </form>
 
             <?php
+
             return;
         }
 

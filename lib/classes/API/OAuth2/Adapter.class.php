@@ -610,8 +610,8 @@ class API_OAuth2_Adapter extends OAuth2
     {
         $token_param = $this->getAccessTokenParams();
 
-
-        if ($token_param === FALSE) { // Access token was not provided
+        // Access token was not provided
+        if ($token_param === false) {
             return $exit_not_present ? $this->errorWWWAuthenticateResponseHeader(OAUTH2_HTTP_BAD_REQUEST, $realm, OAUTH2_ERROR_INVALID_REQUEST, 'The request is missing a required parameter, includes an unsupported parameter or parameter value, repeats the same parameter, uses more than one method for including an access token, or is otherwise malformed.', NULL, $scope) : FALSE;
         }
 

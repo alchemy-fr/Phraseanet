@@ -99,6 +99,7 @@ class task_period_ftpPull extends task_appboxAbstract
             <?php echo $form ?>.passive.checked  = <?php echo p4field::isyes($sxml->passive) ? "true" : 'false' ?>;
             </script>
             <?php
+
             return("");
         } else { // ... so we NEVER come here
             // bad xml

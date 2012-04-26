@@ -189,8 +189,9 @@ class ACL implements cache_cacheableInterface
 
         $key = $record->get_serialize_key();
 
-        if (array_key_exists($key, $this->_rights_records_preview))
+        if (array_key_exists($key, $this->_rights_records_preview)) {
             return true;
+        }
 
         return false;
     }

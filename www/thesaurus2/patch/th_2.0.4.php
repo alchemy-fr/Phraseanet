@@ -143,8 +143,11 @@ class patch_th_2_0_4
     function fixIds(connection_pdo &$connbas, &$node)
     {
         global $debug;
-        if ($node->nodeType != XML_ELEMENT_NODE)
+
+        if ($node->nodeType != XML_ELEMENT_NODE) {
             return;
+        }
+
         if ($node->parentNode && $node->parentNode->nodeType == XML_ELEMENT_NODE) {
             $pid = $node->parentNode->getAttribute("id");
             if ($pid != "") {

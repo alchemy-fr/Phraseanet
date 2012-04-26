@@ -353,7 +353,8 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
                         $response = $this->_api->executeMethod('flickr.photosets.addPhoto', $params);
 
                         if ( ! $response->isOk()) {
-                            if ($response->err_code === 3) { //Already exists in photoset
+                            //Already exists in photoset
+                            if ($response->err_code === 3) {
                                 return;
                             }
 

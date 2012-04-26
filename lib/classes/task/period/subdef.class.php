@@ -142,6 +142,7 @@ class task_period_subdef extends task_databoxAbstract
             <?php echo $form ?>.maxmegs.value = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
             </script>
             <?php
+
             return("");
         }
         else {
