@@ -25,7 +25,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         unset($_GET['oauth_token']);
     }
-    
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -94,7 +94,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $_GET['oauth_token'] = $token;
         $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
         $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals(403, $content->meta->http_code);
+        $this->assertEquals(200, $content->meta->http_code);
         $this->app["Core"]['Registry'] = $registryBkp;
     }
     /*
@@ -1007,7 +1007,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->assertObjectHasAttribute('response', $content);
         $this->assertTrue(is_object($content->meta), 'Le bloc meta est un objet json');
         $this->assertTrue(is_object($content->response), 'Le bloc reponse est un objet json');
-        $this->assertEquals('1.1', $content->meta->api_version);
+        $this->assertEquals('1.2', $content->meta->api_version);
         $this->assertNotNull($content->meta->response_time);
         $this->assertEquals('UTF-8', $content->meta->charset);
     }

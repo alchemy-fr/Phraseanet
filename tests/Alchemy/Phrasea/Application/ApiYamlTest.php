@@ -100,7 +100,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $_GET['oauth_token'] = $token;
         $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
         $content = $content = self::$yaml->parse($this->client->getResponse()->getContent());
-        $this->assertEquals(403, $content["meta"]["http_code"]);
+        $this->assertEquals(200, $content["meta"]["http_code"]);
         $this->app["Core"]['Registry'] = $registryBkp;
     }
     /*
@@ -1028,7 +1028,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('response', $content);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["meta"], 'La response est un array');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["response"], 'La response est un objet');
-        $this->assertEquals('1.1', $content["meta"]["api_version"]);
+        $this->assertEquals('1.2', $content["meta"]["api_version"]);
         $this->assertNotNull($content["meta"]["response_time"]);
         $this->assertEquals('UTF-8', $content["meta"]["charset"]);
     }
@@ -1040,7 +1040,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('response', $content);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["meta"], 'La response est un array');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["response"], 'La response est un array');
-        $this->assertEquals('1.1', $content["meta"]["api_version"]);
+        $this->assertEquals('1.2', $content["meta"]["api_version"]);
         $this->assertNotNull($content["meta"]["response_time"]);
         $this->assertEquals('UTF-8', $content["meta"]["charset"]);
     }
