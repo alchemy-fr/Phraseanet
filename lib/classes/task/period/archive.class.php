@@ -165,6 +165,7 @@ class task_period_archive extends task_abstract
             <?php echo $form ?>.copy_spe.checked      = <?php echo p4field::isyes($sxml->copy_spe) ? "true" : "false" ?>;
             </script>
             <?php
+
             return("");
         }
         else { // ... so we NEVER come here
@@ -196,6 +197,7 @@ class task_period_archive extends task_abstract
             }
         </script>
         <?php
+
         return;
     }
 
@@ -1545,6 +1547,7 @@ class task_period_archive extends task_abstract
     {
         $match = $node->getAttribute('match');
         if ($match == '*')
+
             return;
 
         $file = $node->getAttribute('name');
