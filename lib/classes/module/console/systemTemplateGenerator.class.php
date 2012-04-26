@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -37,22 +37,21 @@ class module_console_systemTemplateGenerator extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $tplDirs = array(
-          realpath(__DIR__ . '/../../../../templates/web/'),
-          realpath(__DIR__ . '/../../../../templates/mobile/')
+            realpath(__DIR__ . '/../../../../templates/web/'),
+            realpath(__DIR__ . '/../../../../templates/mobile/')
         );
 
-        $n_ok    = $n_error = 0;
+        $n_ok = $n_error = 0;
 
-        foreach ($tplDirs as $tplDir)
-        {
+        foreach ($tplDirs as $tplDir) {
             $tmpDir = __DIR__ . '/../../../../tmp/cache_twig/';
 
             $loader = new Twig_Loader_Filesystem($tplDir);
 
             $twig = new Twig_Environment($loader, array(
-                'cache'       => $tmpDir,
-                'auto_reload' => true
-              ));
+                    'cache'       => $tmpDir,
+                    'auto_reload' => true
+                ));
 
             $twig->addExtension(new Twig_Extensions_Extension_I18n());
 
@@ -93,16 +92,12 @@ class module_console_systemTemplateGenerator extends Command
 
 
             $finder = new Symfony\Component\Finder\Finder();
-            foreach ($finder->files()->in(array($tplDir)) as $file)
-            {
-                try
-                {
+            foreach ($finder->files()->in(array($tplDir)) as $file) {
+                try {
                     $twig->loadTemplate(str_replace($tplDir, '', $file->getPathname()));
                     $output->writeln('' . $file . '');
                     $n_ok ++;
-                }
-                catch (Exception $e)
-                {
+                } catch (Exception $e) {
                     $output->writeln('<error>' . $e->getMessage() . '</error>');
                     $n_error ++;
                 }
@@ -112,8 +107,7 @@ class module_console_systemTemplateGenerator extends Command
         $output->writeln("");
         $output->write(sprintf('%d templates generated. ', $n_ok));
 
-        if ($n_error > 0)
-        {
+        if ($n_error > 0) {
             $output->write(sprintf('<error>%d templates failed.</error>', $n_error));
         }
 
@@ -121,5 +115,4 @@ class module_console_systemTemplateGenerator extends Command
 
         return $n_error;
     }
-
 }

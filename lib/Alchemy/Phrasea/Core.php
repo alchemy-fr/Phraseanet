@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -37,15 +37,13 @@ require_once __DIR__ . '/Core/Configuration/ApplicationSpecification.php';
  */
 class Core extends \Pimple
 {
-
     protected static $availableLanguages = array(
-      'ar_SA' => 'العربية'
-      , 'de_DE' => 'Deutsch'
-      , 'en_GB' => 'English'
-      , 'es_ES' => 'Español'
-      , 'fr_FR' => 'Français'
+        'ar_SA' => 'العربية'
+        , 'de_DE' => 'Deutsch'
+        , 'en_GB' => 'English'
+        , 'es_ES' => 'Español'
+        , 'fr_FR' => 'Français'
     );
-
     protected static $autoloader_initialized = false;
 
     /**
@@ -70,109 +68,94 @@ class Core extends \Pimple
         /**
          * Set version
          */
-        $this['Version'] = $this->share(function()
-          {
-              return new Core\Version();
-          });
+        $this['Version'] = $this->share(function() {
+                return new Core\Version();
+            });
 
-        if ($this->configuration->isInstalled())
-        {
-            $this['Registry'] = $this->share(function() use ($core)
-              {
-                  return \registry::get_instance($core);
-              });
+        if ($this->configuration->isInstalled()) {
+            $this['Registry'] = $this->share(function() use ($core) {
+                    return \registry::get_instance($core);
+                });
 
             \phrasea::start($this);
-        }
-        else
-        {
+        } else {
 
-            $this['Registry'] = $this->share(function()
-              {
-                  return new \Setup_Registry();
-              });
+            $this['Registry'] = $this->share(function() {
+                    return new \Setup_Registry();
+                });
         }
 
 
-        $this['CacheService'] = $this->share(function() use ($core)
-          {
-              if ( ! file_exists(__DIR__ . '/../../../tmp/cache_registry.yml'))
-              {
-                  touch(__DIR__ . '/../../../tmp/cache_registry.yml');
-              }
+        $this['CacheService'] = $this->share(function() use ($core) {
+                if ( ! file_exists(__DIR__ . '/../../../tmp/cache_registry.yml')) {
+                    touch(__DIR__ . '/../../../tmp/cache_registry.yml');
+                }
 
-              $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
+                $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
 
-              return new \Alchemy\Phrasea\Cache\Manager($core, $file);
-          });
+                return new \Alchemy\Phrasea\Cache\Manager($core, $file);
+            });
 
         /**
          * Set Entity Manager using configuration
          */
-        $this['EM'] = $this->share(function() use ($core)
-          {
-              $serviceName   = $core->getConfiguration()->getOrm();
-              $configuration = $core->getConfiguration()->getService($serviceName);
+        $this['EM'] = $this->share(function() use ($core) {
+                $serviceName = $core->getConfiguration()->getOrm();
+                $configuration = $core->getConfiguration()->getService($serviceName);
 
-              $Service = Core\Service\Builder::create($core, $configuration);
+                $Service = Core\Service\Builder::create($core, $configuration);
 
-              return $Service->getDriver();
-          });
+                return $Service->getDriver();
+            });
 
 
-        $this['Cache'] = $this->share(function() use ($core)
-          {
-              $serviceName = $core->getConfiguration()->getCache();
+        $this['Cache'] = $this->share(function() use ($core) {
+                $serviceName = $core->getConfiguration()->getCache();
 
-              return $core['CacheService']->get('MainCache', $serviceName)->getDriver();
-          });
+                return $core['CacheService']->get('MainCache', $serviceName)->getDriver();
+            });
 
-        $this['OpcodeCache'] = $this->share(function() use ($core)
-          {
-              $serviceName = $core->getConfiguration()->getOpcodeCache();
+        $this['OpcodeCache'] = $this->share(function() use ($core) {
+                $serviceName = $core->getConfiguration()->getOpcodeCache();
 
-              return $core['CacheService']->get('OpcodeCache', $serviceName)->getDriver();
-          });
+                return $core['CacheService']->get('OpcodeCache', $serviceName)->getDriver();
+            });
 
 
 
-        $this["Twig"] = $this->share(function() use ($core)
-          {
-              $serviceName   = $core->getConfiguration()->getTemplating();
-              $configuration = $core->getConfiguration()->getService($serviceName);
+        $this["Twig"] = $this->share(function() use ($core) {
+                $serviceName = $core->getConfiguration()->getTemplating();
+                $configuration = $core->getConfiguration()->getService($serviceName);
 
-              $Service = Core\Service\Builder::create($core, $configuration);
+                $Service = Core\Service\Builder::create($core, $configuration);
 
-              return $Service->getDriver();
-          });
+                return $Service->getDriver();
+            });
 
 
-        $this['Serializer'] = $this->share(function()
-          {
-              $encoders = array(
-                'json' => new Serializer\Encoder\JsonEncoder()
-              );
+        $this['Serializer'] = $this->share(function() {
+                $encoders = array(
+                    'json' => new Serializer\Encoder\JsonEncoder()
+                );
 
-              return new Serializer\Serializer(array(), $encoders);
-          });
+                return new Serializer\Serializer(array(), $encoders);
+            });
 
-        $this['monolog'] = $this->share(function () use ($core)
-          {
-              $logger = new \Monolog\Logger('Logger');
+        $this['monolog'] = $this->share(function () use ($core) {
+                $logger = new \Monolog\Logger('Logger');
 
-              $logger->pushHandler(new \Monolog\Handler\NullHandler());
+                $logger->pushHandler(new \Monolog\Handler\NullHandler());
 
-              return $logger;
-          });
+                return $logger;
+            });
 
-        $this['media-alchemyst'] = $this->share(function () use ($core)
-          {
-              $conf = $core->getConfiguration()->has('media-alchemyst') ? $core->getConfiguration()->get('media-alchemyst') : new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(array());
+        $this['media-alchemyst'] = $this->share(function () use ($core) {
+                $conf = $core->getConfiguration()->has('media-alchemyst') ? $core->getConfiguration()->get('media-alchemyst') : new \Symfony\Component\DependencyInjection\ParameterBag\ParameterBag(array());
 
-              $drivers = new \MediaAlchemyst\DriversContainer($conf, $core['monolog']);
+                $drivers = new \MediaAlchemyst\DriversContainer($conf, $core['monolog']);
 
-              return new \MediaAlchemyst\Alchemyst($drivers);
-          });
+                return new \MediaAlchemyst\Alchemyst($drivers);
+            });
 
         self::initPHPConf();
 
@@ -199,15 +182,11 @@ class Core extends \Pimple
      */
     private function init()
     {
-        if ($this->configuration->isInstalled())
-        {
-            if ($this->configuration->isDisplayingErrors())
-            {
+        if ($this->configuration->isInstalled()) {
+            if ($this->configuration->isDisplayingErrors()) {
                 ini_set('display_errors', 'on');
                 error_reporting(E_ALL);
-            }
-            else
-            {
+            } else {
                 ini_set('display_errors', 'off');
             }
         }
@@ -292,11 +271,10 @@ class Core extends \Pimple
      */
     public function getAuthenticatedUser()
     {
-        $appbox  = \appbox::get_instance($this);
+        $appbox = \appbox::get_instance($this);
         $session = \Session_Handler::getInstance($appbox);
 
-        if ($session->get_usr_id())
-        {
+        if ($session->get_usr_id()) {
             return \User_Adapter::getInstance($session->get_usr_id(), $appbox);
         }
 
@@ -325,7 +303,6 @@ class Core extends \Pimple
 
         return;
     }
-
     protected $request;
 
     protected function getRequest()
@@ -368,12 +345,9 @@ class Core extends \Pimple
 
         ini_set('error_log', $php_log);
 
-        if ($this->getRegistry()->get('GV_log_errors'))
-        {
+        if ($this->getRegistry()->get('GV_log_errors')) {
             ini_set('log_errors', 'on');
-        }
-        else
-        {
+        } else {
             ini_set('log_errors', 'off');
         }
 
@@ -397,13 +371,12 @@ class Core extends \Pimple
     protected function detectLanguage()
     {
         $this->getRequest()->setDefaultLocale(
-          $this->getRegistry()->get('GV_default_lng', 'en_GB')
+            $this->getRegistry()->get('GV_default_lng', 'en_GB')
         );
 
         $cookies = $this->getRequest()->cookies;
 
-        if (isset(static::$availableLanguages[$cookies->get('locale')]))
-        {
+        if (isset(static::$availableLanguages[$cookies->get('locale')])) {
             $this->getRequest()->setLocale($cookies->get('locale'));
         }
 
@@ -418,42 +391,33 @@ class Core extends \Pimple
      */
     public static function initAutoloads($cacheAutoload = false)
     {
-        if (static::$autoloader_initialized)
-        {
+        if (static::$autoloader_initialized) {
             return;
         }
 
         require_once __DIR__ . '/Loader/Autoloader.php';
 
-        if ($cacheAutoload === true)
-        {
-            try
-            {
+        if ($cacheAutoload === true) {
+            try {
                 require_once __DIR__ . '/Loader/CacheAutoloader.php';
 
-                $prefix    = 'class_';
+                $prefix = 'class_';
                 $namespace = md5(__DIR__);
 
                 $loader = new Loader\CacheAutoloader($prefix, $namespace);
-            }
-            catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 //no op code cache available
                 $loader = new Loader\Autoloader();
             }
-        }
-        else
-        {
+        } else {
             $loader = new Loader\Autoloader();
         }
 
-        $getComposerNamespaces = function()
-          {
-              return require realpath(__DIR__ . '/../../../vendor/.composer/autoload_namespaces.php');
-          };
+        $getComposerNamespaces = function() {
+                return require realpath(__DIR__ . '/../../../vendor/.composer/autoload_namespaces.php');
+            };
 
-        foreach ($getComposerNamespaces() as $prefix => $path)
-        {
+        foreach ($getComposerNamespaces() as $prefix => $path) {
             if (substr($prefix, -1) === '_')
                 $loader->registerPrefix($prefix, $path);
             else
@@ -461,18 +425,18 @@ class Core extends \Pimple
         }
 
         $loader->registerNamespaces(array(
-          'Entities'         => realpath(__DIR__ . '/../../Doctrine/'),
-          'Repositories'     => realpath(__DIR__ . '/../../Doctrine/'),
-          'Proxies'          => realpath(__DIR__ . '/../../Doctrine/'),
-          'Doctrine\\Logger' => realpath(__DIR__ . '/../../'),
-          'Types'            => realpath(__DIR__ . "/../../Doctrine"),
-          'PhraseaFixture'   => realpath(__DIR__ . "/../../conf.d"),
+            'Entities'         => realpath(__DIR__ . '/../../Doctrine/'),
+            'Repositories'     => realpath(__DIR__ . '/../../Doctrine/'),
+            'Proxies'          => realpath(__DIR__ . '/../../Doctrine/'),
+            'Doctrine\\Logger' => realpath(__DIR__ . '/../../'),
+            'Types'            => realpath(__DIR__ . "/../../Doctrine"),
+            'PhraseaFixture'   => realpath(__DIR__ . "/../../conf.d"),
         ));
 
         $loader->register();
 
         set_include_path(
-          get_include_path() . PATH_SEPARATOR . realpath(__DIR__ . '/../../../vendor/alchemy/gdata')
+            get_include_path() . PATH_SEPARATOR . realpath(__DIR__ . '/../../../vendor/alchemy/gdata')
         );
 
         static::$autoloader_initialized = true;
@@ -488,8 +452,7 @@ class Core extends \Pimple
     {
         ini_set('output_buffering', '4096');
 
-        if ((int) ini_get('memory_limit') < 2048)
-        {
+        if ((int) ini_get('memory_limit') < 2048) {
             ini_set('memory_limit', '2048M');
         }
 
@@ -514,5 +477,4 @@ class Core extends \Pimple
     {
         return $this->configuration->getEnvironnement();
     }
-
 }

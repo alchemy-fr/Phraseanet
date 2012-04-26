@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,9 +17,10 @@
  */
 interface Feed_Entry_CollectionInterface
 {
-  public function __construct();
 
-  public function add_entry(Feed_Entry_Adapter $entry);
+    public function __construct();
 
-  public function get_entries();
+    public function add_entry(Feed_Entry_Adapter $entry);
+
+    public function get_entries();
 }

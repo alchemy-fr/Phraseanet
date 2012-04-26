@@ -5,15 +5,13 @@ class p4string
 
     public static function addFirstSlash($path)
     {
-        if ($path == "")
-        {
+        if ($path == "") {
             return("./");
         }
 
         $c = substr($path, 0, 1);
 
-        if ($c != "/" && $c != "\\")
-        {
+        if ($c != "/" && $c != "\\") {
             return "/" . $path;
         }
 
@@ -22,27 +20,23 @@ class p4string
 
     public static function delFirstSlash($path)
     {
-        if ($path == "/" || $path == "\\")
-        {
+        if ($path == "/" || $path == "\\") {
             return("");
         }
 
         $c = substr($path, 0, 1);
 
-        if ($c == "/" || $c == "\\")
-        {
+        if ($c == "/" || $c == "\\") {
             return substr($path, 1, strlen($path));
         }
 
         $c = substr($path, 0, 2);
 
-        if ($c == "\\")
-        {
+        if ($c == "\\") {
             return substr($path, 2, strlen($path) - 1);
         }
 
-        if ($path == "")
-        {
+        if ($path == "") {
             return "./";
         }
 
@@ -51,15 +45,13 @@ class p4string
 
     public static function addEndSlash($path)
     {
-        if ($path == "")
-        {
+        if ($path == "") {
             $path = getcwd();
         }
 
         $lastCharacter = substr($path, -1, 1);
 
-        if ( ! in_array($lastCharacter, array('\\', '/')))
-        {
+        if ( ! in_array($lastCharacter, array('\\', '/'))) {
             $path .= DIRECTORY_SEPARATOR;
         }
 
@@ -68,20 +60,17 @@ class p4string
 
     public static function delEndSlash($path)
     {
-        if ($path == "/" || $path == "\\")
-        {
+        if ($path == "/" || $path == "\\") {
             return("");
         }
 
         $c = substr($path, -1, 1);
 
-        if ($c == "/" || $c == "\\")
-        {
+        if ($c == "/" || $c == "\\") {
             $path = substr($path, 0, strlen($path) - 1);
         }
 
-        if ($path == "")
-        {
+        if ($path == "") {
             $path = ".";
         }
 
@@ -114,8 +103,7 @@ class p4string
      */
     public static function MakeString($s, $context = 'html', $quoted = '')
     {
-        switch (mb_strtolower($context . '_' . $quoted))
-        {
+        switch (mb_strtolower($context . '_' . $quoted)) {
             case 'js_': // old method
                 $s = str_replace(array("\\", "\"", "'", "\r", "\n"), array("\\\\", "\\\"", "\\'", "\\r", "\\n"), $s);
                 break;
@@ -168,8 +156,7 @@ class p4string
         $ret = true;
         preg_match('/^[a-zA-Z0-9-_]*$/', $string, $matches);
 
-        if (count($matches) == '1' && $matches[0] == $string)
-        {
+        if (count($matches) == '1' && $matches[0] == $string) {
             $ret = false;
         }
 
@@ -178,12 +165,9 @@ class p4string
 
     public static function jsonencode($datas)
     {
-        if (version_compare(PHP_VERSION, '5.3.0') >= 0)
-        {
+        if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
             return json_encode($datas, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
-        }
-        else
-        {
+        } else {
             return json_encode($datas);
         }
     }
@@ -191,23 +175,19 @@ class p4string
     public static function format_octets($octets, $precision = 2)
     {
         $octets = (float) $octets;
-        if ($octets < 900)
-        {
+        if ($octets < 900) {
             return $octets . ' o';
         }
         $koctet = round($octets / 1024, $precision);
-        if ($koctet < 900)
-        {
+        if ($koctet < 900) {
             return $koctet . ' ko';
         }
         $Moctet = round($octets / (1024 * 1024), $precision);
-        if ($Moctet < 900)
-        {
+        if ($Moctet < 900) {
             return $Moctet . ' Mo';
         }
         $Goctet = round($octets / (1024 * 1024 * 1024), $precision);
-        if ($Goctet < 900)
-        {
+        if ($Goctet < 900) {
             return $Goctet . ' Go';
         }
         $Toctet = round($octets / (1024 * 1024 * 1024 * 1024), $precision);
@@ -224,23 +204,19 @@ class p4string
         $durationm = ($durationm <= 9 ? '0' . $durationm : $durationm) . ':';
         $durationh = floor($seconds / 3600);
         $durationh = $durationh == 0 ? '' : (
-          ($durationh <= 9 ? '0' . $durationh : $durationh) . ':');
-        $d         = $durationh . $durationm . $durations;
+            ($durationh <= 9 ? '0' . $durationh : $durationh) . ':');
+        $d = $durationh . $durationm . $durations;
 
-        if ($d == '00:00')
-        {
+        if ($d == '00:00') {
             $d = '';
         }
-        if ($seconds < 0)
-        {
+        if ($seconds < 0) {
             $d = '';
         }
-        if ($seconds === 0)
-        {
+        if ($seconds === 0) {
             $d = '00:00';
         }
 
         return $d;
     }
-
 }

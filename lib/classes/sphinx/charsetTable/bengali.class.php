@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_bengali extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Bengali';
-  protected $table = '
+    protected $name = 'Bengali';
+    protected $table = '
     #################################################
     # Bengali
     U+09DC->U+09A1, U+09DD->U+09A2, U+09DF->U+09AF, U+09F0->U+09AC, U+09F1->U+09AC,

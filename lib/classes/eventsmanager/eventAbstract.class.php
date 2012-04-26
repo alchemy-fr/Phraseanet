@@ -2,52 +2,54 @@
 
 abstract class eventsmanager_eventAbstract
 {
+    protected $events = array();
+    protected $group = null;
 
-  protected $events = array();
-  protected $group = null;
-  /**
-   *
-   * @var appbox
-   */
-  protected $appbox;
-  /**
-   *
-   * @var registryInterface
-   */
-  protected $registry;
-  /**
-   *
-   * @var \Alchemy\Phrasea\Core
-   */
-  protected $core;
-  /**
-   *
-   * @var eventsmanager
-   */
-  protected $broker;
+    /**
+     *
+     * @var appbox
+     */
+    protected $appbox;
 
+    /**
+     *
+     * @var registryInterface
+     */
+    protected $registry;
 
-  public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
-  {
-    $this->appbox = $appbox;
-    $this->registry = $core->getRegistry();
-    $this->core = $core;
-    $this->broker = $broker;
+    /**
+     *
+     * @var \Alchemy\Phrasea\Core
+     */
+    protected $core;
 
-    return $this;
-  }
+    /**
+     *
+     * @var eventsmanager
+     */
+    protected $broker;
 
-  public function get_group()
-  {
-    return $this->group;
-  }
+    public function __construct(appbox &$appbox, \Alchemy\Phrasea\Core $core, eventsmanager_broker &$broker)
+    {
+        $this->appbox = $appbox;
+        $this->registry = $core->getRegistry();
+        $this->core = $core;
+        $this->broker = $broker;
 
-  public function get_events()
-  {
-    return $this->events;
-  }
+        return $this;
+    }
 
-  abstract public function get_name();
+    public function get_group()
+    {
+        return $this->group;
+    }
 
-  abstract public function fire($event, $params, &$object);
+    public function get_events()
+    {
+        return $this->events;
+    }
+
+    abstract public function get_name();
+
+    abstract public function fire($event, $params, &$object);
 }

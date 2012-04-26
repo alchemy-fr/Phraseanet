@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,7 +11,6 @@
 
 class databox extends base
 {
-
     /**
      *
      * @var int
@@ -92,9 +91,9 @@ class databox extends base
 
     const BASE_TYPE = self::DATA_BOX;
     const CACHE_META_STRUCT = 'meta_struct';
-    const CACHE_THESAURUS   = 'thesaurus';
+    const CACHE_THESAURUS = 'thesaurus';
     const CACHE_COLLECTIONS = 'collections';
-    const CACHE_STRUCTURE   = 'structure';
+    const CACHE_STRUCTURE = 'structure';
     const PIC_PDF = 'logopdf';
 
     protected $cache;
@@ -131,14 +130,10 @@ class databox extends base
     {
         $ret = array();
 
-        foreach ($this->get_available_collections() as $coll_id)
-        {
-            try
-            {
+        foreach ($this->get_available_collections() as $coll_id) {
+            try {
                 $ret[] = collection::get_from_coll_id($this, $coll_id);
-            }
-            catch (Exception $e)
-            {
+            } catch (Exception $e) {
 
             }
         }
@@ -148,30 +143,26 @@ class databox extends base
 
     protected function get_available_collections()
     {
-        try
-        {
+        try {
             return $this->get_data_from_cache(self::CACHE_COLLECTIONS);
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
 
         }
 
         $conn = connection::getPDOConnection();
 
-        $sql  = "SELECT b.server_coll_id FROM sbas s, bas b
+        $sql = "SELECT b.server_coll_id FROM sbas s, bas b
             WHERE s.sbas_id = b.sbas_id AND b.sbas_id = :sbas_id
               AND b.active = '1'
             ORDER BY s.ord ASC, b.ord,b.base_id ASC";
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
-        $rs        = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $ret = array();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $ret[] = (int) $row['server_coll_id'];
         }
         $this->set_data_to_cache($ret, self::CACHE_COLLECTIONS);
@@ -204,8 +195,7 @@ class databox extends base
     {
         assert(is_int($sbas_id));
         assert($sbas_id > 0);
-        if ( ! array_key_exists($sbas_id, self::$_instances))
-        {
+        if ( ! array_key_exists($sbas_id, self::$_instances)) {
             self::$_instances[$sbas_id] = new self($sbas_id);
         }
 
@@ -235,7 +225,7 @@ class databox extends base
     {
         $sql = "SELECT COUNT(kword_id) AS n FROM kword";
 
-        $stmt   = $this->get_connection()->prepare($sql);
+        $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -247,7 +237,7 @@ class databox extends base
     {
         $sql = "SELECT COUNT(idx_id) AS n FROM idx";
 
-        $stmt   = $this->get_connection()->prepare($sql);
+        $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -259,7 +249,7 @@ class databox extends base
     {
         $sql = "SELECT COUNT(thit_id) AS n FROM thit";
 
-        $stmt   = $this->get_connection()->prepare($sql);
+        $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -281,33 +271,29 @@ class databox extends base
             WHERE ISNULL(record.coll_id)
                     GROUP BY record.coll_id, name";
 
-        if ($sort == "obj")
-        {
+        if ($sort == "obj") {
             $sortk1 = "name";
             $sortk2 = "asciiname";
-        }
-        else
-        {
+        } else {
             $sortk1 = "asciiname";
             $sortk2 = "name";
         }
 
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $rowbas)
-        {
+        foreach ($rs as $rowbas) {
             if ( ! isset($trows[$rowbas[$sortk1]]))
                 $trows[$rowbas[$sortk1]] = array();
             $trows[$rowbas[$sortk1]][$rowbas[$sortk2]] = array(
-              "coll_id"   => $rowbas["coll_id"],
-              "asciiname" => $rowbas["asciiname"],
-              "lostcoll"  => $rowbas["lostcoll"],
-              "name"      => $rowbas["name"],
-              "n"         => $rowbas["n"],
-              "siz"       => $rowbas["siz"]
+                "coll_id"   => $rowbas["coll_id"],
+                "asciiname" => $rowbas["asciiname"],
+                "lostcoll"  => $rowbas["lostcoll"],
+                "name"      => $rowbas["name"],
+                "n"         => $rowbas["n"],
+                "siz"       => $rowbas["siz"]
             );
         }
 
@@ -321,8 +307,8 @@ class databox extends base
 
     public function get_record_amount()
     {
-        $sql    = "SELECT COUNT(record_id) AS n FROM record";
-        $stmt   = $this->get_connection()->prepare($sql);
+        $sql = "SELECT COUNT(record_id) AS n FROM record";
+        $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $rowbas = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
@@ -335,15 +321,14 @@ class databox extends base
     public function get_indexed_record_amount()
     {
 
-        $sql  = "SELECT status & 3 AS status, SUM(1) AS n FROM record GROUP BY(status & 3)";
+        $sql = "SELECT status & 3 AS status, SUM(1) AS n FROM record GROUP BY(status & 3)";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $ret = array('xml_indexed'       => 0, 'thesaurus_indexed' => 0);
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $status = $row['status'];
             if ($status & 1)
                 $ret['xml_indexed'] += $row['n'];
@@ -356,24 +341,21 @@ class databox extends base
 
     public function unmount_databox(appbox $appbox)
     {
-        foreach ($this->get_collections() as $collection)
-        {
+        foreach ($this->get_collections() as $collection) {
             $collection->unmount_collection($appbox);
         }
 
         $query = new User_Query($appbox);
         $total = $query->on_sbas_ids(array($this->get_sbas_id()))
-          ->include_phantoms(false)
-          ->include_special_users(true)
-          ->include_invite(true)
-          ->include_templates(true)
-          ->get_total();
+            ->include_phantoms(false)
+            ->include_special_users(true)
+            ->include_invite(true)
+            ->include_templates(true)
+            ->get_total();
         $n = 0;
-        while ($n < $total)
-        {
+        while ($n < $total) {
             $results = $query->limit($n, 50)->execute()->get_results();
-            foreach ($results as $user)
-            {
+            foreach ($results as $user) {
                 $user->ACL()->delete_data_from_cache(ACL::CACHE_RIGHTS_SBAS);
                 $user->ACL()->delete_data_from_cache(ACL::CACHE_RIGHTS_BAS);
                 $user->ACL()->delete_injected_rights_sbas($this);
@@ -383,22 +365,22 @@ class databox extends base
 
         $params = array(':site_id' => $this->get_registry()->get('GV_sit'));
 
-        $sql  = 'DELETE FROM clients WHERE site_id = :site_id';
+        $sql = 'DELETE FROM clients WHERE site_id = :site_id';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $sql  = 'DELETE FROM memcached WHERE site_id = :site_id';
+        $sql = 'DELETE FROM memcached WHERE site_id = :site_id';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        $sql  = "DELETE FROM sbas WHERE sbas_id = :sbas_id";
+        $sql = "DELETE FROM sbas WHERE sbas_id = :sbas_id";
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
         $stmt->closeCursor();
 
-        $sql  = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
+        $sql = "DELETE FROM sbasusr WHERE sbas_id = :sbas_id";
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
         $stmt->closeCursor();
@@ -428,74 +410,72 @@ class databox extends base
             WHERE host = :host AND port = :port AND dbname = :dbname
               AND user = :user AND pwd = :password';
 
-        $host     = $credentials['hostname'];
-        $port     = $credentials['port'];
-        $dbname   = $credentials['dbname'];
-        $user     = $credentials['user'];
+        $host = $credentials['hostname'];
+        $port = $credentials['port'];
+        $dbname = $credentials['dbname'];
+        $user = $credentials['user'];
         $password = $credentials['password'];
 
         $params = array(
-          ':host'     => $host
-          , ':port'     => $port
-          , ':dbname'   => $dbname
-          , ':user'     => $user
-          , ':password' => $password
+            ':host'     => $host
+            , ':port'     => $port
+            , ':dbname'   => $dbname
+            , ':user'     => $user
+            , ':password' => $password
         );
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
-        $row  = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        if ($row)
+        if ($row) {
             return self::get_instance((int) $row['sbas_id']);
+        }
 
-        try
-        {
-            $sql  = 'CREATE DATABASE `' . $dbname . '`
+        try {
+            $sql = 'CREATE DATABASE `' . $dbname . '`
               CHARACTER SET utf8 COLLATE utf8_unicode_ci';
             $stmt = $connection->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
 
         }
 
-        $sql  = 'USE `' . $dbname . '`';
+        $sql = 'USE `' . $dbname . '`';
         $stmt = $connection->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql  = 'SELECT MAX(ord) as ord FROM sbas';
+        $sql = 'SELECT MAX(ord) as ord FROM sbas';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute();
-        $row  = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         if ($row)
-            $ord  = $row['ord'] + 1;
+            $ord = $row['ord'] + 1;
 
-        $sql  = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
+        $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute(array(
-          ':ord'      => $ord
-          , ':host'     => $host
-          , ':port'     => $port
-          , ':dbname'   => $dbname
-          , ':user'     => $user
-          , ':password' => $password
+            ':ord'      => $ord
+            , ':host'     => $host
+            , ':port'     => $port
+            , ':dbname'   => $dbname
+            , ':user'     => $user
+            , ':password' => $password
         ));
         $stmt->closeCursor();
-        $sbas_id    = (int) $appbox->get_connection()->lastInsertId();
+        $sbas_id = (int) $appbox->get_connection()->lastInsertId();
 
         $appbox->delete_data_from_cache(appbox::CACHE_LIST_BASES);
 
         $databox = self::get_instance($sbas_id);
         $databox->insert_datas();
         $databox->setNewStructure(
-          $data_template, $registry->get('GV_base_datapath_web'), $registry->get('GV_base_datapath_noweb'), $registry->get('GV_base_dataurl')
+            $data_template, $registry->get('GV_base_datapath_web'), $registry->get('GV_base_datapath_noweb'), $registry->get('GV_base_dataurl')
         );
 
         return $databox;
@@ -513,31 +493,31 @@ class databox extends base
      */
     public static function mount(appbox $appbox, $host, $port, $user, $password, $dbname, registry $registry)
     {
-        $name       = 'test';
+        $name = 'test';
         $connection = new connection_pdo($name, $host, $port, $user, $password, $dbname, array(), $registry);
 
         $conn = $appbox->get_connection();
-        $sql  = 'SELECT MAX(ord) as ord FROM sbas';
+        $sql = 'SELECT MAX(ord) as ord FROM sbas';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        $row  = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         if ($row)
-            $ord  = $row['ord'] + 1;
+            $ord = $row['ord'] + 1;
 
-        $sql  = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
+        $sql = 'INSERT INTO sbas (sbas_id, ord, host, port, dbname, sqlengine, user, pwd)
               VALUES (null, :ord, :host, :port, :dbname, "MYSQL", :user, :password)';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(
-          ':ord'      => $ord
-          , ':host'     => $host
-          , ':port'     => $port
-          , ':dbname'   => $dbname
-          , ':user'     => $user
-          , ':password' => $password
+            ':ord'      => $ord
+            , ':host'     => $host
+            , ':port'     => $port
+            , ':dbname'   => $dbname
+            , ':user'     => $user
+            , ':password' => $password
         ));
         $stmt->closeCursor();
-        $sbas_id    = (int) $conn->lastInsertId();
+        $sbas_id = (int) $conn->lastInsertId();
         phrasea::clear_sbas_params();
         phrasea::reset_baseDatas();
         phrasea::reset_sbasDatas();
@@ -571,39 +551,31 @@ class databox extends base
      */
     public function get_meta_structure()
     {
-        if ($this->meta_struct)
-        {
+        if ($this->meta_struct) {
             return $this->meta_struct;
         }
 
-        try
-        {
+        try {
             $this->meta_struct = $this->get_data_from_cache(self::CACHE_META_STRUCT);
 
             return $this->meta_struct;
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             unset($e);
         }
 
         $meta_struct = new databox_descriptionStructure();
 
-        $sql  = 'SELECT id, name FROM metadatas_structure ORDER BY sorter ASC';
+        $sql = 'SELECT id, name FROM metadatas_structure ORDER BY sorter ASC';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
 
-            try
-            {
+            try {
                 $meta = databox_field::get_instance($this, $row['id']);
-            }
-            catch (Exception $e)
-            {
+            } catch (Exception $e) {
                 $meta = databox_fieldUnknown::get_instance($this, $row['id']);
                 $meta->set_name($row['name']);
                 unset($e);
@@ -622,8 +594,7 @@ class databox extends base
      */
     public function get_subdef_structure()
     {
-        if ( ! $this->subdef_struct)
-        {
+        if ( ! $this->subdef_struct) {
             $this->subdef_struct = new databox_subdefsStructure($this);
         }
 
@@ -643,24 +614,22 @@ class databox extends base
 
         $repository_path = p4string::addEndSlash($repository_path);
 
-        $year  = date('Y', strtotime($date));
+        $year = date('Y', strtotime($date));
         $month = date('m', strtotime($date));
-        $day   = date('d', strtotime($date));
+        $day = date('d', strtotime($date));
 
-        $n    = 0;
+        $n = 0;
         $comp = $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR . $day . DIRECTORY_SEPARATOR;
 
         $condition = true;
 
         $pathout = $repository_path . $comp;
 
-        while (($pathout = $repository_path . $comp . self::addZeros($n)) && is_dir($pathout) && self::more_than_limit_in_dir($pathout))
-        {
+        while (($pathout = $repository_path . $comp . self::addZeros($n)) && is_dir($pathout) && self::more_than_limit_in_dir($pathout)) {
             $n ++;
         }
 
-        if ( ! is_dir($pathout))
-        {
+        if ( ! is_dir($pathout)) {
             system_file::mkdir($pathout);
         }
 
@@ -672,7 +641,7 @@ class databox extends base
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
-        $sql  = 'DROP DATABASE `' . $this->get_dbname() . '`';
+        $sql = 'DROP DATABASE `' . $this->get_dbname() . '`';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
@@ -685,23 +654,20 @@ class databox extends base
     private function more_than_limit_in_dir($path)
     {
         $limit = 100;
-        $n     = 0;
-        if (is_dir($path))
-        {
+        $n = 0;
+        if (is_dir($path)) {
             $hdir = opendir($path);
-            if ($hdir)
-            {
-                while ($file = readdir($hdir))
-                {
-                    if ($file != '.' && $file != '..')
-                    {
+            if ($hdir) {
+                while ($file = readdir($hdir)) {
+                    if ($file != '.' && $file != '..') {
                         $n ++;
                     }
                 }
             }
         }
-        if ($n > $limit)
+        if ($n > $limit) {
             return true;
+        }
 
         return false;
     }
@@ -727,16 +693,13 @@ class databox extends base
     public static function get_available_metadatas()
     {
         $available_fields = array();
-        $dir      = __DIR__ . '/metadata/description/';
+        $dir = __DIR__ . '/metadata/description/';
         $registry = registry::get_instance();
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
-        {
-            if ($file->isDir() || strpos($file->getPathname(), '/.svn/') !== false)
-            {
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
+            if ($file->isDir() || strpos($file->getPathname(), '/.svn/') !== false) {
                 continue;
             }
-            if ($file->isFile())
-            {
+            if ($file->isFile()) {
                 $classname = str_replace(array($registry->get('GV_RootPath') . 'lib/classes/', '.class.php', '/'), array('', '', '_'), $file->getPathname());
                 $available_fields[$classname] = new $classname;
             }
@@ -749,21 +712,21 @@ class databox extends base
     public function get_available_dcfields()
     {
         return array(
-          databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor()
-          , databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage()
-          , databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator()
-          , databox_Field_DCESAbstract::Date        => new databox_Field_DCES_Date()
-          , databox_Field_DCESAbstract::Description => new databox_Field_DCES_Description()
-          , databox_Field_DCESAbstract::Format      => new databox_Field_DCES_Format()
-          , databox_Field_DCESAbstract::Identifier  => new databox_Field_DCES_Identifier()
-          , databox_Field_DCESAbstract::Language    => new databox_Field_DCES_Language()
-          , databox_Field_DCESAbstract::Publisher   => new databox_Field_DCES_Publisher()
-          , databox_Field_DCESAbstract::Relation    => new databox_Field_DCES_Relation
-          , databox_Field_DCESAbstract::Rights      => new databox_Field_DCES_Rights
-          , databox_Field_DCESAbstract::Source      => new databox_Field_DCES_Source
-          , databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject()
-          , databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title()
-          , databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
+            databox_Field_DCESAbstract::Contributor => new databox_Field_DCES_Contributor()
+            , databox_Field_DCESAbstract::Coverage    => new databox_Field_DCES_Coverage()
+            , databox_Field_DCESAbstract::Creator     => new databox_Field_DCES_Creator()
+            , databox_Field_DCESAbstract::Date        => new databox_Field_DCES_Date()
+            , databox_Field_DCESAbstract::Description => new databox_Field_DCES_Description()
+            , databox_Field_DCESAbstract::Format      => new databox_Field_DCES_Format()
+            , databox_Field_DCESAbstract::Identifier  => new databox_Field_DCES_Identifier()
+            , databox_Field_DCESAbstract::Language    => new databox_Field_DCES_Language()
+            , databox_Field_DCESAbstract::Publisher   => new databox_Field_DCES_Publisher()
+            , databox_Field_DCESAbstract::Relation    => new databox_Field_DCES_Relation
+            , databox_Field_DCESAbstract::Rights      => new databox_Field_DCES_Rights
+            , databox_Field_DCESAbstract::Source      => new databox_Field_DCES_Source
+            , databox_Field_DCESAbstract::Subject     => new databox_Field_DCES_Subject()
+            , databox_Field_DCESAbstract::Title       => new databox_Field_DCES_Title()
+            , databox_Field_DCESAbstract::Type        => new databox_Field_DCES_Type()
         );
     }
 
@@ -773,17 +736,16 @@ class databox extends base
      */
     public function get_mountable_colls()
     {
-        $conn  = connection::getPDOConnection();
+        $conn = connection::getPDOConnection();
         $colls = array();
 
-        $sql  = 'SELECT server_coll_id FROM bas WHERE sbas_id = :sbas_id';
+        $sql = 'SELECT server_coll_id FROM bas WHERE sbas_id = :sbas_id';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
-        $rs        = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $colls[] = (int) $row['server_coll_id'];
         }
 
@@ -791,18 +753,16 @@ class databox extends base
 
         $sql = 'SELECT coll_id, asciiname FROM coll';
 
-        if (count($colls) > 0)
-        {
+        if (count($colls) > 0) {
             $sql .= ' WHERE coll_id NOT IN (' . implode(',', $colls) . ')';
         }
 
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $mountable_colls[$row['coll_id']] = $row['asciiname'];
         }
 
@@ -811,17 +771,16 @@ class databox extends base
 
     public function get_activable_colls()
     {
-        $conn     = connection::getPDOConnection();
+        $conn = connection::getPDOConnection();
         $base_ids = array();
 
-        $sql  = 'SELECT base_id FROM bas WHERE sbas_id = :sbas_id AND active = "0"';
+        $sql = 'SELECT base_id FROM bas WHERE sbas_id = :sbas_id AND active = "0"';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':sbas_id' => $this->get_sbas_id()));
-        $rs        = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $base_ids[] = (int) $row['base_id'];
         }
 
@@ -837,7 +796,7 @@ class databox extends base
     {
 
         $dom_struct->documentElement
-          ->setAttribute("modification_date", $now = date("YmdHis"));
+            ->setAttribute("modification_date", $now = date("YmdHis"));
 
         $sql = "UPDATE pref SET value= :structure, updated_on= :now
         WHERE prop='structure'";
@@ -846,17 +805,17 @@ class databox extends base
 
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute(
-          array(
-            ':structure' => $this->structure,
-            ':now'       => $now
-          )
+            array(
+                ':structure' => $this->structure,
+                ':now'       => $now
+            )
         );
         $stmt->closeCursor();
 
         $this->_sxml_structure = $this->_dom_structure = $this->_xpath_structure = null;
 
         $com_struct = $this->get_dom_structure();
-        $xp_struct  = $this->get_xpath_structure();
+        $xp_struct = $this->get_xpath_structure();
 
         $this->meta_struct = null;
 
@@ -880,8 +839,8 @@ class databox extends base
 
         $this->cterms = $dom_cterms->saveXML();
         $params = array(
-          ':xml'  => $this->cterms
-          , ':date' => $now
+            ':xml'  => $this->cterms
+            , ':date' => $now
         );
 
         $stmt = $this->get_connection()->prepare($sql);
@@ -891,7 +850,6 @@ class databox extends base
 
         return $this;
     }
-
     protected $thesaurus;
 
     public function saveThesaurus(DOMDocument $dom_thesaurus)
@@ -900,7 +858,7 @@ class databox extends base
         $dom_thesaurus->documentElement->setAttribute("modification_date", $now = date("YmdHis"));
         $this->thesaurus = $dom_thesaurus->saveXML();
 
-        $sql  = "UPDATE pref SET value = :xml, updated_on = :date WHERE prop='thesaurus'";
+        $sql = "UPDATE pref SET value = :xml, updated_on = :date WHERE prop='thesaurus'";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute(array(':xml'  => $this->thesaurus, ':date' => $now));
         $stmt->closeCursor();
@@ -924,9 +882,9 @@ class databox extends base
         $baseurl = $baseurl ? p4string::addEndSlash($baseurl) : '';
 
         $contents = str_replace(
-          array("{{dataurl}}", "{{basename}}", "{{datapathweb}}", "{{datapathnoweb}}")
-          , array($baseurl, $this->dbname, $path_web, $path_doc)
-          , $contents
+            array("{{dataurl}}", "{{basename}}", "{{datapathweb}}", "{{datapathnoweb}}")
+            , array($baseurl, $this->dbname, $path_web, $path_doc)
+            , $contents
         );
 
         $dom_doc = new DOMDocument();
@@ -942,12 +900,11 @@ class databox extends base
     {
         $sxe = $this->get_sxml_structure();
 
-        foreach ($sxe->description->children() as $fname => $field)
-        {
+        foreach ($sxe->description->children() as $fname => $field) {
             $dom_struct = $this->get_dom_structure();
-            $xp_struct  = $this->get_xpath_structure();
-            $fname      = (string) $fname;
-            $src        = trim(isset($field['src']) ? $field['src'] : '');
+            $xp_struct = $this->get_xpath_structure();
+            $fname = (string) $fname;
+            $src = trim(isset($field['src']) ? $field['src'] : '');
 
             $meta_id = isset($field['meta_id']) ? $field['meta_id'] : null;
             if ( ! is_null($meta_id))
@@ -955,41 +912,37 @@ class databox extends base
 
 
             $nodes = $xp_struct->query('/record/description/' . $fname);
-            if ($nodes->length > 0)
-            {
+            if ($nodes->length > 0) {
                 $nodes->item(0)->parentNode->removeChild($nodes->item(0));
             }
             $this->saveStructure($dom_struct);
 
             $type = isset($field['type']) ? $field['type'] : 'string';
             $type = in_array($type
-                , array(
-                databox_field::TYPE_DATE
-                , databox_field::TYPE_NUMBER
-                , databox_field::TYPE_STRING
-                , databox_field::TYPE_TEXT
-                )
-              ) ? $type : databox_field::TYPE_STRING;
+                    , array(
+                    databox_field::TYPE_DATE
+                    , databox_field::TYPE_NUMBER
+                    , databox_field::TYPE_STRING
+                    , databox_field::TYPE_TEXT
+                    )
+                ) ? $type : databox_field::TYPE_STRING;
 
             $meta_struct_field = databox_field::create($this, $fname);
             $meta_struct_field
-              ->set_readonly(isset($field['readonly']) ? $field['readonly'] : 0)
-              ->set_indexable(isset($field['index']) ? $field['index'] : '1')
-              ->set_separator(isset($field['separator']) ? $field['separator'] : '')
-              ->set_required((isset($field['required']) && $field['required'] == 1))
-              ->set_type($type)
-              ->set_tbranch(isset($field['tbranch']) ? $field['tbranch'] : '')
-              ->set_thumbtitle(isset($field['thumbtitle']) ? $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
-              ->set_multi(isset($field['multi']) ? $field['multi'] : 0)
-              ->set_report(isset($field['report']) ? $field['report'] : '1')
-              ->save();
+                ->set_readonly(isset($field['readonly']) ? $field['readonly'] : 0)
+                ->set_indexable(isset($field['index']) ? $field['index'] : '1')
+                ->set_separator(isset($field['separator']) ? $field['separator'] : '')
+                ->set_required((isset($field['required']) && $field['required'] == 1))
+                ->set_type($type)
+                ->set_tbranch(isset($field['tbranch']) ? $field['tbranch'] : '')
+                ->set_thumbtitle(isset($field['thumbtitle']) ? $field['thumbtitle'] : (isset($field['thumbTitle']) ? $field['thumbTitle'] : '0'))
+                ->set_multi(isset($field['multi']) ? $field['multi'] : 0)
+                ->set_report(isset($field['report']) ? $field['report'] : '1')
+                ->save();
 
-            try
-            {
+            try {
                 $meta_struct_field->set_source($src)->save();
-            }
-            catch (Exception $e)
-            {
+            } catch (Exception $e) {
 
             }
         }
@@ -1004,59 +957,53 @@ class databox extends base
      */
     public function registerAdmin(User_Interface $user)
     {
-        $conn     = connection::getPDOConnection();
+        $conn = connection::getPDOConnection();
         $registry = registry::get_instance();
 
         $user->ACL()
-          ->give_access_to_sbas(array($this->get_sbas_id()))
-          ->update_rights_to_sbas(
-            $this->get_sbas_id(), array(
-            'bas_manage'        => 1, 'bas_modify_struct' => 1,
-            'bas_modif_th'      => 1, 'bas_chupub'        => 1
-            )
+            ->give_access_to_sbas(array($this->get_sbas_id()))
+            ->update_rights_to_sbas(
+                $this->get_sbas_id(), array(
+                'bas_manage'        => 1, 'bas_modify_struct' => 1,
+                'bas_modif_th'      => 1, 'bas_chupub'        => 1
+                )
         );
 
 
-        $sql  = "SELECT * FROM coll";
+        $sql = "SELECT * FROM coll";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $sql  = "INSERT INTO bas
+        $sql = "INSERT INTO bas
                             (base_id, active, server_coll_id, sbas_id) VALUES
                             (null,'1', :coll_id, :sbas_id)";
         $stmt = $conn->prepare($sql);
 
         $base_ids = array();
-        foreach ($rs as $row)
-        {
-            try
-            {
+        foreach ($rs as $row) {
+            try {
                 $stmt->execute(array(':coll_id'  => $row['coll_id'], ':sbas_id'  => $this->get_sbas_id()));
-                $base_ids[] = $base_id    = $conn->lastInsertId();
+                $base_ids[] = $base_id = $conn->lastInsertId();
 
-                if ( ! empty($row['logo']))
-                {
+                if ( ! empty($row['logo'])) {
                     file_put_contents($registry->get('GV_RootPath') . 'config/minilogos/' . $base_id, $row['logo']);
                 }
-            }
-            catch (Exception $e)
-            {
+            } catch (Exception $e) {
                 unset($e);
             }
         }
 
         $user->ACL()->give_access_to_base($base_ids);
-        foreach ($base_ids as $base_id)
-        {
+        foreach ($base_ids as $base_id) {
             $user->ACL()->update_rights_to_base($base_id, array(
-              'canpush'         => 1, 'cancmd'          => 1
-              , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
-              , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
-              , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
-              , 'modify_struct'   => 1, 'nowatermark'     => 1
-              )
+                'canpush'         => 1, 'cancmd'          => 1
+                , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
+                , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
+                , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
+                , 'modify_struct'   => 1, 'nowatermark'     => 1
+                )
             );
         }
 
@@ -1074,18 +1021,17 @@ class databox extends base
     {
         $registry = registry::get_instance();
 
-        $out      = '';
+        $out = '';
         if (is_file(($filename = $registry->get('GV_RootPath') . 'config/minilogos/logopdf_' . $sbas_id . '.jpg')))
-            $out      = file_get_contents($filename);
+            $out = file_get_contents($filename);
 
         return $out;
     }
 
     public function clear_logs()
     {
-        foreach (array('log', 'exports', 'quest') as $table)
-        {
-            $sql  = 'TRUNCATE ' . $table;
+        foreach (array('log', 'exports', 'quest') as $table) {
+            $sql = 'TRUNCATE ' . $table;
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();
@@ -1096,7 +1042,7 @@ class databox extends base
 
     public function reindex()
     {
-        $sql  = 'UPDATE pref SET updated_on="0000-00-00 00:00:00" WHERE prop="indexes"';
+        $sql = 'UPDATE pref SET updated_on="0000-00-00 00:00:00" WHERE prop="indexes"';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
@@ -1112,8 +1058,7 @@ class databox extends base
     public function get_dom_thesaurus()
     {
         $sbas_id = $this->get_sbas_id();
-        if (isset(self::$_dom_thesaurus[$sbas_id]))
-        {
+        if (isset(self::$_dom_thesaurus[$sbas_id])) {
             return self::$_dom_thesaurus[$sbas_id];
         }
 
@@ -1135,8 +1080,7 @@ class databox extends base
     public function get_xpath_thesaurus()
     {
         $sbas_id = $this->get_sbas_id();
-        if (isset(self::$_xpath_thesaurus[$sbas_id]))
-        {
+        if (isset(self::$_xpath_thesaurus[$sbas_id])) {
             return self::$_xpath_thesaurus[$sbas_id];
         }
 
@@ -1158,8 +1102,7 @@ class databox extends base
     public function get_sxml_thesaurus()
     {
         $sbas_id = $this->get_sbas_id();
-        if (isset(self::$_sxml_thesaurus[$sbas_id]))
-        {
+        if (isset(self::$_sxml_thesaurus[$sbas_id])) {
             return self::$_sxml_thesaurus[$sbas_id];
         }
 
@@ -1180,30 +1123,24 @@ class databox extends base
      */
     public function get_thesaurus()
     {
-        try
-        {
+        try {
             $this->thesaurus = $this->get_data_from_cache(self::CACHE_THESAURUS);
 
             return $this->thesaurus;
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             unset($e);
         }
 
         $thesaurus = false;
-        try
-        {
-            $sql  = 'SELECT value AS thesaurus FROM pref WHERE prop="thesaurus" LIMIT 1;';
+        try {
+            $sql = 'SELECT value AS thesaurus FROM pref WHERE prop="thesaurus" LIMIT 1;';
             $stmt = $this->get_connection()->prepare($sql);
             $stmt->execute();
-            $row  = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
             $this->thesaurus = $row['thesaurus'];
             $this->set_data_to_cache($this->thesaurus, self::CACHE_THESAURUS);
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             unset($e);
         }
 
@@ -1216,8 +1153,10 @@ class databox extends base
      */
     public function get_structure()
     {
-        if ($this->structure)
+        if ($this->structure) {
             return $this->structure;
+        }
+
         $this->structure = $this->retrieve_structure();
 
         return $this->structure;
@@ -1225,20 +1164,17 @@ class databox extends base
 
     protected function retrieve_structure()
     {
-        try
-        {
+        try {
             return $this->get_data_from_cache(self::CACHE_STRUCTURE);
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
 
         }
 
         $structure = null;
-        $sql       = "SELECT value FROM pref WHERE prop='structure'";
-        $stmt      = $this->get_connection()->prepare($sql);
+        $sql = "SELECT value FROM pref WHERE prop='structure'";
+        $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
-        $row       = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ($row)
@@ -1247,7 +1183,6 @@ class databox extends base
 
         return $structure;
     }
-
     protected $cterms;
 
     /**
@@ -1256,13 +1191,14 @@ class databox extends base
      */
     public function get_cterms()
     {
-        if ($this->cterms)
+        if ($this->cterms) {
             return $this->cterms;
+        }
 
-        $sql  = "SELECT value FROM pref WHERE prop='cterms'";
+        $sql = "SELECT value FROM pref WHERE prop='cterms'";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
-        $row  = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         if ($row)
@@ -1278,8 +1214,7 @@ class databox extends base
      */
     public function get_dom_structure()
     {
-        if ($this->_dom_structure)
-        {
+        if ($this->_dom_structure) {
             return $this->_dom_structure;
         }
 
@@ -1306,8 +1241,7 @@ class databox extends base
      */
     public function get_dom_cterms()
     {
-        if ($this->_dom_cterms)
-        {
+        if ($this->_dom_cterms) {
             return $this->_dom_cterms;
         }
 
@@ -1333,8 +1267,7 @@ class databox extends base
      */
     public function get_sxml_structure()
     {
-        if ($this->_sxml_structure)
-        {
+        if ($this->_sxml_structure) {
             return $this->_sxml_structure;
         }
 
@@ -1355,8 +1288,7 @@ class databox extends base
      */
     public function get_xpath_structure()
     {
-        if ($this->_xpath_structure)
-        {
+        if ($this->_xpath_structure) {
             return $this->_xpath_structure;
         }
 
@@ -1380,16 +1312,14 @@ class databox extends base
         $sx_structure = simplexml_load_string($structure);
 
         $subdefgroup = $sx_structure->subdefs[0];
-        $AvSubdefs   = array();
+        $AvSubdefs = array();
 
         $errors = array();
 
-        foreach ($subdefgroup as $k => $subdefs)
-        {
+        foreach ($subdefgroup as $k => $subdefs) {
             $subdefgroup_name = trim((string) $subdefs->attributes()->name);
 
-            if ($subdefgroup_name == '')
-            {
+            if ($subdefgroup_name == '') {
                 $errors[] = _('ERREUR : TOUTES LES BALISES subdefgroup necessitent un attribut name');
                 continue;
             }
@@ -1397,18 +1327,15 @@ class databox extends base
             if ( ! isset($AvSubdefs[$subdefgroup_name]))
                 $AvSubdefs[$subdefgroup_name] = array();
 
-            foreach ($subdefs as $sd)
-            {
-                $sd_name  = trim(mb_strtolower((string) $sd->attributes()->name));
+            foreach ($subdefs as $sd) {
+                $sd_name = trim(mb_strtolower((string) $sd->attributes()->name));
                 $sd_class = trim(mb_strtolower((string) $sd->attributes()->class));
-                if ($sd_name == '' || isset($AvSubdefs[$subdefgroup_name][$sd_name]))
-                {
+                if ($sd_name == '' || isset($AvSubdefs[$subdefgroup_name][$sd_name])) {
                     $errors[] = _('ERREUR : Les name de subdef sont uniques par groupe de subdefs et necessaire');
                     continue;
                 }
-                if ( ! in_array($sd_class, array('thumbnail', 'preview', 'document')))
-                {
-                    $errors[]                               = _('ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"');
+                if ( ! in_array($sd_class, array('thumbnail', 'preview', 'document'))) {
+                    $errors[] = _('ERREUR : La classe de subdef est necessaire et egal a "thumbnail","preview" ou "document"');
                     continue;
                 }
                 $AvSubdefs[$subdefgroup_name][$sd_name] = $sd;
@@ -1417,13 +1344,13 @@ class databox extends base
 
         return $errors;
     }
-
     protected $cgus;
 
     public function get_cgus()
     {
-        if ($this->cgus)
+        if ($this->cgus) {
             return $this->cgus;
+        }
 
         $this->load_cgus();
 
@@ -1432,45 +1359,40 @@ class databox extends base
 
     protected function load_cgus()
     {
-        try
-        {
+        try {
             $this->cgus = $this->get_data_from_cache(self::CACHE_CGUS);
 
             return $this;
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
 
         }
 
-        $sql  = 'SELECT value, locale, updated_on FROM pref WHERE prop ="ToU"';
+        $sql = 'SELECT value, locale, updated_on FROM pref WHERE prop ="ToU"';
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute();
-        $rs   = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        foreach ($rs as $row)
-        {
+        foreach ($rs as $row) {
             $TOU[$row['locale']] = array('updated_on' => $row['updated_on'], 'value'      => $row['value']);
         }
 
         $missing_locale = array();
 
-        $avLanguages      = User_Adapter::avLanguages();
+        $avLanguages = User_Adapter::avLanguages();
         foreach ($avLanguages as $lang)
             foreach ($lang as $k => $v)
                 if ( ! isset($TOU[$k]))
                     $missing_locale[] = $k;
 
         $date_obj = new DateTime();
-        $date     = phraseadate::format_mysql($date_obj);
-        $sql      = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
+        $date = phraseadate::format_mysql($date_obj);
+        $sql = "INSERT INTO pref (id, prop, value, locale, updated_on, created_on)
               VALUES (null, 'ToU', '', :locale, :date, NOW())";
-        $stmt     = $this->get_connection()->prepare($sql);
-        foreach ($missing_locale as $v)
-        {
+        $stmt = $this->get_connection()->prepare($sql);
+        foreach ($missing_locale as $v) {
             $stmt->execute(array(':locale' => $v, ':date'   => $date));
-            $TOU[$v]  = array('updated_on' => $date, 'value'      => '');
+            $TOU[$v] = array('updated_on' => $date, 'value'      => '');
         }
         $stmt->closeCursor();
         $this->cgus = $TOU;
@@ -1479,7 +1401,6 @@ class databox extends base
 
         return $this;
     }
-
     const CACHE_CGUS = 'cgus';
 
     public function update_cgus($locale, $terms, $reset_date)
@@ -1495,7 +1416,7 @@ class databox extends base
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute(array(':terms'  => $terms, ':locale' => $locale));
         $stmt->closeCursor();
-        $update   = true;
+        $update = true;
         $this->cgus = null;
         $this->delete_data_from_cache(self::CACHE_CGUS);
 
@@ -1504,8 +1425,7 @@ class databox extends base
 
     public function delete_data_from_cache($option = null)
     {
-        switch ($option)
-        {
+        switch ($option) {
             case self::CACHE_CGUS:
                 $this->cgus = null;
                 break;
@@ -1523,5 +1443,4 @@ class databox extends base
         }
         parent::delete_data_from_cache($option);
     }
-
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,17 +17,15 @@
  */
 abstract class API_V1_exception_abstract extends Exception
 {
+    protected static $details;
 
-  protected static $details;
+    public function __construct()
+    {
+        return $this;
+    }
 
-  public function __construct()
-  {
-    return $this;
-  }
-
-  public static function get_details()
-  {
-    return static::$details;
-  }
-
+    public static function get_details()
+    {
+        return static::$details;
+    }
 }

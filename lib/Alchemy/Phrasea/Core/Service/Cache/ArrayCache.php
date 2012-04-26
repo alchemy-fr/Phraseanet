@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,31 +20,27 @@ use Alchemy\Phrasea\Core,
 /**
  * Array cache
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class ArrayCache extends ServiceAbstract
 {
+    protected $cache;
 
-  protected $cache;
-
-  public function getDriver()
-  {
-    if (!$this->cache)
+    public function getDriver()
     {
-      $this->cache = new CacheDriver\ArrayCache();
+        if ( ! $this->cache) {
+            $this->cache = new CacheDriver\ArrayCache();
 
-      $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+            $this->cache->setNamespace(md5(realpath(__DIR__ . '/../../../../../../')));
+        }
+
+        return $this->cache;
     }
 
-    return $this->cache;
-  }
-
-  public function getType()
-  {
-    return 'array';
-  }
-
+    public function getType()
+    {
+        return 'array';
+    }
 }
 

@@ -7,9 +7,8 @@
 
 class sphinx_charsetTable_arabic extends sphinx_charsetTableAbstract
 {
-
-  protected $name = 'Arabic';
-  protected $table = '
+    protected $name = 'Arabic';
+    protected $table = '
     ##################################################
     # Arabic
     U+0622->U+0627, U+0623->U+0627, U+0624->U+0648, U+0625->U+0627, U+0626->U+064A,

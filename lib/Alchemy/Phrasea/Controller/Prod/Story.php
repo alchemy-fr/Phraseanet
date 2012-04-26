@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,327 +25,290 @@ use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute,
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class Story implements ControllerProviderInterface
 {
 
-  public function connect(Application $app)
-  {
-    $controllers = new ControllerCollection();
+    public function connect(Application $app)
+    {
+        $controllers = new ControllerCollection();
 
 
-    $controllers->get('/create/', function(Application $app)
-            {
-              /* @var $twig \Twig_Environment */
-              $twig = $app['Core']->getTwig();
+        $controllers->get('/create/', function(Application $app) {
+                /* @var $twig \Twig_Environment */
+                $twig = $app['Core']->getTwig();
 
-              return new Response($twig->render('prod/Story/Create.html.twig', array()));
+                return new Response($twig->render('prod/Story/Create.html.twig', array()));
             });
 
-    $controllers->post('/', function(Application $app, Request $request)
-            {
-              /* @var $request \Symfony\Component\HttpFoundation\Request */
-              $em = $app['Core']->getEntityManager();
+        $controllers->post('/', function(Application $app, Request $request) {
+                /* @var $request \Symfony\Component\HttpFoundation\Request */
+                $em = $app['Core']->getEntityManager();
 
-              $user = $app['Core']->getAuthenticatedUser();
+                $user = $app['Core']->getAuthenticatedUser();
 
-              $collection = \collection::get_from_base_id($request->get('base_id'));
-
-
-              if (!$user->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord'))
-              {
-                throw new \Exception_Forbidden('You can not create a story on this collection');
-              }
+                $collection = \collection::get_from_base_id($request->get('base_id'));
 
 
-              $system_file = new \system_file(
-                                      $app['Core']->getRegistry()
-                                      ->get('GV_RootPath') . 'www/skins/icons/substitution/regroup_doc.png'
-              );
-
-              $Story = \record_adapter::create($collection, $system_file, false, true);
-
-              foreach (explode(';', $request->get('lst')) as $sbas_rec)
-              {
-                $sbas_rec = explode('_', $sbas_rec);
-
-                if (count($sbas_rec) !== 2)
-                {
-                  continue;
+                if ( ! $user->ACL()->has_right_on_base($collection->get_base_id(), 'canaddrecord')) {
+                    throw new \Exception_Forbidden('You can not create a story on this collection');
                 }
 
-                $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
 
-                if (!$user->ACL()->has_access_to_base($record->get_base_id())
-                        && !$user->ACL()->has_hd_grant($record)
-                        && !$user->ACL()->has_preview_grant($record))
-                {
-                  continue;
-                }
-
-                if ($Story->hasChild($record))
-                  continue;
-
-                $Story->appendChild($record);
-              }
-
-              $metadatas = array();
-
-              foreach ($collection->get_databox()->get_meta_structure() as $meta)
-              {
-                if ($meta->get_thumbtitle())
-                {
-                  $value = $request->get('name');
-                }
-                else
-                {
-                  continue;
-                }
-
-                $metadatas[] = array(
-                    'meta_struct_id' => $meta->get_id()
-                    , 'meta_id' => null
-                    , 'value' => $value
+                $system_file = new \system_file(
+                            $app['Core']->getRegistry()
+                            ->get('GV_RootPath') . 'www/skins/icons/substitution/regroup_doc.png'
                 );
 
-                break;
-              }
+                $Story = \record_adapter::create($collection, $system_file, false, true);
 
-              $Story->set_metadatas($metadatas)->rebuild_subdefs();
+                foreach (explode(';', $request->get('lst')) as $sbas_rec) {
+                    $sbas_rec = explode('_', $sbas_rec);
 
-              $StoryWZ = new \Entities\StoryWZ();
-              $StoryWZ->setUser($user);
-              $StoryWZ->setRecord($Story);
+                    if (count($sbas_rec) !== 2) {
+                        continue;
+                    }
 
-              $em->persist($StoryWZ);
+                    $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
 
-              $em->flush();
+                    if ( ! $user->ACL()->has_access_to_base($record->get_base_id())
+                        && ! $user->ACL()->has_hd_grant($record)
+                        && ! $user->ACL()->has_preview_grant($record)) {
+                        continue;
+                    }
 
-              if ($request->getRequestFormat() == 'json')
-              {
+                    if ($Story->hasChild($record))
+                        continue;
+
+                    $Story->appendChild($record);
+                }
+
+                $metadatas = array();
+
+                foreach ($collection->get_databox()->get_meta_structure() as $meta) {
+                    if ($meta->get_thumbtitle()) {
+                        $value = $request->get('name');
+                    } else {
+                        continue;
+                    }
+
+                    $metadatas[] = array(
+                        'meta_struct_id' => $meta->get_id()
+                        , 'meta_id'        => null
+                        , 'value'          => $value
+                    );
+
+                    break;
+                }
+
+                $Story->set_metadatas($metadatas)->rebuild_subdefs();
+
+                $StoryWZ = new \Entities\StoryWZ();
+                $StoryWZ->setUser($user);
+                $StoryWZ->setRecord($Story);
+
+                $em->persist($StoryWZ);
+
+                $em->flush();
+
+                if ($request->getRequestFormat() == 'json') {
+                    $data = array(
+                        'success'  => true
+                        , 'message'  => _('Story created')
+                        , 'WorkZone' => $StoryWZ->getId()
+                        , 'story'    => array(
+                            'sbas_id'   => $Story->get_sbas_id(),
+                            'record_id' => $Story->get_record_id(),
+                        )
+                    );
+
+                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
+
+                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                } else {
+                    return new RedirectResponse(sprintf('/%d/', $StoryWZ->getId()));
+                }
+            });
+
+
+
+        $controllers->get('/{sbas_id}/{record_id}/', function(Application $app, $sbas_id, $record_id) {
+                $Story = new \record_adapter($sbas_id, $record_id);
+
+                /* @var $twig \Twig_Environment */
+                $twig = $app['Core']->getTwig();
+
+                $html = $twig->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
+
+                return new Response($html);
+            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
+
+
+        $controllers->post(
+            '/{sbas_id}/{record_id}/addElements/'
+            , function(Application $app, Request $request, $sbas_id, $record_id) {
+                $Story = new \record_adapter($sbas_id, $record_id);
+
+                $user = $app['Core']->getAuthenticatedUser();
+
+                if ( ! $user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+                    throw new \Exception_Forbidden('You can not add document to this Story');
+
+                /* @var $user \User_Adapter */
+
+                $n = 0;
+
+                foreach (explode(';', $request->get('lst')) as $sbas_rec) {
+                    $sbas_rec = explode('_', $sbas_rec);
+
+                    if (count($sbas_rec) !== 2)
+                        continue;
+
+                    $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
+
+                    if ( ! $user->ACL()->has_access_to_base($record->get_base_id())
+                        && ! $user->ACL()->has_hd_grant($record)
+                        && ! $user->ACL()->has_preview_grant($record)) {
+                        continue;
+                    }
+
+                    if ($Story->hasChild($record))
+                        continue;
+
+                    $Story->appendChild($record);
+
+                    $n ++;
+                }
+
                 $data = array(
                     'success' => true
-                    , 'message' => _('Story created')
-                    , 'WorkZone' => $StoryWZ->getId()
-                    , 'story' => array(
-                        'sbas_id' => $Story->get_sbas_id(),
-                        'record_id' => $Story->get_record_id(),
-                    )
+                    , 'message' => sprintf(_('%d records added'), $n)
                 );
 
-                $datas = $app['Core']['Serializer']->serialize($data, 'json');
+                if ($request->getRequestFormat() == 'json') {
 
-                return new Response($datas, 200, array('Content-type' => 'application/json'));
-              }
-              else
-              {
-                return new RedirectResponse(sprintf('/%d/', $StoryWZ->getId()));
-              }
-            });
+                    $datas = $app['Core']['Serializer']->serialize($data, 'json');
 
-
-
-    $controllers->get('/{sbas_id}/{record_id}/', function(Application $app, $sbas_id, $record_id)
-            {
-              $Story = new \record_adapter($sbas_id, $record_id);
-
-              /* @var $twig \Twig_Environment */
-              $twig = $app['Core']->getTwig();
-
-              $html = $twig->render('prod/WorkZone/Story.html.twig', array('Story' => $Story));
-
-              return new Response($html);
-            })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
-
-
-    $controllers->post(
-            '/{sbas_id}/{record_id}/addElements/'
-            , function(Application $app, Request $request, $sbas_id, $record_id)
-            {
-              $Story = new \record_adapter($sbas_id, $record_id);
-
-              $user = $app['Core']->getAuthenticatedUser();
-
-              if (!$user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
-                throw new \Exception_Forbidden('You can not add document to this Story');
-
-              /* @var $user \User_Adapter */
-
-              $n = 0;
-
-              foreach (explode(';', $request->get('lst')) as $sbas_rec)
-              {
-                $sbas_rec = explode('_', $sbas_rec);
-
-                if (count($sbas_rec) !== 2)
-                  continue;
-
-                $record = new \record_adapter($sbas_rec[0], $sbas_rec[1]);
-
-                if (!$user->ACL()->has_access_to_base($record->get_base_id())
-                        && !$user->ACL()->has_hd_grant($record)
-                        && !$user->ACL()->has_preview_grant($record))
-                {
-                  continue;
+                    return new Response($datas, 200, array('Content-type' => 'application/json'));
+                } else {
+                    return new RedirectResponse('/');
                 }
-
-                if ($Story->hasChild($record))
-                  continue;
-
-                $Story->appendChild($record);
-
-                $n++;
-              }
-
-              $data = array(
-                  'success' => true
-                  , 'message' => sprintf(_('%d records added'), $n)
-              );
-
-              if ($request->getRequestFormat() == 'json')
-              {
-
-                $datas = $app['Core']['Serializer']->serialize($data, 'json');
-
-                return new Response($datas, 200, array('Content-type' => 'application/json'));
-              }
-              else
-              {
-                return new RedirectResponse('/');
-              }
             })->assert('sbas_id', '\d+')->assert('record_id', '\d+');
 
-    $controllers->post(
-                    '/{sbas_id}/{record_id}/delete/{child_sbas_id}/{child_record_id}/'
-                    , function(Application $app, Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id)
-                    {
-                      $Story = new \record_adapter($sbas_id, $record_id);
+        $controllers->post(
+                '/{sbas_id}/{record_id}/delete/{child_sbas_id}/{child_record_id}/'
+                , function(Application $app, Request $request, $sbas_id, $record_id, $child_sbas_id, $child_record_id) {
+                    $Story = new \record_adapter($sbas_id, $record_id);
 
-                      $record = new \record_adapter($child_sbas_id, $child_record_id);
+                    $record = new \record_adapter($child_sbas_id, $child_record_id);
 
-                      $user = $app['Core']->getAuthenticatedUser();
+                    $user = $app['Core']->getAuthenticatedUser();
 
-                      if (!$user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
+                    if ( ! $user->ACL()->has_right_on_base($Story->get_base_id(), 'canmodifrecord'))
                         throw new \Exception_Forbidden('You can not add document to this Story');
 
-                      /* @var $user \User_Adapter */
+                    /* @var $user \User_Adapter */
 
-                      $Story->removeChild($record);
+                    $Story->removeChild($record);
 
-                      $data = array(
-                          'success' => true
-                          , 'message' => _('Record removed from story')
-                      );
+                    $data = array(
+                        'success' => true
+                        , 'message' => _('Record removed from story')
+                    );
 
-                      if ($request->getRequestFormat() == 'json')
-                      {
+                    if ($request->getRequestFormat() == 'json') {
                         $datas = $app['Core']['Serializer']->serialize($data, 'json');
 
                         return new Response($datas, 200, array('Content-type' => 'application/json'));
-                      }
-                      else
-                      {
+                    } else {
                         return new RedirectResponse('/');
-                      }
-                    })
+                    }
+                })
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+')
             ->assert('child_sbas_id', '\d+')
             ->assert('child_record_id', '\d+');
 
 
-    /**
-     * Get the Basket reorder form
-     */
-    $controllers->get(
-                    '/{sbas_id}/{record_id}/reorder/'
-                    , function(Application $app, $sbas_id, $record_id)
-                    {
-                      /* @var $em \Doctrine\ORM\EntityManager */
-                      $em = $app['Core']->getEntityManager();
+        /**
+         * Get the Basket reorder form
+         */
+        $controllers->get(
+                '/{sbas_id}/{record_id}/reorder/'
+                , function(Application $app, $sbas_id, $record_id) {
+                    /* @var $em \Doctrine\ORM\EntityManager */
+                    $em = $app['Core']->getEntityManager();
 
-                      $story = new \record_adapter($sbas_id, $record_id);
+                    $story = new \record_adapter($sbas_id, $record_id);
 
-                      if (!$story->is_grouping())
-                      {
+                    if ( ! $story->is_grouping()) {
                         throw new \Exception('This is not a story');
-                      }
+                    }
 
-                      /* @var $twig \Twig_Environment */
-                      $twig = $app['Core']->getTwig();
+                    /* @var $twig \Twig_Environment */
+                    $twig = $app['Core']->getTwig();
 
-                      return new Response(
-                                      $twig->render(
-                                              'prod/Story/Reorder.html.twig'
-                                              , array('story' => $story)
-                                      )
-                      );
-                    })
+                    return new Response(
+                            $twig->render(
+                                'prod/Story/Reorder.html.twig'
+                                , array('story' => $story)
+                            )
+                    );
+                })
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
 
 
-    $controllers->post(
-                    '/{sbas_id}/{record_id}/reorder/'
-                    , function(Application $app, $sbas_id, $record_id)
-                    {
-                      $ret = array('success' => false, 'message' => _('An error occured'));
-                      try
-                      {
+        $controllers->post(
+                '/{sbas_id}/{record_id}/reorder/'
+                , function(Application $app, $sbas_id, $record_id) {
+                    $ret = array('success' => false, 'message' => _('An error occured'));
+                    try {
                         $user = $app['Core']->getAuthenticatedUser();
                         /* @var $user \User_Adapter */
 
                         $story = new \record_adapter($sbas_id, $record_id);
 
-                        if (!$story->is_grouping())
-                        {
-                          throw new \Exception('This is not a story');
+                        if ( ! $story->is_grouping()) {
+                            throw new \Exception('This is not a story');
                         }
 
-                        if (!$user->ACL()->has_right_on_base($story->get_base_id(), 'canmodifrecord'))
-                        {
-                          throw new ControllerException(_('You can not edit this story'));
+                        if ( ! $user->ACL()->has_right_on_base($story->get_base_id(), 'canmodifrecord')) {
+                            throw new ControllerException(_('You can not edit this story'));
                         }
 
                         $sql = 'UPDATE regroup SET ord = :ord
                       WHERE rid_parent = :parent_id AND rid_child = :children_id';
                         $stmt = $story->get_databox()->get_connection()->prepare($sql);
 
-                        foreach ($app['request']->get('element') as $record_id => $ord)
-                        {
-                          $params = array(
-                              ':ord' => $ord,
-                              ':parent_id' => $story->get_record_id(),
-                              ':children_id' => $record_id
-                          );
-                          $stmt->execute($params);
+                        foreach ($app['request']->get('element') as $record_id => $ord) {
+                            $params = array(
+                                ':ord'         => $ord,
+                                ':parent_id'   => $story->get_record_id(),
+                                ':children_id' => $record_id
+                            );
+                            $stmt->execute($params);
                         }
 
                         $stmt->closeCursor();
 
                         $ret = array('success' => true, 'message' => _('Story updated'));
-                      }
-                      catch (ControllerException $e)
-                      {
+                    } catch (ControllerException $e) {
                         $ret = array('success' => false, 'message' => $e->getMessage());
-                      }
-                      catch (\Exception $e)
-                      {
+                    } catch (\Exception $e) {
 
-                      }
+                    }
 
-                      $Serializer = $app['Core']['Serializer'];
+                    $Serializer = $app['Core']['Serializer'];
 
-                      return new Response($Serializer->serialize($ret, 'json'), 200, array('Content-type' => 'application/json'));
-                    })
+                    return new Response($Serializer->serialize($ret, 'json'), 200, array('Content-type' => 'application/json'));
+                })
             ->assert('sbas_id', '\d+')
             ->assert('record_id', '\d+');
 
 
-    return $controllers;
-  }
-
+        return $controllers;
+    }
 }

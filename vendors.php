@@ -18,16 +18,14 @@ set_time_limit(0);
 
 $composer = __DIR__ . '/composer.phar';
 
-if (!file_exists($composer))
-{
-  system('curl -s http://getcomposer.org/installer | php');
-  system('chmod +x ' . $composer);
-  system($composer . ' install');
+if ( ! file_exists($composer)) {
+    system('curl -s http://getcomposer.org/installer | php');
+    system('chmod +x ' . $composer);
+    system($composer . ' install');
 }
 
-if (!is_executable($composer))
-{
-  system('chmod +x ' . $composer);
+if ( ! is_executable($composer)) {
+    system('chmod +x ' . $composer);
 }
 
 system($composer . ' self-update');
@@ -38,12 +36,10 @@ system('git submodule update');
 
 $iterator = new RecursiveDirectoryIterator(__DIR__ . '/lib/vendor/');
 
-foreach ($iterator as $file)
-{
-  /* @var $file SplFileInfo */
-  if ($file->isDir())
-  {
-    $cmd = sprintf('cd %s && git submodule init && git submodule update', escapeshellarg($file->getPathname()));
-    system($cmd);
-  }
+foreach ($iterator as $file) {
+    /* @var $file SplFileInfo */
+    if ($file->isDir()) {
+        $cmd = sprintf('cd %s && git submodule init && git submodule update', escapeshellarg($file->getPathname()));
+        system($cmd);
+    }
 }
