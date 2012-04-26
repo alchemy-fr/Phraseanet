@@ -263,6 +263,17 @@ $GV = array(
       )
     )
   ), array(
+    'section' => _('GV::section:: Client Phraseanet API'),
+    'vars'    => array(
+      array(
+        'type'     => 'boolean',
+        'name'     => 'GV_client_navigator',
+        'comment'  => _('reglages:: Authoriser l\'application smartphone *Phraseanet Navigator* à se connecter sur cette instance' ),
+        'default'  => false,
+        'required' => true
+      )
+    )
+  ), array(
     'section' => _('GV::section:: Gestionnaire d\'evenements'),
     'vars'    => array(
       array(
