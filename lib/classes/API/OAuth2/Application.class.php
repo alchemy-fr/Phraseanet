@@ -114,6 +114,18 @@ class API_OAuth2_Application
 
     /**
      *
+     * @var boolean
+     */
+    protected $activated;
+
+    /**
+     *
+     * @var boolean
+     */
+    protected $grant_password;
+
+    /**
+     *
      * @param appbox $appbox
      * @param int $application_id
      * @return API_OAuth2_Application
@@ -123,9 +135,11 @@ class API_OAuth2_Application
         $this->appbox = $appbox;
         $this->id = (int) $application_id;
 
-        $sql = 'SELECT application_id, creator, type, name, description, website
+        $sql = '
+            SELECT
+                application_id, creator, type, name, description, website
               , created_on, last_modified, client_id, client_secret, nonce
-              , redirect_uri
+              , redirect_uri, activated, grant_password
             FROM api_applications
             WHERE application_id = :application_id';
 
@@ -145,6 +159,8 @@ class API_OAuth2_Application
         $this->client_secret = $row['client_secret'];
         $this->redirect_uri = $row['redirect_uri'];
         $this->nonce = $row['nonce'];
+        $this->activated = ! ! $row['activated'];
+        $this->grant_password = ! ! $row['grant_password'];
 
         return $this;
     }
@@ -306,6 +322,74 @@ class API_OAuth2_Application
 
         $params = array(
             ':website'        => $this->website
+            , ':application_id' => $this->id
+        );
+
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+
+        return $this;
+    }
+
+    /**
+     * Tell wether application is activated
+     * @return boolean
+     */
+    public function is_activated()
+    {
+        return $this->activated;
+    }
+
+    /**
+     *
+     * @param boolean $activated
+     * @return API_OAuth2_Application
+     */
+    public function set_activated($activated)
+    {
+        $this->activated = $activated;
+
+        $sql = 'UPDATE api_applications
+            SET activated = :activated, last_modified = NOW()
+            WHERE application_id = :application_id';
+
+        $params = array(
+            ':activated'      => $this->activated
+            , ':application_id' => $this->id
+        );
+
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+
+        return $this;
+    }
+
+    /**
+     * Tell wether application authorize password grant type
+     * @return boolean
+     */
+    public function is_password_granted()
+    {
+        return $this->grant_password;
+    }
+
+    /**
+     *
+     * @param boolean $grant
+     * @return API_OAuth2_Application
+     */
+    public function set_grant_password($grant)
+    {
+        $this->grant_password = ! ! $grant;
+
+        $sql = 'UPDATE api_applications
+            SET grant_password = :grant_password, last_modified = NOW()
+            WHERE application_id = :application_id';
+
+        $params = array(
+            ':grant_password' => $this->grant_password
             , ':application_id' => $this->id
         );
 
@@ -511,24 +595,46 @@ class API_OAuth2_Application
      * @param type $name
      * @return API_OAuth2_Application
      */
-    public static function create(appbox &$appbox, User_Adapter $user, $name)
+    public static function create(appbox &$appbox, User_Adapter $user = null, $name)
     {
-        $sql = 'INSERT INTO api_applications
-              (application_id, creator, created_on, name
-                , last_modified, nonce, client_id, client_secret)
-            VALUES (null, :usr_id, NOW(), :name, NOW()
-                , :nonce, :client_id, :client_secret)';
+        $sql = '
+            INSERT INTO api_applications (
+                application_id,
+                creator,
+                created_on,
+                name,
+                last_modified,
+                nonce,
+                client_id,
+                client_secret,
+                activated,
+                grant_password
+            )
+            VALUES (
+                null,
+                :usr_id,
+                NOW(),
+                :name,
+                NOW(),
+                :nonce,
+                :client_id,
+                :client_secret,
+                :activated,
+                :grant_password
+            )';
 
         $nonce = random::generatePassword(6);
         $client_secret = API_OAuth2_Token::generate_token();
         $client_token = API_OAuth2_Token::generate_token();
 
         $params = array(
-            ':usr_id'        => $user->get_id(),
-            ':name'          => $name,
-            ':client_id'     => $client_token,
-            ':client_secret' => $client_secret,
-            ':nonce'         => $nonce,
+            ':usr_id'         => $user->get_id(),
+            ':name'           => $name,
+            ':client_id'      => $client_token,
+            ':client_secret'  => $client_secret,
+            ':nonce'          => $nonce,
+            ':activated'      => 1,
+            ':grant_password' => 0
         );
 
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -538,7 +644,10 @@ class API_OAuth2_Application
         $application_id = $appbox->get_connection()->lastInsertId();
 
         $application = new self($appbox, $application_id);
-        $account = API_OAuth2_Account::create($appbox, $user, $application);
+
+        if ($user) {
+            API_OAuth2_Account::create($appbox, $user, $application);
+        }
 
         return $application;
     }
@@ -598,8 +707,6 @@ class API_OAuth2_Application
      */
     public static function load_app_by_user(appbox $appbox, user_adapter $user)
     {
-
-        $usr_id = $user->get_id();
         $sql = 'SELECT a.application_id
         FROM api_accounts a, api_applications c
         WHERE usr_id = :usr_id AND c.application_id = a.application_id';
@@ -619,8 +726,6 @@ class API_OAuth2_Application
 
     public static function load_authorized_app_by_user(appbox $appbox, user_adapter $user)
     {
-
-        $usr_id = $user->get_id();
         $sql = '
         SELECT a.application_id
         FROM api_accounts a, api_applications c
