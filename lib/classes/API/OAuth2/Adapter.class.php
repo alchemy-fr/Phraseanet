@@ -245,7 +245,7 @@ class API_OAuth2_Adapter extends OAuth2
                 , 'usr_id'      => $token->get_account()->get_user()->get_id()
                 , 'oauth_token' => $token->get_value()
             );
-            
+
         } catch (Exception $e) {
 
         }

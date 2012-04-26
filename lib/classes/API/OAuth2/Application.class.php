@@ -147,8 +147,8 @@ class API_OAuth2_Application
         $stmt->execute(array(':application_id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-
-        $this->creator = User_Adapter::getInstance($row['creator'], $this->appbox);
+        $this->creator = !$row['creator'] ? null :
+            User_Adapter::getInstance($row['creator'], $this->appbox);
         $this->type = $row['type'];
         $this->name = $row['name'];
         $this->description = $row['description'];
