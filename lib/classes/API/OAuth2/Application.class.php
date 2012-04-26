@@ -147,8 +147,7 @@ class API_OAuth2_Application
         $stmt->execute(array(':application_id' => $this->id));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        $this->creator = !$row['creator'] ? null :
-            User_Adapter::getInstance($row['creator'], $this->appbox);
+        $this->creator = ! $row['creator'] ? null : User_Adapter::getInstance($row['creator'], $this->appbox);
         $this->type = $row['type'];
         $this->name = $row['name'];
         $this->description = $row['description'];
@@ -599,28 +598,12 @@ class API_OAuth2_Application
     {
         $sql = '
             INSERT INTO api_applications (
-                application_id,
-                creator,
-                created_on,
-                name,
-                last_modified,
-                nonce,
-                client_id,
-                client_secret,
-                activated,
-                grant_password
+                application_id, creator, created_on, name, last_modified,
+                nonce, client_id, client_secret, activated, grant_password
             )
             VALUES (
-                null,
-                :usr_id,
-                NOW(),
-                :name,
-                NOW(),
-                :nonce,
-                :client_id,
-                :client_secret,
-                :activated,
-                :grant_password
+                null, :usr_id, NOW(), :name, NOW(), :nonce, :client_id,
+                :client_secret, :activated, :grant_password
             )';
 
         $nonce = random::generatePassword(6);
