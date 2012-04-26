@@ -17,7 +17,6 @@ use Alchemy\Phrasea\Core\Configuration\ApplicationSpecification;
 /**
  * Handle configuration file mechanism of phraseanet
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */

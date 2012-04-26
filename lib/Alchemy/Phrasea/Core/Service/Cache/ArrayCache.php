@@ -20,7 +20,6 @@ use Alchemy\Phrasea\Core,
 /**
  * Array cache
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */

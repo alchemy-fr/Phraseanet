@@ -17,7 +17,6 @@ require_once __DIR__ . '/Autoloader.php';
  * Loop throught op cache code adapter to cache autoloading
  * OpCache code available are apc et xcache
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */

@@ -11,7 +11,6 @@
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -24,7 +23,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  *
- * @package
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
