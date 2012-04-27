@@ -55,7 +55,7 @@ class ControllerInstallerTest extends \PhraseanetWebTestCaseAbstract
     $response = $this->client->getResponse();
     /* @var $response \Symfony\Component\HttpFoundation\Response */
 
-    $this->assertEquals(302, $response->getStatusCode());
+    $this->assertEquals(302, $response->getStatusCode(), "test that response is a redirection " . $this->client->getResponse()->getContent());
     $this->assertEquals('/setup/installer/step2/', $response->headers->get('location'));
   }
 
