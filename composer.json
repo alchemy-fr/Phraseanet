@@ -37,7 +37,6 @@
     "alchemy/oauth2php": "master",
     "alchemy/tcpdf": "master",
     "alchemy/phlickr": "master",
-    "alchemy/phpshortener": "master",
     "alchemy/phpmailer": "master",
     "alchemy/gdata": "master"
   },
