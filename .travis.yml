@@ -1,8 +1,11 @@
 language: php
 
 before_script:
+  - cp hudson/*.yml config/
   - sudo apt-get update
   - sudo apt-get install -y ffmpeg libavcodec-extra-53 openoffice.org openoffice.org-writer unoconv ghostscript gsfonts ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev imagemagick imagemagick libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev xpdf libexpat-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
+  - mysql -e 'create database ab_test;create database db_test;'
+  - mysql -e "source `pwd`/hudson/fixtures.sql"
   - wget http://www.swftools.org/swftools-0.9.1.tar.gz
   - sh -c "tar xzvf swftools-0.9.1.tar.gz && cd swftools-0.9.1 && ./configure && make && sudo make install"
   - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
