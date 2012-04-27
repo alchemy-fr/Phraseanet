@@ -110,13 +110,13 @@ class set_exportorder extends set_export
   protected function get_orderable_lst()
   {
     $ret = array();
-    foreach ($this as $basrec => $download_element)
+    foreach ($this as $download_element)
     {
       foreach ($download_element->get_orderable() as $name => $bool)
       {
         if ($bool === true)
         {
-          $ret[] = $basrec;
+          $ret[] = $download_element->get_serialize_key();
         }
       }
     }
