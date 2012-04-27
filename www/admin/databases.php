@@ -71,10 +71,22 @@ phrasea::headers();
                             <?php echo _('N\'oubliez pas de redemarrer le planificateur de taches'); ?>
                         </div>
                         <?php
-                    } catch (\Exception $e) {
+                    } catch (\Exception_Setup_UpgradeAlreadyStarted $e) {
                         ?>
                         <div style="margin-top:10px;color:black;font-weight:bold;background-color:yellow;">
-                            <?php echo $e->getMessage(); ?>
+                            <?php echo _('The upgrade is already started'); ?>
+                        </div>
+                        <?php
+                    }catch(\Exception_Setup_FixBadEmailAddresses $e){
+                        ?>
+                        <div style="margin-top:10px;color:black;font-weight:bold;background-color:yellow;">
+                            <?php echo _('Please fix the database before starting'); ?>
+                        </div>
+                        <?php
+                    }catch(\Exception $e){
+                        ?>
+                        <div style="margin-top:10px;color:black;font-weight:bold;background-color:yellow;">
+                            <?php echo _('An error occured'); ?>
                         </div>
                         <?php
                     }

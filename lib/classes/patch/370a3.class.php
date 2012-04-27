@@ -60,7 +60,7 @@ class patch_370a3 implements patchInterface
         } catch (\Exception_NotFound $e) {
             $client = \API_OAuth2_Application::create($appbox, null, \API_OAuth2_Application_Navigator::CLIENT_NAME);
 
-            $client->set_activated(true);
+            $client->set_activated(false);
             $client->set_grant_password(true);
             $client->set_website("http://www.phraseanet.com");
             $client->set_client_id(\API_OAuth2_Application_Navigator::CLIENT_ID);
