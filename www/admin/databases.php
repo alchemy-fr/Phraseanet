@@ -51,25 +51,33 @@ phrasea::headers();
                 $checks = phrasea::is_scheduler_started();
                 if ($checks !== true) {
                     $appbox = appbox::get_instance(\bootstrap::getCore());
-                    $upgrader = new Setup_Upgrade($appbox);
-                    $advices = $appbox->forceUpgrade($upgrader);
+                    try {
+                        $upgrader = new Setup_Upgrade($appbox);
+                        $advices = $appbox->forceUpgrade($upgrader);
 
-                    $code = '';
-                    foreach ($advices as $advice) {
-                        $code .= $advice['sql'] . '<br/>';
+                        $code = '';
+                        foreach ($advices as $advice) {
+                            $code .= $advice['sql'] . '<br/>';
+                        }
+
+                        $code = _('Propositions de modifications des tables')
+                            . '<blockquote>' . $code . '</blockquote>';
+                        ?>
+                        <pre>
+                            <?php echo $code; ?>
+                        </pre>
+                        <?php ?>
+                        <div style="color:black;font-weight:bold;background-color:green;">
+                            <?php echo _('N\'oubliez pas de redemarrer le planificateur de taches'); ?>
+                        </div>
+                        <?php
+                    } catch (\Exception $e) {
+                        ?>
+                        <div style="margin-top:10px;color:black;font-weight:bold;background-color:yellow;">
+                            <?php echo $e->getMessage(); ?>
+                        </div>
+                        <?php
                     }
-
-                    $code = _('Propositions de modifications des tables')
-                        . '<blockquote>' . $code . '</blockquote>';
-                    ?>
-                    <pre>
-                    <?php echo $code; ?>
-                    </pre>
-                    <?php ?>
-                    <div style="color:black;font-weight:bold;background-color:green;">
-                        <?php echo _('N\'oubliez pas de redemarrer le planificateur de taches'); ?>
-                    </div>
-                    <?php
                 } else {
                     ?>
                     <div style="color:black;font-weight:bold;background-color:red;"><?php echo _('Veuillez arreter le planificateur avant la mise a jour'); ?></div>
@@ -210,22 +218,22 @@ phrasea::headers();
         }
         ?>
         <script type="text/javascript">
-        <?php
-        if ($createBase || $mountBase) {
-            $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-            $user->ACL()->delete_data_from_cache();
-            ?>
-              parent.reloadTree('bases:bases');
-            <?php
-            if ($createBase) {
-                ?>
-                    document.location.replace('/admin/newcoll.php?act=GETNAME&p0=<?php echo $createBase; ?>');
-                <?php
-            } else {
-                phrasea::redirect('/admin/databases.php');
-            }
-        }
+<?php
+if ($createBase || $mountBase) {
+    $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+    $user->ACL()->delete_data_from_cache();
+    ?>
+            parent.reloadTree('bases:bases');
+    <?php
+    if ($createBase) {
         ?>
+                    document.location.replace('/admin/newcoll.php?act=GETNAME&p0=<?php echo $createBase; ?>');
+        <?php
+    } else {
+        phrasea::redirect('/admin/databases.php');
+    }
+}
+?>
 
         </script>
         <?php
@@ -238,43 +246,43 @@ phrasea::headers();
         <div style="position:relative;float:left;width:100%;">
             <h2>Bases actuelles :</h2>
             <ul>
-        <?php
-        if (count($sbas) > 0) {
-            foreach ($sbas as $k => $v) {
-                ?>
+                <?php
+                if (count($sbas) > 0) {
+                    foreach ($sbas as $k => $v) {
+                        ?>
                         <li>
                             <a href='database.php?p0=<?php echo $k ?>' target='_self'>
                                 <span><?php echo $v ?></span>
                             </a>
                         </li>
-                <?php
-            }
-        } else {
-            ?>
+                        <?php
+                    }
+                } else {
+                    ?>
                     <li>None</li>
-    <?php
-}
-?>
+                    <?php
+                }
+                ?>
 
             </ul>
         </div>
-<?php
-if ($user_obj->is_admin() === true) {
-    ?>
+        <?php
+        if ($user_obj->is_admin() === true) {
+            ?>
 
             <div style="position:relative;float:left;width:100%;">
                 <h2><?php echo _('admin::base: Version') ?></h2>
-    <?php
-    if ($upgrade_available) {
-        ?>
-                    <div><?php echo _('update::Votre application necessite une mise a jour vers : '), ' ', $Core->getVersion()->getNumber() ?></div>
-        <?php
-    } else {
-        ?>
-                    <div><?php echo _('update::Votre version est a jour : '), ' ', $Core->getVersion()->getNumber() ?></div>
                 <?php
-            }
-            ?>
+                if ($upgrade_available) {
+                    ?>
+                    <div><?php echo _('update::Votre application necessite une mise a jour vers : '), ' ', $Core->getVersion()->getNumber() ?></div>
+                    <?php
+                } else {
+                    ?>
+                    <div><?php echo _('update::Votre version est a jour : '), ' ', $Core->getVersion()->getNumber() ?></div>
+                    <?php
+                }
+                ?>
                 <form action="databases.php" method="post" >
                     <input type="hidden" value="" name="upgrade" />
                     <input type="submit" value="<?php echo _('update::Verifier els tables') ?>"/>
@@ -308,20 +316,20 @@ if ($user_obj->is_admin() === true) {
                         <div>
                             <label><?php echo _('phraseanet:: Modele de donnees'); ?></label>
                             <select name="new_data_template">
-            <?php
-            if ($handle = opendir($registry->get('GV_RootPath') . 'lib/conf.d/data_templates')) {
-                while (false !== ($file = readdir($handle))) {
-                    if (is_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $file)) {
-                        $file = substr($file, 0, (strlen($file) - 4));
-                        ?>
+                                <?php
+                                if ($handle = opendir($registry->get('GV_RootPath') . 'lib/conf.d/data_templates')) {
+                                    while (false !== ($file = readdir($handle))) {
+                                        if (is_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $file)) {
+                                            $file = substr($file, 0, (strlen($file) - 4));
+                                            ?>
                                             <option value="<?php echo $file; ?>"><?php echo $file; ?></option>
-                            <?php
-                        }
-                    }
+                                            <?php
+                                        }
+                                    }
 
-                    closedir($handle);
-                }
-                ?>
+                                    closedir($handle);
+                                }
+                                ?>
                             </select>
                         </div>
                         <div>
@@ -361,8 +369,8 @@ if ($user_obj->is_admin() === true) {
                     </form>
                 </div>
             </div>
-                                <?php
-                            }
-                            ?>
+            <?php
+        }
+        ?>
     </body>
 </html>
