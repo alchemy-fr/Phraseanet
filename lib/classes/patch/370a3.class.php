@@ -9,8 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use Doctrine\ORM\Tools\Pagination\Paginator;
-
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
