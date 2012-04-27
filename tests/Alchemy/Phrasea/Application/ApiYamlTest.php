@@ -600,6 +600,12 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     protected function checkUrlCode200($url)
     {
+        $code = http_query::getHttpCodeFromUrl(self::$core->getRegistry()->get('GV_ServerName'));
+
+        if($code == 0) {
+            $this->markTestSkipped('Install does not seem to rely on a webserver');
+        }
+        
         $code = http_query::getHttpCodeFromUrl($url);
         $this->assertEquals(200, $code);
     }
