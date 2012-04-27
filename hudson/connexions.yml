@@ -8,5 +8,5 @@ main_connexion:
     charset: UTF8
 test_connexion:
     driver: pdo_sqlite
-    path: /Users/romain/Documents/workspace/Phraseanet/tests/tests.sqlite
+    path: /tmp/tests.sqlite
     charset: UTF8
