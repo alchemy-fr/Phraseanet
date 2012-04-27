@@ -5,21 +5,27 @@ before_script:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install
   - sudo apt-get update
-  - sudo apt-get install -y mplayer ffmpeg ufraw dcraw libavcodec-extra-53 openoffice.org openoffice.org-writer unoconv ghostscript gsfonts ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev imagemagick imagemagick libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev xpdf libexpat-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
+  - sudo apt-get install -y mplayer ffmpeg ufraw dcraw libavcodec-extra-53 openoffice.org openoffice.org-writer unoconv ghostscript gsfonts ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev xpdf libexpat-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
   - mysql -e 'create database ab_test;create database db_test;'
   - mysql -e "source `pwd`/hudson/fixtures.sql"
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - sh -c "cd Phraseanet-Extension && ./configure && make && sudo make install"
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-#  - git clone git://github.com/sebastianbergmann/php-test-helpers.git
-#  - sh -c "cd php-test-helpers && phpize && ./configure && make && sudo make install"
   - wget http://www.swftools.org/swftools-0.9.1.tar.gz
   - sh -c "tar xzvf swftools-0.9.1.tar.gz && cd swftools-0.9.1 && ./configure && make && sudo make install"
   - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
   - tar -xzf gmagick-1.1.0RC2.tgz  
   - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
   - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-#  - echo "zend_extension=`php -i | grep "^extension_dir =>" | sed -e "s|.*=>\s*||"`/test_helpers.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+
+notifications:
+  irc: 
+    channels:
+      - "irc.freenode.org#phrasea"
+    template:
+      - "%{repository_url} %{branch} by %{author} (%{commit}) : %{message}"
+      - "Build details: %{build_url}"
+    use_notice: true
 
 php:
   - 5.3.2
