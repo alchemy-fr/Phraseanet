@@ -101,29 +101,33 @@ class set_order extends set_abstract
     $this->ssel_id = (int) $row['ssel_id'];
 
     $base_ids = array_keys($user->ACL()->get_granted_base(array('order_master')));
-    $sql = 'SELECT e.base_id, e.record_id, e.order_master_id, e.id, e.deny
-              FROM order_elements e
-              WHERE order_id = :order_id
-              AND e.base_id
-              IN ('.implode(',', $base_ids).')';
-
-    $stmt = $conn->prepare($sql);
-    $stmt->execute(array(':order_id' => $id));
-    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $stmt->closeCursor();
 
     $elements = array();
 
-    foreach ($rs as $row)
+    if(count($base_ids) > 0)
     {
-      $order_master_id = $row['order_master_id'] ? $row['order_master_id'] : false;
+        $sql = 'SELECT e.base_id, e.record_id, e.order_master_id, e.id, e.deny
+                FROM order_elements e
+                WHERE order_id = :order_id
+                AND e.base_id
+                IN ('.implode(',', $base_ids).')';
 
-      $elements[$row['id']] = new record_orderElement(
-                      phrasea::sbasFromBas($row['base_id']),
-                      $row['record_id'],
-                      $row['deny'],
-                      $order_master_id
-      );
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':order_id' => $id));
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        foreach ($rs as $row)
+        {
+            $order_master_id = $row['order_master_id'] ? $row['order_master_id'] : false;
+
+            $elements[$row['id']] = new record_orderElement(
+                            phrasea::sbasFromBas($row['base_id']),
+                            $row['record_id'],
+                            $row['deny'],
+                            $order_master_id
+            );
+        }
     }
 
     $this->elements = $elements;

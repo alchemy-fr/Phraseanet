@@ -944,6 +944,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $base_id = $collection->get_base_id();
         $user->ACL()->give_access_to_base(array($base_id));
 
+        set_exportorder::set_order_admins(array($user->get_id()), $base_id);
+
         $rights = array(
             'canputinalbum' => '1'
             , 'candwnldhd' => '1'
