@@ -67,8 +67,8 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     {
         $diff = (int) $this->object->get_expires() - time();
         $this->assertInternalType('string', $this->object->get_expires(), "expiration timestamp is string : ".$this->object->get_expires());
-        $this->assertTrue($diff > 3500, "expire value is more than 3500 seconds " . $diff);
-        $this->assertTrue($diff < 3700, "expire value is less than 3700 seconds " . $diff);
+        $this->assertTrue($diff > 3500, "expire value $diff should be more than 3500 seconds ");
+        $this->assertTrue($diff < 3700, "expire value $diff should be less than 3700 seconds ");
     }
 
     public function testSet_expires()

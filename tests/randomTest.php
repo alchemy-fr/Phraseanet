@@ -91,7 +91,7 @@ class randomTest extends PhraseanetPHPUnitAbstract
         $this->assertNull($datas['expire_on']);
         $created_on = new DateTime($datas['created_on']);
         $date = new DateTime('-3 seconds');
-        $this->assertTrue($date < $created_on, "asserting that " . $date->format(DATE_ATOM . " is before " . $created_on->format(DATE_ATOM)));
+        $this->assertTrue($date < $created_on, "asserting that " . $date->format(DATE_ATOM) . " is before " . $created_on->format(DATE_ATOM));
         $date = new DateTime();
         $this->assertTrue($date >= $created_on);
         $this->assertEquals('password', $datas['type']);
