@@ -154,7 +154,7 @@ class random
                 ':token'    => $token
                 , ':type'     => $type
                 , ':usr'      => ($usr ? $usr : '-1')
-                , ':end_date' => ($end_date instanceof DateTime ? phraseadate::format_mysql($end_date) : null)
+                , ':end_date' => ($end_date instanceof DateTime ? $end_date->format(DATE_ISO8601) : null)
                 , ':datas'    => ((trim($datas) != '') ? $datas : null)
             );
             $stmt->execute($params);
