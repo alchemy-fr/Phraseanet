@@ -19,7 +19,7 @@ before_script:
   - tar -xzf gmagick-1.1.0RC2.tgz  
   - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
   - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - echo "zend_extension=test_helpers.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
+  - echo "zend_extension=`php -i | grep "^extension_dir =>" | sed -e "s|.*=>\s*||"`/test_helpers.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
 
 php:
   - 5.3.2
