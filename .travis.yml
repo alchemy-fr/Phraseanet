@@ -8,7 +8,7 @@ before_script:
   - mysql -e "source `pwd`/hudson/fixtures.sql"
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
   - cd Phraseanet-Extension
-  - make -j && sudo make install
+  - ./configure && make -j && sudo make install
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - wget http://www.swftools.org/swftools-0.9.1.tar.gz
   - sh -c "tar xzvf swftools-0.9.1.tar.gz && cd swftools-0.9.1 && ./configure && make && sudo make install"
