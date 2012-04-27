@@ -156,6 +156,41 @@ return call_user_func(function() {
                     throw new \API_V1_exception_badrequest();
                 };
 
+            $route = '/scheduler/state/';
+            $app->get(
+                $route, function(\Silex\Application $app, Request $request) {
+                    return $app['api']->get_scheduler_state($request)->get_response();
+                }
+            );
+
+            $route = '/scheduler/start/';
+            $app->get(
+                $route, function(\Silex\Application $app, Request $request) {
+                    /* @var $user \User_Adapter */
+                    $user = $app['token']->get_account()->get_user();
+
+                    if(!$user->is_admin()){
+                        throw new \API_V1_exception_unauthorized();
+                    }
+
+                    return $app['api']->start_scheduler($request)->get_response();
+                }
+            );
+
+            $route = '/scheduler/stop/';
+            $app->get(
+                $route, function(\Silex\Application $app, Request $request) {
+                    /* @var $user \User_Adapter */
+                    $user = $app['token']->get_account()->get_user();
+
+                    if(!$user->is_admin()){
+                        throw new \API_V1_exception_unauthorized();
+                    }
+
+                    return $app['api']->stop_scheduler($request)->get_response();
+                }
+            );
+
             /**
              * *******************************************************************
              * Route : /databoxes/list/FORMAT/
@@ -167,8 +202,8 @@ return call_user_func(function() {
              */
             $route = '/databoxes/list/';
             $app->get(
-                $route, function() use ($app) {
-                    return $app['api']->get_databoxes($app['request'])->get_response();
+                $route, function(\Silex\Application $app, Request $request) {
+                    return $app['api']->get_databoxes($request)->get_response();
                 }
             );
 
@@ -572,8 +607,6 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-//  public function search_publications(\Symfony\Component\HttpFoundation\Request $app['request']);
-
 
             $route = '/feeds/list/';
             $app->get(
@@ -593,7 +626,6 @@ return call_user_func(function() {
              *    PUBLICATION_ID : required INT
              *
              */
-//  public function get_publication(\Symfony\Component\HttpFoundation\Request $app['request'], $publication_id);
 
             $route = '/feeds/{feed_id}/content/';
             $app->get(
@@ -633,7 +665,6 @@ return call_user_func(function() {
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
 
                     $result = $app['api']->get_error_message($app['request'], $code);
-
                     return $result->get_response();
                 });
 ////
