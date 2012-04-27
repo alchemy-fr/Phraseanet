@@ -9,10 +9,10 @@ before_script:
   - mysql -e 'create database ab_test;create database db_test;'
   - mysql -e "source `pwd`/hudson/fixtures.sql"
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
-  - sh -c "cd Phraseanet-Extension && ./configure && make -j && sudo make install"
+  - sh -c "cd Phraseanet-Extension && ./configure && make && sudo make install"
   - git clone git://github.com/sebastianbergmann/php-test-helpers.git
   - echo "extension=phrasea2.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - sh -c "cd php-test-helpers && phpize && ./configure && make -j && sudo make install"
+  - sh -c "cd php-test-helpers && phpize && ./configure && make && sudo make install"
   - wget http://www.swftools.org/swftools-0.9.1.tar.gz
   - sh -c "tar xzvf swftools-0.9.1.tar.gz && cd swftools-0.9.1 && ./configure && make && sudo make install"
   - wget http://pecl.php.net/get/gmagick-1.1.0RC2.tgz
