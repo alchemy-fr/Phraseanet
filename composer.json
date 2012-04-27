@@ -2,7 +2,7 @@
   "name": "phraseanet/phraseanet",
   "description": "Phraseanet",
   "require": {
-    "php": ">=5.3.6",
+    "php": ">=5.3.2",
     "twig/twig": "1.6.*",
     "twig/extensions": "master",
     "doctrine/orm": ">=2.2.2",
@@ -37,7 +37,6 @@
     "alchemy/oauth2php": "master",
     "alchemy/tcpdf": "master",
     "alchemy/phlickr": "master",
-    "alchemy/phpshortener": "master",
     "alchemy/phpmailer": "master",
     "alchemy/gdata": "master"
   },
