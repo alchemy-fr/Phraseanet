@@ -304,10 +304,12 @@ class API_OAuth2_Token
             (oauth_token, session_id, api_account_id, expires, scope)
             VALUES (:token, null, :account_id, :expire, :scope)';
 
+        $expires = new \DateTime('+1 hour');
+
         $params = array(
             ':token'      => self::generate_token()
             , ':account_id' => $account->get_id()
-            , ':expire'     => time() + 3600
+            , ':expire'     => $expires->format(DATE_ISO8601)
             , ':scope'      => $scope
         );
 

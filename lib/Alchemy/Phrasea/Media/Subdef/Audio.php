@@ -15,7 +15,7 @@ class Audio extends Provider
 {
     const OPTION_BITRATE = 'bitrate';
     const OPTION_THREADS = 'threads';
-    const OPTION_ACODEC = 'a_codec';
+    const OPTION_ACODEC = 'acodec';
     const OPTION_AUDIOSAMPLERATE = 'audiosamplerate';
 
     public function __construct()

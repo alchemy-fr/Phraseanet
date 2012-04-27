@@ -91,7 +91,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_version()
   {
-    $this->assertEquals('1.1', $this->object->get_version());
+    $this->assertEquals('1.2', $this->object->get_version());
   }
 
   public function testGet_databoxes()

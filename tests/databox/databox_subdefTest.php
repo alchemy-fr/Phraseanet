@@ -105,8 +105,8 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                     <fps>10</fps>
                     <threads>1</threads>
                     <bitrate>192</bitrate>
-                    <a_codec>faac</a_codec>
-                    <v_codec>libx264</v_codec>
+                    <acodec>libfaac</acodec>
+                    <vcodec>libx264</vcodec>
                 </subdef>';
 
         $type   = new \Alchemy\Phrasea\Media\Type\Video();

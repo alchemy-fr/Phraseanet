@@ -149,10 +149,10 @@ class databox_subdef
         if ($sd->size) {
             $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
         }
-        if ($sd->a_codec) {
+        if ($sd->acodec) {
             $video->setOptionValue(Video::OPTION_ACODEC, (string) $sd->acodec);
         }
-        if ($sd->v_codec) {
+        if ($sd->vcodec) {
             $video->setOptionValue(Video::OPTION_VCODEC, (string) $sd->vcodec);
         }
         if ($sd->fps) {
