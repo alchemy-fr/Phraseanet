@@ -605,7 +605,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         if($code == 0) {
             $this->markTestSkipped('Install does not seem to rely on a webserver');
         }
-        
+
         $code = http_query::getHttpCodeFromUrl($url);
         $this->assertEquals(200, $code);
     }
@@ -712,7 +712,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 foreach ($field->get_values() as $value) {
                     if ($field->is_readonly() === false && $field->is_multi() === false) {
                         $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
-                        $this->assertEquals($value->getValue(), $saved_value);
+                        $this->assertEquals($value->getValue(), $saved_value, $this->client->getResponse()->getContent()." contains values");
                     }
                 }
             }
