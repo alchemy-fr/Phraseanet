@@ -93,21 +93,34 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             ->with($this->equalTo('GV_client_navigator'))
             ->will($this->returnValue(false));
         $registryBkp = $this->app["Core"]->getRegistry();
-        $this->app["Core"]['Registry'] = $registry;
-        $nativeApp = new \API_OAuth2_Application($appbox, 1);
-        $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
-        $token = $account->get_token()->get_value();
-        $_GET['oauth_token'] = $token;
-        $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
-        $content = $content = self::$yaml->parse($this->client->getResponse()->getContent());
-        $this->assertEquals(403, $content["meta"]["http_code"]);
+
+        $fail = null;
+
+        try {
+
+            $this->app["Core"]['Registry'] = $registry;
+            $nativeApp = new \API_OAuth2_Application($appbox, 1);
+            $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
+            $token = $account->get_token()->get_value();
+            $_GET['oauth_token'] = $token;
+            $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
+            $content = $content = self::$yaml->parse($this->client->getResponse()->getContent());
+            $this->assertEquals(403, $content["meta"]["http_code"]);
+        } catch (\Exception $e) {
+            $fail = $e;
+        }
+
         $this->app["Core"]['Registry'] = $registryBkp;
+
+        if ($fail) {
+            throw $e;
+        }
     }
-    /*
+
+    /**
      * Routes /API/V1/databoxes/DATABOX_ID/xxxxxx
      *
      */
-
     public function testDataboxRecordRoute()
     {
 
@@ -321,7 +334,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
-    /*
+
+    /**
      *
      * End /API/V1/databoxes/DATABOX_ID/xxxxxx Routes
      *
@@ -330,7 +344,6 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
      * Routes /API/V1/records/DATABOX_ID/RECORD_ID/xxxxx
      *
      */
-
     public function testRecordsSearchRoute()
     {
 
@@ -1028,7 +1041,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('response', $content);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["meta"], 'La response est un array');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["response"], 'La response est un objet');
-        $this->assertEquals('1.1', $content["meta"]["api_version"]);
+        $this->assertEquals('1.2', $content["meta"]["api_version"]);
         $this->assertNotNull($content["meta"]["response_time"]);
         $this->assertEquals('UTF-8', $content["meta"]["charset"]);
     }
@@ -1040,7 +1053,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey('response', $content);
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["meta"], 'La response est un array');
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $content["response"], 'La response est un array');
-        $this->assertEquals('1.1', $content["meta"]["api_version"]);
+        $this->assertEquals('1.2', $content["meta"]["api_version"]);
         $this->assertNotNull($content["meta"]["response_time"]);
         $this->assertEquals('UTF-8', $content["meta"]["charset"]);
     }

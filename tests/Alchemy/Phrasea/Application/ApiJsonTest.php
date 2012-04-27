@@ -20,12 +20,11 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $_GET['oauth_token'] = self::$token;
     }
 
-
     public function tearDown()
     {
         unset($_GET['oauth_token']);
     }
-    
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -80,28 +79,41 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
-        $registry = $this->getMock('\\registry', array(), array(), '',false);
+        $registry = $this->getMock('\\registry', array(), array(), '', false);
         $registry
             ->expects($this->any())
             ->method('get')
             ->with($this->equalTo('GV_client_navigator'))
             ->will($this->returnValue(false));
         $registryBkp = $this->app["Core"]->getRegistry();
-        $this->app["Core"]['Registry'] = $registry;
-        $nativeApp = new \API_OAuth2_Application($appbox, 1);
-        $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
-        $token = $account->get_token()->get_value();
-        $_GET['oauth_token'] = $token;
-        $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
-        $content = json_decode($this->client->getResponse()->getContent());
-        $this->assertEquals(403, $content->meta->http_code);
+
+        $fail = null;
+
+        try {
+
+            $this->app["Core"]['Registry'] = $registry;
+            $nativeApp = new \API_OAuth2_Application($appbox, 1);
+            $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
+            $token = $account->get_token()->get_value();
+            $_GET['oauth_token'] = $token;
+            $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
+            $content = json_decode($this->client->getResponse()->getContent());
+            $this->assertEquals(403, $content->meta->http_code);
+        } catch (\Exception $e) {
+            $fail = $e;
+        }
+
         $this->app["Core"]['Registry'] = $registryBkp;
+
+        if ($fail) {
+            throw $e;
+        }
     }
-    /*
+
+    /**
      * Routes /API/V1/databoxes/DATABOX_ID/xxxxxx
      *
      */
-
     public function testDataboxRecordRoute()
     {
         foreach (static::$databoxe_ids as $databox_id) {
@@ -315,7 +327,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
-    /*
+
+    /**
      *
      * End /API/V1/databoxes/DATABOX_ID/xxxxxx Routes
      *
@@ -324,7 +337,6 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
      * Routes /API/V1/records/DATABOX_ID/RECORD_ID/xxxxx
      *
      */
-
     public function testRecordsSearchRoute()
     {
 
@@ -1007,7 +1019,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->assertObjectHasAttribute('response', $content);
         $this->assertTrue(is_object($content->meta), 'Le bloc meta est un objet json');
         $this->assertTrue(is_object($content->response), 'Le bloc reponse est un objet json');
-        $this->assertEquals('1.1', $content->meta->api_version);
+        $this->assertEquals('1.2', $content->meta->api_version);
         $this->assertNotNull($content->meta->response_time);
         $this->assertEquals('UTF-8', $content->meta->charset);
     }
