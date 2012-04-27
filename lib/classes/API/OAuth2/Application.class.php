@@ -611,7 +611,7 @@ class API_OAuth2_Application
         $client_token = API_OAuth2_Token::generate_token();
 
         $params = array(
-            ':usr_id'         => $user->get_id(),
+            ':usr_id'         => $user ? $user->get_id() : null,
             ':name'           => $name,
             ':client_id'      => $client_token,
             ':client_secret'  => $client_secret,
