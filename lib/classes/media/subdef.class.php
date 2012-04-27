@@ -79,6 +79,12 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
     /**
      *
+     * @var string
+     */
+    protected $etag;
+
+    /**
+     *
      * @var DateTime
      */
     protected $creation_date;
@@ -93,7 +99,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      *
      * @var boolean
      */
-    protected $is_physically_present = true;
+    protected $is_physically_present = false;
 
     const TYPE_VIDEO_MP4 = 'VIDEO_MP4';
     const TYPE_VIDEO_FLV = 'VIDEO_FLV';
@@ -116,7 +122,6 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $this->name = $name;
         $this->record = $record;
         $this->load($substitute);
-        $this->pathfile = $this->path . $this->file;
 
         $nowtime = new DateTime('-3 days');
         $random = $record->get_modification_date() > $nowtime;
@@ -138,6 +143,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             $this->mime = $datas['mime'];
             $this->width = $datas['width'];
             $this->height = $datas['height'];
+            $this->etag = $datas['etag'];
             $this->baseurl = $datas['baseurl'];
             $this->path = $datas['path'];
             $this->file = $datas['file'];
@@ -155,7 +161,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $connbas = $this->record->get_databox()->get_connection();
 
         $sql = 'SELECT subdef_id, name, baseurl, file, width, height, mime,
-                path, size, substit, created_on, updated_on
+                path, size, substit, created_on, updated_on, etag
                 FROM subdef
                 WHERE name = :name AND record_id = :record_id';
 
@@ -169,14 +175,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
-        $registry = $this->record->get_databox()->get_registry();
-
         if ($row) {
+
             $this->width = (int) $row['width'];
             $this->height = (int) $row['height'];
             $this->mime = $row['mime'];
             $this->baseurl = trim($row['baseurl']);
             $this->file = $row['file'];
+            $this->etag = $row['etag'];
             $this->path = p4string::addEndSlash($row['path']);
             $this->is_substituted = ! ! $row['substit'];
             $this->subdef_id = (int) $row['subdef_id'];
@@ -185,50 +191,16 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
                 $this->modification_date = new DateTime($row['updated_on']);
             if ($row['created_on'])
                 $this->creation_date = new DateTime($row['created_on']);
-        }
-        elseif ($substitute === false) {
-            throw new Exception_Media_SubdefNotFound($this->name . ' not found');
-        } else {
-            $this->mime = 'image/png';
-            $this->width = 256;
-            $this->height = 256;
-            $this->baseurl = 'skins/icons/';
-            $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/';
-            $this->file = 'deleted.png';
-            $this->is_physically_present = false;
-            $this->is_substituted = true;
-        }
-        if ( ! $row || ! file_exists($this->path . $this->file)) {
-            if ($this->record->is_grouping()) {
-                $this->mime = 'image/png';
-                $this->width = 256;
-                $this->height = 256;
-                $this->baseurl = 'skins/icons/substitution/';
-                $this->path = $registry->get('GV_RootPath')
-                    . 'www/skins/icons/substitution/';
-                $this->file = 'regroup_thumb.png';
-                $this->is_substituted = true;
-            } else {
-                $mime = $this->record->get_mime();
-                $mime = trim($mime) != '' ? str_replace('/', '_', $mime) : 'application_octet-stream';
 
-                $this->mime = 'image/png';
-                $this->width = 256;
-                $this->height = 256;
-                $this->baseurl = 'skins/icons/substitution/';
-                $this->path = $registry->get('GV_RootPath')
-                    . 'www/skins/icons/substitution/';
-                $this->file = str_replace('+', '%20', $mime) . '.png';
-                $this->is_substituted = true;
+            if (file_exists($this->path . $this->file)) {
+                $this->is_physically_present = true;
             }
-            $this->is_physically_present = false;
-            if ( ! file_exists($this->path . $this->file)) {
-                $this->baseurl = 'skins/icons/';
-                $this->path = $registry->get('GV_RootPath')
-                    . 'www/skins/icons/';
-                $this->file = 'substitution.png';
-                $this->is_substituted = true;
-            }
+        } elseif ($substitute === false) {
+            throw new Exception_Media_SubdefNotFound($this->name . ' not found');
+        }
+
+        if ( ! $row || ! $this->is_physically_present) {
+            $this->find_substitute_file();
         }
 
         $datas = array(
@@ -236,6 +208,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             , 'width'              => $this->width
             , 'height'             => $this->height
             , 'baseurl'            => $this->baseurl
+            , 'etag'               => $this->etag
             , 'path'               => $this->path
             , 'file'               => $this->file
             , 'physically_present' => $this->is_physically_present
@@ -246,6 +219,70 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         );
 
         $this->set_data_to_cache($datas);
+
+        return $this;
+    }
+
+    /**
+     * Removes the file associated to a subdef
+     *
+     * @return \media_subdef
+     */
+    public function remove_file()
+    {
+        if ($this->is_physically_present() && is_writable($this->get_pathfile())) {
+            unlink($this->get_pathfile());
+
+            $this->delete_data_from_cache();
+
+            if ($this->get_permalink() instanceof media_Permalink_Adapter) {
+                $this->get_permalink()->delete_data_from_cache();
+            }
+
+            $this->find_substitute_file();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Find a substitution file for a sibdef
+     *
+     * @return \media_subdef
+     */
+    protected function find_substitute_file()
+    {
+        $registry = $this->record->get_databox()->get_registry();
+
+        if ($this->record->is_grouping()) {
+            $this->mime = 'image/png';
+            $this->width = 256;
+            $this->height = 256;
+            $this->baseurl = 'skins/icons/substitution/';
+            $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/substitution/';
+            $this->file = 'regroup_thumb.png';
+            $this->is_substituted = true;
+        } else {
+            $mime = $this->record->get_mime();
+            $mime = trim($mime) != '' ? str_replace('/', '_', $mime) : 'application_octet-stream';
+
+            $this->mime = 'image/png';
+            $this->width = 256;
+            $this->height = 256;
+            $this->baseurl = 'skins/icons/substitution/';
+            $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/substitution/';
+            $this->file = str_replace('+', '%20', $mime) . '.png';
+            $this->is_substituted = true;
+        }
+
+        $this->is_physically_present = false;
+
+        if ( ! file_exists($this->path . $this->file)) {
+            $this->baseurl = 'skins/icons/';
+            $this->path = $registry->get('GV_RootPath') . 'www/skins/icons/';
+            $this->file = 'substitution.png';
+            $this->is_substituted = true;
+        }
 
         return $this;
     }
@@ -274,7 +311,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_permalink()
     {
-        if ( ! $this->permalink && $this->is_physically_present)
+        if ( ! $this->permalink && $this->is_physically_present())
             $this->permalink = media_Permalink_Adapter::getPermalink($this->record->get_databox(), $this);
 
         return $this->permalink;
@@ -287,6 +324,29 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     public function get_record_id()
     {
         return $this->record->get_record_id();
+    }
+
+    public function getEtag()
+    {
+        if ( ! $this->etag && $this->is_physically_present()) {
+            $this->setEtag(md5_file($this->get_pathfile()));
+        }
+
+        return $this->etag;
+    }
+
+    public function setEtag($etag)
+    {
+        $this->etag = $etag;
+
+        $sql = "UPDATE subdef SET etag = :etag WHERE subdef_id = :subdef_id";
+        $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute(array(':subdef_id' => $this->subdef_id, ':etag'      => $etag));
+        $stmt->closeCursor();
+
+        $this->delete_data_from_cache();
+
+        return $this;
     }
 
     /**
@@ -414,7 +474,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_pathfile()
     {
-        return $this->pathfile;
+        return $this->path . $this->file;
     }
 
     /**
@@ -447,13 +507,43 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
     }
 
     /**
+     * Return the databox subdef corresponding to the subdef
+     *
+     * @return \databox_subdef
+     */
+    public function getDataboxSubdef()
+    {
+        return $this->record
+                ->get_databox()
+                ->get_subdef_structure()
+                ->get_subdef($this->record->get_type(), $this->get_name());
+    }
+
+    public function getDevices()
+    {
+        if ($this->get_name() == 'document') {
+            return array(\databox_subdef::DEVICE_ALL);
+        }
+
+        return $this->record
+                ->get_databox()
+                ->get_subdef_structure()
+                ->get_subdef($this->record->get_type(), $this->get_name())
+                ->getDevices();
+    }
+
+    /**
      *
      * @param registryInterface $registry
      * @param int $angle
      * @return media_subdef
      */
-    public function rotate(registryInterface $registry, $angle)
+    public function rotate($angle)
     {
+        if ( ! $this->is_physically_present()) {
+            throw new \Alchemy\Phrasea\Exception\RuntimeException('You can not rotate a substitution');
+        }
+
         $Core = \bootstrap::getCore();
 
         $specs = new MediaAlchemyst\Specification\Image();
@@ -550,7 +640,13 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $stmt->execute($params);
         $stmt->closeCursor();
 
-        return new self($record, $name);
+        $subdef = new self($record, $name);
+
+        if ($subdef->get_permalink() instanceof media_Permalink_Adapter) {
+            $subdef->get_permalink()->delete_data_from_cache();
+        }
+
+        return $subdef;
     }
 
     /**
@@ -570,13 +666,14 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         }
 
         if (in_array($this->mime, array('video/mp4'))) {
-            $token = p4file::apache_tokenize($this->pathfile);
+            $token = p4file::apache_tokenize($this->get_pathfile());
             if ($token) {
                 $this->url = $token;
 
                 return;
             }
         }
+
         $this->url = "/datafiles/" . $this->record->get_sbas_id()
             . "/" . $this->record->get_record_id() . "/"
             . $this->get_name() . "/"

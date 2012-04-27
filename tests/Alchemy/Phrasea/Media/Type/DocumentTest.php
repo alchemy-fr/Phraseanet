@@ -13,5 +13,4 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
         $object = new Document();
         $this->assertEquals(Type::TYPE_DOCUMENT, $object->getType());
     }
-
 }

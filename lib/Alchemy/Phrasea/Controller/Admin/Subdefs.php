@@ -61,12 +61,14 @@ class Subdefs implements ControllerProviderInterface
                 }
 
                 if ($delete_subdef) {
+
                     $delete_subef = explode('_', $delete_subdef);
                     $group = $delete_subef[0];
                     $name = $delete_subef[1];
                     $subdefs = $databox->get_subdef_structure();
                     $subdefs->delete_subdef($group, $name);
                 } elseif (count($add_subdef) === 3) {
+
                     $subdefs = $databox->get_subdef_structure();
                     $UnicodeProcessor = new \unicode();
 
@@ -76,11 +78,14 @@ class Subdefs implements ControllerProviderInterface
 
                     $subdefs->add_subdef($group, $name, $class);
                 } else {
+
                     $subdefs = $databox->get_subdef_structure();
 
-                    $options = array();
 
                     foreach ($Parmsubdefs as $post_sub) {
+
+                        $options = array();
+
                         $post_sub_ex = explode('_', $post_sub);
 
                         $group = $post_sub_ex[0];
@@ -105,11 +110,14 @@ class Subdefs implements ControllerProviderInterface
                         $media = $request->get($post_sub . '_' . $mediatype, array());
 
                         foreach ($media as $option => $value) {
+
                             if ($option == 'resolution' && $mediatype == 'image') {
                                 $option = 'dpi';
                             }
+
                             $options[$option] = $value;
                         }
+
                         $subdefs->set_subdef($group, $name, $class, $downloadable, $options);
                     }
                 }

@@ -11,36 +11,56 @@
 
 namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
+/**
+ * Range Subdef Option
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class Range implements OptionType
 {
-    protected $min_value;
-    protected $max_value;
-    protected $default_value;
+    protected $name;
+    protected $displayName;
+    protected $minValue;
+    protected $maxValue;
+    protected $defaultValue;
     protected $value;
     protected $step;
 
-    public function __construct($name, $min_value, $max_value, $default_value = null, $step = 1)
+    public function __construct($displayName, $name, $minValue, $maxValue, $defaultValue = null, $step = 1)
     {
+        $this->displayName = $displayName;
         $this->name = $name;
-        $this->min_value = $min_value;
-        $this->max_value = $max_value;
-        $this->default_value = $default_value;
+        $this->minValue = $minValue;
+        $this->maxValue = $maxValue;
+        $this->defaultValue = $defaultValue;
         $this->step = $step;
 
-        if ($default_value) {
-            $this->setValue($default_value);
+        if ($defaultValue) {
+            $this->setValue($defaultValue);
         }
     }
 
     public function setValue($value)
     {
-        if ($value > $this->max_value || $value < $this->min_value) {
+        if ( ! $value) {
+            $this->value = null;
+
+            return $this;
+        }
+
+        if ($value > $this->maxValue || $value < $this->minValue) {
             throw new \Exception_InvalidArgument('The value provided does not fit in range');
         }
 
         $this->value = $value;
 
         return $this;
+    }
+
+    public function getDisplayName()
+    {
+        return $this->displayName;
     }
 
     public function getType()
@@ -65,11 +85,11 @@ class Range implements OptionType
 
     public function getMinValue()
     {
-        return $this->min_value;
+        return $this->minValue;
     }
 
     public function getMaxValue()
     {
-        return $this->max_value;
+        return $this->maxValue;
     }
 }

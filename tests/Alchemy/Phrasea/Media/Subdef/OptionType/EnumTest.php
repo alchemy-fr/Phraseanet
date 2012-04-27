@@ -12,7 +12,7 @@ class EnumTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new Enum('enumerateur', array('un', 'dos', 'tres'), 'dos');
+        $this->object = new Enum('Numo', 'enumerateur', array('un', 'dos', 'tres'), 'dos');
     }
 
     /**
@@ -24,6 +24,8 @@ class EnumTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('dos', $this->object->getValue());
         $this->object->setValue('tres');
         $this->assertEquals('tres', $this->object->getValue());
+        $this->object->setValue('');
+        $this->assertNull($this->object->getValue());
     }
 
     /**
@@ -57,6 +59,14 @@ class EnumTest extends \PHPUnit_Framework_TestCase
     public function testGetName()
     {
         $this->assertEquals('enumerateur', $this->object->getName());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Media\Subdef\OptionType\Enum::getDisplayName
+     */
+    public function testGetDisplayName()
+    {
+        $this->assertEquals('Numo', $this->object->getDisplayName());
     }
 
 }

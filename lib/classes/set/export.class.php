@@ -773,7 +773,7 @@ class set_export extends set_abstract
      * @param string $exportname
      * @param string $mime
      * @param string $disposition
-     * @return Void
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public static function stream_file(
     $file, $exportname, $mime, $disposition = 'attachment')

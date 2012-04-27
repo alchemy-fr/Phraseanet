@@ -11,6 +11,13 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+
+/**
+ * Audio Subdef
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class Audio extends Provider
 {
     const OPTION_BITRATE = 'bitrate';
@@ -22,13 +29,13 @@ class Audio extends Provider
     {
         $AVaudiosamplerate = array(
             8000, 11025, 16000, 22050, 32000, 44056, 44100,
-            47250, 48000, 50000, 50400, 88200, 96000, null
+            47250, 48000, 50000, 50400, 88200, 96000
         );
 
-        $this->registerOption(new OptionType\Range(self::OPTION_BITRATE, 100, 4000, 800));
-        $this->registerOption(new OptionType\Range(self::OPTION_THREADS, 1, 16, 1));
-        $this->registerOption(new OptionType\Enum(self::OPTION_AUDIOSAMPLERATE, $AVaudiosamplerate));
-        $this->registerOption(new OptionType\Enum(self::OPTION_ACODEC, array('libfaac', 'libvo_aacenc', 'libmp3lame', 'libvorbis'), 'libfaac'));
+        $this->registerOption(new OptionType\Range(_('Birate'), self::OPTION_BITRATE, 100, 4000, 800));
+        $this->registerOption(new OptionType\Range(_('Threads'), self::OPTION_THREADS, 1, 16, 1));
+        $this->registerOption(new OptionType\Enum(_('AudioSamplerate'), self::OPTION_AUDIOSAMPLERATE, $AVaudiosamplerate));
+        $this->registerOption(new OptionType\Enum(_('Audio Codec'), self::OPTION_ACODEC, array('libfaac', 'libvo_aacenc', 'libmp3lame', 'libvorbis'), 'libfaac'));
     }
 
     public function getType()
