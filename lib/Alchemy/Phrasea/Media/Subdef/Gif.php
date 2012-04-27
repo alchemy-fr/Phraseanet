@@ -11,6 +11,12 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+/**
+ * Gif Subdef
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class Gif extends Image
 {
     const OPTION_DELAY = 'delay';
@@ -19,7 +25,7 @@ class Gif extends Image
     {
         parent::__construct();
 
-        $this->registerOption(new OptionType\Range(self::OPTION_DELAY, 50, 500, 100));
+        $this->registerOption(new OptionType\Range(_('Delay'), self::OPTION_DELAY, 50, 500, 100));
     }
 
     public function getType()

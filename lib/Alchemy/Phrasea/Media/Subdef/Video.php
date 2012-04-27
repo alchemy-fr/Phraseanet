@@ -11,11 +11,17 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+/**
+ * Video Subdef
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class Video extends Audio
 {
     const OPTION_SIZE = 'size';
     const OPTION_FRAMERATE = 'fps';
-    const OPTION_VCODEC = 'v_codec';
+    const OPTION_VCODEC = 'vcodec';
     const OPTION_GOPSIZE = 'GOPsize';
 
     protected $options = array();
@@ -24,10 +30,10 @@ class Video extends Audio
     {
         parent::__construct();
 
-        $this->registerOption(new OptionType\Range(self::OPTION_GOPSIZE, 1, 200, 25));
-        $this->registerOption(new OptionType\Range(self::OPTION_SIZE, 100, 2000, 600, 16));
-        $this->registerOption(new OptionType\Range(self::OPTION_FRAMERATE, 1, 200, 20));
-        $this->registerOption(new OptionType\Enum(self::OPTION_VCODEC, array('libx264', 'libvpx', 'libtheora'), 'libx264'));
+        $this->registerOption(new OptionType\Range(_('GOP size'), self::OPTION_GOPSIZE, 1, 200, 25));
+        $this->registerOption(new OptionType\Range(_('Dimension'), self::OPTION_SIZE, 100, 2000, 600, 16));
+        $this->registerOption(new OptionType\Range(_('Frame Rate'), self::OPTION_FRAMERATE, 1, 200, 20));
+        $this->registerOption(new OptionType\Enum(_('Video Codec'), self::OPTION_VCODEC, array('libx264', 'libvpx', 'libtheora'), 'libx264'));
     }
 
     public function getType()

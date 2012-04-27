@@ -558,6 +558,9 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->assertArrayHasKey("mime_type", $embed);
         $this->assertEquals($embed["mime_type"], $record->get_subdef($subdef_name)->get_mime());
         $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_STRING, $embed["mime_type"]);
+        $this->assertArrayHasKey("devices", $embed);
+        $this->assertEquals($embed['devices'], $record->get_subdef($subdef_name)->getDevices());
+        $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $embed['devices']);
     }
 
     protected function checkPermalink($permalink, media_subdef $subdef)

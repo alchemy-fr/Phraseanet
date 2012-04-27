@@ -187,8 +187,9 @@ class mail
 
     public static function send_mail($subject, $body, $to, $from = false, $files = array(), $reading_confirm_to = false)
     {
+        $Core = \bootstrap::getCore();
 
-        $registry = registry::get_instance();
+        $registry = $Core->getRegistry();
 
         if ( ! isset($to['email']) || ! PHPMailer::ValidateAddress($to['email'])) {
             return false;
@@ -252,7 +253,9 @@ class mail
                 $mail->AddAttachment($f);      // attachment
             }
 
-            $mail->Send();
+            if ($Core->getConfiguration()->getEnvironnement() !== 'test') {
+                $mail->Send();
+            }
 
             return true;
         } catch (phpmailerException $e) {

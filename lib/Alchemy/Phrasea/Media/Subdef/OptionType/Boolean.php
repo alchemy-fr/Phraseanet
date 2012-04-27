@@ -11,19 +11,27 @@
 
 namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
+/**
+ * Boolean Subdef Option
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class Boolean implements OptionType
 {
     protected $name;
-    protected $default_value;
+    protected $displayName;
+    protected $defaultValue;
     protected $value;
 
-    public function __construct($name, $default_value = null)
+    public function __construct($displayName, $name, $defaultValue = null)
     {
+        $this->displayName = $displayName;
         $this->name = $name;
-        $this->default_value = $default_value;
+        $this->defaultValue = $defaultValue;
 
-        if ($default_value) {
-            $this->setValue($default_value);
+        if ($defaultValue) {
+            $this->setValue($defaultValue);
         }
     }
 
@@ -37,6 +45,11 @@ class Boolean implements OptionType
     public function getType()
     {
         return self::TYPE_BOOLEAN;
+    }
+
+    public function getDisplayName()
+    {
+        return $this->displayName;
     }
 
     public function getName()

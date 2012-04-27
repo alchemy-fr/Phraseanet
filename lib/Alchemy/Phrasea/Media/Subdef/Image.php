@@ -11,6 +11,12 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+/**
+ * Image Subdef
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class Image extends Provider
 {
     const OPTION_SIZE = 'size';
@@ -22,10 +28,10 @@ class Image extends Provider
 
     public function __construct()
     {
-        $this->registerOption(new OptionType\Range(self::OPTION_SIZE, 20, 3000, 800));
-        $this->registerOption(new OptionType\Range(self::OPTION_RESOLUTION, 50, 300, 72));
-        $this->registerOption(new OptionType\Boolean(self::OPTION_STRIP, false));
-        $this->registerOption(new OptionType\Range(self::OPTION_QUALITY, 0, 100, 75));
+        $this->registerOption(new OptionType\Range(_('Dimension'), self::OPTION_SIZE, 20, 3000, 800));
+        $this->registerOption(new OptionType\Range(_('Resolution'), self::OPTION_RESOLUTION, 50, 300, 72));
+        $this->registerOption(new OptionType\Boolean(_('Remove ICC Profile'), self::OPTION_STRIP, false));
+        $this->registerOption(new OptionType\Range(_('Quality'), self::OPTION_QUALITY, 0, 100, 75));
     }
 
     public function getType()

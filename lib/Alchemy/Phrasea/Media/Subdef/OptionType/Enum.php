@@ -11,25 +11,40 @@
 
 namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
+/**
+ * Enum Subdef Option
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 class Enum implements OptionType
 {
-    protected $default_value;
-    protected $value;
+    protected $name;
+    protected $displayName;
+    protected $defaultValue;
     protected $available;
+    protected $value;
 
-    public function __construct($name, Array $available, $default_value = null)
+    public function __construct($displayName, $name, Array $available, $defaultValue = null)
     {
+        $this->displayName = $displayName;
         $this->name = $name;
         $this->available = $available;
-        $this->default_value = $default_value;
+        $this->defaultValue = $defaultValue;
 
-        if ($default_value) {
-            $this->setValue($default_value);
+        if ($defaultValue) {
+            $this->setValue($defaultValue);
         }
     }
 
     public function setValue($value)
     {
+        if ( ! $value) {
+            $this->value = null;
+
+            return $this;
+        }
+
         if ( ! in_array($value, $this->available)) {
             throw new \Exception_InvalidArgument(
                 sprintf(
@@ -44,6 +59,11 @@ class Enum implements OptionType
         $this->value = $value;
 
         return $this;
+    }
+
+    public function getDisplayName()
+    {
+        return $this->displayName;
     }
 
     public function getType()

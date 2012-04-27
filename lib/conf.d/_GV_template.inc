@@ -152,18 +152,6 @@ $GV = array(
                 'required'  => true
             ),
             array(
-                'type'    => 'string',
-                'name'    => 'GV_bitly_user',
-                'comment' => _('reglages:: Nom d\'utilisateur pour l\'api bit.ly'),
-                'default' => ''
-            ),
-            array(
-                'type'    => 'string',
-                'name'    => 'GV_bitly_key',
-                'comment' => _('reglages:: ccle d\'api pour l\'api bit.ly'),
-                'default' => '',
-            ),
-            array(
                 'type'     => 'boolean',
                 'name'     => 'GV_captchas',
                 'comment'  => _('reglages:: Utilisation de l\'api recpatcha'),

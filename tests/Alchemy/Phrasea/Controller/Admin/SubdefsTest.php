@@ -100,6 +100,7 @@ class ControllerSubdefsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , 'quality'    => 90
           ))
         );
+        
         $this->assertTrue($this->client->getResponse()->isRedirect());
         $subdef      = $subdefs->get_subdef("image", "name");
 
