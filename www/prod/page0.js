@@ -1116,6 +1116,7 @@ $(document).ready(function(){
   $('.datepicker').datepicker({
     changeYear: true,
     changeMonth:true,
+    dateFormat:'yy/mm/dd',
     showOn: 'button',
     buttonImage:'/skins/icons/cal.png',
     buttonImageOnly: true
