@@ -2,6 +2,8 @@ language: php
 
 before_script:
   - cp hudson/*.yml config/
+  - curl -s http://getcomposer.org/installer | php
+  - php composer.phar install
   - sudo apt-get update
   - sudo apt-get install -y ffmpeg libavcodec-extra-53 openoffice.org openoffice.org-writer unoconv ghostscript gsfonts ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev imagemagick imagemagick libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev xpdf libexpat-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
   - mysql -e 'create database ab_test;create database db_test;'
@@ -16,8 +18,6 @@ before_script:
   - tar -xzf gmagick-1.1.0RC2.tgz  
   - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
   - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install
 
 php:
   - 5.3.2
