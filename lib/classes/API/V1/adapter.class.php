@@ -93,6 +93,65 @@ class API_V1_adapter extends API_V1_Abstract
         return $this->version;
     }
 
+    public function get_scheduler_state(Request $request)
+    {
+        $result = new API_V1_result($request, $this);
+
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+
+        $task_manager = new task_manager($appbox);
+
+        $state = $task_manager->get_scheduler_state();
+
+        $result->set_datas($state);
+
+        return $result;
+    }
+
+    public function start_scheduler(Request $request)
+    {
+        $result = new API_V1_result($request, $this);
+
+        $scheduler = new task_Scheduler();
+
+        $ret = array('success' => true);
+        try
+        {
+            $scheduler->run();
+        }
+        catch(\Exception $e)
+        {
+            $ret = array('success' => false);
+        }
+
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    public function stop_scheduler(Request $request)
+    {
+        $result = new API_V1_result($request, $this);
+
+        $ret = array('success' => true);
+
+        try
+        {
+            $appbox = appbox::get_instance(\bootstrap::getCore());
+            
+            $task_manager = new task_manager($appbox);
+            $task_manager->set_sched_status(task_manager::STATUS_SCHED_TOSTOP);
+        }
+        catch(\Exception $e)
+        {
+            $ret = array('success' => false);
+        }
+
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
     /**
      * Get an API_V1_result containing the databoxes
      *
