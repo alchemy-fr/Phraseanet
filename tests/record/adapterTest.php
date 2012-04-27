@@ -46,6 +46,49 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     parent::tearDownAfterClass();
   }
 
+  /**
+     *  Check whether a record is delete from order_elements when
+     *  record::delete is call
+     * @covers \record_adapter
+     */
+    public function testSetExport()
+    {
+        $recordsf = new system_file(__DIR__ . '/../testfiles/test001.CR2');
+        $record = record_adapter::create(self::$collection, $recordsf);
+
+        $basket = new \Entities\Basket();
+
+        $basket->setName('hello');
+        $basket->setOwner(self::$user);
+        $basket->setDescription('hello');
+
+        $em = self::$core->getEntityManager();
+
+        $basketElement = new \Entities\BasketElement();
+
+        $basketElement->setRecord($record);
+        $basketElement->setBasket($basket);
+
+        $em->persist($basketElement);
+
+        $basket->addBasketElement($basketElement);
+
+        $em->persist($basket);
+        $em->flush();
+
+        $export = new set_exportorder(self::$record_1->get_serialize_key(), $basket->getId());
+
+        $orderId = $export->order_available_elements(self::$user->get_id(), 'ahaha', '+2 hours');
+
+        $record->delete();
+
+        try {
+            $order = new set_order($orderId);
+        } catch (\Exception $e) {
+            $this->fail('should not raise an exception' . $e->getMessage() . ' ' . $e->getLine() . ' ' . $e->getFile()  . ' ' . $e->getTraceAsString());
+        }
+    }
+
   public function testGet_creation_date()
   {
     $date_obj = new DateTime();
