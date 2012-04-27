@@ -57,15 +57,19 @@ class patch_370a3 implements patchInterface
     {
         $appbox = \appbox::get_instance(\bootstrap::getCore());
 
-        $client = \API_OAuth2_Application::create($appbox, null, \API_OAuth2_Application_Navigator::CLIENT_NAME);
+        try {
+            \API_OAuth2_Application::load_from_client_id($appbox, \API_OAuth2_Application_Navigator::CLIENT_ID);
+        } catch (\Exception_NotFound $e) {
+            $client = \API_OAuth2_Application::create($appbox, null, \API_OAuth2_Application_Navigator::CLIENT_NAME);
 
-        $client->set_activated(true);
-        $client->set_grant_password(true);
-        $client->set_website("http://www.phraseanet.com");
-        $client->set_client_id(\API_OAuth2_Application_Navigator::CLIENT_ID);
-        $client->set_client_secret(\API_OAuth2_Application_Navigator::CLIENT_SECRET);
-        $client->set_type(\API_OAuth2_Application::DESKTOP_TYPE);
-        $client->set_redirect_uri(\API_OAuth2_Application::NATIVE_APP_REDIRECT_URI);
+            $client->set_activated(true);
+            $client->set_grant_password(true);
+            $client->set_website("http://www.phraseanet.com");
+            $client->set_client_id(\API_OAuth2_Application_Navigator::CLIENT_ID);
+            $client->set_client_secret(\API_OAuth2_Application_Navigator::CLIENT_SECRET);
+            $client->set_type(\API_OAuth2_Application::DESKTOP_TYPE);
+            $client->set_redirect_uri(\API_OAuth2_Application::NATIVE_APP_REDIRECT_URI);
+        }
     }
 }
 
