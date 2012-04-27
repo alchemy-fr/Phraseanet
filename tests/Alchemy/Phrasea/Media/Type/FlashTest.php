@@ -13,5 +13,4 @@ class FlashTest extends \PHPUnit_Framework_TestCase
         $object = new Flash();
         $this->assertEquals(Type::TYPE_FLASH, $object->getType());
     }
-
 }

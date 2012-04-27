@@ -13,5 +13,4 @@ class VideoTest extends \PHPUnit_Framework_TestCase
         $object = new Video();
         $this->assertEquals(Type::TYPE_VIDEO, $object->getType());
     }
-
 }

@@ -62,8 +62,10 @@ class Session_Storage_PHPSession extends Session_Storage_Abstract implements Ses
      */
     protected function start()
     {
+        session_cache_limiter('');
         session_name($this->name);
         session_start();
+
         $this->open = true;
 
         return $this;

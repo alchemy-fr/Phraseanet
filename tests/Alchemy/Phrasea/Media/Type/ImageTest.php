@@ -13,5 +13,4 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $object = new Image();
         $this->assertEquals(Type::TYPE_IMAGE, $object->getType());
     }
-
 }

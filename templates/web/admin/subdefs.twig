@@ -283,7 +283,7 @@
             {% set varname = subdefgroup~'_'~subdefname~'_'~subdefType.getType()~'['~ option.getName() ~']' %}
                               <tr>
                                 <td style="width:120px;">
-                {{option.getName()}}
+                {{option.getDisplayName()}}
                                   </td>
                                   <td style="width:250px;">
                 {% set extradata = '' %}
@@ -304,7 +304,7 @@
 
                 {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_ENUM') %}
                                         <select name="{{varname}}">
-                                          <option>{% trans 'Choisir' %}</option>
+                                          <option value="">{% trans 'Choisir' %}</option>
                   {% for pot_value in option.getAvailableValues() %}
                                           <option value="{{ pot_value }}" {% if pot_value == option.getValue() %}selected="selected"{% endif %}>{{ pot_value }}</option>
                   {% endfor %}
@@ -312,8 +312,13 @@
                 {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_BOOLEAN') %}
                                         <input name="{{varname}}" type="radio" value="yes" {% if option.getValue() %}checked="checked"{% endif %} /> {% trans 'yes' %}
                                         <input name="{{varname}}" type="radio" value="no" {% if option.getValue() is empty %}checked="checked"{% endif %}/> {% trans 'no' %}
-                {% else %}
-                                        <input name="{{varname}}" type="text" value="{{ option.getValue() }}"/>
+                {% elseif option.getType() == constant('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType::TYPE_MULTI') %}
+
+                    {% for pot_value, selected in option.Value(true) %}
+                        <input type="checkbox" name="{{varname}}[]" value="{{ pot_value }}" {% if selected %}checked="checked"{% endif %}/><label>{{ pot_value }}</label>
+                    {% endfor %}
+
+
                 {% endif %}
                                       </td>
                                       <td>

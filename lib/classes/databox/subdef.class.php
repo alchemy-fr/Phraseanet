@@ -32,6 +32,7 @@ class databox_subdef
      * @var string
      */
     protected $class;
+    protected $devices = array();
     protected $name;
     protected $path;
     protected $subdef_group;
@@ -50,6 +51,12 @@ class databox_subdef
     const CLASS_THUMBNAIL = 'thumbnail';
     const CLASS_PREVIEW = 'preview';
     const CLASS_DOCUMENT = 'document';
+    const DEVICE_ALL = 'all';
+    const DEVICE_HANDHELD = 'handheld';
+    const DEVICE_PRINT = 'print';
+    const DEVICE_PROJECTION = 'projection';
+    const DEVICE_SCREEN = 'screen';
+    const DEVICE_TV = 'tv';
 
     /**
      *
@@ -60,6 +67,11 @@ class databox_subdef
     {
         $this->subdef_group = $type;
         $this->class = (string) $sd->attributes()->class;
+
+        foreach ($sd->devices as $device) {
+            $this->devices[] = (string) $device;
+        }
+
         $this->name = strtolower($sd->attributes()->name);
         $this->downloadable = p4field::isyes($sd->attributes()->downloadable);
         $this->path = trim($sd->path) !== '' ? p4string::addEndSlash(trim($sd->path)) : '';
@@ -98,73 +110,6 @@ class databox_subdef
         return $this;
     }
 
-    protected function buildImageSubdef(SimpleXMLElement $sd)
-    {
-        $image = new Image();
-
-        if ($sd->size) {
-            $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
-        }
-        if ($sd->quality) {
-            $image->setOptionValue(Image::OPTION_QUALITY, (int) $sd->quality);
-        }
-        if ($sd->strip) {
-            $image->setOptionValue(Image::OPTION_STRIP, p4field::isyes($sd->strip));
-        }
-        if ($sd->dpi) {
-            $image->setOptionValue(Image::OPTION_RESOLUTION, (int) $sd->dpi);
-        }
-
-        return $image;
-    }
-
-    protected function buildAudioSubdef(SimpleXMLElement $sd)
-    {
-        return new Audio();
-    }
-
-    protected function buildFlexPaperSubdef(SimpleXMLElement $sd)
-    {
-        return new FlexPaper();
-    }
-
-    protected function buildGifSubdef(SimpleXMLElement $sd)
-    {
-        $gif = new Gif();
-
-        if ($sd->size) {
-            $gif->setOptionValue(Gif::OPTION_SIZE, (int) $sd->size);
-        }
-        if ($sd->delay) {
-            $gif->setOptionValue(Gif::OPTION_DELAY, (int) $sd->delay);
-        }
-
-        return $gif;
-    }
-
-    protected function buildVideoSubdef(SimpleXMLElement $sd)
-    {
-        $video = new Video();
-
-        if ($sd->size) {
-            $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
-        }
-        if ($sd->acodec) {
-            $video->setOptionValue(Video::OPTION_ACODEC, (string) $sd->acodec);
-        }
-        if ($sd->vcodec) {
-            $video->setOptionValue(Video::OPTION_VCODEC, (string) $sd->vcodec);
-        }
-        if ($sd->fps) {
-            $video->setOptionValue(Video::OPTION_FRAMERATE, (int) $sd->fps);
-        }
-        if ($sd->bitrate) {
-            $video->setOptionValue(Video::OPTION_BITRATE, (int) $sd->bitrate);
-        }
-
-        return $video;
-    }
-
     /**
      *
      * @return string
@@ -184,6 +129,16 @@ class databox_subdef
     }
 
     /**
+     * The devices matching this subdefinition
+     *
+     * @return Array
+     */
+    public function getDevices()
+    {
+        return $this->devices;
+    }
+
+    /**
      *
      * @return string
      */
@@ -193,8 +148,9 @@ class databox_subdef
     }
 
     /**
+     * The current SubdefType the subdef converts documents
      *
-     * @return type
+     * @return Alchemy\Phrasea\Media\Subdef\Subdef
      */
     public function getSubdefType()
     {
@@ -202,8 +158,9 @@ class databox_subdef
     }
 
     /**
+     * The current Group which the subdef is in (Audio, Video ...)
      *
-     * @return type
+     * @return Alchemy\Phrasea\Media\Type\Type
      */
     public function getSubdefGroup()
     {
@@ -211,6 +168,7 @@ class databox_subdef
     }
 
     /**
+     * An associative label ; keys are i18n languages
      *
      * @return Array
      */
@@ -219,17 +177,38 @@ class databox_subdef
         return $this->labels;
     }
 
+    /**
+     * boolean
+     *
+     * @return type
+     */
     public function is_downloadable()
     {
         return $this->downloadable;
     }
 
+    /**
+     * Get an array of Alchemy\Phrasea\Media\Subdef\Subdef available for the current Media Type
+     *
+     * @return array
+     */
     public function getAvailableSubdefTypes()
     {
         $subdefTypes = array();
 
+        $availableDevices = array(
+            self::DEVICE_ALL,
+            self::DEVICE_HANDHELD,
+            self::DEVICE_PRINT,
+            self::DEVICE_PROJECTION,
+            self::DEVICE_SCREEN,
+            self::DEVICE_TV,
+        );
+
         if (isset(self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()])) {
+
             foreach (self::$mediaTypeToSubdefTypes[$this->subdef_group->getType()] as $subdefType) {
+
                 if ($subdefType == $this->subdef_type->getType()) {
                     $mediatype_obj = $this->subdef_type;
                 } else {
@@ -255,6 +234,8 @@ class databox_subdef
                     }
                 }
 
+                $mediatype_obj->registerOption(new \Alchemy\Phrasea\Media\Subdef\OptionType\Multi(_('Target Device'), 'device', $availableDevices, $this->devices));
+
                 $subdefTypes[] = $mediatype_obj;
             }
         }
@@ -273,6 +254,7 @@ class databox_subdef
     }
 
     /**
+     * The name of the subdef
      *
      * @return string
      */
@@ -281,17 +263,120 @@ class databox_subdef
         return $this->name;
     }
 
+    /**
+     * Get the MediaAlchemyst specs for the current subdef
+     *
+     * @return type
+     */
     public function getSpecs()
     {
         return $this->subdef_type->getMediaAlchemystSpec();
     }
 
     /**
+     * An array of Alchemy\Phrasea\Media\Subdef\OptionType\OptionType for the current subdef
      *
-     * @return <type>
+     * @return array
      */
     public function getOptions()
     {
         return $this->subdef_type->getOptions();
+    }
+
+    /**
+     * Build Image Subdef object depending the SimpleXMLElement
+     *
+     * @param SimpleXMLElement $sd
+     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     */
+    protected function buildImageSubdef(SimpleXMLElement $sd)
+    {
+        $image = new Image();
+
+        if ($sd->size) {
+            $image->setOptionValue(Image::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->quality) {
+            $image->setOptionValue(Image::OPTION_QUALITY, (int) $sd->quality);
+        }
+        if ($sd->strip) {
+            $image->setOptionValue(Image::OPTION_STRIP, p4field::isyes($sd->strip));
+        }
+        if ($sd->dpi) {
+            $image->setOptionValue(Image::OPTION_RESOLUTION, (int) $sd->dpi);
+        }
+
+        return $image;
+    }
+
+    /**
+     * Build Audio Subdef object depending the SimpleXMLElement
+     *
+     * @param SimpleXMLElement $sd
+     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     */
+    protected function buildAudioSubdef(SimpleXMLElement $sd)
+    {
+        return new Audio();
+    }
+
+    /**
+     * Build Flexpaper Subdef object depending the SimpleXMLElement
+     *
+     * @param SimpleXMLElement $sd
+     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     */
+    protected function buildFlexPaperSubdef(SimpleXMLElement $sd)
+    {
+        return new FlexPaper();
+    }
+
+    /**
+     * Build GIF Subdef object depending the SimpleXMLElement
+     *
+     * @param SimpleXMLElement $sd
+     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     */
+    protected function buildGifSubdef(SimpleXMLElement $sd)
+    {
+        $gif = new Gif();
+
+        if ($sd->size) {
+            $gif->setOptionValue(Gif::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->delay) {
+            $gif->setOptionValue(Gif::OPTION_DELAY, (int) $sd->delay);
+        }
+
+        return $gif;
+    }
+
+    /**
+     * Build Video Subdef object depending the SimpleXMLElement
+     *
+     * @param SimpleXMLElement $sd
+     * @return \Alchemy\Phrasea\Media\Subdef\Video
+     */
+    protected function buildVideoSubdef(SimpleXMLElement $sd)
+    {
+        $video = new Video();
+
+        if ($sd->size) {
+            $video->setOptionValue(Video::OPTION_SIZE, (int) $sd->size);
+        }
+        if ($sd->a_codec) {
+            $video->setOptionValue(Video::OPTION_ACODEC, (string) $sd->acodec);
+        }
+        if ($sd->v_codec) {
+            $video->setOptionValue(Video::OPTION_VCODEC, (string) $sd->vcodec);
+        }
+        if ($sd->fps) {
+            $video->setOptionValue(Video::OPTION_FRAMERATE, (int) $sd->fps);
+        }
+        if ($sd->bitrate) {
+            $video->setOptionValue(Video::OPTION_BITRATE, (int) $sd->bitrate);
+        }
+
+        return $video;
     }
 }

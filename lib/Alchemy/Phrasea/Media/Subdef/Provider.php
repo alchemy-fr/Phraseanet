@@ -11,12 +11,17 @@
 
 namespace Alchemy\Phrasea\Media\Subdef;
 
+/**
+ *
+ * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
+ * @link        www.phraseanet.com
+ */
 abstract class Provider implements Subdef
 {
     protected $options = array();
     protected $spec;
 
-    protected function registerOption(OptionType\OptionType $option)
+    public function registerOption(OptionType\OptionType $option)
     {
         $this->options[$option->getName()] = $option;
 

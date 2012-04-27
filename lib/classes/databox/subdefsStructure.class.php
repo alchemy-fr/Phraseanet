@@ -131,7 +131,7 @@ class databox_subdefsStructure implements IteratorAggregate
         if (isset($this->AvSubdefs[$subdef_type]) && isset($this->AvSubdefs[$subdef_type][$subdef_name])) {
             return $this->AvSubdefs[$subdef_type][$subdef_name];
         }
-        throw new Exception_Databox_SubdefNotFound();
+        throw new Exception_Databox_SubdefNotFound(sprintf('Databox subdef name `%s` of type `%s` not found', $subdef_name, $subdef_type));
     }
 
     /**
@@ -157,8 +157,9 @@ class databox_subdefsStructure implements IteratorAggregate
             $parent->removeChild($node);
         }
 
-        if (isset($AvSubdefs[$group]) && isset($AvSubdefs[$group][$name]))
+        if (isset($AvSubdefs[$group]) && isset($AvSubdefs[$group][$name])) {
             unset($AvSubdefs[$group][$name]);
+        }
 
         $this->databox->saveStructure($dom_struct);
 
@@ -220,9 +221,21 @@ class databox_subdefsStructure implements IteratorAggregate
         $subdef->setAttribute('downloadable', ($downloadable ? 'true' : 'false'));
 
         foreach ($options as $option => $value) {
-            $child = $dom_struct->createElement($option);
-            $child->appendChild($dom_struct->createTextNode($value));
-            $subdef->appendChild($child);
+
+            if (is_scalar($value)) {
+
+                $child = $dom_struct->createElement($option);
+                $child->appendChild($dom_struct->createTextNode($value));
+                $subdef->appendChild($child);
+            } elseif (is_array($value)) {
+
+                foreach ($value as $v) {
+
+                    $child = $dom_struct->createElement($option);
+                    $child->appendChild($dom_struct->createTextNode($v));
+                    $subdef->appendChild($child);
+                }
+            }
         }
 
         $dom_xp = $this->databox->get_xpath_structure();

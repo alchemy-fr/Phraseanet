@@ -16,7 +16,7 @@ class RangeTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->object = new Range('name', 3, 8, 6, 2);
+        $this->object = new Range('Rangers', 'name', 3, 8, 6, 2);
     }
 
     /**
@@ -28,6 +28,8 @@ class RangeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(6, $this->object->getValue());
         $this->object->setValue(8);
         $this->assertEquals(8, $this->object->getValue());
+        $this->object->setValue('');
+        $this->assertNull($this->object->getValue());
     }
 
     /**
@@ -77,6 +79,14 @@ class RangeTest extends \PHPUnit_Framework_TestCase
     public function testGetMaxValue()
     {
         $this->assertEquals(8, $this->object->getMaxValue());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Media\Subdef\OptionType\Range::getDisplayName
+     */
+    public function testGetDisplayName()
+    {
+        $this->assertEquals('Rangers', $this->object->getDisplayName());
     }
 
 }

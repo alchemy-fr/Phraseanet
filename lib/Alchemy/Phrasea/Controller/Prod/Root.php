@@ -125,8 +125,6 @@ class Root implements ControllerProviderInterface
                     'thesau_json_sbas'     => $Serializer->serialize($sbas, 'json'),
                     'thesau_json_bas2sbas' => $Serializer->serialize($bas2sbas, 'json'),
                     'thesau_languages'     => \User_Adapter::avLanguages(),
-                    'GV_bitly_user'        => $registry->get('GV_bitly_user'),
-                    'GV_bitly_key'         => $registry->get('GV_bitly_key')
                     ));
 
                 return new Response($out);

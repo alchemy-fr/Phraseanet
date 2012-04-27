@@ -6974,6 +6974,16 @@
             <comment></comment>
           </field>
           <field>
+            <name>etag</name>
+            <type>char(32)</type>
+            <null>YES</null>
+            <extra></extra>
+
+            <default></default>
+
+            <comment></comment>
+          </field>
+          <field>
             <name>dispatched</name>
             <type>tinyint(1) unsigned</type>
             <null></null>

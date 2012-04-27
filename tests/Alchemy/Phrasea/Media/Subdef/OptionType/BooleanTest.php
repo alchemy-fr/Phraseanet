@@ -12,7 +12,7 @@ class BooleanTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->object = new Boolean('boolean', true);
+        $this->object = new Boolean('Booleen', 'boolean', true);
     }
 
     /**
@@ -40,6 +40,14 @@ class BooleanTest extends \PHPUnit_Framework_TestCase
     public function testGetName()
     {
         $this->assertEquals('boolean', $this->object->getName());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Media\Subdef\OptionType\Boolean::getDisplayName
+     */
+    public function testGetDisplayName()
+    {
+        $this->assertEquals('Booleen', $this->object->getDisplayName());
     }
 
 }

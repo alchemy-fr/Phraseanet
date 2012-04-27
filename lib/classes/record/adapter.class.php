@@ -602,6 +602,50 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     }
 
     /**
+     * Returns an array of subdef matching
+     *
+     * @param string|array  $devices    the matching device (see databox_subdef::DEVICE_*)
+     * @param type          $mimes      the matching mime types
+     * @return array
+     */
+    public function getSubdfefByDeviceAndMime($devices = null, $mimes = null)
+    {
+        $subdefNames = array();
+
+        $searchDevices = array_merge((array) $devices, databox_subdef::DEVICE_ALL);
+
+        foreach ($this->databox->get_subdef_structure() as $databoxSubdef) {
+
+            if ($devices && ! array_intersect($databoxSubdef->getDevices(), $searchDevices)) {
+                continue;
+            }
+
+            array_push($subdefNames, $databoxSubdef->get_name());
+        }
+
+        $subdefs = array();
+
+        foreach ($this->get_subdefs() as $subdef) {
+
+            if ( ! in_array($subdef->get_name(), $subdefNames)) {
+                continue;
+            }
+
+            if ($mimes && ! in_array($subdef->get_mime(), (array) $mimes)) {
+                continue;
+            }
+
+            if ($subdef->is_substituted()) {
+                continue;
+            }
+
+            $subdefs[] = $subdef;
+        }
+
+        return $subdefs;
+    }
+
+    /**
      *
      * @return Array
      */
@@ -917,9 +961,9 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $subdef_def = $this->get_databox()->get_subdef_structure()->get_subdef($this->get_type(), $name);
 
             if ($this->has_subdef($name) && ! $this->get_subdef($name)->is_substituted()) {
-                $value = $this->get_subdef($name);
-                $original_file = p4string::addEndSlash($value->get_path()) . $value->get_file();
-                unlink($original_file);
+
+                $original_file = $this->get_subdef($name)->get_pathfile();
+                $this->get_subdef($name)->remove_file();
                 $this->clearSubdefCache($name);
             } else {
                 $path = databox::dispatch($subdef_def->get_path());
@@ -1584,13 +1628,11 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $pathdest = null;
 
             if ($this->has_subdef($subdefname) && $this->get_subdef($subdefname)->is_physically_present()) {
+
                 $pathdest = $this->get_subdef($subdefname)->get_pathfile();
+                $this->get_subdef($subdefname)->remove_file();
 
-                if ( ! is_file($pathdest) && is_writeable($pathdest)) {
-                    unlink($pathdest);
-
-                    $this->clearSubdefCache($subdefname);
-                }
+                $this->clearSubdefCache($subdefname);
             }
 
             $pathdest = $this->generateSubdefPathname($subdef, $pathdest);
@@ -1645,6 +1687,13 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * Generate a subdef pathname depending the databox_subdef and the previous file(if regenerated)
+     *
+     * @param databox_subdef $subdef
+     * @param type $oldVersion
+     * @return type
+     */
     protected function generateSubdefPathname(databox_subdef $subdef, $oldVersion = null)
     {
         if ($oldVersion) {
@@ -1656,6 +1705,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $pathdest . $this->get_record_id() . '_' . $subdef->get_name() . '.' . $this->getExtensionFromSpec($subdef->getSpecs());
     }
 
+    /**
+     * Get the extension from MediaAlchemyst specs
+     *
+     * @param MediaAlchemyst\Specification\Specification $spec
+     * @return string
+     */
     protected function getExtensionFromSpec(MediaAlchemyst\Specification\Specification $spec)
     {
         $extension = null;
@@ -1681,6 +1736,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $extension;
     }
 
+    /**
+     * Get the extension from audiocodec
+     *
+     * @param string $audioCodec
+     * @return string
+     */
     protected function getExtensionFromAudioCodec($audioCodec)
     {
         $extension = null;
@@ -1697,6 +1758,12 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $extension;
     }
 
+    /**
+     * Get the extension from videocodec
+     *
+     * @param string $videoCodec
+     * @return string
+     */
     protected function getExtensionFromVideoCodec($videoCodec)
     {
         $extension = null;
@@ -1783,8 +1850,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 continue;
 
             try {
-                $subdef->rotate($registry, $angle);
-            } catch (Exception $e) {
+                $subdef->rotate($angle);
+            } catch (\Exception $e) {
 
             }
         }
