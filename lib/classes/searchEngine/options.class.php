@@ -98,7 +98,7 @@ class searchEngine_options implements Serializable
    *
    * @var string
    */
-  protected $sort_by = self::SORT_CREATED_ON;
+  protected $sort_by;
 
   /**
    *
