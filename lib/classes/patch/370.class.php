@@ -76,6 +76,12 @@ class patch_370 implements patchInterface
             $delay->nodeValue = min(500, max(50, (int) $delay->nodeValue * 400));
         }
 
+        foreach ($XPath->query('/record/subdefs/subdefgroup/subdef/acodc') as $acodec) {
+            if ($acodec->nodeValue == 'faac') {
+                $acodec->nodeValue = 'libfaac';
+            }
+        }
+
         $sql = 'UPDATE pref SET value = :structure WHERE prop = "structure"';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':structure' => $DOMDocument->saveXML()));

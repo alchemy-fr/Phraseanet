@@ -39,7 +39,7 @@
         <mediatype>video</mediatype>
         <writeDatas>yes</writeDatas>
         <baseurl></baseurl>
-        <acodec>faac</acodec>
+        <acodec>libfaac</acodec>
         <vcodec>libx264</vcodec>
         <bitrate>1000</bitrate>
         <threads>8</threads>
