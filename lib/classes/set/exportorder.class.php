@@ -24,6 +24,7 @@ class set_exportorder extends set_export
      * @param String $usage
      * @param String $deadline
      * @return boolean
+     * @return $order_id
      */
     public function order_available_elements($from_usr_id, $usage, $deadline)
     {
@@ -96,7 +97,7 @@ class set_exportorder extends set_export
 
         $evt_mngr->trigger('__NEW_ORDER__', $params);
 
-        return true;
+        return $order_id;
     }
 
     /**
@@ -106,10 +107,10 @@ class set_exportorder extends set_export
     protected function get_orderable_lst()
     {
         $ret = array();
-        foreach ($this as $basrec => $download_element) {
-            foreach ($download_element->get_orderable() as $name => $bool) {
+        foreach ($this as $download_element) {
+            foreach ($download_element->get_orderable() as $bool) {
                 if ($bool === true) {
-                    $ret[] = $basrec;
+                    $ret[] = $download_element->get_serialize_key();
                 }
             }
         }

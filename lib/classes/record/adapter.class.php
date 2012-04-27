@@ -1572,6 +1572,16 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $stmt->execute(array(':record_id' => $this->get_record_id()));
         $stmt->closeCursor();
 
+        $base_ids = array_map(function($collection) {
+                return $collection->get_base_id();
+            }, $this->databox->get_collections());
+
+        $sql = "DELETE FROM order_elements WHERE record_id = :record_id AND base_id IN (" . implode(', ', $base_ids) . ")";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':record_id' => $this->get_record_id()));
+        $stmt->closeCursor();
+
+
         $em = bootstrap::getCore()->getEntityManager();
 
         $repository = $em->getRepository('\Entities\BasketElement');
