@@ -109,7 +109,7 @@ class CoreTest extends PhraseanetPHPUnitAbstract
 
     if (!extension_loaded('test_helpers'))
     {
-      $this->fail("test_helpers extension required");
+      $this->markTestSkipped("test_helpers extension required");
     }
 
     set_new_overload(array($this, 'newCallback'));
