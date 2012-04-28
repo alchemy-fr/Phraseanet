@@ -316,7 +316,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
   public function testHas_preview()
   {
     $this->assertTrue(self::$record_1->has_preview());
-    $this->assertTrue(self::$record_23->has_preview());
   }
 
   public function testGet_serialize_key()
