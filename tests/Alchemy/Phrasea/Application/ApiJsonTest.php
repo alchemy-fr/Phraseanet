@@ -92,13 +92,19 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         try {
 
             $this->app["Core"]['Registry'] = $registry;
-            $nativeApp = new \API_OAuth2_Application($appbox, 1);
+
+            $nativeApp = \API_OAuth2_Application::load_from_client_id($appbox, \API_OAuth2_Application_Navigator::CLIENT_ID);
+
             $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
             $token = $account->get_token()->get_value();
             $_GET['oauth_token'] = $token;
             $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
             $content = json_decode($this->client->getResponse()->getContent());
-            $this->assertEquals(403, $content->meta->http_code);
+
+            if (403 != $content->meta->http_code) {
+                $fail = new \Exception('Result does not match expected 403, returns ' . $content->meta->http_code);
+            }
+
         } catch (\Exception $e) {
             $fail = $e;
         }
@@ -106,7 +112,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->app["Core"]['Registry'] = $registryBkp;
 
         if ($fail) {
-            throw $e;
+            throw $fail;
         }
     }
 
@@ -594,7 +600,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $code = http_query::getHttpCodeFromUrl(self::$core->getRegistry()->get('GV_ServerName'));
 
-        if($code == 0) {
+        if ($code == 0) {
             $this->markTestSkipped('Install does not seem to rely on a webserver');
         }
 
