@@ -28,7 +28,7 @@ class questionReportTest extends PhraseanetPHPUnitAbstract
   public function setUp()
   {
     $date = new Datetime();
-    $thid->dmax = $date->format("Y-m-d H:i:s");
+    $this->dmax = $date->format("Y-m-d H:i:s");
     $date->modify('-6 month');
     $this->dmin = $date->format("Y-m-d H:i:s");
     $appbox = appbox::get_instance(\bootstrap::getCore());
