@@ -721,7 +721,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             foreach ($content["response"]["metadatas"] as $metadata) {
                 if ( ! in_array($metadata["meta_id"], array_keys($toupdate)))
                     continue;
-                $saved_value = $toupdate[$metadata["meta_id"]]['value'];
+                $saved_value = $toupdate[$metadata["meta_structure_id"]]['value'];
                 $this->assertEquals($saved_value, $metadata["value"], "Asserting that " . $this->client->getResponse()->getContent()." contains values");
             }
             $record->delete();
