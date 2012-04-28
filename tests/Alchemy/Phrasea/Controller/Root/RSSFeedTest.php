@@ -213,7 +213,7 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
   protected function evaluateAtom(Response $response)
   {
     $dom_doc = new DOMDocument();
-    $doc->preserveWhiteSpace = false;
+    $dom_doc->preserveWhiteSpace = false;
     $dom_doc->loadXML($response->getContent());
 
     $xpath = new DOMXPath($dom_doc);
