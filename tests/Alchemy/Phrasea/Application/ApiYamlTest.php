@@ -99,13 +99,19 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         try {
 
             $this->app["Core"]['Registry'] = $registry;
-            $nativeApp = new \API_OAuth2_Application($appbox, 1);
+
+            $nativeApp = \API_OAuth2_Application::load_from_client_id($appbox, \API_OAuth2_Application_Navigator::CLIENT_ID);
+
             $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
             $token = $account->get_token()->get_value();
             $_GET['oauth_token'] = $token;
-            $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
+            $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/yaml'));
             $content = $content = self::$yaml->parse($this->client->getResponse()->getContent());
-            $this->assertEquals(403, $content["meta"]["http_code"]);
+
+            if (403 != $content["meta"]["http_code"]) {
+                $fail = new \Exception('Result does not match expected 403, returns ' . $content["meta"]["http_code"]);
+            }
+            
         } catch (\Exception $e) {
             $fail = $e;
         }
@@ -113,7 +119,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->app["Core"]['Registry'] = $registryBkp;
 
         if ($fail) {
-            throw $e;
+            throw $fail;
         }
     }
 
