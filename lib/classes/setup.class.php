@@ -516,7 +516,7 @@ class setup
             foreach (self::$PHP_EXT as $ext) {
                 if (extension_loaded($ext) !== true) {
                     $blocker = true;
-                    if (in_array($ext, array('twig', 'gmagick', 'imagick'))) {
+                    if (in_array($ext, array('ftp', 'twig', 'gmagick', 'imagick'))) {
                         $blocker = false;
                     }
 
