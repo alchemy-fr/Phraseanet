@@ -19,7 +19,7 @@ class Feed_XML_RSS_ImageTest extends PhraseanetPHPUnitAbstract
   public function setUp()
   {
     parent::setUp();
-    $this->this->link = 'http://www.example.org';
+    $this->link = 'http://www.example.org';
     $this->title = 'Un beau titre';
     $this->url = 'http://www.example.org/image.jpg';
     $this->width = 42;
