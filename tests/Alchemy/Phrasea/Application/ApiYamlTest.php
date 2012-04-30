@@ -12,6 +12,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     protected static $account_id;
     protected static $application;
     protected static $databoxe_ids = array();
+    protected static $need_records = 1;
+    protected static $need_subdefs = true;
 
     /**
      *
@@ -111,7 +113,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             if (403 != $content["meta"]["http_code"]) {
                 $fail = new \Exception('Result does not match expected 403, returns ' . $content["meta"]["http_code"]);
             }
-            
+
         } catch (\Exception $e) {
             $fail = $e;
         }
@@ -492,40 +494,55 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsEmbedRoute()
     {
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        $keys = array_keys(self::$record_1->get_subdefs());
 
-            $record = record_adapter::create($collection, $system_file);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $keys = array_keys($record->get_subdefs());
+        $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
-            $record_id = $record->get_record_id();
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/embed/?oauth_token=' . self::$token;
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-
-            $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
-
-            foreach ($content["response"] as $embed) {
-                foreach ($keys as $key) {
-                    $this->assertArrayHasKey($key, $embed);
-                    $this->checkEmbed($key, $embed[$key], $record);
-                }
+        foreach ($content["response"] as $embed) {
+            foreach ($keys as $key) {
+                $this->assertArrayHasKey($key, $embed);
+                $this->checkEmbed($key, $embed[$key], self::$record_1);
             }
-            $record->delete();
         }
+
         $route = '/records/24892534/51654651553/embed/?oauth_token=' . self::$token;
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
         $route = '/records/any_bad_id/sfsd5qfsd5/embed/?oauth_token=' . self::$token;
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+    }
+
+    public function testRecordsEmbedRouteMime()
+    {
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+
+        $this->client->request('GET', $route, array('mimes' => array('image/jpg', 'image/jpeg')), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+        foreach ($content["response"] as $embed) {
+            foreach (array('thumbnail', 'preview') as $key) {
+                $this->assertArrayHasKey($key, $embed);
+                $this->checkEmbed($key, $embed[$key], self::$record_1);
+            }
+        }
+    }
+
+    public function testRecordsEmbedRouteDevices()
+    {
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+
+        $this->client->request('GET', $route, array('devices' => array('nodevice')), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+        $this->assertEquals(0, count($content["response"]['embed']));
     }
 
     protected function assertPermalinkHeaders($url, media_subdef $subdef, $type_url = "page_url")
@@ -608,7 +625,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $code = http_query::getHttpCodeFromUrl(self::$core->getRegistry()->get('GV_ServerName'));
 
-        if($code == 0) {
+        if ($code == 0) {
             $this->markTestSkipped('Install does not seem to rely on a webserver');
         }
 
@@ -718,7 +735,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 foreach ($field->get_values() as $value) {
                     if ($field->is_readonly() === false && $field->is_multi() === false) {
                         $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
-                        $this->assertEquals($value->getValue(), $saved_value, $this->client->getResponse()->getContent()." contains values");
+                        $this->assertEquals($value->getValue(), $saved_value, $this->client->getResponse()->getContent() . " contains values");
                     }
                 }
             }
@@ -728,7 +745,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 if ( ! in_array($metadata["meta_id"], array_keys($toupdate)))
                     continue;
                 $saved_value = $toupdate[$metadata["meta_structure_id"]]['value'];
-                $this->assertEquals($saved_value, $metadata["value"], "Asserting that " . $this->client->getResponse()->getContent()." contains values");
+                $this->assertEquals($saved_value, $metadata["value"], "Asserting that " . $this->client->getResponse()->getContent() . " contains values");
             }
             $record->delete();
         }

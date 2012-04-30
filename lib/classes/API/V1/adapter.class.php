@@ -451,7 +451,11 @@ class API_V1_adapter extends API_V1_Abstract
         $record = $this->appbox->get_databox($databox_id)->get_record($record_id);
 
         $ret = array();
-        foreach ($record->get_embedable_medias() as $name => $media) {
+
+        $devices = $request->get('devices', array());
+        $mimes = $request->get('mimes', array());
+
+        foreach ($record->get_embedable_medias($devices, $mimes) as $name => $media) {
             $ret[$name] = $this->list_embedable_media($media, $this->appbox->get_registry());
         }
 
@@ -1117,7 +1121,6 @@ class API_V1_adapter extends API_V1_Abstract
          * @todo  ajouter une option pour avoir les values serialisées
          *        dans un cas multi
          */
-
         return array(
             'meta_id'           => $value->getId(),
             'meta_structure_id' => $field->get_meta_struct_id(),
