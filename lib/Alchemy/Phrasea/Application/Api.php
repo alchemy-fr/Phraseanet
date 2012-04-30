@@ -43,7 +43,7 @@ return call_user_func(function() {
                     return new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
                 };
 
-                    /**                     * ********************************************************
+            /**             * ********************************************************
              * oAuth token verification process
              * @ throws \API_V1_exception_unauthorized
              * ********************************************************* */
@@ -156,38 +156,116 @@ return call_user_func(function() {
                     throw new \API_V1_exception_badrequest();
                 };
 
-            $route = '/scheduler/state/';
+            /**
+             * Get sheduler state
+             */
+            $route = '/monitor/scheduler/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
                     return $app['api']->get_scheduler_state($request)->get_response();
                 }
             );
 
-            $route = '/scheduler/start/';
+            /**
+             * task list
+             */
+            $route = '/monitor/tasks/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
                     /* @var $user \User_Adapter */
                     $user = $app['token']->get_account()->get_user();
 
-                    if(!$user->is_admin()){
+                    if ( ! $user->is_admin()) {
                         throw new \API_V1_exception_unauthorized();
                     }
 
-                    return $app['api']->start_scheduler($request)->get_response();
+                    return $app['api']->get_task_list($request)->get_response();
                 }
             );
 
-            $route = '/scheduler/stop/';
+            /**
+             * Get task informations
+             */
+            $route = '/monitor/task/{idTask}/';
+            $app->get(
+                $route, function(\Silex\Application $app, Request $request, $idTask) {
+                    /* @var $user \User_Adapter */
+                    $user = $app['token']->get_account()->get_user();
+
+                    if ( ! $user->is_admin()) {
+                        throw new \API_V1_exception_unauthorized();
+                    }
+
+                    return $app['api']->get_task($request, $idTask)->get_response();
+                }
+            );
+
+            /**
+             * Modify Task
+             * @param name
+             * @param autostart
+             */
+            $route = '/monitor/task/{idTask}/';
+            $app->post(
+                $route, function(\Silex\Application $app, Request $request, $idTask) {
+                    /* @var $user \User_Adapter */
+                    $user = $app['token']->get_account()->get_user();
+
+                    if ( ! $user->is_admin()) {
+                        throw new \API_V1_exception_unauthorized();
+                    }
+
+                    return $app['api']->set_task_property($app, $idTask)->get_response();
+
+                }
+            );
+
+            /**
+             * Start task
+             */
+            $route = '/monitor/task/{idTask}/start/';
+            $app->post(
+                $route, function(\Silex\Application $app, Request $request, $idTask) {
+                    /* @var $user \User_Adapter */
+                    $user = $app['token']->get_account()->get_user();
+
+                    if ( ! $user->is_admin()) {
+                        throw new \API_V1_exception_unauthorized();
+                    }
+
+                    return $app['api']->start_task($app, $idTask)->get_response();
+                }
+            );
+
+            /**
+             * Stop task
+             */
+            $route = '/monitor/task/{idTask}/stop/';
+            $app->post(
+                $route, function(\Silex\Application $app, Request $request, $idTask) {
+                    /* @var $user \User_Adapter */
+                    $user = $app['token']->get_account()->get_user();
+
+                    if ( ! $user->is_admin()) {
+                        throw new \API_V1_exception_unauthorized();
+                    }
+                    return $app['api']->stop_task($app,$idTask)->get_response();
+                }
+            );
+
+            /**
+             * Get some information about phraseanet
+             */
+            $route = '/monitor/phraseanet/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
                     /* @var $user \User_Adapter */
                     $user = $app['token']->get_account()->get_user();
 
-                    if(!$user->is_admin()){
+                    if ( ! $user->is_admin()) {
                         throw new \API_V1_exception_unauthorized();
                     }
-
-                    return $app['api']->stop_scheduler($request)->get_response();
+                    return $app['api']->get_phraseanet_monitor($app)->get_response();
                 }
             );
 
@@ -607,7 +685,6 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-
             $route = '/feeds/list/';
             $app->get(
                 $route, function() use ($app) {
@@ -626,7 +703,6 @@ return call_user_func(function() {
              *    PUBLICATION_ID : required INT
              *
              */
-
             $route = '/feeds/{feed_id}/content/';
             $app->get(
                 $route, function($feed_id) use ($app) {

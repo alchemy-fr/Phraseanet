@@ -138,7 +138,7 @@ abstract class task_abstract
             , self::STATUS_TOSTART
         );
         if ( ! in_array($status, $av_status))
-            throw new Exception(sprintf('unknown status `%s`', $status));
+            throw new Exception_InvalidArgument(sprintf('unknown status `%s`', $status));
 
 
         $conn = connection::getPDOConnection();
@@ -398,6 +398,18 @@ abstract class task_abstract
         $stmt->closeCursor();
 
         return $this;
+    }
+
+    public function get_last_exec_time()
+    {
+        $conn = connection::getPDOConnection();
+        $sql = 'SELECT last_exec_time FROM task2 WHERE task_id = :taskid';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute(array(':taskid' => $this->get_task_id()));
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        return isset($row['last_exec_time']) ? $row['last_exec_time'] : '';
     }
 
     public function get_pid()
