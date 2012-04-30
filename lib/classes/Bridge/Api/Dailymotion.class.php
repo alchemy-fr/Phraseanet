@@ -896,7 +896,7 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
     private function check_record_constraints(record_adapter $record)
     {
         $errors = array();
-        if ( ! $record->get_hd_file() instanceof SplFileObject)
+        if ( ! $record->get_hd_file() instanceof \SplFileInfo)
             $errors["file_size"] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
 
         if ($record->get_duration() > self::AUTH_VIDEO_DURATION)

@@ -91,7 +91,7 @@ class Core extends \Pimple
                     touch(__DIR__ . '/../../../tmp/cache_registry.yml');
                 }
 
-                $file = new \SplFileObject(__DIR__ . '/../../../tmp/cache_registry.yml');
+                $file = new \SplFileInfo(__DIR__ . '/../../../tmp/cache_registry.yml');
 
                 return new \Alchemy\Phrasea\Cache\Manager($core, $file);
             });

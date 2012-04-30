@@ -11,8 +11,9 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use \Alchemy\Phrasea\Core\Service\Builder,
-    \Alchemy\Phrasea\Core;
+use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+use Alchemy\Phrasea\Core\Service\Builder;
+use Alchemy\Phrasea\Core;
 
 /**
  *
@@ -23,7 +24,7 @@ class Manager
 {
     /**
      *
-     * @var \SplFileObject
+     * @var \SplFileInfo
      */
     protected $cacheFile;
     protected $core;
@@ -40,7 +41,7 @@ class Manager
      */
     protected $registry = array();
 
-    public function __construct(Core $core, \SplFileObject $file)
+    public function __construct(Core $core, \SplFileInfo $file)
     {
         $this->cacheFile = $file;
         $this->parser = new \Symfony\Component\Yaml\Yaml();
