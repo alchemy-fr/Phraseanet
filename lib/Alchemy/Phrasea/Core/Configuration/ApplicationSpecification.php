@@ -70,17 +70,17 @@ class ApplicationSpecification implements Specification
 
     protected function getConfigurationsFile()
     {
-        return new \SplFileObject($this->getConfigurationsPathFile());
+        return new \SplFileInfo($this->getConfigurationsPathFile());
     }
 
     protected function getConnexionsFile()
     {
-        return new \SplFileObject($this->getConnexionsPathFile());
+        return new \SplFileInfo($this->getConnexionsPathFile());
     }
 
     protected function getServicesFile()
     {
-        return new \SplFileObject($this->getServicesPathFile());
+        return new \SplFileInfo($this->getServicesPathFile());
     }
 
     public function delete()

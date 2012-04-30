@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-use \Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *
@@ -818,7 +818,7 @@ class Bridge_Api_Flickr extends Bridge_Api_Abstract implements Bridge_Api_Interf
     private function check_record_constraints(record_adapter $record)
     {
         $errors = array();
-        if ( ! $record->get_hd_file() instanceof SplFileObject)
+        if ( ! $record->get_hd_file() instanceof \SplFileInfo)
             $errors["file_size"] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
         if ($record->get_technical_infos('size') > self::AUTH_PHOTO_SIZE)
             $errors["size"] = sprintf(_("Le poids maximum d'un fichier est de %s"), p4string::format_octets(self::AUTH_PHOTO_SIZE));
