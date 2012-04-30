@@ -53,8 +53,8 @@ class module_console_schedulerState extends Command
             if ($state['status'] == 'started') {
                 $output->writeln(sprintf(
                         'Scheduler is %s on pid %d'
-                        , $state['schedstatus']
-                        , $state['schedpid']
+                        , $state['status']
+                        , $state['pid']
                     ));
             } else {
                 $output->writeln(sprintf('Scheduler is %s', $state['status']));
