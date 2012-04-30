@@ -11,7 +11,6 @@
 
 namespace Alchemy\Phrasea\Cache;
 
-use Symfony\Component\HttpFoundation\File\File as SymfoFile;
 use Alchemy\Phrasea\Core\Service\Builder;
 use Alchemy\Phrasea\Core;
 
