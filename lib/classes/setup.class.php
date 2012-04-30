@@ -494,10 +494,10 @@ class setup
          */
         public static function check_php_version()
         {
-            $version_ok = version_compare(PHP_VERSION, '5.3.4', '>');
+            $version_ok = version_compare(PHP_VERSION, '5.3.2', '>');
             if ( ! $version_ok) {
                 $message = sprintf(
-                    'Wrong PHP version : % ; PHP >= 5.3.4 required'
+                    'Wrong PHP version : % ; PHP >= 5.3.2 required'
                     , PHP_VERSION
                 );
             } else {
