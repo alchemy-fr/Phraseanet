@@ -163,10 +163,12 @@ class p4string
         return $ret;
     }
 
-    public static function jsonencode($datas)
+    public static function jsonencode($datas, $options = array())
     {
         if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
-            return json_encode($datas, JSON_HEX_TAG | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_HEX_APOS);
+            $defaultOptions = array(JSON_HEX_TAG, JSON_HEX_QUOT, JSON_HEX_AMP, JSON_HEX_APOS);
+            $options = array_sum(array_merge($options, $defaultOptions));
+            return json_encode($datas, $options);
         } else {
             return json_encode($datas);
         }
