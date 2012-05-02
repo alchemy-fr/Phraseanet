@@ -8,39 +8,63 @@ use Symfony\Component\HttpFoundation\Response;
 class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 {
     protected $client;
+
     protected static $token;
-    protected static $account_id;
+    protected static $account
     protected static $application;
+
+    protected static $adminToken;
+    protected static $adminAccount
+    protected static $adminApplication;
+
     protected static $databoxe_ids = array();
     protected static $need_records = 1;
     protected static $need_subdefs = true;
+
+    protected $savedToken;
 
     public function setUp()
     {
         parent::setUp();
         $this->client = $this->createClient();
-        $_GET['oauth_token'] = self::$token;
     }
 
     public function tearDown()
     {
-        unset($_GET['oauth_token']);
+        $this->unsetToken();
     }
 
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
+
         $appbox = appbox::get_instance(\bootstrap::getCore());
+
         self::$application = API_OAuth2_Application::create($appbox, self::$user, 'test API v1');
-        $account = API_OAuth2_Account::load_with_user($appbox, self::$application, self::$user);
+        self::$account = API_OAuth2_Account::load_with_user($appbox, self::$application, self::$user);
         self::$token = $account->get_token()->get_value();
-        self::$account_id = $account->get_id();
+
+        $admins = User_Adapter::get_sys_admins();
+
+        self::$adminToken = null;
+
+        if(0 !== count($admins)){
+            $admin = User_Adapter::getInstance(key($admins), $appbox);
+            self::$adminApplication = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+            self::$adminAccount = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+            $_GET['oauth_token'] = self::$adminAccount->get_token()->get_value();
+        }
     }
 
     public static function tearDownAfterClass()
     {
+        self::$account->delete();
         self::$application->delete();
-        $_GET = array();
+
+        if(self::$adminToken){
+            self::$adminAccount->delete();
+            self::$adminApplication->delete();
+        }
     }
 
     public function createApplication()
@@ -158,12 +182,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
      */
     public function testGetMonitorScheduler()
     {
-        $admins = User_Adapter::get_sys_admins();
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $admin = User_Adapter::getInstance(key($admins), $appbox);
-        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
-        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
-        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $_GET['oauth_token'] = self::$adminToken;
         $this->client->request('GET', '/monitor/scheduler/', array(), array(), array('HTTP_Accept' => 'application/json'));
         $content = json_decode($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
@@ -1472,5 +1491,17 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $this->assertEquals($retrieved, $status->state);
         }
+    }
+
+    protected function setToken($token){
+      $_GET['oauth_token'] = $token;
+    }
+
+    protected function unsetToken(){
+      unset($_GET['oauth_token']);
+    }
+
+    protected function request(){
+        
     }
 }
