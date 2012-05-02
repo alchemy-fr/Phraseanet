@@ -273,7 +273,7 @@ class task_period_archive extends task_abstract
      */
     protected function run2()
     {
-        $this->debug = TRUE;
+        $this->debug = FALSE;
 
         $ret = '';
         $conn = connection::getPDOConnection();
