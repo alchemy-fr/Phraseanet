@@ -125,6 +125,219 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         }
     }
 
+    public function testAdminOnlyShedulerState()
+    {
+        //Should be 401
+        $this->client->request('GET', '/monitor/scheduler/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('GET', '/monitor/tasks/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('GET', '/monitor/task/1/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('POST', '/monitor/task/1/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('POST', '/monitor/task/1/start/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('POST', '/monitor/task/1/stop/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('GET', '/monitor/phraseanet/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+    }
+
+    /**
+     * Route GET /API/V1/monitor/scheduler
+     *
+     */
+    public function testGetMonitorScheduler()
+    {
+        $admins = User_Adapter::get_sys_admins();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $this->client->request('GET', '/monitor/scheduler/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $response = $content['response'];
+        $this->assertArrayHasKey('qdelay', $response);
+        $this->assertArrayHasKey('status', $response);
+        $this->assertArrayHasKey('pid', $response);
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task
+     *
+     */
+    public function testGetMonitorTasks()
+    {
+        $admins = User_Adapter::get_sys_admins();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $this->client->request('GET', '/monitor/tasks/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $response = $content['response'];
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        $this->assertEquals(count($tasks), count($response));
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task
+     *
+     */
+    public function testGetMonitorTaskById()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        if (count($tasks) == 0) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+        $admins = User_Adapter::get_sys_admins();
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('GET', '/monitor/task/' . $idTask . '/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task
+     *
+     */
+    public function testUnknowGetMonitorTaskById()
+    {
+        $admins = User_Adapter::get_sys_admins();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $this->client->followRedirects();
+        $this->client->request('GET', '/monitor/task/0', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateMetaYamlNotFound($content);
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task/{idTask}/start
+     *
+     */
+    public function testGetMonitorStartTask()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        if (count($tasks) == 0) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+        $admins = User_Adapter::get_sys_admins();
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('POST', '/monitor/task/' . $idTask . '/start/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $task_manager->get_tasks(true);
+        $task = $task_manager->get_task($idTask);
+        $this->assertEquals(\task_abstract::STATUS_TOSTART, $task->get_status());
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task/{idTask}/stop
+     *
+     */
+    public function testGetMonitorStopTask()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        if (count($tasks) == 0) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+        $admins = User_Adapter::get_sys_admins();
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('POST', '/monitor/task/' . $idTask . '/stop/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $task_manager->get_tasks(true);
+        $task = $task_manager->get_task($idTask);
+        $this->assertEquals(\task_abstract::STATUS_TOSTOP, $task->get_status());
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/phraseanet
+     *
+     */
+    public function testgetMonitorPhraseanet()
+    {
+        $admins = User_Adapter::get_sys_admins();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $this->client->request('GET', '/monitor/phraseanet/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $response = $content['response'];
+        $this->assertArrayHasKey('global_values', $response);
+        $this->assertArrayHasKey('cache', $response);
+        $this->assertArrayHasKey('phraseanet', $response);
+        $application->delete();
+        $account->delete();
+    }
+
     /**
      * Routes /API/V1/databoxes/DATABOX_ID/xxxxxx
      *

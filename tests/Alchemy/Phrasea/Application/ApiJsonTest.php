@@ -50,7 +50,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRouteNotFound()
     {
-        $route = '/nothinghere?oauth_token=' . self::$token;
+        $route = '/nothinghere';
         $crawler = $this->client->request('GET', $route);
         $content = json_decode($this->client->getResponse()->getContent());
 
@@ -60,7 +60,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     public function testDatboxListRoute()
     {
-        $crawler = $this->client->request('GET', '/databoxes/list/?oauth_token=' . self::$token, array(), array(), array('HTTP_Accept' => 'application/json'));
+        $crawler = $this->client->request('GET', '/databoxes/list/', array(), array(), array('HTTP_Accept' => 'application/json'));
         $content = json_decode($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -100,7 +100,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
             $token = $account->get_token()->get_value();
             $_GET['oauth_token'] = $token;
-            $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/json'));
+            $this->client->request('GET', '/databoxes/list/', array(), array(), array('HTTP_Accept' => 'application/json'));
             $content = json_decode($this->client->getResponse()->getContent());
 
             if (403 != $content->meta->http_code) {
@@ -119,6 +119,221 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     }
 
     /**
+     * Cover mustBeAdmin route middleware
+     */
+    public function testAdminOnlyShedulerState()
+    {
+        $this->client->request('GET', '/monitor/scheduler/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->assertEquals(401, $content->meta->http_code);
+        $this->client->request('GET', '/monitor/tasks/', array(), array(), array('HTTP_Accept' => 'application/json'));
+
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content->meta->http_code);
+
+        $this->client->request('GET', '/monitor/task/1/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content->meta->http_code);
+
+        $this->client->request('POST', '/monitor/task/1/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content->meta->http_code);
+
+        $this->client->request('POST', '/monitor/task/1/start/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content->meta->http_code);
+
+        $this->client->request('POST', '/monitor/task/1/stop/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content->meta->http_code);
+
+        $this->client->request('GET', '/monitor/phraseanet/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content->meta->http_code);
+    }
+
+    /**
+     * Route GET /API/V1/monitor/scheduler
+     */
+    public function testGetMonitorScheduler()
+    {
+        $admins = User_Adapter::get_sys_admins();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $this->client->request('GET', '/monitor/scheduler/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $response = $content->response;
+        $this->assertObjectHasAttribute('qdelay', $response);
+        $this->assertObjectHasAttribute('status', $response);
+        $this->assertObjectHasAttribute('pid', $response);
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task
+     *
+     */
+    public function testGetMonitorTasks()
+    {
+        $admins = User_Adapter::get_sys_admins();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $this->client->request('GET', '/monitor/tasks/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $response = $content->response;
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        $this->assertEquals(count($tasks), count(get_object_vars($response)));
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task{idTask}
+     *
+     */
+    public function testGetMonitorTaskById()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        if (count($tasks) == 0) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+        $admins = User_Adapter::get_sys_admins();
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('GET', '/monitor/task/' . $idTask . '/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task/{idTask}
+     *
+     */
+    public function testUnknowGetMonitorTaskById()
+    {
+        $admins = User_Adapter::get_sys_admins();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $this->client->followRedirects();
+        $this->client->request('GET', '/monitor/task/0', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->evaluateMetaJsonNotFound($content);
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task/{idTask}/start
+     *
+     */
+    public function testGetMonitorStartTask()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        if (count($tasks) == 0) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+        $admins = User_Adapter::get_sys_admins();
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('POST', '/monitor/task/' . $idTask . '/start/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $task_manager->get_tasks(true);
+        $task = $task_manager->get_task($idTask);
+        $this->assertEquals(\task_abstract::STATUS_TOSTART, $task->get_status());
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task/{idTask}/stop
+     *
+     */
+    public function testGetMonitorStopTask()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        if (count($tasks) == 0) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+        $admins = User_Adapter::get_sys_admins();
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('POST', '/monitor/task/' . $idTask . '/stop/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $task_manager->get_tasks(true);
+        $task = $task_manager->get_task($idTask);
+        $this->assertEquals(\task_abstract::STATUS_TOSTOP, $task->get_status());
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
+     * Route GET /API/V1/monitor/phraseanet
+     *
+     */
+    public function testgetMonitorPhraseanet()
+    {
+        $admins = User_Adapter::get_sys_admins();
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $admin = User_Adapter::getInstance(key($admins), $appbox);
+        $application = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+        $account = API_OAuth2_Account::load_with_user($appbox, $application, $admin);
+        $_GET['oauth_token'] = $account->get_token()->get_value();
+        $this->client->request('GET', '/monitor/phraseanet/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $response = $content->response;
+        $this->assertObjectHasAttribute('global_values', $response);
+        $this->assertObjectHasAttribute('cache', $response);
+        $this->assertObjectHasAttribute('phraseanet', $response);
+        $application->delete();
+        $account->delete();
+    }
+
+    /**
      * Routes /API/V1/databoxes/DATABOX_ID/xxxxxx
      *
      */
@@ -132,9 +347,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $record = record_adapter::create($collection, $system_file);
             $record_id = $record->get_record_id();
-            $route = '/records/' . $databox_id . '/' . $record_id . '/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-            $crawler = $this->client->request('GET', $route);
+            $this->client->request('GET', $route);
             $content = json_decode($this->client->getResponse()->getContent());
 
             $this->evaluateResponse200($this->client->getResponse());
@@ -143,10 +358,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             $this->evaluateGoodRecord($content->response->record);
             $record->delete();
         }
-        $route = '/records/1234567890/1/?oauth_token=' . self::$token;
+        $route = '/records/1234567890/1/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/kjslkz84spm/sfsd5qfsd5/?oauth_token=' . self::$token;
+        $route = '/records/kjslkz84spm/sfsd5qfsd5/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -154,7 +369,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     public function testDataboxCollectionRoute()
     {
         foreach (static::$databoxe_ids as $databox_id) {
-            $route = '/databoxes/' . $databox_id . '/collections/?oauth_token=' . self::$token;
+            $route = '/databoxes/' . $databox_id . '/collections/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route);
@@ -177,10 +392,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertTrue(is_int($collection->record_amount));
             }
         }
-        $route = '/databoxes/24892534/collections/?oauth_token=' . self::$token;
+        $route = '/databoxes/24892534/collections/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/collections/?oauth_token=' . self::$token;
+        $route = '/databoxes/any_bad_id/collections/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -190,7 +405,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
             $ref_status = $databox->get_statusbits();
-            $route = '/databoxes/' . $databox_id . '/status/?oauth_token=' . self::$token;
+            $route = '/databoxes/' . $databox_id . '/status/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route);
@@ -223,10 +438,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertTrue($status->img_on === $ref_status[$status->bit]['img_on']);
             }
         }
-        $route = '/databoxes/24892534/status/?oauth_token=' . self::$token;
+        $route = '/databoxes/24892534/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/status/?oauth_token=' . self::$token;
+        $route = '/databoxes/any_bad_id/status/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -244,7 +459,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             }
 
-            $route = '/databoxes/' . $databox_id . '/metadatas/?oauth_token=' . self::$token;
+            $route = '/databoxes/' . $databox_id . '/metadatas/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route);
@@ -299,10 +514,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertTrue($element->get_metadata_namespace() === $metadatas->namespace);
             }
         }
-        $route = '/databoxes/24892534/metadatas/?oauth_token=' . self::$token;
+        $route = '/databoxes/24892534/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/metadatas/?oauth_token=' . self::$token;
+        $route = '/databoxes/any_bad_id/metadatas/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -312,7 +527,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
 
-            $route = '/databoxes/' . $databox_id . '/termsOfUse/?oauth_token=' . self::$token;
+            $route = '/databoxes/' . $databox_id . '/termsOfUse/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route);
@@ -328,10 +543,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertObjectHasAttribute('terms', $terms);
             }
         }
-        $route = '/databoxes/24892534/termsOfUse/?oauth_token=' . self::$token;
+        $route = '/databoxes/24892534/termsOfUse/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/termsOfUse/?oauth_token=' . self::$token;
+        $route = '/databoxes/any_bad_id/termsOfUse/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -349,7 +564,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
 
 
-        $crawler = $this->client->request('POST', '/records/search/?oauth_token=' . self::$token);
+        $crawler = $this->client->request('POST', '/records/search/');
         $content = json_decode($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -402,7 +617,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/caption/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/caption/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route);
@@ -414,10 +629,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             $this->evaluateRecordsCaptionResponse($content);
             $record->delete();
         }
-        $route = '/records/24892534/51654651553/metadatas/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -434,7 +649,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/metadatas/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/metadatas/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route);
@@ -446,10 +661,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             $this->evaluateRecordsMetadataResponse($content);
             $record->delete();
         }
-        $route = '/records/24892534/51654651553/metadatas/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -465,7 +680,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/status/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/status/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route);
@@ -477,10 +692,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             $this->evaluateRecordsStatusResponse($record, $content);
             $record->delete();
         }
-        $route = '/records/24892534/51654651553/status/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/status/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/status/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -491,8 +706,12 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
         $record_id = self::$record_1->get_record_id();
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . $record_id . '/embed/?oauth_token=' . self::$token;
-        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+            $keys = array_keys($record->get_subdefs());
+
+            $record_id = $record->get_record_id();
+
+            $route = '/records/' . $databox_id . '/' . $record_id . '/embed/';
+            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route);
         $content = json_decode($this->client->getResponse()->getContent());
@@ -506,11 +725,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
                 $this->checkEmbed($key, $embed->$key, self::$record_1);
             }
         }
-
-        $route = '/records/24892534/51654651553/embed/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/embed/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/embed/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -638,7 +856,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/related/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/related/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route);
@@ -652,10 +870,10 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             }
             $record->delete();
         }
-        $route = '/records/24892534/51654651553/related/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/related/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/related/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/related/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -672,7 +890,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setmetadatas/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/setmetadatas/';
             $caption = $record->get_caption();
 
 
@@ -743,7 +961,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setstatus/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/setstatus/';
 
             $record_status = strrev($record->get_status());
             $status_bits = $databox->get_statusbits();
@@ -805,7 +1023,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setcollection/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/setcollection/';
 
             $base_id = false;
             foreach ($databox->get_collections() as $collection) {
@@ -831,7 +1049,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     public function testSearchBaskets()
     {
-        $route = '/baskets/list/?oauth_token=' . self::$token;
+        $route = '/baskets/list/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -849,7 +1067,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     public function testAddBasket()
     {
-        $route = '/baskets/add/?oauth_token=' . self::$token;
+        $route = '/baskets/add/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -876,7 +1094,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
         $basket = $this->insertOneBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/content/?oauth_token=' . self::$token;
+        $route = '/baskets/' . $basket->getId() . '/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -912,7 +1130,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
         $basket = $this->insertOneBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/setname/?oauth_token=' . self::$token;
+        $route = '/baskets/' . $basket->getId() . '/setname/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -964,7 +1182,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $basket = $this->insertOneBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/setdescription/?oauth_token=' . self::$token;
+        $route = '/baskets/' . $basket->getId() . '/setdescription/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -988,7 +1206,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $baskets = $this->insertFiveBasket();
 
-        $route = '/baskets/' . $baskets[0]->getId() . '/delete/?oauth_token=' . self::$token;
+        $route = '/baskets/' . $baskets[0]->getId() . '/delete/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
