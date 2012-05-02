@@ -126,7 +126,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         $ret = array();
         foreach ($tasks as $task) {
-            $ret[] = array(
+            $ret[$task->get_task_id()] = array(
                 'id'             => $task->get_task_id(),
                 'status'         => $task->get_status(),
                 'pid'            => $task->get_pid(),
