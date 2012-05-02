@@ -26,8 +26,14 @@ return call_user_func(function() {
 
             $app = new \Silex\Application();
 
+            /**
+             * @var Alchemy\Phrasea\Core
+             */
             $app["Core"] = \bootstrap::getCore();
 
+            /**
+             * @var appbox
+             */
             $app["appbox"] = \appbox::get_instance($app['Core']);
 
             /**
@@ -43,10 +49,16 @@ return call_user_func(function() {
                     return new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
                 };
 
-            /**             * ********************************************************
+            /**
              * oAuth token verification process
+             * - Check if oauth_token exists && is valid
+             * - Check if request comes from phraseanet Navigator && phraseanet Navigator
+             *  is enbale on current instance
+             * - restore user session
+             *
              * @ throws \API_V1_exception_unauthorized
-             * ********************************************************* */
+             * @ throws \API_V1_exception_forbidden
+             */
             $app->before(function($request) use ($app) {
                     $session = $app["appbox"]->get_session();
                     $registry = $app['Core']->getRegistry();
@@ -85,10 +97,17 @@ return call_user_func(function() {
                 });
 
 
-            /*             * ********************************************************
+            /**
              * oAUth log process
-             * ******************************************************* */
-
+             *
+             * Parse the requested route to fetch
+             * - the ressource (databox, basket, record etc ..)
+             * - general action (list, add, search)
+             * - the action (setstatus, setname etc..)
+             * - the aspect (collections, related, content etc..)
+             *
+             * @return array
+             */
             $parseRoute = function ($route, Response $response) {
                     $ressource = $general = $aspect = $action = null;
                     $exploded_route = explode('/', \p4string::delFirstSlash(\p4string::delEndSlash($route)));
@@ -132,6 +151,9 @@ return call_user_func(function() {
                     return array('ressource' => $ressource, 'general'   => $general, 'aspect'    => $aspect, 'action'    => $action);
                 };
 
+            /**
+             * Log occurs in after filter
+             */
             $app->after(function (Request $request, Response $response) use ($app, $parseRoute) {
                     $account = $app['token']->get_account();
                     $pathInfo = $request->getPathInfo();
@@ -157,117 +179,142 @@ return call_user_func(function() {
                 };
 
             /**
-             * Get sheduler state
+             * Check wether the current user is Admin
+             */
+            $mustBeAdmin = function (Request $request) use ($app) {
+                    /* @var $user \User_Adapter */
+                    $user = $app['token']->get_account()->get_user();
+                    if ( ! $user->is_admin()) {
+                        throw new \API_V1_exception_unauthorized();
+                    }
+                };
+
+            /**
+             * *******************************************************************
+             * Get scheduler state
+             *
+             * Route : /monitor/phraseanet/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *
              */
             $route = '/monitor/scheduler/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
                     return $app['api']->get_scheduler_state($request)->get_response();
                 }
-            );
+            )->middleware($mustBeAdmin);
 
             /**
-             * task list
+             * *******************************************************************
+             * Get all tasks information
+             *
+             * Route : /monitor/phraseanet/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *
              */
             $route = '/monitor/tasks/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
-                    /* @var $user \User_Adapter */
-                    $user = $app['token']->get_account()->get_user();
-
-                    if ( ! $user->is_admin()) {
-                        throw new \API_V1_exception_unauthorized();
-                    }
-
                     return $app['api']->get_task_list($request)->get_response();
                 }
-            );
+            )->middleware($mustBeAdmin);
 
             /**
+             * *******************************************************************
              * Get task informations
+             *
+             * Route : /monitor/phraseanet/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *
              */
             $route = '/monitor/task/{idTask}/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request, $idTask) {
-                    /* @var $user \User_Adapter */
-                    $user = $app['token']->get_account()->get_user();
-
-                    if ( ! $user->is_admin()) {
-                        throw new \API_V1_exception_unauthorized();
-                    }
-
                     return $app['api']->get_task($request, $idTask)->get_response();
                 }
-            );
+            )->middleware($mustBeAdmin)->assert('idTask', '\d+');
 
             /**
-             * Modify Task
-             * @param name
-             * @param autostart
+             * *******************************************************************
+             * Start task
+             *
+             * Route : /monitor/task/{idTask}/
+             *
+             * Method : POST
+             *
+             * Parameters :
+             * - name (string) change the name of the task
+             * - autostart (boolean) start task when scheduler starts
              */
             $route = '/monitor/task/{idTask}/';
             $app->post(
                 $route, function(\Silex\Application $app, Request $request, $idTask) {
-                    /* @var $user \User_Adapter */
-                    $user = $app['token']->get_account()->get_user();
-
-                    if ( ! $user->is_admin()) {
-                        throw new \API_V1_exception_unauthorized();
-                    }
-
                     return $app['api']->set_task_property($app, $idTask)->get_response();
-
                 }
-            );
+            )->middleware($mustBeAdmin)->assert('idTask', '\d+');
 
             /**
+             * *******************************************************************
              * Start task
+             *
+             * Route : /monitor/task/{idTask}/start/
+             *
+             * Method : POST
+             *
+             * Parameters :
+             *
              */
             $route = '/monitor/task/{idTask}/start/';
             $app->post(
                 $route, function(\Silex\Application $app, Request $request, $idTask) {
-                    /* @var $user \User_Adapter */
-                    $user = $app['token']->get_account()->get_user();
-
-                    if ( ! $user->is_admin()) {
-                        throw new \API_V1_exception_unauthorized();
-                    }
-
                     return $app['api']->start_task($app, $idTask)->get_response();
                 }
-            );
+            )->middleware($mustBeAdmin);
 
             /**
+             * *******************************************************************
              * Stop task
+             *
+             * Route : /monitor/task/{idTask}/stop/
+             *
+             * Method : POST
+             *
+             * Parameters :
+             *
              */
             $route = '/monitor/task/{idTask}/stop/';
             $app->post(
                 $route, function(\Silex\Application $app, Request $request, $idTask) {
-                    /* @var $user \User_Adapter */
-                    $user = $app['token']->get_account()->get_user();
-
-                    if ( ! $user->is_admin()) {
-                        throw new \API_V1_exception_unauthorized();
-                    }
-                    return $app['api']->stop_task($app,$idTask)->get_response();
+                    return $app['api']->stop_task($app, $idTask)->get_response();
                 }
-            );
+            )->middleware($mustBeAdmin);
 
             /**
+             * *******************************************************************
              * Get some information about phraseanet
+             *
+             * Route : /monitor/phraseanet/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *
              */
             $route = '/monitor/phraseanet/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
-                    /* @var $user \User_Adapter */
-                    $user = $app['token']->get_account()->get_user();
-
-                    if ( ! $user->is_admin()) {
-                        throw new \API_V1_exception_unauthorized();
-                    }
                     return $app['api']->get_phraseanet_monitor($app)->get_response();
                 }
-            );
+            )->middleware($mustBeAdmin);
 
             /**
              * *******************************************************************
