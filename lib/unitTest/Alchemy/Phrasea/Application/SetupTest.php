@@ -22,11 +22,7 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
      */
     protected $connection;
 
-    /**
-     *
-     * @var \registryInterface
-     */
-    protected $registry;
+    protected $registry = array();
 
     public function createApplication()
     {
@@ -41,14 +37,46 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         $this->temporaryUnInstall();
         $this->appbox = appbox::get_instance(\bootstrap::getCore());
         $this->connection = $this->appbox->get_connection();
-        $this->registry = $this->appbox->get_registry();
+
+        $this->registry = array();
+
+        $params = array(
+            'GV_base_datapath_noweb',
+            'GV_base_datapath_web',
+            'GV_base_dataurl',
+            'GV_ServerName',
+            'GV_cli',
+            'GV_imagick',
+            'GV_pathcomposite',
+            'GV_exiftool',
+            'GV_swf_extract',
+            'GV_pdf2swf',
+            'GV_swf_render',
+            'GV_unoconv',
+            'GV_ffmpeg',
+            'GV_mp4box',
+            'GV_mplayer',
+            'GV_pdftotext',
+        );
+
+        $registry = $this->appbox->get_registry();
+
+        foreach ($params as $param) {
+            $this->registry[$param] = $registry->get($param);
+        }
     }
 
     public function tearDown()
     {
         $this->temporaryReInstall();
         $this->appbox->set_connection($this->connection);
-        $this->appbox->set_registry($this->registry);
+
+        $registry = $this->appbox->get_registry();
+
+        foreach ($this->registry as $param => $value) {
+            $registry->set($param, $value, \registry::TYPE_STRING);
+        }
+
         parent::tearDown();
     }
 
@@ -167,12 +195,27 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
     public function temporaryReInstall()
     {
         if (file_exists($this->root . 'config/config.yml.unitTests')) {
+            if(file_exists($this->root . 'config/config.yml'))
+            {
+                unlink($this->root . 'config/config.yml');
+            }
+
             rename($this->root . 'config/config.yml.unitTests', $this->root . 'config/config.yml');
         }
         if (file_exists($this->root . 'config/services.yml.unitTests')) {
+            if(file_exists($this->root . 'config/services.yml'))
+            {
+                unlink($this->root . 'config/services.yml');
+            }
+
             rename($this->root . 'config/services.yml.unitTests', $this->root . 'config/services.yml');
         }
         if (file_exists($this->root . 'config/connexions.yml.unitTests')) {
+            if(file_exists($this->root . 'config/connexions.yml'))
+            {
+                unlink($this->root . 'config/connexions.yml');
+            }
+
             rename($this->root . 'config/connexions.yml.unitTests', $this->root . 'config/connexions.yml');
         }
     }
