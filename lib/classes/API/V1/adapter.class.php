@@ -15,7 +15,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
 use Symfony\Component\HttpFoundation\Request;
+use Silex\Application;
 
 class API_V1_adapter extends API_V1_Abstract
 {
@@ -99,7 +101,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param \Silex\Application $app The API silex application
    * @return \API_V1_result
    */
-    public function get_task_list(\Silex\Application $app)
+    public function get_task_list(Application $app)
     {
         $result = new \API_V1_result($app['request'], $this);
 
@@ -130,7 +132,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param type $task_id
      * @return \API_V1_result
      */
-    public function get_task(\Silex\Application $app, $taskId)
+    public function get_task(Application $app, $taskId)
     {
         $result = new \API_V1_result($app['request'], $this);
 
@@ -166,7 +168,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param type $task_id The task id
      * @return \API_V1_result
      */
-    public function start_task(\Silex\Application $app, $taskId)
+    public function start_task(Application $app, $taskId)
     {
         $result = new \API_V1_result($app['request'], $this);
 
@@ -198,7 +200,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param type $task_id The task id
      * @return \API_V1_result
      */
-    public function stop_task(\Silex\Application $app, $taskId)
+    public function stop_task(Application $app, $taskId)
     {
         $result = new API_V1_result($app['request'], $this);
 
@@ -233,7 +235,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @return \API_V1_result
      * @throws \Exception_InvalidArgument
      */
-    public function set_task_property(\Silex\Application $app, $taskId)
+    public function set_task_property(Application $app, $taskId)
     {
         $result = new API_V1_result($app['request'], $this);
 
@@ -283,7 +285,7 @@ class API_V1_adapter extends API_V1_Abstract
       * @param \Silex\Application $app the silex application
       * @return array
       */
-    protected function get_cache_info(\Silex\Application $app)
+    protected function get_cache_info(Application $app)
     {
         $mainCache = $app['Core']['Cache'];
         $opCodeCache = $app['Core']['OpcodeCache'];
@@ -317,7 +319,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param \Silex\Application $app the silex application
      * @return array
      */
-    protected function get_config_info(\Silex\Application $app)
+    protected function get_config_info(Application $app)
     {
         $ret = array();
 
@@ -342,7 +344,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param \Silex\Application $app the silex application
      * @return array
      */
-    protected function get_gv_info(\Silex\Application $app)
+    protected function get_gv_info(Application $app)
     {
         $registry = $app['Core']['Registry'];
 
@@ -516,7 +518,7 @@ class API_V1_adapter extends API_V1_Abstract
      * @param \Silex\Application $app the silex application
      * @return \API_V1_result
      */
-    public function get_phraseanet_monitor(\Silex\Application $app)
+    public function get_phraseanet_monitor(Application $app)
     {
         $result = new API_V1_result($app['request'], $this);
 

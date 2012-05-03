@@ -53,10 +53,10 @@ class ArrayCache extends DoctrineArray implements Cache
     /**
      * {@inheritdoc}
      */
-    public function deleteMulti(array $arrayKeys)
+    public function deleteMulti(array $keys)
     {
-        foreach ($arrayKeys as $id) {
-            $this->delete($id);
+        foreach ($keys as $key) {
+            $this->delete($key);
         }
 
         return $this;

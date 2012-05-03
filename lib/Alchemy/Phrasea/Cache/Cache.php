@@ -45,8 +45,8 @@ interface Cache extends DoctrineCache
     /**
      * Delete multi cache entries
      *
-     * @param array $arrayKeys contains all keys to delete
+     * @param array $keys contains all keys to delete
      * @return Alchemy\Phrasea\Cache\Cache
      */
-    public function deleteMulti(array $arrayKeys);
+    public function deleteMulti(array $keys);
 }
