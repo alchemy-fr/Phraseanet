@@ -35,12 +35,12 @@
       </table>
     </div>
     <div class="api_content PNB">
-      <div class="blockmenu PNB" style="height:40px;bottom:auto;overflow:hidden;z-index:2000;">
+      <div class="blockmenu PNB" style="height:100%;bottom:auto;overflow:hidden;">
         <div class="PNB10" style="bottom:0;top:0;">
         {% block menu %}{% endblock %}
         </div>
       </div>
-      <div class="blockresponse PNB" style="top:40px;overflow:auto;overflow:hidden;z-index:1800;">
+      <div class="blockresponse PNB" style="top:40px;overflow:auto;overflow:auto;">
         {% if error_message %}
             <div class="ui-corner-all error_box">{{ error_message }}</div>
         {% endif %}

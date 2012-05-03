@@ -38,15 +38,15 @@ function init_publicator(datas)
     dataType : 'html',
     data : datas,
     success : function(data){
-      div_publicator = $('#dialog_publicator');
+      var div_publicator = $('#dialog_publicator');
       publicator_dialog();
       publicator_load_datas(data);
     },
     error:function(){
-      
+
     },
     timeout:function(){
-      
+
     }
   });
 }
@@ -56,7 +56,7 @@ function init_publicator(datas)
 function publicator_dialog()
 {
   var height = Math.max(bodySize.y - 40, 500);
-  div_publicator = $('#dialog_publicator');
+  var div_publicator = $('#dialog_publicator');
   div_publicator.dialog({
     width:900,
     height:height,
