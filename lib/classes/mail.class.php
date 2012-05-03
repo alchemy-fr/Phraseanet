@@ -201,8 +201,16 @@ class mail
     require_once($registry->get('GV_RootPath') . 'lib/vendor/PHPMailer_v5.1/class.phpmailer.php');
 
     if (!isset($to['email']) || !PHPMailer::ValidateAddress($to['email']))
-
+    {
       return false;
+    }
+
+    $Core = \bootstrap::getCore();
+
+    if($Core->getEnv() === 'test')
+    {
+        return false;
+    }
 
     $mail = new PHPMailer();
 
