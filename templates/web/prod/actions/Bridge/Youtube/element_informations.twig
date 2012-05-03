@@ -13,16 +13,15 @@
       {% endtrans %}
     {% endif %}
   </li>
-  {% if element.get_rating|length > 0 %}
+    {% set value = element.get_rating|default(0) %}
     {% if value > 0 %}
-      <li>
-       {% trans %}
+        <li>
+        {% trans %}
         {{ value }} like
-       {% plural value %}
+        {% plural value %}
         {{ value }} likes
-      {% endtrans %}
-      </li>
+        {% endtrans %}
+        </li>
     {% endif %}
-  {% endif %}
 
 </ul>
