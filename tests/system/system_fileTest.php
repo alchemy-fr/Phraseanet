@@ -12,9 +12,9 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
     public function setUp()
     {
-        $this->objects['indd'] = new system_file(__DIR__ . '/../../lib/vendor/exiftool/t/images/InDesign.indd');
+        $this->objects['indd'] = new system_file(__DIR__ . '/../../vendor/phpexiftool/exiftool/t/images/InDesign.indd');
         $this->objects['wav'] = new system_file(__DIR__ . '/../testfiles/test012.wav');
-        $this->objects['jpg'] = new system_file(__DIR__ . '/../../lib/vendor/exiftool/t/images/Casio.jpg');
+        $this->objects['jpg'] = new system_file(__DIR__ . '/../../vendor/phpexiftool/exiftool/t/images/Casio.jpg');
     }
 
     public function testGet_mime()
@@ -79,7 +79,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
     public function testGetPath()
     {
-        $supposed = __DIR__ . '/../../lib/vendor/exiftool/t/images/';
+        $supposed = __DIR__ . '/../../vendor/phpexiftool/exiftool/t/images/';
         $this->assertEquals($supposed, $this->objects['indd']->getPath());
     }
 

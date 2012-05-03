@@ -48,7 +48,6 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
             'GV_cli',
             'GV_imagick',
             'GV_pathcomposite',
-            'GV_exiftool',
             'GV_swf_extract',
             'GV_pdf2swf',
             'GV_swf_render',
