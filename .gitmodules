@@ -1,6 +1,3 @@
-[submodule "lib/vendor/dailymotion-sdk-php"]
-	path = lib/vendor/dailymotion-sdk-php
-	url = git://github.com/dailymotion/dailymotion-sdk-php.git
 [submodule "lib/vendor/exiftool"]
 	path = lib/vendor/exiftool
 	url = git://github.com/alchemy-fr/exiftool.git

@@ -10,8 +10,6 @@
  *
  * @author nicolas
  */
-require_once __DIR__ . '/../vendor/dailymotion-sdk-php/Dailymotion.php';
-
 class DailymotionWithoutOauth2 extends Dailymotion
 {
 
