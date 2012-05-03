@@ -207,7 +207,7 @@ class mail
 
     $Core = \bootstrap::getCore();
 
-    if($Core->getEnv() === 'test')
+    if($Core->getConfiguration()->getEnvironnement() === 'test')
     {
         return false;
     }
