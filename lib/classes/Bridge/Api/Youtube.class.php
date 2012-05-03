@@ -53,7 +53,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
   const AUTH_VIDEO_SIZE = 68719476736; //in bytes = 64GB
   const ELEMENT_TYPE_VIDEO = 'video';
   const CONTAINER_TYPE_PLAYLIST = 'playlist';
-  const AUTH_TYPE = 'OAuth2';
+  const AUTH_TYPE = 'Youtube';
 
   const UPLOAD_STATE_PROCESSING = 'processing';
   const UPLOAD_STATE_RESTRICTED = 'restricted';
@@ -201,19 +201,18 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
    */
   public function get_object_class_from_type($type)
   {
-    switch ($type)
-    {
-      case self::ELEMENT_TYPE_VIDEO:
-        return self::OBJECT_CLASS_ELEMENT;
-        break;
-      case self::CONTAINER_TYPE_PLAYLIST:
-        return self::OBJECT_CLASS_CONTAINER;
-        break;
-      default:
-        throw new Exception('Unknown type');
-        break;
+        switch ($type) {
+            case self::ELEMENT_TYPE_VIDEO:
+                return self::OBJECT_CLASS_ELEMENT;
+                break;
+            case self::CONTAINER_TYPE_PLAYLIST:
+                return self::OBJECT_CLASS_CONTAINER;
+                break;
+            default:
+                throw new Exception('Unknown type');
+                break;
+        }
     }
-  }
 
   /**
    *
