@@ -617,7 +617,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         if (isset($availableSubdefs['document'])) {
 
-            $mime_ok = ! $mimes || in_array($availableSubdefs['document']->get_mime(), (array) $mime);
+            $mime_ok = ! $mimes || in_array($availableSubdefs['document']->get_mime(), (array) $mimes);
             $devices_ok = ! $devices || array_intersect($availableSubdefs['document']->getDevices(), (array) $devices);
 
             if ($mime_ok && $devices_ok) {
