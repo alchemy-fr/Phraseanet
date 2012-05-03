@@ -137,9 +137,10 @@ abstract class task_abstract
             , self::RETURNSTATUS_TORESTART
             , self::STATUS_TOSTART
         );
-        if ( ! in_array($status, $av_status))
-            throw new Exception_InvalidArgument(sprintf('unknown status `%s`', $status));
 
+        if ( ! in_array($status, $av_status)) {
+            throw new Exception_InvalidArgument(sprintf('unknown status `%s`', $status));
+        }
 
         $conn = connection::getPDOConnection();
 
@@ -400,6 +401,10 @@ abstract class task_abstract
         return $this;
     }
 
+    /**
+     * Return the last time the task was executed
+     * @return string
+     */
     public function get_last_exec_time()
     {
         $conn = connection::getPDOConnection();
