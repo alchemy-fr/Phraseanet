@@ -107,7 +107,7 @@ class phrasea
         $connexion = $configuration->getConnexion($choosenConnexion);
 
         $hostname = $connexion->get('host');
-        $port = $connexion->get('port');
+        $port = (int) $connexion->get('port');
         $user = $connexion->get('user');
         $password = $connexion->get('password');
         $dbname = $connexion->get('dbname');
