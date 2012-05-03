@@ -1,8 +1,6 @@
 Phraseanet 3.6 - Digital Asset Management application
 =================================================
 
-[![Build Status](https://secure.travis-ci.org/alchemy-fr/Phraseanet.png?branch=master)](http://travis-ci.org/alchemy-fr/Phraseanet)
-
 #Features :
 
 Metadatas Management (include Thesaurus and DublinCore Mapping)
