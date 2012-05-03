@@ -135,6 +135,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testCheckNativeApp()
     {
+        $this->setToken(self::$token);
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $registry = $this->getMock('\\registry', array(), array(), '', false);
@@ -156,7 +157,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
             $token = $account->get_token()->get_value();
             $this->setToken($token);
-            $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/yaml'));
+            $this->client->request('GET', '/databoxes/list/', array(), array(), array('HTTP_Accept' => 'application/yaml'));
             $content = $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
             if (403 != $content["meta"]["http_code"]) {
@@ -733,7 +734,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->setToken(self::$token);
         $keys = array_keys(self::$record_1->get_subdefs());
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -758,7 +759,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsEmbedRouteMime()
     {
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+        $this->setToken(self::$token);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, array('mimes' => array('image/jpg', 'image/jpeg')), array(), array("HTTP_ACCEPT" => "application/yaml"));
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
@@ -773,7 +775,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsEmbedRouteDevices()
     {
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+        $this->setToken(self::$token);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, array('devices' => array('nodevice')), array(), array("HTTP_ACCEPT" => "application/yaml"));
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
@@ -866,7 +869,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         }
 
         $code = http_query::getHttpCodeFromUrl($url);
-        $this->assertEquals(200, $code);
+        $this->assertEquals(200, $code, sprintf('verification de url %s', $url));
     }
 
     public function testRecordsRelatedRoute()
