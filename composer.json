@@ -30,6 +30,7 @@
     "symfony/validator": "2.1.*",
     "symfony/yaml": "2.1.*",
     "phpexiftool/phpexiftool": "dev-master",
+    "dailymotion/sdk": "*",
     "mediavorus/mediavorus": "dev-master",
     "media-alchemyst/media-alchemyst": "dev-master",
     "data-uri/data-uri": "dev-master",
