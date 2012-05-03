@@ -191,24 +191,6 @@ return call_user_func(function() {
 
             /**
              * *******************************************************************
-             * Get scheduler state
-             *
-             * Route : /monitor/phraseanet/
-             *
-             * Method : GET
-             *
-             * Parameters :
-             *
-             */
-            $route = '/monitor/scheduler/';
-            $app->get(
-                $route, function(\Silex\Application $app, Request $request) {
-                    return $app['api']->get_scheduler_state($request)->get_response();
-                }
-            )->middleware($mustBeAdmin);
-
-            /**
-             * *******************************************************************
              * Get all tasks information
              *
              * Route : /monitor/phraseanet/
@@ -221,7 +203,7 @@ return call_user_func(function() {
             $route = '/monitor/tasks/';
             $app->get(
                 $route, function(\Silex\Application $app, Request $request) {
-                    return $app['api']->get_task_list($request)->get_response();
+                    return $app['api']->get_task_list($app)->get_response();
                 }
             )->middleware($mustBeAdmin);
 
@@ -236,18 +218,18 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-            $route = '/monitor/task/{idTask}/';
+            $route = '/monitor/task/{task_id}/';
             $app->get(
-                $route, function(\Silex\Application $app, Request $request, $idTask) {
-                    return $app['api']->get_task($request, $idTask)->get_response();
+                $route, function(\Silex\Application $app, Request $request, $task_id) {
+                    return $app['api']->get_task($app, $task_id)->get_response();
                 }
-            )->middleware($mustBeAdmin)->assert('idTask', '\d+');
+            )->middleware($mustBeAdmin)->assert('task_id', '\d+');
 
             /**
              * *******************************************************************
              * Start task
              *
-             * Route : /monitor/task/{idTask}/
+             * Route : /monitor/task/{task_id}/
              *
              * Method : POST
              *
@@ -255,28 +237,28 @@ return call_user_func(function() {
              * - name (string) change the name of the task
              * - autostart (boolean) start task when scheduler starts
              */
-            $route = '/monitor/task/{idTask}/';
+            $route = '/monitor/task/{task_id}/';
             $app->post(
-                $route, function(\Silex\Application $app, Request $request, $idTask) {
-                    return $app['api']->set_task_property($app, $idTask)->get_response();
+                $route, function(\Silex\Application $app, Request $request, $task_id) {
+                    return $app['api']->set_task_property($app, $task_id)->get_response();
                 }
-            )->middleware($mustBeAdmin)->assert('idTask', '\d+');
+            )->middleware($mustBeAdmin)->assert('task_id', '\d+');
 
             /**
              * *******************************************************************
              * Start task
              *
-             * Route : /monitor/task/{idTask}/start/
+             * Route : /monitor/task/{task_id}/start/
              *
              * Method : POST
              *
              * Parameters :
              *
              */
-            $route = '/monitor/task/{idTask}/start/';
+            $route = '/monitor/task/{task_id}/start/';
             $app->post(
-                $route, function(\Silex\Application $app, Request $request, $idTask) {
-                    return $app['api']->start_task($app, $idTask)->get_response();
+                $route, function(\Silex\Application $app, Request $request, $task_id) {
+                    return $app['api']->start_task($app, $task_id)->get_response();
                 }
             )->middleware($mustBeAdmin);
 
@@ -284,17 +266,17 @@ return call_user_func(function() {
              * *******************************************************************
              * Stop task
              *
-             * Route : /monitor/task/{idTask}/stop/
+             * Route : /monitor/task/{task_id}/stop/
              *
              * Method : POST
              *
              * Parameters :
              *
              */
-            $route = '/monitor/task/{idTask}/stop/';
+            $route = '/monitor/task/{task_id}/stop/';
             $app->post(
-                $route, function(\Silex\Application $app, Request $request, $idTask) {
-                    return $app['api']->stop_task($app, $idTask)->get_response();
+                $route, function(\Silex\Application $app, Request $request, $task_id) {
+                    return $app['api']->stop_task($app, $task_id)->get_response();
                 }
             )->middleware($mustBeAdmin);
 
