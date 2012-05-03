@@ -1,7 +1,7 @@
 database:
   host: localhost
   port: port
-  user: phraseaUnitTests
-  password: iWvGxPE8
+  user: root
+  password: 
   applicationBox: ab_unitTests
   dataBox: db_unitTests
