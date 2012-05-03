@@ -6,7 +6,9 @@ before_script:
   - php composer.phar install
   - sudo apt-get update
   - sudo apt-get install -y mplayer ffmpeg ufraw dcraw libavcodec-extra-53 openoffice.org openoffice.org-writer unoconv ghostscript gsfonts ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev xpdf libexpat-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
-  - mysql -e 'create database ab_test;create database db_test;'
+  - mysql -e 'create database ab_test;create database db_test; create database ab_unitTests; create database db_unitTests;'
+  - mysql -e "GRANT ALL PRIVILEGES ON ab_unitTests.* TO 'phraseaUnitTests'@'localhost'"
+  - mysql -e "GRANT ALL PRIVILEGES ON db_unitTests.* TO 'phraseaUnitTests'@'localhost'"
   - mysql -e "source `pwd`/hudson/fixtures.sql"
   - mysql -e 'SET GLOBAL time_zone = "+02:00";'
   - git clone git://github.com/alchemy-fr/Phraseanet-Extension.git
@@ -32,7 +34,3 @@ php:
   - 5.3.2
   - 5.3
   - 5.4
-
-branches:
-  except:
-    - master
