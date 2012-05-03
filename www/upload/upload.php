@@ -29,8 +29,6 @@ $appbox = appbox::get_instance(\bootstrap::getCore());
 $session = $appbox->get_session();
 define("DEFAULT_MIMETYPE", "application/octet-stream");
 
-ini_set('display_errors', 1);
-
 if ($request->comes_from_flash())
     define("UPLOADER", "FLASH");
 else
