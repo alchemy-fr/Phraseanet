@@ -246,64 +246,62 @@ class Installer implements ControllerProviderInterface
 
                     $appbox->get_session()->authenticate($auth);
 
-                    if ( ! \p4string::hasAccent($databox_name)) {
-                        if ($databox_name) {
-                            $template = new \system_file(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
-                            $databox = \databox::create($appbox, $connbas, $template, $registry);
-                            $user->ACL()
-                                ->give_access_to_sbas(array($databox->get_sbas_id()))
-                                ->update_rights_to_sbas(
-                                    $databox->get_sbas_id(), array(
-                                    'bas_manage'        => 1, 'bas_modify_struct' => 1,
-                                    'bas_modif_th'      => 1, 'bas_chupub'        => 1
-                                    )
-                            );
-
-                            $a = \collection::create($databox, $appbox, 'test', $user);
-
-                            $user->ACL()->give_access_to_base(array($a->get_base_id()));
-                            $user->ACL()->update_rights_to_base($a->get_base_id(), array(
-                                'canpush'         => 1, 'cancmd'          => 1
-                                , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
-                                , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
-                                , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
-                                , 'modify_struct'   => 1, 'nowatermark'     => 1
+                    if ($databox_name && ! \p4string::hasAccent($databox_name)) {
+                        $template = new \system_file(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
+                        $databox = \databox::create($appbox, $connbas, $template, $registry);
+                        $user->ACL()
+                            ->give_access_to_sbas(array($databox->get_sbas_id()))
+                            ->update_rights_to_sbas(
+                                $databox->get_sbas_id(), array(
+                                'bas_manage'        => 1, 'bas_modify_struct' => 1,
+                                'bas_modif_th'      => 1, 'bas_chupub'        => 1
                                 )
-                            );
+                        );
 
-                            $tasks = $request->get('create_task', array());
-                            foreach ($tasks as $task) {
-                                switch ($task) {
-                                    case 'cindexer';
-                                    case 'subdef';
-                                    case 'writemeta';
-                                        $class_name = sprintf('task_period_%s', $task);
-                                        if ($task === 'cindexer') {
-                                            $credentials = $databox->get_connection()->get_credentials();
+                        $a = \collection::create($databox, $appbox, 'test', $user);
 
-                                            $host = $credentials['hostname'];
-                                            $port = $credentials['port'];
-                                            $user_ab = $credentials['user'];
-                                            $password = $credentials['password'];
+                        $user->ACL()->give_access_to_base(array($a->get_base_id()));
+                        $user->ACL()->update_rights_to_base($a->get_base_id(), array(
+                            'canpush'         => 1, 'cancmd'          => 1
+                            , 'canputinalbum'   => 1, 'candwnldhd'      => 1, 'candwnldpreview' => 1, 'canadmin'        => 1
+                            , 'actif'           => 1, 'canreport'       => 1, 'canaddrecord'    => 1, 'canmodifrecord'  => 1
+                            , 'candeleterecord' => 1, 'chgstatus'       => 1, 'imgtools'        => 1, 'manage'          => 1
+                            , 'modify_struct'   => 1, 'nowatermark'     => 1
+                            )
+                        );
 
-                                            $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
-                                                . str_replace('/phraseanet_indexer', '', $request->get('binary_phraseanet_indexer'))
-                                                . "</binpath><host>" . $host . "</host><port>"
-                                                . $port . "</port><base>"
-                                                . $appbox_name . "</base><user>"
-                                                . $user_ab . "</user><password>"
-                                                . $password . "</password><socket>25200</socket>"
-                                                . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
-                                                . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
-                                        } else {
-                                            $settings = null;
-                                        }
+                        $tasks = $request->get('create_task', array());
+                        foreach ($tasks as $task) {
+                            switch ($task) {
+                                case 'cindexer';
+                                case 'subdef';
+                                case 'writemeta';
+                                    $class_name = sprintf('task_period_%s', $task);
+                                    if ($task === 'cindexer') {
+                                        $credentials = $databox->get_connection()->get_credentials();
 
-                                        \task_abstract::create($appbox, $class_name, $settings);
-                                        break;
-                                    default:
-                                        break;
-                                }
+                                        $host = $credentials['hostname'];
+                                        $port = $credentials['port'];
+                                        $user_ab = $credentials['user'];
+                                        $password = $credentials['password'];
+
+                                        $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n<binpath>"
+                                            . str_replace('/phraseanet_indexer', '', $request->get('binary_phraseanet_indexer'))
+                                            . "</binpath><host>" . $host . "</host><port>"
+                                            . $port . "</port><base>"
+                                            . $appbox_name . "</base><user>"
+                                            . $user_ab . "</user><password>"
+                                            . $password . "</password><socket>25200</socket>"
+                                            . "<use_sbas>1</use_sbas><nolog>0</nolog><clng></clng>"
+                                            . "<winsvc_run>0</winsvc_run><charset>utf8</charset></tasksettings>";
+                                    } else {
+                                        $settings = null;
+                                    }
+
+                                    \task_abstract::create($appbox, $class_name, $settings);
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                     }
