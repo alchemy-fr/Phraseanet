@@ -162,6 +162,19 @@ abstract class base implements cache_cacheableInterface
     return $this->connection;
   }
 
+  /**
+   * Replaces the connection
+   *
+   * @param \connection_pdo $connection
+   * @return \base
+   */
+  public function set_connection(\connection_pdo $connection)
+  {
+    $this->connection = $connection;
+
+    return $this;
+  }
+
   public function get_cache()
   {
     if (!$this->cache)

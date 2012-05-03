@@ -263,10 +263,14 @@ class Installer implements ControllerProviderInterface
 
                 $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);
 
-                if (!\p4string::hasAccent($databox_name))
+                \phrasea::start($app['Core']);
+
+                $auth = new \Session_Authentication_None($user);
+
+                $appbox->get_session()->authenticate($auth);
+
+                if ($databox_name && !\p4string::hasAccent($databox_name))
                 {
-                  if ($databox_name)
-                  {
                     $template = new \system_file(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
                     $databox = \databox::create($appbox, $connbas, $template, $registry);
                     $user->ACL()
@@ -329,14 +333,7 @@ class Installer implements ControllerProviderInterface
                           break;
                       }
                     }
-                  }
                 }
-
-                \phrasea::start($app['Core']);
-
-                $auth = new \Session_Authentication_None($user);
-
-                $appbox->get_session()->authenticate($auth);
 
                 $redirection = '/admin/?section=taskmanager&notice=install_success';
 

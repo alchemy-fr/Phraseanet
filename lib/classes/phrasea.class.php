@@ -121,7 +121,7 @@ class phrasea
       printf("Missing Extension php-phrasea");
 
     if (function_exists('phrasea_conn'))
-      if (phrasea_conn($hostname, $port, $user, $password, $dbname) !== true)
+      if (phrasea_conn($hostname, (int) $port, $user, $password, $dbname) !== true)
         self::headers(500);
   }
 
