@@ -292,7 +292,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
      * */
     $feed = Feed_Adapter::create($appbox, self::$user_alt1, "salut", 'coucou');
     $publisher = Feed_Publisher_Adapter::getPublisher($appbox, $feed, self::$user_alt1);
-    $entry = Feed_Entry_Adapter::create($appbox, $feed, $publisher, "hello", "coucou", "salut", "bonjour");
+    $entry = Feed_Entry_Adapter::create($appbox, $feed, $publisher, "hello", "coucou", "salut", "bonjour@phraseanet.com");
     $item = Feed_Entry_Item::create($appbox, $entry, self::$record_1);
 
     $params = array(
@@ -371,7 +371,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     $feed = Feed_Adapter::create($appbox, self::$user_alt1, "salut", 'coucou');
 
     $publisher = Feed_Publisher_Adapter::getPublisher($appbox, $feed, self::$user_alt1);
-    $entry = Feed_Entry_Adapter::create($appbox, $feed, $publisher, "hello", "coucou", "salut", "bonjour");
+    $entry = Feed_Entry_Adapter::create($appbox, $feed, $publisher, "hello", "coucou", "salut", "bonjour@phraseanet.com");
     $item = Feed_Entry_Item::create($appbox, $entry, self::$record_1);
 
     $crawler = $this->client->request('POST', '/feeds/entry/' . $entry->get_id() . '/delete/');
