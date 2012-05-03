@@ -525,11 +525,18 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return array(\databox_subdef::DEVICE_ALL);
         }
 
-        return $this->record
-                ->get_databox()
-                ->get_subdef_structure()
-                ->get_subdef($this->record->get_type(), $this->get_name())
-                ->getDevices();
+        try
+        {
+            return $this->record
+                    ->get_databox()
+                    ->get_subdef_structure()
+                    ->get_subdef($this->record->get_type(), $this->get_name())
+                    ->getDevices();
+        }
+        catch(\Exception_Databox_SubdefNotFound $e)
+        {
+            return array();
+        }
     }
 
     /**
