@@ -66,13 +66,5 @@
     "psr-0": {
       "Alchemy": "lib"
     }
-  },
-    "scripts": {
-        "post-install-cmd": [
-        "PHPExiftool\\Vendors::Init"
-        ],
-        "post-update-cmd": [
-        "PHPExiftool\\Vendors::Init"
-        ]
-    }
+  }
 }
