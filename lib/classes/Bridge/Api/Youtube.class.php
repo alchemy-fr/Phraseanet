@@ -1022,7 +1022,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
     {
         $errors = array();
         $key = $record->get_serialize_key();
-        if ( ! $record->get_hd_file() instanceof SplFileObject)
+        if ( ! $record->get_hd_file() instanceof SplFileInfo)
             $errors["file_size_" . $key] = _("Le record n'a pas de fichier physique"); //Record must rely on real file
 
         if ($record->get_duration() > self::AUTH_VIDEO_DURATION)

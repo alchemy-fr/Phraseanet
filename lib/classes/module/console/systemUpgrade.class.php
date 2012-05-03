@@ -50,8 +50,8 @@ class module_console_systemUpgrade extends Command
 
             if ($continue == 'y') {
                 try {
-                    $connexionInc = new \SplFileObject(__DIR__ . '/../../../../config/connexion.inc');
-                    $configInc = new \SplFileObject(__DIR__ . '/../../../../config/config.inc');
+                    $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc', true);
+                    $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc', true);
 
                     $Core->getConfiguration()->upgradeFromOldConf($configInc, $connexionInc);
                 } catch (\Exception $e) {

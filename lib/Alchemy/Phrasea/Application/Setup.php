@@ -39,8 +39,8 @@ return call_user_func(function() {
 
                         $app['upgrade'] = true;
                     } elseif (\setup::needUpgradeConfigurationFile()) {
-                        $connexionInc = new \SplFileObject(__DIR__ . '/../../../../config/connexion.inc');
-                        $configInc = new \SplFileObject(__DIR__ . '/../../../../config/config.inc');
+                        $connexionInc = new \SplFileInfo(__DIR__ . '/../../../../config/connexion.inc', true);
+                        $configInc = new \SplFileInfo(__DIR__ . '/../../../../config/config.inc', true);
 
                         $configuration = \Alchemy\Phrasea\Core\Configuration::build();
                         $configuration->upgradeFromOldConf($configInc, $connexionInc);

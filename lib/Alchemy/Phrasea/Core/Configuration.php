@@ -72,11 +72,11 @@ class Configuration
         return $this;
     }
 
-    public function upgradeFromOldConf(\SplFileObject $configInc, \SplFileObject $connexionInc)
+    public function upgradeFromOldConf(\SplFileInfo $configInc, \SplFileInfo $connexionInc)
     {
         $this->initialize();
 
-        $retrieve_old_credentials = function(\SplFileObject $connexionInc) {
+        $retrieve_old_credentials = function(\SplFileInfo $connexionInc) {
                 require $connexionInc->getPathname();
 
                 return array(
@@ -102,7 +102,7 @@ class Configuration
 
         $configs = $this->getConfigurations();
 
-        $retrieve_old_parameters = function(\SplFileObject $configInc) {
+        $retrieve_old_parameters = function(\SplFileInfo $configInc) {
                 require $configInc->getPathname();
 
                 return array(
