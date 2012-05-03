@@ -79,10 +79,6 @@ class patch_320aa implements patchInterface
                 $val = $val === true ? '1' : $val;
                 $val = $val === false ? '0' : $val;
 
-                if ($datas['name'] == 'GV_exiftool' && strpos($val, 'lib/exiftool/exiftool') !== false) {
-                    $val = str_replace('lib/exiftool/exiftool', 'lib/vendor/exiftool/exiftool', $val);
-                }
-
                 switch ($datas['type']) {
                     case registry::TYPE_ENUM_MULTI:
                     case registry::TYPE_INTEGER:

@@ -228,7 +228,6 @@ class Installer implements ControllerProviderInterface
                     $registry->set('GV_cli', $request->get('binary_php'), \registry::TYPE_STRING);
                     $registry->set('GV_imagick', $request->get('binary_convert'), \registry::TYPE_STRING);
                     $registry->set('GV_pathcomposite', $request->get('binary_composite'), \registry::TYPE_STRING);
-                    $registry->set('GV_exiftool', $request->get('binary_exiftool'), \registry::TYPE_STRING);
                     $registry->set('GV_swf_extract', $request->get('binary_swfextract'), \registry::TYPE_STRING);
                     $registry->set('GV_pdf2swf', $request->get('binary_pdf2swf'), \registry::TYPE_STRING);
                     $registry->set('GV_swf_render', $request->get('binary_swfrender'), \registry::TYPE_STRING);

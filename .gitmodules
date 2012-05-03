@@ -1,6 +1,3 @@
-[submodule "lib/vendor/exiftool"]
-	path = lib/vendor/exiftool
-	url = git://github.com/alchemy-fr/exiftool.git
 [submodule "lib/vendor/recaptcha"]
 	path = lib/vendor/recaptcha
 	url = git://github.com/alchemy-fr/recaptcha.git

@@ -448,7 +448,6 @@ class API_V1_adapter extends API_V1_Abstract
                     'phpCli'            => $registry->get('GV_cli'),
                     'phpIni'            => $registry->get('GV_PHP_INI'),
                     'imagick'           => $registry->get('GV_imagick'),
-                    'exiftool'          => $registry->get('GV_exiftool'),
                     'swfExtract'        => $registry->get('GV_swf_extract'),
                     'pdf2swf'           => $registry->get('GV_pdf2swf'),
                     'swfRender'         => $registry->get('GV_swf_render'),

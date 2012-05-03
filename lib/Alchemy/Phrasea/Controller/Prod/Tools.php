@@ -40,7 +40,7 @@ class Tools implements ControllerProviderInterface
 
                 $selection = $helper->get_elements();
 
-                $binary = $app['Core']->getRegistry()->get('GV_exiftool');
+                $binary = __DIR__ . '/../../../../../vendor/phpexiftool/exiftool/exiftool';
 
                 $metadatas = false;
                 $record = null;

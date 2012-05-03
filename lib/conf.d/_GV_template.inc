@@ -437,13 +437,6 @@ $GV = array(
             ),
             array(
                 'type'     => 'string',
-                'name'     => 'GV_exiftool',
-                'default'  => '',
-                'comment'  => _('reglages:: chemin de l\'executable exiftools'),
-                'required' => true
-            ),
-            array(
-                'type'     => 'string',
                 'name'     => 'GV_swf_extract',
                 'comment'  => _('reglages:: chemin de l\'executable swfextract'),
                 'default'  => '',

@@ -11,10 +11,12 @@ class exiftool
         $ret = array();
 
         if (in_array($system, array('DARWIN', 'LINUX'))) {
-            $cmd = $registry->get('GV_exiftool') . ' ' . escapeshellarg($filename) . '';
+            $cmd = __DIR__ . '/../../vendor/phpexiftool/exiftool/exiftool '
+                . escapeshellarg($filename) ;
         } else {
             if (chdir($registry->get('GV_RootPath') . 'tmp/')) {
-                $cmd = 'start /B /LOW ' . $registry->get('GV_exiftool') . ' ' . escapeshellarg($filename) . '';
+                $cmd = 'start /B /LOW ' . __DIR__ . '/../../vendor/phpexiftool/exiftool/exiftool.exe '
+                    . escapeshellarg($filename) . '';
             }
         }
         if ($cmd) {
@@ -73,10 +75,12 @@ class exiftool
 
 
         if (in_array($system, array('DARWIN', 'LINUX'))) {
-            $cmd = $registry->get('GV_exiftool') . $options . escapeshellarg($file->getPathname()) . '';
+            $cmd = __DIR__ . '/../../vendor/phpexiftool/exiftool/exiftool '
+                . $options . escapeshellarg($file->getPathname()) . '';
         } else {
             if (chdir($registry->get('GV_RootPath') . 'tmp/')) {
-                $cmd = 'start /B /LOW ' . $registry->get('GV_exiftool') . $options . escapeshellarg($file->getPathname()) . '';
+                $cmd = 'start /B /LOW ' . __DIR__ . '/../../vendor/phpexiftool/exiftool/exiftool.exe'
+                    . ' ' . $options . escapeshellarg($file->getPathname()) . '';
             }
         }
 

@@ -45,10 +45,11 @@ class task_period_upgradetov31 extends task_abstract
         // task can't be stopped here
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $conn = $appbox->get_connection();
-        $registry = $appbox->get_registry();
         $running = true;
 
-        if ( ! is_executable($registry->get('GV_exiftool'))) {
+        $binary = __DIR__ . '/../../../../vendor/phpexiftool/exiftool/exiftool';
+
+        if ( ! is_executable($binary)) {
             printf("Exiftool is not executable, script can not process\n");
 
             return 'stopped';

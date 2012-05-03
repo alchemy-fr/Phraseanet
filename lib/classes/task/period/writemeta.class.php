@@ -330,9 +330,15 @@ class task_period_writemeta extends task_databoxAbstract
 
         foreach ($tsub as $name => $file) {
             $cmd = '';
+
             if ($this->system == 'WINDOWS')
+            {
                 $cmd = 'start /B /LOW ';
-            $cmd .= ( $registry->get('GV_exiftool') . ' -m -overwrite_original ');
+            }
+
+            $cmd .= __DIR__ . '/../../../../vendor/phpexiftool/exiftool/exiftool'
+                . ' -m -overwrite_original ';
+
             if ($name != 'document' || $this->clear_doc)
                 $cmd .= ' -all:all= ';
 

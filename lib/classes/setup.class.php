@@ -201,7 +201,6 @@ class setup
             'MP4Box'                  => $registry->get('GV_mp4box'),
             'xpdf (pdf2text)'         => $registry->get('GV_pdftotext'),
             'ImageMagick (composite)' => $registry->get('GV_pathcomposite'),
-            'Exiftool'                => $registry->get('GV_exiftool'),
             'FFmpeg'                  => $registry->get('GV_ffmpeg'),
             'MPlayer'                 => $registry->get('GV_mplayer')
         );

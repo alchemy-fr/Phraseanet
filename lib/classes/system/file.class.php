@@ -735,12 +735,23 @@ class system_file extends \SplFileInfo
         $registry = registry::get_instance();
 
         if (in_array($system, array('DARWIN', 'LINUX'))) {
-            $cmd = $registry->get('GV_exiftool') . ' -m -overwrite_original -XMP-exif:ImageUniqueID=\'' . $this->uuid . '\' -IPTC:UniqueDocumentID=\'' . $this->uuid . '\' ' . escapeshellarg($this->getPathname()) . '';
-        } else { // WINDOWS
+
+            $cmd = __DIR__ . '/../../../vendor/phpexiftool/exiftool/exiftool'
+                . ' -m -overwrite_original '
+                . ' -XMP-exif:ImageUniqueID=\'' . $this->uuid . '\''
+                . ' -IPTC:UniqueDocumentID=\'' . $this->uuid . '\''
+                . ' ' . escapeshellarg($this->getPathname());
+        } else {
             if (chdir($registry->get('GV_RootPath') . 'tmp/')) {
-                $cmd = 'start /B /LOW ' . $registry->get('GV_exiftool') . ' -m -overwrite_original -XMP-exif:ImageUniqueID=\'' . $this->uuid . '\' -IPTC:UniqueDocumentID=\'' . $this->uuid . '\' ' . escapeshellarg($this->getPathname()) . '';
+
+                $cmd = 'start /B /LOW ' . __DIR__ . '/../../../vendor/phpexiftool/exiftool/exiftool.exe'
+                    . ' -m -overwrite_original'
+                    . ' -XMP-exif:ImageUniqueID=\'' . $this->uuid . '\''
+                    . ' -IPTC:UniqueDocumentID=\'' . $this->uuid . '\''
+                    . ' ' . escapeshellarg($this->getPathname());
             }
         }
+
         if ($cmd) {
             $s = @shell_exec($cmd);
         }
