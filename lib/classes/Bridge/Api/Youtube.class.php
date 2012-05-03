@@ -19,173 +19,175 @@ use \Symfony\Component\HttpFoundation\Request;
  */
 class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Interface
 {
-    /**
-     *
-     * @var registryInterface
-     */
-    protected $registry;
 
-    /**
-     *
-     * @var Zend_Gdata_YouTube
-     */
-    protected $_api;
+  /**
+   *
+   * @var registryInterface
+   */
+  protected $registry;
 
-    const OAUTH2_AUTHORIZE_ENDPOINT = 'https://accounts.google.com/o/oauth2/auth';
-    const OAUTH2_TOKEN_ENDPOINT = 'https://accounts.google.com/o/oauth2/token';
-    const UPLOAD_URL = 'http://uploads.gdata.youtube.com/feeds/api/users/default/uploads';
-    const CATEGORY_URL = 'http://gdata.youtube.com/schemas/2007/categories.cat';
-    const AUTH_VIDEO_DURATION = 900;
-    const AUTH_VIDEO_SIZE = 68719476736; //in bytes = 64GB
-    const ELEMENT_TYPE_VIDEO = 'video';
-    const CONTAINER_TYPE_PLAYLIST = 'playlist';
-    const AUTH_TYPE = 'OAuth2';
-    const UPLOAD_STATE_PROCESSING = 'processing';
-    const UPLOAD_STATE_RESTRICTED = 'restricted';
-    const UPLOAD_STATE_DONE = 'done';
-    const UPLOAD_STATE_DELETED = 'deleted';
-    const UPLOAD_STATE_REJECTED = 'rejected';
-    const UPLOAD_STATE_FAILED = 'failed';
+  /**
+   *
+   * @var Zend_Gdata_YouTube
+   */
+  protected $_api;
 
-    /**
-     *
-     * @return Array
-     */
-    public function connect()
-    {
-        $response = parent::connect();
-        $this->_api->getHttpClient()->setAuthSubToken($response['auth_token']);
+  const OAUTH2_AUTHORIZE_ENDPOINT = 'https://accounts.google.com/o/oauth2/auth';
+  const OAUTH2_TOKEN_ENDPOINT = 'https://accounts.google.com/o/oauth2/token';
+  const UPLOAD_URL = 'http://uploads.gdata.youtube.com/feeds/api/users/default/uploads';
+  const CATEGORY_URL = 'http://gdata.youtube.com/schemas/2007/categories.cat';
+  const AUTH_VIDEO_DURATION = 900;
+  const AUTH_VIDEO_SIZE = 68719476736; //in bytes = 64GB
+  const ELEMENT_TYPE_VIDEO = 'video';
+  const CONTAINER_TYPE_PLAYLIST = 'playlist';
+  const AUTH_TYPE = 'Youtube';
 
-        return $response;
-    }
+  const UPLOAD_STATE_PROCESSING = 'processing';
+  const UPLOAD_STATE_RESTRICTED = 'restricted';
+  const UPLOAD_STATE_DONE = 'done';
+  const UPLOAD_STATE_DELETED = 'deleted';
+  const UPLOAD_STATE_REJECTED = 'rejected';
+  const UPLOAD_STATE_FAILED = 'failed';
 
-    /**
-     *
-     * @return Bridge_Api_Youtube
-     */
-    public function reconnect()
-    {
-        parent::reconnect();
-        $this->set_transport_authentication_params();
+  /**
+   *
+   * @return Array
+   */
+  public function connect()
+  {
+    $response = parent::connect();
+    $this->_api->getHttpClient()->setAuthSubToken($response['auth_token']);
 
-        return $this;
-    }
+    return $response;
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_user_id()
-    {
-        return $this->_api->getUserProfile('default')->getUsername();
-    }
+  /**
+   *
+   * @return Bridge_Api_Youtube
+   */
+  public function reconnect()
+  {
+    parent::reconnect();
+    $this->set_transport_authentication_params();
 
-    /**
-     *
-     * @return string
-     */
-    public function get_user_name()
-    {
-        return $this->_api->getUserProfile('default')->getUsername();
-    }
+    return $this;
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_name()
-    {
-        return 'Youtube';
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_user_id()
+  {
+    return $this->_api->getUserProfile('default')->getUsername();
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_icon_url()
-    {
-        return '/skins/icons/youtube-small.gif';
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_user_name()
+  {
+    return $this->_api->getUserProfile('default')->getUsername();
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_image_url()
-    {
-        return '/skins/icons/youtube-white.gif';
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_name()
+  {
+    return 'Youtube';
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_terms_url()
-    {
-        return 'https://code.google.com/apis/youtube/terms.html';
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_icon_url()
+  {
+    return '/skins/icons/youtube-small.gif';
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_url()
-    {
-        return 'https://www.youtube.com/';
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_image_url()
+  {
+    return '/skins/icons/youtube-white.gif';
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_infos()
-    {
-        return 'www.youtube.com';
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_terms_url()
+  {
+    return 'https://code.google.com/apis/youtube/terms.html';
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_default_element_type()
-    {
-        return self::ELEMENT_TYPE_VIDEO;
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_url()
+  {
+    return 'https://www.youtube.com/';
+  }
 
-    /**
-     *
-     * @return string
-     */
-    public function get_default_container_type()
-    {
-        return self::CONTAINER_TYPE_PLAYLIST;
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_infos()
+  {
+    return 'www.youtube.com';
+  }
 
-    /**
-     *
-     * @return Array
-     */
-    public function get_element_types()
-    {
-        return array(self::ELEMENT_TYPE_VIDEO => _('Videos'));
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_default_element_type()
+  {
+    return self::ELEMENT_TYPE_VIDEO;
+  }
 
-    /**
-     *
-     * @return Array
-     */
-    public function get_container_types()
-    {
-        return array(self::CONTAINER_TYPE_PLAYLIST => _('Playlists'));
-    }
+  /**
+   *
+   * @return string
+   */
+  public function get_default_container_type()
+  {
+    return self::CONTAINER_TYPE_PLAYLIST;
+  }
 
-    /**
-     *
-     * @param string $type
-     * @return string
-     */
-    public function get_object_class_from_type($type)
-    {
+  /**
+   *
+   * @return Array
+   */
+  public function get_element_types()
+  {
+    return array(self::ELEMENT_TYPE_VIDEO => _('Videos'));
+  }
+
+  /**
+   *
+   * @return Array
+   */
+  public function get_container_types()
+  {
+    return array(self::CONTAINER_TYPE_PLAYLIST => _('Playlists'));
+  }
+
+  /**
+   *
+   * @param string $type
+   * @return string
+   */
+  public function get_object_class_from_type($type)
+  {
         switch ($type) {
             case self::ELEMENT_TYPE_VIDEO:
                 return self::OBJECT_CLASS_ELEMENT;
