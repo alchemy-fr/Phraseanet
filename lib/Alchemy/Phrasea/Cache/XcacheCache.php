@@ -21,11 +21,25 @@ use Doctrine\Common\Cache\XcacheCache as DoctrineXcache;
 class XcacheCache extends DoctrineXcache implements Cache
 {
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'xcache';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isServer()
     {
         return false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function get($key)
     {
         if ( ! $this->contains($key)) {
@@ -35,10 +49,13 @@ class XcacheCache extends DoctrineXcache implements Cache
         return $this->fetch($key);
     }
 
-    public function deleteMulti(array $array_keys)
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteMulti(array $keys)
     {
-        foreach ($array_keys as $id) {
-            $this->delete($id);
+        foreach ($keys as $key) {
+            $this->delete($key);
         }
 
         return $this;

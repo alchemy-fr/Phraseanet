@@ -7,10 +7,41 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 {
+    /**
+     *
+     * @var Symfony\Component\HttpKernel\Client
+     */
     protected $client;
+
+    /**
+     * @var API_OAuth2_Token
+     */
     protected static $token;
-    protected static $account_id;
+
+    /**
+     * @var API_OAuth2_Account
+     */
+    protected static $account;
+
+    /**
+     * @var API_OAuth2_Application
+     */
     protected static $application;
+
+    /**
+     * @var API_OAuth2_Token
+     */
+    protected static $adminToken;
+
+    /**
+     * @var API_OAuth2_Account
+     */
+    protected static $adminAccount;
+
+    /**
+     * @var API_OAuth2_Application
+     */
+    protected static $adminApplication;
     protected static $databoxe_ids = array();
     protected static $need_records = 1;
     protected static $need_subdefs = true;
@@ -25,12 +56,11 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         parent::setUp();
         $this->client = $this->createClient();
-        $_GET['oauth_token'] = self::$token;
     }
 
     public function tearDown()
     {
-        unset($_GET['oauth_token']);
+        $this->unsetToken();
     }
 
     public static function setUpBeforeClass()
@@ -38,17 +68,34 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         parent::setUpBeforeClass();
         self::$yaml = new Symfony\Component\Yaml\Parser();
         $appbox = appbox::get_instance(\bootstrap::getCore());
+
         self::$application = API_OAuth2_Application::create($appbox, self::$user, 'test API v1');
-        $account = API_OAuth2_Account::load_with_user($appbox, self::$application, self::$user);
-        self::$token = $account->get_token()->get_value();
-        self::$account_id = $account->get_id();
-        $_GET['oauth_token'] = self::$token;
+        self::$account = API_OAuth2_Account::load_with_user($appbox, self::$application, self::$user);
+        self::$token = self::$account->get_token()->get_value();
+
+        //create admin user token
+        $admins = User_Adapter::get_sys_admins();
+
+        self::$adminToken = null;
+
+        if (0 !== count($admins)) {
+            $admin = User_Adapter::getInstance(key($admins), $appbox);
+            self::$adminApplication = API_OAuth2_Application::create($appbox, $admin, 'test2 API v1');
+            self::$adminAccount = API_OAuth2_Account::load_with_user($appbox, self::$adminApplication, $admin);
+            self::$adminToken = self::$adminAccount->get_token()->get_value();
+        }
     }
 
     public static function tearDownAfterClass()
     {
+        //delete database entry
+        self::$account->delete();
         self::$application->delete();
-        $_GET = array();
+
+        if (self::$adminToken) {
+            self::$adminAccount->delete();
+            self::$adminApplication->delete();
+        }
     }
 
     public function createApplication()
@@ -58,7 +105,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRouteNotFound()
     {
-        $route = '/nothinghere?oauth_token=' . self::$token;
+        $route = '/nothinghere';
+        $this->setToken(self::$token);
         $this->client->request('GET', $route, array(), array(), array("HTTP_CONTENT_TYPE" => "application/yaml", "HTTP_ACCEPT"       => "application/yaml"));
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
         $this->evaluateResponseNotFound($this->client->getResponse());
@@ -67,7 +115,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testDatboxListRoute()
     {
-        $crawler = $this->client->request('GET', '/databoxes/list/?oauth_token=' . self::$token, array(), array(), array("HTTP_CONTENT_TYPE" => "application/yaml", "HTTP_ACCEPT"       => "application/yaml"));
+        $this->setToken(self::$token);
+        $crawler = $this->client->request('GET', '/databoxes/list/', array(), array(), array("HTTP_CONTENT_TYPE" => "application/yaml", "HTTP_ACCEPT"       => "application/yaml"));
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -106,14 +155,13 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $account = API_OAuth2_Account::create($appbox, self::$user, $nativeApp);
             $token = $account->get_token()->get_value();
-            $_GET['oauth_token'] = $token;
+            $this->setToken($token);
             $this->client->request('GET', '/databoxes/list/?oauth_token=' . $token, array(), array(), array('HTTP_Accept' => 'application/yaml'));
             $content = $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
             if (403 != $content["meta"]["http_code"]) {
                 $fail = new \Exception('Result does not match expected 403, returns ' . $content["meta"]["http_code"]);
             }
-
         } catch (\Exception $e) {
             $fail = $e;
         }
@@ -125,12 +173,189 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         }
     }
 
+    public function testAdminOnlyShedulerState()
+    {
+        $this->setToken(self::$token);
+        //Should be 401
+        $this->client->request('GET', '/monitor/tasks/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('GET', '/monitor/task/1/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('POST', '/monitor/task/1/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('POST', '/monitor/task/1/start/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('POST', '/monitor/task/1/stop/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+        //Should be 401
+        $this->client->request('GET', '/monitor/phraseanet/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->assertEquals(401, $content["meta"]["http_code"]);
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task
+     * @cover API_V1_adapter::get_task
+     */
+    public function testGetMonitorTasks()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        if (null === self::$adminToken) {
+            $this->markTestSkipped('there is no user with admin rights');
+        }
+        $this->setToken(self::$adminToken);
+        $this->client->request('GET', '/monitor/tasks/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+        $this->assertEquals(count($tasks), count($content['response']));
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task{idTask}
+     * @cover API_V1_adapter::get_task
+     */
+    public function testGetMonitorTaskById()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+
+        if (null === self::$adminToken) {
+            $this->markTestSkipped('there is no user with admin rights');
+        }
+
+        if ( ! count($tasks)) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+
+        $this->setToken(self::$adminToken);
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('GET', '/monitor/task/' . $idTask . '/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task/{idTask}
+     * @cover API_V1_adapter::get_task
+     */
+    public function testUnknowGetMonitorTaskById()
+    {
+        if (null === self::$adminToken) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+        $this->setToken(self::$adminToken);
+        $this->client->followRedirects();
+        $this->client->request('GET', '/monitor/task/0', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateMetaYamlNotFound($content);
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task/{idTask}/start
+     * @cover API_V1_adapter::start_task
+     */
+    public function testGetMonitorStartTask()
+    {
+        if (null === self::$adminToken) {
+            $this->markTestSkipped('there is no user with admin rights');
+        }
+
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+        $tasks = $task_manager->get_tasks();
+
+        if ( ! count($tasks)) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+
+        $this->setToken(self::$adminToken);
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('POST', '/monitor/task/' . $idTask . '/start/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $task_manager->get_tasks(true);
+        $task = $task_manager->get_task($idTask);
+        $this->assertEquals(\task_abstract::STATUS_TOSTART, $task->get_status());
+    }
+
+    /**
+     * Route GET /API/V1/monitor/task/{idTask}/stop
+     * @cover API_V1_adapter::stop_task
+     */
+    public function testGetMonitorStopTask()
+    {
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new \task_manager($appbox);
+
+        $tasks = $task_manager->get_tasks();
+
+        if (null === self::$adminToken) {
+            $this->markTestSkipped('there is no user with admin rights');
+        }
+
+        if ( ! count($tasks)) {
+            $this->markTestSkipped('no tasks created for the current instance');
+        }
+
+        $this->setToken(self::$adminToken);
+        reset($tasks);
+        $idTask = key($tasks);
+        $this->client->request('POST', '/monitor/task/' . $idTask . '/stop/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $task_manager->get_tasks(true);
+        $task = $task_manager->get_task($idTask);
+        $this->assertEquals(\task_abstract::STATUS_TOSTOP, $task->get_status());
+    }
+
+    /**
+     * Route GET /API/V1/monitor/phraseanet
+     * @cover API_V1_adapter::get_phraseanet_monitor
+     */
+    public function testgetMonitorPhraseanet()
+    {
+        if (null === self::$adminToken) {
+            $this->markTestSkipped('there is no user with admin rights');
+        }
+
+        $this->setToken(self::$adminToken);
+        $this->client->request('GET', '/monitor/phraseanet/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $response = $content['response'];
+        $this->assertArrayHasKey('global_values', $response);
+        $this->assertArrayHasKey('cache', $response);
+        $this->assertArrayHasKey('phraseanet', $response);
+    }
+
     /**
      * Routes /API/V1/databoxes/DATABOX_ID/xxxxxx
      *
      */
     public function testDataboxRecordRoute()
     {
+        $this->setToken(self::$token);
 
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
@@ -140,7 +365,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $record = record_adapter::create($collection, $system_file);
             $record_id = $record->get_record_id();
-            $route = '/records/' . $databox_id . '/' . $record_id . '/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
             $content = self::$yaml->parse($this->client->getResponse()->getContent());
@@ -150,18 +375,20 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             $this->evaluateGoodRecord($content["response"]["record"]);
             $record->delete();
         }
-        $route = '/records/1234567890/1/?oauth_token=' . self::$token;
+        $route = '/records/1234567890/1/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/kjslkz84spm/sfsd5qfsd5/?oauth_token=' . self::$token;
+        $route = '/records/kjslkz84spm/sfsd5qfsd5/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
     public function testDataboxCollectionRoute()
     {
+        $this->setToken(self::$token);
+
         foreach (static::$databoxe_ids as $databox_id) {
-            $route = '/databoxes/' . $databox_id . '/collections/?oauth_token=' . self::$token;
+            $route = '/databoxes/' . $databox_id . '/collections/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -184,20 +411,22 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertTrue(is_int($collection["record_amount"]));
             }
         }
-        $route = '/databoxes/24892534/collections/?oauth_token=' . self::$token;
+        $route = '/databoxes/24892534/collections/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/collections/?oauth_token=' . self::$token;
+        $route = '/databoxes/any_bad_id/collections/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
     public function testDataboxStatusRoute()
     {
+        $this->setToken(self::$token);
+
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
             $ref_status = $databox->get_statusbits();
-            $route = '/databoxes/' . $databox_id . '/status/?oauth_token=' . self::$token;
+            $route = '/databoxes/' . $databox_id . '/status/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -230,16 +459,18 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertTrue($status["img_on"] === $ref_status[$status["bit"]]['img_on']);
             }
         }
-        $route = '/databoxes/24892534/status/?oauth_token=' . self::$token;
+        $route = '/databoxes/24892534/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/status/?oauth_token=' . self::$token;
+        $route = '/databoxes/any_bad_id/status/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
     public function testDataboxMetadatasRoute()
     {
+        $this->setToken(self::$token);
+
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
             $ref_structure = $databox->get_meta_structure();
@@ -251,7 +482,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             }
 
-            $route = '/databoxes/' . $databox_id . '/metadatas/?oauth_token=' . self::$token;
+            $route = '/databoxes/' . $databox_id . '/metadatas/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -306,20 +537,22 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertTrue($element->get_metadata_namespace() === $metadatas["namespace"]);
             }
         }
-        $route = '/databoxes/24892534/metadatas/?oauth_token=' . self::$token;
+        $route = '/databoxes/24892534/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/metadatas/?oauth_token=' . self::$token;
+        $route = '/databoxes/any_bad_id/metadatas/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
     public function testDataboxTermsOfUseRoute()
     {
+        $this->setToken(self::$token);
+
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
 
-            $route = '/databoxes/' . $databox_id . '/termsOfUse/?oauth_token=' . self::$token;
+            $route = '/databoxes/' . $databox_id . '/termsOfUse/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -335,10 +568,10 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertArrayHasKey('terms', $terms);
             }
         }
-        $route = '/databoxes/24892534/termsOfUse/?oauth_token=' . self::$token;
+        $route = '/databoxes/24892534/termsOfUse/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/databoxes/any_bad_id/termsOfUse/?oauth_token=' . self::$token;
+        $route = '/databoxes/any_bad_id/termsOfUse/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -354,9 +587,9 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
      */
     public function testRecordsSearchRoute()
     {
+        $this->setToken(self::$token);
 
-
-        $crawler = $this->client->request('POST', '/records/search/?oauth_token=' . self::$token, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $crawler = $this->client->request('POST', '/records/search/', array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
         $this->evaluateResponse200($this->client->getResponse());
@@ -399,6 +632,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsCaptionRoute()
     {
+        $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
 
@@ -409,7 +643,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/caption/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/caption/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -421,16 +655,17 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             $this->evaluateRecordsCaptionResponse($content);
             $record->delete();
         }
-        $route = '/records/24892534/51654651553/metadatas/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
     public function testRecordsMetadatasRoute()
     {
+        $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
 
@@ -441,7 +676,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/metadatas/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/metadatas/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -453,16 +688,17 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             $this->evaluateRecordsMetadataResponse($content);
             $record->delete();
         }
-        $route = '/records/24892534/51654651553/metadatas/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/metadatas/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
     public function testRecordsStatusRoute()
     {
+        $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
             $collection = array_shift($databox->get_collections());
@@ -472,7 +708,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/status/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/status/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -484,16 +720,17 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             $this->evaluateRecordsStatusResponse($record, $content);
             $record->delete();
         }
-        $route = '/records/24892534/51654651553/status/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/status/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/status/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
     public function testRecordsEmbedRoute()
     {
+        $this->setToken(self::$token);
         $keys = array_keys(self::$record_1->get_subdefs());
 
         $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
@@ -511,11 +748,10 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 $this->checkEmbed($key, $embed[$key], self::$record_1);
             }
         }
-
-        $route = '/records/24892534/51654651553/embed/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/embed/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/embed/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
@@ -635,6 +871,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsRelatedRoute()
     {
+        $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
             $collection = array_shift($databox->get_collections());
@@ -644,7 +881,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/related/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/related/';
             $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
             $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -658,17 +895,17 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             }
             $record->delete();
         }
-        $route = '/records/24892534/51654651553/related/?oauth_token=' . self::$token;
+        $route = '/records/24892534/51654651553/related/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-        $route = '/records/any_bad_id/sfsd5qfsd5/related/?oauth_token=' . self::$token;
+        $route = '/records/any_bad_id/sfsd5qfsd5/related/';
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
     }
 
     public function testRecordsSetMetadatas()
     {
-
+        $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
             $collection = array_shift($databox->get_collections());
@@ -678,7 +915,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setmetadatas/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/setmetadatas/';
             $caption = $record->get_caption();
 
 
@@ -753,7 +990,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsSetStatus()
     {
-
+        $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
             $collection = array_shift($databox->get_collections());
@@ -763,7 +1000,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setstatus/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/setstatus/';
 
             $record_status = strrev($record->get_status());
             $status_bits = $databox->get_statusbits();
@@ -813,6 +1050,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testMoveRecordToColleciton()
     {
+        $this->setToken(self::$token);
         foreach (static::$databoxe_ids as $databox_id) {
             $databox = databox::get_instance($databox_id);
             $collection = array_shift($databox->get_collections());
@@ -822,7 +1060,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $record_id = $record->get_record_id();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setcollection/?oauth_token=' . self::$token;
+            $route = '/records/' . $databox_id . '/' . $record_id . '/setcollection/';
 
             $base_id = false;
             foreach ($databox->get_collections() as $collection) {
@@ -849,7 +1087,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testSearchBaskets()
     {
-        $route = '/baskets/list/?oauth_token=' . self::$token;
+        $this->setToken(self::$token);
+        $route = '/baskets/list/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -867,7 +1106,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testAddBasket()
     {
-        $route = '/baskets/add/?oauth_token=' . self::$token;
+        $this->setToken(self::$token);
+        $route = '/baskets/add/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -878,7 +1118,6 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMetaYaml200($content);
 
         $this->assertEquals(1, count((array) $content["response"]));
-        $appbox = appbox::get_instance(\bootstrap::getCore());
         $this->assertArrayHasKey("basket", $content["response"]);
 
         foreach ($content["response"]["basket"] as $basket) {
@@ -889,9 +1128,10 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testBasketContent()
     {
+        $this->setToken(self::$token);
         $basket = $this->insertOneBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/content/?oauth_token=' . self::$token;
+        $route = '/baskets/' . $basket->getId() . '/content/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
@@ -924,10 +1164,11 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testSetBasketTitle()
     {
+        $this->setToken(self::$token);
 
         $basket = $this->insertOneBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/setname/?oauth_token=' . self::$token;
+        $route = '/baskets/' . $basket->getId() . '/setname/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -977,9 +1218,11 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testSetBasketDescription()
     {
+        $this->setToken(self::$token);
+
         $basket = $this->insertOneBasket();
 
-        $route = '/baskets/' . $basket->getId() . '/setdescription/?oauth_token=' . self::$token;
+        $route = '/baskets/' . $basket->getId() . '/setdescription/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -1001,9 +1244,10 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testDeleteBasket()
     {
+        $this->setToken(self::$token);
         $baskets = $this->insertFiveBasket();
 
-        $route = '/baskets/' . $baskets[0]->getId() . '/delete/?oauth_token=' . self::$token;
+        $route = '/baskets/' . $baskets[0]->getId() . '/delete/';
 
         $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
@@ -1290,5 +1534,15 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
             $this->assertEquals($retrieved, $status["state"]);
         }
+    }
+
+    protected function setToken($token)
+    {
+        $_GET['oauth_token'] = $token;
+    }
+
+    protected function unsetToken()
+    {
+        unset($_GET['oauth_token']);
     }
 }

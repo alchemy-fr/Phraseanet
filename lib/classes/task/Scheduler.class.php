@@ -40,10 +40,6 @@ class task_Scheduler
         $date_obj = new DateTime();
         $message = sprintf("%s\t%s", $date_obj->format(DATE_ATOM), $message);
 
-        if ($this->output instanceof OutputInterface) {
-//      $this->output->writeln($message);
-        }
-// $this->output->writeln($this->input->getOption('nolog'));
         if ($this->input && ! ($this->input->getOption('nolog'))) {
             file_put_contents($logdir . "scheduler_l.log", $message . "\n", FILE_APPEND);
         }
