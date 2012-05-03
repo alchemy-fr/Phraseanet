@@ -32,7 +32,6 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
     public function setUp()
     {
         parent::setUp();
-	$this->markTestSkipped('To review');
         $this->root = __DIR__ . '/../../../../../';
         $this->client = $this->createClient();
         $this->temporaryUnInstall();
@@ -65,6 +64,7 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         foreach ($params as $param) {
             $this->registry[$param] = $registry->get($param);
         }
+	$this->markTestSkipped('To review');
     }
 
     public function tearDown()
