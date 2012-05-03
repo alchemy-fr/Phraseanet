@@ -14,13 +14,13 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
 
     public function createApplication()
     {
-        return require __DIR__ . '/../../../../Alchemy/Phrasea/Application/Setup.php';
+        return require __DIR__ . '/../../../../lib/Alchemy/Phrasea/Application/Setup.php';
     }
 
     public function setUp()
     {
         parent::setUp();
-        $this->root = __DIR__ . '/../../../../../';
+        $this->root = __DIR__ . '/../../../../';
         $this->client = $this->createClient();
         $this->temporaryUnInstall();
         $this->appbox = appbox::get_instance(\bootstrap::getCore());

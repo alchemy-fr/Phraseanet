@@ -11,6 +11,9 @@
 
 namespace Alchemy\Phrasea\Core\Configuration;
 
+use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+
 /**
  * Precise some informations about phraseanet configuration mechanism
  *
@@ -70,17 +73,17 @@ class ApplicationSpecification implements Specification
 
     protected function getConfigurationsFile()
     {
-        return new \SplFileInfo($this->getConfigurationsPathFile());
+        return new SymfonyFile($this->getConfigurationsPathFile(), true);
     }
 
     protected function getConnexionsFile()
     {
-        return new \SplFileInfo($this->getConnexionsPathFile());
+        return new SymfonyFile($this->getConnexionsPathFile(), true);
     }
 
     protected function getServicesFile()
     {
-        return new \SplFileInfo($this->getServicesPathFile());
+        return new SymfonyFile($this->getServicesPathFile(), true);
     }
 
     public function delete()
@@ -131,7 +134,7 @@ class ApplicationSpecification implements Specification
             $this->getServicesFile();
 
             return true;
-        } catch (\Exception $e) {
+        } catch (FileNotFoundException $e) {
 
         }
 

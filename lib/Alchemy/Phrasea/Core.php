@@ -21,6 +21,9 @@ require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Yam
 require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Parser.php';
 require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Inline.php';
 require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Unescaper.php';
+require_once __DIR__ . '/../../../vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/File/File.php';
+require_once __DIR__ . '/../../../vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/File/Exception/FileException.php';
+require_once __DIR__ . '/../../../vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/File/Exception/FileNotFoundException.php';
 require_once __DIR__ . '/../../../vendor/symfony/dependency-injection/Symfony/Component/DependencyInjection/ParameterBag/ParameterBagInterface.php';
 require_once __DIR__ . '/../../../vendor/symfony/dependency-injection/Symfony/Component/DependencyInjection/ParameterBag/ParameterBag.php';
 
