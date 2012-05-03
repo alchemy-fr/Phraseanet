@@ -97,11 +97,17 @@ class RedisCache extends CacheProvider
         return $this->_redis->info();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isServer()
     {
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function get($key)
     {
         if ( ! $this->contains($key)) {
@@ -111,12 +117,23 @@ class RedisCache extends CacheProvider
         return $this->fetch($key);
     }
 
-    public function deleteMulti(array $array_keys)
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteMulti(array $keys)
     {
-        foreach ($array_keys as $id) {
-            $this->delete($id);
+        foreach ($keys as $key) {
+            $this->delete($key);
         }
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'redis';
     }
 }

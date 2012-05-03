@@ -26,8 +26,14 @@ return call_user_func(function() {
 
             $app = new \Silex\Application();
 
+            /**
+             * @var Alchemy\Phrasea\Core
+             */
             $app["Core"] = \bootstrap::getCore();
 
+            /**
+             * @var appbox
+             */
             $app["appbox"] = \appbox::get_instance($app['Core']);
 
             /**
@@ -43,10 +49,16 @@ return call_user_func(function() {
                     return new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
                 };
 
-                    /**                     * ********************************************************
+            /**
              * oAuth token verification process
+             * - Check if oauth_token exists && is valid
+             * - Check if request comes from phraseanet Navigator && phraseanet Navigator
+             *  is enbale on current instance
+             * - restore user session
+             *
              * @ throws \API_V1_exception_unauthorized
-             * ********************************************************* */
+             * @ throws \API_V1_exception_forbidden
+             */
             $app->before(function($request) use ($app) {
                     $session = $app["appbox"]->get_session();
                     $registry = $app['Core']->getRegistry();
@@ -85,10 +97,17 @@ return call_user_func(function() {
                 });
 
 
-            /*             * ********************************************************
+            /**
              * oAUth log process
-             * ******************************************************* */
-
+             *
+             * Parse the requested route to fetch
+             * - the ressource (databox, basket, record etc ..)
+             * - general action (list, add, search)
+             * - the action (setstatus, setname etc..)
+             * - the aspect (collections, related, content etc..)
+             *
+             * @return array
+             */
             $parseRoute = function ($route, Response $response) {
                     $ressource = $general = $aspect = $action = null;
                     $exploded_route = explode('/', \p4string::delFirstSlash(\p4string::delEndSlash($route)));
@@ -132,6 +151,9 @@ return call_user_func(function() {
                     return array('ressource' => $ressource, 'general'   => $general, 'aspect'    => $aspect, 'action'    => $action);
                 };
 
+            /**
+             * Log occurs in after filter
+             */
             $app->after(function (Request $request, Response $response) use ($app, $parseRoute) {
                     $account = $app['token']->get_account();
                     $pathInfo = $request->getPathInfo();
@@ -157,6 +179,126 @@ return call_user_func(function() {
                 };
 
             /**
+             * Check wether the current user is Admin
+             */
+            $mustBeAdmin = function (Request $request) use ($app) {
+                    /* @var $user \User_Adapter */
+                    $user = $app['token']->get_account()->get_user();
+                    if ( ! $user->is_admin()) {
+                        throw new \API_V1_exception_unauthorized();
+                    }
+                };
+
+            /**
+             * *******************************************************************
+             * Get all tasks information
+             *
+             * Route : /monitor/phraseanet/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *
+             */
+            $route = '/monitor/tasks/';
+            $app->get(
+                $route, function(\Silex\Application $app, Request $request) {
+                    return $app['api']->get_task_list($app)->get_response();
+                }
+            )->middleware($mustBeAdmin);
+
+            /**
+             * *******************************************************************
+             * Get task informations
+             *
+             * Route : /monitor/phraseanet/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *
+             */
+            $route = '/monitor/task/{task_id}/';
+            $app->get(
+                $route, function(\Silex\Application $app, Request $request, $task_id) {
+                    return $app['api']->get_task($app, $task_id)->get_response();
+                }
+            )->middleware($mustBeAdmin)->assert('task_id', '\d+');
+
+            /**
+             * *******************************************************************
+             * Start task
+             *
+             * Route : /monitor/task/{task_id}/
+             *
+             * Method : POST
+             *
+             * Parameters :
+             * - name (string) change the name of the task
+             * - autostart (boolean) start task when scheduler starts
+             */
+            $route = '/monitor/task/{task_id}/';
+            $app->post(
+                $route, function(\Silex\Application $app, Request $request, $task_id) {
+                    return $app['api']->set_task_property($app, $task_id)->get_response();
+                }
+            )->middleware($mustBeAdmin)->assert('task_id', '\d+');
+
+            /**
+             * *******************************************************************
+             * Start task
+             *
+             * Route : /monitor/task/{task_id}/start/
+             *
+             * Method : POST
+             *
+             * Parameters :
+             *
+             */
+            $route = '/monitor/task/{task_id}/start/';
+            $app->post(
+                $route, function(\Silex\Application $app, Request $request, $task_id) {
+                    return $app['api']->start_task($app, $task_id)->get_response();
+                }
+            )->middleware($mustBeAdmin);
+
+            /**
+             * *******************************************************************
+             * Stop task
+             *
+             * Route : /monitor/task/{task_id}/stop/
+             *
+             * Method : POST
+             *
+             * Parameters :
+             *
+             */
+            $route = '/monitor/task/{task_id}/stop/';
+            $app->post(
+                $route, function(\Silex\Application $app, Request $request, $task_id) {
+                    return $app['api']->stop_task($app, $task_id)->get_response();
+                }
+            )->middleware($mustBeAdmin);
+
+            /**
+             * *******************************************************************
+             * Get some information about phraseanet
+             *
+             * Route : /monitor/phraseanet/
+             *
+             * Method : GET
+             *
+             * Parameters :
+             *
+             */
+            $route = '/monitor/phraseanet/';
+            $app->get(
+                $route, function(\Silex\Application $app, Request $request) {
+                    return $app['api']->get_phraseanet_monitor($app)->get_response();
+                }
+            )->middleware($mustBeAdmin);
+
+            /**
              * *******************************************************************
              * Route : /databoxes/list/FORMAT/
              *
@@ -167,8 +309,8 @@ return call_user_func(function() {
              */
             $route = '/databoxes/list/';
             $app->get(
-                $route, function() use ($app) {
-                    return $app['api']->get_databoxes($app['request'])->get_response();
+                $route, function(\Silex\Application $app, Request $request) {
+                    return $app['api']->get_databoxes($request)->get_response();
                 }
             );
 
@@ -572,9 +714,6 @@ return call_user_func(function() {
              * Parameters :
              *
              */
-//  public function search_publications(\Symfony\Component\HttpFoundation\Request $app['request']);
-
-
             $route = '/feeds/list/';
             $app->get(
                 $route, function() use ($app) {
@@ -593,8 +732,6 @@ return call_user_func(function() {
              *    PUBLICATION_ID : required INT
              *
              */
-//  public function get_publication(\Symfony\Component\HttpFoundation\Request $app['request'], $publication_id);
-
             $route = '/feeds/{feed_id}/content/';
             $app->get(
                 $route, function($feed_id) use ($app) {
@@ -633,7 +770,6 @@ return call_user_func(function() {
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
 
                     $result = $app['api']->get_error_message($app['request'], $code);
-
                     return $result->get_response();
                 });
 ////

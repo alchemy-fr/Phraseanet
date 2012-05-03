@@ -15,7 +15,9 @@
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
+
 use Symfony\Component\HttpFoundation\Request;
+use Silex\Application;
 
 class API_V1_adapter extends API_V1_Abstract
 {
@@ -91,6 +93,442 @@ class API_V1_adapter extends API_V1_Abstract
     public function get_version()
     {
         return $this->version;
+    }
+
+  /**
+   * Get a list of phraseanet tasks
+   *
+   * @param \Silex\Application $app The API silex application
+   * @return \API_V1_result
+   */
+    public function get_task_list(Application $app)
+    {
+        $result = new \API_V1_result($app['request'], $this);
+
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new \task_manager($appbox);
+        $tasks = $taskManager->get_tasks();
+
+        $ret = array();
+        foreach ($tasks as $task) {
+            $ret[$task->get_task_id()] = array(
+                'id'             => $task->get_task_id(),
+                'state'          => $task->get_status(),
+                'pid'            => $task->get_pid(),
+                'title'          => $task->get_title(),
+                'last_exec_time' => $task->get_last_exec_time()
+            );
+        }
+
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    /**
+     * Get informations about an identified task
+     *
+     * @param \Silex\Application $app The API silex application
+     * @param type $task_id
+     * @return \API_V1_result
+     */
+    public function get_task(Application $app, $taskId)
+    {
+        $result = new \API_V1_result($app['request'], $this);
+
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new task_manager($appbox);
+        $ret = array();
+        try {
+            $task = $taskManager->get_task($taskId);
+            $ret['id'] = $task->get_task_id();
+            $ret['state'] = $task->get_status();
+            $ret['pid'] = $task->get_pid();
+            $ret['title'] = $task->get_title();
+            $ret['last_exec_time'] = $task->get_last_exec_time();
+        } catch (\Exception_NotFound $e) {
+            $result->set_error_code(404);
+            $ret = array('success' => false);
+        } catch (\Exception_InvalidArgument $e) {
+            $result->set_error_code(400);
+            $ret = array('success' => false);
+        } catch (\Exception $e) {
+            $result->set_error_code(500);
+            $ret = array('success' => false);
+        }
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    /**
+     * Start a specified task
+     *
+     * @param \Silex\Application $app The API silex application
+     * @param type $task_id The task id
+     * @return \API_V1_result
+     */
+    public function start_task(Application $app, $taskId)
+    {
+        $result = new \API_V1_result($app['request'], $this);
+
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new \task_manager($appbox);
+        $ret = array('success' => true);
+        try {
+            $task = $taskManager->get_task($taskId);
+            $task->set_status(\task_abstract::STATUS_TOSTART);
+        } catch (\Exception_NotFound $e) {
+            $result->set_error_code(404);
+            $ret = array('success' => false);
+        } catch (\Exception_InvalidArgument $e) {
+            $result->set_error_code(400);
+            $ret = array('success' => false);
+        } catch (\Exception $e) {
+            $result->set_error_code(500);
+            $ret = array('success' => false);
+        }
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    /**
+     * Stop a specified task
+     *
+     * @param \Silex\Application $app The API silex application
+     * @param type $task_id The task id
+     * @return \API_V1_result
+     */
+    public function stop_task(Application $app, $taskId)
+    {
+        $result = new API_V1_result($app['request'], $this);
+
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new \task_manager($appbox);
+        $ret = array();
+        try {
+            $task = $taskManager->get_task($taskId);
+            $task->set_status(\task_abstract::STATUS_TOSTOP);
+        } catch (\Exception_NotFound $e) {
+            $result->set_error_code(404);
+            $ret = array('success' => false);
+        } catch (\Exception_InvalidArgument $e) {
+            $result->set_error_code(400);
+            $ret = array('success' => false);
+        } catch (\Exception $e) {
+            $result->set_error_code(500);
+            $ret = array('success' => false);
+        }
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    /**
+     * Update a task property
+     *  - name
+     *  - autostart
+     *
+     * @param \Silex\Application $app Silex application
+     * @param type $task_id the task id
+     * @return \API_V1_result
+     * @throws \Exception_InvalidArgument
+     */
+    public function set_task_property(Application $app, $taskId)
+    {
+        $result = new API_V1_result($app['request'], $this);
+
+        $name = $app['request']->get('name');
+        $autostart = $app['request']->get('autostart');
+
+        $ret = array('success' => false);
+
+        try {
+            if (null === $name && null === $autostart) {
+                throw new \Exception_InvalidArgument();
+            }
+
+            $appbox = \appbox::get_instance($app['Core']);
+
+            $taskManager = new \task_manager($appbox);
+
+            $task = $taskManager->get_task($taskId);
+
+            if ($name) {
+                $task->set_title($name);
+            }
+
+            if ($autostart) {
+                $task->set_active( ! ! $autostart);
+            }
+
+            $ret = array('success' => true);
+        } catch (\Exception_NotFound $e) {
+            $result->set_error_code(404);
+            $ret = array('success' => false);
+        } catch (\Exception_InvalidArgument $e) {
+            $result->set_error_code(400);
+            $ret = array('success' => false);
+        } catch (\Exception $e) {
+            $result->set_error_code(500);
+            $ret = array('success' => false);
+        }
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+     /**
+      * Get Information the cache system used by the instance
+      *
+      * @param \Silex\Application $app the silex application
+      * @return array
+      */
+    protected function get_cache_info(Application $app)
+    {
+        $mainCache = $app['Core']['Cache'];
+        $opCodeCache = $app['Core']['OpcodeCache'];
+
+        $ret = array();
+
+        if ($mainCache instanceof \Alchemy\Phrasea\Cache\Cache) {
+            $ret['cache']['main'] = array(
+                'type'  => $mainCache->getName(),
+                'stats' => $mainCache->getStats()
+            );
+        } else {
+            $ret['cache']['main'] = null;
+        }
+
+        if ($opCodeCache instanceof \Alchemy\Phrasea\Cache\Cache) {
+            $ret['cache']['op_code'] = array(
+                'type'  => $mainCache->getName(),
+                'stats' => $opCodeCache->getStats()
+            );
+        } else {
+            $ret['cache']['op_code'] = null;
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Provide information about phraseanet configuration
+     *
+     * @param \Silex\Application $app the silex application
+     * @return array
+     */
+    protected function get_config_info(Application $app)
+    {
+        $ret = array();
+
+        $ret['phraseanet']['version'] = array(
+            'name'   => $app['Core']['Version']::getName(),
+            'number' => $app['Core']['Version']::getNumber(),
+        );
+
+        $config = $app['Core']->getConfiguration();
+
+        $ret['phraseanet']['environment'] = $app['Core']->getEnv();
+        $ret['phraseanet']['debug'] = $config->isDebug();
+        $ret['phraseanet']['maintenance'] = $config->isMaintained();
+        $ret['phraseanet']['errorsLog'] = $config->isDisplayingErrors();
+        $ret['phraseanet']['serverName'] = $config->getPhraseanet()->get('servername');
+
+        return $ret;
+    }
+
+    /**
+     * Provide phraseanet global values
+     * @param \Silex\Application $app the silex application
+     * @return array
+     */
+    protected function get_gv_info(Application $app)
+    {
+        $registry = $app['Core']['Registry'];
+
+        return array(
+            'global_values' => array(
+                'serverName'  => $registry->get('GV_ServerName'),
+                'title'       => $registry->get('GV_homeTitle'),
+                'keywords'    => $registry->get('GV_metaKeywords'),
+                'description' => $registry->get('GV_metaDescription'),
+                'httpServer'  => array(
+                    'logErrors'       => $registry->get('GV_log_errors'),
+                    'phpTimezone'     => $registry->get('GV_timezone'),
+                    'siteId'          => $registry->get('GV_sit'),
+                    'staticUrl'       => $registry->get('GV_STATIC_URL'),
+                    'defaultLanguage' => $registry->get('id_GV_default_lng'),
+                    'allowIndexing'   => $registry->get('GV_allow_search_engine'),
+                    'modes'           => array(
+                        'XsendFile'                     => $registry->get('GV_modxsendfile'),
+                        'nginxXAccelRedirect'           => $registry->get('GV_X_Accel_Redirect'),
+                        'nginxXAccelRedirectMountPoint' => $registry->get('GV_X_Accel_Redirect_mount_point'),
+                        'h264Streaming'                 => $registry->get('GV_h264_streaming'),
+                        'authTokenDirectory'            => $registry->get('GV_mod_auth_token_directory'),
+                        'authTokenDirectoryPath'        => $registry->get('GV_mod_auth_token_directory_path'),
+                        'authTokenPassphrase'           => $registry->get('GV_mod_auth_token_passphrase'),
+                    ),
+                    'files'                         => array(
+                        'owner'       => $registry->get('GV_filesOwner'),
+                        'group'       => $registry->get('GV_filesOwner'),
+                    )
+                ),
+                'maintenance' => array(
+                    'alertMessage'   => $registry->get('GV_message'),
+                    'displayMessage' => $registry->get('GV_message_on'),
+                ),
+                'webServices'    => array(
+                    'googleApi'                   => $registry->get('GV_google_api'),
+                    'googleAnalyticsId'           => $registry->get('GV_googleAnalytics'),
+                    'googleChromeFrameDisclaimer' => $registry->get('GV_display_gcf'),
+                    'i18nWebService'              => $registry->get('GV_i18n_service'),
+                    'recaptacha'                  => array(
+                        'active'     => $registry->get('GV_captchas'),
+                        'publicKey'  => $registry->get('GV_captcha_public_key'),
+                        'privateKey' => $registry->get('GV_captcha_private_key'),
+                    ),
+                    'youtube'    => array(
+                        'active'       => $registry->get('GV_youtube_api'),
+                        'clientId'     => $registry->get('GV_youtube_client_id'),
+                        'clientSecret' => $registry->get('GV_youtube_client_secret'),
+                        'devKey'       => $registry->get('GV_youtube_dev_key'),
+                    ),
+                    'flickr'       => array(
+                        'active'       => $registry->get('GV_flickr_api'),
+                        'clientId'     => $registry->get('GV_flickr_client_id'),
+                        'clientSecret' => $registry->get('GV_flickr_client_secret'),
+                    ),
+                    'dailymtotion' => array(
+                        'active'       => $registry->get('GV_dailymotion_api'),
+                        'clientId'     => $registry->get('GV_dailymotion_client_id'),
+                        'clientSecret' => $registry->get('GV_dailymotion_client_secret'),
+                    )
+                ),
+                'navigator'    => array(
+                    'active'   => $registry->get('GV_client_navigator'),
+                ),
+                'homepage' => array(
+                    'viewType' => $registry->get('GV_home_publi'),
+                ),
+                'report'   => array(
+                    'anonymous' => $registry->get('GV_anonymousReport'),
+                ),
+                'events'    => array(
+                    'events'        => $registry->get('GV_events'),
+                    'notifications' => $registry->get('GV_notifications'),
+                ),
+                'upload'        => array(
+                    'allowedFileExtension' => $registry->get('GV_appletAllowedFileEx'),
+                ),
+                'filesystem'           => array(
+                    'web'          => $registry->get('GV_base_datapath_web'),
+                    'noWeb'        => $registry->get('GV_base_datapath_noweb'),
+                    'thumbnail'    => $registry->get('GV_base_dataurl'),
+                ),
+                'searchEngine' => array(
+                    'configuration' => array(
+                        'defaultQuery'     => $registry->get('GV_defaultQuery'),
+                        'defaultQueryType' => $registry->get('GV_defaultQuery_type'),
+                    ),
+                    'sphinx'           => array(
+                        'active'       => $registry->get('GV_sphinx'),
+                        'host'         => $registry->get('GV_sphinx_host'),
+                        'port'         => $registry->get('GV_sphinx_port'),
+                        'realtimeHost' => $registry->get('GV_sphinx_rt_host'),
+                        'realtimePort' => $registry->get('GV_sphinx_rt_port'),
+                    ),
+                    'phrasea'      => array(
+                        'minChar' => $registry->get('GV_min_letters_truncation'),
+                        'sort'    => $registry->get('GV_phrasea_sort'),
+                    ),
+                ),
+                'binary'  => array(
+                    'phpCli'            => $registry->get('GV_cli'),
+                    'phpIni'            => $registry->get('GV_PHP_INI'),
+                    'imagick'           => $registry->get('GV_imagick'),
+                    'exiftool'          => $registry->get('GV_exiftool'),
+                    'swfExtract'        => $registry->get('GV_swf_extract'),
+                    'pdf2swf'           => $registry->get('GV_pdf2swf'),
+                    'swfRender'         => $registry->get('GV_swf_render'),
+                    'unoconv'           => $registry->get('GV_unoconv'),
+                    'ffmpeg'            => $registry->get('GV_ffmpeg'),
+                    'mp4box'            => $registry->get('GV_mp4box'),
+                    'mplayer'           => $registry->get('GV_mplayer'),
+                    'pdftotext'         => $registry->get('GV_pdftotext'),
+                    'pdfmaxpages'       => $registry->get('GV_pdfmaxpages'),),
+                'mainConfiguration' => array(
+                    'adminMail'          => $registry->get('GV_adminMail'),
+                    'viewBasAndCollName' => $registry->get('GV_view_bas_and_coll'),
+                    'chooseExportTitle'  => $registry->get('GV_choose_export_title'),
+                    'defaultExportTitle' => $registry->get('GV_default_export_title'),
+                    'socialTools'        => $registry->get('GV_social_tools'),),
+                'modules'            => array(
+                    'thesaurus'          => $registry->get('GV_thesaurus'),
+                    'storyMode'          => $registry->get('GV_multiAndReport'),
+                    'docSubsitution'     => $registry->get('GV_seeOngChgDoc'),
+                    'subdefSubstitution' => $registry->get('GV_seeNewThumb'),),
+                'email'              => array(
+                    'defaultMailAddress' => $registry->get('GV_defaulmailsenderaddr'),
+                    'smtp'               => array(
+                        'active'   => $registry->get('GV_smtp'),
+                        'auth'     => $registry->get('GV_smtp_auth'),
+                        'host'     => $registry->get('GV_smtp_host'),
+                        'port'     => $registry->get('GV_smtp_port'),
+                        'secure'   => $registry->get('GV_smtp_secure'),
+                        'user'     => $registry->get('GV_smtp_user'),
+                        'password' => $registry->get('GV_smtp_password'),
+                    ),
+                ),
+                'ftp'      => array(
+                    'active'        => $registry->get('GV_activeFTP'),
+                    'activeForUser' => $registry->get('GV_ftp_for_user'),),
+                'client'        => array(
+                    'maxSizeDownload'         => $registry->get('GV_download_max'),
+                    'tabSearchMode'           => $registry->get('GV_ong_search'),
+                    'tabAdvSearchPosition'    => $registry->get('GV_ong_advsearch'),
+                    'tabTopicsPosition'       => $registry->get('GV_ong_topics'),
+                    'tabOngActifPosition'     => $registry->get('GV_ong_actif'),
+                    'renderTopicsMode'        => $registry->get('GV_client_render_topics'),
+                    'displayRolloverPreview'  => $registry->get('GV_rollover_reg_preview'),
+                    'displayRolloverBasket'   => $registry->get('GV_rollover_chu'),
+                    'collRenderMode'          => $registry->get('GV_client_coll_ckbox'),
+                    'viewSizeBaket'           => $registry->get('GV_viewSizeBaket'),
+                    'clientAutoShowProposals' => $registry->get('GV_clientAutoShowProposals'),
+                    'needAuth2DL'             => $registry->get('GV_needAuth2DL'),),
+                'inscription'             => array(
+                    'autoSelectDB' => $registry->get('GV_autoselectDB'),
+                    'autoRegister' => $registry->get('GV_autoregister'),
+                ),
+                'push'         => array(
+                    'validationReminder' => $registry->get('GV_validation_reminder'),
+                    'expirationValue'    => $registry->get('GV_val_expiration'),
+                ),
+            )
+        );
+    }
+
+    /**
+     * Provide
+     *  - cache information
+     *  - global values informations
+     *  - configuration informations
+     *
+     * @param \Silex\Application $app the silex application
+     * @return \API_V1_result
+     */
+    public function get_phraseanet_monitor(Application $app)
+    {
+        $result = new API_V1_result($app['request'], $this);
+
+        $ret = array_merge(
+            $this->get_config_info($app), $this->get_cache_info($app), $this->get_gv_info($app)
+        );
+
+        $result->set_datas($ret);
+
+        return $result;
     }
 
     /**

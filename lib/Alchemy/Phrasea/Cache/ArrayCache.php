@@ -21,12 +21,26 @@ use Doctrine\Common\Cache\ArrayCache as DoctrineArray;
 class ArrayCache extends DoctrineArray implements Cache
 {
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'array';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isServer()
     {
 
         return false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function get($id)
     {
         if ( ! $this->contains($id)) {
@@ -36,12 +50,15 @@ class ArrayCache extends DoctrineArray implements Cache
         return $this->fetch($id);
     }
 
-    public function deleteMulti(array $array_keys)
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteMulti(array $keys)
     {
-        foreach ($array_keys as $id) {
-            $this->delete($id);
+        foreach ($keys as $key) {
+            $this->delete($key);
         }
 
-        return;
+        return $this;
     }
 }

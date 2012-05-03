@@ -119,8 +119,9 @@ class task_manager
     {
         $tasks = $this->get_tasks();
 
-        if ( ! isset($tasks[$task_id]))
-            throw new Exception('Unknown task_id');
+        if ( ! isset($tasks[$task_id])) {
+            throw new Exception_NotFound('Unknown task_id');
+        }
 
         return $tasks[$task_id];
     }

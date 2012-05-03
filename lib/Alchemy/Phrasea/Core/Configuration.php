@@ -127,7 +127,7 @@ class Configuration
         return $this;
     }
 
-    public function get()
+    public function get($name)
     {
         return $this->configuration->get($name);
     }
