@@ -12,6 +12,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     protected static $account_id;
     protected static $application;
     protected static $databoxe_ids = array();
+    protected static $need_records = 1;
+    protected static $need_subdefs = true;
 
     public function setUp()
     {
@@ -485,40 +487,57 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsEmbedRoute()
     {
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        $keys = array_keys(self::$record_1->get_subdefs());
 
-            $record = record_adapter::create($collection, $system_file);
+        $record_id = self::$record_1->get_record_id();
 
-            $keys = array_keys($record->get_subdefs());
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . $record_id . '/embed/?oauth_token=' . self::$token;
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record_id = $record->get_record_id();
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/embed/?oauth_token=' . self::$token;
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $crawler = $this->client->request('GET', $route);
-            $content = json_decode($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
-
-            foreach ($content->response as $embed) {
-                foreach ($keys as $key) {
-                    $this->assertObjectHasAttribute($key, $embed);
-                    $this->checkEmbed($key, $embed->$key, $record);
-                }
+        foreach ($content->response as $embed) {
+            foreach ($keys as $key) {
+                $this->assertObjectHasAttribute($key, $embed);
+                $this->checkEmbed($key, $embed->$key, self::$record_1);
             }
-            $record->delete();
         }
+
         $route = '/records/24892534/51654651553/embed/?oauth_token=' . self::$token;
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
         $route = '/records/any_bad_id/sfsd5qfsd5/embed/?oauth_token=' . self::$token;
         $this->evaluateBadRequestRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+    }
+
+    public function testRecordsEmbedRouteMime()
+    {
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+
+        $this->client->request('GET', $route, array('mimes' => array('image/jpg', 'image/jpeg')));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        foreach ($content->response as $embed) {
+            foreach (array('thumbnail', 'preview') as $key) {
+                $this->assertObjectHasAttribute($key, $embed);
+                $this->checkEmbed($key, $embed->$key, self::$record_1);
+            }
+        }
+    }
+
+    public function testRecordsEmbedRouteDevices()
+    {
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+
+        $this->client->request('GET', $route, array('devices' => array('nodevice')));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->assertEquals(0, count($content->response->embed));
     }
 
     protected function checkEmbed($subdef_name, $embed, record_adapter $record)
