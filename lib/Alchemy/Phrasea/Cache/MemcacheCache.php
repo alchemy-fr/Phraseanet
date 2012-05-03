@@ -21,11 +21,25 @@ use \Doctrine\Common\Cache\MemcacheCache as DoctrineMemcache;
 class MemcacheCache extends DoctrineMemcache implements Cache
 {
 
+     /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'memecache';
+    }
+
+     /**
+     * {@inheritdoc}
+     */
     public function isServer()
     {
         return true;
     }
 
+     /**
+     * {@inheritdoc}
+     */
     public function get($key)
     {
         if ( ! $this->contains($key)) {
@@ -35,9 +49,12 @@ class MemcacheCache extends DoctrineMemcache implements Cache
         return $this->fetch($key);
     }
 
-    public function deleteMulti(array $array_keys)
+     /**
+     * {@inheritdoc}
+     */
+    public function deleteMulti(array $arrayKeys)
     {
-        foreach ($array_keys as $id) {
+        foreach ($arrayKeys as $id) {
             $this->delete($id);
         }
 

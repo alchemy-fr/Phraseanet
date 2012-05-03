@@ -21,11 +21,25 @@ use Doctrine\Common\Cache\ApcCache as DoctrineApc;
 class ApcCache extends DoctrineApc implements Cache
 {
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'apc';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isServer()
     {
         return false;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function get($key)
     {
         if ( ! $this->contains($key)) {
@@ -35,9 +49,12 @@ class ApcCache extends DoctrineApc implements Cache
         return $this->fetch($key);
     }
 
-    public function deleteMulti(array $array_keys)
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteMulti(array $arrayKeys)
     {
-        foreach ($array_keys as $id) {
+        foreach ($arrayKeys as $id) {
             $this->delete($id);
         }
 
