@@ -9,8 +9,24 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
 {
     protected $client;
     protected $root;
+
+    /**
+     *
+     * @var \appbox
+     */
     protected $appbox;
+
+    /**
+     *
+     * @var \connection_pdo
+     */
     protected $connection;
+
+    /**
+     *
+     * @var \registryInterface
+     */
+    protected $registry;
 
     public function createApplication()
     {
@@ -25,12 +41,14 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         $this->temporaryUnInstall();
         $this->appbox = appbox::get_instance(\bootstrap::getCore());
         $this->connection = $this->appbox->get_connection();
+        $this->registry = $this->appbox->get_registry();
     }
 
     public function tearDown()
     {
         $this->temporaryReInstall();
         $this->appbox->set_connection($this->connection);
+        $this->appbox->set_registry($this->registry);
         parent::tearDown();
     }
 
