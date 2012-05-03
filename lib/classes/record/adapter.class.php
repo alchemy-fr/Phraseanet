@@ -354,9 +354,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      *
      * @return Array
      */
-    public function get_embedable_medias()
+    public function get_embedable_medias($devices = null, $mimes = null)
     {
-        return $this->get_subdefs();
+
+        return $this->getSubdfefByDeviceAndMime($devices, $mimes);
     }
 
     /**
@@ -610,22 +611,35 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      */
     public function getSubdfefByDeviceAndMime($devices = null, $mimes = null)
     {
-        $subdefNames = array();
+        $subdefNames = $subdefs = array();
 
-        $searchDevices = array_merge((array) $devices, databox_subdef::DEVICE_ALL);
+        $availableSubdefs = $this->get_subdefs();
 
-        foreach ($this->databox->get_subdef_structure() as $databoxSubdef) {
+        if (isset($availableSubdefs['document'])) {
 
-            if ($devices && ! array_intersect($databoxSubdef->getDevices(), $searchDevices)) {
-                continue;
+            $mime_ok = ! $mimes || in_array($availableSubdefs['document']->get_mime(), (array) $mime);
+            $devices_ok = ! $devices || array_intersect($availableSubdefs['document']->getDevices(), (array) $devices);
+
+            if ($mime_ok && $devices_ok) {
+                $subdefs['document'] = $availableSubdefs['document'];
             }
-
-            array_push($subdefNames, $databoxSubdef->get_name());
         }
 
-        $subdefs = array();
+        $searchDevices = array_merge((array) $devices, (array) databox_subdef::DEVICE_ALL);
 
-        foreach ($this->get_subdefs() as $subdef) {
+        foreach ($this->databox->get_subdef_structure() as $databoxSubdefs) {
+
+            foreach ($databoxSubdefs as $databoxSubdef) {
+
+                if ($devices && ! array_intersect($databoxSubdef->getDevices(), $searchDevices)) {
+                    continue;
+                }
+
+                array_push($subdefNames, $databoxSubdef->get_name());
+            }
+        }
+
+        foreach ($availableSubdefs as $subdef) {
 
             if ( ! in_array($subdef->get_name(), $subdefNames)) {
                 continue;
@@ -639,7 +653,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 continue;
             }
 
-            $subdefs[] = $subdef;
+            $subdefs[$subdef->get_name()] = $subdef;
         }
 
         return $subdefs;
@@ -1650,7 +1664,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $this->generate_subdef($subdef, $pathdest);
 
             if (file_exists($pathdest)) {
-                $baseurl = $subdef->get_baseurl() ? $subdef->get_baseurl() . substr(dirname($pathdest), strlen($subdef->get_path()) + 1) : '';
+                $baseurl = $subdef->get_baseurl() ? $subdef->get_baseurl() . substr(dirname($pathdest), strlen($subdef->get_path())) : '';
 
                 media_subdef::create($this, $subdef->get_name(), new system_file($pathdest), $baseurl);
             }
