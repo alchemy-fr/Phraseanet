@@ -43,6 +43,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
      */
     protected static $adminApplication;
     protected static $databoxe_ids = array();
+    protected static $need_records = 1;
+    protected static $need_subdefs = true;
 
     public function setUp()
     {
@@ -724,27 +726,23 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-            $record_id = self::$record_1->get_record_id();
+        $keys = array_keys(self::$record_1->get_subdefs());
 
-            $keys = array_keys($record->get_subdefs());
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record_id = $record->get_record_id();
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/embed/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $this->client->request('GET', $route);
-            $content = json_decode($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
-
-            foreach ($content->response as $embed) {
-                foreach ($keys as $key) {
-                    $this->assertObjectHasAttribute($key, $embed);
-                    $this->checkEmbed($key, $embed->$key, self::$record_1);
-                }
+        foreach ($content->response as $embed) {
+            foreach ($keys as $key) {
+                $this->assertObjectHasAttribute($key, $embed);
+                $this->checkEmbed($key, $embed->$key, self::$record_1);
             }
+        }
         $route = '/records/24892534/51654651553/embed/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -755,7 +753,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsEmbedRouteMime()
     {
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+        $this->setToken(self::$token);
+
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, array('mimes' => array('image/jpg', 'image/jpeg')));
         $content = json_decode($this->client->getResponse()->getContent());
@@ -770,7 +770,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     public function testRecordsEmbedRouteDevices()
     {
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/?oauth_token=' . self::$token;
+        $this->setToken(self::$token);
+
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, array('devices' => array('nodevice')));
         $content = json_decode($this->client->getResponse()->getContent());
