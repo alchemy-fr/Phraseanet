@@ -26,7 +26,7 @@ class MemcacheCache extends DoctrineMemcache implements Cache
      */
     public function getName()
     {
-        return 'memecache';
+        return 'memcache';
     }
 
      /**

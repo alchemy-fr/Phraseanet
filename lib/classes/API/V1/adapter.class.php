@@ -98,7 +98,7 @@ class API_V1_adapter extends API_V1_Abstract
   /**
    * Get a list of phraseanet tasks
    *
-     * @param \Silex\Application $app The API silex application
+   * @param \Silex\Application $app The API silex application
    * @return \API_V1_result
    */
     public function get_task_list(Application $app)
