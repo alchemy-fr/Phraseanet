@@ -93,42 +93,25 @@ class API_V1_adapter extends API_V1_Abstract
         return $this->version;
     }
 
-    /**
-     *
-     * @return API_V1_result
-     */
-    public function get_scheduler_state(Request $request)
+  /**
+   * Get a list of phraseanet tasks
+   *
+     * @param \Silex\Application $app The API silex application
+   * @return \API_V1_result
+   */
+    public function get_task_list(\Silex\Application $app)
     {
-        $result = new \API_V1_result($request, $this);
+        $result = new \API_V1_result($app['request'], $this);
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-
-        $task_manager = new \task_manager($appbox);
-
-        $state = $task_manager->get_scheduler_state();
-
-        $result->set_datas($state);
-
-        return $result;
-    }
-
-    /**
-     *
-     * @return API_V1_result
-     */
-    public function get_task_list(Request $request)
-    {
-        $result = new \API_V1_result($request, $this);
-
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $task_manager = new \task_manager($appbox);
-        $tasks = $task_manager->get_tasks();
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new \task_manager($appbox);
+        $tasks = $taskManager->get_tasks();
 
         $ret = array();
         foreach ($tasks as $task) {
             $ret[$task->get_task_id()] = array(
                 'id'             => $task->get_task_id(),
-                'status'         => $task->get_status(),
+                'state'          => $task->get_status(),
                 'pid'            => $task->get_pid(),
                 'title'          => $task->get_title(),
                 'last_exec_time' => $task->get_last_exec_time()
@@ -141,20 +124,23 @@ class API_V1_adapter extends API_V1_Abstract
     }
 
     /**
+     * Get informations about an identified task
      *
-     * @return API_V1_result
+     * @param \Silex\Application $app The API silex application
+     * @param type $task_id
+     * @return \API_V1_result
      */
-    public function get_task(Request $request, $task_id)
+    public function get_task(\Silex\Application $app, $taskId)
     {
-        $result = new \API_V1_result($request, $this);
+        $result = new \API_V1_result($app['request'], $this);
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $task_manager = new task_manager($appbox);
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new task_manager($appbox);
         $ret = array();
         try {
-            $task = $task_manager->get_task($task_id);
+            $task = $taskManager->get_task($taskId);
             $ret['id'] = $task->get_task_id();
-            $ret['status'] = $task->get_status();
+            $ret['state'] = $task->get_status();
             $ret['pid'] = $task->get_pid();
             $ret['title'] = $task->get_title();
             $ret['last_exec_time'] = $task->get_last_exec_time();
@@ -173,15 +159,22 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function start_task(\Silex\Application $app, $task_id)
+    /**
+     * Start a specified task
+     *
+     * @param \Silex\Application $app The API silex application
+     * @param type $task_id The task id
+     * @return \API_V1_result
+     */
+    public function start_task(\Silex\Application $app, $taskId)
     {
         $result = new \API_V1_result($app['request'], $this);
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $task_manager = new \task_manager($appbox);
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new \task_manager($appbox);
         $ret = array('success' => true);
         try {
-            $task = $task_manager->get_task($task_id);
+            $task = $taskManager->get_task($taskId);
             $task->set_status(\task_abstract::STATUS_TOSTART);
         } catch (\Exception_NotFound $e) {
             $result->set_error_code(404);
@@ -198,15 +191,22 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function stop_task(\Silex\Application $app, $task_id)
+    /**
+     * Stop a specified task
+     *
+     * @param \Silex\Application $app The API silex application
+     * @param type $task_id The task id
+     * @return \API_V1_result
+     */
+    public function stop_task(\Silex\Application $app, $taskId)
     {
         $result = new API_V1_result($app['request'], $this);
 
-        $appbox = \appbox::get_instance(\bootstrap::getCore());
-        $task_manager = new \task_manager($appbox);
+        $appbox = \appbox::get_instance($app['Core']);
+        $taskManager = new \task_manager($appbox);
         $ret = array();
         try {
-            $task = $task_manager->get_task($task_id);
+            $task = $taskManager->get_task($taskId);
             $task->set_status(\task_abstract::STATUS_TOSTOP);
         } catch (\Exception_NotFound $e) {
             $result->set_error_code(404);
@@ -223,7 +223,17 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    public function set_task_property(\Silex\Application $app, $task_id)
+    /**
+     * Update a task property
+     *  - name
+     *  - autostart
+     *
+     * @param \Silex\Application $app Silex application
+     * @param type $task_id the task id
+     * @return \API_V1_result
+     * @throws \Exception_InvalidArgument
+     */
+    public function set_task_property(\Silex\Application $app, $taskId)
     {
         $result = new API_V1_result($app['request'], $this);
 
@@ -231,11 +241,17 @@ class API_V1_adapter extends API_V1_Abstract
         $autostart = $app['request']->get('autostart');
 
         $ret = array('success' => false);
+
         try {
             if (null === $name && null === $autostart) {
                 throw new \Exception_InvalidArgument();
             }
-            $task = $task_manager->get_task($task_id);
+
+            $appbox = \appbox::get_instance($app['Core']);
+
+            $taskManager = new \task_manager($appbox);
+
+            $task = $taskManager->get_task($taskId);
 
             if ($name) {
                 $task->set_title($name);
@@ -261,10 +277,12 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-    /**
-     *
-     * @return array
-     */
+     /**
+      * Get Information the cache system used by the instance
+      *
+      * @param \Silex\Application $app the silex application
+      * @return array
+      */
     protected function get_cache_info(\Silex\Application $app)
     {
         $mainCache = $app['Core']['Cache'];
@@ -274,7 +292,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($mainCache instanceof \Alchemy\Phrasea\Cache\Cache) {
             $ret['cache']['main'] = array(
-                'type'  => strtolower(substr(array_pop(explode('\\', get_class($mainCache))), 0, -5)),
+                'type'  => $mainCache->getName(),
                 'stats' => $mainCache->getStats()
             );
         } else {
@@ -283,7 +301,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($opCodeCache instanceof \Alchemy\Phrasea\Cache\Cache) {
             $ret['cache']['op_code'] = array(
-                'type'  => strtolower(substr(array_pop(explode('\\', get_class($opCodeCache))), 0, -5)),
+                'type'  => $mainCache->getName(),
                 'stats' => $opCodeCache->getStats()
             );
         } else {
@@ -293,6 +311,12 @@ class API_V1_adapter extends API_V1_Abstract
         return $ret;
     }
 
+    /**
+     * Provide information about phraseanet configuration
+     *
+     * @param \Silex\Application $app the silex application
+     * @return array
+     */
     protected function get_config_info(\Silex\Application $app)
     {
         $ret = array();
@@ -313,6 +337,11 @@ class API_V1_adapter extends API_V1_Abstract
         return $ret;
     }
 
+    /**
+     * Provide phraseanet global values
+     * @param \Silex\Application $app the silex application
+     * @return array
+     */
     protected function get_gv_info(\Silex\Application $app)
     {
         $registry = $app['Core']['Registry'];
@@ -478,6 +507,15 @@ class API_V1_adapter extends API_V1_Abstract
         );
     }
 
+    /**
+     * Provide
+     *  - cache information
+     *  - global values informations
+     *  - configuration informations
+     *
+     * @param \Silex\Application $app the silex application
+     * @return \API_V1_result
+     */
     public function get_phraseanet_monitor(\Silex\Application $app)
     {
         $result = new API_V1_result($app['request'], $this);
