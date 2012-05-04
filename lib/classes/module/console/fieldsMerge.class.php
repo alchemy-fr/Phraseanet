@@ -35,26 +35,6 @@ class module_console_fieldsMerge extends Command
         $this->addArgument('destination', InputArgument::REQUIRED, 'Metadata structure id destination');
         $this->addArgument('source', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Metadata structure ids for source');
 
-//        $this->addOption(
-//            'source'
-//            , 'f'
-//            , InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY
-//            , 'Metadata structure ids for source'
-//            , array()
-//        );
-//        $this->addOption(
-//            'destination'
-//            , 'd'
-//            , InputOption::VALUE_REQUIRED
-//            , 'Metadata structure id destination'
-//        );
-//        $this->addOption(
-//            'sbas_id'
-//            , 's'
-//            , InputOption::VALUE_REQUIRED
-//            , 'Databox sbas_id'
-//        );
-
         $this->addOption(
             'separator'
             , ''
