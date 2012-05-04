@@ -309,11 +309,19 @@ foreach ($php_constraints as $php_constraint) {
                     </form>
                     <?php
                 }
+
+                echo '<h1>' . _('OPCode cache') . '</h1>';
+                echo '<ul class="setup">';
+                if ($Core['OpcodeCache']->getName() == 'array') {
+                    echo '<li class="non-blocker">' . _('Array opcode cache is activated, but phrasea strongly recommand the use of APC or Xcache in production') . '</li>';
+                } else {
+                    echo '<li>' . $Core['OpcodeCache']->getName() . '</li>';
+                }
+                echo '</ul>';
+
+                setup::check_sphinx_search();
+                setup::check_php_configuration();
                 ?>
-                    <?php
-                    setup::check_sphinx_search();
-                    setup::check_php_configuration();
-                    ?>
             </div>
         </div>
     </body>
