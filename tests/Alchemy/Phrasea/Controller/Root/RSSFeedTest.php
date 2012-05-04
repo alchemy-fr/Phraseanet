@@ -115,14 +115,14 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
     self::$feed_1_private = Feed_Adapter::create($appbox, self::$user, self::$feed_1_private_title, self::$feed_1_private_subtitle);
     self::$feed_1_private->set_public(false);
-    self::$feed_1_private->set_icon(new system_file(__DIR__ . '/../../../../testfiles/logocoll.gif'));
+    self::$feed_1_private->set_icon(__DIR__ . '/../../../../testfiles/logocoll.gif');
 
     self::$feed_2_private = Feed_Adapter::create($appbox, self::$user, self::$feed_2_private_title, self::$feed_2_private_subtitle);
     self::$feed_2_private->set_public(false);
 
     self::$feed_3_public = Feed_Adapter::create($appbox, self::$user, self::$feed_3_public_title, self::$feed_3_public_subtitle);
     self::$feed_3_public->set_public(true);
-    self::$feed_3_public->set_icon(new system_file(__DIR__ . '/../../../../testfiles/logocoll.gif'));
+    self::$feed_3_public->set_icon(__DIR__ . '/../../../../testfiles/logocoll.gif');
 
     self::$feed_4_public = Feed_Adapter::create($appbox, self::$user, self::$feed_4_public_title, self::$feed_4_public_subtitle);
     self::$feed_4_public->set_public(true);

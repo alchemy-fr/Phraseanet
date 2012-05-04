@@ -198,13 +198,13 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
   public function testGet_formated_duration()
   {
-    $this->assertEquals('00:17', self::$record_23->get_formated_duration());
+    $this->assertTrue(strpos(self::$record_23->get_formated_duration(), '00:17') === 0);
     $this->assertEquals('', self::$record_1->get_formated_duration());
   }
 
   public function testGet_duration()
   {
-    $this->assertEquals(17, self::$record_23->get_duration());
+    $this->assertEquals(17, round(self::$record_23->get_duration()));
     $this->assertEquals(false, self::$record_1->get_duration());
   }
 

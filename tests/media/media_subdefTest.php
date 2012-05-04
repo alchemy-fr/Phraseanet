@@ -270,4 +270,21 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     {
         self::$objectNotPresent->rotate(90);
     }
+
+    /**
+     * @covers media_subdef::readTechnicalDatas
+     */
+    public function testReadTechnicalDatas()
+    {
+        $technical_datas = self::$objectPresent->readTechnicalDatas();
+        $this->assertArrayHasKey(media_subdef::TC_DATA_WIDTH, $technical_datas);
+        $this->assertArrayHasKey(media_subdef::TC_DATA_HEIGHT, $technical_datas);
+        $this->assertArrayHasKey(media_subdef::TC_DATA_CHANNELS, $technical_datas);
+        $this->assertArrayHasKey(media_subdef::TC_DATA_COLORDEPTH, $technical_datas);
+        $this->assertArrayHasKey(media_subdef::TC_DATA_MIMETYPE, $technical_datas);
+        $this->assertArrayHasKey(media_subdef::TC_DATA_FILESIZE, $technical_datas);
+
+        $technical_datas = self::$objectNotPresent->readTechnicalDatas();
+        $this->assertEquals(array(), $technical_datas);
+    }
 }

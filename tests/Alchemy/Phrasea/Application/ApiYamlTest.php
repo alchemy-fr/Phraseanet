@@ -1467,17 +1467,10 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->assertTrue(is_array($record["technical_informations"]));
 
         foreach ($record["technical_informations"] as $key => $value) {
-            switch ($key) {
-                case system_file::TC_DATAS_DURATION:
-                case 'size':
-                case system_file::TC_DATAS_WIDTH:
-                case system_file::TC_DATAS_HEIGHT:
-                case system_file::TC_DATAS_COLORDEPTH:
-                    $this->assertTrue(is_int($value), 'test technical data ' . $key . ' ' . $value);
-                    break;
-                default;
-                    $this->assertTrue(is_string($value), 'test technical data ' . $key);
-                    break;
+            if (is_string($value)) {
+                $this->assertFalse(ctype_digit($value));
+            } else {
+                $this->assertTrue(is_int($value));
             }
         }
     }

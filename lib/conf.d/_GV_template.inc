@@ -477,12 +477,6 @@ $GV = array(
             ),
             array(
                 'type'    => 'string',
-                'name'    => 'GV_mplayer',
-                'comment' => _('reglages:: chemin de l\'executable Mplayer'),
-                'default' => ''
-            ),
-            array(
-                'type'    => 'string',
                 'name'    => 'GV_pdftotext',
                 'comment' => _('reglages:: chemin de l\'executable pdftotext (xpdf)'),
                 'default' => ''
