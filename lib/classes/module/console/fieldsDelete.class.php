@@ -31,9 +31,8 @@ class module_console_fieldsDelete extends Command
 
         $this->setDescription('Delete a documentation field from a Databox');
 
-        $this->addOption('sbas_id', 's', InputOption::VALUE_REQUIRED, 'Databox sbas_id');
-
-        $this->addOption('meta_struct_id', 'm', InputOption::VALUE_REQUIRED, 'Databox meta structure Id');
+        $this->addArgument('meta_struct_id', InputArgument::REQUIRED, 'Metadata structure id destination');
+        $this->addArgument('sbas_id', InputArgument::REQUIRED, 'Databox sbas_id');
 
         return $this;
     }
@@ -41,14 +40,14 @@ class module_console_fieldsDelete extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
 
-        if ( ! $input->getOption('sbas_id'))
+        if ( ! $input->getArgument('sbas_id'))
             throw new \Exception('Missing argument sbas_id');
 
-        if ( ! $input->getOption('meta_struct_id'))
+        if ( ! $input->getArgument('meta_struct_id'))
             throw new \Exception('Missing argument meta_struct_id');
 
         try {
-            $databox = \databox::get_instance((int) $input->getOption('sbas_id'));
+            $databox = \databox::get_instance((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {
             $output->writeln("<error>Invalid databox id </error>");
 
@@ -56,7 +55,7 @@ class module_console_fieldsDelete extends Command
         }
 
         try {
-            $field = $databox->get_meta_structure()->get_element((int) $input->getOption('meta_struct_id'));
+            $field = $databox->get_meta_structure()->get_element((int) $input->getArgument('meta_struct_id'));
         } catch (\Exception $e) {
             $output->writeln("<error>Invalid meta struct id </error>");
 
