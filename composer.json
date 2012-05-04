@@ -13,6 +13,7 @@
     "symfony/http-foundation": "2.1.*",
     "symfony/browser-kit": "2.1.*",
     "symfony/class-loader": "2.1.*",
+    "symfony/config": "2.1.*",
     "symfony/console": "2.1.*",
     "symfony/css-selector": "2.1.*",
     "symfony/dependency-injection": "2.1.*",
@@ -36,16 +37,12 @@
     "data-uri/data-uri": "dev-master",
     "silex/silex": "1.0.*",
     "alchemy/oauth2php": "master",
-    "alchemy/tcpdf": "master",
     "alchemy/phlickr": "master",
     "alchemy/phpmailer": "master",
-    "alchemy/gdata": "master"
+    "tcpdf/tcpdf": ">5.9",
+    "zend/gdata": ">1.11"
   },
   "repositories": [
-  {
-    "type": "vcs",
-    "url": "https://github.com/alchemy-fr/tcpdf"
-  },
   {
     "type": "vcs",
     "url": "https://github.com/alchemy-fr/oauth2-php"
@@ -57,10 +54,6 @@
   {
     "type": "vcs",
     "url": "https://github.com/alchemy-fr/PHPMailer_v5.1"
-  },
-  {
-    "type": "vcs",
-    "url": "https://github.com/alchemy-fr/gdata"
   }
   ],
   "autoload": {
