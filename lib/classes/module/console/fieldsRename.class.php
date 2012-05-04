@@ -31,15 +31,9 @@ class module_console_fieldsRename extends Command
 
         $this->setDescription('Rename a documentation field from a Databox');
 
-        $this->addArgument('name', InputArgument::REQUIRED, 'Metadata structure ids for source');
+        $this->addArgument('name', InputArgument::REQUIRED, 'The new name');
         $this->addArgument('meta_struct_id', InputArgument::REQUIRED, 'Metadata structure id destination');
         $this->addArgument('sbas_id', InputArgument::REQUIRED, 'Databox sbas_id');
-
-//        $this->addOption('sbas_id', 's', InputOption::VALUE_REQUIRED, 'Databox sbas_id');
-//
-//        $this->addOption('meta_struct_id', 'm', InputOption::VALUE_REQUIRED, 'Databox meta structure Id');
-//
-//        $this->addOption('name', 'n', InputOption::VALUE_REQUIRED, 'The new name');
 
         return $this;
     }

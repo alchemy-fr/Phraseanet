@@ -31,9 +31,9 @@ class module_console_fieldsMerge extends Command
 
         $this->setDescription('Merge databox structure fields');
 
-        $this->addArgument('source', InputArgument::REQUIRED, 'Metadata structure ids for source');
         $this->addArgument('sbas_id', InputArgument::REQUIRED, 'Databox sbas_id');
-        $this->addArgument('destination', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Metadata structure id destination');
+        $this->addArgument('destination', InputArgument::REQUIRED, 'Metadata structure id destination');
+        $this->addArgument('source', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Metadata structure ids for source');
 
 //        $this->addOption(
 //            'source'
@@ -42,14 +42,12 @@ class module_console_fieldsMerge extends Command
 //            , 'Metadata structure ids for source'
 //            , array()
 //        );
-
 //        $this->addOption(
 //            'destination'
 //            , 'd'
 //            , InputOption::VALUE_REQUIRED
 //            , 'Metadata structure id destination'
 //        );
-
 //        $this->addOption(
 //            'sbas_id'
 //            , 's'
@@ -203,36 +201,30 @@ class module_console_fieldsMerge extends Command
 
                 foreach ($sources as $source) {
                     try {
-                        $value = $record->get_caption()->get_field($source->get_name())->get_value();
-                    } catch (\Exception $e) {
-                        $value = array();
-                    }
-                    if ( ! is_array($value)) {
-                        $value = array($value);
-                    }
 
-                    $datas = array_merge($datas, $value);
+                        $values = $record->get_caption()->get_field($source->get_name())->get_values();
+
+                        foreach ($values as $captionValue) {
+                            $datas[] = $captionValue->getValue();
+                            $captionValue->delete();
+                        }
+                    } catch (\Exception $e) {
+
+                    }
                 }
 
                 $datas = array_unique($datas);
 
                 if ( ! $destination->is_multi()) {
-                    $datas = array(implode($separator, $datas));
+                    $datas = implode($separator, $datas);
                 }
 
-                try {
-                    $record->get_caption()->get_field($destination->get_name())->set_value($datas);
-                } catch (\Exception $e) {
-                    $record->set_metadatas(
-                        array(
-                        array(
-                            'meta_struct_id' => $destination->get_id()
-                            , 'meta_id'        => null
-                            , 'value'          => $datas
-                        )
-                        )
-                        , true
-                    );
+                foreach ((array) $datas as $data) {
+                    $record->set_metadatas(array(array(
+                            'meta_struct_id' => $destination->get_id(),
+                            'meta_id'        => null,
+                            'value'          => $data,
+                        )), true);
                 }
                 unset($record);
             }
