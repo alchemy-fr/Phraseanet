@@ -1428,4 +1428,109 @@ class unicode
 
         return $string;
     }
+
+    /**
+     * Guess the charset of a string and returns the UTF-8 version
+     *
+     * @param string $string
+     * @return string
+     */
+    public function toUTF8($string)
+    {
+        /**
+         * (8x except 85, 8C) + (9x except 9C) + (BC, BD, BE)
+         */
+        static $macchars = "\x81\x82\x83\x84\x86\x87\x88\x89\x8A\x8B\x8D\x8E\x8F\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9A\x9B\x9D\x9E\x9F\xBC\xBD\xBE";
+
+        if (mb_convert_encoding(mb_convert_encoding($string, 'UTF-32', 'UTF-8'), 'UTF-8', 'UTF-32') == $string) {
+            $mac = mb_convert_encoding($string, 'windows-1252', 'UTF-8');
+            for ($i = strlen($mac); $i;) {
+                if (strpos($macchars, $mac[ -- $i]) !== false) {
+                    return(iconv('MACINTOSH', 'UTF-8', $mac));
+                }
+            }
+
+            return($string);
+        } else {
+            for ($i = strlen($string); $i;) {
+                if (strpos($macchars, $string[ -- $i]) !== false) {
+                    return(iconv('MACINTOSH', 'UTF-8', $string));
+                }
+            }
+
+            return(iconv('windows-1252', 'UTF-8', $string));
+        }
+    }
+
+    /**
+     * Removes ctrl chars (tous < 32 sauf 9,10,13)
+     *
+     * @staticvar null $a_in
+     * @staticvar null $a_out
+     * @param type $s
+     * @return type
+     */
+    public function substituteCtrlCharacters($string, $substitution = '_')
+    {
+        static $chars_in = null;
+
+        if (is_null($chars_in)) {
+
+            $chars_in = array();
+
+            for ($cc = 0; $cc < 32; $cc ++ ) {
+                if (in_array($cc, array(9, 10, 13))) {
+                    continue;
+                }
+
+                $chars_in[] = chr($cc);
+            }
+        }
+
+        return str_replace($chars_in, $substitution, $string);
+    }
+
+    /**
+     * Parse a string and try to return the date normalized
+     *
+     * @example usage :
+     *
+     *      //returns '2012/00/00 00:00:00'
+     *      $unicode->parseDate('2012');
+     *
+     * @todo timezonify
+     *
+     * @param string $date
+     * @return string
+     */
+    public function parseDate($date)
+    {
+        $date = str_replace(array('-', ':', '/', '.'), ' ', $date);
+        $date_yyyy = $date_mm = $date_dd = $date_hh = $date_ii = $date_ss = 0;
+
+        switch (sscanf($date, '%d %d %d %d %d %d', $date_yyyy, $date_mm, $date_dd, $date_hh, $date_ii, $date_ss)) {
+            case 1:
+                $date = sprintf('%04d/00/00 00:00:00', $date_yyyy);
+                break;
+            case 2:
+                $date = sprintf('%04d/%02d/00 00:00:00', $date_yyyy, $date_mm);
+                break;
+            case 3:
+                $date = sprintf('%04d/%02d/%02d 00:00:00', $date_yyyy, $date_mm, $date_dd);
+                break;
+            case 4:
+                $date = sprintf('%04d/%02d/%02d %02d:00:00', $date_yyyy, $date_mm, $date_dd, $date_hh);
+                break;
+            case 5:
+                $date = sprintf('%04d/%02d/%02d %02d:%02d:00', $date_yyyy, $date_mm, $date_dd, $date_hh, $date_ii);
+                break;
+            case 6:
+                $date = sprintf('%04d/%02d/%02d %02d:%02d:%02d', $date_yyyy, $date_mm, $date_dd, $date_hh, $date_ii, $date_ss);
+                break;
+            default:
+                $date = '0000/00/00 00:00:00';
+        }
+
+        return $date;
+    }
 }

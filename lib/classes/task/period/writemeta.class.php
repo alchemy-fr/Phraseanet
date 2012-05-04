@@ -8,6 +8,12 @@
  * file that was distributed with this source code.
  */
 
+use PHPExiftool\Driver\Metadata;
+use PHPExiftool\Driver\Value;
+use PHPExiftool\Driver\Tag;
+use PHPExiftool\Driver\TagFactory;
+use PHPExiftool\Writer;
+
 /**
  *
  * @package     task_manager
@@ -233,40 +239,8 @@ class task_period_writemeta extends task_databoxAbstract
         return $rs;
     }
 
-    protected function format_value($type, $value)
-    {
-        if ($type == 'date') {
-            $value = str_replace(array("-", ":", "/", "."), array(" ", " ", " ", " "), $value);
-            $ip_date_yyyy = 0;
-            $ip_date_mm = 0;
-            $ip_date_dd = 0;
-            $ip_date_hh = 0;
-            $ip_date_nn = 0;
-            $ip_date_ss = 0;
-            switch (sscanf($value, "%d %d %d %d %d %d", $ip_date_yyyy, $ip_date_mm, $ip_date_dd, $ip_date_hh, $ip_date_nn, $ip_date_ss)) {
-                case 1:
-                    $value = sprintf("%04d:00:00", $ip_date_yyyy);
-                    break;
-                case 2:
-                    $value = sprintf("%04d:%02d:00", $ip_date_yyyy, $ip_date_mm);
-                    break;
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                    $value = sprintf("%04d:%02d:%02d", $ip_date_yyyy, $ip_date_mm, $ip_date_dd);
-                    break;
-                default:
-                    $value = '0000:00:00';
-            }
-        }
-
-        return $value;
-    }
-
     protected function process_one_content(databox $databox, Array $row)
     {
-        $coll_id = $row['coll_id'];
         $record_id = $row['record_id'];
         $jeton = $row['jeton'];
 
@@ -286,72 +260,69 @@ class task_period_writemeta extends task_databoxAbstract
             }
         }
 
-        $registry = $databox->get_registry();
-
-        $fields = $record->get_caption()->get_fields();
-
-        $subCMD = '';
+        $metadatas = new Metadata\MetadataBag();
 
         if ($record->get_uuid()) {
-            $subCMD .= ' -XMP-exif:ImageUniqueID=';
-            $subCMD .= escapeshellarg($record->get_uuid());
-            $subCMD .= ' -IPTC:UniqueDocumentID=';
-            $subCMD .= escapeshellarg($record->get_uuid());
+            $metadatas->add(
+                new Metadata\Metadata(
+                    new Tag\XMPExif\ImageUniqueID(),
+                    new Value\Mono($record->get_uuid())
+                )
+            );
+            $metadatas->add(
+                new Metadata\Metadata(
+                    new Tag\ExifIFD\ImageUniqueID(),
+                    new Value\Mono($record->get_uuid())
+                )
+            );
+            $metadatas->add(
+                new Metadata\Metadata(
+                    new Tag\IPTC\UniqueDocumentID(),
+                    new Value\Mono($record->get_uuid())
+                )
+            );
         }
 
-        foreach ($fields as $field) {
-            $meta = $field->get_databox_field();
+        foreach ($record->get_caption()->get_fields() as $field) {
 
+            $meta = $field->get_databox_field();
             /* @var $meta \databox_field */
 
-            if (trim($meta->get_metadata_source()) === '') {
+            try {
+                $tag = TagFactory::getFromRDFTagname($meta->get_metadata_source());
+            } catch (\PHPExiftool\Exception\TagUnknown $e) {
                 continue;
             }
 
-            $multi = $meta->is_multi();
-            $type = $meta->get_type();
             $datas = $field->get_values();
 
-            if ($multi) {
-                foreach ($datas as $value) {
-                    $value = $this->format_value($type, $value->getValue());
-
-                    $subCMD .= ' -' . $meta->get_metadata_namespace() . ':' . $meta->get_metadata_tagname() . '=';
-                    $subCMD .= escapeshellarg($value) . ' ';
-                }
+            if ($meta->is_multi()) {
+                $value = new Value\Multi($datas);
             } else {
-                $value = array_pop($datas);
-                $datas = $this->format_value($type, $value->getValue());
-
-                $subCMD .= ' -' . $meta->get_metadata_namespace() . ':' . $meta->get_metadata_tagname() . '=';
-                $subCMD .= escapeshellarg($datas) . ' ';
+                $value = new Value\Mono(array_pop($datas));
             }
+
+            $metadatas->add(
+                new Metadata\Metadata($tag, $value)
+            );
         }
 
+        $writer = new Writer();
+
         foreach ($tsub as $name => $file) {
-            $cmd = '';
-
-            if ($this->system == 'WINDOWS')
-            {
-                $cmd = 'start /B /LOW ';
-            }
-
-            $cmd .= __DIR__ . '/../../../../vendor/phpexiftool/exiftool/exiftool'
-                . ' -m -overwrite_original ';
-
-            if ($name != 'document' || $this->clear_doc)
-                $cmd .= ' -all:all= ';
-
-            $cmd .= ' -codedcharacterset=utf8 ';
-
-            $cmd .= $subCMD . ' ' . escapeshellarg($file);
 
             $this->log(sprintf(('writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name));
 
-            $s = trim(shell_exec($cmd));
+            $writer->erase($name != 'document' || $this->clear_doc);
 
-            $this->log("\t" . $s);
+            try {
+                $writer->write($file, $metadatas);
+            } catch (\PHPExiftool\Exception\Exception $e) {
+
+            }
         }
+
+        $writer = $metadatas = null;
 
         return $this;
     }

@@ -349,27 +349,29 @@
             width="{{thumbnail.get_width()}}"
             height="{{thumbnail.get_height()}}" />
 
-          {#{% if record is not none %}
-            <h1><b>{{record.get_title()}}</b></h1>
-          {% endif %}#}
-
-
           <div>
-            <h1><b>HTML</b></h1>
+            <h1><b>Metadatas</b></h1>
             <hr>
-            {% for line in metadatasFirst %}
-              {% spaceless %}
-                {{line|raw}}
-              {% endspaceless %}
-            {% endfor %}
-          </div>
-
-          <div>
-          <h1><b>XML</b></h1>
-          <hr />
-          {% for line in metadatasSecond %}
-              {{line|raw}}<br/>
-          {% endfor %}
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                {% for metadata in metadatas %}
+                    <tr>
+                        <td>
+                            {{ metadata.getTag().getTagname() }}
+                        </td>
+                        <td>
+                            {{ metadata.getValue().getValue() }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
           </div>
         </div>
       {% endfor %}
