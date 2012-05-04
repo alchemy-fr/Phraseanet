@@ -21,6 +21,5 @@
 				<exclude name="**/demos/**" />
 			</fileset>
 		</copy>
-    <chmod file="${dir.dest}/lib/vendor/exiftool/exiftool" perm="755"/>
 	</target>
 </project>
