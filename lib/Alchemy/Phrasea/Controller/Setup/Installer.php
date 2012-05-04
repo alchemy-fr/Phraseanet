@@ -234,7 +234,6 @@ class Installer implements ControllerProviderInterface
                     $registry->set('GV_unoconv', $request->get('binary_unoconv'), \registry::TYPE_STRING);
                     $registry->set('GV_ffmpeg', $request->get('binary_ffmpeg'), \registry::TYPE_STRING);
                     $registry->set('GV_mp4box', $request->get('binary_MP4Box'), \registry::TYPE_STRING);
-                    $registry->set('GV_mplayer', $request->get('binary_mplayer'), \registry::TYPE_STRING);
                     $registry->set('GV_pdftotext', $request->get('binary_xpdf'), \registry::TYPE_STRING);
 
                     $user = \User_Adapter::create($appbox, $request->get('email'), $request->get('password'), $request->get('email'), true);

@@ -292,101 +292,6 @@ class system_file extends \SplFileInfo
         return $this->sha256;
     }
 
-    public function get_technical_datas()
-    {
-        if ( ! $this->technical_datas)
-            $this->read_technical_datas();
-
-        return $this->technical_datas;
-    }
-
-    protected function read_image_datas()
-    {
-        $this->technical_datas[self::TC_DATAS_ORIENTATION] = null;
-        if (in_array(
-                $this->get_mime(), array(
-                'image/tif', 'image/tiff',
-                'image/jpg', 'image/pjpeg', 'image/pjpg', 'image/jpeg'
-                )
-            )
-        ) {
-            if ($ex = @exif_read_data($this->getPathname(), 'FILE')) {
-                if (array_key_exists('Orientation', $ex))
-                    $this->technical_datas[self::TC_DATAS_ORIENTATION] = $ex['Orientation'];
-            }
-        }
-
-        $datas = exiftool::extract_metadatas($this, exiftool::EXTRACT_XML_RDF);
-
-        $domrdf = new DOMDocument();
-        $domrdf->recover = true;
-        $domrdf->preserveWhiteSpace = false;
-
-        if ($domrdf->loadXML($datas)) {
-            $xptrdf = new DOMXPath($domrdf);
-            $xptrdf->registerNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-
-            $pattern = "(xmlns:([a-zA-Z-_0-9]+)=[']{1}(https?:[/{2,4}|\\{2,4}][\w:#%/;$()~_?/\-=\\\.&]*)[']{1})";
-            preg_match_all($pattern, $datas, $matches, PREG_PATTERN_ORDER, 0);
-
-            $xptrdf->registerNamespace('XMP-exif', 'http://ns.exiftool.ca/XMP/XMP-exif/1.0/');
-            $xptrdf->registerNamespace('PHRASEANET', 'http://phraseanet.com/metas/PHRASEANET/1.0/');
-            foreach ($matches[2] as $key => $value)
-                $xptrdf->registerNamespace($matches[1][$key], $value);
-
-            $descriptionNode = @$xptrdf->query('/rdf:RDF/rdf:Description')->item(0);
-            if ($descriptionNode) {
-                for ($x = $descriptionNode->firstChild; $x; $x = $x->nextSibling) {
-                    if ($x->nodeType !== XML_ELEMENT_NODE)
-                        continue;
-
-                    switch ($x->nodeName) {
-                        case 'Composite:ImageSize':
-                            if ((count($_t = explode('x', $x->textContent))) == 2) {
-                                $this->technical_datas[self::TC_DATAS_WIDTH] = 0 + $_t[0];
-                                $this->technical_datas[self::TC_DATAS_HEIGHT] = 0 + $_t[1];
-                            }
-                            break;
-                        case 'ExifIFD:ExifImageWidth':
-                            if ( ! array_key_exists('width', $this->technical_datas))
-                                $this->technical_datas[self::TC_DATAS_WIDTH] = 0 + $x->textContent;
-                            break;
-                        case 'ExifIFD:ExifImageHeight':
-                            if ( ! array_key_exists('height', $this->technical_datas))
-                                $this->technical_datas[self::TC_DATAS_HEIGHT] = 0 + $x->textContent;
-                            break;
-                        case 'File:ColorComponents':
-                        case 'IFD0:SamplesPerPixel':
-                            if ( ! array_key_exists('channels', $this->technical_datas))
-                                $this->technical_datas[self::TC_DATAS_CHANNELS] = 0 + $x->textContent;
-                            break;
-                        case 'File:BitsPerSample':
-                        case 'IFD0:BitsPerSample':
-                            if ( ! array_key_exists('bits', $this->technical_datas))
-                                $this->technical_datas[self::TC_DATAS_COLORDEPTH] = 0 + $x->textContent;
-                            break;
-                    }
-
-                    if (count($_t = explode(':', $x->nodeName)) !== 2)
-                        continue;
-
-                    switch ($_t[1]) {
-                        case 'ImageWidth':
-                            if ( ! array_key_exists('width', $this->technical_datas))
-                                $this->technical_datas[self::TC_DATAS_WIDTH] = 0 + $x->textContent;
-                            break;
-                        case 'ImageHeight':
-                            if ( ! array_key_exists('height', $this->technical_datas))
-                                $this->technical_datas[self::TC_DATAS_HEIGHT] = 0 + $x->textContent;
-                            break;
-                    }
-                }
-            }
-        }
-
-        return $this;
-    }
-
     protected function read_pdf_datas()
     {
         $system = system_server::get_platform();
@@ -418,129 +323,6 @@ class system_file extends \SplFileInfo
         }
 
         return $pdf_text;
-    }
-
-    protected function read_video_datas()
-    {
-        $registry = registry::get_instance();
-
-        $retour = array('width'  => 0, 'height' => 0, 'CMYK'   => false);
-
-        $hdPath = $this->getPathname();
-
-        $datas = exiftool::get_fields(
-                $hdPath, array('Duration', 'Image Width', 'Image Height')
-        );
-        $duration = 0;
-
-        if ($datas['Duration']) {
-            $data = explode('_', trim($datas['Duration']));
-            $data = explode(':', $data[0]);
-
-            $factor = 1;
-            while ($segment = array_pop($data)) {
-                $duration += $segment * $factor;
-                $factor *=60;
-            }
-        }
-        $width = $height = false;
-        if ($datas['Image Width']) {
-            if ((int) $datas['Image Width'] > 0)
-                $width = $datas['Image Width'];
-        }
-        if ($datas['Image Height']) {
-            if ((int) $datas['Image Height'] > 0)
-                $height = $datas['Image Height'];
-        }
-
-        $this->technical_datas = array();
-
-        if ( ! is_executable($registry->get('GV_mplayer'))) {
-            return $this;
-        }
-
-        $cmd = $registry->get('GV_mplayer')
-            . ' -identify '
-            . escapeshellarg($hdPath)
-            . '  -ao null -vo null -frames 0 | grep ^ID_';
-        $docProps = array(
-            'ID_VIDEO_WIDTH'   => self::TC_DATAS_WIDTH,
-            'ID_VIDEO_HEIGHT'  => self::TC_DATAS_HEIGHT,
-            'ID_VIDEO_FPS'     => self::TC_DATAS_FRAMERATE,
-            'ID_AUDIO_CODEC'   => self::TC_DATAS_AUDIOCODEC,
-            'ID_VIDEO_CODEC'   => self::TC_DATAS_VIDEOCODEC,
-            'ID_VIDEO_BITRATE' => self::TC_DATAS_VIDEOBITRATE,
-            'ID_AUDIO_BITRATE' => self::TC_DATAS_AUDIOBITRATE,
-            'ID_AUDIO_RATE'    => self::TC_DATAS_AUDIOSAMPLERATE
-        );
-
-        $stdout = shell_exec($cmd);
-
-        $this->technical_datas = array();
-
-        $stdout = explode("\n", $stdout);
-        foreach ($stdout as $property) {
-            $props = explode('=', $property);
-
-
-            if (array_key_exists($props[0], $docProps))
-                $this->technical_datas[$docProps[$props[0]]] = $props[1];
-        }
-
-        $datas = exiftool::extract_metadatas($this, exiftool::EXTRACT_XML_RDF);
-        $dom_document = new DOMDocument();
-        if ($dom_document->loadXML($datas)) {
-            $xq = new DOMXPath($dom_document);
-            $xq->registerNamespace('RIFF', 'http://ns.exiftool.ca/RIFF/RIFF/1.0/');
-            $nodes_width = $xq->query('/rdf:RDF/rdf:Description/RIFF:ImageWidth');
-            $nodes_height = $xq->query('/rdf:RDF/rdf:Description/RIFF:ImageHeight');
-
-            if ($nodes_height->length > 0 && $nodes_width->length > 0) {
-                $width = $nodes_width->item(0)->nodeValue;
-                $height = $nodes_height->item(0)->nodeValue;
-            }
-        }
-
-        $this->technical_datas[self::TC_DATAS_DURATION] = $duration;
-        if ($width)
-            $this->technical_datas[self::TC_DATAS_WIDTH] = $width;
-        if ($height)
-            $this->technical_datas[self::TC_DATAS_HEIGHT] = $height;
-
-        return $this;
-    }
-
-    protected function read_audio_datas()
-    {
-        return $this->read_video_datas();
-    }
-
-    protected function read_technical_datas()
-    {
-        $this->technical_datas = array();
-
-        switch ($this->get_phrasea_type()) {
-            case 'image' :
-                $this->read_image_datas();
-                break;
-            case 'document';
-                $this->read_image_datas();
-//        $this->read_pdf_datas();
-                break;
-            case 'video':
-                $this->read_video_datas();
-                break;
-            case 'audio':
-                $this->read_audio_datas();
-                break;
-            default:
-                break;
-        }
-
-        $this->technical_datas[self::TC_DATAS_MIMETYPE] = $this->get_mime();
-        $this->technical_datas[self::TC_DATAS_FILESIZE] = $this->getSize();
-
-        return;
     }
 
     /**
@@ -890,7 +672,16 @@ class system_file extends \SplFileInfo
 
         $tfields = array();
 
-        $technical_datas = $this->get_technical_datas();
+        $media = MediaVorus\MediaVorus::guess($this);
+
+        $width = $height = $channels = $colorDepth = array();
+
+        if (in_array($media, array(\MediaVorus\Media\Media::TYPE_IMAGE, \MediaVorus\Media\Media::TYPE_VIDEO))) {
+            $width[] = $media->getWidth();
+            $height[] = $media->getHeight();
+            $channels[] = $media->getChannels();
+            $colorDepth[] = $media->getColorDepth();
+        }
 
         $tfields[metadata_description_PHRASEANET_tfmimetype::get_source()]
             = array($this->get_mime());
@@ -903,36 +694,24 @@ class system_file extends \SplFileInfo
         $tfields[metadata_description_PHRASEANET_tffilename::get_source()]
             = array($this->get_phrasea_tech_field(self::TECH_FIELD_ORIGINALNAME));
 
-        $tfields[metadata_description_PHRASEANET_tfextension::get_source()]
-            = array($this->get_extension());
-        $tfields[metadata_description_PHRASEANET_tfwidth::get_source()]
-            = isset($technical_datas[system_file::TC_DATAS_WIDTH]) ? array(($technical_datas[system_file::TC_DATAS_WIDTH])) : array();
-        $tfields[metadata_description_PHRASEANET_tfheight::get_source()]
-            = isset($technical_datas[system_file::TC_DATAS_HEIGHT]) ? array(($technical_datas[system_file::TC_DATAS_HEIGHT])) : array();
-        $tfields[metadata_description_PHRASEANET_tfbits::get_source()]
-            = isset($technical_datas[system_file::TC_DATAS_COLORDEPTH]) ? array(($technical_datas[system_file::TC_DATAS_COLORDEPTH])) : array();
-        $tfields[metadata_description_PHRASEANET_tfchannels::get_source()]
-            = isset($technical_datas[system_file::TC_DATAS_CHANNELS]) ? array(($technical_datas[system_file::TC_DATAS_CHANNELS])) : array();
+        $tfields[metadata_description_PHRASEANET_tfextension::get_source()] = array($this->get_extension());
+        $tfields[metadata_description_PHRASEANET_tfwidth::get_source()] = $width;
+        $tfields[metadata_description_PHRASEANET_tfheight::get_source()] = $height;
+        $tfields[metadata_description_PHRASEANET_tfbits::get_source()] = $colorDepth;
+        $tfields[metadata_description_PHRASEANET_tfchannels::get_source()] = $channels;
 
-        $tfields[metadata_description_PHRASEANET_tfctime::get_source()]
-            = array(date('Y/m/d H:i:s', $this->getCTime()));
-        $tfields[metadata_description_PHRASEANET_tfmtime::get_source()]
-            = array(date('Y/m/d H:i:s', $this->getMTime()));
-        $tfields[metadata_description_PHRASEANET_tfatime::get_source()]
-            = array(date('Y/m/d H:i:s', $this->getATime()));
+        $tfields[metadata_description_PHRASEANET_tfctime::get_source()] = array(date('Y/m/d H:i:s', $this->getCTime()));
+        $tfields[metadata_description_PHRASEANET_tfmtime::get_source()] = array(date('Y/m/d H:i:s', $this->getMTime()));
+        $tfields[metadata_description_PHRASEANET_tfatime::get_source()] = array(date('Y/m/d H:i:s', $this->getATime()));
 
         $time = time();
 
-        $tfields[metadata_description_PHRASEANET_tfarchivedate::get_source()]
-            = array(date('Y/m/d H:i:s', $time));
-        $tfields[metadata_description_PHRASEANET_tfeditdate::get_source()]
-            = array(date('Y/m/d H:i:s', $time));
-        $tfields[metadata_description_PHRASEANET_tfchgdocdate::get_source()]
-            = array(date('Y/m/d H:i:s', $time));
+        $tfields[metadata_description_PHRASEANET_tfarchivedate::get_source()] = array(date('Y/m/d H:i:s', $time));
+        $tfields[metadata_description_PHRASEANET_tfeditdate::get_source()] = array(date('Y/m/d H:i:s', $time));
+        $tfields[metadata_description_PHRASEANET_tfchgdocdate::get_source()] = array(date('Y/m/d H:i:s', $time));
 
         if ($this->get_mime() === 'application/pdf') {
-            $tfields[metadata_description_PHRASEANET_pdftext::get_source()]
-                = $this->read_pdf_datas();
+            $tfields[metadata_description_PHRASEANET_pdftext::get_source()] = $this->read_pdf_datas();
         }
 
         $datas = exiftool::extract_metadatas($this, exiftool::EXTRACT_XML_RDF);

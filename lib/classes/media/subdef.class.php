@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use MediaVorus\MediaVorus;
+use MediaVorus\Media\Media;
+
 /**
  *
  * @package     subdefs
@@ -101,12 +104,41 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     protected $is_physically_present = false;
 
+    /**
+     * Players types constants
+     */
     const TYPE_VIDEO_MP4 = 'VIDEO_MP4';
     const TYPE_VIDEO_FLV = 'VIDEO_FLV';
     const TYPE_FLEXPAPER = 'FLEXPAPER';
     const TYPE_AUDIO_MP3 = 'AUDIO_MP3';
     const TYPE_IMAGE = 'IMAGE';
     const TYPE_NO_PLAYER = 'UNKNOWN';
+    /**
+     * Technical datas types constants
+     */
+    const TC_DATA_WIDTH = 'Width';
+    const TC_DATA_HEIGHT = 'Height';
+    const TC_DATA_COLORSPACE = 'ColorSpace';
+    const TC_DATA_CHANNELS = 'Channels';
+    const TC_DATA_ORIENTATION = 'Orientation';
+    const TC_DATA_COLORDEPTH = 'ColorDepth';
+    const TC_DATA_DURATION = 'Duration';
+    const TC_DATA_AUDIOCODEC = 'AudioCodec';
+    const TC_DATA_AUDIOSAMPLERATE = 'AudioSamplerate';
+    const TC_DATA_VIDEOCODEC = 'VideoCodec';
+    const TC_DATA_FRAMERATE = 'FrameRate';
+    const TC_DATA_MIMETYPE = 'MimeType';
+    const TC_DATA_FILESIZE = 'FileSize';
+    const TC_DATA_LONGITUDE = 'Longitude';
+    const TC_DATA_LATITUDE = 'Latitude';
+    const TC_DATA_FOCALLENGTH = 'FocalLength';
+    const TC_DATA_CAMERAMODEL = 'CameraModel';
+    const TC_DATA_FLASHFIRED = 'FlashFired';
+    const TC_DATA_APERTURE = 'Aperture';
+    const TC_DATA_SHUTTERSPEED = 'ShutterSpeed';
+    const TC_DATA_HYPERFOCALDISTANCE = 'HyperfocalDistance';
+    const TC_DATA_ISO = 'ISO';
+    const TC_DATA_LIGHTVALUE = 'LightValue';
 
     /**
      * @todo    the presence of file is checked on constructor, it would be better
@@ -525,16 +557,15 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return array(\databox_subdef::DEVICE_ALL);
         }
 
-        try
-        {
+        try {
+
             return $this->record
                     ->get_databox()
                     ->get_subdef_structure()
                     ->get_subdef($this->record->get_type(), $this->get_name())
                     ->getDevices();
-        }
-        catch(\Exception_Databox_SubdefNotFound $e)
-        {
+        } catch (\Exception_Databox_SubdefNotFound $e) {
+
             return array();
         }
     }
@@ -553,7 +584,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $Core = \bootstrap::getCore();
 
-        $specs = new MediaAlchemyst\Specification\Image();
+        $specs = new \MediaAlchemyst\Specification\Image();
         $specs->setRotationAngle($angle);
 
         try {
@@ -564,29 +595,98 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             return $this;
         }
 
-        $result = new system_file($this->get_pathfile());
+        $media = MediaVorus::guess(new SplFileInfo($this->get_pathfile()));
 
-        $tc_datas = $result->get_technical_datas();
-        if ($tc_datas[system_file::TC_DATAS_WIDTH] && $tc_datas[system_file::TC_DATAS_HEIGHT]) {
-
-            $sql = "UPDATE subdef
+        $sql = "UPDATE subdef
               SET height = :height , width = :width, updated_on = NOW()
               WHERE record_id = :record_id AND name = :name";
 
-            $params = array(
-                ':width'     => $tc_datas[system_file::TC_DATAS_WIDTH]
-                , ':height'    => $tc_datas[system_file::TC_DATAS_HEIGHT]
-                , ':record_id' => $this->get_record_id()
-                , ':name'      => $this->get_name()
-            );
+        $params = array(
+            ':width'     => $media->getWidth(),
+            ':height'    => $media->getHeight(),
+            ':record_id' => $this->get_record_id(),
+            ':name'      => $this->get_name(),
+        );
 
-            $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
-            $stmt->execute($params);
-            $stmt->closeCursor();
-            $this->delete_data_from_cache();
-        }
+        unset($media);
+
+        $stmt = $this->record->get_databox()->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $stmt->closeCursor();
+        $this->delete_data_from_cache();
 
         return $this;
+    }
+
+    /**
+     * Read the technical datas of the file.
+     * Returns an empty array for non physical present files
+     *
+     * @return array An array of technical datas Key/values
+     */
+    public function readTechnicalDatas()
+    {
+        if ( ! $this->is_physically_present()) {
+            return array();
+        }
+
+        $media = MediaVorus::guess(new \SplFileInfo($this->get_pathfile()));
+
+        switch ($media->getType()) {
+            case Media::TYPE_IMAGE:
+                $datas = array(
+                    self::TC_DATA_WIDTH              => $media->getWidth(),
+                    self::TC_DATA_HEIGHT             => $media->getHeight(),
+                    self::TC_DATA_FOCALLENGTH        => $media->getFocalLength(),
+                    self::TC_DATA_CHANNELS           => $media->getChannels(),
+                    self::TC_DATA_COLORDEPTH         => $media->getColorDepth(),
+                    self::TC_DATA_CAMERAMODEL        => $media->getCameraModel(),
+                    self::TC_DATA_FLASHFIRED         => $media->getFlashFired(),
+                    self::TC_DATA_APERTURE           => $media->getAperture(),
+                    self::TC_DATA_SHUTTERSPEED       => $media->getShutterSpeed(),
+                    self::TC_DATA_HYPERFOCALDISTANCE => $media->getHyperfocalDistance(),
+                    self::TC_DATA_ISO                => $media->getISO(),
+                    self::TC_DATA_LIGHTVALUE         => $media->getLightValue(),
+                    self::TC_DATA_COLORSPACE         => $media->getColorSpace(),
+                );
+                break;
+            case Media::TYPE_VIDEO:
+                $datas = array(
+                    self::TC_DATA_WIDTH              => $media->getWidth(),
+                    self::TC_DATA_HEIGHT             => $media->getHeight(),
+                    self::TC_DATA_FOCALLENGTH        => $media->getFocalLength(),
+                    self::TC_DATA_CHANNELS           => $media->getChannels(),
+                    self::TC_DATA_COLORDEPTH         => $media->getColorDepth(),
+                    self::TC_DATA_CAMERAMODEL        => $media->getCameraModel(),
+                    self::TC_DATA_FLASHFIRED         => $media->getFlashFired(),
+                    self::TC_DATA_APERTURE           => $media->getAperture(),
+                    self::TC_DATA_SHUTTERSPEED       => $media->getShutterSpeed(),
+                    self::TC_DATA_HYPERFOCALDISTANCE => $media->getHyperfocalDistance(),
+                    self::TC_DATA_ISO                => $media->getISO(),
+                    self::TC_DATA_LIGHTVALUE         => $media->getLightValue(),
+                    self::TC_DATA_COLORSPACE         => $media->getColorSpace(),
+                    self::TC_DATA_DURATION           => $media->getDuration(),
+                    self::TC_DATA_FRAMERATE          => $media->getFrameRate(),
+                    self::TC_DATA_AUDIOSAMPLERATE    => $media->getAudioSampleRate(),
+                    self::TC_DATA_VIDEOCODEC         => $media->getVideoCodec(),
+                    self::TC_DATA_AUDIOCODEC         => $media->getAudioCodec(),
+                );
+                break;
+            case Media::TYPE_FLASH:
+            case Media::TYPE_AUDIO:
+            case Media::TYPE_DOCUMENT:
+            default:
+                break;
+        }
+
+        $datas[self::TC_DATA_LONGITUDE] = $media->getLongitude();
+        $datas[self::TC_DATA_LATITUDE] = $media->getLatitude();
+        $datas[self::TC_DATA_MIMETYPE] = $media->getFile()->getMimeType();
+        $datas[self::TC_DATA_FILESIZE] = $media->getFile()->getSize();
+
+        unset($media);
+
+        return $datas;
     }
 
     /**
@@ -602,21 +702,26 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         $databox = $record->get_databox();
         $connbas = $databox->get_connection();
 
+        $media = MediaVorus::guess($system_file);
+
         $path = $system_file->getPath();
         $newname = $system_file->getFilename();
-
-        $datas = $system_file->get_technical_datas();
 
         $params = array(
             ':path'       => $path,
             ':file'       => $newname,
             ':baseurl'    => $baseurl,
-            ':width'      => isset($datas[system_file::TC_DATAS_WIDTH]) ? $datas[system_file::TC_DATAS_WIDTH] : '',
-            ':height'     => isset($datas[system_file::TC_DATAS_HEIGHT]) ? $datas[system_file::TC_DATAS_HEIGHT] : '',
+            ':width'      => 0,
+            ':height'     => 0,
             ':mime'       => $system_file->get_mime(),
             ':size'       => $system_file->getSize(),
             ':dispatched' => 1,
         );
+
+        if (in_array($media->getType(), array(Media::TYPE_IMAGE, Media::TYPE_VIDEO))) {
+            $params[':width'] = $media->getWidth();
+            $params[':height'] = $media->getHeight();
+        }
 
         try {
             $subdef = new self($record, $name);
@@ -652,6 +757,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         if ($subdef->get_permalink() instanceof media_Permalink_Adapter) {
             $subdef->get_permalink()->delete_data_from_cache();
         }
+
+        unset($media);
 
         return $subdef;
     }

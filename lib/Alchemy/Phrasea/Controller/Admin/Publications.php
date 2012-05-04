@@ -119,26 +119,37 @@ class Publications implements ControllerProviderInterface
                     return new Response('ERROR:error while upload');
                 }
 
-                $file = new \system_file($fileData['tmp_name']);
-                if ( ! in_array($file->get_mime(), array('image/jpeg', 'image/jpg', 'image/gif'))) {
+                $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($fileData['tmp_name']));
+
+                if ($media->getType() !== \MediaVorus\Media\Media::TYPE_IMAGE) {
+
                     return new Response('ERROR:bad filetype');
                 }
 
-                if ($file->getSize() > 200000) {
-                    return new Response('ERROR:file too large');
+                $spec = new \MediaAlchemyst\Specification\Image();
+
+                $spec->setResizeMode(\MediaAlchemyst\Specification\Image::RESIZE_MODE_OUTBOUND);
+                $spec->setDimensions(32, 32);
+                $spec->setStrip(true);
+                $spec->setQuality(72);
+
+                $tmpname = tempnam(sys_get_temp_dir(), 'feed_icon');
+
+                try {
+                    $app['Core']['media-alchemyst']
+                        ->open($media->getFile()->getPathname())
+                        ->turnInto($tmpname, $spec)
+                        ->close();
+                } catch (\MediaAlchemyst\Exception\Exception $e) {
+                    return new Response('Error while handling icon');
                 }
 
-                $datas = $file->get_technical_datas();
-                if ( ! isset($datas[\system_file::TC_DATAS_WIDTH]) || ! isset($datas[\system_file::TC_DATAS_HEIGHT])) {
-                    return new Response('ERROR:file is not square');
-                }
+                $feed->set_icon($tmpname);
 
-                if ($datas[\system_file::TC_DATAS_WIDTH] != $datas[\system_file::TC_DATAS_HEIGHT]) {
-                    return new Response('ERROR:file is not square');
-                }
+                unset($media);
 
-                $feed->set_icon($file);
-                unlink($file->getPathname());
+                unlink($tmpname);
+                unlink($fileData['tmp_name']);
 
                 return new Response('FILEHREF:' . $feed->get_icon_url() . '?' . mt_rand(100000, 999999));
             })->assert('id', '\d+');

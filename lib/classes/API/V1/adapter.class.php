@@ -454,7 +454,6 @@ class API_V1_adapter extends API_V1_Abstract
                     'unoconv'           => $registry->get('GV_unoconv'),
                     'ffmpeg'            => $registry->get('GV_ffmpeg'),
                     'mp4box'            => $registry->get('GV_mp4box'),
-                    'mplayer'           => $registry->get('GV_mplayer'),
                     'pdftotext'         => $registry->get('GV_pdftotext'),
                     'pdfmaxpages'       => $registry->get('GV_pdfmaxpages'),),
                 'mainConfiguration' => array(

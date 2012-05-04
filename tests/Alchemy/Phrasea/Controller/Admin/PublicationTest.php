@@ -226,68 +226,11 @@ class Module_Admin_Route_PublicationTest extends PhraseanetWebTestCaseAuthentica
             "POST"
             , "/publications/feed/" . $feed->get_id() . "/iconupload/"
             , array()
-            , array('Filedata' => array('error' => 0, 'tmp_name' => __DIR__ . '/../../../../testfiles/test013.ai'))
+            , array('Filedata' => array('error' => 0, 'tmp_name' => __DIR__ . '/../../../../testfiles/test007.ppt'))
     );
     $response = $this->client->getResponse();
     $this->assertTrue($response->isOk());
     $this->assertRegexp("/ERROR:bad filetype/", $response->getContent());
-
-    $feed->delete();
-  }
-
-  public function testIconUploadErrorTooLarge()
-  {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-
-    $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
-
-    $this->client->request(
-            "POST"
-            , "/publications/feed/" . $feed->get_id() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error' => 0, 'tmp_name' => __DIR__ . '/../../../../testfiles/heavy500.jpg'))
-    );
-    $response = $this->client->getResponse();
-    $this->assertTrue($response->isOk());
-    $this->assertRegexp("/ERROR:file too large/", $response->getContent());
-
-    $feed->delete();
-  }
-
-  public function testIconUploadErrorNotSquareA()
-  {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-
-    $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
-
-    $this->client->request(
-            "POST"
-            , "/publications/feed/" . $feed->get_id() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error' => 0, 'tmp_name' => __DIR__ . '/../../../../testfiles/recta_logo.gif'))
-    );
-    $response = $this->client->getResponse();
-    $this->assertTrue($response->isOk());
-    $this->assertRegexp("/ERROR:file is not square/", $response->getContent());
-
-    $feed->delete();
-  }
-
-  public function testIconUploadErrorNotSquareB()
-  {
-    $appbox = appbox::get_instance(\bootstrap::getCore());
-
-    $feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
-
-    $this->client->request(
-            "POST"
-            , "/publications/feed/" . $feed->get_id() . "/iconupload/"
-            , array()
-            , array('Filedata' => array('error' => 0, 'tmp_name' => __DIR__ . '/../../../../testfiles/rectb_logo.gif'))
-    );
-    $response = $this->client->getResponse();
-    $this->assertTrue($response->isOk());
-    $this->assertRegexp("/ERROR:file is not square/", $response->getContent());
 
     $feed->delete();
   }

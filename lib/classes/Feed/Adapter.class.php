@@ -150,20 +150,22 @@ class Feed_Adapter extends Feed_Abstract implements Feed_Interface, cache_cachea
 
     /**
      *
-     * @param system_file $file
+     * @param string $file The path to the file
      * @return Feed_Adapter
      */
-    public function set_icon(system_file $file)
+    public function set_icon($file)
     {
+        if ( ! file_exists($file)) {
+            throw new \Alchemy\Phrasea\Exception\InvalidArgumentException('File does not exists');
+        }
+
         $registry = registry::get_instance();
 
-        $config_file = $registry->get('GV_RootPath')
-            . 'config/feed_' . $this->get_id() . '.jpg';
-        $www_file = $registry->get('GV_RootPath')
-            . 'www/custom/feed_' . $this->get_id() . '.jpg';
+        $config_file = $registry->get('GV_RootPath') . 'config/feed_' . $this->get_id() . '.jpg';
+        $www_file = $registry->get('GV_RootPath') . 'www/custom/feed_' . $this->get_id() . '.jpg';
 
-        copy($file->getPathname(), $config_file);
-        copy($file->getPathname(), $www_file);
+        copy($file, $config_file);
+        copy($file, $www_file);
         $this->icon_url = null;
 
         return $this;
