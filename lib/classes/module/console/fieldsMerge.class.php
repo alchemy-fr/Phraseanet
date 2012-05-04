@@ -31,27 +31,31 @@ class module_console_fieldsMerge extends Command
 
         $this->setDescription('Merge databox structure fields');
 
-        $this->addOption(
-            'source'
-            , 'f'
-            , InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY
-            , 'Metadata structure ids for source'
-            , array()
-        );
+        $this->addArgument('source', InputArgument::REQUIRED, 'Metadata structure ids for source');
+        $this->addArgument('sbas_id', InputArgument::REQUIRED, 'Databox sbas_id');
+        $this->addArgument('destination', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Metadata structure id destination');
 
-        $this->addOption(
-            'destination'
-            , 'd'
-            , InputOption::VALUE_REQUIRED
-            , 'Metadata structure id destination'
-        );
+//        $this->addOption(
+//            'source'
+//            , 'f'
+//            , InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY
+//            , 'Metadata structure ids for source'
+//            , array()
+//        );
 
-        $this->addOption(
-            'sbas_id'
-            , 's'
-            , InputOption::VALUE_REQUIRED
-            , 'Databox sbas_id'
-        );
+//        $this->addOption(
+//            'destination'
+//            , 'd'
+//            , InputOption::VALUE_REQUIRED
+//            , 'Metadata structure id destination'
+//        );
+
+//        $this->addOption(
+//            'sbas_id'
+//            , 's'
+//            , InputOption::VALUE_REQUIRED
+//            , 'Databox sbas_id'
+//        );
 
         $this->addOption(
             'separator'
@@ -68,11 +72,11 @@ class module_console_fieldsMerge extends Command
     {
         $output->writeln("");
 
-        if ( ! $input->getOption('sbas_id'))
+        if ( ! $input->getArgument('sbas_id'))
             throw new \Exception('Missing argument sbas_id');
 
         try {
-            $databox = \databox::get_instance((int) $input->getOption('sbas_id'));
+            $databox = \databox::get_instance((int) $input->getArgument('sbas_id'));
         } catch (\Exception $e) {
             $output->writeln("<error>Invalid databox id </error>");
 
@@ -81,19 +85,19 @@ class module_console_fieldsMerge extends Command
 
         $sources = array();
 
-        foreach ($input->getOption('source') as $source_id) {
+        foreach ($input->getArgument('source') as $source_id) {
             $sources[] = $databox->get_meta_structure()->get_element($source_id);
         }
 
         if (count($sources) === 0)
             throw new \Exception('No sources to proceed');
 
-        if ( ! $input->getOption('destination'))
+        if ( ! $input->getArgument('destination'))
             throw new \Exception('Missing argument destination');
 
         $separator = ' ' . $input->getOption('separator') . ' ';
 
-        $destination = $databox->get_meta_structure()->get_element($input->getOption('destination'));
+        $destination = $databox->get_meta_structure()->get_element($input->getArgument('destination'));
 
         $types = $multis = array();
 
