@@ -9,6 +9,10 @@
  * file that was distributed with this source code.
  */
 
+use PHPExiftool\Driver\Metadata;
+use PHPExiftool\Driver\Tag;
+use PHPExiftool\Driver\Value;
+
 /**
  *
  *
@@ -459,14 +463,24 @@ class system_file extends \SplFileInfo
             return $this->uuid;
         }
 
-        $datas = exiftool::extract_metadatas($this, exiftool::EXTRACT_XML_RDF);
-        $domrdf = new DOMDocument();
-        $domrdf->recover = true;
-        $domrdf->preserveWhiteSpace = false;
+        $reader = new PHPExiftool\Reader();
+        $metadatas = $reader->files($this->getPathname())->first()->getMetadatas();
 
-        if ($domrdf->loadXML($datas)) {
-            $this->uuid = $this->test_rdf_fields($domrdf);
+        $uniqueKeys = array('XMP-exif:ImageUniqueID', 'IPTC:UniqueDocumentID');
+
+        foreach ($uniqueKeys as $uniqueKey) {
+            if ($metadatas->containsKey($uniqueKey)) {
+
+                $value = (string) $metadatas->get($uniqueKey)->getValue()->getValue();
+
+                if (uuid::is_valid($value)) {
+                    $this->uuid = $value;
+                    break;
+                }
+            }
         }
+
+        $reader = null;
 
         return $this->uuid;
     }
@@ -513,64 +527,37 @@ class system_file extends \SplFileInfo
 
     public function write()
     {
-        $system = system_server::get_platform();
-        $registry = registry::get_instance();
-
-        if (in_array($system, array('DARWIN', 'LINUX'))) {
-
-            $cmd = __DIR__ . '/../../../vendor/phpexiftool/exiftool/exiftool'
-                . ' -m -overwrite_original '
-                . ' -XMP-exif:ImageUniqueID=\'' . $this->uuid . '\''
-                . ' -IPTC:UniqueDocumentID=\'' . $this->uuid . '\''
-                . ' ' . escapeshellarg($this->getPathname());
-        } else {
-            if (chdir($registry->get('GV_RootPath') . 'tmp/')) {
-
-                $cmd = 'start /B /LOW ' . __DIR__ . '/../../../vendor/phpexiftool/exiftool/exiftool.exe'
-                    . ' -m -overwrite_original'
-                    . ' -XMP-exif:ImageUniqueID=\'' . $this->uuid . '\''
-                    . ' -IPTC:UniqueDocumentID=\'' . $this->uuid . '\''
-                    . ' ' . escapeshellarg($this->getPathname());
-            }
-        }
-
-        if ($cmd) {
-            $s = @shell_exec($cmd);
-        }
-
-        return $this;
-    }
-
-    private function test_rdf_fields($rdf_dom)
-    {
-        $xptrdf = new DOMXPath($rdf_dom);
-        $xptrdf->registerNamespace('XMP-exif', 'http://ns.exiftool.ca/XMP/XMP-exif/1.0/');
-        $xptrdf->registerNamespace('IPTC', 'http://ns.exiftool.ca/IPTC/IPTC/1.0/');
-
-        $fields = array(
-            '/rdf:RDF/rdf:Description/XMP-exif:ImageUniqueID',
-            '/rdf:RDF/rdf:Description/IPTC:UniqueDocumentID'
+        $metadatas = new Metadata\MetadataBag();
+        $metadatas->add(
+            new Metadata\Metadata(
+                new Tag\IPTC\UniqueDocumentID(),
+                new Value\Mono($this->uuid)
+            )
+        );
+        $metadatas->add(
+            new Metadata\Metadata(
+                new Tag\ExifIFD\ImageUniqueID(),
+                new Value\Mono($this->uuid)
+            )
+        );
+        $metadatas->add(
+            new Metadata\Metadata(
+                new Tag\XMPExif\ImageUniqueID(),
+                new Value\Mono($this->uuid)
+            )
         );
 
-        foreach ($fields as $field) {
-            $x = $xptrdf->query($field);
+        try {
 
-            if ($x->length > 0) {
-                $x = $x->item(0);
+            $writer = new PHPExiftool\Writer();
+            $writer->write($this->getPathname(), $metadatas);
+        } catch (PHPExiftool\Exception\Exception $e) {
 
-                $encoding = strtolower($x->getAttribute('rdf:datatype') . $x->getAttribute('et:encoding'));
-                $base64_encoded = (strpos($encoding, 'base64') !== false);
-
-                if (($v = $x->firstChild) && $v->nodeType == XML_TEXT_NODE) {
-                    $value = $base64_encoded ? base64_decode($v->nodeValue) : $v->nodeValue;
-                    if (uuid::is_valid($value)) {
-                        return $value;
-                    }
-                }
-            }
         }
 
-        return false;
+        $writer = $metadatas = null;
+
+        return $this;
     }
 
     public static function mkdir($path, $depth = 0)
@@ -714,153 +701,70 @@ class system_file extends \SplFileInfo
             $tfields[metadata_description_PHRASEANET_pdftext::get_source()] = $this->read_pdf_datas();
         }
 
-        $datas = exiftool::extract_metadatas($this, exiftool::EXTRACT_XML_RDF);
-        $domrdf = new DOMDocument();
-        $domrdf->recover = true;
-        $domrdf->preserveWhiteSpace = false;
+        $unicode = new unicode();
 
-        if ($domrdf->loadXML($datas)) {
-            $xptrdf = new DOMXPath($domrdf);
+        $reader = new PHPExiftool\Reader();
 
-            $defined_namespaces = array(
-                'rdf'        => true
-                , 'XMP-exif'   => true
-                , 'PHRASEANET' => true
-            );
+        $metadatas = $reader->files($this->getPathname())->first()->getMetadatas();
 
-            $xptrdf->registerNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+        foreach ($meta_struct as $meta) {
 
-            $pattern = "(xmlns:([a-zA-Z-_0-9]+)=[']{1}(https?:[/{2,4}|\\{2,4}][\w:#%/;$()~_?/\-=\\\.&]*)[']{1})";
-            preg_match_all($pattern, $datas, $matches, PREG_PATTERN_ORDER, 0);
+            $name = $meta->get_name();
+            $src = $meta->get_metadata_source();
+            $key = $meta->get_metadata_namespace() . ':' . $meta->get_metadata_tagname();
 
-            $xptrdf->registerNamespace('XMP-exif', 'http://ns.exiftool.ca/XMP/XMP-exif/1.0/');
-            $xptrdf->registerNamespace('PHRASEANET', 'http://phraseanet.com/metas/PHRASEANET/1.0/');
-            foreach ($matches[2] as $key => $value) {
-                $defined_namespaces[$matches[1][$key]] = true;
-                $xptrdf->registerNamespace($matches[1][$key], $value);
+            if ( ! $src || ! $metadatas->containsKey($key)) {
+                continue;
             }
-            // tous les champs de la structure
-            foreach ($meta_struct as $meta) {
 
-                if ( ! array_key_exists($meta->get_metadata_namespace(), $defined_namespaces)) {
-                    $xptrdf->registerNamespace($meta->get_metadata_namespace(), 'http://ns.exiftool.ca/' . $meta->get_metadata_namespace() . '/1.0/');
-                    $defined_namespaces[$meta->get_metadata_namespace()] = true;
-                }
-                $fname = $meta->get_name();
-
-                $src = $meta->get_metadata_source();
-                if ( ! $src)
-                    continue;
-
-                $x = $xptrdf->query($src);
-                if ( ! $x || $x->length != 1) {
-                    continue;
-                }
-
-                if ( ! isset($tfields[$src])) {
-                    $tfields[$src] = array();
-                }
-                $x = $x->item(0);
-
-                //double check -- exiftool uses et:encoding in version prior 7.71
-                $encoding = strtolower($x->getAttribute('rdf:datatype') . $x->getAttribute('et:encoding'));
-                $base64_encoded = (strpos($encoding, 'base64') !== false);
-
-                $bag = $xptrdf->query('rdf:Bag', $x);
-                if ($bag && $bag->length == 1) {
-                    $li = $xptrdf->query('rdf:li', $bag->item(0));
-                    if ($li->length > 0) {
-                        for ($ili = 0; $ili < $li->length; $ili ++ ) {
-                            $value = $base64_encoded ? base64_decode($li->item($ili)->nodeValue) : $li->item($ili)->nodeValue;
-                            $utf8value = trim($this->guessCharset($value));
-                            $tfields[$src][] = $utf8value;
-                        }
-                    }
-                } else {
-                    if (($v = $x->firstChild) && $v->nodeType == XML_TEXT_NODE) {
-                        $value = $base64_encoded ? base64_decode($v->nodeValue) : $v->nodeValue;
-                        $utf8value = $this->guessCharset($value);
-                        $tfields[$src] = array($utf8value);
-                    }
-                }
+            if ( ! isset($tfields[$src])) {
+                $tfields[$src] = array();
             }
+
+            foreach ((array) $metadatas->get($key)->getValue()->getValue() as $value) {
+
+                $value = $unicode->substituteCtrlCharacters($value, ' ');
+
+                $tfields[$src][] = $unicode->toUTF8($value);
+            }
+
+            $tfields[$src] = array_unique($tfields[$src]);
         }
 
 
         foreach ($meta_struct as $meta) {
-            $fname = $meta->get_name();
+
+            $name = $meta->get_name();
             $src = $meta->get_metadata_source();
-            $typ = mb_strtolower($meta->get_type()); // l'attribut 'type' du champ
-            $multi = $meta->is_multi();    // l'attribut 'multi' du champ
 
-            if (trim($src) === '' || isset($tfields[$src]) === false)
+            if ( ! isset($tfields[$src])) {
                 continue;
-
-            if (trim(implode('', $tfields[$src])) === '')
-                continue;
-
-            // un champ iptc peut etre multi-value, on recoit donc toujours un tableau comme valeur
-            $tmpval = array();
-            foreach ($tfields[$src] as $val) {
-                // on remplace les caracteres de controle (tous < 32 sauf 9,10,13)
-                $val = $this->kill_ctrlchars($val);
-
-                if ($typ == 'date') {
-                    $val = str_replace(array('-', ':', '/', '.'), array(' ', ' ', ' ', ' '), $val);
-                    $ip_date_yyyy = 0;
-                    $ip_date_mm = 0;
-                    $ip_date_dd = 0;
-                    $ip_date_hh = 0;
-                    $ip_date_nn = 0;
-                    $ip_date_ss = 0;
-                    switch (sscanf($val, '%d %d %d %d %d %d', $ip_date_yyyy, $ip_date_mm, $ip_date_dd, $ip_date_hh, $ip_date_nn, $ip_date_ss)) {
-                        case 1:
-                            $val = sprintf('%04d/00/00 00:00:00', $ip_date_yyyy);
-                            break;
-                        case 2:
-                            $val = sprintf('%04d/%02d/00 00:00:00', $ip_date_yyyy, $ip_date_mm);
-                            break;
-                        case 3:
-                            $val = sprintf('%04d/%02d/%02d 00:00:00', $ip_date_yyyy, $ip_date_mm, $ip_date_dd);
-                            break;
-                        case 4:
-                            $val = sprintf('%04d/%02d/%02d %02d:00:00', $ip_date_yyyy, $ip_date_mm, $ip_date_dd, $ip_date_hh);
-                            break;
-                        case 5:
-                            $val = sprintf('%04d/%02d/%02d %02d:%02d:00', $ip_date_yyyy, $ip_date_mm, $ip_date_dd, $ip_date_hh, $ip_date_nn);
-                            break;
-                        case 6:
-                            $val = sprintf('%04d/%02d/%02d %02d:%02d:%02d', $ip_date_yyyy, $ip_date_mm, $ip_date_dd, $ip_date_hh, $ip_date_nn, $ip_date_ss);
-                            break;
-                        default:
-                            $val = '0000/00/00 00:00:00';
-                    }
-                }
-
-                if ( ! in_array($val, $tmpval))
-                    $tmpval[] = $val;
             }
 
-            foreach ($tmpval as $val) {
-                $ret = $this->add_meta_value($meta, $ret, $val);
+            foreach ($tfields[$src] as $value) {
+
+                if ($meta->get_type() == 'date') {
+                    $value = $unicode->parseDate($value);
+                }
+
+                if (trim($value) == '') {
+                    continue;
+                }
+
+                $ret = $this->add_meta_value($meta, $ret, $value);
             }
         }
 
 
         $statBit = null;
         $sxcaption = null;
+
         if ( ! is_null($caption_file)) {
-            // on a une description xml en plus a lire dans un fichier externe
+
             if ($domcaption = @DOMDocument::load($caption_file->getPathname())) {
-                if ($domcaption->documentElement->tagName == 'description') { // il manque 'record' (ca commence par 'description') : on repare
-                    $newdomcaption = new DOMDocument('1.0', 'UTF-8');
-                    $newdomcaption->standalone = true;
-                    $newdomrec = $newdomcaption->appendChild($newdomcaption->createElement('record'));
-                    $newdomrec->appendChild($newdomcaption->importNode($domcaption->documentElement, true));
-                    $sxcaption = simplexml_load_string($newdomcaption->saveXML());
-                } else {
-                    $sxcaption = simplexml_load_file($caption_file->getPathname());
-                }
+
+                $sxcaption = simplexml_load_file($caption_file->getPathname());
+
                 if ($inStatus = $sxcaption->status) {
                     if ($inStatus && $inStatus != '') {
                         $statBit = $inStatus;
@@ -872,6 +776,8 @@ class system_file extends \SplFileInfo
                 $ret = $this->meta_merge($meta_struct, $ret, $sxcaption);
             }
         }
+
+        $reader = $unicode = null;
 
         return(array('metadatas' => $ret, 'status'    => $statBit));
     }

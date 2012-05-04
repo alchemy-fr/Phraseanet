@@ -128,63 +128,64 @@ class p4file
 
     public static function check_file_error($filename, $sbas_id, $originalname)
     {
-        $registry = registry::get_instance();
+        $checks = array();
 
         $system_file = new system_file($filename);
 
         $doctype = $system_file->get_phrasea_type();
 
         $databox = databox::get_instance($sbas_id);
-        if ($baseprefs = $databox->get_sxml_structure()) {
-            $file_checks = $baseprefs->filechecks;
-        }
-        else
-            throw new Exception(_('prod::erreur : impossible de lire les preferences de base'));
 
+        if ($baseprefs = $databox->get_sxml_structure()) {
+
+            $file_checks = $baseprefs->filechecks;
+            $checks = $file_checks->$doctype;
+            $checks = $checks[0];
+        } else {
+            throw new Exception(_('prod::erreur : impossible de lire les preferences de base'));
+        }
 
         $errors = array();
 
-        $datas = exiftool::get_fields($filename, array('Color Space Data', 'Color Space', 'Color Mode', 'Image Width', 'Image Height'));
+        $media = \MediaVorus\MediaVorus::guess($filename);
 
-        if ($checks = $file_checks->$doctype) {
-            foreach ($checks[0] as $name => $value) {
-                switch ($name) {
-                    case 'name':
-                        $records = record_adapter::get_records_by_originalname($databox, $original_name, 0, 1);
-                        if (count($records) > 0)
-                            $errors[] = sprintf(_('Le fichier \'%s\' existe deja'), $originalname);
-                        break;
-                    case 'size':
-                        $min = min($datas['Image Height'], $datas['Image Width']);
-                        if ($min < (int) $value) {
-                            $errors[] = sprintf(_('Taille trop petite : %dpx'), $min);
-                        }
-                        break;
-                    case 'color_space':
-                        $required = in_array($value, array('sRGB', 'RGB')) ? 'RGB' : $value;
-                        $go = false;
+        $width = $height = 0;
+        $colorSpace = null;
 
-                        $results = array($datas['Color Space'], $datas['Color Space Data'], $datas['Color Mode']);
+        if ($media instanceof \MediaVorus\Media\Image) {
+            $width = $media->getWidth();
+            $height = $media->getHeight();
+            $colorSpace = strtolower($media->getColorSpace());
+        }
 
-                        $results_str = implode(' ', $results);
+        foreach ($checks as $name => $value) {
+            switch ($name) {
+                case 'name':
+                    $records = record_adapter::get_records_by_originalname($databox, $original_name, 0, 1);
+                    if (count($records) > 0)
+                        $errors[] = sprintf(_('Le fichier \'%s\' existe deja'), $originalname);
+                    break;
+                case 'size':
+                    if (min($width, $height) < (int) $value) {
+                        $errors[] = sprintf(_('Taille trop petite : %dpx'), $min);
+                    }
+                    break;
+                case 'color_space':
+                    $required = strtolower(in_array($value, array('sRGB', 'RGB')) ? 'RGB' : $value);
 
-                        if (trim($results_str) === '') {
-                            $go = true;
-                        } else {
-                            if ($required == 'RGB' && count(array_intersect($results, array('sRGB', 'RGB'))) > 0) {
-                                $go = true;
-                            } elseif (in_array($required, $results)) {
-                                $go = true;
-                            }
-                        }
+                    $go = false;
 
+                    if ( ! $colorSpace || $required == $colorSpace) {
+                        $go = true;
+                    } else if ($required == 'rgb' && in_array($colorSpace, array('srgb', 'rgb')) > 0) {
+                        $go = true;
+                    }
 
-                        if ( ! $go) {
-                            $errors[] = sprintf(_('Mauvais mode colorimetrique : %s'), $results_str);
-                        }
+                    if ( ! $go) {
+                        $errors[] = sprintf(_('Mauvais mode colorimetrique : %s'), $colorSpace);
+                    }
 
-                        break;
-                }
+                    break;
             }
         }
 

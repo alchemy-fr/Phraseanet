@@ -47,14 +47,6 @@ class task_period_upgradetov31 extends task_abstract
         $conn = $appbox->get_connection();
         $running = true;
 
-        $binary = __DIR__ . '/../../../../vendor/phpexiftool/exiftool/exiftool';
-
-        if ( ! is_executable($binary)) {
-            printf("Exiftool is not executable, script can not process\n");
-
-            return 'stopped';
-        }
-
         $todo = $this->how_many_left();
         $done = 0;
 

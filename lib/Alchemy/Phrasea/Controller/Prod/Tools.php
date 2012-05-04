@@ -40,45 +40,32 @@ class Tools implements ControllerProviderInterface
 
                 $selection = $helper->get_elements();
 
-                $binary = __DIR__ . '/../../../../../vendor/phpexiftool/exiftool/exiftool';
-
                 $metadatas = false;
                 $record = null;
-                $metadatasFirst = $metadatasSecond = array();
 
-                if (count($selection) == 1 && ! empty($binary)) {
+                if (count($selection) == 1) {
                     try {
-                        $record = reset($selection);
-                        $file = $record->get_subdef('document')->get_pathfile();
-                        $cmd = $binary . ' -h ' . escapeshellarg($file);
 
-                        $out = "";
-                        exec($cmd, $out);
-                        foreach ($out as $liout) {
-                            if (strpos($liout, '<tr><td>Directory') === false)
-                                $metadatasFirst[] = $liout;
-                        }
-                        $out = "";
-                        $cmd = $binary . ' -X -n -fast ' . escapeshellarg($file) . '';
-                        exec($cmd, $out);
-                        foreach ($out as $liout) {
-                            $metadatasSecond[] = htmlentities($liout);
-                        }
-                        $metadatas = true;
-                    } catch (\Exception $e) {
+                        $record = reset($selection);
+
+                        $reader = new \PHPExiftool\Reader();
+                        $metadatas = $reader->files($record->get_subdef('document')->get_pathfile())
+                                ->first()->getMetadatas();
+
+                    } catch (\PHPExiftool\Exception\Exception $e) {
 
                     }
                 }
 
+                $reader = null;
+
                 $template = 'prod/actions/Tools/index.html.twig';
 
                 $var = array(
-                    'helper'          => $helper,
-                    'selection'       => $selection,
-                    'record'          => $record,
-                    'metadatas'       => $metadatas,
-                    'metadatasFirst'  => $metadatasFirst,
-                    'metadatasSecond' => $metadatasSecond
+                    'helper'    => $helper,
+                    'selection' => $selection,
+                    'record'    => $record,
+                    'metadatas' => $metadatas,
                 );
 
                 return new Response($app['Core']->getTwig()->render($template, $var));
