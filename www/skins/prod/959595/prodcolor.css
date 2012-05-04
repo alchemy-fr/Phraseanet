@@ -605,6 +605,7 @@ div.diapo
   font-weight:normal;
 }
 
+
 #history-queries ul{
 	list-style-type:none;
 	margin:0;
@@ -616,9 +617,6 @@ div.diapo
 #history-queries ul li.hover{
 	color:#838383;
 }
-
-
-
 
 #TOPIC_UL li{
 	float:none;
@@ -2911,11 +2909,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
   background-position: center bottom;
 }
 
-#answers .feed .contents .diapo
-{
-  float:none;
-  display:inline-block;
-}
 
 #answers .feed .contents
 {
@@ -3098,7 +3091,6 @@ dans l'onglet thesaurus : arbres, menus contextuels
 }
 #dialog_publicator .api_content .blockmenu
 {
-  background-image: url('/skins/icons/api_menu.png');
   background-repeat: repeat-x;
   background-position:left bottom;
 }
@@ -3253,9 +3245,18 @@ dans l'onglet thesaurus : arbres, menus contextuels
   z-index:600;
 }
 
+#dialog_publicator .api_content .element{
+  padding:5px;
+}
+
+#dialog_publicator .api_content .element.odd{
+  background-color:#2a2a2a;
+}
+
 #dialog_publicator .api_content .element.selected{
   background-color:#666666;
 }
+
 
 .ui-selectable-helper{
   border:1px dotted #CCCCCC;
@@ -3315,10 +3316,10 @@ dans l'onglet thesaurus : arbres, menus contextuels
   border:1px solid #1A1B1B;
   border-bottom:none;
   height:210px;
-  width:320px; 
-  top:50px; 
+  width:320px;
+  top:50px;
   left:380px;
-  z-index:2; 
+  z-index:2;
   text-align:center
 }
 
