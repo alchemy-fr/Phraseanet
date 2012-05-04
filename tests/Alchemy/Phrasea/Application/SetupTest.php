@@ -54,7 +54,6 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
             'GV_unoconv',
             'GV_ffmpeg',
             'GV_mp4box',
-            'GV_mplayer',
             'GV_pdftotext',
         );
 

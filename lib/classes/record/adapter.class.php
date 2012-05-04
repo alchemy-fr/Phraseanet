@@ -452,7 +452,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     public function get_duration()
     {
         if ( ! $this->duration) {
-            $this->duration = $this->get_technical_infos(system_file::TC_DATAS_DURATION);
+            $this->duration = $this->get_technical_infos(media_subdef::TC_DATA_DURATION);
         }
 
         return $this->duration;
@@ -740,12 +740,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 $stmt->closeCursor();
 
                 foreach ($rs as $row) {
-                    switch ($row['name']) {
-                        case 'size':
-                        case system_file::TC_DATAS_WIDTH:
-                        case system_file::TC_DATAS_COLORDEPTH:
-                        case system_file::TC_DATAS_HEIGHT:
-                        case system_file::TC_DATAS_DURATION:
+                    switch (true) {
+                        case ctype_digit($row['value']):
                             $this->technical_datas[$row['name']] = (int) $row['value'];
                             break;
                         default:
@@ -956,6 +952,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $base_url = '';
 
+        $media = MediaVorus\MediaVorus::guess($pathfile);
+
         $original_file = $subdef_def = false;
 
         if ($name == 'document') {
@@ -1016,8 +1014,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             $connbas = connection::getPDOConnection($this->get_sbas_id());
 
-            $image_size = $system_file->get_technical_datas();
-
             $sql = 'UPDATE subdef
                 SET baseurl = :baseurl,
                     file = :filename,
@@ -1036,8 +1032,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                 ':name'      => $name,
                 ':baseurl'   => $base_url,
                 ':filename'  => $system_file->getFilename(),
-                ':width'     => $image_size[system_file::TC_DATAS_WIDTH],
-                ':height'    => $image_size[system_file::TC_DATAS_HEIGHT],
+                ':width'     => $media->getWidth(),
+                ':height'    => $media->getHeight(),
                 ':mime'      => $system_file->get_mime(),
                 ':path'      => $system_file->getPath(),
                 ':filesize'  => $system_file->getSize()
@@ -1062,6 +1058,8 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         } catch (Exception $e) {
 
         }
+
+        unset($media);
 
         return $this;
     }
@@ -1365,17 +1363,15 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $system_file2 = new system_file($pathhd . $newname);
         $system_file2->write_uuid($uuid);
 
-        media_subdef::create($record, 'document', $system_file2);
+        $subdef = media_subdef::create($record, 'document', $system_file2);
 
         $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
-
-        $tc_datas = $system_file->get_technical_datas();
 
         $sql = 'REPLACE INTO technical_datas (id, record_id, name, value)
         VALUES (null, :record_id, :name, :value)';
         $stmt = $connbas->prepare($sql);
 
-        foreach ($tc_datas as $name => $value) {
+        foreach ($subdef->readTechnicalDatas() as $name => $value) {
             if (is_null($value))
                 continue;
 

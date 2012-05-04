@@ -61,36 +61,36 @@
       {{record.get_formated_duration() }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_FRAMERATE')) is not empty %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_FRAMERATE')) is not empty %}
       {% trans 'Images par secondes' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_FRAMERATE')) }} ips
+      {{record.get_technical_infos(constant('media_subdef::TC_DATA_FRAMERATE')) }} ips
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOCODEC'))  %}
       {% trans 'Codec Audio' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC')) }}
+      {{record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOCODEC')) }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOCODEC'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOCODEC'))  %}
       {% trans 'Codec Video' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOCODEC')) }}
+      {{record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOCODEC')) }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOBITRATE'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOBITRATE'))  %}
       {% trans 'Debit video' %} :
-      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_VIDEOBITRATE'))  / 1024) %}
+      {% set rate = (record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOBITRATE'))  / 1024) %}
       {{rate|round(1)}} kbps
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOBITRATE'))  %}
       {% trans 'Debit audio' %} :
-      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  / 1024) %}
+      {% set rate = (record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOBITRATE'))  / 1024) %}
       {{rate|round(1)}} kbps
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE'))  %}
       {% trans 'Frequence d\'echantillonage' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE')) }} kHz
+      {{record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE')) }} kHz
       <br />
     {% endif %}
   {% endif %}
@@ -105,20 +105,20 @@
       {{record.get_formated_duration() }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOCODEC'))  %}
       {% trans 'Codec Audio' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOCODEC')) }}
+      {{record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOCODEC')) }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOBITRATE'))  %}
       {% trans 'Debit audio' %} :
-      {% set rate = (record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOBITRATE'))  / 1024) %}
+      {% set rate = (record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOBITRATE'))  / 1024) %}
       {{rate|round(1)}} kbps
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE'))  %}
+    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE'))  %}
       {% trans 'Frequence d\'echantillonage' %} :
-      {{record.get_technical_infos(constant('system_file::TC_DATAS_AUDIOSAMPLERATE')) }} kHz
+      {{record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE')) }} kHz
       <br />
     {% endif %}
   {% endif %}

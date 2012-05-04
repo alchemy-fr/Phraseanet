@@ -45,31 +45,6 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals('c08fed0e193a1549c130d79814d30a3ac3fcd81980e261c4947ff45691628f92', $this->objects['jpg']->get_sha256());
     }
 
-    public function testGet_technical_datas()
-    {
-        $technical_datas = $this->objects['jpg']->get_technical_datas();
-        $this->assertArrayHasKey(system_file::TC_DATAS_WIDTH, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_HEIGHT, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_CHANNELS, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_COLORDEPTH, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_MIMETYPE, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_FILESIZE, $technical_datas);
-        $technical_datas = $this->objects['indd']->get_technical_datas();
-        $this->assertArrayHasKey(system_file::TC_DATAS_MIMETYPE, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_FILESIZE, $technical_datas);
-
-        $registry        = registry::get_instance();
-        if ( ! is_executable($registry->get('GV_mplayer')))
-            $this->markTestSkipped('MPlayer is not configured');
-        $technical_datas = $this->objects['wav']->get_technical_datas();
-        $this->assertArrayHasKey(system_file::TC_DATAS_AUDIOBITRATE, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_AUDIOSAMPLERATE, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_AUDIOCODEC, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_DURATION, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_MIMETYPE, $technical_datas);
-        $this->assertArrayHasKey(system_file::TC_DATAS_FILESIZE, $technical_datas);
-    }
-
     public function testGet_phrasea_type()
     {
         $this->assertEquals('unknown', $this->objects['indd']->get_phrasea_type());

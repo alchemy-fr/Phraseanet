@@ -195,14 +195,9 @@ class task_period_upgradetov32 extends task_abstract
                 foreach ($rs as $row) {
                     try {
                         $record = new record_adapter($this->sbas_id, $row['record_id']);
-                        $system_file = $record->get_hd_file();
+                        $document = $record->get_subdef('document');
 
-                        if ( ! $system_file instanceof system_file)
-                            continue;
-
-                        $tc_datas = $system_file->get_technical_datas();
-
-                        foreach ($tc_datas as $name => $value) {
+                        foreach ($document->readTechnicalDatas() as $name => $value) {
                             if (is_null($value))
                                 continue;
 
