@@ -44,27 +44,40 @@ class module_console_schedulerState extends Command
 
         require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
-        try {
-            $appbox = appbox::get_instance(\bootstrap::getCore());
-            $task_manager = new task_manager($appbox);
+        $appbox = appbox::get_instance(\bootstrap::getCore());
+        $task_manager = new task_manager($appbox);
 
-            $state = $task_manager->get_scheduler_state();
+        $state = $task_manager->get_scheduler_state();
 
-            if ($state['status'] == 'started') {
-                $output->writeln(sprintf(
-                        'Scheduler is %s on pid %d'
-                        , $state['status']
-                        , $state['pid']
-                    ));
-            } else {
-                $output->writeln(sprintf('Scheduler is %s', $state['status']));
-            }
-
-            return 0;
-        } catch (\Exception $e) {
-            return 1;
+        if ($state['status'] == 'started') {
+            $output->writeln(sprintf(
+                    'Scheduler is %s on pid %d'
+                    , $state['status']
+                    , $state['pid']
+                ));
+        } else {
+            $output->writeln(sprintf('Scheduler is %s', $state['status']));
         }
 
-        return 0;
+        switch ($state['status']) {
+            case \task_manager::STATUS_SCHED_STARTED:
+
+                return 10;
+                break;
+            case \task_manager::STATUS_SCHED_STOPPED:
+
+                return 11;
+                break;
+            case \task_manager::STATUS_SCHED_STOPPING:
+
+                return 12;
+                break;
+            case \task_manager::STATUS_SCHED_TOSTOP:
+
+                return 13;
+                break;
+        }
+
+        return 1;
     }
 }
