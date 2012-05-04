@@ -378,14 +378,14 @@ class Bridge implements ControllerProviderInterface
 
                 $route->grep_records($account->get_api()->acceptable_records());
 
-              $params = array(
-                    'route'          => $route
-                  , 'account'        => $account
-                  , 'error_message'  => $app['request']->get('error')
-                  , 'notice_message' => $app['request']->get('notice')
-                  , 'constraint_errors' => null
-                  , 'adapter_action' => 'upload'
-              );
+                $params = array(
+                    'route'             => $route
+                    , 'account'           => $account
+                    , 'error_message'     => $app['request']->get('error')
+                    , 'notice_message'    => $app['request']->get('notice')
+                    , 'constraint_errors' => null
+                    , 'adapter_action'    => 'upload'
+                );
 
                 $html = $twig->render(
                     'prod/actions/Bridge/' . $account->get_api()->get_connector()->get_name() . '/upload.twig', $params
