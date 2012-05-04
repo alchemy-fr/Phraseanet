@@ -46,7 +46,7 @@
 {% block response %}
     {%for element in elements.get_elements%}
 
-      <div class="element">
+      <div class="element {{ loop.index is odd ? 'odd' : 'even' }}">
         <table>
           <tr>
             <td style="width:20px;">
