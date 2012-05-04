@@ -426,6 +426,7 @@ class Bridge implements ControllerProviderInterface
                   , 'account' => $account
                   , 'error_message' => $app['request']->get('error')
                   , 'notice_message' => $app['request']->get('notice')
+                  , 'constraint_errors' => null
                   , 'adapter_action' => 'upload'
               );
 
