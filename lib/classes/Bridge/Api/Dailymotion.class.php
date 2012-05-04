@@ -971,12 +971,6 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
             'length_min' => '0',
             'required' => true
         )
-        , array(
-            'name' => 'category',
-            'length' => '0',
-            'length_min' => '0',
-            'required' => true
-        )
     );
   }
 
