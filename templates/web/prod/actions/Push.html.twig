@@ -131,9 +131,15 @@
 
                 {% if recommendation != '' %}
                   {% set recommendation = '<br/>' ~ recommendation %}
-                  {% trans %}
-                    Please consider send this validation to the following users : {{ recommendation }}
-                  {% endtrans %}
+                   {% if context == 'Push' %}
+                        {% trans %}
+                            Please consider send this push to the following users : {{ recommendation }}
+                        {% endtrans %}
+                   {% else %}
+                        {% trans %}
+                            Please consider send this validation to the following users : {{ recommendation }}
+                        {% endtrans %}
+                    {% endif %}
                 {% endif %}
               </p>
 
