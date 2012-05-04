@@ -52,6 +52,9 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals('a2b5cdeé', $this->object->remove_first_digits('4a2b5cdeé'));
     }
 
+    /**
+     * @covers \unicode::substituteCtrlCharacters
+     */
     public function testSubstituteCtrlCharacters()
     {
         $string = 'Hello' . chr(30) . 'World !';
