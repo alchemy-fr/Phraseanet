@@ -239,16 +239,13 @@ class setup
     public static function discover_binaries()
     {
         if (system_server::get_platform() == 'WINDOWS') {
-            $exiftool = dirname(__DIR__) . '/vendor/exiftool/exiftool.exe';
             $indexer = dirname(dirname(__DIR__)) . '/bin/phraseanet_indexer.exe';
         } else {
-            $exiftool = dirname(__DIR__) . '/vendor/exiftool/exiftool';
             $indexer = null;
         }
 
         return array(
             'php' => array('name'     => 'PHP CLI', 'binary'   => self::discover_binary('php')),
-            'exiftool' => array('name'   => 'Exiftool', 'binary' => self::discover_binary('exiftool', array($exiftool))),
             'phraseanet_indexer' => array('name'   => 'Indexeur Phrasea', 'binary' => self::discover_binary('phraseanet_indexer', array($indexer))),
             'convert' => array('name'      => 'ImageMagick (convert)', 'binary'    => self::discover_binary('convert')),
             'composite' => array('name'    => 'ImageMagick (composite)', 'binary'  => self::discover_binary('composite')),
@@ -259,7 +256,6 @@ class setup
             'MP4Box' => array('name'   => 'MP4Box', 'binary' => self::discover_binary('MP4Box')),
             'xpdf'   => array('name'   => 'XPDF', 'binary' => self::discover_binary('xpdf')),
             'ffmpeg' => array('name'    => 'FFmpeg', 'binary'  => self::discover_binary('ffmpeg')),
-            'mplayer' => array('name'   => 'MPlayer', 'binary' => self::discover_binary('mplayer'))
         );
     }
 
