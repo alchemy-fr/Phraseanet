@@ -439,7 +439,7 @@ class Core extends \Pimple
         $loader->register();
 
         set_include_path(
-            get_include_path() . PATH_SEPARATOR . realpath(__DIR__ . '/../../../vendor/alchemy/gdata')
+            get_include_path() . PATH_SEPARATOR . realpath(__DIR__ . '/../../../vendor/zend/gdata')
         );
 
         static::$autoloader_initialized = true;
