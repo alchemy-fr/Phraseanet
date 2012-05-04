@@ -39,7 +39,7 @@ class module_console_schedulerState extends Command
         if ( ! setup::is_installed()) {
             $output->writeln('Phraseanet is not set up');
 
-            return 1;
+            return -1;
         }
 
         require_once __DIR__ . '/../../../../lib/bootstrap.php';
@@ -60,11 +60,27 @@ class module_console_schedulerState extends Command
                 $output->writeln(sprintf('Scheduler is %s', $state['status']));
             }
 
-            return 0;
-        } catch (\Exception $e) {
-            return 1;
-        }
+            switch ($state['status']) {
+                case \task_manager::STATUS_SCHED_STARTED:
 
-        return 0;
+                    return 0;
+                    break;
+                case \task_manager::STATUS_SCHED_STOPPED:
+
+                    return 1;
+                    break;
+                case \task_manager::STATUS_SCHED_STOPPING:
+
+                    return 2;
+                    break;
+                case \task_manager::STATUS_SCHED_TOSTOP:
+                    
+                    return 3;
+                    break;
+            }
+        } catch (\Exception $e) {
+
+            return -1;
+        }
     }
 }
