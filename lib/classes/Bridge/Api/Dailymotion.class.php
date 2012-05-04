@@ -637,7 +637,6 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 /**
                  * @todo Retieve thumb
                  */
-
                 return new Bridge_Api_Dailymotion_Container($entry, $object, '');
                 break;
             default:
@@ -835,20 +834,20 @@ class Bridge_Api_Dailymotion extends Bridge_Api_Abstract implements Bridge_Api_I
                 }
             };
 
-    array_map($check, $this->get_fields());
+        array_map($check, $this->get_fields());
 
-    return $errors;
-  }
+        return $errors;
+    }
 
-  /**
-   * Returns dats needed for an uploaded record
-   * @param record_adapter $record
-   * @return array
-   */
-  public function get_upload_datas(Request $request, record_adapter $record)
-  {
-    $key = $record->get_serialize_key();
-    $datas = array(
+    /**
+     * Returns dats needed for an uploaded record
+     * @param record_adapter $record
+     * @return array
+     */
+    public function get_upload_datas(Request $request, record_adapter $record)
+    {
+        $key = $record->get_serialize_key();
+        $datas = array(
             'title'       => $request->get('title_' . $key),
             'description' => $request->get('description_' . $key),
             'category'    => $request->get('category_' . $key),
