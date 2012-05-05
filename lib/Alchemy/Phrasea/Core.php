@@ -17,15 +17,15 @@ use Alchemy\Phrasea\Core\Configuration;
 
 require_once __DIR__ . '/../../../vendor/pimple/pimple/lib/Pimple.php';
 
-require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Yaml.php';
-require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Parser.php';
-require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Inline.php';
-require_once __DIR__ . '/../../../vendor/symfony/yaml/Symfony/Component/Yaml/Unescaper.php';
-require_once __DIR__ . '/../../../vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/File/File.php';
-require_once __DIR__ . '/../../../vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/File/Exception/FileException.php';
-require_once __DIR__ . '/../../../vendor/symfony/http-foundation/Symfony/Component/HttpFoundation/File/Exception/FileNotFoundException.php';
-require_once __DIR__ . '/../../../vendor/symfony/dependency-injection/Symfony/Component/DependencyInjection/ParameterBag/ParameterBagInterface.php';
-require_once __DIR__ . '/../../../vendor/symfony/dependency-injection/Symfony/Component/DependencyInjection/ParameterBag/ParameterBag.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/Yaml/Yaml.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/Yaml/Parser.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/Yaml/Inline.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/Yaml/Unescaper.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/File/File.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/File/Exception/FileException.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/File/Exception/FileNotFoundException.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/DependencyInjection/ParameterBag/ParameterBagInterface.php';
+require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/DependencyInjection/ParameterBag/ParameterBag.php';
 
 require_once __DIR__ . '/Core/Configuration/Specification.php';
 require_once __DIR__ . '/Core/Configuration.php';
