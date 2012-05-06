@@ -471,7 +471,7 @@ class system_file extends \SplFileInfo
         foreach ($uniqueKeys as $uniqueKey) {
             if ($metadatas->containsKey($uniqueKey)) {
 
-                $value = (string) $metadatas->get($uniqueKey)->getValue()->getValue();
+                $value = (string) $metadatas->get($uniqueKey)->getValue()->asString();
 
                 if (uuid::is_valid($value)) {
                     $this->uuid = $value;
@@ -721,7 +721,7 @@ class system_file extends \SplFileInfo
                 $tfields[$src] = array();
             }
 
-            foreach ((array) $metadatas->get($key)->getValue()->getValue() as $value) {
+            foreach ($metadatas->get($key)->getValue()->asArray() as $value) {
 
                 $value = $unicode->substituteCtrlCharacters($value, ' ');
 
