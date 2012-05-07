@@ -40,7 +40,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param appbox $appbox
      * @return Array
      */
-    protected function retrieve_content(appbox $appbox)
+    protected function retrieveContent(appbox $appbox)
     {
         $status = array(Bridge_Element::STATUS_PENDING, Bridge_Element::STATUS_PROCESSING, Bridge_Element::STATUS_PROCESSING_SERVER);
 
@@ -52,8 +52,8 @@ class task_period_apibridge extends task_appboxAbstract
             $n ++;
         }
 
-        $sql = 'SELECT id, account_id FROM bridge_elements
-                WHERE (status = ' . implode(' OR status = ', array_keys($params)) . ')';
+        $sql = 'SELECT id, account_id FROM bridge_elements'
+            . ' WHERE (status = ' . implode(' OR status = ', array_keys($params)) . ')';
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -69,7 +69,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param array $row
      * @return task_period_apibridge
      */
-    protected function process_one_content(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, Array $row)
     {
         try {
             $account = Bridge_Account::load_account($appbox, $row['account_id']);
@@ -86,7 +86,7 @@ class task_period_apibridge extends task_appboxAbstract
 
             $params = array(
                 ':status' => Bridge_Element::STATUS_ERROR
-                , ':id'     => $row['id']
+                , ':id' => $row['id']
             );
 
             $stmt = $appbox->get_connection()->prepare($sql);
@@ -103,7 +103,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param array $row
      * @return task_period_apibridge
      */
-    protected function post_process_one_content(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, Array $row)
     {
         return $this;
     }
@@ -160,11 +160,11 @@ class task_period_apibridge extends task_appboxAbstract
             case Bridge_Element::STATUS_ERROR:
 
                 $params = array(
-                    'usr_id'     => $account->get_user()->get_id()
-                    , 'reason'     => $error_message
+                    'usr_id' => $account->get_user()->get_id()
+                    , 'reason' => $error_message
                     , 'account_id' => $account->get_id()
-                    , 'sbas_id'    => $element->get_record()->get_sbas_id()
-                    , 'record_id'  => $element->get_record()->get_record_id()
+                    , 'sbas_id' => $element->get_record()->get_sbas_id()
+                    , 'record_id' => $element->get_record()->get_record_id()
                 );
                 $events_mngr = eventsmanager_broker::getInstance(appbox::get_instance(\bootstrap::getCore()), $Core);
                 $events_mngr->trigger('__BRIDGE_UPLOAD_FAIL__', $params);

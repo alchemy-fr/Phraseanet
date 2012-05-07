@@ -22,13 +22,13 @@ abstract class task_databoxAbstract extends task_abstract
 
     protected $mono_sbas_id;
 
-    abstract protected function retrieve_sbas_content(databox $databox);
+    abstract protected function retrieveSbasContent(databox $databox);
 
-    abstract protected function process_one_content(databox $databox, Array $row);
+    abstract protected function processOneContent(databox $databox, Array $row);
 
-    abstract protected function flush_records_sbas();
+    abstract protected function flushRecordsSbas();
 
-    abstract protected function post_process_one_content(databox $databox, Array $row);
+    abstract protected function postProcessOneContent(databox $databox, Array $row);
 
     protected function run2()
     {
@@ -39,7 +39,7 @@ abstract class task_databoxAbstract extends task_abstract
                 $conn = connection::getPDOConnection();
             } catch (Exception $e) {
                 $this->log($e->getMessage());
-                if ($this->get_runner() == self::RUNNER_SCHEDULER) {
+                if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                     $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
                     for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
@@ -54,16 +54,16 @@ abstract class task_databoxAbstract extends task_abstract
                 return;
             }
 
-            $this->set_last_exec_time();
+            $this->setLastExecTime();
             try {
                 if ($this->mono_sbas_id) {
                     $sql = 'SELECT sbas_id, task2.* FROM sbas, task2 WHERE task_id=:taskid AND sbas_id=:sbas_id';
                     $stmt = $conn->prepare($sql);
-                    $stmt->execute(array(':taskid' => $this->get_task_id(), ':sbas_id' => $this->mono_sbas_id));
+                    $stmt->execute(array(':taskid' => $this->getID(), ':sbas_id' => $this->mono_sbas_id));
                 } else {
                     $sql = 'SELECT sbas_id, task2.* FROM sbas, task2 WHERE task_id = :taskid';
                     $stmt = $conn->prepare($sql);
-                    $stmt->execute(array(':taskid' => $this->get_task_id()));
+                    $stmt->execute(array(':taskid' => $this->getID()));
                 }
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
@@ -83,33 +83,33 @@ abstract class task_databoxAbstract extends task_abstract
                 $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id));
 
                 try {
-                    $this->load_settings(simplexml_load_string($row['settings']));
+                    $this->loadSettings(simplexml_load_string($row['settings']));
                 } catch (Exception $e) {
                     $this->log($e->getMessage());
                     continue;
                 }
 
-                $process_ret = $this->process_sbas();
+                $process_ret = $this->processSbas();
 
                 // printf("%s (%d) process_ret=%s \n", __FILE__, __LINE__, var_export($process_ret, true));
                 // $this->check_current_xxxstate();
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:
                     case self::STATE_MAXRECSDONE:
-                        if ($this->get_runner() == self::RUNNER_SCHEDULER) {
-                            $this->set_status(self::STATUS_TORESTART);
+                        if ($this->getRunner() == self::RUNNER_SCHEDULER) {
+                            $this->setState(self::STATUS_TORESTART);
                             $this->running = FALSE;
                         }
                         break;
 
                     case self::STATUS_TOSTOP:
-                        $this->set_status(self::STATUS_TOSTOP);
+                        $this->setState(self::STATUS_TOSTOP);
                         $this->running = FALSE;
                         break;
 
                     case self::STATUS_TODELETE: // formal 'suicidable'
                         // DO NOT SUICIDE IN THE LOOP, may have to work on other sbas !!!
-                        // $this->set_status(self::STATUS_TODELETE);
+                        // $this->setState(self::STATUS_TODELETE);
                         // $this->log('task will self delete');
                         // $this->running = FALSE;
                         $task_must_delete = TRUE;
@@ -119,15 +119,15 @@ abstract class task_databoxAbstract extends task_abstract
                         break;
                 }
 
-                $this->flush_records_sbas();
+                $this->flushRecordsSbas();
             }  // foreach sbas
 
-            $this->increment_loops();
+            $this->incrementLoops();
             $this->pause($duration);
         } // while($this->running)
 
         if ($task_must_delete) {
-            $this->set_status(self::STATUS_TODELETE);
+            $this->setState(self::STATUS_TODELETE);
             $this->log('task will self delete');
         }
         return;
@@ -137,7 +137,7 @@ abstract class task_databoxAbstract extends task_abstract
      *
      * @return <type>
      */
-    protected function process_sbas()
+    protected function processSbas()
     {
         $ret = self::STATE_OK;
 
@@ -148,7 +148,7 @@ abstract class task_databoxAbstract extends task_abstract
             // get the records to process
             $databox = databox::get_instance($this->sbas_id);
             $connbas = $databox->get_connection();
-            $rs = $this->retrieve_sbas_content($databox);
+            $rs = $this->retrieveSbasContent($databox);
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
             $rs = array();
@@ -163,7 +163,7 @@ abstract class task_databoxAbstract extends task_abstract
         foreach ($rs as $row) {
             try {
                 // process one record
-                $this->process_one_content($databox, $row);
+                $this->processOneContent($databox, $row);
             } catch (Exception $e) {
                 $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine());
             }
@@ -172,7 +172,7 @@ abstract class task_databoxAbstract extends task_abstract
             $this->setProgress($rowsdone, $rowstodo);
 
             // post-process
-            $this->post_process_one_content($databox, $row);
+            $this->postProcessOneContent($databox, $row);
 
             // $this->check_memory_usage();
             $current_memory = memory_get_usage();
@@ -182,7 +182,6 @@ abstract class task_databoxAbstract extends task_abstract
                 $ret = self::STATE_MAXMEGSREACHED;
             }
 
-            // $this->check_records_done();
             if ($this->records_done >= (int) ($this->maxrecs)) {
                 $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
                 $this->running = FALSE;
@@ -191,7 +190,7 @@ abstract class task_databoxAbstract extends task_abstract
 
             // $this->check_task_status();
             try {
-                $status = $this->get_status();
+                $status = $this->getState();
                 // printf("%s (%d) status=%s \n", __FILE__, __LINE__, var_export($status, true));
                 if ($status == self::STATUS_TOSTOP) {
                     $this->running = FALSE;
@@ -219,7 +218,6 @@ abstract class task_databoxAbstract extends task_abstract
                 $ret = self::STATE_MAXMEGSREACHED;
             }
 
-            // $this->check_records_done();
             if ($this->records_done >= (int) ($this->maxrecs)) {
                 $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
                 $this->running = FALSE;
@@ -228,7 +226,7 @@ abstract class task_databoxAbstract extends task_abstract
 
             // $this->check_task_status();
             try {
-                $status = $this->get_status();
+                $status = $this->getState();
                 // printf("%s (%d) status=%s \n", __FILE__, __LINE__, var_export($status, true));
                 if ($status == self::STATUS_TOSTOP) {
                     $this->running = FALSE;

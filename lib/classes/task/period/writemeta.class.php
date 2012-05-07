@@ -23,6 +23,7 @@ use PHPExiftool\Writer;
 class task_period_writemeta extends task_databoxAbstract
 {
     protected $clear_doc;
+
     protected $metasubdefs = array();
 
     function help()
@@ -30,12 +31,10 @@ class task_period_writemeta extends task_databoxAbstract
         return(_("task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)"));
     }
 
-    protected function load_settings(SimpleXMLElement $sx_task_settings)
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->clear_doc = p4field::isyes($sx_task_settings->cleardoc);
-        parent::load_settings($sx_task_settings);
-
-        return $this;
+        parent::loadSettings($sx_task_settings);
     }
 
     public function getName()
@@ -118,7 +117,6 @@ class task_period_writemeta extends task_databoxAbstract
             <?php echo $form ?>.maxmegs.value       = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
             </script>
             <?php
-
             return("");
         }
         else { // ... so we NEVER come here
@@ -212,7 +210,7 @@ class task_period_writemeta extends task_databoxAbstract
         return $out;
     }
 
-    protected function retrieve_sbas_content(databox $databox)
+    protected function retrieveSbasContent(databox $databox)
     {
         $connbas = $databox->get_connection();
         $subdefgroups = $databox->get_subdef_structure();
@@ -239,7 +237,7 @@ class task_period_writemeta extends task_databoxAbstract
         return $rs;
     }
 
-    protected function process_one_content(databox $databox, Array $row)
+    protected function processOneContent(databox $databox, Array $row)
     {
         $record_id = $row['record_id'];
         $jeton = $row['jeton'];
@@ -327,12 +325,12 @@ class task_period_writemeta extends task_databoxAbstract
         return $this;
     }
 
-    protected function flush_records_sbas()
+    protected function flushRecordsSbas()
     {
         return $this;
     }
 
-    protected function post_process_one_content(databox $databox, Array $row)
+    protected function postProcessOneContent(databox $databox, Array $row)
     {
         $connbas = $databox->get_connection();
 

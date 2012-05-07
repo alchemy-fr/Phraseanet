@@ -19,7 +19,7 @@ class module_console_schedulerStateTest extends PHPUnit_Framework_TestCase
         $commandTester->execute(array('command' => $command->getName()));
 
         $task_manager = new task_manager(appbox::get_instance(\bootstrap::getCore()));
-        $state = $task_manager->get_scheduler_state();
+        $state = $task_manager->getSchedulerState();
 
         $sentence = sprintf('Scheduler is %s', $state['status']);
         $this->assertTrue(strpos($commandTester->getDisplay(), $sentence) !== false);

@@ -36,7 +36,7 @@ phrasea::headers();
         <link type="text/css" rel="stylesheet" href="/include/minify/f=skins/common/main.css,skins/admin/admincolor.css" />
         <?php
         $task_manager = new task_manager($appbox);
-        $ztask = $task_manager->get_task($parm['__tid']);
+        $ztask = $task_manager->getTask($parm['__tid']);
         switch ($parm['__act']) {
             case 'FORM2XML':
                 if (method_exists($ztask, 'printInterfaceHTML')) {
@@ -117,11 +117,11 @@ phrasea::headers();
             }
             $task_manager = new task_manager($appbox);
             $tid = $parm['__tid'];
-            $task = $task_manager->get_task($tid);
+            $task = $task_manager->getTask($tid);
 
-            $task->set_active($parm['__tactive']);
-            $task->set_title($parm['__tname']);
-            $task->set_settings($parm['txtareaxml']);
+            $task->setActive($parm['__tactive']);
+            $task->setTitle($parm['__tname']);
+            $task->setSettings($parm['txtareaxml']);
             ?>
                     <script type="text/javascript">
                         parent.document.getElementById("taskid").innerHTML = "id : <?php echo $tid ?>";

@@ -363,7 +363,7 @@ class task_period_archive extends task_abstract
                     $conn = connection::getPDOConnection();
                 } catch (Exception $e) {
                     $this->log($e->getMessage());
-                    if ($this->get_runner() == self::RUNNER_SCHEDULER) {
+                    if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
                         for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
@@ -381,28 +381,28 @@ class task_period_archive extends task_abstract
 
                 $path_in = (string) ($this->sxTaskSettings->hotfolder);
                 if ( ! @is_dir($path_in)) {
-                    if ($this->get_runner() == self::RUNNER_SCHEDULER) {
+                    if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(sprintf(('Warning : missing hotfolder \'%s\', restarting in 10 min.'), $path_in));
 
                         for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
                             sleep(1);
-                        $this->set_status(self::STATUS_TORESTART);
+                        $this->setState(self::STATUS_TORESTART);
                     } else {
                         $this->log(sprintf(('Error : missing hotfolder \'%s\', stopping.'), $path_in));
                         // runner = manual : can't restart so simply quit
-                        $this->set_status(self::STATUS_STOPPED);
+                        $this->setState(self::STATUS_STOPPED);
                     }
                     $this->running = FALSE;
                     return;
                 }
 
-                $this->set_last_exec_time();
+                $this->setLastExecTime();
 
                 $row = NULL;
                 try {
                     $sql = "SELECT * FROM task2 WHERE task_id = :task_id";
                     $stmt = $conn->prepare($sql);
-                    $stmt->execute(array(':task_id' => $this->get_task_id()));
+                    $stmt->execute(array(':task_id' => $this->getID()));
                     $row = $stmt->fetch(PDO::FETCH_ASSOC);
                     $stmt->closeCursor();
                     if ($row && $this->sxTaskSettings = @simplexml_load_string($row['settings'])) {
@@ -418,19 +418,19 @@ class task_period_archive extends task_abstract
                             $cold = 60;
                     }
                     else {
-                        throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->get_task_id()));
+                        throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->getID()));
                     }
                 } catch (Exception $e) {
-                    if ($this->get_runner() == self::RUNNER_SCHEDULER) {
-                        $this->log(sprintf(('Warning : error fetching or reading settings of the task \'%d\', restarting in 10 min.'), $this->get_task_id()));
+                    if ($this->getRunner() == self::RUNNER_SCHEDULER) {
+                        $this->log(sprintf(('Warning : error fetching or reading settings of the task \'%d\', restarting in 10 min.'), $this->getID()));
 
                         for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
                             sleep(1);
-                        $this->set_status(self::STATUS_TORESTART);
+                        $this->setState(self::STATUS_TORESTART);
                     } else {
-                        $this->log(sprintf(('Error : error fetching task \'%d\', stopping.'), $this->get_task_id()));
+                        $this->log(sprintf(('Error : error fetching task \'%d\', stopping.'), $this->getID()));
                         // runner = manual : can't restart so simply quit
-                        $this->set_status(self::STATUS_STOPPED);
+                        $this->setState(self::STATUS_STOPPED);
                     }
                     $this->running = FALSE;
                     return;
@@ -449,15 +449,15 @@ class task_period_archive extends task_abstract
 
                 switch ($r) {
                     case 'TOSTOP':
-                        $this->set_status(self::STATUS_STOPPED);
+                        $this->setState(self::STATUS_STOPPED);
                         $this->running = FALSE;
                         break;
                     case 'WAIT':
-                        $this->set_status(self::STATUS_STOPPED);
+                        $this->setState(self::STATUS_STOPPED);
                         $this->running = FALSE;
                         break;
                     case 'BAD':
-                        $this->set_status(self::STATUS_STOPPED);
+                        $this->setState(self::STATUS_STOPPED);
                         $this->running = FALSE;
                         break;
                     case 'NORECSTODO':
@@ -472,9 +472,9 @@ class task_period_archive extends task_abstract
                               sleep(5);
                              */
                             for ($i = 0; $i < (($period + $cold) - $duration) && $this->running; $i ++ ) {
-                                $s = $this->get_status();
+                                $s = $this->getState();
                                 if ($s == self::STATUS_TOSTOP) {
-                                    $this->set_status(self::STATUS_STOPPED);
+                                    $this->setState(self::STATUS_STOPPED);
                                     $this->running = FALSE;
                                 } else {
 
@@ -489,14 +489,14 @@ class task_period_archive extends task_abstract
                     case 'MAXRECSDONE':
                     case 'MAXMEMORY':
                     case 'MAXLOOP':
-                        if ($row['status'] == self::STATUS_STARTED && $this->get_runner() !== self::RUNNER_MANUAL) {
-                            $this->set_status(self::STATUS_TORESTART);
+                        if ($row['status'] == self::STATUS_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
+                            $this->setState(self::STATUS_TORESTART);
                             $this->running = FALSE;
                         }
                         break;
                     default:
                         if ($row['status'] == self::STATUS_STARTED) {
-                            $this->set_status(self::STATUS_STOPPED);
+                            $this->setState(self::STATUS_STOPPED);
                             $this->running = FALSE;
                         }
                         break;
@@ -569,7 +569,7 @@ class task_period_archive extends task_abstract
             $cold = 60;
 
         while ($cold > 0) {
-            $s = $this->get_status();
+            $s = $this->getState();
             if ($s == self::STATUS_TOSTOP)
                 return('TOSTOP');
             sleep(2);
@@ -723,7 +723,7 @@ class task_period_archive extends task_abstract
             $time0 = time();
             while (($file = $listFolder->read()) !== NULL) {
                 if (time() - $time0 >= 2) { // each 2 secs, check the status of the task
-                    $s = $this->get_status();
+                    $s = $this->getState();
                     if ($s == self::STATUS_TOSTOP) {
                         $nnew = 'TOSTOP'; // since we will return a string...
                         break;    // ...we can check it against numerical result

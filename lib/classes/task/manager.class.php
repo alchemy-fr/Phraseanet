@@ -22,6 +22,7 @@ class task_manager
     const STATUS_SCHED_TOSTOP = 'tostop';
 
     protected $appbox;
+
     protected $tasks;
 
     public function __construct(appbox &$appbox)
@@ -31,35 +32,7 @@ class task_manager
         return $this;
     }
 
-    public function old_get_tasks($refresh = false)
-    {
-        if ($this->tasks && ! $refresh)
-            return $this->tasks;
-        $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $tasks = array();
-
-        foreach ($rs as $row) {
-            $classname = $row['class'];
-            if ( ! class_exists($classname))
-                continue;
-            try {
-                $tasks[$row['task_id']] = new $classname($row['task_id']);
-            } catch (Exception $e) {
-
-            }
-        }
-
-        $this->tasks = $tasks;
-
-        return $this->tasks;
-    }
-
-    public function get_tasks($refresh = false)
+    public function getTasks($refresh = false)
     {
         if ($this->tasks && ! $refresh)
             return $this->tasks;
@@ -109,12 +82,12 @@ class task_manager
 
     /**
      *
-     * @param <type> $task_id
+     * @param int $task_id
      * @return task_abstract
      */
-    public function get_task($task_id)
+    public function getTask($task_id)
     {
-        $tasks = $this->get_tasks();
+        $tasks = $this->getTasks();
 
         if ( ! isset($tasks[$task_id])) {
             throw new Exception_NotFound('Unknown task_id');
@@ -123,7 +96,7 @@ class task_manager
         return $tasks[$task_id];
     }
 
-    public function set_sched_status($status)
+    public function setSchedulerState($status)
     {
         $av_status = array(
             self::STATUS_SCHED_STARTED
@@ -143,7 +116,7 @@ class task_manager
         return $this;
     }
 
-    public function get_scheduler_state()
+    public function getSchedulerState()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
 

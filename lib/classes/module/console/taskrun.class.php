@@ -61,7 +61,7 @@ class module_console_taskrun extends Command
         if ($this->task) {
             $this->task->log(sprintf("signal %s received", $signo));
             if ($signo == SIGTERM)
-                $this->task->set_running(false);
+                $this->task->setRunning(false);
         }
     }
 
@@ -78,11 +78,10 @@ class module_console_taskrun extends Command
 
         $appbox = \appbox::get_instance(\bootstrap::getCore());
         $task_manager = new task_manager($appbox);
-        $this->task = $task_manager->get_task($task_id);
+        $this->task = $task_manager->getTask($task_id);
 
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
-            $schedStatus = $task_manager->get_scheduler_state();
-// printf("%s (%d) schedStatus=%s \n", __FILE__, __LINE__, var_export($schedStatus, true));
+            $schedStatus = $task_manager->getSchedulerState();
 
             if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid'])
                 $this->shedulerPID = $schedStatus['pid'];
@@ -90,7 +89,7 @@ class module_console_taskrun extends Command
         }
         else {
             $runner = task_abstract::RUNNER_SCHEDULER;
-            $schedStatus = $task_manager->get_scheduler_state();
+            $schedStatus = $task_manager->getSchedulerState();
             if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid'])
                 $this->shedulerPID = $schedStatus['pid'];
         }
@@ -102,7 +101,6 @@ class module_console_taskrun extends Command
 
         try {
             $this->task->run($runner, $input, $output);
-//		$this->task->log(sprintf("%s [%d] taskrun : returned from 'run()', get_status()=%s \n", __FILE__, __LINE__, $this->task->get_status()));
         } catch (Exception $e) {
             $this->task->log(sprintf("taskrun : exception from 'run()', %s \n", $e->getMessage()));
             return($e->getCode());
@@ -122,13 +120,12 @@ class module_console_taskrun extends Command
         }
 
         if (time() - $start > 0) {
-// printf("%s (%d) : tick\n", __FILE__, __LINE__);
             if ($this->shedulerPID) {
                 if ( ! posix_kill($this->shedulerPID, 0)) {
                     if (method_exists($this->task, 'signal'))
                         $this->task->signal('SIGNAL_SCHEDULER_DIED');
                     else
-                        $this->task->set_status(task_abstract::STATUS_TOSTOP);
+                        $this->task->setState(task_abstract::STATUS_TOSTOP);
                 }
 
 

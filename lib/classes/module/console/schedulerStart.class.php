@@ -53,7 +53,7 @@ class module_console_schedulerStart extends Command
         return $this;
     }
 
-    public function execute(InputInterface $zinput, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         if ( ! setup::is_installed()) {
             $output->writeln('Phraseanet is not set up');
@@ -65,8 +65,9 @@ class module_console_schedulerStart extends Command
 
         try {
             $scheduler = new task_Scheduler();
-            $scheduler->run($zinput, $output);
+            $scheduler->run($input, $output);
         } catch (\Exception $e) {
+
             return $e->getCode();
         }
     }

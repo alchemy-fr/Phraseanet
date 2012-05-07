@@ -36,7 +36,7 @@ $task_manager = new task_manager($appbox);
 $refresh_tasklist = false;
 if ($parm["act"] == "DELETETASK") {
     try {
-        $task = $task_manager->get_task($parm['tid']);
+        $task = $task_manager->getTask($parm['tid']);
         $task->delete();
         $refresh_tasklist = true;
     } catch (Exception $e) {
@@ -190,170 +190,170 @@ foreach ($tasks as $t) {
     printf("      }%s\n",  -- $ntasks ? ',' : '');
 }
 ?>
-                ];
+            ];
 
 
-                $('#newTaskButton').contextMenu(
-                menuNewTask,
+            $('#newTaskButton').contextMenu(
+            menuNewTask,
+            {
+                //            theme:'vista'
+            }
+        );
+
+
+            $('.dropdown.scheduler').contextMenu(
+            [
                 {
-                    //            theme:'vista'
-                }
-            );
-
-
-                $('.dropdown.scheduler').contextMenu(
-                [
-                    {
-                        'Start':
-                            {
-                            onclick:function(menuItem,menu) { doMenuSched('start'); },
-                            title:'Demarrer le TaskManager'
-                        }
-                    },
-                    {
-                        'Stop':
-                            {
-                            onclick:function(menuItem,menu) { doMenuSched('stop'); },
-                            title:'Arreter le TaskManager'
-                        }
-                    },
-                    $.contextMenu.separator,
-                    {
-                        'Show log':
-                            {
-                            onclick:function(menuItem,menu) { doMenuSched('log'); },
-                            title:'Afficher les logs'
-                        }
-                    },
-                    {
-                        'Preferences':
-                            {
-                            onclick:function(menuItem,menu) { doMenuSched('preferences'); },
-                            title:'Scheduler preferences'
-                        }
+                    'Start':
+                        {
+                        onclick:function(menuItem,menu) { doMenuSched('start'); },
+                        title:'Demarrer le TaskManager'
                     }
-                ]
-                ,
+                },
                 {
-                    // theme:'vista',
-                    optionsIdx:{'start':0, 'stop':1},
-                    doclick:function(item)
-                    {
-                        console.log(item);
-                    },
-                    beforeShow:function()
-                    {
-                        if(!retPing)
-                            return;
-                        if(retPing.scheduler && retPing.scheduler.pid)
+                    'Stop':
                         {
+                        onclick:function(menuItem,menu) { doMenuSched('stop'); },
+                        title:'Arreter le TaskManager'
+                    }
+                },
+                $.contextMenu.separator,
+                {
+                    'Show log':
+                        {
+                        onclick:function(menuItem,menu) { doMenuSched('log'); },
+                        title:'Afficher les logs'
+                    }
+                },
+                {
+                    'Preferences':
+                        {
+                        onclick:function(menuItem,menu) { doMenuSched('preferences'); },
+                        title:'Scheduler preferences'
+                    }
+                }
+            ]
+            ,
+            {
+                // theme:'vista',
+                optionsIdx:{'start':0, 'stop':1},
+                doclick:function(item)
+                {
+                    console.log(item);
+                },
+                beforeShow:function()
+                {
+                    if(!retPing)
+                        return;
+                    if(retPing.scheduler && retPing.scheduler.pid)
+                    {
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
+                    }
+                    else
+                    {
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
+                    }
+                }
+            }
+        );
+
+
+
+            $('.task_manager .dropdown.task').contextMenu(
+            [
+                {
+                    'Edit':
+                        {
+                        onclick:function(menuItem,menu) { doMenuTask($(this), 'edit'); },
+                        title:'Modifier cette tache'
+                    }
+                },
+                {
+                    'Start':
+                        {
+                        onclick:function(menuItem,menu) { doMenuTask($(this), 'start'); },
+                        title:'Demarrer cette tache'
+                    }
+                },
+                {
+                    'Stop':
+                        {
+                        onclick:function(menuItem,menu) { doMenuTask($(this), 'stop'); },
+                        title:'Arreter cette tache'
+                    }
+                },
+                {
+                    'Delete':
+                        {
+                        onclick:function(menuItem,menu) { doMenuTask($(this), 'delete'); },
+                        title:'Supprimer cette tache'
+                    }
+                },
+                $.contextMenu.separator,
+                {
+                    'Show log':
+                        {
+                        onclick:function(menuItem,menu) { doMenuTask($(this), 'log'); },
+                        title:'Afficher les logs'
+                    }
+                }
+            ],
+            {
+                optionsIdx:{'edit':0, 'start':1, 'stop':2, 'delete':3, 'log':5},
+                doclick:function()
+                {
+
+                },
+                beforeShow:function()
+                {
+                    var tid = $($(this)[0].target).parent().attr('id').split('_').pop();
+
+                    if(!retPing || !retPing.tasks[tid])
+                        return;
+
+                    if(retPing.tasks[tid].pid)
+                    {
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').addClass("context-menu-item-disabled");
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').addClass("context-menu-item-disabled");
+                    }
+                    else
+                    {
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').removeClass("context-menu-item-disabled");
+
+                        if(retPing.tasks[tid].status == 'started')
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
-                        }
                         else
-                        {
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
+
+                        $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').removeClass("context-menu-item-disabled");
+                        if(retPing.scheduler && retPing.scheduler.pid)
                             $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
-                        }
-                    }
-                }
-            );
-
-
-
-                $('.task_manager .dropdown.task').contextMenu(
-                [
-                    {
-                        'Edit':
-                            {
-                            onclick:function(menuItem,menu) { doMenuTask($(this), 'edit'); },
-                            title:'Modifier cette tache'
-                        }
-                    },
-                    {
-                        'Start':
-                            {
-                            onclick:function(menuItem,menu) { doMenuTask($(this), 'start'); },
-                            title:'Demarrer cette tache'
-                        }
-                    },
-                    {
-                        'Stop':
-                            {
-                            onclick:function(menuItem,menu) { doMenuTask($(this), 'stop'); },
-                            title:'Arreter cette tache'
-                        }
-                    },
-                    {
-                        'Delete':
-                            {
-                            onclick:function(menuItem,menu) { doMenuTask($(this), 'delete'); },
-                            title:'Supprimer cette tache'
-                        }
-                    },
-                    $.contextMenu.separator,
-                    {
-                        'Show log':
-                            {
-                            onclick:function(menuItem,menu) { doMenuTask($(this), 'log'); },
-                            title:'Afficher les logs'
-                        }
-                    }
-                ],
-                {
-                    optionsIdx:{'edit':0, 'start':1, 'stop':2, 'delete':3, 'log':5},
-                    doclick:function()
-                    {
-
-                    },
-                    beforeShow:function()
-                    {
-                        var tid = $($(this)[0].target).parent().attr('id').split('_').pop();
-
-                        if(!retPing || !retPing.tasks[tid])
-                            return;
-
-                        if(retPing.tasks[tid].pid)
-                        {
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').addClass("context-menu-item-disabled");
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').addClass("context-menu-item-disabled");
-                        }
                         else
-                        {
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['edit']+')').removeClass("context-menu-item-disabled");
-
-                            if(retPing.tasks[tid].status == 'started')
-                                $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').removeClass("context-menu-item-disabled");
-                            else
-                                $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['stop']+')').addClass("context-menu-item-disabled");
-
-                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['delete']+')').removeClass("context-menu-item-disabled");
-                            if(retPing.scheduler && retPing.scheduler.pid)
-                                $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').removeClass("context-menu-item-disabled");
-                            else
-                                $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
-                        }
-
+                            $(this.menu).find('.context-menu-item:eq('+this.optionsIdx['start']+')').addClass("context-menu-item-disabled");
                     }
+
                 }
-            );
+            }
+        );
 
 
-                self.setTimeout("pingScheduler(true);", 100); // true : loop forever each 2 sec
-            })
+            self.setTimeout("pingScheduler(true);", 100); // true : loop forever each 2 sec
+        })
         </script>
     </head>
     <body>
 
 
-<?php ?>
+        <?php ?>
         <iframe id="zsched" src="about:blank" style="position:absolute; top:0px; left:0px; width:50px; height:50px; visibility:hidden"></iframe>
 
         <h1><?php echo _('admin::tasks: planificateur de taches') ?>
             <span style="font-size:12px;">
-<?php echo sprintf(_('Last update at %s.'), '<span id="pingTime"></span>'); ?>
+                <?php echo sprintf(_('Last update at %s.'), '<span id="pingTime"></span>'); ?>
             </span>
         </h1>
 
@@ -381,12 +381,12 @@ foreach ($tasks as $t) {
                     <td>&nbsp;</td>
                     <td style="font-weight:900" class="taskname">TaskManager</td>
                 </tr>
-<?php
-$n = 0;
-foreach ($task_manager->get_tasks($refresh_tasklist) as $task) {
-    $n ++;
-    $tid = $task->get_task_id()
-    ?>
+                <?php
+                $n = 0;
+                foreach ($task_manager->getTasks($refresh_tasklist) as $task) {
+                    $n ++;
+                    $tid = $task->getID()
+                    ?>
                     <tr id="TR_<?php echo $tid ?>" class="task <?php echo $n % 2 == 0 ? 'even' : 'odd' ?>">
                         <td class="dropdown task">
                             <img src="/skins/admin/dropdown.png"/>
@@ -403,11 +403,11 @@ foreach ($task_manager->get_tasks($refresh_tasklist) as $task) {
                                 </div>
                             </div>
                         </td>
-                        <td class="taskname"><?php echo p4string::MakeString($task->get_title()) ?> [<?php echo p4string::MakeString($task::getName()) ?>]</td>
+                        <td class="taskname"><?php echo p4string::MakeString($task->getTitle()) ?> [<?php echo p4string::MakeString($task::getName()) ?>]</td>
                     </tr>
-    <?php
-}
-?>
+                    <?php
+                }
+                ?>
             </tbody>
             <tfoot>
                 <tr>
@@ -415,7 +415,7 @@ foreach ($task_manager->get_tasks($refresh_tasklist) as $task) {
                         <img id="newTaskButton" src="/skins/admin/dropdown.png"/>
                     </td>
                     <td colspan="6">
-<?php echo _('admin::tasks: Nouvelle tache') ?>
+                        <?php echo _('admin::tasks: Nouvelle tache') ?>
                     </td>
                 </tr>
             </tfoot>
@@ -426,7 +426,7 @@ foreach ($task_manager->get_tasks($refresh_tasklist) as $task) {
           <a id="newTaskButton" href="#"><?php echo _('admin::tasks: Nouvelle tache') ?></a>
         -->
 
-                        <?php ?>
+        <?php ?>
         <script type="text/javascript">
 
                 function editTask(tid)
@@ -487,148 +487,6 @@ foreach ($task_manager->get_tasks($refresh_tasklist) as $task) {
                         document.forms["taskManager"].submit();
                     }
                 }
-                /*
-                function old_pingScheduler()
-                {
-                  $.ajax({
-                    url: '/admin/adminFeedback.php?action=PINGSCHEDULER',
-                    dataType:'xml',
-                    success: function(ret)
-                    {
-
-
-                      var ping= '', pingTime='', newStr='', statusping='', running='', qdelay;
-
-                      status = ret.documentElement.getAttribute("status"); // +'_'+ret.documentElement.getAttribute("ping");
-                      pingTime = ret.documentElement.getAttribute("time");
-                      locked = ret.documentElement.getAttribute("locked");
-                      qdelay = ret.documentElement.getAttribute("qdelay");
-                      schedpid = ret.documentElement.getAttribute("pid");
-
-                      T_task['SCHED'] = status+'_'+locked;
-
-                      $("#PID_SCHED").empty().append(schedpid);
-                      switch(status+'_'+locked)
-                      {
-                        case "stopped_0":  // normal
-
-                          $("#STATUSIMG_SCHED").attr("src", "/skins/icons/stop-alt.png").show();
-                          break;
-                        case "stopping_0":  // not normal (scheduler killed ?)
-                        case "started_0":
-                        case "tostop_0":
-                          $("#STATUSIMG_SCHED"+id).attr("src", "/skins/icons/alert.png").show();
-                          break;
-                        case "stopped_1":  // not normal (no database ?)
-
-                          $("#STATUSIMG_SCHED"+id).attr("src", "/skins/icons/alert.png").show();
-
-                          break;
-                        case "stopping_1":  // normal, wait
-                        case "tostop_1":
-
-                          $("#STATUSIMG_SCHED").attr("src", "/skins/icons/indicator.gif").show();
-
-                          break
-                        case "started_1":
-
-                          $("#STATUSIMG_SCHED").attr("src", "/skins/icons/up.png").show();
-
-                          break;
-                      }
-
-
-                      $("#pingTime").empty().append(pingTime);
-
-
-                      var t = ret.getElementsByTagName('task');
-                      for(var i=0; i<t.length; i++)
-                      {
-                        var id = t.item(i).getAttribute('id');
-                        var status  = t.item(i).getAttribute('status') + "_" + t.item(i).getAttribute('running');
-                        var active  = t.item(i).getAttribute('active');
-                        var pid     = t.item(i).getAttribute('pid');
-                        var completed = 0 | (t.item(i).getAttribute('completed'));
-                        var crashed   = 0 | (t.item(i).getAttribute('crashed'));
-                        var runner = t.item(i).getAttribute('runner');
-
-                        if(runner === 'manual')
-                          status = 'manual'+ "_" + t.item(i).getAttribute('running');;
-
-                        T_task[id] = status;
-                        switch(status)
-                        {
-                          case "stopped_0":  // normal
-                            $("#STATUSIMG_"+id).attr("src", "/skins/icons/stop-alt.png").show();
-                            break;
-                          case "started_0":
-                          case "stopping_0":
-                          case "manual_0":
-                          case "tostop_0":
-                          case "stopped_1":
-                          case "starting_1":
-                          case "tostart_1":
-                            $("#STATUSIMG_"+id).attr("src", "/skins/icons/alert.png").show();
-                            break;
-                          case "tostart_0":
-                          case "starting_0":
-                          case "stopping_1":
-                          case "tostop_1":
-                          case "torestart_0":
-                          case "torestart_1":
-                            $("#STATUSIMG_"+id).attr("src", "/skins/icons/indicator.gif").show();
-                            break;
-                          case "manual_1":
-                            $("#STATUSIMG_"+id).attr("src", "/skins/icons/public.png").show();
-                            break;
-                          case "started_1":
-                            $("#STATUSIMG_"+id).attr("src", "/skins/icons/up.png").show();
-                            break;
-                        }
-
-
-
-                        if(o = document.getElementById("COMP_"+id))
-                        {
-                          //if(completed >=0)
-                          //  o.innerHTML = completed + "%";
-                          //else
-                          //  o.innerHTML = '&nbsp;';
-                          if(completed >=0)
-                          {
-                            document.getElementById("COMP_"+id).style.width = completed + "%";
-                            document.getElementById("COMPBOX_"+id).style.visibility = "visible";
-                          }
-                          else
-                          {
-                            document.getElementById("COMPBOX_"+id).style.visibility = "hidden";
-                            document.getElementById("COMP_"+id).style.width = '0px';
-                          }
-                        }
-                        if(o = document.getElementById("PID_"+id))
-                        {
-                          if(pid != "")
-                            o.innerHTML = pid;
-                          else
-                            o.innerHTML = '&nbsp;';
-                        }
-                        if(o = document.getElementById("WARNING_"+id))
-                        {
-                          if(crashed > 0)
-                          {
-                            var str = "<?php echo p4string::MakeString(_('admin::tasks: Nombre de crashes : '), 'js', '"'); ?>"+crashed;
-                            o.setAttribute('alt', str);
-                          }
-                          o.style.display = crashed > 0 ? '':'none';
-                        }
-                      }
-
-                      self.setTimeout("pingScheduler();", 3000);
-                    }
-                  });
-                }
-                 */
-
 
                 function pingScheduler(repeat)
                 {

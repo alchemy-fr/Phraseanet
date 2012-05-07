@@ -47,10 +47,11 @@ class module_console_schedulerStop extends Command
         try {
             $appbox = appbox::get_instance(\bootstrap::getCore());
             $task_manager = new task_manager($appbox);
-            $task_manager->set_sched_status(task_manager::STATUS_SCHED_TOSTOP);
+            $task_manager->setSchedulerState(task_manager::STATUS_SCHED_TOSTOP);
 
             return 0;
         } catch (\Exception $e) {
+
             return 1;
         }
 

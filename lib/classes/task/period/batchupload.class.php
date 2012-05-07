@@ -28,21 +28,21 @@ class task_period_batchupload extends task_appboxAbstract
         return(("Hello I'm the batch upload process."));
     }
 
-    protected function retrieve_content(appbox $appbox)
+    protected function retrieveContent(appbox $appbox)
     {
         $conn = $appbox->get_connection();
 
-        $sql = 'UPDATE uplfile AS f INNER JOIN uplbatch AS u USING(uplbatch_id)
-            SET f.error="1", u.error="1"
-            WHERE u.error=0 AND u.base_id NOT IN(SELECT base_id FROM bas)';
+        $sql = 'UPDATE uplfile AS f INNER JOIN uplbatch AS u USING(uplbatch_id)'
+            . ' SET f.error="1", u.error="1"'
+            . ' WHERE u.error=0 AND u.base_id NOT IN(SELECT base_id FROM bas)';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $stmt->closeCursor();
 
-        $sql = 'SELECT uplbatch_id, sbas_id, server_coll_id, usr_id
-            FROM (uplbatch u INNER JOIN bas b USING(base_id))
-            WHERE complete="1" AND error="0" ORDER BY uplbatch_id';
+        $sql = 'SELECT uplbatch_id, sbas_id, server_coll_id, usr_id'
+            . ' FROM (uplbatch u INNER JOIN bas b USING(base_id))'
+            . ' WHERE complete="1" AND error="0" ORDER BY uplbatch_id';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -52,7 +52,7 @@ class task_period_batchupload extends task_appboxAbstract
         return $rs;
     }
 
-    protected function process_one_content(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, Array $row)
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $registry = $appbox->get_registry();
@@ -114,9 +114,9 @@ class task_period_batchupload extends task_appboxAbstract
         } catch (Exception $e) {
             $this->log($e->getMessage());
 
-            $sql = 'UPDATE uplfile AS f INNER JOIN uplbatch AS u USING(uplbatch_id)
-              SET f.error="1", u.error="1"
-              WHERE u.uplbatch_id = :batch_id';
+            $sql = 'UPDATE uplfile AS f INNER JOIN uplbatch AS u USING(uplbatch_id)'
+                . ' SET f.error="1", u.error="1"'
+                . ' WHERE u.uplbatch_id = :batch_id';
 
             $stmt = $conn->prepare($sql);
             $stmt->execute(array(':batch_id' => $batch_id));
@@ -124,10 +124,10 @@ class task_period_batchupload extends task_appboxAbstract
             $errors = '1';
         }
 
-        $sql = 'UPDATE uplbatch SET complete="2", error = :error
-            WHERE uplbatch_id = :batch_id';
+        $sql = 'UPDATE uplbatch SET complete="2", error = :error'
+            . ' WHERE uplbatch_id = :batch_id';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':error'    => $errors, ':batch_id' => $batch_id));
+        $stmt->execute(array(':error' => $errors, ':batch_id' => $batch_id));
         $stmt->closeCursor();
 
         $this->log(sprintf(('finishing batch %s'), $row['uplbatch_id']));
@@ -135,7 +135,7 @@ class task_period_batchupload extends task_appboxAbstract
         return $this;
     }
 
-    protected function post_process_one_content(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, Array $row)
     {
         return $this;
     }

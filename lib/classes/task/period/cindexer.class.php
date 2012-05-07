@@ -338,7 +338,7 @@ class task_period_cindexer extends task_abstract
      * @param SimpleXMLElement $sx_task_settings
      * @return task_cindexer
      */
-    protected function load_settings(SimpleXMLElement $sx_task_settings)
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->host = trim($sx_task_settings->host);
         $this->port = trim($sx_task_settings->port);
@@ -353,9 +353,7 @@ class task_period_cindexer extends task_abstract
         $this->winsvc_run = p4field::isyes(trim($sx_task_settings->winsvc_run));
         $this->binpath = p4string::addEndSlash(trim($sx_task_settings->binpath));
 
-        parent::load_settings($sx_task_settings);
-
-        return $this;
+        parent::loadSettings($sx_task_settings);
     }
 
     /**
@@ -383,7 +381,7 @@ class task_period_cindexer extends task_abstract
         }
 
         if ( ! file_exists($cmd) || ! is_executable($cmd)) {
-            $this->set_status(self::STATUS_STOPPED);
+            $this->setState(self::STATUS_STOPPED);
             $this->log(sprintf(_('task::cindexer:file \'%s\' does not exists'), $cmd));
             throw new Exception('cindexer executable not found', self::ERR_EXECUTABLE_NOT_FOUND);
             return;
@@ -433,7 +431,7 @@ class task_period_cindexer extends task_abstract
         }
 
         if ($this->new_status !== NULL)
-            $this->set_status($this->new_status);
+            $this->setState($this->new_status);
 
         if ($this->exception)
             throw $this->exception;
@@ -444,8 +442,8 @@ class task_period_cindexer extends task_abstract
         $nullfile = $this->system == 'WINDOWS' ? 'NUL' : '/dev/null';
 
         $descriptors = array();
-        //      $descriptors[1] = array("file", $logdir . "/phraseanet_indexer_" . $this->get_task_id() . ".log", "a+");
-        //      $descriptors[2] = array("file", $logdir . "/phraseanet_indexer_" . $this->get_task_id() . ".error.log", "a+");
+        //      $descriptors[1] = array("file", $logdir . "/phraseanet_indexer_" . $this->getID() . ".log", "a+");
+        //      $descriptors[2] = array("file", $logdir . "/phraseanet_indexer_" . $this->getID() . ".error.log", "a+");
         $descriptors[1] = array("file", $nullfile, "a+");
         $descriptors[2] = array("file", $nullfile, "a+");
 
@@ -467,7 +465,7 @@ class task_period_cindexer extends task_abstract
         $this->running = true;
 
         while ($this->running) {
-            if ($this->get_status() == self::STATUS_TOSTOP && $this->socket > 0) {
+            if ($this->getState() == self::STATUS_TOSTOP && $this->socket > 0) {
                 // must quit task, so send 'Q' to port 127.0.0.1:XXXX to cindexer
                 if ( ! $qsent && (($sock = socket_create(AF_INET, SOCK_STREAM, 0)) !== false)) {
                     if (socket_connect($sock, '127.0.0.1', $this->socket) === true) {
@@ -564,7 +562,7 @@ class task_period_cindexer extends task_abstract
                     }
                 }
 
-                if ($this->get_status() == self::STATUS_TOSTOP) {
+                if ($this->getState() == self::STATUS_TOSTOP) {
                     posix_kill($pid, ($sigsent = SIGINT));
                     sleep(2);
                 }

@@ -127,14 +127,14 @@ class task_Scheduler
         $task_manager = new task_manager($appbox);
 
         // set every 'auto-start' task to start
-        foreach ($task_manager->get_tasks() as $task) {
-            if ($task->is_active()) {
-                $tid = $task->get_task_id();
+        foreach ($task_manager->getTasks() as $task) {
+            if ($task->isActive()) {
+                $tid = $task->getID();
 
-                if ( ! $task->get_pid()) {
+                if ( ! $task->getPID()) {
                     /* @var $task task_abstract */
-                    $task->reset_crash_counter();
-                    $task->set_status(task_abstract::STATUS_TOSTART);
+                    $task->resetCrashCounter();
+                    $task->setState(task_abstract::STATUS_TOSTART);
                 }
             }
         }
@@ -224,13 +224,13 @@ class task_Scheduler
             foreach ($taskPoll as $tkey => $task)
                 $taskPoll[$tkey]["todel"] = true;
 
-            foreach ($task_manager->get_tasks(true) as $task) {
-                $tkey = "t_" . $task->get_task_id();
-                $status = $task->get_status();
+            foreach ($task_manager->getTasks(true) as $task) {
+                $tkey = "t_" . $task->getID();
+                $status = $task->getState();
 
-                logs::rotate($logdir . "task_t_" . $task->get_task_id() . ".log");
-                logs::rotate($logdir . "task_o_" . $task->get_task_id() . ".log");
-                logs::rotate($logdir . "task_e_" . $task->get_task_id() . ".log");
+                logs::rotate($logdir . "task_t_" . $task->getID() . ".log");
+                logs::rotate($logdir . "task_o_" . $task->getID() . ".log");
+                logs::rotate($logdir . "task_e_" . $task->getID() . ".log");
 
                 if ( ! isset($taskPoll[$tkey])) {
                     // the task is not in the poll, add it
@@ -238,7 +238,7 @@ class task_Scheduler
                     switch ($system) {
                         case "WINDOWS":
                             $cmd = $phpcli;
-                            $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->get_task_id(), '--runner=scheduler');
+                            $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->getID(), '--runner=scheduler');
                             if ($this->input && ($this->input->getOption('notasklog')))
                                 $args[] = 'notasklog';
                             break;
@@ -246,7 +246,7 @@ class task_Scheduler
                         case "DARWIN":
                         case "LINUX":
                             $cmd = $phpcli;
-                            $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->get_task_id(), '--runner=scheduler');
+                            $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->getID(), '--runner=scheduler');
                             if ($this->input && ($this->input->getOption('notasklog')))
                                 $args[] = 'notasklog';
                             break;
@@ -268,7 +268,7 @@ class task_Scheduler
                     $this->log(
                         sprintf(
                             "new Task %s, status=%s"
-                            , $taskPoll[$tkey]["task"]->get_task_id()
+                            , $taskPoll[$tkey]["task"]->getID()
                             , $status
                         )
                     );
@@ -278,7 +278,7 @@ class task_Scheduler
                         $this->log(
                             sprintf(
                                 "Task %s, oldstatus=%s, newstatus=%s"
-                                , $taskPoll[$tkey]["task"]->get_task_id()
+                                , $taskPoll[$tkey]["task"]->getID()
                                 , $taskPoll[$tkey]["current_status"]
                                 , $status
                             )
@@ -298,7 +298,7 @@ class task_Scheduler
             // remove not-existing task from poll
             foreach ($taskPoll as $tkey => $task) {
                 if ($task["todel"]) {
-                    $this->log(sprintf("Task %s deleted", $taskPoll[$tkey]["task"]->get_task_id()));
+                    $this->log(sprintf("Task %s deleted", $taskPoll[$tkey]["task"]->getID()));
                     unset($taskPoll[$tkey]);
                 }
             }
@@ -307,14 +307,14 @@ class task_Scheduler
             $runningtask = 0;
 
             foreach ($taskPoll as $tkey => $tv) {
-                $status = $tv['task']->get_status();
+                $status = $tv['task']->getState();
                 switch ($status) {
                     default:
                         $this->log(sprintf('Unknow status `%s`', $status));
                         break;
 
                     case task_abstract::STATUS_TORESTART:
-                        if ( ! $taskPoll[$tkey]['task']->get_pid()) {
+                        if ( ! $taskPoll[$tkey]['task']->getPID()) {
                             if ($this->method == self::METHOD_PROC_OPEN) {
                                 @fclose($taskPoll[$tkey]["pipes"][1]);
                                 @fclose($taskPoll[$tkey]["pipes"][2]);
@@ -323,7 +323,7 @@ class task_Scheduler
                                 $taskPoll[$tkey]["process"] = null;
                             }
                             if ($schedstatus == 'started') {
-                                $taskPoll[$tkey]["task"]->set_status(task_abstract::STATUS_TOSTART);
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_TOSTART);
                             }
                             // trick to start the task immediatly : DON'T break if ending with 'tostart'
                             // so it will continue with 'tostart' case !
@@ -340,8 +340,8 @@ class task_Scheduler
 
                         if ($this->method == self::METHOD_PROC_OPEN) {
                             if ( ! $taskPoll[$tkey]["process"]) {
-                                $descriptors[1] = array('file', $logdir . "task_o_" . $taskPoll[$tkey]['task']->get_task_id() . ".log", 'a+');
-                                $descriptors[2] = array('file', $logdir . "task_e_" . $taskPoll[$tkey]['task']->get_task_id() . ".log", 'a+');
+                                $descriptors[1] = array('file', $logdir . "task_o_" . $taskPoll[$tkey]['task']->getID() . ".log", 'a+');
+                                $descriptors[2] = array('file', $logdir . "task_e_" . $taskPoll[$tkey]['task']->getID() . ".log", 'a+');
 
                                 $taskPoll[$tkey]["process"] = proc_open(
                                     $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
@@ -356,18 +356,18 @@ class task_Scheduler
                                     sleep(2); // let the process lock and write it's pid
                                 }
 
-                                if (is_resource($taskPoll[$tkey]["process"]) && $taskPoll[$tkey]['task']->get_pid() !== null) {
+                                if (is_resource($taskPoll[$tkey]["process"]) && $taskPoll[$tkey]['task']->getPID() !== null) {
                                     $this->log(
                                         sprintf(
                                             "Task %s '%s' started (pid=%s)"
-                                            , $taskPoll[$tkey]['task']->get_task_id()
+                                            , $taskPoll[$tkey]['task']->getID()
                                             , $taskPoll[$tkey]["cmd"] . ' ' . implode(' ', $taskPoll[$tkey]["args"])
-                                            , $taskPoll[$tkey]['task']->get_pid()
+                                            , $taskPoll[$tkey]['task']->getPID()
                                         )
                                     );
                                     $runningtask ++;
                                 } else {
-                                    $taskPoll[$tkey]["task"]->increment_crash_counter();
+                                    $taskPoll[$tkey]["task"]->incrementCrashCounter();
 
                                     @fclose($taskPoll[$tkey]["pipes"][1]);
                                     @fclose($taskPoll[$tkey]["pipes"][2]);
@@ -377,16 +377,16 @@ class task_Scheduler
                                     $this->log(
                                         sprintf(
                                             "Task %s '%s' failed to start %d times"
-                                            , $taskPoll[$tkey]["task"]->get_task_id()
+                                            , $taskPoll[$tkey]["task"]->getID()
                                             , $taskPoll[$tkey]["cmd"]
-                                            , $taskPoll[$tkey]["task"]->get_crash_counter()
+                                            , $taskPoll[$tkey]["task"]->getCrashCounter()
                                         )
                                     );
 
-                                    if ($taskPoll[$tkey]["task"]->get_crash_counter() > 5)
-                                        $taskPoll[$tkey]["task"]->set_status(task_abstract::STATUS_STOPPED);
+                                    if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5)
+                                        $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_STOPPED);
                                     else
-                                        $taskPoll[$tkey]["task"]->set_status(task_abstract::STATUS_TOSTART);
+                                        $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_TOSTART);
                                 }
                             }
                         }
@@ -407,8 +407,8 @@ class task_Scheduler
                                 fclose(STDOUT);
                                 fclose(STDERR);
                                 $fdIN = fopen($nullfile, 'r');
-                                $fdOUT = fopen($logdir . "task_o_" . $taskPoll[$tkey]["task"]->get_task_id() . ".log", 'a+');
-                                $fdERR = fopen($logdir . "task_e_" . $taskPoll[$tkey]["task"]->get_task_id() . ".log", 'a+');
+                                $fdOUT = fopen($logdir . "task_o_" . $taskPoll[$tkey]["task"]->getID() . ".log", 'a+');
+                                $fdERR = fopen($logdir . "task_e_" . $taskPoll[$tkey]["task"]->getID() . ".log", 'a+');
 
                                 $this->log(sprintf("exec('%s %s')", $taskPoll[$tkey]["cmd"], implode(' ', $taskPoll[$tkey]["args"])));
                                 pcntl_exec($taskPoll[$tkey]["cmd"], $taskPoll[$tkey]["args"]);
@@ -445,7 +445,7 @@ class task_Scheduler
                             }
                         }
 
-                        if ( ! $crashed && ! $taskPoll[$tkey]['task']->get_pid()) {
+                        if ( ! $crashed && ! $taskPoll[$tkey]['task']->getPID()) {
                             // printf("=== %d ===\n", __LINE__);
                             $crashed = true;
                         }
@@ -456,7 +456,7 @@ class task_Scheduler
                         } else {
                             // printf("=== %d ===\n", __LINE__);
                             // crashed !
-                            $taskPoll[$tkey]["task"]->increment_crash_counter();
+                            $taskPoll[$tkey]["task"]->incrementCrashCounter();
 
                             if ($this->method == self::METHOD_PROC_OPEN) {
                                 @fclose($taskPoll[$tkey]["pipes"][1]);
@@ -467,15 +467,15 @@ class task_Scheduler
                             $this->log(
                                 sprintf(
                                     "Task %s crashed %d times"
-                                    , $taskPoll[$tkey]["task"]->get_task_id()
-                                    , $taskPoll[$tkey]["task"]->get_crash_counter()
+                                    , $taskPoll[$tkey]["task"]->getID()
+                                    , $taskPoll[$tkey]["task"]->getCrashCounter()
                                 )
                             );
 
-                            if ($taskPoll[$tkey]["task"]->get_crash_counter() > 5)
-                                $taskPoll[$tkey]["task"]->set_status(task_abstract::STATUS_STOPPED);
+                            if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5)
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_STOPPED);
                             else
-                                $taskPoll[$tkey]["task"]->set_status(task_abstract::STATUS_TOSTART);
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_TOSTART);
                         }
                         break;
 
@@ -484,7 +484,7 @@ class task_Scheduler
                         if ($taskPoll[$tkey]["killat"] === NULL)
                             $taskPoll[$tkey]["killat"] = time() + self::TASKDELAYTOQUIT;
 
-                        $pid = $taskPoll[$tkey]['task']->get_pid();
+                        $pid = $taskPoll[$tkey]['task']->getPID();
                         if ($pid) {
                             // send ctrl-c to tell the task to CLEAN quit
                             // (just in case the task doesn't pool his status 'tostop' fast enough)
@@ -494,7 +494,7 @@ class task_Scheduler
                                     $this->log(
                                         sprintf(
                                             "SIGTERM sent to task %s (pid=%s)"
-                                            , $taskPoll[$tkey]["task"]->get_task_id()
+                                            , $taskPoll[$tkey]["task"]->getID()
                                             , $pid
                                         )
                                     );
@@ -511,7 +511,7 @@ class task_Scheduler
                                     $this->log(
                                         sprintf(
                                             "proc_terminate(...) done on task %s (pid=%s)"
-                                            , $taskPoll[$tkey]["task"]->get_task_id()
+                                            , $taskPoll[$tkey]["task"]->getID()
                                             , $pid
                                         )
                                     );
@@ -520,23 +520,23 @@ class task_Scheduler
                                     $this->log(
                                         sprintf(
                                             "SIGKILL sent to task %s (pid=%s)"
-                                            , $taskPoll[$tkey]["task"]->get_task_id()
+                                            , $taskPoll[$tkey]["task"]->getID()
                                             , $pid
                                         )
                                     );
                                 }
                                 /*
-                                  unlink($lockdir . 'task_' . $taskPoll[$tkey]['task']->get_task_id() . '.lock');
+                                  unlink($lockdir . 'task_' . $taskPoll[$tkey]['task']->getID() . '.lock');
 
-                                  $taskPoll[$tkey]["task"]->increment_crash_counter();
+                                  $taskPoll[$tkey]["task"]->incrementCrashCounter();
                                   //                $taskPoll[$tkey]["task"]->set_pid(null);
-                                  $taskPoll[$tkey]["task"]->set_status(task_abstract::STATUS_STOPPED);
+                                  $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_STOPPED);
                                  */
                             } else {
                                 $this->log(
                                     sprintf(
                                         "waiting task %s to quit (kill in %d seconds)"
-                                        , $taskPoll[$tkey]["task"]->get_task_id()
+                                        , $taskPoll[$tkey]["task"]->getID()
                                         , $dt
                                     )
                                 );
@@ -546,10 +546,10 @@ class task_Scheduler
                             $this->log(
                                 sprintf(
                                     "task %s has quit"
-                                    , $taskPoll[$tkey]["task"]->get_task_id()
+                                    , $taskPoll[$tkey]["task"]->getID()
                                 )
                             );
-                            $taskPoll[$tkey]["task"]->set_status(task_abstract::STATUS_STOPPED);
+                            $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_STOPPED);
                         }
 
                         break;

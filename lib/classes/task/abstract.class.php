@@ -101,8 +101,17 @@ abstract class task_abstract
 
     protected $completed_percentage;
 
+    protected $period = 60;
 
-    public function get_status()
+    protected $taskid = NULL;
+
+    protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
+
+    protected $argt = array(
+        "--help" => array("set" => false, "values" => array(), "usage" => " (no help available)")
+    );
+
+    public function getState()
     {
         $conn = connection::getPDOConnection();
         $sql = 'SELECT status FROM task2 WHERE task_id = :taskid LIMIT 1';
@@ -130,7 +139,7 @@ abstract class task_abstract
         return false;
     }
 
-    public function set_status($status)
+    public function setState($status)
     {
         $av_status = array(
             self::STATUS_STARTED
@@ -149,19 +158,19 @@ abstract class task_abstract
 
         $sql = 'UPDATE task2 SET status = :status WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':status' => $status, ':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':status' => $status, ':taskid' => $this->getID()));
         $stmt->closeCursor();
-        $this->log(sprintf("task %d <- %s", $this->get_task_id(), $status));
+        $this->log(sprintf("task %d <- %s", $this->getID(), $status));
     }
 
     // 'active' means 'auto-start when scheduler starts'
-    public function set_active($boolean)
+    public function setActive($boolean)
     {
         $conn = connection::getPDOConnection();
 
         $sql = 'UPDATE task2 SET active = :active WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':active' => ($boolean ? '1' : '0'), ':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':active' => ($boolean ? '1' : '0'), ':taskid' => $this->getID()));
         $stmt->closeCursor();
 
         $this->active = ! ! $boolean;
@@ -169,14 +178,14 @@ abstract class task_abstract
         return $this;
     }
 
-    public function set_title($title)
+    public function setTitle($title)
     {
         $title = strip_tags($title);
         $conn = connection::getPDOConnection();
 
         $sql = 'UPDATE task2 SET name = :title WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':title' => $title, ':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':title' => $title, ':taskid' => $this->getID()));
         $stmt->closeCursor();
 
         $this->title = $title;
@@ -184,29 +193,27 @@ abstract class task_abstract
         return $this;
     }
 
-    public function set_settings($settings)
+    public function setSettings($settings)
     {
         $conn = connection::getPDOConnection();
 
         $sql = 'UPDATE task2 SET settings = :settings WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':settings' => $settings, ':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':settings' => $settings, ':taskid' => $this->getID()));
         $stmt->closeCursor();
 
         $this->settings = $settings;
 
-        $this->load_settings(simplexml_load_string($settings));
-
-        return $this;
+        $this->loadSettings(simplexml_load_string($settings));
     }
 
-    public function reset_crash_counter()
+    public function resetCrashCounter()
     {
         $conn = connection::getPDOConnection();
 
         $sql = 'UPDATE task2 SET crashed = 0 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':taskid' => $this->getID()));
         $stmt->closeCursor();
 
         $this->crash_counter = 0;
@@ -214,47 +221,38 @@ abstract class task_abstract
         return $this;
     }
 
-    public function get_crash_counter()
+    public function getCrashCounter()
     {
         return $this->crash_counter;
     }
 
-    public function increment_crash_counter()
+    public function incrementCrashCounter()
     {
         $conn = connection::getPDOConnection();
 
         $sql = 'UPDATE task2 SET crashed = crashed + 1 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':taskid' => $this->getID()));
         $stmt->closeCursor();
 
         return $this->crash_counter ++;
     }
 
-    public function get_settings()
+    public function getSettings()
     {
         return $this->settings;
     }
 
     // 'active' means 'auto-start when scheduler starts'
-    public function is_active()
+    public function isActive()
     {
         return $this->active;
     }
 
-    public function get_completed_percentage()
+    public function getCompletedPercentage()
     {
         return $this->completed_percentage;
     }
-    protected $period = 60;
-
-    protected $taskid = NULL;
-
-    protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
-
-    protected $argt = array(
-        "--help" => array("set" => false, "values" => array(), "usage" => " (no help available)")
-    );
 
     abstract public function getName();
 
@@ -297,7 +295,7 @@ abstract class task_abstract
         $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
               FROM task2 WHERE task_id = :taskid LIMIT 1';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':taskid' => $this->getID()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         if ( ! $row)
@@ -308,17 +306,15 @@ abstract class task_abstract
         $this->settings = $row['settings'];
         $this->runner = $row['runner'];
         $this->completed_percentage = (int) $row['completed'];
-        $this->load_settings(simplexml_load_string($row['settings']));
-
-        return $this;
+        $this->loadSettings(simplexml_load_string($row['settings']));
     }
 
-    public function get_runner()
+    public function getRunner()
     {
         return $this->runner;
     }
 
-    public function set_runner($runner)
+    public function setRunner($runner)
     {
         $this->runner = $runner;
 
@@ -326,55 +322,42 @@ abstract class task_abstract
         $sql = 'UPDATE task2 SET runner = :runner WHERE task_id = :taskid';
 
         $params = array(
-            ':taskid' => $this->get_task_id()
+            ':taskid' => $this->getID()
             , ':runner' => $this->runner
         );
 
         $stmt = $conn->prepare($sql);
         $stmt->execute($params);
         $stmt->closeCursor();
-
-        return $this;
     }
 
-    public function get_title()
+    public function getTitle()
     {
         return $this->title;
     }
 
     public function delete()
     {
-        if ( ! $this->get_pid()) { // do not delete a running task
+        if ( ! $this->getPID()) { // do not delete a running task
             $conn = connection::getPDOConnection();
             $registry = registry::get_instance();
             $sql = "DELETE FROM task2 WHERE task_id = :task_id";
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':task_id' => $this->get_task_id()));
+            $stmt->execute(array(':task_id' => $this->getID()));
             $stmt->closeCursor();
 
-            $lock_file = $registry->get('GV_RootPath') . 'tmp/locks/task_' . $this->get_task_id() . '.lock';
+            $lock_file = $registry->get('GV_RootPath') . 'tmp/locks/task_' . $this->getID() . '.lock';
             @unlink($lock_file);
         }
     }
 
-    protected function check_records_done()
-    {
-        if ($this->records_done >= (int) ($this->maxrecs)) {
-            $this->current_state = self::STATE_MAXRECSDONE;
-        }
-
-        return $this;
-    }
-
-    public function set_last_exec_time()
+    public function setLastExecTime()
     {
         $conn = connection::getPDOConnection();
         $sql = 'UPDATE task2 SET last_exec_time=NOW() WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':taskid' => $this->getID()));
         $stmt->closeCursor();
-
-        return $this;
     }
 
     /**
@@ -393,10 +376,10 @@ abstract class task_abstract
         return isset($row['last_exec_time']) ? $row['last_exec_time'] : '';
     }
 
-    public function get_pid()
+    public function getPID()
     {
         $pid = NULL;
-        $taskid = $this->get_task_id();
+        $taskid = $this->getID();
 
         $registry = registry::get_instance();
         system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
@@ -414,7 +397,7 @@ abstract class task_abstract
         return $pid;
     }
 
-    public function set_running($stat)
+    public function setRunning($stat)
     {
         $this->running = $stat;
     }
@@ -429,9 +412,9 @@ abstract class task_abstract
                 //       $conn->close();
                 //      unset($conn);
                 for ($t = $this->period - $when_started; $this->running && $t > 0; $t -- ) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
-                    $s = $this->get_status();
+                    $s = $this->getState();
                     if ($s == self::STATUS_TOSTOP) {
-                        $this->set_status(self::STATUS_STOPPED);
+                        $this->setState(self::STATUS_STOPPED);
                         $this->running = FALSE;
                     } else {
                         sleep(1);
@@ -446,7 +429,7 @@ abstract class task_abstract
         $this->input = $input;
         $this->output = $output;
 
-        $taskid = $this->get_task_id();
+        $taskid = $this->getID();
         $conn = connection::getPDOConnection();
 
         $registry = registry::get_instance();
@@ -472,8 +455,8 @@ abstract class task_abstract
         flock($tasklock, LOCK_UN);
         flock($tasklock, LOCK_SH);
 
-        $this->set_runner($runner);
-        $this->set_status(self::STATUS_STARTED);
+        $this->setRunner($runner);
+        $this->setState(self::STATUS_STARTED);
 
         // run the real code of the task -into the task's class- (may throw an exception)
         $exception = NULL;
@@ -489,12 +472,12 @@ abstract class task_abstract
         fclose($tasklock);
         @unlink($lockfile);
 
-        switch ($this->get_status()) {
+        switch ($this->getState()) {
             case self::STATUS_TODELETE:
                 $this->delete();
                 break;
             case self::STATUS_TOSTOP:
-                $this->set_status(self::STATUS_STOPPED);
+                $this->setState(self::STATUS_STOPPED);
                 break;
         }
 
@@ -505,7 +488,7 @@ abstract class task_abstract
 
     abstract protected function run2();
 
-    protected function load_settings(SimpleXMLElement $sx_task_settings)
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->period = (int) $sx_task_settings->period;
         if ($this->period <= 0 || $this->period >= 60 * 60)
@@ -520,21 +503,17 @@ abstract class task_abstract
         $this->record_buffer_size = (int) $sx_task_settings->flush;
         if ($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100)
             $this->record_buffer_size = 10;
-
-        return $this;
     }
 
-    protected function increment_loops()
+    protected function incrementLoops()
     {
-        if ($this->get_runner() == self::RUNNER_SCHEDULER && ++ $this->loop >= $this->maxloops) {
+        if ($this->getRunner() == self::RUNNER_SCHEDULER && ++ $this->loop >= $this->maxloops) {
             $this->log(sprintf(('%d loops done, restarting'), $this->loop));
-            $this->set_status(self::STATUS_TORESTART);
+            $this->setState(self::STATUS_TORESTART);
 //      $this->return_xxxvalue = self::RETURNSTATUS_TORESTART;
 
             $this->running = false;
         }
-
-        return $this;
     }
 
     function traceRam($msg='')
@@ -630,12 +609,8 @@ abstract class task_abstract
         return($t);
     }
 
-    public function get_argt()
-    {
-        return $this->argt;
-    }
 
-    public function get_task_id()
+    public function getID()
     {
         return $this->taskid;
     }
@@ -648,7 +623,7 @@ abstract class task_abstract
             $conn = connection::getPDOConnection();
             $sql = 'UPDATE task2 SET completed = :p WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':p' => $p, ':taskid' => $this->get_task_id()));
+            $stmt->execute(array(':p' => $p, ':taskid' => $this->getID()));
             $stmt->closeCursor();
             $this->completed_percentage = $p;
         } catch (Exception $e) {
