@@ -1,52 +1,48 @@
 <?php
 
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2012 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Entities;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- *
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
+ * Entities\LazaretSession
  */
-class UsrListEntry
+class LazaretSession
 {
     /**
      * @var integer $id
      */
-    protected $id;
+    private $id;
 
     /**
      * @var integer $usr_id
      */
-    protected $usr_id;
+    private $usr_id;
 
     /**
      * @var datetime $created
      */
-    protected $created;
+    private $created;
 
     /**
      * @var datetime $updated
      */
-    protected $updated;
+    private $updated;
 
     /**
-     * @var Entities\UsrList
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $list;
+    private $files;
 
+    public function __construct()
+    {
+        $this->files = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -57,16 +53,18 @@ class UsrListEntry
      * Set usr_id
      *
      * @param integer $usrId
+     * @return LazaretSession
      */
     public function setUsrId($usrId)
     {
         $this->usr_id = $usrId;
+        return $this;
     }
 
     /**
      * Get usr_id
      *
-     * @return integer
+     * @return integer 
      */
     public function getUsrId()
     {
@@ -77,16 +75,18 @@ class UsrListEntry
      * Set created
      *
      * @param datetime $created
+     * @return LazaretSession
      */
     public function setCreated($created)
     {
         $this->created = $created;
+        return $this;
     }
 
     /**
      * Get created
      *
-     * @return datetime
+     * @return datetime 
      */
     public function getCreated()
     {
@@ -97,16 +97,18 @@ class UsrListEntry
      * Set updated
      *
      * @param datetime $updated
+     * @return LazaretSession
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
+        return $this;
     }
 
     /**
      * Get updated
      *
-     * @return datetime
+     * @return datetime 
      */
     public function getUpdated()
     {
@@ -114,32 +116,36 @@ class UsrListEntry
     }
 
     /**
-     * Set list
+     * Add files
      *
-     * @param Entities\UsrList $list
+     * @param Entities\LazaretFiles $files
+     * @return LazaretSession
      */
-    public function setList(\Entities\UsrList $list)
+    public function addLazaretFiles(\Entities\LazaretFiles $files)
     {
-        $this->list = $list;
+        $this->files[] = $files;
+        return $this;
     }
 
     /**
-     * Get list
+     * Get files
      *
-     * @return Entities\UsrList
+     * @return Doctrine\Common\Collections\Collection 
      */
-    public function getList()
+    public function getFiles()
     {
-        return $this->list;
+        return $this->files;
     }
 
-    public function getUser()
+    /**
+     * Add files
+     *
+     * @param Entities\LazaretFile $files
+     * @return LazaretSession
+     */
+    public function addLazaretFile(\Entities\LazaretFile $files)
     {
-        return \User_Adapter::getInstance($this->getUsrId(), \appbox::get_instance(\bootstrap::getCore()));
-    }
-
-    public function setUser(\User_Adapter $user)
-    {
-        return $this->setUsrId($user->get_id());
+        $this->files[] = $files;
+        return $this;
     }
 }
