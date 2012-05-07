@@ -41,7 +41,7 @@ class task_period_upgradetov31 extends task_abstract
 
     protected function run2()
     {
-        printf("taskid %s starting." . PHP_EOL, $this->get_task_id());
+        printf("taskid %s starting." . PHP_EOL, $this->getID());
         // task can't be stopped here
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $conn = $appbox->get_connection();
@@ -84,7 +84,7 @@ class task_period_upgradetov31 extends task_abstract
                     $sql = 'UPDATE record SET uuid = :uuid WHERE record_id = :record_id';
 
                     $params = array(
-                        ':uuid'      => $uuid
+                        ':uuid' => $uuid
                         , ':record_id' => $row['record_id']
                     );
                     $stmt = $connbas->prepare($sql);
@@ -103,16 +103,16 @@ class task_period_upgradetov31 extends task_abstract
             if ($done == $todo) {
                 $sql = 'UPDATE task2 SET status="tostop" WHERE  task_id = :task_id';
                 $stmt = $conn->prepare($sql);
-                $stmt->execute(array(':task_id' => $this->get_task_id()));
+                $stmt->execute(array(':task_id' => $this->getID()));
                 $stmt->closeCursor();
 
                 $this->setProgress(0, 0);
                 $ret = 'todelete';
             }
 
-            $sql = "SELECT status FROM task2 WHERE status='tostop' AND task_id=" . $this->get_task_id();
+            $sql = "SELECT status FROM task2 WHERE status='tostop' AND task_id=" . $this->getID();
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':task_id' => $this->get_task_id()));
+            $stmt->execute(array(':task_id' => $this->getID()));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
@@ -125,7 +125,7 @@ class task_period_upgradetov31 extends task_abstract
             sleep(1);
             $conn = connection::getPDOConnection();
         }
-        printf("taskid %s ending." . PHP_EOL, $this->get_task_id());
+        printf("taskid %s ending." . PHP_EOL, $this->getID());
 
         sleep(1);
 
@@ -145,9 +145,9 @@ class task_period_upgradetov31 extends task_abstract
             try {
                 $connbas = $databox->get_connection();
 
-                $sql = 'SELECT count(r.record_id) as total FROM record r, subdef s
-                    WHERE ISNULL(uuid)
-                    AND s.record_id = r.record_id AND s.name="document"';
+                $sql = 'SELECT count(r.record_id) as total FROM record r, subdef s'
+                    . ' WHERE ISNULL(uuid)'
+                    . ' AND s.record_id = r.record_id AND s.name="document"';
 
                 $stmt = $connbas->prepare($sql);
                 $stmt->execute();
@@ -157,7 +157,7 @@ class task_period_upgradetov31 extends task_abstract
                 if ($row) {
                     $todo += (int) $row['total'];
                 }
-            } catch (Excepiton $e) {
+            } catch (Exception $e) {
 
             }
         }

@@ -28,21 +28,21 @@ class task_period_test extends task_appboxAbstract
         return "just saying what i'm doing";
     }
 
-    protected function retrieve_content(appbox $appbox)
+    protected function retrieveContent(appbox $appbox)
     {
         $this->log('test class, retrive content');
 
         return array('hello', 'world');
     }
 
-    protected function process_one_content(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, Array $row)
     {
         $this->log(sprintf("test class, process content : `%s`", implode(' ', $row)));
 
         return $this;
     }
 
-    protected function post_process_one_content(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, Array $row)
     {
         $this->log(sprintf("test class, post process content, they were %s", count($row)));
 

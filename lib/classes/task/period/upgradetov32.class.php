@@ -47,17 +47,15 @@ class task_period_upgradetov32 extends task_abstract
     // run() : the real code executed by each task, MANDATORY
     // ==========================================================================
 
-    protected function load_settings(SimpleXMLElement $sx_task_settings)
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->sbas_id = (int) $sx_task_settings->sbas_id;
-        parent::load_settings($sx_task_settings);
-
-        return $this;
+        parent::loadSettings($sx_task_settings);
     }
 
     protected function run2()
     {
-        printf("taskid %s starting." . PHP_EOL, $this->get_task_id());
+        printf("taskid %s starting." . PHP_EOL, $this->getID());
 
         $registry = registry::get_instance();
 //    $registry->set('GV_cache_server_type', 'nocache', \registry::TYPE_STRING);
@@ -163,7 +161,7 @@ class task_period_upgradetov32 extends task_abstract
                         }
                     }
                     try {
-                        $stmt_original->execute(array(':originalname' => $value, ':record_id'    => $row['record_id']));
+                        $stmt_original->execute(array(':originalname' => $value, ':record_id' => $row['record_id']));
                     } catch (Exception $e) {
 
                     }
@@ -203,8 +201,8 @@ class task_period_upgradetov32 extends task_abstract
 
                             $stmt->execute(array(
                                 ':record_id' => $record->get_record_id()
-                                , ':name'      => $name
-                                , ':value'     => $value
+                                , ':name' => $name
+                                , ':value' => $value
                             ));
                         }
                     } catch (Exception $e) {
@@ -214,15 +212,6 @@ class task_period_upgradetov32 extends task_abstract
 
                 $connbas->commit();
                 $stmt->closeCursor();
-
-
-
-
-
-
-
-
-
 
                 $sql = 'select record_id, coll_id, xml, BIN(status) as status
           FROM record
@@ -283,8 +272,8 @@ class task_period_upgradetov32 extends task_abstract
 
                                     $metadatas[$databox_field->get_id()] = array(
                                         'meta_struct_id' => $databox_field->get_id()
-                                        , 'meta_id'        => null
-                                        , 'value'          => $value
+                                        , 'meta_id' => null
+                                        , 'value' => $value
                                     );
                                 }
                             }
@@ -341,14 +330,14 @@ class task_period_upgradetov32 extends task_abstract
 
         $conn = connection::getPDOConnection();
 
-        printf("taskid %s ending." . PHP_EOL, $this->get_task_id());
+        printf("taskid %s ending." . PHP_EOL, $this->getID());
         sleep(1);
         printf("good bye world I was task upgrade to version 3.2" . PHP_EOL);
 
         $sql = 'UPDATE task2 SET status="tostop" WHERE  task_id = :task_id';
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':task_id' => $this->get_task_id()));
+        $stmt->execute(array(':task_id' => $this->getID()));
         $stmt->closeCursor();
 
         $this->setProgress(0, 0);
