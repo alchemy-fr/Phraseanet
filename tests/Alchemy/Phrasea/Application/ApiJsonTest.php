@@ -203,7 +203,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     /**
      * Route GET /API/V1/monitor/task
-     * @cover API_V1_adapter::get_task_list
+     * @cover API_V1_adapter::getTask_list
      */
     public function testGetMonitorTasks()
     {
@@ -219,19 +219,19 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMetaJson200($content);
         $response = $content->response;
         $task_manager = new \task_manager($appbox);
-        $tasks = $task_manager->get_tasks();
+        $tasks = $task_manager->getTasks();
         $this->assertEquals(count($tasks), count(get_object_vars($response)));
     }
 
     /**
      * Route GET /API/V1/monitor/task{idTask}
-     * @cover API_V1_adapter::get_task
+     * @cover API_V1_adapter::getTask
      */
     public function testGetMonitorTaskById()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new \task_manager($appbox);
-        $tasks = $task_manager->get_tasks();
+        $tasks = $task_manager->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -252,7 +252,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     /**
      * Route GET /API/V1/monitor/task/{idTask}
-     * @cover API_V1_adapter::get_task
+     * @cover API_V1_adapter::getTask
      */
     public function testUnknowGetMonitorTaskById()
     {
@@ -278,7 +278,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new \task_manager($appbox);
-        $tasks = $task_manager->get_tasks();
+        $tasks = $task_manager->getTasks();
 
         if ( ! count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
@@ -291,9 +291,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $content = json_decode($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaJson200($content);
-        $task_manager->get_tasks(true);
-        $task = $task_manager->get_task($idTask);
-        $this->assertEquals(\task_abstract::STATUS_TOSTART, $task->get_status());
+        $task_manager->getTasks(true);
+        $task = $task_manager->getTask($idTask);
+        $this->assertEquals(\task_abstract::STATUS_TOSTART, $task->getState());
     }
 
     /**
@@ -305,7 +305,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new \task_manager($appbox);
 
-        $tasks = $task_manager->get_tasks();
+        $tasks = $task_manager->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -322,9 +322,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $content = json_decode($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaJson200($content);
-        $task_manager->get_tasks(true);
-        $task = $task_manager->get_task($idTask);
-        $this->assertEquals(\task_abstract::STATUS_TOSTOP, $task->get_status());
+        $task_manager->getTasks(true);
+        $task = $task_manager->getTask($idTask);
+        $this->assertEquals(\task_abstract::STATUS_TOSTOP, $task->getState());
     }
 
     /**

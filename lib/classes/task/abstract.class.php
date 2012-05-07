@@ -364,12 +364,12 @@ abstract class task_abstract
      * Return the last time the task was executed
      * @return string
      */
-    public function get_last_exec_time()
+    public function getLastExecTime()
     {
         $conn = connection::getPDOConnection();
         $sql = 'SELECT last_exec_time FROM task2 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':taskid' => $this->get_task_id()));
+        $stmt->execute(array(':taskid' => $this->getID()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 

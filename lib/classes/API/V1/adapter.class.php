@@ -107,16 +107,16 @@ class API_V1_adapter extends API_V1_Abstract
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new \task_manager($appbox);
-        $tasks = $taskManager->get_tasks();
+        $tasks = $taskManager->getTasks();
 
         $ret = array();
         foreach ($tasks as $task) {
-            $ret[$task->get_task_id()] = array(
-                'id'             => $task->get_task_id(),
-                'state'          => $task->get_status(),
-                'pid'            => $task->get_pid(),
-                'title'          => $task->get_title(),
-                'last_exec_time' => $task->get_last_exec_time()
+            $ret[$task->getID()] = array(
+                'id'             => $task->getID(),
+                'state'          => $task->getState(),
+                'pid'            => $task->getPID(),
+                'title'          => $task->getTitle(),
+                'last_exec_time' => $task->getLastExecTime()
             );
         }
 
@@ -140,12 +140,12 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new task_manager($appbox);
         $ret = array();
         try {
-            $task = $taskManager->get_task($taskId);
-            $ret['id'] = $task->get_task_id();
-            $ret['state'] = $task->get_status();
-            $ret['pid'] = $task->get_pid();
-            $ret['title'] = $task->get_title();
-            $ret['last_exec_time'] = $task->get_last_exec_time();
+            $task = $taskManager->getTask($taskId);
+            $ret['id'] = $task->getID();
+            $ret['state'] = $task->getState();
+            $ret['pid'] = $task->getPID();
+            $ret['title'] = $task->getTitle();
+            $ret['last_exec_time'] = $task->getLastExecTime();
         } catch (\Exception_NotFound $e) {
             $result->set_error_code(404);
             $ret = array('success' => false);
@@ -176,8 +176,8 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new \task_manager($appbox);
         $ret = array('success' => true);
         try {
-            $task = $taskManager->get_task($taskId);
-            $task->set_status(\task_abstract::STATUS_TOSTART);
+            $task = $taskManager->getTask($taskId);
+            $task->setState(\task_abstract::STATUS_TOSTART);
         } catch (\Exception_NotFound $e) {
             $result->set_error_code(404);
             $ret = array('success' => false);
@@ -208,8 +208,8 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new \task_manager($appbox);
         $ret = array();
         try {
-            $task = $taskManager->get_task($taskId);
-            $task->set_status(\task_abstract::STATUS_TOSTOP);
+            $task = $taskManager->getTask($taskId);
+            $task->setState(\task_abstract::STATUS_TOSTOP);
         } catch (\Exception_NotFound $e) {
             $result->set_error_code(404);
             $ret = array('success' => false);
@@ -253,14 +253,14 @@ class API_V1_adapter extends API_V1_Abstract
 
             $taskManager = new \task_manager($appbox);
 
-            $task = $taskManager->get_task($taskId);
+            $task = $taskManager->getTask($taskId);
 
             if ($name) {
-                $task->set_title($name);
+                $task->setTitle($name);
             }
 
             if ($autostart) {
-                $task->set_active( ! ! $autostart);
+                $task->setActive( ! ! $autostart);
             }
 
             $ret = array('success' => true);
