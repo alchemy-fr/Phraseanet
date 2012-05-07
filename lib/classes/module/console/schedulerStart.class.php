@@ -63,14 +63,11 @@ class module_console_schedulerStart extends Command
 
         require_once __DIR__ . '/../../../../lib/bootstrap.php';
 
-        $scheduler = new task_Scheduler();
-        $scheduler->run($zinput, $output); //, !$input->getOption('nolog'), !$input->getOption('notasklog'));
-
         try {
             $scheduler = new task_Scheduler();
-            $scheduler->run($output, true);
+            $scheduler->run($zinput, $output);
         } catch (\Exception $e) {
-            return 1;
+            return $e->getCode();
         }
     }
 }
