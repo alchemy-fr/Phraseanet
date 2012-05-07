@@ -29,7 +29,16 @@ class module_console_schedulerState extends Command
     {
         parent::__construct($name);
 
-        $this->setDescription('Get scheduler state');
+        $this->setDescription('Get scheduler status');
+
+        $this->addOption(
+            'short'
+            , NULL
+            , InputOption::VALUE_NONE
+            , 'print short result, ie: <info>stopped</info> | <info>started(12345)</info> | <info>stopping</info>'
+            , NULL
+        );
+//    $this->setHelp("");
 
         return $this;
     }
@@ -37,7 +46,7 @@ class module_console_schedulerState extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         if ( ! setup::is_installed()) {
-            $output->writeln('Phraseanet is not set up');
+            $output->writeln($input->getOption('short') ? 'setup_error' : 'Phraseanet is not set up');
 
             return 1;
         }
