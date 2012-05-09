@@ -32,7 +32,6 @@ notifications:
     use_notice: true
 
 php:
-  - 5.3.3
   - 5.3
   - 5.4
 
