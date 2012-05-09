@@ -27,7 +27,7 @@ class module_console_tasklistTest extends PHPUnit_Framework_TestCase
         if (count($task_manager->getTasks()) > 0) {
             $this->assertEquals(count($task_manager->getTasks()), count($lines));
             foreach ($task_manager->getTasks() as $task) {
-                $this->assertTrue(strpos($commandTester->getDisplay(), $task->get_title()) !== false);
+                $this->assertTrue(strpos($commandTester->getDisplay(), $task->getTitle()) !== false);
             }
         } else {
             $this->assertEquals(1, count($lines));
