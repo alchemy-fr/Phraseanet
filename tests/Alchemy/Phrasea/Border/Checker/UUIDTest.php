@@ -4,12 +4,15 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
+use Alchemy\Phrasea\Border\File;
+
 class UUIDTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var UUID
      */
     protected $object;
+    protected $filename;
     protected static $need_records = 1;
 
     /**
@@ -20,6 +23,16 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUp();
         $this->object = new UUID;
+        $this->filename = __DIR__ . '/../../../../../tmp/test001.CR2';
+        copy(__DIR__ . '/../../../../testfiles/test001.CR2', $this->filename);
+    }
+
+    public function tearDown()
+    {
+        if (file_exists($this->filename)) {
+            unlink($this->filename);
+        }
+        parent::tearDown();
     }
 
     /**
@@ -27,7 +40,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $response = $this->object->check(self::$core['EM'], new \Alchemy\Phrasea\Border\File(__DIR__ . '/../../../../testfiles/test001.CR2', self::$collection));
+        $response = $this->object->check(self::$core['EM'], new File($this->filename, self::$collection));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -39,7 +52,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getUUID'), array(__DIR__ . '/../../../../testfiles/test001.CR2', self::$collection));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getUUID'), array($this->filename, self::$collection));
 
         $mock
             ->expects($this->once())

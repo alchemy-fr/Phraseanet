@@ -4,18 +4,31 @@ namespace Alchemy\Phrasea\Border\Checker;
 
 require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
+use Alchemy\Phrasea\Border\File;
+
 class Sha256Test extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var Sha256
      */
     protected $object;
+    protected $filename;
     protected static $need_records = 1;
 
     public function setUp()
     {
         parent::setUp();
         $this->object = new Sha256;
+        $this->filename = __DIR__ . '/../../../../../tmp/test001.CR2';
+        copy(__DIR__ . '/../../../../testfiles/test001.CR2', $this->filename);
+    }
+
+    public function tearDown()
+    {
+        if (file_exists($this->filename)) {
+            unlink($this->filename);
+        }
+        parent::tearDown();
     }
 
     /**
@@ -23,9 +36,15 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $file = new \Alchemy\Phrasea\Border\File(__DIR__ . '/../../../../testfiles/test001.CR2', self::$collection);
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array($this->filename, self::$collection));
 
-        $response = $this->object->check(self::$core['EM'], $file);
+        $mock
+            ->expects($this->once())
+            ->method('getSha256')
+            ->will(hash_file('sha256', __DIR__ . '/../../../../testfiles/test001.CR2'))
+        ;
+
+        $response = $this->object->check(self::$core['EM'], $mock);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -37,7 +56,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array(__DIR__ . '/../../../../testfiles/test001.CR2', self::$collection));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array($this->filename, self::$collection));
 
         $mock
             ->expects($this->once())

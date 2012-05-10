@@ -63,27 +63,41 @@ class ManagerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testProcess()
     {
-        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, new File(self::$file1, self::$collection)));
+        $records = array();
+
+        $postProcessRecord = function($record) use(&$records) {
+                $records[] = $record;
+            };
+
+        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, new File(self::$file1, self::$collection), $postProcessRecord));
         $shaChecker = new Checker\Sha256();
         $this->object->registerChecker($shaChecker);
 
         $phpunit = $this;
 
-        $postProcess = function($element, $visa, $code) use ($phpunit) {
+        $postProcess = function($element, $visa, $code) use ($phpunit, &$records) {
                 $phpunit->assertInstanceOf('\\Entities\\LazaretFile', $element);
                 $phpunit->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
                 $phpunit->assertEquals(Manager::LAZARET_CREATED, $code);
+                $records[] = $element;
             };
 
         $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, new File(self::$file1, self::$collection), $postProcess));
 
-        $postProcess = function($element, $visa, $code) use ($phpunit) {
+        $postProcess = function($element, $visa, $code) use ($phpunit, &$records) {
                 $phpunit->assertInstanceOf('\\record_adapter', $element);
                 $phpunit->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
                 $phpunit->assertEquals(Manager::RECORD_CREATED, $code);
+                $records[] = $element;
             };
 
         $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, new File(self::$file1, self::$collection), $postProcess, Manager::FORCE_RECORD));
+
+        foreach ($records as $record) {
+            if ($record instanceof \record_adapter) {
+                $record->delete();
+            }
+        }
     }
 
     /**
@@ -91,8 +105,19 @@ class ManagerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testProcessForceLazaret()
     {
-        $this->assertEquals(MaNAGER::LAZARET_CREATED, $this->object->process($this->session, new File(self::$file1, self::$collection), NULL, Manager::FORCE_LAZARET));
-        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, new File(self::$file1, self::$collection)));
+        $records = array();
+
+        $postProcessRecord = function($record) use(&$records) {
+                $records[] = $record;
+            };
+        $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, new File(self::$file1, self::$collection), NULL, Manager::FORCE_LAZARET));
+        $this->assertEquals(Manager::RECORD_CREATED, $this->object->process($this->session, new File(self::$file1, self::$collection), $postProcessRecord));
+
+        foreach ($records as $record) {
+            if ($record instanceof \record_adapter) {
+                $record->delete();
+            }
+        }
     }
 
     /**
@@ -126,7 +151,7 @@ class ManagerTest extends \PhraseanetPHPUnitAbstract
                 }
             };
 
-        $this->assertEquals(MaNAGER::LAZARET_CREATED, $this->object->process($this->session, $file, $postProcess, Manager::FORCE_LAZARET));
+        $this->assertEquals(Manager::LAZARET_CREATED, $this->object->process($this->session, $file, $postProcess, Manager::FORCE_LAZARET));
     }
 
     /**
@@ -134,13 +159,19 @@ class ManagerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetVisa()
     {
+        $records = array();
+
+        $postProcessRecord = function($record) use(&$records) {
+                $records[] = $record;
+            };
+
         $visa = $this->object->getVisa(new File(self::$file1, self::$collection));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
 
         $this->assertTrue($visa->isValid());
 
-        $this->object->process($this->session, new File(self::$file1, self::$collection));
+        $this->object->process($this->session, new File(self::$file1, self::$collection), $postProcessRecord);
 
 
         $visa = $this->object->getVisa(new File(self::$file1, self::$collection));
@@ -156,6 +187,12 @@ class ManagerTest extends \PhraseanetPHPUnitAbstract
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Visa', $visa);
 
         $this->assertFalse($visa->isValid());
+
+        foreach ($records as $record) {
+            if ($record instanceof \record_adapter) {
+                $record->delete();
+            }
+        }
     }
 
     /**

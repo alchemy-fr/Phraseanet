@@ -10,13 +10,17 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      * @var File
      */
     protected $object;
+    protected $filename;
 
     /**
      * @covers Alchemy\Phrasea\Border\File::__construct
      */
     public function setUp()
     {
-        $this->object = new File(__DIR__ . '/../../../testfiles/iphone_pic.jpg', self::$collection, 'originalName.txt');
+        parent::setUp();
+        $this->filename = __DIR__ . '/../../../../tmp/iphone_pic.jpg';
+        copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $this->filename);
+        $this->object = new File($this->filename, self::$collection, 'originalName.txt');
     }
 
     /**
@@ -25,6 +29,10 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     public function tearDown()
     {
         $this->object = null;
+        if (file_exists($this->filename)) {
+            unlink($this->filename);
+        }
+        parent::tearDown();
     }
 
     /**
@@ -82,7 +90,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetPathfile()
     {
-        $this->assertEquals(realpath(__DIR__ . '/../../../testfiles/iphone_pic.jpg'), $this->object->getPathfile());
+        $this->assertEquals(realpath(__DIR__ . '/../../../../tmp/iphone_pic.jpg'), $this->object->getPathfile());
     }
 
     /**
@@ -114,7 +122,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testOriginalNameAuto()
     {
-        $object = new File(__DIR__ . '/../../../testfiles/iphone_pic.jpg', self::$collection);
+        $object = new File($this->filename, self::$collection);
         $this->assertSame('iphone_pic.jpg', $object->getOriginalName());
     }
 
