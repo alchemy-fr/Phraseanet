@@ -41,7 +41,7 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
         $mock
             ->expects($this->once())
             ->method('getSha256')
-            ->will(hash_file('sha256', __DIR__ . '/../../../../testfiles/test001.CR2'))
+            ->will($this->returnValue(hash_file('sha256', __DIR__ . '/../../../../testfiles/test001.CR2')))
         ;
 
         $response = $this->object->check(self::$core['EM'], $mock);
