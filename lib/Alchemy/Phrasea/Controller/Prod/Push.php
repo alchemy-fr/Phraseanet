@@ -253,6 +253,9 @@ class Push implements ControllerProviderInterface
                         $events_manager->trigger('__PUSH_DATAS__', $params);
                     }
 
+                    $appbox->get_session()->get_logger($BasketElement->getRecord()->get_databox())
+                        ->log($BasketElement->getRecord(), \Session_Logger::EVENT_VALIDATE, $user_receiver->get_id(), '');
+
                     $em->flush();
 
                     $message = sprintf(
@@ -277,6 +280,7 @@ class Push implements ControllerProviderInterface
 
         $controllers->post('/validate/', function(Application $app) {
                 $request = $app['request'];
+                $appbox = \appbox::get_instance($app['Core']);
 
                 $ret = array(
                     'success' => false,
@@ -429,6 +433,9 @@ class Push implements ControllerProviderInterface
 
                             $em->merge($BasketElement);
                             $em->persist($ValidationData);
+
+                            $appbox->get_session()->get_logger($BasketElement->getRecord()->get_databox())
+                                ->log($BasketElement->getRecord(), \Session_Logger::EVENT_PUSH, $participant_user->get_id(), '');
 
                             $Participant->addValidationData($ValidationData);
                         }
