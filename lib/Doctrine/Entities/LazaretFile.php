@@ -244,4 +244,31 @@ class LazaretFile
     {
         return $this->session;
     }
+    /**
+     * @var string $originalName
+     */
+    private $originalName;
+
+
+    /**
+     * Set originalName
+     *
+     * @param string $originalName
+     * @return LazaretFile
+     */
+    public function setOriginalName($originalName)
+    {
+        $this->originalName = $originalName;
+        return $this;
+    }
+
+    /**
+     * Get originalName
+     *
+     * @return string 
+     */
+    public function getOriginalName()
+    {
+        return $this->originalName;
+    }
 }
