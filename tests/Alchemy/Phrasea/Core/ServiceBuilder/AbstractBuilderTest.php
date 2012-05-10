@@ -10,6 +10,7 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
         try {
             $stub = $this->getMock(
                 "\Alchemy\Phrasea\Core\Service\Builder"
+                , array()
                 , array(
                 self::$core
                 , ''
@@ -27,6 +28,7 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
         try {
             $stub = $this->getMock(
                 "\\Alchemy\\Phrasea\\Core\\Service\\Builder"
+                , array()
                 , array(
                 self::$core,
                 'test',

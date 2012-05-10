@@ -23,7 +23,9 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $response = $this->object->check(self::$core['EM'], new \Alchemy\Phrasea\Border\File(__DIR__ . '/../../../../testfiles/test001.CR2', self::$collection));
+        $file = new \Alchemy\Phrasea\Border\File(__DIR__ . '/../../../../testfiles/test001.CR2', self::$collection);
+
+        $response = $this->object->check(self::$core['EM'], $file);
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 

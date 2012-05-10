@@ -57,11 +57,7 @@ class Monolog extends ServiceAbstract
 
         if ( ! array_key_exists($handler, $this->handlers)) {
             throw new \Exception(sprintf(
-                    "The handler type '%s' declared in %s %s service is not valid.
-          Available types are %s."
-                    , $handler
-                    , __CLASS__
-                    , implode(", ", $this->handlers)
+                    "The handler type '%s' declared in %s is not valid. Available types are %s.", $handler, __CLASS__, implode(", ", $this->handlers)
                 )
             );
         }
