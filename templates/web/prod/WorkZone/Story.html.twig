@@ -54,11 +54,12 @@
       {% endif %}
       <button class="ui-corner-all TOOL_trash_btn story_window" title="{% trans 'action : supprimer' %}">
         <img src="/skins/icons/delete.png"/>
+        <input type="hidden" name="story_key" value="{{ Story.get_serialize_key() }}"/>
       </button>
 
     </div>
     <div class="alert_datas_changed ui-corner-all">
-      {% trans 'Certaines donnees du panier ont change' %}
+      {% trans 'Certaines donnees du reportage ont change' %}
       <a class="basket_refresher" href="#">
         {% trans 'rafraichir' %}
       </a>
