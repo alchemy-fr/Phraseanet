@@ -1880,6 +1880,10 @@ function activeIcons()
       {
         if(p4.WorkZone.Selection.length() > 0)
           type = 'CHIM';
+        else{
+          type = 'SSTT';
+          el = $('.SSTT.active');
+        }
       }
       else
       {
@@ -1887,11 +1891,12 @@ function activeIcons()
         {
           if(p4.WorkZone.Selection.length() > 0)
           {
-            value = 'lst=' + p4.WorkZone.Selection.serialize();
+            type = 'CHIM';
           }
           else
           {
-            value = 'story=' + $('.SSTT.active').attr('id').split('_').slice(1,2).pop();
+            type = 'STORY';
+            el = $(this).find('input[name=story_key]');
           }
         }
       }
@@ -2366,7 +2371,7 @@ $('.TOOL_disktt_btn').live('click', function(){
       }
     }
 
-    for(i in datas)
+    for(var i in datas)
     {
       return downloadThis(datas);
     }
@@ -2419,6 +2424,10 @@ function checkDeleteThis(type, el)
       $('#tooltip').hide();
       return;
       break;
+    case "STORY":
+        lst = el.val();
+        deleteThis(lst);
+        break;
 
   }
 }
@@ -2712,7 +2721,7 @@ function archiveBasket(basket_id)
 function deleteBasket(item)
 {
   $('#DIALOG').dialog("destroy");
-  k = $(item).attr('id').split('_').slice(1,2).pop();	// id de chutier
+  var k = $(item).attr('id').split('_').slice(1,2).pop();	// id de chutier
   $.ajax({
     type: "POST",
     url: "/prod/baskets/"+k+'/delete/',
