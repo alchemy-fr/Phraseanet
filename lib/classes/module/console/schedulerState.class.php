@@ -42,8 +42,6 @@ class module_console_schedulerState extends Command
             return 1;
         }
 
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new task_manager($appbox);
 

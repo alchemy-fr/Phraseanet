@@ -39,7 +39,14 @@
   ],
   "autoload": {
     "psr-0": {
-      "Alchemy": "lib"
+      "Alchemy": "lib",
+      "Entities": "lib/Doctrine/",
+        "Repositories": "lib/Doctrine/",
+        "Proxies": "lib/Doctrine/",
+        "Doctrine\\Logger": "lib",
+        "Types": "lib/Doctrine",
+        "PhraseaFixture": "lib/conf.d",
     }
-  }
+  },
+  "include-path": ["vendor/zend/gdata/library"]
 }
