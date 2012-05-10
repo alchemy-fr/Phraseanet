@@ -43,7 +43,7 @@ class ManagerTest extends \PhraseanetPHPUnitAbstract
     public function setUp()
     {
         parent::setUp();
-        $this->object = new Manager(self::$core);
+        $this->object = new Manager(self::$core['EM']);
         $this->session = new \Entities\LazaretSession();
 
         self::$core['EM']->persist($this->session);
@@ -212,7 +212,7 @@ class ManagerTest extends \PhraseanetPHPUnitAbstract
      */
     public function testBookLazaretPathfile()
     {
-        $manager = new ManagerTester(self::$core);
+        $manager = new ManagerTester(self::$core['EM']);
 
         $file1 = $manager->bookLazaretPathfileTester('babebibobu.txt');
         $file2 = $manager->bookLazaretPathfileTester('babebibobu.txt');

@@ -11,7 +11,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
-use Alchemy\Phrasea\Core;
+use Doctrine\ORM\EntityManager;
 use Entities\LazaretAttribute;
 use Entities\LazaretFile;
 use Entities\LazaretSession;
@@ -38,11 +38,11 @@ class Manager
     /**
      * Constructor
      *
-     * @param \Alchemy\Phrasea\Core $core   Phraseanet Core
+     * @param \Doctrine\ORM\EntityManager $em   Entity manager
      */
-    public function __construct(Core $core)
+    public function __construct(EntityManager $em)
     {
-        $this->core = $core;
+        $this->em = $em;
         $this->filesystem = new Filesystem();
     }
 
@@ -52,7 +52,7 @@ class Manager
      */
     public function __destruct()
     {
-        $this->core = $this->filesystem = null;
+        $this->em = $this->filesystem = null;
     }
 
     /**
@@ -102,12 +102,12 @@ class Manager
 
                 $lazaretFile->addLazaretAttribute($attribute);
 
-                $this->core['EM']->persist($attribute);
+                $this->em->persist($attribute);
             }
 
-            $this->core['EM']->persist($lazaretFile);
+            $this->em->persist($lazaretFile);
 
-            $this->core['EM']->flush();
+            $this->em->flush();
 
             $element = $lazaretFile;
 
@@ -134,7 +134,7 @@ class Manager
         $visa = new Visa();
 
         foreach ($this->checkers as $checker) {
-            $visa->addResponse($checker->check($this->core['EM'], $file));
+            $visa->addResponse($checker->check($this->em, $file));
         }
 
         return $visa;
@@ -206,7 +206,7 @@ class Manager
      */
     protected function bookLazaretPathfile($filename)
     {
-        $root = $this->core['Registry']->get('GV_RootPath') . 'tmp/lazaret/';
+        $root = __DIR__ . '/../../../../tmp/lazaret/';
 
         $infos = pathinfo($filename);
 
