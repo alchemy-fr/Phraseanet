@@ -452,7 +452,7 @@ class task_period_workflow01 extends task_databoxAbstract
 
         phrasea::headers(200, true, 'text/json', 'UTF-8', false);
 
-        $retjs = array('result' => NULL,
+        $retjs = array('result'      => NULL,
             'date_fields' => array(),
             'status_bits' => array(),
             'collections' => array()
@@ -471,18 +471,18 @@ class task_period_workflow01 extends task_databoxAbstract
 
             foreach ($status as $n => $s) {
                 $retjs['status_bits'][] = array(
-                    'n' => $n,
-                    'value' => 0,
-                    'label' => $s['labeloff'] ? $s['labeloff'] : 'non ' . $s['name']);
+                    'n'                     => $n,
+                    'value'                 => 0,
+                    'label'                 => $s['labeloff'] ? $s['labeloff'] : 'non ' . $s['name']);
                 $retjs['status_bits'][] = array(
-                    'n' => $n,
+                    'n'     => $n,
                     'value' => 1,
                     'label' => $s['labelon'] ? $s['labelon'] : $s['name']);
             }
 
             $base_ids = $user->ACL()->get_granted_base(array(), array($sbas_id));
             foreach ($base_ids as $base_id => $collection) {
-                $retjs['collections'][] = array('id' => (string) ($collection->get_coll_id()), 'name' => $collection->get_name());
+                $retjs['collections'][] = array('id'   => (string) ($collection->get_coll_id()), 'name' => $collection->get_name());
             }
         } catch (Exception $e) {
 

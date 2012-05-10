@@ -62,7 +62,7 @@ abstract class task_databoxAbstract extends task_abstract
                 if ($this->mono_sbas_id) {
                     $sql = 'SELECT sbas_id, task2.* FROM sbas, task2 WHERE task_id=:taskid AND sbas_id=:sbas_id';
                     $stmt = $conn->prepare($sql);
-                    $stmt->execute(array(':taskid' => $this->getID(), ':sbas_id' => $this->mono_sbas_id));
+                    $stmt->execute(array(':taskid'  => $this->getID(), ':sbas_id' => $this->mono_sbas_id));
                 } else {
                     $sql = 'SELECT sbas_id, task2.* FROM sbas, task2 WHERE task_id = :taskid';
                     $stmt = $conn->prepare($sql);

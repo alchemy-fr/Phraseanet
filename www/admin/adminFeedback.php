@@ -190,11 +190,11 @@ switch ($parm['action']) {
             }
             $id = $task->getID();
             $ret['tasks'][$id] = array(
-                'id' => $id
-                , 'pid' => $task->getPID()
-                , 'crashed' => $task->getCrashCounter()
+                'id'        => $id
+                , 'pid'       => $task->getPID()
+                , 'crashed'   => $task->getCrashCounter()
                 , 'completed' => $task->getCompletedPercentage()
-                , 'status' => $task->getState()
+                , 'status'    => $task->getState()
             );
         }
 
@@ -228,13 +228,13 @@ switch ($parm['action']) {
     case 'P_BAR_INFO':
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
         $ret = array(
-            'sbas_id' => null,
-            'indexable' => false,
-            'records' => 0,
-            'xml_indexed' => 0,
+            'sbas_id'           => null,
+            'indexable'         => false,
+            'records'           => 0,
+            'xml_indexed'       => 0,
             'thesaurus_indexed' => 0,
-            'viewname' => null,
-            'printLogoURL' => NULL
+            'viewname'          => null,
+            'printLogoURL'      => NULL
         );
 
         $databox = databox::get_instance((int) $parm['sbas_id']);
@@ -260,7 +260,7 @@ switch ($parm['action']) {
     case 'CHGVIEWNAME':
 
         $parm = $request->get_parms('sbas_id', 'viewname');
-        $ret = array('sbas_id' => null, 'viewname' => null);
+        $ret = array('sbas_id'  => null, 'viewname' => null);
         $sbas_id = (int) $parm['sbas_id'];
         $databox = databox::get_instance($sbas_id);
         $appbox->set_databox_viewname($databox, $parm['viewname']);
@@ -270,7 +270,7 @@ switch ($parm['action']) {
     case 'MAKEINDEXABLE':
 
         $parm = $request->get_parms('sbas_id', 'INDEXABLE');
-        $ret = array('sbas_id' => null, 'indexable' => null);
+        $ret = array('sbas_id'         => null, 'indexable'       => null);
         $sbas_id = (int) $parm['sbas_id'];
         $databox = databox::get_instance($sbas_id);
         $appbox->set_databox_indexable($databox, $parm['INDEXABLE']);
@@ -292,7 +292,7 @@ switch ($parm['action']) {
     case 'CLEARALLLOG':
 
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-        $ret = array('sbas_id' => null);
+        $ret = array('sbas_id'       => null);
         $sbas_id = (int) $parm['sbas_id'];
         $databox = databox::get_instance($sbas_id);
         $databox->clear_logs();
@@ -302,7 +302,7 @@ switch ($parm['action']) {
 
     case 'DELLOGOPDF':
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
-        $ret = array('sbas_id' => null);
+        $ret = array('sbas_id'       => null);
         $sbas_id = (int) $parm['sbas_id'];
         $databox = databox::get_instance($sbas_id);
         $appbox->write_databox_pic($databox, null, databox::PIC_PDF);
@@ -314,7 +314,7 @@ switch ($parm['action']) {
     case 'DELETEBASE':
         $parm = $request->get_parms(array('sbas_id' => http_request::SANITIZE_NUMBER_INT));
 
-        $ret = array('sbas_id' => null, 'err' => -1, 'errmsg' => null);
+        $ret = array('sbas_id' => null, 'err'     => -1, 'errmsg'  => null);
 
         try {
             $sbas_id = (int) $parm['sbas_id'];

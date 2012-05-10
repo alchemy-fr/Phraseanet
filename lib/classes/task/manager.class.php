@@ -171,7 +171,7 @@ class task_manager
                     try {
                         //      $testclass = new $classname(null);
                         if ($classname::interfaceAvailable()) {
-                            $tasks[] = array("class" => $classname, "name" => $classname::getName(), "err" => null);
+                            $tasks[] = array("class" => $classname, "name"  => $classname::getName(), "err"   => null);
                         }
                     } catch (Exception $e) {
 

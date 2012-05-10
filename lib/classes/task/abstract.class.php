@@ -4,25 +4,21 @@ abstract class task_abstract
 {
     const LAUCHED_BY_BROWSER = 1;
     const LAUCHED_BY_COMMANDLINE = 2;
-
     const STATE_TOSTOP = 'tostop';
     const STATE_STARTED = 'started';
     const STATE_TOSTART = 'tostart';
     const STATE_TORESTART = 'torestart';
     const STATE_STOPPED = 'stopped';
     const STATE_TODELETE = 'todelete';
-
     const RUNNER_MANUAL = 'manual';
     const RUNNER_SCHEDULER = 'scheduler';
-
     const STATE_OK = 'STATE_OK';
     const STATE_MAXMEGSREACHED = 'STATE_MAXMEGS';
     const STATE_MAXRECSDONE = 'STATE_MAXRECS';
     const STATE_FINISHED = 'STATE_FINISHED';
-
     const SIGNAL_SCHEDULER_DIED = 'SIGNAL_SCHEDULER_DIED';
-
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
+
     protected $suicidable = false;
     protected $launched_by = 0;
 
@@ -94,7 +90,7 @@ abstract class task_abstract
     protected $taskid = NULL;
     protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
     protected $argt = array(
-        "--help" => array("set" => false, "values" => array(), "usage" => " (no help available)")
+        "--help" => array("set"    => false, "values" => array(), "usage" => " (no help available)")
     );
 
     public function getState()
@@ -172,7 +168,7 @@ abstract class task_abstract
 
         $sql = 'UPDATE task2 SET name = :title WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':title' => $title, ':taskid' => $this->getID()));
+        $stmt->execute(array(':title'  => $title, ':taskid' => $this->getID()));
         $stmt->closeCursor();
 
         $this->title = $title;
@@ -186,7 +182,7 @@ abstract class task_abstract
 
         $sql = 'UPDATE task2 SET settings = :settings WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':settings' => $settings, ':taskid' => $this->getID()));
+        $stmt->execute(array(':settings' => $settings, ':taskid'   => $this->getID()));
         $stmt->closeCursor();
 
         $this->settings = $settings;
@@ -390,7 +386,7 @@ abstract class task_abstract
         $this->running = $stat;
     }
 
-    protected function pause($when_started=0)
+    protected function pause($when_started = 0)
     {
         $this->log($this->records_done . ' records done');
         if ($this->running) {// && $this->records_done == 0)
@@ -409,7 +405,7 @@ abstract class task_abstract
         }
     }
 
-    final public function run($runner, $input=null, $output = null)
+    final public function run($runner, $input = null, $output = null)
     {
         $this->input = $input;
         $this->output = $output;
@@ -500,7 +496,7 @@ abstract class task_abstract
         }
     }
 
-    function traceRam($msg='')
+    function traceRam($msg = '')
     {
         static $lastt = null;
         $t = explode(' ', ($ut = microtime()));
@@ -568,9 +564,9 @@ abstract class task_abstract
             $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
 
         $params = array(
-            ':active' => 1
-            , ':name' => $class_name::getName()
-            , ':class' => $class_name
+            ':active'   => 1
+            , ':name'     => $class_name::getName()
+            , ':class'    => $class_name
             , ':settings' => $settings
         );
         $stmt = $appbox->get_connection()->prepare($sql);
@@ -605,7 +601,7 @@ abstract class task_abstract
             $conn = connection::getPDOConnection();
             $sql = 'UPDATE task2 SET completed = :p WHERE task_id = :taskid';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':p' => $p, ':taskid' => $this->getID()));
+            $stmt->execute(array(':p'      => $p, ':taskid' => $this->getID()));
             $stmt->closeCursor();
             $this->completed_percentage = $p;
         } catch (Exception $e) {

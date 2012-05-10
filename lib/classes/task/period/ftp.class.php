@@ -460,7 +460,7 @@ class task_period_ftp extends task_appboxAbstract
 
 
                     $obj[] = array(
-                        "name" => $subdef, "size" => filesize($localfile),
+                        "name"     => $subdef, "size"     => filesize($localfile),
                         "shortXml" => ($sdcaption ? $sdcaption : '')
                     );
 
@@ -488,7 +488,7 @@ class task_period_ftp extends task_appboxAbstract
                     $sql = "UPDATE ftp_export_elements"
                         . " SET done = :done, error='1' WHERE id = :file_id";
                     $stmt = $conn->prepare($sql);
-                    $stmt->execute(array(':done' => $done, ':file_id' => $file['id']));
+                    $stmt->execute(array(':done'    => $done, ':file_id' => $file['id']));
                     $stmt->closeCursor();
                 }
             }

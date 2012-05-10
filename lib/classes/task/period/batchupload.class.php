@@ -126,7 +126,7 @@ class task_period_batchupload extends task_appboxAbstract
         $sql = 'UPDATE uplbatch SET complete="2", error = :error'
             . ' WHERE uplbatch_id = :batch_id';
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':error' => $errors, ':batch_id' => $batch_id));
+        $stmt->execute(array(':error'    => $errors, ':batch_id' => $batch_id));
         $stmt->closeCursor();
 
         $this->log(sprintf(('finishing batch %s'), $row['uplbatch_id']));

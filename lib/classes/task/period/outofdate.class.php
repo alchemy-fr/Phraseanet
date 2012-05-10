@@ -677,7 +677,7 @@ class task_period_outofdate extends task_abstract
                 . " SET " . $sqlset[0]
                 . " WHERE " . $w;
 
-            $ret[] = array('sql' => $sql, 'params' => $params);
+            $ret[] = array('sql'    => $sql, 'params' => $params);
         }
 
 
@@ -709,7 +709,7 @@ class task_period_outofdate extends task_abstract
                 . " SET " . $sqlset[1]
                 . " WHERE " . $w;
 
-            $ret[] = array('sql' => $sql, 'params' => $params);
+            $ret[] = array('sql'    => $sql, 'params' => $params);
         }
 
 
@@ -738,7 +738,7 @@ class task_period_outofdate extends task_abstract
                 . " SET " . $sqlset[2]
                 . " WHERE " . $w;
 
-            $ret[] = array('sql' => $sql, 'params' => $params);
+            $ret[] = array('sql'    => $sql, 'params' => $params);
         }
 
         return($ret);
@@ -779,12 +779,12 @@ class task_period_outofdate extends task_abstract
                         foreach ($status as $n => $stat) {
                             $labelon = $stat['labelon'] ? $stat['labelon'] : ($n . '-ON');
                             $labeloff = $stat['labeloff'] ? $stat['labeloff'] : ($n . '-OFF');
-                            $ret['status_bits'][] = array('n' => $n, 'value' => 0, 'label' => $labeloff);
-                            $ret['status_bits'][] = array('n' => $n, 'value' => 1, 'label' => $labelon);
+                            $ret['status_bits'][] = array('n'                   => $n, 'value'               => 0, 'label'               => $labeloff);
+                            $ret['status_bits'][] = array('n'     => $n, 'value' => 1, 'label' => $labelon);
                         }
 
                         foreach ($databox->get_collections() as $collection)
-                            $ret['collections'][] = array('id' => $collection->get_coll_id(), 'name' => $collection->get_name());
+                            $ret['collections'][] = array('id'   => $collection->get_coll_id(), 'name' => $collection->get_name());
                     } catch (Exception $e) {
 
                     }

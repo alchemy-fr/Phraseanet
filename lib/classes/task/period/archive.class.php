@@ -27,9 +27,9 @@ class task_period_archive extends task_abstract
      * @var <type>
      */
     protected $mimeTypes = array(
-        "jpg" => "image/jpeg",
+        "jpg"  => "image/jpeg",
         "jpeg" => "image/jpeg",
-        "pdf" => "application/pdf"
+        "pdf"  => "application/pdf"
     );
 
     /**
@@ -219,27 +219,27 @@ class task_period_archive extends task_abstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-        <?php echo _('task::archive:archivage sur base/collection/') ?> :
+            <?php echo _('task::archive:archivage sur base/collection/') ?> :
 
             <select onchange="chgxmlpopup(this, 'base_id');" name="base_id">
                 <option value="">...</option>
-        <?php
-        foreach ($appbox->get_databoxes() as $databox) {
-            foreach ($databox->get_collections() as $collection) {
-                print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
-            }
-        }
-        ?>
+                <?php
+                foreach ($appbox->get_databoxes() as $databox) {
+                    foreach ($databox->get_collections() as $collection) {
+                        print("<option value=\"" . $collection->get_base_id() . "\">" . $databox->get_viewname() . " / " . $collection->get_name() . "</option>");
+                    }
+                }
+                ?>
             </select>
             <br/>
             <br/>
-        <?php echo _('task::_common_:hotfolder') ?>
+            <?php echo _('task::_common_:hotfolder') ?>
             <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
             <br/>
-        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
+            <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
             <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
@@ -335,23 +335,23 @@ class task_period_archive extends task_abstract
             if ($this->sxTaskSettings->files && $this->sxTaskSettings->files->file) {
                 foreach ($this->sxTaskSettings->files->file as $ft)
                     $this->tmask[] = array(
-                        "mask" => (string) $ft["mask"]
+                        "mask"    => (string) $ft["mask"]
                         , "caption" => (string) $ft["caption"]
-                        , "accept" => (string) $ft["accept"]
+                        , "accept"  => (string) $ft["accept"]
                     );
             }
             if ($this->sxTaskSettings->files && $this->sxTaskSettings->files->grouping) {
                 foreach ($this->sxTaskSettings->files->grouping as $ft)
                     $this->tmaskgrp[] = array(
-                        "mask" => (string) $ft["mask"]
-                        , "caption" => (string) $ft["caption"]
+                        "mask"           => (string) $ft["mask"]
+                        , "caption"        => (string) $ft["caption"]
                         , "representation" => (string) $ft["representation"]
-                        , "accept" => (string) $ft["accept"]
+                        , "accept"         => (string) $ft["accept"]
                     );
             }
             if (count($this->tmask) == 0) {
                 // no mask defined : accept all kind of files
-                $this->tmask[] = array("mask" => ".*", "caption" => "", "accept" => "");
+                $this->tmask[] = array("mask"    => ".*", "caption" => "", "accept"  => "");
             }
 
             // main loop
@@ -899,7 +899,7 @@ class task_period_archive extends task_abstract
                         // this group in new (to be created)
                         // do we need one (or both) linked file ? (caption or representation)
                         $err = false;
-                        $flink = array('caption' => null, 'representation' => null);
+                        $flink = array('caption'        => null, 'representation' => null);
 
                         foreach ($flink as $linkName => $v) {
                             if (isset($grpSettings[$linkName]) && $grpSettings[$linkName] != '') {
@@ -1727,7 +1727,7 @@ class task_period_archive extends task_abstract
 
                     $params = array(
                         ':rid_parent' => $grp_rid
-                        , ':rid_child' => $rid
+                        , ':rid_child'  => $rid
                     );
 
                     $stmt = $connbas->prepare($sql);

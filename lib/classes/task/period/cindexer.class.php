@@ -17,13 +17,14 @@ class task_period_cindexer extends task_abstract
 {
     // how to execute indexer (choose in 'run2' method)
     private $method;
+
     const METHOD_FORK = 'METHOD_FORK';
     const METHOD_EXEC = 'METHOD_EXEC';
     const METHOD_PROC_OPEN = 'METHOD_PROC_OPEN';
-
     const ERR_EXECUTABLE_NOT_FOUND = 2;   // aka ENOENT (No such file or directory)
     const ERR_CRASHED = 14;      // aka EFAULT (Bad address)
     const ERR_CANT_FORK = 3;      // aka ESRCH (No such process)
+
     /**
      *
      * @var string
@@ -278,7 +279,7 @@ class task_period_cindexer extends task_abstract
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
-            <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
+        <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
             <input type="text" name="binpath" style="width:300px;" onchange="chgxmltxt(this, 'binpath');" value="">&nbsp;/&nbsp;<?php echo $appname ?>
             <br/>
             <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" onchange="chgxmltxt(this, 'host');" value="">
@@ -289,13 +290,13 @@ class task_period_cindexer extends task_abstract
             <br/>
             <?php echo _('task::cindexer:user') ?>&nbsp;:&nbsp;<input type="text" name="user" style="width:200px;" onchange="chgxmltxt(this, 'user');" value="">
             <br/>
-            <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="password" name="password" style="width:200px;" onchange="chgxmltxt(this, 'password');" value="">
+        <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="password" name="password" style="width:200px;" onchange="chgxmltxt(this, 'password');" value="">
             <br/>
             <br/>
 
             <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:50px;" onchange="chgxmltxt(this, 'socket');" value="">
             <br/>
-            <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" onchange="chgxmltxt(this, 'debugmask');" value="">
+        <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" onchange="chgxmltxt(this, 'debugmask');" value="">
             <br/>
             <br/>
 
@@ -304,20 +305,20 @@ class task_period_cindexer extends task_abstract
                 <br/>
             </div>
 
-            <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" onchange="chgxmltxt(this, 'charset');" value="">
+        <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" onchange="chgxmltxt(this, 'charset');" value="">
             <br/>
 
             <input type="checkbox" name="nolog" onclick="chgxmlck(this, 'nolog');">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
             <br/>
 
-            <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
+        <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
             <br/>
             <br/>
 
             <hr/>
 
             <br/>
-            <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
+        <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
             <input type="checkbox" name="winsvc_run" onclick="chgxmlck(this, 'run');">&nbsp;<?php echo _('task::cindexer:run as application, not as service') ?>
             <br/>
 

@@ -111,10 +111,10 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array();
         foreach ($tasks as $task) {
             $ret[$task->getID()] = array(
-                'id' => $task->getID(),
-                'state' => $task->getState(),
-                'pid' => $task->getPID(),
-                'title' => $task->getTitle(),
+                'id'             => $task->getID(),
+                'state'          => $task->getState(),
+                'pid'            => $task->getPID(),
+                'title'          => $task->getTitle(),
                 'last_exec_time' => $task->getLastExecTime()
             );
         }
@@ -293,7 +293,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($mainCache instanceof \Alchemy\Phrasea\Cache\Cache) {
             $ret['cache']['main'] = array(
-                'type' => $mainCache->getName(),
+                'type'  => $mainCache->getName(),
                 'stats' => $mainCache->getStats()
             );
         } else {
@@ -302,7 +302,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         if ($opCodeCache instanceof \Alchemy\Phrasea\Cache\Cache) {
             $ret['cache']['op_code'] = array(
-                'type' => $mainCache->getName(),
+                'type'  => $mainCache->getName(),
                 'stats' => $opCodeCache->getStats()
             );
         } else {
@@ -323,7 +323,7 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array();
 
         $ret['phraseanet']['version'] = array(
-            'name' => $app['Core']['Version']::getName(),
+            'name'   => $app['Core']['Version']::getName(),
             'number' => $app['Core']['Version']::getNumber(),
         );
 
@@ -349,158 +349,158 @@ class API_V1_adapter extends API_V1_Abstract
 
         return array(
             'global_values' => array(
-                'serverName' => $registry->get('GV_ServerName'),
-                'title' => $registry->get('GV_homeTitle'),
-                'keywords' => $registry->get('GV_metaKeywords'),
+                'serverName'  => $registry->get('GV_ServerName'),
+                'title'       => $registry->get('GV_homeTitle'),
+                'keywords'    => $registry->get('GV_metaKeywords'),
                 'description' => $registry->get('GV_metaDescription'),
-                'httpServer' => array(
-                    'logErrors' => $registry->get('GV_log_errors'),
-                    'phpTimezone' => $registry->get('GV_timezone'),
-                    'siteId' => $registry->get('GV_sit'),
-                    'staticUrl' => $registry->get('GV_STATIC_URL'),
+                'httpServer'  => array(
+                    'logErrors'       => $registry->get('GV_log_errors'),
+                    'phpTimezone'     => $registry->get('GV_timezone'),
+                    'siteId'          => $registry->get('GV_sit'),
+                    'staticUrl'       => $registry->get('GV_STATIC_URL'),
                     'defaultLanguage' => $registry->get('id_GV_default_lng'),
-                    'allowIndexing' => $registry->get('GV_allow_search_engine'),
-                    'modes' => array(
-                        'XsendFile' => $registry->get('GV_modxsendfile'),
-                        'nginxXAccelRedirect' => $registry->get('GV_X_Accel_Redirect'),
+                    'allowIndexing'   => $registry->get('GV_allow_search_engine'),
+                    'modes'           => array(
+                        'XsendFile'                     => $registry->get('GV_modxsendfile'),
+                        'nginxXAccelRedirect'           => $registry->get('GV_X_Accel_Redirect'),
                         'nginxXAccelRedirectMountPoint' => $registry->get('GV_X_Accel_Redirect_mount_point'),
-                        'h264Streaming' => $registry->get('GV_h264_streaming'),
-                        'authTokenDirectory' => $registry->get('GV_mod_auth_token_directory'),
-                        'authTokenDirectoryPath' => $registry->get('GV_mod_auth_token_directory_path'),
-                        'authTokenPassphrase' => $registry->get('GV_mod_auth_token_passphrase'),
+                        'h264Streaming'                 => $registry->get('GV_h264_streaming'),
+                        'authTokenDirectory'            => $registry->get('GV_mod_auth_token_directory'),
+                        'authTokenDirectoryPath'        => $registry->get('GV_mod_auth_token_directory_path'),
+                        'authTokenPassphrase'           => $registry->get('GV_mod_auth_token_passphrase'),
                     ),
-                    'files' => array(
-                        'owner' => $registry->get('GV_filesOwner'),
-                        'group' => $registry->get('GV_filesOwner'),
+                    'files'                         => array(
+                        'owner'       => $registry->get('GV_filesOwner'),
+                        'group'       => $registry->get('GV_filesOwner'),
                     )
                 ),
                 'maintenance' => array(
-                    'alertMessage' => $registry->get('GV_message'),
+                    'alertMessage'   => $registry->get('GV_message'),
                     'displayMessage' => $registry->get('GV_message_on'),
                 ),
-                'webServices' => array(
-                    'googleApi' => $registry->get('GV_google_api'),
-                    'googleAnalyticsId' => $registry->get('GV_googleAnalytics'),
+                'webServices'    => array(
+                    'googleApi'                   => $registry->get('GV_google_api'),
+                    'googleAnalyticsId'           => $registry->get('GV_googleAnalytics'),
                     'googleChromeFrameDisclaimer' => $registry->get('GV_display_gcf'),
-                    'i18nWebService' => $registry->get('GV_i18n_service'),
-                    'recaptacha' => array(
-                        'active' => $registry->get('GV_captchas'),
-                        'publicKey' => $registry->get('GV_captcha_public_key'),
+                    'i18nWebService'              => $registry->get('GV_i18n_service'),
+                    'recaptacha'                  => array(
+                        'active'     => $registry->get('GV_captchas'),
+                        'publicKey'  => $registry->get('GV_captcha_public_key'),
                         'privateKey' => $registry->get('GV_captcha_private_key'),
                     ),
-                    'youtube' => array(
-                        'active' => $registry->get('GV_youtube_api'),
-                        'clientId' => $registry->get('GV_youtube_client_id'),
+                    'youtube'    => array(
+                        'active'       => $registry->get('GV_youtube_api'),
+                        'clientId'     => $registry->get('GV_youtube_client_id'),
                         'clientSecret' => $registry->get('GV_youtube_client_secret'),
-                        'devKey' => $registry->get('GV_youtube_dev_key'),
+                        'devKey'       => $registry->get('GV_youtube_dev_key'),
                     ),
-                    'flickr' => array(
-                        'active' => $registry->get('GV_flickr_api'),
-                        'clientId' => $registry->get('GV_flickr_client_id'),
+                    'flickr'       => array(
+                        'active'       => $registry->get('GV_flickr_api'),
+                        'clientId'     => $registry->get('GV_flickr_client_id'),
                         'clientSecret' => $registry->get('GV_flickr_client_secret'),
                     ),
                     'dailymtotion' => array(
-                        'active' => $registry->get('GV_dailymotion_api'),
-                        'clientId' => $registry->get('GV_dailymotion_client_id'),
+                        'active'       => $registry->get('GV_dailymotion_api'),
+                        'clientId'     => $registry->get('GV_dailymotion_client_id'),
                         'clientSecret' => $registry->get('GV_dailymotion_client_secret'),
                     )
                 ),
-                'navigator' => array(
-                    'active' => $registry->get('GV_client_navigator'),
+                'navigator'    => array(
+                    'active'   => $registry->get('GV_client_navigator'),
                 ),
                 'homepage' => array(
                     'viewType' => $registry->get('GV_home_publi'),
                 ),
-                'report' => array(
+                'report'   => array(
                     'anonymous' => $registry->get('GV_anonymousReport'),
                 ),
-                'events' => array(
-                    'events' => $registry->get('GV_events'),
+                'events'    => array(
+                    'events'        => $registry->get('GV_events'),
                     'notifications' => $registry->get('GV_notifications'),
                 ),
-                'upload' => array(
+                'upload'        => array(
                     'allowedFileExtension' => $registry->get('GV_appletAllowedFileEx'),
                 ),
-                'filesystem' => array(
-                    'web' => $registry->get('GV_base_datapath_web'),
-                    'noWeb' => $registry->get('GV_base_datapath_noweb'),
-                    'thumbnail' => $registry->get('GV_base_dataurl'),
+                'filesystem'           => array(
+                    'web'          => $registry->get('GV_base_datapath_web'),
+                    'noWeb'        => $registry->get('GV_base_datapath_noweb'),
+                    'thumbnail'    => $registry->get('GV_base_dataurl'),
                 ),
                 'searchEngine' => array(
                     'configuration' => array(
-                        'defaultQuery' => $registry->get('GV_defaultQuery'),
+                        'defaultQuery'     => $registry->get('GV_defaultQuery'),
                         'defaultQueryType' => $registry->get('GV_defaultQuery_type'),
                     ),
-                    'sphinx' => array(
-                        'active' => $registry->get('GV_sphinx'),
-                        'host' => $registry->get('GV_sphinx_host'),
-                        'port' => $registry->get('GV_sphinx_port'),
+                    'sphinx'           => array(
+                        'active'       => $registry->get('GV_sphinx'),
+                        'host'         => $registry->get('GV_sphinx_host'),
+                        'port'         => $registry->get('GV_sphinx_port'),
                         'realtimeHost' => $registry->get('GV_sphinx_rt_host'),
                         'realtimePort' => $registry->get('GV_sphinx_rt_port'),
                     ),
-                    'phrasea' => array(
+                    'phrasea'      => array(
                         'minChar' => $registry->get('GV_min_letters_truncation'),
-                        'sort' => $registry->get('GV_phrasea_sort'),
+                        'sort'    => $registry->get('GV_phrasea_sort'),
                     ),
                 ),
-                'binary' => array(
-                    'phpCli' => $registry->get('GV_cli'),
-                    'phpIni' => $registry->get('GV_PHP_INI'),
-                    'imagick' => $registry->get('GV_imagick'),
-                    'swfExtract' => $registry->get('GV_swf_extract'),
-                    'pdf2swf' => $registry->get('GV_pdf2swf'),
-                    'swfRender' => $registry->get('GV_swf_render'),
-                    'unoconv' => $registry->get('GV_unoconv'),
-                    'ffmpeg' => $registry->get('GV_ffmpeg'),
-                    'mp4box' => $registry->get('GV_mp4box'),
-                    'pdftotext' => $registry->get('GV_pdftotext'),
-                    'pdfmaxpages' => $registry->get('GV_pdfmaxpages'),),
+                'binary'  => array(
+                    'phpCli'            => $registry->get('GV_cli'),
+                    'phpIni'            => $registry->get('GV_PHP_INI'),
+                    'imagick'           => $registry->get('GV_imagick'),
+                    'swfExtract'        => $registry->get('GV_swf_extract'),
+                    'pdf2swf'           => $registry->get('GV_pdf2swf'),
+                    'swfRender'         => $registry->get('GV_swf_render'),
+                    'unoconv'           => $registry->get('GV_unoconv'),
+                    'ffmpeg'            => $registry->get('GV_ffmpeg'),
+                    'mp4box'            => $registry->get('GV_mp4box'),
+                    'pdftotext'         => $registry->get('GV_pdftotext'),
+                    'pdfmaxpages'       => $registry->get('GV_pdfmaxpages'),),
                 'mainConfiguration' => array(
-                    'adminMail' => $registry->get('GV_adminMail'),
+                    'adminMail'          => $registry->get('GV_adminMail'),
                     'viewBasAndCollName' => $registry->get('GV_view_bas_and_coll'),
-                    'chooseExportTitle' => $registry->get('GV_choose_export_title'),
+                    'chooseExportTitle'  => $registry->get('GV_choose_export_title'),
                     'defaultExportTitle' => $registry->get('GV_default_export_title'),
-                    'socialTools' => $registry->get('GV_social_tools'),),
-                'modules' => array(
-                    'thesaurus' => $registry->get('GV_thesaurus'),
-                    'storyMode' => $registry->get('GV_multiAndReport'),
-                    'docSubsitution' => $registry->get('GV_seeOngChgDoc'),
+                    'socialTools'        => $registry->get('GV_social_tools'),),
+                'modules'            => array(
+                    'thesaurus'          => $registry->get('GV_thesaurus'),
+                    'storyMode'          => $registry->get('GV_multiAndReport'),
+                    'docSubsitution'     => $registry->get('GV_seeOngChgDoc'),
                     'subdefSubstitution' => $registry->get('GV_seeNewThumb'),),
-                'email' => array(
+                'email'              => array(
                     'defaultMailAddress' => $registry->get('GV_defaulmailsenderaddr'),
-                    'smtp' => array(
-                        'active' => $registry->get('GV_smtp'),
-                        'auth' => $registry->get('GV_smtp_auth'),
-                        'host' => $registry->get('GV_smtp_host'),
-                        'port' => $registry->get('GV_smtp_port'),
-                        'secure' => $registry->get('GV_smtp_secure'),
-                        'user' => $registry->get('GV_smtp_user'),
+                    'smtp'               => array(
+                        'active'   => $registry->get('GV_smtp'),
+                        'auth'     => $registry->get('GV_smtp_auth'),
+                        'host'     => $registry->get('GV_smtp_host'),
+                        'port'     => $registry->get('GV_smtp_port'),
+                        'secure'   => $registry->get('GV_smtp_secure'),
+                        'user'     => $registry->get('GV_smtp_user'),
                         'password' => $registry->get('GV_smtp_password'),
                     ),
                 ),
-                'ftp' => array(
-                    'active' => $registry->get('GV_activeFTP'),
+                'ftp'      => array(
+                    'active'        => $registry->get('GV_activeFTP'),
                     'activeForUser' => $registry->get('GV_ftp_for_user'),),
-                'client' => array(
-                    'maxSizeDownload' => $registry->get('GV_download_max'),
-                    'tabSearchMode' => $registry->get('GV_ong_search'),
-                    'tabAdvSearchPosition' => $registry->get('GV_ong_advsearch'),
-                    'tabTopicsPosition' => $registry->get('GV_ong_topics'),
-                    'tabOngActifPosition' => $registry->get('GV_ong_actif'),
-                    'renderTopicsMode' => $registry->get('GV_client_render_topics'),
-                    'displayRolloverPreview' => $registry->get('GV_rollover_reg_preview'),
-                    'displayRolloverBasket' => $registry->get('GV_rollover_chu'),
-                    'collRenderMode' => $registry->get('GV_client_coll_ckbox'),
-                    'viewSizeBaket' => $registry->get('GV_viewSizeBaket'),
+                'client'        => array(
+                    'maxSizeDownload'         => $registry->get('GV_download_max'),
+                    'tabSearchMode'           => $registry->get('GV_ong_search'),
+                    'tabAdvSearchPosition'    => $registry->get('GV_ong_advsearch'),
+                    'tabTopicsPosition'       => $registry->get('GV_ong_topics'),
+                    'tabOngActifPosition'     => $registry->get('GV_ong_actif'),
+                    'renderTopicsMode'        => $registry->get('GV_client_render_topics'),
+                    'displayRolloverPreview'  => $registry->get('GV_rollover_reg_preview'),
+                    'displayRolloverBasket'   => $registry->get('GV_rollover_chu'),
+                    'collRenderMode'          => $registry->get('GV_client_coll_ckbox'),
+                    'viewSizeBaket'           => $registry->get('GV_viewSizeBaket'),
                     'clientAutoShowProposals' => $registry->get('GV_clientAutoShowProposals'),
-                    'needAuth2DL' => $registry->get('GV_needAuth2DL'),),
-                'inscription' => array(
+                    'needAuth2DL'             => $registry->get('GV_needAuth2DL'),),
+                'inscription'             => array(
                     'autoSelectDB' => $registry->get('GV_autoselectDB'),
                     'autoRegister' => $registry->get('GV_autoregister'),
                 ),
-                'push' => array(
+                'push'         => array(
                     'validationReminder' => $registry->get('GV_validation_reminder'),
-                    'expirationValue' => $registry->get('GV_val_expiration'),
+                    'expirationValue'    => $registry->get('GV_val_expiration'),
                 ),
             )
         );
@@ -648,8 +648,8 @@ class API_V1_adapter extends API_V1_Abstract
         foreach ($fields as $field) {
             $ret[$field->get_meta_struct_id()] = array(
                 'meta_structure_id' => $field->get_meta_struct_id(),
-                'name' => $field->get_name(),
-                'value' => $field->get_serialized_values(";"),
+                'name'              => $field->get_name(),
+                'value'             => $field->get_serialized_values(";"),
             );
         }
         $result->set_datas($ret);
@@ -688,16 +688,16 @@ class API_V1_adapter extends API_V1_Abstract
             'status' => is_array($request->get('status')) ? $request->get('status') : array(),
             'bases' => is_array($request->get('bases')) ? $request->get('bases') : array(),
             'search_type' => $search_type,
-            'recordtype' => $record_type,
-            'datemin' => $request->get('datemin') ? : '',
-            'datemax' => $request->get('datemax') ? : '',
-            'datefield' => $request->get('datefield') ? : '',
-            'sort' => $request->get('sort') ? : '',
-            'ord' => $request->get('ord') ? : '',
-            'stemme' => $request->get('stemme') ? : '',
-            'per_page' => $request->get('per_page') ? : 10,
-            'query' => $request->get('query') ? : '',
-            'page' => (int) ($request->get('page') ? : 0),
+            'recordtype'  => $record_type,
+            'datemin'     => $request->get('datemin') ? : '',
+            'datemax'     => $request->get('datemax') ? : '',
+            'datefield'   => $request->get('datefield') ? : '',
+            'sort'        => $request->get('sort') ? : '',
+            'ord'         => $request->get('ord') ? : '',
+            'stemme'      => $request->get('stemme') ? : '',
+            'per_page'    => $request->get('per_page') ? : 10,
+            'query'       => $request->get('query') ? : '',
+            'page'        => (int) ($request->get('page') ? : 0),
         );
 
         if (is_array($request->get('bases')) === false) {
@@ -762,16 +762,16 @@ class API_V1_adapter extends API_V1_Abstract
         $search_result = $search_engine->query_per_page($params['query'], $params["page"], $perPage);
 
         $ret = array(
-            'total_pages' => $search_result->get_total_pages(),
-            'current_page' => $search_result->get_current_page(),
+            'total_pages'       => $search_result->get_total_pages(),
+            'current_page'      => $search_result->get_current_page(),
             'available_results' => $search_result->get_count_available_results(),
-            'total_results' => $search_result->get_count_total_results(),
-            'error' => $search_result->get_error(),
-            'warning' => $search_result->get_warning(),
-            'query_time' => $search_result->get_query_time(),
-            'search_indexes' => $search_result->get_search_indexes(),
-            'suggestions' => $search_result->get_suggestions(),
-            'results' => array(),
+            'total_results'     => $search_result->get_count_total_results(),
+            'error'             => $search_result->get_error(),
+            'warning'           => $search_result->get_warning(),
+            'query_time'        => $search_result->get_query_time(),
+            'search_indexes'    => $search_result->get_search_indexes(),
+            'suggestions'       => $search_result->get_suggestions(),
+            'results'           => array(),
             'query' => $search_engine->get_query(),
         );
 
@@ -1178,9 +1178,9 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array(
             'basket_element_id' => $basket_element->getId(),
-            'order' => $basket_element->getOrd(),
-            'record' => $this->list_record($basket_element->getRecord()),
-            'validation_item' => ! ! $basket_element->getValidationDatas(),
+            'order'             => $basket_element->getOrd(),
+            'record'            => $this->list_record($basket_element->getRecord()),
+            'validation_item'   => ! ! $basket_element->getValidationDatas(),
         );
 
         if ($basket_element->getValidationDatas()) {
@@ -1191,12 +1191,12 @@ class API_V1_adapter extends API_V1_Abstract
                 $user = $validation_datas->getParticipant()->getUser();
                 /* @var $validation_datas Entities\ValidationData */
                 $choices[$user->get_id()] = array(
-                    'usr_id' => $user->get_id(),
-                    'usr_name' => $user->get_display_name(),
-                    'is_mine' => $user->get_id() == $this->core->getAuthenticatedUser()->get_id(),
-                    'agreement' => $validation_datas->getAgreement(),
+                    'usr_id'     => $user->get_id(),
+                    'usr_name'   => $user->get_display_name(),
+                    'is_mine'    => $user->get_id() == $this->core->getAuthenticatedUser()->get_id(),
+                    'agreement'  => $validation_datas->getAgreement(),
                     'updated_on' => $validation_datas->getUpdated()->format(DATE_ATOM),
-                    'note' => $validation_datas->getNote(),
+                    'note'       => $validation_datas->getNote(),
                 );
 
                 if ($user->get_id() == $this->core->getAuthenticatedUser()->get_id()) {
@@ -1339,10 +1339,10 @@ class API_V1_adapter extends API_V1_Abstract
         $per_page = (($per_page >= 1) && ($per_page <= 20)) ? $per_page : 5;
 
         $datas = array(
-            'feed' => $this->list_publication($feed, $user),
+            'feed'         => $this->list_publication($feed, $user),
             'offset_start' => $offset_start,
-            'per_page' => $per_page,
-            'entries' => $this->list_publications_entries($feed, $offset_start, $per_page),
+            'per_page'     => $per_page,
+            'entries'      => $this->list_publications_entries($feed, $offset_start, $per_page),
         );
 
         $result->set_datas($datas);
@@ -1360,15 +1360,15 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_publication(Feed_Adapter $feed, $user)
     {
         return array(
-            'id' => $feed->get_id(),
-            'title' => $feed->get_title(),
-            'subtitle' => $feed->get_subtitle(),
+            'id'            => $feed->get_id(),
+            'title'         => $feed->get_title(),
+            'subtitle'      => $feed->get_subtitle(),
             'total_entries' => $feed->get_count_total_entries(),
-            'icon' => $feed->get_icon_url(),
-            'public' => $feed->is_public(),
-            'is_mine' => $feed->is_owner($user),
-            'created_on' => $feed->get_created_on()->format(DATE_ATOM),
-            'updated_on' => $feed->get_updated_on()->format(DATE_ATOM),
+            'icon'          => $feed->get_icon_url(),
+            'public'        => $feed->is_public(),
+            'is_mine'       => $feed->is_owner($user),
+            'created_on'    => $feed->get_created_on()->format(DATE_ATOM),
+            'updated_on'    => $feed->get_updated_on()->format(DATE_ATOM),
         );
     }
 
@@ -1392,7 +1392,7 @@ class API_V1_adapter extends API_V1_Abstract
 
         return array(
             'offset_start' => $offset_start
-            , 'entries' => $out
+            , 'entries'      => $out
         );
     }
 
@@ -1411,12 +1411,12 @@ class API_V1_adapter extends API_V1_Abstract
 
         return array(
             'author_email' => $entry->get_author_email(),
-            'author_name' => $entry->get_author_name(),
-            'created_on' => $entry->get_created_on()->format(DATE_ATOM),
-            'updated_on' => $entry->get_updated_on()->format(DATE_ATOM),
-            'title' => $entry->get_title(),
-            'subtitle' => $entry->get_subtitle(),
-            'items' => $items,
+            'author_name'  => $entry->get_author_name(),
+            'created_on'   => $entry->get_created_on()->format(DATE_ATOM),
+            'updated_on'   => $entry->get_updated_on()->format(DATE_ATOM),
+            'title'        => $entry->get_title(),
+            'subtitle'     => $entry->get_subtitle(),
+            'items'        => $items,
         );
     }
 
@@ -1430,7 +1430,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $datas = array(
             'item_id' => $item->get_id()
-            , 'record' => $this->list_record($item->get_record())
+            , 'record'  => $this->list_record($item->get_record())
         );
 
         return $datas;
@@ -1478,13 +1478,13 @@ class API_V1_adapter extends API_V1_Abstract
             $permalink = null;
 
         return array(
-            'permalink' => $permalink,
-            'height' => $media->get_height(),
-            'width' => $media->get_width(),
-            'filesize' => $media->get_size(),
-            'devices' => $media->getDevices(),
+            'permalink'   => $permalink,
+            'height'      => $media->get_height(),
+            'width'       => $media->get_width(),
+            'filesize'    => $media->get_size(),
+            'devices'     => $media->getDevices(),
             'player_type' => $media->get_type(),
-            'mime_type' => $media->get_mime(),
+            'mime_type'   => $media->get_mime(),
         );
     }
 
@@ -1498,13 +1498,13 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_permalink(media_Permalink_Adapter &$permalink, registryInterface &$registry)
     {
         return array(
-            'created_on' => $permalink->get_created_on()->format(DATE_ATOM),
-            'id' => $permalink->get_id(),
-            'is_activated' => $permalink->get_is_activated(),
-            'label' => $permalink->get_label(),
+            'created_on'    => $permalink->get_created_on()->format(DATE_ATOM),
+            'id'            => $permalink->get_id(),
+            'is_activated'  => $permalink->get_is_activated(),
+            'label'         => $permalink->get_label(),
             'last_modified' => $permalink->get_last_modified()->format(DATE_ATOM),
-            'page_url' => $permalink->get_page($registry),
-            'url' => $permalink->get_url($registry)
+            'page_url'      => $permalink->get_page($registry),
+            'url'           => $permalink->get_url($registry)
         );
     }
 
@@ -1520,7 +1520,7 @@ class API_V1_adapter extends API_V1_Abstract
         $status = strrev($status);
         $ret = array();
         foreach ($databox->get_statusbits() as $bit => $status_datas) {
-            $ret[$bit] = array('bit' => $bit, 'state' => ! ! substr($status, ($bit - 1), 1));
+            $ret[$bit] = array('bit'   => $bit, 'state' => ! ! substr($status, ($bit - 1), 1));
         }
 
         return $ret;
@@ -1557,10 +1557,10 @@ class API_V1_adapter extends API_V1_Abstract
          *        dans un cas multi
          */
         return array(
-            'meta_id' => $value->getId(),
+            'meta_id'           => $value->getId(),
             'meta_structure_id' => $field->get_meta_struct_id(),
-            'name' => $field->get_name(),
-            'value' => $value->getValue(),
+            'name'              => $field->get_name(),
+            'value'             => $value->getValue(),
         );
     }
 
@@ -1573,13 +1573,13 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_basket(\Entities\Basket $basket)
     {
         $ret = array(
-            'created_on' => $basket->getCreated()->format(DATE_ATOM),
-            'description' => (string) $basket->getDescription(),
-            'name' => $basket->getName(),
+            'created_on'    => $basket->getCreated()->format(DATE_ATOM),
+            'description'   => (string) $basket->getDescription(),
+            'name'          => $basket->getName(),
             'pusher_usr_id' => $basket->getPusherId(),
-            'ssel_id' => $basket->getId(),
-            'updated_on' => $basket->getUpdated()->format(DATE_ATOM),
-            'unread' => ! $basket->getIsRead(),
+            'ssel_id'       => $basket->getId(),
+            'updated_on'    => $basket->getUpdated()->format(DATE_ATOM),
+            'unread'        => ! $basket->getIsRead(),
         );
 
         if ($basket->getValidation()) {
@@ -1590,10 +1590,10 @@ class API_V1_adapter extends API_V1_Abstract
                 $user = $participant->getUser();
 
                 $users[$user->get_id()] = array(
-                    'usr_id' => $user->get_id(),
-                    'usr_name' => $user->get_display_name(),
-                    'confirmed' => $participant->getIsConfirmed(),
-                    'can_agree' => $participant->getCanAgree(),
+                    'usr_id'         => $user->get_id(),
+                    'usr_name'       => $user->get_display_name(),
+                    'confirmed'      => $participant->getIsConfirmed(),
+                    'can_agree'      => $participant->getCanAgree(),
                     'can_see_others' => $participant->getCanSeeOthers(),
                 );
             }
@@ -1607,11 +1607,11 @@ class API_V1_adapter extends API_V1_Abstract
 
             $ret = array_merge(
                 array(
-                'validation_users' => $users,
-                'validation_end_date' => $expires_on_atom,
-                'validation_infos' => $basket->getValidation()->getValidationString($user),
+                'validation_users'     => $users,
+                'validation_end_date'  => $expires_on_atom,
+                'validation_infos'     => $basket->getValidation()->getValidationString($user),
                 'validation_confirmed' => $basket->getValidation()->getParticipant($user)->getIsConfirmed(),
-                'mine' => $basket->getValidation()->isInitiator($user),
+                'mine'                 => $basket->getValidation()->isInitiator($user),
                 ), $ret
             );
         }
@@ -1628,21 +1628,21 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_record(record_adapter $record)
     {
         return array(
-            'databox_id' => $record->get_sbas_id(),
-            'record_id' => $record->get_record_id(),
-            'mime_type' => $record->get_mime(),
-            'title' => $record->get_title(),
-            'original_name' => $record->get_original_name(),
-            'last_modification' => $record->get_modification_date()->format(DATE_ATOM),
-            'created_on' => $record->get_creation_date()->format(DATE_ATOM),
-            'collection_id' => phrasea::collFromBas($record->get_base_id()),
-            'sha256' => $record->get_sha256(),
-            'thumbnail' => $this->list_embedable_media(
+            'databox_id'             => $record->get_sbas_id(),
+            'record_id'              => $record->get_record_id(),
+            'mime_type'              => $record->get_mime(),
+            'title'                  => $record->get_title(),
+            'original_name'          => $record->get_original_name(),
+            'last_modification'      => $record->get_modification_date()->format(DATE_ATOM),
+            'created_on'             => $record->get_creation_date()->format(DATE_ATOM),
+            'collection_id'          => phrasea::collFromBas($record->get_base_id()),
+            'sha256'                 => $record->get_sha256(),
+            'thumbnail'              => $this->list_embedable_media(
                 $record->get_thumbnail(), registry::get_instance()
             ),
             'technical_informations' => $record->get_technical_infos(),
-            'phrasea_type' => $record->get_type(),
-            'uuid' => $record->get_uuid(),
+            'phrasea_type'           => $record->get_type(),
+            'uuid'                   => $record->get_uuid(),
         );
     }
 
@@ -1671,7 +1671,7 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array();
         foreach ($databox->get_cgus() as $locale => $array_terms) {
-            $ret[$locale] = array('locale' => $locale, 'terms' => $array_terms['value']);
+            $ret[$locale] = array('locale' => $locale, 'terms'  => $array_terms['value']);
         }
 
         return $ret;
@@ -1719,9 +1719,9 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_collection(collection $collection)
     {
         $ret = array(
-            'base_id' => $collection->get_base_id(),
-            'coll_id' => $collection->get_coll_id(),
-            'name' => $collection->get_name(),
+            'base_id'       => $collection->get_base_id(),
+            'coll_id'       => $collection->get_coll_id(),
+            'name'          => $collection->get_name(),
             'record_amount' => $collection->get_record_amount(),
         );
 
@@ -1739,13 +1739,13 @@ class API_V1_adapter extends API_V1_Abstract
         $ret = array();
         foreach ($status as $n => $datas) {
             $ret[$n] = array(
-                'bit' => $n,
-                'label_on' => $datas['labelon'],
-                'label_off' => $datas['labeloff'],
-                'img_on' => $datas['img_on'],
-                'img_off' => $datas['img_off'],
+                'bit'        => $n,
+                'label_on'   => $datas['labelon'],
+                'label_off'  => $datas['labeloff'],
+                'img_on'     => $datas['img_on'],
+                'img_off'    => $datas['img_off'],
                 'searchable' => $datas['searchable'],
-                'printable' => $datas['printable'],
+                'printable'  => $datas['printable'],
             );
         }
 
@@ -1777,18 +1777,18 @@ class API_V1_adapter extends API_V1_Abstract
     protected function list_databox_metadata_field_properties(databox_field $databox_field)
     {
         $ret = array(
-            'id' => $databox_field->get_id(),
-            'namespace' => $databox_field->get_metadata_namespace(),
-            'source' => $databox_field->get_metadata_source(),
-            'tagname' => $databox_field->get_metadata_tagname(),
-            'name' => $databox_field->get_name(),
-            'separator' => $databox_field->get_separator(),
+            'id'               => $databox_field->get_id(),
+            'namespace'        => $databox_field->get_metadata_namespace(),
+            'source'           => $databox_field->get_metadata_source(),
+            'tagname'          => $databox_field->get_metadata_tagname(),
+            'name'             => $databox_field->get_name(),
+            'separator'        => $databox_field->get_separator(),
             'thesaurus_branch' => $databox_field->get_tbranch(),
-            'type' => $databox_field->get_type(),
-            'indexable' => $databox_field->is_indexable(),
-            'multivalue' => $databox_field->is_multi(),
-            'readonly' => $databox_field->is_readonly(),
-            'required' => $databox_field->is_required(),
+            'type'             => $databox_field->get_type(),
+            'indexable'        => $databox_field->is_indexable(),
+            'multivalue'       => $databox_field->is_multi(),
+            'readonly'         => $databox_field->is_readonly(),
+            'required'         => $databox_field->is_required(),
         );
 
         return $ret;

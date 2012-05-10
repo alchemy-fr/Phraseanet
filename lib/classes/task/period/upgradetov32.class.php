@@ -160,7 +160,7 @@ class task_period_upgradetov32 extends task_abstract
                         }
                     }
                     try {
-                        $stmt_original->execute(array(':originalname' => $value, ':record_id' => $row['record_id']));
+                        $stmt_original->execute(array(':originalname' => $value, ':record_id'    => $row['record_id']));
                     } catch (Exception $e) {
 
                     }
@@ -200,8 +200,8 @@ class task_period_upgradetov32 extends task_abstract
 
                             $stmt->execute(array(
                                 ':record_id' => $record->get_record_id()
-                                , ':name' => $name
-                                , ':value' => $value
+                                , ':name'      => $name
+                                , ':value'     => $value
                             ));
                         }
                     } catch (Exception $e) {
@@ -271,8 +271,8 @@ class task_period_upgradetov32 extends task_abstract
 
                                     $metadatas[$databox_field->get_id()] = array(
                                         'meta_struct_id' => $databox_field->get_id()
-                                        , 'meta_id' => null
-                                        , 'value' => $value
+                                        , 'meta_id'        => null
+                                        , 'value'          => $value
                                     );
                                 }
                             }

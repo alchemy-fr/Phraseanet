@@ -83,7 +83,7 @@ class task_period_upgradetov31 extends task_abstract
                     $sql = 'UPDATE record SET uuid = :uuid WHERE record_id = :record_id';
 
                     $params = array(
-                        ':uuid' => $uuid
+                        ':uuid'      => $uuid
                         , ':record_id' => $row['record_id']
                     );
                     $stmt = $connbas->prepare($sql);

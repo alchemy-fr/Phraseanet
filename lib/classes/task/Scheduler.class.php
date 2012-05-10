@@ -23,6 +23,7 @@ class task_Scheduler
     const METHOD_FORK = 'METHOD_FORK';
     const METHOD_PROC_OPEN = 'METHOD_PROC_OPEN';
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
+
     private $method;
     private $input;
     protected $output;
@@ -51,7 +52,7 @@ class task_Scheduler
         return appbox::get_instance(\bootstrap::getCore())->get_connection();
     }
 
-    public function run($input=null, OutputInterface $output = null)
+    public function run($input = null, OutputInterface $output = null)
     {
         require_once dirname(__FILE__) . '/../../bootstrap.php';
         $this->input = $input;
@@ -249,12 +250,12 @@ class task_Scheduler
                     }
 
                     $taskPoll[$tkey] = array(
-                        "task" => $task,
+                        "task"           => $task,
                         "current_status" => $status,
-                        "cmd" => $cmd,
-                        "args" => $args,
-                        "killat" => null,
-                        "sigterm_sent" => false
+                        "cmd"            => $cmd,
+                        "args"           => $args,
+                        "killat"         => null,
+                        "sigterm_sent"   => false
                     );
                     if ($this->method == self::METHOD_PROC_OPEN) {
                         $taskPoll[$tkey]['process'] = NULL;
