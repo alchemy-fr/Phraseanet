@@ -323,17 +323,6 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                     $videoEntry->setVideoPrivate();
                 }
 
-                $videoEntry->setVideoDescription(trim($datas['description']));
-                $videoEntry->setVideoCategory(trim($datas['category']));
-                $videoEntry->setVideoTags(trim($datas['tags']));
-                $videoEntry->setVideoTitle(trim($datas['title']));
-
-                if ($params["privacy"] == "public") {
-                    $videoEntry->setVideoPublic();
-                } else {
-                    $videoEntry->setVideoPrivate();
-                }
-
                 $this->_api->updateEntry($videoEntry, $videoEntry->getEditLink()->getHref());
                 break;
 
