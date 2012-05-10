@@ -95,19 +95,19 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $em->flush();
 
 
-        //attach JSON
-        $this->client->request('POST', $route, array('stories' => $story->get_serialize_key()), array(), array(
-            "HTTP_ACCEPT" => "application/json")
-        );
+    //attach JSON
+    $this->client->request('POST', $route, array('stories' => array($story->get_serialize_key())), array(), array(
+        "HTTP_ACCEPT" => "application/json")
+    );
 
         $response = $this->client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        //test already attached
-        $this->client->request('POST', $route, array('stories' => $story->get_serialize_key()), array(), array(
-            "HTTP_ACCEPT" => "application/json")
-        );
+    //test already attached
+    $this->client->request('POST', $route, array('stories' => array($story->get_serialize_key())), array(), array(
+        "HTTP_ACCEPT" => "application/json")
+    );
 
         $response = $this->client->getResponse();
 

@@ -1,0 +1,29 @@
+Entities\LazaretSession:
+  type: entity
+  table: LazaretSessions
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    usr_id:
+      type: integer
+      nullable: true
+    created:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+  oneToMany:
+    files:
+      targetEntity: LazaretFile
+      mappedBy: session
+      cascade: ["ALL"]
+      orderBy:
+        id: ASC
