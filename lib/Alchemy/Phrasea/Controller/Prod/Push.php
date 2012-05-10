@@ -253,6 +253,9 @@ class Push implements ControllerProviderInterface
                               , \ACL::GRANT_ACTION_PUSH
                       );
                     }
+
+                    $appbox->get_session()->get_logger($BasketElement->getRecord()->get_databox())
+                          ->log($BasketElement->getRecord(), \Session_Logger::EVENT_VALIDATE, $user_receiver->get_id(), '');
                   }
 
                   $em->flush();
@@ -303,6 +306,7 @@ class Push implements ControllerProviderInterface
     $controllers->post('/validate/', function(Application $app)
             {
               $request = $app['request'];
+              $appbox = \appbox::get_instance($app['Core']);
 
               $ret = array(
                   'success' => false,
@@ -321,7 +325,7 @@ class Push implements ControllerProviderInterface
                 $pusher = new RecordHelper\Push($app['Core'], $app['request']);
                 $user = $app['Core']->getAuthenticatedUser();
 
-                $events_manager = \eventsmanager_broker::getInstance(\appbox::get_instance($app['Core']), $app['Core']);
+                $events_manager = \eventsmanager_broker::getInstance($appbox, $app['Core']);
 
                 $repository = $em->getRepository('\Entities\Basket');
 
@@ -397,9 +401,6 @@ class Push implements ControllerProviderInterface
                   $Validation = $Basket->getValidation();
                 }
 
-
-                $appbox = \appbox::get_instance($app['Core']);
-
                 $found = false;
                 foreach ($participants as $key => $participant)
                 {
@@ -444,7 +445,7 @@ class Push implements ControllerProviderInterface
                   }
                   catch (\Exception_NotFound $e)
                   {
-                    
+
                   }
 
                   $Participant = new \Entities\ValidationParticipant();
@@ -482,6 +483,9 @@ class Push implements ControllerProviderInterface
 
                     $em->merge($BasketElement);
                     $em->persist($ValidationData);
+
+                    $appbox->get_session()->get_logger($BasketElement->getRecord()->get_databox())
+                      ->log($BasketElement->getRecord(), \Session_Logger::EVENT_PUSH, $participant_user->get_id(), '');
 
                     $Participant->addValidationData($ValidationData);
                   }
@@ -641,7 +645,7 @@ class Push implements ControllerProviderInterface
               }
               catch (\Exception $e)
               {
-                
+
               }
 
               if (!$user instanceof \User_Adapter)
