@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
 class RangeTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Range
      */
@@ -88,5 +87,4 @@ class RangeTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('Rangers', $this->object->getDisplayName());
     }
-
 }

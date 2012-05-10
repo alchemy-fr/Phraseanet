@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class FlexPaperTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var FlexPaper
      */
@@ -38,5 +37,4 @@ class FlexPaperTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Flash', $this->object->getMediaAlchemystSpec());
     }
-
 }

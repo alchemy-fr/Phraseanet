@@ -55,6 +55,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     public function tearDown()
     {
         $this->unsetToken();
+        parent::tearDown();
     }
 
     public static function setUpBeforeClass()
@@ -91,6 +92,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             self::$adminAccount->delete();
             self::$adminApplication->delete();
         }
+        parent::tearDownAfterClass();
     }
 
     public function createApplication()
@@ -1429,8 +1431,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
             $this->assertTrue(is_object($record->technical_informations));
 
         foreach ($record->technical_informations as $key => $value) {
-            if(is_string($value))
-                $this->assertFalse(ctype_digit ($value));
+            if (is_string($value))
+                $this->assertFalse(ctype_digit($value));
             else
                 $this->assertTrue(is_int($value));
         }

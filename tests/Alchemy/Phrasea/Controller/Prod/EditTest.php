@@ -2,93 +2,73 @@
 
 require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
-
 class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
+    protected $client;
+    protected static $need_records = 1;
 
-  /**
-   * As controllers use WebTestCase, it requires a client
-   */
-  protected $client;
+    public function createApplication()
+    {
+        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
+    }
 
-  /**
-   * If the controller tests require some records, specify it her
-   *
-   * For example, this will loacd 2 records
-   * (self::$record_1 and self::$record_2) :
-   *
-   * $need_records = 2;
-   *
-   */
-  protected static $need_records = 1;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->client = $this->createClient();
+    }
 
-  /**
-   * The application loader
-   */
-  public function createApplication()
-  {
-    return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-  }
+    /**
+     * Default route test
+     */
+    public function testRouteSlash()
+    {
+        $this->client->request('POST', '/records/edit/', array('lst' => self::$record_1->get_serialize_key()));
 
-  public function setUp()
-  {
-    parent::setUp();
-    $this->client = $this->createClient();
-  }
+        $response = $this->client->getResponse();
 
-  /**
-   * Default route test
-   */
-  public function testRouteSlash()
-  {
-    $this->client->request('POST', '/records/edit/', array('lst' => self::$record_1->get_serialize_key()));
+        $this->assertTrue($response->isOk());
+    }
 
-    $response = $this->client->getResponse();
+    public function testApply()
+    {
+        $this->client->request('POST', '/records/edit/apply/', array('lst' => self::$record_1->get_serialize_key()));
 
-    $this->assertTrue($response->isOk());
-  }
+        $response = $this->client->getResponse();
 
-  public function testApply()
-  {
-    $this->client->request('POST', '/records/edit/apply/', array('lst' => self::$record_1->get_serialize_key()));
+        $this->assertTrue($response->isOk());
+    }
 
-    $response = $this->client->getResponse();
+    public function testVocabulary()
+    {
+        $this->client->request('GET', '/records/edit/vocabulary/Zanzibar/');
 
-    $this->assertTrue($response->isOk());
-  }
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+        $datas = json_decode($response->getContent());
+        $this->assertFalse($datas->success);
 
+        $this->client->request('GET', '/records/edit/vocabulary/User/');
 
-  public function testVocabulary()
-  {
-    $this->client->request('GET', '/records/edit/vocabulary/Zanzibar/');
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+        $datas = json_decode($response->getContent());
+        $this->assertFalse($datas->success);
 
-    $response = $this->client->getResponse();
-    $this->assertTrue($response->isOk());
-    $datas = json_decode($response->getContent());
-    $this->assertFalse($datas->success);
+        $params = array('sbas_id' => self::$collection->get_sbas_id());
+        $this->client->request('GET', '/records/edit/vocabulary/Zanzibar/', $params);
 
-    $this->client->request('GET', '/records/edit/vocabulary/User/');
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+        $datas = json_decode($response->getContent());
+        $this->assertFalse($datas->success);
 
-    $response = $this->client->getResponse();
-    $this->assertTrue($response->isOk());
-    $datas = json_decode($response->getContent());
-    $this->assertFalse($datas->success);
+        $params = array('sbas_id' => self::$collection->get_sbas_id());
+        $this->client->request('GET', '/records/edit/vocabulary/User/', $params);
 
-    $params = array('sbas_id'=>self::$collection->get_sbas_id());
-    $this->client->request('GET', '/records/edit/vocabulary/Zanzibar/', $params);
-
-    $response = $this->client->getResponse();
-    $this->assertTrue($response->isOk());
-    $datas = json_decode($response->getContent());
-    $this->assertFalse($datas->success);
-
-    $params = array('sbas_id'=>self::$collection->get_sbas_id());
-    $this->client->request('GET', '/records/edit/vocabulary/User/', $params);
-
-    $response = $this->client->getResponse();
-    $this->assertTrue($response->isOk());
-    $datas = json_decode($response->getContent());
-    $this->assertTrue($datas->success);
-  }
-
+        $response = $this->client->getResponse();
+        $this->assertTrue($response->isOk());
+        $datas = json_decode($response->getContent());
+        $this->assertTrue($datas->success);
+    }
 }

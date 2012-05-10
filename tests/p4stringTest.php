@@ -71,7 +71,7 @@ class p4stringTest extends PhraseanetPHPUnitAbstract
 
     public function testCleanTags()
     {
-        $string  = ' yuh i jkn lkk jk ';
+        $string = ' yuh i jkn lkk jk ';
         $this->assertEquals($string, p4string::cleanTags($string));
         $stringb = ' <a>yuh i jkn lkk jk</a> ';
         $this->assertEquals($string, p4string::cleanTags($stringb));
@@ -139,6 +139,4 @@ class p4stringTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals('00:00', p4string::format_seconds(0));
         $this->assertEquals('', p4string::format_seconds(-15));
     }
-
 }
-

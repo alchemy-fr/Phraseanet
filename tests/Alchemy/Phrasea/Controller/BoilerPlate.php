@@ -21,49 +21,48 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class BoilerPlate extends \PhraseanetWebTestCaseAbstract
 {
+    /**
+     * As controllers use WebTestCase, it requires a client
+     */
+    protected $client;
 
-  /**
-   * As controllers use WebTestCase, it requires a client
-   */
-  protected $client;
-  /**
-   * If the controller tests require some records, specify it her
-   *
-   * For example, this will loacd 2 records
-   * (self::$record_1 and self::$record_2) :
-   *
-   * $need_records = 2;
-   *
-   */
-  protected static $need_records = false;
+    /**
+     * If the controller tests require some records, specify it her
+     *
+     * For example, this will loacd 2 records
+     * (self::$record_1 and self::$record_2) :
+     *
+     * $need_records = 2;
+     *
+     */
+    protected static $need_records = false;
 
-  /**
-   * The application loader
-   */
-  public function createApplication()
-  {
-    return require __DIR__ . '/../../../../Path/To/Application.php';
-  }
+    /**
+     * The application loader
+     */
+    public function createApplication()
+    {
+        return require __DIR__ . '/../../../../Path/To/Application.php';
+    }
 
-  public function setUp()
-  {
-    parent::setUp();
-    $this->client = $this->createClient();
-  }
+    public function setUp()
+    {
+        parent::setUp();
+        $this->client = $this->createClient();
+    }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
+    public function tearDown()
+    {
+        parent::tearDown();
+    }
 
-  /**
-   * Default route test
-   */
-  public function testRouteSlash()
-  {
-    $this->markTestIncomplete(
+    /**
+     * Default route test
+     */
+    public function testRouteSlash()
+    {
+        $this->markTestIncomplete(
             'This test has not been implemented yet.'
-    );
-  }
-
+        );
+    }
 }

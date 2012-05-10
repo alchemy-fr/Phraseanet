@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
 class BooleanTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Boolean
      */
@@ -49,5 +48,4 @@ class BooleanTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('Booleen', $this->object->getDisplayName());
     }
-
 }

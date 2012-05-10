@@ -4,47 +4,29 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 class RootTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
+    protected $client;
+    protected static $need_records = false;
 
-  /**
-   * As controllers use WebTestCase, it requires a client
-   */
-  protected $client;
+    public function createApplication()
+    {
+        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
+    }
 
-  /**
-   * If the controller tests require some records, specify it her
-   *
-   * For example, this will loacd 2 records
-   * (self::$record_1 and self::$record_2) :
-   *
-   * $need_records = 2;
-   *
-   */
-  protected static $need_records = false;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->client = $this->createClient();
+    }
 
-  /**
-   * The application loader
-   */
-  public function createApplication()
-  {
-    return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-  }
+    /**
+     * Default route test
+     */
+    public function testRouteSlash()
+    {
+        $this->client->request('GET', '/', array('section' => 'base:featured'));
+        $this->assertTrue($this->client->getResponse()->isOk());
 
-  public function setUp()
-  {
-    parent::setUp();
-    $this->client = $this->createClient();
-  }
-
-  /**
-   * Default route test
-   */
-  public function testRouteSlash()
-  {
-    $this->client->request('GET', '/', array('section' => 'base:featured'));
-    $this->assertTrue($this->client->getResponse()->isOk());
-
-    $this->client->request('GET', '/');
-    $this->assertTrue($this->client->getResponse()->isOk());
-  }
-
+        $this->client->request('GET', '/');
+        $this->assertTrue($this->client->getResponse()->isOk());
+    }
 }

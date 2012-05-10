@@ -16,6 +16,7 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
 
     public function setUp()
     {
+        parent::setUp();
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $this->application = API_OAuth2_Application::create($appbox, self::$user, 'test app');
         $account = API_OAuth2_Account::load_with_user($appbox, $this->application, self::$user);
@@ -33,6 +34,7 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     public function tearDown()
     {
         $this->application->delete();
+        parent::tearDown();
     }
 
     protected function assertmd5($md5)
@@ -66,7 +68,7 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
     public function testGet_expires()
     {
         $diff = (int) $this->object->get_expires() - time();
-        $this->assertInternalType('string', $this->object->get_expires(), "expiration timestamp is string : ".$this->object->get_expires());
+        $this->assertInternalType('string', $this->object->get_expires(), "expiration timestamp is string : " . $this->object->get_expires());
         $this->assertTrue($diff > 3500, "expire value $diff should be more than 3500 seconds ");
         $this->assertTrue($diff < 3700, "expire value $diff should be less than 3700 seconds ");
     }
@@ -121,4 +123,3 @@ class API_OAuth2_TokenTest extends PhraseanetPHPUnitAbstract
         }
     }
 }
-

@@ -4,79 +4,61 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
+    protected $client;
+    protected static $need_records = false;
 
-  /**
-   * As controllers use WebTestCase, it requires a client
-   */
-  protected $client;
+    public function createApplication()
+    {
+        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
+    }
 
-  /**
-   * If the controller tests require some records, specify it her
-   *
-   * For example, this will loacd 2 records
-   * (self::$record_1 and self::$record_2) :
-   *
-   * $need_records = 2;
-   *
-   */
-  protected static $need_records = false;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->client = $this->createClient();
+    }
 
-  /**
-   * The application loader
-   */
-  public function createApplication()
-  {
-    return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Admin.php';
-  }
+    /**
+     * Default route test
+     */
+    public function testCheckMulti()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = array_shift($appbox->get_databoxes());
 
-  public function setUp()
-  {
-    parent::setUp();
-    $this->client = $this->createClient();
-  }
+        $field = \databox_field::create($databox, "test" . time());
+        $source = $field->get_source();
 
-  /**
-   * Default route test
-   */
-  public function testCheckMulti()
-  {
-    $appbox = \appbox::get_instance(\bootstrap::getCore());
-    $databox = array_shift($appbox->get_databoxes());
+        $this->client->request("GET", "/fields/checkmulti/", array(
+            'souce' => $source, 'multi' => 'false'));
 
-    $field = \databox_field::create($databox, "test" . time());
-    $source = $field->get_source();
+        $response = $this->client->getResponse();
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
+        $datas = json_decode($response->getContent());
+        $this->assertTrue(is_object($datas));
+        $this->assertTrue( ! ! $datas->result);
+        $this->assertEquals($field->is_multi(),  ! ! $datas->is_multi);
+        $field->delete();
+    }
 
-    $this->client->request("GET", "/fields/checkmulti/", array(
-        'souce' => $source, 'multi' => 'false'));
+    public function testCheckReadOnly()
+    {
+        $appbox = \appbox::get_instance(\bootstrap::getCore());
+        $databox = array_shift($appbox->get_databoxes());
 
-    $response = $this->client->getResponse();
-    $this->assertEquals("application/json", $response->headers->get("content-type"));
-    $datas = json_decode($response->getContent());
-    $this->assertTrue(is_object($datas));
-    $this->assertTrue(!!$datas->result);
-    $this->assertEquals($field->is_multi(), !!$datas->is_multi);
-    $field->delete();
-  }
+        $field = \databox_field::create($databox, "test" . time());
+        $source = $field->get_source();
 
-  public function testCheckReadOnly()
-  {
-    $appbox = \appbox::get_instance(\bootstrap::getCore());
-    $databox = array_shift($appbox->get_databoxes());
+        $this->client->request("GET", "/fields/checkreadonly/", array(
+            'souce'    => $source, 'readonly' => 'false'));
 
-    $field = \databox_field::create($databox, "test" . time());
-    $source = $field->get_source();
+        $response = $this->client->getResponse();
+        $this->assertEquals("application/json", $response->headers->get("content-type"));
+        $datas = json_decode($response->getContent());
+        $this->assertTrue(is_object($datas));
+        $this->assertTrue( ! ! $datas->result);
+        $this->assertEquals($field->is_readonly(),  ! ! $datas->is_readonly);
 
-    $this->client->request("GET", "/fields/checkreadonly/", array(
-        'souce' => $source, 'readonly' => 'false'));
-
-    $response = $this->client->getResponse();
-    $this->assertEquals("application/json", $response->headers->get("content-type"));
-    $datas = json_decode($response->getContent());
-    $this->assertTrue(is_object($datas));
-    $this->assertTrue(!!$datas->result);
-    $this->assertEquals($field->is_readonly(), !!$datas->is_readonly);
-
-    $field->delete();
-  }
-
+        $field->delete();
+    }
 }
