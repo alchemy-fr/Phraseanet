@@ -471,6 +471,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $this->purgeDatabase();
 
         self::$user->ACL()->revoke_access_from_bases(array(self::$collection_no_access->get_base_id()));
+
+        \PHPUnit_Framework_Error_Warning::$enabled = true;
+        \PHPUnit_Framework_Error_Notice::$enabled = true;
     }
 
     public function tearDown()
@@ -843,7 +846,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             } catch (Symfony\Component\Process\Exception\RuntimeException $e) {
                 $this->fail('Unable to validate ORM schema');
             }
-            
+
             self::$updated = true;
         }
 
