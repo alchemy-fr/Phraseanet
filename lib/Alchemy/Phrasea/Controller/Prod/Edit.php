@@ -52,6 +52,10 @@ class Edit implements ControllerProviderInterface
                 $sbas_id = (int) $request->get('sbas_id');
 
                 try {
+                    if ($sbas_id === 0) {
+                        throw new \Exception('Invalid sbas_id');
+                    }
+
                     $VC = \Alchemy\Phrasea\Vocabulary\Controller::get($vocabulary);
                     $databox = \databox::get_instance($sbas_id);
                 } catch (\Exception $e) {

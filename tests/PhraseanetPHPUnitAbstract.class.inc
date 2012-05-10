@@ -471,6 +471,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $this->purgeDatabase();
 
         self::$user->ACL()->revoke_access_from_bases(array(self::$collection_no_access->get_base_id()));
+
+        \PHPUnit_Framework_Error_Warning::$enabled = true;
+        \PHPUnit_Framework_Error_Notice::$enabled = true;
     }
 
     public function tearDown()
@@ -824,6 +827,25 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $upgrader = new Setup_Upgrade($appbox);
             $appbox->forceUpgrade($upgrader);
             unset($upgrader);
+
+            $command = __DIR__ . '/../bin/doctrine orm:schema-tool:update --force';
+
+            try {
+                $process = new Symfony\Component\Process\Process('php ' . $command);
+                $process->run();
+            } catch (Symfony\Component\Process\Exception\RuntimeException $e) {
+                $this->fail('Unable to validate ORM schema');
+            }
+
+            $command = __DIR__ . '/../bin/doctrine orm:validate-schema';
+
+            $process = new Symfony\Component\Process\Process('php ' . $command);
+
+            try {
+                $process->run();
+            } catch (Symfony\Component\Process\Exception\RuntimeException $e) {
+                $this->fail('Unable to validate ORM schema');
+            }
 
             self::$updated = true;
         }
