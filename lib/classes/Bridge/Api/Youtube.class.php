@@ -19,175 +19,173 @@ use \Symfony\Component\HttpFoundation\Request;
  */
 class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Interface
 {
+    /**
+     *
+     * @var registryInterface
+     */
+    protected $registry;
 
-  /**
-   *
-   * @var registryInterface
-   */
-  protected $registry;
+    /**
+     *
+     * @var Zend_Gdata_YouTube
+     */
+    protected $_api;
 
-  /**
-   *
-   * @var Zend_Gdata_YouTube
-   */
-  protected $_api;
+    const OAUTH2_AUTHORIZE_ENDPOINT = 'https://accounts.google.com/o/oauth2/auth';
+    const OAUTH2_TOKEN_ENDPOINT = 'https://accounts.google.com/o/oauth2/token';
+    const UPLOAD_URL = 'http://uploads.gdata.youtube.com/feeds/api/users/default/uploads';
+    const CATEGORY_URL = 'http://gdata.youtube.com/schemas/2007/categories.cat';
+    const AUTH_VIDEO_DURATION = 900;
+    const AUTH_VIDEO_SIZE = 68719476736; //in bytes = 64GB
+    const ELEMENT_TYPE_VIDEO = 'video';
+    const CONTAINER_TYPE_PLAYLIST = 'playlist';
+    const AUTH_TYPE = 'Youtube';
+    const UPLOAD_STATE_PROCESSING = 'processing';
+    const UPLOAD_STATE_RESTRICTED = 'restricted';
+    const UPLOAD_STATE_DONE = 'done';
+    const UPLOAD_STATE_DELETED = 'deleted';
+    const UPLOAD_STATE_REJECTED = 'rejected';
+    const UPLOAD_STATE_FAILED = 'failed';
 
-  const OAUTH2_AUTHORIZE_ENDPOINT = 'https://accounts.google.com/o/oauth2/auth';
-  const OAUTH2_TOKEN_ENDPOINT = 'https://accounts.google.com/o/oauth2/token';
-  const UPLOAD_URL = 'http://uploads.gdata.youtube.com/feeds/api/users/default/uploads';
-  const CATEGORY_URL = 'http://gdata.youtube.com/schemas/2007/categories.cat';
-  const AUTH_VIDEO_DURATION = 900;
-  const AUTH_VIDEO_SIZE = 68719476736; //in bytes = 64GB
-  const ELEMENT_TYPE_VIDEO = 'video';
-  const CONTAINER_TYPE_PLAYLIST = 'playlist';
-  const AUTH_TYPE = 'Youtube';
+    /**
+     *
+     * @return Array
+     */
+    public function connect()
+    {
+        $response = parent::connect();
+        $this->_api->getHttpClient()->setAuthSubToken($response['auth_token']);
 
-  const UPLOAD_STATE_PROCESSING = 'processing';
-  const UPLOAD_STATE_RESTRICTED = 'restricted';
-  const UPLOAD_STATE_DONE = 'done';
-  const UPLOAD_STATE_DELETED = 'deleted';
-  const UPLOAD_STATE_REJECTED = 'rejected';
-  const UPLOAD_STATE_FAILED = 'failed';
+        return $response;
+    }
 
-  /**
-   *
-   * @return Array
-   */
-  public function connect()
-  {
-    $response = parent::connect();
-    $this->_api->getHttpClient()->setAuthSubToken($response['auth_token']);
+    /**
+     *
+     * @return Bridge_Api_Youtube
+     */
+    public function reconnect()
+    {
+        parent::reconnect();
+        $this->set_transport_authentication_params();
 
-    return $response;
-  }
+        return $this;
+    }
 
-  /**
-   *
-   * @return Bridge_Api_Youtube
-   */
-  public function reconnect()
-  {
-    parent::reconnect();
-    $this->set_transport_authentication_params();
+    /**
+     *
+     * @return string
+     */
+    public function get_user_id()
+    {
+        return $this->_api->getUserProfile('default')->getUsername();
+    }
 
-    return $this;
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_user_name()
+    {
+        return $this->_api->getUserProfile('default')->getUsername();
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_user_id()
-  {
-    return $this->_api->getUserProfile('default')->getUsername();
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_name()
+    {
+        return 'Youtube';
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_user_name()
-  {
-    return $this->_api->getUserProfile('default')->getUsername();
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_icon_url()
+    {
+        return '/skins/icons/youtube-small.gif';
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_name()
-  {
-    return 'Youtube';
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_image_url()
+    {
+        return '/skins/icons/youtube-white.gif';
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_icon_url()
-  {
-    return '/skins/icons/youtube-small.gif';
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_terms_url()
+    {
+        return 'https://code.google.com/apis/youtube/terms.html';
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_image_url()
-  {
-    return '/skins/icons/youtube-white.gif';
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_url()
+    {
+        return 'https://www.youtube.com/';
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_terms_url()
-  {
-    return 'https://code.google.com/apis/youtube/terms.html';
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_infos()
+    {
+        return 'www.youtube.com';
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_url()
-  {
-    return 'https://www.youtube.com/';
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_default_element_type()
+    {
+        return self::ELEMENT_TYPE_VIDEO;
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_infos()
-  {
-    return 'www.youtube.com';
-  }
+    /**
+     *
+     * @return string
+     */
+    public function get_default_container_type()
+    {
+        return self::CONTAINER_TYPE_PLAYLIST;
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_default_element_type()
-  {
-    return self::ELEMENT_TYPE_VIDEO;
-  }
+    /**
+     *
+     * @return Array
+     */
+    public function get_element_types()
+    {
+        return array(self::ELEMENT_TYPE_VIDEO => _('Videos'));
+    }
 
-  /**
-   *
-   * @return string
-   */
-  public function get_default_container_type()
-  {
-    return self::CONTAINER_TYPE_PLAYLIST;
-  }
+    /**
+     *
+     * @return Array
+     */
+    public function get_container_types()
+    {
+        return array(self::CONTAINER_TYPE_PLAYLIST => _('Playlists'));
+    }
 
-  /**
-   *
-   * @return Array
-   */
-  public function get_element_types()
-  {
-    return array(self::ELEMENT_TYPE_VIDEO => _('Videos'));
-  }
-
-  /**
-   *
-   * @return Array
-   */
-  public function get_container_types()
-  {
-    return array(self::CONTAINER_TYPE_PLAYLIST => _('Playlists'));
-  }
-
-  /**
-   *
-   * @param string $type
-   * @return string
-   */
-  public function get_object_class_from_type($type)
-  {
+    /**
+     *
+     * @param string $type
+     * @return string
+     */
+    public function get_object_class_from_type($type)
+    {
         switch ($type) {
             case self::ELEMENT_TYPE_VIDEO:
                 return self::OBJECT_CLASS_ELEMENT;
@@ -201,15 +199,15 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         }
     }
 
-  /**
-   *
-   * @param string $object
-   * @param int $offset_start
-   * @param int $quantity
-   * @return Bridge_Api_ElementCollection
-   */
-  public function list_elements($object, $offset_start = 0, $quantity = 10)
-  {
+    /**
+     *
+     * @param string $object
+     * @param int $offset_start
+     * @param int $quantity
+     * @return Bridge_Api_ElementCollection
+     */
+    public function list_elements($object, $offset_start = 0, $quantity = 10)
+    {
         switch ($object) {
             case self::ELEMENT_TYPE_VIDEO:
                 $video_feed = $this->get_user_object_list_feed($object, $offset_start, $quantity);
@@ -313,6 +311,17 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
                 $videoEntry = $this->_api->getFullVideoEntry($object_id);
                 if ($videoEntry->getEditLink() === null)
                     throw new Bridge_Exception_ActionForbidden("You cannot edit this video object");
+
+                $videoEntry->setVideoDescription(trim($datas['description']));
+                $videoEntry->setVideoCategory(trim($datas['category']));
+                $videoEntry->setVideoTags(trim($datas['tags']));
+                $videoEntry->setVideoTitle(trim($datas['title']));
+
+                if ($datas["privacy"] == "public") {
+                    $videoEntry->setVideoPublic();
+                } else {
+                    $videoEntry->setVideoPrivate();
+                }
 
                 $videoEntry->setVideoDescription(trim($datas['description']));
                 $videoEntry->setVideoCategory(trim($datas['category']));
