@@ -8,8 +8,7 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
     public function testFiles()
     {
         $testDir = __DIR__ . '/';
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($testDir), RecursiveIteratorIterator::LEAVES_ONLY) as $file)
-        {
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($testDir), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
             if (strpos($file, '/.svn/') !== false)
                 continue;
             if (substr($file->getFilename(), 0, 1) === '.')
@@ -24,6 +23,4 @@ class unitTestsTest extends PhraseanetPHPUnitAbstract
             $this->assertRegExp('/[a-zA-Z0-9-_\.]+Test.php/', $file->getPathname(), 'Verify that all tests files names');
         }
     }
-
 }
-

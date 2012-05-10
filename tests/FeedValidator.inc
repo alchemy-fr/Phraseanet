@@ -14,13 +14,11 @@ class W3CFeedValidatorException extends Exception
  */
 abstract class W3CFeedValidator
 {
-
-    const VALIDATOR_ENDPOINT   = "http://validator.w3.org/feed/check.cgi";
-    const OUTPOUT              = "soap12";
+    const VALIDATOR_ENDPOINT = "http://validator.w3.org/feed/check.cgi";
+    const OUTPOUT = "soap12";
     const TIME_BETWEEN_REQUEST = 2;
 
     public abstract function validate();
-
 }
 
 /**
@@ -29,7 +27,6 @@ abstract class W3CFeedValidator
  */
 class W3CFeedUrlValidator extends W3CFeedValidator
 {
-
     /**
      * The URL of the document to validate
      * @var string
@@ -60,9 +57,8 @@ class W3CFeedUrlValidator extends W3CFeedValidator
     {
         $url_validator = sprintf("%s?url=%s&output=%s", self::VALIDATOR_ENDPOINT, $this->url, self::OUTPOUT);
         sleep(self::TIME_BETWEEN_REQUEST);
-        $response      = @file_get_contents($url_validator);
-        if ( ! $response)
-        {
+        $response = @file_get_contents($url_validator);
+        if ( ! $response) {
             throw new W3CFeedValidatorException("Unable to request W3C API");
         }
 
@@ -78,7 +74,6 @@ class W3CFeedUrlValidator extends W3CFeedValidator
     {
         return filter_var($url, FILTER_VALIDATE_URL);
     }
-
 }
 
 /**
@@ -113,7 +108,6 @@ class W3CFeedUrlValidator extends W3CFeedValidator
  */
 class W3CFeedRawValidator extends W3CFeedValidator
 {
-
     /**
      * The source of the document to validate
      * @var string
@@ -139,26 +133,24 @@ class W3CFeedRawValidator extends W3CFeedValidator
     public function validate()
     {
         $context = stream_context_create(array(
-          'http' => array(
-            'method'  => 'POST',
-            'header'  => 'Content-type: application/x-www-form-urlencoded',
-            'content' => http_build_query(array(
-              'rawdata' => $this->rawData,
-              'manual'  => 1,
-              'output'  => self::OUTPOUT)),
-            'timeout' => 5,
-          ),
-          ));
+            'http' => array(
+                'method'  => 'POST',
+                'header'  => 'Content-type: application/x-www-form-urlencoded',
+                'content' => http_build_query(array(
+                    'rawdata' => $this->rawData,
+                    'manual'  => 1,
+                    'output'  => self::OUTPOUT)),
+                'timeout' => 5,
+            ),
+            ));
         sleep(self::TIME_BETWEEN_REQUEST);
         $response = @file_get_contents(self::VALIDATOR_ENDPOINT, false, $context);
-        if ( ! $response)
-        {
+        if ( ! $response) {
             throw new W3CFeedValidatorException("Unable to request W3C API");
         }
 
         return new W3CFeedValidatorResponse($response);
     }
-
 }
 
 /**
@@ -166,7 +158,6 @@ class W3CFeedRawValidator extends W3CFeedValidator
  */
 class W3CFeedValidatorResponse
 {
-
     /**
      * XML W3C response
      * @var string
@@ -192,8 +183,7 @@ class W3CFeedValidatorResponse
     public function __construct($xml)
     {
         $this->DOMDocument = new DOMDocument();
-        if ( ! $this->DOMDocument->loadXML($xml))
-        {
+        if ( ! $this->DOMDocument->loadXML($xml)) {
             throw new W3CFeedValidatorException("Unable to parse XML");
         }
         $this->DOMXpath = new DOMXPath($this->DOMDocument);
@@ -206,11 +196,9 @@ class W3CFeedValidatorResponse
     public function __toString()
     {
         $string = "";
-        foreach ($this->getErrors() as $error)
-        {
+        foreach ($this->getErrors() as $error) {
             $string .= "\nERROR\n";
-            foreach ($error as $name => $detail)
-            {
+            foreach ($error as $name => $detail) {
                 $string .= $name . "=>" . $detail . "\n";
             }
         }
@@ -286,12 +274,10 @@ class W3CFeedValidatorResponse
     public function getWarnings()
     {
         $warnings = array();
-        $xPathQuery  = "/env:Envelope/env:Body/m:feedvalidationresponse/m:warnings/m:warninglist/*";
+        $xPathQuery = "/env:Envelope/env:Body/m:feedvalidationresponse/m:warnings/m:warninglist/*";
         $warningList = $this->DOMXpath->query($xPathQuery);
-        if ($warningList->length > 0)
-        {
-            foreach ($warningList as $warning)
-            {
+        if ($warningList->length > 0) {
+            foreach ($warningList as $warning) {
                 $warnings[] = $this->domNodeToArray($warning);
             }
         }
@@ -307,11 +293,9 @@ class W3CFeedValidatorResponse
     {
         $errors = array();
         $xPathQuery = "/env:Envelope/env:Body/m:feedvalidationresponse/m:errors/m:errorlist/*";
-        $errorList  = $this->DOMXpath->query($xPathQuery);
-        if ($errorList->length > 0)
-        {
-            foreach ($errorList as $error)
-            {
+        $errorList = $this->DOMXpath->query($xPathQuery);
+        if ($errorList->length > 0) {
+            foreach ($errorList as $error) {
                 $errors[] = $this->domNodeToArray($error);
             }
         }
@@ -334,36 +318,26 @@ class W3CFeedValidatorResponse
     {
         $ret = '';
 
-        if ($node->hasChildNodes())
-        {
-            if ($node->firstChild === $node->lastChild && $node->firstChild->nodeType === XML_TEXT_NODE)
-            {
+        if ($node->hasChildNodes()) {
+            if ($node->firstChild === $node->lastChild && $node->firstChild->nodeType === XML_TEXT_NODE) {
                 // Node contains nothing but a text node, return its value
                 $ret = trim($node->nodeValue);
-            }
-            else
-            {
+            } else {
                 // Otherwise, do recursion
                 $ret = array();
-                foreach ($node->childNodes as $child)
-                {
-                    if ($child->nodeType !== XML_TEXT_NODE)
-                    {
+                foreach ($node->childNodes as $child) {
+                    if ($child->nodeType !== XML_TEXT_NODE) {
                         // If there's more than one node with this node name on the
                         // current level, create an array
-                        if (isset($ret[$child->nodeName]))
-                        {
-                            if ( ! is_array($ret[$child->nodeName]) || ! isset($ret[$child->nodeName][0]))
-                            {
-                                $tmp                   = $ret[$child->nodeName];
+                        if (isset($ret[$child->nodeName])) {
+                            if ( ! is_array($ret[$child->nodeName]) || ! isset($ret[$child->nodeName][0])) {
+                                $tmp = $ret[$child->nodeName];
                                 $ret[$child->nodeName] = array();
                                 $ret[$child->nodeName][] = $tmp;
                             }
 
                             $ret[$child->nodeName][] = $this->domNodeToArray($child);
-                        }
-                        else
-                        {
+                        } else {
                             $ret[$child->nodeName] = $this->domNodeToArray($child);
                         }
                     }
@@ -373,5 +347,4 @@ class W3CFeedValidatorResponse
 
         return $ret;
     }
-
 }

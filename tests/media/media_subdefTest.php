@@ -8,10 +8,12 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
      * @var \media_subdef
      */
     protected static $objectPresent;
+
     /**
      * @var \media_subdef
      */
     protected static $objectNotPresent;
+
     /**
      * @var \record_adapter
      */
@@ -65,7 +67,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
         $this->assertEquals(self::$recordonbleu->get_record_id(), self::$objectPresent->get_record()->get_record_id());
         $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectNotPresent->get_record()->get_sbas_id());
         $this->assertEquals(self::$recordonbleu->get_sbas_id(), self::$objectPresent->get_record()->get_sbas_id());
-}
+    }
 
     /**
      * @covers media_subdef::get_permalink

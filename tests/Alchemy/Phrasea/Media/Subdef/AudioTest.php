@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class AudioTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Audio
      */
@@ -38,5 +37,4 @@ class AudioTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Audio', $this->object->getMediaAlchemystSpec());
     }
-
 }

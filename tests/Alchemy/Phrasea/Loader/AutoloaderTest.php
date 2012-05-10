@@ -11,7 +11,7 @@ class AutoloaderTest extends \PhraseanetPHPUnitAbstract
     public function testFindFile()
     {
         $testClassName = 'Test_Hello';
-        $autoloader    = new Alchemy\Phrasea\Loader\Autoloader();
+        $autoloader = new Alchemy\Phrasea\Loader\Autoloader();
         $autoloader->addPath('fixture', __DIR__ . '/Fixtures');
         $autoloader->loadClass($testClassName);
         $this->assertTrue(class_exists($testClassName));
@@ -23,7 +23,7 @@ class AutoloaderTest extends \PhraseanetPHPUnitAbstract
     public function testAddPath()
     {
         $autoloader = new Alchemy\Phrasea\Loader\Autoloader();
-        $pathNb     = count($autoloader->getPaths());
+        $pathNb = count($autoloader->getPaths());
         $autoloader->addPath('fixture', __DIR__ . '/Fixtures');
         $this->assertGreaterThan($pathNb, count($autoloader->getPaths()));
         $this->assertArrayHasKey('fixture', $autoloader->getPaths());
@@ -40,5 +40,4 @@ class AutoloaderTest extends \PhraseanetPHPUnitAbstract
         $this->assertArrayHasKey('config', $autoloader->getPaths());
         $this->assertArrayHasKey('library', $autoloader->getPaths());
     }
-
 }

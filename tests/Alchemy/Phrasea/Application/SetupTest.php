@@ -21,7 +21,6 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
      * @var \connection_pdo
      */
     protected $connection;
-
     protected $registry = array();
 
     public function createApplication()
@@ -62,7 +61,7 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
         foreach ($params as $param) {
             $this->registry[$param] = $registry->get($param);
         }
-	$this->markTestSkipped('To review');
+        $this->markTestSkipped('To review');
     }
 
     public function tearDown()
@@ -194,24 +193,21 @@ class ApplicationSetupTest extends PhraseanetWebTestCaseAbstract
     public function temporaryReInstall()
     {
         if (file_exists($this->root . 'config/config.yml.unitTests')) {
-            if(file_exists($this->root . 'config/config.yml'))
-            {
+            if (file_exists($this->root . 'config/config.yml')) {
                 unlink($this->root . 'config/config.yml');
             }
 
             rename($this->root . 'config/config.yml.unitTests', $this->root . 'config/config.yml');
         }
         if (file_exists($this->root . 'config/services.yml.unitTests')) {
-            if(file_exists($this->root . 'config/services.yml'))
-            {
+            if (file_exists($this->root . 'config/services.yml')) {
                 unlink($this->root . 'config/services.yml');
             }
 
             rename($this->root . 'config/services.yml.unitTests', $this->root . 'config/services.yml');
         }
         if (file_exists($this->root . 'config/connexions.yml.unitTests')) {
-            if(file_exists($this->root . 'config/connexions.yml'))
-            {
+            if (file_exists($this->root . 'config/connexions.yml')) {
                 unlink($this->root . 'config/connexions.yml');
             }
 

@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class VideoTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Video
      */
@@ -38,5 +37,4 @@ class VideoTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Video', $this->object->getMediaAlchemystSpec());
     }
-
 }

@@ -14,26 +14,11 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         $this->object = new http_request();
     }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-
-    }
-
-    /**
-     * @todo Implement testGetInstance().
-     */
     public function testGetInstance()
     {
         $this->assertInstanceOf('http_request', http_request::getInstance());
     }
 
-    /**
-     * @todo Implement testIs_ajax().
-     */
     public function testIs_ajax()
     {
         $this->assertFalse($this->object->is_ajax());
@@ -41,9 +26,6 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->is_ajax());
     }
 
-    /**
-     * @todo Implement testComes_from_flash().
-     */
     public function testComes_from_flash()
     {
         $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
@@ -68,9 +50,6 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->object->comes_from_flash());
     }
 
-    /**
-     * @todo Implement testGet_code().
-     */
     public function testGet_code()
     {
         $this->assertNull($this->object->get_code());
@@ -84,18 +63,12 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $this->object->get_code());
     }
 
-    /**
-     * @todo Implement testSet_code().
-     */
     public function testSet_code()
     {
         $this->object->set_code(302);
         $this->assertEquals(302, $this->object->get_code());
     }
 
-    /**
-     * @todo Implement testGet_parms().
-     */
     public function testGet_parms()
     {
         $_GET = array('lili' => '25', 'popo' => array('tip', 'top'));
@@ -143,9 +116,6 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         $_GET = $_POST = array();
     }
 
-    /**
-     * @todo Implement testGet_parms_from_serialized_datas().
-     */
     public function testGet_parms_from_serialized_datas()
     {
         // Remove the following lines when you implement this test.
@@ -154,9 +124,6 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @todo Implement testHas_post_datas().
-     */
     public function testHas_post_datas()
     {
         $this->assertFalse($this->object->has_post_datas());
@@ -164,18 +131,12 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->has_post_datas());
     }
 
-    /**
-     * @todo Implement testGet_post_datas().
-     */
     public function testGet_post_datas()
     {
         $post = $_POST = array('Plili' => '25', 'Gpopo' => array('mtip', 'btop'));
         $this->assertEquals($post, $this->object->get_post_datas());
     }
 
-    /**
-     * @todo Implement testHas_get_datas().
-     */
     public function testHas_get_datas()
     {
         $this->assertFalse($this->object->has_get_datas());
@@ -183,9 +144,6 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->object->has_get_datas());
     }
 
-    /**
-     * @todo Implement testHas_datas().
-     */
     public function testHas_datas()
     {
         $_POST = $_GET = array();
@@ -213,9 +171,6 @@ class http_requestTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @todo Implement testIs_command_line().
-     */
     public function testIs_command_line()
     {
         $this->assertTrue($this->object->is_command_line());

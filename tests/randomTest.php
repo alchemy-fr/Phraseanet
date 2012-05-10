@@ -74,9 +74,6 @@ class randomTest extends PhraseanetPHPUnitAbstract
         $this->testGetUrlToken();
     }
 
-    /**
-     * @todo Implement testUpdateToken().
-     */
     public function testUpdateToken()
     {
         $this->testGetUrlToken();
@@ -139,4 +136,3 @@ class randomTest extends PhraseanetPHPUnitAbstract
         }
     }
 }
-

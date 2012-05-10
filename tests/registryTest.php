@@ -185,4 +185,3 @@ class registryTest extends PhraseanetPHPUnitAbstract
         $this->assertFalse($this->object->is_set('key_test'));
     }
 }
-
