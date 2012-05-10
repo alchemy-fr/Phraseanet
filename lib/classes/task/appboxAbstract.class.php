@@ -34,8 +34,10 @@ abstract class task_appboxAbstract extends task_abstract
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                     $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-                    for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
+                    // DON'T do sleep(600) because it prevents ticks !
+                    for ($t = 60 * 10; $this->running && $t; $t -- ) {
                         sleep(1);
+                    }
                     // because connection is lost we cannot change status to 'torestart'
                     // anyway the current status 'running' with no pid
                     // will enforce the scheduler to restart the task
@@ -50,7 +52,7 @@ abstract class task_appboxAbstract extends task_abstract
             $this->setLastExecTime();
 
             try {
-                $sql = 'SELECT task2.* FROM task2 WHERE task_id = :taskid LIMIT 1';
+                $sql = 'SELECT settings FROM task2 WHERE task_id = :taskid';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute(array(':taskid' => $this->getID()));
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -82,18 +84,18 @@ abstract class task_appboxAbstract extends task_abstract
                     case self::STATE_MAXMEGSREACHED:
                     case self::STATE_MAXRECSDONE:
                         if ($this->getRunner() == self::RUNNER_SCHEDULER) {
-                            $this->setState(self::STATUS_TORESTART);
+                            $this->setState(self::STATE_TORESTART);
                             $this->running = FALSE;
                         }
                         break;
 
-                    case self::STATUS_TOSTOP:
-                        $this->setState(self::STATUS_TOSTOP);
+                    case self::STATE_TOSTOP:
+                        $this->setState(self::STATE_TOSTOP);
                         $this->running = FALSE;
                         break;
 
-                    case self::STATUS_TODELETE: // formal 'suicidable'
-                        $this->setState(self::STATUS_TODELETE);
+                    case self::STATE_TODELETE: // formal 'suicidable'
+                        $this->setState(self::STATE_TODELETE);
                         $this->running = FALSE;
                         break;
 
@@ -164,9 +166,9 @@ abstract class task_appboxAbstract extends task_abstract
             // $this->check_task_status();
             try {
                 $status = $this->getState();
-                if ($status == self::STATUS_TOSTOP) {
+                if ($status == self::STATE_TOSTOP) {
                     $this->running = FALSE;
-                    $ret = self::STATUS_TOSTOP;
+                    $ret = self::STATE_TOSTOP;
                 }
             } catch (Exception $e) {
                 $this->running = FALSE;
@@ -174,11 +176,11 @@ abstract class task_appboxAbstract extends task_abstract
 
             if ( ! $this->running)
                 break;
-        } // foreach($rs as $row)
+        }
         //
         // if nothing was done, at least check the status
         if (count($rs) == 0 && $this->running) {
-            // $this->check_memory_usage();
+
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
                 $this->log(sprintf("Max memory (%s M) reached (current is %s M)", $this->maxmegs, $current_memory));
@@ -192,12 +194,11 @@ abstract class task_appboxAbstract extends task_abstract
                 $ret = self::STATE_MAXRECSDONE;
             }
 
-            // $this->check_task_status();
             try {
                 $status = $this->getState();
-                if ($status == self::STATUS_TOSTOP) {
+                if ($status == self::STATE_TOSTOP) {
                     $this->running = FALSE;
-                    $ret = self::STATUS_TOSTOP;
+                    $ret = self::STATE_TOSTOP;
                 }
             } catch (Exception $e) {
                 $this->running = FALSE;

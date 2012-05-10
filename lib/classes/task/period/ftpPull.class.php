@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,25 +17,15 @@
 class task_period_ftpPull extends task_appboxAbstract
 {
     protected $debug = false;
-
     protected $proxy;
-
     protected $proxyport;
-
     protected $host;
-
     protected $port;
-
     protected $user;
-
     protected $password;
-
     protected $ssl;
-
     protected $passive;
-
     protected $ftppath;
-
     protected $localpath;
 
     public function getName()
@@ -108,6 +98,7 @@ class task_period_ftpPull extends task_appboxAbstract
             <?php echo $form ?>.ssl.checked    = <?php echo p4field::isyes($sxml->ssl) ? "true" : 'false' ?>;
             <?php echo $form ?>.passive.checked  = <?php echo p4field::isyes($sxml->passive) ? "true" : 'false' ?>;
             </script>
+
             <?php
             return("");
         } else { // ... so we NEVER come here
@@ -134,6 +125,7 @@ class task_period_ftpPull extends task_appboxAbstract
                 setDirty();
             }
         </script>
+
         <?php
     }
 
@@ -203,11 +195,11 @@ class task_period_ftpPull extends task_appboxAbstract
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
-            if ($domTaskSettings = DOMDocument::loadXML($taskrow["settings"])) {
+            if (($domTaskSettings = DOMDocument::loadXML($taskrow["settings"]))) {
                 $xmlchanged = false;
                 foreach (array("proxy", "proxyport", "period", "host", "port", "user", "password", "ssl", "passive", "localpath", "ftppath") as $f) {
                     if ($parm[$f] !== NULL) {
-                        if ($ns = $domTaskSettings->getElementsByTagName($f)->item(0)) {
+                        if (($ns = $domTaskSettings->getElementsByTagName($f)->item(0))) {
                             // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
                             while (($n = $ns->firstChild))
                                 $ns->removeChild($n);
@@ -228,8 +220,9 @@ class task_period_ftpPull extends task_appboxAbstract
         }
 
         // si on doit changer le xml, on verifie qu'il est valide
-        if ($parm["xml"] && ! DOMDocument::loadXML($parm["xml"]))
+        if ($parm["xml"] && ! DOMDocument::loadXML($parm["xml"])) {
             return(false);
+        }
 
         $sql = "";
         $params = array(':task_id' => $taskid);
@@ -295,7 +288,7 @@ class task_period_ftpPull extends task_appboxAbstract
             $this->running = FALSE;
         }
         if ( ! $this->running) {
-            $this->set_status(self::STATUS_STOPPED);
+            $this->set_status(self::STATE_STOPPED);
             return array();
         }
 
@@ -308,14 +301,16 @@ class task_period_ftpPull extends task_appboxAbstract
             $todo = count($list_1);
             $this->setProgress($done, $todo);
 
-            if ($this->debug)
+            if ($this->debug) {
                 echo "attente de 25sec pour avoir les fichiers froids...\n";
+            }
+
             for ($t = 25; $this->running && $t > 0; $t -- ) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
                 $s = $this->getState();
-                if ($s == self::STATUS_TOSTOP) {
+                if ($s == self::STATE_TOSTOP) {
                     if (isset($ftp) && $ftp instanceof ftpclient)
                         $ftp->close();
-                    $this->set_status(self::STATUS_STOPPED);
+                    $this->set_status(self::STATE_STOPPED);
                     $this->running = FALSE;
                     return array();
                 }
@@ -379,3 +374,4 @@ class task_period_ftpPull extends task_appboxAbstract
 
     }
 }
+

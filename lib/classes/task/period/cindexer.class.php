@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -381,7 +381,7 @@ class task_period_cindexer extends task_abstract
         }
 
         if ( ! file_exists($cmd) || ! is_executable($cmd)) {
-            $this->setState(self::STATUS_STOPPED);
+            $this->setState(self::STATE_STOPPED);
             $this->log(sprintf(_('task::cindexer:file \'%s\' does not exists'), $cmd));
             throw new Exception('cindexer executable not found', self::ERR_EXECUTABLE_NOT_FOUND);
             return;
@@ -442,8 +442,6 @@ class task_period_cindexer extends task_abstract
         $nullfile = $this->system == 'WINDOWS' ? 'NUL' : '/dev/null';
 
         $descriptors = array();
-        //      $descriptors[1] = array("file", $logdir . "/phraseanet_indexer_" . $this->getID() . ".log", "a+");
-        //      $descriptors[2] = array("file", $logdir . "/phraseanet_indexer_" . $this->getID() . ".error.log", "a+");
         $descriptors[1] = array("file", $nullfile, "a+");
         $descriptors[2] = array("file", $nullfile, "a+");
 
@@ -465,7 +463,7 @@ class task_period_cindexer extends task_abstract
         $this->running = true;
 
         while ($this->running) {
-            if ($this->getState() == self::STATUS_TOSTOP && $this->socket > 0) {
+            if ($this->getState() == self::STATE_TOSTOP && $this->socket > 0) {
                 // must quit task, so send 'Q' to port 127.0.0.1:XXXX to cindexer
                 if ( ! $qsent && (($sock = socket_create(AF_INET, SOCK_STREAM, 0)) !== false)) {
                     if (socket_connect($sock, '127.0.0.1', $this->socket) === true) {
@@ -487,10 +485,10 @@ class task_period_cindexer extends task_abstract
                 // the cindexer died
                 if ($qsent == 'Q') {
                     $this->log(_('task::cindexer:the cindexer clean-quit'));
-                    $this->new_status = self::STATUS_STOPPED;
+                    $this->new_status = self::STATE_STOPPED;
                 } elseif ($qsent == 'K') {
                     $this->log(_('task::cindexer:the cindexer has been killed'));
-                    $this->new_status = self::STATUS_STOPPED;
+                    $this->new_status = self::STATE_STOPPED;
                 } else {
                     $this->log(_('task::cindexer:the cindexer crashed'));
                     $this->exception = new Exception('cindexer crashed', self::ERR_CRASHED);
@@ -536,7 +534,6 @@ class task_period_cindexer extends task_abstract
         } elseif ($pid == 0) {
             // child
             umask(0);
-            // openlog('MyLog', LOG_PID | LOG_PERROR, LOG_LOCAL0);
             if (($err = posix_setsid()) < 0) {
                 $this->exception = new Exception('cindexer can\'t detach from terminal', $err);
             } else {
@@ -562,7 +559,7 @@ class task_period_cindexer extends task_abstract
                     }
                 }
 
-                if ($this->getState() == self::STATUS_TOSTOP) {
+                if ($this->getState() == self::STATE_TOSTOP) {
                     posix_kill($pid, ($sigsent = SIGINT));
                     sleep(2);
                 }
@@ -572,10 +569,10 @@ class task_period_cindexer extends task_abstract
                     // child (indexer) has exited
                     if ($sigsent == SIGINT) {
                         $this->log(_('task::cindexer:the cindexer clean-quit'));
-                        $this->new_status = self::STATUS_STOPPED;
+                        $this->new_status = self::STATE_STOPPED;
                     } elseif ($sigsent == SIGKILL) {
                         $this->log(_('task::cindexer:the cindexer has been killed'));
-                        $this->new_status = self::STATUS_STOPPED;
+                        $this->new_status = self::STATE_STOPPED;
                     } else {
                         $this->log(_('task::cindexer:the cindexer crashed'));
                         $this->exception = new Exception('cindexer crashed', self::ERR_CRASHED);
@@ -601,5 +598,3 @@ class task_period_cindexer extends task_abstract
         sleep(2);
     }
 }
-
-// class

@@ -38,7 +38,6 @@ class module_console_schedulerState extends Command
             , 'print short result, ie: <info>stopped</info> | <info>started(12345)</info> | <info>stopping</info>'
             , NULL
         );
-//    $this->setHelp("");
 
         return $this;
     }

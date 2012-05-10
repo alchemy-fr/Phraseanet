@@ -37,13 +37,15 @@ abstract class task_databoxAbstract extends task_abstract
         while ($this->running) {
             try {
                 $conn = connection::getPDOConnection();
-            } catch (Exception $e) {
+            } catch (PDOException $e) {
                 $this->log($e->getMessage());
                 if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                     $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-                    for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
+                    // DON'T do sleep(600) because it prevents ticks !
+                    for ($t = 60 * 10; $this->running && $t; $t -- ) {
                         sleep(1);
+                    }
                     // because connection is lost we cannot change status to 'torestart'
                     // anyway the current status 'running' with no pid
                     // will enforce the scheduler to restart the task
@@ -51,6 +53,7 @@ abstract class task_databoxAbstract extends task_abstract
                     // runner = manual : can't restart so simply quit
                 }
                 $this->running = FALSE;
+
                 return;
             }
 
@@ -91,27 +94,22 @@ abstract class task_databoxAbstract extends task_abstract
 
                 $process_ret = $this->processSbas();
 
-                // printf("%s (%d) process_ret=%s \n", __FILE__, __LINE__, var_export($process_ret, true));
-                // $this->check_current_xxxstate();
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:
                     case self::STATE_MAXRECSDONE:
                         if ($this->getRunner() == self::RUNNER_SCHEDULER) {
-                            $this->setState(self::STATUS_TORESTART);
+                            $this->setState(self::STATE_TORESTART);
                             $this->running = FALSE;
                         }
                         break;
 
-                    case self::STATUS_TOSTOP:
-                        $this->setState(self::STATUS_TOSTOP);
+                    case self::STATE_TOSTOP:
+                        $this->setState(self::STATE_TOSTOP);
                         $this->running = FALSE;
                         break;
 
-                    case self::STATUS_TODELETE: // formal 'suicidable'
+                    case self::STATE_TODELETE: // formal 'suicidable'
                         // DO NOT SUICIDE IN THE LOOP, may have to work on other sbas !!!
-                        // $this->setState(self::STATUS_TODELETE);
-                        // $this->log('task will self delete');
-                        // $this->running = FALSE;
                         $task_must_delete = TRUE;
                         break;
 
@@ -120,16 +118,17 @@ abstract class task_databoxAbstract extends task_abstract
                 }
 
                 $this->flushRecordsSbas();
-            }  // foreach sbas
+            }
 
             $this->incrementLoops();
             $this->pause($duration);
-        } // while($this->running)
+        }
 
         if ($task_must_delete) {
-            $this->setState(self::STATUS_TODELETE);
+            $this->setState(self::STATE_TODELETE);
             $this->log('task will self delete');
         }
+
         return;
     }
 
@@ -174,7 +173,6 @@ abstract class task_databoxAbstract extends task_abstract
             // post-process
             $this->postProcessOneContent($databox, $row);
 
-            // $this->check_memory_usage();
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
                 $this->log(sprintf("Max memory (%s M) reached (actual is %s M)", $this->maxmegs, $current_memory));
@@ -188,29 +186,23 @@ abstract class task_databoxAbstract extends task_abstract
                 $ret = self::STATE_MAXRECSDONE;
             }
 
-            // $this->check_task_status();
             try {
                 $status = $this->getState();
-                // printf("%s (%d) status=%s \n", __FILE__, __LINE__, var_export($status, true));
-                if ($status == self::STATUS_TOSTOP) {
+                if ($status == self::STATE_TOSTOP) {
                     $this->running = FALSE;
-                    $ret = self::STATUS_TOSTOP;
+                    $ret = self::STATE_TOSTOP;
                 }
             } catch (Exception $e) {
                 $this->running = FALSE;
-//				$this->task_status = self::STATUS_TOSTOP;
-//				$this->return_xxxvalue = self::RETURNSTATUS_STOPPED;
             }
-//			if($this->task_status == self::STATUS_TOSTOP)
-//				$this->running = false;
-
 
             if ( ! $this->running)
                 break;
-        } // foreach($rs as $row)
+        }
+        //
         // if nothing was done, at least check the status
         if (count($rs) == 0 && $this->running) {
-            // $this->check_memory_usage();
+
             $current_memory = memory_get_usage();
             if ($current_memory >> 20 >= $this->maxmegs) {
                 $this->log(sprintf("Max memory (%s M) reached (current is %s M)", $this->maxmegs, $current_memory));
@@ -224,20 +216,14 @@ abstract class task_databoxAbstract extends task_abstract
                 $ret = self::STATE_MAXRECSDONE;
             }
 
-            // $this->check_task_status();
             try {
                 $status = $this->getState();
-                // printf("%s (%d) status=%s \n", __FILE__, __LINE__, var_export($status, true));
-                if ($status == self::STATUS_TOSTOP) {
+                if ($status == self::STATE_TOSTOP) {
                     $this->running = FALSE;
-                    $ret = self::STATUS_TOSTOP;
-                    //				$this->task_status = self::STATUS_TOSTOP;
-                    //				$this->return_xxxvalue = self::RETURNSTATUS_STOPPED;
+                    $ret = self::STATE_TOSTOP;
                 }
             } catch (Exception $e) {
                 $this->running = FALSE;
-                //			$this->task_status = self::STATUS_TOSTOP;
-                //			$this->return_xxxvalue = self::RETURNSTATUS_STOPPED;
             }
         }
 
@@ -250,7 +236,7 @@ abstract class task_databoxAbstract extends task_abstract
         if ($rowstodo > 0)
             $this->setProgress(0, 0);
 
-        return($ret);
+        return $ret;
     }
 }
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,16 +20,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class task_Scheduler
 {
     const TASKDELAYTOQUIT = 60;
-
     // how to schedule tasks (choose in 'run' method)
     const METHOD_FORK = 'METHOD_FORK';
     const METHOD_PROC_OPEN = 'METHOD_PROC_OPEN';
-
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
     private $method;
-
     private $input;
-
     protected $output;
 
     protected function log($message)
@@ -47,6 +43,7 @@ class task_Scheduler
         if ($this->input && ! ($this->input->getOption('nolog'))) {
             file_put_contents($logdir . "scheduler_l.log", $message . "\n", FILE_APPEND);
         }
+
         return $this;
     }
 
@@ -55,7 +52,7 @@ class task_Scheduler
         return appbox::get_instance(\bootstrap::getCore())->get_connection();
     }
 
-    public function run($input=null, OutputInterface $output = null) //, $log = true, $log_tasks = true)
+    public function run($input=null, OutputInterface $output = null)
     {
         require_once dirname(__FILE__) . '/../../bootstrap.php';
         $this->input = $input;
@@ -134,7 +131,7 @@ class task_Scheduler
                 if ( ! $task->getPID()) {
                     /* @var $task task_abstract */
                     $task->resetCrashCounter();
-                    $task->setState(task_abstract::STATUS_TOSTART);
+                    $task->setState(task_abstract::STATE_TOSTART);
                 }
             }
         }
@@ -313,7 +310,7 @@ class task_Scheduler
                         $this->log(sprintf('Unknow status `%s`', $status));
                         break;
 
-                    case task_abstract::STATUS_TORESTART:
+                    case task_abstract::STATE_TORESTART:
                         if ( ! $taskPoll[$tkey]['task']->getPID()) {
                             if ($this->method == self::METHOD_PROC_OPEN) {
                                 @fclose($taskPoll[$tkey]["pipes"][1]);
@@ -323,7 +320,7 @@ class task_Scheduler
                                 $taskPoll[$tkey]["process"] = null;
                             }
                             if ($schedstatus == 'started') {
-                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_TOSTART);
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
                             }
                             // trick to start the task immediatly : DON'T break if ending with 'tostart'
                             // so it will continue with 'tostart' case !
@@ -331,7 +328,7 @@ class task_Scheduler
                             break;
                         }
 
-                    case task_abstract::STATUS_TOSTART:
+                    case task_abstract::STATE_TOSTART:
                         // if scheduler is 'tostop', don't launch a new task !
                         if ($schedstatus != 'started')
                             break;
@@ -384,21 +381,17 @@ class task_Scheduler
                                     );
 
                                     if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5)
-                                        $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_STOPPED);
+                                        $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
                                     else
-                                        $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_TOSTART);
+                                        $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
                                 }
                             }
                         }
                         elseif ($this->method == self::METHOD_FORK) {
-                            // printf("forking pid %d\n", getmypid());
                             $pid = pcntl_fork();
                             if ($pid == -1) {
                                 die("failed to fork");
                             } elseif ($pid == 0) {
-                                // child
-                                // printf("hello i am child pid=%d\n", getmypid());
-                                // printf("%s %s \n", $taskPoll[$tkey]["cmd"], implode(' ', $taskPoll[$tkey]["args"]));
                                 umask(0);
                                 if (posix_setsid() < 0)
                                     die("Forked process could not detach from terminal\n");
@@ -413,25 +406,18 @@ class task_Scheduler
                                 $this->log(sprintf("exec('%s %s')", $taskPoll[$tkey]["cmd"], implode(' ', $taskPoll[$tkey]["args"])));
                                 pcntl_exec($taskPoll[$tkey]["cmd"], $taskPoll[$tkey]["args"]);
                             }
-                            else {
-                                // parent
-                                // sleep(2);
-                            }
                         }
                         break;
 
-                    case task_abstract::STATUS_STARTED:
+                    case task_abstract::STATE_STARTED:
                         $crashed = false;
                         // If no process, the task is probably manually ran
 
                         if ($this->method == self::METHOD_PROC_OPEN) {
-                            // printf("=== %d ===\n", __LINE__);
                             if ($taskPoll[$tkey]["process"]) {
-                                // printf("=== %d ===\n", __LINE__);
                                 $taskPoll[$tkey]["killat"] = NULL;
 
                                 if (is_resource($taskPoll[$tkey]["process"])) {
-                                    // printf("=== %d ===\n", __LINE__);
                                     $proc_status = proc_get_status($taskPoll[$tkey]["process"]);
                                     if ($proc_status['running'])
                                         $runningtask ++;
@@ -439,14 +425,12 @@ class task_Scheduler
                                         $crashed = true;
                                 }
                                 else {
-                                    // printf("=== %d ===\n", __LINE__);
                                     $crashed = true;
                                 }
                             }
                         }
 
                         if ( ! $crashed && ! $taskPoll[$tkey]['task']->getPID()) {
-                            // printf("=== %d ===\n", __LINE__);
                             $crashed = true;
                         }
 
@@ -454,7 +438,6 @@ class task_Scheduler
                             $taskPoll[$tkey]["killat"] = NULL;
                             $runningtask ++;
                         } else {
-                            // printf("=== %d ===\n", __LINE__);
                             // crashed !
                             $taskPoll[$tkey]["task"]->incrementCrashCounter();
 
@@ -473,13 +456,13 @@ class task_Scheduler
                             );
 
                             if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5)
-                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_STOPPED);
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
                             else
-                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_TOSTART);
+                                $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
                         }
                         break;
 
-                    case task_abstract::STATUS_TOSTOP:
+                    case task_abstract::STATE_TOSTOP:
 
                         if ($taskPoll[$tkey]["killat"] === NULL)
                             $taskPoll[$tkey]["killat"] = time() + self::TASKDELAYTOQUIT;
@@ -525,13 +508,6 @@ class task_Scheduler
                                         )
                                     );
                                 }
-                                /*
-                                  unlink($lockdir . 'task_' . $taskPoll[$tkey]['task']->getID() . '.lock');
-
-                                  $taskPoll[$tkey]["task"]->incrementCrashCounter();
-                                  //                $taskPoll[$tkey]["task"]->set_pid(null);
-                                  $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_STOPPED);
-                                 */
                             } else {
                                 $this->log(
                                     sprintf(
@@ -549,13 +525,13 @@ class task_Scheduler
                                     , $taskPoll[$tkey]["task"]->getID()
                                 )
                             );
-                            $taskPoll[$tkey]["task"]->setState(task_abstract::STATUS_STOPPED);
+                            $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
                         }
 
                         break;
 
-                    case task_abstract::STATUS_STOPPED:
-                    case task_abstract::STATUS_TODELETE:
+                    case task_abstract::STATE_STOPPED:
+                    case task_abstract::STATE_TODELETE:
                         if ($this->method == self::METHOD_PROC_OPEN) {
                             if ($taskPoll[$tkey]["process"]) {
                                 @fclose($taskPoll[$tkey]["pipes"][1]);

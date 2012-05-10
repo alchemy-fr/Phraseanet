@@ -124,21 +124,21 @@ try {
     $status_2 = databox_status::operation_and($mask_oui, $mask_non);
     if ( ! $filename->is_new_in_base(phrasea::sbasFromBas($base_id)) || count($error_file) > 0) {
         // file already exists in base
-        if ( ! lazaretFile::copy_uploaded_to_lazaret($filename, $base_id, $_FILES['Filedata']["name"], implode("\n", $error_file), $status_2)) {
-            // copy in lazaret failed
+        if ( ! lazaretFile::move_uploaded_to_lazaret($filename, $base_id, $_FILES['Filedata']["name"], implode("\n", $error_file), $status_2)) {
+            // move in lazaret failed
             if (UPLOADER == 'FLASH')
                 header('HTTP/1.1 500 Internal Server Error');
             else
                 echo '<script type="text/javascript">parent.classic_uploaded("' . _("erreur lors de l'archivage") . '")</script>';
         }
         else {
-            // copy in lazaret succeed
+            // move in lazaret succeed
             if (UPLOADER == 'HTML')
                 echo '<script type="text/javascript">parent.classic_uploaded("' . _('Document ajoute a la quarantaine') . '")</script>';
         }
 
-        // if (UPLOADER == 'HTML')
-        //  echo '<script type="text/javascript">parent.classic_uploaded("' . _("Fichier uploade, en attente") . '")</script>';
+        if (UPLOADER == 'HTML')
+            echo '<script type="text/javascript">parent.classic_uploaded("' . _("Fichier uploade, en attente") . '")</script>';
 
         unset($filename);
         unlink($_FILES['Filedata']['tmp_name']);

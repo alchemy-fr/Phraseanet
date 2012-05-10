@@ -26,7 +26,6 @@ use Symfony\Component\Console\Command\Command;
 class module_console_taskrun extends Command
 {
     private $task;
-
     private $shedulerPID;
 
     public function __construct($name = null)
@@ -125,7 +124,7 @@ class module_console_taskrun extends Command
                     if (method_exists($this->task, 'signal'))
                         $this->task->signal('SIGNAL_SCHEDULER_DIED');
                     else
-                        $this->task->setState(task_abstract::STATUS_TOSTOP);
+                        $this->task->setState(task_abstract::STATE_TOSTOP);
                 }
 
 

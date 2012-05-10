@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,7 +10,6 @@
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -102,7 +101,7 @@ class task_period_archive extends task_abstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if ($ns = $dom->getElementsByTagName($pname)->item(0)) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
                     while (($n = $ns->firstChild))
                         $ns->removeChild($n);
@@ -234,13 +233,13 @@ class task_period_archive extends task_abstract
             </select>
             <br/>
             <br/>
-                <?php echo _('task::_common_:hotfolder') ?>
+        <?php echo _('task::_common_:hotfolder') ?>
             <input type="text" name="hotfolder" style="width:400px;" onchange="chgxmltxt(this, 'hotfolder');" value=""><br/>
             <br/>
-                <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+        <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-                <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
+        <?php echo _('task::archive:delai de \'repos\' avant traitement') ?>&nbsp;:&nbsp;
             <input type="text" name="cold" style="width:40px;" onchange="chgxmltxt(this, 'cold');" value="">&nbsp;<?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
             <input type="checkbox" name="move_archived" onchange="chgxmlck(this, 'move_archived');">&nbsp;<?php echo _('task::archive:deplacer les fichiers archives dans _archived') ?>
@@ -386,11 +385,11 @@ class task_period_archive extends task_abstract
 
                         for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
                             sleep(1);
-                        $this->setState(self::STATUS_TORESTART);
+                        $this->setState(self::STATE_TORESTART);
                     } else {
                         $this->log(sprintf(('Error : missing hotfolder \'%s\', stopping.'), $path_in));
                         // runner = manual : can't restart so simply quit
-                        $this->setState(self::STATUS_STOPPED);
+                        $this->setState(self::STATE_STOPPED);
                     }
                     $this->running = FALSE;
                     return;
@@ -426,17 +425,17 @@ class task_period_archive extends task_abstract
 
                         for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
                             sleep(1);
-                        $this->setState(self::STATUS_TORESTART);
+                        $this->setState(self::STATE_TORESTART);
                     } else {
                         $this->log(sprintf(('Error : error fetching task \'%d\', stopping.'), $this->getID()));
                         // runner = manual : can't restart so simply quit
-                        $this->setState(self::STATUS_STOPPED);
+                        $this->setState(self::STATE_STOPPED);
                     }
                     $this->running = FALSE;
                     return;
                 }
 
-                if ($row['status'] == self::STATUS_TOSTOP) {
+                if ($row['status'] == self::STATE_TOSTOP) {
                     $this->running = FALSE;
                     return;
                 }
@@ -449,39 +448,27 @@ class task_period_archive extends task_abstract
 
                 switch ($r) {
                     case 'TOSTOP':
-                        $this->setState(self::STATUS_STOPPED);
+                        $this->setState(self::STATE_STOPPED);
                         $this->running = FALSE;
                         break;
                     case 'WAIT':
-                        $this->setState(self::STATUS_STOPPED);
+                        $this->setState(self::STATE_STOPPED);
                         $this->running = FALSE;
                         break;
                     case 'BAD':
-                        $this->setState(self::STATUS_STOPPED);
+                        $this->setState(self::STATE_STOPPED);
                         $this->running = FALSE;
                         break;
                     case 'NORECSTODO':
                         $duration = time() - $duration;
                         if ($duration < ($period + $cold)) {
-                            /*
-                              printf("will close a conn in 5sec...\n");
-                              sleep(5);
-                              $conn->close();
-                              unset($conn);
-                              printf("conn closed, waiting 5sec\n");
-                              sleep(5);
-                             */
                             for ($i = 0; $i < (($period + $cold) - $duration) && $this->running; $i ++ ) {
                                 $s = $this->getState();
-                                if ($s == self::STATUS_TOSTOP) {
-                                    $this->setState(self::STATUS_STOPPED);
+                                if ($s == self::STATE_TOSTOP) {
+                                    $this->setState(self::STATE_STOPPED);
                                     $this->running = FALSE;
                                 } else {
-
-                                    //	$conn->close();
-                                    //	unset($conn);
                                     sleep(1);
-                                    //	$conn = connection::getPDOConnection();
                                 }
                             }
                         }
@@ -489,14 +476,14 @@ class task_period_archive extends task_abstract
                     case 'MAXRECSDONE':
                     case 'MAXMEMORY':
                     case 'MAXLOOP':
-                        if ($row['status'] == self::STATUS_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
-                            $this->setState(self::STATUS_TORESTART);
+                        if ($row['status'] == self::STATE_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
+                            $this->setState(self::STATE_TORESTART);
                             $this->running = FALSE;
                         }
                         break;
                     default:
-                        if ($row['status'] == self::STATUS_STARTED) {
-                            $this->setState(self::STATUS_STOPPED);
+                        if ($row['status'] == self::STATE_STARTED) {
+                            $this->setState(self::STATE_STOPPED);
                             $this->running = FALSE;
                         }
                         break;
@@ -513,8 +500,6 @@ class task_period_archive extends task_abstract
      */
     function archiveHotFolder($server_coll_id)
     {
-        // $this->filesToIgnore = array('.', '..', 'Thumbs.db', '');
-
         clearstatcache();
 
         $conn = connection::getPDOConnection();
@@ -570,7 +555,7 @@ class task_period_archive extends task_abstract
 
         while ($cold > 0) {
             $s = $this->getState();
-            if ($s == self::STATUS_TOSTOP)
+            if ($s == self::STATE_TOSTOP)
                 return('TOSTOP');
             sleep(2);
             $cold -= 2;
@@ -724,7 +709,7 @@ class task_period_archive extends task_abstract
             while (($file = $listFolder->read()) !== NULL) {
                 if (time() - $time0 >= 2) { // each 2 secs, check the status of the task
                     $s = $this->getState();
-                    if ($s == self::STATUS_TOSTOP) {
+                    if ($s == self::STATE_TOSTOP) {
                         $nnew = 'TOSTOP'; // since we will return a string...
                         break;    // ...we can check it against numerical result
                     }
@@ -779,7 +764,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function listFilesPhase2($dom, $node, $path, $depth=0)
+    function listFilesPhase2($dom, $node, $path, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -877,7 +862,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp=false, $depth=0)
+    function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp = false, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -903,7 +888,6 @@ class task_period_archive extends task_abstract
             if ($n->getAttribute('isdir') == '1') {
                 if (($grpSettings = $this->getGrpSettings($name)) !== FALSE) { // get 'caption', 'representation'
                     // this is a grp folder, we check it
-
                     $dnl = $xpath->query('./file[@name=".grouping.xml"]', $n);
                     if ($dnl->length == 1) {
                         // this group is old (don't care about any linked files), just flag it
@@ -1010,7 +994,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth=0)
+    function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -1033,11 +1017,6 @@ class task_period_archive extends task_abstract
 
             if ($n->getAttribute('isdir')) {
                 // a dir
-//        if($n->getAttribute('error') && $this->move_error)
-//        {
-//          @mkdir($path_error . '/' . $name);
-//        }
-
                 $ret |= $this->removeBadGroups($dom, $n, $path . '/' . $name
                     , $path_archived . '/' . $name
                     , $path_error . '/' . $name
@@ -1086,7 +1065,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function archive($dom, $node, $path, $path_archived, $path_error, $depth=0)
+    function archive($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -1125,7 +1104,6 @@ class task_period_archive extends task_abstract
                 $this->archiveFile($dom, $n, $path, $path_archived, $path_error, $nodesToDel, 0); // 0 = no grp
             }
         }
-// printf("========== %s === %s ====== \n", __LINE__, var_export($nodesToDel, true));
         foreach ($nodesToDel as $n)
             $n->parentNode->removeChild($n);
 
@@ -1153,7 +1131,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function bubbleResults($dom, $node, $path, $depth=0)
+    function bubbleResults($dom, $node, $path, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -1212,7 +1190,7 @@ class task_period_archive extends task_abstract
      * @param <type> $depth
      * @return <type>
      */
-    function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth=0)
+    function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0)
@@ -1567,7 +1545,7 @@ class task_period_archive extends task_abstract
      * @param <type> $grp_rid
      * @return <type>
      */
-    function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid=0)
+    function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid = 0)
     {
         $match = $node->getAttribute('match');
         if ($match == '*')
@@ -1823,7 +1801,7 @@ class task_period_archive extends task_abstract
      * @param <type> $attributes
      * @param <type> $depth
      */
-    function setAllChildren($dom, $node, $attributes, $depth=0)
+    function setAllChildren($dom, $node, $attributes, $depth = 0)
     {
         static $iloop = 0;
         if ($depth == 0)

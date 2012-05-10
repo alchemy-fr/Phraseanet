@@ -18,9 +18,7 @@
 class task_period_emptyColl extends task_appboxAbstract
 {
     protected $base_id;
-
     protected $suicidable = true;
-
     protected $total_records = 0;
 
     public function getName()
@@ -47,9 +45,8 @@ class task_period_emptyColl extends task_appboxAbstract
     protected function retrieveContent(appbox $appbox)
     {
         if ( ! $this->base_id) {
-            $this->current_state = self::STATE_FINISHED;
-
-            return;
+            $this->setState(self::STATE_STOPPED);
+            return array();
         }
         $collection = collection::get_from_base_id($this->base_id);
         $this->total_records = $collection->get_record_amount();
@@ -58,7 +55,7 @@ class task_period_emptyColl extends task_appboxAbstract
         $this->setProgress($this->records_done, $this->total_records);
 
         if ($this->total_records == 0) {
-            $this->current_state = self::STATE_FINISHED;
+            $this->setState(self::STATE_STOPPED);
             $this->log('Job finished');
         }
 

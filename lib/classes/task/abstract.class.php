@@ -5,12 +5,12 @@ abstract class task_abstract
     const LAUCHED_BY_BROWSER = 1;
     const LAUCHED_BY_COMMANDLINE = 2;
 
-    const STATUS_TOSTOP = 'tostop';
-    const STATUS_STARTED = 'started';
-    const STATUS_TOSTART = 'tostart';
-    const STATUS_TORESTART = 'torestart';
-    const STATUS_STOPPED = 'stopped';
-    const STATUS_TODELETE = 'todelete';
+    const STATE_TOSTOP = 'tostop';
+    const STATE_STARTED = 'started';
+    const STATE_TOSTART = 'tostart';
+    const STATE_TORESTART = 'torestart';
+    const STATE_STOPPED = 'stopped';
+    const STATE_TODELETE = 'todelete';
 
     const RUNNER_MANUAL = 'manual';
     const RUNNER_SCHEDULER = 'scheduler';
@@ -24,7 +24,6 @@ abstract class task_abstract
 
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
     protected $suicidable = false;
-
     protected $launched_by = 0;
 
     /**
@@ -75,11 +74,8 @@ abstract class task_abstract
      * @var <type>
      */
     protected $maxmegs;
-
     protected $runner;
-
     private $input;
-
     private $output;
 
     /**
@@ -88,25 +84,15 @@ abstract class task_abstract
      * @var <type>
      */
     protected $title;
-
     protected $settings;
-
     protected $crash_counter;
-
     protected $status;
-
     protected $active;
-
     protected $debug = false;
-
     protected $completed_percentage;
-
     protected $period = 60;
-
     protected $taskid = NULL;
-
     protected $system = '';  // "DARWIN", "WINDOWS" , "LINUX"...
-
     protected $argt = array(
         "--help" => array("set" => false, "values" => array(), "usage" => " (no help available)")
     );
@@ -114,13 +100,14 @@ abstract class task_abstract
     public function getState()
     {
         $conn = connection::getPDOConnection();
-        $sql = 'SELECT status FROM task2 WHERE task_id = :taskid LIMIT 1';
+        $sql = 'SELECT status FROM task2 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':taskid' => $this->taskid));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
         if ( ! $row)
             throw new Exception('Unknown task id');
+
         return $row['status'];
     }
 
@@ -142,12 +129,12 @@ abstract class task_abstract
     public function setState($status)
     {
         $av_status = array(
-            self::STATUS_STARTED
-            , self::STATUS_TOSTOP
-            , self::STATUS_STOPPED
-            , self::STATUS_TORESTART
-            , self::STATUS_TOSTART
-            , self::STATUS_TODELETE
+            self::STATE_STARTED
+            , self::STATE_TOSTOP
+            , self::STATE_STOPPED
+            , self::STATE_TORESTART
+            , self::STATE_TOSTART
+            , self::STATE_TODELETE
         );
 
         if ( ! in_array($status, $av_status)) {
@@ -293,7 +280,7 @@ abstract class task_abstract
             return('');
         }
         $sql = 'SELECT crashed, pid, status, active, settings, name, completed, runner
-              FROM task2 WHERE task_id = :taskid LIMIT 1';
+              FROM task2 WHERE task_id = :taskid';
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':taskid' => $this->getID()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -394,6 +381,7 @@ abstract class task_abstract
             }
             fclose($fd);
         }
+
         return $pid;
     }
 
@@ -408,13 +396,10 @@ abstract class task_abstract
         if ($this->running) {// && $this->records_done == 0)
             $when_started = time() - $when_started;
             if ($when_started < $this->period) {
-//        $conn = connection::getPDOConnection();
-                //       $conn->close();
-                //      unset($conn);
                 for ($t = $this->period - $when_started; $this->running && $t > 0; $t -- ) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
                     $s = $this->getState();
-                    if ($s == self::STATUS_TOSTOP) {
-                        $this->setState(self::STATUS_STOPPED);
+                    if ($s == self::STATE_TOSTOP) {
+                        $this->setState(self::STATE_STOPPED);
                         $this->running = FALSE;
                     } else {
                         sleep(1);
@@ -456,7 +441,7 @@ abstract class task_abstract
         flock($tasklock, LOCK_SH);
 
         $this->setRunner($runner);
-        $this->setState(self::STATUS_STARTED);
+        $this->setState(self::STATE_STARTED);
 
         // run the real code of the task -into the task's class- (may throw an exception)
         $exception = NULL;
@@ -473,11 +458,11 @@ abstract class task_abstract
         @unlink($lockfile);
 
         switch ($this->getState()) {
-            case self::STATUS_TODELETE:
+            case self::STATE_TODELETE:
                 $this->delete();
                 break;
-            case self::STATUS_TOSTOP:
-                $this->setState(self::STATUS_STOPPED);
+            case self::STATE_TOSTOP:
+                $this->setState(self::STATE_STOPPED);
                 break;
         }
 
@@ -509,8 +494,7 @@ abstract class task_abstract
     {
         if ($this->getRunner() == self::RUNNER_SCHEDULER && ++ $this->loop >= $this->maxloops) {
             $this->log(sprintf(('%d loops done, restarting'), $this->loop));
-            $this->setState(self::STATUS_TORESTART);
-//      $this->return_xxxvalue = self::RETURNSTATUS_TORESTART;
+            $this->setState(self::STATE_TORESTART);
 
             $this->running = false;
         }
@@ -529,7 +513,6 @@ abstract class task_abstract
 
         $lastt = $t;
         echo "\n" . memory_get_usage() . " -- " . memory_get_usage(true) . "\n";
-        // print($s);
     }
 
     public function log($message)
@@ -608,7 +591,6 @@ abstract class task_abstract
 
         return($t);
     }
-
 
     public function getID()
     {

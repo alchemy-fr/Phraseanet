@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -141,6 +141,7 @@ class task_period_subdef extends task_databoxAbstract
             <?php echo $form ?>.maxrecs.value = "<?php echo p4string::MakeString($sxml->maxrecs, "js", '"') ?>";
             <?php echo $form ?>.maxmegs.value = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
             </script>
+
             <?php
             return("");
         }
@@ -261,7 +262,7 @@ class task_period_subdef extends task_databoxAbstract
                 , $this->sbas_id, $record_id));
         $record = new record_adapter($this->sbas_id, $record_id);
 
-        $record->generate_subdefs($databox, null, $this->debug);
+        $record->generate_subdefs($databox, null);
 
         $this->recs_to_write[] = $record->get_record_id();
 

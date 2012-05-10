@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,7 +10,6 @@
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -117,12 +116,12 @@ class task_period_workflow01 extends task_databoxAbstract
             <?php echo $form ?>.period.value   = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
                 parent.calccmd();
             </script>
+
             <?php
             return("");
         }
         else { // ... so we NEVER come here
             // bad xml
-
             return("BAD XML");
         }
     }
@@ -283,16 +282,16 @@ class task_period_workflow01 extends task_databoxAbstract
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
-        <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
+            <?php echo _('task::outofdate:Base') ?>&nbsp;:&nbsp;
 
             <select onchange="chgsbas(this);setDirty();" name="sbas_id">
                 <option value="">...</option>
-        <?php
-        $sbas_ids = $user->ACL()->get_granted_sbas(array('bas_manage'));
-        foreach ($sbas_ids as $databox) {
-            print('<option value="' . $databox->get_sbas_id() . '">' . p4string::MakeString($databox->get_viewname(), "form") . '</option>');
-        }
-        ?>
+                <?php
+                $sbas_ids = $user->ACL()->get_granted_sbas(array('bas_manage'));
+                foreach ($sbas_ids as $databox) {
+                    print('<option value="' . $databox->get_sbas_id() . '">' . p4string::MakeString($databox->get_viewname(), "form") . '</option>');
+                }
+                ?>
             </select>
 
             &nbsp;
@@ -300,9 +299,9 @@ class task_period_workflow01 extends task_databoxAbstract
             <br/>
             <br/>
 
-                <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
+            <?php echo _('task::_common_:periodicite de la tache') ?>&nbsp;:&nbsp;
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
-                <?php echo _('task::_common_:minutes (unite temporelle)') ?><br/>
+            <?php echo _('task::_common_:minutes (unite temporelle)') ?><br/>
             <br/>
 
             <table id="OUTOFDATETAB" style="margin-right:10px; ">
@@ -348,11 +347,8 @@ class task_period_workflow01 extends task_databoxAbstract
         return(_("task::outofdate:deplacement de docs suivant valeurs de champs 'date'"));
     }
     protected $status_origine;
-
     protected $coll_origine;
-
     protected $status_destination;
-
     protected $coll_destination;
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
@@ -382,28 +378,28 @@ class task_period_workflow01 extends task_databoxAbstract
         $sql_s = $sql_w = '';
         $sql_parms = array();
         if ($this->coll_origine != '') {
-            $sql_w .= ($sql_w ? ' AND ' : '')
-                . '(coll_id=:coll_org)';
+            $sql_w .= ($sql_w ? ' AND ' : '') . '(coll_id=:coll_org)';
             $sql_parms[':coll_org'] = $this->coll_origine;
         }
         if ($this->status_origine != '') {
             $x = explode('_', $this->status_origine);
-            if (count($x) !== 2)
-                throw new Exception('Error in settings for status origine');
+            if (count($x) !== 2) {
+                throw new Exception('Error in settings for status origin');
+            }
             $sql_w .= ($sql_w ? ' AND ' : '')
                 . '((status >> :stat_org_n & 1) = :stat_org_v)';
             $sql_parms[':stat_org_n'] = $x[0];
             $sql_parms[':stat_org_v'] = $x[1];
         }
         if ($this->coll_destination != '') {
-            $sql_s .= ($sql_s ? ', ' : '')
-                . 'coll_id=:coll_dst';
+            $sql_s .= ($sql_s ? ', ' : '') . 'coll_id=:coll_dst';
             $sql_parms[':coll_dst'] = $this->coll_destination;
         }
         if ($this->status_destination != '') {
             $x = explode('_', $this->status_destination);
-            if (count($x) !== 2)
+            if (count($x) !== 2) {
                 throw new Exception('Error in settings for status destination');
+            }
             $sql_s .= ($sql_s ? ', ' : '');
             if ((int) $x[1] === 0)
                 $sql_s .= 'status = status &~(1 << :stat_dst)';
@@ -491,6 +487,7 @@ class task_period_workflow01 extends task_databoxAbstract
         } catch (Exception $e) {
 
         }
+
         return p4string::jsonencode($retjs);
     }
 }

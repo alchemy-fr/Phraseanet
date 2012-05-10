@@ -17,9 +17,7 @@
 class task_period_ftp extends task_appboxAbstract
 {
     protected $proxy;
-
     protected $proxyport;
-
     protected $debug;
 
     /**
@@ -566,8 +564,7 @@ class task_period_ftp extends task_appboxAbstract
     {
         $conn = $appbox->get_connection();
 
-        $sql = 'SELECT crash, nbretry FROM ftp_export'
-            . ' WHERE id = :export_id';
+        $sql = 'SELECT crash, nbretry FROM ftp_export WHERE id = :export_id';
 
         $stmt = $conn->prepare($sql);
         $stmt->execute(array(':export_id' => $id));

@@ -2,7 +2,7 @@
 /*
  * This file is part of Phraseanet
  *
- * (c) 2005-2010 Alchemy
+ * (c) 2005-2012 Alchemy
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -448,11 +448,8 @@ class task_period_outofdate extends task_abstract
     // ======================================================================================================
 
     protected $sxTaskSettings = null; // les settings de la tache en simplexml
-
     private $connbas = null;  // cnx a la base
-
     private $msg = "";
-
     private $sbas_id;
 
     protected function run2()
@@ -529,11 +526,11 @@ class task_period_outofdate extends task_abstract
 
                     switch ($r) {
                         case 'WAIT':
-                            $ret = self::STATUS_STOPPED;
+                            $this->setState(self::STATE_STOPPED);
                             $this->running = false;
                             break;
                         case 'BAD':
-                            $ret = self::STATUS_STOPPED;
+                            $this->setState(self::STATE_STOPPED);
                             $this->running = false;
                             break;
                         case 'NORECSTODO':
@@ -546,21 +543,21 @@ class task_period_outofdate extends task_abstract
                         case 'MAXRECSDONE':
                         case 'MAXMEMORY':
                         case 'MAXLOOP':
-                            if ($row['status'] == self::STATUS_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
-                                $ret = self::STATUS_TORESTART;
+                            if ($row['status'] == self::STATE_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
+                                $this->setState(self::STATE_TORESTART);
                                 $this->running = false;
                             }
                             break;
                         default:
-                            if ($row['status'] == self::STATUS_STARTED) {
-                                $ret = self::STATUS_STOPPED;
+                            if ($row['status'] == self::STATE_STARTED) {
+                                $this->setState(self::STATE_STOPPED);
                                 $this->running = false;
                             }
                             break;
                     }
                 }
             } else {
-                $ret = self::STATUS_STOPPED;
+                $this->setState(self::STATE_STOPPED);
                 $this->running = false;
             }
             $loop ++;

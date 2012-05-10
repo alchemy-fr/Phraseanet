@@ -22,7 +22,6 @@ class task_manager
     const STATUS_SCHED_TOSTOP = 'tostop';
 
     protected $appbox;
-
     protected $tasks;
 
     public function __construct(appbox &$appbox)

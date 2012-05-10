@@ -16,14 +16,12 @@ use PHPExiftool\Writer;
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
 class task_period_writemeta extends task_databoxAbstract
 {
     protected $clear_doc;
-
     protected $metasubdefs = array();
 
     function help()
@@ -61,7 +59,7 @@ class task_period_writemeta extends task_databoxAbstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if ($ns = $dom->getElementsByTagName($pname)->item(0)) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
                     while (($n = $ns->firstChild))
                         $ns->removeChild($n);

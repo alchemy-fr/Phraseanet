@@ -293,7 +293,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMetaJson200($content);
         $task_manager->getTasks(true);
         $task = $task_manager->getTask($idTask);
-        $this->assertEquals(\task_abstract::STATUS_TOSTART, $task->getState());
+        $this->assertEquals(\task_abstract::STATE_TOSTART, $task->getState());
     }
 
     /**
@@ -324,7 +324,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMetaJson200($content);
         $task_manager->getTasks(true);
         $task = $task_manager->getTask($idTask);
-        $this->assertEquals(\task_abstract::STATUS_TOSTOP, $task->getState());
+        $this->assertEquals(\task_abstract::STATE_TOSTOP, $task->getState());
     }
 
     /**
