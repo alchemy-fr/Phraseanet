@@ -1279,13 +1279,17 @@ class record_adapter implements record_Interface, cache_cacheableInterface
     /**
      *
      * @param collection $collection
-     * @param system_file $system_file
+     * @param system_file|string $system_file
      * @param string $original_name
      * @param boolean $is_grouping
      * @return record_adapter
      */
-    public static function create(collection $collection, system_file &$system_file, $original_name = false, $is_grouping = false)
+    public static function create(collection $collection, $system_file, $original_name = false, $is_grouping = false)
     {
+        if ( ! $system_file instanceof \system_file) {
+            $system_file = new \system_file($system_file);
+        }
+
         $type = $system_file->get_phrasea_type();
 
         if ($is_grouping) {
@@ -1453,6 +1457,41 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         foreach ($rs as $row) {
             $k = count($records);
             $records[$k] = new record_adapter($sbas_id, $row['record_id']);
+        }
+
+        return $records;
+    }
+
+    /**
+     * Search for a record on a databox by UUID
+     *
+     * @param  \databox        $databox
+     * @param  string          $uuid
+     * @param  int             $record_id Restrict check on a record_id
+     * @return \record_adapter
+     */
+    public static function get_record_by_uuid(\databox $databox, $uuid, $record_id = null)
+    {
+        $sql = "SELECT record_id FROM record r
+                WHERE uuid IS NOT NULL AND uuid = :uuid";
+
+        $params = array(':uuid' => $uuid);
+
+        if ( ! is_null($record_id)) {
+            $sql .= ' AND record_id = :record_id';
+            $params[':record_id'] = $record_id;
+        }
+
+        $stmt = $databox->get_connection()->prepare($sql);
+        $stmt->execute($params);
+        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $records = array();
+
+        foreach ($rs as $row) {
+            $k = count($records);
+            $records[$k] = new record_adapter($databox->get_sbas_id(), $row['record_id']);
         }
 
         return $records;
@@ -1907,13 +1946,15 @@ class record_adapter implements record_Interface, cache_cacheableInterface
      * @param int $how_many
      * @return type
      */
-    public static function get_records_by_originalname(databox $databox, $original_name, $offset_start = 0, $how_many = 10)
+    public static function get_records_by_originalname(databox $databox, $original_name, $caseSensitive = false, $offset_start = 0, $how_many = 10)
     {
         $offset_start = (int) ($offset_start < 0 ? 0 : $offset_start);
         $how_many = (int) (($how_many > 20 || $how_many < 1) ? 10 : $how_many);
 
         $sql = sprintf('SELECT record_id FROM record
-            WHERE original_name = :original_name LIMIT %d, %d'
+            WHERE originalname = :original_name '
+            . ($caseSensitive ? 'COLLATE utf8_bin' : 'COLLATE utf8_unicode_ci')
+            . ' LIMIT %d, %d'
             , $offset_start, $how_many);
 
         $stmt = $databox->get_connection()->prepare($sql);

@@ -161,7 +161,7 @@ class p4file
         foreach ($checks as $name => $value) {
             switch ($name) {
                 case 'name':
-                    $records = record_adapter::get_records_by_originalname($databox, $original_name, 0, 1);
+                    $records = record_adapter::get_records_by_originalname($databox, $original_name, false, 0, 1);
                     if (count($records) > 0)
                         $errors[] = sprintf(_('Le fichier \'%s\' existe deja'), $originalname);
                     break;
