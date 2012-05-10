@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class ImageTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Image
      */
@@ -38,5 +37,4 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Image', $this->object->getMediaAlchemystSpec());
     }
-
 }

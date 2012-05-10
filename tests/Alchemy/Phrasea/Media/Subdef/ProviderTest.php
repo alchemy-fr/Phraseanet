@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class ProviderTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Provider
      */
@@ -22,8 +21,7 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(is_array($this->object->getOptions()));
 
-        foreach ($this->object->getOptions() as $option)
-        {
+        foreach ($this->object->getOptions() as $option) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType', $option);
         }
     }
@@ -48,5 +46,4 @@ class ProviderTest extends \PHPUnit_Framework_TestCase
         $option = $this->object->getOption(Image::OPTION_SIZE);
         $this->assertEquals(300, $option->getValue());
     }
-
 }

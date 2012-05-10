@@ -1,195 +1,172 @@
 <?php
 
-/*
- * This file is part of Phraseanet
- *
- * (c) 2005-2010 Alchemy
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
 
-/**
- *
- * @package
- * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
- * @link        www.phraseanet.com
- */
 class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
+    protected static $need_records = 1;
 
-  protected static $need_records = 1;
+    /**
+     *
+     * @var \Entities\Basket
+     */
+    protected $basket;
 
-  /**
-   *
-   * @var \Entities\Basket
-   */
-  protected $basket;
+    /**
+     *
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-  /**
-   *
-   * @var \Doctrine\ORM\EntityManager
-   */
-  protected $em;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->em = self::$core->getEntityManager();
+        $this->basket = $this->insertOneBasket();
+    }
 
-  public function setUp()
-  {
-    parent::setUp();
-    $this->em = self::$core->getEntityManager();
-    $this->basket = $this->insertOneBasket();
-  }
+    public function testGetId()
+    {
+        $this->assertTrue(is_int($this->basket->getId()));
+        $otherBasket = $this->insertOneBasket();
+        $this->assertGreaterThan($this->basket->getId(), $otherBasket->getId());
+    }
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
+    public function testGetName()
+    {
+        $this->basket->setName('one name');
+        $this->em->persist($this->basket);
+        $this->em->flush();
+        $this->assertEquals('one name', $this->basket->getName());
+    }
 
-  public function testGetId()
-  {
-    $this->assertTrue(is_int($this->basket->getId()));
-    $otherBasket = $this->insertOneBasket();
-    $this->assertGreaterThan($this->basket->getId(), $otherBasket->getId());
-  }
+    public function testGetDescription()
+    {
+        $this->basket->setDescription('une jolie description pour mon super panier');
+        $this->em->persist($this->basket);
+        $this->em->flush();
+        $this->assertEquals('une jolie description pour mon super panier', $this->basket->getDescription());
+    }
 
-  public function testGetName()
-  {
-    $this->basket->setName('one name');
-    $this->em->persist($this->basket);
-    $this->em->flush();
-    $this->assertEquals('one name', $this->basket->getName());
-  }
+    public function testGetUsrId()
+    {
+        $this->basket->setUsrId(1);
+        $this->em->persist($this->basket);
+        $this->em->flush();
+        $this->assertEquals(1, $this->basket->getUsrId());
+    }
 
-  public function testGetDescription()
-  {
-    $this->basket->setDescription('une jolie description pour mon super panier');
-    $this->em->persist($this->basket);
-    $this->em->flush();
-    $this->assertEquals('une jolie description pour mon super panier', $this->basket->getDescription());
-  }
+    public function testGetPusherId()
+    {
+        $this->basket->setPusherId(1);
+        $this->em->persist($this->basket);
+        $this->em->flush();
+        $this->assertEquals(1, $this->basket->getPusherId());
+    }
 
-  public function testGetUsrId()
-  {
-    $this->basket->setUsrId(1);
-    $this->em->persist($this->basket);
-    $this->em->flush();
-    $this->assertEquals(1, $this->basket->getUsrId());
-  }
+    public function testGetArchived()
+    {
+        $this->basket->setArchived(true);
+        $this->em->persist($this->basket);
+        $this->em->flush();
+        $this->assertTrue($this->basket->GetArchived());
+        $this->basket->setArchived(false);
+        $this->em->persist($this->basket);
+        $this->em->flush();
+        $this->assertFalse($this->basket->GetArchived());
+    }
 
-  public function testGetPusherId()
-  {
-    $this->basket->setPusherId(1);
-    $this->em->persist($this->basket);
-    $this->em->flush();
-    $this->assertEquals(1, $this->basket->getPusherId());
-  }
+    public function testGetCreated()
+    {
+        $date = $this->basket->getCreated();
+        $this->assertInstanceOf('\DateTime', $date);
+    }
 
-  public function testGetArchived()
-  {
-    $this->basket->setArchived(true);
-    $this->em->persist($this->basket);
-    $this->em->flush();
-    $this->assertTrue($this->basket->GetArchived());
-    $this->basket->setArchived(false);
-    $this->em->persist($this->basket);
-    $this->em->flush();
-    $this->assertFalse($this->basket->GetArchived());
-  }
+    public function testGetUpdated()
+    {
+        $date = $this->basket->getUpdated();
+        $this->assertInstanceOf('\DateTime', $date);
+    }
 
-  public function testGetCreated()
-  {
-    $date = $this->basket->getCreated();
-    $this->assertInstanceOf('\DateTime', $date);
-  }
+    public function testGetElements()
+    {
+        $elements = $this->basket->getElements();
 
-  public function testGetUpdated()
-  {
-    $date = $this->basket->getUpdated();
-    $this->assertInstanceOf('\DateTime', $date);
+        $this->assertInstanceOf('\Doctrine\ORM\PersistentCollection', $elements);
 
-  }
+        $this->assertEquals(0, $elements->count());
 
-  public function testGetElements()
-  {
-    $elements = $this->basket->getElements();
+        $basketElement = new \Entities\BasketElement();
 
-    $this->assertInstanceOf('\Doctrine\ORM\PersistentCollection', $elements);
+        $basketElement->setRecord(self::$record_1);
 
-    $this->assertEquals(0, $elements->count());
+        $basketElement->setBasket($this->basket);
 
-    $basketElement = new \Entities\BasketElement();
+        $this->em->persist($basketElement);
 
-    $basketElement->setRecord(self::$record_1);
+        $this->em->flush();
 
-    $basketElement->setBasket($this->basket);
+        $this->em->refresh($this->basket);
 
-    $this->em->persist($basketElement);
+        $this->assertEquals(1, $this->basket->getElements()->count());
+    }
 
-    $this->em->flush();
+    public function testGetPusher()
+    {
+        $this->assertNull($this->basket->getPusher()); //no pusher
+        $this->basket->setPusherId(self::$user->get_id());
+        $this->assertInstanceOf('\User_Adapter', $this->basket->getPusher());
+        $this->assertEquals($this->basket->getPusher()->get_id(), self::$user->get_id());
+    }
 
-    $this->em->refresh($this->basket);
+    public function testGetOwner()
+    {
+        $this->assertNotNull($this->basket->getOwner()); //no owner
+        $this->basket->setUsrId(self::$user->get_id());
+        $this->assertInstanceOf('\User_Adapter', $this->basket->getOwner());
+        $this->assertEquals($this->basket->getOwner()->get_id(), self::$user->get_id());
+    }
 
-    $this->assertEquals(1, $this->basket->getElements()->count());
-  }
+    public function testGetValidation()
+    {
+        $this->assertNull($this->basket->getValidation());
 
-  public function testGetPusher()
-  {
-    $this->assertNull($this->basket->getPusher()); //no pusher
-    $this->basket->setPusherId(self::$user->get_id());
-    $this->assertInstanceOf('\User_Adapter', $this->basket->getPusher());
-    $this->assertEquals($this->basket->getPusher()->get_id(), self::$user->get_id());
-  }
+        $validationSession = new \Entities\ValidationSession();
 
-  public function testGetOwner()
-  {
-    $this->assertNotNull($this->basket->getOwner()); //no owner
-    $this->basket->setUsrId(self::$user->get_id());
-    $this->assertInstanceOf('\User_Adapter', $this->basket->getOwner());
-    $this->assertEquals($this->basket->getOwner()->get_id(), self::$user->get_id());
-  }
+        $validationSession->setBasket($this->basket);
 
-  public function testGetValidation()
-  {
-    $this->assertNull($this->basket->getValidation());
+        $validationSession->setDescription('Une description au hasard');
 
-    $validationSession = new \Entities\ValidationSession();
+        $validationSession->setName('Un nom de validation');
 
-    $validationSession->setBasket($this->basket);
+        $expires = new \DateTime();
+        $expires->modify('+1 week');
 
-    $validationSession->setDescription('Une description au hasard');
+        $validationSession->setExpires($expires);
 
-    $validationSession->setName('Un nom de validation');
+        $validationSession->setInitiator(self::$user);
 
-    $expires = new \DateTime();
-    $expires->modify('+1 week');
+        $this->em->persist($validationSession);
 
-    $validationSession->setExpires($expires);
+        $this->em->flush();
 
-    $validationSession->setInitiator(self::$user);
+        $this->em->refresh($this->basket);
 
-    $this->em->persist($validationSession);
+        $this->assertInstanceOf('\Entities\ValidationSession', $this->basket->getValidation());
+    }
 
-    $this->em->flush();
+    public function testGetIsRead()
+    {
+        $this->markTestIncomplete();
+    }
 
-    $this->em->refresh($this->basket);
+    public function testGetSize()
+    {
+        $this->markTestIncomplete();
+    }
 
-    $this->assertInstanceOf('\Entities\ValidationSession', $this->basket->getValidation());
-  }
-
-  public function testGetIsRead()
-  {
-    $this->markTestIncomplete();
-  }
-
-  public function testGetSize()
-  {
-    $this->markTestIncomplete();
-  }
-
-  public function hasRecord()
-  {
-    $this->markTestIncomplete();
-  }
-
+    public function hasRecord()
+    {
+        $this->markTestIncomplete();
+    }
 }

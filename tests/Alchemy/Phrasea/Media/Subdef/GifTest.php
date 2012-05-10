@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef;
 
 class GifTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Gif
      */
@@ -38,5 +37,4 @@ class GifTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Animation', $this->object->getMediaAlchemystSpec());
     }
-
 }

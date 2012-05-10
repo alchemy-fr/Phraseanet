@@ -4,7 +4,6 @@ namespace Alchemy\Phrasea\Media\Subdef\OptionType;
 
 class EnumTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var Enum
      */
@@ -68,5 +67,4 @@ class EnumTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('Numo', $this->object->getDisplayName());
     }
-
 }

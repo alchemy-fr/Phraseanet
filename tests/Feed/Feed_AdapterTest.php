@@ -268,4 +268,3 @@ class Feed_AdapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertInstanceOf('DateTime', self::$object->get_updated_on());
     }
 }
-

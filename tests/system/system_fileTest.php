@@ -4,7 +4,6 @@ require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 
 class system_fileTest extends PhraseanetPHPUnitAbstract
 {
-
     /**
      * @var system_file
      */
@@ -12,6 +11,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
     public function setUp()
     {
+        parent::setUp();
         $this->objects['indd'] = new system_file(__DIR__ . '/../../vendor/phpexiftool/exiftool/t/images/InDesign.indd');
         $this->objects['wav'] = new system_file(__DIR__ . '/../testfiles/test012.wav');
         $this->objects['jpg'] = new system_file(__DIR__ . '/../../vendor/phpexiftool/exiftool/t/images/Casio.jpg');
@@ -65,7 +65,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 
@@ -76,7 +76,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 
@@ -87,7 +87,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 
@@ -98,7 +98,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 
@@ -109,7 +109,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 
@@ -120,15 +120,14 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+            'This test has not been implemented yet.'
         );
     }
 
     public function testMkdir()
     {
         $path = __DIR__ . '/test/dir/to/create/';
-        if (is_dir($path))
-        {
+        if (is_dir($path)) {
             $this->fail('unable to create directory : directory already extists');
         }
         system_file::mkdir($path);
@@ -146,13 +145,13 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     public function testChmod()
     {
         $file = __DIR__ . '/../testfiles/cestlafete.jpg';
-        $dir  = __DIR__ . '/testchmod';
+        $dir = __DIR__ . '/testchmod';
         system_file::mkdir($dir);
 
         chmod($file, 0700);
         chmod($dir, 0700);
         $system_file = new system_file($file);
-        $system_dir  = new system_file($dir);
+        $system_dir = new system_file($dir);
         $system_file->chmod();
         $system_dir->chmod();
         clearstatcache();
@@ -164,7 +163,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
     public function testEmpty_directory()
     {
         $file = __DIR__ . '/../testfiles/cestlafete.jpg';
-        $dir  = __DIR__ . '/testchmod';
+        $dir = __DIR__ . '/testchmod';
         system_file::mkdir($dir);
 
         copy($file, $dir . '/v1.test');
@@ -187,13 +186,10 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
         $this->objects['wav']->set_phrasea_tech_field('trois', '3');
         $this->objects['wav']->set_phrasea_tech_field('deux', '2');
 
-        try
-        {
+        try {
             $this->objects['wav']->set_phrasea_tech_field(' ', '2');
             $this->fail();
-        }
-        catch (Exception_InvalidArgument $e)
-        {
+        } catch (Exception_InvalidArgument $e) {
 
         }
 
@@ -209,11 +205,10 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
     public function testExtract_metadatas()
     {
-        $appbox  = appbox::get_instance(\bootstrap::getCore());
+        $appbox = appbox::get_instance(\bootstrap::getCore());
         $databox = null;
-        foreach ($appbox->get_databoxes() as $d)
-        {
-            $databox   = $d;
+        foreach ($appbox->get_databoxes() as $d) {
+            $databox = $d;
             break;
         }
         $this->assertInstanceOf('databox', $databox);
@@ -222,8 +217,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue(is_array($metadatas));
         $this->assertArrayHasKey('metadatas', $metadatas);
         $this->assertArrayHasKey('status', $metadatas);
-        foreach ($metadatas['metadatas'] as $metadata)
-        {
+        foreach ($metadatas['metadatas'] as $metadata) {
             $this->assertTrue(is_array($metadata));
             $this->assertArrayHasKey('meta_struct_id', $metadata);
             $this->assertArrayHasKey('meta_id', $metadata);
@@ -237,16 +231,15 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
     public function testExtract_metadatasWithCaption()
     {
-        $appbox  = appbox::get_instance(\bootstrap::getCore());
+        $appbox = appbox::get_instance(\bootstrap::getCore());
         $databox = null;
-        foreach ($appbox->get_databoxes() as $d)
-        {
+        foreach ($appbox->get_databoxes() as $d) {
             $databox = $d;
             break;
         }
         $this->assertInstanceOf('databox', $databox);
 
-        $file    = new system_file(__DIR__ . '/../testfiles/extractfile.jpg');
+        $file = new system_file(__DIR__ . '/../testfiles/extractfile.jpg');
         $caption = new system_file(__DIR__ . '/../testfiles/extractfile.xml');
 
         $metadatas = $file->extract_metadatas($databox->get_meta_structure(), $caption);
@@ -256,8 +249,7 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
         $this->assertTrue(is_array($metadatas));
         $this->assertArrayHasKey('metadatas', $metadatas);
         $this->assertArrayHasKey('status', $metadatas);
-        foreach ($metadatas['metadatas'] as $metadata)
-        {
+        foreach ($metadatas['metadatas'] as $metadata) {
             $this->assertTrue(is_array($metadata));
             $this->assertArrayHasKey('meta_struct_id', $metadata);
             $this->assertArrayHasKey('meta_id', $metadata);
@@ -269,13 +261,11 @@ class system_fileTest extends PhraseanetPHPUnitAbstract
 
             $databox_field = databox_field::get_instance($databox, $metadata['meta_struct_id']);
 
-            if ( ! $databox_field->is_multi() && isset($meta_id_found[$metadata['meta_struct_id']]))
-            {
+            if ( ! $databox_field->is_multi() && isset($meta_id_found[$metadata['meta_struct_id']])) {
                 $this->fail('There should not be multiple mono values');
             }
 
             $meta_id_found[$metadata['meta_struct_id']] = $metadata['meta_struct_id'];
         }
     }
-
 }

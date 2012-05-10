@@ -61,6 +61,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function tearDown()
     {
         $this->unsetToken();
+        parent::tearDown();
     }
 
     public static function setUpBeforeClass()
@@ -96,6 +97,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             self::$adminAccount->delete();
             self::$adminApplication->delete();
         }
+        parent::tearDownAfterClass();
     }
 
     public function createApplication()

@@ -35,7 +35,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                     <quality>75</quality>
                 </subdef>';
 
-        $type   = new \Alchemy\Phrasea\Media\Type\Image();
+        $type = new \Alchemy\Phrasea\Media\Type\Image();
         $object = new databox_subdef($type, simplexml_load_string($xml));
 
         $this->assertEquals(databox_subdef::CLASS_PREVIEW, $object->get_class());
@@ -55,8 +55,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($object->getAvailableSubdefTypes()));
         $this->assertTrue(count($object->getAvailableSubdefTypes()) > 0);
 
-        foreach ($object->getAvailableSubdefTypes() as $type)
-        {
+        foreach ($object->getAvailableSubdefTypes() as $type) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\Image', $type);
         }
 
@@ -68,8 +67,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $options = $object->getOptions();
         $this->assertTrue(is_array($options));
 
-        foreach ($options as $option)
-        {
+        foreach ($options as $option) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType', $option);
         }
     }
@@ -109,7 +107,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                     <vcodec>libx264</vcodec>
                 </subdef>';
 
-        $type   = new \Alchemy\Phrasea\Media\Type\Video();
+        $type = new \Alchemy\Phrasea\Media\Type\Video();
         $object = new databox_subdef($type, simplexml_load_string($xml));
 
         $this->assertEquals(databox_subdef::CLASS_THUMBNAIL, $object->get_class());
@@ -126,8 +124,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($object->getAvailableSubdefTypes()));
         $this->assertTrue(count($object->getAvailableSubdefTypes()) > 0);
 
-        foreach ($object->getAvailableSubdefTypes() as $type)
-        {
+        foreach ($object->getAvailableSubdefTypes() as $type) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\Subdef', $type);
         }
 
@@ -139,8 +136,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $options = $object->getOptions();
         $this->assertTrue(is_array($options));
 
-        foreach ($options as $option)
-        {
+        foreach ($options as $option) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType', $option);
         }
     }
@@ -164,7 +160,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                     <delay>100</delay>
                 </subdef>';
 
-        $type   = new \Alchemy\Phrasea\Media\Type\Video();
+        $type = new \Alchemy\Phrasea\Media\Type\Video();
         $object = new databox_subdef($type, simplexml_load_string($xml));
 
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Animation', $object->getSpecs());
@@ -172,8 +168,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $options = $object->getOptions();
         $this->assertTrue(is_array($options));
 
-        foreach ($options as $option)
-        {
+        foreach ($options as $option) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType', $option);
         }
     }
@@ -192,7 +187,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                     <mediatype>audio</mediatype>
                 </subdef>';
 
-        $type   = new \Alchemy\Phrasea\Media\Type\Audio();
+        $type = new \Alchemy\Phrasea\Media\Type\Audio();
         $object = new databox_subdef($type, simplexml_load_string($xml));
 
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Audio', $object->getSpecs());
@@ -200,8 +195,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $options = $object->getOptions();
         $this->assertTrue(is_array($options));
 
-        foreach ($options as $option)
-        {
+        foreach ($options as $option) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType', $option);
         }
     }
@@ -220,7 +214,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                     <mediatype>flexpaper</mediatype>
                 </subdef>';
 
-        $type   = new \Alchemy\Phrasea\Media\Type\Flash();
+        $type = new \Alchemy\Phrasea\Media\Type\Flash();
         $object = new databox_subdef($type, simplexml_load_string($xml));
 
         $this->assertInstanceOf('\\MediaAlchemyst\\Specification\\Flash', $object->getSpecs());
@@ -228,8 +222,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
         $options = $object->getOptions();
         $this->assertTrue(is_array($options));
 
-        foreach ($options as $option)
-        {
+        foreach ($options as $option) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\OptionType\\OptionType', $option);
         }
     }
@@ -241,8 +234,7 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
     public function testGetAvailableSubdefTypes($object)
     {
 
-        foreach ($object->getAvailableSubdefTypes() as $type)
-        {
+        foreach ($object->getAvailableSubdefTypes() as $type) {
             $this->assertInstanceOf('\\Alchemy\\Phrasea\\Media\\Subdef\\Subdef', $type);
         }
     }
@@ -256,15 +248,14 @@ class databox_subdefTest extends PHPUnit_Framework_TestCase
                     <mediatype>image</mediatype>
                 </subdef>';
 
-        $typeAudio    = new \Alchemy\Phrasea\Media\Type\Audio();
+        $typeAudio = new \Alchemy\Phrasea\Media\Type\Audio();
         $typeDocument = new \Alchemy\Phrasea\Media\Type\Document();
-        $typeVideo    = new \Alchemy\Phrasea\Media\Type\Video();
+        $typeVideo = new \Alchemy\Phrasea\Media\Type\Video();
 
         return array(
-          array(new databox_subdef($typeAudio, simplexml_load_string($xmlImage))),
-          array(new databox_subdef($typeDocument, simplexml_load_string($xmlImage))),
-          array(new databox_subdef($typeVideo, simplexml_load_string($xmlImage))),
+            array(new databox_subdef($typeAudio, simplexml_load_string($xmlImage))),
+            array(new databox_subdef($typeDocument, simplexml_load_string($xmlImage))),
+            array(new databox_subdef($typeVideo, simplexml_load_string($xmlImage))),
         );
     }
-
 }

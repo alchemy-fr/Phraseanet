@@ -85,8 +85,6 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
      */
     public function testparseDate()
     {
-        $date = '2012';
-
         $this->assertEquals('2012/00/00 00:00:00', $this->object->parseDate('2012'));
         $this->assertEquals('2012/01/00 00:00:00', $this->object->parseDate('2012-01'));
         $this->assertEquals('2012/03/15 00:00:00', $this->object->parseDate('2012-03-15'));
@@ -95,4 +93,3 @@ class unicodeTest extends PhraseanetPHPUnitAbstract
         $this->assertEquals('2012/03/15 12:12:12', $this->object->parseDate('2012-03-15 12-12-12'));
     }
 }
-

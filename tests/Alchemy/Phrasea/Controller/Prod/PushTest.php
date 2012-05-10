@@ -4,160 +4,142 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 
 class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
+    protected $client;
+    protected static $need_records = 2;
 
-  /**
-   * As controllers use WebTestCase, it requires a client
-   */
-  protected $client;
+    public function createApplication()
+    {
+        return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
+    }
 
-  /**
-   * If the controller tests require some records, specify it her
-   *
-   * For example, this will loacd 2 records
-   * (self::$record_1 and self::$record_2) :
-   *
-   * $need_records = 2;
-   *
-   */
-  protected static $need_records = 2;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->client = $this->createClient();
+    }
 
-  /**
-   * The application loader
-   */
-  public function createApplication()
-  {
-    return require __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Application/Prod.php';
-  }
+    /**
+     * Default route test
+     */
+    public function testRoutePOSTSendSlash()
+    {
+        $route = '/push/sendform/';
 
-  public function setUp()
-  {
-    parent::setUp();
-    $this->client = $this->createClient();
-  }
+        $this->client->request('POST', $route);
 
-  /**
-   * Default route test
-   */
-  public function testRoutePOSTSendSlash()
-  {
-    $route = '/push/sendform/';
+        $response = $this->client->getResponse();
 
-    $this->client->request('POST', $route);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('UTF-8', $response->getCharset());
+    }
 
-    $response = $this->client->getResponse();
+    public function testRoutePOSTValidateSlash()
+    {
+        $route = '/push/validateform/';
 
-    $this->assertEquals(200, $response->getStatusCode());
-    $this->assertEquals('UTF-8', $response->getCharset());
-  }
+        $this->client->request('POST', $route);
 
-  public function testRoutePOSTValidateSlash()
-  {
-    $route = '/push/validateform/';
+        $response = $this->client->getResponse();
 
-    $this->client->request('POST', $route);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('UTF-8', $response->getCharset());
+    }
 
-    $response = $this->client->getResponse();
+    public function testRoutePOSTsend()
+    {
+        $route = '/push/send/';
 
-    $this->assertEquals(200, $response->getStatusCode());
-    $this->assertEquals('UTF-8', $response->getCharset());
-  }
+        $records = array(
+            self::$record_1->get_serialize_key()
+            , self::$record_2->get_serialize_key()
+        );
 
-  public function testRoutePOSTsend()
-  {
-    $route = '/push/send/';
+        $receivers = array(
+            array('usr_id' => self::$user_alt1->get_id(), 'HD'     => 1)
+            , array('usr_id' => self::$user_alt2->get_id(), 'HD'     => 0)
+        );
 
-    $records = array(
-        self::$record_1->get_serialize_key()
-        , self::$record_2->get_serialize_key()
-    );
+        $params = array(
+            'lst'          => implode(';', $records)
+            , 'participants' => $receivers
+        );
 
-    $receivers = array(
-        array('usr_id'=>self::$user_alt1->get_id(), 'HD'=>1)
-            , array('usr_id'=>self::$user_alt2->get_id(), 'HD'=>0)
-            );
+        $this->client->request('POST', $route, $params);
 
-    $params = array(
-        'lst' => implode(';', $records)
-        , 'participants' => $receivers
-    );
+        $response = $this->client->getResponse();
 
-    $this->client->request('POST', $route, $params);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('UTF-8', $response->getCharset());
 
-    $response = $this->client->getResponse();
+        $datas = (array) json_decode($response->getContent());
 
-    $this->assertEquals(200, $response->getStatusCode());
-    $this->assertEquals('UTF-8', $response->getCharset());
+        $this->assertArrayHasKey('message', $datas);
+        $this->assertArrayHasKey('success', $datas);
 
-    $datas = (array) json_decode($response->getContent());
+        $this->assertTrue($datas['success'], 'Result is successful');
+    }
 
-    $this->assertArrayHasKey('message', $datas);
-    $this->assertArrayHasKey('success', $datas);
+    public function testRoutePOSTvalidate()
+    {
+        $route = '/push/validate/';
 
-    $this->assertTrue($datas['success'], 'Result is successful');
-  }
+        $records = array(
+            self::$record_1->get_serialize_key()
+            , self::$record_2->get_serialize_key()
+        );
 
-  public function testRoutePOSTvalidate()
-  {
-    $route = '/push/validate/';
+        $participants = array(
+            array(
+                'usr_id'     => self::$user_alt1->get_id(),
+                'agree'      => 0,
+                'see_others' => 1,
+                'HD'         => 0,
+            )
+            , array(
+                'usr_id'     => self::$user_alt2->get_id(),
+                'agree'      => 1,
+                'see_others' => 0,
+                'HD'         => 1,
+            )
+        );
 
-    $records = array(
-        self::$record_1->get_serialize_key()
-        , self::$record_2->get_serialize_key()
-    );
+        $params = array(
+            'lst'          => implode(';', $records)
+            , 'participants' => $participants
+        );
 
-    $participants = array(
-        array(
-            'usr_id' => self::$user_alt1->get_id(),
-            'agree'=> 0,
-            'see_others'=> 1,
-            'HD'=> 0,
-        )
-        , array(
-            'usr_id' => self::$user_alt2->get_id(),
-            'agree'=> 1,
-            'see_others'=> 0,
-            'HD'=> 1,
-        )
-    );
+        $this->client->request('POST', $route, $params);
 
-    $params = array(
-        'lst' => implode(';', $records)
-        , 'participants' => $participants
-    );
+        $response = $this->client->getResponse();
 
-    $this->client->request('POST', $route, $params);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('UTF-8', $response->getCharset());
 
-    $response = $this->client->getResponse();
+        $datas = (array) json_decode($response->getContent());
 
-    $this->assertEquals(200, $response->getStatusCode());
-    $this->assertEquals('UTF-8', $response->getCharset());
+        $this->assertArrayHasKey('message', $datas);
+        $this->assertArrayHasKey('success', $datas);
 
-    $datas = (array) json_decode($response->getContent());
+        $this->assertTrue($datas['success'], 'Result is successful');
+    }
 
-    $this->assertArrayHasKey('message', $datas);
-    $this->assertArrayHasKey('success', $datas);
+    public function testRouteGETsearchuser()
+    {
+        $route = '/push/search-user/';
 
-    $this->assertTrue($datas['success'], 'Result is successful');
-  }
+        $params = array(
+            'query' => ''
+        );
 
-  public function testRouteGETsearchuser()
-  {
-    $route = '/push/search-user/';
+        $this->client->request('GET', $route, $params);
 
-    $params = array(
-        'query' => ''
-    );
+        $response = $this->client->getResponse();
 
-    $this->client->request('GET', $route, $params);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('UTF-8', $response->getCharset());
 
-    $response = $this->client->getResponse();
+        $datas = (array) json_decode($response->getContent());
 
-    $this->assertEquals(200, $response->getStatusCode());
-    $this->assertEquals('UTF-8', $response->getCharset());
-
-    $datas = (array) json_decode($response->getContent());
-
-    $this->assertTrue(is_array($datas), 'Json is valid');
-  }
-
+        $this->assertTrue(is_array($datas), 'Json is valid');
+    }
 }
