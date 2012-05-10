@@ -342,7 +342,7 @@ class Bridge_Api_Youtube extends Bridge_Api_Abstract implements Bridge_Api_Inter
         $videoEntry->setVideoTags(trim($datas['tags']));
         $videoEntry->setVideoTitle(trim($datas['title']));
 
-        if ($params["privacy"] == "public")
+        if ($datas["privacy"] == "public")
         {
           $videoEntry->setVideoPublic();
         }
