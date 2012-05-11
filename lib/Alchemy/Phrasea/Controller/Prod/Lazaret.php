@@ -33,95 +33,105 @@ class Lazaret implements ControllerProviderInterface
      * Connect the ControllerCollection to the Silex Application
      *
      * @param   Application     $app    A silex application
-     * @return \Silex\ControllerCollection
+     * @return  \Silex\ControllerCollection
      */
     public function connect(Application $app)
     {
         $controllers = new ControllerCollection();
 
         /**
-         * Lazaret Elements route AKA lazaret_elements
+         * Lazaret Elements route
          *
-         * descritpion : List all lazaret elements
+         * name         : lazaret_elements
          *
-         * method : GET
+         * descritpion  : List all lazaret elements
          *
-         * @return HTML Response
+         * method       : GET
+         *
+         * return       : HTML Response
          */
         $app->get('/lazaret/', $this->call('listElement'))
             ->bind('lazaret_elements');
 
         /**
-         * Lazaret Element route AKA lazaret_element
+         * Lazaret Element route
          *
-         * descritpion : Get one lazaret element identified by {file_id} parameter
+         * name         : lazaret_element
          *
-         * method : GET
+         * descritpion  : Get one lazaret element identified by {file_id} parameter
          *
-         * return JSON Response
+         * method       : GET
+         *
+         * return       : JSON Response
          */
         $app->get('/lazaret/{file_id}/', $this->call('getElement'))
             ->assert('file_id', '\d+')
             ->bind('lazaret_element');
 
         /**
-         * Lazaret Force Add route AKA lazaret_force_add
+         * Lazaret Force Add route
          *
-         * descritpion : Move a lazaret element identified by {file_id} parameter into phraseanet
+         * name         : lazaret_force_add
          *
-         * method : POST
+         * descritpion  : Move a lazaret element identified by {file_id} parameter into phraseanet
          *
-         * parameters :
-         *  'bas_id'            int     (mandatory) : The id of the destination collection
-         *  'keep_attributes'   boolean (optional)  : Keep all attributes attached to the lazaret element
-         *  'attributes'        array   (optional)  : Attributes id's to attach to the lazaret element
+         * method       : POST
          *
-         * return JSON Response
+         * parameters   : 'bas_id'            int     (mandatory) : The id of the destination collection
+         *                'keep_attributes'   boolean (optional)  : Keep all attributes attached to the lazaret element
+         *                'attributes'        array   (optional)  : Attributes id's to attach to the lazaret element
+         *
+         * return       : JSON Response
          */
         $app->post('/lazaret/{file_id}/force-add/', $this->call('addElement'))
             ->assert('file_id', '\d+')
             ->bind('lazaret_force_add');
 
         /**
-         * Lazaret Deny route AKA lazaret_deny_element
+         * Lazaret Deny route
          *
-         * descritpion : Remove a lazaret element identified by {file_id} parameter
+         * name         : lazaret_deny_element
          *
-         * method : POST
+         * descritpion  : Remove a lazaret element identified by {file_id} parameter
          *
-         * @return JSON
+         * method       : POST
+         *
+         * return       : JSON
          */
         $app->post('/lazaret/{file_id}/deny/', $this->call('denyElement'))
             ->assert('file_id', '\d+')
             ->bind('lazaret_deny_element');
 
         /**
-         * Lazaret Accept Route AKA lazaret_accept
+         * Lazaret Accept Route
          *
-         * description : Substitute the phraseanet record identified by
-         * the post parameter 'record_id'by the lazaret element identified
-         * by {file_id} parameter
+         * name         : lazaret_accept
          *
-         * method : POST
+         * description  : Substitute the phraseanet record identified by
+         *                the post parameter 'record_id'by the lazaret element identified
+         *                by {file_id} parameter
          *
-         * parameters :
-         *  'record_id' int (mandatory) : The substitued record
+         * method       : POST
          *
-         * return JSON response
+         * parameters   : 'record_id' int (mandatory) : The substitued record
+         *
+         * return       : JSON response
          */
         $app->post('/lazaret/{file_id}/accept/', $this->call('acceptElement'))
             ->assert('file_id', '\d+')
             ->bind('lazaret_accept');
 
         /**
-         * Lazaret Thumbnail route AKA lazaret_thumbnail
+         * Lazaret Thumbnail route
          *
-         * descritpion : Get the thumbnail attached to the lazaret element
-         * identified by {file_id} parameter
+         * name         : lazaret_thumbnail
          *
-         * method : GET
+         * descritpion  : Get the thumbnail attached to the lazaret element
+         *                identified by {file_id} parameter
          *
-         * return JSON Response
+         * method       : GET
+         *
+         * return       : JSON Response
          */
         $app->get('/lazaret/{file_id}/thumbnail/', $this->call('thumbnailElement'))
             ->assert('file_id', '\d+')
