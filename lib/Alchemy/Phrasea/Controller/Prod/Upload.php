@@ -33,41 +33,44 @@ class Upload implements ControllerProviderInterface
      * Connect the ControllerCollection to the Silex Application
      *
      * @param   Application     $app    A silex application
-     * @return \Silex\ControllerCollection
+     * @return  \Silex\ControllerCollection
      */
     public function connect(Application $app)
     {
         $controllers = new ControllerCollection();
 
         /**
-         * Upload form route AKA upload_form
+         * Upload form route
          *
-         * description : Render the html upload form
+         * name         : upload_form
          *
-         * method : GET
+         * description  : Render the html upload form
          *
-         * @return HTML Response
+         * method       : GET
+         *
+         * return       : HTML Response
          */
         $app->get('/upload/', $this->call('getUploadForm'))
             ->bind('upload_form');
 
         /**
-         * UPLOAD route AKA upload
+         * UPLOAD route
          *
-         * description : Initiate the upload process
+         * name         : upload
          *
-         * method : POST
+         * description  : Initiate the upload process
          *
-         * parameters :
-         *  'bas_id'        int     (mandatory) :   The id of the destination collection
-         *  'status'        array   (optional)  :   The status to set to new uploaded files
-         *  'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
-         *  'forceBeahvior' int     (optional)  :   Force upload behavior
-         *      - 0 //to define
-         *      - 1
-         *      - 2
+         * method       : POST
          *
-         * @return JSON
+         * parameters   : 'bas_id'        int     (mandatory) :   The id of the destination collection
+         *                'status'        array   (optional)  :   The status to set to new uploaded files
+         *                'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
+         *                'forceBeahvior' int     (optional)  :   Force upload behavior
+         *                      - 0
+         *                      - 1
+         *                      - 2
+         *
+         * return       : JSON Response
          */
         $app->post('/upload/', $this->call('upload'))
             ->assert('file_id', '\d+')
