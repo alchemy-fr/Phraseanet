@@ -72,7 +72,6 @@ class Upload implements ControllerProviderInterface
          * return       : JSON Response
          */
         $app->post('/upload/', $this->call('upload'))
-            ->assert('file_id', '\d+')
             ->bind('upload');
 
         return $controllers;
