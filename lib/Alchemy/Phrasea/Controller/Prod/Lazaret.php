@@ -96,7 +96,7 @@ class Lazaret implements ControllerProviderInterface
             ->bind('lazaret_deny_element');
 
         /**
-         * Lazaret Accept Route AKA LazaretAcceptRoute
+         * Lazaret Accept Route AKA lazaret_accept
          *
          * description : Substitute the phraseanet record identified by
          * the post parameter 'record_id'by the lazaret element identified
@@ -111,7 +111,7 @@ class Lazaret implements ControllerProviderInterface
          */
         $app->post('/lazaret/{file_id}/accept/', $this->call('acceptElement'))
             ->assert('file_id', '\d+')
-            ->bind('LazaretAcceptRoute');
+            ->bind('lazaret_accept');
 
         /**
          * Lazaret Thumbnail route AKA lazaret_thumbnail
