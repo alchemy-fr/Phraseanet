@@ -32,7 +32,7 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Connect the ControllerCollection to the Silex Application
      *
-     * @param Application $app A silex application
+     * @param   Application     $app    A silex application
      * @return \Silex\ControllerCollection
      */
     public function connect(Application $app)
@@ -72,9 +72,9 @@ class Lazaret implements ControllerProviderInterface
          * method : POST
          *
          * parameters :
-         *  'bas_id' int (mandatory) : The id of the destination collection
-         *  'keep_attributes' boolean (optional) : Keep all attributes attached to the lazaret element
-         *  'attributes' array (optional) : Attributes id's to attach to the lazaret element
+         *  'bas_id'            int     (mandatory) : The id of the destination collection
+         *  'keep_attributes'   boolean (optional)  : Keep all attributes attached to the lazaret element
+         *  'attributes'        array   (optional)  : Attributes id's to attach to the lazaret element
          *
          * return JSON Response
          */
@@ -116,7 +116,8 @@ class Lazaret implements ControllerProviderInterface
         /**
          * Lazaret Thumbnail route AKA lazaret_thumbnail
          *
-         * descritpion : Get the thumbnail attached to the lazaret element identified by {file_id} parameter
+         * descritpion : Get the thumbnail attached to the lazaret element
+         * identified by {file_id} parameter
          *
          * method : GET
          *
@@ -132,8 +133,8 @@ class Lazaret implements ControllerProviderInterface
     /**
      * List all elements in lazaret
      *
-     * @param Application $app The Silex application where the controller is mounted on
-     * @param Request $request The current request
+     * @param Application   $app        A Silex application
+     * @param Request       $request    The current request
      *
      * @return Response
      */
@@ -145,9 +146,9 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Get one lazaret Element
      *
-     * @param Application $app The Silex application where the controller is mounted on
-     * @param Request $request The current request
-     * @param type $file_id An lazaret element id
+     * @param Application   $app        A Silex application
+     * @param Request       $request    The current request
+     * @param int           $file_id    A lazaret element id
      *
      * @return Response
      */
@@ -159,9 +160,9 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Add an element to phraseanet
      *
-     * @param Application $app The Silex application where the controller is mounted on
-     * @param Request $request The current request
-     * @param type $file_id An lazaret element id
+     * @param Application   $app        A Silex application
+     * @param Request       $request    The current request
+     * @param int           $file_id    A lazaret element id
      *
      * @return Response
      */
@@ -173,9 +174,9 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Delete a lazaret element
      *
-     * @param Application $app The Silex application where the controller is mounted on
-     * @param Request $request The current request
-     * @param type $file_id An lazaret element id
+     * @param Application   $app        A Silex application where the controller is mounted on
+     * @param Request       $request    The current request
+     * @param int           $file_id    A lazaret element id
      *
      * @return Response
      */
@@ -187,9 +188,9 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Substitute a record element by a lazaret element
      *
-     * @param Application $app The Silex application where the controller is mounted on
-     * @param Request $request The current request
-     * @param type $file_id An lazaret element id
+     * @param Application   $app        A Silex application where the controller is mounted on
+     * @param Request       $request    The current request
+     * @param int           $file_id    A lazaret element id
      *
      * @return Response
      */
@@ -201,9 +202,9 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Get the associated lazaret element thumbnail
      *
-     * @param Application $app The Silex application where the controller is mounted on
-     * @param Request $request The current request
-     * @param type $file_id An lazaret element id
+     * @param Application   $app        A Silex application where the controller is mounted on
+     * @param Request       $request    The current request
+     * @param int           $file_id    A lazaret element id
      *
      * @return Response
      */
@@ -215,8 +216,8 @@ class Lazaret implements ControllerProviderInterface
     /**
      * Prefix the method to call with the controller class name
      *
-     * @param type $method The method to call
-     * @return string
+     * @param   string  $method The method to call
+     * @return  string
      */
     private function call($method)
     {
