@@ -360,24 +360,15 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
 
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        $this->evaluateGoodRecord($content["response"]["record"]);
 
-            $record = record_adapter::create($collection, $system_file);
-            $record_id = $record->get_record_id();
-            $route = '/records/' . $databox_id . '/' . $record_id . '/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-            $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
-
-            $this->evaluateGoodRecord($content["response"]["record"]);
-            $record->delete();
-        }
         $route = '/records/1234567890/1/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -636,28 +627,18 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsCaptionRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
 
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/caption/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record = record_adapter::create($collection, $system_file);
+        $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
-            $record_id = $record->get_record_id();
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/caption/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateRecordsCaptionResponse($content);
 
-            $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
-
-            $this->evaluateRecordsCaptionResponse($content);
-            $record->delete();
-        }
         $route = '/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -669,28 +650,18 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsMetadatasRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
 
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/metadatas/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record = record_adapter::create($collection, $system_file);
+        $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
-            $record_id = $record->get_record_id();
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/metadatas/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateRecordsMetadataResponse($content);
 
-            $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
-
-            $this->evaluateRecordsMetadataResponse($content);
-            $record->delete();
-        }
         $route = '/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -702,27 +673,18 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsStatusRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            $record = record_adapter::create($collection, $system_file);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/status/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record_id = $record->get_record_id();
+        $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/status/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
 
-            $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $this->evaluateRecordsStatusResponse(self::$record_1, $content);
 
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
-
-            $this->evaluateRecordsStatusResponse($record, $content);
-            $record->delete();
-        }
         $route = '/records/24892534/51654651553/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -877,29 +839,20 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsRelatedRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            $record = record_adapter::create($collection, $system_file);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/related/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record_id = $record->get_record_id();
+        $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/related/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-
-            $crawler = $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
-            $this->assertArrayHasKey("baskets", $content["response"]);
-            foreach ($content["response"]["baskets"] as $basket) {
-                $this->evaluateGoodBasket($basket);
-            }
-            $record->delete();
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+        $this->assertArrayHasKey("baskets", $content["response"]);
+        foreach ($content["response"]["baskets"] as $basket) {
+            $this->evaluateGoodBasket($basket);
         }
+
         $route = '/records/24892534/51654651553/related/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -911,183 +864,149 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsSetMetadatas()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            $record = record_adapter::create($collection, $system_file);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/setmetadatas/';
+        $caption = self::$record_1->get_caption();
 
-            $record_id = $record->get_record_id();
+        $old_datas = array();
+        $toupdate = array();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setmetadatas/';
-            $caption = $record->get_caption();
-
-
-            $old_datas = array();
-            $toupdate = array();
-
-            /**
-             * @todo enhance the test, if there's no field, there's no update
-             */
-            foreach ($caption->get_fields() as $field) {
-                foreach ($field->get_values() as $value) {
-                    $old_datas[$value->getId()] = $value->getValue();
-                    if ($field->is_readonly() === false && $field->is_multi() === false) {
-                        $toupdate[$value->getId()] = array(
-                            'meta_struct_id' => $field->get_meta_struct_id(),
-                            'meta_id'        => $value->getId(),
-                            'value'          => array($value->getValue() . ' test')
-                        );
-                    }
+        /**
+         * @todo enhance the test, if there's no field, there's no update
+         */
+        foreach ($caption->get_fields() as $field) {
+            foreach ($field->get_values() as $value) {
+                $old_datas[$value->getId()] = $value->getValue();
+                if ($field->is_readonly() === false && $field->is_multi() === false) {
+                    $toupdate[$value->getId()] = array(
+                        'meta_struct_id' => $field->get_meta_struct_id(),
+                        'meta_id'        => $value->getId(),
+                        'value'          => array($value->getValue() . ' test')
+                    );
                 }
             }
+        }
 
 
-            foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
-                try {
-                    $values = $record->get_caption()->get_field($field->get_name())->get_values();
-                    $value = array_pop($values);
-                    $meta_id = $value->getId();
-                } catch (\Exception $e) {
-                    $meta_id = null;
+        foreach (self::$record_1->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = self::$record_1->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
+            }
+
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => 'podom pom pom ' . $field->get_id()
+            );
+        }
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $this->client->request('POST', $route, array('metadatas' => $toupdate), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
+
+        $caption = self::$record_1->get_caption();
+
+        $this->assertEquals(count($caption->get_fields()), count($content["response"]["metadatas"]));
+
+        foreach ($caption->get_fields() as $field) {
+            foreach ($field->get_values() as $value) {
+                if ($field->is_readonly() === false && $field->is_multi() === false) {
+                    $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
+                    $this->assertEquals($value->getValue(), $saved_value, $this->client->getResponse()->getContent() . " contains values");
                 }
-
-                $toupdate[$field->get_id()] = array(
-                    'meta_id'        => $meta_id
-                    , 'meta_struct_id' => $field->get_id()
-                    , 'value'          => 'podom pom pom ' . $field->get_id()
-                );
             }
+        }
+        $this->evaluateRecordsMetadataResponse($content);
 
-            $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-            $crawler = $this->client->request('POST', $route, array('metadatas' => $toupdate), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
-
-            $record = $databox->get_record($record_id);
-            $caption = $record->get_caption();
-
-            $this->assertEquals(count($caption->get_fields()), count($content["response"]["metadatas"]));
-
-            foreach ($caption->get_fields() as $field) {
-                foreach ($field->get_values() as $value) {
-                    if ($field->is_readonly() === false && $field->is_multi() === false) {
-                        $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
-                        $this->assertEquals($value->getValue(), $saved_value, $this->client->getResponse()->getContent() . " contains values");
-                    }
-                }
-            }
-            $this->evaluateRecordsMetadataResponse($content);
-
-            foreach ($content["response"]["metadatas"] as $metadata) {
-                if ( ! in_array($metadata["meta_id"], array_keys($toupdate)))
-                    continue;
-                $saved_value = $toupdate[$metadata["meta_structure_id"]]['value'];
-                $this->assertEquals($saved_value, $metadata["value"], "Asserting that " . $this->client->getResponse()->getContent() . " contains values");
-            }
-            $record->delete();
+        foreach ($content["response"]["metadatas"] as $metadata) {
+            if ( ! in_array($metadata["meta_id"], array_keys($toupdate)))
+                continue;
+            $saved_value = $toupdate[$metadata["meta_structure_id"]]['value'];
+            $this->assertEquals($saved_value, $metadata["value"], "Asserting that " . $this->client->getResponse()->getContent() . " contains values");
         }
     }
 
     public function testRecordsSetStatus()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            $record = record_adapter::create($collection, $system_file);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/setstatus/';
 
-            $record_id = $record->get_record_id();
+        $record_status = strrev(self::$record_1->get_status());
+        $status_bits = self::$record_1->get_databox()->get_statusbits();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setstatus/';
-
-            $record_status = strrev($record->get_status());
-            $status_bits = $databox->get_statusbits();
-
-            $tochange = array();
-            foreach ($status_bits as $n => $datas) {
-                $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
-            }
-            $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+        $tochange = array();
+        foreach ($status_bits as $n => $datas) {
+            $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
+        }
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
 
-            $crawler = $this->client->request('POST', $route, array('status' => $tochange), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $crawler = $this->client->request('POST', $route, array('status' => $tochange), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
 
-            $record = $databox->get_record($record_id);
-            $this->evaluateRecordsStatusResponse($record, $content);
+        $this->evaluateRecordsStatusResponse(self::$record_1, $content);
 
-            $record_status = strrev($record->get_status());
-            foreach ($status_bits as $n => $datas) {
-                $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
-            }
+        $record_status = strrev(self::$record_1->get_status());
+        foreach ($status_bits as $n => $datas) {
+            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
+        }
 
-            foreach ($tochange as $n => $value) {
-                $tochange[$n] = $value == '0' ? '1' : '0';
-            }
+        foreach ($tochange as $n => $value) {
+            $tochange[$n] = $value == '0' ? '1' : '0';
+        }
 
 
-            $crawler = $this->client->request('POST', $route, array('status' => $tochange), array(), array("HTTP_ACCEPT" => "application/yaml"));
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
+        $crawler = $this->client->request('POST', $route, array('status' => $tochange), array(), array("HTTP_ACCEPT" => "application/yaml"));
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
 
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
 
-            $record = $databox->get_record($record_id);
-            $this->evaluateRecordsStatusResponse($record, $content);
+        $this->evaluateRecordsStatusResponse(self::$record_1, $content);
 
-            $record_status = strrev($record->get_status());
-            foreach ($status_bits as $n => $datas) {
-                $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
-            }
-            $record->delete();
+        $record_status = strrev(self::$record_1->get_status());
+        foreach ($status_bits as $n => $datas) {
+            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
         }
     }
 
     public function testMoveRecordToColleciton()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            $record = record_adapter::create($collection, $system_file);
+        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/setcollection/';
 
-            $record_id = $record->get_record_id();
-
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setcollection/';
-
-            $base_id = false;
-            foreach ($databox->get_collections() as $collection) {
-                if ($collection->get_base_id() != $record->get_base_id()) {
-                    $base_id = $collection->get_base_id();
-                    break;
-                }
+        $base_id = false;
+        foreach (self::$record_1->get_databox()->get_collections() as $collection) {
+            if ($collection->get_base_id() != self::$record_1->get_base_id()) {
+                $base_id = $collection->get_base_id();
+                break;
             }
-            if ( ! $base_id) {
-                continue;
-            }
-
-            $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-            $crawler = $this->client->request('POST', $route, array('base_id' => $base_id), array(), array("HTTP_ACCEPT" => "application/yaml"));
-
-            $content = self::$yaml->parse($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaYaml200($content);
-            $record->delete();
         }
+        if ( ! $base_id) {
+            continue;
+        }
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $this->client->request('POST', $route, array('base_id' => $base_id), array(), array("HTTP_ACCEPT" => "application/yaml"));
+
+        $content = self::$yaml->parse($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaYaml200($content);
     }
 
     public function testSearchBaskets()
