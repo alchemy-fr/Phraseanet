@@ -32,7 +32,7 @@ class Upload implements ControllerProviderInterface
     /**
      * Connect the ControllerCollection to the Silex Application
      *
-     * @param Application $app A silex application
+     * @param   Application     $app    A silex application
      * @return \Silex\ControllerCollection
      */
     public function connect(Application $app)
@@ -59,10 +59,10 @@ class Upload implements ControllerProviderInterface
          * method : POST
          *
          * parameters :
-         *  'bas_id' int (mandatory) : The id of the destination collection for the uploaded files
-         *  'status' int (optional) : The status to set to new uploaded files
-         *  'attributes' array (optional) : Attributes id's to attach to the uploaded files
-         *  'forceBeahvior' int (optional) : Force upload behavior possible values are
+         *  'bas_id'        int     (mandatory) :   The id of the destination collection
+         *  'status'        array   (optional)  :   The status to set to new uploaded files
+         *  'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
+         *  'forceBeahvior' int     (optional)  :   Force upload behavior
          *      - 0 //to define
          *      - 1
          *      - 2
@@ -79,8 +79,8 @@ class Upload implements ControllerProviderInterface
     /**
      * Render the html upload form
      *
-     * @param Application $app The Silex application where the controller is mounted on
-     * @param Request $request The current request
+     * @param Application   $app        A Silex application
+     * @param Request       $request    The current request
      *
      * @return Response
      */
@@ -92,8 +92,8 @@ class Upload implements ControllerProviderInterface
     /**
      * Upload processus
      *
-     * @param Application $app The Silex application where the controller is mounted on
-     * @param Request $request The current request
+     * @param Application   $app        The Silex application
+     * @param Request       $request    The current request
      *
      * @return Response
      */
@@ -105,8 +105,8 @@ class Upload implements ControllerProviderInterface
     /**
      * Prefix the method to call with the controller class name
      *
-     * @param type $method The method to call
-     * @return string
+     * @param   string  $method     The method to call
+     * @return  string
      */
     private function call($method)
     {
