@@ -96,7 +96,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * method       : POST
          *
-         * return       : JSON
+         * return       : JSON Response
          */
         $app->post('/lazaret/{file_id}/deny/', $this->call('denyElement'))
             ->assert('file_id', '\d+')
@@ -115,7 +115,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * parameters   : 'record_id' int (mandatory) : The substitued record
          *
-         * return       : JSON response
+         * return       : JSON Response
          */
         $app->post('/lazaret/{file_id}/accept/', $this->call('acceptElement'))
             ->assert('file_id', '\d+')
