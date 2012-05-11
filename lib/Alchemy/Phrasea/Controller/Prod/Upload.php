@@ -66,9 +66,8 @@ class Upload implements ControllerProviderInterface
          *                'status'        array   (optional)  :   The status to set to new uploaded files
          *                'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
          *                'forceBeahvior' int     (optional)  :   Force upload behavior
-         *                      - 0
-         *                      - 1
-         *                      - 2
+         *                      - 0 Force record
+         *                      - 1 Force lazaret
          *
          * return       : JSON Response
          */
