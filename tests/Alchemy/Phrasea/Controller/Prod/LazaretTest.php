@@ -36,6 +36,8 @@ class LazaretTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testListElement()
     {
+        $this->markTestSkipped('empty');
+
         $response = null;
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -46,6 +48,8 @@ class LazaretTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testGetElement()
     {
+        $this->markTestSkipped('empty');
+
         $response = null;
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -56,6 +60,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testAddElement()
     {
+        $this->markTestSkipped('empty');
         $response = null;
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -66,6 +71,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testDenyElement()
     {
+        $this->markTestSkipped('empty');
         $response = null;
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -76,6 +82,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testAcceptElement()
     {
+        $this->markTestSkipped('empty');
         $response = null;
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
@@ -86,6 +93,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testThumbnailElement()
     {
+        $this->markTestSkipped('empty');
         $response = null;
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
