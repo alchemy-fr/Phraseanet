@@ -65,7 +65,7 @@ class Upload implements ControllerProviderInterface
          * parameters   : 'bas_id'        int     (mandatory) :   The id of the destination collection
          *                'status'        array   (optional)  :   The status to set to new uploaded files
          *                'attributes'    array   (optional)  :   Attributes id's to attach to the uploaded files
-         *                'forceBeahvior' int     (optional)  :   Force upload behavior
+         *                'forceBehavior' int     (optional)  :   Force upload behavior
          *                      - 0 Force record
          *                      - 1 Force lazaret
          *
