@@ -123,7 +123,8 @@ class Lazaret implements ControllerProviderInterface
          * return JSON Response
          */
         $app->get('/lazaret/{file_id}/thumbnail/', $this->call('thumbnailElement'))
-            ->assert('file_id', '\d+');
+            ->assert('file_id', '\d+')
+            ->bind('lazaret_thumbnail');
 
         return $controllers;
     }
