@@ -45,7 +45,7 @@
         "Proxies": "lib/Doctrine/",
         "Doctrine\\Logger": "lib",
         "Types": "lib/Doctrine",
-        "PhraseaFixture": "lib/conf.d",
+        "PhraseaFixture": "lib/conf.d"
     }
   },
   "include-path": ["vendor/zend/gdata/library"]
