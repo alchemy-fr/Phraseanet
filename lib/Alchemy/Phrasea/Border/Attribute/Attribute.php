@@ -18,6 +18,7 @@ interface Attribute
 {
     const NAME_METADATA = 'metadata';
     const NAME_STORY = 'story';
+    const NAME_STATUS = 'status';
 
     /**
      * Return the name of the attribute, one of the self::NAME_* constants
