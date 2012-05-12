@@ -13,7 +13,6 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
      */
     protected $object;
     protected $filename;
-    protected static $need_records = 1;
 
     public function setUp()
     {
@@ -61,6 +60,8 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
         $this->assertTrue($response->isOk());
+
+        $mock = null;
     }
 
     /**

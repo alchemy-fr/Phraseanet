@@ -37,8 +37,6 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
     protected $entry_subtitle = 'entry subtitle';
     protected $entry_authorname = 'author name';
     protected $entry_authormail = 'author.mail@example.com';
-    protected static $need_records = 2;
-    protected static $need_subdefs = false;
 
     public static function setUpBeforeClass()
     {
@@ -76,7 +74,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
                 , $this->entry_authormail
         );
 
-        $this->item = Feed_Entry_Item::create($appbox, $this->entry, self::$record_1);
+        $this->item = Feed_Entry_Item::create($appbox, $this->entry, static::$records['record_1']);
     }
 
     public function tearDown()
@@ -119,7 +117,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"
             , "author_email" => "robert@kikoo.mail"
-            , 'lst'          => self::$record_1->get_serialize_key()
+            , 'lst'          => static::$records['record_1']->get_serialize_key()
         );
 
         $crawler = $this->client->request('POST', '/feeds/entry/create/', $params);
@@ -139,7 +137,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "coucou"
             , "author_name"  => "robert"
             , "author_email" => "robert@kikoo.mail"
-            , 'lst'          => self::$record_1->get_serialize_key()
+            , 'lst'          => static::$records['record_1']->get_serialize_key()
         );
         $crawler = $this->client->request('POST', '/feeds/entry/create/', $params);
         $this->assertTrue($this->client->getResponse()->isOk());
@@ -210,7 +208,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_email" => "mouse"
-            , 'lst'          => self::$record_1->get_serialize_key()
+            , 'lst'          => static::$records['record_1']->get_serialize_key()
         );
 
         $crawler = $this->client->request('POST', '/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
@@ -234,7 +232,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_email" => "mouse"
-            , 'lst'          => self::$record_1->get_serialize_key()
+            , 'lst'          => static::$records['record_1']->get_serialize_key()
         );
 
         $crawler = $this->client->request('POST', '/feeds/entry/99999999/update/', $params);
@@ -260,7 +258,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_email" => "mouse"
-            , 'sorted_lst'   => self::$record_1->get_serialize_key() . ";" . self::$record_2->get_serialize_key() . ";12345;" . "unknow_unknow"
+            , 'sorted_lst'   => static::$records['record_1']->get_serialize_key() . ";" . static::$records['record_2']->get_serialize_key() . ";12345;" . "unknow_unknow"
         );
 
         $crawler = $this->client->request('POST', '/feeds/entry/' . $this->entry->get_id() . '/update/', $params);
@@ -285,7 +283,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $feed = Feed_Adapter::create($appbox, self::$user_alt1, "salut", 'coucou');
         $publisher = Feed_Publisher_Adapter::getPublisher($appbox, $feed, self::$user_alt1);
         $entry = Feed_Entry_Adapter::create($appbox, $feed, $publisher, "hello", "coucou", "salut", "bonjour@phraseanet.com");
-        $item = Feed_Entry_Item::create($appbox, $entry, self::$record_1);
+        $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
 
         $params = array(
             "feed_id"      => $feed->get_id()
@@ -293,7 +291,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
             , "subtitle"     => "cat"
             , "author_name"  => "bird"
             , "author_email" => "mouse"
-            , 'lst'          => self::$record_1->get_serialize_key()
+            , 'lst'          => static::$records['record_1']->get_serialize_key()
         );
 
         $crawler = $this->client->request('POST', '/feeds/entry/' . $entry->get_id() . '/update/', $params);
@@ -361,7 +359,7 @@ class ControllerFeedApp extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $publisher = Feed_Publisher_Adapter::getPublisher($appbox, $feed, self::$user_alt1);
         $entry = Feed_Entry_Adapter::create($appbox, $feed, $publisher, "hello", "coucou", "salut", "bonjour@phraseanet.com");
-        $item = Feed_Entry_Item::create($appbox, $entry, self::$record_1);
+        $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
 
         $crawler = $this->client->request('POST', '/feeds/entry/' . $entry->get_id() . '/delete/');
 

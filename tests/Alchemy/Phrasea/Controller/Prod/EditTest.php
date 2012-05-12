@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = 1;
 
     public function createApplication()
     {
@@ -23,7 +22,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testRouteSlash()
     {
-        $this->client->request('POST', '/records/edit/', array('lst' => self::$record_1->get_serialize_key()));
+        $this->client->request('POST', '/records/edit/', array('lst' => static::$records['record_1']->get_serialize_key()));
 
         $response = $this->client->getResponse();
 
@@ -32,7 +31,7 @@ class ControllerEditTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testApply()
     {
-        $this->client->request('POST', '/records/edit/apply/', array('lst' => self::$record_1->get_serialize_key()));
+        $this->client->request('POST', '/records/edit/apply/', array('lst' => static::$records['record_1']->get_serialize_key()));
 
         $response = $this->client->getResponse();
 

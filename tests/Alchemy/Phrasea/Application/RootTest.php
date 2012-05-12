@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 class ApplicationRootTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = false;
 
     public function createApplication()
     {

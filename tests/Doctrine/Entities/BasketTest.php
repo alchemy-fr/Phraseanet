@@ -4,8 +4,6 @@ require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc'
 
 class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 {
-    protected static $need_records = 1;
-
     /**
      *
      * @var \Entities\Basket
@@ -98,7 +96,7 @@ class EntityBasketTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $basketElement = new \Entities\BasketElement();
 
-        $basketElement->setRecord(self::$record_1);
+        $basketElement->setRecord(static::$records['record_1']);
 
         $basketElement->setBasket($this->basket);
 

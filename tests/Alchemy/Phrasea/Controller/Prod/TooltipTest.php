@@ -10,9 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = 1;
-    protected static $need_subdefs = true;
-    protected static $need_story = 1;
 
     public function setUp()
     {
@@ -46,8 +43,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRoutePreview()
     {
-        $route = '/tooltip/preview/' . self::$record_1->get_sbas_id()
-            . '/' . self::$record_1->get_record_id() . '/';
+        $route = '/tooltip/preview/' . static::$records['record_1']->get_sbas_id()
+            . '/' . static::$records['record_1']->get_record_id() . '/';
 
         $crawler = $this->client->request('POST', $route);
         $pageContent = $this->client->getResponse()->getContent();
@@ -57,8 +54,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteCaption()
     {
 
-        $route_base = '/tooltip/caption/' . self::$record_1->get_sbas_id()
-            . '/' . self::$record_1->get_record_id() . '/%s/';
+        $route_base = '/tooltip/caption/' . static::$records['record_1']->get_sbas_id()
+            . '/' . static::$records['record_1']->get_record_id() . '/%s/';
 
         $routes = array(
             sprintf($route_base, 'answer')
@@ -77,8 +74,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteCaptionSearchEngine()
     {
-        $route_base = '/tooltip/caption/' . self::$record_1->get_sbas_id()
-            . '/' . self::$record_1->get_record_id() . '/%s/';
+        $route_base = '/tooltip/caption/' . static::$records['record_1']->get_sbas_id()
+            . '/' . static::$records['record_1']->get_record_id() . '/%s/';
 
         $routes = array(
             sprintf($route_base, 'answer')
@@ -98,8 +95,8 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteTCDatas()
     {
-        $route = '/tooltip/tc_datas/' . self::$record_1->get_sbas_id()
-            . '/' . self::$record_1->get_record_id() . '/';
+        $route = '/tooltip/tc_datas/' . static::$records['record_1']->get_sbas_id()
+            . '/' . static::$records['record_1']->get_record_id() . '/';
 
         $crawler = $this->client->request('POST', $route);
         $pageContent = $this->client->getResponse()->getContent();
@@ -108,7 +105,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteMetasFieldInfos()
     {
-        $databox = self::$record_1->get_databox();
+        $databox = static::$records['record_1']->get_databox();
 
         foreach ($databox->get_meta_structure() as $field) {
             $route = '/tooltip/metas/FieldInfos/' . $databox->get_sbas_id()
@@ -122,7 +119,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteMetasDCESInfos()
     {
-        $databox = self::$record_1->get_databox();
+        $databox = static::$records['record_1']->get_databox();
         $dces = array(
             databox_field::DCES_CONTRIBUTOR => new databox_Field_DCES_Contributor()
             , databox_field::DCES_COVERAGE    => new databox_Field_DCES_Coverage()
@@ -151,7 +148,7 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteMetaRestrictions()
     {
-        $databox = self::$record_1->get_databox();
+        $databox = static::$records['record_1']->get_databox();
 
         foreach ($databox->get_meta_structure() as $field) {
 
@@ -166,11 +163,11 @@ class ControllerTooltipTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRouteStory()
     {
-        $databox = self::$story_1->get_databox();
+        $databox = static::$records['record_story_1']->get_databox();
 
 
         $route = '/tooltip/Story/' . $databox->get_sbas_id()
-            . '/' . self::$story_1->get_record_id() . '/';
+            . '/' . static::$records['record_story_1']->get_record_id() . '/';
 
         $this->client->request('POST', $route);
         $this->assertTrue($this->client->getResponse()->isOk());

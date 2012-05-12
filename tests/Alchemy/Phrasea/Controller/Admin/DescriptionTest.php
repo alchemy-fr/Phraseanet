@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class DescriptionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = false;
 
     public function createApplication()
     {

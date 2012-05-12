@@ -12,12 +12,11 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     protected $databox;
     protected $name_mono;
     protected $name_multi;
-    protected static $need_records = 1;
 
     public function setUp()
     {
         parent::setUp();
-        $this->databox = self::$record_1->get_databox();
+        $this->databox = static::$records['record_1']->get_databox();
         $this->name_mono = 'Field Test Mono';
         $this->name_multi = 'Field Test Multi';
 
@@ -78,9 +77,9 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     public function testGet_databox()
     {
         $this->assertInstanceOf('\databox', $this->object_mono->get_databox());
-        $this->assertEquals(self::$record_1->get_databox()->get_sbas_id(), $this->object_mono->get_databox()->get_sbas_id());
+        $this->assertEquals(static::$records['record_1']->get_databox()->get_sbas_id(), $this->object_mono->get_databox()->get_sbas_id());
         $this->assertInstanceOf('\databox', $this->object_multi->get_databox());
-        $this->assertEquals(self::$record_1->get_databox()->get_sbas_id(), $this->object_multi->get_databox()->get_sbas_id());
+        $this->assertEquals(static::$records['record_1']->get_databox()->get_sbas_id(), $this->object_multi->get_databox()->get_sbas_id());
     }
 
     /**
@@ -395,7 +394,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     {
         $AddedValue = 'scalar value';
 
-        self::$record_1->set_metadatas(array(
+        static::$records['record_1']->set_metadatas(array(
             array(
                 'meta_id'        => null,
                 'meta_struct_id' => $this->object_mono->get_id(),
@@ -405,7 +404,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
         $this->object_mono->set_name('Bonobo yoyo')->save();
 
-        $value = array_pop(self::$record_1->get_caption()->get_field('Bonoboyoyo')->get_values());
+        $value = array_pop(static::$records['record_1']->get_caption()->get_field('Bonoboyoyo')->get_values());
         $this->assertEquals($value->getValue(), $AddedValue);
     }
 
@@ -414,7 +413,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
         $AddedValue_1 = 'scalar value 1';
         $AddedValue_2 = 'scalar value 2';
 
-        self::$record_1->set_metadatas(array(
+        static::$records['record_1']->set_metadatas(array(
             array(
                 'meta_id'        => null,
                 'meta_struct_id' => $this->object_multi->get_id(),
@@ -427,11 +426,11 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
             )
         ));
 
-        $this->assertEquals(2, count(self::$record_1->get_caption()->get_field(str_replace(' ', '', $this->name_multi))->get_values()));
+        $this->assertEquals(2, count(static::$records['record_1']->get_caption()->get_field(str_replace(' ', '', $this->name_multi))->get_values()));
 
         $this->object_multi->set_multi(false)->save();
 
-        $this->assertEquals(1, count(self::$record_1->get_caption()->get_field(str_replace(' ', '', $this->name_multi))->get_values()));
+        $this->assertEquals(1, count(static::$records['record_1']->get_caption()->get_field(str_replace(' ', '', $this->name_multi))->get_values()));
     }
 
     /**

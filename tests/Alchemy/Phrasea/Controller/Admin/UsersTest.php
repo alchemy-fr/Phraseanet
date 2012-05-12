@@ -5,8 +5,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class ControllerUsersTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-
-    protected static $need_records = false;
     protected $usersParameters;
 
     public function createApplication()

@@ -8,7 +8,6 @@ use Alchemy\Phrasea\RouteProcessor as routeProcessor;
 class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = 2;
 
     public function setUp()
     {
@@ -23,14 +22,16 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testRootPost()
     {
+        static::$records['record_1'];
+        static::$records['record_2'];
         $route = '/baskets/';
 
         $records = array(
-            self::$record_1->get_serialize_key(),
-            self::$record_2->get_serialize_key(),
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key(),
             ' ',
             '42',
-            self::$record_no_access->get_serialize_key()
+            static::$records['record_no_access']->get_serialize_key()
         );
 
         $lst = implode(';', $records);
@@ -134,7 +135,7 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $basket = $this->insertOneBasket();
 
-        $record = self::$record_1;
+        $record = static::$records['record_1'];
 
         $basket_element = new \Entities\BasketElement();
         $basket_element->setBasket($basket);
@@ -172,7 +173,7 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
         $basket = $this->insertOneBasket();
 
-        $record = self::$record_1;
+        $record = static::$records['record_1'];
 
         $basket_element = new \Entities\BasketElement();
         $basket_element->setBasket($basket);
@@ -421,17 +422,17 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/baskets/%s/addElements/', $basket->getId());
 
         $records = array(
-            self::$record_1->get_serialize_key(),
-            self::$record_2->get_serialize_key(),
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key(),
             ' ',
             '42',
             'abhak',
-            self::$record_no_access->get_serialize_key(),
+            static::$records['record_no_access']->get_serialize_key(),
         );
 
         $lst = implode(';', $records);
 
-        $crawler = $this->client->request('POST', $route, array('lst' => $lst));
+        $this->client->request('POST', $route, array('lst' => $lst));
 
         $response = $this->client->getResponse();
 
@@ -484,12 +485,12 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/baskets/%s/addElements/', $basket->getId());
 
         $records = array(
-            self::$record_1->get_serialize_key(),
-            self::$record_2->get_serialize_key(),
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key(),
             ' ',
             '42',
             'abhak',
-            self::$record_no_access->get_serialize_key(),
+            static::$records['record_no_access']->get_serialize_key(),
         );
 
         $lst = implode(';', $records);
@@ -518,8 +519,8 @@ class ControllerBasketTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $route = sprintf('/baskets/%s/addElements/', $basket->getId());
 
         $records = array(
-            self::$record_1->get_serialize_key(),
-            self::$record_2->get_serialize_key()
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key()
         );
 
         $lst = implode(';', $records);

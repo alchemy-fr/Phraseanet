@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = 1;
 
     public function createApplication()
     {
@@ -23,7 +22,7 @@ class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAb
      */
     public function testRouteSlash()
     {
-        $this->client->request('POST', '/records/movecollection/', array('lst' => self::$record_1->get_serialize_key()));
+        $this->client->request('POST', '/records/movecollection/', array('lst' => static::$records['record_1']->get_serialize_key()));
 
         $response = $this->client->getResponse();
 
@@ -33,7 +32,7 @@ class ControllerMoveCollectionTest extends \PhraseanetWebTestCaseAuthenticatedAb
     public function testApply()
     {
 
-        $this->client->request('POST', '/records/movecollection/apply/', array('lst'     => self::$record_1->get_serialize_key(), 'base_id' => self::$collection->get_base_id()));
+        $this->client->request('POST', '/records/movecollection/apply/', array('lst'     => static::$records['record_1']->get_serialize_key(), 'base_id' => self::$collection->get_base_id()));
 
         $response = $this->client->getResponse();
 

@@ -13,7 +13,6 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     protected $object;
     protected $filename;
-    protected static $need_records = 1;
 
     public function setUp()
     {

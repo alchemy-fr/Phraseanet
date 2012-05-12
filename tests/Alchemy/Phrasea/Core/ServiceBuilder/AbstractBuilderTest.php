@@ -8,7 +8,7 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
     public function testConstructExceptionNameEmpty()
     {
         try {
-            $stub = $this->getMock(
+            $this->getMock(
                 "\Alchemy\Phrasea\Core\Service\Builder"
                 , array()
                 , array(
@@ -26,7 +26,7 @@ class AbstractBuilderTest extends PhraseanetPHPUnitAbstract
     public function testConstructExceptionCreate()
     {
         try {
-            $stub = $this->getMock(
+            $this->getMock(
                 "\\Alchemy\\Phrasea\\Core\\Service\\Builder"
                 , array()
                 , array(
