@@ -73,7 +73,7 @@ class Bridge_Api_Auth_FlickrTest extends PHPUnit_Framework_TestCase
 
         $this->setExpectedException("Bridge_Exception_ApiConnectorAccessTokenFailed");
 
-        $return = $stub->connect("123");
+        $stub->connect("123");
     }
 
     public function testReconnect()

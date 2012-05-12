@@ -7,6 +7,7 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 {
     public static $account = null;
     public static $api = null;
+    protected $bridgeApi;
 
     /**
      * @var Bridge_Api_Abstract
@@ -17,6 +18,7 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     {
         parent::setUp();
         $this->auth = $this->getMock("Bridge_Api_Auth_Interface");
+        $this->bridgeApi = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
     }
 
     public static function setUpBeforeClass()
@@ -46,23 +48,19 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testSet_auth_settings()
     {
-        $stub = $this->getMockForAbstractClass('Bridge_Api_Abstract', array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
         $settings = self::$account->get_settings();
 
-        $stub->expects($this->once())
+        $this->bridgeApi->expects($this->once())
             ->method('set_transport_authentication_params');
 
-        $return = $stub->set_auth_settings($settings);
+        $return = $this->bridgeApi->set_auth_settings($settings);
 
-        $this->assertEquals($stub, $return);
+        $this->assertEquals($this->bridgeApi, $return);
     }
 
     public function testConnectGood()
     {
-        $stub = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
-        $stub->expects($this->once())
+        $this->bridgeApi->expects($this->once())
             ->method('is_configured')
             ->will($this->returnValue(TRUE));
 
@@ -73,134 +71,115 @@ class Bridge_Api_AbstractTest extends PhraseanetWebTestCaseAuthenticatedAbstract
             ->method('connect')
             ->will($this->returnValue(array("coucou")));
 
-        $return = $stub->connect();
+        $return = $this->bridgeApi->connect();
 
         $this->assertEquals(array("coucou"), $return);
     }
 
     public function testConnectBad()
     {
-        $stub = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
-        $stub->expects($this->once())
+        $this->bridgeApi->expects($this->once())
             ->method('is_configured')
             ->will($this->returnValue(FALSE));
 
         $this->setExpectedException("Bridge_Exception_ApiConnectorNotConfigured");
 
-        $stub->connect();
+        $this->bridgeApi->connect();
     }
 
     public function testReconnect()
     {
-        $stub = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
-        $stub->expects($this->once())
+        $this->bridgeApi->expects($this->once())
             ->method('is_configured')
             ->will($this->returnValue(TRUE));
 
         $this->auth->expects($this->once())
             ->method('reconnect');
 
-        $return = $stub->reconnect();
+        $return = $this->bridgeApi->reconnect();
 
-        $this->assertEquals($stub, $return);
+        $this->assertEquals($this->bridgeApi, $return);
     }
 
     public function testReconnectBad()
     {
-        $stub = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
-        $stub->expects($this->once())
+        $this->bridgeApi->expects($this->once())
             ->method('is_configured')
             ->will($this->returnValue(FALSE));
 
         $this->setExpectedException("Bridge_Exception_ApiConnectorNotConfigured");
 
-        $stub->reconnect();
+        $this->bridgeApi->reconnect();
     }
 
     public function testDisconnect()
     {
-        $stub = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
-        $stub->expects($this->once())
+        $this->bridgeApi->expects($this->once())
             ->method('is_configured')
             ->will($this->returnValue(TRUE));
 
         $this->auth->expects($this->once())
             ->method('disconnect');
 
-        $return = $stub->disconnect();
+        $return = $this->bridgeApi->disconnect();
 
-        $this->assertEquals($stub, $return);
+        $this->assertEquals($this->bridgeApi, $return);
     }
 
     public function testDisconnectBad()
     {
-        $stub = $this->getMock('Bridge_Api_Abstract', array("is_configured", "initialize_transport", "set_auth_params", "set_transport_authentication_params"), array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
-        $stub->expects($this->once())
+        $this->bridgeApi->expects($this->once())
             ->method('is_configured')
             ->will($this->returnValue(FALSE));
 
         $this->setExpectedException("Bridge_Exception_ApiConnectorNotConfigured");
 
-        $stub->disconnect();
+        $this->bridgeApi->disconnect();
     }
 
     public function testIs_connected()
     {
-        $stub = $this->getMockForAbstractClass('Bridge_Api_Abstract', array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
         $this->auth->expects($this->once())
             ->method('is_connected')
             ->will($this->returnValue(TRUE));
 
-        $return = $stub->is_connected();
+        $return = $this->bridgeApi->is_connected();
 
-        $this->assertEquals(TRUE, $return);
+        $this->assertEquals(true, $return);
     }
 
     public function testGet_auth_url()
     {
-        $stub = $this->getMockForAbstractClass('Bridge_Api_Abstract', array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
         $this->auth->expects($this->once())
             ->method('get_auth_url')
             ->with($this->isType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY))
             ->will($this->returnValue("une url"));
 
-        $return = $stub->get_auth_url();
+        $return = $this->bridgeApi->get_auth_url();
 
         $this->assertEquals("une url", $return);
     }
 
     public function testSet_locale()
     {
-        $stub = $this->getMockForAbstractClass('Bridge_Api_Abstract', array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
+        $this->bridgeApi->set_locale("fr");
 
-        $stub->set_locale("fr");
-
-        $this->assertEquals("fr", $stub->get_locale());
+        $this->assertEquals("fr", $this->bridgeApi->get_locale());
     }
 
     public function testIs_valid_object_id()
     {
-        $stub = $this->getMockForAbstractClass('Bridge_Api_Abstract', array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
-
-        $this->assertTrue($stub->is_valid_object_id("abc"));
-        $this->assertTrue($stub->is_valid_object_id(123));
-        $this->assertTrue($stub->is_valid_object_id(12.25));
-        $this->assertFalse($stub->is_valid_object_id(array()));
-        $this->assertFalse($stub->is_valid_object_id(true));
+        $this->assertTrue($this->bridgeApi->is_valid_object_id("abc"));
+        $this->assertTrue($this->bridgeApi->is_valid_object_id(123));
+        $this->assertTrue($this->bridgeApi->is_valid_object_id(12.25));
+        $this->assertFalse($this->bridgeApi->is_valid_object_id(array()));
+        $this->assertFalse($this->bridgeApi->is_valid_object_id(true));
     }
 
     public function testHandle_exception()
     {
-        $stub = $this->getMockForAbstractClass('Bridge_Api_Abstract', array(registry::get_instance(), $this->auth, "Mock_Bridge_Api_Abstract"));
         $e = new Exception("hihi");
-        $void = $stub->handle_exception($e);
+        $void = $this->bridgeApi->handle_exception($e);
         $this->assertNull($void);
     }
 }

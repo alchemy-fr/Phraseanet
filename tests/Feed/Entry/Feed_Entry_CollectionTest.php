@@ -32,7 +32,6 @@ class Feed_Entry_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     protected static $subtitle = 'subtitle lalalala';
     protected static $author_name = 'Jean Bonno';
     protected static $author_email = 'Jean@bonno.fr';
-    protected static $need_records = true;
 
     public static function setUpBeforeClass()
     {
@@ -45,7 +44,7 @@ class Feed_Entry_CollectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $publisher = Feed_Publisher_Adapter::getPublisher($appbox, self::$feed, self::$user);
         self::$entry = Feed_Entry_Adapter::create($appbox, self::$feed, $publisher, self::$title, self::$subtitle, self::$author_name, self::$author_email);
 
-        self::$item = Feed_Entry_Item::create($appbox, self::$entry, self::$record_1);
+        self::$item = Feed_Entry_Item::create($appbox, self::$entry, static::$records['record_1']);
 
         self::$object = new Feed_Entry_Collection();
     }

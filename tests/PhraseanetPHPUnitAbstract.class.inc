@@ -21,300 +21,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var Symfony\Component\HttpKernel\Client
      */
     protected $client;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $story_1;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $story_2;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_1;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_2;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_3;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_4;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_5;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_6;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_7;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_8;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_9;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_10;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_11;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_12;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_13;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_14;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_15;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_16;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_17;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_18;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_19;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_20;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_21;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_22;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_23;
-
-    /**
-     *
-     * @var record_adapter
-     */
-    protected static $record_no_access;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_1;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_2;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_3;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_4;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_5;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_6;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_7;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_8;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_9;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_10;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_11;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_12;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_13;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_14;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_15;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_16;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_17;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_18;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_19;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_20;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_21;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_22;
-
-    /**
-     *
-     * @var system_file
-     */
-    protected static $record_sf_23;
+    protected static $records;
+    public static $recordsInitialized = false;
 
     /**
      *
@@ -341,18 +49,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     protected static $updated;
 
     /**
-     * if yo need record for your test
-     * just tell how many
-     * example = $need_records = 2
-     * will create 2 records self::$record_1 & self::$record_2
-     * You can use the same mechanism for subdef and stories
-     * @var mixed int|boolean
-     */
-    protected static $need_records = false;
-    protected static $need_subdefs = false;
-    protected static $need_story = false;
-
-    /**
      *
      * @var collection
      */
@@ -369,12 +65,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
      * @var float
      */
     protected static $time_start;
-
-    /**
-     *
-     * @var Array
-     */
-    protected static $generated_subdefs = array();
 
     /**
      *
@@ -402,11 +92,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         self::setCollection();
 
-        self::generateStories();
-
         self::generateRecords();
-
-        self::generateSubdefs();
     }
 
     /**
@@ -480,6 +166,20 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     {
         //unset static::$core
         self::$core = null;
+
+        /**
+         * Kris Wallsmith pro-tip
+         * @see http://kriswallsmith.net/post/18029585104/faster-phpunit
+         */
+        $refl = new ReflectionObject($this);
+        foreach ($refl->getProperties() as $prop) {
+            if ( ! $prop->isStatic() && 0 !== strpos($prop->getDeclaringClass()->getName(), 'PHPUnit_') && 0 !== strpos($prop->getDeclaringClass()->getName(), 'Phraseanet')) {
+                $prop->setAccessible(true);
+                $prop->setValue($this, null);
+            }
+        }
+        $refl = null;
+
         parent::tearDown();
     }
 
@@ -586,7 +286,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $loader->addFixture($UsrList);
 
             $UsrEntry = new PhraseaFixture\UsrLists\UsrListEntry();
-//      $UsrEntry->setList($UsrList);
+
             $UsrEntry->setUser($user);
 
             $loader->addFixture($UsrEntry);
@@ -632,7 +332,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         $basket = $this->insertOneBasket();
 
         $basketElement = new \Entities\BasketElement();
-        $basketElement->setRecord(self::$record_1);
+        $basketElement->setRecord(static::$records['record_1']);
         $basketElement->setBasket($basket);
 
         $basket->addBasketElement($basketElement);
@@ -714,8 +414,8 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             $basketFixture->addParticipant(self::$user_alt1);
             $basketFixture->addParticipant(self::$user_alt2);
 
-            $basketFixture->addBasketElement(self::$record_1);
-            $basketFixture->addBasketElement(self::$record_2);
+            $basketFixture->addBasketElement(static::$records['record_1']);
+            $basketFixture->addBasketElement(static::$records['record_2']);
 
             $loader = new Loader();
             $loader->addFixture($basketFixture);
@@ -746,7 +446,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
             //add one story
             $story = new PhraseaFixture\Story\LoadOneStory();
             $story->setUser($currentUser);
-            $story->setRecord(self::$record_1);
+            $story->setRecord(static::$records['record_1']);
             //add a validation session initiated by alt user
             $validationSession = new PhraseaFixture\ValidationSession\LoadOneValidationSession();
             $validationSession->setUser($altUser);
@@ -975,7 +675,6 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
         }
         if ( ! $collection_no_acces instanceof collection) {
             $collection_no_acces = collection::create($databox, $appbox, 'BIBOO', self::$user);
-//      self::fail('Unable to find a second collection');
         }
 
         self::$collection = $coll;
@@ -986,241 +685,60 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
     }
 
     /**
-     * Generate a set of stories for the current test suites
-     *
-     * @return void
-     */
-    private static function generateStories()
-    {
-        if (static::$need_story && ! self::$story_1 instanceof record_adapter) {
-            self::$story_1 = \record_adapter::create(
-                    self::$collection
-                    , new system_file(__DIR__ . '/testfiles/test001.CR2')
-                    , false
-                    , true
-            );
-        }
-
-        if (static::$need_story && ! self::$story_2 instanceof record_adapter) {
-            self::$story_2 = \record_adapter::create(
-                    self::$collection
-                    , new system_file(__DIR__ . '/testfiles/test001.CR2')
-                    , false
-                    , true
-            );
-        }
-
-        return;
-    }
-
-    /**
-     * Generate a set subdef according to the records previously created
-     *
-     * @return void
-     */
-    private static function generateSubdefs()
-    {
-        if (static::$need_records && static::$need_subdefs) {
-            if (self::$record_1 instanceof record_adapter && ! isset(self::$generated_subdefs['a1'])) {
-                self::$record_1->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a1'] = true;
-            }
-            if (self::$record_2 instanceof record_adapter && ! isset(self::$generated_subdefs['a2'])) {
-                self::$record_2->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a2'] = true;
-            }
-            if (self::$record_3 instanceof record_adapter && ! isset(self::$generated_subdefs['a3'])) {
-                self::$record_3->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a3'] = true;
-            }
-            if (self::$record_4 instanceof record_adapter && ! isset(self::$generated_subdefs['a4'])) {
-                self::$record_4->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a4'] = true;
-            }
-            if (self::$record_5 instanceof record_adapter && ! isset(self::$generated_subdefs['a5'])) {
-                self::$record_5->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a5'] = true;
-            }
-            if (self::$record_6 instanceof record_adapter && ! isset(self::$generated_subdefs['a6'])) {
-                self::$record_6->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a6'] = true;
-            }
-            if (self::$record_7 instanceof record_adapter && ! isset(self::$generated_subdefs['a7'])) {
-                self::$record_7->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a7'] = true;
-            }
-            if (self::$record_8 instanceof record_adapter && ! isset(self::$generated_subdefs['a8'])) {
-                self::$record_8->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a8'] = true;
-            }
-            if (self::$record_9 instanceof record_adapter && ! isset(self::$generated_subdefs['a9'])) {
-                self::$record_9->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a9'] = true;
-            }
-            if (self::$record_10 instanceof record_adapter && ! isset(self::$generated_subdefs['a10'])) {
-                self::$record_10->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a10'] = true;
-            }
-            if (self::$record_11 instanceof record_adapter && ! isset(self::$generated_subdefs['a11'])) {
-                self::$record_11->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a11'] = true;
-            }
-            if (self::$record_12 instanceof record_adapter && ! isset(self::$generated_subdefs['a12'])) {
-                self::$record_12->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a12'] = true;
-            }
-            if (self::$record_13 instanceof record_adapter && ! isset(self::$generated_subdefs['a13'])) {
-                self::$record_13->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a13'] = true;
-            }
-            if (self::$record_14 instanceof record_adapter && ! isset(self::$generated_subdefs['a14'])) {
-                self::$record_14->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a14'] = true;
-            }
-            if (self::$record_15 instanceof record_adapter && ! isset(self::$generated_subdefs['a15'])) {
-                self::$record_15->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a15'] = true;
-            }
-            if (self::$record_16 instanceof record_adapter && ! isset(self::$generated_subdefs['a16'])) {
-                self::$record_16->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a16'] = true;
-            }
-            if (self::$record_17 instanceof record_adapter && ! isset(self::$generated_subdefs['a17'])) {
-                self::$record_17->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a17'] = true;
-            }
-            if (self::$record_18 instanceof record_adapter && ! isset(self::$generated_subdefs['a18'])) {
-                self::$record_18->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a18'] = true;
-            }
-            if (self::$record_19 instanceof record_adapter && ! isset(self::$generated_subdefs['a19'])) {
-                self::$record_19->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a19'] = true;
-            }
-            if (self::$record_20 instanceof record_adapter && ! isset(self::$generated_subdefs['a20'])) {
-                self::$record_20->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a20'] = true;
-            }
-            if (self::$record_21 instanceof record_adapter && ! isset(self::$generated_subdefs['a21'])) {
-                self::$record_21->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a21'] = true;
-            }
-            if (self::$record_22 instanceof record_adapter && ! isset(self::$generated_subdefs['a22'])) {
-                self::$record_22->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a22'] = true;
-            }
-            if (self::$record_23 instanceof record_adapter && ! isset(self::$generated_subdefs['a23'])) {
-                self::$record_23->generate_subdefs(self::$collection->get_databox());
-                self::$generated_subdefs['a23'] = true;
-            }
-        }
-
-        return;
-    }
-
-    /**
      * Generate a set of records for the current tests suites
-     * @return void
      */
     private static function generateRecords()
     {
-        if (static::$need_records) {
-            if ((static::$need_records === true || static::$need_records >= 1) && ! self::$record_1 instanceof record_adapter) {
-                self::$record_sf_1 = new system_file(__DIR__ . '/testfiles/test001.CR2');
-                self::$record_1 = record_adapter::create(self::$collection, self::$record_sf_1);
+        if (self::$recordsInitialized === false) {
+
+            self::$recordsInitialized = array();
+
+            static::$records = new Pimple();
+
+            $collection = self::$collection;
+
+            $resolvePathfile = function($i) {
+                    $finder = new Symfony\Component\Finder\Finder();
+
+                    $name = $i < 10 ? 'test00' . $i . '.*' : 'test0' . $i . '.*';
+
+                    $finder->name($name)->in(__DIR__ . '/testfiles/');
+
+                    foreach ($finder as $file) {
+                        return $file->getRealPath();
+                    }
+
+                    throw new Exception(sprintf('File %d not found', $i));
+                };
+
+            foreach (range(1, 24) as $i) {
+                static::$records['record_' . $i] = static::$records->share(function() use ($collection, $resolvePathfile, $i) {
+
+                        PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
+                        $record = record_adapter::create($collection, $resolvePathfile($i));
+
+                        $record->generate_subdefs($record->get_databox());
+
+                        return $record;
+                    });
             }
-            if ((static::$need_records === true || static::$need_records >= 1) && ! self::$record_no_access instanceof record_adapter) {
-                $file = new system_file(__DIR__ . '/testfiles/test001.CR2');
-                self::$record_no_access = record_adapter::create(self::$collection_no_access, $file);
+            foreach (range(1, 2) as $i) {
+                static::$records['record_story_' . $i] = static::$records->share(function() use ($collection, $i) {
+
+                        PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
+
+                        return record_adapter::create($collection, __DIR__ . '/testfiles/test001.CR2', false, true);
+                    });
             }
-            if ((static::$need_records === true || static::$need_records >= 2) && ! self::$record_2 instanceof record_adapter) {
-                self::$record_sf_2 = new system_file(__DIR__ . '/testfiles/test002.CR2');
-                self::$record_2 = record_adapter::create(self::$collection, self::$record_sf_2);
-            }
-            if ((static::$need_records === true || static::$need_records >= 3) && ! self::$record_3 instanceof record_adapter) {
-                self::$record_sf_3 = new system_file(__DIR__ . '/testfiles/test003.CR2');
-                self::$record_3 = record_adapter::create(self::$collection, self::$record_sf_3);
-            }
-            if ((static::$need_records === true || static::$need_records >= 4) && ! self::$record_4 instanceof record_adapter) {
-                self::$record_sf_4 = new system_file(__DIR__ . '/testfiles/test004.CR2');
-                self::$record_4 = record_adapter::create(self::$collection, self::$record_sf_4);
-            }
-            if ((static::$need_records === true || static::$need_records >= 5) && ! self::$record_5 instanceof record_adapter) {
-                self::$record_sf_5 = new system_file(__DIR__ . '/testfiles/test005.CR2');
-                self::$record_5 = record_adapter::create(self::$collection, self::$record_sf_5);
-            }
-            if ((static::$need_records === true || static::$need_records >= 6) && ! self::$record_6 instanceof record_adapter) {
-                self::$record_sf_6 = new system_file(__DIR__ . '/testfiles/test006.wav');
-                self::$record_6 = record_adapter::create(self::$collection, self::$record_sf_6);
-            }
-            if ((static::$need_records === true || static::$need_records >= 7) && ! self::$record_7 instanceof record_adapter) {
-                self::$record_sf_7 = new system_file(__DIR__ . '/testfiles/test007.ppt');
-                self::$record_7 = record_adapter::create(self::$collection, self::$record_sf_7);
-            }
-            if ((static::$need_records === true || static::$need_records >= 8) && ! self::$record_8 instanceof record_adapter) {
-                self::$record_sf_8 = new system_file(__DIR__ . '/testfiles/test008.ai');
-                self::$record_8 = record_adapter::create(self::$collection, self::$record_sf_8);
-            }
-            if ((static::$need_records === true || static::$need_records >= 9) && ! self::$record_9 instanceof record_adapter) {
-                self::$record_sf_9 = new system_file(__DIR__ . '/testfiles/test009.TIFF');
-                self::$record_9 = record_adapter::create(self::$collection, self::$record_sf_9);
-            }
-            if ((static::$need_records === true || static::$need_records >= 10) && ! self::$record_10 instanceof record_adapter) {
-                self::$record_sf_10 = new system_file(__DIR__ . '/testfiles/test010.fla');
-                self::$record_10 = record_adapter::create(self::$collection, self::$record_sf_10);
-            }
-            if ((static::$need_records === true || static::$need_records >= 11) && ! self::$record_11 instanceof record_adapter) {
-                self::$record_sf_11 = new system_file(__DIR__ . '/testfiles/test011.swf');
-                self::$record_11 = record_adapter::create(self::$collection, self::$record_sf_11);
-            }
-            if ((static::$need_records === true || static::$need_records >= 12) && ! self::$record_12 instanceof record_adapter) {
-                self::$record_sf_12 = new system_file(__DIR__ . '/testfiles/test012.wav');
-                self::$record_12 = record_adapter::create(self::$collection, self::$record_sf_12);
-            }
-            if ((static::$need_records === true || static::$need_records >= 13) && ! self::$record_13 instanceof record_adapter) {
-                self::$record_sf_13 = new system_file(__DIR__ . '/testfiles/test013.ai');
-                self::$record_13 = record_adapter::create(self::$collection, self::$record_sf_13);
-            }
-            if ((static::$need_records === true || static::$need_records >= 14) && ! self::$record_14 instanceof record_adapter) {
-                self::$record_sf_14 = new system_file(__DIR__ . '/testfiles/test014.swf');
-                self::$record_14 = record_adapter::create(self::$collection, self::$record_sf_14);
-            }
-            if ((static::$need_records === true || static::$need_records >= 15) && ! self::$record_15 instanceof record_adapter) {
-                self::$record_sf_15 = new system_file(__DIR__ . '/testfiles/test015.eps');
-                self::$record_15 = record_adapter::create(self::$collection, self::$record_sf_15);
-            }
-            if ((static::$need_records === true || static::$need_records >= 16) && ! self::$record_16 instanceof record_adapter) {
-                self::$record_sf_16 = new system_file(__DIR__ . '/testfiles/test016.ai');
-                self::$record_16 = record_adapter::create(self::$collection, self::$record_sf_16);
-            }
-            if ((static::$need_records === true || static::$need_records >= 17) && ! self::$record_17 instanceof record_adapter) {
-                self::$record_sf_17 = new system_file(__DIR__ . '/testfiles/test017.wav');
-                self::$record_17 = record_adapter::create(self::$collection, self::$record_sf_17);
-            }
-            if ((static::$need_records === true || static::$need_records >= 18) && ! self::$record_18 instanceof record_adapter) {
-                self::$record_sf_18 = new system_file(__DIR__ . '/testfiles/test018.TIFF');
-                self::$record_18 = record_adapter::create(self::$collection, self::$record_sf_18);
-            }
-            if ((static::$need_records === true || static::$need_records >= 19) && ! self::$record_19 instanceof record_adapter) {
-                self::$record_sf_19 = new system_file(__DIR__ . '/testfiles/test019.mp3');
-                self::$record_19 = record_adapter::create(self::$collection, self::$record_sf_19);
-            }
-            if ((static::$need_records === true || static::$need_records >= 20) && ! self::$record_20 instanceof record_adapter) {
-                self::$record_sf_20 = new system_file(__DIR__ . '/testfiles/test020.mp3');
-                self::$record_20 = record_adapter::create(self::$collection, self::$record_sf_20);
-            }
-            if ((static::$need_records === true || static::$need_records >= 21) && ! self::$record_21 instanceof record_adapter) {
-                self::$record_sf_21 = new system_file(__DIR__ . '/testfiles/test021.fla');
-                self::$record_21 = record_adapter::create(self::$collection, self::$record_sf_21);
-            }
-            if ((static::$need_records === true || static::$need_records >= 22) && ! self::$record_22 instanceof record_adapter) {
-                self::$record_sf_22 = new system_file(__DIR__ . '/testfiles/test022.swf');
-                self::$record_22 = record_adapter::create(self::$collection, self::$record_sf_22);
-            }
-            if ((static::$need_records === true || static::$need_records >= 23) && ! self::$record_23 instanceof record_adapter) {
-                self::$record_sf_23 = new system_file(__DIR__ . '/testfiles/test023.mp4');
-                self::$record_23 = record_adapter::create(self::$collection, self::$record_sf_23);
-            }
+
+            $collection_no_access = self::$collection_no_access;
+
+            static::$records['record_no_access'] = static::$records->share(function()use($collection_no_access) {
+
+                    PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
+
+                    return record_adapter::create($collection_no_access, __DIR__ . '/testfiles/test001.CR2');
+                });
         }
 
         return;
@@ -1245,106 +763,11 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
         \PhraseanetPHPUnitListener::resetSkipped();
 
-        if (self::$story_1 instanceof record_adapter) {
-            self::$story_1->delete();
-            self::$story_1 = null;
+        foreach (self::$recordsInitialized as $i) {
+            static::$records['record_' . $i]->delete();
         }
-        if (self::$story_2 instanceof record_adapter) {
-            self::$story_2->delete();
-            self::$story_2 = null;
-        }
-        if (self::$record_1 instanceof record_adapter) {
-            self::$record_1->delete();
-            self::$record_1 = null;
-        }
-        if (self::$record_2 instanceof record_adapter) {
-            self::$record_2->delete();
-            self::$record_2 = null;
-        }
-        if (self::$record_3 instanceof record_adapter) {
-            self::$record_3->delete();
-            self::$record_3 = null;
-        }
-        if (self::$record_4 instanceof record_adapter) {
-            self::$record_4->delete();
-            self::$record_4 = null;
-        }
-        if (self::$record_5 instanceof record_adapter) {
-            self::$record_5->delete();
-            self::$record_5 = null;
-        }
-        if (self::$record_6 instanceof record_adapter) {
-            self::$record_6->delete();
-            self::$record_6 = null;
-        }
-        if (self::$record_7 instanceof record_adapter) {
-            self::$record_7->delete();
-            self::$record_7 = null;
-        }
-        if (self::$record_8 instanceof record_adapter) {
-            self::$record_8->delete();
-            self::$record_8 = null;
-        }
-        if (self::$record_9 instanceof record_adapter) {
-            self::$record_9->delete();
-            self::$record_9 = null;
-        }
-        if (self::$record_10 instanceof record_adapter) {
-            self::$record_10->delete();
-            self::$record_10 = null;
-        }
-        if (self::$record_11 instanceof record_adapter) {
-            self::$record_11->delete();
-            self::$record_11 = null;
-        }
-        if (self::$record_12 instanceof record_adapter) {
-            self::$record_12->delete();
-            self::$record_12 = null;
-        }
-        if (self::$record_13 instanceof record_adapter) {
-            self::$record_13->delete();
-            self::$record_13 = null;
-        }
-        if (self::$record_14 instanceof record_adapter) {
-            self::$record_14->delete();
-            self::$record_14 = null;
-        }
-        if (self::$record_15 instanceof record_adapter) {
-            self::$record_15->delete();
-            self::$record_15 = null;
-        }
-        if (self::$record_16 instanceof record_adapter) {
-            self::$record_16->delete();
-            self::$record_16 = null;
-        }
-        if (self::$record_17 instanceof record_adapter) {
-            self::$record_17->delete();
-            self::$record_17 = null;
-        }
-        if (self::$record_18 instanceof record_adapter) {
-            self::$record_18->delete();
-            self::$record_18 = null;
-        }
-        if (self::$record_19 instanceof record_adapter) {
-            self::$record_19->delete();
-            self::$record_19 = null;
-        }
-        if (self::$record_20 instanceof record_adapter) {
-            self::$record_20->delete();
-            self::$record_20 = null;
-        }
-        if (self::$record_21 instanceof record_adapter) {
-            self::$record_21->delete();
-            self::$record_21 = null;
-        }
-        if (self::$record_22 instanceof record_adapter) {
-            self::$record_22->delete();
-            self::$record_22 = null;
-        }
-        if (self::$record_23 instanceof record_adapter) {
-            self::$record_23->delete();
-            self::$record_23 = null;
-        }
+
+        self::$recordsInitialized = array();
 
         return;
     }

@@ -13,12 +13,7 @@ class UUIDTest extends \PhraseanetPHPUnitAbstract
      */
     protected $object;
     protected $filename;
-    protected static $need_records = 1;
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     */
     public function setUp()
     {
         parent::setUp();

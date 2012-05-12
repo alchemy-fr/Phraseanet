@@ -6,9 +6,6 @@ require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 class FactoryTest extends \PhraseanetPHPUnitAbstract
 {
-    protected static $need_records = 1;
-    protected static $need_story = 1;
-
     /**
      * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
      */
@@ -38,7 +35,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStory()
     {
-        $attribute = Factory::getFileAttribute(Attribute::NAME_STORY, static::$story_1->get_serialize_key());
+        $attribute = Factory::getFileAttribute(Attribute::NAME_STORY, static::$records['record_story_1']->get_serialize_key());
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Story', $attribute);
     }
@@ -49,7 +46,7 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFileAttributeStoryFailsRecord()
     {
-        Factory::getFileAttribute(Attribute::NAME_STORY, self::$record_1->get_serialize_key());
+        Factory::getFileAttribute(Attribute::NAME_STORY, static::$records['record_1']->get_serialize_key());
     }
 
     /**

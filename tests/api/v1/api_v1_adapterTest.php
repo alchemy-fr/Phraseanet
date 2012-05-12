@@ -10,8 +10,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
      * @var API_V1_adapter
      */
     protected $object;
-    protected static $need_records = 1;
-    protected static $need_subdefs = true;
 
     public function setUp()
     {
@@ -119,11 +117,11 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->get_record($request, self::$record_1->get_sbas_id(), "-40");
+        $result = $this->object->get_record($request, static::$records['record_1']->get_sbas_id(), "-40");
         $this->assertEquals(400, $result->get_http_code());
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->get_record($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $this->object->get_record($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_object(json_decode($result->format())));
@@ -179,7 +177,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->get_record_related($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $this->object->get_record_related($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_object(json_decode($result->format())));
@@ -190,7 +188,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->get_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $this->object->get_record_metadatas($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_object(json_decode($result->format())));
@@ -202,7 +200,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $request = new Request();
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->get_record_status($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $this->object->get_record_status($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_object(json_decode($result->format())));
@@ -213,7 +211,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
 
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->get_record_embed($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $this->object->get_record_embed($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(200, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
         $this->assertTrue(is_object(json_decode($result->format())));
@@ -222,25 +220,25 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_record_metadatas()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
-        $databox = self::$record_1->get_databox();
+        $databox = static::$records['record_1']->get_databox();
         $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->set_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $this->object->set_record_metadatas($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
         $request = new Request(array("metadatas" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $this->object->set_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $this->object->set_record_metadatas($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
-        if (sizeof(self::$record_1->get_caption()->get_fields()) == 0) {
-            $caption_field_value = caption_Field_Value::create(databox_field::get_instance($databox, 1), self::$record_1, 'my value');
+        if (sizeof(static::$records['record_1']->get_caption()->get_fields()) == 0) {
+            $caption_field_value = caption_Field_Value::create(databox_field::get_instance($databox, 1), static::$records['record_1'], 'my value');
         }
 
 //valide metas
         $metadatas = array();
 
-        foreach (self::$record_1->get_databox()->get_meta_structure()->get_elements() as $field) {
+        foreach (static::$records['record_1']->get_databox()->get_meta_structure()->get_elements() as $field) {
             try {
-                $values = self::$record_1->get_caption()->get_field($field->get_name())->get_values();
+                $values = static::$records['record_1']->get_caption()->get_field($field->get_name())->get_values();
                 $value = array_pop($values);
                 $meta_id = $value->getId();
             } catch (\Exception $e) {
@@ -256,7 +254,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
         $request = new Request(array("metadatas" => $metadatas), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
 
-        $result = $this->object->set_record_metadatas($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $this->object->set_record_metadatas($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
 
         $response = json_decode($result->format());
 
@@ -270,7 +268,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $stub = $this->getMock("API_V1_adapter", array("list_record_status"), array(false, &$appbox, bootstrap::getCore()));
         $appbox = appbox::get_instance(\bootstrap::getCore());
-        $databox = self::$record_1->get_databox();
+        $databox = static::$records['record_1']->get_databox();
 
         $statusbit = null;
         foreach ($databox->get_statusbits() as $key => $value) {
@@ -279,11 +277,11 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         }
 
         $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $stub->set_record_status($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $stub->set_record_status($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
         $request = new Request(array("status" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $stub->set_record_status($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $stub->set_record_status($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
         $status = array($statusbit => '1');
@@ -294,18 +292,18 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             ->method("list_record_status")
             ->will($this->returnValue(new stdClass()));
         //check for metadas fiels in response
-        $result = $stub->set_record_status($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $stub->set_record_status($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->checkResponseField($result, "status", PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT);
-    }
+        }
 
     public function testSet_record_collection()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $stub = $this->getMock("API_V1_adapter", array("list_record"), array(false, &$appbox, bootstrap::getCore()));
-        $databox = self::$record_1->get_databox();
+        $databox = static::$records['record_1']->get_databox();
 
         $request = new Request(array("salut" => "salut c'est la fete"), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $stub->set_record_collection($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $stub->set_record_collection($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->assertEquals(400, $result->get_http_code());
 
         foreach ($appbox->get_databoxes() as $databox) {
@@ -321,7 +319,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
             ->method("list_record")
             ->will($this->returnValue(new stdClass()));
         //check for metadas fiels in response
-        $result = $stub->set_record_collection($request, self::$record_1->get_sbas_id(), self::$record_1->get_record_id());
+        $result = $stub->set_record_collection($request, static::$records['record_1']->get_sbas_id(), static::$records['record_1']->get_record_id());
         $this->checkResponseField($result, "record", PHPUnit_Framework_Constraint_IsType::TYPE_OBJECT);
     }
 
@@ -464,7 +462,6 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSearch_publications()
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
-        $stub = $this->getMock("API_V1_adapter", array("list_publication"), array(false, &$appbox, bootstrap::getCore()));
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
         $feed = Feed_Adapter::create($appbox, self::$user, "hello", "salut");
         $result = $this->object->search_publications($request, self::$user);
@@ -489,7 +486,7 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $feed = Feed_Adapter::create($appbox, self::$user, "hello", "salut");
         $feed_publisher = Feed_Publisher_Adapter::getPublisher($appbox, $feed, self::$user);
         $feed_entry = Feed_Entry_Adapter::create($appbox, $feed, $feed_publisher, "coucou", "hello", "me", "my@email.com");
-        $feed_entry_item = Feed_Entry_Item::create($appbox, $feed_entry, self::$record_1);
+        $feed_entry_item = Feed_Entry_Item::create($appbox, $feed_entry, static::$records['record_1']);
         $coll = Feed_Collection::load_all($appbox, self::$user);
         foreach ($coll->get_feeds() as $feed) {
             $result = $this->object->get_publication($request, $feed->get_id(), self::$user);

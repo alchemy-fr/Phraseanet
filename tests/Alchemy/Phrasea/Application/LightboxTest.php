@@ -12,7 +12,6 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
     protected $entry;
     protected $item;
     protected $validation_basket;
-    protected static $need_records = 1;
 
     public function setUp()
     {
@@ -22,7 +21,7 @@ class ApplicationLightboxTest extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->feed = Feed_Adapter::create($appbox, self::$user, "salut", 'coucou');
         $publisher = array_shift($this->feed->get_publishers());
         $this->entry = Feed_Entry_Adapter::create($appbox, $this->feed, $publisher, 'title', "sub Titkle", " jean pierre", "jp@test.com");
-        $this->item = Feed_Entry_Item::create($appbox, $this->entry, self::$record_1);
+        $this->item = Feed_Entry_Item::create($appbox, $this->entry, static::$records['record_1']);
     }
 
     public function tearDown()

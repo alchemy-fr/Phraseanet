@@ -27,7 +27,7 @@ class media_subdefTest extends \PhraseanetPHPUnitAbstract
     {
         parent::setUpBeforeClass();
 
-        self::$recordonbleu = record_adapter::create(self::$collection, new system_file(__DIR__ . "/../testfiles/iphone_pic.jpg"));
+        self::$recordonbleu = record_adapter::create(self::$collection, __DIR__ . "/../testfiles/iphone_pic.jpg");
         self::$recordonbleu->generate_subdefs(self::$recordonbleu->get_databox());
 
         foreach (self::$recordonbleu->get_subdefs() as $subdef) {

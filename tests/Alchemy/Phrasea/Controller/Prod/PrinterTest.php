@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = 4;
 
     public function createApplication()
     {
@@ -24,8 +23,8 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRouteSlash()
     {
         $records = array(
-            self::$record_1->get_serialize_key(),
-            self::$record_2->get_serialize_key()
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key()
         );
 
         $lst = implode(';', $records);
@@ -40,10 +39,10 @@ class ControllerPrinterTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testRoutePrintPdf()
     {
         $records = array(
-            self::$record_1->get_serialize_key(),
-            self::$record_2->get_serialize_key(),
-            self::$record_3->get_serialize_key(),
-            self::$record_4->get_serialize_key(),
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key(),
+            static::$records['record_3']->get_serialize_key(),
+            static::$records['record_4']->get_serialize_key(),
         );
 
         $lst = implode(';', $records);

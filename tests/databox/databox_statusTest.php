@@ -9,12 +9,11 @@ class databox_statusTest extends PhraseanetPHPUnitAbstract
      */
     protected $object;
     protected $databox;
-    protected static $need_records = 1;
 
     public function setUp()
     {
         parent::setUp();
-        $this->databox = self::$record_1->get_databox();
+        $this->databox = static::$records['record_1']->get_databox();
         $this->object = $this->databox->get_statusbits();
     }
 
