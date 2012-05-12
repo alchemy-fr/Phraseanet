@@ -10,17 +10,6 @@ class ControllerPathFileTestTest extends \PhraseanetWebTestCaseAbstract
     protected $client;
 
     /**
-     * If the controller tests require some records, specify it her
-     *
-     * For example, this will loacd 2 records
-     * (self::$record_1 and self::$record_2) :
-     *
-     * $need_records = 2;
-     *
-     */
-    protected static $need_records = false;
-
-    /**
      * The application loader
      */
     public function createApplication()

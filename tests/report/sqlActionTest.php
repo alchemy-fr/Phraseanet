@@ -5,11 +5,15 @@ require_once __DIR__ . '/../PhraseanetPHPUnitAbstract.class.inc';
 class sqlActionTest extends PhraseanetPHPUnitAbstract
 {
     protected $action;
+    protected $mock;
 
     public function setUp()
     {
         parent::setUp();
-        $this->action = new module_report_sqlaction($this->getMock('module_report', array(), array(), '', false));
+
+        $this->mock = $this->getMock('module_report', array(), array(), '', false);
+
+        $this->action = new module_report_sqlaction($this->mock);
     }
 
     public function testGetAction()

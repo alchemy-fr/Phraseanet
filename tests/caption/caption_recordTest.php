@@ -8,12 +8,11 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
      * @var caption_record
      */
     protected $object;
-    protected static $need_records = 1;
 
     public function setUp()
     {
         parent::setUp();
-        $this->object = new caption_record(self::$record_1, self::$record_1->get_databox());
+        $this->object = new caption_record(static::$records['record_1'], static::$records['record_1']->get_databox());
     }
 
     /**
@@ -22,11 +21,11 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
     public function testSerializeXML()
     {
 
-        foreach (self::$record_1->get_databox()->get_meta_structure() as $databox_field) {
+        foreach (static::$records['record_1']->get_databox()->get_meta_structure() as $databox_field) {
             $n = $databox_field->is_multi() ? 3 : 1;
 
             for ($i = 0; $i < $n; $i ++ ) {
-                \caption_Field_Value::create($databox_field, self::$record_1, \random::generatePassword());
+                \caption_Field_Value::create($databox_field, static::$records['record_1'], \random::generatePassword());
             }
         }
 
@@ -35,7 +34,7 @@ class caption_recordTest extends PhraseanetPHPUnitAbstract
         $sxe = simplexml_load_string($xml);
         $this->assertInstanceOf('SimpleXMLElement', $sxe);
 
-        foreach (self::$record_1->get_caption()->get_fields() as $field) {
+        foreach (static::$records['record_1']->get_caption()->get_fields() as $field) {
             if ($field->get_databox_field()->is_multi()) {
                 $tagname = $field->get_name();
                 $retrieved = array();

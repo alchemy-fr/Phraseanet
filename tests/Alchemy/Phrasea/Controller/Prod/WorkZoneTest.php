@@ -8,8 +8,6 @@ use Alchemy\Phrasea\RouteProcessor as routeProcessor;
 class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = 1;
-    protected static $need_story = true;
 
     public function setUp()
     {
@@ -39,7 +37,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testAttachStoryToWZ()
     {
-        $story = self::$story_1;
+        $story = static::$records['record_story_1'];
         /* @var $story \Record_Adapter */
         $route = sprintf("/WorkZone/attachStories/");
 
@@ -64,7 +62,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(1, $count);
 
-        $story2 = self::$story_2;
+        $story2 = static::$records['record_story_2'];
 
         $stories = array($story->get_serialize_key(), $story2->get_serialize_key());
 
@@ -116,7 +114,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDetachStoryFromWZ()
     {
-        $story = self::$story_1;
+        $story = static::$records['record_story_1'];
 
         $route = sprintf("/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), $story->get_record_id());
         //story not yet Attched
@@ -188,7 +186,7 @@ class ControllerWorkZoneTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testDetachStoryFromWZNotFound()
     {
-        $story = self::$story_1;
+        $story = static::$records['record_story_1'];
 
         $route = sprintf("/WorkZone/detachStory/%s/%s/", $story->get_sbas_id(), 'unknow');
         //story not yet Attched

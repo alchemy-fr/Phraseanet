@@ -71,8 +71,6 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
     protected static $feed_4_public;
     protected static $feed_4_public_title = 'Feed 4 title';
     protected static $feed_4_public_subtitle = 'Feed 4 subtitle';
-    protected static $need_records = true;
-    protected static $need_subdefs = true;
     protected $client;
 
     public function setUp()
@@ -82,8 +80,8 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
         self::$feed = Feed_Adapter::create(appbox::get_instance(\bootstrap::getCore()), self::$user, 'title', 'subtitle');
         self::$publisher = Feed_Publisher_Adapter::getPublisher(appbox::get_instance(\bootstrap::getCore()), self::$feed, self::$user);
         self::$entry = Feed_Entry_Adapter::create(appbox::get_instance(\bootstrap::getCore()), self::$feed, self::$publisher, 'title_entry', 'subtitle', 'hello', "test@mail.com");
-        Feed_Entry_Item::create(appbox::get_instance(\bootstrap::getCore()), self::$entry, self::$record_1);
-        Feed_Entry_Item::create(appbox::get_instance(\bootstrap::getCore()), self::$entry, self::$record_2);
+        Feed_Entry_Item::create(appbox::get_instance(\bootstrap::getCore()), self::$entry, static::$records['record_1']);
+        Feed_Entry_Item::create(appbox::get_instance(\bootstrap::getCore()), self::$entry, static::$records['record_2']);
         self::$feed->set_public(true);
     }
 
@@ -127,47 +125,32 @@ class ControllerRssFeedTest extends \PhraseanetWebTestCaseAbstract
 
         for ($i = 1; $i != 15; $i ++ ) {
             $entry = Feed_Entry_Adapter::create($appbox, self::$feed_4_public, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_1);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_2);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_3);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_4);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_5);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_6);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_7);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_8);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_9);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_10);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_11);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_12);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_13);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_14);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_15);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_16);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_17);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_18);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_19);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_20);
+
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_6']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_7']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_8']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_9']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_10']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_13']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_15']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_16']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_19']);
+
             $entry = Feed_Entry_Adapter::create($appbox, self::$feed_1_private, $publisher, 'titre entry', 'soustitre entry', 'Jean-Marie Biggaro', 'author@example.com');
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_1);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_2);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_3);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_4);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_5);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_6);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_7);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_8);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_9);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_10);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_11);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_12);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_13);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_14);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_15);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_16);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_17);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_18);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_19);
-            $item = Feed_Entry_Item::create($appbox, $entry, self::$record_20);
+
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_6']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_7']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_8']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_9']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_10']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_1']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_13']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_15']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_16']);
+            $item = Feed_Entry_Item::create($appbox, $entry, static::$records['record_19']);
 
             self::$feed_4_entries[] = $entry;
         }

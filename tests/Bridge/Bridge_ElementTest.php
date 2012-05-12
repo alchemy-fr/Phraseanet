@@ -16,7 +16,6 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
     protected $id;
     protected $title;
     protected $status;
-    protected static $need_records = 1;
 
     public function setUp()
     {
@@ -36,7 +35,7 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->title = 'GOGACKO';
         $this->status = 'Processing';
 
-        $element = Bridge_Element::create($appbox, $this->account, self::$record_1, $this->title, $this->status, $this->account->get_api()->get_connector()->get_default_element_type());
+        $element = Bridge_Element::create($appbox, $this->account, static::$records['record_1'], $this->title, $this->status, $this->account->get_api()->get_connector()->get_default_element_type());
         $this->id = $element->get_id();
         $this->object = new Bridge_Element($appbox, $this->account, $this->id);
     }
@@ -73,8 +72,8 @@ class Bridge_ElementTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record()
     {
         $this->assertInstanceOf('record_adapter', $this->object->get_record());
-        $this->assertEquals(self::$record_1->get_sbas_id(), $this->object->get_record()->get_sbas_id());
-        $this->assertEquals(self::$record_1->get_record_id(), $this->object->get_record()->get_record_id());
+        $this->assertEquals(static::$records['record_1']->get_sbas_id(), $this->object->get_record()->get_sbas_id());
+        $this->assertEquals(static::$records['record_1']->get_record_id(), $this->object->get_record()->get_record_id());
     }
 
     public function testGet_dist_id()

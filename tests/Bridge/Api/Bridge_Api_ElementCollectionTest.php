@@ -8,10 +8,11 @@ class Bridge_Api_ElementCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testAdd_element()
     {
+        $elements = array();
         $collection = new Bridge_Api_ElementCollection();
         $i = 0;
         while ($i < 5) {
-            $element = $this->getMock("Bridge_Api_ElementInterface");
+            $elements[] = $element = $this->getMock("Bridge_Api_ElementInterface");
             $collection->add_element(new $element);
             $i ++;
         }

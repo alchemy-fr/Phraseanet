@@ -11,7 +11,6 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
     public static $account = null;
     public static $api = null;
     protected $client;
-    protected static $need_records = 1;
 
     public function setUp()
     {
@@ -389,7 +388,7 @@ class BridgeApplication extends PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertTrue($response->isOk());
 
         $records = array(
-            self::$record_1->get_serialize_key()
+            static::$records['record_1']->get_serialize_key()
         );
 
         Bridge_Api_Apitest::$hasError = true;

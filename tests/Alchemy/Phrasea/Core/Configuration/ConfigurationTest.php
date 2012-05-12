@@ -42,29 +42,32 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
      * @var \Alchemy\Phrasea\Core\Configuration
      */
     protected $object;
+    protected $stubNotInstalled;
+    protected $stubExperience;
+    protected $stubConfTest;
 
     public function setUp()
     {
         $this->markTestSkipped('To rewrite');
         parent::setUp();
 
-        $specNotInstalled = $this->getMock(
+        $this->stubNotInstalled = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
             , array('getConfigurationsFile')
         );
 
-        $specNotInstalled->expects($this->any())
+        $this->stubNotInstalled->expects($this->any())
             ->method('getConfigurationsFile')
             ->will(
                 $this->throwException(new Exception)
         );
 
-        $specExperience = $this->getMock(
+        $this->stubExperience = $this->getMock(
             '\Alchemy\Phrasea\Core\Configuration\Application'
             , array('getConfigurationsFile')
         );
 
-        $specExperience->expects($this->any())
+        $this->stubExperience->expects($this->any())
             ->method('getConfigurationsFile')
             ->will(
                 $this->returnValue(
@@ -72,12 +75,28 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
                 )
         );
 
-        $handler = new Configuration\Handler($specNotInstalled);
+        $handler = new Configuration\Handler($this->stubNotInstalled);
         $this->confNotInstalled = new PhraseaCore\Configuration($handler);
 
 
-        $handler = new Configuration\Handler($specExperience);
+        $handler = new Configuration\Handler($this->stubExperience);
         $this->object = new PhraseaCore\Configuration($handler);
+
+
+        touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+
+        $this->stubConfTest = $this->getMock(
+            '\Alchemy\Phrasea\Core\Configuration\Application'
+            , array('getConfigurationPathName')
+        );
+
+        $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
+
+        $this->stubConfTest->expects($this->any())
+            ->method('getConfigurationPathName')
+            ->will(
+                $this->returnValue($file->getPathname())
+        );
     }
 
     public function testGetEnvironment()
@@ -244,22 +263,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 
     public function testWrite()
     {
-        touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub = $this->getMock(
-            '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getConfigurationPathName')
-        );
-
-        $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub->expects($this->any())
-            ->method('getConfigurationPathName')
-            ->will(
-                $this->returnValue($file->getPathname())
-        );
-
-        $handler = new Configuration\Handler($stub);
+        $handler = new Configuration\Handler($this->stubConfTest);
 
         $configuration = new PhraseaCore\Configuration($handler);
 
@@ -282,22 +286,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 
     public function testWriteException()
     {
-        touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub = $this->getMock(
-            '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getConfigurationPathName')
-        );
-
-        $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub->expects($this->any())
-            ->method('getConfigurationPathName')
-            ->will(
-                $this->returnValue("unknow_path")
-        );
-
-        $handler = new Configuration\Handler($stub);
+        $handler = new Configuration\Handler($this->stubConfTest);
 
         $configuration = new PhraseaCore\Configuration($handler);
 
@@ -319,22 +308,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 
     public function testDelete()
     {
-        touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub = $this->getMock(
-            '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getConfigurationPathName')
-        );
-
-        $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub->expects($this->any())
-            ->method('getConfigurationPathName')
-            ->will(
-                $this->returnValue($file->getPathname())
-        );
-
-        $handler = new Configuration\Handler($stub);
+        $handler = new Configuration\Handler($this->stubConfTest);
 
         $configuration = new PhraseaCore\Configuration($handler);
 
@@ -345,22 +319,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
 
     public function testDeleteException()
     {
-        touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub = $this->getMock(
-            '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getConfigurationPathName')
-        );
-
-        $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub->expects($this->any())
-            ->method('getConfigurationPathName')
-            ->will(
-                $this->returnValue("unknow_path")
-        );
-
-        $handler = new Configuration\Handler($stub);
+        $handler = new Configuration\Handler($this->stubConfTest);
 
         $configuration = new PhraseaCore\Configuration($handler);
 
@@ -412,22 +371,7 @@ class ConfigurationTest extends \PhraseanetPHPUnitAbstract
         $this->assertFalse($this->confNotInstalled->isInstalled());
         $this->assertInstanceOf("\Symfony\Component\DependencyInjection\ParameterBag\ParameterBag", $this->confNotInstalled->getConfiguration());
 
-        touch(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub = $this->getMock(
-            '\Alchemy\Phrasea\Core\Configuration\Application'
-            , array('getConfigurationPathName')
-        );
-
-        $file = new \SplFileObject(__DIR__ . "/confTestFiles/yamlWriteTest.yml");
-
-        $stub->expects($this->any())
-            ->method('getConfigurationPathName')
-            ->will(
-                $this->returnValue($file->getPathname())
-        );
-
-        $handler = new Configuration\Handler($stub);
+        $handler = new Configuration\Handler($this->stubConfTest);
 
         $configuration = new PhraseaCore\Configuration($handler);
 

@@ -12,13 +12,6 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
 
-    /**
-     *
-     * @var \record_adapter
-     */
-    protected static $need_story = true;
-    protected static $need_records = 2;
-
     public function setUp()
     {
         parent::setUp();
@@ -105,7 +98,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testByIds()
     {
-        $story = self::$story_1;
+        $story = static::$records['record_story_1'];
 
         $route = sprintf("/story/%d/%d/", $story->get_sbas_id(), $story->get_record_id());
 
@@ -118,13 +111,13 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function testAddElementsToStory()
     {
-        $story = self::$story_1;
+        $story = static::$records['record_story_1'];
 
         $route = sprintf("/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
         $records = array(
-            self::$record_1->get_serialize_key(),
-            self::$record_2->get_serialize_key()
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key()
         );
 
         $lst = implode(';', $records);
@@ -135,18 +128,18 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(302, $response->getStatusCode());
 
-        $this->assertEquals(2, self::$story_1->get_children()->get_count());
+        $this->assertEquals(2, static::$records['record_story_1']->get_children()->get_count());
     }
 
     public function testAddElementsToStoryJSON()
     {
-        $story = self::$story_1;
+        $story = static::$records['record_story_1'];
 
         $route = sprintf("/story/%s/%s/addElements/", $story->get_sbas_id(), $story->get_record_id());
 
         $records = array(
-            self::$record_1->get_serialize_key(),
-            self::$record_2->get_serialize_key()
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key()
         );
 
         $lst = implode(';', $records);
@@ -159,16 +152,16 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals(2, self::$story_1->get_children()->get_count());
+        $this->assertEquals(2, static::$records['record_story_1']->get_children()->get_count());
     }
 
     public function testRemoveElementFromStory()
     {
-        $story = self::$story_1;
+        $story = static::$records['record_story_1'];
 
         $records = array(
-            self::$record_1,
-            self::$record_2
+            static::$records['record_1'],
+            static::$records['record_2']
         );
 
         $totalRecords = count($records);
@@ -200,7 +193,7 @@ class ControllerStoryTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
             }
             $n ++;
 
-            $this->assertEquals($totalRecords - $n, self::$story_1->get_children()->get_count());
+            $this->assertEquals($totalRecords - $n, static::$records['record_story_1']->get_children()->get_count());
         }
     }
 }

@@ -43,8 +43,6 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
      */
     protected static $adminApplication;
     protected static $databoxe_ids = array();
-    protected static $need_records = 1;
-    protected static $need_subdefs = true;
 
     /**
      *
@@ -360,7 +358,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
         $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
@@ -628,7 +626,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/caption/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/caption/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -651,7 +649,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/metadatas/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/metadatas/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -674,7 +672,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/status/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/status/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -683,7 +681,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaYaml200($content);
 
-        $this->evaluateRecordsStatusResponse(self::$record_1, $content);
+        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
 
         $route = '/records/24892534/51654651553/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
@@ -696,9 +694,9 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsEmbedRoute()
     {
         $this->setToken(self::$token);
-        $keys = array_keys(self::$record_1->get_subdefs());
+        $keys = array_keys(static::$records['record_1']->get_subdefs());
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -710,7 +708,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         foreach ($content["response"] as $embed) {
             foreach ($keys as $key) {
                 $this->assertArrayHasKey($key, $embed);
-                $this->checkEmbed($key, $embed[$key], self::$record_1);
+                $this->checkEmbed($key, $embed[$key], static::$records['record_1']);
             }
         }
         $route = '/records/24892534/51654651553/embed/';
@@ -724,7 +722,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsEmbedRouteMime()
     {
         $this->setToken(self::$token);
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, array('mimes' => array('image/jpg', 'image/jpeg')), array(), array("HTTP_ACCEPT" => "application/yaml"));
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
@@ -732,7 +730,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         foreach ($content["response"] as $embed) {
             foreach (array('thumbnail', 'preview') as $key) {
                 $this->assertArrayHasKey($key, $embed);
-                $this->checkEmbed($key, $embed[$key], self::$record_1);
+                $this->checkEmbed($key, $embed[$key], static::$records['record_1']);
             }
         }
     }
@@ -740,7 +738,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsEmbedRouteDevices()
     {
         $this->setToken(self::$token);
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, array('devices' => array('nodevice')), array(), array("HTTP_ACCEPT" => "application/yaml"));
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
@@ -840,7 +838,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/related/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/related/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route, array(), array(), array("HTTP_ACCEPT" => "application/yaml"));
@@ -865,8 +863,10 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/setmetadatas/';
-        $caption = self::$record_1->get_caption();
+        $record = record_adapter::create(self::$collection, __DIR__ . '/../../../testfiles/test001.CR2');
+
+        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
+        $caption = $record->get_caption();
 
         $old_datas = array();
         $toupdate = array();
@@ -878,19 +878,19 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             foreach ($field->get_values() as $value) {
                 $old_datas[$value->getId()] = $value->getValue();
                 if ($field->is_readonly() === false && $field->is_multi() === false) {
-                    $toupdate[$value->getId()] = array(
+                    $toupdate[$field->get_meta_struct_id()] = array(
                         'meta_struct_id' => $field->get_meta_struct_id(),
                         'meta_id'        => $value->getId(),
-                        'value'          => array($value->getValue() . ' test')
+                        'value'          => $value->getValue() . ' test'
                     );
                 }
             }
         }
 
 
-        foreach (self::$record_1->get_databox()->get_meta_structure()->get_elements() as $field) {
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
             try {
-                $values = self::$record_1->get_caption()->get_field($field->get_name())->get_values();
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
                 $value = array_pop($values);
                 $meta_id = $value->getId();
             } catch (\Exception $e) {
@@ -912,7 +912,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaYaml200($content);
 
-        $caption = self::$record_1->get_caption();
+        $caption = $record->get_caption();
 
         $this->assertEquals(count($caption->get_fields()), count($content["response"]["metadatas"]));
 
@@ -932,16 +932,18 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
             $saved_value = $toupdate[$metadata["meta_structure_id"]]['value'];
             $this->assertEquals($saved_value, $metadata["value"], "Asserting that " . $this->client->getResponse()->getContent() . " contains values");
         }
+
+        $record->delete();
     }
 
     public function testRecordsSetStatus()
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/setstatus/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/setstatus/';
 
-        $record_status = strrev(self::$record_1->get_status());
-        $status_bits = self::$record_1->get_databox()->get_statusbits();
+        $record_status = strrev(static::$records['record_1']->get_status());
+        $status_bits = static::$records['record_1']->get_databox()->get_statusbits();
 
         $tochange = array();
         foreach ($status_bits as $n => $datas) {
@@ -956,9 +958,14 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaYaml200($content);
 
-        $this->evaluateRecordsStatusResponse(self::$record_1, $content);
+        /**
+         * Get fresh record_1
+         */
+        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
 
-        $record_status = strrev(self::$record_1->get_status());
+        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
+
+        $record_status = strrev(static::$records['record_1']->get_status());
         foreach ($status_bits as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
         }
@@ -974,23 +981,30 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaYaml200($content);
 
-        $this->evaluateRecordsStatusResponse(self::$record_1, $content);
+        /**
+         * Get fresh record_1
+         */
+        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
 
-        $record_status = strrev(self::$record_1->get_status());
+        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
+
+        $record_status = strrev(static::$records['record_1']->get_status());
         foreach ($status_bits as $n => $datas) {
             $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
         }
     }
 
-    public function testMoveRecordToColleciton()
+    public function testMoveRecordToCollection()
     {
+        $record = record_adapter::create(self::$collection, __DIR__ . '/../../../testfiles/test001.CR2');
+
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/setcollection/';
+        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setcollection/';
 
         $base_id = false;
-        foreach (self::$record_1->get_databox()->get_collections() as $collection) {
-            if ($collection->get_base_id() != self::$record_1->get_base_id()) {
+        foreach ($record->get_databox()->get_collections() as $collection) {
+            if ($collection->get_base_id() != $record->get_base_id()) {
                 $base_id = $collection->get_base_id();
                 break;
             }
@@ -1007,6 +1021,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaYaml200($content);
+
+        $record->delete();
     }
 
     public function testSearchBaskets()
@@ -1400,12 +1416,12 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         foreach ($content["response"] as $field) {
             $this->assertTrue(is_array($field), 'Un bloc field est un objet');
-            $this->assertArrayHasKey('meta_structure_id', $meta);
+            $this->assertArrayHasKey('meta_structure_id', $field);
             $this->assertTrue(is_int($field["meta_structure_id"]));
             $this->assertArrayHasKey('name', $field);
-            $this->assertTrue(is_string($meta["name"]));
+            $this->assertTrue(is_string($field["name"]));
             $this->assertArrayHasKey('value', $field);
-            $this->assertTrue(is_string($meta["value"]));
+            $this->assertTrue(is_string($field["value"]));
         }
     }
 

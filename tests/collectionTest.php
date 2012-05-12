@@ -81,7 +81,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testEmpty_collection()
     {
-        $record = record_adapter::create(self::$object, new system_file(__DIR__ . '/testfiles/cestlafete.jpg'));
+        $record = record_adapter::create(self::$object, __DIR__ . '/testfiles/cestlafete.jpg');
         $this->assertTrue(self::$object->get_record_amount() > 0);
         self::$object->empty_collection();
         $this->assertTrue(self::$object->get_record_amount() === 0);
@@ -128,7 +128,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_record_amount()
     {
         self::$object->empty_collection();
-        $record = record_adapter::create(self::$object, new system_file(__DIR__ . '/testfiles/cestlafete.jpg'));
+        $record = record_adapter::create(self::$object, __DIR__ . '/testfiles/cestlafete.jpg');
         $this->assertTrue(self::$object->get_record_amount() === 1);
         self::$object->empty_collection();
         $this->assertTrue(self::$object->get_record_amount() === 0);
@@ -136,7 +136,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_record_details()
     {
-        $record = record_adapter::create(self::$object, new system_file(__DIR__ . '/testfiles/cestlafete.jpg'));
+        $record = record_adapter::create(self::$object, __DIR__ . '/testfiles/cestlafete.jpg');
         $details = self::$object->get_record_details();
 
         $this->assertTrue(is_array($details));

@@ -172,7 +172,7 @@ class reportTest extends PhraseanetPHPUnitAbstract
             $report->expects($this->any())->method('buildReq')->will($this->returnValue(''));
             $report->expects($this->any())->method('buildResult')->will($this->returnValue(array()));
             $result = $report->buildReport(false, 'user');
-//      $this->assertInternalType(PHPUnit_Framework_Constraint_IsType::TYPE_ARRAY, $report->getChamps());
+
         }
     }
 }

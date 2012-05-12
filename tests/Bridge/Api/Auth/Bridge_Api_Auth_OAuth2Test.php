@@ -10,6 +10,7 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
      */
     protected $object;
     protected $parameters;
+    protected $mockSettings;
 
     public function setUp()
     {
@@ -24,6 +25,8 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
             , 'token_endpoint' => "one_token_endpoint"
             , 'auth_endpoint'  => "one_auth_endpoint"
         );
+
+        $this->mockSettings = $this->getMock("Bridge_AccountSettings", array("get", "set"), array(), "", false);
     }
 
     public function testParse_request_token()
@@ -46,14 +49,12 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
 
     public function testReconnect()
     {
-        $setting = $this->getMock("Bridge_AccountSettings", array("get"), array(), "", false);
-
-        $setting->expects($this->once())
+        $this->mockSettings->expects($this->once())
             ->method("get")
             ->with($this->equalTo("refresh_token"))
             ->will($this->returnValue("123"));
 
-        $this->object->set_settings($setting);
+        $this->object->set_settings($this->mockSettings);
 
         $this->setExpectedException("Bridge_Exception_ApiConnectorAccessTokenFailed");
 
@@ -62,13 +63,11 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
 
     public function testDisconnect()
     {
-        $setting = $this->getMock("Bridge_AccountSettings", array("set"), array(), "", false);
-
-        $setting->expects($this->once())
+        $this->mockSettings->expects($this->once())
             ->method("set")
             ->with($this->equalTo("auth_token"), $this->isNull());
 
-        $this->object->set_settings($setting);
+        $this->object->set_settings($this->mockSettings);
 
         $return = $this->object->disconnect();
 
@@ -77,14 +76,12 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
 
     public function testIs_connected()
     {
-        $setting = $this->getMock("Bridge_AccountSettings", array("get"), array(), "", false);
-
-        $setting->expects($this->any())
+        $this->mockSettings->expects($this->any())
             ->method("get")
             ->with($this->equalTo("auth_token"))
             ->will($this->onConsecutiveCalls("123456", 123456, null));
 
-        $this->object->set_settings($setting);
+        $this->object->set_settings($this->mockSettings);
 
         $this->assertTrue($this->object->is_connected());
         $this->assertTrue($this->object->is_connected());
@@ -93,14 +90,12 @@ class Bridge_Api_Auth_OAuth2Test extends PHPUnit_Framework_TestCase
 
     public function testGet_auth_signatures()
     {
-        $setting = $this->getMock("Bridge_AccountSettings", array("get"), array(), "", false);
-
-        $setting->expects($this->once())
+        $this->mockSettings->expects($this->once())
             ->method("get")
             ->with($this->equalTo("auth_token"))
             ->will($this->returnValue("123"));
 
-        $this->object->set_settings($setting);
+        $this->object->set_settings($this->mockSettings);
 
         $return = $this->object->get_auth_signatures();
 

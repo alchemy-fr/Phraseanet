@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.
 class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     protected $client;
-    protected static $need_records = 2;
 
     public function createApplication()
     {
@@ -50,8 +49,8 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = '/push/send/';
 
         $records = array(
-            self::$record_1->get_serialize_key()
-            , self::$record_2->get_serialize_key()
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key(),
         );
 
         $receivers = array(
@@ -84,8 +83,8 @@ class ControllerPushTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $route = '/push/validate/';
 
         $records = array(
-            self::$record_1->get_serialize_key()
-            , self::$record_2->get_serialize_key()
+            static::$records['record_1']->get_serialize_key(),
+            static::$records['record_2']->get_serialize_key(),
         );
 
         $participants = array(

@@ -43,8 +43,6 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
      */
     protected static $adminApplication;
     protected static $databoxe_ids = array();
-    protected static $need_records = 1;
-    protected static $need_subdefs = true;
 
     public function setUp()
     {
@@ -357,26 +355,18 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
      */
     public function testDataboxRecordRoute()
     {
-        foreach (static::$databoxe_ids as $databox_id) {
-            $this->setToken(self::$token);
-            $databox = databox::get_instance($databox_id);
+        $this->setToken(self::$token);
 
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $record = record_adapter::create($collection, $system_file);
-            $record_id = $record->get_record_id();
-            $route = '/records/' . $databox_id . '/' . $record_id . '/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-            $this->client->request('GET', $route);
-            $content = json_decode($this->client->getResponse()->getContent());
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
+        $this->evaluateGoodRecord($content->response->record);
 
-            $this->evaluateGoodRecord($content->response->record);
-            $record->delete();
-        }
         $route = '/records/1234567890/1/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -629,28 +619,18 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsCaptionRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
 
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/caption/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record = record_adapter::create($collection, $system_file);
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $record_id = $record->get_record_id();
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/caption/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateRecordsCaptionResponse($content);
 
-            $crawler = $this->client->request('GET', $route);
-            $content = json_decode($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
-
-            $this->evaluateRecordsCaptionResponse($content);
-            $record->delete();
-        }
         $route = '/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -662,28 +642,18 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsMetadatasRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
 
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/metadatas/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record = record_adapter::create($collection, $system_file);
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $record_id = $record->get_record_id();
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/metadatas/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateRecordsMetadataResponse($content);
 
-            $this->client->request('GET', $route);
-            $content = json_decode($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
-
-            $this->evaluateRecordsMetadataResponse($content);
-            $record->delete();
-        }
         $route = '/records/24892534/51654651553/metadatas/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -695,27 +665,18 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsStatusRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            $record = record_adapter::create($collection, $system_file);
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/status/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record_id = $record->get_record_id();
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/status/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $crawler = $this->client->request('GET', $route);
-            $content = json_decode($this->client->getResponse()->getContent());
+        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
 
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
-
-            $this->evaluateRecordsStatusResponse($record, $content);
-            $record->delete();
-        }
         $route = '/records/24892534/51654651553/status/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -728,9 +689,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $keys = array_keys(self::$record_1->get_subdefs());
+        $keys = array_keys(static::$records['record_1']->get_subdefs());
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
         $this->client->request('GET', $route);
@@ -742,7 +703,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         foreach ($content->response as $embed) {
             foreach ($keys as $key) {
                 $this->assertObjectHasAttribute($key, $embed);
-                $this->checkEmbed($key, $embed->$key, self::$record_1);
+                $this->checkEmbed($key, $embed->$key, static::$records['record_1']);
             }
         }
         $route = '/records/24892534/51654651553/embed/';
@@ -757,7 +718,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, array('mimes' => array('image/jpg', 'image/jpeg')));
         $content = json_decode($this->client->getResponse()->getContent());
@@ -765,7 +726,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         foreach ($content->response as $embed) {
             foreach (array('thumbnail', 'preview') as $key) {
                 $this->assertObjectHasAttribute($key, $embed);
-                $this->checkEmbed($key, $embed->$key, self::$record_1);
+                $this->checkEmbed($key, $embed->$key, static::$records['record_1']);
             }
         }
     }
@@ -774,7 +735,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $route = '/records/' . self::$record_1->get_sbas_id() . '/' . self::$record_1->get_record_id() . '/embed/';
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/embed/';
 
         $this->client->request('GET', $route, array('devices' => array('nodevice')));
         $content = json_decode($this->client->getResponse()->getContent());
@@ -872,29 +833,20 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsRelatedRoute()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            $record = record_adapter::create($collection, $system_file);
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/related/';
+        $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
 
-            $record_id = $record->get_record_id();
+        $this->client->request('GET', $route);
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/related/';
-            $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
-
-            $crawler = $this->client->request('GET', $route);
-            $content = json_decode($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
-            $this->assertObjectHasAttribute("baskets", $content->response);
-            foreach ($content->response->baskets as $basket) {
-                $this->evaluateGoodBasket($basket);
-            }
-            $record->delete();
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+        $this->assertObjectHasAttribute("baskets", $content->response);
+        foreach ($content->response->baskets as $basket) {
+            $this->evaluateGoodBasket($basket);
         }
+
         $route = '/records/24892534/51654651553/related/';
         $this->evaluateNotFoundRoute($route, array('GET'));
         $this->evaluateMethodNotAllowedRoute($route, array('POST', 'PUT', 'DELETE'));
@@ -906,169 +858,146 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     public function testRecordsSetMetadatas()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            $record = record_adapter::create($collection, $system_file);
+        $record = record_adapter::create(self::$collection, __DIR__ . '/../../../testfiles/test001.CR2');
 
-            $record_id = $record->get_record_id();
+        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
+        $caption = $record->get_caption();
 
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setmetadatas/';
-            $caption = $record->get_caption();
+        $toupdate = array();
 
-            $toupdate = array();
-
-            foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
-                try {
-                    $values = $record->get_caption()->get_field($field->get_name())->get_values();
-                    $value = array_pop($values);
-                    $meta_id = $value->getId();
-                } catch (\Exception $e) {
-                    $meta_id = null;
-                }
-
-                $toupdate[$field->get_id()] = array(
-                    'meta_id'        => $meta_id
-                    , 'meta_struct_id' => $field->get_id()
-                    , 'value'          => 'podom pom pom ' . $field->get_id()
-                );
+        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $field) {
+            try {
+                $values = $record->get_caption()->get_field($field->get_name())->get_values();
+                $value = array_pop($values);
+                $meta_id = $value->getId();
+            } catch (\Exception $e) {
+                $meta_id = null;
             }
 
-            $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+            $toupdate[$field->get_id()] = array(
+                'meta_id'        => $meta_id
+                , 'meta_struct_id' => $field->get_id()
+                , 'value'          => 'podom pom pom ' . $field->get_id()
+            );
+        }
 
-            $this->client->request('POST', $route, array('metadatas' => $toupdate));
-            $content = json_decode($this->client->getResponse()->getContent());
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
+        $this->client->request('POST', $route, array('metadatas' => $toupdate));
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $record = $databox->get_record($record_id);
-            $caption = $record->get_caption();
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $this->assertEquals(count($caption->get_fields()), count(get_object_vars($content->response->metadatas)), 'Retrived metadatas are the same');
+        $caption = $record->get_caption();
 
-            foreach ($caption->get_fields() as $field) {
-                foreach ($field->get_values() as $value) {
-                    if ($field->is_readonly() === false && $field->is_multi() === false) {
-                        $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
-                        $this->assertEquals($value->getValue(), $saved_value);
-                    }
+        $this->assertEquals(count($caption->get_fields()), count(get_object_vars($content->response->metadatas)), 'Retrived metadatas are the same');
+
+        foreach ($caption->get_fields() as $field) {
+            foreach ($field->get_values() as $value) {
+                if ($field->is_readonly() === false && $field->is_multi() === false) {
+                    $saved_value = $toupdate[$field->get_meta_struct_id()]['value'];
+                    $this->assertEquals($value->getValue(), $saved_value);
                 }
             }
-            $this->evaluateRecordsMetadataResponse($content);
+        }
+        $this->evaluateRecordsMetadataResponse($content);
 
-            foreach ($content->response->metadatas as $metadata) {
-                if ( ! in_array($metadata->meta_id, array_keys($toupdate)))
-                    continue;
-                $saved_value = $toupdate[$metadata->meta_structure_id]['value'];
-                $this->assertEquals($saved_value, $metadata->value);
-            }
-            $record->delete();
+        foreach ($content->response->metadatas as $metadata) {
+            if ( ! in_array($metadata->meta_id, array_keys($toupdate)))
+                continue;
+            $saved_value = $toupdate[$metadata->meta_structure_id]['value'];
+            $this->assertEquals($saved_value, $metadata->value);
         }
     }
 
     public function testRecordsSetStatus()
     {
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            if ( ! $collection instanceof \collection)
-                $this->fail('unable to find a collection');
+        $route = '/records/' . static::$records['record_1']->get_sbas_id() . '/' . static::$records['record_1']->get_record_id() . '/setstatus/';
 
-            $record = record_adapter::create($collection, $system_file);
+        $record_status = strrev(static::$records['record_1']->get_status());
+        $status_bits = static::$records['record_1']->get_databox()->get_statusbits();
 
-            $record_id = $record->get_record_id();
-
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setstatus/';
-
-            $record_status = strrev($record->get_status());
-            $status_bits = $databox->get_statusbits();
-
-            $tochange = array();
-            foreach ($status_bits as $n => $datas) {
-                $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
-            }
-            $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+        $tochange = array();
+        foreach ($status_bits as $n => $datas) {
+            $tochange[$n] = substr($record_status, ($n - 1), 1) == '0' ? '1' : '0';
+        }
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
 
 
-            $crawler = $this->client->request('POST', $route, array('status' => $tochange));
-            $content = json_decode($this->client->getResponse()->getContent());
+        $crawler = $this->client->request('POST', $route, array('status' => $tochange));
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
+        /**
+         * Get fresh record_1
+         */
+        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
 
-            $record = $databox->get_record($record_id);
-            $this->evaluateRecordsStatusResponse($record, $content);
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $record_status = strrev($record->get_status());
-            foreach ($status_bits as $n => $datas) {
-                $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
-            }
+        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
 
-            foreach ($tochange as $n => $value) {
-                $tochange[$n] = $value == '0' ? '1' : '0';
-            }
+        $record_status = strrev(static::$records['record_1']->get_status());
+        foreach ($status_bits as $n => $datas) {
+            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
+        }
+
+        foreach ($tochange as $n => $value) {
+            $tochange[$n] = $value == '0' ? '1' : '0';
+        }
 
 
-            $crawler = $this->client->request('POST', $route, array('status' => $tochange));
-            $content = json_decode($this->client->getResponse()->getContent());
+        $crawler = $this->client->request('POST', $route, array('status' => $tochange));
+        $content = json_decode($this->client->getResponse()->getContent());
 
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
+        /**
+         * Get fresh record_1
+         */
+        static::$records['record_1'] = static::$records['record_1']->get_databox()->get_record(static::$records['record_1']->get_record_id());
 
-            $record = $databox->get_record($record_id);
-            $this->evaluateRecordsStatusResponse($record, $content);
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
 
-            $record_status = strrev($record->get_status());
-            foreach ($status_bits as $n => $datas) {
-                $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
-            }
-            $record->delete();
+        $this->evaluateRecordsStatusResponse(static::$records['record_1'], $content);
+
+        $record_status = strrev(static::$records['record_1']->get_status());
+        foreach ($status_bits as $n => $datas) {
+            $this->assertEquals(substr($record_status, ($n - 1), 1), $tochange[$n]);
         }
     }
 
-    public function testMoveRecordToColleciton()
+    public function testMoveRecordToCollection()
     {
+        $record = record_adapter::create(self::$collection, __DIR__ . '/../../../testfiles/test001.CR2');
+
         $this->setToken(self::$token);
-        foreach (static::$databoxe_ids as $databox_id) {
-            $databox = databox::get_instance($databox_id);
-            $collection = array_shift($databox->get_collections());
-            $system_file = new system_file(__DIR__ . '/../../../testfiles/cestlafete.jpg');
 
-            if ( ! $collection instanceof \collection)
-                $this->fail('unable to find a collection');
+        $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setcollection/';
 
-            $record = record_adapter::create($collection, $system_file);
-
-            $record_id = $record->get_record_id();
-
-            $route = '/records/' . $databox_id . '/' . $record_id . '/setcollection/';
-
-            $base_id = false;
-            foreach ($databox->get_collections() as $collection) {
-                if ($collection->get_base_id() != $record->get_base_id()) {
-                    $base_id = $collection->get_base_id();
-                    break;
-                }
+        $base_id = false;
+        foreach ($record->get_databox()->get_collections() as $collection) {
+            if ($collection->get_base_id() != $record->get_base_id()) {
+                $base_id = $collection->get_base_id();
+                break;
             }
-            if ( ! $base_id) {
-                continue;
-            }
-
-            $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
-
-            $this->client->request('POST', $route, array('base_id' => $base_id));
-            $content = json_decode($this->client->getResponse()->getContent());
-
-            $this->evaluateResponse200($this->client->getResponse());
-            $this->evaluateMetaJson200($content);
-            $record->delete();
         }
+        if ( ! $base_id) {
+            continue;
+        }
+
+        $this->evaluateMethodNotAllowedRoute($route, array('GET', 'PUT', 'DELETE'));
+
+        $this->client->request('POST', $route, array('base_id' => $base_id));
+        $content = json_decode($this->client->getResponse()->getContent());
+
+        $this->evaluateResponse200($this->client->getResponse());
+        $this->evaluateMetaJson200($content);
+
+        $record->delete();
     }
 
     public function testSearchBaskets()
@@ -1477,7 +1406,6 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     protected function evaluateRecordsStatusResponse(record_adapter $record, $content)
     {
         $status = $record->get_databox()->get_statusbits();
-
 
         $r_status = strrev($record->get_status());
         $this->assertObjectHasAttribute('status', $content->response);
