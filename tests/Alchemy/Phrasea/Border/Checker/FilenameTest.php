@@ -6,13 +6,14 @@ require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 use Alchemy\Phrasea\Border\File;
 
-class FilenameTest extends \PhraseanetPHPUnitAbstract
+class FilenameTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Filename
      */
     protected $object;
     protected $filename;
+    protected $media;
 
     public function setUp()
     {
@@ -20,10 +21,12 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
         $this->object = new Filename;
         $this->filename = __DIR__ . '/../../../../../tmp/test001.CR2';
         copy(__DIR__ . '/../../../../testfiles/test001.CR2', $this->filename);
+        $this->media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
     }
 
     public function tearDown()
     {
+        $this->media = null;
         if (file_exists($this->filename)) {
             unlink($this->filename);
         }
@@ -35,7 +38,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
-        $response = $this->object->check(self::$core['EM'], new File($this->filename, self::$collection));
+        $response = $this->object->check(self::$core['EM'], new File($this->media, self::$collection));
 
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
@@ -47,7 +50,7 @@ class FilenameTest extends \PhraseanetPHPUnitAbstract
      */
     public function testCheckNoFile()
     {
-        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getOriginalName'), array($this->filename, self::$collection));
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getOriginalName'), array($this->media, self::$collection));
 
         $mock
             ->expects($this->once())

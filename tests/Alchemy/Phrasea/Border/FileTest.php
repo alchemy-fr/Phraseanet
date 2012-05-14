@@ -11,6 +11,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     protected $object;
     protected $filename;
+    protected $media;
 
     /**
      * @covers Alchemy\Phrasea\Border\File::__construct
@@ -20,7 +21,10 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         parent::setUp();
         $this->filename = __DIR__ . '/../../../../tmp/iphone_pic.jpg';
         copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $this->filename);
-        $this->object = new File($this->filename, self::$collection, 'originalName.txt');
+
+        $this->media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
+
+        $this->object = new File($this->media, self::$collection, 'originalName.txt');
     }
 
     /**
@@ -58,7 +62,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         copy(__DIR__ . '/../../../testfiles/p4logo.jpg', $file);
 
-        $borderFile = new File($file, self::$collection);
+        $borderFile = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($file)), self::$collection);
         $uuid = $borderFile->getUUID();
 
         $this->assertTrue(\uuid::is_valid($uuid));
@@ -122,7 +126,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testOriginalNameAuto()
     {
-        $object = new File($this->filename, self::$collection);
+        $object = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename)), self::$collection);
         $this->assertSame('iphone_pic.jpg', $object->getOriginalName());
     }
 

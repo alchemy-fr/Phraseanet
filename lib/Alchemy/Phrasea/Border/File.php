@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
+use MediaVorus\Media\Media;
 use MediaVorus\MediaVorus;
 use PHPExiftool\Reader;
 use PHPExiftool\Writer;
@@ -44,18 +45,18 @@ class File
     /**
      * Constructor
      *
-     * @param type          $pathfile       The path to the file
+     * @param Media         $media          The media
      * @param \collection   $collection     The destination collection
-     * @param type          $originalName   The original name of the file
+     * @param string        $originalName   The original name of the file
      *                                      (if not provided, original name is
      *                                      extracted from the pathfile)
      */
-    public function __construct($pathfile, \collection $collection, $originalName = null)
+    public function __construct(Media $media, \collection $collection, $originalName = null)
     {
-        $this->media = MediaVorus::guess(new \SplFileInfo($pathfile));
+        $this->media = $media;
         $this->collection = $collection;
         $this->attributes = array();
-        $this->originalName = $originalName ? : pathinfo($pathfile, PATHINFO_BASENAME);
+        $this->originalName = $originalName ? : pathinfo($this->getPathfile(), PATHINFO_BASENAME);
 
         $this->ensureUUID();
     }
@@ -226,5 +227,27 @@ class File
         $writer = $reader = $metadatas = null;
 
         return $this;
+    }
+
+    /**
+     * Build the File package object
+     *
+     * @param string        $pathfile       The path to the file
+     * @param \collection   $collection     The destination collection
+     * @param string        $originalName   An optionnal original name (if
+     *                                      different from the $pathfile filename)
+     * @throws \RuntimeException
+     *
+     * @return \Alchemy\Phrasea\Border\File
+     */
+    public function buildFromPathfile($pathfile, \collection $collection, $originalName = null)
+    {
+        try {
+            $media = MediaVorus::guess(new \SplFileInfo($pathfile));
+        } catch (\MediaVorus\Exception\FileNotFoundException $e) {
+            throw new \RuntimeException(sprintf('Unable to build media file from non existant %s', $pathfile));
+        }
+
+        return new File($media, $collection, $originalName);
     }
 }
