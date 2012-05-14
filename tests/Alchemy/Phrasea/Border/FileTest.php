@@ -11,6 +11,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     protected $object;
     protected $filename;
+    protected $media;
 
     /**
      * @covers Alchemy\Phrasea\Border\File::__construct
@@ -20,7 +21,10 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         parent::setUp();
         $this->filename = __DIR__ . '/../../../../tmp/iphone_pic.jpg';
         copy(__DIR__ . '/../../../testfiles/iphone_pic.jpg', $this->filename);
-        $this->object = new File($this->filename, self::$collection, 'originalName.txt');
+
+        $this->media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
+
+        $this->object = new File($this->media, self::$collection, 'originalName.txt');
     }
 
     /**
@@ -37,7 +41,6 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
     /**
      * @covers Alchemy\Phrasea\Border\File::getUUID
-     * @covers Alchemy\Phrasea\Border\File::ensureUUID
      */
     public function testGetUuid()
     {
@@ -46,7 +49,6 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
     /**
      * @covers Alchemy\Phrasea\Border\File::getUUID
-     * @covers Alchemy\Phrasea\Border\File::ensureUUID
      */
     public function testNewUuid()
     {
@@ -58,10 +60,24 @@ class FileTest extends \PhraseanetPHPUnitAbstract
 
         copy(__DIR__ . '/../../../testfiles/p4logo.jpg', $file);
 
-        $borderFile = new File($file, self::$collection);
+        $borderFile = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($file)), self::$collection);
+        $uuid = $borderFile->getUUID(true, false);
+
+        $this->assertTrue(\uuid::is_valid($uuid));
+        $this->assertEquals($uuid, $borderFile->getUUID());
+
+        $borderFile = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($file)), self::$collection);
+        $newuuid = $borderFile->getUUID(true, true);
+
+        $this->assertTrue(\uuid::is_valid($newuuid));
+        $this->assertNotEquals($uuid, $newuuid);
+        $this->assertEquals($newuuid, $borderFile->getUUID());
+
+        $borderFile = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($file)), self::$collection);
         $uuid = $borderFile->getUUID();
 
         $this->assertTrue(\uuid::is_valid($uuid));
+        $this->assertEquals($uuid, $newuuid);
         $this->assertEquals($uuid, $borderFile->getUUID());
 
         if (file_exists($file)) {
@@ -74,7 +90,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetSha256()
     {
-        $this->assertEquals('5f2574831efb9783f38d2f4787b50e6578c78c08c80c5fea2f05ed62103eec69', $this->object->getSha256());
+        $this->assertEquals('b0c1bf5bbeb1f019bb334e9d40ec5f3f9edc483fac6f1f953933e0706db81e48', $this->object->getSha256());
     }
 
     /**
@@ -82,15 +98,15 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetMD5()
     {
-        $this->assertEquals('c616d7f28803fdc54a336b06e6ffe6d1', $this->object->getMD5());
+        $this->assertEquals('8b11238c2bda977e8983625ba71acd92', $this->object->getMD5());
     }
 
     /**
-     * @covers Alchemy\Phrasea\Border\File::getPathfile
+     * @covers Alchemy\Phrasea\Border\File::getFile
      */
-    public function testGetPathfile()
+    public function testGetFile()
     {
-        $this->assertEquals(realpath(__DIR__ . '/../../../../tmp/iphone_pic.jpg'), $this->object->getPathfile());
+        $this->assertEquals(realpath(__DIR__ . '/../../../../tmp/iphone_pic.jpg'), $this->object->getFile()->getRealPath());
     }
 
     /**
@@ -122,7 +138,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testOriginalNameAuto()
     {
-        $object = new File($this->filename, self::$collection);
+        $object = new File(\MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename)), self::$collection);
         $this->assertSame('iphone_pic.jpg', $object->getOriginalName());
     }
 
@@ -157,4 +173,36 @@ class FileTest extends \PhraseanetPHPUnitAbstract
         $this->object->addAttribute($attribute2);
         $this->assertSame(array($attribute1, $attribute2), $this->object->getAttributes());
     }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\File::buildFromPathfile
+     */
+    public function testBuildFromPathfile()
+    {
+        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
+        $file1 = new File($media, self::$collection);
+
+        $file2 = File::buildFromPathfile($this->filename, self::$collection);
+
+        $this->assertEquals($file1, $file2);
+
+
+        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($this->filename));
+        $file3 = new File($media, self::$collection, 'coco lapin');
+
+        $file4 = File::buildFromPathfile($this->filename, self::$collection, 'coco lapin');
+
+        $this->assertEquals($file3, $file4);
+        $this->assertNotEquals($file1, $file4);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\File::buildFromPathfile
+     * @expectedException \InvalidArgumentException
+     */
+    public function testBuildFromWrongPathfile()
+    {
+        File::buildFromPathfile('unexistent.file', self::$collection);
+    }
+
 }

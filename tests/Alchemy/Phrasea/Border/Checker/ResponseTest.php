@@ -40,7 +40,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers Alchemy\Phrasea\Border\Checker\Checker
-     * @covers Alchemy\Phrasea\Border\Checker\Response::getCheck
+     * @covers Alchemy\Phrasea\Border\Checker\Response::getChecker
      */
     public function testGetCheck()
     {
