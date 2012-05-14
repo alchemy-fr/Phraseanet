@@ -71,19 +71,24 @@ class Manager
     {
         $visa = $this->getVisa($file);
 
+        /**
+         * Generates and write UUID
+         */
+        $file->getUUID(true, true);
+
         if (($visa->isValid() || $forceBehaviour === self::FORCE_RECORD) && $forceBehaviour !== self::FORCE_LAZARET) {
 
             /**
              * add attributes
              */
-            $element = \record_adapter::create($file->getCollection(), $file->getPathfile(), $file->getOriginalName());
+            $element = \record_adapter::create($file->getCollection(), $file->getFile()->getRealPath(), $file->getOriginalName());
 
             $code = self::RECORD_CREATED;
         } else {
 
-            $lazaretPathname = $this->bookLazaretPathfile($file->getPathfile());
+            $lazaretPathname = $this->bookLazaretPathfile($file->getFile()->getRealPath());
 
-            $this->filesystem->copy($file->getPathfile(), $lazaretPathname, true);
+            $this->filesystem->copy($file->getFile()->getRealPath(), $lazaretPathname, true);
 
             $lazaretFile = new LazaretFile();
             $lazaretFile->setBaseId($file->getCollection()->get_base_id());

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 
 use Alchemy\Phrasea\Border\File;
 
-class FilenameTest extends \PHPUnit_Framework_TestCase
+class FilenameTest extends \PhraseanetPHPUnitAbstract
 {
     /**
      * @var Filename
@@ -15,6 +15,10 @@ class FilenameTest extends \PHPUnit_Framework_TestCase
     protected $filename;
     protected $media;
 
+    /**
+     * @covers Alchemy\Phrasea\Border\Checker\Checker
+     * @covers Alchemy\Phrasea\Border\Checker\Filename::__construct
+     */
     public function setUp()
     {
         parent::setUp();
@@ -63,6 +67,34 @@ class FilenameTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
 
         $this->assertTrue($response->isOk());
+
+        $mock = null;
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\Checker\Filename::__construct
+     * @covers Alchemy\Phrasea\Border\Checker\Filename::check
+     */
+    public function testCheckSensitive()
+    {
+        $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getOriginalName'), array($this->media, self::$collection));
+
+        $mock
+            ->expects($this->any())
+            ->method('getOriginalName')
+            ->will($this->returnValue(strtoupper($this->media->getFile()->getFilename())))
+        ;
+
+        $response = $this->object->check(self::$core['EM'], $mock);
+
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Checker\\Response', $response);
+
+        $this->assertFalse($response->isOk());
+
+        $objectSensitive = new Filename(true);
+        $responseSensitive = $objectSensitive->check(self::$core['EM'], $mock);
+
+        $this->assertTrue($responseSensitive->isOk());
 
         $mock = null;
     }
