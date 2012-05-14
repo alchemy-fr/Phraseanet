@@ -11,6 +11,7 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
     protected $metadata;
 
     /**
+     * @covers Alchemy\Phrasea\Border\Attribute\Attribute
      * @covers Alchemy\Phrasea\Border\Attribute\Metadata::__construct
      */
     protected function setUp()

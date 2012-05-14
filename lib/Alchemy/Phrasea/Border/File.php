@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
+use MediaVorus\Media\Media;
 use MediaVorus\MediaVorus;
 use PHPExiftool\Reader;
 use PHPExiftool\Writer;
@@ -44,20 +45,18 @@ class File
     /**
      * Constructor
      *
-     * @param type          $pathfile       The path to the file
+     * @param Media         $media          The media
      * @param \collection   $collection     The destination collection
-     * @param type          $originalName   The original name of the file
+     * @param string        $originalName   The original name of the file
      *                                      (if not provided, original name is
      *                                      extracted from the pathfile)
      */
-    public function __construct($pathfile, \collection $collection, $originalName = null)
+    public function __construct(Media $media, \collection $collection, $originalName = null)
     {
-        $this->media = MediaVorus::guess(new \SplFileInfo($pathfile));
+        $this->media = $media;
         $this->collection = $collection;
         $this->attributes = array();
-        $this->originalName = $originalName ? : pathinfo($pathfile, PATHINFO_BASENAME);
-
-        $this->ensureUUID();
+        $this->originalName = $originalName ? : pathinfo($this->media->getFile()->getPathname(), PATHINFO_BASENAME);
     }
 
     /**
@@ -71,12 +70,70 @@ class File
     }
 
     /**
-     * Returns the document Unique ID
+     * Checks for UUID in metadatas
      *
-     * @return string
+     * @todo Check if a file exists with the same checksum
+     * @todo Check if an UUID is contained in the attributes, replace It if
+     *              necessary
+     *
+     * @param   boolean $generate   if true, if no uuid found, a valid one is generated
+     * @param   boolean $write      if true, writes uuid in all available metadatas
+     * @return  File
      */
-    public function getUUID()
+    public function getUUID($generate = false, $write = false)
     {
+        if ($this->uuid && ! $write) {
+            return $this->uuid;
+        }
+
+        if ( ! $this->uuid) {
+            $metadatas = $this->media->getEntity()->getMetadatas();
+
+            $available = array(
+                'XMP-exif:ImageUniqueID',
+                'SigmaRaw:ImageUniqueID',
+                'IPTC:UniqueDocumentID',
+                'ExifIFD:ImageUniqueID',
+                'Canon:ImageUniqueID',
+            );
+
+            $uuid = null;
+
+            foreach ($available as $meta) {
+                if ($metadatas->containsKey($meta)) {
+                    $candidate = $metadatas->get($meta)->getValue()->asString();
+                    if (\uuid::is_valid($candidate)) {
+                        $uuid = $candidate;
+                        break;
+                    }
+                }
+            }
+
+            if ( ! $uuid && $generate) {
+                /**
+                 * @todo Check if a file exists with the same checksum
+                 */
+                $uuid = \uuid::generate_v4();
+            }
+
+            $this->uuid = $uuid;
+        }
+
+        if ($write) {
+            $writer = new Writer();
+
+            $value = new MonoValue($uuid);
+            $metadatas = new MetadataBag();
+
+            foreach ($available as $tagname) {
+                $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
+            }
+
+            $writer->write($this->getFile()->getRealPath(), $metadatas);
+        }
+
+        $writer = $reader = $metadatas = null;
+
         return $this->uuid;
     }
 
@@ -88,7 +145,7 @@ class File
     public function getSha256()
     {
         if ( ! $this->sha256) {
-            $this->sha256 = hash_file('sha256', $this->getPathfile());
+            $this->sha256 = $this->media->getHash('sha256');
         }
 
         return $this->sha256;
@@ -102,20 +159,20 @@ class File
     public function getMD5()
     {
         if ( ! $this->md5) {
-            $this->md5 = hash_file('md5', $this->getPathfile());
+            $this->md5 = $this->media->getHash('md5');
         }
 
         return $this->md5;
     }
 
     /**
-     * Returns the realpath to the document
+     * Returns the SplFileInfo related to the document
      *
-     * @return string
+     * @return \SplFileInfo
      */
-    public function getPathfile()
+    public function getFile()
     {
-        return $this->media->getFile()->getRealpath();
+        return $this->media->getFile();
     }
 
     /**
@@ -172,59 +229,24 @@ class File
     }
 
     /**
-     * Checks for UUID in metadatas
+     * Build the File package object
      *
-     * The unique Id is first read in document metadatas. If not found, it is
-     * generated
-     *
-     * @todo Check if an UUID is contained in the attributes
+     * @param string        $pathfile       The path to the file
+     * @param \collection   $collection     The destination collection
+     * @param string        $originalName   An optionnal original name (if
+     *                                      different from the $pathfile filename)
+     * @throws \InvalidArgumentException
      *
      * @return \Alchemy\Phrasea\Border\File
      */
-    protected function ensureUUID()
+    public function buildFromPathfile($pathfile, \collection $collection, $originalName = null)
     {
-        $reader = new Reader();
-        $metadatas = $reader->files($this->getPathfile())->first()->getMetadatas();
-
-        $available = array(
-            'XMP-exif:ImageUniqueID',
-            'SigmaRaw:ImageUniqueID',
-            'IPTC:UniqueDocumentID',
-            'ExifIFD:ImageUniqueID',
-            'Canon:ImageUniqueID',
-        );
-
-        $uuid = null;
-
-        foreach ($available as $meta) {
-            if ($metadatas->containsKey($meta)) {
-                $candidate = $metadatas->get($meta)->getValue()->asString();
-                if (\uuid::is_valid($candidate)) {
-                    $uuid = $candidate;
-                    break;
-                }
-            }
+        try {
+            $media = MediaVorus::guess(new \SplFileInfo($pathfile));
+        } catch (\MediaVorus\Exception\FileNotFoundException $e) {
+            throw new \InvalidArgumentException(sprintf('Unable to build media file from non existant %s', $pathfile));
         }
 
-        if ( ! $uuid) {
-            $uuid = \uuid::generate_v4();
-        }
-
-        $this->uuid = $uuid;
-
-        $writer = new Writer();
-
-        $value = new MonoValue($uuid);
-        $metadatas = new MetadataBag();
-
-        foreach ($available as $tagname) {
-            $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
-        }
-
-        $writer->write($this->getPathfile(), $metadatas);
-
-        $writer = $reader = $metadatas = null;
-
-        return $this;
+        return new File($media, $collection, $originalName);
     }
 }

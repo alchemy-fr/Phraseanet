@@ -12,6 +12,7 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
     protected $object;
 
     /**
+     * @covers Alchemy\Phrasea\Border\Attribute\Attribute
      * @covers Alchemy\Phrasea\Border\Attribute\Story::__construct
      */
     public function setUp()
@@ -62,6 +63,15 @@ class StoryTest extends \PhraseanetPHPUnitAbstract
         $loaded = Story::loadFromString($this->object->asString());
 
         $this->assertEquals($this->object, $loaded);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\Attribute\Story::__construct
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructWrongElement()
+    {
+        new Story(static::$records['record_1']);
     }
 
     /**
