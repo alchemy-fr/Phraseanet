@@ -70,17 +70,15 @@ class File
     }
 
     /**
-     * Checks for UUID in metadatas, If not create it and write it.
-     * Be carefull, this methods writes in file.
-     *
-     * The unique Id is first read in document metadatas. If not found, it is
-     * generated
+     * Checks for UUID in metadatas
      *
      * @todo Check if a file exists with the same checksum
      * @todo Check if an UUID is contained in the attributes, replace It if
      *              necessary
      *
-     * @return \Alchemy\Phrasea\Border\File
+     * @param   boolean $generate   if true, if no uuid found, a valid one is generated
+     * @param   boolean $write      if true, writes uuid in all available metadatas
+     * @return  File
      */
     public function getUUID($generate = false, $write = false)
     {
