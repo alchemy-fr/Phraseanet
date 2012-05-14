@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../../../PhraseanetPHPUnitAbstract.class.inc';
 class FactoryTest extends \PhraseanetPHPUnitAbstract
 {
     /**
+     * @covers Alchemy\Phrasea\Border\Attribute\Attribute
      * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
      */
     public function testGetFileAttributeMetadata()

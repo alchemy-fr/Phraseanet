@@ -12,6 +12,7 @@ class StatusTest extends \PHPUnit_Framework_TestCase
     protected $object;
 
     /**
+     * @covers Alchemy\Phrasea\Border\Attribute\Attribute
      * @covers Alchemy\Phrasea\Border\Attribute\Status::__construct
      * @dataProvider getValidStatuses
      */
