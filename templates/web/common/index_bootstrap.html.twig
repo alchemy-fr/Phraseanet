@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="{{ session.get_I18n }}" style="overflow:hidden;">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <title>{% if local_title is defined%}{{local_title}} | {% endif %}{{home_title}} - {{ module_name }} </title>
+
+        <link type="text/css" rel="stylesheet" href="/skins/html5/bootstrap/css/bootstrap.css" />
+        <link type="text/css" rel="stylesheet" href="/skins/html5/bootstrap/css/bootstrap-responsive.css" />
+        <link type="text/css" rel="stylesheet" href="{{registry.get('GV_STATIC_URL')}}/skins/common/main.css">
+
+        <script type="text/javascript" src="/include/minify/f=include/jslibs/jquery-1.7.1.js"></script>
+        <script type="text/javascript" src="/skins/html5/bootstrap/js/bootstrap.js"></script>
+
+        {% block stylesheet %}{% endblock %}
+        {% block icon %}{% endblock %}
+        {% block rss %}{% endblock %}
+        {% block javascript %}{% endblock %}
+    </head>
+    <body class="PNB">
+        <div id="mainContainer" class="PNB">
+            {% include 'common/menubar.twig' %}
+            <div class="PNB" id="mainContent" style="top:30px; min-width:900px; overflow-x:auto; overflow-y:auto;">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        {% include 'common/analytics.twig' %}
+    </body>
+</html>
