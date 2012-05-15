@@ -27,13 +27,11 @@ return call_user_func(function() {
 
             $app["Core"] = \bootstrap::getCore();
 
-            $app["appbox"] = \appbox::get_instance($app['Core']);
-
             $app->get(
                 '/', function(Request $request) use ($app) {
                     $registry = $app["Core"]->getRegistry();
 
-                    $apiAdapter = new \API_V1_adapter(false, $app["appbox"], $app["Core"]);
+                    $apiAdapter = new \API_V1_adapter(false, \appbox::get_instance($app['Core']), $app["Core"]);
 
                     $result = new \API_V1_result($request, $apiAdapter);
 
