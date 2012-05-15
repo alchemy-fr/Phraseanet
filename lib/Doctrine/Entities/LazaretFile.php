@@ -54,6 +54,21 @@ class LazaretFile
      */
     private $session;
 
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    private $checks;
+
+    /**
+     * @var string $originalName
+     */
+    private $originalName;
+
+    /**
+     * @var boolean $forced
+     */
+    private $forced = false;
+
     public function __construct()
     {
         $this->attributes = new \Doctrine\Common\Collections\ArrayCollection();
@@ -244,11 +259,6 @@ class LazaretFile
     {
         return $this->session;
     }
-    /**
-     * @var string $originalName
-     */
-    private $originalName;
-
 
     /**
      * Set originalName
@@ -270,6 +280,50 @@ class LazaretFile
     public function getOriginalName()
     {
         return $this->originalName;
+    }
+
+    /**
+     * Add checks
+     *
+     * @param Entities\LazaretCheck $checks
+     * @return LazaretFile
+     */
+    public function addLazaretCheck(\Entities\LazaretCheck $checks)
+    {
+        $this->checks[] = $checks;
+        return $this;
+    }
+
+    /**
+     * Get checks
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getChecks()
+    {
+        return $this->checks;
+    }
+
+    /**
+     * Set forced
+     *
+     * @param boolean $forced
+     * @return LazaretFile
+     */
+    public function setForced($forced)
+    {
+        $this->forced = $forced;
+        return $this;
+    }
+
+    /**
+     * Get forced
+     *
+     * @return boolean
+     */
+    public function getForced()
+    {
+        return $this->forced;
     }
 
     /**

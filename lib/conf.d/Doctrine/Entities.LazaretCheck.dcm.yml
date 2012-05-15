@@ -1,0 +1,20 @@
+Entities\LazaretCheck:
+  type: entity
+  table: LazaretChecks
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    check:
+      type: string
+      length: 512
+  manyToOne:
+    lazaretFile:
+      targetEntity: LazaretFile
+      inversedBy: checks
+      joinColumn:
+        name: lazaret_file_id
+        referencedColumnName: id
+      cascade: ["persist"]
