@@ -112,8 +112,9 @@ class task_period_upgradetov32 extends task_abstract
                 $stmt->closeCursor();
 
                 $total = 0;
-                if ($row)
+                if ($row) {
                     $total = $row['total'];
+                }
 
                 $sql = 'SELECT COUNT(record_id) as total FROM record WHERE migrated = 1';
                 $stmt = $connbas->prepare($sql);
@@ -122,8 +123,9 @@ class task_period_upgradetov32 extends task_abstract
                 $stmt->closeCursor();
 
                 $done = 0;
-                if ($row)
+                if ($row) {
                     $done = $row['total'];
+                }
 
                 $this->setProgress($done, $total);
 
@@ -195,8 +197,9 @@ class task_period_upgradetov32 extends task_abstract
                         $document = $record->get_subdef('document');
 
                         foreach ($document->readTechnicalDatas() as $name => $value) {
-                            if (is_null($value))
+                            if (is_null($value)) {
                                 continue;
+                            }
 
                             $stmt->execute(array(
                                 ':record_id' => $record->get_record_id()
@@ -239,7 +242,7 @@ class task_period_upgradetov32 extends task_abstract
 
                         $metadatas = array();
 
-                        if ($sxe = simplexml_load_string($row['xml'])) {
+                        if (($sxe = simplexml_load_string($row['xml'])) != FALSE) {
                             $z = $sxe->xpath('/record/description');
                             if ($z && is_array($z)) {
                                 foreach ($z[0] as $ki => $vi) {
@@ -250,8 +253,9 @@ class task_period_upgradetov32 extends task_abstract
 
                                     $value = (string) $vi;
 
-                                    if (trim($value) === '')
+                                    if (trim($value) === '') {
                                         continue;
+                                    }
 
                                     if ($databox_field->is_multi()) {
                                         $new_value = caption_field::get_multi_values($value, $databox_field->get_separator());

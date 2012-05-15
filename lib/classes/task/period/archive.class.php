@@ -101,10 +101,11 @@ class task_period_archive extends task_abstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
@@ -134,16 +135,18 @@ class task_period_archive extends task_abstract
      */
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values (ex. 0 < period < 3600)
-            if ((int) ($sxml->period) < 10)
+            if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
-            elseif ((int) ($sxml->period) > 300)
+            } elseif ((int) ($sxml->period) > 300) {
                 $sxml->period = 300;
-            if ((int) ($sxml->cold) < 5)
+            }
+            if ((int) ($sxml->cold) < 5) {
                 $sxml->cold = 5;
-            elseif ((int) ($sxml->cold) > 3600)
+            } elseif ((int) ($sxml->cold) > 3600) {
                 $sxml->cold = 3600;
+            }
             ?>
             <script type="text/javascript">
                 var i;
@@ -165,8 +168,7 @@ class task_period_archive extends task_abstract
             </script>
             <?php
             return("");
-        }
-        else { // ... so we NEVER come here
+        } else { // ... so we NEVER come here
             // bad xml
             return("BAD XML");
         }
@@ -295,8 +297,9 @@ class task_period_archive extends task_abstract
         $collection = null;
         foreach ($databox->get_collections() as $coll) {
             $this->TColls['c' . $coll->get_coll_id()] = $coll->get_coll_id();
-            if ($base_id == $coll->get_base_id())
+            if ($base_id == $coll->get_base_id()) {
                 $collection = $coll;
+            }
         }
         $server_coll_id = $collection->get_coll_id();
 
@@ -307,18 +310,20 @@ class task_period_archive extends task_abstract
         $this->cold = 60;
 
 
-        if (($this->sxBasePrefs = simplexml_load_string($collection->get_prefs()))) {
+        if (($this->sxBasePrefs = simplexml_load_string($collection->get_prefs())) != FALSE) {
             $this->sxBasePrefs["id"] = $base_id;
 
             $do_it = true;
 
             $this->period = (int) ($this->sxTaskSettings->period);
-            if ($this->period <= 0 || $this->period >= 60 * 60)
+            if ($this->period <= 0 || $this->period >= 60 * 60) {
                 $this->period = 60;
+            }
 
             $this->cold = (int) ($this->sxTaskSettings->cold);
-            if ($this->cold <= 0 || $this->cold >= 60 * 60)
+            if ($this->cold <= 0 || $this->cold >= 60 * 60) {
                 $this->cold = 60;
+            }
 
             // check the data-repository exists
             $pathhd = (string) ($this->sxBasePrefs->path);
@@ -333,21 +338,23 @@ class task_period_archive extends task_abstract
 
             // load masks
             if ($this->sxTaskSettings->files && $this->sxTaskSettings->files->file) {
-                foreach ($this->sxTaskSettings->files->file as $ft)
+                foreach ($this->sxTaskSettings->files->file as $ft) {
                     $this->tmask[] = array(
                         "mask"    => (string) $ft["mask"]
                         , "caption" => (string) $ft["caption"]
                         , "accept"  => (string) $ft["accept"]
                     );
+                }
             }
             if ($this->sxTaskSettings->files && $this->sxTaskSettings->files->grouping) {
-                foreach ($this->sxTaskSettings->files->grouping as $ft)
+                foreach ($this->sxTaskSettings->files->grouping as $ft) {
                     $this->tmaskgrp[] = array(
                         "mask"           => (string) $ft["mask"]
                         , "caption"        => (string) $ft["caption"]
                         , "representation" => (string) $ft["representation"]
                         , "accept"         => (string) $ft["accept"]
                     );
+                }
             }
             if (count($this->tmask) == 0) {
                 // no mask defined : accept all kind of files
@@ -410,13 +417,14 @@ class task_period_archive extends task_abstract
                         $this->move_error = p4field::isyes($this->sxTaskSettings->move_error);
 
                         $period = (int) ($this->sxTaskSettings->period);
-                        if ($period <= 0 || $period >= 60 * 60)
+                        if ($period <= 0 || $period >= 60 * 60) {
                             $period = 60;
+                        }
                         $cold = (int) ($this->sxTaskSettings->cold);
-                        if ($cold <= 0 || $cold >= 60 * 60)
+                        if ($cold <= 0 || $cold >= 60 * 60) {
                             $cold = 60;
-                    }
-                    else {
+                        }
+                    } else {
                         throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->getID()));
                     }
                 } catch (Exception $e) {
@@ -443,8 +451,9 @@ class task_period_archive extends task_abstract
                 $duration = time();
                 $r = $this->archiveHotFolder($server_coll_id);
 
-                if ($loop > 10)
+                if ($loop > 10) {
                     $r = 'MAXLOOP';
+                }
 
                 switch ($r) {
                     case 'TOSTOP':
@@ -550,13 +559,15 @@ class task_period_archive extends task_abstract
         }
 
         $cold = (int) ($this->sxTaskSettings->cold);
-        if ($cold <= 0 || $cold >= 60 * 60)
+        if ($cold <= 0 || $cold >= 60 * 60) {
             $cold = 60;
+        }
 
         while ($cold > 0) {
             $s = $this->getState();
-            if ($s == self::STATE_TOSTOP)
+            if ($s == self::STATE_TOSTOP) {
                 return('TOSTOP');
+            }
             sleep(2);
             $cold -= 2;
         }
@@ -682,14 +693,15 @@ class task_period_archive extends task_abstract
         try {
             $listFolder = new CListFolder($path);
 
-            if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml'))) {
+            if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) != FALSE) {
                 // on gere le magicfile
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                     $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
                         return;
-                    elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile))
+                    } elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile)) {
                         return;
+                    }
                 }
 
                 // on gere le changement de collection
@@ -716,11 +728,13 @@ class task_period_archive extends task_abstract
                     $time0 = time();
                 }
 
-                if (($iloop ++ % 100) == 0)
+                if (($iloop ++ % 100) == 0) {
                     usleep(1000);
+                }
 
-                if ($this->isIgnoredFile($file))
+                if ($this->isIgnoredFile($file)) {
                     continue;
+                }
 
                 if (is_dir($path . '/' . $file)) {
                     $n = $node->appendChild($dom->createElement('file'));
@@ -738,8 +752,9 @@ class task_period_archive extends task_abstract
                     $n = $node->appendChild($dom->createElement('file'));
                     $n->setAttribute('name', $file);
                     $stat = stat($path . '/' . $file);
-                    foreach (array("size", "ctime", "mtime") as $k)
+                    foreach (array("size", "ctime", "mtime") as $k) {
                         $n->setAttribute($k, $stat[$k]);
+                    }
                     $nnew ++;
                 }
                 $n->setAttribute('cid', $server_coll_id);
@@ -767,8 +782,9 @@ class task_period_archive extends task_abstract
     function listFilesPhase2($dom, $node, $path, $depth = 0)
     {
         static $iloop = 0;
-        if ($depth == 0)
+        if ($depth == 0) {
             $iloop = 0;
+        }
 
         $nnew = 0;
 
@@ -777,32 +793,36 @@ class task_period_archive extends task_abstract
 
             $xp = new DOMXPath($dom);
 
-            if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml'))) {
+            if (($sxDotPhrasea = @simplexml_load_file($path . '/.phrasea.xml')) != FALSE) {
                 // on gere le magicfile
                 if (($magicfile = trim((string) ($sxDotPhrasea->magicfile))) != '') {
                     $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+                    if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
                         return;
-                    elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile))
+                    } elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile)) {
                         return;
+                    }
                 }
             }
 
             // on gere le magicfile
             if (($magicfile = trim((string) @($sxDotPhrasea->magicfile))) != '') {
                 $magicmethod = strtoupper($sxDotPhrasea->magicfile['method']);
-                if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile))
+                if ($magicmethod == 'LOCK' && file_exists($path . '/' . $magicfile)) {
                     return;
-                elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile))
+                } elseif ($magicmethod == 'UNLOCK' && ! file_exists($path . '/' . $magicfile)) {
                     return;
+                }
             }
 
             while (($file = $listFolder->read()) !== NULL) {
-                if ($this->isIgnoredFile($file))
+                if ($this->isIgnoredFile($file)) {
                     continue;
+                }
 
-                if (($iloop ++ % 100) == 0)
+                if (($iloop ++ % 100) == 0) {
                     usleep(500);
+                }
 
                 $dnl = @$xp->query('./file[@name="' . $file . '"]', $node);
                 if ($dnl && $dnl->length == 0) {
@@ -865,24 +885,29 @@ class task_period_archive extends task_abstract
     function makePairs($dom, $node, $path, $path_archived, $path_error, $inGrp = false, $depth = 0)
     {
         static $iloop = 0;
-        if ($depth == 0)
+        if ($depth == 0) {
             $iloop = 0;
+        }
 
-        if ($depth == 0 && ($node->getAttribute('temperature') == 'hot' || $node->getAttribute('cid') == '-1'))
+        if ($depth == 0 && ($node->getAttribute('temperature') == 'hot' || $node->getAttribute('cid') == '-1')) {
             return;
+        }
 
         $xpath = new DOMXPath($dom); // useful
 
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 100) == 0)
+            if (($iloop ++ % 100) == 0) {
                 usleep(1000);
+            }
 
             // make xml lighter (free ram)
-            foreach (array("size", "ctime", "mtime") as $k)
+            foreach (array("size", "ctime", "mtime") as $k) {
                 $n->removeAttribute($k);
+            }
 
-            if ($n->getAttribute('temperature') == 'hot' || $n->getAttribute('cid') == '-1')
+            if ($n->getAttribute('temperature') == 'hot' || $n->getAttribute('cid') == '-1') {
                 continue;
+            }
 
             $name = $n->getAttribute('name');
             if ($n->getAttribute('isdir') == '1') {
@@ -940,8 +965,9 @@ class task_period_archive extends task_abstract
                             $this->setAllChildren($dom, $n, array('error' => '1'));
 
                             // bubble to the top
-                            for ($nn = $n; $nn && $nn->nodeType == XML_ELEMENT_NODE; $nn = $nn->parentNode)
+                            for ($nn = $n; $nn && $nn->nodeType == XML_ELEMENT_NODE; $nn = $nn->parentNode) {
                                 $nn->setAttribute('error', '1');
+                            }
 
                             // ... as the existing linked file(s) ...
                             foreach ($flink as $linkName => $v) {
@@ -961,10 +987,11 @@ class task_period_archive extends task_abstract
             } else {
                 // this is a file
                 if ( ! $n->getAttribute('match')) { // because match can be set before
-                    if ($name == '.phrasea.xml')
+                    if ($name == '.phrasea.xml') {
                         $n->setAttribute('match', '*');  // special file(s) always ok
-                    else
+                    } else {
                         $this->checkMatch($dom, $n);
+                    }
                 }
             }
         }
@@ -973,8 +1000,9 @@ class task_period_archive extends task_abstract
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             if ( ! $n->getAttribute('isdir') == '1' && ! $n->getAttribute('match')) {
                 // still no match, now it's an error (bubble to the top)
-                for ($nn = $n; $nn && $nn->nodeType == XML_ELEMENT_NODE; $nn = $nn->parentNode)
+                for ($nn = $n; $nn && $nn->nodeType == XML_ELEMENT_NODE; $nn = $nn->parentNode) {
                     $nn->setAttribute('error', '1');
+                }
             }
         }
 
@@ -997,8 +1025,9 @@ class task_period_archive extends task_abstract
     function removeBadGroups($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
-        if ($depth == 0)
+        if ($depth == 0) {
             $iloop = 0;
+        }
 
         $ret = false;
 
@@ -1007,11 +1036,13 @@ class task_period_archive extends task_abstract
 
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 20) == 0)
+            if (($iloop ++ % 20) == 0) {
                 usleep(1000);
+            }
 
-            if ($n->getAttribute('temperature') == 'hot') // do not move hotfiles
-                continue;
+            if ($n->getAttribute('temperature') == 'hot') {
+                continue; // do not move hotfiles
+            }
 
             $name = $n->getAttribute('name');
 
@@ -1045,8 +1076,9 @@ class task_period_archive extends task_abstract
             }
         }
 
-        foreach ($nodesToDel as $n)
+        foreach ($nodesToDel as $n) {
             $n->parentNode->removeChild($n);
+        }
 
         return;
     }
@@ -1068,19 +1100,23 @@ class task_period_archive extends task_abstract
     function archive($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
-        if ($depth == 0)
+        if ($depth == 0) {
             $iloop = 0;
+        }
 
-        if ($node->getAttribute('temperature') == 'hot')
+        if ($node->getAttribute('temperature') == 'hot') {
             return;
+        }
 
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 20) == 0)
+            if (($iloop ++ % 20) == 0) {
                 usleep(1000);
+            }
 
-            if ($n->getAttribute('temperature') == 'hot')
+            if ($n->getAttribute('temperature') == 'hot') {
                 continue;
+            }
 
             if ($n->getAttribute('cid') == '-1') {
                 $n->setAttribute('error', '1');
@@ -1104,16 +1140,18 @@ class task_period_archive extends task_abstract
                 $this->archiveFile($dom, $n, $path, $path_archived, $path_error, $nodesToDel, 0); // 0 = no grp
             }
         }
-        foreach ($nodesToDel as $n)
+        foreach ($nodesToDel as $n) {
             $n->parentNode->removeChild($n);
+        }
 
         // at the end of recursion, restore the magic file (create or delete it)
         if (($magicfile = $node->getAttribute('magicfile')) != '') {
             $magicmethod = $node->getAttribute('magicmethod');
-            if ($magicmethod == 'LOCK')
+            if ($magicmethod == 'LOCK') {
                 file_put_contents($path . '/' . $magicfile, '');
-            elseif ($magicmethod == 'UNLOCK')
+            } elseif ($magicmethod == 'UNLOCK') {
                 unlink($path . '/' . $magicfile);
+            }
         }
 
         return;
@@ -1134,22 +1172,26 @@ class task_period_archive extends task_abstract
     function bubbleResults($dom, $node, $path, $depth = 0)
     {
         static $iloop = 0;
-        if ($depth == 0)
+        if ($depth == 0) {
             $iloop = 0;
+        }
 
-        if ($node->getAttribute('temperature') == 'hot')
+        if ($node->getAttribute('temperature') == 'hot') {
             return;
+        }
 
         $ret = 0;
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 20) == 0)
+            if (($iloop ++ % 20) == 0) {
                 usleep(1000);
+            }
 
             if ($n->getAttribute('name') == '.phrasea.xml' || $n->getAttribute('name') == '.grouping.xml') {
                 // special files stay in place AND are copied into 'archived'
                 $n->setAttribute('keep', '1');
-                if (p4field::isyes($this->sxTaskSettings->copy_spe))
+                if (p4field::isyes($this->sxTaskSettings->copy_spe)) {
                     $n->setAttribute('archived', '1');
+                }
             }
 //      else
 //      {
@@ -1158,21 +1200,28 @@ class task_period_archive extends task_abstract
 //          $n->setAttribute('error', '1');
 //        }
 //      }
-            if ($n->getAttribute('keep') == '1')
+            if ($n->getAttribute('keep') == '1') {
                 $ret |= 1;
-            if ($n->getAttribute('archived') == '1')
+            }
+            if ($n->getAttribute('archived') == '1') {
                 $ret |= 2;
-            if ($n->getAttribute('error') == '1')
+            }
+            if ($n->getAttribute('error') == '1') {
                 $ret |= 4;
-            if ($n->getAttribute('isdir') == '1')
+            }
+            if ($n->getAttribute('isdir') == '1') {
                 $ret |= $this->bubbleResults($dom, $n, $path . '/' . $n->getAttribute('name'), $depth + 1);
+            }
         }
-        if ($ret & 1)
+        if ($ret & 1) {
             $node->setAttribute('keep', '1');
-        if ($ret & 2)
+        }
+        if ($ret & 2) {
             $node->setAttribute('archived', '1');
-        if ($ret & 4)
+        }
+        if ($ret & 4) {
             $node->setAttribute('error', '1');
+        }
 
         return($ret);
     }
@@ -1193,71 +1242,43 @@ class task_period_archive extends task_abstract
     function moveFiles($dom, $node, $path, $path_archived, $path_error, $depth = 0)
     {
         static $iloop = 0;
-        if ($depth == 0)
+        if ($depth == 0) {
             $iloop = 0;
+        }
 
         $ret = false;
 
-        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') // if root of hotfolder if hot, die...
+        if ($depth == 0 && $node->getAttribute('temperature') == 'hot') { // if root of hotfolder if hot, die...
             return($ret);
+        }
 
 //printf("%s : \n", __LINE__);
         $nodesToDel = array();
         for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
-            if (($iloop ++ % 20) == 0)
+            if (($iloop ++ % 20) == 0) {
                 usleep(1000);
+            }
 
-            if ($n->getAttribute('temperature') == 'hot') // do not move hotfiles
+            if ($n->getAttribute('temperature') == 'hot') { // do not move hotfiles
                 continue;
+            }
 
-//printf("%s : \n", __LINE__);
             $name = $n->getAttribute('name');
-//printf("----------------\n file %s : \n ", $path.'/'.$name);
-//$fp = fopen('php://stdin', 'r');
-//fgets($fp);
-//fclose($fp);
 
             if ($n->getAttribute('isdir')) {
-// printf("%s : ('%s', '%s')\n", __LINE__, $path_archived, $path_error);
-//        $new_path_archived = $new_path_error = null;
-//        if($n->getAttribute('archived') && $this->move_archived)
-//        {
-//          @mkdir($new_path_archived = ($path_archived . '/' . $name));
-//          if(!is_dir($new_path_archived))
-//          {
-//            $rootpath = p4string::delEndSlash(trim((string)($this->sxTaskSettings->hotfolder)));
-//            $subpath  = substr($new_path_archived, strlen($rootpath));
-//
-//            $this->log("error subfolder '".$subpath."' does not exits");
-//          }
-//        }
-//
-//        if($n->getAttribute('error') && $this->move_error)
-//        {
-//          @mkdir($new_path_error = ($path_error . '/' . $name));
-//          if(!is_dir($new_path_error))
-//          {
-//            $rootpath = p4string::delEndSlash(trim((string)($this->sxTaskSettings->hotfolder)));
-//            $subpath  = substr($new_path_error, strlen($rootpath));
-//
-//            $this->log("error subfolder '".$subpath."' does not exists");
-//          }
-//        }
-
                 $ret |= $this->moveFiles($dom, $n, $path . '/' . $name
                     , $path_archived . '/' . $name
                     , $path_error . '/' . $name
                     , $depth + 1);
 
-                if ( ! $n->firstChild)
+                if ( ! $n->firstChild) {
                     $nodesToDel[] = $n;
+                }
 // ----- JY 20100318 : DO NOT DELETE EMPTY FOLDERS ANYMORE, AS THEY MAY DISAPEAR TOO SOON -----
 //        if(!$n->getAttribute('keep'))
 //          @rmdir($path.'/'.$name);
 // --------------------------------------------------------------------------------------------
-            }
-            else {
-//printf("%s : \n", __LINE__);
+            } else {
                 $rootpath = p4string::delEndSlash(trim((string) ($this->sxTaskSettings->hotfolder)));
                 $subpath = substr($path, strlen($rootpath));
 
@@ -1273,7 +1294,6 @@ class task_period_archive extends task_abstract
                 }
 
                 if ($n->getAttribute('error') && $this->move_error) {
-// printf("%s : \n", __LINE__);
                     $this->log(sprintf(('copy \'%s\' to \'error\''), $subpath . '/' . $name));
 
                     @mkdir($path_error, 0755, true);
@@ -1282,11 +1302,9 @@ class task_period_archive extends task_abstract
                         $nodesToDel[] = $n;
                         $ret = true;
                     }
-//printf("-> copy to %s \n", $path_error.'/'.$name);
                 }
 
                 if ( ! $n->getAttribute('keep')) {
-//printf("-> unlink %s \n", $path.'/'.$name);
                     $this->log(sprintf(('delete \'%s\''), $subpath . '/' . $name));
                     if (@unlink($path . '/' . $name)) {
                         //      $n->parentNode->removeChild($n);
@@ -1298,8 +1316,9 @@ class task_period_archive extends task_abstract
             }
         }
 
-        foreach ($nodesToDel as $n)
+        foreach ($nodesToDel as $n) {
             $n->parentNode->removeChild($n);
+        }
 
         return($ret);
     }
@@ -1315,8 +1334,9 @@ class task_period_archive extends task_abstract
         for ($n = $node; $n; $n = $n->parentNode) {
             if ($n->nodeType == XML_ELEMENT_NODE) {
                 $n->setAttribute('temperature', 'hot');
-                if ($n->hasAttribute('pxml'))
+                if ($n->hasAttribute('pxml')) {
                     break;
+                }
             }
         }
 
@@ -1374,7 +1394,7 @@ class task_period_archive extends task_abstract
                 $this->log(sprintf(('representation from \'%s\''), $representationFileName));
             }
 
-            if (($cap = $node->getAttribute('grp_caption'))) {
+            if (($cap = $node->getAttribute('grp_caption')) != '') {
                 $dnl = $xpath->query('./file[@name="' . $cap . '"]', $node->parentNode);
                 $captionFileNode = $dnl->item(0);
                 $captionFileName = $cap;
@@ -1399,15 +1419,19 @@ class task_period_archive extends task_abstract
             $meta = $system_file->extract_metadatas($databox->get_meta_structure(), $caption_file);
 
             $stat0 = $stat1 = "0";
-            if ($this->sxBasePrefs->status)
+            if ($this->sxBasePrefs->status) {
                 $stat0 = (string) ($this->sxBasePrefs->status);
-            if ($this->sxTaskSettings->status)
+            }
+            if ($this->sxTaskSettings->status) {
                 $stat1 = (string) ($this->sxTaskSettings->status);
+            }
 
-            if ( ! $stat0)
+            if ( ! $stat0) {
                 $stat0 = '0';
-            if ( ! $stat1)
+            }
+            if ( ! $stat1) {
                 $stat1 = '0';
+            }
 
 
             try {
@@ -1427,8 +1451,9 @@ class task_period_archive extends task_abstract
 
 
 
-                if ($genericdoc)
+                if ($genericdoc) {
                     unlink($genericdoc);
+                }
 
                 file_put_contents($groupingFile, '<?xml version="1.0" encoding="ISO-8859-1" ?><record grouping="' . $rid . '" />');
                 $n = $node->appendChild($dom->createElement('file'));
@@ -1449,8 +1474,9 @@ class task_period_archive extends task_abstract
                     if ($this->move_archived) {
                         $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $captionFileName));
 
-                        if ( ! is_dir($path_archived))
+                        if ( ! is_dir($path_archived)) {
                             @mkdir($path_archived, 0755, true);
+                        }
                         @copy($path . '/' . $captionFileName, $path_archived . '/' . $captionFileName);
                     }
                     @unlink($path . '/' . $captionFileName);
@@ -1463,8 +1489,9 @@ class task_period_archive extends task_abstract
                     if ($this->move_archived) {
                         $this->log(sprintf(('copy \'%s\' to \'archived\''), $subpath . '/' . $representationFileName));
 
-                        if ( ! is_dir($path_archived))
+                        if ( ! is_dir($path_archived)) {
                             @mkdir($path_archived, 0755, true);
+                        }
                         @copy($path . '/' . $representationFileName, $path_archived . '/' . $representationFileName);
                     }
                     @unlink($path . '/' . $representationFileName);
@@ -1527,8 +1554,9 @@ class task_period_archive extends task_abstract
                 $this->archiveFile($dom, $n, $path, $path_archived, $path_error, $nodesToDel, $grp_rid);
             }
         }
-        foreach ($nodesToDel as $n)
+        foreach ($nodesToDel as $n) {
             $n->parentNode->removeChild($n);
+        }
 
         return;
     }
@@ -1548,8 +1576,9 @@ class task_period_archive extends task_abstract
     function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid = 0)
     {
         $match = $node->getAttribute('match');
-        if ($match == '*')
+        if ($match == '*') {
             return;
+        }
 
         $file = $node->getAttribute('name');
         $cid = $node->getAttribute('cid');
@@ -1571,7 +1600,7 @@ class task_period_archive extends task_abstract
             $node->setAttribute('error', '1');
 
             return;
-        } elseif (($match != '.')) {  // match='.' : the file does not have a separate caption
+        } elseif ($match != '.') {  // match='.' : the file does not have a separate caption
             $xpath = new DOMXPath($dom);
             $dnl = $xpath->query('./file[@name="' . $match . '"]', $node->parentNode);
             // in fact, xquery has been done in checkMatch, setting match='?' if caption does not exists...
@@ -1612,20 +1641,26 @@ class task_period_archive extends task_abstract
         $subpath = substr($path, strlen($rootpath));
 
         $this->log(sprintf(("Archiving file '%s'"), $subpath . '/' . $file));
-        if ($captionFileName !== NULL)
+        if ($captionFileName !== NULL) {
             $this->log(sprintf(' ' . (" (caption in '%s')"), $captionFileName));
-        if ($grp_rid !== 0)
+        }
+        if ($grp_rid !== 0) {
             $this->log(sprintf(' ' . (" into GRP rid=%s"), $grp_rid));
+        }
 
         $stat0 = $stat1 = "0";
-        if ($this->sxBasePrefs->status)
+        if ($this->sxBasePrefs->status) {
             $stat0 = (string) ($this->sxBasePrefs->status);
-        if ($this->sxTaskSettings->status)
+        }
+        if ($this->sxTaskSettings->status) {
             $stat1 = (string) ($this->sxTaskSettings->status);
-        if ( ! $stat0)
+        }
+        if ( ! $stat0) {
             $stat0 = '0';
-        if ( ! $stat1)
+        }
+        if ( ! $stat1) {
             $stat1 = '0';
+        }
 
         $system_file = new system_file($path . '/' . $file);
 
@@ -1649,8 +1684,9 @@ class task_period_archive extends task_abstract
         $hexstat = '';
         if ($meta['status'] !== NULL) {
             $s = strrev($meta['status']) . str_repeat('0', 64);
-            for ($a = 0; $a < 4; $a ++ )
+            for ($a = 0; $a < 4; $a ++ ) {
                 $hexstat = substr('0000' . base_convert(strrev(substr($s, $a << 4, 16)), 2, 16), -4) . $hexstat;
+            }
         } else {
             $hexstat = '0';
         }
@@ -1675,8 +1711,9 @@ class task_period_archive extends task_abstract
                         $row = $stmt->fetch(PDO::FETCH_ASSOC);
                         $stmt->closeCursor();
 
-                        if ($row && uuid::is_valid($row['uuid']))
+                        if ($row && uuid::is_valid($row['uuid'])) {
                             $uuid = $row['uuid'];
+                        }
                     } catch (Exception $e) {
 
                     }
@@ -1687,8 +1724,9 @@ class task_period_archive extends task_abstract
                 $error_file = p4file::check_file_error($system_file->getPathname(), $sbas_id, $file);
                 $status = databox_status::operation_or($stat0, $stat1);
 
-                if ($meta['status'])
+                if ($meta['status']) {
                     $status = databox_status::operation_or($status, $meta['status']);
+                }
 
                 if ( ! $system_file->is_new_in_base(phrasea::sbasFromBas($base_id)) || count($error_file) > 0) {
                     $this->log(sprintf(("Trying to move to lazaret")));
@@ -1737,13 +1775,15 @@ class task_period_archive extends task_abstract
                 $this->archivedFiles ++;
 
                 $node->setAttribute('archived', '1');
-                if ($captionFileNode)
+                if ($captionFileNode) {
                     $captionFileNode->setAttribute('archived', '1');
+                }
             } catch (Exception $e) {
                 $this->log(("Error : can't insert record : " . $e->getMessage()));
                 $node->setAttribute('error', '1');
-                if ($captionFileNode)
+                if ($captionFileNode) {
                     $captionFileNode->setAttribute('error', '1');
+                }
             }
         }
 
@@ -1804,17 +1844,21 @@ class task_period_archive extends task_abstract
     function setAllChildren($dom, $node, $attributes, $depth = 0)
     {
         static $iloop = 0;
-        if ($depth == 0)
+        if ($depth == 0) {
             $iloop = 0;
+        }
 
-        foreach ($attributes as $a => $v)
+        foreach ($attributes as $a => $v) {
             $node->setAttribute($a, $v);
+        }
 
-        if (($iloop ++ % 100) == 0)
+        if (($iloop ++ % 100) == 0) {
             usleep(1000);
+        }
 
-        for ($n = $node->firstChild; $n; $n = $n->nextSibling)
+        for ($n = $node->firstChild; $n; $n = $n->nextSibling) {
             $this->setAllChildren($dom, $n, $attributes, $depth + 1);
+        }
     }
 
     /**
@@ -1834,8 +1878,9 @@ class task_period_archive extends task_abstract
             if (preg_match($preg_maskgrp, $file)) {
                 $matched = $maskgrp;
             }
-            if ($matched)
+            if ($matched) {
                 break;
+            }
         }
 
         return($matched);
@@ -1859,11 +1904,13 @@ class CListFolder
     {
         $this->list = array();
         if ($hdir = opendir($path)) {
-            while (false !== ($file = readdir($hdir)))
+            while (false !== ($file = readdir($hdir))) {
                 $this->list[] = $file;
+            }
             closedir($hdir);
-            if ($sorted)
+            if ($sorted) {
                 natcasesort($this->list);
+            }
         }
     }
 

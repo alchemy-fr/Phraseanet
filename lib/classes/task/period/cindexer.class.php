@@ -135,10 +135,11 @@ class task_period_cindexer extends task_abstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if ($ns = $dom->getElementsByTagName($pname)->item(0)) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cr�e
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
@@ -167,7 +168,7 @@ class task_period_cindexer extends task_abstract
      */
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             ?>
             <script type="text/javascript">
             <?php echo $form ?>.binpath.value      = "<?php echo p4string::MakeString($sxml->binpath, "js", '"') ?>";
@@ -200,8 +201,9 @@ class task_period_cindexer extends task_abstract
     public function printInterfaceJS()
     {
         $appname = 'phraseanet_indexer';
-        if ($this->system == 'WINDOWS')
+        if ($this->system == 'WINDOWS') {
             $appname .= '.exe';
+        }
         ?>
         <script type="text/javascript">
             function calccmd()
@@ -273,13 +275,14 @@ class task_period_cindexer extends task_abstract
     public function printInterfaceHTML()
     {
         $appname = 'phraseanet_indexer';
-        if ($this->system == 'WINDOWS')
+        if ($this->system == 'WINDOWS') {
             $appname .= '.exe';
+        }
         ob_start();
         ?>
         <form name="graphicForm" onsubmit="return(false);" method="post">
             <br/>
-        <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
+            <?php echo _('task::cindexer:executable') ?>&nbsp;:&nbsp;
             <input type="text" name="binpath" style="width:300px;" onchange="chgxmltxt(this, 'binpath');" value="">&nbsp;/&nbsp;<?php echo $appname ?>
             <br/>
             <?php echo _('task::cindexer:host') ?>&nbsp;:&nbsp;<input type="text" name="host" style="width:100px;" onchange="chgxmltxt(this, 'host');" value="">
@@ -290,13 +293,13 @@ class task_period_cindexer extends task_abstract
             <br/>
             <?php echo _('task::cindexer:user') ?>&nbsp;:&nbsp;<input type="text" name="user" style="width:200px;" onchange="chgxmltxt(this, 'user');" value="">
             <br/>
-        <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="password" name="password" style="width:200px;" onchange="chgxmltxt(this, 'password');" value="">
+            <?php echo _('task::cindexer:password') ?>&nbsp;:&nbsp;<input type="password" name="password" style="width:200px;" onchange="chgxmltxt(this, 'password');" value="">
             <br/>
             <br/>
 
             <?php echo _('task::cindexer:control socket') ?>&nbsp;:&nbsp;<input type="text" name="socket" style="width:50px;" onchange="chgxmltxt(this, 'socket');" value="">
             <br/>
-        <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" onchange="chgxmltxt(this, 'debugmask');" value="">
+            <?php echo _('task::cindexer:Debug mask') ?>&nbsp;:&nbsp;<input type="text" name="debugmask" style="width:50px;" onchange="chgxmltxt(this, 'debugmask');" value="">
             <br/>
             <br/>
 
@@ -305,20 +308,20 @@ class task_period_cindexer extends task_abstract
                 <br/>
             </div>
 
-        <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" onchange="chgxmltxt(this, 'charset');" value="">
+            <?php echo _('task::cindexer:MySQL charset') ?>&nbsp;:&nbsp;<input type="text" name="charset" style="width:100px;" onchange="chgxmltxt(this, 'charset');" value="">
             <br/>
 
             <input type="checkbox" name="nolog" onclick="chgxmlck(this, 'nolog');">&nbsp;<?php echo _('task::cindexer:do not (sys)log, but out to console)') ?>
             <br/>
 
-        <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
+            <?php echo _('task::cindexer:default language for new candidates') ?>&nbsp;:&nbsp;<input type="text" name="clng" style="width:50px;" onchange="chgxmltxt(this, 'clng');" value="">
             <br/>
             <br/>
 
             <hr/>
 
             <br/>
-        <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
+            <?php echo _('task::cindexer:windows specific') ?>&nbsp;:<br/>
             <input type="checkbox" name="winsvc_run" onclick="chgxmlck(this, 'run');">&nbsp;<?php echo _('task::cindexer:run as application, not as service') ?>
             <br/>
 
@@ -388,28 +391,39 @@ class task_period_cindexer extends task_abstract
         }
 
         $args = array();
-        if ($this->host)
+        if ($this->host) {
             $args[] = '-h=' . $this->host;
-        if ($this->port)
+        }
+        if ($this->port) {
             $args[] = '-P=' . $this->port;
-        if ($this->base)
+        }
+        if ($this->base) {
             $args[] = '-b=' . $this->base;
-        if ($this->user)
+        }
+        if ($this->user) {
             $args[] = '-u=' . $this->user;
-        if ($this->password)
+        }
+        if ($this->password) {
             $args[] = '-p=' . $this->password;
-        if ($this->socket)
+        }
+        if ($this->socket) {
             $args[] = '--socket=' . $this->socket;
-        if ($this->use_sbas)
+        }
+        if ($this->use_sbas) {
             $args[] = '-o';
-        if ($this->charset)
+        }
+        if ($this->charset) {
             $args[] = '--default-character-set=' . $this->charset;
-        if ($this->debugmask > 0)
+        }
+        if ($this->debugmask > 0) {
             $args[] = '-d=' . $this->debugmask;
-        if ($this->nolog)
+        }
+        if ($this->nolog) {
             $args[] = '-n';
-        if ($this->winsvc_run)
+        }
+        if ($this->winsvc_run) {
             $args[] = '--run';
+        }
 
         $registry = registry::get_instance();
         $logdir = p4string::addEndSlash($registry->get('GV_RootPath') . 'logs');
@@ -430,11 +444,13 @@ class task_period_cindexer extends task_abstract
                 break;
         }
 
-        if ($this->new_status !== NULL)
+        if ($this->new_status !== NULL) {
             $this->setState($this->new_status);
+        }
 
-        if ($this->exception)
+        if ($this->exception) {
             throw $this->exception;
+        }
     }
 
     private function run_with_proc_open($cmd, $args)
@@ -453,8 +469,9 @@ class task_period_cindexer extends task_abstract
         $pid = NULL;
         if (is_resource($process)) {
             $proc_status = proc_get_status($process);
-            if ($proc_status['running'])
+            if ($proc_status['running']) {
                 $pid = $proc_status['pid'];
+            }
         }
         $qsent = '';
         $timetokill = NULL;
@@ -469,8 +486,9 @@ class task_period_cindexer extends task_abstract
                     if (socket_connect($sock, '127.0.0.1', $this->socket) === true) {
                         socket_write($sock, 'Q', 1);
                         socket_write($sock, "\r\n", strlen("\r\n"));
-                        for ($i = 0; $this->running && $i < 5; $i ++ )
+                        for ($i = 0; $this->running && $i < 5; $i ++ ) {
                             sleep(1);
+                        }
                         $qsent = 'Q';
                         $timetokill = time() + 10;
                     } else {
@@ -506,8 +524,9 @@ class task_period_cindexer extends task_abstract
                     }
                 }
             }
-            for ($i = 0; $this->running && $i < 5; $i ++ )
+            for ($i = 0; $this->running && $i < 5; $i ++ ) {
                 sleep(1);
+            }
         }
 
         if ($sock) {
@@ -516,8 +535,9 @@ class task_period_cindexer extends task_abstract
         }
 
         foreach (array_keys($pipes) as $offset) {
-            if (is_resource($pipes[$offset]))
+            if (is_resource($pipes[$offset])) {
                 fclose($pipes[$offset]);
+            }
         }
 
         proc_terminate($process); // sigint
@@ -526,8 +546,6 @@ class task_period_cindexer extends task_abstract
 
     private function run_with_fork($cmd, $args)
     {
-        $nullfile = $this->system == 'WINDOWS' ? 'NUL' : '/dev/null';
-
         $pid = pcntl_fork();
         if ($pid == -1) {
             $this->exception = new Exception('cindexer can\'t fork', self::ERR_CANT_FORK);
@@ -561,6 +579,7 @@ class task_period_cindexer extends task_abstract
 
                 if ($this->getState() == self::STATE_TOSTOP) {
                     posix_kill($pid, ($sigsent = SIGINT));
+                    $timetokill = time() + 10;
                     sleep(2);
                 }
 
@@ -583,7 +602,6 @@ class task_period_cindexer extends task_abstract
                     if ($sigsent == SIGINT && time() > $timetokill) {
                         // must kill cindexer
                         $this->log(_('task::cindexer:killing the cindexer'));
-                        $qsent = 'K';
                         posix_kill($pid, ($sigsent = SIGKILL));
                     }
                     sleep(2);
@@ -594,7 +612,7 @@ class task_period_cindexer extends task_abstract
 
     private function run_with_exec($cmd, $args)
     {
-        $x = pcntl_exec($cmd, $args);
+        pcntl_exec($cmd, $args);
         sleep(2);
     }
 }

@@ -77,10 +77,11 @@ class task_period_apibridge extends task_appboxAbstract
 
             $this->log("process " . $element->get_id() . " with status " . $element->get_status());
 
-            if ($element->get_status() == Bridge_Element::STATUS_PENDING)
+            if ($element->get_status() == Bridge_Element::STATUS_PENDING) {
                 $this->upload_element($element);
-            else
+            } else {
                 $this->update_element($element);
+            }
         } catch (Exception $e) {
             $sql = 'UPDATE bridge_elements SET status = :status WHERE id = :id';
 

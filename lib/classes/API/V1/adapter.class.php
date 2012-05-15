@@ -730,11 +730,13 @@ class API_V1_adapter extends API_V1_Abstract
 
         $options->set_bases($params['bases'], $user->ACL());
 
-        if ( ! is_array($params['fields']))
+        if ( ! is_array($params['fields'])) {
             $params['fields'] = array();
+        }
         $options->set_fields($params['fields']);
-        if ( ! is_array($params['status']))
+        if ( ! is_array($params['status'])) {
             $params['status'] = array();
+        }
         $options->set_status($params['status']);
         $options->set_search_type($params['search_type']);
         $options->set_record_type($params['recordtype']);
@@ -938,15 +940,19 @@ class API_V1_adapter extends API_V1_Abstract
 
             $datas = strrev($record->get_status());
 
-            if ( ! is_array($status))
+            if ( ! is_array($status)) {
                 throw new API_V1_exception_badrequest();
+            }
             foreach ($status as $n => $value) {
-                if ($n > 63 || $n < 4)
+                if ($n > 63 || $n < 4) {
                     throw new API_V1_exception_badrequest();
-                if ( ! in_array($value, array('0', '1')))
+                }
+                if ( ! in_array($value, array('0', '1'))) {
                     throw new API_V1_exception_badrequest();
-                if ( ! isset($status_bits[$n]))
+                }
+                if ( ! isset($status_bits[$n])) {
                     throw new API_V1_exception_badrequest ();
+                }
 
                 $datas = substr($datas, 0, ($n - 1)) . $value . substr($datas, ($n + 1));
             }
@@ -1076,8 +1082,9 @@ class API_V1_adapter extends API_V1_Abstract
 
         $name = $request->get('name');
 
-        if (trim(strip_tags($name)) === '')
+        if (trim(strip_tags($name)) === '') {
             throw new API_V1_exception_badrequest ();
+        }
 
         $user = $this->core->getAuthenticatedUser();
 
@@ -1472,10 +1479,11 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_embedable_media(media_subdef &$media, registryInterface &$registry)
     {
-        if ($media->get_permalink() instanceof media_Permalink_Adapter)
+        if ($media->get_permalink() instanceof media_Permalink_Adapter) {
             $permalink = $this->list_permalink($media->get_permalink(), $registry);
-        else
+        } else {
             $permalink = null;
+        }
 
         return array(
             'permalink'   => $permalink,
@@ -1600,8 +1608,9 @@ class API_V1_adapter extends API_V1_Abstract
 
             $expires_on_atom = $basket->getValidation()->getExpires();
 
-            if ($expires_on_atom instanceof DateTime)
+            if ($expires_on_atom instanceof DateTime) {
                 $expires_on_atom = $expires_on_atom->format(DATE_ATOM);
+            }
 
             $user = \User_Adapter::getInstance($this->appbox->get_session()->get_usr_id(), $this->appbox);
 

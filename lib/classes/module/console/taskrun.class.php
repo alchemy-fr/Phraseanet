@@ -59,8 +59,9 @@ class module_console_taskrun extends Command
     {
         if ($this->task) {
             $this->task->log(sprintf("signal %s received", $signo));
-            if ($signo == SIGTERM)
+            if ($signo == SIGTERM) {
                 $this->task->setRunning(false);
+            }
         }
     }
 
@@ -72,8 +73,9 @@ class module_console_taskrun extends Command
         }
 
         $task_id = (int) $input->getArgument('task_id');
-        if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id')))
+        if ($task_id <= 0 || strlen($task_id) !== strlen($input->getArgument('task_id'))) {
             throw new \RuntimeException('Argument must be an Id.');
+        }
 
         $appbox = \appbox::get_instance(\bootstrap::getCore());
         $task_manager = new task_manager($appbox);
@@ -82,21 +84,23 @@ class module_console_taskrun extends Command
         if ($input->getOption('runner') === task_abstract::RUNNER_MANUAL) {
             $schedStatus = $task_manager->getSchedulerState();
 
-            if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid'])
+            if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid']) {
                 $this->shedulerPID = $schedStatus['pid'];
+            }
             $runner = task_abstract::RUNNER_MANUAL;
-        }
-        else {
+        } else {
             $runner = task_abstract::RUNNER_SCHEDULER;
             $schedStatus = $task_manager->getSchedulerState();
-            if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid'])
+            if ($schedStatus && $schedStatus['status'] == 'running' && $schedStatus['pid']) {
                 $this->shedulerPID = $schedStatus['pid'];
+            }
         }
 
         register_tick_function(array($this, 'tick_handler'), true);
         declare(ticks = 1);
-        if (function_exists('pcntl_signal'))
+        if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGTERM, array($this, 'sig_handler'));
+        }
 
         try {
             $this->task->run($runner, $input, $output);
@@ -121,12 +125,12 @@ class module_console_taskrun extends Command
         if (time() - $start > 0) {
             if ($this->shedulerPID) {
                 if ( ! posix_kill($this->shedulerPID, 0)) {
-                    if (method_exists($this->task, 'signal'))
+                    if (method_exists($this->task, 'signal')) {
                         $this->task->signal('SIGNAL_SCHEDULER_DIED');
-                    else
+                    } else {
                         $this->task->setState(task_abstract::STATE_TOSTOP);
+                    }
                 }
-
 
                 $start = time();
             }

@@ -29,10 +29,11 @@ switch ($parm['action']) {
         $output = module_admin::getTree($parm['position']);
         break;
     case 'APACHE':
-        if ($parm['test'] == 'success')
+        if ($parm['test'] == 'success') {
             $output = '1';
-        else
+        } else {
             $output = '0';
+        }
         break;
     case 'SCHEDULERKEY':
         $output = $registry->get('GV_ServerName') . 'admin/runscheduler.php?key=' . urlencode(phrasea::scheduler_key( ! ! $parm['renew']));
@@ -114,8 +115,9 @@ switch ($parm['action']) {
             $pid = (int) ($task->getPID());
             $task->setState($parm["status"]);
             $signal = (int) ($parm['signal']);
-            if ($signal > 0 && $pid)
+            if ($signal > 0 && $pid) {
                 posix_kill($pid, $signal);
+            }
         } catch (Exception $e) {
 
         }
@@ -167,8 +169,9 @@ switch ($parm['action']) {
              * @todo checker, cette methode n'est pas implementee partout
              */
             $root->setAttribute("crashed", $task->getCrashCounter());
-            if ($task->saveChanges($conn, $parm["task_id"], $row))
+            if ($task->saveChanges($conn, $parm["task_id"], $row)) {
                 $root->setAttribute("saved", "1");
+            }
         } catch (Exception $e) {
 
         }
@@ -206,8 +209,9 @@ switch ($parm['action']) {
             $stmt->closeCursor();
             $ret['db_processlist'] = array();
             foreach ($rows as $row) {
-                if ($row['Info'] != $sql)
+                if ($row['Info'] != $sql) {
                     $ret['db_processlist'][] = $row;
+                }
             }
         }
 
@@ -252,8 +256,9 @@ switch ($parm['action']) {
         $ret['xml_indexed'] = $datas['xml_indexed'];
         $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
 
-        if (file_exists($registry->get('GV_RootPath') . 'config/minilogos/logopdf_' . $parm['sbas_id'] . '.jpg'))
+        if (file_exists($registry->get('GV_RootPath') . 'config/minilogos/logopdf_' . $parm['sbas_id'] . '.jpg')) {
             $ret['printLogoURL'] = '/print/' . $parm['sbas_id'];
+        }
         $output = p4string::jsonencode($ret);
         break;
 

@@ -59,10 +59,11 @@ class task_period_writemeta extends task_databoxAbstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
@@ -87,26 +88,31 @@ class task_period_writemeta extends task_databoxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values (ex. 0 < period < 3600)
-            if ((int) ($sxml->period) < 10)
+            if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
-            elseif ((int) ($sxml->period) > 300)
+            } elseif ((int) ($sxml->period) > 300) {
                 $sxml->period = 300;
+            }
 
-            if ((string) ($sxml->maxrecs) == '')
+            if ((string) ($sxml->maxrecs) == '') {
                 $sxml->maxrecs = 100;
-            if ((int) ($sxml->maxrecs) < 10)
+            }
+            if ((int) ($sxml->maxrecs) < 10) {
                 $sxml->maxrecs = 10;
-            elseif ((int) ($sxml->maxrecs) > 500)
+            } elseif ((int) ($sxml->maxrecs) > 500) {
                 $sxml->maxrecs = 500;
+            }
 
-            if ((string) ($sxml->maxmegs) == '')
+            if ((string) ($sxml->maxmegs) == '') {
                 $sxml->maxmegs = 6;
-            if ((int) ($sxml->maxmegs) < 3)
+            }
+            if ((int) ($sxml->maxmegs) < 3) {
                 $sxml->maxmegs = 3;
-            elseif ((int) ($sxml->maxmegs) > 32)
+            } elseif ((int) ($sxml->maxmegs) > 32) {
                 $sxml->maxmegs = 32;
+            }
             ?>
             <script type="text/javascript">
             <?php echo $form ?>.period.value        = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
@@ -116,8 +122,7 @@ class task_period_writemeta extends task_databoxAbstract
             </script>
             <?php
             return("");
-        }
-        else { // ... so we NEVER come here
+        } else { // ... so we NEVER come here
             // bad xml
             return("BAD XML");
         }
@@ -217,8 +222,9 @@ class task_period_writemeta extends task_databoxAbstract
         foreach ($subdefgroups as $type => $subdefs) {
             foreach ($subdefs as $sub) {
                 $name = $sub->get_name();
-                if ($sub->meta_writeable())
+                if ($sub->meta_writeable()) {
                     $metasubdefs[$name . '_' . $type] = true;
+                }
             }
         }
 

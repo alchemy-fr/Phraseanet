@@ -79,8 +79,9 @@ abstract class task_databoxAbstract extends task_abstract
             }
 
             foreach ($rs as $row) { // every sbas
-                if ( ! $this->running)
+                if ( ! $this->running) {
                     break;
+                }
 
                 $this->sbas_id = (int) $row['sbas_id'];
                 $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id));
@@ -140,7 +141,6 @@ abstract class task_databoxAbstract extends task_abstract
     {
         $ret = self::STATE_OK;
 
-        $tsub = array();
         $connbas = false;
 
         try {
@@ -156,8 +156,9 @@ abstract class task_databoxAbstract extends task_abstract
         $rowstodo = count($rs);
         $rowsdone = 0;
 
-        if ($rowstodo > 0)
+        if ($rowstodo > 0) {
             $this->setProgress(0, $rowstodo);
+        }
 
         foreach ($rs as $row) {
             try {
@@ -196,8 +197,9 @@ abstract class task_databoxAbstract extends task_abstract
                 $this->running = FALSE;
             }
 
-            if ( ! $this->running)
+            if ( ! $this->running) {
                 break;
+            }
         }
         //
         // if nothing was done, at least check the status
@@ -233,8 +235,9 @@ abstract class task_databoxAbstract extends task_abstract
             unset($connbas);
         }
 
-        if ($rowstodo > 0)
+        if ($rowstodo > 0) {
             $this->setProgress(0, 0);
+        }
 
         return $ret;
     }

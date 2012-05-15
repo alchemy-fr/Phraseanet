@@ -29,35 +29,38 @@ $appbox = appbox::get_instance(\bootstrap::getCore());
 $session = $appbox->get_session();
 define("DEFAULT_MIMETYPE", "application/octet-stream");
 
-if ($request->comes_from_flash())
+if ($request->comes_from_flash()) {
     define("UPLOADER", "FLASH");
-else
+} else {
     define("UPLOADER", "HTML");
+}
 
 if ( ! isset($_FILES['Filedata'])) {
-    if (UPLOADER == 'FLASH')
+    if (UPLOADER == 'FLASH') {
         header('HTTP/1.1 500 Internal Server Error');
-    else
+    } else {
         echo '<script type="text/javascript">parent.classic_uploaded("' . _("Internal Server Error") . '")</script>';
+    }
     exit;
 }
 
 if ($_FILES['Filedata']['error'] > 0) {
-    if (UPLOADER == 'FLASH')
+    if (UPLOADER == 'FLASH') {
         header('HTTP/1.1 500 Internal Server Error');
-    else
+    } else {
         echo '<script type="text/javascript">parent.classic_uploaded("' . _("Internal Server Error") . '")</script>';
+    }
     exit(0);
 }
 
 if ( ! move_uploaded_file($_FILES['Filedata']['tmp_name'], $_FILES['Filedata']['tmp_name'] . '_muf')) {
-    if (UPLOADER == 'FLASH')
+    if (UPLOADER == 'FLASH') {
         header('HTTP/1.1 500 Internal Server Error');
-    else
+    } else {
         echo '<script type="text/javascript">parent.classic_uploaded("' . _("Internal Server Error") . '")</script>';
+    }
     exit(0);
-}
-else {
+} else {
     $_FILES['Filedata']['tmp_name'].='_muf';
 }
 
@@ -87,10 +90,11 @@ if ($sbas_id !== false && is_array($parm['status'])) {
 
     foreach ($parm['status'] as $k => $v) {
         if ((int) $k <= 63 && (int) $k >= 4) {
-            if ($v == '0')
+            if ($v == '0') {
                 $mask_non[63 - (int) $k] = $v;
-            elseif ($v == '1')
+            } elseif ($v == '1') {
                 $mask_oui[63 - (int) $k] = $v;
+            }
         }
     }
 }
@@ -104,10 +108,12 @@ try {
         try {
             $tmp_record = record_adapter::get_record_by_sha($sbas_id, $sha256);
 
-            if ( ! $tmp_record)
+            if ( ! $tmp_record) {
                 throw new Exception('bad luck');
-            if (is_array($tmp_record))
+            }
+            if (is_array($tmp_record)) {
                 $tmp_record = array_shift($tmp_record);
+            }
 
             $tmp_uuid = $tmp_record->get_uuid();
 
@@ -126,34 +132,35 @@ try {
         // file already exists in base
         if ( ! lazaretFile::move_uploaded_to_lazaret($filename, $base_id, $_FILES['Filedata']["name"], implode("\n", $error_file), $status_2)) {
             // move in lazaret failed
-            if (UPLOADER == 'FLASH')
+            if (UPLOADER == 'FLASH') {
                 header('HTTP/1.1 500 Internal Server Error');
-            else
+            } else {
                 echo '<script type="text/javascript">parent.classic_uploaded("' . _("erreur lors de l'archivage") . '")</script>';
-        }
-        else {
+            }
+        } else {
             // move in lazaret succeed
-            if (UPLOADER == 'HTML')
+            if (UPLOADER == 'HTML') {
                 echo '<script type="text/javascript">parent.classic_uploaded("' . _('Document ajoute a la quarantaine') . '")</script>';
+            }
         }
 
-        if (UPLOADER == 'HTML')
+        if (UPLOADER == 'HTML') {
             echo '<script type="text/javascript">parent.classic_uploaded("' . _("Fichier uploade, en attente") . '")</script>';
+        }
 
         unset($filename);
         unlink($_FILES['Filedata']['tmp_name']);
         exit;
-    }
-    else {
+    } else {
         // file does not exists in base, we can archive
         if (($record_id = p4file::archiveFile($filename, $base_id, true, $_FILES['Filedata']["name"])) === false) {
             // archive failed
-            if (UPLOADER == 'FLASH')
+            if (UPLOADER == 'FLASH') {
                 header('HTTP/1.1 500 Internal Server Error');
-            else
+            } else {
                 echo '<script type="text/javascript">parent.classic_uploaded("' . _("erreur lors de l'archivage") . '")</script>';
-        }
-        else {
+            }
+        } else {
             // archive succeed
             if ($chStatus === true && $sbas_id !== false && is_array($parm['status'])) {
                 try {
@@ -164,10 +171,12 @@ try {
 
                 }
             }
-            if (UPLOADER == 'HTML')
+            if (UPLOADER == 'HTML') {
                 echo '<script type="text/javascript">parent.classic_uploaded("' . _("Fichier uploade !") . '")</script>';
+            }
         }
     }
+    
     exit(0);
 } catch (Exception $e) {
 

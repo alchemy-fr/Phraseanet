@@ -101,8 +101,9 @@ abstract class task_abstract
         $stmt->execute(array(':taskid' => $this->taskid));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        if ( ! $row)
+        if ( ! $row) {
             throw new Exception('Unknown task id');
+        }
 
         return $row['status'];
     }
@@ -281,8 +282,9 @@ abstract class task_abstract
         $stmt->execute(array(':taskid' => $this->getID()));
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
-        if ( ! $row)
+        if ( ! $row) {
             throw new Exception('Unknown task id');
+        }
         $this->title = $row['name'];
         $this->crash_counter = (int) $row['crashed'];
         $this->active = ! ! $row['active'];
@@ -367,7 +369,7 @@ abstract class task_abstract
         $registry = registry::get_instance();
         system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
 
-        if (($fd = fopen(($lockfile = ($lockdir . 'task_' . $taskid . '.lock')), 'a+'))) {
+        if (($fd = fopen(($lockfile = ($lockdir . 'task_' . $taskid . '.lock')), 'a+')) != FALSE) {
             if (flock($fd, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked ? : task running
                 $pid = fgets($fd);
@@ -389,7 +391,7 @@ abstract class task_abstract
     protected function pause($when_started = 0)
     {
         $this->log($this->records_done . ' records done');
-        if ($this->running) {// && $this->records_done == 0)
+        if ($this->running) {       // && $this->records_done == 0)
             $when_started = time() - $when_started;
             if ($when_started < $this->period) {
                 for ($t = $this->period - $when_started; $this->running && $t > 0; $t -- ) { // DON'T do sleep($this->period - $when_started) because it prevents ticks !
@@ -411,12 +413,12 @@ abstract class task_abstract
         $this->output = $output;
 
         $taskid = $this->getID();
-        $conn = connection::getPDOConnection();
 
         $registry = registry::get_instance();
         system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
         $locker = true;
-        $tasklock = fopen(($lockfile = ($lockdir . 'task_' . $taskid . '.lock')), 'a+');
+        $lockfile = ($lockdir . 'task_' . $taskid . '.lock');
+        $tasklock = fopen($lockfile, 'a+');
 
         if (flock($tasklock, LOCK_EX | LOCK_NB, $locker) === FALSE) {
             $this->log("runtask::ERROR : task already running.");
@@ -463,8 +465,9 @@ abstract class task_abstract
         }
 
         // if something went wrong, report
-        if ($exception)
+        if ($exception) {
             throw($exception);
+        }
     }
 
     abstract protected function run2();
@@ -472,18 +475,22 @@ abstract class task_abstract
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->period = (int) $sx_task_settings->period;
-        if ($this->period <= 0 || $this->period >= 60 * 60)
+        if ($this->period <= 0 || $this->period >= 60 * 60) {
             $this->period = 60;
+        }
 
         $this->maxrecs = (int) $sx_task_settings->maxrecs;
-        if ($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000)
+        if ($sx_task_settings->maxrecs < 10 || $sx_task_settings->maxrecs > 1000) {
             $this->maxrecs = 100;
+        }
         $this->maxmegs = (int) $sx_task_settings->maxmegs;
-        if ($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512)
+        if ($sx_task_settings->maxmegs < 16 || $sx_task_settings->maxmegs > 512) {
             $this->maxmegs = 24;
+        }
         $this->record_buffer_size = (int) $sx_task_settings->flush;
-        if ($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100)
+        if ($sx_task_settings->flush < 1 || $sx_task_settings->flush > 100) {
             $this->record_buffer_size = 10;
+        }
     }
 
     protected function incrementLoops()
@@ -500,8 +507,9 @@ abstract class task_abstract
     {
         static $lastt = null;
         $t = explode(' ', ($ut = microtime()));
-        if ($lastt === null)
+        if ($lastt === null) {
             $lastt = $t;
+        }
         $dt = ($t[0] - $lastt[0]) + ($t[1] - $lastt[1]);
 
         $m = memory_get_usage() >> 10;
@@ -547,8 +555,9 @@ abstract class task_abstract
      */
     public static function create(appbox $appbox, $class_name, $settings = null)
     {
-        if ( ! class_exists($class_name))
+        if ( ! class_exists($class_name)) {
             throw new Exception('Unknown task class');
+        }
 
         $sql = 'INSERT INTO task2
                     (task_id, usr_id_owner, status, crashed, active,
@@ -558,10 +567,11 @@ abstract class task_abstract
                       :name, "0000/00/00 00:00:00", :class, :settings)';
 
 
-        if ($settings && ! DOMDocument::loadXML($settings))
+        if ($settings && ! DOMDocument::loadXML($settings)) {
             throw new Exception('settings invalide');
-        elseif ( ! $settings)
+        } elseif ( ! $settings) {
             $settings = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<tasksettings>\n</tasksettings>";
+        }
 
         $params = array(
             ':active'   => 1
@@ -582,8 +592,9 @@ abstract class task_abstract
     {
         global $argc, $argv;
         $t = "usage: " . $argv[0] . " [options]\noptions:\n";
-        foreach ($this->argt as $n => $v)
+        foreach ($this->argt as $n => $v) {
             $t .= "\t" . $n . $v["usage"] . "\n";
+        }
 
         return($t);
     }

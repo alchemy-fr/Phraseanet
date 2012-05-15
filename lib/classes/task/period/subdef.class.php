@@ -77,9 +77,10 @@ class task_period_subdef extends task_databoxAbstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
-                    while (($n = $ns->firstChild))
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     $ns = $dom->documentElement->appendChild($dom->createElement($pname));
                 }
@@ -107,32 +108,38 @@ class task_period_subdef extends task_databoxAbstract
      */
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) {
-            if ((int) ($sxml->period) < 10)
+        if (($sxml = simplexml_load_string($xml)) != FALSE) {
+            if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
-            elseif ((int) ($sxml->period) > 300)
+            } elseif ((int) ($sxml->period) > 300) {
                 $sxml->period = 300;
+            }
 
-            if ((string) ($sxml->flush) == '')
+            if ((string) ($sxml->flush) == '') {
                 $sxml->flush = 10;
-            elseif ((int) ($sxml->flush) < 1)
+            } elseif ((int) ($sxml->flush) < 1) {
                 $sxml->flush = 1;
-            elseif ((int) ($sxml->flush) > 100)
+            } elseif ((int) ($sxml->flush) > 100) {
                 $sxml->flush = 100;
+            }
 
-            if ((string) ($sxml->maxrecs) == '')
+            if ((string) ($sxml->maxrecs) == '') {
                 $sxml->maxrecs = 100;
-            if ((int) ($sxml->maxrecs) < 10)
+            }
+            if ((int) ($sxml->maxrecs) < 10) {
                 $sxml->maxrecs = 10;
-            elseif ((int) ($sxml->maxrecs) > 500)
+            } elseif ((int) ($sxml->maxrecs) > 500) {
                 $sxml->maxrecs = 500;
+            }
 
-            if ((string) ($sxml->maxmegs) == '')
+            if ((string) ($sxml->maxmegs) == '') {
                 $sxml->maxmegs = 6;
-            if ((int) ($sxml->maxmegs) < 3)
+            }
+            if ((int) ($sxml->maxmegs) < 3) {
                 $sxml->maxmegs = 3;
-            elseif ((int) ($sxml->maxmegs) > 32)
+            } elseif ((int) ($sxml->maxmegs) > 32) {
                 $sxml->maxmegs = 32;
+            }
             ?>
             <script type="text/javascript">
             <?php echo $form ?>.period.value  = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
@@ -143,8 +150,7 @@ class task_period_subdef extends task_databoxAbstract
 
             <?php
             return("");
-        }
-        else {
+        } else {
             return("BAD XML");
         }
     }
@@ -219,12 +225,12 @@ class task_period_subdef extends task_databoxAbstract
             <input type="text" name="period" style="width:40px;" onchange="chgxmltxt(this, 'period');" value="">
             <?php echo _('task::_common_:secondes (unite temporelle)') ?><br/>
             <br/>
-            <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" onchange="chgxmltxt(this, \'flush\');" value="">'); ?>
+        <?php echo sprintf(_("task::_common_:passer tous les %s records a l'etape suivante"), '<input type="text" name="flush" style="width:40px;" onchange="chgxmltxt(this, \'flush\');" value="">'); ?>
             <br/>
             <br/>
-            <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
+        <?php echo _('task::_common_:relancer la tache tous les') ?>&nbsp;
             <input type="text" name="maxrecs" style="width:40px;" onchange="chgxmltxt(this, 'maxrecs');" value="">
-            <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
+        <?php echo _('task::_common_:records, ou si la memoire depasse') ?>&nbsp;
             <input type="text" name="maxmegs" style="width:40px;" onchange="chgxmltxt(this, 'maxmegs');" value="">
             Mo
             <br/>

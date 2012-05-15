@@ -51,16 +51,17 @@ class task_period_ftp extends task_appboxAbstract
             , "proxyport"
             , "period"
         );
-        if (($dom = @DOMDocument::loadXML($oldxml))) {
+        if (($dom = @DOMDocument::loadXML($oldxml)) != FALSE) {
             $xmlchanged = false;
             foreach (array("str:proxy", "str:proxyport", "str:period") as $pname) {
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
@@ -91,7 +92,7 @@ class task_period_ftp extends task_appboxAbstract
      */
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values (ex. 0 < period < 3600)
             ?>
             <script type="text/javascript">
@@ -178,14 +179,15 @@ class task_period_ftp extends task_appboxAbstract
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
-            if (($domTaskSettings = @DOMDocument::loadXML($taskrow["settings"]))) {
+            if (($domTaskSettings = @DOMDocument::loadXML($taskrow["settings"])) != FALSE) {
                 $xmlchanged = false;
                 foreach (array("proxy", "proxyport", "period") as $f) {
                     if ($parm[$f] !== NULL) {
-                        if (($ns = $domTaskSettings->getElementsByTagName($f)->item(0))) {
+                        if (($ns = $domTaskSettings->getElementsByTagName($f)->item(0)) != NULL) {
                             // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                            while (($n = $ns->firstChild))
+                            while (($n = $ns->firstChild)) {
                                 $ns->removeChild($n);
+                            }
                         } else {
                             // le champ n'existait pas dans le xml, on le cree
                             $domTaskSettings->documentElement->appendChild($domTaskSettings->createTextNode("\t"));
@@ -197,8 +199,9 @@ class task_period_ftp extends task_appboxAbstract
                         $xmlchanged = true;
                     }
                 }
-                if ($xmlchanged)
+                if ($xmlchanged) {
                     $parm["xml"] = $domTaskSettings->saveXML();
+                }
             }
         }
 
@@ -299,8 +302,9 @@ class task_period_ftp extends task_appboxAbstract
         $stmt->closeCursor();
 
         foreach ($rs as $rowtask) {
-            if (isset($ftp_exports[$rowtask["ftp_export_id"]]))
+            if (isset($ftp_exports[$rowtask["ftp_export_id"]])) {
                 $ftp_exports[$rowtask["ftp_export_id"]]["files"][] = $rowtask;
+            }
         }
 
         return $ftp_exports;
@@ -324,16 +328,18 @@ class task_period_ftp extends task_appboxAbstract
         $ftpLog = $ftp_user_name . "@" . p4string::addEndSlash($ftp_server) . $ftp_export["destfolder"];
 
         if ($ftp_export["crash"] == 0) {
-            $state .= $line = sprintf(
+            $line = sprintf(
                 _('task::ftp:Etat d\'envoi FTP vers le serveur' .
                     ' "%1$s" avec le compte "%2$s" et pour destination le dossier : "%3$s"') . PHP_EOL
                 , $ftp_server
                 , $ftp_user_name
                 , $ftp_export["destfolder"]
             );
+            $state .= $line;
 
-            if ($this->debug)
+            if ($this->debug) {
                 echo $line;
+            }
         }
 
         $state .= $line = sprintf(
@@ -342,8 +348,9 @@ class task_period_ftp extends task_appboxAbstract
                 , "  (" . date('r') . ")"
             ) . PHP_EOL;
 
-        if ($this->debug)
+        if ($this->debug) {
             echo $line;
+        }
 
         if (($ses_id = phrasea_create_session($usr_id)) == null) {
             echo "Unable to create session\n";
@@ -398,13 +405,15 @@ class task_period_ftp extends task_appboxAbstract
             $obj = array();
 
             $basefolder = '';
-            if ( ! in_array(trim($ftp_export["destfolder"]), array('.', './', '')))
+            if ( ! in_array(trim($ftp_export["destfolder"]), array('.', './', ''))) {
                 $basefolder = p4string::addEndSlash($ftp_export["destfolder"]);
+            }
 
             $basefolder .= $ftp_export["foldertocreate"];
 
-            if (in_array(trim($basefolder), array('.', './', '')))
+            if (in_array(trim($basefolder), array('.', './', ''))) {
                 $basefolder = '/';
+            }
 
             foreach ($ftp_export['files'] as $fileid => $file) {
                 $base_id = $file["base_id"];
@@ -480,8 +489,9 @@ class task_period_ftp extends task_appboxAbstract
                             , basename($localfile), $record_id
                             , phrasea::sbas_names(phrasea::sbasFromBas($base_id))) . "\n<br/>";
 
-                    if ($this->debug)
+                    if ($this->debug) {
                         echo $line;
+                    }
 
                     $done = $file['error'];
 
@@ -494,8 +504,9 @@ class task_period_ftp extends task_appboxAbstract
             }
 
             if ($ftp_export['logfile']) {
-                if ($this->debug)
+                if ($this->debug) {
                     echo "\nlogfile \n";
+                }
 
                 $date = new DateTime();
                 $remote_file = $date->format('U');
@@ -539,8 +550,9 @@ class task_period_ftp extends task_appboxAbstract
         } catch (Exception $e) {
             $state .= $line = $e . "\n";
 
-            if ($this->debug)
+            if ($this->debug) {
                 echo $line;
+            }
 
             $sql = "UPDATE ftp_export SET crash=crash+1,date=now()"
                 . " WHERE id = :export_id";
@@ -653,10 +665,11 @@ class task_period_ftp extends task_appboxAbstract
         $stmt->closeCursor();
 
         if ($row) {
-            if ($row['crash'] >= $row['nbretry'])
+            if ($row['crash'] >= $row['nbretry']) {
                 $connection_status = _('Des difficultes ont ete rencontres a la connection au serveur distant');
-            else
+            } else {
                 $connection_status = _('La connection vers le serveur distant est OK');
+            }
 
             $text_mail_sender = $row['text_mail_sender'];
             $text_mail_receiver = $row['text_mail_receiver'];

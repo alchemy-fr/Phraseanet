@@ -80,7 +80,7 @@ class task_period_ftpPull extends task_appboxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values (ex. 0 < period < 3600)
             ?>
             <script type="text/javascript">
@@ -194,11 +194,11 @@ class task_period_ftpPull extends task_appboxAbstract
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
-            if (($domTaskSettings = DOMDocument::loadXML($taskrow["settings"]))) {
+            if (($domTaskSettings = DOMDocument::loadXML($taskrow["settings"])) != FALSE) {
                 $xmlchanged = false;
                 foreach (array("proxy", "proxyport", "period", "host", "port", "user", "password", "ssl", "passive", "localpath", "ftppath") as $f) {
                     if ($parm[$f] !== NULL) {
-                        if (($ns = $domTaskSettings->getElementsByTagName($f)->item(0))) {
+                        if (($ns = $domTaskSettings->getElementsByTagName($f)->item(0)) != NULL) {
                             // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
                             while (($n = $ns->firstChild))
                                 $ns->removeChild($n);

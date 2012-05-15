@@ -70,8 +70,9 @@ class task_period_batchupload extends task_appboxAbstract
         try {
             $databox = databox::get_instance($sbas_id);
             $path = $registry->get('GV_RootPath') . 'tmp/batches/' . $batch_id . '/';
-            if ( ! is_dir($path))
+            if ( ! is_dir($path)) {
                 throw new Exception(sprintf(('Batch directory \'%s\' does not exist'), $path));
+            }
 
             $user = User_Adapter::getInstance($usr_id, $appbox);
             $auth = new Session_Authentication_None($user);

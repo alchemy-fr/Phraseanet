@@ -33,8 +33,9 @@ class task_manager
 
     public function getTasks($refresh = false)
     {
-        if ($this->tasks && ! $refresh)
+        if ($this->tasks && ! $refresh) {
             return $this->tasks;
+        }
 
         $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
         $stmt = $this->appbox->get_connection()->prepare($sql);
@@ -51,8 +52,9 @@ class task_manager
             $row['pid'] = NULL;
 
             $classname = $row['class'];
-            if ( ! class_exists($classname))
+            if ( ! class_exists($classname)) {
                 continue;
+            }
             try {
 //        if( ($lock = fopen( $lockdir . 'task.'.$row['task_id'].'.lock', 'a+')) )
 //        {
@@ -129,7 +131,7 @@ class task_manager
         $pid = NULL;
 
         $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
-        if (($schedlock = fopen($lockdir . 'scheduler.lock', 'a+'))) {
+        if (($schedlock = fopen($lockdir . 'scheduler.lock', 'a+')) != FALSE) {
             if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked : running !
                 $pid = trim(fgets($schedlock, 512));
@@ -159,12 +161,12 @@ class task_manager
 
         $tasks = array();
         foreach ($taskdir as $path) {
-            if (($hdir = @opendir($path))) {
-                $tskin = array();
+            if (($hdir = @opendir($path)) != FALSE) {
                 $max = 9999;
                 while (($max -- > 0) && (($file = readdir($hdir)) !== false)) {
-                    if ( ! is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php")
+                    if ( ! is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php") {
                         continue;
+                    }
 
                     $classname = 'task_period_' . substr($file, 0, strlen($file) - 10);
 

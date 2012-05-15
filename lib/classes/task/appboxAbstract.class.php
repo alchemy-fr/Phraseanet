@@ -67,8 +67,9 @@ abstract class task_appboxAbstract extends task_abstract
             }
 
             if ($row) {
-                if ( ! $this->running)
+                if ( ! $this->running) {
                     break;
+                }
 
                 $appbox = appbox::get_instance(\bootstrap::getCore());
                 try {
@@ -119,8 +120,6 @@ abstract class task_appboxAbstract extends task_abstract
     {
         $ret = self::STATE_OK;
 
-        $conn = $appbox->get_connection();
-        $tsub = array();
         try {
             // get the records to process
             $rs = $this->retrieveContent($appbox);
@@ -132,8 +131,9 @@ abstract class task_appboxAbstract extends task_abstract
         $rowstodo = count($rs);
         $rowsdone = 0;
 
-        if ($rowstodo > 0)
+        if ($rowstodo > 0) {
             $this->setProgress(0, $rowstodo);
+        }
 
         foreach ($rs as $row) {
             try {
@@ -174,8 +174,9 @@ abstract class task_appboxAbstract extends task_abstract
                 $this->running = FALSE;
             }
 
-            if ( ! $this->running)
+            if ( ! $this->running) {
                 break;
+            }
         }
         //
         // if nothing was done, at least check the status
@@ -205,8 +206,9 @@ abstract class task_appboxAbstract extends task_abstract
             }
         }
 
-        if ($rowstodo > 0)
+        if ($rowstodo > 0) {
             $this->setProgress(0, 0);
+        }
 
         return $ret;
     }

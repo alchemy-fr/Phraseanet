@@ -74,10 +74,11 @@ class task_period_outofdate extends task_abstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
@@ -105,15 +106,17 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values
-            if ((int) ($sxml->period) < 10)
+            if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
-            elseif ((int) ($sxml->period) > 1440) // 1 jour
+            } elseif ((int) ($sxml->period) > 1440) { // 1 jour
                 $sxml->period = 1440;
+            }
 
-            if ((string) ($sxml->delay) == '')
+            if ((string) ($sxml->delay) == '') {
                 $sxml->delay = 0;
+            }
             ?>
             <script type="text/javascript">
                 var i;
@@ -155,8 +158,7 @@ class task_period_outofdate extends task_abstract
             </script>
             <?php
             return("");
-        }
-        else { // ... so we NEVER come here
+        } else { // ... so we NEVER come here
             // bad xml
             return("BAD XML");
         }
@@ -199,7 +201,6 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function printInterfaceJS()
     {
-        global $parm;
         ?>
         <script type="text/javascript">
 
@@ -324,8 +325,6 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function printInterfaceHTML()
     {
-        global $usr_id;
-
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -469,13 +468,13 @@ class task_period_outofdate extends task_abstract
 
 
         // ici la tache tourne tant qu'elle est active
-        $last_exec = 0;
         $loop = 0;
         while ($this->running) {
             if ( ! $conn->ping()) {
                 $this->log(("Warning : abox connection lost, restarting in 10 min."));
-                for ($i = 0; $i < 60 * 10; $i ++ )
+                for ($i = 0; $i < 60 * 10; $i ++ ) {
                     sleep(1);
+                }
                 $this->running = false;
 
                 return(self::STATUS_TORESTART);
@@ -483,20 +482,20 @@ class task_period_outofdate extends task_abstract
 
             try {
                 $connbas = connection::getPDOConnection($this->sbas_id);
-                if ( ! $connbas->ping())
+                if ( ! $connbas->ping()) {
                     throw new Exception('Mysql has gone away');
+                }
             } catch (Exception $e) {
                 $this->log(("dbox connection lost, restarting in 10 min."));
-                for ($i = 0; $i < 60 * 10; $i ++ )
+                for ($i = 0; $i < 60 * 10; $i ++ ) {
                     sleep(1);
+                }
                 $this->running = false;
 
                 return(self::STATUS_TORESTART);
             }
 
             $this->setLastExecTime();
-
-            $databox = databox::get_instance($this->sbas_id);
 
             $sql = "SELECT * FROM task2 WHERE task_id = :task_id";
             $stmt = $conn->prepare($sql);
@@ -509,12 +508,12 @@ class task_period_outofdate extends task_abstract
                     $ret = self::STATUS_STOPPED;
                     $this->running = false;
                 } else {
-                    if (($this->sxTaskSettings = simplexml_load_string($row['settings']))) {
+                    if (($this->sxTaskSettings = simplexml_load_string($row['settings'])) != FALSE) {
                         $period = (int) ($this->sxTaskSettings->period);
-                        if ($period <= 0 || $period >= 24 * 60)
+                        if ($period <= 0 || $period >= 24 * 60) {
                             $period = 60;
-                    }
-                    else {
+                        }
+                    } else {
                         $period = 60;
                     }
                     $this->connbas = connection::getPDOConnection($this->sbas_id);
@@ -579,10 +578,10 @@ class task_period_outofdate extends task_abstract
                     $stmt->closeCursor();
 
                     $nchanged += $n;
-                    if ($n > 0)
+                    if ($n > 0) {
                         $this->log(sprintf("SQL='%s' ; parms=%s - %s changes", $xsql['sql'], var_export($xsql['params']), $n));
-                }
-                else {
+                    }
+                } else {
                     $this->log(sprintf("ERROR SQL='%s' ; parms=%s", $xsql['sql'], var_export($xsql['params'], true)));
                 }
             } catch (ErrorException $e) {
@@ -608,10 +607,11 @@ class task_period_outofdate extends task_abstract
         if (($field1 = trim($this->sxTaskSettings->field1)) != '') {
             $date1 = time();
             if (($delta = (int) ($this->sxTaskSettings->fieldDv1)) > 0) {
-                if ($this->sxTaskSettings->fieldDs1 == '-')
+                if ($this->sxTaskSettings->fieldDs1 == '-') {
                     $date1 += 86400 * $delta;
-                else
+                } else {
                     $date1 -= 86400 * $delta;
+                }
             }
             $date1 = date("YmdHis", $date1);
         }
@@ -619,16 +619,18 @@ class task_period_outofdate extends task_abstract
         if (($field2 = trim($this->sxTaskSettings->field2)) != '') {
             $date2 = time();
             if (($delta = (int) ($this->sxTaskSettings->fieldDv2)) > 0) {
-                if ($this->sxTaskSettings->fieldDs2 == '-')
+                if ($this->sxTaskSettings->fieldDs2 == '-') {
                     $date2 += 86400 * $delta;
-                else
+                } else {
                     $date2 -= 86400 * $delta;
+                }
             }
             $date2 = date("YmdHis", $date2);
         }
 
 
         $sqlset = $params = $tmp_params = array();
+        $sqlwhere = array();
         for ($i = 0; $i <= 2; $i ++ ) {
             $sqlwhere[$i] = '';
             $sqlset[$i] = '';
@@ -771,8 +773,9 @@ class task_period_outofdate extends task_abstract
                         $meta_struct = $databox->get_meta_structure();
 
                         foreach ($meta_struct as $meta) {
-                            if (mb_strtolower($meta->get_type()) == 'date')
+                            if (mb_strtolower($meta->get_type()) == 'date') {
                                 $ret['date_fields'][] = $meta->get_name();
+                            }
                         }
 
                         $status = $databox->get_statusbits();
@@ -783,8 +786,9 @@ class task_period_outofdate extends task_abstract
                             $ret['status_bits'][] = array('n'     => $n, 'value' => 1, 'label' => $labelon);
                         }
 
-                        foreach ($databox->get_collections() as $collection)
+                        foreach ($databox->get_collections() as $collection) {
                             $ret['collections'][] = array('id'   => $collection->get_coll_id(), 'name' => $collection->get_name());
+                        }
                     } catch (Exception $e) {
 
                     }

@@ -50,10 +50,11 @@ class task_period_workflow01 extends task_databoxAbstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
@@ -78,15 +79,17 @@ class task_period_workflow01 extends task_databoxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values
-            if ((int) ($sxml->period) < 1)
+            if ((int) ($sxml->period) < 1) {
                 $sxml->period = 1;
-            elseif ((int) ($sxml->period) > 1440) // 1 jour
+            } elseif ((int) ($sxml->period) > 1440) { // 1 jour
                 $sxml->period = 1440;
+            }
 
-            if ((string) ($sxml->delay) == '')
+            if ((string) ($sxml->delay) == '') {
                 $sxml->delay = 0;
+            }
             ?>
             <script type="text/javascript">
                 var i;
@@ -119,8 +122,7 @@ class task_period_workflow01 extends task_databoxAbstract
 
             <?php
             return("");
-        }
-        else { // ... so we NEVER come here
+        } else { // ... so we NEVER come here
             // bad xml
             return("BAD XML");
         }
@@ -365,8 +367,9 @@ class task_period_workflow01 extends task_databoxAbstract
         // in minutes
         $this->period = (int) $sx_task_settings->period * 60;
 
-        if ($this->period <= 0 || $this->period >= 24 * 60)
+        if ($this->period <= 0 || $this->period >= 24 * 60) {
             $this->period = 60;
+        }
     }
 
     protected function retrieveSbasContent(databox $databox)
@@ -401,10 +404,11 @@ class task_period_workflow01 extends task_databoxAbstract
                 throw new Exception('Error in settings for status destination');
             }
             $sql_s .= ($sql_s ? ', ' : '');
-            if ((int) $x[1] === 0)
+            if ((int) $x[1] === 0) {
                 $sql_s .= 'status = status &~(1 << :stat_dst)';
-            else
+            } else {
                 $sql_s .= 'status = status |(1 << :stat_dst)';
+            }
             $sql_parms[':stat_dst'] = (int) $x[0];
         }
 
@@ -462,8 +466,9 @@ class task_period_workflow01 extends task_databoxAbstract
         try {
             $databox = databox::get_instance($sbas_id);
             foreach ($databox->get_meta_structure() as $meta) {
-                if ($meta->get_type() !== 'date')
+                if ($meta->get_type() !== 'date') {
                     continue;
+                }
                 $retjs['date_fields'][] = $meta->get_name();
             }
 
@@ -481,7 +486,7 @@ class task_period_workflow01 extends task_databoxAbstract
             }
 
             $base_ids = $user->ACL()->get_granted_base(array(), array($sbas_id));
-            foreach ($base_ids as $base_id => $collection) {
+            foreach ($base_ids as $collection) {
                 $retjs['collections'][] = array('id'   => (string) ($collection->get_coll_id()), 'name' => $collection->get_name());
             }
         } catch (Exception $e) {

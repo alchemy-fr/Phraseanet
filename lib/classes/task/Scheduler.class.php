@@ -78,7 +78,8 @@ class task_Scheduler
         $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
 
         for ($try = 1; true; $try ++ ) {
-            if (($schedlock = fopen(($lockfile = ($lockdir . 'scheduler.lock')), 'a+'))) {
+            $lockfile = ($lockdir . 'scheduler.lock');
+            if (($schedlock = fopen($lockfile, 'a+')) != FALSE) {
                 if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
                     $this->log(sprintf("failed to lock '%s' (try=%s/4)", $lockfile, $try));
                     if ($try == 4) {
@@ -107,8 +108,9 @@ class task_Scheduler
 
         $this->log(sprintf("running scheduler with method %s", $this->method));
 
-        if ($this->method == self::METHOD_FORK)
+        if ($this->method == self::METHOD_FORK) {
             pcntl_signal(SIGCHLD, SIG_IGN);
+        }
 
         $logdir = $registry->get('GV_RootPath') . 'logs/';
 
@@ -136,15 +138,10 @@ class task_Scheduler
             }
         }
 
-        $tlist = array();
-
-
 
         $schedstatus = 'started';
         $runningtask = 0;
         $connwaslost = false;
-
-        $last_log_check = array();
 
         while ($schedstatus == 'started' || $runningtask > 0) {
             while (1) {
@@ -154,15 +151,17 @@ class task_Scheduler
                 } catch (ErrorException $e) {
                     $ping = false;
                 }
-                if ($ping)
+                if ($ping) {
                     break;
+                }
 
                 unset($conn);
                 if ( ! $connwaslost) {
                     $this->log(sprintf("Warning : abox connection lost, restarting in 10 min."));
                 }
-                for ($i = 0; $i < 60 * 10; $i ++ )
+                for ($i = 0; $i < 60 * 10; $i ++ ) {
                     sleep(1);
+                }
                 try {
                     $conn = appbox::get_instance(\bootstrap::getCore())->get_connection();
                 } catch (ErrorException $e) {
@@ -181,7 +180,7 @@ class task_Scheduler
 
                 $connwaslost = false;
             }
-// printf("%d \n", __LINE__);
+
             $schedstatus = '';
             $row = NULL;
             try {
@@ -216,10 +215,10 @@ class task_Scheduler
             logs::rotate($logdir . "scheduler_o.log");
             logs::rotate($logdir . "scheduler_e.log");
 
-// printf("%d \n", __LINE__);
             // initialy, all tasks are supposed to be removed from the poll
-            foreach ($taskPoll as $tkey => $task)
+            foreach ($taskPoll as $tkey => $task) {
                 $taskPoll[$tkey]["todel"] = true;
+            }
 
             foreach ($task_manager->getTasks(true) as $task) {
                 $tkey = "t_" . $task->getID();
@@ -236,16 +235,18 @@ class task_Scheduler
                         case "WINDOWS":
                             $cmd = $phpcli;
                             $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->getID(), '--runner=scheduler');
-                            if ($this->input && ($this->input->getOption('notasklog')))
+                            if ($this->input && ($this->input->getOption('notasklog'))) {
                                 $args[] = 'notasklog';
+                            }
                             break;
                         default:
                         case "DARWIN":
                         case "LINUX":
                             $cmd = $phpcli;
                             $args = array('-f', $registry->get('GV_RootPath') . 'bin/console', '--', '-q', 'task:run', $task->getID(), '--runner=scheduler');
-                            if ($this->input && ($this->input->getOption('notasklog')))
+                            if ($this->input && ($this->input->getOption('notasklog'))) {
                                 $args[] = 'notasklog';
+                            }
                             break;
                     }
 
@@ -330,8 +331,9 @@ class task_Scheduler
 
                     case task_abstract::STATE_TOSTART:
                         // if scheduler is 'tostop', don't launch a new task !
-                        if ($schedstatus != 'started')
+                        if ($schedstatus != 'started') {
                             break;
+                        }
 
                         $taskPoll[$tkey]["killat"] = NULL;
 
@@ -380,28 +382,24 @@ class task_Scheduler
                                         )
                                     );
 
-                                    if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5)
+                                    if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5) {
                                         $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
-                                    else
+                                    } else {
                                         $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
+                                    }
                                 }
                             }
-                        }
-                        elseif ($this->method == self::METHOD_FORK) {
+                        } elseif ($this->method == self::METHOD_FORK) {
                             $pid = pcntl_fork();
                             if ($pid == -1) {
                                 die("failed to fork");
                             } elseif ($pid == 0) {
                                 umask(0);
-                                if (posix_setsid() < 0)
+                                if (posix_setsid() < 0) {
                                     die("Forked process could not detach from terminal\n");
+                                }
 
-                                fclose(STDIN);
-                                fclose(STDOUT);
-                                fclose(STDERR);
-                                $fdIN = fopen($nullfile, 'r');
-                                $fdOUT = fopen($logdir . "task_o_" . $taskPoll[$tkey]["task"]->getID() . ".log", 'a+');
-                                $fdERR = fopen($logdir . "task_e_" . $taskPoll[$tkey]["task"]->getID() . ".log", 'a+');
+                                // todo (if possible) : redirecting stdin, stdout to log files ?
 
                                 $this->log(sprintf("exec('%s %s')", $taskPoll[$tkey]["cmd"], implode(' ', $taskPoll[$tkey]["args"])));
                                 pcntl_exec($taskPoll[$tkey]["cmd"], $taskPoll[$tkey]["args"]);
@@ -419,12 +417,12 @@ class task_Scheduler
 
                                 if (is_resource($taskPoll[$tkey]["process"])) {
                                     $proc_status = proc_get_status($taskPoll[$tkey]["process"]);
-                                    if ($proc_status['running'])
+                                    if ($proc_status['running']) {
                                         $runningtask ++;
-                                    else
+                                    } else {
                                         $crashed = true;
-                                }
-                                else {
+                                    }
+                                } else {
                                     $crashed = true;
                                 }
                             }
@@ -455,17 +453,19 @@ class task_Scheduler
                                 )
                             );
 
-                            if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5)
+                            if ($taskPoll[$tkey]["task"]->getCrashCounter() > 5) {
                                 $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_STOPPED);
-                            else
+                            } else {
                                 $taskPoll[$tkey]["task"]->setState(task_abstract::STATE_TOSTART);
+                            }
                         }
                         break;
 
                     case task_abstract::STATE_TOSTOP:
 
-                        if ($taskPoll[$tkey]["killat"] === NULL)
+                        if ($taskPoll[$tkey]["killat"] === NULL) {
                             $taskPoll[$tkey]["killat"] = time() + self::TASKDELAYTOQUIT;
+                        }
 
                         $pid = $taskPoll[$tkey]['task']->getPID();
                         if ($pid) {
@@ -545,8 +545,9 @@ class task_Scheduler
                 }
             }
 
-            for ($i = 0; $i < $sleeptime; $i ++ )
+            for ($i = 0; $i < $sleeptime; $i ++ ) {
                 sleep(1);
+            }
         }
 
         $sql = "UPDATE sitepreff SET schedstatus='stopped', schedpid='0'";
