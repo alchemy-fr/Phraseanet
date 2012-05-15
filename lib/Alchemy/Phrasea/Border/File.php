@@ -129,7 +129,14 @@ class File
                 $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
             }
 
-            $writer->write($this->getFile()->getRealPath(), $metadatas);
+            /**
+             * PHPExiftool throws exception on some files not supported
+             */
+            try {
+                $writer->write($this->getFile()->getRealPath(), $metadatas);
+            } catch (\PHPExiftool\Exception\Exception $e) {
+
+            }
         }
 
         $writer = $reader = $metadatas = null;
