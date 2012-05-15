@@ -29,14 +29,14 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $source = $field->get_source();
 
         $this->client->request("GET", "/fields/checkmulti/", array(
-            'souce' => $source, 'multi' => 'false'));
+            'source' => $source->get_source(), 'multi'  => 'false'));
 
         $response = $this->client->getResponse();
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
-        $this->assertTrue( ! ! $datas->result);
-        $this->assertEquals($field->is_multi(),  ! ! $datas->is_multi);
+        $this->assertTrue($datas->result);
+        $this->assertEquals($field->is_multi(), $datas->is_multi);
         $field->delete();
     }
 
@@ -49,14 +49,14 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $source = $field->get_source();
 
         $this->client->request("GET", "/fields/checkreadonly/", array(
-            'souce'    => $source, 'readonly' => 'false'));
+            'source'   => $source->get_source(), 'readonly' => 'false'));
 
         $response = $this->client->getResponse();
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
-        $this->assertTrue( ! ! $datas->result);
-        $this->assertEquals($field->is_readonly(),  ! ! $datas->is_readonly);
+        $this->assertTrue($datas->result);
+        $this->assertEquals($field->is_readonly(), $datas->is_readonly);
 
         $field->delete();
     }
