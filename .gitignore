@@ -6,3 +6,4 @@
 /datas
 composer.lock
 composer.phar
+/libevent-0.0.5/.libs/
