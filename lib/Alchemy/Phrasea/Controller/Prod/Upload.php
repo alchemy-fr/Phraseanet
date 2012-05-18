@@ -87,7 +87,26 @@ class Upload implements ControllerProviderInterface
      */
     public function getUploadForm(Application $app, Request $request)
     {
+        $collections = array();
+        $rights = array('canaddrecord');
 
+        foreach ($app['Core']->getAuthenticatedUser()->ACL()->get_granted_base($rights) as $collection) {
+            $databox = $collection->get_databox();
+            if ( ! isset($collections[$databox->get_sbas_id()])) {
+                $collections[$databox->get_sbas_id()] = array(
+                    'databox'             => $databox,
+                    'databox_collections' => array()
+                );
+            }
+
+            $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
+        }
+
+        $html = $app['Core']['Twig']->render(
+            'prod/upload/upload.html.twig', array('collections' => $collections)
+        );
+
+        return new Response($html);
     }
 
     /**

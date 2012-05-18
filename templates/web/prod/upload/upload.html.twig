@@ -1,0 +1,247 @@
+<div id="uploadBox">
+    <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
+        {# action bar #}
+        <div class="PNB" style="height:40px;">
+            <input type="file" multiple directory webkitdirectory mozdirectory name="files[]">
+            <button type="button" class="upload-submitter">{% trans 'Upload' %}</button>
+            <button type="button" class="clear-queue">{% trans 'Clear queue' %}</button>
+             <span class='progress-bar-total'></span>
+        </div>
+
+        <div class="PNB10" style="top:40px;">
+            {# upload box #}
+            <div class='upload-box' style='width:33%;float:left;height:100%;overflow:auto;'></div>
+            {# settings box #}
+            <div class='settings-box' style='width:32%;float:left;height:100%;overflow:auto;'>
+                <span>{% trans 'upload:: Destination (collection) :' %}</span>
+                {# collections list #}
+                {% if collections|length > 0 %}
+                    <select name="collection">
+                    {% for  sbasId, availableCollections in collections %}
+                        <optgroup label="{{ availableCollections['databox'].get_viewname() }}" >
+                        {% for collection in availableCollections['databox_collections'] %}
+                            <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                        {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                    </select>
+                    {# collections status #}
+                    {% for availableCollections in collections %}
+                        {% for collection in availableCollections['databox_collections'] %}
+                            <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.first ? "display:block" :"display:none" }}'>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4">
+                                                {% trans 'upload:: Status :' %}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for status in availableCollections['databox'].get_statusbits() %}
+                                        <tr>
+                                            <td colspan="4">
+                                                <h2>{{ status['name']|title }}</h2>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {% if status['img_off'] is not empty %}
+                                                    <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <label for="labeloff">{{ status['labeloff']|default('off') }}</label>
+                                                <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="off" checked="checked"/>
+                                            </td>
+                                            <td>
+                                                <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="on" />
+                                                <label for="labelon">{{ status['labelon']|default('on') }}</label>
+                                            </td>
+                                            <td>
+                                                {% if status['img_on'] is not empty %}
+                                                    <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    {% trans 'You can not upload files' %}
+                {% endif %}
+            </div>
+            {# download box #}
+            <div class='download-box' style='width:33%;float:left;height: 100%;overflow:auto;'></div>
+        </div>
+    </form>
+</div>
+<script>
+
+$(document).ready(function () {
+
+    //Upload management
+    var UploaderManager = new p4.UploaderManager({
+        container: $('#uploadBox'),
+        uploadBox: $('#uploadBox .upload-box'),
+        settingsBox: $('#uploadBox .settings-box'),
+        downloadBox: $('#uploadBox .download-box')
+    });
+
+    //Show the good collection status box
+    $('select[name=collection]', UploaderManager.getSettingsBox()).bind('change', function(){
+        var selectedCollId = $(this).find('option:selected').val();
+
+        $('#uploadBox .settings-box .collection-status').hide();
+
+        $('#uploadBox #status-' + selectedCollId).show();
+    });
+
+    //Remove all element from upload box
+    $("button.clear-queue", UploaderManager.getContainer()).bind("click", function(){
+        UploaderManager.clearUploadBox();
+    });
+
+    //Remove an element from the upload box
+    $("button.remove-element", UploaderManager.getUploadBox()).live("click", function(){
+        var container = $(this).closest(".upload-record");
+        var uploadIndex = container.find("input[name=uploadIndex]").val();
+        UploaderManager.removeData(uploadIndex);
+        container.remove();
+    });
+
+    //Get all elements in the upload box & trigger the submit event
+    $("button.upload-submitter", UploaderManager.getContainer()).bind("click", function(){
+        UploaderManager.getUploadBox().find('li').each(function(index, el){
+            var index = $(el).find('input[name=uploadIndex]').val();
+            UploaderManager.getData(index).submit();
+        });
+    });
+
+    $('#fileupload', UploaderManager.getContainer()).fileupload({
+        namespace: 'phrasea-upload',
+        dataType: 'json',
+        // Set singleFileUploads, sequentialUploads to true so the files
+        // are upload one by one
+        singleFileUploads : true,
+        sequentialUploads: true,
+        //When a file is added
+        add: function (e, data) {
+            //Since singleFileUploads &  sequentialUploads are setted to true
+            //There is only on file data.files
+            $.each(data.files, function (index, file) {
+
+                if (file.error) {
+                    var params = $.extend({}, file, {error: language.errorFileApi});
+                    p4.Mustache.Render('Upload-Items-Error', params, function(html){
+                        UploaderManager.getUploadBox().append(html);
+                    });
+                }else{
+                    // Add data to Queue
+                    UploaderManager.addData(data);
+
+                    var formatedFile = {
+                        size: UploaderManager.Formater.size(file.size),
+                        name: file.name,
+                        type: file.type,
+                        uploadIndex: UploaderManager.getUploadIndex(),
+                        language: {
+                            cancel: language.cancel
+                        }
+                    }
+
+                    //Set context in upload-box
+                    p4.Mustache.Render('Upload-Items', formatedFile, function(html){
+                        UploaderManager.getUploadBox().append(html);
+
+                        var context = $("li", UploaderManager.getUploadBox()).last();
+
+                        var uploadIndex = context.find("input[name=uploadIndex]").val()
+
+                        UploaderManager.addAttributeToData(uploadIndex, 'context', context);
+
+                        UploaderManager.Preview.render(file, function(img){
+                            context.find('.preview-img').append(img);
+                        });
+                    });
+                }
+            });
+        },
+        //on success upload
+        done: function (e, data) {
+            // set progress bar to 100% for preventing mozilla bug which never reach 100%
+            data.context.find('.progress-bar').empty().append('100');
+            UploaderManager.removeData(data.uploadIndex);
+            data.context.find("button.cancel").remove();
+            return false;
+        }
+    });
+
+    //on submit file
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadsubmit', function (e, data) {
+        var $this = $(this);
+
+        //get form datas attached to the file
+        data.formData = $.extend(
+            data.context.find('input').serializeArray(),
+            UploaderManager.getSettingsBox().find('.collection-status:visible input').serializeArray()
+        );
+
+        //clone preview
+        var image = data.context.find('.preview-img');
+
+        //remove current context
+        data.context.remove();
+
+        //Set new context in download-box
+        $.each(data.files, function (index, file) {
+            p4.Mustache.Render('Download-Items', file, function(html){
+                UploaderManager.getDownloadBox().append(html);
+
+                data.context = $(".upload-record", UploaderManager.getDownloadBox()).last();
+
+                //copy image
+                data.context.prepend(image);
+
+                //launch ajax request
+                var jqXHR = $this.fileupload('send', data)
+                .error(function(jqXHR, textStatus, errorThrown) {
+                    //Request is aborted
+                    if (errorThrown === 'abort') {
+                        data.context.remove();
+                    }else{
+                        data.context.find('.error').append(jqXHR.responseText);
+                    }
+                    //Remove data
+                    UploaderManager.removeData(data.uploadIndex);
+                });
+
+                //cancel request
+                $('button.cancel', data.context).bind('click', function (e) {
+                    jqXHR.abort();
+                });
+            });
+        });
+
+        return false;
+    });
+
+    // Get one file upload progress & bitrate
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogress', function (e, data) {
+        var progressbar = data.context.find('.progress-bar');
+        var bitratebox = data.context.find('.bitrate-box');
+        progressbar.empty().append(UploaderManager.Formater.pourcent(data.loaded, data.total));
+        bitratebox.empty().append(UploaderManager.Formater.bitrate(data.bitrate));
+    });
+
+    //Get global upload progress
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogressall', function (e, data) {
+        var progressbar = $(this).find('.progress-bar-total');
+        progressbar.empty().append(UploaderManager.Formater.pourcent(data.loaded, data.total));
+    });
+
+});
+</script>
