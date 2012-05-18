@@ -7,7 +7,7 @@ Entities\LazaretCheck:
       generator:
         strategy: AUTO
   fields:
-    check:
+    checkClassname:
       type: string
       length: 512
   manyToOne:
