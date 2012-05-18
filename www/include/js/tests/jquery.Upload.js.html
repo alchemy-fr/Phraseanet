@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.js"></script>
+        <script src="/include/vendor/qunit/qunit/qunit.js"></script>
+        <script src="/include/jslibs/blueimp.load-image.js"></script>
+        <script src="../../../prod/jquery.Upload.js"></script>
+        <link type="text/css" rel="stylesheet" href="/include/vendor/qunit/qunit/qunit.css"/>
+        <script>  $(document).ready(function(){
+
+            var getUploadManager = function(){
+                var UM = new p4.UploaderManager({
+                    container : $(".container"),
+                    uploadBox : $(".upload-box"),
+                    settingsBox : $(".settings-box"),
+                    downloadBox : $(".download-box")
+                });
+
+                return UM;
+            }
+
+            module("upload Manager");
+
+            test("bad parameters", function() {
+                raises(function() {
+                    new p4.UploaderManager();
+                }, "must throw error to pass");
+
+                raises(function() {
+                    new p4.UploaderManager({
+                        container : $(".container"),
+                        uploadBox : $(".upload-box"),
+                        settingsBox : $(".settings-box"),
+                        downloadBox : {}
+                    });
+                }, "must throw error to pass");
+
+                raises(function() {
+                    new p4.UploaderManager({
+                        container : $(".container"),
+                        uploadBox : $(".upload-box"),
+                        settingsBox : $(".settings-box")
+                    });
+                }, "must throw error to pass");
+            });
+
+            test("getContainer", function() {
+                var UM = getUploadManager();
+                deepEqual($(".container"), UM.getContainer());
+            });
+
+            test("getUploadBox", function() {
+                var UM = getUploadManager();
+                deepEqual($(".upload-box").find('ul:first'), UM.getUploadBox());
+            });
+
+            test("getSettingsBox", function() {
+                var UM = getUploadManager();
+                deepEqual($(".settings-box"), UM.getSettingsBox());
+            });
+
+            test("getDownloadBox", function() {
+                var UM = getUploadManager();
+                deepEqual($(".download-box"), UM.getDownloadBox());
+            });
+
+            test("clearUploadBox", function() {
+                var UM = getUploadManager();
+                UM.addData({test:'test'});
+                UM.clearUploadBox();
+                equal(0, UM.Queue.getLength());
+                equal(0, UM.getUploadIndex());
+                equal(0, UM.getUploadBox().find('*').length);
+            });
+
+            test("getDatas", function() {
+                var UM = getUploadManager();
+
+                UM.addData({test:'test'});
+                UM.addData({test:'toto'});
+
+                var datas = UM.getDatas();
+                var expected = {1:{test:"test", uploadIndex:1}, 2:{test:"toto", uploadIndex:2}};
+                deepEqual(datas, expected);
+            });
+
+            test("addData", function() {
+                var UM = getUploadManager();
+
+                UM.addData({test:'test'});
+                UM.addData({test:'toto'});
+
+                equal( UM.Queue.getLength(), 2);
+                equal(UM.getUploadIndex(), 2);
+            });
+
+            test("getData", function() {
+                var UM = getUploadManager();
+
+                UM.addData({test:'test'});
+                deepEqual(UM.getData(UM.getUploadIndex()), {test:'test', uploadIndex: 1});
+                UM.addData({test:'test'});
+                deepEqual(UM.getData(UM.getUploadIndex()), {test:'test', uploadIndex: 2});
+            });
+
+            test("addAttributeToData", function() {
+                var UM = getUploadManager();
+
+                UM.addData({test:'test'});
+                UM.addAttributeToData(UM.getUploadIndex(), 'test2', 'titi');
+                var data = UM.getData(UM.getUploadIndex());
+
+                ok("test2" in data);
+                equal(data.test2, 'titi');
+            });
+
+            test("getUploadIndex", function() {
+                var UM = getUploadManager();
+                UM.uploadIndex = 5;
+                equal(UM.getUploadIndex(), 5);
+            });
+
+            module("upload Manager Queue");
+
+            test("set", function() {
+                var UM = getUploadManager();
+
+                UM.Queue.set(32, {test:'test'});
+                equal(1, UM.Queue.getLength());
+            });
+
+            test("remove", function() {
+                var UM = getUploadManager();
+
+                UM.Queue.set(32, {test:'test'});
+                UM.Queue.remove(32);
+
+                equal(0, UM.Queue.getLength());
+            });
+
+            test("length", function() {
+                var UM = getUploadManager();
+
+                UM.Queue.set(32, {test:'test'});
+                UM.Queue.set(33, {test:'test'});
+                UM.Queue.set(34, {test:'test'});
+                UM.Queue.set(32, {test:'test'});
+
+                equal(3, UM.Queue.getLength());
+            });
+
+            test("all", function() {
+                var UM = getUploadManager();
+
+                UM.Queue.set(32, {test:'test'});
+                UM.Queue.set(33, {test:'test'});
+                UM.Queue.set(34, {test:'test'});
+                UM.Queue.set(32, {test:'test'});
+
+                var o = UM.Queue.all();
+                $.each(o, function(k, v){
+                    equal(v, UM.Queue.get(k));
+                });
+            });
+
+
+            test("clear", function() {
+                var UM = getUploadManager();
+
+                UM.Queue.set(32, {test:'test'});
+                UM.Queue.set(33, {test:'test'});
+                UM.Queue.set(34, {test:'test'});
+
+                UM.Queue.clear();
+                equal(0, UM.Queue.getLength());
+            });
+
+            test("isEmpty", function() {
+                var UM = getUploadManager();
+
+                ok(UM.Queue.isEmpty());
+
+                UM.Queue.set(32, {test:'test'});
+
+                ok(!UM.Queue.isEmpty());
+            });
+
+            module("upload Manager Formater");
+
+            test("size", function() {
+                var UM = getUploadManager();
+
+                var convert = UM.Formater.size(125456589754);
+                equal('116.84 GB', convert);
+                convert = UM.Formater.size(12545);
+                equal('12.25 KB', convert);
+                convert = UM.Formater.size(565487585);
+                equal('539.29 MB', convert);
+            });
+
+            test("bitrate", function() {
+                var UM = getUploadManager();
+
+                var convert = UM.Formater.bitrate(125456589754);
+                equal('116.84 Gbit/s', convert);
+                convert = UM.Formater.bitrate(12545);
+                equal('12.25 Kbit/s', convert);
+                convert = UM.Formater.bitrate(565487585);
+                equal('539.29 Mbit/s', convert);
+            });
+
+            module("upload Manager Preview");
+
+            test("setOptions & getOptions", function() {
+                var UM = getUploadManager();
+
+                var o = {
+                    maxWidth: 600,
+                    maxHeight: 480,
+                    minWidth: 300,
+                    minHeight: 200,
+                    canvas : false
+                };
+
+                var defaultOptions = {
+                    fileType: /^image\/(gif|jpeg|png|jpg)$/,
+                    maxSize: 5242880
+                };
+
+                var expected = $.extend(defaultOptions, o);
+
+                UM.Preview.setOptions(o);
+
+                deepEqual(expected, UM.Preview.getOptions());
+
+            });
+
+            test("render", function() {
+                var UM = getUploadManager();
+
+                var ab, bb, blob, i, ia, _i, _len;
+
+                var byteString = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAyVBMVEUzM2a9pUL90Bzi0phoZH3/6pb/9cytooiEg3v93FhST2vuwhL977qVjGr/++z/1zl0cILPvoj/5X9eW3Xix1/9ywP/7aX/+NyLhnb/88Sfk37NwZ86OWb80ix0bHD/5HZZV3T/8LX//vn/20yFeWr/6I1jYob7zBDGqTrp4MNoZ4j/7J7/9tPNtWCDg4P/4mtSUHT1xwuckWT//fP+2kfpz2r/5oReXYD8zAr/7qz/+uSLhnaflYjPx7Q6Omn70zP977qAeHoAAAAdPTPOAAAAQ3RSTlP///////////////////////////////////////////////////////////////////////////////////////8AQWIE7wAAAM5JREFUGFclj9lywjAMRcWSkIWGVTYppTQMe0JCwA22hzZT//9HVTb3SeeMNJLA2KCNqwxYlJVSeSidIoFCJ5oXqWqtAeLN3YmMrWorpL7vH5r7/S/WyKMBrJLk/OCF35/luzYmwbSmAT/NlNcIXAAqzgviocp3a4FvgN4JfiyzCXyPbEeYXsfDTDHvMwq7cUlb2PL3+hy8Rx8XgR0S2LLeXwTRdi5kHbhLV00zXVehOOCtdL/U2Aox6mJN7IQ5xvRs3AmIX8KY4BaUFo35B3lHJ6UKnYJ8AAAAAElFTkSuQmCC';
+
+                ab = new ArrayBuffer(byteString.length);
+                ia = new Uint8Array(ab);
+
+                for (_i = 0, _len = byteString.length; _i < _len; _i++) {
+                    i = byteString[_i];
+                    ia[i] = byteString.charCodeAt(i);
+                }
+
+                bb = new MozBlobBuilder();
+                bb.append(ab);
+                blob = bb.getBlob('image/png');
+
+                UM.Preview.render(blob, function(img){
+                    //do something
+                });
+            });
+
+
+
+        });
+        </script>
+    </head>
+    <body>
+        <h1 id="qunit-header">QUnit example</h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <div id="qunit-fixture">test markup, will be hidden</div>
+
+        <div class='container'>
+            <div class='upload-box'><p></p></div>
+            <div class='settings-box'></div>
+            <div class='download-box'></div>
+        </div>
+
+    </body>
+</html>
