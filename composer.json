@@ -15,6 +15,7 @@
     "dailymotion/sdk": "*",
     "mediavorus/mediavorus": "dev-master",
     "media-alchemyst/media-alchemyst": "dev-master",
+    "php-xpdf/php-xpdf": "dev-master",
     "data-uri/data-uri": "dev-master",
     "silex/silex": "1.0.*",
     "alchemy/oauth2php": "master",
