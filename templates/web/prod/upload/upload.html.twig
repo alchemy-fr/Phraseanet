@@ -3,8 +3,8 @@
         {# action bar #}
         <div class="PNB" style="height:40px;">
             <input type="file" multiple directory webkitdirectory mozdirectory name="files[]">
-            <button type="button" class="upload-submitter">{% trans 'upload' %}</button>
-            <button type="button" class="clear-queue">{% trans 'empty list' %}</button>
+            <button type="button" class="upload-submitter">{% trans 'Upload' %}</button>
+            <button type="button" class="clear-queue">{% trans 'Clear queue' %}</button>
              <span class='progress-bar-total'></span>
         </div>
 
@@ -71,7 +71,7 @@
                         {% endfor %}
                     {% endfor %}
                 {% else %}
-                    {% trans 'you cannot upload files' %}
+                    {% trans 'You can not upload files' %}
                 {% endif %}
             </div>
             {# download box #}
