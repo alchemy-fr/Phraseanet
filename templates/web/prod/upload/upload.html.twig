@@ -134,8 +134,9 @@ $(document).ready(function () {
             //There is only on file data.files
             $.each(data.files, function (index, file) {
 
-                if (file.error) {
-                    p4.Mustache.Render('Upload-Items-Error', file, function(html){
+                if (!file.error) {
+                    var params = $.extend({}, file, {error: language.errorFileApi});
+                    p4.Mustache.Render('Upload-Items-Error', params, function(html){
                         UploaderManager.getUploadBox().append(html);
                     });
                 }else{
