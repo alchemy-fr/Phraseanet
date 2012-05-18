@@ -13,3 +13,9 @@
 [submodule "www/include/vendor/mustache-js"]
 	path = www/include/vendor/mustache-js
 	url = https://github.com/janl/mustache.js.git
+[submodule "www/include/vendor/jquery-file-upload"]
+	path = www/include/vendor/jquery-file-upload
+	url = https://github.com/blueimp/jQuery-File-Upload.git
+[submodule "www/include/vendor/javascript-load-image"]
+	path = www/include/vendor/javascript-load-image
+	url = https://github.com/blueimp/JavaScript-Load-Image.git
