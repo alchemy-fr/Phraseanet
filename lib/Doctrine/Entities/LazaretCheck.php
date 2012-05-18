@@ -15,46 +15,23 @@ class LazaretCheck
     private $id;
 
     /**
-     * @var string $check
-     */
-    private $check;
-
-    /**
      * @var Entities\LazaretFile
      */
     private $lazaretFile;
 
+    /**
+     * @var string $checkClassname
+     */
+    private $checkClassname;
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set check
-     *
-     * @param string $check
-     * @return LazaretCheck
-     */
-    public function setCheck($check)
-    {
-        $this->check = $check;
-        return $this;
-    }
-
-    /**
-     * Get check
-     *
-     * @return string 
-     */
-    public function getCheck()
-    {
-        return $this->check;
     }
 
     /**
@@ -72,10 +49,32 @@ class LazaretCheck
     /**
      * Get lazaretFile
      *
-     * @return Entities\LazaretFile 
+     * @return Entities\LazaretFile
      */
     public function getLazaretFile()
     {
         return $this->lazaretFile;
+    }
+
+    /**
+     * Set checkClassname
+     *
+     * @param string $checkClassname
+     * @return LazaretCheck
+     */
+    public function setCheckClassname($checkClassname)
+    {
+        $this->checkClassname = $checkClassname;
+        return $this;
+    }
+
+    /**
+     * Get checkClassname
+     *
+     * @return string
+     */
+    public function getCheckClassname()
+    {
+        return $this->checkClassname;
     }
 }
