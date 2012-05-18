@@ -18,9 +18,9 @@
                 {% if collections|length > 0 %}
                     <select name="collection">
                     {% for  sbasId, availableCollections in collections %}
-                        <optgroup label="{{availableCollections['databox'].get_viewname()}}" >
+                        <optgroup label="{{ availableCollections['databox'].get_viewname() }}" >
                         {% for collection in availableCollections['databox_collections'] %}
-                            <option value="{{collection.get_base_id()}}">{{collection.get_name()}}</option>
+                            <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
                         {% endfor %}
                         </optgroup>
                     {% endfor %}
@@ -28,7 +28,7 @@
                     {# collections status #}
                     {% for availableCollections in collections %}
                         {% for collection in availableCollections['databox_collections'] %}
-                            <div id="status-{{collection.get_base_id()}}" class='collection-status' style='{{loop.first ? "display:block" :"display:none"}}'>
+                            <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.first ? "display:block" :"display:none" }}'>
                                 <table>
                                     <thead>
                                         <tr>
@@ -41,7 +41,7 @@
                                     {% for status in availableCollections['databox'].get_statusbits() %}
                                         <tr>
                                             <td colspan="4">
-                                                <h2>{{status['name']|title}}</h2>
+                                                <h2>{{ status['name']|title }}</h2>
                                             </td>
                                         </tr>
                                         <tr>
@@ -52,10 +52,10 @@
                                             </td>
                                             <td>
                                                 <label for="labeloff">{{ status['labeloff']|default('off') }}</label>
-                                                <input type="radio" name="label_{{collection.get_base_id()}}_{{status['name']}}" value="off" checked="checked"/>
+                                                <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="off" checked="checked"/>
                                             </td>
                                             <td>
-                                                <input type="radio" name="label_{{collection.get_base_id()}}_{{status['name']}}" value="on" />
+                                                <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="on" />
                                                 <label for="labelon">{{ status['labelon']|default('on') }}</label>
                                             </td>
                                             <td>
