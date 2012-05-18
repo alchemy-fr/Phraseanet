@@ -692,21 +692,35 @@ class databox extends base
      */
     public static function get_available_metadatas()
     {
-        $available_fields = array();
-        $dir = __DIR__ . '/metadata/description/';
-        $registry = registry::get_instance();
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
-            if ($file->isDir() || strpos($file->getPathname(), '/.svn/') !== false) {
-                continue;
-            }
-            if ($file->isFile()) {
-                $classname = str_replace(array($registry->get('GV_RootPath') . 'lib/classes/', '.class.php', '/'), array('', '', '_'), $file->getPathname());
-                $available_fields[$classname] = new $classname;
-            }
-        }
-        ksort($available_fields);
+        $provider = new PHPExiftool\Driver\TagProvider();
 
-        return $available_fields;
+        $available = $provider->getAll();
+
+        $available['Phraseanet'] = array(
+            'PdfText'       => new \Alchemy\Phrasea\Metadata\Tag\PdfText(),
+            'TfArchivedate' => new \Alchemy\Phrasea\Metadata\Tag\TfArchivedate(),
+            'TfAtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfAtime(),
+            'TfBits'        => new \Alchemy\Phrasea\Metadata\Tag\TfBits(),
+            'TfBasename'    => new \Alchemy\Phrasea\Metadata\Tag\TfBasename(),
+            'TfChannels'    => new \Alchemy\Phrasea\Metadata\Tag\TfChannels(),
+            'TfCtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfCtime(),
+            'TfDuration'    => new \Alchemy\Phrasea\Metadata\Tag\TfDuration(),
+            'TfEditdate'    => new \Alchemy\Phrasea\Metadata\Tag\TfEditdate(),
+            'TfExtension'   => new \Alchemy\Phrasea\Metadata\Tag\TfExtension(),
+            'TfFilename'    => new \Alchemy\Phrasea\Metadata\Tag\TfFilename(),
+            'TfFilepath'    => new \Alchemy\Phrasea\Metadata\Tag\TfFilepath(),
+            'TfHeight'      => new \Alchemy\Phrasea\Metadata\Tag\TfHeight(),
+            'TfMimetype'    => new \Alchemy\Phrasea\Metadata\Tag\TfMimetype(),
+            'TfMtime'       => new \Alchemy\Phrasea\Metadata\Tag\TfMtime(),
+            'TfDirname'     => new \Alchemy\Phrasea\Metadata\Tag\TfDirname(),
+            'TfRecordid'    => new \Alchemy\Phrasea\Metadata\Tag\TfRecordid(),
+            'TfSize'        => new \Alchemy\Phrasea\Metadata\Tag\TfSize(),
+            'TfWidth'       => new \Alchemy\Phrasea\Metadata\Tag\TfWidth(),
+        );
+
+        ksort($available);
+
+        return $available;
     }
 
     public function get_available_dcfields()
@@ -904,7 +918,7 @@ class databox extends base
             $dom_struct = $this->get_dom_structure();
             $xp_struct = $this->get_xpath_structure();
             $fname = (string) $fname;
-            $src = trim(isset($field['src']) ? $field['src'] : '');
+            $src = trim(isset($field['src']) ? str_replace('/rdf:RDF/rdf:Description/', '', $field['src']) : '');
 
             $meta_id = isset($field['meta_id']) ? $field['meta_id'] : null;
             if ( ! is_null($meta_id))
@@ -941,7 +955,7 @@ class databox extends base
                 ->save();
 
             try {
-                $meta_struct_field->set_source($src)->save();
+                $meta_struct_field->set_tag(\databox_field::loadClassFromTagName($src))->save();
             } catch (Exception $e) {
 
             }
