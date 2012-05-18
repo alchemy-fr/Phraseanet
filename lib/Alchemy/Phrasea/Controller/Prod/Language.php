@@ -95,7 +95,7 @@ class Language implements ControllerProviderInterface
                 $out['Recept'] = _('Accuse de reception');
                 $out['nFieldsChanged'] = _('%d fields have been updated');
                 $out['FeedBackNoUsersSelected'] = _('No users selected');
-                $out['errorFileApi'] = _('an error occurred reading this file');
+                $out['errorFileApi'] = _('An error occurred reading this file');
 
                 $Serializer = $app['Core']['Serializer'];
 

@@ -147,7 +147,10 @@ $(document).ready(function () {
                         size: UploaderManager.Formater.size(file.size),
                         name: file.name,
                         type: file.type,
-                        uploadIndex: UploaderManager.getUploadIndex()
+                        uploadIndex: UploaderManager.getUploadIndex(),
+                        button: {
+                            cancel: language.cancel
+                        }
                     }
 
                     //Set context in upload-box
