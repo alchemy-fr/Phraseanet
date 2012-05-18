@@ -85,7 +85,7 @@ class Upload implements ControllerProviderInterface
      *
      * @return Response
      */
-    public function getUploadForm(Application $app)
+    public function getUploadForm(Application $app, Request $request)
     {
         $collections = array();
         $rights = array('canaddrecord');
