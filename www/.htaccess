@@ -36,6 +36,8 @@
   RewriteRule ^prod/WorkZone/.*$      /prod/router.php [L]
   RewriteRule ^prod/language/.*$      /prod/router.php [L]
   RewriteRule ^prod/tools/.*$         /prod/router.php [L]
+  RewriteRule ^prod/upload/.*$        /prod/router.php [L]
+  RewriteRule ^prod/lazaret/.*$       /prod/router.php [L]
   RewriteRule ^prod/$                 /prod/router.php [L]
 
   RewriteRule ^prod/query/.*$         /prod/router.php [L]
