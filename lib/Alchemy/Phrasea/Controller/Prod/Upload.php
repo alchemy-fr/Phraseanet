@@ -85,7 +85,7 @@ class Upload implements ControllerProviderInterface
      *
      * @return Response
      */
-    public function getUploadForm(Application $app, Request $request)
+    public function getUploadForm(Application $app)
     {
         $collections = array();
         $rights = array('canaddrecord');
@@ -102,9 +102,9 @@ class Upload implements ControllerProviderInterface
             $collections[$databox->get_sbas_id()]['databox_collections'][] = $collection;
         }
 
-        $html = $app['Core']['Twig']->render('prod/upload/upload.html.twig', array(
-            'collections' => $collections
-            ));
+        $html = $app['Core']['Twig']->render(
+            'prod/upload/upload.html.twig', array('collections' => $collections)
+        );
 
         return new Response($html);
     }

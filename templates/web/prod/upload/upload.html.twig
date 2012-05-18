@@ -83,21 +83,21 @@
 
 $(document).ready(function () {
 
-    //Show the good collection status box
-    $('select[name=collection]').bind('change', function(){
-        var selectedCollId = $(this).find('option:selected').val();
-
-        $('#uploadBox .settings-box .collection-status').hide();
-
-        $('#uploadBox #status-' + selectedCollId).show();
-    });
-
     //Upload management
     var UploaderManager = new p4.UploaderManager({
         container: $('#uploadBox'),
         uploadBox: $('#uploadBox .upload-box'),
         settingsBox: $('#uploadBox .settings-box'),
         downloadBox: $('#uploadBox .download-box')
+    });
+
+    //Show the good collection status box
+    $('select[name=collection]', UploaderManager.getSettingsBox()).bind('change', function(){
+        var selectedCollId = $(this).find('option:selected').val();
+
+        $('#uploadBox .settings-box .collection-status').hide();
+
+        $('#uploadBox #status-' + selectedCollId).show();
     });
 
     //Remove all element from upload box
@@ -121,7 +121,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#fileupload').fileupload({
+    $('#fileupload', UploaderManager.getContainer()).fileupload({
         namespace: 'phrasea-upload',
         dataType: 'json',
         // Set singleFileUploads, sequentialUploads to true so the files
@@ -130,6 +130,8 @@ $(document).ready(function () {
         sequentialUploads: true,
         //When a file is added
         add: function (e, data) {
+            //Since singleFileUploads &  sequentialUploads are setted to true
+            //There is only on file data.files
             $.each(data.files, function (index, file) {
 
                 if (file.error) {
@@ -164,18 +166,9 @@ $(document).ready(function () {
                 }
             });
         },
-        //When an upload failed
-        fail : function (jqXHR, textStatus, errorThrown) {
-            if (errorThrown === 'abort') {
-                UploaderManager.removeData(data.uploadIndex);
-                data.context.remove();
-            }else{
-                data.context.find('.error').append(jqXHR.responseText);
-            }
-        //When sscessful upload
-        },
+        //on success upload
         done: function (e, data) {
-            // set progress bar to 100 for preventing mozilla bug which never reach 100%
+            // set progress bar to 100% for preventing mozilla bug which never reach 100%
             data.context.find('.progress-bar').empty().append('100');
             UploaderManager.removeData(data.uploadIndex);
             data.context.find("button.cancel").remove();
@@ -183,11 +176,11 @@ $(document).ready(function () {
         }
     });
 
-    //On submit file
-    $('#fileupload').bind('fileuploadsubmit', function (e, data) {
+    //on submit file
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadsubmit', function (e, data) {
         var $this = $(this);
 
-        //Get form datas attached to the file
+        //get form datas attached to the file
         data.formData = $.extend(
             data.context.find('input').serializeArray(),
             UploaderManager.getSettingsBox().find('.collection-status:visible input').serializeArray()
@@ -211,6 +204,16 @@ $(document).ready(function () {
 
                 //launch ajax request
                 var jqXHR = $this.fileupload('send', data)
+                .error(function(jqXHR, textStatus, errorThrown) {
+                    //Request is aborted
+                    if (errorThrown === 'abort') {
+                        data.context.remove();
+                    }else{
+                        data.context.find('.error').append(jqXHR.responseText);
+                    }
+                    //Remove data
+                    UploaderManager.removeData(data.uploadIndex);
+                });
 
                 //cancel request
                 $('button.cancel', data.context).bind('click', function (e) {
@@ -223,7 +226,7 @@ $(document).ready(function () {
     });
 
     // Get one file upload progress & bitrate
-    $('#fileupload').bind('fileuploadprogress', function (e, data) {
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogress', function (e, data) {
         var progressbar = data.context.find('.progress-bar');
         var bitratebox = data.context.find('.bitrate-box');
         progressbar.empty().append(UploaderManager.Formater.pourcent(data.loaded, data.total));
@@ -231,10 +234,10 @@ $(document).ready(function () {
     });
 
     //Get global upload progress
-    $('#fileupload').bind('fileuploadprogressall', function (e, data) {
+    $('#fileupload', UploaderManager.getContainer()).bind('fileuploadprogressall', function (e, data) {
         var progressbar = $(this).find('.progress-bar-total');
         progressbar.empty().append(UploaderManager.Formater.pourcent(data.loaded, data.total));
     });
 
-    });
+});
 </script>
