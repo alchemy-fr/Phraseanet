@@ -119,7 +119,14 @@
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "24244da60407eff5d08dd5c460a7d23285be6995"
+            "source-reference": "a0a78aff64ee5e9d218643646fcf819d4a626804"
+        },
+        {
+            "package": "silex/silex",
+            "version": "dev-master",
+            "source-reference": "a0a78aff64ee5e9d218643646fcf819d4a626804",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "swftools/swftools",
@@ -129,31 +136,38 @@
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "57789082d1d53529dcf8cd3ca132d9787a59afee",
+            "source-reference": "9895567cec5a13d1a43db5053defbaad260c1b87"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "dev-master",
+            "source-reference": "9895567cec5a13d1a43db5053defbaad260c1b87",
             "alias-pretty-version": "4.1.x-dev",
             "alias-version": "4.1.9999999.9999999-dev"
         },
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "57789082d1d53529dcf8cd3ca132d9787a59afee"
+            "source-reference": "57789082d1d53529dcf8cd3ca132d9787a59afee",
+            "alias-pretty-version": "4.1.x-dev",
+            "alias-version": "4.1.9999999.9999999-dev"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "1e15f2109633723b710e87184643cad88004b1b9",
+            "source-reference": "ea33d4d377bacd6804ab9c304dbbd70cfc5d2860",
             "alias-pretty-version": "2.1.x-dev",
             "alias-version": "2.1.9999999.9999999-dev"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "1e15f2109633723b710e87184643cad88004b1b9"
+            "source-reference": "ea33d4d377bacd6804ab9c304dbbd70cfc5d2860"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "5314836d3ce70a489143fd846933798f424946b5",
+            "source-reference": "1e15f2109633723b710e87184643cad88004b1b9",
             "alias-pretty-version": "2.1.x-dev",
             "alias-version": "2.1.9999999.9999999-dev"
         },
@@ -165,24 +179,24 @@
         {
             "package": "twig/extensions",
             "version": "dev-master",
-            "source-reference": "446d870272cd87a720e95242eade38a2acf56eaa"
+            "source-reference": "feb6d3f10c411e2631997c0a905aa581c80305c1"
         },
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "875fa010ce597edf97c04ce6490be950068e9372"
+            "source-reference": "0fa26d642994630b2ec19c090149fa56ce84c789"
         },
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "7f06c12c53aa81a1058175fbc5c03e729c1a9b20",
+            "source-reference": "875fa010ce597edf97c04ce6490be950068e9372",
             "alias-pretty-version": "1.8.x-dev",
             "alias-version": "1.8.9999999.9999999-dev"
         },
         {
             "package": "twig/twig",
             "version": "dev-master",
-            "source-reference": "875fa010ce597edf97c04ce6490be950068e9372",
+            "source-reference": "0fa26d642994630b2ec19c090149fa56ce84c789",
             "alias-pretty-version": "1.8.x-dev",
             "alias-version": "1.8.9999999.9999999-dev"
         },
@@ -195,5 +209,14 @@
     "packages-dev": null,
     "aliases": [
 
-    ]
+    ],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "doctrine/data-fixtures": 20,
+        "phpexiftool/phpexiftool": 20,
+        "mediavorus/mediavorus": 20,
+        "media-alchemyst/media-alchemyst": 20,
+        "php-xpdf/php-xpdf": 20,
+        "data-uri/data-uri": 20
+    }
 }
