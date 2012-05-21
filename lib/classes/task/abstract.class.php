@@ -137,7 +137,7 @@ abstract class task_abstract
     {
         return false;
     }
-    
+
     /**
     *
     * @return boolean
@@ -454,10 +454,9 @@ abstract class task_abstract
 
     private function getLockfilePath()
     {
-        $registry = registry::get_instance();
-        $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
+        $core = \bootstrap::getCore();
 
-        system_file::mkdir($lockdir);
+        $lockdir = $core->getRegistry()->get('GV_RootPath') . 'tmp/locks/';
         $lockfile = ($lockdir . 'task_' . $this->getID() . '.lock');
 
         return($lockfile);
