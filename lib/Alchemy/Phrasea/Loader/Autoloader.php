@@ -42,7 +42,7 @@ class Autoloader extends UniversalClassLoader
         $this->paths['library'] = __DIR__ . '/../../../classes/';
 
         $getComposerClassMap = function() {
-                return require realpath(__DIR__ . '/../../../../vendor/.composer/autoload_classmap.php');
+                return require realpath(__DIR__ . '/../../../../vendor/autoload_classmap.php');
             };
 
         $this->classmap = $getComposerClassMap();
