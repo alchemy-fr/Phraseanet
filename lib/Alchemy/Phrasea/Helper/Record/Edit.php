@@ -11,9 +11,10 @@
 
 namespace Alchemy\Phrasea\Helper\Record;
 
-use Alchemy\Phrasea\Core,
-    Alchemy\Phrasea\Helper\Record\Helper as RecordHelper,
-    Symfony\Component\HttpFoundation\Request;
+use Alchemy\Phrasea\Core;
+use Alchemy\Phrasea\Helper\Record\Helper as RecordHelper;
+use MediaVorus\MediaVorus;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Edit Record Helper
@@ -401,7 +402,6 @@ class Edit extends RecordHelper
     {
         $i = count($this->javascript_fields);
 
-        $source = $meta->get_source();
         $separator = $meta->get_separator();
 
         $datas = array(
@@ -416,8 +416,8 @@ class Edit extends RecordHelper
             , 'format'               => ''
             , 'explain'              => ''
             , 'tbranch'              => $meta->get_tbranch()
-            , 'maxLength'            => $source ? $source->maxlength() : 0
-            , 'minLength'            => $source ? $source->minLength() : 0
+            , 'maxLength'            => $meta->get_tag()->getMaxLength()
+            , 'minLength'            => $meta->get_tag()->getMinLength()
             , 'multi'                => $meta->is_multi()
             , 'separator'            => $separator
             , 'vocabularyControl'    => $meta->getVocabularyControl() ? $meta->getVocabularyControl()->getType() : null
@@ -450,9 +450,8 @@ class Edit extends RecordHelper
                     throw new \Exception('A reg image must come from image data');
 
                 foreach ($newsubdef_reg->get_subdefs() as $name => $value) {
-                    $pathfile = $value->get_pathfile();
-                    $system_file = new \system_file($pathfile);
-                    $reg_record->substitute_subdef($name, $system_file);
+                    $media = MediaVorus::guess(new \SplFileInfo($value->get_pathfile()));
+                    $reg_record->substitute_subdef($name, $media);
                 }
             } catch (\Exception $e) {
 
@@ -469,8 +468,9 @@ class Edit extends RecordHelper
         $write_edit_el = false;
         $date_obj = new \DateTime();
         foreach ($meta_struct->get_elements() as $meta_struct_el) {
-            if ($meta_struct_el->get_metadata_namespace() == "PHRASEANET" && $meta_struct_el->get_metadata_tagname() == 'tf-editdate')
+            if ($meta_struct_el->get_tag() instanceof \Alchemy\Phrasea\Metadata\Tag\TfEditdate) {
                 $write_edit_el = $meta_struct_el;
+            }
         }
 
         $elements = $this->selection->get_elements();
