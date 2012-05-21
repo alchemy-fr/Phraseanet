@@ -1,5 +1,6 @@
 Entities\LazaretFile:
   type: entity
+  repositoryClass: Repositories\LazaretFileRepository
   table: LazaretFiles
   id:
     id:

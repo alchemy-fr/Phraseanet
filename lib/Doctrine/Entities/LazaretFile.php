@@ -265,10 +265,32 @@ class LazaretFile
     /**
      * Get originalName
      *
-     * @return string 
+     * @return string
      */
     public function getOriginalName()
     {
         return $this->originalName;
+    }
+
+    /**
+     * Get the Destination Collection
+     *
+     * @return \collection
+     */
+    public function getCollection()
+    {
+        return collection::get_from_base_id($this->getBaseId());
+    }
+
+    /**
+     * Get an array of records that can be substitued by the Lazaret file
+     *
+     * @return array
+     */
+    public function getRecordsToSubstitute()
+    {
+        return \record_adapter::get_record_by_uuid(
+            $this->getCollection()->get_databox(), $this->getUuid()
+        );
     }
 }
