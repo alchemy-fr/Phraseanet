@@ -705,7 +705,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     $finder->name($name)->in(__DIR__ . '/testfiles/');
 
                     foreach ($finder as $file) {
-                        return $file->getRealPath();
+                        return $file;
                     }
 
                     throw new Exception(sprintf('File %d not found', $i));
@@ -716,7 +716,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
 
-                        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess($resolvePathfile($i), $collection));
+                        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess($resolvePathfile($i)), $collection);
 
                         $record = record_adapter::createFromFile($file);
 

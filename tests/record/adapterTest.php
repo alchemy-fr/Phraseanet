@@ -12,16 +12,6 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $system_file = static::$records['record_1']->get_hd_file();
-        $databox = static::$records['record_1']->get_databox();
-        $metadatas = $system_file->extract_metadatas($databox->get_meta_structure());
-        static::$records['record_1']->set_metadatas($metadatas['metadatas']);
-
-        $databox = static::$records['record_23']->get_databox();
-        $system_file = static::$records['record_23']->get_hd_file();
-        $metadatas = $system_file->extract_metadatas($databox->get_meta_structure());
-        static::$records['record_23']->set_metadatas($metadatas['metadatas']);
-
 
         /**
          * Reset thumbtitle in order to have consistent tests (testGet_title)
@@ -202,7 +192,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_mime()
     {
-        $this->assertEquals('image/x-canon-cr2', static::$records['record_1']->get_mime());
+        $this->assertRegExp('/image\/\w+/', static::$records['record_1']->get_mime());
     }
 
     public function testGet_status()
@@ -485,7 +475,7 @@ class record_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testGet_hd_file()
     {
-        $this->assertInstanceOf('system_file', static::$records['record_1']->get_hd_file());
+        $this->assertInstanceOf('\SplFileInfo', static::$records['record_1']->get_hd_file());
     }
 
     /**
