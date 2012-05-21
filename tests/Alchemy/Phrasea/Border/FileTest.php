@@ -90,7 +90,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetSha256()
     {
-        $this->assertEquals('b0c1bf5bbeb1f019bb334e9d40ec5f3f9edc483fac6f1f953933e0706db81e48', $this->object->getSha256());
+        $this->assertEquals('a7f3ec01c4c5efcadc639d494d432006f13b28b9a576afaee4d3b7508c4be074', $this->object->getSha256());
     }
 
     /**
@@ -98,7 +98,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetMD5()
     {
-        $this->assertEquals('8b11238c2bda977e8983625ba71acd92', $this->object->getMD5());
+        $this->assertEquals('db0d69df2fc9e5e82e42d174f2bbb62f', $this->object->getMD5());
     }
 
     /**
@@ -106,6 +106,7 @@ class FileTest extends \PhraseanetPHPUnitAbstract
      */
     public function testGetFile()
     {
+        $this->assertInstanceOf('\\MediaVorus\\File', $this->object->getFile());
         $this->assertEquals(realpath(__DIR__ . '/../../../../tmp/iphone_pic.jpg'), $this->object->getFile()->getRealPath());
     }
 
@@ -203,6 +204,102 @@ class FileTest extends \PhraseanetPHPUnitAbstract
     public function testBuildFromWrongPathfile()
     {
         File::buildFromPathfile('unexistent.file', self::$collection);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\File::getType
+     */
+    public function testGetTypeImage()
+    {
+        $image = $this->getMock('\\MediaVorus\\Media\\Image', array('getType'), array(), '', false);
+
+        $image->expects($this->once())
+            ->method('getType')
+            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_IMAGE));
+
+        $file = new File($image, self::$collection, 'hello');
+
+        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Image(), $file->getType());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\File::getType
+     */
+    public function testGetTypeDocument()
+    {
+        $image = $this->getMock('\\MediaVorus\\Media\\Document', array('getType'), array(), '', false);
+
+        $image->expects($this->once())
+            ->method('getType')
+            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_DOCUMENT));
+
+        $file = new File($image, self::$collection, 'hello');
+
+        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Document(), $file->getType());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\File::getType
+     */
+    public function testGetTypeAudio()
+    {
+        $image = $this->getMock('\\MediaVorus\\Media\\Audio', array('getType'), array(), '', false);
+
+        $image->expects($this->once())
+            ->method('getType')
+            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_AUDIO));
+
+        $file = new File($image, self::$collection, 'hello');
+
+        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Audio(), $file->getType());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\File::getType
+     */
+    public function testGetTypeVideo()
+    {
+        $image = $this->getMock('\\MediaVorus\\Media\\Video', array('getType'), array(), '', false);
+
+        $image->expects($this->once())
+            ->method('getType')
+            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_VIDEO));
+
+        $file = new File($image, self::$collection, 'hello');
+
+        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Video(), $file->getType());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\File::getType
+     */
+    public function testGetTypeFlash()
+    {
+        $image = $this->getMock('\\MediaVorus\\Media\\Flash', array('getType'), array(), '', false);
+
+        $image->expects($this->once())
+            ->method('getType')
+            ->will($this->returnValue(\MediaVorus\Media\Media::TYPE_FLASH));
+
+        $file = new File($image, self::$collection, 'hello');
+
+        $this->assertEquals(new \Alchemy\Phrasea\Media\Type\Flash(), $file->getType());
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\File::getType
+     */
+    public function testGetTypeNoType()
+    {
+        $image = $this->getMock('\\MediaVorus\\Media\\DefaultMedia', array('getType'), array(), '', false);
+
+        $image->expects($this->once())
+            ->method('getType')
+            ->will($this->returnValue(null));
+
+        $file = new File($image, self::$collection, 'hello');
+
+        $this->assertNull($file->getType());
     }
 
 }

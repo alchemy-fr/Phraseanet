@@ -145,6 +145,33 @@ class File
     }
 
     /**
+     *
+     * @return \Alchemy\Phrasea\Media\Type\Type|null
+     */
+    public function getType()
+    {
+        switch ($this->media->getType()) {
+            case Media::TYPE_AUDIO:
+                return new \Alchemy\Phrasea\Media\Type\Audio();
+                break;
+            case Media::TYPE_DOCUMENT:
+                return new \Alchemy\Phrasea\Media\Type\Document();
+                break;
+            case Media::TYPE_FLASH:
+                return new \Alchemy\Phrasea\Media\Type\Flash();
+                break;
+            case Media::TYPE_IMAGE:
+                return new \Alchemy\Phrasea\Media\Type\Image();
+                break;
+            case Media::TYPE_VIDEO:
+                return new \Alchemy\Phrasea\Media\Type\Video();
+                break;
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the sha256 checksum of the document
      *
      * @return string
@@ -173,9 +200,9 @@ class File
     }
 
     /**
-     * Returns the SplFileInfo related to the document
+     * Returns the MediaVorus File related to the document
      *
-     * @return \SplFileInfo
+     * @return \MediaVorus\File
      */
     public function getFile()
     {
