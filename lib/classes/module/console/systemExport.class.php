@@ -75,6 +75,8 @@ class module_console_systemExport extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $core = \bootstrap::getCore();
+
         $docPerDir = max(1, (int) $input->getOption('docperdir'));
 
         /**
@@ -167,7 +169,7 @@ class module_console_systemExport extends Command
                 . '/' . $unicode->remove_nonazAZ09($databox->get_viewname(), true, true)
                 . '/';
 
-            system_file::mkdir($local_export);
+            $core['file-system']->mkdir($local_export);
 
             $sql = 'SELECT record_id FROM record WHERE parent_record_id = 0 ';
 
@@ -201,7 +203,7 @@ class module_console_systemExport extends Command
                     $dir_increment ++;
                     $in_dir_files = array();
                     $current_dir = $local_export . sprintf($dir_format, $dir_increment) . '/';
-                    system_file::mkdir($current_dir);
+                    $core['file-system']->mkdir($current_dir);
                 }
 
                 if ($sanitize) {
@@ -250,16 +252,14 @@ class module_console_systemExport extends Command
 
     protected function processRecords(\record_adapter $record, $outfile, $caption)
     {
-
-        try {
-            $file = new system_file($record->get_subdef('document')->get_pathfile());
-        } catch (\Exception_Media_SubdefNotFound $e) {
+        if ( ! file_exists($record->get_subdef('document')->get_pathfile())) {
             return false;
         }
+        $core = \bootstrap::getCore();
 
-        copy($file->getPathname(), $outfile);
+        $core['file-system']->copy($record->get_subdef('document')->get_pathfile(), $outfile);
 
-        $dest_file = new system_file($outfile);
+        $dest_file = new \SplFileInfo($outfile);
 
         touch(
             $dest_file->getPathname()
