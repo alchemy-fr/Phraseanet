@@ -1926,9 +1926,9 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array(
             'id'               => $databox_field->get_id(),
-            'namespace'        => $databox_field->get_metadata_namespace(),
-            'source'           => $databox_field->get_metadata_source(),
-            'tagname'          => $databox_field->get_metadata_tagname(),
+            'namespace'        => $databox_field->get_tag()->getGroupName(),
+            'source'           => $databox_field->get_tag()->getTagname(),
+            'tagname'          => $databox_field->get_tag()->getName(),
             'name'             => $databox_field->get_name(),
             'separator'        => $databox_field->get_separator(),
             'thesaurus_branch' => $databox_field->get_tbranch(),
