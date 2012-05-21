@@ -79,10 +79,12 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->testEnable();
     }
 
-    public function testEmpty_collection()
+    public function testGet_record_amount()
     {
-        $record = record_adapter::create(self::$object, __DIR__ . '/testfiles/cestlafete.jpg');
-        $this->assertTrue(self::$object->get_record_amount() > 0);
+        self::$object->empty_collection();
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object));
+        record_adapter::create($file);
+        $this->assertTrue(self::$object->get_record_amount() === 1);
         self::$object->empty_collection();
         $this->assertTrue(self::$object->get_record_amount() === 0);
     }
@@ -125,18 +127,10 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->assertEquals('babababe bi bo bu', self::$object->get_name());
     }
 
-    public function testGet_record_amount()
-    {
-        self::$object->empty_collection();
-        $record = record_adapter::create(self::$object, __DIR__ . '/testfiles/cestlafete.jpg');
-        $this->assertTrue(self::$object->get_record_amount() === 1);
-        self::$object->empty_collection();
-        $this->assertTrue(self::$object->get_record_amount() === 0);
-    }
-
     public function testGet_record_details()
     {
-        $record = record_adapter::create(self::$object, __DIR__ . '/testfiles/cestlafete.jpg');
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object));
+        $record = record_adapter::createFromFile($file);
         $details = self::$object->get_record_details();
 
         $this->assertTrue(is_array($details));
@@ -155,7 +149,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
 
     public function testUpdate_logo()
     {
-        $pathfile = new system_file(__DIR__ . '/testfiles/logocoll.gif');
+        $pathfile = new \SplFileInfo(__DIR__ . '/testfiles/logocoll.gif');
         self::$object->update_logo($pathfile);
         $this->assertEquals(file_get_contents($pathfile->getPathname()), self::$object->get_binary_minilogos());
     }
@@ -174,11 +168,6 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
         $this->markTestIncomplete(
             'This test has not been implemented yet.'
         );
-    }
-
-    public function testGet_binary_minilogos()
-    {
-        $this->testUpdate_logo();
     }
 
     public function testGet_from_base_id()
