@@ -390,19 +390,12 @@ class databox extends base
         return;
     }
 
-    /**
-     *
-     * @param string $host
-     * @param int $port
-     * @param string $user
-     * @param string $password
-     * @param string $dbname
-     * @param system_file $data_template
-     * @param registryInterface $registry
-     * @return databox
-     */
-    public static function create(appbox &$appbox, connection_pdo &$connection, system_file $data_template, registryInterface $registry)
+    public static function create(appbox &$appbox, connection_pdo &$connection, \SplFileInfo $data_template, registryInterface $registry)
     {
+        if ( ! file_exists($data_template->getRealPath())) {
+            throw new \InvalidArgumentException();
+        }
+
         $credentials = $connection->get_credentials();
 
         $sql = 'SELECT sbas_id
@@ -609,8 +602,11 @@ class databox extends base
      */
     public static function dispatch($repository_path, $date = false)
     {
-        if ( ! $date)
+        $core = \bootstrap::getCore();
+
+        if ( ! $date) {
             $date = date('Y-m-d H:i:s');
+        }
 
         $repository_path = p4string::addEndSlash($repository_path);
 
@@ -621,20 +617,16 @@ class databox extends base
         $n = 0;
         $comp = $year . DIRECTORY_SEPARATOR . $month . DIRECTORY_SEPARATOR . $day . DIRECTORY_SEPARATOR;
 
-        $condition = true;
-
         $pathout = $repository_path . $comp;
 
-        while (($pathout = $repository_path . $comp . self::addZeros($n)) && is_dir($pathout) && self::more_than_limit_in_dir($pathout)) {
+        while (($pathout = $repository_path . $comp . self::addZeros($n)) && is_dir($pathout) && iterator_count(new \DirectoryIterator($pathout)) > 100) {
             $n ++;
         }
 
-        if ( ! is_dir($pathout)) {
-            system_file::mkdir($pathout);
-        }
 
+        $core['file-system']->mkdir($pathout, 0750);
 
-        return p4string::addEndSlash($pathout);
+        return $pathout . DIRECTORY_SEPARATOR;
     }
 
     public function delete()
@@ -651,31 +643,11 @@ class databox extends base
         return;
     }
 
-    private function more_than_limit_in_dir($path)
-    {
-        $limit = 100;
-        $n = 0;
-        if (is_dir($path)) {
-            $hdir = opendir($path);
-            if ($hdir) {
-                while ($file = readdir($hdir)) {
-                    if ($file != '.' && $file != '..') {
-                        $n ++;
-                    }
-                }
-            }
-        }
-        if ($n > $limit) {
-            return true;
-        }
-
-        return false;
-    }
-
     private function addZeros($n, $length = 5)
     {
-        while (strlen($n) < $length)
+        while (strlen($n) < $length) {
             $n = '0' . $n;
+        }
 
         return $n;
     }
@@ -881,16 +853,12 @@ class databox extends base
         return $this;
     }
 
-    /**
-     *
-     * @param system_file $data_template
-     * @param string $path_web
-     * @param string $path_doc
-     * @param string $baseurl
-     * @return databox
-     */
-    public function setNewStructure(system_file $data_template, $path_web, $path_doc, $baseurl)
+    public function setNewStructure(\SplFileInfo $data_template, $path_web, $path_doc, $baseurl)
     {
+        if ( ! file_exists($data_template->getPathname())) {
+            throw new \InvalidArgumentException(sprintf('File %s does not exists'));
+        }
+
         $contents = file_get_contents($data_template->getPathname());
 
         $baseurl = $baseurl ? p4string::addEndSlash($baseurl) : '';
@@ -906,7 +874,7 @@ class databox extends base
         $this->saveStructure($dom_doc);
 
         $this->feed_meta_fields();
-//    exit;
+
         return $this;
     }
 

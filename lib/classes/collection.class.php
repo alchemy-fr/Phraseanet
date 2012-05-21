@@ -262,12 +262,14 @@ class collection implements cache_cacheableInterface
         return $ret;
     }
 
-    public function update_logo(system_file $pathfile = null)
+    public function update_logo(\SplFileInfo $pathfile = null)
     {
-        if (is_null($pathfile))
+        if (is_null($pathfile)) {
             $this->binary_logo = null;
-        else
+        } else {
             $this->binary_logo = file_get_contents($pathfile->getPathname());
+        }
+
         $sql = "UPDATE coll SET logo = :logo, majLogo=NOW() WHERE coll_id = :coll_id";
         $stmt = $this->get_connection()->prepare($sql);
         $stmt->execute(array(':logo'    => $this->binary_logo, ':coll_id' => $this->get_coll_id()));

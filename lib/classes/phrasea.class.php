@@ -28,55 +28,29 @@ class phrasea
 
     public static function copy_custom_files()
     {
+        $core = \bootstrap::getCore();
+
         $registry = registry::get_instance();
 
-        $origine = $registry->get('GV_RootPath') . 'config/custom_files/';
+        $origine = $registry->get('GV_RootPath') . 'config/';
         $dest = $registry->get('GV_RootPath') . 'www/custom/';
 
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($origine), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
-            if (substr($file->getFilename(), 0, 1) == '.' || strpos($file->getRealPath(), '.svn') !== false)
-                continue;
+        $finder = new Symfony\Component\Finder\Finder();
 
-            $dest_file = str_replace($origine, $dest, $file->getRealPath());
-            $dest_dir = dirname($dest_file);
-            if ( ! is_dir($dest_dir))
-                system_file::mkdir($dest_dir);
-            copy($file->getRealPath(), $dest_file);
-            $system_file = new system_file($dest_file);
-            $system_file->chmod();
-            unset($system_file);
-        }
-        $origine = $registry->get('GV_RootPath') . 'config/minilogos/';
-        $dest = $registry->get('GV_RootPath') . 'www/custom/minilogos/';
+        $mapping = array(
+            'custom_files' => '',
+            'status' => 'status',
+            'minilogos'    => 'minilogos'
+            );
 
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($origine), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
-            if (substr($file->getFilename(), 0, 1) == '.' || strpos($file->getRealPath(), '.svn') !== false)
-                continue;
+        foreach ($mapping as $source => $target) {
+            foreach ($finder->depth('==1')->in($origine . $source)->ignoreVCS(true)->ignoreDotFiles() as $file) {
+                $dest_file = str_replace($origine, $dest . $target, $file->getRealPath());
 
-            $dest_file = str_replace($origine, $dest, $file->getRealPath());
-            $dest_dir = dirname($dest_file);
-            if ( ! is_dir($dest_dir))
-                system_file::mkdir($dest_dir);
-            copy($file->getRealPath(), $dest_file);
-            $system_file = new system_file($dest_file);
-            $system_file->chmod();
-            unset($system_file);
-        }
-        $origine = $registry->get('GV_RootPath') . 'config/status/';
-        $dest = $registry->get('GV_RootPath') . 'www/custom/status/';
-
-        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($origine), RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
-            if (substr($file->getFilename(), 0, 1) == '.' || strpos($file->getRealPath(), '.svn') !== false)
-                continue;
-
-            $dest_file = str_replace($origine, $dest, $file->getRealPath());
-            $dest_dir = dirname($dest_file);
-            if ( ! is_dir($dest_dir))
-                system_file::mkdir($dest_dir);
-            copy($file->getRealPath(), $dest_file);
-            $system_file = new system_file($dest_file);
-            $system_file->chmod();
-            unset($system_file);
+                $core['file-system']->mkdir(dirname($dest_file), 0750);
+                $core['file-system']->copy($file->getRealPath(), $dest_file, true);
+                $core['file-system']->chmod($dest_file, 0760);
+            }
         }
     }
 
