@@ -11,17 +11,18 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
-use Silex\Application,
-    Silex\ControllerProviderInterface,
-    Silex\ControllerCollection;
-use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\HttpFoundation\Response,
-    Symfony\Component\HttpFoundation\RedirectResponse,
-    Symfony\Component\HttpKernel\Exception\HttpException,
-    Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute,
-    Alchemy\Phrasea\Helper;
+use Alchemy\Phrasea\RouteProcessor\Basket as BasketRoute;
+use Alchemy\Phrasea\Helper;
 use DataURI;
+use MediaVorus\MediaVorus;
+use Silex\Application;
+use Silex\ControllerProviderInterface;
+use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  *
@@ -51,7 +52,6 @@ class Tools implements ControllerProviderInterface
                         $reader = new \PHPExiftool\Reader();
                         $metadatas = $reader->files($record->get_subdef('document')->get_pathfile())
                                 ->first()->getMetadatas();
-
                     } catch (\PHPExiftool\Exception\Exception $e) {
 
                     }
@@ -123,10 +123,11 @@ class Tools implements ControllerProviderInterface
                 $fileName = null;
 
                 if ($file = $request->files->get('newHD')) {
-                    $fileName = $file->getClientOriginalName();
-                    $size = $file->getClientSize();
 
-                    if ($size && $fileName && $file->isValid()) {
+                    if ($file->isValid()) {
+
+                        $fileName = $file->getClientOriginalName();
+                        $size = $file->getClientSize();
 
                         try {
                             $record = new \record_adapter(
@@ -134,10 +135,9 @@ class Tools implements ControllerProviderInterface
                                     , $request->get('record_id')
                             );
 
-                            $record->substitute_subdef(
-                                'document'
-                                , new \system_file($file->getPathname())
-                            );
+                            $media = MediaVorus::guess($file);
+
+                            $record->substitute_subdef('document', $media);
 
                             if ((int) $request->get('ccfilename') === 1) {
                                 $record->set_original_name($fileName);
@@ -186,10 +186,9 @@ class Tools implements ControllerProviderInterface
                                     , $request->get('record_id')
                             );
 
-                            $record->substitute_subdef(
-                                'thumbnail'
-                                , new \system_file($tmpFile)
-                            );
+                            $media = MediaVorus::guess($file);
+
+                            $record->substitute_subdef('thumbnail', $media);
 
                             $success = true;
                         } catch (\Exception $e) {
@@ -247,7 +246,9 @@ class Tools implements ControllerProviderInterface
 
                     file_put_contents($fileName, $dataUri->getData());
 
-                    $record->substitute_subdef('thumbnail', new \system_file($fileName));
+                    $media = MediaVorus::guess(new \SplFileInfo($fileName));
+
+                    $record->substitute_subdef('thumbnail', $media);
 
                     $return['success'] = true;
                 } catch (\Exception $e) {
