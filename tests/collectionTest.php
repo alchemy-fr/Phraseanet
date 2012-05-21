@@ -83,7 +83,7 @@ class collectionTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         self::$object->empty_collection();
         $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/testfiles/cestlafete.jpg'), self::$object));
-        record_adapter::create($file);
+        record_adapter::createFromFile($file);
         $this->assertTrue(self::$object->get_record_amount() === 1);
         self::$object->empty_collection();
         $this->assertTrue(self::$object->get_record_amount() === 0);
