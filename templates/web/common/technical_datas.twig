@@ -132,18 +132,6 @@
       {{record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOCODEC')) }}
       <br />
     {% endif %}
-    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOBITRATE'))  %}
-      {% trans 'Debit video' %} :
-      {% set rate = (record.get_technical_infos(constant('media_subdef::TC_DATA_VIDEOBITRATE'))  / 1024) %}
-      {{rate|round(1)}} kbps
-      <br />
-    {% endif %}
-    {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOBITRATE'))  %}
-      {% trans 'Debit audio' %} :
-      {% set rate = (record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOBITRATE'))  / 1024) %}
-      {{rate|round(1)}} kbps
-      <br />
-    {% endif %}
     {% if record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE'))  %}
       {% trans 'Frequence d\'echantillonage' %} :
       {{record.get_technical_infos(constant('media_subdef::TC_DATA_AUDIOSAMPLERATE')) }} kHz
