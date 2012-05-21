@@ -41,11 +41,11 @@ require_once __DIR__ . '/Core/Configuration/ApplicationSpecification.php';
 class Core extends \Pimple
 {
     protected static $availableLanguages = array(
-        'ar_SA' => 'العربية'
-        , 'de_DE' => 'Deutsch'
-        , 'en_GB' => 'English'
-        , 'es_ES' => 'Español'
-        , 'fr_FR' => 'Français'
+        'ar_SA'                 => 'العربية'
+        , 'de_DE'                 => 'Deutsch'
+        , 'en_GB'                 => 'English'
+        , 'es_ES'                 => 'Español'
+        , 'fr_FR'                 => 'Français'
     );
     protected static $autoloader_initialized = false;
 
@@ -158,6 +158,28 @@ class Core extends \Pimple
                 $drivers = new \MediaAlchemyst\DriversContainer($conf, $core['monolog']);
 
                 return new \MediaAlchemyst\Alchemyst($drivers);
+            });
+
+        $this['border-manager'] = $this->share(function () use ($core) {
+
+                /**
+                 * @todo configuration
+                 */
+                $borderManager = new \Alchemy\Phrasea\Border\Manager($core['EM']);
+
+                $borderManager->registerCheckers(
+                    array(
+                        new Border\Checker\Sha256(),
+                        new Border\Checker\UUID(),
+                    )
+                );
+
+                return $borderManager;
+            });
+
+        $this['file-system'] = $this->share(function () use ($core) {
+
+                return new \Symfony\Component\Filesystem\Filesystem();
             });
 
         self::initPHPConf();
