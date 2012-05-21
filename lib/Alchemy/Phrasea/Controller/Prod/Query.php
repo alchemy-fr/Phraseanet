@@ -114,38 +114,38 @@ class Query implements ControllerProviderInterface
                         if ($d2bottom < 4) {
                             for ($i = 1; ($i <= 4 && (($i <= $npages) === true)); $i ++ ) {
                                 if ($i == $page)
-                                    $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" />';
+                                    $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                                 else
-                                    $string .= "<a onclick='gotopage(" . $i . ");return false;'>" . $i . "</a>";
+                                    $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                             }
                             if ($npages > 4)
-                                $string .= "<a onclick='gotopage(" . ($npages) . ");return false;'>&gt;&gt;</a>";
+                                $string .= "<a onclick='gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini'>&gt;&gt;</a>";
                         }
                         else {
                             $start = $npages - 4;
                             if (($start) > 0)
-                                $string .= "<a onclick='gotopage(1);return false;'>&lt;&lt;</a>";
+                                $string .= "<a onclick='gotopage(1);return false;' class='btn btn-primary btn-mini'>&lt;&lt;</a>";
                             else
                                 $start = 1;
                             for ($i = ($start); $i <= $npages; $i ++ ) {
                                 if ($i == $page)
-                                    $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" />';
+                                    $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                                 else
-                                    $string .= "<a onclick='gotopage(" . $i . ");return false;'>" . $i . "</a>";
+                                    $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                             }
                         }
                     }
                     else {
-                        $string .= "<a onclick='gotopage(1);return false;'>&lt;&lt;</a>";
+                        $string .= "<a onclick='gotopage(1);return false;' class='btn btn-primary btn-mini'>&lt;&lt;</a>";
 
                         for ($i = ($page - 2); $i <= ($page + 2); $i ++ ) {
                             if ($i == $page)
-                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" />';
+                                $string .= '<input onkeypress="if(event.keyCode == 13 && !isNaN(parseInt(this.value)))gotopage(parseInt(this.value))" type="text" value="' . $i . '" size="' . (strlen((string) $i)) . '" class="btn btn-mini" />';
                             else
-                                $string .= "<a onclick='gotopage(" . $i . ");return false;'>" . $i . "</a>";
+                                $string .= "<a onclick='gotopage(" . $i . ");return false;' class='btn btn-primary btn-mini'>" . $i . "</a>";
                         }
 
-                        $string .= "<a onclick='gotopage(" . ($npages) . ");return false;'>&gt;&gt;</a>";
+                        $string .= "<a onclick='gotopage(" . ($npages) . ");return false;' class='btn btn-primary btn-mini'>&gt;&gt;</a>";
                     }
                 }
                 $string .= '<div style="display:none;"><div id="NEXT_PAGE"></div><div id="PREV_PAGE"></div></div>';

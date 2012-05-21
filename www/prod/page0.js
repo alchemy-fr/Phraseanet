@@ -443,7 +443,7 @@ function afterSearch()
 function initAnswerForm(){
 
   var searchForm = $('#searchForm');
-  $('button[type="submit"]', searchForm).button().bind('click', function(){
+  $('button[type="submit"]', searchForm).bind('click', function(){
 
     newSearch();
     $('searchForm').trigger('submit');
@@ -1708,8 +1708,8 @@ function pushThis(sstt_id, lst, story)
 
   $.post("/prod/push/sendform/"
     , {
-      lst : lst, 
-      ssel : sstt_id, 
+      lst : lst,
+      ssel : sstt_id,
       story : story
     }
     , function(data){
@@ -1731,8 +1731,8 @@ function feedbackThis(sstt_id, lst, story)
 
   $.post("/prod/push/validateform/"
     , {
-      lst : lst, 
-      ssel : sstt_id, 
+      lst : lst,
+      ssel : sstt_id,
       story : story
     }
     , function(data){
@@ -1743,7 +1743,7 @@ function feedbackThis(sstt_id, lst, story)
 }
 
   function toolREFACTOR(datas){
-    
+
     var dialog = p4.Dialog.Create({
       size:'Medium',
       title:'Tool box',
@@ -1757,7 +1757,7 @@ function feedbackThis(sstt_id, lst, story)
         return;
       }
       );
-    
+
   }
 
 function activeIcons()
@@ -2122,9 +2122,6 @@ function activeIcons()
     alert(language.nodocselected);
   });
 
-  $('#idFrameT .tools .buttonset').buttonset();
-  $('#idFrameT .tools .verticalbuttonset').buttonsetv();
-
   $('.TOOL_chgstatus_btn').live('click', function(){
     var value="";
 
@@ -2323,7 +2320,7 @@ function activeIcons()
       alert(language.nodocselected);
     }
   });
-  
+
 
 $('.TOOL_disktt_btn').live('click', function(){
     var datas = {};
