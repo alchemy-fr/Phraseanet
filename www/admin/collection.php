@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -98,7 +100,7 @@ switch ($parm['act']) {
                 $msg['SENDMINILOGO'] = '<div style="color:#FF0000">' . _('forms::erreur lors de l\'envoi du fichier') . '</div>';
             } elseif (( $_FILES['newLogo']['error'] == UPLOAD_ERR_OK)) {
                 try {
-                    $appbox->write_collection_pic($collection, new system_file($_FILES['newLogo']['tmp_name']), collection::PIC_LOGO);
+                    $appbox->write_collection_pic($collection, new SymfoFile($_FILES['newLogo']['tmp_name']), collection::PIC_LOGO);
                 } catch (Exception $e) {
                     $msg['SENDMINILOGO'] = $e->getMessage();
                 }
@@ -125,7 +127,7 @@ switch ($parm['act']) {
                 $msg['SENDWM'] = '<div style="color:#FF0000">' . _('forms::erreur lors de l\'envoi du fichier') . "</div>"; // par le serveur (fichier php.ini)
             } elseif (($_FILES['newWm']['error'] == UPLOAD_ERR_OK)) {
                 try {
-                    $appbox->write_collection_pic($collection, new system_file($_FILES['newWm']["tmp_name"]), collection::PIC_WM);
+                    $appbox->write_collection_pic($collection, new SymfoFile($_FILES['newWm']["tmp_name"]), collection::PIC_WM);
                 } catch (Exception $e) {
                     $msg['SENDWM'] = '<div style="color:#FF0000">' . $e->getMessage() . "</div>";
                 }
@@ -148,7 +150,7 @@ switch ($parm['act']) {
                 $msg['SENDSTAMPLOGO'] = '<div style="color:#FF0000">' . _('forms::erreur lors de l\'envoi du fichier') . '</div>'; // par le serveur (fichier php.ini)
             } elseif (( $_FILES['newStampLogo']['error'] == UPLOAD_ERR_OK)) {
                 try {
-                    $appbox->write_collection_pic($collection, new system_file($_FILES['newStampLogo']["tmp_name"]), collection::PIC_STAMP);
+                    $appbox->write_collection_pic($collection, new SymfoFile($_FILES['newStampLogo']["tmp_name"]), collection::PIC_STAMP);
                 } catch (Exception $e) {
                     $msg['SENDSTAMPLOGO'] = '<div style="color:#FF0000">' . $e->getMessage() . "</div>";
                 }
@@ -173,7 +175,7 @@ switch ($parm['act']) {
                 $msg['SENDPRESENTPICT'] = '<div style="color:#FF0000">' . _('forms::erreur lors de l\'envoi du fichier') . '</div>'; // par le serveur (fichier php.ini)
             } elseif ($_FILES['newPresentPict']['error'] == UPLOAD_ERR_OK) {
                 try {
-                    $appbox->write_collection_pic($collection, new system_file($_FILES['newPresentPict']["tmp_name"]), collection::PIC_PRESENTATION);
+                    $appbox->write_collection_pic($collection, new SymfoFile($_FILES['newPresentPict']["tmp_name"]), collection::PIC_PRESENTATION);
                 } catch (Exception $e) {
                     $msg['SENDPRESENTPICT'] = '<div style="color:#FF0000">' . $e->getMessage() . "</div>";
                 }
