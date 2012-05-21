@@ -60,6 +60,8 @@ class p4file
 
     public static function archiveFile(system_file &$system_file, $base_id, $delete = true, $name = false)
     {
+        throw new Exception('This method is deprecated');
+
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
         $registry = $appbox->get_registry();
@@ -128,6 +130,8 @@ class p4file
 
     public static function check_file_error($filename, $sbas_id, $originalname)
     {
+        throw new Exception('This method is deprecated');
+
         $checks = array();
 
         $system_file = new system_file($filename);
