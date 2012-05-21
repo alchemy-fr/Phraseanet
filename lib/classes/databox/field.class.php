@@ -13,6 +13,8 @@ use \Alchemy\Phrasea\Vocabulary;
 
 /**
  *
+ * @todo        disable the ability to change from multi to mono from admin
+ *              panel ; propose an alternative to copy/update
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -32,9 +34,9 @@ class databox_field implements cache_cacheableInterface
 
     /**
      *
-     * @var <type>
+     * @var \PHPExiftool\Driver\Tag
      */
-    protected $source;
+    protected $tag;
 
     /**
      *
@@ -171,7 +173,7 @@ class databox_field implements cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->id = (int) $id;
-        $this->source = self::load_class_from_xpath($row['src']);
+        $this->tag = self::loadClassFromTagName($row['src']);
         $this->name = $row['name'];
         $this->indexable = ! ! $row['indexable'];
         $this->readonly = ! ! $row['readonly'];
@@ -332,7 +334,7 @@ class databox_field implements cache_cacheableInterface
 
         $params = array(
             ':name'                  => $this->name,
-            ':source'                => $this->source->get_source(),
+            ':source'                => $this->tag->getTagname(),
             ':indexable'             => $this->indexable ? '1' : '0',
             ':readonly'              => $this->readonly ? '1' : '0',
             ':required'              => $this->required ? '1' : '0',
@@ -383,7 +385,7 @@ class databox_field implements cache_cacheableInterface
                 $nodes_parent->item(0)->replaceChild($meta, $old_meta);
             }
         }
-        $meta->setAttribute('src', $this->source->get_source());
+        $meta->setAttribute('src', $this->tag->getTagname());
         $meta->setAttribute('index', $this->indexable ? '1' : '0');
         $meta->setAttribute('readonly', $this->readonly ? '1' : '0');
         $meta->setAttribute('required', $this->required ? '1' : '0');
@@ -428,44 +430,59 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
+     * Get a PHPExiftool Tag from tagName
      *
-     * @param string $xpath
-     * @return metadata_Abstract
+     * @param type $tagName
+     * @return \PHPExiftool\Driver\Tag
+     * @throws Exception_Databox_metadataDescriptionNotFound
      */
-    public static function load_class_from_xpath($xpath)
+    public static function loadClassFromTagName($tagName)
     {
-        if (trim($xpath) === '')
-            $classname = 'metadata_description_nosource';
-        else
-            $classname = 'metadata_description_' . str_replace(
-                    array('/rdf:RDF/rdf:Description/', ':', '-'), array('', '_', ''), $xpath
-            );
+        $tagName = str_replace('/rdf:rdf/rdf:description/', '', strtolower($tagName));
 
-        if ( ! class_exists($classname))
-            throw new Exception_Databox_metadataDescriptionNotFound();
+        if (trim($tagName) === '') {
 
-        return new $classname();
+            $tag = new Alchemy\Phrasea\Metadata\Tag\Nosource();
+        } elseif (strpos($tagName, 'phraseanet:') === 0) {
+
+            $tagName = str_replace('phraseanet:', '', $tagName);
+
+            $tagName = explode('-', $tagName);
+            $tagName = array_map('ucfirst', $tagName);
+            $tagName = implode('', $tagName);
+
+            $classname = '\\Alchemy\\Phrasea\\Metadata\\Tag\\' . $tagName;
+
+            if ( ! class_exists($classname)) {
+                throw new Exception_Databox_metadataDescriptionNotFound(sprintf("tagname %s not found", $tagName));
+            }
+
+            $tag = new $classname();
+        } else {
+            $tag = \PHPExiftool\Driver\TagFactory::getFromRDFTagname($tagName);
+        }
+
+        return $tag;
     }
 
-    /**
-     *
-     * @param string $source
-     * @return databox_field
-     */
-    public function set_source($source)
+    public function set_tag(\PHPExiftool\Driver\Tag $tag = null)
     {
-        $this->source = self::load_class_from_xpath($source);
+        if ($tag === null) {
+            $tag = new \Alchemy\Phrasea\Metadata\Tag\Nosource();
+        }
+
+        $this->tag = $tag;
 
         return $this;
     }
 
     /**
      *
-     * @return metadata_Abstract
+     * @return \PHPExiftool\Driver\Tag
      */
-    public function get_source()
+    public function get_tag()
     {
-        return $this->source;
+        return $this->tag;
     }
 
     /**
@@ -509,6 +526,12 @@ class databox_field implements cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * Set a vocabulary 
+     *
+     * @param Vocabulary\ControlProvider\ControlProviderInterface $vocabulary
+     * @return \databox_field
+     */
     public function setVocabularyControl(Vocabulary\ControlProvider\ControlProviderInterface $vocabulary = null)
     {
         $this->Vocabulary = $vocabulary;
@@ -516,6 +539,12 @@ class databox_field implements cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * Set whether or not the vocabulary is restricted to the provider
+     *
+     * @param   boolean         $boolean
+     * @return  \databox_field
+     */
     public function setVocabularyRestricted($boolean)
     {
         $this->VocabularyRestriction = ! ! $boolean;
@@ -627,6 +656,13 @@ class databox_field implements cache_cacheableInterface
         return $this;
     }
 
+    /**
+     * Return the separator depending of the multi attribute
+     *
+     * @param   string    $separator
+     * @param   boolean   $multi
+     * @return  string
+     */
     protected static function checkMultiSeparator($separator, $multi)
     {
         if ( ! $multi) {
@@ -749,33 +785,6 @@ class databox_field implements cache_cacheableInterface
     public function get_name()
     {
         return $this->name;
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function get_metadata_source()
-    {
-        return $this->source->get_source();
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function get_metadata_namespace()
-    {
-        return $this->source->get_namespace();
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function get_metadata_tagname()
-    {
-        return $this->source->get_tagname();
     }
 
     /**

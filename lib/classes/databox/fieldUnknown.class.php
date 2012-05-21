@@ -55,29 +55,6 @@ class databox_fieldUnknown extends databox_field
     }
 
     /**
-     *
-     * @return string
-     */
-    public function get_metadata_source()
-    {
-        return '';
-    }
-
-    public function get_metadata_namespace()
-    {
-        return '';
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function get_metadata_tagname()
-    {
-        return '';
-    }
-
-    /**
      * Return true because the field is unknown
      *
      * @return boolean
