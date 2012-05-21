@@ -84,7 +84,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetElement()
     {
-        $this->markTestAsSkipped('Test response content');
+        $this->markTestSkipped('Test response content');
 
         $originalEm = $this->app['Core']['EM'];
 
