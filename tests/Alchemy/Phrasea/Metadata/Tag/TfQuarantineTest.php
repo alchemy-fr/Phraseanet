@@ -2,7 +2,7 @@
 
 namespace Alchemy\Phrasea\Metadata\Tag;
 
-class TfQuarantine extends \PHPUnit_Framework_TestCase
+class TfQuarantineTest extends \PHPUnit_Framework_TestCase
 {
 
     /**

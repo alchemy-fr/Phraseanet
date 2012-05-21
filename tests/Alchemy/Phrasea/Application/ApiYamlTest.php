@@ -863,7 +863,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2'), self::$collection));
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
         $record = record_adapter::createFromFile($file);
 
         $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
@@ -997,7 +997,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testMoveRecordToCollection()
     {
-        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2'), self::$collection));
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
         $record = record_adapter::createFromFile($file);
 
         $this->setToken(self::$token);
