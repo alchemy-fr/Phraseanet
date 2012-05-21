@@ -2119,7 +2119,7 @@ function startThisEditing(sbas_id,what,regbasprid,ssel)
 
   check_required();
 
-  $('#TH_Opresets button.adder').button().bind('click', function(){
+  $('#TH_Opresets button.adder').bind('click', function(){
     preset_copy();
   });
 
