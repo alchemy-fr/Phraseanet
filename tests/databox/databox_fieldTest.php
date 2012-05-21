@@ -144,29 +144,27 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
         );
     }
 
-    public function testSet_source()
+    public function testSet_tag()
     {
-        $source = '/rdf:RDF/rdf:Description/PHRASEANET:tf-filename';
+        $source = \databox_field::loadClassFromTagName('/rdf:RDF/rdf:Description/PHRASEANET:tf-basename');
 
-        $this->object_mono->set_source($source);
-        $this->object_multi->set_source($source);
+        $this->object_mono->set_tag($source);
+        $this->object_multi->set_tag($source);
 
-        $this->assertEquals($source, $this->object_mono->get_source()->get_source());
-        $this->assertEquals($source, $this->object_multi->get_source()->get_source());
+        $this->assertEquals($source, $this->object_mono->get_tag());
+        $this->assertEquals($source, $this->object_multi->get_tag());
 
-        $this->object_mono->set_source(null);
-        $this->object_multi->set_source(null);
+        $this->object_mono->set_tag(null);
+        $this->object_multi->set_tag(null);
 
-        $this->assertInstanceOf('\metadata_Interface', $this->object_mono->get_source());
-        $this->assertInstanceOf('\metadata_Interface', $this->object_multi->get_source());
-        $this->assertEquals('', $this->object_mono->get_source()->get_source());
-        $this->assertEquals('', $this->object_multi->get_source()->get_source());
+        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\Nosource(), $this->object_mono->get_tag());
+        $this->assertEquals(new \Alchemy\Phrasea\Metadata\Tag\Nosource(), $this->object_multi->get_tag());
     }
 
-    public function testGet_source()
+    public function testGet_tag()
     {
-        $this->assertInstanceOf('\metadata_Interface', $this->object_mono->get_source());
-        $this->assertInstanceOf('\metadata_Interface', $this->object_multi->get_source());
+        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Tag', $this->object_mono->get_tag());
+        $this->assertInstanceOf('\\PHPExiftool\\Driver\\Tag', $this->object_multi->get_tag());
     }
 
     public function testGet_dces_element()
@@ -340,48 +338,6 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
     {
         $this->assertEquals(str_replace(' ', '', $this->name_mono), $this->object_mono->get_name());
         $this->assertEquals(str_replace(' ', '', $this->name_multi), $this->object_multi->get_name());
-    }
-
-    public function testGet_metadata_source()
-    {
-        $this->assertEquals('', $this->object_mono->get_metadata_source());
-        $this->assertEquals('', $this->object_multi->get_metadata_source());
-
-        $source = '/rdf:RDF/rdf:Description/PHRASEANET:tf-filename';
-
-        $this->object_mono->set_source($source);
-        $this->object_multi->set_source($source);
-
-        $this->assertEquals($source, $this->object_mono->get_metadata_source());
-        $this->assertEquals($source, $this->object_multi->get_metadata_source());
-    }
-
-    public function testGet_metadata_namespace()
-    {
-        $this->assertEquals('NoSource', $this->object_mono->get_metadata_namespace());
-        $this->assertEquals('NoSource', $this->object_multi->get_metadata_namespace());
-
-        $source = '/rdf:RDF/rdf:Description/PHRASEANET:tf-filename';
-
-        $this->object_mono->set_source($source);
-        $this->object_multi->set_source($source);
-
-        $this->assertEquals('PHRASEANET', $this->object_mono->get_metadata_namespace());
-        $this->assertEquals('PHRASEANET', $this->object_multi->get_metadata_namespace());
-    }
-
-    public function testGet_metadata_tagname()
-    {
-        $this->assertEquals('NoSource', $this->object_mono->get_metadata_tagname());
-        $this->assertEquals('NoSource', $this->object_multi->get_metadata_tagname());
-
-        $source = '/rdf:RDF/rdf:Description/PHRASEANET:tf-filename';
-
-        $this->object_mono->set_source($source);
-        $this->object_multi->set_source($source);
-
-        $this->assertEquals('tf-filename', $this->object_mono->get_metadata_tagname());
-        $this->assertEquals('tf-filename', $this->object_multi->get_metadata_tagname());
     }
 
     public function testIs_on_error()

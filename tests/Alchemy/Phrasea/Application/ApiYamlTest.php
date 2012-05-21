@@ -524,9 +524,9 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertTrue($element->get_tbranch() === $metadatas["thesaurus_branch"]);
                 $this->assertTrue($element->get_separator() === $metadatas["separator"]);
                 $this->assertTrue($element->get_name() === $metadatas["name"]);
-                $this->assertTrue($element->get_metadata_tagname() === $metadatas["tagname"]);
-                $this->assertTrue($element->get_metadata_source() === $metadatas["source"]);
-                $this->assertTrue($element->get_metadata_namespace() === $metadatas["namespace"]);
+                $this->assertTrue($element->get_tag()->getName() === $metadatas["tagname"]);
+                $this->assertTrue($element->get_tag()->getTagname() === $metadatas["source"]);
+                $this->assertTrue($element->get_tag()->getGroupName() === $metadatas["namespace"]);
             }
         }
         $route = '/databoxes/24892534/metadatas/';
@@ -863,7 +863,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $record = record_adapter::create(self::$collection, __DIR__ . '/../../../testfiles/test001.CR2');
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2'), self::$collection));
+        $record = record_adapter::createFromFile($file);
 
         $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
         $caption = $record->get_caption();
@@ -996,7 +997,8 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
     public function testMoveRecordToCollection()
     {
-        $record = record_adapter::create(self::$collection, __DIR__ . '/../../../testfiles/test001.CR2');
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2'), self::$collection));
+        $record = record_adapter::createFromFile($file);
 
         $this->setToken(self::$token);
 
@@ -1279,6 +1281,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMetaYaml($content);
         $this->assertEquals(200, $content["meta"]["http_code"]);
         $this->assertNull($content["meta"]["error_message"]);
+        $this->assertNull($content["meta"]["error_type"]);
         $this->assertNull($content["meta"]["error_details"]);
     }
 
@@ -1287,7 +1290,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMetaYaml($content);
         $this->evaluateMetaYaml400($content);
         $this->assertNotNull($content["meta"]["error_message"]);
-        $this->assertNotNull($content["meta"]["error_details"]);
+        $this->assertNotNull($content["meta"]["error_type"]);
         $this->assertEquals(400, $content["meta"]["http_code"]);
     }
 
@@ -1296,7 +1299,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateMetaYaml($content);
         $this->evaluateMetaYaml400($content);
         $this->assertNotNull($content["meta"]["error_message"]);
-        $this->assertNotNull($content["meta"]["error_details"]);
+        $this->assertNotNull($content["meta"]["error_type"]);
         $this->assertEquals(404, $content["meta"]["http_code"]);
     }
 
@@ -1304,7 +1307,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->evaluateMetaYaml400($content);
         $this->assertNotNull($content["meta"]["error_message"]);
-        $this->assertNotNull($content["meta"]["error_details"]);
+        $this->assertNotNull($content["meta"]["error_type"]);
         $this->assertEquals(405, $content["meta"]["http_code"]);
     }
 
