@@ -44,7 +44,7 @@ class phrasea
             );
 
         foreach ($mapping as $source => $target) {
-            foreach ($finder->depth('==1')->in($origine . $source)->ignoreVCS(true)->ignoreDotFiles() as $file) {
+            foreach ($finder->depth('==1')->in($origine . $source)->ignoreVCS(true)->ignoreDotFiles(true) as $file) {
                 $dest_file = str_replace($origine, $dest . $target, $file->getRealPath());
 
                 $core['file-system']->mkdir(dirname($dest_file), 0750);
