@@ -41,8 +41,8 @@
                 <th class="{{ key }}" scope="col" >
                 {% if value.sort == 1 %}
                     <div class="orderby">
-                        <img title="{% trans Trier %}" style="float:left;top:0;left:0;" class="asc" src="images/arrow_up.png"  />
-                        <img title="{% trans Trier %}" style="float:left;top:0;left:0;" class="desc" src="images/arrow_down.png" />
+                        <img title="{% trans "Trier" %}" style="float:left;top:0;left:0;" class="asc" src="images/arrow_up.png"  />
+                        <img title="{% trans "Trier" %}" style="float:left;top:0;left:0;" class="desc" src="images/arrow_down.png" />
                 {% endif %}
 
                 <div class="title_th" style="clear:both;color:black;">{{ value.title }}</div>
@@ -54,11 +54,11 @@
                 <div style="height:8px;">
 
                 {% if value.filter == 1 %}
-                    <a href="#" title="{% trans Filtrer %}" style="float:left;bottom:0;left:0;font-size:8px;" class="{{ key }} filter ">{% trans "report :: filtrer" %}</a>
+                    <a href="#" title="{% trans "Filtrer" %}" style="float:left;bottom:0;left:0;font-size:8px;" class="{{ key }} filter ">{% trans "report :: filtrer" %}</a>
                 {% endif %}
 
                 {% if value.groupby == 1 %}
-                    <a href="#" title="{% trans Grouper %}" style="float:right;bottom:0;right:0;font-size:8px;" class="{{ key }} groupby ">{% trans "report :: grouper" %}</a>
+                    <a href="#" title="{% trans "Grouper" %}" style="float:right;bottom:0;right:0;font-size:8px;" class="{{ key }} groupby ">{% trans "report :: grouper" %}</a>
                 {% endif %}
                 </div>
                 </th>
