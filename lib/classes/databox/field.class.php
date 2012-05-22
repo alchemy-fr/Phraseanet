@@ -445,18 +445,16 @@ class databox_field implements cache_cacheableInterface
      */
     public static function loadClassFromTagName($tagName)
     {
-        $tagName = str_replace('/rdf:rdf/rdf:description/', '', strtolower($tagName));
+        $tagName = str_replace('/rdf:rdf/rdf:description/', '', $tagName);
 
         if (trim($tagName) === '') {
 
             $tag = new Alchemy\Phrasea\Metadata\Tag\Nosource();
-        } elseif (strpos($tagName, 'phraseanet:') === 0) {
+        } elseif (strpos($tagName, 'Phraseanet:') === 0) {
 
-            $tagName = str_replace('phraseanet:', '', $tagName);
+            $tagName = str_replace('Phraseanet:', '', $tagName);
 
-            $tagName = explode('-', $tagName);
-            $tagName = array_map('ucfirst', $tagName);
-            $tagName = implode('', $tagName);
+            $tagName = str_replace('-', '', $tagName);
 
             $classname = '\\Alchemy\\Phrasea\\Metadata\\Tag\\' . $tagName;
 
