@@ -1,12 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAbstract.class.inc';
-require_once __DIR__ . '/../../../../../lib/Alchemy/Phrasea/Controller/Prod/Upload.php';
+require_once __DIR__ . '/../../../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Silex\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class UploadTest extends \PhraseanetWebTestCaseAbstract
+class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 {
     /**
      *
@@ -33,13 +32,14 @@ class UploadTest extends \PhraseanetWebTestCaseAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Upload::getUploadForm
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::call
      */
     public function testUploadForm()
     {
-        $this->markTestSkipped('empty');
-        $response = null;
+        $this->client->request('GET', '/upload/', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $response = $this->client->getResponse();
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**
@@ -47,9 +47,269 @@ class UploadTest extends \PhraseanetWebTestCaseAbstract
      */
     public function testUpload()
     {
-        $this->markTestSkipped('empty');
-        $response = null;
+        $params = array('base_id' => self::$collection->get_base_id());
+        $files = array(
+            'files' => array(
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                )
+            )
+        );
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
 
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertTrue($datas['success']);
+
+        if ($datas['element'] == 'record') {
+            $id = explode('_', $datas['id']);
+
+            $record = new record_adapter($id[0], $id[1]);
+        }
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUploadWrongBaseId()
+    {
+        $params = array('base_id' => 0);
+        $files = array(
+            'files' => array(
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                )
+            )
+        );
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertFalse($datas['success']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUploadNoAccessBaseId()
+    {
+        $params = array('base_id' => self::$collection_no_access->get_base_id());
+        $files = array(
+            'files' => array(
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                )
+            )
+        );
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertFalse($datas['success']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUploadInvalidFile()
+    {
+        $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG', 'image/jpeg', 123, UPLOAD_ERR_NO_FILE
+        );
+
+        $params = array('base_id' => self::$collection->get_base_id());
+        $files = array('files' => array($file));
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertFalse($datas['success']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUploadNoBaseId()
+    {
+        $params = array();
+        $files = array(
+            'files' => array(
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                )
+            )
+        );
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertFalse($datas['success']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUpload2Files()
+    {
+        $params = array('base_id' => self::$collection->get_base_id());
+        $files = array(
+            'files' => array(
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                ),
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                )
+            )
+        );
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertFalse($datas['success']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUploadForceRecord()
+    {
+        $params = array(
+            'base_id'     => self::$collection->get_base_id(),
+            'forceAction' => \Alchemy\Phrasea\Border\Manager::FORCE_RECORD,
+        );
+
+        $files = array(
+            'files' => array(
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                )
+            )
+        );
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertTrue($datas['success']);
+        $this->assertEquals('record', $datas['element']);
+        $this->assertEquals(\Alchemy\Phrasea\Border\Manager::RECORD_CREATED, $datas['code']);
+
+        $id = explode('_', $datas['id']);
+        $record = new \record_adapter($id[0], $id[1]);
+        $this->assertFalse($record->is_grouping());
+        $this->assertEquals(array(), $datas['reasons']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUploadRecordStatus()
+    {
+        $params = array(
+            'base_id'     => self::$collection->get_base_id(),
+            'forceAction' => \Alchemy\Phrasea\Border\Manager::FORCE_RECORD,
+            'status'      => array(4 => 1),
+        );
+
+        $files = array(
+            'files' => array(
+                new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                )
+            )
+        );
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertTrue($datas['success']);
+        $this->assertEquals('record', $datas['element']);
+        $this->assertEquals(\Alchemy\Phrasea\Border\Manager::RECORD_CREATED, $datas['code']);
+
+        $id = explode('_', $datas['id']);
+        $record = new \record_adapter($id[0], $id[1]);
+        $this->assertFalse($record->is_grouping());
+        $this->assertEquals(1, substr(strrev($record->get_status()), 5, 1));
+        $this->assertEquals(array(), $datas['reasons']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUploadNoFiles()
+    {
+        $params = array('base_id' => self::$collection->get_base_id());
+        $files = array();
+        $this->client->request('POST', '/upload/', $params, $files, array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertFalse($datas['success']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     */
+    public function testUploadWithoutAnything()
+    {
+        $this->client->request('POST', '/upload/', array(), array(), array('HTTP_Accept' => 'application/json'));
+
+        $response = $this->client->getResponse();
+
+        $this->checkJsonResponse($response);
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertFalse($datas['success']);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsnResponse
+     */
+    public function checkJsonResponse(Response $response)
+    {
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $datas = json_decode($response->getContent(), true);
+
+        $this->assertTrue(is_array($datas));
+        $this->assertArrayHasKey('success', $datas);
+        $this->assertArrayHasKey('message', $datas);
     }
 }
