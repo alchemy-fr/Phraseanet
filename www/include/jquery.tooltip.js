@@ -350,7 +350,7 @@
 
         var zH;
 
-        if(vertS > horS)
+        if((Math.abs(ratioSurfaceV - ratioImage) > Math.abs(ratioSurfaceH - ratioImage)))
         {
           //				width = ($(h).width()>(v.x-40))?(v.x-40):$(h).width();
           var zL = event.pageX;
