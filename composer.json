@@ -24,6 +24,9 @@
     "tcpdf/tcpdf": ">5.9",
     "zend/gdata": ">1.11"
   },
+  "require-dev": {
+    "fabpot/php-cs-fixer": "dev-master"
+  },
   "repositories": [
   {
     "type": "vcs",

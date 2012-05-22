@@ -1,5 +1,5 @@
 {
-    "hash": "c6dd70ef87506b7d67d6a42365998725",
+    "hash": "df16a5217e8608e6a829fed200c83487",
     "packages": [
         {
             "package": "alchemy/Phlickr",
@@ -110,11 +110,9 @@
             "alias-version": "1.0.9999999.9999999-dev"
         },
         {
-            "package": "pimple/pimple",
+            "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "v1.0.0",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
+            "source-reference": "6dcb25872210c50292516683ba541c1b29624afd"
         },
         {
             "package": "silex/silex",
@@ -122,11 +120,6 @@
             "source-reference": "6dcb25872210c50292516683ba541c1b29624afd",
             "alias-pretty-version": "1.0.x-dev",
             "alias-version": "1.0.9999999.9999999-dev"
-        },
-        {
-            "package": "silex/silex",
-            "version": "dev-master",
-            "source-reference": "6dcb25872210c50292516683ba541c1b29624afd"
         },
         {
             "package": "swftools/swftools",
@@ -185,7 +178,13 @@
             "source-reference": "827dc8696f1e5b70a4c507355877cdbab60fb3fa"
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+        {
+            "package": "fabpot/php-cs-fixer",
+            "version": "dev-master",
+            "source-reference": "0c24e56efdaddd63b9f7e74a259952003e37e73f"
+        }
+    ],
     "aliases": [
 
     ],
@@ -196,6 +195,7 @@
         "mediavorus/mediavorus": 20,
         "media-alchemyst/media-alchemyst": 20,
         "php-xpdf/php-xpdf": 20,
-        "data-uri/data-uri": 20
+        "data-uri/data-uri": 20,
+        "fabpot/php-cs-fixer": 20
     }
 }
