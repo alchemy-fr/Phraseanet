@@ -43,6 +43,38 @@ class FactoryTest extends \PhraseanetPHPUnitAbstract
 
     /**
      * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
+     */
+    public function testGetFileAttributeMetaField()
+    {
+        $databox_field = null;
+        foreach (self::$collection->get_databox()->get_meta_structure() as $df) {
+            $databox_field = $df;
+            break;
+        }
+
+        if ( ! $databox_field) {
+            $this->markTestSkipped('No databox field found');
+        }
+
+        $metafield = new MetaField($databox_field, 'value');
+
+        $attribute = Factory::getFileAttribute(Attribute::NAME_METAFIELD, $metafield->asString());
+
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\MetaField', $attribute);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
+     */
+    public function testGetFileAttributeStatus()
+    {
+        $attribute = Factory::getFileAttribute(Attribute::NAME_STATUS, '000100');
+
+        $this->assertInstanceOf('\\Alchemy\\Phrasea\\Border\\Attribute\\Status', $attribute);
+    }
+
+    /**
+     * @covers Alchemy\Phrasea\Border\Attribute\Factory::getFileAttribute
      * @expectedException \InvalidArgumentException
      */
     public function testGetFileAttributeStoryFailsRecord()
