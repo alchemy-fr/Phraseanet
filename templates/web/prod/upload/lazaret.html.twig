@@ -1,0 +1,38 @@
+<div id="lazaretBox">
+    {% if lazaretFiles|length > 0%}
+        {% for file in lazaretFiles %}
+            {{ _self.lazaretElement(file) }}
+        {% endfor %}
+    {% else %}
+        {% trans 'Aucun document dans la quarantaine actuellement' %}
+    {% endif %}
+</div>
+
+{% macro lazaretElement(file) %}
+    {% import "common/thumbnail.html" as thumb %}
+    <div class='lazaret-file'>
+        <div>{#load image from pathname#}</div>
+        <div>{{ file.getOriginalName() }}</div>
+    </div>
+    {% set records = file.getRecordsToSubstitute() %}
+
+    {% if  records|length > 0 %}
+        {% for record in records %}
+            {% if user.ACL().has_right_on_base(record.get_base_id(), 'canaddrecord')
+                and user.ACL().has_right_on_base(record.get_base_id(), 'candeleterecord') %}
+                <div class='records-subititution'>
+                    {% if user.ACL().has_access_to_subdef(record, 'preview') %}
+                        {% set preview_obj = record.get_preview() %}
+                    {% else %}
+                        {% set preview_obj = record.get_thumbnail() %}
+                    {% endif %}
+
+                    <div>{{ thumb.format(preview_obj, 80, 80, '', session, false) }}</div>
+                    <div>{{ record.get_title() }}</div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+{% endmacro %}
+
