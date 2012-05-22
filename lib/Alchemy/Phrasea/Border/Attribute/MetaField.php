@@ -36,7 +36,7 @@ class MetaField implements Attribute
      *
      * @param   \databox_field              $databox_field  The databox field
      * @param   type                        $value          A scalar value
-     * 
+     *
      * @throws  \InvalidArgumentException   When value is not scalar
      */
     public function __construct(\databox_field $databox_field, $value)
@@ -77,7 +77,7 @@ class MetaField implements Attribute
     /**
      * {@inheritdoc}
      *
-     * return mixed A scalar value
+     * @return mixed A scalar value
      */
     public function getValue()
     {

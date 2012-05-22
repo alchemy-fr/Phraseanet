@@ -18,6 +18,7 @@ use Entities\LazaretAttribute;
 use Entities\LazaretFile;
 use Entities\LazaretSession;
 use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Driver\Value\Mono as MonoValue;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -213,8 +214,20 @@ class Manager
 
         $date = new \DateTime();
 
-        $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfArchivedate(), new \PHPExiftool\Driver\Value\Mono($date->format('Y/m/d H:i:s')))));
-        $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfRecordid(), new \PHPExiftool\Driver\Value\Mono($element->get_record_id()))));
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new PhraseaTag\TfArchivedate(), new MonoValue($date->format('Y/m/d H:i:s'))
+                )
+            )
+        );
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new PhraseaTag\TfRecordid(), new MonoValue($element->get_record_id())
+                )
+            )
+        );
 
         $metadatas = array();
 
@@ -227,11 +240,14 @@ class Manager
 
         if ( ! $fieldToKeyMap) {
             foreach ($file->getCollection()->get_databox()->get_meta_structure() as $databox_field) {
-                if ( ! isset($fieldToKeyMap[$databox_field->get_tag()->getTagname()])) {
-                    $fieldToKeyMap[$databox_field->get_tag()->getTagname()] = array();
+
+                $tagname = $databox_field->get_tag()->getTagname();
+
+                if ( ! isset($fieldToKeyMap[$tagname])) {
+                    $fieldToKeyMap[$tagname] = array();
                 }
 
-                $fieldToKeyMap[$databox_field->get_tag()->getTagname()][] = $databox_field->get_name();
+                $fieldToKeyMap[$tagname][] = $databox_field->get_name();
             }
         }
 
@@ -366,7 +382,13 @@ class Manager
     protected function createLazaret(File $file, Visa $visa, LazaretSession $session, $forced)
     {
         $date = new \DateTime();
-        $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfQuarantine(), new \PHPExiftool\Driver\Value\Mono($date->format('Y/m/d H:i:s')))));
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new PhraseaTag\TfQuarantine(), new MonoValue($date->format('Y/m/d H:i:s'))
+                )
+            )
+        );
 
         $lazaretPathname = $this->bookLazaretPathfile($file->getFile()->getRealPath());
 
@@ -425,19 +447,49 @@ class Manager
     {
 
         if (method_exists($file->getMedia(), 'getWidth')) {
-            $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfWidth(), new \PHPExiftool\Driver\Value\Mono($file->getMedia()->getWidth()))));
+            $file->addAttribute(
+                new MetadataAttr(
+                    new Metadata(
+                        new PhraseaTag\TfWidth(), new MonoValue($file->getMedia()->getWidth())
+                    )
+                )
+            );
         }
         if (method_exists($file->getMedia(), 'getHeight')) {
-            $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfHeight(), new \PHPExiftool\Driver\Value\Mono($file->getMedia()->getHeight()))));
+            $file->addAttribute(
+                new MetadataAttr(
+                    new Metadata(
+                        new PhraseaTag\TfHeight(), new MonoValue($file->getMedia()->getHeight())
+                    )
+                )
+            );
         }
         if (method_exists($file->getMedia(), 'getChannels')) {
-            $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfChannels(), new \PHPExiftool\Driver\Value\Mono($file->getMedia()->getChannels()))));
+            $file->addAttribute(
+                new MetadataAttr(
+                    new Metadata(
+                        new PhraseaTag\TfChannels(), new MonoValue($file->getMedia()->getChannels())
+                    )
+                )
+            );
         }
         if (method_exists($file->getMedia(), 'getColorDepth')) {
-            $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfBits(), new \PHPExiftool\Driver\Value\Mono($file->getMedia()->getColorDepth()))));
+            $file->addAttribute(
+                new MetadataAttr(
+                    new Metadata(
+                        new PhraseaTag\TfBits(), new MonoValue($file->getMedia()->getColorDepth())
+                    )
+                )
+            );
         }
         if (method_exists($file->getMedia(), 'getDuration')) {
-            $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfDuration(), new \PHPExiftool\Driver\Value\Mono($file->getMedia()->getDuration()))));
+            $file->addAttribute(
+                new MetadataAttr(
+                    new Metadata(
+                        new PhraseaTag\TfDuration(), new MonoValue($file->getMedia()->getDuration())
+                    )
+                )
+            );
         }
 
         if ($file->getFile()->getMimeType() == 'application/pdf') {
@@ -449,7 +501,13 @@ class Manager
                     ->getText();
 
                 if (trim($text)) {
-                    $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\PdfText(), new \PHPExiftool\Driver\Value\Mono($text))));
+                    $file->addAttribute(
+                        new MetadataAttr(
+                            new Metadata(
+                                new PhraseaTag\PdfText(), new MonoValue($text)
+                            )
+                        )
+                    );
                 }
 
                 $extractor->close();
@@ -458,11 +516,35 @@ class Manager
             }
         }
 
-        $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfMimetype(), new \PHPExiftool\Driver\Value\Mono($file->getFile()->getMimeType()))));
-        $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfSize(), new \PHPExiftool\Driver\Value\Mono($file->getFile()->getSize()))));
-        $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfBasename(), new \PHPExiftool\Driver\Value\Mono(pathinfo($file->getOriginalName(), PATHINFO_BASENAME)))));
-        $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfFilename(), new \PHPExiftool\Driver\Value\Mono(pathinfo($file->getOriginalName(), PATHINFO_FILENAME)))));
-        $file->addAttribute(new MetadataAttr(new Metadata(new PhraseaTag\TfExtension(), new \PHPExiftool\Driver\Value\Mono(pathinfo($file->getOriginalName(), PATHINFO_EXTENSION)))));
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new PhraseaTag\TfMimetype(), new MonoValue($file->getFile()->getMimeType()))));
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new PhraseaTag\TfSize(), new MonoValue($file->getFile()->getSize()))));
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new PhraseaTag\TfBasename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_BASENAME))
+                )
+            )
+        );
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new PhraseaTag\TfFilename(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_FILENAME))
+                )
+            )
+        );
+        $file->addAttribute(
+            new MetadataAttr(
+                new Metadata(
+                    new PhraseaTag\TfExtension(), new MonoValue(pathinfo($file->getOriginalName(), PATHINFO_EXTENSION))
+                )
+            )
+        );
 
         return $this;
     }

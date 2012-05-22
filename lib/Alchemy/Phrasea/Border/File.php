@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
+use Alchemy\Phrasea\Media\Type as MediaType;
 use MediaVorus\Media\Media;
 use MediaVorus\MediaVorus;
 use PHPExiftool\Reader;
@@ -152,19 +153,19 @@ class File
     {
         switch ($this->media->getType()) {
             case Media::TYPE_AUDIO:
-                return new \Alchemy\Phrasea\Media\Type\Audio();
+                return new MediaType\Audio();
                 break;
             case Media::TYPE_DOCUMENT:
-                return new \Alchemy\Phrasea\Media\Type\Document();
+                return new MediaType\Document();
                 break;
             case Media::TYPE_FLASH:
-                return new \Alchemy\Phrasea\Media\Type\Flash();
+                return new MediaType\Flash();
                 break;
             case Media::TYPE_IMAGE:
-                return new \Alchemy\Phrasea\Media\Type\Image();
+                return new MediaType\Image();
                 break;
             case Media::TYPE_VIDEO:
-                return new \Alchemy\Phrasea\Media\Type\Video();
+                return new MediaType\Video();
                 break;
         }
 
