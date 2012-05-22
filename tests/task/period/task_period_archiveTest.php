@@ -16,7 +16,7 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        $appbox = \appbox::get_instance(self::$core);
+        $appbox = \appbox::get_instance(\bootstrap::getCore('test'));
         $task = \task_period_archive::create($appbox, 'task_period_archive');
 
         self::$object = new archiveTester($task->get_task_id());
