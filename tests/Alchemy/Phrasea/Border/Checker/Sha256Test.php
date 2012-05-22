@@ -38,12 +38,17 @@ class Sha256Test extends \PhraseanetPHPUnitAbstract
      */
     public function testCheck()
     {
+        $session = new \Entities\LazaretSession();
+        self::$core['EM']->persist($session);
+
+        self::$core['border-manager']->process($session, File::buildFromPathfile($this->media->getFile()->getPathname(), self::$collection), null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+
         $mock = $this->getMock('\\Alchemy\\Phrasea\\Border\\File', array('getSha256'), array($this->media, self::$collection));
 
         $mock
             ->expects($this->once())
             ->method('getSha256')
-            ->will($this->returnValue(hash_file('sha256', __DIR__ . '/../../../../testfiles/test001.CR2')))
+            ->will($this->returnValue($this->media->getHash('sha256', __DIR__ . '/../../../../testfiles/test001.CR2')))
         ;
 
         $response = $this->object->check(self::$core['EM'], $mock);
