@@ -176,7 +176,8 @@ class databox_field implements cache_cacheableInterface
 
         echo "create tag from " . $row['src'] . " for id $id - name is " . $row['name'] . "\n";
         $this->tag = self::loadClassFromTagName($row['src']);
-
+        var_dump($this->tag);
+        
         $this->name = $row['name'];
         $this->indexable = ! ! $row['indexable'];
         $this->readonly = ! ! $row['readonly'];
