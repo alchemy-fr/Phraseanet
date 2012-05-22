@@ -44,6 +44,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     /**
      * @covers Alchemy\Phrasea\Controller\Prod\Upload::upload
+     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsonResponse
      */
     public function testUpload()
     {
@@ -299,9 +300,6 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $this->assertFalse($datas['success']);
     }
 
-    /**
-     * @covers Alchemy\Phrasea\Controller\Prod\Upload::getJsnResponse
-     */
     public function checkJsonResponse(Response $response)
     {
         $this->assertEquals(200, $response->getStatusCode());
