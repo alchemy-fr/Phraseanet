@@ -245,7 +245,7 @@ class Installer implements ControllerProviderInterface
                     $appbox->get_session()->authenticate($auth);
 
                     if ($databox_name && ! \p4string::hasAccent($databox_name)) {
-                        $template = new \system_file(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
+                        $template = new \SplFileInfo(__DIR__ . '/../../../../conf.d/data_templates/' . $request->get('db_template') . '.xml');
                         $databox = \databox::create($appbox, $connbas, $template, $registry);
                         $user->ACL()
                             ->give_access_to_sbas(array($databox->get_sbas_id()))

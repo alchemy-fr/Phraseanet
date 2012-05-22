@@ -36,6 +36,8 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testListElement()
     {
+        $this->markTestSkipped('Route is not yet written');
+        
         $originalEm = $this->app['Core']['EM'];
 
         //mock one Entities\LazaretFile::getRecordsToSubstitute

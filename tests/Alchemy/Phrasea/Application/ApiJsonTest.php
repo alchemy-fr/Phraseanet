@@ -261,7 +261,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
         }
         $this->setToken(self::$adminToken);
         $this->client->followRedirects();
-        $this->client->request('GET', '/monitor/task/0', array(), array(), array('HTTP_Accept' => 'application/json'));
+        $this->client->request('GET', '/monitor/task/0/', array(), array(), array('HTTP_Accept' => 'application/json'));
         $content = json_decode($this->client->getResponse()->getContent());
         $this->evaluateMetaJsonNotFound($content);
     }
@@ -522,9 +522,9 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
                 $this->assertTrue($element->get_tbranch() === $metadatas->thesaurus_branch);
                 $this->assertTrue($element->get_separator() === $metadatas->separator);
                 $this->assertTrue($element->get_name() === $metadatas->name);
-                $this->assertTrue($element->get_metadata_tagname() === $metadatas->tagname);
-                $this->assertTrue($element->get_metadata_source() === $metadatas->source);
-                $this->assertTrue($element->get_metadata_namespace() === $metadatas->namespace);
+                $this->assertTrue($element->get_tag()->getName() === $metadatas->tagname);
+                $this->assertTrue($element->get_tag()->getTagname() === $metadatas->source);
+                $this->assertTrue($element->get_tag()->getGroupName() === $metadatas->namespace);
             }
         }
         $route = '/databoxes/24892534/metadatas/';
@@ -859,7 +859,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->setToken(self::$token);
 
-        $record = record_adapter::create(self::$collection, __DIR__ . '/../../../testfiles/test001.CR2');
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
+        $record = record_adapter::createFromFile($file);
 
         $route = '/records/' . $record->get_sbas_id() . '/' . $record->get_record_id() . '/setmetadatas/';
         $caption = $record->get_caption();
@@ -972,7 +973,8 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
 
     public function testMoveRecordToCollection()
     {
-        $record = record_adapter::create(self::$collection, __DIR__ . '/../../../testfiles/test001.CR2');
+        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/../../../testfiles/test001.CR2')), self::$collection);
+        $record = record_adapter::createFromFile($file);
 
         $this->setToken(self::$token);
 
@@ -1238,6 +1240,7 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         $this->evaluateMetaJson($content);
         $this->assertEquals(200, $content->meta->http_code);
+        $this->assertNull($content->meta->error_type);
         $this->assertNull($content->meta->error_message);
         $this->assertNull($content->meta->error_details);
     }
@@ -1245,24 +1248,24 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     protected function evaluateMetaJsonBadRequest($content)
     {
         $this->evaluateMetaJson($content);
+        $this->assertNotNull($content->meta->error_type);
         $this->assertNotNull($content->meta->error_message);
-        $this->assertNotNull($content->meta->error_details);
         $this->assertEquals(400, $content->meta->http_code);
     }
 
     protected function evaluateMetaJsonNotFound($content)
     {
         $this->evaluateMetaJson($content);
+        $this->assertNotNull($content->meta->error_type);
         $this->assertNotNull($content->meta->error_message);
-        $this->assertNotNull($content->meta->error_details);
         $this->assertEquals(404, $content->meta->http_code);
     }
 
     protected function evaluateMetaJsonMethodNotAllowed($content)
     {
         $this->evaluateMetaJson($content);
+        $this->assertNotNull($content->meta->error_type);
         $this->assertNotNull($content->meta->error_message);
-        $this->assertNotNull($content->meta->error_details);
         $this->assertEquals(405, $content->meta->http_code);
     }
 
@@ -1371,12 +1374,12 @@ class ApiJsonApplication extends PhraseanetWebTestCaseAbstract
     {
         foreach ($content->response as $field) {
             $this->assertTrue(is_object($field), 'Un bloc field est un objet');
-            $this->assertObjectHasAttribute('meta_structure_id', $meta);
+            $this->assertObjectHasAttribute('meta_structure_id', $field);
             $this->assertTrue(is_int($field->meta_structure_id));
             $this->assertObjectHasAttribute('name', $field);
-            $this->assertTrue(is_string($meta->name));
+            $this->assertTrue(is_string($field->name));
             $this->assertObjectHasAttribute('value', $field);
-            $this->assertTrue(is_string($meta->value));
+            $this->assertTrue(is_string($field->value));
         }
     }
 

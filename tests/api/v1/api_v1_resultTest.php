@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../PhraseanetPHPUnitAuthenticatedAbstract.class.inc';
+require_once __DIR__ . '/../../../vendor/alchemy/oauth2php/lib/OAuth2.php';
 
 use Symfony\Component\HttpFoundation\Request;
 
@@ -190,38 +191,45 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testSet_error_message()
     {
         $api_result = new API_V1_result(new Request(), $this->api);
-        $api_result->set_error_message(API_V1_result::ERROR_BAD_REQUEST);
-        $this->assertErrorMessage($api_result, 400, API_V1_result::ERROR_BAD_REQUEST, API_V1_exception_badrequest::get_details());
+        $api_result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, 'detaillage');
+        $this->assertErrorMessage($api_result, 400, API_V1_result::ERROR_BAD_REQUEST, API_V1_exception_badrequest::get_details(), 'detaillage');
 
         $api_result = new API_V1_result(new Request(), $this->api);
-        $api_result->set_error_message(API_V1_result::ERROR_UNAUTHORIZED);
-        $this->assertErrorMessage($api_result, 401, API_V1_result::ERROR_UNAUTHORIZED, API_V1_exception_unauthorized::get_details());
+        $api_result->set_error_message(API_V1_result::ERROR_UNAUTHORIZED, 'detaillage');
+        $this->assertErrorMessage($api_result, 401, API_V1_result::ERROR_UNAUTHORIZED, API_V1_exception_unauthorized::get_details(), 'detaillage');
 
         $api_result = new API_V1_result(new Request(), $this->api);
-        $api_result->set_error_message(API_V1_result::ERROR_FORBIDDEN);
-        $this->assertErrorMessage($api_result, 403, API_V1_result::ERROR_FORBIDDEN, API_V1_exception_forbidden::get_details());
+        $api_result->set_error_message(API_V1_result::ERROR_FORBIDDEN, 'detaillage');
+        $this->assertErrorMessage($api_result, 403, API_V1_result::ERROR_FORBIDDEN, API_V1_exception_forbidden::get_details(), 'detaillage');
 
         $api_result = new API_V1_result(new Request(), $this->api);
-        $api_result->set_error_message(API_V1_result::ERROR_NOTFOUND);
-        $this->assertErrorMessage($api_result, 404, API_V1_result::ERROR_NOTFOUND, API_V1_exception_notfound::get_details());
+        $api_result->set_error_message(API_V1_result::ERROR_NOTFOUND, 'detaillage');
+        $this->assertErrorMessage($api_result, 404, API_V1_result::ERROR_NOTFOUND, API_V1_exception_notfound::get_details(), 'detaillage');
 
         $api_result = new API_V1_result(new Request(), $this->api);
-        $api_result->set_error_message(API_V1_result::ERROR_METHODNOTALLOWED);
-        $this->assertErrorMessage($api_result, 405, API_V1_result::ERROR_METHODNOTALLOWED, API_V1_exception_methodnotallowed::get_details());
+        $api_result->set_error_message(API_V1_result::ERROR_METHODNOTALLOWED, 'detaillage');
+        $this->assertErrorMessage($api_result, 405, API_V1_result::ERROR_METHODNOTALLOWED, API_V1_exception_methodnotallowed::get_details(), 'detaillage');
 
         $api_result = new API_V1_result(new Request(), $this->api);
-        $api_result->set_error_message(API_V1_result::ERROR_INTERNALSERVERERROR);
-        $this->assertErrorMessage($api_result, 500, API_V1_result::ERROR_INTERNALSERVERERROR, API_V1_exception_internalservererror::get_details());
+        $api_result->set_error_message(API_V1_result::ERROR_INTERNALSERVERERROR, 'detaillage');
+        $this->assertErrorMessage($api_result, 500, API_V1_result::ERROR_INTERNALSERVERERROR, API_V1_exception_internalservererror::get_details(), 'detaillage');
 
         $api_result = new API_V1_result(new Request(), $this->api);
-        $api_result->set_error_message(OAUTH2_ERROR_INVALID_REQUEST);
-        $this->assertErrorMessage($api_result, 200, OAUTH2_ERROR_INVALID_REQUEST, NULL);
+        $api_result->set_error_message(OAUTH2_ERROR_INVALID_REQUEST, 'detaillage');
+        $this->assertErrorMessage($api_result, 200, OAUTH2_ERROR_INVALID_REQUEST, NULL, 'detaillage');
     }
 
-    protected function assertErrorMessage(API_V1_result $api_result, $code, $message, $detail)
+    protected function assertErrorMessage(API_V1_result $api_result, $code, $type, $message, $detail)
     {
         $response = json_decode($api_result->format());
         $this->checkResponseFieldMeta($response, 'http_code', $code, PHPUnit_Framework_Constraint_IsType::TYPE_INT);
+
+        if (is_null($type)) {
+            $this->assertObjectHasAttribute('error_type', $response->meta);
+            $this->assertNull($response->meta->error_type);
+        } else {
+            $this->checkResponseFieldMeta($response, 'error_type', $type, PHPUnit_Framework_Constraint_IsType::TYPE_STRING);
+        }
 
         if (is_null($message)) {
             $this->assertObjectHasAttribute('error_message', $response->meta);
@@ -245,27 +253,27 @@ class API_V1_resultTest extends PhraseanetPHPUnitAuthenticatedAbstract
     {
         $api_result = new API_V1_result(new Request(), $this->api);
         $api_result->set_error_code(400);
-        $this->assertErrorMessage($api_result, 400, API_V1_result::ERROR_BAD_REQUEST, API_V1_exception_badrequest::get_details());
+        $this->assertErrorMessage($api_result, 400, API_V1_result::ERROR_BAD_REQUEST, API_V1_exception_badrequest::get_details(), null);
 
         $api_result = new API_V1_result(new Request(), $this->api);
         $api_result->set_error_code(401);
-        $this->assertErrorMessage($api_result, 401, API_V1_result::ERROR_UNAUTHORIZED, API_V1_exception_unauthorized::get_details());
+        $this->assertErrorMessage($api_result, 401, API_V1_result::ERROR_UNAUTHORIZED, API_V1_exception_unauthorized::get_details(), null);
 
         $api_result = new API_V1_result(new Request(), $this->api);
         $api_result->set_error_code(403);
-        $this->assertErrorMessage($api_result, 403, API_V1_result::ERROR_FORBIDDEN, API_V1_exception_forbidden::get_details());
+        $this->assertErrorMessage($api_result, 403, API_V1_result::ERROR_FORBIDDEN, API_V1_exception_forbidden::get_details(), null);
 
         $api_result = new API_V1_result(new Request(), $this->api);
         $api_result->set_error_code(404);
-        $this->assertErrorMessage($api_result, 404, API_V1_result::ERROR_NOTFOUND, API_V1_exception_notfound::get_details());
+        $this->assertErrorMessage($api_result, 404, API_V1_result::ERROR_NOTFOUND, API_V1_exception_notfound::get_details(), null);
 
         $api_result = new API_V1_result(new Request(), $this->api);
         $api_result->set_error_code(405);
-        $this->assertErrorMessage($api_result, 405, API_V1_result::ERROR_METHODNOTALLOWED, API_V1_exception_methodnotallowed::get_details());
+        $this->assertErrorMessage($api_result, 405, API_V1_result::ERROR_METHODNOTALLOWED, API_V1_exception_methodnotallowed::get_details(), null);
 
         $api_result = new API_V1_result(new Request(), $this->api);
         $api_result->set_error_code(500);
-        $this->assertErrorMessage($api_result, 500, API_V1_result::ERROR_INTERNALSERVERERROR, API_V1_exception_internalservererror::get_details());
+        $this->assertErrorMessage($api_result, 500, API_V1_result::ERROR_INTERNALSERVERERROR, API_V1_exception_internalservererror::get_details(), null);
     }
 
     public function testGet_http_code()

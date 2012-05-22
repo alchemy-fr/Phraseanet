@@ -116,7 +116,7 @@ phrasea::headers();
                             $user = $connexion->get('user');
                             $password = $connexion->get('password');
 
-                            $data_template = new system_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
+                            $data_template = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
 
                             $connbas = new connection_pdo('databox_creation', $hostname, $port, $user, $password, $parm['new_dbname'], array(), $appbox->get_registry());
 
@@ -142,7 +142,7 @@ phrasea::headers();
                     if (count($error) === 0) {
 
                         try {
-                            $data_template = new system_file($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
+                            $data_template = new \SplFileInfo($registry->get('GV_RootPath') . 'lib/conf.d/data_templates/' . $parm['new_data_template'] . '.xml');
                             $connbas = new connection_pdo('databox_creation', $parm['new_hostname'], $parm['new_port'], $parm['new_user'], $parm['new_password'], $parm['new_dbname'], array(), $appbox->get_registry());
                             $base = databox::create($appbox, $connbas, $data_template, $registry);
                             $base->registerAdmin($user_obj);

@@ -35,7 +35,7 @@
                         <span>{% trans 'upload:: Destination (collection) :' %}</span>
                         {# collections list #}
                         {% if collections|length > 0 %}
-                            <select name="collection">
+                            <select name="base_id">
                             {% for  sbasId, availableCollections in collections %}
                                 <optgroup label="{{ availableCollections['databox'].get_viewname() }}" >
                                 {% for collection in availableCollections['databox_collections'] %}
@@ -57,7 +57,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            {% for status in availableCollections['databox'].get_statusbits() %}
+                                            {% for bit, status in availableCollections['databox'].get_statusbits() %}
                                                 <tr>
                                                     <td colspan="4">
                                                         <h2>{{ status['name']|title }}</h2>
@@ -71,10 +71,10 @@
                                                     </td>
                                                     <td>
                                                         <label for="labeloff">{{ status['labeloff']|default('off') }}</label>
-                                                        <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="off" checked="checked"/>
+                                                        <input type="radio" name="status[{{ bit }}]" value="0" checked="checked"/>
                                                     </td>
                                                     <td>
-                                                        <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="on" />
+                                                        <input type="radio" name="status[{{ bit }}]" value="1" />
                                                         <label for="labelon">{{ status['labelon']|default('on') }}</label>
                                                     </td>
                                                     <td>
@@ -123,7 +123,7 @@ $(document).ready(function () {
     });
 
     //Show the good collection status box
-    $('select[name=collection]', UploaderManager.getSettingsBox()).bind('change', function(){
+    $('select[name="base_id"]', UploaderManager.getSettingsBox()).bind('change', function(){
         var selectedCollId = $(this).find('option:selected').val();
 
         $('#uploadBox .settings-box .collection-status').hide();
@@ -217,8 +217,8 @@ $(document).ready(function () {
 
         //get form datas attached to the file
         data.formData = $.extend(
-            data.context.find('input').serializeArray(),
-            UploaderManager.getSettingsBox().find('.collection-status:visible input').serializeArray()
+            data.context.find('input, select').serializeArray(),
+            UploaderManager.getSettingsBox().find('.collection-status:visible input, select').serializeArray()
         );
 
         //clone preview

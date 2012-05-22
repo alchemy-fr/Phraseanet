@@ -705,7 +705,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                     $finder->name($name)->in(__DIR__ . '/testfiles/');
 
                     foreach ($finder as $file) {
-                        return $file->getRealPath();
+                        return $file;
                     }
 
                     throw new Exception(sprintf('File %d not found', $i));
@@ -715,7 +715,10 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
                 static::$records['record_' . $i] = static::$records->share(function() use ($collection, $resolvePathfile, $i) {
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = $i;
-                        $record = record_adapter::create($collection, $resolvePathfile($i));
+
+                        $file = new Alchemy\Phrasea\Border\File(\MediaVorus\MediaVorus::guess($resolvePathfile($i)), $collection);
+
+                        $record = record_adapter::createFromFile($file);
 
                         $record->generate_subdefs($record->get_databox());
 
@@ -727,7 +730,7 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                         PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'story_' . $i;
 
-                        return record_adapter::create($collection, __DIR__ . '/testfiles/test001.CR2', false, true);
+                        return record_adapter::createStory($collection);
                     });
             }
 
@@ -737,7 +740,9 @@ abstract class PhraseanetPHPUnitAbstract extends WebTestCase
 
                     PhraseanetPHPUnitAbstract::$recordsInitialized[] = 'no_access';
 
-                    return record_adapter::create($collection_no_access, __DIR__ . '/testfiles/test001.CR2');
+                    $file = new Alchemy\Phrasea\Border\File(MediaVorus\MediaVorus::guess(new \SplFileInfo(__DIR__ . '/testfiles/test001.CR2')), $collection_no_access);
+
+                    return record_adapter::createFromFile($file);
                 });
         }
 

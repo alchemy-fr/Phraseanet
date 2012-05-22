@@ -11,13 +11,13 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Silex\Application;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception;
 
 /**
  *
- * @package     APIv1
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -185,12 +185,11 @@ return call_user_func(function() {
                     /* @var $user \User_Adapter */
                     $user = $app['token']->get_account()->get_user();
                     if ( ! $user->is_admin()) {
-                        throw new \API_V1_exception_unauthorized();
+                        throw new \API_V1_exception_unauthorized('You are not authorized');
                     }
                 };
 
             /**
-             * *******************************************************************
              * Get all tasks information
              *
              * Route : /monitor/phraseanet/
@@ -298,9 +297,10 @@ return call_user_func(function() {
                 }
             )->middleware($mustBeAdmin);
 
+
             /**
              * *******************************************************************
-             * Route : /databoxes/list/FORMAT/
+             * Route : /databoxes/list/
              *
              * Method : GET
              *
@@ -317,7 +317,7 @@ return call_user_func(function() {
             /**
              * *******************************************************************
              *
-             * Route /databoxes/DATABOX_ID/collections/FORMAT/
+             * Route /databoxes/DATABOX_ID/collections/
              *
              * Method : GET
              *
@@ -338,7 +338,7 @@ return call_user_func(function() {
 
             /**
              * *******************************************************************
-             * Route /databoxes/DATABOX_ID/status/FORMAT/
+             * Route /databoxes/DATABOX_ID/status/
              *
              * Method : GET
              *
@@ -358,7 +358,7 @@ return call_user_func(function() {
             $app->get('/databoxes/{any_id}/status/', $bad_request_exception);
 
             /**
-             * Route /databoxes/DATABOX_ID/metadatas/FORMAT/
+             * Route /databoxes/DATABOX_ID/metadatas/
              *
              * Method : GET
              *
@@ -377,7 +377,7 @@ return call_user_func(function() {
             $app->get('/databoxes/{any_id}/metadatas/', $bad_request_exception);
 
             /**
-             * Route /databoxes/DATABOX_ID/termsOfUse/FORMAT/
+             * Route /databoxes/DATABOX_ID/termsOfUse/
              *
              * Method : GET
              *
@@ -396,8 +396,27 @@ return call_user_func(function() {
             $app->get('/databoxes/{any_id}/termsOfUse/', $bad_request_exception);
 
 
+
             /**
-             * Route : /records/search/FORMAT/
+             * *******************************************************************
+             * Route : /records/add/
+             *
+             * Method : POST
+             *
+             * Parameters :
+             *
+             */
+            $route = '/records/add/';
+            $app->post(
+                $route, function(\Silex\Application $app, Request $request) {
+                    return $app['api']->add_record($app, $request)->get_response();
+                }
+            );
+
+            $app->match('/records/add/', $bad_request_exception);
+
+            /**
+             * Route : /records/search/
              *
              * Method : GET or POST
              *
@@ -435,7 +454,7 @@ return call_user_func(function() {
 
 
             /**
-             * Route : /records/DATABOX_ID/RECORD_ID/metadatas/FORMAT/
+             * Route : /records/DATABOX_ID/RECORD_ID/metadatas/
              *
              * Method : GET
              *
@@ -456,7 +475,7 @@ return call_user_func(function() {
             $app->get('/records/{any_id}/{anyother_id}/metadatas/', $bad_request_exception);
 
             /**
-             * Route : /records/DATABOX_ID/RECORD_ID/status/FORMAT/
+             * Route : /records/DATABOX_ID/RECORD_ID/status/
              *
              * Method : GET
              *
@@ -477,7 +496,7 @@ return call_user_func(function() {
             $app->get('/records/{any_id}/{anyother_id}/status/', $bad_request_exception);
 
             /**
-             * Route : /records/DATABOX_ID/RECORD_ID/related/FORMAT/
+             * Route : /records/DATABOX_ID/RECORD_ID/related/
              *
              * Method : GET
              *
@@ -498,7 +517,7 @@ return call_user_func(function() {
             $app->get('/records/{any_id}/{anyother_id}/related/', $bad_request_exception);
 
             /**
-             * Route : /records/DATABOX_ID/RECORD_ID/embed/FORMAT/
+             * Route : /records/DATABOX_ID/RECORD_ID/embed/
              *
              * Method : GET
              *
@@ -519,7 +538,7 @@ return call_user_func(function() {
             $app->get('/records/{any_id}/{anyother_id}/embed/', $bad_request_exception);
 
             /**
-             * Route : /records/DATABOX_ID/RECORD_ID/setmetadatas/FORMAT/
+             * Route : /records/DATABOX_ID/RECORD_ID/setmetadatas/
              *
              * Method : POST
              *
@@ -540,7 +559,7 @@ return call_user_func(function() {
             $app->post('/records/{any_id}/{anyother_id}/setmetadatas/', $bad_request_exception);
 
             /**
-             * Route : /records/DATABOX_ID/RECORD_ID/setstatus/FORMAT/
+             * Route : /records/DATABOX_ID/RECORD_ID/setstatus/
              *
              * Method : POST
              *
@@ -562,7 +581,7 @@ return call_user_func(function() {
 
 
             /**
-             * Route : /records/DATABOX_ID/RECORD_ID/setcollection/FORMAT/
+             * Route : /records/DATABOX_ID/RECORD_ID/setcollection/
              *
              * Method : POST
              *
@@ -591,7 +610,7 @@ return call_user_func(function() {
             $app->get('/records/{any_id}/{anyother_id}/', $bad_request_exception);
 
             /**
-             * Route : /baskets/list/FORMAT/
+             * Route : /baskets/list/
              *
              * Method : POST
              *
@@ -609,7 +628,7 @@ return call_user_func(function() {
 
 
             /**
-             * Route : /baskets/add/FORMAT/
+             * Route : /baskets/add/
              *
              * Method : POST
              *
@@ -628,7 +647,7 @@ return call_user_func(function() {
 
 
             /**
-             * Route : /baskets/BASKET_ID/content/FORMAT/
+             * Route : /baskets/BASKET_ID/content/
              *
              * Method : GET
              *
@@ -648,7 +667,7 @@ return call_user_func(function() {
 
 
             /**
-             * Route : /baskets/BASKET_ID/settitle/FORMAT/
+             * Route : /baskets/BASKET_ID/settitle/
              *
              * Method : GET
              *
@@ -668,7 +687,7 @@ return call_user_func(function() {
 
 
             /**
-             * Route : /baskets/BASKET_ID/setdescription/FORMAT/
+             * Route : /baskets/BASKET_ID/setdescription/
              *
              * Method : POST
              *
@@ -687,7 +706,7 @@ return call_user_func(function() {
             $app->post('/baskets/{wrong_basket_id}/setdescription/', $bad_request_exception);
 
             /**
-             * Route : /baskets/BASKET_ID/delete/FORMAT/
+             * Route : /baskets/BASKET_ID/delete/
              *
              * Method : POST
              *
@@ -707,7 +726,7 @@ return call_user_func(function() {
 
 
             /**
-             * Route : /feeds/list/FORMAT/
+             * Route : /feeds/list/
              *
              * Method : POST
              *
@@ -724,7 +743,7 @@ return call_user_func(function() {
             );
 
             /**
-             * Route : /feeds/PUBLICATION_ID/content/FORMAT/
+             * Route : /feeds/PUBLICATION_ID/content/
              *
              * Method : GET
              *
@@ -769,13 +788,13 @@ return call_user_func(function() {
                     else
                         $code = \API_V1_result::ERROR_INTERNALSERVERERROR;
 
-                    $result = $app['api']->get_error_message($app['request'], $code);
+                    $result = $app['api']->get_error_message($app['request'], $code, $e->getMessage());
                     return $result->get_response();
                 });
 ////
 ////
 ////  /**
-////   * Route : /records/DATABOX_ID/RECORD_ID/addtobasket/FORMAT/
+////   * Route : /records/DATABOX_ID/RECORD_ID/addtobasket/
 ////   *
 ////   * Method : POST
 ////   *
@@ -788,7 +807,7 @@ return call_user_func(function() {
 ////
 ////
 ////  /**
-////   * Route : /feeds/PUBLICATION_ID/remove/FORMAT/
+////   * Route : /feeds/PUBLICATION_ID/remove/
 ////   *
 ////   * Method : GET
 ////   *
@@ -800,7 +819,7 @@ return call_user_func(function() {
 ////
 ////
 ////  /**
-////   * Route : /users/search/FORMAT/
+////   * Route : /users/search/
 ////   *
 ////   * Method : POST-GET
 ////   *
@@ -810,7 +829,7 @@ return call_user_func(function() {
 ////  public function search_users(\Symfony\Component\HttpFoundation\Request $app['request']);
 ////
 ////  /**
-////   * Route : /users/USER_ID/access/FORMAT/
+////   * Route : /users/USER_ID/access/
 ////   *
 ////   * Method : GET
 ////   *
@@ -821,7 +840,7 @@ return call_user_func(function() {
 ////  public function get_user_acces(\Symfony\Component\HttpFoundation\Request $app['request'], $usr_id);
 ////
 ////  /**
-////   * Route : /users/add/FORMAT/
+////   * Route : /users/add/
 ////   *
 ////   * Method : POST
 ////   *

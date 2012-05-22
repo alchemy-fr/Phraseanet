@@ -1,212 +1,162 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <record>
-  <path>{{datapathnoweb}}{{basename}}/documents</path>
+    <path>{{datapathnoweb}}{{basename}}/documents</path>
 
-  <subdefs>
-    <subdefgroup name="image">
-      <subdef class="preview" name="preview" downloadable="true">
-        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-        <size>800</size>
-        <method>resample</method>
-        <dpi>72</dpi>
-        <strip>no</strip>
-        <quality>75</quality>
-        <meta>yes</meta>
-        <baseurl></baseurl>
-        <mediatype>image</mediatype>
-        <label lang="fr">Prévisualisation</label>
-        <label lang="en">Preview</label>
-      </subdef>
-      <subdef class="thumbnail" name="thumbnail" downloadable="true">
-        <path>{{datapathweb}}{{basename}}/subdefs</path>
-        <size>200</size>
-        <method>resample</method>
-        <dpi>72</dpi>
-        <strip>yes</strip>
-        <quality>75</quality>
-        <meta>no</meta>
-        <mediatype>image</mediatype>
-        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
-        <label lang="fr">Imagette</label>
-        <label lang="en">Thumbnail</label>
-      </subdef>
-    </subdefgroup>
+    <subdefs>
+        <subdefgroup name="image">
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>800</size>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <strip>no</strip>
+                <quality>75</quality>
+                <meta>yes</meta>
+                <baseurl></baseurl>
+                <mediatype>image</mediatype>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <size>200</size>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <strip>yes</strip>
+                <quality>75</quality>
+                <meta>no</meta>
+                <mediatype>image</mediatype>
+                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+                <label lang="fr">Imagette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+        </subdefgroup>
 
-    <subdefgroup name="video">
-      <subdef class="preview" name="preview" downloadable="true">
-        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-        <size>800</size>
-        <mediatype>video</mediatype>
-        <writeDatas>yes</writeDatas>
-        <baseurl></baseurl>
-        <acodec>libfaac</acodec>
-        <vcodec>libx264</vcodec>
-        <bitrate>1000</bitrate>
-        <threads>8</threads>
-        <fps>15</fps>
-        <label lang="fr">Prévisualisation</label>
-        <label lang="en">Preview</label>
-      </subdef>
-      <subdef class="thumbnail" name="thumbnailgif" downloadable="true">
-        <path>{{datapathweb}}{{basename}}/subdefs</path>
-        <size>200</size>
-        <mediatype>gif</mediatype>
-        <delay>500</delay>
-        <writeDatas>no</writeDatas>
-        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
-        <label lang="fr">Animation GIF</label>
-        <label lang="en">GIF Animation</label>
-      </subdef>
-      <subdef class="thumbnail" name="thumbnail" downloadable="true">
-        <path>{{datapathweb}}{{basename}}/subdefs</path>
-        <size>200</size>
-        <mediatype>image</mediatype>
-        <writeDatas>no</writeDatas>
-        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
-        <label lang="fr">Imagette</label>
-        <label lang="en">Thumbnail</label>
-      </subdef>
-    </subdefgroup>
+        <subdefgroup name="video">
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <size>800</size>
+                <mediatype>video</mediatype>
+                <writeDatas>yes</writeDatas>
+                <baseurl></baseurl>
+                <acodec>libfaac</acodec>
+                <vcodec>libx264</vcodec>
+                <bitrate>1000</bitrate>
+                <threads>8</threads>
+                <fps>15</fps>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnailgif" downloadable="true">
+                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <size>200</size>
+                <mediatype>gif</mediatype>
+                <delay>500</delay>
+                <writeDatas>no</writeDatas>
+                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+                <label lang="fr">Animation GIF</label>
+                <label lang="en">GIF Animation</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <size>200</size>
+                <mediatype>image</mediatype>
+                <writeDatas>no</writeDatas>
+                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+                <label lang="fr">Imagette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+        </subdefgroup>
 
-    <subdefgroup name="audio">
-      <subdef class="preview" name="preview" downloadable="true">
-        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-        <mediatype>audio</mediatype>
-        <writeDatas>yes</writeDatas>
-        <baseurl></baseurl>
-        <label lang="fr">Prévisualisation</label>
-        <label lang="en">Preview</label>
-      </subdef>
-      <subdef class="thumbnail" name="thumbnail" downloadable="true">
-        <path>{{datapathweb}}{{basename}}/subdefs</path>
-        <mediatype>image</mediatype>
-        <writeDatas>no</writeDatas>
-        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
-        <label lang="fr">Imagette</label>
-        <label lang="en">Thumbnail</label>
-      </subdef>
-    </subdefgroup>
-    <subdefgroup name="document">
-      <subdef class="preview" name="preview" downloadable="false">
-        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-        <mediatype>flexpaper</mediatype>
-        <writeDatas>no</writeDatas>
-        <baseurl></baseurl>
-        <label lang="fr">Prévisualisation</label>
-        <label lang="en">Preview</label>
-      </subdef>
-      <subdef class="thumbnail" name="thumbnail" downloadable="false">
-        <path>{{datapathweb}}{{basename}}/subdefs</path>
-        <mediatype>image</mediatype>
-        <method>resample</method>
-        <dpi>72</dpi>
-        <size>200</size>
-        <writeDatas>no</writeDatas>
-        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
-        <label lang="fr">Imagette</label>
-        <label lang="en">Thumbnail</label>
-      </subdef>
-    </subdefgroup>
-    <subdefgroup name="flash">
-      <subdef class="preview" name="preview" downloadable="false">
-        <path>{{datapathnoweb}}{{basename}}/subdefs</path>
-        <mediatype>image</mediatype>
-        <size>200</size>
-        <writeDatas>no</writeDatas>
-        <method>resample</method>
-        <dpi>72</dpi>
-        <baseurl></baseurl>
-        <label lang="fr">Prévisualisation</label>
-        <label lang="en">Preview</label>
-      </subdef>
-      <subdef class="thumbnail" name="thumbnail" downloadable="false">
-        <path>{{datapathweb}}{{basename}}/subdefs</path>
-        <mediatype>image</mediatype>
-        <writeDatas>no</writeDatas>
-        <method>resample</method>
-        <dpi>72</dpi>
-        <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
-        <label lang="fr">Imagette</label>
-        <label lang="en">Thumbnail</label>
-      </subdef>
-    </subdefgroup>
-  </subdefs>
+        <subdefgroup name="audio">
+            <subdef class="preview" name="preview" downloadable="true">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>audio</mediatype>
+                <writeDatas>yes</writeDatas>
+                <baseurl></baseurl>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail" downloadable="true">
+                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <writeDatas>no</writeDatas>
+                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+                <label lang="fr">Imagette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="document">
+            <subdef class="preview" name="preview" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>flexpaper</mediatype>
+                <writeDatas>no</writeDatas>
+                <baseurl></baseurl>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <size>200</size>
+                <writeDatas>no</writeDatas>
+                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+                <label lang="fr">Imagette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+        </subdefgroup>
+        <subdefgroup name="flash">
+            <subdef class="preview" name="preview" downloadable="false">
+                <path>{{datapathnoweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <size>200</size>
+                <writeDatas>no</writeDatas>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <baseurl></baseurl>
+                <label lang="fr">Prévisualisation</label>
+                <label lang="en">Preview</label>
+            </subdef>
+            <subdef class="thumbnail" name="thumbnail" downloadable="false">
+                <path>{{datapathweb}}{{basename}}/subdefs</path>
+                <mediatype>image</mediatype>
+                <writeDatas>no</writeDatas>
+                <method>resample</method>
+                <dpi>72</dpi>
+                <baseurl>{{dataurl}}/{{basename}}/subdefs</baseurl>
+                <label lang="fr">Imagette</label>
+                <label lang="en">Thumbnail</label>
+            </subdef>
+        </subdefgroup>
+    </subdefs>
 
-  <description>
-        <!-- 2:5 -->
-    <Object src="/rdf:RDF/rdf:Description/IPTC:ObjectName" />
+    <description>
+        <Object src="IPTC:ObjectName" />
+        <Category src="IPTC:Category"/>
+        <SupplCategory src="IPTC:SupplementalCategories"/>
+        <Keywords src="IPTC:Keywords" multi="1"/>
+        <SpecialInstruct src="IPTC:SpecialInstructions"/>
+        <Date src="IPTC:DateCreated" type="date" />
+        <Byline src="IPTC:By-line"/>
+        <BylineTitle src="IPTC:By-lineTitle"/>
+        <City src="IPTC:City" />
+        <Province src="IPTC:Province-State" />
+        <Country src="IPTC:Country-PrimaryLocationName" />
+        <OriginalRef src="IPTC:OriginalTransmissionReference" />
+        <Headline src="IPTC:Headline" report="1" />
+        <Credit src="IPTC:Credit" report="1" />
+        <Source src="IPTC:Source" />
+        <Caption src="IPTC:Caption-Abstract" />
+        <CaptionWriter src="IPTC:Writer-Editor" />
+        <Longitude src="GPS:GPSLongitude" readonly="1"/>
+        <Latitude src="GPS:GPSLatitude" readonly="1"/>
+        <CameraModel src="IFD0:Model" readonly="1"/>
+        <FileName src="Phraseanet:tf-basename" readonly="1" type="text" />
+    </description>
 
-        <!-- 2:15 -->
-    <Category src="/rdf:RDF/rdf:Description/IPTC:Category"/>
-
-        <!-- 2:20 -->
-    <SupplCategory src="/rdf:RDF/rdf:Description/IPTC:SupplementalCategories"/>
-
-        <!-- 2:25 -->
-    <Keywords src="/rdf:RDF/rdf:Description/IPTC:Keywords" multi="1"/>
-
-        <!-- 2:40 -->
-    <SpecialInstruct src="/rdf:RDF/rdf:Description/IPTC:SpecialInstructions"/>
-
-        <!-- 2:55 -->
-    <Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" />
-
-        <!-- 2:80 -->
-    <Byline src="/rdf:RDF/rdf:Description/IPTC:By-line"/>
-
-        <!-- 2:85 -->
-    <BylineTitle src="/rdf:RDF/rdf:Description/IPTC:By-lineTitle"/>
-
-        <!-- 2:90 -->
-    <City src="/rdf:RDF/rdf:Description/IPTC:City" />
-
-        <!-- 2:95 -->
-    <Province src="/rdf:RDF/rdf:Description/IPTC:Province-State" />
-
-        <!-- 2:101 -->
-    <Country src="/rdf:RDF/rdf:Description/IPTC:Country-PrimaryLocationName" />
-
-        <!-- 2:103 -->
-    <OriginalRef src="/rdf:RDF/rdf:Description/IPTC:OriginalTransmissionReference" />
-
-        <!-- 2:105 -->
-    <Headline src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" />
-
-        <!-- 2:110 -->
-    <Credit src="/rdf:RDF/rdf:Description/IPTC:Credit" report="1" />
-
-        <!-- 2:115 -->
-    <Source src="/rdf:RDF/rdf:Description/IPTC:Source" />
-
-        <!-- 2:120 -->
-    <Caption src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" />
-
-        <!-- 2:122 -->
-    <CaptionWriter src="/rdf:RDF/rdf:Description/IPTC:Writer-Editor" />
-
-        <!-- 2:25 -->
-    <Longitude src="/rdf:RDF/rdf:Description/GPS:GPSLongitude" readonly="1"/>
-
-        <!-- 2:25 -->
-    <Latitude src="/rdf:RDF/rdf:Description/GPS:GPSLatitude" readonly="1"/>
-
-        <!-- 2:25 -->
-    <CameraModel src="/rdf:RDF/rdf:Description/IFD0:Model" readonly="1"/>
-
-       <!-- Technical Fields -->
-    <FileName src="/rdf:RDF/rdf:Description/PHRASEANET:tf-filename" readonly="1" type="text" />
-    <FilePath src="/rdf:RDF/rdf:Description/PHRASEANET:tf-filepath" index="0" readonly="1" type="text" />
-    <Recordid src="/rdf:RDF/rdf:Description/PHRASEANET:tf-recordid" index="0" readonly="1" type="number" />
-    <MimeType src="/rdf:RDF/rdf:Description/PHRASEANET:tf-mimetype" index="0" readonly="1" type="text" />
-    <Size src="/rdf:RDF/rdf:Description/PHRASEANET:tf-size" index="0" readonly="1" type="number" />
-    <Extension src="/rdf:RDF/rdf:Description/PHRASEANET:tf-extension" index="0" readonly="1" type="text" />
-    <Width src="/rdf:RDF/rdf:Description/PHRASEANET:tf-width" index="0" readonly="1" type="number" />
-    <Height src="/rdf:RDF/rdf:Description/PHRASEANET:tf-height" index="0" readonly="1" type="number" />
-    <Bits src="/rdf:RDF/rdf:Description/PHRASEANET:tf-bits" index="0" readonly="1" type="number" />
-    <Channels src="/rdf:RDF/rdf:Description/PHRASEANET:tf-channels" index="0" readonly="1" type="number" />
-  </description>
-
-  <statbits>
-    <bit n="4">Online</bit>
-  </statbits>
+    <statbits>
+        <bit n="4">Online</bit>
+    </statbits>
 </record>

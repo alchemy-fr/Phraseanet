@@ -37,6 +37,12 @@ class Factory
             case Attribute::NAME_STORY:
                 return Story::loadFromString($serialized);
                 break;
+            case Attribute::NAME_METAFIELD:
+                return MetaField::loadFromString($serialized);
+                break;
+            case Attribute::NAME_STATUS:
+                return Status::loadFromString($serialized);
+                break;
         }
 
         throw new \InvalidArgumentException(sprintf('Unknown attribute %s', $name));

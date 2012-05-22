@@ -56,13 +56,7 @@ class Story implements ControllerProviderInterface
                     throw new \Exception_Forbidden('You can not create a story on this collection');
                 }
 
-
-                $system_file = new \system_file(
-                            $app['Core']->getRegistry()
-                            ->get('GV_RootPath') . 'www/skins/icons/substitution/regroup_doc.png'
-                );
-
-                $Story = \record_adapter::create($collection, $system_file, false, true);
+                $Story = \record_adapter::createStory($collection);
 
                 foreach (explode(';', $request->get('lst')) as $sbas_rec) {
                     $sbas_rec = explode('_', $sbas_rec);

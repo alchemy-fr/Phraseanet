@@ -212,15 +212,17 @@
           <select id="field_chooser">
             <option>{% trans 'choisir' %}</option>
         {% set current_ns = '' %}
-        {% for field in available_fields %}
-          {% if current_ns != field.get_namespace() %}
-            {% if current_ns != '' %}
-            </optgroup>
-            {% endif %}
-            {% set current_ns = field.get_namespace() %}
-            <optgroup label="{{field.get_namespace()}}">
-          {% endif %}
-                <option value="{{field.get_source()}}">{{field.get_tagname()}}</option>
+        {% for group in available_fields %}
+            {% for field in group %}
+                {% if current_ns != field.getGroupName() %}
+                    {% if current_ns != '' %}
+                    </optgroup>
+                    {% endif %}
+                    {% set current_ns = field.getGroupName() %}
+                    <optgroup label="{{field.getGroupName()}}">
+                {% endif %}
+                <option value="{{field.getTagname()}}">{{field.getTagname()}}</option>
+            {% endfor %}
         {% endfor %}
               </optgroup>
             </select>
@@ -304,8 +306,8 @@
                                         <input style="width:100px;" class="meta_namer metafield_{{field.get_id()}}" {{disabled}} type="text" name="name_{{field.get_id()}}" value="{{field.get_name ()}}" />
                                       </td>
                                       <td>
-                                        <span id="display_value_{{field.get_id()}}">{{ field.get_metadata_namespace() }} / {{ field.get_metadata_tagname() }}</span> <a href="#" class="field_change">change<input type="hidden" value="{{field.get_id()}}"/></a>
-                                        <input class="meta_src" type="hidden" name="src_{{field.get_id()}}" value="{{ field.get_metadata_source() }}"/>
+                                        <span id="display_value_{{field.get_id()}}">{{ field.get_tag().getGroupName() }} / {{ field.get_tag().getName() }}</span> <a href="#" class="field_change">change<input type="hidden" value="{{field.get_id()}}"/></a>
+                                        <input class="meta_src" type="hidden" name="src_{{field.get_id()}}" value="{{ field.get_tag().getTagname() }}"/>
                                       </td>
                                       <td>
               {{_self.dces_selector(available_dc_fields, field)}}

@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use MediaVorus\Media\Media;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -81,7 +83,7 @@ interface record_Interface
 
     public function get_sbas_id();
 
-    public function substitute_subdef($name, system_file $pathfile);
+    public function substitute_subdef($name, Media $media);
 
     public function set_metadatas(Array $metadatas, $force_readonly = false);
 

@@ -401,42 +401,43 @@ class databox_status
 
     public static function updateIcon($sbas_id, $bit, $switch, $file)
     {
-        $appbox = appbox::get_instance(\bootstrap::getCore());
-        $session = $appbox->get_session();
+        $core = \bootstrap::getCore();
+        $user = $core->getAuthenticatedUser();
+        $registry = $core->getRegistry();
 
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
-
-        $registry = registry::get_instance();
-
-        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct'))
+        if ( ! $user->ACL()->has_right_on_sbas($sbas_id, 'bas_modify_struct')) {
             throw new Exception_Forbidden();
+        }
 
         $switch = in_array($switch, array('on', 'off')) ? $switch : false;
 
-        if ( ! $switch)
+        if ( ! $switch){
             throw new Exception_InvalidArgument();
+        }
 
-        $status = self::getStatus($sbas_id);
         $url = self::getUrl($sbas_id);
         $path = self::getPath($sbas_id);
-        if ($file['size'] >= 65535)
-            throw new Exception_Upload_FileTooBig();
 
-        if ($file['error'] !== UPLOAD_ERR_OK)
+        if ($file['size'] >= 65535) {
+            throw new Exception_Upload_FileTooBig();
+        }
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
             throw new Exception_Upload_Error();
+        }
 
         self::deleteIcon($sbas_id, $bit, $switch);
         $name = "-stat_" . $bit . "_" . ($switch == 'on' ? '1' : '0') . ".gif";
 
-        if ( ! move_uploaded_file($file["tmp_name"], $path . $name))
+        if ( ! move_uploaded_file($file["tmp_name"], $path . $name)) {
             throw new Exception_Upload_CannotWriteFile();
+        }
 
         $custom_path = $registry->get('GV_RootPath') . 'www/custom/status/';
 
-        if ( ! is_dir($custom_path))
-            system_file::mkdir($custom_path);
+        $core['file-system']->mkdir($custom_path, 0750);
+        $core['file-system']->copy($path . $name, $custom_path . basename($path . $name), true);
 
-        copy($path . $name, $custom_path . basename($path . $name));
         self::$_status[$sbas_id]->status[$bit]['img_' . $switch] = $url . $name;
         self::$_status[$sbas_id]->status[$bit]['path_' . $switch] = $path . $name;
 

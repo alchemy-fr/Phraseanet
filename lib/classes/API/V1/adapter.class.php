@@ -9,15 +9,14 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\Request;
+use Silex\Application;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
-
-use Symfony\Component\HttpFoundation\Request;
-use Silex\Application;
-
 class API_V1_adapter extends API_V1_Abstract
 {
     /**
@@ -62,10 +61,10 @@ class API_V1_adapter extends API_V1_Abstract
      * @param string $error
      * @return API_V1_result `
      */
-    public function get_error_message(Request $request, $error)
+    public function get_error_message(Request $request, $error, $message)
     {
         $result = new API_V1_result($request, $this);
-        $result->set_error_message($error);
+        $result->set_error_message($error, $message);
 
         return $result;
     }
@@ -657,6 +656,139 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
+    public function add_record(Application $app, Request $request)
+    {
+        if (count($request->files->get('file')) == 0) {
+            throw new API_V1_exception_badrequest('Missing file parameter');
+        }
+
+        if ( ! $request->files->get('file') instanceof Symfony\Component\HttpFoundation\File\UploadedFile) {
+            throw new API_V1_exception_badrequest('You can upload one file at time');
+        }
+
+        $file = $request->files->get('file');
+        /* @var $file Symfony\Component\HttpFoundation\File\UploadedFile */
+
+        if ( ! $file->isValid()) {
+            throw new API_V1_exception_badrequest('Datas corrupted, please try again');
+        }
+
+        if ( ! $request->get('base_id')) {
+            throw new API_V1_exception_badrequest('Missing base_id parameter');
+        }
+
+        $collection = \collection::get_from_base_id($request->get('base_id'));
+
+        if ( ! $app['Core']->getAuthenticatedUser()->ACL()->has_right_on_base($request->get('base_id'), 'canaddrecord')) {
+            throw new API_V1_exception_forbidden(sprintf('You do not have access to collection %s', $collection->get_name()));
+        }
+
+        $media = \MediaVorus\MediaVorus::guess($file);
+
+        $Package = new Alchemy\Phrasea\Border\File($media, $collection, $file->getClientOriginalName());
+
+        if ($request->get('status')) {
+            $Package->addAttribute(new \Alchemy\Phrasea\Border\Attribute\Status($request->get('status')));
+        }
+
+        $session = new Entities\LazaretSession();
+        $session->setUsrId($app['Core']->getAuthenticatedUser()->get_id());
+
+        $app['Core']['EM']->persist($session);
+        $app['Core']['EM']->flush();
+
+        $errors = $output = null;
+
+        $callback = function($element, $visa, $code) use(&$errors, &$output) {
+                if ( ! $visa->isValid()) {
+                    $errors = array();
+
+                    foreach ($visa->getResponses() as $response) {
+                        $errors[] = $response->getMessage();
+                    }
+                }
+
+                $output = $element;
+            };
+
+        switch ($request->get('forceBehavior')) {
+            case '0' :
+                $behavior = \Alchemy\Phrasea\Border\Manager::FORCE_RECORD;
+                break;
+            case '1' :
+                $behavior = \Alchemy\Phrasea\Border\Manager::FORCE_LAZARET;
+                break;
+            case null:
+                $behavior = null;
+                break;
+            default:
+                throw new API_V1_exception_badrequest('Invalid forceBehavior value');
+                break;
+        }
+
+        $app['Core']['border-manager']->process($session, $Package, $callback, $behavior);
+
+        if ($output instanceof \record_adapter) {
+            $ret = $this->list_record($output);
+        }
+        if ($output instanceof \Entities\LazaretFile) {
+            $ret = array(
+                'errors'      => $errors,
+                'lazaretFile' => $this->list_lazaret_file($output),
+            );
+        }
+
+        $result = new API_V1_result($request, $this);
+
+        $result->set_datas($ret);
+
+        return $result;
+    }
+
+    protected function list_lazaret_file(\Entities\LazaretFile $file)
+    {
+        $attributes = $checks = array();
+
+        foreach ($file->getAttributes() as $attr) {
+            $attributes[] = array(
+                'name'  => $attr->getName(),
+                'value' => $attr->asString(),
+            );
+        }
+
+        foreach ((array) $file->getChecks() as $checker) {
+
+            if ( ! class_exists($checker)) {
+                continue;
+            }
+
+            if ( ! $checker instanceof \Alchemy\Phrasea\Border\Checker\Checker) {
+                continue;
+            }
+
+            $checks[] = $checker::getMessage();
+        }
+
+        $session = array(
+            'id'     => $file->getSession()->getId(),
+            'usr_id' => $file->getSession()->getUsrId(),
+        );
+
+        return array(
+            'id'            => $file->getId(),
+            'session'       => $session,
+            'base_id'       => $file->getBaseId(),
+            'original_name' => $file->getOriginalName(),
+            'sha256'        => $file->getSha256(),
+            'uuid'          => $file->getUuid(),
+            'forced'        => $file->getForced(),
+            'attributes'    => $attributes,
+            'checks'        => $checks,
+            'created_on'    => $file->getCreated()->format(DATE_ATOM),
+            'updated_on'    => $file->getUpdated()->format(DATE_ATOM),
+        );
+    }
+
     /**
      * Get an API_V1_result containing the results of a records search
      *
@@ -922,7 +1054,7 @@ class API_V1_adapter extends API_V1_Abstract
             $record->set_metadatas($metadatas);
             $result->set_datas(array("metadatas" => $this->list_record_caption($record->get_caption())));
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST);
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
         }
 
         return $result;
@@ -965,7 +1097,7 @@ class API_V1_adapter extends API_V1_Abstract
                 )
             );
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST);
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
         }
 
         return $result;
@@ -991,7 +1123,7 @@ class API_V1_adapter extends API_V1_Abstract
             $record->move_to_collection($collection, $this->appbox);
             $result->set_datas(array("record" => $this->list_record($record)));
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST);
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
         }
 
         return $result;
@@ -1012,8 +1144,10 @@ class API_V1_adapter extends API_V1_Abstract
         try {
             $record = $databox->get_record($record_id);
             $result->set_datas(array('record' => $this->list_record($record)));
+        } catch (Exception_NotFound $e) {
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('Record Not Found'));
         } catch (Exception $e) {
-            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST);
+            $result->set_error_message(API_V1_result::ERROR_BAD_REQUEST, _('An error occured'));
         }
 
         return $result;
@@ -1083,7 +1217,7 @@ class API_V1_adapter extends API_V1_Abstract
         $name = $request->get('name');
 
         if (trim(strip_tags($name)) === '') {
-            throw new API_V1_exception_badrequest ();
+            throw new API_V1_exception_badrequest('Missing basket name parameter');
         }
 
         $user = $this->core->getAuthenticatedUser();
@@ -1787,9 +1921,9 @@ class API_V1_adapter extends API_V1_Abstract
     {
         $ret = array(
             'id'               => $databox_field->get_id(),
-            'namespace'        => $databox_field->get_metadata_namespace(),
-            'source'           => $databox_field->get_metadata_source(),
-            'tagname'          => $databox_field->get_metadata_tagname(),
+            'namespace'        => $databox_field->get_tag()->getGroupName(),
+            'source'           => $databox_field->get_tag()->getTagname(),
+            'tagname'          => $databox_field->get_tag()->getName(),
             'name'             => $databox_field->get_name(),
             'separator'        => $databox_field->get_separator(),
             'thesaurus_branch' => $databox_field->get_tbranch(),

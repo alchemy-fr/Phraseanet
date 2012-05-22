@@ -17,6 +17,7 @@ namespace Alchemy\Phrasea\Border\Attribute;
 interface Attribute
 {
     const NAME_METADATA = 'metadata';
+    const NAME_METAFIELD = 'metafield';
     const NAME_STORY = 'story';
     const NAME_STATUS = 'status';
 
@@ -41,6 +42,8 @@ interface Attribute
 
     /**
      * Build the current object with is string value
+     *
+     * @throws  \InvalidArgumentException 
      */
     public static function loadFromString($string);
 }

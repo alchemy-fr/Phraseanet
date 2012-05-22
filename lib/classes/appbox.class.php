@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -90,20 +92,14 @@ class appbox extends base
         return $this;
     }
 
-    /**
-     *
-     * @param collection $collection
-     * @param system_file $pathfile
-     * @param string $pic_type
-     * @return appbox
-     */
-    public function write_collection_pic(collection $collection, system_file $pathfile = null, $pic_type)
+    public function write_collection_pic(collection $collection, SymfoFile $pathfile = null, $pic_type)
     {
-        if ($pathfile instanceof system_file) {
-            $mime = $pathfile->get_mime();
+        $core = \bootstrap::getCore();
 
-            if ( ! in_array(mb_strtolower($mime), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
-                throw new Exception('Invalid file format');
+        if ( ! is_null($pathfile)) {
+
+            if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/gif', 'image/png', 'image/jpeg', 'image/jpg', 'image/pjpeg'))) {
+                throw new \InvalidArgumentException('Invalid file format');
             }
         }
 
@@ -118,94 +114,70 @@ class appbox extends base
                 $collection->reset_stamp();
                 break;
             default:
-                throw new Exception('unknown pic_type');
+                throw new \InvalidArgumentException('unknown pic_type');
                 break;
         }
 
-        if ($pic_type == collection::PIC_LOGO)
+        if ($pic_type == collection::PIC_LOGO) {
             $collection->update_logo($pathfile);
+        }
 
         $registry = registry::get_instance();
+
         $file = $registry->get('GV_RootPath') . 'config/' . $pic_type . '/' . $collection->get_base_id();
-        if (is_file($file)) {
-            unlink($file);
-        }
-        $custom_path = $registry->get('GV_RootPath') . 'www/custom/' . $pic_type . '/';
-        if (is_file($custom_path)) {
-            unlink($custom_path);
-        }
-        if ( ! is_dir($custom_path)) {
-            system_file::mkdir($custom_path);
-        }
-        $custom_path.= $collection->get_base_id();
+        $custom_path = $registry->get('GV_RootPath') . 'www/custom/' . $pic_type . '/' . $collection->get_base_id();
 
-        if (is_null($pathfile)) {
-            return $this;
-        }
+        foreach (array($file, $custom_path) as $target) {
+            if (is_file($target)) {
+                $core['file-system']->remove($target);
+            }
 
-        $datas = file_get_contents($pathfile->getPathname());
-        if (is_null($datas)) {
-            return $this;
-        }
+            if (is_null($target)) {
+                continue;
+            }
 
-        file_put_contents($file, $datas);
-        file_put_contents($custom_path, $datas);
-        $system_file = new system_file($file);
-        $system_file->chmod();
-        $system_file = new system_file($custom_path);
-        $system_file->chmod();
+            $core['file-system']->mkdir(dirname($target), 0750);
+            $core['file-system']->copy($pathfile->getPathname(), $target, true);
+            $core['file-system']->chmod($target, 0760);
+        }
 
         return $this;
     }
 
-    /**
-     *
-     * @param databox $databox
-     * @param system_file $pathfile
-     * @param <type> $pic_type
-     * @return appbox
-     */
-    public function write_databox_pic(databox $databox, system_file $pathfile = null, $pic_type)
+    public function write_databox_pic(databox $databox, SymfoFile $pathfile = null, $pic_type)
     {
+        $core = \bootstrap::getCore();
 
-        if ($pathfile instanceof system_file) {
-            $mime = $pathfile->get_mime();
+        if ( ! is_null($pathfile)) {
 
-            if ( ! in_array(mb_strtolower($mime), array('image/jpeg', 'image/jpg', 'image/pjpeg'))) {
-                throw new Exception('Invalid file format');
+            if ( ! in_array(mb_strtolower($pathfile->getMimeType()), array('image/jpeg', 'image/jpg', 'image/pjpeg'))) {
+                throw new \InvalidArgumentException('Invalid file format');
             }
         }
-        if ( ! in_array($pic_type, array(databox::PIC_PDF)))
-            throw new Exception('unknown pic_type');
+
+        if ( ! in_array($pic_type, array(databox::PIC_PDF))) {
+            throw new \InvalidArgumentException('unknown pic_type');
+        }
+
         $registry = $databox->get_registry();
         $file = $registry->get('GV_RootPath') . 'config/minilogos/' . $pic_type . '_' . $databox->get_sbas_id();
-        if (is_file($file)) {
-            unlink($file);
-        }
-        $custom_path = $registry->get('GV_RootPath') . 'www/custom/minilogos/';
-        if (is_file($custom_path)) {
-            unlink($custom_path);
-        }
-        if ( ! is_dir($custom_path)) {
-            system_file::mkdir($custom_path);
-        }
-        $custom_path.= $pic_type . '_' . $databox->get_sbas_id();
+        $custom_path = $registry->get('GV_RootPath') . 'www/custom/minilogos/' . $pic_type . '_' . $databox->get_sbas_id();
 
-        if (is_null($pathfile)) {
-            return $this;
-        }
+        foreach (array($file, $custom_path) as $target) {
 
-        $datas = file_get_contents($pathfile->getPathname());
-        if (is_null($datas)) {
-            return $this;
+            if (is_file($target)) {
+                $core['file-system']->remove($target);
+            }
+
+            if (is_null($pathfile)) {
+                continue;
+            }
+
+            $core['file-system']->mkdir(dirname($target));
+            $core['file-system']->copy($pathfile->getRealPath(), $target);
+            $core['file-system']->chmod($target, 0760);
         }
 
-        file_put_contents($file, $datas);
-        file_put_contents($custom_path, $datas);
-        $system_file = new system_file($file);
-        $system_file->chmod();
-        $system_file = new system_file($custom_path);
-        $system_file->chmod();
         $databox->delete_data_from_cache('printLogo');
 
         return $this;
@@ -302,7 +274,7 @@ class appbox extends base
 
     public function forceUpgrade(Setup_Upgrade &$upgrader)
     {
-        $upgrader->add_steps(8 + count($this->get_databoxes()));
+        $upgrader->add_steps(7 + count($this->get_databoxes()));
 
         $registry = $this->get_registry();
 
@@ -333,16 +305,17 @@ class appbox extends base
          * Step 2
          */
         $upgrader->set_current_message(_('Purging directories'));
-        $system_file = new system_file($registry->get('GV_RootPath') . 'tmp/cache_minify/');
-        $system_file->empty_directory();
-        $upgrader->add_steps_complete(1);
 
-        /**
-         * Step 3
-         */
-        $upgrader->set_current_message(_('Purging directories'));
-        $system_file = new system_file($registry->get('GV_RootPath') . 'tmp/cache_twig/');
-        $system_file->empty_directory();
+        $finder = new Symfony\Component\Finder\Finder();
+        $finder->in(array(
+            $registry->get('GV_RootPath') . 'tmp/cache_minify/',
+            $registry->get('GV_RootPath') . 'tmp/cache_minify/',
+        ))->ignoreVCS(true)->ignoreDotFiles(true);
+
+        foreach ($finder as $file) {
+            $core['file-system']->remove($file);
+        }
+        
         $upgrader->add_steps_complete(1);
 
         /**

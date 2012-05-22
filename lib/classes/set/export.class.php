@@ -393,6 +393,7 @@ class set_export extends set_abstract
 
         $includeBusinessFields = ! ! $includeBusinessFields;
 
+        $core = \bootstrap::getCore();
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
         $registry = $appbox->get_registry();
@@ -406,7 +407,7 @@ class set_export extends set_abstract
         $file_names = array();
 
         $size = 0;
-        $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
+        $user = $core->getAuthenticatedUser();
 
         foreach ($this->elements as $download_element) {
             $id = count($files);
@@ -639,7 +640,7 @@ class set_export extends set_abstract
                     . time() . $session->get_usr_id()
                     . $session->get_ses_id() . '/';
 
-                system_file::mkdir($caption_dir);
+                $core['file-system']->mkdir($caption_dir, 0750);
 
                 $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_XML, $BF);
 
@@ -660,7 +661,8 @@ class set_export extends set_abstract
                 $caption_dir = $registry->get('GV_RootPath') . 'tmp/desc_tmp/'
                     . time() . $session->get_usr_id()
                     . $session->get_ses_id() . '/';
-                system_file::mkdir($caption_dir);
+
+                $core['file-system']->mkdir($caption_dir, 0750);
 
                 $desc = $download_element->get_caption()->serialize(\caption_record::SERIALIZE_YAML, $BF);
 
@@ -699,6 +701,8 @@ class set_export extends set_abstract
      */
     public static function build_zip($token, Array $list, $zipFile)
     {
+        $core = bootstrap::getCore();
+
         $zip = new ZipArchiveImproved();
 
         if ($zip->open($zipFile, ZIPARCHIVE::CREATE) !== true) {
@@ -715,12 +719,7 @@ class set_export extends set_abstract
 
         random::updateToken($token, serialize($list));
 
-        $str_in = array("à", "á", "â", "ã", "ä", "å", "ç", "è", "é", "ê",
-            "ë", "ì", "í", "î", "ï", "ð", "ñ", "ò", "ó", "ô",
-            "õ", "ö", "ù", "ú", "û", "ü", "ý", "ÿ");
-        $str_out = array("a", "a", "a", "a", "a", "a", "c", "e", "e", "e",
-            "e", "i", "i", "i", "i", "o", "n", "o", "o", "o",
-            "o", "o", "u", "u", "u", "u", "y", "y");
+        $unicode = new \unicode();
 
         $caption_dirs = $unlinks = array();
 
@@ -734,7 +733,7 @@ class set_export extends set_abstract
                             . $obj["ajout"]
                             . '.' . $obj["exportExt"];
 
-                        $name = str_replace($str_in, $str_out, $name);
+                        $name = $unicode->remove_diacritics($name);
 
                         $zip->addFile($path, $name);
 
@@ -751,6 +750,7 @@ class set_export extends set_abstract
         $zip->close();
 
         $list['complete'] = true;
+        $unicode = null;
 
         random::updateToken($token, serialize($list));
 
@@ -761,8 +761,7 @@ class set_export extends set_abstract
             @rmdir($c);
         }
 
-        $system_file = new system_file($zipFile);
-        $system_file->chmod();
+        $core['file-system']->chmod($zipFile, 0760);
 
         return $zipFile;
     }
