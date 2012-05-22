@@ -8,7 +8,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -272,7 +274,7 @@ class appbox extends base
 
     public function forceUpgrade(Setup_Upgrade &$upgrader)
     {
-        $upgrader->add_steps(8 + count($this->get_databoxes()));
+        $upgrader->add_steps(7 + count($this->get_databoxes()));
 
         $registry = $this->get_registry();
 
@@ -303,16 +305,17 @@ class appbox extends base
          * Step 2
          */
         $upgrader->set_current_message(_('Purging directories'));
-        $core['file-system']->remove($registry->get('GV_RootPath') . 'tmp/cache_minify/');
-        $core['file-system']->mkdir($registry->get('GV_RootPath') . 'tmp/cache_minify/');
-        $upgrader->add_steps_complete(1);
 
-        /**
-         * Step 3
-         */
-        $upgrader->set_current_message(_('Purging directories'));
-        $core['file-system']->remove($registry->get('GV_RootPath') . 'tmp/cache_twig/');
-        $core['file-system']->mkdir($registry->get('GV_RootPath') . 'tmp/cache_twig/');
+        $finder = new Symfony\Component\Finder\Finder();
+        $finder->in(array(
+            $registry->get('GV_RootPath') . 'tmp/cache_minify/',
+            $registry->get('GV_RootPath') . 'tmp/cache_minify/',
+        ))->ignoreVCS(true)->ignoreDotFiles(true);
+
+        foreach ($finder as $file) {
+            $core['file-system']->remove($file);
+        }
+        
         $upgrader->add_steps_complete(1);
 
         /**
