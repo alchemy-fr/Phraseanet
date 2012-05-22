@@ -66,6 +66,7 @@ try {
 
     $app->add(new module_console_taskrun('task:run'));
     $app->add(new module_console_tasklist('task:list'));
+    $app->add(new module_console_taskState('task:state'));
     $app->add(new module_console_schedulerState('scheduler:state'));
     $app->add(new module_console_schedulerStop('scheduler:stop'));
     $app->add(new module_console_schedulerStart('scheduler:start'));

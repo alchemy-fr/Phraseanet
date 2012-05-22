@@ -16,10 +16,10 @@
  */
 class task_manager
 {
-    const STATUS_SCHED_STOPPED = 'stopped';
-    const STATUS_SCHED_STOPPING = 'stopping';
-    const STATUS_SCHED_STARTED = 'started';
-    const STATUS_SCHED_TOSTOP = 'tostop';
+    const STATE_STOPPED = 'stopped';
+    const STATE_STOPPING = 'stopping';
+    const STATE_STARTED = 'started';
+    const STATE_TOSTOP = 'tostop';
 
     protected $appbox;
     protected $tasks;
@@ -91,7 +91,7 @@ class task_manager
         $tasks = $this->getTasks();
 
         if ( ! isset($tasks[$task_id])) {
-            throw new Exception_NotFound('Unknown task_id');
+            throw new Exception_NotFound('Unknown task_id ' . $task_id);
         }
 
         return $tasks[$task_id];
@@ -100,10 +100,10 @@ class task_manager
     public function setSchedulerState($status)
     {
         $av_status = array(
-            self::STATUS_SCHED_STARTED
-            , self::STATUS_SCHED_STOPPED
-            , self::STATUS_SCHED_STOPPING
-            , self::STATUS_SCHED_TOSTOP
+            self::STATE_STARTED,
+            self::STATE_STOPPED,
+            self::STATE_STOPPING,
+            self::STATE_TOSTOP
         );
 
         if ( ! in_array($status, $av_status))

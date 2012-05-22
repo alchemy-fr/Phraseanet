@@ -93,6 +93,11 @@ abstract class task_abstract
         "--help" => array("set"    => false, "values" => array(), "usage" => " (no help available)")
     );
 
+    /**
+     * get the state of the task (task_abstract::STATE_*)
+     *
+     * @return String
+     */
     public function getState()
     {
         $conn = connection::getPDOConnection();
@@ -118,11 +123,22 @@ abstract class task_abstract
         return false;
     }
 
+    public function printInterfaceHTML()
+    {
+        return false;
+    }
+
     public function getGraphicForm()
     {
         return false;
     }
 
+    /**
+     * set the state of the task (task_abstract::STATE_*)
+     *
+     * @param String $status
+     * @throws Exception_InvalidArgument
+     */
     public function setState($status)
     {
         $av_status = array(
@@ -179,6 +195,10 @@ abstract class task_abstract
 
     public function setSettings($settings)
     {
+        if (@simplexml_load_string($settings) === FALSE) {
+            throw new Exception_InvalidArgument('Bad XML');
+        }
+
         $conn = connection::getPDOConnection();
 
         $sql = 'UPDATE task2 SET settings = :settings WHERE task_id = :taskid';
@@ -301,6 +321,10 @@ abstract class task_abstract
 
     public function setRunner($runner)
     {
+        if ($runner != self::RUNNER_MANUAL && $runner != self::RUNNER_SCHEDULER) {
+            throw new Exception_InvalidArgument(sprintf('unknown runner `%s`', $runner));
+        }
+
         $this->runner = $runner;
 
         $conn = connection::getPDOConnection();
@@ -364,12 +388,10 @@ abstract class task_abstract
     public function getPID()
     {
         $pid = NULL;
-        $taskid = $this->getID();
 
-        $registry = registry::get_instance();
-        system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
+        $lockfile = $this->getLockfilePath();
 
-        if (($fd = fopen(($lockfile = ($lockdir . 'task_' . $taskid . '.lock')), 'a+')) != FALSE) {
+        if (($fd = fopen($lockfile, 'a+')) != FALSE) {
             if (flock($fd, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked ? : task running
                 $pid = fgets($fd);
@@ -407,36 +429,50 @@ abstract class task_abstract
         }
     }
 
+    private function getLockfilePath()
+    {
+        $registry = registry::get_instance();
+        $lockdir = $registry->get('GV_RootPath') . 'tmp/locks/';
+
+        system_file::mkdir($lockdir);
+        $lockfile = ($lockdir . 'task_' . $this->getID() . '.lock');
+
+        return($lockfile);
+    }
+
+    private function lockTask()
+    {
+        $lockfile = $this->getLockfilePath();
+
+        $lockFD = fopen($lockfile, 'a+');
+
+        $locker = true;
+        if (flock($lockFD, LOCK_EX | LOCK_NB, $locker) === FALSE) {
+            $this->log("runtask::ERROR : task already running.");
+            fclose($lockFD);
+
+            throw new Exception('task already running.', self::ERR_ALREADY_RUNNING);
+        }
+
+        // here we run the task
+        ftruncate($lockFD, 0);
+        fwrite($lockFD, '' . getmypid());
+        fflush($lockFD);
+
+        // for windows : unlock then lock shared to allow OTHER processes to read the file
+        // too bad : no critical section nor atomicity
+        flock($lockFD, LOCK_UN);
+        flock($lockFD, LOCK_SH);
+
+        return $lockFD;
+    }
+
     final public function run($runner, $input = null, $output = null)
     {
         $this->input = $input;
         $this->output = $output;
 
-        $taskid = $this->getID();
-
-        $registry = registry::get_instance();
-        system_file::mkdir($lockdir = $registry->get('GV_RootPath') . 'tmp/locks/');
-        $locker = true;
-        $lockfile = ($lockdir . 'task_' . $taskid . '.lock');
-        $tasklock = fopen($lockfile, 'a+');
-
-        if (flock($tasklock, LOCK_EX | LOCK_NB, $locker) === FALSE) {
-            $this->log("runtask::ERROR : task already running.");
-            fclose($tasklock);
-
-            throw new Exception('task already running.', self::ERR_ALREADY_RUNNING);
-            return;
-        }
-
-        // here we run the task
-        ftruncate($tasklock, 0);
-        fwrite($tasklock, '' . getmypid());
-        fflush($tasklock);
-
-        // for windows : unlock then lock shared to allow OTHER processes to read the file
-        // too bad : no critical section nor atomicity
-        flock($tasklock, LOCK_UN);
-        flock($tasklock, LOCK_SH);
+        $lockFD = $this->lockTask();
 
         $this->setRunner($runner);
         $this->setState(self::STATE_STARTED);
@@ -450,9 +486,21 @@ abstract class task_abstract
         }
 
         // in any case, exception or not, the task is ending so unlock the pid file
-        flock($tasklock, LOCK_UN | LOCK_NB);
-        ftruncate($tasklock, 0);
-        fclose($tasklock);
+        $this->unlockTask($lockFD);
+
+        // if something went wrong, report
+        if ($exception) {
+            throw($exception);
+        }
+    }
+
+    public function unlockTask($lockFD)
+    {
+        flock($lockFD, LOCK_UN | LOCK_NB);
+        ftruncate($lockFD, 0);
+        fclose($lockFD);
+
+        $lockfile = $this->getLockfilePath();
         @unlink($lockfile);
 
         switch ($this->getState()) {
@@ -462,11 +510,6 @@ abstract class task_abstract
             case self::STATE_TOSTOP:
                 $this->setState(self::STATE_STOPPED);
                 break;
-        }
-
-        // if something went wrong, report
-        if ($exception) {
-            throw($exception);
         }
     }
 

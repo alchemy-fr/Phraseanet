@@ -128,8 +128,6 @@ class task_Scheduler
         // set every 'auto-start' task to start
         foreach ($task_manager->getTasks() as $task) {
             if ($task->isActive()) {
-                $tid = $task->getID();
-
                 if ( ! $task->getPID()) {
                     /* @var $task task_abstract */
                     $task->resetCrashCounter();

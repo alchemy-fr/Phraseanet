@@ -418,7 +418,7 @@
                 <!-- _____________  end graphic interface '{{task.getName()}}'   _________________ -->
                 {% endif %}
                 <!-- _____________      xml interface    _____________ -->
-                <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.printInterfaceHTML() %}display:none;{% endif %}">
+                <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.printInterfaceHTML %}display:none;{% endif %}">
                     <form style="position:absolute; top:0px; left:0px; right:4px; bottom:20px;" action="./task2utils.php" onsubmit="return(false);" name="fxml" method="post">
                         <input type="hidden" name="__act" value="???" />
                         <input type="hidden" name="__class" value="{{ task|get_class }}" />

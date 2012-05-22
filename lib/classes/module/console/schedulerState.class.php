@@ -24,6 +24,15 @@ use Symfony\Component\Console\Command\Command;
 
 class module_console_schedulerState extends Command
 {
+    const EXITCODE_SETUP_ERROR = 1;
+    const EXITCODE_STATE_UNKNOWN = 21;
+
+    private $stateToExitCode = array(
+        \task_manager::STATE_TOSTOP   => 13,
+        \task_manager::STATE_STARTED  => 10,
+        \task_manager::STATE_STOPPING => 12,
+        \task_manager::STATE_STOPPED  => 11,
+    );
 
     public function __construct($name = null)
     {
@@ -35,9 +44,10 @@ class module_console_schedulerState extends Command
             'short'
             , NULL
             , InputOption::VALUE_NONE
-            , 'print short result, ie: <info>stopped</info> | <info>started(12345)</info> | <info>stopping</info>'
+            , 'print short result, ie: <info>stopped()</info> | <info>started(12345)</info> | <info>tostop(12345)</info> | <info>stopping(12345)</info>'
             , NULL
         );
+//    $this->setHelp("");
 
         return $this;
     }
@@ -47,7 +57,7 @@ class module_console_schedulerState extends Command
         if ( ! setup::is_installed()) {
             $output->writeln($input->getOption('short') ? 'setup_error' : 'Phraseanet is not set up');
 
-            return 1;
+            return self::EXITCODE_SETUP_ERROR;
         }
 
         require_once __DIR__ . '/../../../../lib/bootstrap.php';
@@ -55,37 +65,29 @@ class module_console_schedulerState extends Command
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new task_manager($appbox);
 
+        $exitCode = 0;
         $state = $task_manager->getSchedulerState();
 
-        if ($state['status'] == 'started') {
-            $output->writeln(sprintf(
-                    'Scheduler is %s on pid %d'
-                    , $state['status']
-                    , $state['pid']
-                ));
+        if ($input->getOption('short')) {
+            $output->writeln(sprintf('%s(%s)', $state['status'], $state['pid']));
         } else {
-            $output->writeln(sprintf('Scheduler is %s', $state['status']));
+            if ($state['pid'] != NULL) {
+                $output->writeln(sprintf(
+                        'Scheduler is %s on pid %d'
+                        , $state['status']
+                        , $state['pid']
+                    ));
+            } else {
+                $output->writeln(sprintf('Scheduler is %s', $state['status']));
+            }
         }
 
-        switch ($state['status']) {
-            case \task_manager::STATUS_SCHED_STARTED:
-
-                return 10;
-                break;
-            case \task_manager::STATUS_SCHED_STOPPED:
-
-                return 11;
-                break;
-            case \task_manager::STATUS_SCHED_STOPPING:
-
-                return 12;
-                break;
-            case \task_manager::STATUS_SCHED_TOSTOP:
-
-                return 13;
-                break;
+        if (array_key_exists($state['status'], $this->stateToExitCode)) {
+            $exitCode = $this->stateToExitCode[$state['status']];
+        } else {
+            $exitCode = self::EXITCODE_STATE_UNKNOWN;
         }
 
-        return 1;
+        return $exitCode;
     }
 }
