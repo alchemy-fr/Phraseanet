@@ -174,7 +174,7 @@ class databox_field implements cache_cacheableInterface
 
         $this->id = (int) $id;
 
-        echo "create tag from ".$row['src']." for id $id - name is ".$row['name']."\n";
+        echo "create tag from " . $row['src'] . " for id $id - name is " . $row['name'] . "\n";
         $this->tag = self::loadClassFromTagName($row['src']);
 
         $this->name = $row['name'];
@@ -241,6 +241,7 @@ class databox_field implements cache_cacheableInterface
      */
     public static function get_instance(databox &$databox, $id)
     {
+        echo "getting instance of databox_field $id for databox " . $databox->get_sbas_id() . "\n";
         $cache_key = 'field_' . $id;
         $instance_id = $databox->get_sbas_id() . '_' . $id;
         if ( ! isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false) {
