@@ -1539,22 +1539,22 @@ class task_period_archive extends task_abstract
         $media = MediaVorus::guess(new \SplFileInfo($pathfile));
 
         $databox = $collection->get_databox();
-        $meta_struct = $databox->get_meta_structure();
+        $metadatasStructure = $databox->get_meta_structure();
 
-        $metadatas = $this->getIndexByFieldName($meta_struct, $media->getEntity()->getMetadatas());
+        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
 
         if (file_exists($captionFile)) {
-            $caption = $this->readXMLForDatabox($meta_struct, $captionFile);
+            $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
             if ($captionStatus) {
                 $status = databox_status::operation_or($status, $captionStatus);
             }
 
-            $metadatas = $this->mergeForDatabox($meta_struct, $metadatas, $caption);
+            $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
         }
 
-        $metas = $this->bagToArray($meta_struct, $metadatas);
+        $metas = $this->bagToArray($metadatasStructure, $metadatas);
 
         $story = record_adapter::createStory($collection);
         $story->substitute_subdef('document', $media);
@@ -1605,19 +1605,19 @@ class task_period_archive extends task_abstract
         $media = MediaVorus::guess(new \SplFileInfo($pathfile));
 
         $databox = $collection->get_databox();
-        $meta_struct = $databox->get_meta_structure();
+        $metadatasStructure = $databox->get_meta_structure();
 
-        $metadatas = $this->getIndexByFieldName($meta_struct, $media->getEntity()->getMetadatas());
+        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
 
         if (file_exists($captionFile)) {
-            $caption = $this->readXMLForDatabox($meta_struct, $captionFile);
+            $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
             $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
 
             if ($captionStatus) {
                 $status = databox_status::operation_or($status, $captionStatus);
             }
 
-            $metadatas = $this->mergeForDatabox($meta_struct, $metadatas, $caption);
+            $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
         }
 
         $file = new \Alchemy\Phrasea\Border\File($media, $collection);
@@ -1940,15 +1940,15 @@ class task_period_archive extends task_abstract
      * Map a Bag of metadatas indexed by **Tagnames** to a bag of metadatas
      * indexed by **FieldNames**
      *
-     * @param \databox_descriptionStructure $meta_struct    The databox structure related
-     * @param MetadataBag                   $bag            The metadata bag
+     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
+     * @param MetadataBag                   $bag                The metadata bag
      * @return \PHPExiftool\Driver\Metadata\MetadataBag
      */
-    protected function getIndexByFieldName(\databox_descriptionStructure $meta_struct, MetadataBag $bag)
+    protected function getIndexByFieldName(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag)
     {
         $ret = new MetadataBag();
 
-        foreach ($meta_struct as $databox_field) {
+        foreach ($metadatasStructure as $databox_field) {
             if ($bag->containsKey($databox_field->get_tag()->getTagname())) {
                 $ret->set($databox_field->get_name(), $bag->get($databox_field->get_tag()->getTagname()));
             }
@@ -1961,16 +1961,16 @@ class task_period_archive extends task_abstract
      * Map a bag of metadatas indexed by **FieldNames** to an array ready for
      * \record_adapter metadatas submission
      *
-     * @param \databox_descriptionStructure $meta_struct    The databox structure related
-     * @param MetadataBag                   $metadatas      The metadata bag
+     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
+     * @param MetadataBag                   $metadatas          The metadata bag
      * @return array
      */
-    protected function bagToArray(\databox_descriptionStructure $meta_struct, MetadataBag $metadatas)
+    protected function bagToArray(\databox_descriptionStructure $metadatasStructure, MetadataBag $metadatas)
     {
         $metas = array();
         $unicode = new \unicode();
 
-        foreach ($meta_struct as $databox_field) {
+        foreach ($metadatasStructure as $databox_field) {
             if ($metadatas->containsKey($databox_field->get_tag()->getTagname())) {
 
                 if ($databox_field->is_multi()) {
@@ -2028,16 +2028,16 @@ class task_period_archive extends task_abstract
      * Merge two bags of metadatas indexed by **FieldNames**
      * Return a bag indexed by **FieldNames**
      *
-     * @param \databox_descriptionStructure $meta_struct    The databox structure related
-     * @param MetadataBag                   $bag1           The first metadata bag
-     * @param MetadataBag                   $bag2           The second metadata bag
+     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
+     * @param MetadataBag                   $bag1               The first metadata bag
+     * @param MetadataBag                   $bag2               The second metadata bag
      * @return \PHPExiftool\Driver\Metadata\MetadataBag
      */
-    protected function mergeForDatabox(\databox_descriptionStructure $meta_struct, MetadataBag $bag1, MetadataBag $bag2)
+    protected function mergeForDatabox(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag1, MetadataBag $bag2)
     {
         $metadatasBag = new MetadataBag();
 
-        foreach ($meta_struct as $databox_field) {
+        foreach ($metadatasStructure as $databox_field) {
 
             $value = array();
 
@@ -2076,13 +2076,13 @@ class task_period_archive extends task_abstract
      * Read a Phrasea XML file for Phrasea metadatas
      * Returns a MetadataBag indexed by **FieldNames**
      *
-     * @param \databox_descriptionStructure             $meta_struct    The databox structure related
-     * @param type                                      $pathfile       The path file to the XML
+     * @param \databox_descriptionStructure             $metadatasStructure The databox structure related
+     * @param type                                      $pathfile           The path file to the XML
      * @return \PHPExiftool\Driver\Metadata\MetadataBag
      *
      * @throws \InvalidArgumentException When the file is invalid or missing
      */
-    protected function readXMLForDatabox(\databox_descriptionStructure $meta_struct, $pathfile)
+    protected function readXMLForDatabox(\databox_descriptionStructure $metadatasStructure, $pathfile)
     {
         if ( ! file_exists($pathfile)) {
             throw new \InvalidArgumentException(sprintf('file %s does not exists', $pathfile));
@@ -2102,7 +2102,7 @@ class task_period_archive extends task_abstract
         foreach ($sxcaption->description->children() as $tagname => $field) {
             $field = trim($field);
 
-            $meta = $meta_struct->get_element_by_name(trim($tagname));
+            $meta = $metadatasStructure->get_element_by_name(trim($tagname));
             if ( ! $meta) {
                 continue;
             }

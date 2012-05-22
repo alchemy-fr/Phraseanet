@@ -39,17 +39,17 @@ class phrasea
 
         $mapping = array(
             'custom_files' => '',
-            'status' => 'status',
+            'status'       => 'status',
             'minilogos'    => 'minilogos'
-            );
+        );
 
         foreach ($mapping as $source => $target) {
             foreach ($finder->depth('==1')->in($origine . $source)->ignoreVCS(true)->ignoreDotFiles(true) as $file) {
-                $dest_file = str_replace($origine, $dest . $target, $file->getRealPath());
+                $targetFile = str_replace($origine, $dest . $target, $file->getRealPath());
 
-                $core['file-system']->mkdir(dirname($dest_file), 0750);
-                $core['file-system']->copy($file->getRealPath(), $dest_file, true);
-                $core['file-system']->chmod($dest_file, 0760);
+                $core['file-system']->mkdir(dirname($targetFile), 0750);
+                $core['file-system']->copy($file->getRealPath(), $targetFile, true);
+                $core['file-system']->chmod($targetFile, 0760);
             }
         }
     }
