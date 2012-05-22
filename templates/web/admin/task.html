@@ -166,7 +166,7 @@
 
                 currentView : null,
 
-                oldXML:"{{task.get_settings()|stripdoublequotes}}",
+                oldXML:"{{task.getSettings()|stripdoublequotes}}",
 
                 view:function(type)
                 {
@@ -300,7 +300,7 @@
                         };
                     }
 
-                    var url  = "/admin/adminFeedback.php?action=RESETTASKCRASHCOUNTER&task_id={{task.get_task_id()}}";
+                    var url  = "/admin/adminFeedback.php?action=RESETTASKCRASHCOUNTER&task_id={{task.getID()}}";
                     this.resetCrashCounter.x.xmlhttp.onreadystatechange = this.resetCrashCounter.x.cb; // ping_stateChange;
                     this.resetCrashCounter.x.xmlhttp.open("POST", url, true);
                     this.resetCrashCounter.x.xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -356,7 +356,7 @@
                     o.setAttribute("id", "__gtid");
                     o.setAttribute("name", "__tid");
                     o.setAttribute("type", "hidden");
-                    o.setAttribute("value", "{{task.get_task_id()}}");
+                    o.setAttribute("value", "{{task.getID()}}");
                     f.appendChild(o);
                 }
                 redrawme();
@@ -380,15 +380,15 @@
 
     <body id="idBody"  onResize="redrawme();"  onLoad="loaded();" style="background-color:#AAAAAA; overflow:hidden" scroll="no" >
         <div style="position:absolute; top:0px; left:5px; right:5px; height:45px; " nowrap>
-            <h4 style="padding:2px; text-align:center">{{task.getName()}} <span id="taskid">id : {{task.get_task_id()}}</span></h4>
+            <h4 style="padding:2px; text-align:center">{{task.getName()}} <span id="taskid">id : {{task.getID()}}</span></h4>
             <form name="__ftask" onsubmit="return(false);" method="post" method="post">
                 <label>{% trans 'admin::tasks: nom de la tache' %}</label>
-                <input type="text" name="__tname" style="width:200px" value="{{task.get_title()}}" onchange="setDirty();" />
-                <input type="checkbox" name="__tactive" {% if task.is_active() %}checked="checked"{% endif %} onchange="setDirty();" />
+                <input type="text" name="__tname" style="width:200px" value="{{task.getTitle()}}" onchange="setDirty();" />
+                <input type="checkbox" name="__tactive" {% if task.isActive() %}checked="checked"{% endif %} onchange="setDirty();" />
                        <label>{% trans 'admin::tasks: lancer au demarrage du scheduler' %}</label>
             </form>
-            <div id="idCrashLine" style="visibility:{% if task.get_crash_counter() == 0 %}hidden{% endif %}">
-                {% trans 'admin::tasks: Nombre de crashes : ' %} {{task.get_crash_counter()}}
+            <div id="idCrashLine" style="visibility:{% if task.getCrashCounter() == 0 %}hidden{% endif %}">
+                {% trans 'admin::tasks: Nombre de crashes : ' %} {{task.getCrashCounter()}}
 
                 <a href="javascript:void();" onclick="jsTaskObj.resetCrashCounter();return(false);">
                     {% trans 'admin::tasks: reinitialiser el compteur de crashes' %}</a>
@@ -418,14 +418,14 @@
                 <!-- _____________  end graphic interface '{{task.getName()}}'   _________________ -->
                 {% endif %}
                 <!-- _____________      xml interface    _____________ -->
-                <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.printInterfaceHTML() %}display:none;{% endif %}">
+                <div id="divXml" style="position:absolute; top:5px; left:5px; bottom:5px; right:5px; {% if task.printInterfaceHTML %}display:none;{% endif %}">
                     <form style="position:absolute; top:0px; left:0px; right:4px; bottom:20px;" action="./task2utils.php" onsubmit="return(false);" name="fxml" method="post">
                         <input type="hidden" name="__act" value="???" />
                         <input type="hidden" name="__class" value="{{ task|get_class }}" />
-                        <input type="hidden" name="__tid" value="{{task.get_task_id()}}" />
+                        <input type="hidden" name="__tid" value="{{task.getID()}}" />
                         <input type="hidden" name="__tname" value="" />
                         <input type="hidden" name="__tactive" value="" />
-                        <textarea nowrap id="txtareaxml" style="position:absolute; top:0px; left:0px; width:100%; height:100%; white-space:pre;" onchange="setDirty();" name="txtareaxml" >{{task.get_settings()}}</textarea>
+                        <textarea nowrap id="txtareaxml" style="position:absolute; top:0px; left:0px; width:100%; height:100%; white-space:pre;" onchange="setDirty();" name="txtareaxml" >{{task.getSettings()}}</textarea>
                     </form>
                 </div>
                 <!-- _____________     xml interface    _____________ -->

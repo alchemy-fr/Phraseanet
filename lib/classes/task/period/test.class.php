@@ -11,7 +11,6 @@
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -28,21 +27,21 @@ class task_period_test extends task_appboxAbstract
         return "just saying what i'm doing";
     }
 
-    protected function retrieve_content(appbox $appbox)
+    protected function retrieveContent(appbox $appbox)
     {
-        $this->log('test class, retrive content');
+        $this->log('test class, retrieve content');
 
-        return array('hello', 'world');
+        return array(array('hello'), array('world'));
     }
 
-    protected function process_one_content(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, Array $row)
     {
         $this->log(sprintf("test class, process content : `%s`", implode(' ', $row)));
 
         return $this;
     }
 
-    protected function post_process_one_content(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, Array $row)
     {
         $this->log(sprintf("test class, post process content, they were %s", count($row)));
 

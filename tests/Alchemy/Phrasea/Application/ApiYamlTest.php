@@ -220,7 +220,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaYaml200($content);
         $task_manager = new \task_manager($appbox);
-        $tasks = $task_manager->get_tasks();
+        $tasks = $task_manager->getTasks();
         $this->assertEquals(count($tasks), count($content['response']));
     }
 
@@ -232,7 +232,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
     {
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new \task_manager($appbox);
-        $tasks = $task_manager->get_tasks();
+        $tasks = $task_manager->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -279,7 +279,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new \task_manager($appbox);
-        $tasks = $task_manager->get_tasks();
+        $tasks = $task_manager->getTasks();
 
         if ( ! count($tasks)) {
             $this->markTestSkipped('no tasks created for the current instance');
@@ -292,9 +292,9 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaYaml200($content);
-        $task_manager->get_tasks(true);
-        $task = $task_manager->get_task($idTask);
-        $this->assertEquals(\task_abstract::STATUS_TOSTART, $task->get_status());
+        $task_manager->getTasks(true);
+        $task = $task_manager->getTask($idTask);
+        $this->assertEquals(\task_abstract::STATE_TOSTART, $task->getState());
     }
 
     /**
@@ -306,7 +306,7 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new \task_manager($appbox);
 
-        $tasks = $task_manager->get_tasks();
+        $tasks = $task_manager->getTasks();
 
         if (null === self::$adminToken) {
             $this->markTestSkipped('there is no user with admin rights');
@@ -323,9 +323,9 @@ class ApiYamlApplication extends PhraseanetWebTestCaseAbstract
         $content = self::$yaml->parse($this->client->getResponse()->getContent());
         $this->evaluateResponse200($this->client->getResponse());
         $this->evaluateMetaYaml200($content);
-        $task_manager->get_tasks(true);
-        $task = $task_manager->get_task($idTask);
-        $this->assertEquals(\task_abstract::STATUS_TOSTOP, $task->get_status());
+        $task_manager->getTasks(true);
+        $task = $task_manager->getTask($idTask);
+        $this->assertEquals(\task_abstract::STATE_TOSTOP, $task->getState());
     }
 
     /**

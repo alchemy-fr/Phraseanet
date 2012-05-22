@@ -43,7 +43,7 @@ try {
             $task = task_abstract::create($appbox, $parm['tcl']);
             break;
         case 'EDITTASK': // existing task
-            $task = $task_manager->get_task($parm['tid']);
+            $task = $task_manager->getTask($parm['tid']);
             break;
         default:
             throw new Exception('Unknown action');

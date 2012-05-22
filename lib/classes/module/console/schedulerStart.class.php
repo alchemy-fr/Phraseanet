@@ -53,7 +53,7 @@ class module_console_schedulerStart extends Command
         return $this;
     }
 
-    public function execute(InputInterface $zinput, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         if ( ! setup::is_installed()) {
             $output->writeln('Phraseanet is not set up');
@@ -61,16 +61,20 @@ class module_console_schedulerStart extends Command
             return 1;
         }
 
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
-        $scheduler = new task_Scheduler();
-        $scheduler->run($zinput, $output); //, !$input->getOption('nolog'), !$input->getOption('notasklog'));
-
         try {
             $scheduler = new task_Scheduler();
-            $scheduler->run($output, true);
+            $scheduler->run($input, $output);
         } catch (\Exception $e) {
-            return 1;
+            switch($e->getCode())
+            {
+                case task_Scheduler::ERR_ALREADY_RUNNING:   // 114 : aka EALREADY (Operation already in progress)
+                    $exitCode = ERR_ALREADY_RUNNING;
+                    break;
+                default:
+                    $exitCode = 1;   // default exit code (error)
+                    break;
+            }
+            return $exitCode;
         }
     }
 }

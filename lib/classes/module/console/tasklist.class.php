@@ -48,14 +48,14 @@ class module_console_tasklist extends Command
         try {
             $appbox = appbox::get_instance(\bootstrap::getCore());
             $task_manager = new task_manager($appbox);
-            $tasks = $task_manager->get_tasks();
+            $tasks = $task_manager->getTasks();
 
             if (count($tasks) === 0) {
                 $output->writeln('No tasks on your install !');
             }
 
             foreach ($tasks as $task) {
-                $this->print_task($task, $output);
+                $this->printTask($task, $output);
             }
 
             return 0;
@@ -64,9 +64,9 @@ class module_console_tasklist extends Command
         }
     }
 
-    protected function print_task(task_abstract $task, OutputInterface &$output)
+    protected function printTask(task_abstract $task, OutputInterface &$output)
     {
-        $message = $task->get_task_id() . "\t" . ($task->get_status() ) . "\t" . $task->get_title();
+        $message = $task->getID() . "\t" . ($task->getState() ) . "\t" . $task->getTitle();
         $output->writeln($message);
 
         return $this;

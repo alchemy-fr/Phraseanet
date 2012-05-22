@@ -10,7 +10,6 @@
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -55,8 +54,9 @@ class task_period_ftpPull extends task_appboxAbstract
                 $pvalue = $parm2[$pname];
                 if ($ns = $dom->getElementsByTagName($pname)->item(0)) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
@@ -81,7 +81,7 @@ class task_period_ftpPull extends task_appboxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values (ex. 0 < period < 3600)
             ?>
             <script type="text/javascript">
@@ -98,8 +98,8 @@ class task_period_ftpPull extends task_appboxAbstract
             <?php echo $form ?>.ssl.checked    = <?php echo p4field::isyes($sxml->ssl) ? "true" : 'false' ?>;
             <?php echo $form ?>.passive.checked  = <?php echo p4field::isyes($sxml->passive) ? "true" : 'false' ?>;
             </script>
-            <?php
 
+            <?php
             return("");
         } else { // ... so we NEVER come here
             // bad xml
@@ -125,6 +125,7 @@ class task_period_ftpPull extends task_appboxAbstract
                 setDirty();
             }
         </script>
+
         <?php
     }
 
@@ -194,14 +195,15 @@ class task_period_ftpPull extends task_appboxAbstract
 
         if ($parm["xml"] === null) {
             // pas de xml 'raw' : on accepte les champs 'graphic view'
-            if ($domTaskSettings = DOMDocument::loadXML($taskrow["settings"])) {
+            if (($domTaskSettings = DOMDocument::loadXML($taskrow["settings"])) != FALSE) {
                 $xmlchanged = false;
                 foreach (array("proxy", "proxyport", "period", "host", "port", "user", "password", "ssl", "passive", "localpath", "ftppath") as $f) {
                     if ($parm[$f] !== NULL) {
-                        if ($ns = $domTaskSettings->getElementsByTagName($f)->item(0)) {
+                        if (($ns = $domTaskSettings->getElementsByTagName($f)->item(0)) != NULL) {
                             // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                            while (($n = $ns->firstChild))
+                            while (($n = $ns->firstChild)) {
                                 $ns->removeChild($n);
+                            }
                         } else {
                             // le champ n'existait pas dans le xml, on le cree
                             $domTaskSettings->documentElement->appendChild($domTaskSettings->createTextNode("\t"));
@@ -213,13 +215,15 @@ class task_period_ftpPull extends task_appboxAbstract
                         $xmlchanged = true;
                     }
                 }
-                if ($xmlchanged)
+                if ($xmlchanged) {
                     $parm["xml"] = $domTaskSettings->saveXML();
+                }
             }
         }
 
         // si on doit changer le xml, on verifie qu'il est valide
         if ($parm["xml"] && ! DOMDocument::loadXML($parm["xml"])) {
+
             return(false);
         }
 
@@ -247,14 +251,16 @@ class task_period_ftpPull extends task_appboxAbstract
 
                 return true;
             } catch (Exception $e) {
+
                 return false;
             }
         } else {
+
             return true;
         }
     }
 
-    protected function load_settings(SimpleXMLElement $sx_task_settings)
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->proxy = (string) $sx_task_settings->proxy;
         $this->proxyport = (string) $sx_task_settings->proxyport;
@@ -267,31 +273,54 @@ class task_period_ftpPull extends task_appboxAbstract
         $this->ftppath = (string) ($sx_task_settings->ftppath);
         $this->localpath = (string) ($sx_task_settings->localpath);
 
-        parent::load_settings($sx_task_settings);
-
-        return $this;
+        parent::loadSettings($sx_task_settings);
     }
 
-    protected function retrieve_content(appbox $appbox)
+    protected function retrieveContent(appbox $appbox)
     {
+        foreach (array('localpath', 'host', 'port', 'user', 'password', 'ftppath') as $f) {
+            if (trim((string) ($this->{$f})) === '') {
+                $this->log('setting \'' . $f . '\' must be set');
+                $this->running = FALSE;
+            }
+        }
+        if ( ! is_dir($this->localpath) || ! system_file::mkdir($this->localpath)) {
+            $this->log('\'' . $this->localpath . '\' does not exists');
+            $this->running = FALSE;
+        }
+        if ( ! is_writeable($this->localpath)) {
+            $this->log('\'' . $this->localpath . '\' is not writeable');
+            $this->running = FALSE;
+        }
+
+        if ( ! $this->running) {
+            $this->set_status(self::STATE_STOPPED);
+
+            return array();
+        }
+
         try {
-            if ( ! is_dir($this->localpath) || ! system_file::mkdir($this->localpath))
-                throw new Exception("$this->localpath is not writeable\n");
-
-            if ( ! is_writeable($this->localpath))
-                throw new Exception("$this->localpath is not writeable\n");
-
             $ftp = new ftpclient($this->host, $port, 90, $this->ssl, $this->proxy, $this->proxyport);
             $ftp->login($this->user, $this->password);
             $ftp->chdir($this->ftppath);
             $list_1 = $ftp->list_directory(true);
 
+            $done = 0;
             $todo = count($list_1);
             $this->setProgress($done, $todo);
 
-            if ($this->debug)
+            if ($this->debug) {
                 echo "attente de 25sec pour avoir les fichiers froids...\n";
-            sleep(25);
+            }
+
+            $this->sleep(25);
+            if ( ! $this->running) {
+                if (isset($ftp) && $ftp instanceof ftpclient) {
+                    $ftp->close();
+                }
+
+                return array();
+            }
 
             $list_2 = $ftp->list_directory(true);
 
@@ -300,13 +329,15 @@ class task_period_ftpPull extends task_appboxAbstract
                 $this->setProgress($done, $todo);
 
                 if ( ! isset($list_2[$filepath])) {
-                    if ($this->debug)
+                    if ($this->debug) {
                         echo "le fichier $filepath a disparu...\n";
+                    }
                     continue;
                 }
                 if ($list_2[$filepath] !== $timestamp) {
-                    if ($this->debug)
+                    if ($this->debug) {
                         echo "le fichier $filepath a ete modifie depuis le dernier passage...\n";
+                    }
                     continue;
                 }
 
@@ -314,16 +345,18 @@ class task_period_ftpPull extends task_appboxAbstract
                 echo "Ok pour rappatriement de $filepath vers $finalpath\n";
 
                 try {
-                    if (file_exists($finalpath))
+                    if (file_exists($finalpath)) {
                         throw new Exception("Un fichier du meme nom ($finalpath) existe deja...");
+                    }
 
                     system_file::mkdir(dirname($finalpath));
 
                     $ftp->get($finalpath, $filepath);
                     $ftp->delete($filepath);
                 } catch (Exception $e) {
-                    if ($this->debug)
+                    if ($this->debug) {
                         echo "Erreur lors du rappatriement de $filepath : " . $e->getMessage() . "\n";
+                    }
                 }
             }
 
@@ -331,19 +364,23 @@ class task_period_ftpPull extends task_appboxAbstract
 
             $this->setProgress(0, 0);
         } catch (Exception $e) {
-            if (isset($ftp) && $ftp instanceof ftpclient)
+            if (isset($ftp) && $ftp instanceof ftpclient) {
                 $ftp->close();
+            }
             echo $e->getMessage() . "\n";
+
+            return array();
         }
     }
 
-    protected function process_one_content(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, Array $row)
     {
 
     }
 
-    protected function post_process_one_content(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, Array $row)
     {
 
     }
 }
+

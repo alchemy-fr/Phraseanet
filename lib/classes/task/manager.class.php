@@ -16,10 +16,10 @@
  */
 class task_manager
 {
-    const STATUS_SCHED_STOPPED = 'stopped';
-    const STATUS_SCHED_STOPPING = 'stopping';
-    const STATUS_SCHED_STARTED = 'started';
-    const STATUS_SCHED_TOSTOP = 'tostop';
+    const STATE_STOPPED = 'stopped';
+    const STATE_STOPPING = 'stopping';
+    const STATE_STARTED = 'started';
+    const STATE_TOSTOP = 'tostop';
 
     protected $appbox;
     protected $tasks;
@@ -31,37 +31,7 @@ class task_manager
         return $this;
     }
 
-    public function old_get_tasks($refresh = false)
-    {
-        if ($this->tasks && ! $refresh) {
-            return $this->tasks;
-        }
-
-        $sql = "SELECT task2.* FROM task2 ORDER BY task_id ASC";
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
-
-        $tasks = array();
-
-        foreach ($rs as $row) {
-            $classname = $row['class'];
-            if ( ! class_exists($classname))
-                continue;
-            try {
-                $tasks[$row['task_id']] = new $classname($row['task_id']);
-            } catch (Exception $e) {
-
-            }
-        }
-
-        $this->tasks = $tasks;
-
-        return $this->tasks;
-    }
-
-    public function get_tasks($refresh = false)
+    public function getTasks($refresh = false)
     {
         if ($this->tasks && ! $refresh) {
             return $this->tasks;
@@ -82,8 +52,9 @@ class task_manager
             $row['pid'] = NULL;
 
             $classname = $row['class'];
-            if ( ! class_exists($classname))
+            if ( ! class_exists($classname)) {
                 continue;
+            }
             try {
 //        if( ($lock = fopen( $lockdir . 'task.'.$row['task_id'].'.lock', 'a+')) )
 //        {
@@ -112,27 +83,27 @@ class task_manager
 
     /**
      *
-     * @param <type> $task_id
+     * @param int $task_id
      * @return task_abstract
      */
-    public function get_task($task_id)
+    public function getTask($task_id)
     {
-        $tasks = $this->get_tasks();
+        $tasks = $this->getTasks();
 
         if ( ! isset($tasks[$task_id])) {
-            throw new Exception_NotFound('Unknown task_id');
+            throw new Exception_NotFound('Unknown task_id ' . $task_id);
         }
 
         return $tasks[$task_id];
     }
 
-    public function set_sched_status($status)
+    public function setSchedulerState($status)
     {
         $av_status = array(
-            self::STATUS_SCHED_STARTED
-            , self::STATUS_SCHED_STOPPED
-            , self::STATUS_SCHED_STOPPING
-            , self::STATUS_SCHED_TOSTOP
+            self::STATE_STARTED,
+            self::STATE_STOPPED,
+            self::STATE_STOPPING,
+            self::STATE_TOSTOP
         );
 
         if ( ! in_array($status, $av_status))
@@ -146,13 +117,22 @@ class task_manager
         return $this;
     }
 
-    public function get_scheduler_state()
+    public function getSchedulerState()
     {
-        $pid = NULL;
         $appbox = appbox::get_instance(\bootstrap::getCore());
+
+        $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay
+            , schedstatus AS status FROM sitepreff";
+        $stmt = $this->appbox->get_connection()->prepare($sql);
+        $stmt->execute();
+        $ret = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $pid = NULL;
+
         $lockdir = $appbox->get_registry()->get('GV_RootPath') . 'tmp/locks/';
-        if (($schedlock = fopen($lockdir . 'scheduler.lock', 'a+'))) {
-            if (flock($schedlock, LOCK_SH | LOCK_NB) === FALSE) {
+        if (($schedlock = fopen($lockdir . 'scheduler.lock', 'a+')) != FALSE) {
+            if (flock($schedlock, LOCK_EX | LOCK_NB) === FALSE) {
                 // already locked : running !
                 $pid = trim(fgets($schedlock, 512));
             } else {
@@ -161,13 +141,6 @@ class task_manager
             }
             fclose($schedlock);
         }
-
-        $sql = "SELECT UNIX_TIMESTAMP()-UNIX_TIMESTAMP(schedqtime) AS qdelay
-            , schedstatus AS status FROM sitepreff";
-        $stmt = $this->appbox->get_connection()->prepare($sql);
-        $stmt->execute();
-        $ret = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
 
         if ($pid === NULL && $ret['status'] !== 'stopped') {
             // auto fix
@@ -188,12 +161,12 @@ class task_manager
 
         $tasks = array();
         foreach ($taskdir as $path) {
-            if (($hdir = @opendir($path))) {
-                $tskin = array();
+            if (($hdir = @opendir($path)) != FALSE) {
                 $max = 9999;
                 while (($max -- > 0) && (($file = readdir($hdir)) !== false)) {
-                    if ( ! is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php")
+                    if ( ! is_file($path . '/' . $file) || substr($file, 0, 1) == "." || substr($file, -10) != ".class.php") {
                         continue;
+                    }
 
                     $classname = 'task_period_' . substr($file, 0, strlen($file) - 10);
 

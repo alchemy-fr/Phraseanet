@@ -10,7 +10,6 @@
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -75,10 +74,11 @@ class task_period_outofdate extends task_abstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if (($ns = $dom->getElementsByTagName($pname)->item(0))) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
@@ -106,15 +106,17 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values
-            if ((int) ($sxml->period) < 10)
+            if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
-            elseif ((int) ($sxml->period) > 1440) // 1 jour
+            } elseif ((int) ($sxml->period) > 1440) { // 1 jour
                 $sxml->period = 1440;
+            }
 
-            if ((string) ($sxml->delay) == '')
+            if ((string) ($sxml->delay) == '') {
                 $sxml->delay = 0;
+            }
             ?>
             <script type="text/javascript">
                 var i;
@@ -155,10 +157,8 @@ class task_period_outofdate extends task_abstract
                 parent.calcSQL();
             </script>
             <?php
-
             return("");
-        }
-        else { // ... so we NEVER come here
+        } else { // ... so we NEVER come here
             // bad xml
             return("BAD XML");
         }
@@ -201,7 +201,6 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function printInterfaceJS()
     {
-        global $parm;
         ?>
         <script type="text/javascript">
 
@@ -232,11 +231,13 @@ class task_period_outofdate extends task_abstract
                 setDirty();
                 calcSQL();
             }
+
             function chgxmlck(checkinput, fieldname)
             {
                 setDirty();
                 calcSQL();
             }
+
             function chgxmlpopup(popupinput, fieldname)
             {
                 setDirty();
@@ -246,7 +247,7 @@ class task_period_outofdate extends task_abstract
             function calcSQL()
             {
                 var data = $("form[name='graphicForm']").serializeJSON();
-                data["taskid"] = <?php echo $this->get_task_id(); ?>;
+                data["taskid"] = <?php echo $this->getID(); ?>;
                 data["ACT"] = "CALCSQL";
                 data["cls"]="outofdate";
                 $.ajax({ url: "/admin/taskfacility.php"
@@ -273,7 +274,7 @@ class task_period_outofdate extends task_abstract
 
             function chgsbas(sbaspopup)
             {
-                var data = {taskid:<?php echo $this->get_task_id(); ?>, bid: sbaspopup.value};
+                var data = {taskid:<?php echo $this->getID(); ?>, bid: sbaspopup.value};
                 data["ACT"] = "GETBASE";
                 data["cls"]="outofdate";
                 $.ajax({ url: "/admin/taskfacility.php"
@@ -306,72 +307,6 @@ class task_period_outofdate extends task_abstract
                 return;
             }
 
-
-
-        <?php
-        /*
-
-
-          function chgxmltxt(textinput, fieldname)
-          {
-          var limits = { 'period':{min:1, 'max':1440} , 'delay':{min:0} } ;
-          if(typeof(limits[fieldname])!='undefined')
-          {
-          var v = 0|textinput.value;
-          if(limits[fieldname].min && v < limits[fieldname].min)
-          v = limits[fieldname].min;
-          else if(limits[fieldname].max && v > limits[fieldname].max)
-          v = limits[fieldname].max;
-          textinput.value = v;
-          }
-          setDirty();
-          }
-
-          function chgxmlck(checkinput, fieldname)
-          {
-          setDirty();
-          }
-
-          function chgxmlpopup(popupinput, fieldname)
-          {
-          setDirty();
-          }
-
-          function chgsbas(sbaspopup)
-          {
-          loadsbas(sbaspopup.value);
-          setDirty();
-          }
-
-          function loadsbas(sbas)
-          {
-          $.ajax({ url:"/admin/taskfacility.php"
-          , data: {taskid:<?php echo $this->get_task_id() ?>, bid:sbas, type:"json", cls:"outofdate"}
-          , dataType:'json'
-          , type:"POST"
-          , async:false
-          , success:function(data)
-          {
-          $(".popfield").empty().append('<option class="jsFilled" value="">...</option>');
-          for(i in data.date_fields)
-          $(".popfield").append('<option class="jsFilled" value="'+data.date_fields[i]+'">'+data.date_fields[i]+'</option>');
-
-          $(".popcoll").empty().append('<option class="jsFilled" value="">...</option>');
-          for(i in data.collections)
-          $(".popcoll").append('<option class="jsFilled" value="'+data.collections[i].id+'">'+data.collections[i].name+'</option>');
-
-          $(".popstatus").empty().append('<option class="jsFilled" value="">...</option>');
-          for(i in data.status_bits)
-          {
-          $(".popstatus").append('<option class="jsFilled" value="'+data.status_bits[i].n+'_0">'+data.status_bits[i].labelOff+'</option>');
-          $(".popstatus").append('<option class="jsFilled" value="'+data.status_bits[i].n+'_1">'+data.status_bits[i].labelOn+'</option>');
-          }
-          }
-          });
-          }
-         */
-        ?>
-
         </script>
         <?php
     }
@@ -390,8 +325,6 @@ class task_period_outofdate extends task_abstract
     // ====================================================================
     public function printInterfaceHTML()
     {
-        global $usr_id;
-
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $session = $appbox->get_session();
         $user = User_Adapter::getInstance($session->get_usr_id(), $appbox);
@@ -535,53 +468,52 @@ class task_period_outofdate extends task_abstract
 
 
         // ici la tache tourne tant qu'elle est active
-        $last_exec = 0;
         $loop = 0;
         while ($this->running) {
             if ( ! $conn->ping()) {
                 $this->log(("Warning : abox connection lost, restarting in 10 min."));
-                for ($i = 0; $i < 60 * 10; $i ++ )
+                for ($i = 0; $i < 60 * 10; $i ++ ) {
                     sleep(1);
+                }
                 $this->running = false;
 
-                return(self::RETURNSTATUS_TORESTART);
+                return(self::STATUS_TORESTART);
             }
 
             try {
                 $connbas = connection::getPDOConnection($this->sbas_id);
-                if ( ! $connbas->ping())
+                if ( ! $connbas->ping()) {
                     throw new Exception('Mysql has gone away');
+                }
             } catch (Exception $e) {
                 $this->log(("dbox connection lost, restarting in 10 min."));
-                for ($i = 0; $i < 60 * 10; $i ++ )
+                for ($i = 0; $i < 60 * 10; $i ++ ) {
                     sleep(1);
+                }
                 $this->running = false;
 
-                return(self::RETURNSTATUS_TORESTART);
+                return(self::STATUS_TORESTART);
             }
 
-            $this->set_last_exec_time();
-
-            $databox = databox::get_instance($this->sbas_id);
+            $this->setLastExecTime();
 
             $sql = "SELECT * FROM task2 WHERE task_id = :task_id";
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array(':task_id' => $this->get_task_id()));
+            $stmt->execute(array(':task_id' => $this->getID()));
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $stmt->closeCursor();
 
             if ($row) {
                 if ($row['status'] == 'tostop') {
-                    $ret = self::RETURNSTATUS_STOPPED;
-                    ;
+                    $ret = self::STATUS_STOPPED;
                     $this->running = false;
                 } else {
-                    if (($this->sxTaskSettings = simplexml_load_string($row['settings']))) {
+                    if (($this->sxTaskSettings = simplexml_load_string($row['settings'])) != FALSE) {
                         $period = (int) ($this->sxTaskSettings->period);
-                        if ($period <= 0 || $period >= 24 * 60)
+                        if ($period <= 0 || $period >= 24 * 60) {
                             $period = 60;
-                    }
-                    else {
+                        }
+                    } else {
                         $period = 60;
                     }
                     $this->connbas = connection::getPDOConnection($this->sbas_id);
@@ -592,11 +524,11 @@ class task_period_outofdate extends task_abstract
 
                     switch ($r) {
                         case 'WAIT':
-                            $ret = self::RETURNSTATUS_STOPPED;
+                            $this->setState(self::STATE_STOPPED);
                             $this->running = false;
                             break;
                         case 'BAD':
-                            $ret = self::RETURNSTATUS_STOPPED;
+                            $this->setState(self::STATE_STOPPED);
                             $this->running = false;
                             break;
                         case 'NORECSTODO':
@@ -609,29 +541,25 @@ class task_period_outofdate extends task_abstract
                         case 'MAXRECSDONE':
                         case 'MAXMEMORY':
                         case 'MAXLOOP':
-                            if ($row['status'] == self::STATUS_STARTED && $this->get_runner() !== self::RUNNER_MANUAL) {
-                                $ret = self::RETURNSTATUS_TORESTART;
+                            if ($row['status'] == self::STATE_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
+                                $this->setState(self::STATE_TORESTART);
                                 $this->running = false;
                             }
                             break;
                         default:
-                            if ($row['status'] == self::STATUS_STARTED) {
-                                $ret = self::RETURNSTATUS_STOPPED;
+                            if ($row['status'] == self::STATE_STARTED) {
+                                $this->setState(self::STATE_STOPPED);
                                 $this->running = false;
                             }
                             break;
                     }
                 }
             } else {
-                $ret = 'stopped';
+                $this->setState(self::STATE_STOPPED);
                 $this->running = false;
             }
             $loop ++;
         }
-
-        $this->return_value = $ret;
-
-        return($ret);
     }
 
     function doRecords()
@@ -650,10 +578,10 @@ class task_period_outofdate extends task_abstract
                     $stmt->closeCursor();
 
                     $nchanged += $n;
-                    if ($n > 0)
+                    if ($n > 0) {
                         $this->log(sprintf("SQL='%s' ; parms=%s - %s changes", $xsql['sql'], var_export($xsql['params']), $n));
-                }
-                else {
+                    }
+                } else {
                     $this->log(sprintf("ERROR SQL='%s' ; parms=%s", $xsql['sql'], var_export($xsql['params'], true)));
                 }
             } catch (ErrorException $e) {
@@ -679,10 +607,11 @@ class task_period_outofdate extends task_abstract
         if (($field1 = trim($this->sxTaskSettings->field1)) != '') {
             $date1 = time();
             if (($delta = (int) ($this->sxTaskSettings->fieldDv1)) > 0) {
-                if ($this->sxTaskSettings->fieldDs1 == '-')
+                if ($this->sxTaskSettings->fieldDs1 == '-') {
                     $date1 += 86400 * $delta;
-                else
+                } else {
                     $date1 -= 86400 * $delta;
+                }
             }
             $date1 = date("YmdHis", $date1);
         }
@@ -690,16 +619,18 @@ class task_period_outofdate extends task_abstract
         if (($field2 = trim($this->sxTaskSettings->field2)) != '') {
             $date2 = time();
             if (($delta = (int) ($this->sxTaskSettings->fieldDv2)) > 0) {
-                if ($this->sxTaskSettings->fieldDs2 == '-')
+                if ($this->sxTaskSettings->fieldDs2 == '-') {
                     $date2 += 86400 * $delta;
-                else
+                } else {
                     $date2 -= 86400 * $delta;
+                }
             }
             $date2 = date("YmdHis", $date2);
         }
 
 
         $sqlset = $params = $tmp_params = array();
+        $sqlwhere = array();
         for ($i = 0; $i <= 2; $i ++ ) {
             $sqlwhere[$i] = '';
             $sqlset[$i] = '';
@@ -744,9 +675,9 @@ class task_period_outofdate extends task_abstract
                 }
             }
 
-            $sql = "UPDATE prop AS p1 INNER JOIN record USING(record_id)
-              SET " . $sqlset[0] .
-                " WHERE " . $w;
+            $sql = "UPDATE prop AS p1 INNER JOIN record USING(record_id)"
+                . " SET " . $sqlset[0]
+                . " WHERE " . $w;
 
             $ret[] = array('sql'    => $sql, 'params' => $params);
         }
@@ -775,10 +706,10 @@ class task_period_outofdate extends task_abstract
                 }
             }
 
-            $sql = "UPDATE (prop AS p1 INNER JOIN prop AS p2 USING(record_id))
-             INNER JOIN record USING(record_id)
-              SET " . $sqlset[1] .
-                " WHERE " . $w;
+            $sql = "UPDATE (prop AS p1 INNER JOIN prop AS p2 USING(record_id))"
+                . " INNER JOIN record USING(record_id)"
+                . " SET " . $sqlset[1]
+                . " WHERE " . $w;
 
             $ret[] = array('sql'    => $sql, 'params' => $params);
         }
@@ -805,9 +736,9 @@ class task_period_outofdate extends task_abstract
                 }
             }
 
-            $sql = "UPDATE prop AS p2 INNER JOIN record USING(record_id)
-             SET " . $sqlset[2] .
-                " WHERE " . $w;
+            $sql = "UPDATE prop AS p2 INNER JOIN record USING(record_id)"
+                . " SET " . $sqlset[2]
+                . " WHERE " . $w;
 
             $ret[] = array('sql'    => $sql, 'params' => $params);
         }
@@ -842,8 +773,9 @@ class task_period_outofdate extends task_abstract
                         $meta_struct = $databox->get_meta_structure();
 
                         foreach ($meta_struct as $meta) {
-                            if (mb_strtolower($meta->get_type()) == 'date')
+                            if (mb_strtolower($meta->get_type()) == 'date') {
                                 $ret['date_fields'][] = $meta->get_name();
+                            }
                         }
 
                         $status = $databox->get_statusbits();
@@ -854,8 +786,9 @@ class task_period_outofdate extends task_abstract
                             $ret['status_bits'][] = array('n'     => $n, 'value' => 1, 'label' => $labelon);
                         }
 
-                        foreach ($databox->get_collections() as $collection)
+                        foreach ($databox->get_collections() as $collection) {
                             $ret['collections'][] = array('id'   => $collection->get_coll_id(), 'name' => $collection->get_name());
+                        }
                     } catch (Exception $e) {
 
                     }

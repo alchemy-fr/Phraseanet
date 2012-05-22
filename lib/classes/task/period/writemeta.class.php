@@ -16,7 +16,6 @@ use PHPExiftool\Writer;
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -30,12 +29,10 @@ class task_period_writemeta extends task_databoxAbstract
         return(_("task::writemeta:(re)ecriture des metadatas dans les documents (et subdefs concernees)"));
     }
 
-    protected function load_settings(SimpleXMLElement $sx_task_settings)
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->clear_doc = p4field::isyes($sx_task_settings->cleardoc);
-        parent::load_settings($sx_task_settings);
-
-        return $this;
+        parent::loadSettings($sx_task_settings);
     }
 
     public function getName()
@@ -62,10 +59,11 @@ class task_period_writemeta extends task_databoxAbstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if ($ns = $dom->getElementsByTagName($pname)->item(0)) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
@@ -90,26 +88,31 @@ class task_period_writemeta extends task_databoxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values (ex. 0 < period < 3600)
-            if ((int) ($sxml->period) < 10)
+            if ((int) ($sxml->period) < 10) {
                 $sxml->period = 10;
-            elseif ((int) ($sxml->period) > 300)
+            } elseif ((int) ($sxml->period) > 300) {
                 $sxml->period = 300;
+            }
 
-            if ((string) ($sxml->maxrecs) == '')
+            if ((string) ($sxml->maxrecs) == '') {
                 $sxml->maxrecs = 100;
-            if ((int) ($sxml->maxrecs) < 10)
+            }
+            if ((int) ($sxml->maxrecs) < 10) {
                 $sxml->maxrecs = 10;
-            elseif ((int) ($sxml->maxrecs) > 500)
+            } elseif ((int) ($sxml->maxrecs) > 500) {
                 $sxml->maxrecs = 500;
+            }
 
-            if ((string) ($sxml->maxmegs) == '')
+            if ((string) ($sxml->maxmegs) == '') {
                 $sxml->maxmegs = 6;
-            if ((int) ($sxml->maxmegs) < 3)
+            }
+            if ((int) ($sxml->maxmegs) < 3) {
                 $sxml->maxmegs = 3;
-            elseif ((int) ($sxml->maxmegs) > 32)
+            } elseif ((int) ($sxml->maxmegs) > 32) {
                 $sxml->maxmegs = 32;
+            }
             ?>
             <script type="text/javascript">
             <?php echo $form ?>.period.value        = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
@@ -118,10 +121,8 @@ class task_period_writemeta extends task_databoxAbstract
             <?php echo $form ?>.maxmegs.value       = "<?php echo p4string::MakeString($sxml->maxmegs, "js", '"') ?>";
             </script>
             <?php
-
             return("");
-        }
-        else { // ... so we NEVER come here
+        } else { // ... so we NEVER come here
             // bad xml
             return("BAD XML");
         }
@@ -212,7 +213,7 @@ class task_period_writemeta extends task_databoxAbstract
         return $out;
     }
 
-    protected function retrieve_sbas_content(databox $databox)
+    protected function retrieveSbasContent(databox $databox)
     {
         $connbas = $databox->get_connection();
         $subdefgroups = $databox->get_subdef_structure();
@@ -221,8 +222,9 @@ class task_period_writemeta extends task_databoxAbstract
         foreach ($subdefgroups as $type => $subdefs) {
             foreach ($subdefs as $sub) {
                 $name = $sub->get_name();
-                if ($sub->meta_writeable())
+                if ($sub->meta_writeable()) {
                     $metasubdefs[$name . '_' . $type] = true;
+                }
             }
         }
 
@@ -239,7 +241,7 @@ class task_period_writemeta extends task_databoxAbstract
         return $rs;
     }
 
-    protected function process_one_content(databox $databox, Array $row)
+    protected function processOneContent(databox $databox, Array $row)
     {
         $record_id = $row['record_id'];
         $jeton = $row['jeton'];
@@ -327,12 +329,12 @@ class task_period_writemeta extends task_databoxAbstract
         return $this;
     }
 
-    protected function flush_records_sbas()
+    protected function flushRecordsSbas()
     {
         return $this;
     }
 
-    protected function post_process_one_content(databox $databox, Array $row)
+    protected function postProcessOneContent(databox $databox, Array $row)
     {
         $connbas = $databox->get_connection();
 
