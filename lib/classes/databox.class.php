@@ -565,15 +565,7 @@ class databox extends base
         $stmt->closeCursor();
 
         foreach ($rs as $row) {
-
-            try {
-                $meta = databox_field::get_instance($this, $row['id']);
-            } catch (Exception $e) {
-                $meta = databox_fieldUnknown::get_instance($this, $row['id']);
-                $meta->set_name($row['name']);
-                unset($e);
-            }
-            $meta_struct->add_element($meta);
+            $meta_struct->add_element(databox_field::get_instance($this, $row['id']));
         }
         $this->meta_struct = $meta_struct;
         $this->set_data_to_cache($this->meta_struct, self::CACHE_META_STRUCT);

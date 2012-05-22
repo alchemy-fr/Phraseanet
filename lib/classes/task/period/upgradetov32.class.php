@@ -57,7 +57,7 @@ class task_period_upgradetov32 extends task_abstract
         printf("taskid %s starting." . PHP_EOL, $this->getID());
 
         $registry = registry::get_instance();
-//    $registry->set('GV_cache_server_type', 'nocache', \registry::TYPE_STRING);
+
         $registry->set('GV_sphinx', false, \registry::TYPE_BOOLEAN);
 
         if ( ! $this->sbas_id) {
@@ -76,17 +76,14 @@ class task_period_upgradetov32 extends task_abstract
             return;
         }
 
-        try {
-            foreach ($databox->get_meta_structure()->get_elements() as $struct_el) {
-                if ($struct_el instanceof databox_fieldUnknown) {
-                    throw new Exception('Bad field');
-                }
-            }
-        } catch (Exception $e) {
-            printf("Please verify all your databox meta fields before migrating, It seems somes are wrong\n");
-            $this->return_value = self::RETURNSTATUS_STOPPED;
+        foreach ($databox->get_meta_structure()->get_elements() as $struct_el) {
+            if ($struct_el->is_on_error()) {
 
-            return 'stopped';
+                printf("Please verify all your databox meta fields before migrating, It seems somes are wrong\n");
+                $this->return_value = self::STATE_STOPPED;
+
+                return self::STATE_STOPPED;
+            }
         }
 
         $this->running = true;

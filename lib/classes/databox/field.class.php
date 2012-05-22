@@ -123,6 +123,7 @@ class databox_field implements cache_cacheableInterface
     protected $dces_element;
     protected $Vocabulary;
     protected $VocabularyRestriction = false;
+    protected $on_error = false;
 
     const TYPE_TEXT = "text";
     const TYPE_DATE = "date";
@@ -174,10 +175,12 @@ class databox_field implements cache_cacheableInterface
 
         $this->id = (int) $id;
 
-        echo "create tag from " . $row['src'] . " for id $id - name is " . $row['name'] . "\n";
         $this->tag = self::loadClassFromTagName($row['src']);
-        var_dump($this->tag);
-        
+
+        if ($row['src'] != $this->tag->getTagname()) {
+            $this->on_error = true;
+        }
+
         $this->name = $row['name'];
         $this->indexable = ! ! $row['indexable'];
         $this->readonly = ! ! $row['readonly'];
@@ -242,7 +245,6 @@ class databox_field implements cache_cacheableInterface
      */
     public static function get_instance(databox &$databox, $id)
     {
-        echo "getting instance of databox_field $id for databox " . $databox->get_sbas_id() . "\n";
         $cache_key = 'field_' . $id;
         $instance_id = $databox->get_sbas_id() . '_' . $id;
         if ( ! isset(self::$_instance[$instance_id]) || (self::$_instance[$instance_id] instanceof self) === false) {
@@ -799,7 +801,7 @@ class databox_field implements cache_cacheableInterface
      */
     public function is_on_error()
     {
-        return false;
+        return $this->on_error;
     }
 
     public static function create(databox $databox, $name)
