@@ -16,8 +16,8 @@ use PHPExiftool\Driver\Metadata\Metadata as ExiftoolMeta;
 /**
  * Phraseanet Border Metadata Attribute
  *
- * This attribute is used to store metadatas with file prior to their record
- * creation
+ * This attribute is used to store a PHPExiftool metadatas with file prior to
+ * their record creation
  */
 class Metadata implements Attribute
 {
