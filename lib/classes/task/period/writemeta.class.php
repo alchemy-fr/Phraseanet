@@ -289,9 +289,17 @@ class task_period_writemeta extends task_databoxAbstract
             $datas = $field->get_values();
 
             if ($meta->is_multi()) {
-                $value = new Value\Multi($datas);
+                $values = array();
+                foreach($datas as $data){
+                    $values[] = $data->getValue();
+                }
+
+                $value = new Value\Multi($values);
             } else {
-                $value = new Value\Mono(array_pop($datas));
+                $data = array_pop($datas);
+                $value = $data->getValue();
+
+                $value = new Value\Mono($value);
             }
 
             $metadatas->add(
@@ -303,14 +311,15 @@ class task_period_writemeta extends task_databoxAbstract
 
         foreach ($tsub as $name => $file) {
 
-            $this->log(sprintf(('writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name));
-
             $writer->erase($name != 'document' || $this->clear_doc);
 
             try {
                 $writer->write($file, $metadatas);
-            } catch (\PHPExiftool\Exception\Exception $e) {
 
+                $this->log(sprintf('Success writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name);
+
+            } catch (\PHPExiftool\Exception\Exception $e) {
+                $this->log(sprintf('Failure writing meta for sbas_id=%1$d - record_id=%2$d (%3$s)'), $this->sbas_id, $record_id, $name);
             }
         }
 
