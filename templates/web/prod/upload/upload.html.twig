@@ -1,94 +1,125 @@
 <div id="uploadBox">
-    <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
-        {# action bar #}
-        <div class="PNB" style="height:40px;">
-            <input type="file" multiple directory webkitdirectory mozdirectory name="files[]">
-            <button type="button" class="upload-submitter">{% trans 'Upload' %}</button>
-            <button type="button" class="clear-queue">{% trans 'Clear queue' %}</button>
-             <span class='progress-bar-total'></span>
-        </div>
+    {# jQuery tab wrapper #}
+    <div class="upload-tabs">
+        {# tab nav bar #}
+        <ul>
+            <li>
+                <a href="#tab-upload">
+                    {% trans 'Upload' %}
+                </a>
+            </li>
+            <li>
+                {# template prod/upload/lazaret.html.twig loaded via ajax #}
+                <a href="/prod/lazaret/" title="tab-lazaret">
+                    {# <span>&nbsp;</span> element is required for the jQuery loading spinner appears && disappears properly #}
+                    {% trans 'Quarantine' %}<span>&nbsp;</span>
+                </a>
+            </li>
+        </ul>
+        {# upload tab content #}
+        <div id="tab-upload">
+            <form id="fileupload" enctype="multipart/form-data" method="POST" action="/prod/upload/">
+                {# action bar #}
+                <div>
+                    <input type="file" multiple directory webkitdirectory mozdirectory name="files[]">
+                    <button type="button" class="upload-submitter">{% trans 'Upload' %}</button>
+                    <button type="button" class="clear-queue">{% trans 'Clear queue' %}</button>
+                    <span class='progress-bar-total'></span>
+                </div>
 
-        <div class="PNB10" style="top:40px;">
-            {# upload box #}
-            <div class='upload-box' style='width:33%;float:left;height:100%;overflow:auto;'></div>
-            {# settings box #}
-            <div class='settings-box' style='width:32%;float:left;height:100%;overflow:auto;'>
-                <span>{% trans 'upload:: Destination (collection) :' %}</span>
-                {# collections list #}
-                {% if collections|length > 0 %}
-                    <select name="collection">
-                    {% for  sbasId, availableCollections in collections %}
-                        <optgroup label="{{ availableCollections['databox'].get_viewname() }}" >
-                        {% for collection in availableCollections['databox_collections'] %}
-                            <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
-                        {% endfor %}
-                        </optgroup>
-                    {% endfor %}
-                    </select>
-                    {# collections status #}
-                    {% for availableCollections in collections %}
-                        {% for collection in availableCollections['databox_collections'] %}
-                            <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.first ? "display:block" :"display:none" }}'>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th colspan="4">
-                                                {% trans 'upload:: Status :' %}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for status in availableCollections['databox'].get_statusbits() %}
-                                        <tr>
-                                            <td colspan="4">
-                                                <h2>{{ status['name']|title }}</h2>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                {% if status['img_off'] is not empty %}
-                                                    <img src="{{ status['img_off'] }}" width="16" height="16" />
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <label for="labeloff">{{ status['labeloff']|default('off') }}</label>
-                                                <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="off" checked="checked"/>
-                                            </td>
-                                            <td>
-                                                <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="on" />
-                                                <label for="labelon">{{ status['labelon']|default('on') }}</label>
-                                            </td>
-                                            <td>
-                                                {% if status['img_on'] is not empty %}
-                                                    <img src="{{ status['img_on'] }}" width="16" height="16" />
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                {% else %}
-                    {% trans 'You can not upload files' %}
-                {% endif %}
-            </div>
-            {# download box #}
-            <div class='download-box' style='width:33%;float:left;height: 100%;overflow:auto;'></div>
-        </div>
-    </form>
+                <div>
+                    {# upload box #}
+                    <div class='upload-box'></div>
+                    {# settings box #}
+                    <div class='settings-box'>
+                        <span>{% trans 'upload:: Destination (collection) :' %}</span>
+                        {# collections list #}
+                        {% if collections|length > 0 %}
+                            <select name="collection">
+                            {% for  sbasId, availableCollections in collections %}
+                                <optgroup label="{{ availableCollections['databox'].get_viewname() }}" >
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <option value="{{ collection.get_base_id() }}">{{ collection.get_name() }}</option>
+                                {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                            </select>
+                            {# collections status #}
+                            {% for availableCollections in collections %}
+                                {% for collection in availableCollections['databox_collections'] %}
+                                    <div id="status-{{ collection.get_base_id() }}" class='collection-status' style='{{ loop.first ? "display:block" :"display:none" }}'>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4">
+                                                        {% trans 'upload:: Status :' %}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for status in availableCollections['databox'].get_statusbits() %}
+                                                <tr>
+                                                    <td colspan="4">
+                                                        <h2>{{ status['name']|title }}</h2>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        {% if status['img_off'] is not empty %}
+                                                            <img src="{{ status['img_off'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <label for="labeloff">{{ status['labeloff']|default('off') }}</label>
+                                                        <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="off" checked="checked"/>
+                                                    </td>
+                                                    <td>
+                                                        <input type="radio" name="label_{{ collection.get_base_id() }}_{{ status['name'] }}" value="on" />
+                                                        <label for="labelon">{{ status['labelon']|default('on') }}</label>
+                                                    </td>
+                                                    <td>
+                                                        {% if status['img_on'] is not empty %}
+                                                            <img src="{{ status['img_on'] }}" width="16" height="16" />
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            {% trans 'You can not upload files' %}
+                        {% endif %}
+                    </div>
+                    {# download box #}
+                    <div class='download-box' style='width:33%;float:left;height: 100%;overflow:auto;'></div>
+                </div>
+            </form>
+         </div>
+    </div>
 </div>
 <script>
 
 $(document).ready(function () {
-
     //Upload management
     var UploaderManager = new p4.UploaderManager({
         container: $('#uploadBox'),
         uploadBox: $('#uploadBox .upload-box'),
         settingsBox: $('#uploadBox .settings-box'),
         downloadBox: $('#uploadBox .download-box')
+    });
+
+    //Init jquery tabs
+    $(".upload-tabs", UploaderManager.getContainer()).tabs({
+        spinner: language.loading + '<img src="/skins/icons/loader404040.gif"/>',
+        ajaxOptions: {
+            error: function( xhr, status, index, anchor ) {
+                //display error message if ajax failed
+                $( anchor.hash ).html(language.error);
+            }
+        }
     });
 
     //Show the good collection status box
