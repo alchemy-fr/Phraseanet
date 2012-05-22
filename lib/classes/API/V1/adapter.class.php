@@ -1919,6 +1919,8 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_databox_metadata_field_properties(databox_field $databox_field)
     {
+        echo "listing properties for ".$databox_field->get_id()."\n";
+        var_dump($databox_field->get_tag());
         $ret = array(
             'id'               => $databox_field->get_id(),
             'namespace'        => $databox_field->get_tag()->getGroupName(),
