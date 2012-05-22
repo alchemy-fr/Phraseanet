@@ -173,7 +173,10 @@ class databox_field implements cache_cacheableInterface
         $stmt->closeCursor();
 
         $this->id = (int) $id;
+
+        echo "create tag from ".$row['src']." for id $id - name is ".$row['name']."\n";
         $this->tag = self::loadClassFromTagName($row['src']);
+
         $this->name = $row['name'];
         $this->indexable = ! ! $row['indexable'];
         $this->readonly = ! ! $row['readonly'];
@@ -527,7 +530,7 @@ class databox_field implements cache_cacheableInterface
     }
 
     /**
-     * Set a vocabulary 
+     * Set a vocabulary
      *
      * @param Vocabulary\ControlProvider\ControlProviderInterface $vocabulary
      * @return \databox_field
