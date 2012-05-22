@@ -316,9 +316,14 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
         list($xml, $tofetch, $meta_struct) = $this->getXml();
 
         $tmp = sys_get_temp_dir() . '/tmp' . time() . mt_rand(1000, 9999) . '.xml';
+        $tmpFile = sys_get_temp_dir() . '/tmp' . time() . mt_rand(1000, 9999) . '.jpg';
+        copy(__DIR__ . '/../../testfiles/cestlafete.jpg', $tmpFile);
+
         file_put_contents($tmp, $xml);
 
-        $story = self::$object->createStory(self::$collection, __DIR__ . '/../../testfiles/cestlafete.jpg', $tmp);
+        $story = self::$object->createStory(self::$collection, $tmpFile, $tmp);
+
+        unlink($tmpFile);
 
         $this->assertTrue($story->is_grouping());
     }
@@ -332,9 +337,14 @@ class task_period_archiveTest extends \PhraseanetPHPUnitAbstract
         list($xml, $tofetch, $meta_struct) = $this->getXml();
 
         $tmp = sys_get_temp_dir() . '/tmp' . time() . mt_rand(1000, 9999) . '.xml';
+        $tmpFile = sys_get_temp_dir() . '/tmp' . time() . mt_rand(1000, 9999) . '.jpg';
+        copy(__DIR__ . '/../../testfiles/cestlafete.jpg', $tmpFile);
+
         file_put_contents($tmp, $xml);
 
-        $story = self::$object->createRecord(self::$collection, __DIR__ . '/../../testfiles/cestlafete.jpg', $tmp, null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+        $story = self::$object->createRecord(self::$collection, $tmpFile, $tmp, null, \Alchemy\Phrasea\Border\Manager::FORCE_RECORD);
+
+        unlink($tmpFile);
 
         $this->assertFalse($story->is_grouping());
     }
