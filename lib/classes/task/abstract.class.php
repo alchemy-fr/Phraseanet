@@ -113,21 +113,35 @@ abstract class task_abstract
         return $row['status'];
     }
 
+    /*
+     * to be overwritten by tasks : echo text to be included in <head> in task interface
+     */
     public function printInterfaceHEAD()
     {
         return false;
     }
 
+    /*
+     * to be overwritten by tasks : echo javascript to be included in <head> in task interface
+     */
     public function printInterfaceJS()
     {
         return false;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function printInterfaceHTML()
     {
         return false;
     }
-
+    
+    /**
+    *
+    * @return boolean
+    */
     public function getGraphicForm()
     {
         return false;
@@ -289,8 +303,7 @@ abstract class task_abstract
             $this->log($e->getMessage());
             $this->log(("Warning : abox connection lost, restarting in 10 min."));
 
-            for ($t = 60 * 10; $this->running && $t > 0; $t -- ) // DON'T do sleep(600) because it prevents ticks !
-                sleep(1);
+            $this->sleep(60 * 10);
 
             $this->running = false;
 
@@ -429,6 +442,16 @@ abstract class task_abstract
         }
     }
 
+    protected function sleep($nsec)
+    {
+        $nsec = (int) $nsec;
+        if ($nsec < 0)
+            throw new \InvalidArgumentException(sprintf("(%s) is not > 0"));
+        while ($this->running && $nsec -- > 0) {
+            sleep(1);
+        }
+    }
+
     private function getLockfilePath()
     {
         $registry = registry::get_instance();
@@ -514,6 +537,94 @@ abstract class task_abstract
     }
 
     abstract protected function run2();
+
+    protected function processLoop(&$box, &$rs)
+    {
+        $ret = self::STATE_OK;
+
+        $rowstodo = count($rs);
+        $rowsdone = 0;
+
+        if ($rowstodo > 0) {
+            $this->setProgress(0, $rowstodo);
+        }
+
+        foreach ($rs as $row) {
+
+            try {
+                // process one record
+                $this->processOneContent($box, $row);
+            } catch (Exception $e) {
+                $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine());
+            }
+
+            $this->records_done ++;
+            $this->setProgress($rowsdone, $rowstodo);
+
+            // post-process
+            $this->postProcessOneContent($box, $row);
+
+            $current_memory = memory_get_usage();
+            if ($current_memory >> 20 >= $this->maxmegs) {
+                $this->log(sprintf("Max memory (%s M) reached (actual is %s M)", $this->maxmegs, $current_memory));
+                $this->running = FALSE;
+                $ret = self::STATE_MAXMEGSREACHED;
+            }
+
+            if ($this->records_done >= (int) ($this->maxrecs)) {
+                $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
+                $this->running = FALSE;
+                $ret = self::STATE_MAXRECSDONE;
+            }
+
+            try {
+                $status = $this->getState();
+                if ($status == self::STATE_TOSTOP) {
+                    $this->running = FALSE;
+                    $ret = self::STATE_TOSTOP;
+                }
+            } catch (Exception $e) {
+                $this->running = FALSE;
+            }
+
+            if ( ! $this->running) {
+                break;
+            }
+        }
+        //
+        // if nothing was done, at least check the status
+        if (count($rs) == 0 && $this->running) {
+
+            $current_memory = memory_get_usage();
+            if ($current_memory >> 20 >= $this->maxmegs) {
+                $this->log(sprintf("Max memory (%s M) reached (current is %s M)", $this->maxmegs, $current_memory));
+                $this->running = FALSE;
+                $ret = self::STATE_MAXMEGSREACHED;
+            }
+
+            if ($this->records_done >= (int) ($this->maxrecs)) {
+                $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
+                $this->running = FALSE;
+                $ret = self::STATE_MAXRECSDONE;
+            }
+
+            try {
+                $status = $this->getState();
+                if ($status == self::STATE_TOSTOP) {
+                    $this->running = FALSE;
+                    $ret = self::STATE_TOSTOP;
+                }
+            } catch (Exception $e) {
+                $this->running = FALSE;
+            }
+        }
+
+        if ($rowstodo > 0) {
+            $this->setProgress(0, 0);
+        }
+
+        return $ret;
+    }
 
     protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {

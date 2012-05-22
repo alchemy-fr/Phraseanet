@@ -72,8 +72,6 @@ class module_console_taskState extends Command
             return self::EXITCODE_BAD_ARGUMENT;
         }
 
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
         $appbox = appbox::get_instance(\bootstrap::getCore());
         $task_manager = new task_manager($appbox);
 

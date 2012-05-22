@@ -22,6 +22,7 @@ class task_Scheduler
     // how to schedule tasks (choose in 'run' method)
     const METHOD_FORK = 'METHOD_FORK';
     const METHOD_PROC_OPEN = 'METHOD_PROC_OPEN';
+
     const ERR_ALREADY_RUNNING = 114;   // aka EALREADY (Operation already in progress)
 
     private $method;
@@ -52,7 +53,11 @@ class task_Scheduler
         return appbox::get_instance(\bootstrap::getCore())->get_connection();
     }
 
-    public function run($input = null, OutputInterface $output = null)
+    /*
+     * @throws Exception if scheduler is already running
+     * @todo doc all possible exception
+     */
+    public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         require_once dirname(__FILE__) . '/../../bootstrap.php';
         $this->input = $input;
@@ -87,6 +92,7 @@ class task_Scheduler
                         fclose($schedlock);
 
                         throw new Exception('scheduler already running.', self::ERR_ALREADY_RUNNING);
+
                         return;
                     } else {
                         sleep(2);

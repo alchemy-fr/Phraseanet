@@ -32,10 +32,10 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
     public function testActive()
     {
         self::$task->setActive(true);
-        self::assertTrue(self::$task->isActive());
+        $this->assertTrue(self::$task->isActive());
 
         self::$task->setActive(false);
-        self::assertFalse(self::$task->isActive());
+        $this->assertFalse(self::$task->isActive());
     }
 
     /**
@@ -45,10 +45,10 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
     public function testState()
     {
         self::$task->setState(\task_abstract::STATE_STOPPED);
-        self::assertEquals(\task_abstract::STATE_STOPPED, self::$task->getState());
+        $this->assertEquals(\task_abstract::STATE_STOPPED, self::$task->getState());
 
         self::$task->setState(\task_abstract::STATE_TOSTOP);
-        self::assertEquals(\task_abstract::STATE_TOSTOP, self::$task->getState());
+        $this->assertEquals(\task_abstract::STATE_TOSTOP, self::$task->getState());
     }
 
     /**
@@ -58,7 +58,7 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
     public function testTitle()
     {
         self::$task->setTitle('a_test_title');
-        self::assertEquals('a_test_title', self::$task->getTitle());
+        $this->assertEquals('a_test_title', self::$task->getTitle());
     }
 
     /**
@@ -70,13 +70,13 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
     {
         self::$task->resetCrashCounter();
         self::$task->incrementCrashCounter();
-        self::assertEquals(1, self::$task->getCrashCounter());
+        $this->assertEquals(1, self::$task->getCrashCounter());
 
         self::$task->incrementCrashCounter();
-        self::assertEquals(2, self::$task->getCrashCounter());
+        $this->assertEquals(2, self::$task->getCrashCounter());
 
         self::$task->resetCrashCounter();
-        self::assertEquals(0, self::$task->getCrashCounter());
+        $this->assertEquals(0, self::$task->getCrashCounter());
     }
 
     /**
@@ -92,8 +92,8 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
         $settings = self::$task->getSettings();
         $sxSettings = @simplexml_load_string($settings);
 
-        self::assertTrue($sxSettings !== FALSE);
-        self::assertEquals($sxGoodSettings->saveXML(), $sxSettings->saveXML());
+        $this->assertTrue($sxSettings !== FALSE);
+        $this->assertEquals($sxGoodSettings->saveXML(), $sxSettings->saveXML());
     }
 
     /**
@@ -112,10 +112,10 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
     public function testRunner()
     {
         self::$task->setRunner(\task_abstract::RUNNER_MANUAL);
-        self::assertTrue(\task_abstract::RUNNER_MANUAL === self::$task->getRunner());
+        $this->assertTrue(\task_abstract::RUNNER_MANUAL === self::$task->getRunner());
 
         self::$task->setRunner(\task_abstract::RUNNER_SCHEDULER);
-        self::assertTrue(\task_abstract::RUNNER_SCHEDULER === self::$task->getRunner());
+        $this->assertTrue(\task_abstract::RUNNER_SCHEDULER === self::$task->getRunner());
     }
 
     /**
@@ -143,14 +143,14 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
         try {
             $fd = $methodL->invoke(self::$task);
         } catch (Exception $e) {
-            self::fail('file should not be locked');
+            $this->fail('file should not be locked');
         }
-        self::assertInternalType('resource', $fd);
+        $this->assertInternalType('resource', $fd);
 
         // now task should be locked
         try {
             $fd = $methodL->invoke(self::$task);
-            self::fail('file should be locked');
+            $this->fail('file should be locked');
         } catch (Exception $e) {
 
         }
@@ -162,9 +162,9 @@ class task_abstractTest extends PhraseanetPHPUnitAbstract
         try {
             $fd = $methodL->invoke(self::$task);
         } catch (Exception $e) {
-            self::fail('file should not be locked');
+            $this->fail('file should not be locked');
         }
-        self::assertInternalType('resource', $fd);
+        $this->assertInternalType('resource', $fd);
 
         // leave the file unlocked
         $methodU->invokeArgs(self::$task, array($fd));

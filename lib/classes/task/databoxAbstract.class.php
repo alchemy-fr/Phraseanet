@@ -87,13 +87,29 @@ abstract class task_databoxAbstract extends task_abstract
                 $this->log('This task works now on ' . phrasea::sbas_names($this->sbas_id));
 
                 try {
+                    // get the records to process
+                    $databox = databox::get_instance((int)$row['sbas_id']);
+                } catch (Exception $e) {
+                    $this->log(sprintf('Warning : can\' connect to sbas(%s)', $row['sbas_id']));
+                    continue;
+                }
+
+                try {
                     $this->loadSettings(simplexml_load_string($row['settings']));
                 } catch (Exception $e) {
                     $this->log($e->getMessage());
                     continue;
                 }
 
-                $process_ret = $this->processSbas();
+                $process_ret = $this->processSbas($databox);
+
+                // close the cnx to the dbox
+                $connbas = $databox->get_connection();
+                if ($connbas instanceof PDO) {
+                    $connbas->close();
+                    unset($connbas);
+                }
+
 
                 switch ($process_ret) {
                     case self::STATE_MAXMEGSREACHED:
@@ -137,109 +153,113 @@ abstract class task_databoxAbstract extends task_abstract
      *
      * @return <type>
      */
-    protected function processSbas()
+    protected function processSbas(databox $databox)
     {
         $ret = self::STATE_OK;
 
-        $connbas = false;
-
         try {
             // get the records to process
-            $databox = databox::get_instance($this->sbas_id);
-            $connbas = $databox->get_connection();
             $rs = $this->retrieveSbasContent($databox);
+            $ret = $this->processLoop($databox, $rs);
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
-            $rs = array();
-        }
-
-        $rowstodo = count($rs);
-        $rowsdone = 0;
-
-        if ($rowstodo > 0) {
-            $this->setProgress(0, $rowstodo);
-        }
-
-        foreach ($rs as $row) {
-            try {
-                // process one record
-                $this->processOneContent($databox, $row);
-            } catch (Exception $e) {
-                $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine());
-            }
-
-            $this->records_done ++;
-            $this->setProgress($rowsdone, $rowstodo);
-
-            // post-process
-            $this->postProcessOneContent($databox, $row);
-
-            $current_memory = memory_get_usage();
-            if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s M) reached (actual is %s M)", $this->maxmegs, $current_memory));
-                $this->running = FALSE;
-                $ret = self::STATE_MAXMEGSREACHED;
-            }
-
-            if ($this->records_done >= (int) ($this->maxrecs)) {
-                $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
-                $this->running = FALSE;
-                $ret = self::STATE_MAXRECSDONE;
-            }
-
-            try {
-                $status = $this->getState();
-                if ($status == self::STATE_TOSTOP) {
-                    $this->running = FALSE;
-                    $ret = self::STATE_TOSTOP;
-                }
-            } catch (Exception $e) {
-                $this->running = FALSE;
-            }
-
-            if ( ! $this->running) {
-                break;
-            }
-        }
-        //
-        // if nothing was done, at least check the status
-        if (count($rs) == 0 && $this->running) {
-
-            $current_memory = memory_get_usage();
-            if ($current_memory >> 20 >= $this->maxmegs) {
-                $this->log(sprintf("Max memory (%s M) reached (current is %s M)", $this->maxmegs, $current_memory));
-                $this->running = FALSE;
-                $ret = self::STATE_MAXMEGSREACHED;
-            }
-
-            if ($this->records_done >= (int) ($this->maxrecs)) {
-                $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
-                $this->running = FALSE;
-                $ret = self::STATE_MAXRECSDONE;
-            }
-
-            try {
-                $status = $this->getState();
-                if ($status == self::STATE_TOSTOP) {
-                    $this->running = FALSE;
-                    $ret = self::STATE_TOSTOP;
-                }
-            } catch (Exception $e) {
-                $this->running = FALSE;
-            }
-        }
-
-        // close the cnx to the dbox
-        if ($connbas instanceof PDO) {
-            $connbas->close();
-            unset($connbas);
-        }
-
-        if ($rowstodo > 0) {
-            $this->setProgress(0, 0);
         }
 
         return $ret;
+        /*
+          $ret = self::STATE_OK;
+
+          try {
+          // get the records to process
+          $rs = $this->retrieveSbasContent($databox);
+          } catch (Exception $e) {
+          $this->log('Error  : ' . $e->getMessage());
+          $rs = array();
+          }
+
+          $rowstodo = count($rs);
+          $rowsdone = 0;
+
+          if ($rowstodo > 0) {
+          $this->setProgress(0, $rowstodo);
+          }
+
+          foreach ($rs as $row) {
+
+          try {
+          // process one record
+          $this->processOneContent($databox, $row);
+          } catch (Exception $e) {
+          $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine());
+          }
+
+          $this->records_done ++;
+          $this->setProgress($rowsdone, $rowstodo);
+
+          // post-process
+          $this->postProcessOneContent($databox, $row);
+
+          $current_memory = memory_get_usage();
+          if ($current_memory >> 20 >= $this->maxmegs) {
+          $this->log(sprintf("Max memory (%s M) reached (actual is %s M)", $this->maxmegs, $current_memory));
+          $this->running = FALSE;
+          $ret = self::STATE_MAXMEGSREACHED;
+          }
+
+          if ($this->records_done >= (int) ($this->maxrecs)) {
+          $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
+          $this->running = FALSE;
+          $ret = self::STATE_MAXRECSDONE;
+          }
+
+          try {
+          $status = $this->getState();
+          if ($status == self::STATE_TOSTOP) {
+          $this->running = FALSE;
+          $ret = self::STATE_TOSTOP;
+          }
+          } catch (Exception $e) {
+          $this->running = FALSE;
+          }
+
+          if ( ! $this->running) {
+          break;
+          }
+          }
+          //
+          // if nothing was done, at least check the status
+          if (count($rs) == 0 && $this->running) {
+
+          $current_memory = memory_get_usage();
+          if ($current_memory >> 20 >= $this->maxmegs) {
+          $this->log(sprintf("Max memory (%s M) reached (current is %s M)", $this->maxmegs, $current_memory));
+          $this->running = FALSE;
+          $ret = self::STATE_MAXMEGSREACHED;
+          }
+
+          if ($this->records_done >= (int) ($this->maxrecs)) {
+          $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
+          $this->running = FALSE;
+          $ret = self::STATE_MAXRECSDONE;
+          }
+
+          try {
+          $status = $this->getState();
+          if ($status == self::STATE_TOSTOP) {
+          $this->running = FALSE;
+          $ret = self::STATE_TOSTOP;
+          }
+          } catch (Exception $e) {
+          $this->running = FALSE;
+          }
+          }
+
+          if ($rowstodo > 0) {
+          $this->setProgress(0, 0);
+          }
+
+          return $ret;
+         */
     }
 }
 

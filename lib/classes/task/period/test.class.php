@@ -29,7 +29,7 @@ class task_period_test extends task_appboxAbstract
 
     protected function retrieveContent(appbox $appbox)
     {
-        $this->log('test class, retrive content');
+        $this->log('test class, retrieve content');
 
         return array(array('hello'), array('world'));
     }

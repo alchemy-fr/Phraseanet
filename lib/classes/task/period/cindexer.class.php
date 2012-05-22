@@ -391,38 +391,50 @@ class task_period_cindexer extends task_abstract
         }
 
         $args = array();
+        $args_nopwd = array();
         if ($this->host) {
             $args[] = '-h=' . $this->host;
+            $args_nopwd[] = '-h=' . $this->host;
         }
         if ($this->port) {
             $args[] = '-P=' . $this->port;
+            $args_nopwd[] = '-P=' . $this->port;
         }
         if ($this->base) {
             $args[] = '-b=' . $this->base;
+            $args_nopwd[] = '-b=' . $this->base;
         }
         if ($this->user) {
             $args[] = '-u=' . $this->user;
+            $args_nopwd[] = '-u=' . $this->user;
         }
         if ($this->password) {
             $args[] = '-p=' . $this->password;
+            $args_nopwd[] = '-p=******';
         }
         if ($this->socket) {
             $args[] = '--socket=' . $this->socket;
+            $args_nopwd[] = '--socket=' . $this->socket;
         }
         if ($this->use_sbas) {
             $args[] = '-o';
+            $args_nopwd[] = '-o';
         }
         if ($this->charset) {
             $args[] = '--default-character-set=' . $this->charset;
+            $args_nopwd[] = '--default-character-set=' . $this->charset;
         }
         if ($this->debugmask > 0) {
             $args[] = '-d=' . $this->debugmask;
+            $args_nopwd[] = '-d=' . $this->debugmask;
         }
         if ($this->nolog) {
             $args[] = '-n';
+            $args_nopwd[] = '-n';
         }
         if ($this->winsvc_run) {
             $args[] = '--run';
+            $args_nopwd[] = '--run';
         }
 
         $registry = registry::get_instance();
@@ -434,13 +446,13 @@ class task_period_cindexer extends task_abstract
         $this->log(sprintf("running cindexer with method %s", $this->method));
         switch ($this->method) {
             case self::METHOD_PROC_OPEN:
-                $this->run_with_proc_open($cmd, $args);
+                $this->run_with_proc_open($cmd, $args, $args_nopwd);
                 break;
             case self::METHOD_FORK:
-                $this->run_with_fork($cmd, $args);
+                $this->run_with_fork($cmd, $args, $args_nopwd);
                 break;
             case self::METHOD_EXEC:
-                $this->run_with_exec($cmd, $args);
+                $this->run_with_exec($cmd, $args, $args_nopwd);
                 break;
         }
 
@@ -453,7 +465,7 @@ class task_period_cindexer extends task_abstract
         }
     }
 
-    private function run_with_proc_open($cmd, $args)
+    private function run_with_proc_open($cmd, $args, $args_nopwd)
     {
         $nullfile = $this->system == 'WINDOWS' ? 'NUL' : '/dev/null';
 
@@ -463,7 +475,8 @@ class task_period_cindexer extends task_abstract
 
         $pipes = array();
 
-        $this->log(sprintf('cmd=\'%s %s\'', $cmd, implode(' ', $args)));
+        $this->log(sprintf('cmd=\'%s %s\'', $cmd, implode(' ', $args_nopwd)));
+
         $process = proc_open($cmd . ' ' . implode(' ', $args), $descriptors, $pipes, $this->binpath, null, array('bypass_shell' => true));
 
         $pid = NULL;
@@ -544,7 +557,7 @@ class task_period_cindexer extends task_abstract
         proc_close($process);
     }
 
-    private function run_with_fork($cmd, $args)
+    private function run_with_fork($cmd, $args, $args_nopwd)
     {
         $pid = pcntl_fork();
         if ($pid == -1) {
@@ -610,7 +623,7 @@ class task_period_cindexer extends task_abstract
         }
     }
 
-    private function run_with_exec($cmd, $args)
+    private function run_with_exec($cmd, $args, $args_nopwd)
     {
         pcntl_exec($cmd, $args);
         sleep(2);

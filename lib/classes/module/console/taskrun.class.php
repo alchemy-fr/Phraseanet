@@ -12,7 +12,6 @@
 /**
  * @todo write tests
  *
- * @package     KonsoleKomander
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -69,6 +68,7 @@ class module_console_taskrun extends Command
     {
         if ( ! setup::is_installed()) {
             $output->writeln('Phraseanet is not set up');
+
             return 1;
         }
 
@@ -106,6 +106,7 @@ class module_console_taskrun extends Command
             $this->task->run($runner, $input, $output);
         } catch (Exception $e) {
             $this->task->log(sprintf("taskrun : exception from 'run()', %s \n", $e->getMessage()));
+
             return($e->getCode());
         }
 

@@ -61,14 +61,20 @@ class module_console_schedulerStart extends Command
             return 1;
         }
 
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
         try {
             $scheduler = new task_Scheduler();
             $scheduler->run($input, $output);
         } catch (\Exception $e) {
-
-            return $e->getCode();
+            switch($e->getCode())
+            {
+                case task_Scheduler::ERR_ALREADY_RUNNING:   // 114 : aka EALREADY (Operation already in progress)
+                    $exitCode = ERR_ALREADY_RUNNING;
+                    break;
+                default:
+                    $exitCode = 1;   // default exit code (error)
+                    break;
+            }
+            return $exitCode;
         }
     }
 }

@@ -382,6 +382,7 @@ class task_period_archive extends task_abstract
                         // runner = manual : can't restart so simply quit
                     }
                     $this->running = FALSE;
+
                     return;
                 }
 
@@ -399,19 +400,16 @@ class task_period_archive extends task_abstract
                         $this->setState(self::STATE_STOPPED);
                     }
                     $this->running = FALSE;
+
                     return;
                 }
 
                 $this->setLastExecTime();
 
-                $row = NULL;
                 try {
-                    $sql = "SELECT * FROM task2 WHERE task_id = :task_id";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute(array(':task_id' => $this->getID()));
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $stmt->closeCursor();
-                    if ($row && $this->sxTaskSettings = @simplexml_load_string($row['settings'])) {
+                    if (!($this->sxTaskSettings = @simplexml_load_string($this->getSettings()))) {
+                        throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->getID()));
+                    } else {
                         // copy settings to task, so it's easier to get later
                         $this->move_archived = p4field::isyes($this->sxTaskSettings->move_archived);
                         $this->move_error = p4field::isyes($this->sxTaskSettings->move_error);
@@ -424,15 +422,13 @@ class task_period_archive extends task_abstract
                         if ($cold <= 0 || $cold >= 60 * 60) {
                             $cold = 60;
                         }
-                    } else {
-                        throw new Exception(sprintf('Error fetching or reading settings of the task \'%d\'', $this->getID()));
                     }
                 } catch (Exception $e) {
                     if ($this->getRunner() == self::RUNNER_SCHEDULER) {
                         $this->log(sprintf(('Warning : error fetching or reading settings of the task \'%d\', restarting in 10 min.'), $this->getID()));
 
-                        for ($t = 60 * 10; $this->running && $t; $t -- ) // DON'T do sleep(600) because it prevents ticks !
-                            sleep(1);
+                        $this->sleep(60 * 10);
+
                         $this->setState(self::STATE_TORESTART);
                     } else {
                         $this->log(sprintf(('Error : error fetching task \'%d\', stopping.'), $this->getID()));
@@ -440,11 +436,15 @@ class task_period_archive extends task_abstract
                         $this->setState(self::STATE_STOPPED);
                     }
                     $this->running = FALSE;
+
                     return;
                 }
 
-                if ($row['status'] == self::STATE_TOSTOP) {
+                $status = $this->getState();
+
+                if ($status == self::STATE_TOSTOP) {
                     $this->running = FALSE;
+
                     return;
                 }
 
@@ -485,13 +485,13 @@ class task_period_archive extends task_abstract
                     case 'MAXRECSDONE':
                     case 'MAXMEMORY':
                     case 'MAXLOOP':
-                        if ($row['status'] == self::STATE_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
+                        if ($status == self::STATE_STARTED && $this->getRunner() !== self::RUNNER_MANUAL) {
                             $this->setState(self::STATE_TORESTART);
                             $this->running = FALSE;
                         }
                         break;
                     default:
-                        if ($row['status'] == self::STATE_STARTED) {
+                        if ($status == self::STATE_STARTED) {
                             $this->setState(self::STATE_STOPPED);
                             $this->running = FALSE;
                         }
