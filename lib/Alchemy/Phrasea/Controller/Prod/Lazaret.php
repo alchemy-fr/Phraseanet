@@ -44,9 +44,12 @@ class Lazaret implements ControllerProviderInterface
          *
          * name         : lazaret_elements
          *
-         * descritpion  : List all lazaret elements
+         * description  : List all lazaret elements
          *
          * method       : GET
+         *
+         * parameters   : 'offset'      int (optional)  default 0   : List offset
+         *                'limit'       int (optional)  default 10  : List limit
          *
          * return       : HTML Response
          */
@@ -73,7 +76,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * name         : lazaret_force_add
          *
-         * descritpion  : Move a lazaret element identified by {file_id} parameter into phraseanet
+         * description  : Move a lazaret element identified by {file_id} parameter into phraseanet
          *
          * method       : POST
          *
@@ -92,7 +95,7 @@ class Lazaret implements ControllerProviderInterface
          *
          * name         : lazaret_deny_element
          *
-         * descritpion  : Remove a lazaret element identified by {file_id} parameter
+         * description  : Remove a lazaret element identified by {file_id} parameter
          *
          * method       : POST
          *
@@ -150,7 +153,20 @@ class Lazaret implements ControllerProviderInterface
      */
     public function listElement(Application $app, Request $request)
     {
+        $em = $app['Core']->getEntityManager();
 
+        $lazaretRepository = $em->getRepository('Entities\LazaretFile');
+
+        $lazaretFiles = $lazaretRepository->getFiles(
+            $request->get('offset', 0),
+            $request->get('limit', 10)
+        );
+
+        $html = $app['Core']['Twig']->render(
+            'prod/upload/lazaret.html.twig', array('lazaretFiles' => $lazaretFiles)
+        );
+
+        return new Response($html);
     }
 
     /**
@@ -164,7 +180,7 @@ class Lazaret implements ControllerProviderInterface
      */
     public function getElement(Application $app, Request $request, $file_id)
     {
-
+        
     }
 
     /**
