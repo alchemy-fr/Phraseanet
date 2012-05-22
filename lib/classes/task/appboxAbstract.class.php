@@ -147,7 +147,7 @@ abstract class task_appboxAbstract extends task_abstract
             $this->setProgress($rowsdone, $rowstodo);
 
             // post-process
-            $this->post_processOneContent($appbox, $row);
+            $this->postProcessOneContent($appbox, $row);
 
             // $this->check_memory_usage();
             $current_memory = memory_get_usage();

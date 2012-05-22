@@ -31,7 +31,7 @@ class task_period_test extends task_appboxAbstract
     {
         $this->log('test class, retrive content');
 
-        return array('hello', 'world');
+        return array(array('hello'), array('world'));
     }
 
     protected function processOneContent(appbox $appbox, Array $row)
