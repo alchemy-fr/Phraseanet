@@ -40,7 +40,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param appbox $appbox
      * @return Array
      */
-    protected function retrieve_content(appbox $appbox)
+    protected function retrieveContent(appbox $appbox)
     {
         $status = array(Bridge_Element::STATUS_PENDING, Bridge_Element::STATUS_PROCESSING, Bridge_Element::STATUS_PROCESSING_SERVER);
 
@@ -52,8 +52,8 @@ class task_period_apibridge extends task_appboxAbstract
             $n ++;
         }
 
-        $sql = 'SELECT id, account_id FROM bridge_elements
-                WHERE (status = ' . implode(' OR status = ', array_keys($params)) . ')';
+        $sql = 'SELECT id, account_id FROM bridge_elements'
+            . ' WHERE (status = ' . implode(' OR status = ', array_keys($params)) . ')';
 
         $stmt = $appbox->get_connection()->prepare($sql);
         $stmt->execute($params);
@@ -69,7 +69,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param array $row
      * @return task_period_apibridge
      */
-    protected function process_one_content(appbox $appbox, Array $row)
+    protected function processOneContent(appbox $appbox, Array $row)
     {
         try {
             $account = Bridge_Account::load_account($appbox, $row['account_id']);
@@ -77,10 +77,11 @@ class task_period_apibridge extends task_appboxAbstract
 
             $this->log("process " . $element->get_id() . " with status " . $element->get_status());
 
-            if ($element->get_status() == Bridge_Element::STATUS_PENDING)
+            if ($element->get_status() == Bridge_Element::STATUS_PENDING) {
                 $this->upload_element($element);
-            else
+            } else {
                 $this->update_element($element);
+            }
         } catch (Exception $e) {
             $sql = 'UPDATE bridge_elements SET status = :status WHERE id = :id';
 
@@ -103,7 +104,7 @@ class task_period_apibridge extends task_appboxAbstract
      * @param array $row
      * @return task_period_apibridge
      */
-    protected function post_process_one_content(appbox $appbox, Array $row)
+    protected function postProcessOneContent(appbox $appbox, Array $row)
     {
         return $this;
     }

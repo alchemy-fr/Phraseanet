@@ -29,10 +29,11 @@ switch ($parm['action']) {
         $output = module_admin::getTree($parm['position']);
         break;
     case 'APACHE':
-        if ($parm['test'] == 'success')
+        if ($parm['test'] == 'success') {
             $output = '1';
-        else
+        } else {
             $output = '0';
+        }
         break;
     case 'SCHEDULERKEY':
         $output = $registry->get('GV_ServerName') . 'admin/runscheduler.php?key=' . urlencode(phrasea::scheduler_key( ! ! $parm['renew']));
@@ -110,12 +111,13 @@ switch ($parm['action']) {
         $parm = $request->get_parms('task_id', 'status', 'signal');
         try {
             $task_manager = new task_manager($appbox);
-            $task = $task_manager->get_task($parm['task_id']);
-            $pid = (int) ($task->get_pid());
-            $task->set_status($parm["status"]);
+            $task = $task_manager->getTask($parm['task_id']);
+            $pid = (int) ($task->getPID());
+            $task->setState($parm["status"]);
             $signal = (int) ($parm['signal']);
-            if ($signal > 0 && $pid)
+            if ($signal > 0 && $pid) {
                 posix_kill($pid, $signal);
+            }
         } catch (Exception $e) {
 
         }
@@ -127,7 +129,7 @@ switch ($parm['action']) {
         try {
             $task_manager = new task_manager($appbox);
 
-            $task_manager->set_sched_status($parm['status']);
+            $task_manager->setSchedulerState($parm['status']);
         } catch (Exception $e) {
 
         }
@@ -137,8 +139,8 @@ switch ($parm['action']) {
         $parm = $request->get_parms("task_id");
         try {
             $task_manager = new task_manager($appbox);
-            $task = $task_manager->get_task($parm['task_id']);
-            $task->reset_crash_counter();
+            $task = $task_manager->getTask($parm['task_id']);
+            $task->resetCrashCounter();
         } catch (Exception $e) {
 
         }
@@ -162,13 +164,14 @@ switch ($parm['action']) {
 
         try {
             $task_manager = new task_manager($appbox);
-            $task = $task_manager->get_task($parm["task_id"]);
+            $task = $task_manager->getTask($parm["task_id"]);
             /**
              * @todo checker, cette methode n'est pas implementee partout
              */
-            $root->setAttribute("crashed", $task->get_crash_counter());
-            if ($task->saveChanges($conn, $parm["task_id"], $row))
+            $root->setAttribute("crashed", $task->getCrashCounter());
+            if ($task->saveChanges($conn, $parm["task_id"], $row)) {
                 $root->setAttribute("saved", "1");
+            }
         } catch (Exception $e) {
 
         }
@@ -179,18 +182,22 @@ switch ($parm['action']) {
         $ret = array('time' => date("H:i:s"));
 
         $task_manager = new task_manager($appbox);
-        $ret['scheduler'] = $task_manager->get_scheduler_state();
+        $ret['scheduler'] = $task_manager->getSchedulerState();
 
         $ret['tasks'] = array();
 
-        foreach ($task_manager->get_tasks(true) as $task) {
-            $id = $task->get_task_id();
+        foreach ($task_manager->getTasks(true) as $task) {
+            if ($task->getState() == task_abstract::STATE_TOSTOP && $task->getPID() === NULL) {
+                // fix
+                $task->setState(task_abstract::STATE_STOPPED);
+            }
+            $id = $task->getID();
             $ret['tasks'][$id] = array(
                 'id'        => $id
-                , 'pid'       => $task->get_pid()
-                , 'crashed'   => $task->get_crash_counter()
-                , 'completed' => $task->get_completed_percentage()
-                , 'status'    => $task->get_status()
+                , 'pid'       => $task->getPID()
+                , 'crashed'   => $task->getCrashCounter()
+                , 'completed' => $task->getCompletedPercentage()
+                , 'status'    => $task->getState()
             );
         }
 
@@ -202,8 +209,9 @@ switch ($parm['action']) {
             $stmt->closeCursor();
             $ret['db_processlist'] = array();
             foreach ($rows as $row) {
-                if ($row['Info'] != $sql)
+                if ($row['Info'] != $sql) {
                     $ret['db_processlist'][] = $row;
+                }
             }
         }
 
@@ -248,8 +256,9 @@ switch ($parm['action']) {
         $ret['xml_indexed'] = $datas['xml_indexed'];
         $ret['thesaurus_indexed'] = $datas['thesaurus_indexed'];
 
-        if (file_exists($registry->get('GV_RootPath') . 'config/minilogos/logopdf_' . $parm['sbas_id'] . '.jpg'))
+        if (file_exists($registry->get('GV_RootPath') . 'config/minilogos/logopdf_' . $parm['sbas_id'] . '.jpg')) {
             $ret['printLogoURL'] = '/print/' . $parm['sbas_id'];
+        }
         $output = p4string::jsonencode($ret);
         break;
 

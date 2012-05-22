@@ -11,7 +11,6 @@
 
 /**
  *
- * @package     APIv1
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -95,28 +94,28 @@ class API_V1_adapter extends API_V1_Abstract
         return $this->version;
     }
 
-  /**
-   * Get a list of phraseanet tasks
-   *
-   * @param \Silex\Application $app The API silex application
-   * @return \API_V1_result
-   */
+    /**
+     * Get a list of phraseanet tasks
+     *
+     * @param \Silex\Application $app The API silex application
+     * @return \API_V1_result
+     */
     public function get_task_list(Application $app)
     {
         $result = new \API_V1_result($app['request'], $this);
 
         $appbox = \appbox::get_instance($app['Core']);
         $taskManager = new \task_manager($appbox);
-        $tasks = $taskManager->get_tasks();
+        $tasks = $taskManager->getTasks();
 
         $ret = array();
         foreach ($tasks as $task) {
-            $ret[$task->get_task_id()] = array(
-                'id'             => $task->get_task_id(),
-                'state'          => $task->get_status(),
-                'pid'            => $task->get_pid(),
-                'title'          => $task->get_title(),
-                'last_exec_time' => $task->get_last_exec_time()
+            $ret[$task->getID()] = array(
+                'id'             => $task->getID(),
+                'state'          => $task->getState(),
+                'pid'            => $task->getPID(),
+                'title'          => $task->getTitle(),
+                'last_exec_time' => $task->getLastExecTime()
             );
         }
 
@@ -140,12 +139,12 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new task_manager($appbox);
         $ret = array();
         try {
-            $task = $taskManager->get_task($taskId);
-            $ret['id'] = $task->get_task_id();
-            $ret['state'] = $task->get_status();
-            $ret['pid'] = $task->get_pid();
-            $ret['title'] = $task->get_title();
-            $ret['last_exec_time'] = $task->get_last_exec_time();
+            $task = $taskManager->getTask($taskId);
+            $ret['id'] = $task->getID();
+            $ret['state'] = $task->getState();
+            $ret['pid'] = $task->getPID();
+            $ret['title'] = $task->getTitle();
+            $ret['last_exec_time'] = $task->getLastExecTime();
         } catch (\Exception_NotFound $e) {
             $result->set_error_code(404);
             $ret = array('success' => false);
@@ -176,8 +175,8 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new \task_manager($appbox);
         $ret = array('success' => true);
         try {
-            $task = $taskManager->get_task($taskId);
-            $task->set_status(\task_abstract::STATUS_TOSTART);
+            $task = $taskManager->getTask($taskId);
+            $task->setState(\task_abstract::STATE_TOSTART);
         } catch (\Exception_NotFound $e) {
             $result->set_error_code(404);
             $ret = array('success' => false);
@@ -208,8 +207,8 @@ class API_V1_adapter extends API_V1_Abstract
         $taskManager = new \task_manager($appbox);
         $ret = array();
         try {
-            $task = $taskManager->get_task($taskId);
-            $task->set_status(\task_abstract::STATUS_TOSTOP);
+            $task = $taskManager->getTask($taskId);
+            $task->setState(\task_abstract::STATE_TOSTOP);
         } catch (\Exception_NotFound $e) {
             $result->set_error_code(404);
             $ret = array('success' => false);
@@ -253,14 +252,14 @@ class API_V1_adapter extends API_V1_Abstract
 
             $taskManager = new \task_manager($appbox);
 
-            $task = $taskManager->get_task($taskId);
+            $task = $taskManager->getTask($taskId);
 
             if ($name) {
-                $task->set_title($name);
+                $task->setTitle($name);
             }
 
             if ($autostart) {
-                $task->set_active( ! ! $autostart);
+                $task->setActive( ! ! $autostart);
             }
 
             $ret = array('success' => true);
@@ -279,12 +278,12 @@ class API_V1_adapter extends API_V1_Abstract
         return $result;
     }
 
-     /**
-      * Get Information the cache system used by the instance
-      *
-      * @param \Silex\Application $app the silex application
-      * @return array
-      */
+    /**
+     * Get Information the cache system used by the instance
+     *
+     * @param \Silex\Application $app the silex application
+     * @return array
+     */
     protected function get_cache_info(Application $app)
     {
         $mainCache = $app['Core']['Cache'];
@@ -731,11 +730,13 @@ class API_V1_adapter extends API_V1_Abstract
 
         $options->set_bases($params['bases'], $user->ACL());
 
-        if ( ! is_array($params['fields']))
+        if ( ! is_array($params['fields'])) {
             $params['fields'] = array();
+        }
         $options->set_fields($params['fields']);
-        if ( ! is_array($params['status']))
+        if ( ! is_array($params['status'])) {
             $params['status'] = array();
+        }
         $options->set_status($params['status']);
         $options->set_search_type($params['search_type']);
         $options->set_record_type($params['recordtype']);
@@ -939,15 +940,19 @@ class API_V1_adapter extends API_V1_Abstract
 
             $datas = strrev($record->get_status());
 
-            if ( ! is_array($status))
+            if ( ! is_array($status)) {
                 throw new API_V1_exception_badrequest();
+            }
             foreach ($status as $n => $value) {
-                if ($n > 63 || $n < 4)
+                if ($n > 63 || $n < 4) {
                     throw new API_V1_exception_badrequest();
-                if ( ! in_array($value, array('0', '1')))
+                }
+                if ( ! in_array($value, array('0', '1'))) {
                     throw new API_V1_exception_badrequest();
-                if ( ! isset($status_bits[$n]))
+                }
+                if ( ! isset($status_bits[$n])) {
                     throw new API_V1_exception_badrequest ();
+                }
 
                 $datas = substr($datas, 0, ($n - 1)) . $value . substr($datas, ($n + 1));
             }
@@ -1077,8 +1082,9 @@ class API_V1_adapter extends API_V1_Abstract
 
         $name = $request->get('name');
 
-        if (trim(strip_tags($name)) === '')
+        if (trim(strip_tags($name)) === '') {
             throw new API_V1_exception_badrequest ();
+        }
 
         $user = $this->core->getAuthenticatedUser();
 
@@ -1473,10 +1479,11 @@ class API_V1_adapter extends API_V1_Abstract
      */
     protected function list_embedable_media(media_subdef &$media, registryInterface &$registry)
     {
-        if ($media->get_permalink() instanceof media_Permalink_Adapter)
+        if ($media->get_permalink() instanceof media_Permalink_Adapter) {
             $permalink = $this->list_permalink($media->get_permalink(), $registry);
-        else
+        } else {
             $permalink = null;
+        }
 
         return array(
             'permalink'   => $permalink,
@@ -1601,8 +1608,9 @@ class API_V1_adapter extends API_V1_Abstract
 
             $expires_on_atom = $basket->getValidation()->getExpires();
 
-            if ($expires_on_atom instanceof DateTime)
+            if ($expires_on_atom instanceof DateTime) {
                 $expires_on_atom = $expires_on_atom->format(DATE_ATOM);
+            }
 
             $user = \User_Adapter::getInstance($this->appbox->get_session()->get_usr_id(), $this->appbox);
 

@@ -10,7 +10,6 @@
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -51,10 +50,11 @@ class task_period_workflow01 extends task_databoxAbstract
                 $ptype = substr($pname, 0, 3);
                 $pname = substr($pname, 4);
                 $pvalue = $parm2[$pname];
-                if ($ns = $dom->getElementsByTagName($pname)->item(0)) {
+                if (($ns = $dom->getElementsByTagName($pname)->item(0)) != NULL) {
                     // le champ existait dans le xml, on supprime son ancienne valeur (tout le contenu)
-                    while (($n = $ns->firstChild))
+                    while (($n = $ns->firstChild)) {
                         $ns->removeChild($n);
+                    }
                 } else {
                     // le champ n'existait pas dans le xml, on le cree
                     $dom->documentElement->appendChild($dom->createTextNode("\t"));
@@ -79,15 +79,17 @@ class task_period_workflow01 extends task_databoxAbstract
 
     public function xml2graphic($xml, $form)
     {
-        if (($sxml = simplexml_load_string($xml))) { // in fact XML IS always valid here...
+        if (($sxml = simplexml_load_string($xml)) != FALSE) { // in fact XML IS always valid here...
             // ... but we could check for safe values
-            if ((int) ($sxml->period) < 10)
-                $sxml->period = 10;
-            elseif ((int) ($sxml->period) > 1440) // 1 jour
+            if ((int) ($sxml->period) < 1) {
+                $sxml->period = 1;
+            } elseif ((int) ($sxml->period) > 1440) { // 1 jour
                 $sxml->period = 1440;
+            }
 
-            if ((string) ($sxml->delay) == '')
+            if ((string) ($sxml->delay) == '') {
                 $sxml->delay = 0;
+            }
             ?>
             <script type="text/javascript">
                 var i;
@@ -117,11 +119,10 @@ class task_period_workflow01 extends task_databoxAbstract
             <?php echo $form ?>.period.value   = "<?php echo p4string::MakeString($sxml->period, "js", '"') ?>";
                 parent.calccmd();
             </script>
-            <?php
 
+            <?php
             return("");
-        }
-        else { // ... so we NEVER come here
+        } else { // ... so we NEVER come here
             // bad xml
             return("BAD XML");
         }
@@ -201,94 +202,71 @@ class task_period_workflow01 extends task_databoxAbstract
                 setDirty();
                 calccmd();
             }
+
             function chgxmlck(checkinput, fieldname)
             {
                 setDirty();
                 calccmd();
             }
+
             function chgxmlpopup(popupinput, fieldname)
             {
                 setDirty();
                 calccmd();
             }
+
             function chgsbas(sbaspopup)
             {
-                var xmlhttp = new XMLHttpRequest_with_xpath();
-                xmlhttp.open("POST", "/admin/taskfacility.php", false);
-                xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-                xmlhttp.send("cls=workflow01&taskid=<?php echo $this->get_task_id() ?>&bid="+sbaspopup.value);
-
                 for(fld=0; fld<=1; fld++)
                 {
                     var p = document.getElementById("status"+fld);
                     while( (f=p.firstChild) )
                         p.removeChild(f);
-                    var t = xmlhttp.xpathSearch('/result/status_bits/bit');
-                    if(t.length > 0)
-                    {
-                        var o = p.appendChild(document.createElement('option'));
-                        o.setAttribute('value', '');
-                        o.appendChild(document.createTextNode("..."));
-                        for(i in t)
-                        {
-                            var o = p.appendChild(document.createElement('option'));
-                            o.setAttribute('value', t[i].getAttribute("n")+"_"+t[i].getAttribute("value"));
-                            o.appendChild(document.createTextNode(t[i].firstChild.nodeValue));
-                            o.setAttribute('class', "jsFilled");
-                        }
-                    }
-                }
+                    var o = p.appendChild(document.createElement('option'));
+                    o.setAttribute('value', '');
+                    o.appendChild(document.createTextNode("..."));
 
-                for(fld=0; fld<=1; fld++)
-                {
                     var p = document.getElementById("coll"+fld);
                     while( (f=p.firstChild) )
                         p.removeChild(f);
-                    var t = xmlhttp.xpathSearch('/result/collections/collection');
-                    if(t.length > 0)
-                    {
-                        var o = p.appendChild(document.createElement('option'));
-                        o.setAttribute('value', '');
-                        o.appendChild(document.createTextNode("..."));
-                        for(i in t)
-                        {
-                            var o = p.appendChild(document.createElement('option'));
-                            o.setAttribute('value', t[i].getAttribute("id"));
-                            o.appendChild(document.createTextNode(t[i].firstChild.nodeValue));
-                            o.setAttribute('class', "jsFilled");
-                        }
-                    }
+                    var o = p.appendChild(document.createElement('option'));
+                    o.setAttribute('value', '');
+                    o.appendChild(document.createTextNode("..."));
                 }
-                delete xmlhttp;
+                if(sbaspopup.value > 0)
+                {
+                    $.ajax({
+                        url:"/admin/taskfacility.php"
+                        , async:false
+                        , data:{'cls':'workflow01', 'taskid':<?php echo $this->getID() ?>, 'bid':sbaspopup.value}
+                        , success:function(data){
+                            for(fld=0; fld<=1; fld++)
+                            {
+                                var p = document.getElementById("status"+fld);
+                                for(i in data.status_bits)
+                                {
+                                    var o = p.appendChild(document.createElement('option'));
+                                    o.setAttribute('value', data.status_bits[i].n + "_" + data.status_bits[i].value);
+                                    o.appendChild(document.createTextNode(data.status_bits[i].label));
+                                    o.setAttribute('class', "jsFilled");
+                                }
+                            }
+
+                            for(fld=0; fld<=1; fld++)
+                            {
+                                var p = document.getElementById("coll"+fld);
+                                for(i in data.collections)
+                                {
+                                    var o = p.appendChild(document.createElement('option'));
+                                    o.setAttribute('value', ""+data.collections[i].id);
+                                    o.appendChild(document.createTextNode(data.collections[i].name));
+                                    o.setAttribute('class', "jsFilled");
+                                }
+                            }
+                        }});
+                }
                 calccmd();
-                // setDirty();
             }
-
-            function XMLHttpRequest_with_xpath()
-            {
-                var x = new XMLHttpRequest();
-                x.xpathSearch = function(xpath) {
-                    var t = new Array();
-                    if(x.responseXML.evaluate)
-                    {
-                        var tmp = x.responseXML.evaluate(xpath, x.responseXML, null, 4, null);
-                        var i;
-                        while(i = tmp.iterateNext())
-                            t.push(i);
-                    }
-                    else if(typeof(x.responseXML.selectNodes))
-                    {
-                        var tmp = x.responseXML.selectNodes(xpath);
-                        for(var i=0; i<tmp.length; i++)
-                        t.push(tmp.item(i));
-                    }
-
-                    return(t);
-                };
-
-                return(x);
-            }
-
         </script>
         <?php
     }
@@ -375,7 +353,7 @@ class task_period_workflow01 extends task_databoxAbstract
     protected $status_destination;
     protected $coll_destination;
 
-    protected function load_settings(SimpleXMLElement $sx_task_settings)
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->status_origine = (string) $sx_task_settings->status0;
         $this->status_destination = (string) $sx_task_settings->status1;
@@ -383,80 +361,85 @@ class task_period_workflow01 extends task_databoxAbstract
         $this->coll_origine = (int) $sx_task_settings->coll0;
         $this->coll_destination = (int) $sx_task_settings->coll1;
 
-        parent::load_settings($sx_task_settings);
+        parent::loadSettings($sx_task_settings);
 
         $this->mono_sbas_id = (int) $sx_task_settings->sbas_id;
         // in minutes
         $this->period = (int) $sx_task_settings->period * 60;
 
-        if ($this->period <= 0 || $this->period >= 24 * 60)
+        if ($this->period <= 0 || $this->period >= 24 * 60) {
             $this->period = 60;
-
-        return $this;
+        }
     }
 
-    protected function retrieve_sbas_content(databox $databox)
+    protected function retrieveSbasContent(databox $databox)
     {
+        static $firstCall = true;
 
         $connbas = $databox->get_connection();
 
-        $status_origine = explode('_', $this->status_origine);
-        if (count($status_origine) !== 2)
-            throw new Exception('Error in settings for status origine');
+        $sql_s = $sql_w = '';
+        $sql_parms = array();
+        if ($this->coll_origine != '') {
+            $sql_w .= ($sql_w ? ' AND ' : '') . '(coll_id=:coll_org)';
+            $sql_parms[':coll_org'] = $this->coll_origine;
+        }
+        if ($this->status_origine != '') {
+            $x = explode('_', $this->status_origine);
+            if (count($x) !== 2) {
+                throw new Exception('Error in settings for status origin');
+            }
+            $sql_w .= ($sql_w ? ' AND ' : '')
+                . '((status >> :stat_org_n & 1) = :stat_org_v)';
+            $sql_parms[':stat_org_n'] = $x[0];
+            $sql_parms[':stat_org_v'] = $x[1];
+        }
+        if ($this->coll_destination != '') {
+            $sql_s .= ($sql_s ? ', ' : '') . 'coll_id=:coll_dst';
+            $sql_parms[':coll_dst'] = $this->coll_destination;
+        }
+        if ($this->status_destination != '') {
+            $x = explode('_', $this->status_destination);
+            if (count($x) !== 2) {
+                throw new Exception('Error in settings for status destination');
+            }
+            $sql_s .= ($sql_s ? ', ' : '');
+            if ((int) $x[1] === 0) {
+                $sql_s .= 'status = status &~(1 << :stat_dst)';
+            } else {
+                $sql_s .= 'status = status |(1 << :stat_dst)';
+            }
+            $sql_parms[':stat_dst'] = (int) $x[0];
+        }
 
-        $status_destination = explode('_', $this->status_destination);
-        if (count($status_destination) !== 2)
-            throw new Exception('Error in settings for status destination');
+        if ($sql_w && $sql_s) {
+            $sql = 'UPDATE record SET ' . $sql_s . ' WHERE ' . $sql_w;
+            $stmt = $connbas->prepare($sql);
+            $stmt->execute($sql_parms);
 
-        $collection_origine = collection::get_from_base_id($this->coll_origine);
-        $collection_destination = collection::get_from_base_id($this->coll_destination);
-
-        unset($collection_destination);
-        unset($collection_origine);
-
-        $status_orgine_number = (int) $status_origine[0];
-        $status_orgine_state = (int) $status_origine[1];
-
-        $status_destination_number = (int) $status_destination[0];
-        $status_destination_state = (int) $status_destination[1];
-
-
-        $u = 'coll_id = :coll_dest';
-        if ($status_destination_state === 0)
-            $u .= ', status = status &~(1 << ' . $status_destination_number . ')';
-        else
-            $u .= ', status = status |(1 << ' . $status_destination_number . ')';
-
-
-        $sql = 'UPDATE record
-            SET ' . $u . '
-            WHERE coll_id = :coll_id
-              AND (status >> ' . $status_orgine_number . ') & 1 = ' . $status_orgine_state;
-
-        $params = array(
-            ':coll_id'   => $this->coll_origine,
-            ':coll_dest' => $this->coll_destination
-        );
-
-        $stmt = $connbas->prepare($sql);
-        $stmt->execute($params);
-        $this->log(sprintf(("SQL=%s - %s changes"), str_replace(array("\r\n", "\n", "\r"), " ", $sql), $stmt->rowCount()));
-        $stmt->closeCursor();
+            if ($firstCall || $stmt->rowCount() != 0) {
+                $this->log(sprintf(("SQL=%s\n  (parms=%s)\n  - %s changes"), str_replace(array("\r\n", "\n", "\r", "\t"), " ", $sql)
+                        , str_replace(array("\r\n", "\n", "\r", "\t"), " ", var_export($sql_parms, true))
+                        , $stmt->rowCount()));
+                $firstCall = false;
+            }
+            $stmt->closeCursor();
+        }
 
         return array();
     }
 
-    protected function process_one_content(databox $databox, Array $row)
+    protected function processOneContent(databox $databox, Array $row)
     {
         return $this;
     }
 
-    protected function flush_records_sbas()
+    protected function flushRecordsSbas()
     {
         return $this;
     }
 
-    protected function post_process_one_content(databox $databox, Array $row)
+    protected function postProcessOneContent(databox $databox, Array $row)
     {
         return $this;
     }
@@ -471,57 +454,45 @@ class task_period_workflow01 extends task_databoxAbstract
 
         $parm = $request->get_parms("bid");
 
-        phrasea::headers(200, true, 'text/xml', 'UTF-8', false);
+        phrasea::headers(200, true, 'text/json', 'UTF-8', false);
 
-        $ret = new DOMDocument("1.0", "UTF-8");
-        $ret->standalone = true;
-        $ret->preserveWhiteSpace = false;
-
-        $element = $ret->createElement('result');
-
-        $root = $ret->appendChild($element);
-        $root->appendChild($ret->createCDATASection(var_export($parm, true)));
-        $dfields = $root->appendChild($ret->createElement("date_fields"));
-        $statbits = $root->appendChild($ret->createElement("status_bits"));
-        $coll = $root->appendChild($ret->createElement("collections"));
+        $retjs = array('result'      => NULL,
+            'date_fields' => array(),
+            'status_bits' => array(),
+            'collections' => array()
+        );
 
         $sbas_id = (int) $parm['bid'];
         try {
             $databox = databox::get_instance($sbas_id);
-
             foreach ($databox->get_meta_structure() as $meta) {
-                if ($meta->get_type() !== 'date')
+                if ($meta->get_type() !== 'date') {
                     continue;
-                $dfields->appendChild($ret->createElement("field"))
-                    ->appendChild($ret->createTextNode($meta->get_name()));
+                }
+                $retjs['date_fields'][] = $meta->get_name();
             }
 
             $status = $databox->get_statusbits();
 
             foreach ($status as $n => $s) {
-                $node = $statbits->appendChild($ret->createElement("bit"));
-                $node->setAttribute('n', $n);
-                $node->setAttribute('value', '0');
-                $node->setAttribute('label', $s['labeloff']);
-                $node->appendChild($ret->createTextNode($s['labeloff']));
-                $node = $statbits->appendChild($ret->createElement("bit"));
-                $node->setAttribute('n', $n);
-                $node->setAttribute('value', '1');
-                $node->setAttribute('label', $s['labelon']);
-                $node->appendChild($ret->createTextNode($s['labelon']));
+                $retjs['status_bits'][] = array(
+                    'n'                     => $n,
+                    'value'                 => 0,
+                    'label'                 => $s['labeloff'] ? $s['labeloff'] : 'non ' . $s['name']);
+                $retjs['status_bits'][] = array(
+                    'n'     => $n,
+                    'value' => 1,
+                    'label' => $s['labelon'] ? $s['labelon'] : $s['name']);
             }
 
             $base_ids = $user->ACL()->get_granted_base(array(), array($sbas_id));
-
-            foreach ($base_ids as $base_id => $collection) {
-                $node = $coll->appendChild($ret->createElement("collection"));
-                $node->setAttribute('id', $collection->get_coll_id());
-                $node->appendChild($ret->createTextNode($collection->get_name()));
+            foreach ($base_ids as $collection) {
+                $retjs['collections'][] = array('id'   => (string) ($collection->get_coll_id()), 'name' => $collection->get_name());
             }
         } catch (Exception $e) {
 
         }
 
-        return $ret->saveXML();
+        return p4string::jsonencode($retjs);
     }
 }

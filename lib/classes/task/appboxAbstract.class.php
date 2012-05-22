@@ -17,62 +17,97 @@
 abstract class task_appboxAbstract extends task_abstract
 {
 
-    abstract protected function retrieve_content(appbox $appbox);
+    abstract protected function retrieveContent(appbox $appbox);
 
-    abstract protected function process_one_content(appbox $appbox, Array $row);
+    abstract protected function processOneContent(appbox $appbox, Array $row);
 
-    abstract protected function post_process_one_content(appbox $appbox, Array $row);
+    abstract protected function postProcessOneContent(appbox $appbox, Array $row);
 
     protected function run2()
     {
+        $this->running = TRUE;
         while ($this->running) {
             try {
                 $conn = connection::getPDOConnection();
             } catch (Exception $e) {
                 $this->log($e->getMessage());
-                $this->log(("Warning : abox connection lost, restarting in 10 min."));
-                sleep(60 * 10);
-                $this->running = false;
-                $this->return_value = self::RETURNSTATUS_TORESTART;
+                if ($this->getRunner() == self::RUNNER_SCHEDULER) {
+                    $this->log(("Warning : abox connection lost, restarting in 10 min."));
+
+                    // DON'T do sleep(600) because it prevents ticks !
+                    for ($t = 60 * 10; $this->running && $t; $t -- ) {
+                        sleep(1);
+                    }
+                    // because connection is lost we cannot change status to 'torestart'
+                    // anyway the current status 'running' with no pid
+                    // will enforce the scheduler to restart the task
+                } else {
+                    // runner = manual : can't restart so simply quit
+                }
+                $this->running = FALSE;
 
                 return;
             }
 
-            $this->set_last_exec_time();
+            $this->setLastExecTime();
 
             try {
-                $sql = 'SELECT task2.* FROM task2 WHERE task_id = :taskid';
+                $sql = 'SELECT settings FROM task2 WHERE task_id = :taskid';
                 $stmt = $conn->prepare($sql);
-                $stmt->execute(array(':taskid' => $this->get_task_id()));
+                $stmt->execute(array(':taskid' => $this->getID()));
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $stmt->closeCursor();
                 $this->records_done = 0;
                 $duration = time();
             } catch (Exception $e) {
-                $this->task_status = self::STATUS_TOSTOP;
-                $this->return_value = self::RETURNSTATUS_STOPPED;
-                $rs = array();
+                // failed sql, simply return
+                $this->running = FALSE;
+
+                return;
             }
+
             if ($row) {
-                if ( ! $this->running)
+                if ( ! $this->running) {
                     break;
+                }
 
                 $appbox = appbox::get_instance(\bootstrap::getCore());
                 try {
-                    $this->load_settings(simplexml_load_string($row['settings']));
+                    $this->loadSettings(simplexml_load_string($row['settings']));
                 } catch (Exception $e) {
                     $this->log($e->getMessage());
                     continue;
                 }
 
-                $this->current_state = self::STATE_OK;
-                $this->process($appbox)
-                    ->check_current_state();
-            }
+                $process_ret = $this->process($appbox);
 
-            $this->increment_loops();
+                switch ($process_ret) {
+                    case self::STATE_MAXMEGSREACHED:
+                    case self::STATE_MAXRECSDONE:
+                        if ($this->getRunner() == self::RUNNER_SCHEDULER) {
+                            $this->setState(self::STATE_TORESTART);
+                            $this->running = FALSE;
+                        }
+                        break;
+
+                    case self::STATE_TOSTOP:
+                        $this->setState(self::STATE_TOSTOP);
+                        $this->running = FALSE;
+                        break;
+
+                    case self::STATE_TODELETE: // formal 'suicidable'
+                        $this->setState(self::STATE_TODELETE);
+                        $this->running = FALSE;
+                        break;
+
+                    case self::STATE_OK:
+                        break;
+                }
+            } // if(row)
+
+            $this->incrementLoops();
             $this->pause($duration);
-        }
+        } // while running
 
         return;
     }
@@ -83,61 +118,110 @@ abstract class task_appboxAbstract extends task_abstract
      */
     protected function process(appbox $appbox)
     {
-        $conn = $appbox->get_connection();
-        $tsub = array();
+                  $ret = self::STATE_OK;
+
         try {
-            /**
-             * GET THE RECORDS TO PROCESS ON CURRENT SBAS
-             */
-            $rs = $this->retrieve_content($appbox);
+            // get the records to process
+            $rs = $this->retrieveContent($appbox);
+            $ret = $this->processLoop($appbox, $rs);
         } catch (Exception $e) {
             $this->log('Error  : ' . $e->getMessage());
-            $rs = array();
         }
+        return $ret;
 
-        $rowstodo = count($rs);
-        $rowsdone = 0;
+        /*
+          $ret = self::STATE_OK;
 
-        if ($rowstodo > 0)
-            $this->setProgress(0, $rowstodo);
+          try {
+          // get the records to process
+          $rs = $this->retrieveContent($appbox);
+          } catch (Exception $e) {
+          $this->log('Error  : ' . $e->getMessage());
+          $rs = array();
+          }
 
-        foreach ($rs as $row) {
-            try {
+          $rowstodo = count($rs);
+          $rowsdone = 0;
 
-                /**
-                 * PROCESS ONE RECORD
-                 */
-                $this->process_one_content($appbox, $row);
-            } catch (Exception $e) {
-                $this->log("Exception : " . $e->getMessage()
-                    . " " . basename($e->getFile()) . " " . $e->getLine());
-            }
+          if ($rowstodo > 0) {
+          $this->setProgress(0, $rowstodo);
+          }
 
-            $this->records_done ++;
-            $this->setProgress($rowsdone, $rowstodo);
+          foreach ($rs as $row) {
 
-            /**
-             * POST COIT
-             */
-            $this->post_process_one_content($appbox, $row);
+          try {
+          // process one record
+          $this->processOneContent($appbox, $row);
+          } catch (Exception $e) {
+          $this->log("Exception : " . $e->getMessage() . " " . basename($e->getFile()) . " " . $e->getLine());
+          }
 
-            $this->check_memory_usage()
-                ->check_records_done()
-                ->check_task_status();
+          $this->records_done ++;
+          $this->setProgress($rowsdone, $rowstodo);
 
-            if ( ! $this->running)
-                break;
-        }
+          // post-process
+          $this->postProcessOneContent($appbox, $row);
 
+          $current_memory = memory_get_usage();
+          if ($current_memory >> 20 >= $this->maxmegs) {
+          $this->log(sprintf("Max memory (%s M) reached (actual is %s M)", $this->maxmegs, $current_memory));
+          $this->running = FALSE;
+          $ret = self::STATE_MAXMEGSREACHED;
+          }
 
-        $this->check_memory_usage()
-            ->check_records_done()
-            ->check_task_status();
+          if ($this->records_done >= (int) ($this->maxrecs)) {
+          $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
+          $this->running = FALSE;
+          $ret = self::STATE_MAXRECSDONE;
+          }
 
-        if ($rowstodo > 0)
-            $this->setProgress(0, 0);
+          try {
+          $status = $this->getState();
+          if ($status == self::STATE_TOSTOP) {
+          $this->running = FALSE;
+          $ret = self::STATE_TOSTOP;
+          }
+          } catch (Exception $e) {
+          $this->running = FALSE;
+          }
 
-        return $this;
+          if ( ! $this->running) {
+          break;
+          }
+          }
+          //
+          // if nothing was done, at least check the status
+          if (count($rs) == 0 && $this->running) {
+
+          $current_memory = memory_get_usage();
+          if ($current_memory >> 20 >= $this->maxmegs) {
+          $this->log(sprintf("Max memory (%s M) reached (current is %s M)", $this->maxmegs, $current_memory));
+          $this->running = FALSE;
+          $ret = self::STATE_MAXMEGSREACHED;
+          }
+
+          if ($this->records_done >= (int) ($this->maxrecs)) {
+          $this->log(sprintf("Max records done (%s) reached (actual is %s)", $this->maxrecs, $this->records_done));
+          $this->running = FALSE;
+          $ret = self::STATE_MAXRECSDONE;
+          }
+
+          try {
+          $status = $this->getState();
+          if ($status == self::STATE_TOSTOP) {
+          $this->running = FALSE;
+          $ret = self::STATE_TOSTOP;
+          }
+          } catch (Exception $e) {
+          $this->running = FALSE;
+          }
+          }
+
+          if ($rowstodo > 0) {
+          $this->setProgress(0, 0);
+          }
+
+          return $ret;
+         */
     }
 }
-

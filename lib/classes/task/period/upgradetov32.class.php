@@ -11,7 +11,6 @@
 
 /**
  *
- * @package     task_manager
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
  * @link        www.phraseanet.com
  */
@@ -47,17 +46,15 @@ class task_period_upgradetov32 extends task_abstract
     // run() : the real code executed by each task, MANDATORY
     // ==========================================================================
 
-    protected function load_settings(SimpleXMLElement $sx_task_settings)
+    protected function loadSettings(SimpleXMLElement $sx_task_settings)
     {
         $this->sbas_id = (int) $sx_task_settings->sbas_id;
-        parent::load_settings($sx_task_settings);
-
-        return $this;
+        parent::loadSettings($sx_task_settings);
     }
 
     protected function run2()
     {
-        printf("taskid %s starting." . PHP_EOL, $this->get_task_id());
+        printf("taskid %s starting." . PHP_EOL, $this->getID());
 
         $registry = registry::get_instance();
 //    $registry->set('GV_cache_server_type', 'nocache', \registry::TYPE_STRING);
@@ -115,8 +112,9 @@ class task_period_upgradetov32 extends task_abstract
                 $stmt->closeCursor();
 
                 $total = 0;
-                if ($row)
+                if ($row) {
                     $total = $row['total'];
+                }
 
                 $sql = 'SELECT COUNT(record_id) as total FROM record WHERE migrated = 1';
                 $stmt = $connbas->prepare($sql);
@@ -125,8 +123,9 @@ class task_period_upgradetov32 extends task_abstract
                 $stmt->closeCursor();
 
                 $done = 0;
-                if ($row)
+                if ($row) {
                     $done = $row['total'];
+                }
 
                 $this->setProgress($done, $total);
 
@@ -198,8 +197,9 @@ class task_period_upgradetov32 extends task_abstract
                         $document = $record->get_subdef('document');
 
                         foreach ($document->readTechnicalDatas() as $name => $value) {
-                            if (is_null($value))
+                            if (is_null($value)) {
                                 continue;
+                            }
 
                             $stmt->execute(array(
                                 ':record_id' => $record->get_record_id()
@@ -214,15 +214,6 @@ class task_period_upgradetov32 extends task_abstract
 
                 $connbas->commit();
                 $stmt->closeCursor();
-
-
-
-
-
-
-
-
-
 
                 $sql = 'select record_id, coll_id, xml, BIN(status) as status
           FROM record
@@ -251,7 +242,7 @@ class task_period_upgradetov32 extends task_abstract
 
                         $metadatas = array();
 
-                        if ($sxe = simplexml_load_string($row['xml'])) {
+                        if (($sxe = simplexml_load_string($row['xml'])) != FALSE) {
                             $z = $sxe->xpath('/record/description');
                             if ($z && is_array($z)) {
                                 foreach ($z[0] as $ki => $vi) {
@@ -262,8 +253,9 @@ class task_period_upgradetov32 extends task_abstract
 
                                     $value = (string) $vi;
 
-                                    if (trim($value) === '')
+                                    if (trim($value) === '') {
                                         continue;
+                                    }
 
                                     if ($databox_field->is_multi()) {
                                         $new_value = caption_field::get_multi_values($value, $databox_field->get_separator());
@@ -341,14 +333,14 @@ class task_period_upgradetov32 extends task_abstract
 
         $conn = connection::getPDOConnection();
 
-        printf("taskid %s ending." . PHP_EOL, $this->get_task_id());
+        printf("taskid %s ending." . PHP_EOL, $this->getID());
         sleep(1);
         printf("good bye world I was task upgrade to version 3.2" . PHP_EOL);
 
         $sql = 'UPDATE task2 SET status="tostop" WHERE  task_id = :task_id';
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute(array(':task_id' => $this->get_task_id()));
+        $stmt->execute(array(':task_id' => $this->getID()));
         $stmt->closeCursor();
 
         $this->setProgress(0, 0);
