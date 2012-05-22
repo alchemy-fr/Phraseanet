@@ -110,33 +110,28 @@
             "alias-version": "1.0.9999999.9999999-dev"
         },
         {
-            "package": "silex/silex",
+            "package": "pimple/pimple",
             "version": "dev-master",
-            "source-reference": "24244da60407eff5d08dd5c460a7d23285be6995",
+            "source-reference": "v1.0.0",
             "alias-pretty-version": "1.0.x-dev",
             "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "a0a78aff64ee5e9d218643646fcf819d4a626804"
+            "source-reference": "6dcb25872210c50292516683ba541c1b29624afd",
+            "alias-pretty-version": "1.0.x-dev",
+            "alias-version": "1.0.9999999.9999999-dev"
         },
         {
             "package": "silex/silex",
             "version": "dev-master",
-            "source-reference": "a0a78aff64ee5e9d218643646fcf819d4a626804",
-            "alias-pretty-version": "1.0.x-dev",
-            "alias-version": "1.0.9999999.9999999-dev"
+            "source-reference": "6dcb25872210c50292516683ba541c1b29624afd"
         },
         {
             "package": "swftools/swftools",
             "version": "dev-master",
             "source-reference": "9e7668636baf3ef6c833d3bbd44ba17d4a062942"
-        },
-        {
-            "package": "swiftmailer/swiftmailer",
-            "version": "dev-master",
-            "source-reference": "9895567cec5a13d1a43db5053defbaad260c1b87"
         },
         {
             "package": "swiftmailer/swiftmailer",
@@ -148,26 +143,17 @@
         {
             "package": "swiftmailer/swiftmailer",
             "version": "dev-master",
-            "source-reference": "57789082d1d53529dcf8cd3ca132d9787a59afee",
-            "alias-pretty-version": "4.1.x-dev",
-            "alias-version": "4.1.9999999.9999999-dev"
+            "source-reference": "9895567cec5a13d1a43db5053defbaad260c1b87"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "ea33d4d377bacd6804ab9c304dbbd70cfc5d2860",
-            "alias-pretty-version": "2.1.x-dev",
-            "alias-version": "2.1.9999999.9999999-dev"
+            "source-reference": "e0238071d4f07b46a07177066b6dd74ffb50fa5f"
         },
         {
             "package": "symfony/symfony",
             "version": "dev-master",
-            "source-reference": "ea33d4d377bacd6804ab9c304dbbd70cfc5d2860"
-        },
-        {
-            "package": "symfony/symfony",
-            "version": "dev-master",
-            "source-reference": "1e15f2109633723b710e87184643cad88004b1b9",
+            "source-reference": "e0238071d4f07b46a07177066b6dd74ffb50fa5f",
             "alias-pretty-version": "2.1.x-dev",
             "alias-version": "2.1.9999999.9999999-dev"
         },
@@ -185,13 +171,6 @@
             "package": "twig/twig",
             "version": "dev-master",
             "source-reference": "0fa26d642994630b2ec19c090149fa56ce84c789"
-        },
-        {
-            "package": "twig/twig",
-            "version": "dev-master",
-            "source-reference": "875fa010ce597edf97c04ce6490be950068e9372",
-            "alias-pretty-version": "1.8.x-dev",
-            "alias-version": "1.8.9999999.9999999-dev"
         },
         {
             "package": "twig/twig",

@@ -133,27 +133,27 @@
 
 
     <description>
-        <Objet src="/rdf:RDF/rdf:Description/IPTC:ObjectName" />
-        <Categorie src="/rdf:RDF/rdf:Description/IPTC:Category"/>
-        <AutresCategories src="/rdf:RDF/rdf:Description/IPTC:SupplementalCategories"/>
-        <MotsCles src="/rdf:RDF/rdf:Description/IPTC:Keywords" multi="1"/>
-        <Observations src="/rdf:RDF/rdf:Description/IPTC:SpecialInstructions"/>
-        <Date src="/rdf:RDF/rdf:Description/IPTC:DateCreated" type="date" />
-        <Signature src="/rdf:RDF/rdf:Description/IPTC:By-line"/>
-        <TitreCredits src="/rdf:RDF/rdf:Description/IPTC:By-lineTitle"/>
-        <Ville src="/rdf:RDF/rdf:Description/IPTC:City" />
-        <Province src="/rdf:RDF/rdf:Description/IPTC:Province-State" />
-        <Pays src="/rdf:RDF/rdf:Description/IPTC:Country-PrimaryLocationName" />
-        <ReferencesOriginales src="/rdf:RDF/rdf:Description/IPTC:OriginalTransmissionReference" />
-        <Titre src="/rdf:RDF/rdf:Description/IPTC:Headline" report="1" />
-        <Credit src="/rdf:RDF/rdf:Description/IPTC:Credit" report="1" />
-        <Source src="/rdf:RDF/rdf:Description/IPTC:Source" />
-        <Legende src="/rdf:RDF/rdf:Description/IPTC:Caption-Abstract" />
-        <Redacteur src="/rdf:RDF/rdf:Description/IPTC:Writer-Editor" />
-        <Longitude src="/rdf:RDF/rdf:Description/GPS:GPSLongitude" readonly="1"/>
-        <Latitude src="/rdf:RDF/rdf:Description/GPS:GPSLatitude" readonly="1"/>
-        <AppareilPhoto src="/rdf:RDF/rdf:Description/IFD0:Model" readonly="1"/>
-        <NomDeFichier src="/rdf:RDF/rdf:Description/PHRASEANET:tf-basename" readonly="1" type="text" />
+        <Objet src="IPTC:ObjectName" />
+        <Categorie src="IPTC:Category"/>
+        <AutresCategories src="IPTC:SupplementalCategories"/>
+        <MotsCles src="IPTC:Keywords" multi="1"/>
+        <Observations src="IPTC:SpecialInstructions"/>
+        <Date src="IPTC:DateCreated" type="date" />
+        <Signature src="IPTC:By-line"/>
+        <TitreCredits src="IPTC:By-lineTitle"/>
+        <Ville src="IPTC:City" />
+        <Province src="IPTC:Province-State" />
+        <Pays src="IPTC:Country-PrimaryLocationName" />
+        <ReferencesOriginales src="IPTC:OriginalTransmissionReference" />
+        <Titre src="IPTC:Headline" report="1" />
+        <Credit src="IPTC:Credit" report="1" />
+        <Source src="IPTC:Source" />
+        <Legende src="IPTC:Caption-Abstract" />
+        <Redacteur src="IPTC:Writer-Editor" />
+        <Longitude src="GPS:GPSLongitude" readonly="1"/>
+        <Latitude src="GPS:GPSLatitude" readonly="1"/>
+        <AppareilPhoto src="IFD0:Model" readonly="1"/>
+        <NomDeFichier src="Phraseanet:tf-basename" readonly="1" type="text" />
     </description>
 
     <statbits>

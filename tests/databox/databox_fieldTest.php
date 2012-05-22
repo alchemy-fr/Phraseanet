@@ -146,7 +146,7 @@ class databox_fieldTest extends PhraseanetPHPUnitAbstract
 
     public function testSet_tag()
     {
-        $source = \databox_field::loadClassFromTagName('/rdf:RDF/rdf:Description/PHRASEANET:tf-basename');
+        $source = \databox_field::loadClassFromTagName('Phraseanet:tf-basename');
 
         $this->object_mono->set_tag($source);
         $this->object_multi->set_tag($source);
