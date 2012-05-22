@@ -11,25 +11,10 @@
 
 namespace Alchemy\Phrasea;
 
-use Symfony\Component\HttpFoundation\Request,
-    Symfony\Component\Serializer;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer;
 use Alchemy\Phrasea\Core\Configuration;
-
-require_once __DIR__ . '/../../../vendor/pimple/pimple/lib/Pimple.php';
-
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/Yaml/Yaml.php';
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/Yaml/Parser.php';
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/Yaml/Inline.php';
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/Yaml/Unescaper.php';
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/File/File.php';
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/File/Exception/FileException.php';
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/File/Exception/FileNotFoundException.php';
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/DependencyInjection/ParameterBag/ParameterBagInterface.php';
-require_once __DIR__ . '/../../../vendor/symfony/symfony/src/Symfony/Component/DependencyInjection/ParameterBag/ParameterBag.php';
-
-require_once __DIR__ . '/Core/Configuration/Specification.php';
-require_once __DIR__ . '/Core/Configuration.php';
-require_once __DIR__ . '/Core/Configuration/ApplicationSpecification.php';
+use Alchemy\Phrasea\Loader;
 
 /**
  *
@@ -398,12 +383,8 @@ class Core extends \Pimple
             return;
         }
 
-        require_once __DIR__ . '/Loader/Autoloader.php';
-
         if ($cacheAutoload === true) {
             try {
-                require_once __DIR__ . '/Loader/CacheAutoloader.php';
-
                 $prefix = 'class_';
                 $namespace = md5(__DIR__);
 
@@ -427,20 +408,7 @@ class Core extends \Pimple
                 $loader->registerNamespace($prefix, $path);
         }
 
-        $loader->registerNamespaces(array(
-            'Entities'         => realpath(__DIR__ . '/../../Doctrine/'),
-            'Repositories'     => realpath(__DIR__ . '/../../Doctrine/'),
-            'Proxies'          => realpath(__DIR__ . '/../../Doctrine/'),
-            'Doctrine\\Logger' => realpath(__DIR__ . '/../../'),
-            'Types'            => realpath(__DIR__ . "/../../Doctrine"),
-            'PhraseaFixture'   => realpath(__DIR__ . "/../../conf.d"),
-        ));
-
         $loader->register();
-
-        set_include_path(
-            get_include_path() . PATH_SEPARATOR . realpath(__DIR__ . '/../../../vendor/zend/gdata/library')
-        );
 
         static::$autoloader_initialized = true;
 

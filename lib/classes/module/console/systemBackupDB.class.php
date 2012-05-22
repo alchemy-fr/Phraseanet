@@ -49,8 +49,6 @@ class module_console_systemBackupDB extends Command
             return 1;
         }
 
-        require_once __DIR__ . '/../../../../lib/bootstrap.php';
-
         $output->write('Phraseanet is going to be backup...', true);
 
         $appbox = appbox::get_instance(\bootstrap::getCore());
