@@ -3,14 +3,13 @@
 require_once __DIR__ . '/../../PhraseanetWebTestCaseAuthenticatedAbstract.class.inc';
 
 use Symfony\Component\Console\Tester\CommandTester;
-use \Symfony\Component\Console\Application;
+use Symfony\Component\Console\Application;
 
-class module_console_taskStateTest extends PHPUnit_Framework_TestCase
+class module_console_taskStateTest extends PhraseanetPHPUnitAbstract
 {
 
     /**
-     * @covers {className}::{origMethodName}
-     * @todo Implement testExecute().
+     * @covers module_console_taskState::execute
      */
     public function testExecute()
     {
