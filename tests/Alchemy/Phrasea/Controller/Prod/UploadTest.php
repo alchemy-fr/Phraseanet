@@ -12,11 +12,14 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      * @return Client A Client instance
      */
     protected $client;
+    protected $tmpFile;
     protected static $need_records = false;
 
     public function setUp()
     {
         parent::setUp();
+        $this->tmpFile = sys_get_temp_dir() . '/' . time() . mt_rand(1000, 9999) . '.jpg';
+        copy(__DIR__ . '/../../../../testfiles/cestlafete.jpg', $this->tmpFile);
         $this->client = $this->createClient();
     }
 
@@ -27,6 +30,9 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
 
     public function tearDown()
     {
+        if (file_exists($this->tmpFile)) {
+            unlink($this->tmpFile);
+        }
         parent::tearDown();
     }
 
@@ -52,7 +58,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                    $this->tmpFile, 'KIKOO.JPG'
                 )
             )
         );
@@ -82,7 +88,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                   $this->tmpFile, 'KIKOO.JPG'
                 )
             )
         );
@@ -106,7 +112,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                    $this->tmpFile, 'KIKOO.JPG'
                 )
             )
         );
@@ -127,7 +133,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
     public function testUploadInvalidFile()
     {
         $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG', 'image/jpeg', 123, UPLOAD_ERR_NO_FILE
+                $this->tmpFile, 'KIKOO.JPG', 'image/jpeg', 123, UPLOAD_ERR_NO_FILE
         );
 
         $params = array('base_id' => self::$collection->get_base_id());
@@ -152,7 +158,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                    $this->tmpFile, 'KIKOO.JPG'
                 )
             )
         );
@@ -176,10 +182,10 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                    $this->tmpFile, 'KIKOO.JPG'
                 ),
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                    $this->tmpFile, 'KIKOO.JPG'
                 )
             )
         );
@@ -207,7 +213,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                    $this->tmpFile, 'KIKOO.JPG'
                 )
             )
         );
@@ -243,7 +249,7 @@ class UploadTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $files = array(
             'files' => array(
                 new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                    __DIR__ . '/../../../../testfiles/cestlafete.jpg', 'KIKOO.JPG'
+                    $this->tmpFile, 'KIKOO.JPG'
                 )
             )
         );
