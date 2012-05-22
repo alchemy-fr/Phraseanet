@@ -279,7 +279,7 @@ class LazaretFile
      */
     public function getCollection()
     {
-        return collection::get_from_base_id($this->getBaseId());
+        return \collection::get_from_base_id($this->getBaseId());
     }
 
     /**

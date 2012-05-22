@@ -38,11 +38,11 @@ class LazaretSession
     {
         $this->files = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -62,13 +62,22 @@ class LazaretSession
     }
 
     /**
-     * Get usr_id
+     * Get user
      *
-     * @return integer 
+     * @return \User_Adapte
      */
-    public function getUsrId()
+    public function getUser()
     {
-        return $this->usr_id;
+        $user = null;
+
+        try{
+            $appbox = \appbox::get_instance(\bootstrap::getCore());
+            $user = \User_Adapter::getInstance($this->usr_id, $appbox);
+        }catch(\Exception $e){
+
+        }
+
+        return $user;
     }
 
     /**
@@ -86,7 +95,7 @@ class LazaretSession
     /**
      * Get created
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getCreated()
     {
@@ -108,7 +117,7 @@ class LazaretSession
     /**
      * Get updated
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getUpdated()
     {
@@ -118,10 +127,10 @@ class LazaretSession
     /**
      * Add files
      *
-     * @param Entities\LazaretFiles $files
+     * @param Entities\LazaretFile $files
      * @return LazaretSession
      */
-    public function addLazaretFiles(\Entities\LazaretFiles $files)
+    public function addLazaretFiles(\Entities\LazaretFile $files)
     {
         $this->files[] = $files;
         return $this;
@@ -130,7 +139,7 @@ class LazaretSession
     /**
      * Get files
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getFiles()
     {
