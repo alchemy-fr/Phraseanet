@@ -86,20 +86,20 @@ class File
             return $this->uuid;
         }
 
+        $availableUUIDs = array(
+            'XMP-exif:ImageUniqueID',
+            'SigmaRaw:ImageUniqueID',
+            'IPTC:UniqueDocumentID',
+            'ExifIFD:ImageUniqueID',
+            'Canon:ImageUniqueID',
+        );
+
         if ( ! $this->uuid) {
             $metadatas = $this->media->getEntity()->getMetadatas();
 
-            $available = array(
-                'XMP-exif:ImageUniqueID',
-                'SigmaRaw:ImageUniqueID',
-                'IPTC:UniqueDocumentID',
-                'ExifIFD:ImageUniqueID',
-                'Canon:ImageUniqueID',
-            );
-
             $uuid = null;
 
-            foreach ($available as $meta) {
+            foreach ($availableUUIDs as $meta) {
                 if ($metadatas->containsKey($meta)) {
                     $candidate = $metadatas->get($meta)->getValue()->asString();
                     if (\uuid::is_valid($candidate)) {
@@ -122,10 +122,10 @@ class File
         if ($write) {
             $writer = new Writer();
 
-            $value = new MonoValue($uuid);
+            $value = new MonoValue($this->uuid);
             $metadatas = new MetadataBag();
 
-            foreach ($available as $tagname) {
+            foreach ($availableUUIDs as $tagname) {
                 $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
             }
 
