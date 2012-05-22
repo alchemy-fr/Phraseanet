@@ -18,9 +18,6 @@ before_script:
   - tar -xzf gmagick-1.1.0RC2.tgz
   - sh -c "cd gmagick-1.1.0RC2 && phpize && ./configure --with-gmagick=/usr/local && make && sudo make install"
   - echo "extension=gmagick.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
-#  - wget http://www.swftools.org/swftools-0.9.1.tar.gz
-#  - sh -c "tar xzvf swftools-0.9.1.tar.gz && cd swftools-0.9.1 && ./configure && make && sudo make install"
-#  - sudo apt-get install -y mplayer ffmpeg ufraw dcraw libavcodec-extra-53 openoffice.org openoffice.org-writer unoconv ghostscript gsfonts ufraw graphicsmagick libgraphicsmagick1-dev libfreetype6-dev libjpeg-dev libgif-dev libtiff-dev libdjvulibre-dev libwmf-dev libmagickcore-dev libmagickwand-dev libpng-dev xpdf libexpat-dev gettext zlib1g-dev build-essential libfaac-dev libmp3lame0 libx264-dev libvpx-dev libtheora-dev libvorbis-dev gpac
 
 notifications:
   irc:
