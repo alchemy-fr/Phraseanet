@@ -35,3 +35,5 @@ php:
 branches:
   except:
     - master
+
+script: phpunit -c phpunit.xml.dist tests/Alchemy/Phrasea/Application/ApiJsonTest.php
