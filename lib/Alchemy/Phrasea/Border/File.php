@@ -11,6 +11,7 @@
 
 namespace Alchemy\Phrasea\Border;
 
+use Alchemy\Phrasea\Media\Type as MediaType;
 use MediaVorus\Media\Media;
 use MediaVorus\MediaVorus;
 use PHPExiftool\Reader;
@@ -86,20 +87,20 @@ class File
             return $this->uuid;
         }
 
+        $availableUUIDs = array(
+            'XMP-exif:ImageUniqueID',
+            'SigmaRaw:ImageUniqueID',
+            'IPTC:UniqueDocumentID',
+            'ExifIFD:ImageUniqueID',
+            'Canon:ImageUniqueID',
+        );
+
         if ( ! $this->uuid) {
             $metadatas = $this->media->getEntity()->getMetadatas();
 
-            $available = array(
-                'XMP-exif:ImageUniqueID',
-                'SigmaRaw:ImageUniqueID',
-                'IPTC:UniqueDocumentID',
-                'ExifIFD:ImageUniqueID',
-                'Canon:ImageUniqueID',
-            );
-
             $uuid = null;
 
-            foreach ($available as $meta) {
+            foreach ($availableUUIDs as $meta) {
                 if ($metadatas->containsKey($meta)) {
                     $candidate = $metadatas->get($meta)->getValue()->asString();
                     if (\uuid::is_valid($candidate)) {
@@ -122,19 +123,53 @@ class File
         if ($write) {
             $writer = new Writer();
 
-            $value = new MonoValue($uuid);
+            $value = new MonoValue($this->uuid);
             $metadatas = new MetadataBag();
 
-            foreach ($available as $tagname) {
+            foreach ($availableUUIDs as $tagname) {
                 $metadatas->add(new Metadata(TagFactory::getFromRDFTagname($tagname), $value));
             }
 
-            $writer->write($this->getFile()->getRealPath(), $metadatas);
+            /**
+             * PHPExiftool throws exception on some files not supported
+             */
+            try {
+                $writer->write($this->getFile()->getRealPath(), $metadatas);
+            } catch (\PHPExiftool\Exception\Exception $e) {
+
+            }
         }
 
         $writer = $reader = $metadatas = null;
 
         return $this->uuid;
+    }
+
+    /**
+     *
+     * @return \Alchemy\Phrasea\Media\Type\Type|null
+     */
+    public function getType()
+    {
+        switch ($this->media->getType()) {
+            case Media::TYPE_AUDIO:
+                return new MediaType\Audio();
+                break;
+            case Media::TYPE_DOCUMENT:
+                return new MediaType\Document();
+                break;
+            case Media::TYPE_FLASH:
+                return new MediaType\Flash();
+                break;
+            case Media::TYPE_IMAGE:
+                return new MediaType\Image();
+                break;
+            case Media::TYPE_VIDEO:
+                return new MediaType\Video();
+                break;
+        }
+
+        return null;
     }
 
     /**
@@ -166,9 +201,9 @@ class File
     }
 
     /**
-     * Returns the SplFileInfo related to the document
+     * Returns the MediaVorus File related to the document
      *
-     * @return \SplFileInfo
+     * @return \MediaVorus\File
      */
     public function getFile()
     {

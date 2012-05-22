@@ -55,32 +55,32 @@ class API_V1_adapterTest extends PhraseanetPHPUnitAuthenticatedAbstract
     public function testGet_error_message()
     {
         $request = new Request(array(), array(), array(), array(), array(), array('HTTP_Accept' => 'application/json'));
-        $result = $this->object->get_error_message($request, API_V1_result::ERROR_BAD_REQUEST);
+        $result = $this->object->get_error_message($request, API_V1_result::ERROR_BAD_REQUEST, 'detaillage');
         $this->assertTrue(is_object(json_decode($result->format())));
         $this->assertEquals(400, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
 
-        $result = $this->object->get_error_message($request, API_V1_result::ERROR_FORBIDDEN);
+        $result = $this->object->get_error_message($request, API_V1_result::ERROR_FORBIDDEN, 'detaillage');
         $this->assertTrue(is_object(json_decode($result->format())));
         $this->assertEquals(403, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
 
-        $result = $this->object->get_error_message($request, API_V1_result::ERROR_INTERNALSERVERERROR);
+        $result = $this->object->get_error_message($request, API_V1_result::ERROR_INTERNALSERVERERROR, 'detaillage');
         $this->assertTrue(is_object(json_decode($result->format())));
         $this->assertEquals(500, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
 
-        $result = $this->object->get_error_message($request, API_V1_result::ERROR_METHODNOTALLOWED);
+        $result = $this->object->get_error_message($request, API_V1_result::ERROR_METHODNOTALLOWED, 'detaillage');
         $this->assertTrue(is_object(json_decode($result->format())));
         $this->assertEquals(405, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
 
-        $result = $this->object->get_error_message($request, API_V1_result::ERROR_NOTFOUND);
+        $result = $this->object->get_error_message($request, API_V1_result::ERROR_NOTFOUND, 'detaillage');
         $this->assertTrue(is_object(json_decode($result->format())));
         $this->assertEquals(404, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());
 
-        $result = $this->object->get_error_message($request, API_V1_result::ERROR_UNAUTHORIZED);
+        $result = $this->object->get_error_message($request, API_V1_result::ERROR_UNAUTHORIZED, 'detaillage');
         $this->assertTrue(is_object(json_decode($result->format())));
         $this->assertEquals(401, $result->get_http_code());
         $this->assertEquals('application/json', $result->get_content_type());

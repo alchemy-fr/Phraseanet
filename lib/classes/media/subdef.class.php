@@ -464,13 +464,7 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
      */
     public function get_size()
     {
-        try {
-            $system_file = new system_file($this->path . $this->file);
-
-            return $system_file->getSize();
-        } catch (Exception $e) {
-            return 0;
-        }
+        return filesize($this->get_pathfile());
     }
 
     /**
@@ -632,51 +626,61 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
 
         $media = MediaVorus::guess(new \SplFileInfo($this->get_pathfile()));
 
-        switch ($media->getType()) {
-            case Media::TYPE_IMAGE:
-                $datas = array(
-                    self::TC_DATA_WIDTH              => $media->getWidth(),
-                    self::TC_DATA_HEIGHT             => $media->getHeight(),
-                    self::TC_DATA_FOCALLENGTH        => $media->getFocalLength(),
-                    self::TC_DATA_CHANNELS           => $media->getChannels(),
-                    self::TC_DATA_COLORDEPTH         => $media->getColorDepth(),
-                    self::TC_DATA_CAMERAMODEL        => $media->getCameraModel(),
-                    self::TC_DATA_FLASHFIRED         => $media->getFlashFired(),
-                    self::TC_DATA_APERTURE           => $media->getAperture(),
-                    self::TC_DATA_SHUTTERSPEED       => $media->getShutterSpeed(),
-                    self::TC_DATA_HYPERFOCALDISTANCE => $media->getHyperfocalDistance(),
-                    self::TC_DATA_ISO                => $media->getISO(),
-                    self::TC_DATA_LIGHTVALUE         => $media->getLightValue(),
-                    self::TC_DATA_COLORSPACE         => $media->getColorSpace(),
-                );
-                break;
-            case Media::TYPE_VIDEO:
-                $datas = array(
-                    self::TC_DATA_WIDTH              => $media->getWidth(),
-                    self::TC_DATA_HEIGHT             => $media->getHeight(),
-                    self::TC_DATA_FOCALLENGTH        => $media->getFocalLength(),
-                    self::TC_DATA_CHANNELS           => $media->getChannels(),
-                    self::TC_DATA_COLORDEPTH         => $media->getColorDepth(),
-                    self::TC_DATA_CAMERAMODEL        => $media->getCameraModel(),
-                    self::TC_DATA_FLASHFIRED         => $media->getFlashFired(),
-                    self::TC_DATA_APERTURE           => $media->getAperture(),
-                    self::TC_DATA_SHUTTERSPEED       => $media->getShutterSpeed(),
-                    self::TC_DATA_HYPERFOCALDISTANCE => $media->getHyperfocalDistance(),
-                    self::TC_DATA_ISO                => $media->getISO(),
-                    self::TC_DATA_LIGHTVALUE         => $media->getLightValue(),
-                    self::TC_DATA_COLORSPACE         => $media->getColorSpace(),
-                    self::TC_DATA_DURATION           => $media->getDuration(),
-                    self::TC_DATA_FRAMERATE          => $media->getFrameRate(),
-                    self::TC_DATA_AUDIOSAMPLERATE    => $media->getAudioSampleRate(),
-                    self::TC_DATA_VIDEOCODEC         => $media->getVideoCodec(),
-                    self::TC_DATA_AUDIOCODEC         => $media->getAudioCodec(),
-                );
-                break;
-            case Media::TYPE_FLASH:
-            case Media::TYPE_AUDIO:
-            case Media::TYPE_DOCUMENT:
-            default:
-                break;
+        $datas = array();
+
+        if (method_exists($media, 'getWidth')) {
+            $datas[self::TC_DATA_WIDTH] = $media->getWidth();
+        }
+        if (method_exists($media, 'getHeight')) {
+            $datas[self::TC_DATA_HEIGHT] = $media->getHeight();
+        }
+        if (method_exists($media, 'getFocalLength')) {
+            $datas[self::TC_DATA_FOCALLENGTH] = $media->getFocalLength();
+        }
+        if (method_exists($media, 'getChannels')) {
+            $datas[self::TC_DATA_CHANNELS] = $media->getChannels();
+        }
+        if (method_exists($media, 'getColorDepth')) {
+            $datas[self::TC_DATA_COLORDEPTH] = $media->getColorDepth();
+        }
+        if (method_exists($media, 'getCameraModel')) {
+            $datas[self::TC_DATA_CAMERAMODEL] = $media->getCameraModel();
+        }
+        if (method_exists($media, 'getFlashFired')) {
+            $datas[self::TC_DATA_FLASHFIRED] = $media->getFlashFired();
+        }
+        if (method_exists($media, 'getAperture')) {
+            $datas[self::TC_DATA_APERTURE] = $media->getAperture();
+        }
+        if (method_exists($media, 'getShutterSpeed')) {
+            $datas[self::TC_DATA_SHUTTERSPEED] = $media->getShutterSpeed();
+        }
+        if (method_exists($media, 'getHyperfocalDistance')) {
+            $datas[self::TC_DATA_HYPERFOCALDISTANCE] = $media->getHyperfocalDistance();
+        }
+        if (method_exists($media, 'getISO')) {
+            $datas[self::TC_DATA_ISO] = $media->getISO();
+        }
+        if (method_exists($media, 'getLightValue')) {
+            $datas[self::TC_DATA_LIGHTVALUE] = $media->getLightValue();
+        }
+        if (method_exists($media, 'getColorSpace')) {
+            $datas[self::TC_DATA_COLORSPACE] = $media->getColorSpace();
+        }
+        if (method_exists($media, 'getDuration')) {
+            $datas[self::TC_DATA_DURATION] = $media->getDuration();
+        }
+        if (method_exists($media, 'getFrameRate')) {
+            $datas[self::TC_DATA_FRAMERATE] = $media->getFrameRate();
+        }
+        if (method_exists($media, 'getAudioSampleRate')) {
+            $datas[self::TC_DATA_AUDIOSAMPLERATE] = $media->getAudioSampleRate();
+        }
+        if (method_exists($media, 'getVideoCodec')) {
+            $datas[self::TC_DATA_VIDEOCODEC] = $media->getVideoCodec();
+        }
+        if (method_exists($media, 'getAudioCodec')) {
+            $datas[self::TC_DATA_AUDIOCODEC] = $media->getAudioCodec();
         }
 
         $datas[self::TC_DATA_LONGITUDE] = $media->getLongitude();
@@ -689,23 +693,13 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
         return $datas;
     }
 
-    /**
-     *
-     * @param record_Interface $record
-     * @param string $name
-     * @param system_file $system_file
-     * @param string $baseurl
-     * @return media_subdef
-     */
-    public static function create(record_Interface $record, $name, system_file $system_file, $baseurl = '')
+    public static function create(record_Interface $record, $name, Media $media, $baseurl = '')
     {
         $databox = $record->get_databox();
         $connbas = $databox->get_connection();
 
-        $media = MediaVorus::guess($system_file);
-
-        $path = $system_file->getPath();
-        $newname = $system_file->getFilename();
+        $path = $media->getFile()->getPath();
+        $newname = $media->getFile()->getFilename();
 
         $params = array(
             ':path'       => $path,
@@ -713,8 +707,8 @@ class media_subdef extends media_abstract implements cache_cacheableInterface
             ':baseurl'    => $baseurl,
             ':width'      => 0,
             ':height'     => 0,
-            ':mime'       => $system_file->get_mime(),
-            ':size'       => $system_file->getSize(),
+            ':mime'       => $media->getFile()->getMimeType(),
+            ':size'       => $media->getFile()->getSize(),
             ':dispatched' => 1,
         );
 

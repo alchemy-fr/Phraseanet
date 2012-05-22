@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -42,9 +44,7 @@ if ($user->ACL()->has_right_on_sbas($sbas_id, 'bas_manage')) {
         case "SENDLOGOPDF":
             if (isset($_FILES['newLogoPdf']) && $_FILES['newLogoPdf']['error'] == UPLOAD_ERR_OK) {
                 if ($_FILES['newLogoPdf']['size'] < 65536) {
-                    $filenameTemp = $_FILES['newLogoPdf']["tmp_name"];
-                    $system_file = new system_file($_FILES['newLogoPdf']["tmp_name"]);
-                    $appbox->write_databox_pic($databox, $system_file, databox::PIC_PDF);
+                    $appbox->write_databox_pic($databox, new SymfoFile($_FILES['newLogoPdf']["tmp_name"]), databox::PIC_PDF);
                     unlink($_FILES['newLogoPdf']["tmp_name"]);
                 } else {
                     $printLogoUploadMsg = _('forms::erreur lors de l\'envoi du fichier');

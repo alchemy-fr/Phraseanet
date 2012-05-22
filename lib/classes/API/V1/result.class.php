@@ -43,6 +43,12 @@ class API_V1_result
      *
      * @var string
      */
+    protected $error_type;
+
+    /**
+     *
+     * @var string
+     */
     protected $error_message;
 
     /**
@@ -172,6 +178,7 @@ class API_V1_result
                 , 'request'       => $request_uri
                 , 'response_time' => $this->response_time
                 , 'http_code'     => $this->http_code
+                , 'error_type'    => $this->error_type
                 , 'error_message' => $this->error_message
                 , 'error_details' => $this->error_details
                 , 'charset'       => 'UTF-8'
@@ -227,47 +234,49 @@ class API_V1_result
     }
 
     /**
-     * Set the API_V1_result http_code, error_message and error_details
+     * Set the API_V1_result http_code, error_type, error_message and error_details
      * with the appropriate datas
      *
      * @param string $const
      * @return API_V1_result
      */
-    public function set_error_message($const)
+    public function set_error_message($const, $message)
     {
+        $this->error_details = $message;
+
         switch ($const) {
             case self::ERROR_BAD_REQUEST:
                 $this->http_code = 400;
-                $this->error_message = $const;
-                $this->error_details = API_V1_exception_badrequest::get_details();
+                $this->error_type = $const;
+                $this->error_message = API_V1_exception_badrequest::get_details();
                 break;
             case self::ERROR_UNAUTHORIZED:
                 $this->http_code = 401;
-                $this->error_message = $const;
-                $this->error_details = API_V1_exception_unauthorized::get_details();
+                $this->error_type = $const;
+                $this->error_message = API_V1_exception_unauthorized::get_details();
                 break;
             case self::ERROR_FORBIDDEN:
                 $this->http_code = 403;
-                $this->error_message = $const;
-                $this->error_details = API_V1_exception_forbidden::get_details();
+                $this->error_type = $const;
+                $this->error_message = API_V1_exception_forbidden::get_details();
                 break;
             case self::ERROR_NOTFOUND:
                 $this->http_code = 404;
-                $this->error_message = $const;
-                $this->error_details = API_V1_exception_notfound::get_details();
+                $this->error_type = $const;
+                $this->error_message = API_V1_exception_notfound::get_details();
                 break;
             case self::ERROR_METHODNOTALLOWED:
                 $this->http_code = 405;
-                $this->error_message = $const;
-                $this->error_details = API_V1_exception_methodnotallowed::get_details();
+                $this->error_type = $const;
+                $this->error_message = API_V1_exception_methodnotallowed::get_details();
                 break;
             case self::ERROR_INTERNALSERVERERROR:
                 $this->http_code = 500;
-                $this->error_message = $const;
-                $this->error_details = API_V1_exception_internalservererror::get_details();
+                $this->error_type = $const;
+                $this->error_message = API_V1_exception_internalservererror::get_details();
                 break;
             case OAUTH2_ERROR_INVALID_REQUEST:
-                $this->error_message = $const;
+                $this->error_type = $const;
                 break;
         }
 
@@ -286,33 +295,33 @@ class API_V1_result
         switch ($code = (int) $code) {
             case 400:
                 $this->http_code = $code;
-                $this->error_message = self::ERROR_BAD_REQUEST;
-                $this->error_details = API_V1_exception_badrequest::get_details();
+                $this->error_type = self::ERROR_BAD_REQUEST;
+                $this->error_message = API_V1_exception_badrequest::get_details();
                 break;
             case 401:
                 $this->http_code = $code;
-                $this->error_message = self::ERROR_UNAUTHORIZED;
-                $this->error_details = API_V1_exception_unauthorized::get_details();
+                $this->error_type = self::ERROR_UNAUTHORIZED;
+                $this->error_message = API_V1_exception_unauthorized::get_details();
                 break;
             case 403:
                 $this->http_code = $code;
-                $this->error_message = self::ERROR_FORBIDDEN;
-                $this->error_details = API_V1_exception_forbidden::get_details();
+                $this->error_type = self::ERROR_FORBIDDEN;
+                $this->error_message = API_V1_exception_forbidden::get_details();
                 break;
             case 404:
                 $this->http_code = $code;
-                $this->error_message = self::ERROR_NOTFOUND;
-                $this->error_details = API_V1_exception_notfound::get_details();
+                $this->error_type = self::ERROR_NOTFOUND;
+                $this->error_message = API_V1_exception_notfound::get_details();
                 break;
             case 405:
                 $this->http_code = $code;
-                $this->error_message = self::ERROR_METHODNOTALLOWED;
-                $this->error_details = API_V1_exception_methodnotallowed::get_details();
+                $this->error_type = self::ERROR_METHODNOTALLOWED;
+                $this->error_message = API_V1_exception_methodnotallowed::get_details();
                 break;
             case 500:
                 $this->http_code = $code;
-                $this->error_message = self::ERROR_INTERNALSERVERERROR;
-                $this->error_details = API_V1_exception_internalservererror::get_details();
+                $this->error_type = self::ERROR_INTERNALSERVERERROR;
+                $this->error_message = API_V1_exception_internalservererror::get_details();
                 break;
         }
 

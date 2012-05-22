@@ -311,7 +311,7 @@ interface API_V1_Interface
      */
     public function add_user(\Symfony\Component\HttpFoundation\Request $request);
 
-    public function get_error_message(\Symfony\Component\HttpFoundation\Request $request, $error);
+    public function get_error_message(\Symfony\Component\HttpFoundation\Request $request, $error, $message);
 
     public function get_error_code(\Symfony\Component\HttpFoundation\Request $request, $code);
 }

@@ -11,7 +11,7 @@
 </h1>
 <hr/>
 <div>
-  {% trans 'Source' %} : {{ field.get_metadata_namespace() }} / {{ field.get_metadata_tagname() }}
+  {% trans 'Source' %} : {{ field.get_tag().getGroupName() }} / {{ field.get_tag().getName() }}
 </div>
 
 {% if field.is_indexable() is empty %}

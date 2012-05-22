@@ -25,18 +25,20 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = \appbox::get_instance(\bootstrap::getCore());
         $databox = array_shift($appbox->get_databoxes());
 
+        $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
+
         $field = \databox_field::create($databox, "test" . time());
-        $source = $field->get_source();
+        $field->set_tag($tag)->save();
 
         $this->client->request("GET", "/fields/checkmulti/", array(
-            'souce' => $source, 'multi' => 'false'));
+            'source' => $tag->getTagname(), 'multi'  => 'false'));
 
         $response = $this->client->getResponse();
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
-        $this->assertTrue( ! ! $datas->result);
-        $this->assertEquals($field->is_multi(),  ! ! $datas->is_multi);
+        $this->assertTrue($datas->result);
+        $this->assertEquals($field->is_multi(), $datas->is_multi);
         $field->delete();
     }
 
@@ -45,18 +47,20 @@ class ControllerFieldsTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
         $appbox = \appbox::get_instance(\bootstrap::getCore());
         $databox = array_shift($appbox->get_databoxes());
 
+        $tag = new PHPExiftool\Driver\Tag\IPTC\ObjectName();
+
         $field = \databox_field::create($databox, "test" . time());
-        $source = $field->get_source();
+        $field->set_tag($tag)->save();
 
         $this->client->request("GET", "/fields/checkreadonly/", array(
-            'souce'    => $source, 'readonly' => 'false'));
+            'source'   => $tag->getTagname(), 'readonly' => 'false'));
 
         $response = $this->client->getResponse();
         $this->assertEquals("application/json", $response->headers->get("content-type"));
         $datas = json_decode($response->getContent());
         $this->assertTrue(is_object($datas));
-        $this->assertTrue( ! ! $datas->result);
-        $this->assertEquals($field->is_readonly(),  ! ! $datas->is_readonly);
+        $this->assertTrue($datas->result);
+        $this->assertEquals($field->is_readonly(), $datas->is_readonly);
 
         $field->delete();
     }

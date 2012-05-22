@@ -64,7 +64,7 @@ class LazaretSession
     /**
      * Get user
      *
-     * @return \User_Adapte
+     * @return \User_Adapter
      */
     public function getUser()
     {

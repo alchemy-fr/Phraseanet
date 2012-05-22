@@ -1,7 +1,5 @@
-/nbproject/*
-/config/*
+nbproject
+config
 .DS_Store
-!.gitignore
-/vendor/
-composer.lock
+vendor
 composer.phar

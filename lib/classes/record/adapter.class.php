@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use MediaVorus\Media\Media;
+use Symfony\Component\HttpFoundation\File\File as SymfoFile;
+
 /**
  *
  *
@@ -810,7 +813,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         $this->original_name = $original_name;
 
         foreach ($this->get_databox()->get_meta_structure()->get_elements() as $data_field) {
-            if ($data_field->get_metadata_source() != metadata_description_PHRASEANET_tffilename::get_source()) {
+
+            if ($data_field->get_tag() instanceof \Alchemy\Phrasea\Metadata\Tag\TfFilename) {
+                $original_name = pathinfo($original_name, PATHINFO_FILENAME);
+            } elseif ( ! $data_field->get_tag() instanceof \Alchemy\Phrasea\Metadata\Tag\TfBasename) {
                 continue;
             }
 
@@ -939,34 +945,27 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         return $this->get_databox()->get_sbas_id();
     }
 
-    /**
-     *
-     * @param string $name subdef name
-     * @param system_file $pathfile new file
-     * @return record_adapter
-     */
-    public function substitute_subdef($name, system_file $pathfile)
+    public function substitute_subdef($name, Media $media)
     {
-        $newfilename = $this->record_id . '_0_' . $name
-            . '.' . $pathfile->get_extension();
+        $core = \bootstrap::getCore();
+
+        $newfilename = $this->record_id . '_0_' . $name . '.' . $media->getFile()->getExtension();
 
         $base_url = '';
 
-        $media = MediaVorus\MediaVorus::guess($pathfile);
-
-        $original_file = $subdef_def = false;
+        $subdef_def = false;
 
         if ($name == 'document') {
             $baseprefs = $this->get_databox()->get_sxml_structure();
 
             $pathhd = p4string::addEndSlash((string) ($baseprefs->path));
 
-            $filehd = $this->get_record_id() . "_document." . $pathfile->get_extension(true);
+            $filehd = $this->get_record_id() . "_document." . strtolower($media->getFile()->getExtension());
             $pathhd = databox::dispatch($pathhd);
 
-            copy($pathfile->getPathname(), $pathhd . $filehd);
+            $core['file-system']->copy($media->getFile()->getRealPath(), $pathhd . $filehd, true);
 
-            $system_file = new system_file($pathhd . $filehd);
+            $subdefFile = new \Symfony\Component\HttpFoundation\File\File($pathhd . $filehd);
 
             $meta_writable = true;
         } else {
@@ -974,16 +973,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             if ($this->has_subdef($name) && ! $this->get_subdef($name)->is_substituted()) {
 
-                $original_file = $this->get_subdef($name)->get_pathfile();
+                $path_file_dest = $this->get_subdef($name)->get_pathfile();
                 $this->get_subdef($name)->remove_file();
                 $this->clearSubdefCache($name);
             } else {
                 $path = databox::dispatch($subdef_def->get_path());
-                system_file::mkdir($path);
-                $original_file = $path . $newfilename;
+                $core['file-system']->mkdir($path, 0750);
+                $path_file_dest = $path . $newfilename;
             }
-
-            $path_file_dest = $original_file;
 
             if (trim($subdef_def->get_baseurl()) !== '') {
                 $base_url = str_replace(
@@ -995,18 +992,19 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
             try {
                 $Core = \bootstrap::getCore();
-                $Core['media-alchemyst']->open($pathfile->getPathname())
+                $Core['media-alchemyst']->open($media->getFile()->getRealPath())
                     ->turnInto($path_file_dest, $subdef_def->getSpecs())
                     ->close();
             } catch (\MediaAlchemyst\Exception\Exception $e) {
                 return $this;
             }
 
-            $system_file = new system_file($path_file_dest);
-            $system_file->chmod();
+            $subdefFile = new \Symfony\Component\HttpFoundation\File\File($path_file_dest);
 
             $meta_writable = $subdef_def->meta_writeable();
         }
+
+        $core['file-system']->chmod($subdefFile->getRealPath(), 0760);
 
         try {
             $appbox = \appbox::get_instance(\bootstrap::getCore());
@@ -1025,19 +1023,26 @@ class record_adapter implements record_Interface, cache_cacheableInterface
                     substit = 1
                 WHERE name = :name AND record_id = :record_id';
 
-            $stmt = $connbas->prepare($sql);
-
-            $stmt->execute(array(
+            $params = array(
                 ':record_id' => $this->record_id,
                 ':name'      => $name,
                 ':baseurl'   => $base_url,
-                ':filename'  => $system_file->getFilename(),
-                ':width'     => $media->getWidth(),
-                ':height'    => $media->getHeight(),
-                ':mime'      => $system_file->get_mime(),
-                ':path'      => $system_file->getPath(),
-                ':filesize'  => $system_file->getSize()
-            ));
+                ':filename'  => $subdefFile->getFilename(),
+                ':mime'      => $subdefFile->getMimeType(),
+                ':path'      => $subdefFile->getPath(),
+                ':filesize'  => $subdefFile->getSize(),
+            );
+
+            if (method_exists($media, 'getWidth')) {
+                $params[':width'] = $media->getWidth();
+            }
+            if (method_exists($media, 'getHeight')) {
+                $params[':height'] = $media->getHeight();
+            }
+
+            $stmt = $connbas->prepare($sql);
+
+            $stmt->execute($params);
 
             $subdef = $this->get_subdef($name);
             $subdef->delete_data_from_cache();
@@ -1058,8 +1063,6 @@ class record_adapter implements record_Interface, cache_cacheableInterface
         } catch (Exception $e) {
 
         }
-
-        unset($media);
 
         return $this;
     }
@@ -1278,62 +1281,36 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @param collection $collection
-     * @param system_file|string $system_file
-     * @param string $original_name
-     * @param boolean $is_grouping
-     * @return record_adapter
+     * @param \collection $collection
+     * @return \record_adapter
      */
-    public static function create(collection $collection, $system_file, $original_name = false, $is_grouping = false)
+    public static function createStory(\collection $collection)
     {
-        if ( ! $system_file instanceof \system_file) {
-            $system_file = new \system_file($system_file);
-        }
-
-        $type = $system_file->get_phrasea_type();
-
-        if ($is_grouping) {
-            $uuid = uuid::generate_v4();
-            $sha256 = null;
-        } else {
-            $uuid = $system_file->read_uuid();
-            if ( ! uuid::is_valid($uuid)) {
-                $uuid = uuid::generate_v4();
-            }
-            $sha256 = $system_file->get_sha256();
-        }
-
-        if ( ! $original_name) {
-            $original_name = $system_file->getFilename();
-        }
-
         $databox = $collection->get_databox();
-        $sbas_id = $databox->get_sbas_id();
-        $coll_id = $collection->get_coll_id();
-
-        $connbas = $databox->get_connection();
 
         $sql = 'INSERT INTO record
               (coll_id, record_id, parent_record_id, moddate, credate
-                , jeton, type, sha256, uuid, originalname, mime)
+                , type, sha256, uuid, originalname, mime)
             VALUES
               (:coll_id, null, :parent_record_id, NOW(), NOW()
-              , ' . JETON_MAKE_SUBDEF . ' , :type, :sha256, :uuid
+              , :type, :sha256, :uuid
               , :originalname, :mime)';
 
-        $stmt = $connbas->prepare($sql);
+        $stmt = $databox->get_connection()->prepare($sql);
+
         $stmt->execute(array(
-            ':coll_id'          => $coll_id
-            , ':parent_record_id' => ($is_grouping ? 1 : 0)
-            , ':type'             => $type
-            , ':sha256'           => $sha256
-            , ':uuid'             => $uuid
-            , ':originalname'     => $original_name
-            , ':mime'             => $system_file->get_mime()
+            ':coll_id'          => $collection->get_coll_id(),
+            ':parent_record_id' => 1,
+            ':type'             => 'unknown',
+            ':sha256'           => null,
+            ':uuid'             => \uuid::generate_v4(),
+            ':originalname'     => null,
+            ':mime'             => null,
         ));
 
-        $record_id = $connbas->lastInsertId();
-        $record = new self($sbas_id, $record_id);
+        $story_id = $databox->get_connection()->lastInsertId();
+
+        $story = new self($databox->get_sbas_id(), $story_id);
 
         try {
             $appbox = appbox::get_instance(\bootstrap::getCore());
@@ -1343,37 +1320,82 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)
             VALUES (null, :log_id, now(),
               :record_id, "add", :coll_id,"")';
-            $stmt = $connbas->prepare($sql);
+            $stmt = $databox->get_connection()->prepare($sql);
             $stmt->execute(array(
                 ':log_id'    => $log_id,
-                ':record_id' => $record_id,
-                ':coll_id'   => $coll_id
+                ':record_id' => $story_id,
+                ':coll_id'   => $collection->get_coll_id()
             ));
             $stmt->closeCursor();
         } catch (Exception $e) {
             unset($e);
         }
 
-        $pathhd = trim($databox->get_sxml_structure()->path);
-        $pathhd = databox::dispatch($pathhd);
+        return $story;
+    }
 
-        system_file::mkdir($pathhd);
+    public static function createFromFile(\Alchemy\Phrasea\Border\File $file)
+    {
+        $core = \bootstrap::getCore();
 
-        $newname = $record->get_record_id() . "_document." . $system_file->get_extension();
-        if ( ! copy($system_file->getPathname(), $pathhd . $newname)) {
-            throw new Exception('Unable to write file');
+        $databox = $file->getCollection()->get_databox();
+
+        $sql = 'INSERT INTO record
+              (coll_id, record_id, parent_record_id, moddate, credate
+                , jeton, type, sha256, uuid, originalname, mime)
+            VALUES
+              (:coll_id, null, :parent_record_id, NOW(), NOW()
+              , ' . JETON_MAKE_SUBDEF . ' , :type, :sha256, :uuid
+              , :originalname, :mime)';
+
+        $stmt = $databox->get_connection()->prepare($sql);
+
+        $stmt->execute(array(
+            ':coll_id'          => $file->getCollection()->get_coll_id(),
+            ':parent_record_id' => 0,
+            ':type'             => $file->getType() ? $file->getType()->getType() : 'unknown',
+            ':sha256'           => $file->getMedia()->getHash('sha256'),
+            ':uuid'             => $file->getUUID(),
+            ':originalname'     => $file->getOriginalName(),
+            ':mime'             => $file->getFile()->getMimeType(),
+        ));
+
+        $record_id = $databox->get_connection()->lastInsertId();
+
+        $record = new self($databox->get_sbas_id(), $record_id);
+
+        try {
+            $appbox = appbox::get_instance(\bootstrap::getCore());
+            $session = $appbox->get_session();
+            $log_id = $session->get_logger($databox)->get_id();
+
+            $sql = 'INSERT INTO log_docs (id, log_id, date, record_id, action, final, comment)
+            VALUES (null, :log_id, now(),
+              :record_id, "add", :coll_id,"")';
+            $stmt = $databox->get_connection()->prepare($sql);
+            $stmt->execute(array(
+                ':log_id'    => $log_id,
+                ':record_id' => $record_id,
+                ':coll_id'   => $file->getCollection()->get_coll_id()
+            ));
+            $stmt->closeCursor();
+        } catch (Exception $e) {
+            unset($e);
         }
 
-        $system_file2 = new system_file($pathhd . $newname);
-        $system_file2->write_uuid($uuid);
+        $pathhd = databox::dispatch(trim($databox->get_sxml_structure()->path));
+        $newname = $record->get_record_id() . "_document." . $file->getFile()->getExtension();
 
-        $subdef = media_subdef::create($record, 'document', $system_file2);
+        $core['file-system']->copy($file->getFile()->getRealPath(), $pathhd . $newname, true);
+
+        $media = MediaVorus\MediaVorus::guess(new \SplFileInfo($pathhd . $newname));
+        $subdef = media_subdef::create($record, 'document', $media);
 
         $record->delete_data_from_cache(record_adapter::CACHE_SUBDEFS);
 
         $sql = 'REPLACE INTO technical_datas (id, record_id, name, value)
         VALUES (null, :record_id, :name, :value)';
-        $stmt = $connbas->prepare($sql);
+        $stmt = $databox->get_connection()->prepare($sql);
 
         foreach ($subdef->readTechnicalDatas() as $name => $value) {
             if (is_null($value))
@@ -1388,38 +1410,7 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
         $stmt->closeCursor();
 
-        foreach ($record->get_databox()->get_meta_structure()->get_elements() as $data_field) {
-            if ($data_field->get_metadata_source() != metadata_description_PHRASEANET_tfrecordid::get_source()) {
-
-                continue;
-            }
-
-            /**
-             * Replacing record_id in multi values is non sense
-             */
-            if ( ! $data_field->is_multi()) {
-                continue;
-            }
-
-            try {
-                $field = $record->get_caption()->get_field($data_field->get_name())->get_meta_id();
-                $value = array_pop($field->get_values());
-                $meta_id = $value->getId();
-            } catch (\Exception $e) {
-                $meta_id = null;
-            }
-
-            $metas = array(
-                array(
-                    'meta_struct_id' => $data_field->get_id()
-                    , 'meta_id'        => $meta_id
-                    , 'value'          => array($record->get_record_id())
-                )
-            );
-
-            $record->set_metadatas($metas, true);
-        }
-
+        $filessystem = null;
 
         return $record;
     }
@@ -1499,14 +1490,14 @@ class record_adapter implements record_Interface, cache_cacheableInterface
 
     /**
      *
-     * @return system_file
+     * @return \Symfony\Component\HttpFoundation\File\File|null
      */
     public function get_hd_file()
     {
         $hd = $this->get_subdef('document');
 
         if ($hd->is_physically_present()) {
-            return new system_file(p4string::addEndSlash($hd->get_path()) . $hd->get_file());
+            return new SymfoFile($hd->get_pathfile());
         }
 
         return null;
@@ -1699,9 +1690,10 @@ class record_adapter implements record_Interface, cache_cacheableInterface
             $this->generate_subdef($subdef, $pathdest);
 
             if (file_exists($pathdest)) {
+                $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($pathdest));
                 $baseurl = $subdef->get_baseurl() ? $subdef->get_baseurl() . substr(dirname($pathdest), strlen($subdef->get_path())) : '';
 
-                media_subdef::create($this, $subdef->get_name(), new system_file($pathdest), $baseurl);
+                media_subdef::create($this, $subdef->get_name(), $media, $baseurl);
             }
 
             $this->clearSubdefCache($subdefname);

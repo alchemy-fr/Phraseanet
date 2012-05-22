@@ -8,6 +8,12 @@
  * file that was distributed with this source code.
  */
 
+use Alchemy\Phrasea\Metadata\Tag as PhraseaTag;
+use Alchemy\Phrasea\Border\Attribute as BorderAttribute;
+use MediaVorus\MediaVorus;
+use PHPExiftool\Driver\Metadata\Metadata;
+use PHPExiftool\Driver\Metadata\MetadataBag;
+
 /**
  *
  * @license     http://opensource.org/licenses/gpl-3.0 GPLv3
@@ -47,21 +53,27 @@ class task_period_archive extends task_abstract
 
     /**
      *
-     * @var <type>
+     * @var string
      */
     protected $msg = "";
 
     /**
      *
-     * @var <type>
+     * @var boolean
      */
     protected $move_archived = true;
 
     /**
      *
-     * @var <type>
+     * @var boolean
      */
     protected $move_error = true;
+
+    /**
+     *
+     * @var \Entities\LazaretSession
+     */
+    protected $lazaretSession;
 
     /**
      *
@@ -277,6 +289,7 @@ class task_period_archive extends task_abstract
         $this->debug = FALSE;
 
         $ret = '';
+        $core = \bootstrap::getCore();
         $conn = connection::getPDOConnection();
 
         $this->sxTaskSettings = simplexml_load_string($this->settings);
@@ -327,8 +340,11 @@ class task_period_archive extends task_abstract
 
             // check the data-repository exists
             $pathhd = (string) ($this->sxBasePrefs->path);
+
             if ($pathhd) {
-                system_file::mkdir($pathhd);
+
+                $core['file-system']->mkdir($pathhd, 0750);
+
                 if ( ! is_dir($pathhd)) {
                     $this->log(sprintf(_('task::archive:Can\'t create or go to folder \'%s\''), $pathhd));
                     $this->running = false;
@@ -1402,54 +1418,17 @@ class task_period_archive extends task_abstract
                 $this->log(sprintf(('caption from \'%s\''), $captionFileName));
             }
 
-            $system_file = new system_file($path . '/' . $representationFileName);
-
-            $pi = pathinfo($subpath);
-
-            $caption_file = null;
-            if (file_exists($path . '/' . $captionFileName)) {
-                $caption_file = new system_file($path . '/' . $captionFileName);
-            }
-
-            $system_file->set_phrasea_tech_field(system_file::TECH_FIELD_ORIGINALNAME, $representationFileName);
-            $system_file->set_phrasea_tech_field(system_file::TECH_FIELD_PARENTDIRECTORY, $pi["basename"]);
-            $system_file->set_phrasea_tech_field(system_file::TECH_FIELD_SUBPATH, $subpath);
-
-            $databox = databox::get_instance($this->sbas_id);
-            $meta = $system_file->extract_metadatas($databox->get_meta_structure(), $caption_file);
-
-            $stat0 = $stat1 = "0";
-            if ($this->sxBasePrefs->status) {
-                $stat0 = (string) ($this->sxBasePrefs->status);
-            }
-            if ($this->sxTaskSettings->status) {
-                $stat1 = (string) ($this->sxTaskSettings->status);
-            }
-
-            if ( ! $stat0) {
-                $stat0 = '0';
-            }
-            if ( ! $stat1) {
-                $stat1 = '0';
-            }
-
-
             try {
+
+                $databox = \databox::get_instance($this->sbas_id);
                 $collection = collection::get_from_coll_id($databox, $cid);
-                $record = record_adapter::create($collection, $system_file, false, true);
 
-                $record->set_metadatas($meta['metadatas'], true);
-                $record->set_binary_status(databox_status::operation_or($stat0, $stat1));
-                $record->rebuild_subdefs();
-                $record->reindex();
-                $rid = $record->get_record_id();
-                $this->log(sprintf((' (recordId %s)'), $rid));
+                $story = $this->createStory($collection, $path . '/' . $representationFileName, $path . '/' . $captionFileName);
+
+                $rid = $story->get_record_id();
+
+                $this->log(sprintf('story %s created', $rid));
                 $this->archivedFiles ++;
-
-
-                $rid = $record->get_record_id();
-
-
 
                 if ($genericdoc) {
                     unlink($genericdoc);
@@ -1528,6 +1507,150 @@ class task_period_archive extends task_abstract
     }
 
     /**
+     * Create a story
+     *
+     * @todo pathfile should be optionnal
+     *
+     * @param \collection       $collection     The destination collection
+     * @param sring             $pathfile       The base file
+     * @param string            $captionFile    The optionnal Phrasea XML caption file
+     * @return \record_adapter
+     */
+    public function createStory(\collection $collection, $pathfile, $captionFile = null)
+    {
+        $stat0 = $stat1 = "0";
+
+        if (isset($this->sxBasePrefs)) {
+            if ($this->sxBasePrefs->status) {
+                $stat0 = (string) ($this->sxBasePrefs->status);
+            }
+            if ($this->sxTaskSettings->status) {
+                $stat1 = (string) ($this->sxTaskSettings->status);
+            }
+        }
+
+        if ( ! $stat0) {
+            $stat0 = '0';
+        }
+        if ( ! $stat1) {
+            $stat1 = '0';
+        }
+
+        $media = MediaVorus::guess(new \SplFileInfo($pathfile));
+
+        $databox = $collection->get_databox();
+        $metadatasStructure = $databox->get_meta_structure();
+
+        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
+
+        if (file_exists($captionFile)) {
+            $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
+            $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
+
+            if ($captionStatus) {
+                $status = databox_status::operation_or($status, $captionStatus);
+            }
+
+            $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
+        }
+
+        $metas = $this->bagToArray($metadatasStructure, $metadatas);
+
+        $story = record_adapter::createStory($collection);
+        $story->substitute_subdef('document', $media);
+
+        $story->set_metadatas($metas, true);
+        $story->set_binary_status(databox_status::operation_or($stat0, $stat1));
+        $story->rebuild_subdefs();
+        $story->reindex();
+
+        $media = $databox = null;
+
+        return $story;
+    }
+
+    /**
+     * Creates a fecord
+     *
+     * @param \collection   $collection     The destination collection
+     * @param string        $pathfile       The file to archive
+     * @param string        $captionFile    The Phrasea XML caption file
+     * @param integer       $grp_rid        Add the record to a story
+     * @param integer       $force          Force lazaret or record ; use \Alchemy\Phrasea\Border\Manager::FORCE_* constants
+     * @return null
+     */
+    public function createRecord(\collection $collection, $pathfile, $captionFile, $grp_rid, $force = null)
+    {
+        $stat0 = $stat1 = "0";
+
+        if (isset($this->sxBasePrefs)) {
+            if ($this->sxBasePrefs->status) {
+                $stat0 = (string) ($this->sxBasePrefs->status);
+            }
+            if ($this->sxTaskSettings->status) {
+                $stat1 = (string) ($this->sxTaskSettings->status);
+            }
+        }
+
+        if ( ! $stat0) {
+            $stat0 = '0';
+        }
+        if ( ! $stat1) {
+            $stat1 = '0';
+        }
+
+        $core = \bootstrap::getCore();
+        $status = databox_status::operation_or($stat0, $stat1);
+
+        $media = MediaVorus::guess(new \SplFileInfo($pathfile));
+
+        $databox = $collection->get_databox();
+        $metadatasStructure = $databox->get_meta_structure();
+
+        $metadatas = $this->getIndexByFieldName($metadatasStructure, $media->getEntity()->getMetadatas());
+
+        if (file_exists($captionFile)) {
+            $caption = $this->readXMLForDatabox($metadatasStructure, $captionFile);
+            $captionStatus = $this->parseStatusBit(simplexml_load_file($captionFile));
+
+            if ($captionStatus) {
+                $status = databox_status::operation_or($status, $captionStatus);
+            }
+
+            $metadatas = $this->mergeForDatabox($metadatasStructure, $metadatas, $caption);
+        }
+
+        $file = new \Alchemy\Phrasea\Border\File($media, $collection);
+
+        $file->addAttribute(new BorderAttribute\Status($status));
+
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfFilepath(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getRealPath()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfDirname(), new \PHPExiftool\Driver\Value\Mono(dirname($media->getFile()->getRealPath())))));
+
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfAtime(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getATime()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfMtime(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getMTime()))));
+        $file->addAttribute(new BorderAttribute\Metadata(new Metadata(new PhraseaTag\TfCtime(), new \PHPExiftool\Driver\Value\Mono($media->getFile()->getCTime()))));
+
+        foreach ($metadatas as $meta) {
+            $file->addAttribute(new BorderAttribute\Metadata($meta));
+        }
+
+        if ($grp_rid) {
+            $file->addAttribute(new BorderAttribute\Story(new record_adapter($databox->get_sbas_id(), $grp_rid)));
+        }
+
+        $record = null;
+
+        $postProcess = function($element, $visa, $code) use(&$record) {
+                $record = $element;
+            };
+
+        $core['border-manager']->process($this->getLazaretSession(), $file, $postProcess, $force);
+
+        return $record;
+    }
+
+    /**
      *
      * @param <type> $dom
      * @param <type> $node
@@ -1576,6 +1699,7 @@ class task_period_archive extends task_abstract
     function archiveFile($dom, $node, $path, $path_archived, $path_error, &$nodesToDel, $grp_rid = 0)
     {
         $match = $node->getAttribute('match');
+
         if ($match == '*') {
             return;
         }
@@ -1634,6 +1758,8 @@ class task_period_archive extends task_abstract
     {
         $ret = false;
 
+        $core = \bootstrap::getCore();
+
         $file = $node->getAttribute('name');
         $captionFileName = $captionFileNode ? $captionFileNode->getAttribute('name') : NULL;
 
@@ -1662,128 +1788,27 @@ class task_period_archive extends task_abstract
             $stat1 = '0';
         }
 
-        $system_file = new system_file($path . '/' . $file);
+        try {
+            $databox = \databox::get_instance($this->sbas_id);
+            $collection = collection::get_from_coll_id($databox, $cid);
 
-        $caption_file = NULL;
+            $record = $this->createRecord($collection, $path . '/' . $file, $path . '/' . $captionFileName, $grp_rid);
 
-        if ($captionFileName !== NULL && $captionFileName != $file) {
-            $caption_file = new system_file($path . '/' . $captionFileName);
-        }
+            $node->setAttribute('archived', '1');
 
-        $pi = pathinfo($subpath);
-
-        $databox = databox::get_instance($this->sbas_id);
-
-        $system_file->set_phrasea_tech_field(system_file::TECH_FIELD_ORIGINALNAME, $file);
-        $system_file->set_phrasea_tech_field(system_file::TECH_FIELD_PARENTDIRECTORY, $pi["basename"]);
-        $system_file->set_phrasea_tech_field(system_file::TECH_FIELD_SUBPATH, $subpath);
-
-        $meta = $system_file->extract_metadatas($databox->get_meta_structure(), $caption_file);
-//    unset($databox);
-
-        $hexstat = '';
-        if ($meta['status'] !== NULL) {
-            $s = strrev($meta['status']) . str_repeat('0', 64);
-            for ($a = 0; $a < 4; $a ++ ) {
-                $hexstat = substr('0000' . base_convert(strrev(substr($s, $a << 4, 16)), 2, 16), -4) . $hexstat;
+            if ($captionFileNode) {
+                $captionFileNode->setAttribute('archived', '1');
             }
-        } else {
-            $hexstat = '0';
-        }
 
-        $lazaret = false;
-        $uuid = false;
-        if ($grp_rid == 0 && $captionFileName == NULL) {
-            $this->log(sprintf(("Checkin for lazaret")));
-            try {
+            $this->archivedFiles ++;
+        } catch (\Exception $e) {
 
-                $base_id = (int) ($this->sxTaskSettings->base_id);
-                $sbas_id = phrasea::sbasFromBas($base_id);
-                $sha256 = $system_file->get_sha256();
+            $this->log(("Error : can't insert record : " . $e->getMessage()));
 
-                $uuid = false;
-                if ( ! $system_file->has_uuid()) {
-                    try {
-                        $connbas = connection::getPDOConnection($sbas_id);
-                        $sql = 'SELECT uuid FROM record WHERE sha256 = :sha256';
-                        $stmt = $connbas->prepare($sql);
-                        $stmt->execute(array(':sha256' => $sha256));
-                        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $stmt->closeCursor();
+            $node->setAttribute('error', '1');
 
-                        if ($row && uuid::is_valid($row['uuid'])) {
-                            $uuid = $row['uuid'];
-                        }
-                    } catch (Exception $e) {
-
-                    }
-                }
-
-                $system_file->write_uuid($uuid);
-
-                $error_file = p4file::check_file_error($system_file->getPathname(), $sbas_id, $file);
-                $status = databox_status::operation_or($stat0, $stat1);
-
-                if ($meta['status']) {
-                    $status = databox_status::operation_or($status, $meta['status']);
-                }
-
-                if ( ! $system_file->is_new_in_base(phrasea::sbasFromBas($base_id)) || count($error_file) > 0) {
-                    $this->log(sprintf(("Trying to move to lazaret")));
-                    if (lazaretFile::move_uploaded_to_lazaret($system_file, $base_id, $file, implode("\n", $error_file), $status)) {
-                        $this->log("File %s moved to lazaret");
-                        $lazaret = true;
-                        $node->setAttribute('archived', '1');
-                        $this->archivedFiles ++;
-                    }
-                } else {
-                    $this->log("No need to lazaret");
-                }
-            } catch (Exception $e) {
-                $this->log(sprintf(("Error while checking for lazaret : %s"), $e->getMessage()));
-            }
-        }
-
-        if ( ! $lazaret) {
-            $cid = $node->getAttribute('cid');
-
-            $base_id = phrasea::baseFromColl($this->sbas_id, $cid);
-
-            try {
-                $collection = collection::get_from_base_id($base_id);
-                $record = record_adapter::create($collection, $system_file, false, false);
-                $record->set_metadatas($meta['metadatas'], true);
-                $record->set_binary_status(databox_status::operation_or(databox_status::operation_or($stat0, $stat1), databox_status::hex2bin($hexstat)));
-                $record->rebuild_subdefs();
-                $record->reindex();
-
-                $rid = $record->get_record_id();
-                if ($grp_rid !== NULL) {
-                    $connbas = connection::getPDOConnection($this->sbas_id);
-                    $sql = "INSERT INTO regroup (id, rid_parent, rid_child, dateadd, ord)
-                VALUES (NULL, :rid_parent, :rid_child, NOW(), 0)";
-
-                    $params = array(
-                        ':rid_parent' => $grp_rid
-                        , ':rid_child'  => $rid
-                    );
-
-                    $stmt = $connbas->prepare($sql);
-                    $stmt->execute($params);
-                    $stmt->closeCursor();
-                }
-                $this->archivedFiles ++;
-
-                $node->setAttribute('archived', '1');
-                if ($captionFileNode) {
-                    $captionFileNode->setAttribute('archived', '1');
-                }
-            } catch (Exception $e) {
-                $this->log(("Error : can't insert record : " . $e->getMessage()));
-                $node->setAttribute('error', '1');
-                if ($captionFileNode) {
-                    $captionFileNode->setAttribute('error', '1');
-                }
+            if ($captionFileNode) {
+                $captionFileNode->setAttribute('error', '1');
             }
         }
 
@@ -1809,8 +1834,10 @@ class task_period_archive extends task_abstract
                 $this->log(sprintf(('copy \'%s\' to \'error\''), $subpath . '/' . $captionFileName));
                 @copy($path . '/' . $captionFileName, $path_error . '/' . $captionFileName);
             }
-            if ( ! $node->getAttribute('keep')) // do not count copy of special files as a real event
+            // do not count copy of special files as a real event
+            if ( ! $node->getAttribute('keep')) {
                 $ret = true;
+            }
         }
 
         if ( ! $node->getAttribute('keep')) {
@@ -1885,50 +1912,242 @@ class task_period_archive extends task_abstract
 
         return($matched);
     }
-}
-
-class CListFolder
-{
-    /**
-     *
-     * @var Array
-     */
-    protected $list;
 
     /**
+     * Return a LazaretSession
      *
-     * @param string $path
-     * @param boolean $sorted
+     * @return \Entities\LazaretSession
      */
-    function __construct($path, $sorted = true)
+    protected function getLazaretSession()
     {
-        $this->list = array();
-        if ($hdir = opendir($path)) {
-            while (false !== ($file = readdir($hdir))) {
-                $this->list[] = $file;
-            }
-            closedir($hdir);
-            if ($sorted) {
-                natcasesort($this->list);
+        if ($this->lazaretSession) {
+            return $this->lazaretSession;
+        }
+
+        $core = \bootstrap::getCore();
+
+        $lazaretSession = new \Entities\LazaretSession();
+
+        $core['EM']->persist($lazaretSession);
+        $core['EM']->flush();
+
+        $this->lazaretSession = $lazaretSession;
+
+        return $this->lazaretSession;
+    }
+
+    /**
+     * Map a Bag of metadatas indexed by **Tagnames** to a bag of metadatas
+     * indexed by **FieldNames**
+     *
+     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
+     * @param MetadataBag                   $bag                The metadata bag
+     * @return \PHPExiftool\Driver\Metadata\MetadataBag
+     */
+    protected function getIndexByFieldName(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag)
+    {
+        $ret = new MetadataBag();
+
+        foreach ($metadatasStructure as $databox_field) {
+            if ($bag->containsKey($databox_field->get_tag()->getTagname())) {
+                $ret->set($databox_field->get_name(), $bag->get($databox_field->get_tag()->getTagname()));
             }
         }
+
+        return $ret;
     }
 
     /**
-     * Destructor
+     * Map a bag of metadatas indexed by **FieldNames** to an array ready for
+     * \record_adapter metadatas submission
      *
+     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
+     * @param MetadataBag                   $metadatas          The metadata bag
+     * @return array
      */
-    function __destruct()
+    protected function bagToArray(\databox_descriptionStructure $metadatasStructure, MetadataBag $metadatas)
     {
-        unset($this->list);
+        $metas = array();
+        $unicode = new \unicode();
+
+        foreach ($metadatasStructure as $databox_field) {
+            if ($metadatas->containsKey($databox_field->get_tag()->getTagname())) {
+
+                if ($databox_field->is_multi()) {
+
+                    $values = $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asArray();
+
+                    $tmp = array();
+
+                    foreach ($values as $value) {
+                        foreach (\caption_field::get_multi_values($value, $databox_field->get_separator()) as $v) {
+                            $tmp[] = $v;
+                        }
+                    }
+
+                    $values = array_unique($tmp);
+
+                    foreach ($values as $value) {
+
+                        $value = $unicode->substituteCtrlCharacters($value, ' ');
+                        $value = $unicode->toUTF8($value);
+                        if ($databox_field->get_type() == 'date') {
+                            $value = $unicode->parseDate($value);
+                        }
+
+                        $metas[] = array(
+                            'meta_struct_id' => $databox_field->get_id(),
+                            'value'          => $value,
+                            'meta_id'        => null
+                        );
+                    }
+                } else {
+                    $value = $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asString();
+
+                    $value = $unicode->substituteCtrlCharacters($value, ' ');
+                    $value = $unicode->toUTF8($value);
+                    if ($databox_field->get_type() == 'date') {
+                        $value = $unicode->parseDate($value);
+                    }
+
+                    $metas[] = array(
+                        'meta_struct_id' => $databox_field->get_id(),
+                        'value'          => $metadatas->get($databox_field->get_tag()->getTagname())->getValue()->asString(),
+                        'meta_id'        => null
+                    );
+                }
+            }
+        }
+
+        $unicode = null;
+
+        return $metas;
     }
 
     /**
+     * Merge two bags of metadatas indexed by **FieldNames**
+     * Return a bag indexed by **FieldNames**
      *
+     * @param \databox_descriptionStructure $metadatasStructure The databox structure related
+     * @param MetadataBag                   $bag1               The first metadata bag
+     * @param MetadataBag                   $bag2               The second metadata bag
+     * @return \PHPExiftool\Driver\Metadata\MetadataBag
+     */
+    protected function mergeForDatabox(\databox_descriptionStructure $metadatasStructure, MetadataBag $bag1, MetadataBag $bag2)
+    {
+        $metadatasBag = new MetadataBag();
+
+        foreach ($metadatasStructure as $databox_field) {
+
+            $value = array();
+
+            $tag = $databox_field->get_tag();
+
+            foreach (array($bag1, $bag2) as $bag) {
+
+                if ( ! $bag->containsKey($databox_field->get_name())) {
+                    continue;
+                }
+
+                if ($databox_field->is_multi()) {
+                    $value = array_unique(array_merge($value, $bag->get($databox_field->get_name())->getValue()->asArray()));
+                } else {
+                    $value = $bag->get($databox_field->get_name())->getValue()->asString();
+                }
+            }
+
+            if ( ! $value) {
+                continue;
+            }
+
+            if ($databox_field->is_multi()) {
+                $value = new \PHPExiftool\Driver\Value\Multi($value);
+            } else {
+                $value = new \PHPExiftool\Driver\Value\Mono($value);
+            }
+
+            $metadatasBag->set($databox_field->get_name(), new PHPExiftool\Driver\Metadata\Metadata($tag, $value));
+        }
+
+        return $metadatasBag;
+    }
+
+    /**
+     * Read a Phrasea XML file for Phrasea metadatas
+     * Returns a MetadataBag indexed by **FieldNames**
+     *
+     * @param \databox_descriptionStructure             $metadatasStructure The databox structure related
+     * @param type                                      $pathfile           The path file to the XML
+     * @return \PHPExiftool\Driver\Metadata\MetadataBag
+     *
+     * @throws \InvalidArgumentException When the file is invalid or missing
+     */
+    protected function readXMLForDatabox(\databox_descriptionStructure $metadatasStructure, $pathfile)
+    {
+        if ( ! file_exists($pathfile)) {
+            throw new \InvalidArgumentException(sprintf('file %s does not exists', $pathfile));
+        }
+
+        $sxcaption = @simplexml_load_file($pathfile);
+
+        if ( ! $sxcaption) {
+            throw new \InvalidArgumentException(sprintf('Invalid XML file %s', $pathfile));
+        }
+
+        /**
+         * @todo update with metafield, ensure that metafield primes on metadata
+         */
+        $metadataBag = new MetadataBag();
+
+        foreach ($sxcaption->description->children() as $tagname => $field) {
+            $field = trim($field);
+
+            $meta = $metadatasStructure->get_element_by_name(trim($tagname));
+            if ( ! $meta) {
+                continue;
+            }
+
+            $tag = $meta->get_tag();
+
+            if ($meta->is_multi()) {
+                $fields = caption_field::get_multi_values($field, $meta->get_separator());
+
+                if ( ! $metadataBag->containsKey($meta->get_name())) {
+                    $values = new \PHPExiftool\Driver\Value\Multi($fields);
+                } else {
+                    $values = $metadataBag->get($meta->get_name())->getValue();
+
+                    foreach ($fields as $f) {
+                        $values->addValue($f);
+                    }
+                }
+
+                /**
+                 * fail if not tagname defined
+                 */
+                $metadataBag->set($meta->get_name(), new \PHPExiftool\Driver\Metadata\Metadata($tag, $values));
+            } else {
+                $metadataBag->set($meta->get_name(), new \PHPExiftool\Driver\Metadata\Metadata($tag, new \PHPExiftool\Driver\Value\Mono($field)));
+            }
+        }
+
+        return $metadataBag;
+    }
+
+    /**
+     * Parse a Phrasea XML to find status tag
+     *
+     * @param \SimpleXMLElement $sxcaption The SimpleXML related to the XML
      * @return string
      */
-    function read()
+    protected function parseStatusBit(\SimpleXMLElement $sxcaption)
     {
-        return(array_shift($this->list));
+        $statBit = null;
+
+        if ('' !== $inStatus = (string) $sxcaption->status) {
+            $statBit = $inStatus;
+        }
+
+        return $statBit;
     }
 }

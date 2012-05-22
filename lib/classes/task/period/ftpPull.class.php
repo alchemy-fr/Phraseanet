@@ -278,13 +278,18 @@ class task_period_ftpPull extends task_appboxAbstract
 
     protected function retrieveContent(appbox $appbox)
     {
+        $core = \bootstrap::getCore();
+
         foreach (array('localpath', 'host', 'port', 'user', 'password', 'ftppath') as $f) {
             if (trim((string) ($this->{$f})) === '') {
                 $this->log('setting \'' . $f . '\' must be set');
                 $this->running = FALSE;
             }
         }
-        if ( ! is_dir($this->localpath) || ! system_file::mkdir($this->localpath)) {
+
+        $core['file-system']->mkdir($this->localpath, 0750);
+        
+        if ( ! is_dir($this->localpath)) {
             $this->log('\'' . $this->localpath . '\' does not exists');
             $this->running = FALSE;
         }
@@ -349,7 +354,7 @@ class task_period_ftpPull extends task_appboxAbstract
                         throw new Exception("Un fichier du meme nom ($finalpath) existe deja...");
                     }
 
-                    system_file::mkdir(dirname($finalpath));
+                    $core['file-system']->mkdir(dirname($finalpath), 0750);
 
                     $ftp->get($finalpath, $filepath);
                     $ftp->delete($filepath);

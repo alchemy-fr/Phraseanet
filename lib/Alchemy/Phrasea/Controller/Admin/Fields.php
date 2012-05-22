@@ -38,11 +38,11 @@ class Fields implements ControllerProviderInterface
 
                 $multi = ($request->get('multi') === 'true');
 
-                $metadata = \databox_field::load_class_from_xpath($request->get('source'));
+                $tag = \databox_field::loadClassFromTagName($request->get('source'));
 
                 $datas = array(
-                    'result'   => ($multi === $metadata->is_multi())
-                    , 'is_multi' => $metadata->is_multi()
+                    'result'   => ($multi === $tag->isMulti()),
+                    'is_multi' => $tag->isMulti(),
                 );
 
                 $Serializer = $app['Core']['Serializer'];
@@ -58,19 +58,19 @@ class Fields implements ControllerProviderInterface
                 $request = $app['request'];
                 $readonly = ($request->get('readonly') === 'true');
 
-                $metadata = \databox_field::load_class_from_xpath($request->get('source'));
+                $tag = \databox_field::loadClassFromTagName($request->get('source'));
 
                 $datas = array(
-                    'result'      => ($readonly === $metadata->is_readonly())
-                    , 'is_readonly' => $metadata->is_readonly()
+                    'result'      => ($readonly !== $tag->isWritable()),
+                    'is_readonly' => ! $tag->isWritable(),
                 );
 
                 $Serializer = $app['Core']['Serializer'];
 
                 return new Response(
-                        $Serializer->serialize($datas, 'json')
-                        , 200
-                        , array('Content-Type' => 'application/json')
+                        $Serializer->serialize($datas, 'json'),
+                        200,
+                        array('Content-Type' => 'application/json')
                 );
             });
 

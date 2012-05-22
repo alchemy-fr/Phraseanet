@@ -17,13 +17,13 @@ Entities\LazaretFile:
     base_id:
       type: integer
     uuid:
-    #check collation in tests
       type: string
       length: 36
     sha256:
-    #check collation in tests
       type: string
       length: 64
+    forced:
+      type: boolean
     created:
       type: datetime
       gedmo:
@@ -45,6 +45,12 @@ Entities\LazaretFile:
   oneToMany:
     attributes:
       targetEntity: LazaretAttribute
+      mappedBy: lazaretFile
+      cascade: ["ALL"]
+      orderBy:
+        id: ASC
+    checks:
+      targetEntity: LazaretCheck
       mappedBy: lazaretFile
       cascade: ["ALL"]
       orderBy:

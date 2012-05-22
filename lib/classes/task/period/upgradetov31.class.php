@@ -60,7 +60,7 @@ class task_period_upgradetov31 extends task_abstract
             foreach ($appbox->get_databoxes() as $databox) {
                 $connbas = $databox->get_connection();
 
-                $sql = 'SELECT r.type, r.record_id, s.path, s.file, r.xml
+                $sql = 'SELECT r.coll_id, r.type, r.record_id, s.path, s.file, r.xml
                 FROM record r, subdef s
                         WHERE ISNULL(uuid)
                         AND s.record_id = r.record_id AND s.name="document" LIMIT 100';
@@ -72,12 +72,16 @@ class task_period_upgradetov31 extends task_abstract
 
                 foreach ($rs as $row) {
                     $pathfile = p4string::addEndSlash($row['path']) . $row['file'];
-                    if ( ! file_exists($pathfile)) {
-                        printf("le fichier nexiste $pathfile pas ....\n");
-                        $uuid = uuid::generate_v4();
-                    } else {
-                        $uuid_file = new system_file($pathfile);
-                        $uuid = $uuid_file->write_uuid();
+
+                    $uuid = uuid::generate_v4();
+                    try {
+                        $media = \MediaVorus\MediaVorus::guess(new \SplFileInfo($pathfile));
+                        $collection = \collection::get_from_coll_id($databox, $row['coll_id']);
+
+                        $file = new \Alchemy\Phrasea\Border\File($media, $collection);
+                        $uuid = $file->getUUID(true, true);
+                    } catch (\Exception $e) {
+
                     }
 
                     $sql = 'UPDATE record SET uuid = :uuid WHERE record_id = :record_id';

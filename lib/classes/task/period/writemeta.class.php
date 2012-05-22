@@ -290,12 +290,6 @@ class task_period_writemeta extends task_databoxAbstract
             $meta = $field->get_databox_field();
             /* @var $meta \databox_field */
 
-            try {
-                $tag = TagFactory::getFromRDFTagname($meta->get_metadata_source());
-            } catch (\PHPExiftool\Exception\TagUnknown $e) {
-                continue;
-            }
-
             $datas = $field->get_values();
 
             if ($meta->is_multi()) {
@@ -305,7 +299,7 @@ class task_period_writemeta extends task_databoxAbstract
             }
 
             $metadatas->add(
-                new Metadata\Metadata($tag, $value)
+                new Metadata\Metadata($meta->get_tag(), $value)
             );
         }
 

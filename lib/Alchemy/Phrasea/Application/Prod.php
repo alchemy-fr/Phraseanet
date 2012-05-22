@@ -11,9 +11,9 @@
 
 namespace Alchemy\Phrasea\Application;
 
+use Alchemy\Phrasea\Controller\Prod as Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Alchemy\Phrasea\Controller\Prod as Controller;
 
 /**
  *
@@ -51,6 +51,8 @@ return call_user_func(function() {
             $app->mount('/tooltip', new Controller\Tooltip());
             $app->mount('/language', new Controller\Language());
             $app->mount('/tools/', new Controller\Tools());
+            $app->mount('/lazaret/', new Controller\Lazaret());
+            $app->mount('/upload/', new Controller\Upload());
             $app->mount('/', new Controller\Root());
 
             $app->error(function (\Exception $e, $code) use ($app) {

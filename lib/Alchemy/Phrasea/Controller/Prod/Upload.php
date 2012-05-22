@@ -11,12 +11,15 @@
 
 namespace Alchemy\Phrasea\Controller\Prod;
 
+use Alchemy\Phrasea\Border;
+use Alchemy\Phrasea\Helper;
+use MediaVorus\MediaVorus;
 use Silex\Application;
 use Silex\ControllerProviderInterface;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Alchemy\Phrasea\Helper;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Upload controller collection
@@ -119,7 +122,111 @@ class Upload implements ControllerProviderInterface
      */
     public function upload(Application $app, Request $request)
     {
+        $datas = array(
+            'success' => false,
+            'code'    => null,
+            'message' => '',
+            'element' => '',
+            'reasons' => array(),
+            'id' => '',
+        );
 
+        if ( ! $request->files->get('files')) {
+            throw new \Exception_BadRequest('Missing file parameter');
+        }
+
+        if (count($request->files->get('files')) > 1) {
+            throw new \Exception_BadRequest('Upload is limited to 1 file per request');
+        }
+
+        $base_id = $request->get('base_id');
+
+        if ( ! $base_id) {
+            throw new \Exception_BadRequest('Missing base_id parameter');
+        }
+
+        if ( ! $app['Core']->getAuthenticatedUser()->ACL()->has_right_on_base($base_id, 'canaddrecord')) {
+            throw new \Exception_Forbidden('User is not allowed to add record on this collection');
+        }
+
+        $file = current($request->files->get('files'));
+
+        if ( ! $file->isValid()) {
+            throw new \Exception_BadRequest('Uploaded file is invalid');
+        }
+
+        try {
+            $media = MediaVorus::guess($file);
+            $collection = \collection::get_from_base_id($base_id);
+
+            $lazaretSession = new \Entities\LazaretSession();
+            $lazaretSession->setUsrId($app['Core']->getAuthenticatedUser()->get_id());
+
+            $app['Core']['EM']->persist($lazaretSession);
+
+            $packageFile = new Border\File($media, $collection, $file->getClientOriginalName());
+
+            $postStatus = $request->get('status');
+
+            if (is_array($postStatus)) {
+
+                $status = '';
+                foreach (range(0, 64) as $i) {
+                    $status .= isset($postStatus[$i]) ? ($postStatus[$i] ? '1' : '0') : '0';
+                }
+                $packageFile->addAttribute(new Border\Attribute\Status(strrev($status)));
+            }
+
+            $forceBehavior = $request->get('forceAction');
+
+            $reasons = $elementCreated = null;
+
+            $callback = function($element, $visa, $code) use (&$reasons, &$elementCreated) {
+                    foreach ($visa->getResponses() as $response) {
+                        if ( ! $response->isOk()) {
+                            $reasons[] = $response->getMessage();
+                        }
+                    }
+                    $elementCreated = $element;
+                };
+
+            $code = $app['Core']['border-manager']->process(
+                $lazaretSession, $packageFile, $callback, $forceBehavior
+            );
+
+
+            if ($elementCreated instanceof \record_adapter) {
+                $id = $elementCreated->get_serialize_key();
+                $element = 'record';
+                $reasons = array();
+            } else {
+                $id = $elementCreated->getId();
+                $element = 'lazaret';
+            }
+
+            $datas = array(
+                'success' => true,
+                'code'    => $code,
+                'message' => '',
+                'element' => $element,
+                'reasons' => $reasons,
+                'id'      => $id,
+            );
+        } catch (\Exception $e) {
+
+            $datas['message'] = _('Unable to add file to Phraseanet') . $e->getFile() . ':' . $e->getLine() . $e->getMessage();
+        }
+
+        return self::getJsonResponse($app['Core']['Serializer'], $datas);
+    }
+
+    private static function getJsonResponse(Serializer $serializer, Array $datas)
+    {
+        return new Response(
+                $serializer->serialize($datas, 'json'),
+                200,
+                array('Content-type' => 'application/json')
+        );
     }
 
     /**
