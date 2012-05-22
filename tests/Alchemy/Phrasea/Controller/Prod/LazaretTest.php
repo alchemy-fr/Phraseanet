@@ -84,7 +84,7 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetElement()
     {
-        $this->markTestSkipped('Test response content');
+        $this->markTestSkipped('Route is not yet written');
 
         $originalEm = $this->app['Core']['EM'];
 
@@ -128,6 +128,8 @@ class LazaretTest extends \PhraseanetWebTestCaseAuthenticatedAbstract
      */
     public function testGetElementException()
     {
+        $this->markTestSkipped('Route is not yet written');
+
         $originalEm = $this->app['Core']['EM'];
 
         $em = $this->getMock('Doctrine\ORM\EntityManager', array('find'), array(), '', false);

@@ -23,7 +23,7 @@ class LazaretFileRepository extends EntityRepository
 {
 
     /**
-     * Returns all basket for a given offset & limit
+     * Returns all lazaret files for a given offset & limit
      *
      * @param   int     $offset
      * @param   int     $limit
