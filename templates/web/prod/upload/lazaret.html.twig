@@ -2,6 +2,7 @@
     {% if lazaretFiles|length > 0%}
         {% for file in lazaretFiles %}
             {{ _self.lazaretElement(file) }}
+            <br style='clear:both' />
         {% endfor %}
     {% else %}
         {% trans 'Aucun document dans la quarantaine actuellement' %}
@@ -10,17 +11,45 @@
 
 {% macro lazaretElement(file) %}
     {% import "common/thumbnail.html" as thumb %}
-    <div class='lazaret-file'>
-        <div>{#load image from pathname#}</div>
-        <div>{{ file.getOriginalName() }}</div>
-    </div>
     {% set records = file.getRecordsToSubstitute() %}
+    <div>{#load image from pathname#}</div>
+    <div class='lazaret-file' style='float:left;width:25%;padding:10px;'>
+        <table class='table'>
+            <tr>
+                <td>{% trans 'Filename' %}</td>
+                <td>{{ file.getOriginalName() }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'Date' %}</td>
+                <td>{{ file.getCreated()|date('Y-m-d') }}</td>
+            </tr>
+            {% if file.getSession().getUser() is not none %}
+                <tr>
+                    <td>{% trans 'Uploaded by' %}</td>
+                    <td>{{ file.getSession().getUser().get_login() }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td>{% trans 'Collection' %}</td>
+                <td>{{ file.getCollection().get_name() }}</td>
+            </tr>
+        </table>
+
+        <div class="btn-group">
+            <button class="btn"><img src="/skins/icons/add.png"></button>
+            <button class="btn"><img src="/skins/icons/delete.png"></button>
+            {% if records|length > 0 %}
+                <button class="btn"><img src="/skins/icons/reload.png"></button>
+            {% endif %}
+        </div>
+    </div>
 
     {% if  records|length > 0 %}
+        <div class='lazaret-file' style='float:left;width:70%'>
         {% for record in records %}
             {% if user.ACL().has_right_on_base(record.get_base_id(), 'canaddrecord')
                 and user.ACL().has_right_on_base(record.get_base_id(), 'candeleterecord') %}
-                <div class='records-subititution'>
+                <div class='records-subititution' style='float:left;padding:5px'>
                     {% if user.ACL().has_access_to_subdef(record, 'preview') %}
                         {% set preview_obj = record.get_preview() %}
                     {% else %}
@@ -32,6 +61,7 @@
                 </div>
             {% endif %}
         {% endfor %}
+        </div>
     {% endif %}
 
 {% endmacro %}
